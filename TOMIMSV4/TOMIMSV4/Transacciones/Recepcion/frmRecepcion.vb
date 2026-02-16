@@ -4,6 +4,7 @@ Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Mvvm.Native
 Imports DevExpress.Utils
+Imports DevExpress.XtraBars.Ribbon.ViewInfo
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraEditors.Repository
@@ -12,7 +13,6 @@ Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraReports.UI
-Imports DevExpress.XtraRichEdit.Fields
 Imports DevExpress.XtraSplashScreen
 
 Public Class frmRecepcion
@@ -202,12 +202,17 @@ Public Class frmRecepcion
                     '#CKFK20240214 Agregué la funcionalidad de que se guarde la recepción cuando sea este tipo de transacción MCOC00
                     If txtIdTipoTR.Text = clsBeTrans_re_enc.pTipoTrans.MCOC00.ToString Then
 
-                        chkRecepcionManual.Checked = True
+
 
                         '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
                         Check_Reglas_Propietario_Ingreso()
 
+                        '#GT13012025: asignar los estados y bloquear controles.
+                        chkRecepcionManual.Checked = True
                         chkHabilitaStock.Checked = True
+                        chkRecepcionManual.Enabled = False
+
+
 
                         If txtIdOrdenCompra.Text <> "" Then
                             '#GT08022024: guardar el encabezado al recibir por BOF.
@@ -310,14 +315,7 @@ Public Class frmRecepcion
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -849,13 +847,7 @@ Public Class frmRecepcion
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -931,13 +923,7 @@ Public Class frmRecepcion
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -999,14 +985,15 @@ Public Class frmRecepcion
                     Exit Sub
                 End If
 
+                '#GT13012025: asignar y bloquear controles
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
-
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
 
-                '#CKFK20251012 Esta validación es la que no aplica, no tiene nada que ver si se está editando o no una recepcion
-                'If Modo = TipoTrans.Editar Then
-                '    chkHabilitaStock.Enabled = False
-                'End If
+                If Modo = TipoTrans.Editar Then
+                    chkHabilitaStock.Enabled = gBeRecepcionEnc.Habilitar_Stock
+                End If
+
+                chkMostrarCantidadPI.Enabled = False
 
                 txtIdOrdenCompra.Enabled = False
 
@@ -1162,6 +1149,8 @@ Public Class frmRecepcion
 
     Private Sub Check_Reglas_Propietario_Ingreso()
 
+        chkHabilitaStock.Checked = True
+
         Try
 
             '#EJC20210624: Validar si existen reglas por propietario.
@@ -1179,8 +1168,12 @@ Public Class frmRecepcion
                 End If
             End If
 
+            '#GT13012025: se añade que, si por tipo recepcion es 2, se habilita stock
+            'en resumen, la recepción dice habilitar stock, pero por el tipo de recepción se coloca false, eso es inconsistente
             If vReglasPropietarioDefinidas AndAlso clsBD.Instancia.Formato_Recepcion = 1 Then
                 chkHabilitaStock.Checked = False
+            ElseIf clsBD.Instancia.Formato_Recepcion = 2 Then
+                chkHabilitaStock.Checked = True
             End If
 
         Catch ex As Exception
@@ -1296,15 +1289,7 @@ Public Class frmRecepcion
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1335,13 +1320,7 @@ Public Class frmRecepcion
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1397,14 +1376,7 @@ Public Class frmRecepcion
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1942,14 +1914,7 @@ Public Class frmRecepcion
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2669,14 +2634,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2700,14 +2658,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2797,14 +2748,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2829,14 +2773,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2861,14 +2798,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3104,14 +3034,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3211,14 +3134,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3321,14 +3236,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3692,14 +3600,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3966,14 +3867,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3987,14 +3881,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             If Actualizar() Then
 
                 If Not gBeRecepcionEnc Is Nothing Then
-                    '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-                    Dim mensajeAdvertencia As String = "ADVERTENCIA_202302231712: Se actualizó la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario
-                    clsLnLog_error_wms_rec.Agregar_Error(mensajeAdvertencia,
-                                                         pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
-                                                         pIdBodega:=AP.IdBodega,
-                                                         pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                         pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
-
+                    clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231712: Se actualizó la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario)
                 End If
 
                 SplashScreenManager.CloseForm(False)
@@ -4092,15 +3979,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -4456,45 +4335,22 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                     '#GT02032022_1906: si no tiene control operador, visualmente esta desmarcado y pListOp debe estar vacio
                                     If BeBodega.control_operador_ubicacion Then
 
-                                        Dim tmpIdOperadorBodega As Integer = CInt(DTOperadores(i)(0))
-
-                                        '#GT23092025: validar que no se añada el mismo operador mas de una vez
-                                        If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpIdOperadorBodega) Then
-
-                                            Dim ReOperador As New clsBeTrans_re_op() With {
-                                                .IdOperadorBodega = tmpIdOperadorBodega,
+                                        Dim Obj As New clsBeTrans_re_op() With
+                                          {.IdOperadorBodega = DTOperadores(i)(0),
                                              .User_agr = AP.UsuarioAp.IdUsuario,
                                              .Fec_agr = Now,
                                              .User_mod = AP.UsuarioAp.IdUsuario,
                                              .Fec_mod = Now,
                                              .IsNew = True,
-                                                .UsaHH = DTOperadores(i)(2)
-                                                }
-                                            pListOpe.Add(ReOperador)
-
-                                    End If
-
-                                        'Dim Obj As New clsBeTrans_re_op() With
-                                        '  {.IdOperadorBodega = DTOperadores(i)(0),
-                                        '     .User_agr = AP.UsuarioAp.IdUsuario,
-                                        '     .Fec_agr = Now,
-                                        '     .User_mod = AP.UsuarioAp.IdUsuario,
-                                        '     .Fec_mod = Now,
-                                        '     .IsNew = True,
-                                        '     .UsaHH = DTOperadores(i)(2)}
-                                        'pListOpe.Add(Obj)
+                                             .UsaHH = DTOperadores(i)(2)}
+                                        pListOpe.Add(Obj)
 
                                     End If
 
                                 Else
                                     If vIdOperadorBodega = IdOperadorBodegaDefecto Then
-
-                                        '#GT23092025: validar que el operador no existe en la lista para no duplicar
-                                        Dim tmpReOperador = DTOperadores(i)(0)
-                                        If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpReOperador) Then
-
                                         Dim Obj As New clsBeTrans_re_op() With
-                                                                              {.IdOperadorBodega = tmpReOperador,
+                                                                              {.IdOperadorBodega = DTOperadores(i)(0),
                                                                               .User_agr = AP.UsuarioAp.IdUsuario,
                                                                               .Fec_agr = Now,
                                                                               .User_mod = AP.UsuarioAp.IdUsuario,
@@ -4502,22 +4358,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                                               .IsNew = True,
                                                                               .UsaHH = DTOperadores(i)(2)}
                                         pListOpe.Add(Obj)
-
                                     End If
-
-
-                                        'Dim Obj As New clsBeTrans_re_op() With
-                                        '                                      {.IdOperadorBodega = DTOperadores(i)(0),
-                                        '                                      .User_agr = AP.UsuarioAp.IdUsuario,
-                                        '                                      .Fec_agr = Now,
-                                        '                                      .User_mod = AP.UsuarioAp.IdUsuario,
-                                        '                                      .Fec_mod = Now,
-                                        '                                      .IsNew = True,
-                                        '                                      .UsaHH = DTOperadores(i)(2)}
-                                        'pListOpe.Add(Obj)
-
                                 End If
-                            End If
                             End If
                         Else
                             lRow.Item("IdOperadorRec") = 0
@@ -4674,8 +4516,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                             DgridDetalleRec.Rows.RemoveAt(lIndexF)
 
-                            DgridDetalleRec.Refresh()
-
                         End If
 
                     Else
@@ -4715,15 +4555,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -4964,13 +4796,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                   lBeTransRecDet,
                                                   habilitaStock)
 
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            Dim msjAdvertencia As String = "ADVERTENCIA_202302231712B: Se finalizó la recepción desde BOF: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario
-            clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                 pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231712B: Se finalizó la recepción desde BOF: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario)
 
             Finaliza_Recepcion = True
 
@@ -4988,13 +4814,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -5018,15 +4838,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 gBeRecepcionEnc.IdTipoTransaccion = "MCOC00") Then
                 gBeRecepcionEnc = clsLnTrans_re_enc.GetSingle(gBeRecepcionEnc.IdRecepcionEnc)
                 pListRecepcionDetalle = gBeRecepcionEnc.Detalle
-
-                '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-                Dim msjAdvertencia As String = "ADVERTENCIA_202302230123: Se realizó recarga del objeto para la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " el tipo de transacción es: " & gBeRecepcionEnc.IdTipoTransaccion
-                clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                     pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
-                                                     pIdBodega:=AP.IdBodega,
-                                                     pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                     pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
-
+                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302230123: Se realizó recarga del objeto para la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " el tipo de transacción es: " & gBeRecepcionEnc.IdTipoTransaccion)
                 vRecargoObjetoRecepcion = True
             End If
 
@@ -5060,15 +4872,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                             If Not gBeRecepcionEnc.Detalle Is Nothing Then
                                 If gBeRecepcionEnc.Detalle.Count > 0 Then
-
-                                    '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-                                    Dim msjAdvertencia As String = "ADVERTENCIA_202302230139A: Se realizó llamada recursiva del objeto para la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " el tipo de transacción es: " & gBeRecepcionEnc.IdTipoTransaccion
-                                    clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                                         pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
-                                                                         pIdBodega:=AP.IdBodega,
-                                                                         pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                                         pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
-
+                                    clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302230139A: Se realizó llamada recursiva del objeto para la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " el tipo de transacción es: " & gBeRecepcionEnc.IdTipoTransaccion)
                                     Finalizar(gBeRecepcionEnc.Detalle)
                                 End If
                             End If
@@ -5179,8 +4983,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If e.KeyCode = Keys.F3 Then
             cmdVerParametros_Click(Nothing, Nothing)
         ElseIf DgridDetalleRec2.IsFocused AndAlso e.KeyCode = Keys.Delete Then
-            'Eliminar_Fila(Nothing)
-            Eliminar_Fila_Recepcion2(Nothing)
+            Eliminar_Fila_Nuev_Recepcion(Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
             '#EJC20240326: Validar al salir.
             Dim vMensaje As String = ""
@@ -5825,12 +5628,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             clsLnTrans_re_fact.Guarda_facturas_asoc(gBeRecepcionEnc.IdRecepcionEnc,
                                                     pListRecFact)
 
-
-
-            '#GT10102025: recargar facturas, porque luego de guardar en memoria, IsNew afecta al presionar Actualizar o Finalizar
-            gBeRecepcionEnc.DetalleFacturas = clsLnTrans_re_fact.Get_Detalle_Facturas_By_IdRecepcionEnc(gBeRecepcionEnc.IdRecepcionEnc)
-            pListRecFact = gBeRecepcionEnc.DetalleFacturas()
-
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -6039,13 +5836,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     txtDescripcionTR.Text = BeTransReTR.Descripcion
                     Configura_Opcion_Tipo_Rec(BeTransReTR)
 
+                    '#GT13012025: habilitar stock puede ser inconsistente si en check reglas de negocio se aplica false
                     If BeTransReTR.UsaHH = 0 Then
                         chkRecepcionManual.Checked = True
-                        '#CKFK20251012 Quité esta funcionalidad
                         chkHabilitaStock.Checked = False
                     Else
                         chkRecepcionManual.Checked = False
-                        '#CKFK20251012 Quité esta funcionalidad
                         chkHabilitaStock.Checked = True
                     End If
 
@@ -6084,14 +5880,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6246,13 +6034,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                                   IdMotivoAnulacionBodega,
                                                                   gBeRecepcionEnc.TareaHH) Then
 
-                                '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-                                Dim msjAdvertencia As String = "ADVERTENCIA_202302231712A: Se anuló la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario
-                                clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                                     pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
-                                                                     pIdBodega:=AP.IdBodega,
-                                                                     pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                                     pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231712A: Se anuló la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario)
 
                                 SplashScreenManager.CloseForm(False)
 
@@ -6329,14 +6111,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6456,14 +6230,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -6550,14 +6317,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -6597,14 +6357,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -6656,14 +6409,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -6697,14 +6443,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         Finally
             UseWaitCursor = False
@@ -6762,15 +6501,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         Finally
             DesmarcandoOperadores = False
         End Try
@@ -6799,9 +6530,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Else
                 If pSeleccion Then
-
-                    '#GT23092025: evita duplicar al operador en la lista
-                    If Not pListOpe.Any(Function(x) x.IdOperadorBodega = pIdOperadorBodega) Then
                     Dim Obj As New clsBeTrans_re_op() With
                         {.IdOperadorBodega = pIdOperadorBodega,
                         .User_agr = AP.UsuarioAp.IdUsuario,
@@ -6811,8 +6539,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         .IsNew = True,
                         .UsaHH = pUsaHH}
                     pListOpe.Add(Obj)
-                End If
-
                 End If
             End If
 
@@ -6824,14 +6550,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -6856,15 +6575,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Sub
@@ -6913,11 +6624,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     Else
 
-                        '#GT23092025: evita duplicar al mismo operador en la lista
-                        Dim tmpOperadorBodega = CInt(Dr.Item("IdOperadorBodega"))
-
-                        If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpOperadorBodega) Then
-
                         Dim Obj As New clsBeTrans_re_op() With
                         {.IdOperadorBodega = Dr.Item("IdOperadorBodega"),
                         .User_agr = AP.UsuarioAp.IdUsuario,
@@ -6927,7 +6633,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         .IsNew = True,
                         .UsaHH = Dr.Item("colUsaHH")}
                         pListOpe.Add(Obj)
-                        End If
 
                     End If
 
@@ -7013,8 +6718,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         DTGridDetalleDocIngresos.Columns.Add("ControlPeso", GetType(Boolean))
         DTGridDetalleDocIngresos.Columns.Add("PesoReferenciaUMBas", GetType(Double))
         '#GT13082025: campos talla, color y sku
-        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(Integer))
-        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(Integer))
+        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(String))
+        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(String))
         DTGridDetalleDocIngresos.Columns.Add("SKU", GetType(String))
 
 
@@ -7883,43 +7588,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 DTGridDetalleDocIngresos.Rows.Add(finalData)
 
 
-
-                'DTGridDetalleDocIngresos.Rows.Add(BeTransOCDet.IdPropietarioBodega,
-                '                                  BeTransOCDet.Nombre_Propietario,
-                '                                  BeTransOCDet.No_Linea,
-                '                                  BeTransOCDet.IdProductoBodega,
-                '                                  BeTransOCDet.Codigo_Producto,
-                '                                  BeTransOCDet.Nombre_producto,
-                '                                  BeTransOCDet.Nombre_unidad_medida_basica,
-                '                                  BeTransOCDet.IdUnidadMedidaBasica,
-                '                                  BeTransOCDet.IdPresentacion,
-                '                                  BeTransOCDet.Arancel.IdArancel,
-                '                                  BeTransOCDet.IdMotivoDevolucion,
-                '                                  BeTransOCDet.Cantidad,
-                '                                  BeTransOCDet.Cantidad_recibida,
-                '                                  vCantidadPendiente,
-                '                                  BeTransOCDet.Peso_Bruto,
-                '                                  BeTransOCDet.Peso_Neto,
-                '                                  BeTransOCDet.Costo,
-                '                                  BeTransOCDet.valor_aduana,
-                '                                  BeTransOCDet.valor_fob,
-                '                                  BeTransOCDet.valor_iva,
-                '                                  BeTransOCDet.valor_dai,
-                '                                  BeTransOCDet.valor_seguro,
-                '                                  BeTransOCDet.valor_flete,
-                '                                  BeTransOCDet.Total_linea,
-                '                                  BeTransOCDet.Producto.IdProducto,
-                '                                  BeTransOCDet.IsNew,
-                '                                  BeTransOCDet.IdOrdenCompraEnc,
-                '                                  BeTransOCDet.IdOrdenCompraDet,
-                '                                  False,
-                '                                  BeTransOCDet.Atributo_variante_1,
-                '                                  BeTransOCDet.Producto.Kit,
-                '                                  BeTransOCDet.IdPedidoCompraDet,
-                '                                  BeTransOCDet.IdOrdenCompraDetPadre,
-                '                                  BeTransOCDet.Producto.Control_peso,
-                '                                  BeTransOCDet.Producto.Peso_referencia)
-
                 If BeTransOCDet.lProductosHijosKit.Count > 0 Then
 
                     For Each Hijo As clsBeTrans_oc_det In BeTransOCDet.lProductosHijosKit
@@ -8002,15 +7670,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         Finally
             SplashScreenManager.CloseForm(False)
         End Try
@@ -8158,12 +7818,14 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     '#CKFK20240214 Agregué la funcionalidad de que se guarde la recepción cuando sea este tipo de transacción MCOC00
                     If txtIdTipoTR.Text = "MCOC00" Then
 
+                        '#GT13012025: se valida dentro de las reglas_propietario
                         chkRecepcionManual.Checked = True
+                        'chkHabilitaStock.Checked = True
 
                         '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
                         Check_Reglas_Propietario_Ingreso()
 
-                        chkHabilitaStock.Checked = True
+                        chkHabilitaStock.Enabled = False
 
                         If txtIdOrdenCompra.Text <> "" Then
 
@@ -8202,37 +7864,34 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     '#EJC202405122223 Agregado por número de contenedor en Cumbre
                     grpDatosFiscalSAT.Visible = (txtNoContenedor.Text.Trim <> "" OrElse Control_Poliza)
 
-                    '#GT23102025: habilitar_stock no disponible en modo edición
-                    chkHabilitaStock.Enabled = False
-                    chkRecepcionManual.Enabled = False
-
             End Select
 
-            'If BeTransOcEnc.No_Ticket_TMS <> "0") OrElse BeTransOcEnc.No_Ticket_TMS <> "" Then
-            If Not BeTransOcEnc.No_Ticket_TMS.Equals("0") AndAlso Not BeTransOcEnc.No_Ticket_TMS.Equals("") Then
+            If BeTransOcEnc IsNot Nothing Then
+                If Not BeTransOcEnc.No_Ticket_TMS.Equals("0") AndAlso Not BeTransOcEnc.No_Ticket_TMS.Equals("") Then
 
-                pBeTms_ticket = clsLnTms_ticket.Get_Ticket_By_Id(BeTransOcEnc.No_Ticket_TMS)
+                    pBeTms_ticket = clsLnTms_ticket.Get_Ticket_By_Id(BeTransOcEnc.No_Ticket_TMS)
 
-                pBeEmpresa_Transporte_Piloto = clsLnEmpresa_transporte_pilotos.Get_By_IdPiloto(pBeTms_ticket.IdPiloto)
-                pBeEmpresa_Transporte_Vehiculo = clsLnEmpresa_transporte_vehiculos.Get_Single_By_IdVehiculo(pBeTms_ticket.IdVehiculo)
+                    pBeEmpresa_Transporte_Piloto = clsLnEmpresa_transporte_pilotos.Get_By_IdPiloto(pBeTms_ticket.IdPiloto)
+                    pBeEmpresa_Transporte_Vehiculo = clsLnEmpresa_transporte_vehiculos.Get_Single_By_IdVehiculo(pBeTms_ticket.IdVehiculo)
 
 
-                If pBeEmpresa_Transporte_Piloto IsNot Nothing AndAlso pBeEmpresa_Transporte_Piloto.IdPiloto > 0 Then
-                    txtIdPiloto.Text = pBeEmpresa_Transporte_Piloto.IdPiloto
-                    txtNombrePiloto.Text = Trim(String.Format("{0} {1}", pBeEmpresa_Transporte_Piloto.Nombres, pBeEmpresa_Transporte_Piloto.Apellidos))
-                    txtIdPiloto.Enabled = False
-                Else
-                    txtIdPiloto.Focus() : txtIdPiloto.SelectAll()
+                    If pBeEmpresa_Transporte_Piloto IsNot Nothing AndAlso pBeEmpresa_Transporte_Piloto.IdPiloto > 0 Then
+                        txtIdPiloto.Text = pBeEmpresa_Transporte_Piloto.IdPiloto
+                        txtNombrePiloto.Text = Trim(String.Format("{0} {1}", pBeEmpresa_Transporte_Piloto.Nombres, pBeEmpresa_Transporte_Piloto.Apellidos))
+                        txtIdPiloto.Enabled = False
+                    Else
+                        txtIdPiloto.Focus() : txtIdPiloto.SelectAll()
+                    End If
+
+                    If pBeEmpresa_Transporte_Vehiculo IsNot Nothing AndAlso pBeEmpresa_Transporte_Vehiculo.IdVehiculo > 0 Then
+                        txtIdVehiculo.Text = pBeEmpresa_Transporte_Vehiculo.IdVehiculo
+                        txtNombreVehiculo.Text = Trim(String.Format("{0} - {1} - {2}", pBeEmpresa_Transporte_Vehiculo.Marca, pBeEmpresa_Transporte_Vehiculo.Modelo, pBeEmpresa_Transporte_Vehiculo.Tipo))
+                        txtIdVehiculo.Enabled = False
+                    Else
+                        txtIdVehiculo.Focus() : txtIdVehiculo.SelectAll()
+                    End If
+
                 End If
-
-                If pBeEmpresa_Transporte_Vehiculo IsNot Nothing AndAlso pBeEmpresa_Transporte_Vehiculo.IdVehiculo > 0 Then
-                    txtIdVehiculo.Text = pBeEmpresa_Transporte_Vehiculo.IdVehiculo
-                    txtNombreVehiculo.Text = Trim(String.Format("{0} - {1} - {2}", pBeEmpresa_Transporte_Vehiculo.Marca, pBeEmpresa_Transporte_Vehiculo.Modelo, pBeEmpresa_Transporte_Vehiculo.Tipo))
-                    txtIdVehiculo.Enabled = False
-                Else
-                    txtIdVehiculo.Focus() : txtIdVehiculo.SelectAll()
-                End If
-
             End If
 
             DgridDetalleRec.Focus()
@@ -8501,10 +8160,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     ProductoGridLookUpEditRec.DataSource =
             clsLnProducto.Get_Lista_By_IdOrdenCompraEnc_Talla_Color(ocEncId, cmbBodega.EditValue)
                 Else
-                If gBeRecepcionEnc.OrdenCompraRec IsNot Nothing Then
-                    If gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc > 0 Then
-                        ProductoGridLookUpEditRec.DataSource = clsLnProducto.Get_Lista_By_IdOrdenCompraEnc(gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc, cmbBodega.EditValue)
-                    End If
+                    ProductoGridLookUpEditRec.DataSource =
+            clsLnProducto.Get_Lista_By_IdOrdenCompraEnc(ocEncId, cmbBodega.EditValue)
                 End If
             End If
 
@@ -8548,12 +8205,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     ColIdProductoBodega.OptionsColumn.AllowEdit = True
                 Case TipoTrans.Editar
 
-                    If Not gBeRecepcionEnc Is Nothing Then
                     If gBeRecepcionEnc.Estado.ToUpper = "CERRADO" Or gBeRecepcionEnc.Estado.ToUpper = "ANULADO" Then
                         ColIdProductoBodega.OptionsColumn.AllowEdit = False
                     Else
                         ColIdProductoBodega.OptionsColumn.AllowEdit = True
-                    End If
                     End If
 
             End Select
@@ -8634,12 +8289,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 Case TipoTrans.Nuevo
                     ColPresentacion.OptionsColumn.AllowEdit = True
                 Case TipoTrans.Editar
-                    If Not gBeRecepcionEnc Is Nothing Then
                     If gBeRecepcionEnc.Estado.ToUpper = "CERRADO" Or gBeRecepcionEnc.Estado.ToUpper = "ANULADO" Then
                         ColPresentacion.OptionsColumn.AllowEdit = False
-                    Else
-                        ColPresentacion.OptionsColumn.AllowEdit = True
-                    End If
                     Else
                         ColPresentacion.OptionsColumn.AllowEdit = True
                     End If
@@ -8837,7 +8488,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Dim ColLote As New GridColumn
 
-            If Not gBeRecepcionEnc Is Nothing AndAlso gBeRecepcionEnc.OrdenCompraRec IsNot Nothing Then
+            If gBeRecepcionEnc.OrdenCompraRec IsNot Nothing Then
 
                 If gBeRecepcionEnc.OrdenCompraRec.OC.DetalleLotes.Count > 0 Then
 
@@ -9500,9 +9151,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             Dim Codigo_Producto As String = IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "codigo_producto")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "codigo_producto"))
             Dim Costo As Double = IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "costo")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "costo"))
             Dim No_Linea As String = IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea"))
-
             Dim vCantidadRecibidaGrid As Double = Get_Cantidad_Recibidad_Grid2(No_Linea, gvDetalleRec2.FocusedRowHandle)
-            'If vCantidadRecibidaGrid = 0 Then vCantidadRecibidaGrid = ColCantidadRecibida
 
             gvDetalleRec2.SetRowCellValue(gvDetalleRec2.FocusedRowHandle, "Total", Math.Round(Cantidad_Recibida * Costo, 6))
             gvDetalleRec2.SetRowCellValue(gvDetalleRec2.FocusedRowHandle, "cantidad_pendiente", Math.Round(Cantidad_Solicitada - (vCantidadRecibidaGrid + ColCantidadRecibida), 6))
@@ -9514,86 +9163,34 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     End Sub
 
     Private PopupTieneErrores As Boolean = False
-
-    '' Método hipotético que debes implementar para verificar si el valor está duplicado
-
     'Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
 
-    '    Dim lista As GridLookUpEdit = Nothing
+    '    Dim lista As GridLookUpEdit = TryCast(sender, GridLookUpEdit)
     '    Dim vCodigoBarra As String = ""
 
-    '    Try
+    '    If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
 
-    '        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+    '        Try
 
     '            Dim View As GridView = CType(DgridDetalleRec2.DefaultView, GridView)
-    '            lista = TryCast(sender, GridLookUpEdit)
-    '            Dim ColProducto As GridColumn = View.Columns("IdProductoBodega")
+    '            If lista Is Nothing Then Return
     '            Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
     '            Dim nolineaSeleccionada As String = ""
 
-    '            If lista Is Nothing Then Return
+    '            vCodigoBarra = If(IsDBNull(lista.Text), "", lista.Text.Trim())
 
-    '            vCodigoBarra = IIf(IsDBNull(lista.Text), "", lista.Text)
+    '            If String.IsNullOrEmpty(vCodigoBarra) Then Return
 
-    '            If lista.EditValue Is Nothing AndAlso vCodigoBarra.Trim = "" Then Return
-
-    '            Dim drLineaGrid As DataRow = gvDetalleRec2.GetFocusedDataRow()
+    '            Dim drLineaGrid As DataRow = View.GetFocusedDataRow()
     '            If drLineaGrid Is Nothing AndAlso Not View.IsNewItemRow(View.FocusedRowHandle) Then Return
 
-    '            Dim codigoIngresadoString As String = ""
-    '            Dim nolineaSeleccionada As String = ""
-
-    '            If lista.EditValue Is Nothing Then
-    '                If Not vCodigoBarra.Trim = "" Then
-    '                    codigoIngresadoString = vCodigoBarra.Trim()
-    '                    ' Aquí establecemos el filtro global para aplicar
-    '                    _filtroCodigoBarra = codigoIngresadoString
-    '                    lista.Properties.View.RefreshData()  ' Refresca los datos para aplicar el filtro
-    '                End If
-    '            End If
-
-    '            If lista.EditValue Is Nothing Then
-    '                If Not vCodigoBarra.Trim = "" Then
-    '                    codigoIngresadoString = vCodigoBarra.Trim()
-    '                    _filtroCodigoBarra = codigoIngresadoString
-    '                    lista.Properties.View.RefreshData()  ' Refresca los datos para aplicar el filtro
-    '                End If
-    '            Else
-
-    '                Dim selectedDataRow = lista.GetSelectedDataRow()
-
-    '                If selectedDataRow IsNot Nothing Then
-    '                    ' Acceder a las propiedades del objeto selectedDataRow aquí
-    '                    codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
-    '                    nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea"))
-    '                Else
-    '                    ' Configuramos el filtro en el GridView basado en el valor duplicado
-    '                    _filtroCodigoBarra = codigoIngresadoString
-    '                    ProductoGridLookUpEditRec.View.ActiveFilterCriteria = New DevExpress.Data.Filtering.BinaryOperator("CodigoBarra", _filtroCodigoBarra, DevExpress.Data.Filtering.BinaryOperatorType.Equal)
-    '                    ProductoGridLookUpEditRec.View.RefreshData()
-    '                    View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-    '                    e.Handled = True
-    '                    Exit Sub
-    '                End If
-
-    '            End If
-
-    '            If ColNoLinea Is Nothing Then
-    '                ColNoLinea = View.Columns(1)
-    '            Else
-    '                If nolineaSeleccionada = "" Then
-
-    '                End If
-    '            End If
+    '            Dim codigoIngresadoString As String = vCodigoBarra
 
     '            View.SetColumnError(ColNoLinea, "") : PopupTieneErrores = False
 
     '            If String.IsNullOrEmpty(codigoIngresadoString) Then
-    '                ' El código ingresado es nulo o vacío
-    '                If Not View Is Nothing AndAlso Not ColProducto Is Nothing Then
-    '                    'Marca celda de código de producto con error.
-    '                    View.SetColumnError(ColProducto, "Código no válido.")
+    '                If Not View Is Nothing AndAlso Not ColNoLinea Is Nothing Then
+    '                    View.SetColumnError(ColNoLinea, "Código no válido.")
     '                End If
     '            Else
 
@@ -9634,19 +9231,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     '                    If nolineaSeleccionada = "" Then
 
     '                        If vCantPorProducto > 1 Then
-
-    '                            PopupTieneErrores = True
     '                            _filtroCodigoBarra = codigoIngresadoString
-    '                            ProductoGridLookUpEditRec.View.ActiveFilter.Clear()
-    '                            ProductoGridLookUpEditRec.View.ActiveFilterCriteria = New DevExpress.Data.Filtering.BinaryOperator("CodigoBarra", _filtroCodigoBarra, DevExpress.Data.Filtering.BinaryOperatorType.Equal)
-    '                            ProductoGridLookUpEditRec.View.RefreshData()
+    '                            PopupTieneErrores = True
     '                            View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-    '                            e.Handled = False
-    '                            Exit Sub
-
-    '                        Else
-    '                            'Marca celda de código de producto con error.
-    '                            View.SetColumnError(ColProducto, "Código no válido para el documento.")
     '                        End If
 
     '                    Else
@@ -9668,134 +9255,17 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
     '                    End If
 
-    '                    Try
-    '                        lista.EditValue = nolineaSeleccionada 'vIdProductoBodega
-    '                    Catch ex As Exception
-    '                        Debug.WriteLine(ex.Message)
-    '                    End Try
-
-
-    '                Else
-    '                    If Not View Is Nothing AndAlso Not ColProducto Is Nothing Then
-    '                        'Marca celda de código de producto con error.
-    '                        View.SetColumnError(ColProducto, "Código no válido.")
-    '                    End If
     '                End If
 
     '            End If
 
-    '        End If
+    '        Catch ex As Exception
+    '            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+    '        End Try
 
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    End Try
+    '    End If
 
     'End Sub
-
-    Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
-
-        Dim lista As GridLookUpEdit = TryCast(sender, GridLookUpEdit)
-        Dim vCodigoBarra As String = ""
-
-        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
-
-            Try
-
-                Dim View As GridView = CType(DgridDetalleRec2.DefaultView, GridView)
-                If lista Is Nothing Then Return
-                Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
-                Dim nolineaSeleccionada As String = ""
-
-                vCodigoBarra = If(IsDBNull(lista.Text), "", lista.Text.Trim())
-
-                If String.IsNullOrEmpty(vCodigoBarra) Then Return
-
-                Dim drLineaGrid As DataRow = View.GetFocusedDataRow()
-                If drLineaGrid Is Nothing AndAlso Not View.IsNewItemRow(View.FocusedRowHandle) Then Return
-
-                Dim codigoIngresadoString As String = vCodigoBarra
-
-                View.SetColumnError(ColNoLinea, "") : PopupTieneErrores = False
-
-                If String.IsNullOrEmpty(codigoIngresadoString) Then
-                    If Not View Is Nothing AndAlso Not ColNoLinea Is Nothing Then
-                        View.SetColumnError(ColNoLinea, "Código no válido.")
-                    End If
-                Else
-
-                    Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega)
-
-                    If Not vIdProductoBodega = 0 Then
-
-                        Dim cmbView As GridView = lista.Properties.View
-                        Dim vCantPorProducto As Integer = 0
-
-                        If Not cmbView Is Nothing Then
-                            vCantPorProducto = cmbView.RowCount
-                        End If
-
-                        If lista.EditValue Is Nothing Then
-                            If Not vCodigoBarra.Trim = "" Then
-                                codigoIngresadoString = vCodigoBarra.Trim()
-                                _filtroCodigoBarra = codigoIngresadoString
-                            End If
-                        Else
-
-                            Dim selectedDataRow = lista.GetSelectedDataRow()
-
-                            If selectedDataRow IsNot Nothing Then
-                                codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
-                                nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea"))
-                            Else
-                                PopupTieneErrores = True
-                                View.SetColumnError(ColNoLinea, "Seleccione un registro.")
-                            End If
-
-                        End If
-
-                        If ColNoLinea Is Nothing Then
-                            ColNoLinea = View.Columns(1)
-                        End If
-
-                        If nolineaSeleccionada = "" Then
-
-                            If vCantPorProducto > 1 Then
-                                _filtroCodigoBarra = codigoIngresadoString
-                                PopupTieneErrores = True
-                                View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-                            End If
-
-                        Else
-
-                            If vCantPorProducto > 1 Then
-
-                                vCantPorProducto = clsLnTrans_oc_det.Get_Count_By_Producto_En_OC(txtIdOrdenCompra.Text, vIdProductoBodega)
-
-                                If vCantPorProducto > 1 Then
-
-                                    If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                        'Eliminar_Fila(Nothing)
-                                        Eliminar_Fila_Recepcion2(Nothing)
-                                        Exit Sub
-                                    End If
-
-                                End If
-
-                            End If
-
-                        End If
-
-                    End If
-
-                End If
-
-            Catch ex As Exception
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            End Try
-
-        End If
-
-    End Sub
     Private Function EsCodigoBarraDuplicado(codigoBarra As String, gridView As GridView) As Boolean
         Try
             ' Necesitas castear el DataSource a DataView o DataTable para acceder a los DataRowViews
@@ -9868,18 +9338,28 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     BeProducto.IdProductoBodega = IdProductoBodega
                     Dim IdRecepcionDet As Integer = IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "IdRecepcionDet")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "IdRecepcionDet"))
                     Dim vNoLinea As Integer = NoLineaActualFilaGrid 'IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea"))
-                    Dim vTalla As String = IIf(IsDBNull(drArticulo("Talla")), "", drArticulo("Talla"))
-                    Dim vColor As String = IIf(IsDBNull(drArticulo("Color")), "", drArticulo("Color"))
-                    Dim vSKU As String = IIf(IsDBNull(drArticulo("SKU")), "", drArticulo("SKU"))
+                    Dim BeTalla As New clsBeTalla
+                    Dim BeColor As New clsBeColor
+                    Dim vSKU As String = ""
+                    Dim vTalla As String = ""
+                    Dim vColor As String = ""
 
-                    clsTransaccion.Begin_Transaction()
+                    If AP.Bodega.Control_Talla_Color Then
 
-                    '#GT13082025: obtener los Ids, el codigo no se asigna
-                    Dim vIdTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    Dim vIdColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        vTalla = IIf(IsDBNull(drArticulo("Talla")), "", drArticulo("Talla"))
+                        vColor = IIf(IsDBNull(drArticulo("Color")), "", drArticulo("Color"))
+                        vSKU = IIf(IsDBNull(drArticulo("SKU")), "", drArticulo("SKU"))
 
-                    clsTransaccion.Commit_Transaction()
-                    clsTransaccion.Close_Conection()
+                        clsTransaccion.Begin_Transaction()
+
+                        '#GT13082025: obtener los Ids, el codigo no se asigna
+                        BeTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        BeColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                        clsTransaccion.Commit_Transaction()
+                        clsTransaccion.Close_Conection()
+
+                    End If
 
                     '#GT01022024: si es el mismo producto en el productolockup, no alteramos los datos del grid
                     pExisteLinea = Existe_Producto_en_Grid(vNoLinea, IdRecepcionDet, BeProducto.IdProductoBodega)
@@ -9903,8 +9383,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         drLineaGrid("No_Linea") = vNoLinea
                         drLineaGrid("Costo") = 0.1
                         drLineaGrid("costo_oc") = 0.1
-                        drLineaGrid("Talla") = vIdTalla.IdTalla
-                        drLineaGrid("Color") = vIdColor.IdColor
+                        drLineaGrid("Talla") = BeTalla?.IdTalla
+                        drLineaGrid("Color") = BeColor?.IdColor
                         drLineaGrid("SKU") = vSKU
 
                         '#GT30012024: Set de OC_ENC y OC_DET al grid
@@ -9923,13 +9403,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 If gBeOrdenCompra.DetalleOC.Count > 0 Then
 
                                     If BeBodega.Control_Talla_Color Then
-                                        Dim codigoProducto = BeProducto.Codigo + "" + vIdTalla.Codigo + "" + vIdColor.Codigo
+                                        Dim codigoProducto = BeProducto.Codigo + "" + BeColor.Codigo + "" + BeTalla.Codigo
                                         BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = codigoProducto AndAlso x.No_Linea = NoLineaActualFilaGrid)
                                     Else
                                         BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = BeProducto.Codigo AndAlso x.No_Linea = NoLineaActualFilaGrid)
                                     End If
-
-
 
                                     If Not BeCompraDet Is Nothing Then
 
@@ -10733,8 +10211,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                                                    clsTransaccion.lConnection,
                                                                                    clsTransaccion.lTransaction)
 
-
-
                 'vRsultGuardarHHBof = False
 
                 e.Valid = vRsultGuardarHHBof
@@ -10745,29 +10221,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     View.SetRowCellValue(e.RowHandle, "IdRecepcionEnc", gBeRecepcionEnc.IdRecepcionEnc)
                     View.SetRowCellValue(e.RowHandle, "IsNewR", False)
 
-                    View.UpdateCurrentRow()
-
-                    '#GT10102025: si producto maneja LP, hacer incremento a usuario BOF
-                    If BeProducto.Genera_lp Or BeProducto.Presentacion.Genera_lp_auto Then
                     Incrementar_Licencia_BOF(AP.IdBodega,
                                              AP.UsuarioAp.IdUsuario,
                                              clsTransaccion.lConnection,
                                              clsTransaccion.lTransaction)
-                    End If
-
-                    '#MECR22092025: Se agregó bitacora para registro de detalle recepcionado.
-                    Dim msjResultado As String = "Linea registrada: " & gIdMaxIdRecepcionDet & " del producto " & CodigoProducto & " con licencia " & Licencia & " y cantidad recibida " & Cantidad
-                    clsLnLog_error_wms_rec.Agregar_Error(msjResultado,
-                                                         pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
-                                                         pIdBodega:=AP.IdBodega,
-                                                         pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                         pUMBas:=BeProducto.UnidadMedida.Nombre,
-                                                         pVariantCode:=CodigoProducto,
-                                                         pCantidad:=Cantidad,
-                                                         pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                         pIdRecDet:=gIdMaxIdRecepcionDet,
-                                                         pConection:=clsTransaccion.lConnection,
-                                                         pTransaction:=clsTransaccion.lTransaction)
 
                     Grid_Tiene_Error = False
 
@@ -10793,15 +10250,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                             Impresion.ShowDialog()
                             Impresion.Dispose()
                         Else
-
-                            If BeProducto.Genera_lp OrElse BeProducto.Presentacion.Genera_lp_auto Then
                             Dim Impresion As New frmImpresionRecepcion
                             Impresion.pTransReDet = ObjTransReDet
                             Impresion.ShowDialog()
                             Impresion.Dispose()
-                        End If
-
-
                         End If
                     End If
 
@@ -10810,10 +10262,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 End If
 
                 _filtroCodigoBarra = ""
-
-
-                '#GT13102025: cambio agregado para confirmar que idrecepcionDet se asigna y no se pierda
-                gvDetalleRec2.RefreshData()
 
                 DgridDetalleRec2.BeginInvoke(New MethodInvoker(Sub()
                                                                    gvDetalleRec2.FocusedRowHandle = GridControl.NewItemRowHandle
@@ -10920,15 +10368,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -11166,6 +10606,16 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     BeTransReDet.Fec_agr = Now
                     BeTransReDet.IsNew = gvDetalleRec2.GetRowCellValue(i, "IsNewR")
                     BeTransReDet.IdUbicacion = CInt(txtIdUbicacion.Text)
+
+                    '#GT13012025: preservar idproductotallacolor, porque al presionar Actualizar, asigna 0
+                    Dim tmpTalla As Short = Convert.ToInt16(If(gvDetalleRec2.GetRowCellValue(i, "Talla"), 0))
+                    Dim tmpColor As Short = Convert.ToInt16(If(gvDetalleRec2.GetRowCellValue(i, "Color"), 0))
+                    'Dim tmpSKU As String = Convert.ToString(If(gvDetalleRec2.GetRowCellValue(i, "SKU"), String.Empty))
+                    Dim tmpProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(tmpTalla, tmpColor, BeTransReDet.Producto.IdProducto)
+
+                    If tmpProductoTallaColor > 0 Then
+                        BeTransReDet.IdProductoTallaColor = tmpProductoTallaColor
+                    End If
 
                     '#GT25012024
                     ' CAMPOS FALTANTES STOCK DE ASIGNACIÓN 
@@ -11453,15 +10903,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -11582,14 +11024,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -11873,14 +11308,13 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If pBeTipo_Tarea_HH.UsaHH Then
             XtraMessageBox.Show("El tipo de tarea requiere que la linea se elimine desde la HH.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            '#GT13102025: este botón es del nuevo grid recepcion y debe eliminar datos del nuevo grid no del viejo
-            'EliminarFila(Nothing)
-            Eliminar_Fila_Recepcion2(Nothing)
+            '#GT: no cambiar al otro metodo llamado de forma parecida
+            Eliminar_Fila_Nuev_Recepcion(Nothing)
         End If
 
     End Sub
 
-    Private Sub Eliminar_Fila_Recepcion2(e As KeyEventArgs)
+    Private Sub Eliminar_Fila_Nuev_Recepcion(e As KeyEventArgs)
 
         Try
 
@@ -11901,7 +11335,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         Dim gridControl As GridControl = DgridDetalleRec2
                         Eliminar_Fila_Recepcion(gridControl)
-
                     End If
 
                 End If
@@ -12208,9 +11641,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                 If pIsNewRow Then
 
-                    pBeTransReDet.Producto = New clsBeProducto()
-                    pBeTransReDet.Producto = clsLnProducto.Get_Single_By_IdProductoBodega(pBeProducto.IdProductoBodega, lConnection, lTransaction)
                     pBeTransReDet.IdPropietarioBodega = cmbPropietario.EditValue
+                    pBeTransReDet.Producto = BeProducto
                     pBeTransReDet.Producto.Codigo = vCodigoProducto
                     pBeTransReDet.Codigo_Producto = vCodigoProducto
                     pBeTransReDet.IdProductoBodega = pBeProducto.IdProductoBodega
@@ -12252,6 +11684,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         pBeTransReDet.IdPresentacion = vIdPresentacion
                         pBeTransReDet.UnidadMedida.IdUnidadMedida = vIdUnidadMedida
                         pBeTransReDet.Nombre_unidad_medida = vnombre_unidad_medida
+                        pBeTransReDet.IdUnidadMedida = vIdUnidadMedida
                     Else
                         pBeTransReDet.IdUnidadMedida = vIdUnidadMedida
                         pBeTransReDet.UnidadMedida.IdUnidadMedida = vIdUnidadMedida
@@ -12494,8 +11927,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 BeStockRec.Fecha_vence = Nothing
                             End If
 
-                            ' BeStockRec.IdUbicacion = CInt(txtIdUbicacion.Text.Trim)
-                            'BeStockRec.IdUbicacion_anterior = CInt(txtIdUbicacion.Text.Trim)
                             BeStockRec.ProductoValidado = True
                             BeStockRec.Fecha_Ingreso = Now
                             BeStockRec.Fec_agr = Now
@@ -12635,10 +12066,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         pBeTransReDet.User_agr = AP.UsuarioAp.IdUsuario
                         pListBeStockRec(vIndice).IdRecepcionDet = vIdRecepcionDet
+
                         gBeRecepcionEnc.Detalle = New List(Of clsBeTrans_re_det) From {
                             pBeTransReDet
                         }
-
 
                     End If
 
@@ -12647,16 +12078,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             End If
 
         Catch ex As Exception
-
-            '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=AP.IdEmpresa,
-                                                 pIdBodega:=AP.IdBodega,
-                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -12977,11 +12400,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 estadoprod = clsLnProducto_estado.Get_Single_By_IdEstado(gBeRecepcionEnc.IdEstado_Defecto_Recepcion)
 
                 If Not estadoprod Is Nothing Then
-                    If (estadoprod.IdUbicacionDefecto > 0) Then
-                        Dim ubicacion As Integer = estadoprod.IdUbicacionDefecto
-                        txtIdUbicacion.Text = estadoprod.IdUbicacionDefecto
-                        Valida_Ubicacion()
-                    End If
+                    Dim ubicacion As Integer = estadoprod.IdUbicacionDefecto
+
+                    txtIdUbicacion.Text = estadoprod.IdUbicacionDefecto
                 End If
             End If
 
@@ -13007,9 +12428,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     Dim view2 As GridView = lista.Properties.View
                     Dim row As DataRowView = TryCast(view2.GetFocusedRow(), DataRowView)
 
-                    If row IsNot Nothing Then
-                        vSKU = row("SKU").ToString()
+                    If AP.Bodega.Control_Talla_Color Then
+                        If row IsNot Nothing Then
+                            vSKU = row("SKU").ToString()
+                        End If
                     End If
+
                 End If
 
                 Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
@@ -13101,7 +12525,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         If vCantPorProducto > 1 Then
                             If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                Eliminar_Fila(Nothing)
+                                Eliminar_Fila_Nuev_Recepcion(Nothing)
                                 Exit Sub
                             End If
                         End If

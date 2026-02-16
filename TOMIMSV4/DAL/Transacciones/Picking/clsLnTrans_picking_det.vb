@@ -28,15 +28,8 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoDet:=oBeTrans_picking_det.IdPedidoDet,
-                                                  pIdPedidoEnc:=oBeTrans_picking_det.IdPedidoEnc,
-                                                  pIdPickingEnc:=oBeTrans_picking_det.IdPickingEnc,
-                                                  pIdPickingDet:=oBeTrans_picking_det.IdPickingDet,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
     End Sub
@@ -68,13 +61,12 @@ Public Class clsLnTrans_picking_det
             Ins.Add("nombre", "@nombre", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim cmd As SqlCommand
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
             If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection)
-                cmd.Transaction = pTransaction
+                cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
@@ -105,8 +97,6 @@ Public Class clsLnTrans_picking_det
             oBeTrans_picking_det.IdPickingDet = CInt(cmd.Parameters("@IDPICKINGDET").Value)
 
             Return rowsAffected
-
-            oBeTrans_picking_det.IdPickingDet = CInt(cmd.Parameters("@IDPICKINGDET").Value)
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -454,10 +444,8 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -576,7 +564,7 @@ Public Class clsLnTrans_picking_det
 
         Try
 
-            Const sp As String = "SELECT * FROM Trans_picking_det" &
+            Const sp As String = "SELECT * FROM Trans_picking_det" & _
             " Where(IdPickingDet = @IdPickingDet)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -596,21 +584,14 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoDet:=pBeTrans_picking_det.IdPedidoDet,
-                                                  pIdPedidoEnc:=pBeTrans_picking_det.IdPedidoEnc,
-                                                  pIdPickingEnc:=pBeTrans_picking_det.IdPickingEnc,
-                                                  pIdPickingDet:=pBeTrans_picking_det.IdPickingDet,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
     End Function
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 
@@ -634,10 +615,8 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -669,31 +648,7 @@ Public Class clsLnTrans_picking_det
 
             If dt.Rows.Count = 1 Then
                 Dim oBeTrans_picking_det As New clsBeTrans_picking_det
-
                 Cargar(oBeTrans_picking_det, dt.Rows(0))
-
-                If EsDecimal(oBeTrans_picking_det.Cantidad.ToString) Then
-
-                    Dim oBeTrans_pe_det As New clsBeTrans_pe_det
-                    oBeTrans_pe_det = clsLnTrans_pe_det.Get_Single_By_IdPedidoDet(oBeTrans_picking_det.IdPedidoDet, lConnection, lTransaction)
-
-                    If Not oBeTrans_picking_det Is Nothing Then
-
-                        If oBeTrans_pe_det.IdPresentacion > 0 Then
-                            Dim bePresentacion As New clsBeProducto_Presentacion
-                            bePresentacion.IdPresentacion = oBeTrans_pe_det.IdPresentacion
-                            clsLnProducto_presentacion.GetSingle(bePresentacion, lConnection, lTransaction)
-                            If bePresentacion IsNot Nothing Then
-                                If bePresentacion.Factor > 0 Then
-                                    oBeTrans_picking_det.Cantidad = oBeTrans_picking_det.Cantidad * bePresentacion.Factor
-                                End If
-                            End If
-                        End If
-
-                    End If
-
-                End If
-
                 Get_Single_By_IdPickingEnc_And_IdPickingDet = oBeTrans_picking_det
             End If
 
@@ -874,15 +829,6 @@ Public Class clsLnTrans_picking_det
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
-    End Function
-
-    Public Shared Function EsDecimal(ByVal numero As String) As Boolean
-        Try
-            Dim resultado As Decimal = Convert.ToDecimal(numero)
-            Return True
-        Catch ex As Exception
-            Return False
-        End Try
     End Function
 
 End Class

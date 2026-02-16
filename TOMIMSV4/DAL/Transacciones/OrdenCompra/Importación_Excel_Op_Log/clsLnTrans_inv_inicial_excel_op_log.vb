@@ -239,10 +239,8 @@ Public Class clsLnTrans_inv_inicial_excel_op_log
 
         Catch ex As Exception
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             Throw New Exception(vMsgError)
 
@@ -655,11 +653,8 @@ Public Class clsLnTrans_inv_inicial_excel_op_log
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
-
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -906,11 +901,8 @@ Public Class clsLnTrans_inv_inicial_excel_op_log
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
-
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()

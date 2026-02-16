@@ -16,7 +16,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                            T1.U_Marca AS CodigoMarca, m.Name AS NombreMarca,
                            ISNULL(U.UomCode,'UN') AS Umbas,
                            (SELECT TOP(1) O.ItemCode FROM " & BD.Instancia.SAP_COMPANY_DB & ".dbo.OITM O WHERE O.U_CodWMS = T1.U_CodWMS) AS CodKilio,
-                           'Garesa' AS Sociedad, T1.U_reqLote, T1.U_reqFVencimiento
+                           'Garesa' AS Sociedad
                     FROM " & BD.Instancia.SAP_COMPANY_DB2 & ".dbo.OITM T1
                     RIGHT JOIN " & BD.Instancia.SAP_COMPANY_DB2 & ".dbo.OITB T2 ON T2.ItmsGrpCod = T1.ItmsGrpCod
                     INNER JOIN " & BD.Instancia.SAP_COMPANY_DB2 & ".dbo.[@MARCA] M ON T1.U_Marca = M.DocEntry
@@ -30,7 +30,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                        '2' AS Codigo_Tipo, T2.ItmsGrpCod AS CodClasificacion, T2.ItmsGrpNam AS Clasificacion,
                        T1.U_Marca AS CodigoMarca, M.Name AS NombreMarca,
                        ISNULL(U.UomCode,'UN') AS Umbas, T1.ItemCode AS CodKilio,
-                       'Kilio' AS Sociedad, T1.U_reqLote, T1.U_reqFVencimiento
+                       'Kilio' AS Sociedad
                 FROM " & BD.Instancia.SAP_COMPANY_DB & ".dbo.OITM T1
                 RIGHT JOIN " & BD.Instancia.SAP_COMPANY_DB & ".dbo.OITB T2 ON T2.ItmsGrpCod = T1.ItmsGrpCod
                 INNER JOIN " & BD.Instancia.SAP_COMPANY_DB & ".dbo.[@MARCA] M ON T1.U_Marca = M.DocEntry
@@ -47,9 +47,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
 
     ''' <summary>
-    ''' '#EJC20241001: Tome la decisión de manejar en UMBas UN la medida base del producto 
-    ''' porque SAP maneja en presentación los pedidos pero la unidad base no está relacionada 
-    ''' de forma precisa o correcta con la del maestro del producto.
+    ''' '#EJC20241001: Tome la decisión de manejar en UMBas UN la medida base del producto porque SAP maneja en presentación los pedidos pero la unidad base no está relacionada de forma precisa o correcta con la del maestro del producto.
     ''' </summary>
     ''' <param name="pTEmpresa"></param>
     ''' <returns></returns>
@@ -111,9 +109,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
         .Sales_Unit = rs.Fields.Item("Umbas").Value.ToString(),
         .Item_Tracking_Code = rs.Fields.Item("CodigoBarra").Value.ToString(),
         .Product_Class_Code = rs.Fields.Item("Codigo_Tipo").Value.ToString(),
-        .Product_Class_Name = rs.Fields.Item("Sociedad").Value.ToString(),
-        .BatchControl = IIf(rs.Fields.Item("U_reqLote").Value.ToString() = "Y" OrElse rs.Fields.Item("U_reqLote").Value.ToString() = "S", True, False),
-        .ExpirationControl = IIf(rs.Fields.Item("U_reqFVencimiento").Value.ToString() = "Y" OrElse rs.Fields.Item("U_reqFVencimiento").Value.ToString() = "S", True, False)
+        .Product_Class_Name = rs.Fields.Item("Sociedad").Value.ToString()
     }
     End Function
 
@@ -881,7 +877,6 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             productoWMS.IdTipoProducto = ResolverTipoProducto(productoSAP, cnn, trx, cnnLog, lblprg)
             productoWMS.IdMarca = ResolverMarca(productoSAP, cnn, trx, cnnLog, lblprg)
             productoWMS.IdUnidadMedidaBasica = ResolverUnidadMedida(productoSAP, cnn, trx, cnnLog, lblprg)
-            productoWMS.IdPropietario = BeConfigEnc.IdPropietario
 
             MapearDatosProducto(productoWMS, productoSAP)
 
@@ -920,7 +915,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             Dim nuevaClas As New clsBeProducto_clasificacion With {
                 .IdClasificacion = clsLnProducto_clasificacion.MaxId(cnn, trx),
                 .Nombre = productoSAP.Item_Category_Name,
-                .codigo = codigo,
+                .Codigo = codigo,
                 .Activo = True,
                 .User_agr = BeConfigEnc.IdUsuario,
                 .User_mod = BeConfigEnc.IdUsuario,
@@ -952,7 +947,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                 .IdTipoProducto = clsLnProducto_tipo.MaxID(cnn, trx),
                 .IdPropietario = BeConfigEnc.IdPropietario,
                 .NombreTipoProducto = productoSAP.Product_Class_Name,
-                .codigo = codigo,
+                .Codigo = codigo,
                 .Activo = True,
                 .User_agr = BeConfigEnc.IdUsuario,
                 .User_mod = BeConfigEnc.IdUsuario,
@@ -978,7 +973,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             .IdMarca = clsLnProducto_marca.MaxID(cnn, trx),
             .IdPropietario = BeConfigEnc.IdPropietario,
             .Nombre = productoSAP.Gen_Prod_Posting_Name,
-            .codigo = codigo,
+            .Codigo = codigo,
             .Activo = True,
             .User_agr = BeConfigEnc.IdUsuario,
             .User_mod = BeConfigEnc.IdUsuario,
@@ -1021,9 +1016,8 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
         prod.Fec_mod = Now
         prod.User_agr = BeConfigEnc.IdUsuario
         prod.User_mod = BeConfigEnc.IdUsuario
-        '#CKFK20250826 Se agregaron estos campos porque la info ahora viene de SAP
-        prod.Control_vencimiento = sap.ExpirationControl
-        prod.Control_lote = sap.BatchControl
+        prod.Control_vencimiento = BeConfigEnc.Control_vencimiento
+        prod.Control_lote = BeConfigEnc.Control_lote
         prod.Genera_lp = BeConfigEnc.Genera_lp
         prod.IdTipoEtiqueta = BeConfigEnc.IdTipoEtiqueta
         prod.IdTipoRotacion = If(sap.Item_Tracking_Code = "Y" OrElse sap.Item_Tracking_Code = "S", 3, 1)

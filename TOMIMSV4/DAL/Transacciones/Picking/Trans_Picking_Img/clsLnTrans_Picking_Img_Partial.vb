@@ -71,24 +71,8 @@ Partial Public Class clsLnTrans_Picking_Img
 
             If Es_Transaccion_Remota Then
                 Insertar(BePickingImg, pConnection, pTransaction)
-
-                '#MECR04122025: Se agrego bitacora de log para verificacion
-                Dim msgControl As String = "Se agrego imagen al pedido: " + BePickingImg.IdPedidoEnc.ToString + " por su verficacion"
-                'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-                'pIdPickingDet:=pIdPedidoDet,
-                'pUser_agr:=BePickingImg.User_agr,
-                'pConection:=pConnection,
-                'pTransaction:=pTransaction)
             Else
                 Insertar(BePickingImg, lConnection, lTransaction)
-
-                '#MECR04122025: Se agrego bitacora de log para verificacion
-                Dim msgControl As String = "Se agrego imagen al pedido: " + BePickingImg.IdPedidoEnc.ToString + " por su verficacion"
-                'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-                'pIdPickingDet:=pIdPedidoDet,
-                'pUser_agr:=BePickingImg.User_agr,
-                'pConection:=lConnection,
-                'pTransaction:=lTransaction)
                 lTransaction.Commit()
             End If
 
@@ -168,13 +152,8 @@ Partial Public Class clsLnTrans_Picking_Img
         Dim lTransaction As SqlTransaction = Nothing
         Dim lDTA As New SqlDataAdapter
         Get_All_Imagen_By_IdPedidoEnc = Nothing
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-        Dim cmd As New SqlCommand
 
         Try
-            ' Comando SQL
-            Dim vSQL As String = "SELECT * FROM Trans_picking_img WHERE IdPedidoEnc=@pIdPedidoEnc"
 
 
             Dim vSQL As String = "SELECT * FROM Trans_picking_img WHERE IdPedidoEnc=@pIdPedidoEnc"
@@ -197,24 +176,22 @@ Partial Public Class clsLnTrans_Picking_Img
 
             If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                ' Procesamos los resultados si los hay
-                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                    Dim pTransPicking_Img As clsBeTrans_picking_img
-                    Get_All_Imagen_By_IdPedidoEnc = New List(Of clsBeTrans_picking_img)()
+                Dim pTransPicking_Img As clsBeTrans_picking_img
+                Get_All_Imagen_By_IdPedidoEnc = New List(Of clsBeTrans_picking_img)()
 
-                    For Each lRow As DataRow In lDataTable.Rows
+                For Each lRow As DataRow In lDataTable.Rows
 
-                        pTransPicking_Img = New clsBeTrans_picking_img
-                        Cargar(pTransPicking_Img, lRow)
+                    pTransPicking_Img = New clsBeTrans_picking_img
+                    Cargar(pTransPicking_Img, lRow)
 
-                        pTransPicking_Img.IsNew = False
-                        Get_All_Imagen_By_IdPedidoEnc.Add(pTransPicking_Img)
+                    pTransPicking_Img.IsNew = False
+                    Get_All_Imagen_By_IdPedidoEnc.Add(pTransPicking_Img)
 
-                    Next
+                Next
 
-                End If
+            End If
 
-                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -226,6 +203,5 @@ Partial Public Class clsLnTrans_Picking_Img
         End Try
 
     End Function
-
 
 End Class

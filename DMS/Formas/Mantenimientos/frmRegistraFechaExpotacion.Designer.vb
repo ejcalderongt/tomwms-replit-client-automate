@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmRegistraFechaExpotacion
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,11 +17,10 @@ Partial Class frmRegistraFechaExpotacion
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmRegistraFechaExpotacion))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
-        Me.cmdGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -41,16 +40,8 @@ Partial Class frmRegistraFechaExpotacion
         Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(755, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
-        '
-        'cmdGuardar
-        '
-        Me.cmdGuardar.Caption = "Guardar"
-        Me.cmdGuardar.Id = 1
-        Me.cmdGuardar.ImageOptions.SvgImage = CType(resources.GetObject("cmdGuardar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdGuardar.Name = "cmdGuardar"
         '
         'RibbonPage1
         '
@@ -105,7 +96,7 @@ Partial Class frmRegistraFechaExpotacion
         Me.Name = "frmRegistraFechaExpotacion"
         Me.Ribbon = Me.RibbonControl
         Me.StatusBar = Me.RibbonStatusBar
-        Me.Text = "Fecha de Inicio para Exportación"
+        Me.Text = "frmRegistraFechaExpotacion"
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridControl1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()

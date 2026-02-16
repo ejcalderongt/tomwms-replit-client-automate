@@ -14,11 +14,9 @@ Public Module m_Global
     Public Property HostName As String = ""
     Public Property NoDocEntrySAP As Integer = 0
     Public Property EstadoEnviadoSAP As clsDataContractDI.Estado_Enviado_SAP? = 0
-    Public Property gVersionApp As String = "7.9.6"
-    Public Property gFechaVersion As Date = New Date(2025, 12, 3)
+    Public Property gVersionApp As String = "7.3.2"
+    Public Property gFechaVersion As Date = New Date(2025, 6, 17)
     Public Property gNombreInstancia As String = ""
-    Public Property UsuarioSapFromUsuarioWMS As String = ""
-    Public Property ClaveSapFromUsuarioWMS As String = ""
 
     Public Enum NombreInterface
         Becofarma = 0

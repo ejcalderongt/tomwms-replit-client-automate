@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Configuration
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnI_nav_producto
@@ -30,6 +31,45 @@ Partial Public Class clsLnI_nav_producto
 
     End Function
 
+    Public Shared Function GetAll() As List(Of clsBeI_nav_producto)
+        Dim cn As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Dim lReturnList As New List(Of clsBeI_nav_producto)
+            Const sp As String = "SELECT * FROM I_nav_producto;"
+
+            Using cmd As New SqlCommand(sp, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60 ' ajusta si aplica
+
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable()
+                    dad.Fill(dt)
+
+                    For Each dr As DataRow In dt.Rows
+                        Dim vBeI_nav_producto As New clsBeI_nav_producto()
+                        Cargar(vBeI_nav_producto, dr)
+                        lReturnList.Add(vBeI_nav_producto)
+
+                        ' Sin transacción: pasar Nothing
+                        vBeI_nav_producto.lINavConversion =
+                            clsLnI_nav_conversion.Get_All_By_Codigo_Producto(vBeI_nav_producto.No, cn, Nothing)
+                    Next
+                End Using
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
 
     Public Shared Function GetAll(ByRef lConnection As SqlConnection, ByRef lTrans As SqlTransaction) As List(Of clsBeI_nav_producto)
 

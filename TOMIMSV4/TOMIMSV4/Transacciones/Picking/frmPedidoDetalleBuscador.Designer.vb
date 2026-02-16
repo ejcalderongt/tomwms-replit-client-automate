@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmPedidoDetalleBuscador
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing Then
             If components IsNot Nothing Then
@@ -23,7 +23,7 @@ Partial Class frmPedidoDetalleBuscador
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedidoDetalleBuscador))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -38,7 +38,6 @@ Partial Class frmPedidoDetalleBuscador
         Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
         Me.chkMostrarSoloMisDocumentos = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.mnuGuardarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
-        Me.tsAnulados = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -60,10 +59,10 @@ Partial Class frmPedidoDetalleBuscador
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImprimir, Me.cmdImportarExcel, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.chkMostrarSoloMisDocumentos, Me.mnuGuardarLayoutGrid, Me.tsAnulados})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImprimir, Me.cmdImportarExcel, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.chkMostrarSoloMisDocumentos, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 14
+        Me.RibbonControl.MaxItemId = 13
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -155,12 +154,6 @@ Partial Class frmPedidoDetalleBuscador
         Me.mnuGuardarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuGuardarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuGuardarLayoutGrid.Name = "mnuGuardarLayoutGrid"
         '
-        'tsAnulados
-        '
-        Me.tsAnulados.Caption = "Mostrar anulados"
-        Me.tsAnulados.Id = 13
-        Me.tsAnulados.Name = "tsAnulados"
-        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -175,7 +168,6 @@ Partial Class frmPedidoDetalleBuscador
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarLayoutGrid)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkMostrarSoloMisDocumentos)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuSalir)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.tsAnulados)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -303,7 +295,6 @@ Partial Class frmPedidoDetalleBuscador
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Agregar Pedido Detalle"
-        Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -337,5 +328,5 @@ Partial Class frmPedidoDetalleBuscador
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents chkMostrarSoloMisDocumentos As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents tsAnulados As DevExpress.XtraBars.BarToggleSwitchItem
+    Friend WithEvents tsAnulados As DevExpress.XtraEditors.ToggleSwitch
 End Class

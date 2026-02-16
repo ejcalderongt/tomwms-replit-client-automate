@@ -427,7 +427,7 @@ Public Class frmUbicacion_Etiqueta
 
         If UbicGuion > 0 Then
             '#CKFK 20180417 12:56PM Se modificó la forma de obtener el número del Rack
-            Rack = Strings.Right(StrDup(IIf(Longitud > 2, Longitud, 2), "0") & BeUbicacion.Tramo.Descripcion.Substring(1, Longitud), IIf(Longitud > 2, Longitud, 2))
+            Rack = Strings.Right("00" & BeUbicacion.Tramo.Descripcion.Substring(1, Longitud), 2)
             '#EJC20180419: Si el rack tiene más de 2 dígitos UbicGuion =3
             If UbicGuion >= 3 Then
                 Tunel = BeUbicacion.Tramo.Descripcion.Substring(BeUbicacion.Tramo.Descripcion.Length - 1, 1)
@@ -457,20 +457,17 @@ Public Class frmUbicacion_Etiqueta
 
         If cmbEtiquetaU.SelectedValue = 3 Then
 
-            Dim BeArea As New clsBeBodega_area
-            BeArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(BeUbicacion.IdArea, BeUbicacion.IdBodega)
-
             ZPLString = String.Format(" ^XA
                                         ^MMT
                                         ^PW609
                                         ^LL0406
                                         ^LS0
                                         ^FT595,374^A0I,25,24^FH\^FDTOM, WMS. - Location Tag^FS
-                                        ^FT290,374^A0I,25,24^FH\^FD{6}^FS
+                                        ^FT290,374^A0I,25,24^FH\^FDBodega: {6}^FS
                                         ^FO9,359^GB800,1,1^FS
                                         ^FO15,235^GB580,120,3^FS 
                                         ^FT570,325^A0I,25,24^FH\^FD{7}^FS
-                                        ^FT575,250^A0I,65,50^FH\^FD{0}^FS
+                                        ^FT575,250^A0I,65,74^FH\^FD{0}^FS
                                         ^FO475,235^GB3,120,3^FS
                                         ^FT450,325^A0I,25,24^FH\^FDTunel^FS
                                         ^FT440,250^A0I,65,70^FH\^FD{1}^FS
@@ -492,7 +489,7 @@ Public Class frmUbicacion_Etiqueta
                                                Col,
                                                Nivel,
                                                Barra,
-                                               BeArea.Descripcion,
+                                               CodBodega,
                                                RackPasillo)
 
         ElseIf cmbEtiquetaU.SelectedValue = 6 Then
@@ -656,16 +653,15 @@ Public Class frmUbicacion_Etiqueta
                                         ^FT500,28^A0I,30,25^FH\^FD{2}^FS
                                         ^FT590,60^A0I,25,24^FH\^FDNivel^FS
                                         ^FT590,28^A0I,30,25^FH\^FD{4}^FS
-                                        ^FT430,140^A0I,20,18^FH\^FD^FS
-                                        ^FT430,100^A0I,30,25^FH\^FD{1}^FS
+                                        ^FT420,140^A0I,23,24^FH\^FDTunel^FS
+                                        ^FT420,100^A0I,30,25^FH\^FD{1}^FS
                                         ^FO440,90^GB160,75,4^FS
                                         ^FO440,13^GB160,75,4^FS
                                         ^FO520,18^GB4,70,4^FS
                                         ^FO520,90^GB4,70,4^FS
-                                        ^BY4,3,90^FT400,50^BCI,,Y,N
+                                        ^BY4,3,100^FT328,50^BCI,,Y,N
                                         ^FD>:{5}^FS
-                                        ^PQ1,0,1,Y
-                                        ^XZ", Rack,
+                                        ^PQ1,0,1,Y", Rack,
                                                Tunel,
                                                Pos,
                                                Col,

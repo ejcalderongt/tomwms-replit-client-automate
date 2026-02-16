@@ -46,9 +46,6 @@ Public Class clsBeTrans_pe_det
     Public Property valor_flete As Double = 0
     Public Property Total_linea As Double = 0
 
-    '#GT16092025: marcar linea del pedido como no disponible en despacho
-    Public Property Stock_Liberado As Boolean = False
-
     ''' <summary>
     ''' #EJC20220307: Cliente en detalle para BYB.
     ''' </summary>

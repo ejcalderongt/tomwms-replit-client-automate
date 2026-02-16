@@ -2,7 +2,6 @@ Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnProveedor
-
     Public Shared Sub Cargar(ByRef oBeProveedor As clsBeProveedor, ByRef dr As DataRow)
 
         Try
@@ -35,7 +34,7 @@ Public Class clsLnProveedor
                 .Es_Proveedor_Servicio = IIf(IsDBNull(dr.Item("Es_Proveedor_Servicio")), False, dr.Item("Es_Proveedor_Servicio"))
                 .IdBodegaAreaSAP = IIf(IsDBNull(dr.Item("IdBodegaAreaSAP")), 0, dr.Item("IdBodegaAreaSAP"))
                 If dr.Table.Columns.Contains("idPais") Then .IdPais = IIf(IsDBNull(dr.Item("idPais")), 0, dr.Item("idPais"))
-                If dr.Table.Columns.Contains("Codigo_Empresa_ERP") Then .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), "", dr.Item("Codigo_Empresa_ERP"))
+                .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), "", dr.Item("Codigo_Empresa_ERP"))
 
             End With
 

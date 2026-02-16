@@ -164,125 +164,125 @@ Partial Class frmPreFactura
         'Label12
         '
         Label12.AutoSize = True
-        Label12.Location = New System.Drawing.Point(8, 50)
-        Label12.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label12.Location = New System.Drawing.Point(7, 41)
+        Label12.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label12.Name = "Label12"
-        Label12.Size = New System.Drawing.Size(71, 16)
+        Label12.Size = New System.Drawing.Size(61, 13)
         Label12.TabIndex = 0
         Label12.Text = "Documento"
         '
         'lblFechaDocumento
         '
         lblFechaDocumento.AutoSize = True
-        lblFechaDocumento.Location = New System.Drawing.Point(8, 87)
-        lblFechaDocumento.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        lblFechaDocumento.Location = New System.Drawing.Point(7, 71)
+        lblFechaDocumento.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblFechaDocumento.Name = "lblFechaDocumento"
-        lblFechaDocumento.Size = New System.Drawing.Size(114, 16)
+        lblFechaDocumento.Size = New System.Drawing.Size(97, 13)
         lblFechaDocumento.TabIndex = 7
         lblFechaDocumento.Text = "Fecha Documento:"
         '
         'IdPropietarioLabel
         '
         IdPropietarioLabel.AutoSize = True
-        IdPropietarioLabel.Location = New System.Drawing.Point(9, 123)
-        IdPropietarioLabel.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        IdPropietarioLabel.Location = New System.Drawing.Point(8, 100)
+        IdPropietarioLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         IdPropietarioLabel.Name = "IdPropietarioLabel"
-        IdPropietarioLabel.Size = New System.Drawing.Size(54, 16)
+        IdPropietarioLabel.Size = New System.Drawing.Size(47, 13)
         IdPropietarioLabel.TabIndex = 9
         IdPropietarioLabel.Text = "Bodega:"
         '
         'Label2
         '
         Label2.AutoSize = True
-        Label2.Location = New System.Drawing.Point(34, 18)
-        Label2.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label2.Location = New System.Drawing.Point(29, 15)
+        Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label2.Name = "Label2"
-        Label2.Size = New System.Drawing.Size(93, 16)
+        Label2.Size = New System.Drawing.Size(80, 13)
         Label2.TabIndex = 38
         Label2.Text = "Fecha Ingreso:"
         '
         'Label3
         '
         Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(34, 98)
-        Label3.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label3.Location = New System.Drawing.Point(29, 80)
+        Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(85, 16)
+        Label3.Size = New System.Drawing.Size(71, 13)
         Label3.TabIndex = 42
         Label3.Text = "Fecha Salida:"
         '
         'Label5
         '
         Label5.AutoSize = True
-        Label5.Location = New System.Drawing.Point(34, 142)
-        Label5.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label5.Location = New System.Drawing.Point(29, 115)
+        Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label5.Name = "Label5"
-        Label5.Size = New System.Drawing.Size(89, 16)
+        Label5.Size = New System.Drawing.Size(75, 13)
         Label5.TabIndex = 47
         Label5.Text = "Valor Aduana:"
         '
         'Label6
         '
         Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(34, 185)
-        Label6.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label6.Location = New System.Drawing.Point(29, 150)
+        Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label6.Name = "Label6"
-        Label6.Size = New System.Drawing.Size(89, 16)
+        Label6.Size = New System.Drawing.Size(75, 13)
         Label6.TabIndex = 49
         Label6.Text = "Total General:"
         '
         'Label7
         '
         Label7.AutoSize = True
-        Label7.Location = New System.Drawing.Point(34, 58)
-        Label7.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label7.Location = New System.Drawing.Point(29, 47)
+        Label7.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label7.Name = "Label7"
-        Label7.Size = New System.Drawing.Size(116, 16)
+        Label7.Size = New System.Drawing.Size(98, 13)
         Label7.TabIndex = 51
         Label7.Text = "Total Peso (bruto):"
         '
         'Label4
         '
         Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(34, 224)
-        Label4.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label4.Location = New System.Drawing.Point(29, 182)
+        Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(107, 16)
+        Label4.Size = New System.Drawing.Size(89, 13)
         Label4.TabIndex = 56
         Label4.Text = "Dias Almacenaje:"
         '
         'Label9
         '
         Label9.AutoSize = True
-        Label9.Location = New System.Drawing.Point(34, 265)
-        Label9.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label9.Location = New System.Drawing.Point(29, 215)
+        Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label9.Name = "Label9"
-        Label9.Size = New System.Drawing.Size(86, 16)
+        Label9.Size = New System.Drawing.Size(71, 13)
         Label9.TabIndex = 60
         Label9.Text = "Valor por día:"
         '
         'Label1
         '
         Label1.AutoSize = True
-        Label1.Location = New System.Drawing.Point(34, 308)
-        Label1.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label1.Location = New System.Drawing.Point(29, 250)
+        Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(104, 16)
+        Label1.Size = New System.Drawing.Size(88, 13)
         Label1.TabIndex = 62
         Label1.Text = "Total a Facturar:"
         '
         'RibbonControl
         '
-        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(37)
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(32, 30, 32, 30)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar, Me.cmdProcesar, Me.chkConsolidados, Me.BarSubItem1, Me.cmdImpresionPrecuenta, Me.cmdImpresionDetallePrecuenta, Me.BarButtonItem1, Me.cmdCorreccionPoliza, Me.chkControlPesoBruto, Me.chkVarianteCobro, Me.chkAgruparPorProducto, Me.chkMantenerDolares, Me.chkEnviarDolares, Me.mnuPrefactura, Me.cmdAnularPrefactura, Me.chkEstimacionCobro, Me.cmdListadoIngresos})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonControl.MaxItemId = 24
         Me.RibbonControl.Name = "RibbonControl"
-        Me.RibbonControl.OptionsMenuMinWidth = 412
+        Me.RibbonControl.OptionsMenuMinWidth = 353
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1598, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1370, 158)
         '
         'cmdGuardar
         '
@@ -354,7 +354,6 @@ Partial Class frmPreFactura
         'chkVarianteCobro
         '
         Me.chkVarianteCobro.Caption = "Calcular con variante"
-        Me.chkVarianteCobro.Hint = "Aplica si el cobro es por unidad (mt2, mt3 o posición)"
         Me.chkVarianteCobro.Id = 12
         Me.chkVarianteCobro.Name = "chkVarianteCobro"
         '
@@ -476,10 +475,10 @@ Partial Class frmPreFactura
         Me.GrpTransaccion.Controls.Add(Me.cmbPropietario)
         Me.GrpTransaccion.Controls.Add(Me.txtTipoCambio)
         Me.GrpTransaccion.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GrpTransaccion.Location = New System.Drawing.Point(0, 193)
-        Me.GrpTransaccion.Margin = New System.Windows.Forms.Padding(5)
+        Me.GrpTransaccion.Location = New System.Drawing.Point(0, 158)
+        Me.GrpTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpTransaccion.Name = "GrpTransaccion"
-        Me.GrpTransaccion.Size = New System.Drawing.Size(1598, 456)
+        Me.GrpTransaccion.Size = New System.Drawing.Size(1370, 366)
         Me.GrpTransaccion.TabIndex = 2
         Me.GrpTransaccion.Text = "Encabezado"
         '
@@ -487,18 +486,18 @@ Partial Class frmPreFactura
         '
         Me.lbDecimales.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lbDecimales.Appearance.Options.UseFont = True
-        Me.lbDecimales.Location = New System.Drawing.Point(503, 48)
-        Me.lbDecimales.Margin = New System.Windows.Forms.Padding(5)
+        Me.lbDecimales.Location = New System.Drawing.Point(431, 39)
+        Me.lbDecimales.Margin = New System.Windows.Forms.Padding(4)
         Me.lbDecimales.Name = "lbDecimales"
-        Me.lbDecimales.Size = New System.Drawing.Size(63, 16)
+        Me.lbDecimales.Size = New System.Drawing.Size(51, 13)
         Me.lbDecimales.TabIndex = 94
         Me.lbDecimales.Text = "Decimales:"
         '
         'txtDecimales
         '
         Me.txtDecimales.EditValue = New Decimal(New Integer() {2, 0, 0, 0})
-        Me.txtDecimales.Location = New System.Drawing.Point(625, 46)
-        Me.txtDecimales.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtDecimales.Location = New System.Drawing.Point(536, 37)
+        Me.txtDecimales.Margin = New System.Windows.Forms.Padding(4)
         Me.txtDecimales.Name = "txtDecimales"
         Me.txtDecimales.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtDecimales.Properties.Appearance.Options.UseFont = True
@@ -508,7 +507,7 @@ Partial Class frmPreFactura
         Me.txtDecimales.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False")
         Me.txtDecimales.Properties.MaxValue = New Decimal(New Integer() {6, 0, 0, 0})
         Me.txtDecimales.Properties.MinValue = New Decimal(New Integer() {2, 0, 0, 0})
-        Me.txtDecimales.Size = New System.Drawing.Size(239, 24)
+        Me.txtDecimales.Size = New System.Drawing.Size(205, 20)
         Me.txtDecimales.TabIndex = 6
         '
         'gbErrores
@@ -516,11 +515,11 @@ Partial Class frmPreFactura
         Me.gbErrores.Controls.Add(Me.lblPrg)
         Me.gbErrores.Controls.Add(Me.prg)
         Me.gbErrores.Controls.Add(Me.lblTLog)
-        Me.gbErrores.Location = New System.Drawing.Point(625, 274)
-        Me.gbErrores.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.gbErrores.Location = New System.Drawing.Point(536, 223)
+        Me.gbErrores.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.gbErrores.Name = "gbErrores"
-        Me.gbErrores.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.gbErrores.Size = New System.Drawing.Size(239, 162)
+        Me.gbErrores.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.gbErrores.Size = New System.Drawing.Size(205, 132)
         Me.gbErrores.TabIndex = 92
         Me.gbErrores.TabStop = False
         Me.gbErrores.Text = "Ingreso sin histórico."
@@ -529,20 +528,18 @@ Partial Class frmPreFactura
         '
         Me.lblPrg.BackColor = System.Drawing.Color.OldLace
         Me.lblPrg.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblPrg.Location = New System.Drawing.Point(4, 73)
-        Me.lblPrg.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblPrg.Location = New System.Drawing.Point(3, 61)
         Me.lblPrg.Name = "lblPrg"
-        Me.lblPrg.Size = New System.Drawing.Size(231, 87)
+        Me.lblPrg.Size = New System.Drawing.Size(199, 69)
         Me.lblPrg.TabIndex = 5
         Me.lblPrg.Text = ""
         '
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Top
-        Me.prg.Location = New System.Drawing.Point(4, 45)
-        Me.prg.Margin = New System.Windows.Forms.Padding(4)
+        Me.prg.Location = New System.Drawing.Point(3, 38)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(231, 28)
+        Me.prg.Size = New System.Drawing.Size(199, 23)
         Me.prg.TabIndex = 4
         Me.prg.Visible = False
         '
@@ -553,10 +550,9 @@ Partial Class frmPreFactura
         Me.lblTLog.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
         Me.lblTLog.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.lblTLog.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblTLog.Location = New System.Drawing.Point(4, 18)
-        Me.lblTLog.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblTLog.Location = New System.Drawing.Point(3, 16)
         Me.lblTLog.Name = "lblTLog"
-        Me.lblTLog.Size = New System.Drawing.Size(231, 27)
+        Me.lblTLog.Size = New System.Drawing.Size(199, 22)
         Me.lblTLog.TabIndex = 3
         Me.lblTLog.Text = "Log"
         '
@@ -564,31 +560,28 @@ Partial Class frmPreFactura
         '
         Me.lblScanPoliza.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblScanPoliza.Appearance.Options.UseFont = True
-        Me.lblScanPoliza.Location = New System.Drawing.Point(503, 239)
-        Me.lblScanPoliza.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblScanPoliza.Location = New System.Drawing.Point(431, 194)
         Me.lblScanPoliza.Name = "lblScanPoliza"
-        Me.lblScanPoliza.Size = New System.Drawing.Size(89, 16)
+        Me.lblScanPoliza.Size = New System.Drawing.Size(74, 13)
         Me.lblScanPoliza.TabIndex = 91
         Me.lblScanPoliza.Text = "Escanée Poliza:"
         '
         'txtScanPoliza
         '
-        Me.txtScanPoliza.Location = New System.Drawing.Point(625, 234)
-        Me.txtScanPoliza.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtScanPoliza.Location = New System.Drawing.Point(536, 190)
         Me.txtScanPoliza.Name = "txtScanPoliza"
         Me.txtScanPoliza.Properties.Appearance.BackColor = System.Drawing.Color.Silver
         Me.txtScanPoliza.Properties.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtScanPoliza.Properties.Appearance.Options.UseBackColor = True
         Me.txtScanPoliza.Properties.Appearance.Options.UseFont = True
-        Me.txtScanPoliza.Size = New System.Drawing.Size(239, 24)
+        Me.txtScanPoliza.Size = New System.Drawing.Size(205, 22)
         Me.txtScanPoliza.TabIndex = 90
         '
         'lblTipoCambioOrigen
         '
-        Me.lblTipoCambioOrigen.Location = New System.Drawing.Point(467, 308)
-        Me.lblTipoCambioOrigen.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblTipoCambioOrigen.Location = New System.Drawing.Point(400, 250)
         Me.lblTipoCambioOrigen.Name = "lblTipoCambioOrigen"
-        Me.lblTipoCambioOrigen.Size = New System.Drawing.Size(72, 16)
+        Me.lblTipoCambioOrigen.Size = New System.Drawing.Size(58, 13)
         Me.lblTipoCambioOrigen.TabIndex = 87
         Me.lblTipoCambioOrigen.Text = "Tipo Cambio"
         Me.lblTipoCambioOrigen.Visible = False
@@ -597,27 +590,27 @@ Partial Class frmPreFactura
         '
         Me.lblObservacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblObservacion.Appearance.Options.UseFont = True
-        Me.lblObservacion.Location = New System.Drawing.Point(10, 345)
-        Me.lblObservacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lblObservacion.Location = New System.Drawing.Point(9, 280)
+        Me.lblObservacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.lblObservacion.Name = "lblObservacion"
-        Me.lblObservacion.Size = New System.Drawing.Size(75, 16)
+        Me.lblObservacion.Size = New System.Drawing.Size(64, 13)
         Me.lblObservacion.TabIndex = 86
         Me.lblObservacion.Text = "Observación:"
         '
         'txtObservacion
         '
         Me.txtObservacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtObservacion.Location = New System.Drawing.Point(158, 343)
-        Me.txtObservacion.Margin = New System.Windows.Forms.Padding(4, 6, 4, 6)
+        Me.txtObservacion.Location = New System.Drawing.Point(135, 279)
+        Me.txtObservacion.Margin = New System.Windows.Forms.Padding(3, 5, 3, 5)
         Me.txtObservacion.Multiline = True
         Me.txtObservacion.Name = "txtObservacion"
-        Me.txtObservacion.Size = New System.Drawing.Size(301, 93)
+        Me.txtObservacion.Size = New System.Drawing.Size(258, 76)
         Me.txtObservacion.TabIndex = 85
         '
         'cmbPolizasPE
         '
-        Me.cmbPolizasPE.Location = New System.Drawing.Point(625, 194)
-        Me.cmbPolizasPE.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmbPolizasPE.Location = New System.Drawing.Point(536, 158)
+        Me.cmbPolizasPE.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbPolizasPE.Name = "cmbPolizasPE"
         Me.cmbPolizasPE.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbPolizasPE.Properties.Appearance.Options.UseFont = True
@@ -625,23 +618,23 @@ Partial Class frmPreFactura
         Me.cmbPolizasPE.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPolizasPE.Properties.NullText = ""
         Me.cmbPolizasPE.Properties.PopupView = Me.GridView2
-        Me.cmbPolizasPE.Size = New System.Drawing.Size(239, 24)
+        Me.cmbPolizasPE.Size = New System.Drawing.Size(205, 20)
         Me.cmbPolizasPE.TabIndex = 8
         '
         'GridView2
         '
-        Me.GridView2.DetailHeight = 437
+        Me.GridView2.DetailHeight = 355
         Me.GridView2.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
         Me.GridView2.Name = "GridView2"
-        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 857
         Me.GridView2.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridView2.OptionsView.ShowAutoFilterRow = True
         Me.GridView2.OptionsView.ShowGroupPanel = False
         '
         'cmbPolizasOC
         '
-        Me.cmbPolizasOC.Location = New System.Drawing.Point(625, 158)
-        Me.cmbPolizasOC.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmbPolizasOC.Location = New System.Drawing.Point(536, 128)
+        Me.cmbPolizasOC.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbPolizasOC.Name = "cmbPolizasOC"
         Me.cmbPolizasOC.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbPolizasOC.Properties.Appearance.Options.UseFont = True
@@ -649,15 +642,15 @@ Partial Class frmPreFactura
         Me.cmbPolizasOC.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPolizasOC.Properties.NullText = ""
         Me.cmbPolizasOC.Properties.PopupView = Me.GridView1
-        Me.cmbPolizasOC.Size = New System.Drawing.Size(239, 24)
+        Me.cmbPolizasOC.Size = New System.Drawing.Size(205, 20)
         Me.cmbPolizasOC.TabIndex = 7
         '
         'GridView1
         '
-        Me.GridView1.DetailHeight = 437
+        Me.GridView1.DetailHeight = 355
         Me.GridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
         Me.GridView1.Name = "GridView1"
-        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 857
         Me.GridView1.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
         Me.GridView1.OptionsView.ShowGroupPanel = False
@@ -682,20 +675,19 @@ Partial Class frmPreFactura
         Me.pnValores.Controls.Add(Me.txtDiasAlmacenaje)
         Me.pnValores.Controls.Add(Me.txtAlmacenajeDiario)
         Me.pnValores.Controls.Add(Me.txtTotalFacturacion)
-        Me.pnValores.Location = New System.Drawing.Point(889, 48)
-        Me.pnValores.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.pnValores.Location = New System.Drawing.Point(762, 39)
+        Me.pnValores.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.pnValores.Name = "pnValores"
-        Me.pnValores.Size = New System.Drawing.Size(631, 354)
+        Me.pnValores.Size = New System.Drawing.Size(541, 288)
         Me.pnValores.TabIndex = 68
         '
         'lblCobroMoneda
         '
         Me.lblCobroMoneda.Appearance.Font = New System.Drawing.Font("Tahoma", 13.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCobroMoneda.Appearance.Options.UseFont = True
-        Me.lblCobroMoneda.Location = New System.Drawing.Point(574, 134)
-        Me.lblCobroMoneda.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblCobroMoneda.Location = New System.Drawing.Point(492, 109)
         Me.lblCobroMoneda.Name = "lblCobroMoneda"
-        Me.lblCobroMoneda.Size = New System.Drawing.Size(210, 28)
+        Me.lblCobroMoneda.Size = New System.Drawing.Size(164, 22)
         Me.lblCobroMoneda.TabIndex = 88
         Me.lblCobroMoneda.Text = "Enviar Dólares a ERP"
         Me.lblCobroMoneda.Visible = False
@@ -703,8 +695,8 @@ Partial Class frmPreFactura
         'dtFechaIngreso
         '
         Me.dtFechaIngreso.EditValue = New Date(2017, 11, 19, 11, 13, 59, 0)
-        Me.dtFechaIngreso.Location = New System.Drawing.Point(192, 12)
-        Me.dtFechaIngreso.Margin = New System.Windows.Forms.Padding(5)
+        Me.dtFechaIngreso.Location = New System.Drawing.Point(165, 10)
+        Me.dtFechaIngreso.Margin = New System.Windows.Forms.Padding(4)
         Me.dtFechaIngreso.MenuManager = Me.RibbonControl
         Me.dtFechaIngreso.Name = "dtFechaIngreso"
         Me.dtFechaIngreso.Properties.Appearance.BackColor = System.Drawing.Color.White
@@ -715,7 +707,7 @@ Partial Class frmPreFactura
         Me.dtFechaIngreso.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtFechaIngreso.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtFechaIngreso.Properties.ReadOnly = True
-        Me.dtFechaIngreso.Size = New System.Drawing.Size(248, 24)
+        Me.dtFechaIngreso.Size = New System.Drawing.Size(213, 20)
         Me.dtFechaIngreso.TabIndex = 39
         '
         'LabelControl1
@@ -723,31 +715,31 @@ Partial Class frmPreFactura
         Me.LabelControl1.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelControl1.Appearance.Options.UseFont = True
         Me.LabelControl1.Appearance.Options.UseImage = True
-        Me.LabelControl1.Location = New System.Drawing.Point(184, 101)
-        Me.LabelControl1.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.LabelControl1.Location = New System.Drawing.Point(158, 82)
+        Me.LabelControl1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.LabelControl1.Name = "LabelControl1"
-        Me.LabelControl1.Size = New System.Drawing.Size(0, 18)
+        Me.LabelControl1.Size = New System.Drawing.Size(0, 15)
         Me.LabelControl1.TabIndex = 41
         '
         'dtFechaSalida
         '
         Me.dtFechaSalida.EditValue = New Date(2017, 11, 20, 10, 7, 9, 549)
-        Me.dtFechaSalida.Location = New System.Drawing.Point(190, 98)
-        Me.dtFechaSalida.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.dtFechaSalida.Location = New System.Drawing.Point(163, 80)
+        Me.dtFechaSalida.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.dtFechaSalida.Name = "dtFechaSalida"
         Me.dtFechaSalida.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.dtFechaSalida.Properties.Appearance.Options.UseFont = True
         Me.dtFechaSalida.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.dtFechaSalida.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtFechaSalida.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtFechaSalida.Size = New System.Drawing.Size(251, 24)
+        Me.dtFechaSalida.Size = New System.Drawing.Size(215, 20)
         Me.dtFechaSalida.TabIndex = 43
         '
         'txtPesoTotal
         '
         Me.txtPesoTotal.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtPesoTotal.Location = New System.Drawing.Point(190, 52)
-        Me.txtPesoTotal.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtPesoTotal.Location = New System.Drawing.Point(163, 42)
+        Me.txtPesoTotal.Margin = New System.Windows.Forms.Padding(4)
         Me.txtPesoTotal.Name = "txtPesoTotal"
         Me.txtPesoTotal.Properties.Appearance.BackColor = System.Drawing.Color.White
         Me.txtPesoTotal.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -758,14 +750,14 @@ Partial Class frmPreFactura
         Me.txtPesoTotal.Properties.MaskSettings.Set("MaskManagerType", GetType(DevExpress.Data.Mask.NumericMaskManager))
         Me.txtPesoTotal.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False")
         Me.txtPesoTotal.Properties.MaskSettings.Set("mask", "f")
-        Me.txtPesoTotal.Size = New System.Drawing.Size(251, 24)
+        Me.txtPesoTotal.Size = New System.Drawing.Size(215, 20)
         Me.txtPesoTotal.TabIndex = 52
         '
         'txtValorAduana
         '
         Me.txtValorAduana.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtValorAduana.Location = New System.Drawing.Point(190, 138)
-        Me.txtValorAduana.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtValorAduana.Location = New System.Drawing.Point(163, 112)
+        Me.txtValorAduana.Margin = New System.Windows.Forms.Padding(4)
         Me.txtValorAduana.Name = "txtValorAduana"
         Me.txtValorAduana.Properties.Appearance.BackColor = System.Drawing.Color.White
         Me.txtValorAduana.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -776,14 +768,14 @@ Partial Class frmPreFactura
         Me.txtValorAduana.Properties.MaskSettings.Set("MaskManagerType", GetType(DevExpress.Data.Mask.NumericMaskManager))
         Me.txtValorAduana.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False")
         Me.txtValorAduana.Properties.MaskSettings.Set("mask", "f")
-        Me.txtValorAduana.Size = New System.Drawing.Size(251, 24)
+        Me.txtValorAduana.Size = New System.Drawing.Size(215, 20)
         Me.txtValorAduana.TabIndex = 48
         '
         'txtValorGeneral
         '
         Me.txtValorGeneral.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtValorGeneral.Location = New System.Drawing.Point(190, 181)
-        Me.txtValorGeneral.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtValorGeneral.Location = New System.Drawing.Point(163, 147)
+        Me.txtValorGeneral.Margin = New System.Windows.Forms.Padding(4)
         Me.txtValorGeneral.Name = "txtValorGeneral"
         Me.txtValorGeneral.Properties.Appearance.BackColor = System.Drawing.Color.White
         Me.txtValorGeneral.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -794,14 +786,14 @@ Partial Class frmPreFactura
         Me.txtValorGeneral.Properties.MaskSettings.Set("MaskManagerType", GetType(DevExpress.Data.Mask.NumericMaskManager))
         Me.txtValorGeneral.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False")
         Me.txtValorGeneral.Properties.MaskSettings.Set("mask", "f")
-        Me.txtValorGeneral.Size = New System.Drawing.Size(251, 24)
+        Me.txtValorGeneral.Size = New System.Drawing.Size(215, 20)
         Me.txtValorGeneral.TabIndex = 50
         '
         'txtDiasAlmacenaje
         '
         Me.txtDiasAlmacenaje.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtDiasAlmacenaje.Location = New System.Drawing.Point(190, 220)
-        Me.txtDiasAlmacenaje.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtDiasAlmacenaje.Location = New System.Drawing.Point(163, 179)
+        Me.txtDiasAlmacenaje.Margin = New System.Windows.Forms.Padding(4)
         Me.txtDiasAlmacenaje.Name = "txtDiasAlmacenaje"
         Me.txtDiasAlmacenaje.Properties.Appearance.BackColor = System.Drawing.Color.AntiqueWhite
         Me.txtDiasAlmacenaje.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -809,14 +801,14 @@ Partial Class frmPreFactura
         Me.txtDiasAlmacenaje.Properties.Appearance.Options.UseFont = True
         Me.txtDiasAlmacenaje.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtDiasAlmacenaje.Properties.EditValueChangedFiringMode = DevExpress.XtraEditors.Controls.EditValueChangedFiringMode.[Default]
-        Me.txtDiasAlmacenaje.Size = New System.Drawing.Size(251, 24)
+        Me.txtDiasAlmacenaje.Size = New System.Drawing.Size(215, 20)
         Me.txtDiasAlmacenaje.TabIndex = 44
         '
         'txtAlmacenajeDiario
         '
         Me.txtAlmacenajeDiario.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtAlmacenajeDiario.Location = New System.Drawing.Point(189, 261)
-        Me.txtAlmacenajeDiario.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtAlmacenajeDiario.Location = New System.Drawing.Point(162, 212)
+        Me.txtAlmacenajeDiario.Margin = New System.Windows.Forms.Padding(4)
         Me.txtAlmacenajeDiario.Name = "txtAlmacenajeDiario"
         Me.txtAlmacenajeDiario.Properties.Appearance.BackColor = System.Drawing.Color.AntiqueWhite
         Me.txtAlmacenajeDiario.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -824,14 +816,14 @@ Partial Class frmPreFactura
         Me.txtAlmacenajeDiario.Properties.Appearance.Options.UseFont = True
         Me.txtAlmacenajeDiario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtAlmacenajeDiario.Properties.EditValueChangedFiringMode = DevExpress.XtraEditors.Controls.EditValueChangedFiringMode.[Default]
-        Me.txtAlmacenajeDiario.Size = New System.Drawing.Size(251, 24)
+        Me.txtAlmacenajeDiario.Size = New System.Drawing.Size(215, 20)
         Me.txtAlmacenajeDiario.TabIndex = 57
         '
         'txtTotalFacturacion
         '
         Me.txtTotalFacturacion.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtTotalFacturacion.Location = New System.Drawing.Point(189, 304)
-        Me.txtTotalFacturacion.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtTotalFacturacion.Location = New System.Drawing.Point(162, 247)
+        Me.txtTotalFacturacion.Margin = New System.Windows.Forms.Padding(4)
         Me.txtTotalFacturacion.Name = "txtTotalFacturacion"
         Me.txtTotalFacturacion.Properties.Appearance.BackColor = System.Drawing.Color.AntiqueWhite
         Me.txtTotalFacturacion.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -840,17 +832,17 @@ Partial Class frmPreFactura
         Me.txtTotalFacturacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtTotalFacturacion.Properties.EditValueChangedFiringMode = DevExpress.XtraEditors.Controls.EditValueChangedFiringMode.[Default]
         Me.txtTotalFacturacion.Properties.MaskSettings.Set("mask", "f")
-        Me.txtTotalFacturacion.Size = New System.Drawing.Size(251, 24)
+        Me.txtTotalFacturacion.Size = New System.Drawing.Size(215, 20)
         Me.txtTotalFacturacion.TabIndex = 61
         '
         'lblFechaFinal
         '
         Me.lblFechaFinal.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblFechaFinal.Appearance.Options.UseFont = True
-        Me.lblFechaFinal.Location = New System.Drawing.Point(10, 268)
-        Me.lblFechaFinal.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblFechaFinal.Location = New System.Drawing.Point(9, 218)
+        Me.lblFechaFinal.Margin = New System.Windows.Forms.Padding(4)
         Me.lblFechaFinal.Name = "lblFechaFinal"
-        Me.lblFechaFinal.Size = New System.Drawing.Size(75, 16)
+        Me.lblFechaFinal.Size = New System.Drawing.Size(64, 13)
         Me.lblFechaFinal.TabIndex = 75
         Me.lblFechaFinal.Text = "Fecha Hasta:"
         '
@@ -858,10 +850,10 @@ Partial Class frmPreFactura
         '
         Me.lblTipoCambio.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblTipoCambio.Appearance.Options.UseFont = True
-        Me.lblTipoCambio.Location = New System.Drawing.Point(10, 308)
-        Me.lblTipoCambio.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblTipoCambio.Location = New System.Drawing.Point(9, 250)
+        Me.lblTipoCambio.Margin = New System.Windows.Forms.Padding(4)
         Me.lblTipoCambio.Name = "lblTipoCambio"
-        Me.lblTipoCambio.Size = New System.Drawing.Size(115, 16)
+        Me.lblTipoCambio.Size = New System.Drawing.Size(93, 13)
         Me.lblTipoCambio.TabIndex = 79
         Me.lblTipoCambio.Text = "Tipo Cambio (USD):"
         '
@@ -869,10 +861,10 @@ Partial Class frmPreFactura
         '
         Me.lblFechaInicial.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblFechaInicial.Appearance.Options.UseFont = True
-        Me.lblFechaInicial.Location = New System.Drawing.Point(10, 231)
-        Me.lblFechaInicial.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblFechaInicial.Location = New System.Drawing.Point(9, 188)
+        Me.lblFechaInicial.Margin = New System.Windows.Forms.Padding(4)
         Me.lblFechaInicial.Name = "lblFechaInicial"
-        Me.lblFechaInicial.Size = New System.Drawing.Size(78, 16)
+        Me.lblFechaInicial.Size = New System.Drawing.Size(66, 13)
         Me.lblFechaInicial.TabIndex = 74
         Me.lblFechaInicial.Text = "Fecha Desde:"
         '
@@ -880,39 +872,39 @@ Partial Class frmPreFactura
         '
         Me.dtpfechaHasta.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.dtpfechaHasta.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpfechaHasta.Location = New System.Drawing.Point(159, 266)
-        Me.dtpfechaHasta.Margin = New System.Windows.Forms.Padding(5)
+        Me.dtpfechaHasta.Location = New System.Drawing.Point(136, 216)
+        Me.dtpfechaHasta.Margin = New System.Windows.Forms.Padding(4)
         Me.dtpfechaHasta.Name = "dtpfechaHasta"
-        Me.dtpfechaHasta.Size = New System.Drawing.Size(299, 26)
+        Me.dtpfechaHasta.Size = New System.Drawing.Size(257, 22)
         Me.dtpfechaHasta.TabIndex = 4
         '
         'dtpFechaDesde
         '
         Me.dtpFechaDesde.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.dtpFechaDesde.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaDesde.Location = New System.Drawing.Point(159, 228)
-        Me.dtpFechaDesde.Margin = New System.Windows.Forms.Padding(5)
+        Me.dtpFechaDesde.Location = New System.Drawing.Point(136, 185)
+        Me.dtpFechaDesde.Margin = New System.Windows.Forms.Padding(4)
         Me.dtpFechaDesde.Name = "dtpFechaDesde"
-        Me.dtpFechaDesde.Size = New System.Drawing.Size(299, 26)
+        Me.dtpFechaDesde.Size = New System.Drawing.Size(257, 22)
         Me.dtpFechaDesde.TabIndex = 3
         '
         'cmbBodega
         '
-        Me.cmbBodega.Location = New System.Drawing.Point(162, 119)
-        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmbBodega.Location = New System.Drawing.Point(139, 97)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbBodega.Properties.Appearance.Options.UseFont = True
         Me.cmbBodega.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbBodega.Size = New System.Drawing.Size(298, 24)
+        Me.cmbBodega.Size = New System.Drawing.Size(255, 20)
         Me.cmbBodega.TabIndex = 31
         '
         'dtpFechaDocumento
         '
         Me.dtpFechaDocumento.EditValue = New Date(2017, 11, 19, 11, 13, 59, 0)
-        Me.dtpFechaDocumento.Location = New System.Drawing.Point(162, 82)
-        Me.dtpFechaDocumento.Margin = New System.Windows.Forms.Padding(5)
+        Me.dtpFechaDocumento.Location = New System.Drawing.Point(139, 67)
+        Me.dtpFechaDocumento.Margin = New System.Windows.Forms.Padding(4)
         Me.dtpFechaDocumento.MenuManager = Me.RibbonControl
         Me.dtpFechaDocumento.Name = "dtpFechaDocumento"
         Me.dtpFechaDocumento.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -920,17 +912,17 @@ Partial Class frmPreFactura
         Me.dtpFechaDocumento.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtpFechaDocumento.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtpFechaDocumento.Properties.ReadOnly = True
-        Me.dtpFechaDocumento.Size = New System.Drawing.Size(298, 24)
+        Me.dtpFechaDocumento.Size = New System.Drawing.Size(255, 20)
         Me.dtpFechaDocumento.TabIndex = 8
         '
         'lblPolizaSalida
         '
         Me.lblPolizaSalida.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblPolizaSalida.Appearance.Options.UseFont = True
-        Me.lblPolizaSalida.Location = New System.Drawing.Point(503, 198)
-        Me.lblPolizaSalida.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblPolizaSalida.Location = New System.Drawing.Point(431, 161)
+        Me.lblPolizaSalida.Margin = New System.Windows.Forms.Padding(4)
         Me.lblPolizaSalida.Name = "lblPolizaSalida"
-        Me.lblPolizaSalida.Size = New System.Drawing.Size(83, 16)
+        Me.lblPolizaSalida.Size = New System.Drawing.Size(67, 13)
         Me.lblPolizaSalida.TabIndex = 67
         Me.lblPolizaSalida.Text = "Pólizas Salida:"
         '
@@ -938,10 +930,10 @@ Partial Class frmPreFactura
         '
         Me.lblCliente.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblCliente.Appearance.Options.UseFont = True
-        Me.lblCliente.Location = New System.Drawing.Point(12, 197)
-        Me.lblCliente.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblCliente.Location = New System.Drawing.Point(10, 160)
+        Me.lblCliente.Margin = New System.Windows.Forms.Padding(4)
         Me.lblCliente.Name = "lblCliente"
-        Me.lblCliente.Size = New System.Drawing.Size(64, 16)
+        Me.lblCliente.Size = New System.Drawing.Size(54, 13)
         Me.lblCliente.TabIndex = 66
         Me.lblCliente.Text = "Facturar a:"
         '
@@ -949,10 +941,10 @@ Partial Class frmPreFactura
         '
         Me.lblConsolidador.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblConsolidador.Appearance.Options.UseFont = True
-        Me.lblConsolidador.Location = New System.Drawing.Point(10, 160)
-        Me.lblConsolidador.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblConsolidador.Location = New System.Drawing.Point(9, 130)
+        Me.lblConsolidador.Margin = New System.Windows.Forms.Padding(4)
         Me.lblConsolidador.Name = "lblConsolidador"
-        Me.lblConsolidador.Size = New System.Drawing.Size(79, 16)
+        Me.lblConsolidador.Size = New System.Drawing.Size(66, 13)
         Me.lblConsolidador.TabIndex = 65
         Me.lblConsolidador.Text = "Consolidador:"
         '
@@ -961,73 +953,73 @@ Partial Class frmPreFactura
         Me.txtNoDocumento.BackColor = System.Drawing.Color.Linen
         Me.txtNoDocumento.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtNoDocumento.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtNoDocumento.Location = New System.Drawing.Point(162, 48)
-        Me.txtNoDocumento.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.txtNoDocumento.Location = New System.Drawing.Point(139, 39)
+        Me.txtNoDocumento.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.txtNoDocumento.Name = "txtNoDocumento"
-        Me.txtNoDocumento.Size = New System.Drawing.Size(296, 25)
+        Me.txtNoDocumento.Size = New System.Drawing.Size(254, 21)
         Me.txtNoDocumento.TabIndex = 1
         '
         'lblPolizaIngreso
         '
         Me.lblPolizaIngreso.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblPolizaIngreso.Appearance.Options.UseFont = True
-        Me.lblPolizaIngreso.Location = New System.Drawing.Point(503, 161)
-        Me.lblPolizaIngreso.Margin = New System.Windows.Forms.Padding(5)
+        Me.lblPolizaIngreso.Location = New System.Drawing.Point(431, 131)
+        Me.lblPolizaIngreso.Margin = New System.Windows.Forms.Padding(4)
         Me.lblPolizaIngreso.Name = "lblPolizaIngreso"
-        Me.lblPolizaIngreso.Size = New System.Drawing.Size(90, 16)
+        Me.lblPolizaIngreso.Size = New System.Drawing.Size(74, 13)
         Me.lblPolizaIngreso.TabIndex = 0
         Me.lblPolizaIngreso.Text = "Pólizas ingreso:"
         '
         'cmbCliente
         '
-        Me.cmbCliente.Location = New System.Drawing.Point(159, 193)
-        Me.cmbCliente.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmbCliente.Location = New System.Drawing.Point(136, 157)
+        Me.cmbCliente.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbCliente.Name = "cmbCliente"
         Me.cmbCliente.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbCliente.Properties.Appearance.Options.UseFont = True
         Me.cmbCliente.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbCliente.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbCliente.Properties.PopupView = Me.SearchLookUpEdit1View
-        Me.cmbCliente.Size = New System.Drawing.Size(300, 24)
+        Me.cmbCliente.Size = New System.Drawing.Size(257, 20)
         Me.cmbCliente.TabIndex = 2
         '
         'SearchLookUpEdit1View
         '
-        Me.SearchLookUpEdit1View.DetailHeight = 437
+        Me.SearchLookUpEdit1View.DetailHeight = 355
         Me.SearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
         Me.SearchLookUpEdit1View.Name = "SearchLookUpEdit1View"
-        Me.SearchLookUpEdit1View.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.SearchLookUpEdit1View.OptionsEditForm.PopupEditFormWidth = 857
         Me.SearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.SearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = True
         Me.SearchLookUpEdit1View.OptionsView.ShowGroupPanel = False
         '
         'cmbPropietario
         '
-        Me.cmbPropietario.Location = New System.Drawing.Point(159, 156)
-        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmbPropietario.Location = New System.Drawing.Point(136, 127)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbPropietario.Properties.Appearance.Options.UseFont = True
         Me.cmbPropietario.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietario.Properties.PopupView = Me.GridLookUpEdit1View
-        Me.cmbPropietario.Size = New System.Drawing.Size(300, 24)
+        Me.cmbPropietario.Size = New System.Drawing.Size(257, 20)
         Me.cmbPropietario.TabIndex = 1
         '
         'GridLookUpEdit1View
         '
-        Me.GridLookUpEdit1View.DetailHeight = 437
+        Me.GridLookUpEdit1View.DetailHeight = 355
         Me.GridLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
         Me.GridLookUpEdit1View.Name = "GridLookUpEdit1View"
-        Me.GridLookUpEdit1View.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.GridLookUpEdit1View.OptionsEditForm.PopupEditFormWidth = 857
         Me.GridLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridLookUpEdit1View.OptionsView.ShowGroupPanel = False
         '
         'txtTipoCambio
         '
         Me.txtTipoCambio.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtTipoCambio.Location = New System.Drawing.Point(158, 304)
-        Me.txtTipoCambio.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtTipoCambio.Location = New System.Drawing.Point(135, 247)
+        Me.txtTipoCambio.Margin = New System.Windows.Forms.Padding(4)
         Me.txtTipoCambio.Name = "txtTipoCambio"
         Me.txtTipoCambio.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtTipoCambio.Properties.Appearance.Options.UseFont = True
@@ -1035,19 +1027,19 @@ Partial Class frmPreFactura
         Me.txtTipoCambio.Properties.EditValueChangedFiringMode = DevExpress.XtraEditors.Controls.EditValueChangedFiringMode.[Default]
         Me.txtTipoCambio.Properties.MaskSettings.Set("MaskManagerType", GetType(DevExpress.Data.Mask.NumericMaskManager))
         Me.txtTipoCambio.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False")
-        Me.txtTipoCambio.Size = New System.Drawing.Size(301, 24)
+        Me.txtTipoCambio.Size = New System.Drawing.Size(258, 20)
         Me.txtTipoCambio.TabIndex = 5
         '
         'dgridServiciosAsociados
         '
         Me.dgridServiciosAsociados.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridServiciosAsociados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.dgridServiciosAsociados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.dgridServiciosAsociados.Font = New System.Drawing.Font("Tahoma", 6.0!)
         Me.dgridServiciosAsociados.Location = New System.Drawing.Point(0, 0)
         Me.dgridServiciosAsociados.MainView = Me.gvDetalleServicios
-        Me.dgridServiciosAsociados.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.dgridServiciosAsociados.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.dgridServiciosAsociados.Name = "dgridServiciosAsociados"
-        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1592, 262)
+        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1364, 137)
         Me.dgridServiciosAsociados.TabIndex = 32
         Me.dgridServiciosAsociados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleServicios})
         '
@@ -1059,11 +1051,11 @@ Partial Class frmPreFactura
         Me.gvDetalleServicios.Appearance.HeaderPanel.Options.UseFont = True
         Me.gvDetalleServicios.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.gvDetalleServicios.Appearance.Row.Options.UseFont = True
-        Me.gvDetalleServicios.DetailHeight = 437
+        Me.gvDetalleServicios.DetailHeight = 355
         Me.gvDetalleServicios.GridControl = Me.dgridServiciosAsociados
         Me.gvDetalleServicios.Name = "gvDetalleServicios"
         Me.gvDetalleServicios.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
-        Me.gvDetalleServicios.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.gvDetalleServicios.OptionsEditForm.PopupEditFormWidth = 857
         Me.gvDetalleServicios.OptionsView.ColumnAutoWidth = False
         Me.gvDetalleServicios.OptionsView.GroupFooterShowMode = DevExpress.XtraGrid.Views.Grid.GroupFooterShowMode.VisibleAlways
         Me.gvDetalleServicios.OptionsView.ShowFooter = True
@@ -1073,38 +1065,38 @@ Partial Class frmPreFactura
         '
         Me.xtratabPrecuenta.Dock = System.Windows.Forms.DockStyle.Fill
         Me.xtratabPrecuenta.Location = New System.Drawing.Point(2, 2)
-        Me.xtratabPrecuenta.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.xtratabPrecuenta.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.xtratabPrecuenta.Name = "xtratabPrecuenta"
         Me.xtratabPrecuenta.SelectedTabPage = Me.XtraTabPage1
-        Me.xtratabPrecuenta.Size = New System.Drawing.Size(1594, 292)
+        Me.xtratabPrecuenta.Size = New System.Drawing.Size(1366, 162)
         Me.xtratabPrecuenta.TabIndex = 64
         Me.xtratabPrecuenta.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2})
         '
         'XtraTabPage1
         '
         Me.XtraTabPage1.Controls.Add(Me.dgridServiciosAsociados)
-        Me.XtraTabPage1.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.XtraTabPage1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(1592, 262)
+        Me.XtraTabPage1.Size = New System.Drawing.Size(1364, 137)
         Me.XtraTabPage1.Text = "Precuenta"
         '
         'XtraTabPage2
         '
         Me.XtraTabPage2.Controls.Add(Me.dgriDetallePreCuenta)
-        Me.XtraTabPage2.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.XtraTabPage2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.XtraTabPage2.Name = "XtraTabPage2"
-        Me.XtraTabPage2.Size = New System.Drawing.Size(1592, 262)
+        Me.XtraTabPage2.Size = New System.Drawing.Size(669, 89)
         Me.XtraTabPage2.Text = "Detalle de precuenta"
         '
         'dgriDetallePreCuenta
         '
         Me.dgriDetallePreCuenta.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgriDetallePreCuenta.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.dgriDetallePreCuenta.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.dgriDetallePreCuenta.Location = New System.Drawing.Point(0, 0)
         Me.dgriDetallePreCuenta.MainView = Me.gvdetalleprecuenta
-        Me.dgriDetallePreCuenta.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
+        Me.dgriDetallePreCuenta.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.dgriDetallePreCuenta.Name = "dgriDetallePreCuenta"
-        Me.dgriDetallePreCuenta.Size = New System.Drawing.Size(1592, 262)
+        Me.dgriDetallePreCuenta.Size = New System.Drawing.Size(535, 71)
         Me.dgriDetallePreCuenta.TabIndex = 33
         Me.dgriDetallePreCuenta.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvdetalleprecuenta})
         '
@@ -1114,11 +1106,11 @@ Partial Class frmPreFactura
         Me.gvdetalleprecuenta.Appearance.FocusedRow.Options.UseFont = True
         Me.gvdetalleprecuenta.Appearance.HeaderPanel.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.gvdetalleprecuenta.Appearance.HeaderPanel.Options.UseFont = True
-        Me.gvdetalleprecuenta.DetailHeight = 437
+        Me.gvdetalleprecuenta.DetailHeight = 355
         Me.gvdetalleprecuenta.GridControl = Me.dgriDetallePreCuenta
         Me.gvdetalleprecuenta.Name = "gvdetalleprecuenta"
         Me.gvdetalleprecuenta.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
-        Me.gvdetalleprecuenta.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.gvdetalleprecuenta.OptionsEditForm.PopupEditFormWidth = 857
         Me.gvdetalleprecuenta.OptionsView.ColumnAutoWidth = False
         Me.gvdetalleprecuenta.OptionsView.ShowFooter = True
         Me.gvdetalleprecuenta.OptionsView.ShowGroupPanel = False
@@ -1127,21 +1119,20 @@ Partial Class frmPreFactura
         '
         Me.PanelControl1.Controls.Add(Me.xtratabPrecuenta)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PanelControl1.Location = New System.Drawing.Point(0, 649)
-        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.PanelControl1.Location = New System.Drawing.Point(0, 524)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1598, 296)
+        Me.PanelControl1.Size = New System.Drawing.Size(1370, 166)
         Me.PanelControl1.TabIndex = 68
         '
         'frmPreFactura
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1598, 945)
+        Me.ClientSize = New System.Drawing.Size(1370, 690)
         Me.Controls.Add(Me.PanelControl1)
         Me.Controls.Add(Me.GrpTransaccion)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Name = "frmPreFactura"
         Me.Ribbon = Me.RibbonControl
         Me.Text = "Prefactura"

@@ -25,7 +25,8 @@ namespace WMSWebAPI.Dtos.Picking
         public string Cliente { get; set; } = string.Empty;
         public string Propietario { get; set; } = string.Empty;
         public DateTime FechaPedido { get; set; }
-        public string No_Documento { get; set; } = string.Empty;
+        //GT08012025: definido como string pero en dto es int
+        public int No_Documento { get; set; } = 0;
         public int IdMuelle { get; set; }
         public DateTime Hora_Inicio { get; set; }
         public DateTime Hora_fin { get; set; }

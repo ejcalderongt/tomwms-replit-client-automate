@@ -1,4 +1,3 @@
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -141,17 +140,8 @@ Public Class clsLnTrans_picking_ubic
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoDet:=oBeTrans_picking_ubic.IdPedidoDet,
-                                                  pIdPedidoEnc:=oBeTrans_picking_ubic.IdPedidoEnc,
-                                                  pIdPickingEnc:=oBeTrans_picking_ubic.IdPickingEnc,
-                                                  pIdPickingDet:=oBeTrans_picking_ubic.IdPickingDet,
-                                                  pIdPickingUbic:=oBeTrans_picking_ubic.IdPickingUbic,
-                                                  pCodigoProducto:=oBeTrans_picking_ubic.CodigoProducto,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -292,10 +282,6 @@ Public Class clsLnTrans_picking_ubic
 
             Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(oBeTrans_picking_ubic.IdBodega, pConection, pTransaction)
             clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
-
-            'If Math.Abs(CantidadStockDestino - Fix(CantidadStockDestino)) Then
-            '    Throw New Exception("Error_202303101448M3: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
-            'End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -1142,63 +1128,6 @@ Public Class clsLnTrans_picking_ubic
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Eliminar_By_IdPickingUbic = rowsAffected
-
-        Catch ex1 As SqlException
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex1
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
-        End Try
-
-    End Function
-
-    Public Shared Function Actualizar_No_Verificado(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
-
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-
-        Try
-
-            Upd.Init("trans_picking_ubic")
-            Upd.Add("peso_verificado", "@peso_verificado", DataType.Parametro)
-            Upd.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
-            Upd.Add("user_mod", "@user_mod", DataType.Parametro)
-            Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
-            Upd.Add("IdOperadorBodega_Verifico", "@IdOperadorBodega_Verifico", DataType.Parametro)
-            Upd.Where("IdPickingUbic = @IdPickingUbic")
-
-            Dim sp As String = Upd.SQL()
-
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection)
-                cmd.Transaction = pTransaction
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
-
-            cmd.Parameters.Add(New SqlParameter("@IDPICKINGUBIC", oBeTrans_picking_ubic.IdPickingUbic))
-            cmd.Parameters.Add(New SqlParameter("@PESO_VERIFICADO", oBeTrans_picking_ubic.Peso_verificado))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_VERIFICADA", oBeTrans_picking_ubic.Cantidad_Verificada))
-            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeTrans_picking_ubic.User_mod))
-            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_picking_ubic.Fec_mod))
-            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_VERIFICO", oBeTrans_picking_ubic.IdOperadorBodega_Verifico))
-
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            cmd.Dispose()
-
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-            Return rowsAffected
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()

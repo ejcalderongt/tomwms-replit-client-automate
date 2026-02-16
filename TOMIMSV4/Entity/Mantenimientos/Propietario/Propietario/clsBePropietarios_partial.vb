@@ -38,5 +38,4 @@ Partial Public Class clsBePropietarios
         End If
     End Sub
 #End Region
-
 End Class

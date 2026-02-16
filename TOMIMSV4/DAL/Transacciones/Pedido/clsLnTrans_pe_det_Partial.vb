@@ -1,7 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_pe_det
@@ -9,7 +6,7 @@ Partial Public Class clsLnTrans_pe_det
     Private Shared lProductosInMemory As New List(Of clsBeProducto)
     Private Shared lPresentaciones As New List(Of clsBeProducto_Presentacion)
     Private Shared lBeConfigInMemory As New List(Of clsBeI_nav_config_enc)
-    Public Shared IdPedidoDetMaxId As Integer = 0
+
     Public Shared Function Get_All_By_IdPedidoEnc(ByVal pIdPedidoEnc) As List(Of clsBeTrans_pe_det)
 
         Dim lReturnList As New List(Of clsBeTrans_pe_det)
@@ -156,8 +153,6 @@ Partial Public Class clsLnTrans_pe_det
 
                 If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                    Dim lProductos = clsLnProducto.Get_All_By_IdPedidoEnc(pIdPedidoEnc, lConnection, lTransaction)
-
                     For Each lRow As DataRow In lDataTable.Rows
 
                         BeTransPeDet = New clsBeTrans_pe_det
@@ -231,7 +226,6 @@ Partial Public Class clsLnTrans_pe_det
                             .Talla = IIf(IsDBNull(lRow.Item("talla")), "", lRow.Item("talla"))
                             .Color = IIf(IsDBNull(lRow.Item("color")), "", lRow.Item("color"))
                             .IdProductoTallaColor = IIf(IsDBNull(lRow.Item("IdProductoTallaColor")), 0, lRow.Item("IdProductoTallaColor"))
-                            .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
 
                         End With
 
@@ -485,9 +479,6 @@ Partial Public Class clsLnTrans_pe_det
                             .Talla = IIf(IsDBNull(lRow.Item("Talla")), "", lRow.Item("Talla"))
                             .Color = IIf(IsDBNull(lRow.Item("Color")), "", lRow.Item("Color"))
                             .IdProductoTallaColor = IIf(IsDBNull(lRow.Item("IdProductoTallaColor")), 0, lRow.Item("IdProductoTallaColor"))
-
-                            '#GT17092025: cargar propiedad de stock_liberado en la linea de detalle
-                            .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
 
                             If pEstadoPedido = "Despachado" Then
 
@@ -801,7 +792,8 @@ Partial Public Class clsLnTrans_pe_det
                     dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IDBODEGA) AS NomUbic,
                     s.IdRecepcionEnc, s.IdRecepcionDet,
                     col.Codigo AS Color,
-                    tal.Codigo AS Talla
+                    tal.Codigo AS Talla,
+                    ptc.IdProductoTallaColor
                     FROM  stock_res AS res INNER JOIN
                     propietario_bodega AS prb ON res.IdPropietarioBodega = prb.IdPropietarioBodega INNER JOIN
                     producto_bodega AS pb ON pb.IdProductoBodega = res.IdProductoBodega INNER JOIN
@@ -838,7 +830,7 @@ Partial Public Class clsLnTrans_pe_det
                         Res.ubicacion_ant, Res.no_bulto, Res.IdRecepcion, Res.IdPicking, Res.IdPedido, Res.IdDespacho,
                         res.añada, res.fecha_manufactura,
                         ISNULL(trans_picking_ubic.acepto, 0), 
-                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, s.IdRecepcionEnc, s.IdRecepcionDet,col.Codigo, tal.Codigo  "
+                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, s.IdRecepcionEnc, s.IdRecepcionDet,col.Codigo, tal.Codigo,ptc.IdProductoTallaColor "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion"
 
@@ -971,6 +963,7 @@ Partial Public Class clsLnTrans_pe_det
                         SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
                         SUM(ISNULL(trans_picking_ubic.cantidad_despachada, 0)) as Cantidad_Despachada, 
                         ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado, trans_picking_ubic.IdProductoTallaColor
+                        ,res.color as Codigo_Color,res.talla as Codigo_Talla
                         FROM trans_picking_det INNER JOIN 
                         trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet RIGHT OUTER JOIN 
                         stock_res AS res INNER JOIN 
@@ -1003,7 +996,8 @@ Partial Public Class clsLnTrans_pe_det
                         ISNULL(trans_picking_ubic.acepto, 0), 
                         ISNULL(trans_picking_ubic.encontrado, 0),
                         bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, 
-                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor "
+                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor,
+                        res.color ,res.talla "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion "
 
@@ -1194,22 +1188,8 @@ Partial Public Class clsLnTrans_pe_det
                                                                                             lTransaction)
 
                 If BeConfigEnc Is Nothing Then
-                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = true IdBodega: " & pIdBodega & " IdPropietario: " & pIdPropietario
-                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
-                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                        pIdEmpresa:=pIdEmpresa,
-                                                        pIdBodega:=pIdBodega,
-                                                        pUsrAgr:=pBePedidoDet?.User_agr,
-                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
-                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
-                                                        pCantidad:=pBePedidoDet?.Cantidad,
-                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
-                                                        pIdEstado:=pBePedidoDet?.IdEstado,
-                                                        pNoLinea:=pBePedidoDet?.No_linea,
-                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
-                                                        pConection:=lConnection,
-                                                        pTransaction:=lTransaction)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
 
             Else
@@ -1219,22 +1199,8 @@ Partial Public Class clsLnTrans_pe_det
                                                                                          lTransaction)
 
                 If BeConfigEnc Is Nothing Then
-                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = false IdEmpresa: " & pIdEmpresa & " IdPropietario: " & pIdPropietario
-                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
-                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                        pIdEmpresa:=pIdEmpresa,
-                                                        pIdBodega:=pIdBodega,
-                                                        pUsrAgr:=pBePedidoDet?.User_agr,
-                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
-                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
-                                                        pCantidad:=pBePedidoDet?.Cantidad,
-                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
-                                                        pIdEstado:=pBePedidoDet?.IdEstado,
-                                                        pNoLinea:=pBePedidoDet?.No_linea,
-                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
-                                                        pConection:=lConnection,
-                                                        pTransaction:=lTransaction)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
 
             End If
@@ -2515,56 +2481,50 @@ Partial Public Class clsLnTrans_pe_det
                                 '#EJC20191218: Corrección a raiz de que el picking ubic si tiene pres, 
                                 'La cantidad va en pres.
                                 If pBePedidoDet.IdPresentacion <> 0 Then
-                                    'Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
-                                    Dim vEsMultiplo = (Sr.Cantidad Mod pBePedidoDet.Presentacion.Factor = 0)
-                                    Dim cantidadMultiplo = (Sr.Cantidad \ pBePedidoDet.Presentacion.Factor) * pBePedidoDet.Presentacion.Factor
                                     Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
-                                    If Not vEsMultiplo Then
-                                        Sr.Cantidad = Sr.Cantidad * pBePedidoDet.Presentacion.Factor
-                                        Sr.IdPresentacion = 0
-                                    End If
-                                End If
                                 End If
 
-                        If clsLnTrans_picking_ubic.Insertar_PickingUbic(Sr,
+                                If clsLnTrans_picking_ubic.Insertar_PickingUbic(Sr,
                                                                                 vIdPickingDet,
                                                                                 lConnection,
                                                                                 lTransaction) Then
 
-                            If clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(Sr.IdStock,
+                                    If clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(Sr.IdStock,
                                                                                                             vIdPickingDet,
                                                                                                             lConnection,
                                                                                                             lTransaction) Then
-                                vDetalleActualizadoCorrectamente = True
+                                        vDetalleActualizadoCorrectamente = True
 
-                            End If
+                                    End If
+
+                                End If
+
+                            Next
+
 
                         End If
 
-                        Next
+                        If BeTransPickingEnc.Estado = "Despachado" Then
 
+                            BeTransPickingEnc.Estado = "Pendiente"
 
-                    End If
-
-                    If BeTransPickingEnc.Estado = "Despachado" Then
-
-                        BeTransPickingEnc.Estado = "Pendiente"
-
-                        clsLnTrans_picking_enc.Actualizar_Estado(BeTransPickingEnc,
+                            clsLnTrans_picking_enc.Actualizar_Estado(BeTransPickingEnc,
                                                                      lConnection,
                                                                      lTransaction)
 
-                    End If
+                        End If
 
-                    If Not BeTransPeEnc Is Nothing Then
+                        If Not BeTransPeEnc Is Nothing Then
 
-                        If BeTransPeEnc.Enviado_A_ERP Then
+                            If BeTransPeEnc.Enviado_A_ERP Then
 
-                            clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc_Single(BeTransPeEnc.IdPedidoEnc,
+                                clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc_Single(BeTransPeEnc.IdPedidoEnc,
                                                                                                         False,
                                                                                                         BeTransPeEnc.User_agr,
                                                                                                         lConnection,
                                                                                                         lTransaction)
+                            End If
+
                         End If
 
                     End If
@@ -2573,25 +2533,11 @@ Partial Public Class clsLnTrans_pe_det
 
             End If
 
-            End If
-
             Actualiza_Picking_Existente = True
 
         Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                pStackTrace:=ex.StackTrace,
-                                                pIdBodega:=BeTransPickingEnc?.IdBodega,
-                                                pUsrAgr:=pBePedidoDet?.User_agr,
-                                                pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
-                                                pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
-                                                pCantidad:=pBePedidoDet?.Cantidad,
-                                                pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
-                                                pIdEstado:=pBePedidoDet?.IdEstado,
-                                                pNoLinea:=pBePedidoDet?.No_linea,
-                                                pIdPresentacion:=pBePedidoDet?.IdPresentacion)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2658,19 +2604,8 @@ Partial Public Class clsLnTrans_pe_det
             Actualiza_Picking_Existente = True
 
         Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                pStackTrace:=ex.StackTrace,
-                                                pUsrAgr:=pBePedidoDet?.User_agr,
-                                                pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
-                                                pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
-                                                pCantidad:=pBePedidoDet?.Cantidad,
-                                                pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
-                                                pIdEstado:=pBePedidoDet?.IdEstado,
-                                                pNoLinea:=pBePedidoDet?.No_linea,
-                                                pIdPresentacion:=pBePedidoDet?.IdPresentacion)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -2757,8 +2692,7 @@ Partial Public Class clsLnTrans_pe_det
     End Function
 
     '#CKFK 20180502 04:15 PM Agregué el campo ndias porque me hace falta para poder listar el inventario disponible al realizar reemplazos
-    Public Shared Function Get_Detalle_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
-                                                      ByVal pIdBodega As Integer) As List(Of clsBeDetallePedidoAVerificar)
+    Public Shared Function Get_Detalle_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, ByVal pIdBodega As Integer) As List(Of clsBeDetallePedidoAVerificar)
 
         Get_Detalle_By_IdPedidoEnc = Nothing
 
@@ -2773,15 +2707,6 @@ Partial Public Class clsLnTrans_pe_det
                 Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                     'AT20220607 Quite la condición <> 0 , para que se muestren siempre las lineas de verificación
                     Dim vSQL As String = "SELECT * FROM VW_VERIFICACION WHERE IdPedidoEnc = @IdPedidoEnc"
-
-                    Dim BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega, lConnection, ltransaction)
-
-                    If BeBodega IsNot Nothing Then
-                        If BeBodega.Agrupar_Sin_Lic_Veri_No_Cons Then
-                            vSQL = "SELECT * FROM VW_VERIFICACION_DETALLADO_SIN_LICENCIA WHERE IdPedidoEnc = @IdPedidoEnc"
-                        End If
-                    End If
-
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
                         lDTA.SelectCommand.CommandType = CommandType.Text
@@ -3016,13 +2941,12 @@ Partial Public Class clsLnTrans_pe_det
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
-        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
 
             Dim vSQL As String = "update trans_pe_det 
                     set cant_despachada = @cant_despachada,
-                    peso_despachado =  @peso_despachado
+                    peso_despachado += @peso_despachado
                     Where(IdPedidoDet = @IdPedidoDet)"
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -3030,7 +2954,6 @@ Partial Public Class clsLnTrans_pe_det
 
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(vSQL, pConection, pTransaction)
-                cmd.CommandTimeout = 60
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 cmd = New SqlCommand(vSQL, lConnection, lTransaction)
@@ -3055,12 +2978,9 @@ Partial Public Class clsLnTrans_pe_det
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
-            If Not Es_Transaccion_Remota Then
-                If lConnection.State = ConnectionState.Open Then lConnection.Close()
-                If lTransaction IsNot Nothing Then lTransaction.Dispose()
-                If lConnection IsNot Nothing Then lConnection.Dispose()
-            End If
-
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
 
     End Function
@@ -3595,10 +3515,8 @@ Partial Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3643,10 +3561,8 @@ Partial Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -3938,22 +3854,8 @@ Partial Public Class clsLnTrans_pe_det
                                                                                             lTransaction)
 
                 If BeConfigEnc Is Nothing Then
-                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = true IdBodega: " & pIdBodega & " IdPropietario: " & pIdPropietario
-                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
-                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                        pIdEmpresa:=pIdEmpresa,
-                                                        pIdBodega:=pIdBodega,
-                                                        pUsrAgr:=pBePedidoDet?.User_agr,
-                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
-                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
-                                                        pCantidad:=pBePedidoDet?.Cantidad,
-                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
-                                                        pIdEstado:=pBePedidoDet?.IdEstado,
-                                                        pNoLinea:=pBePedidoDet?.No_linea,
-                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
-                                                        pConection:=lConnection,
-                                                        pTransaction:=lTransaction)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
 
             Else
@@ -3963,22 +3865,8 @@ Partial Public Class clsLnTrans_pe_det
                                                                                          lTransaction)
 
                 If BeConfigEnc Is Nothing Then
-                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = false IdEmpresa: " & pIdEmpresa & " IdPropietario: " & pIdPropietario
-                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
-                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                        pIdEmpresa:=pIdEmpresa,
-                                                        pIdBodega:=pIdBodega,
-                                                        pUsrAgr:=pBePedidoDet?.User_agr,
-                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
-                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
-                                                        pCantidad:=pBePedidoDet?.Cantidad,
-                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
-                                                        pIdEstado:=pBePedidoDet?.IdEstado,
-                                                        pNoLinea:=pBePedidoDet?.No_linea,
-                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
-                                                        pConection:=lConnection,
-                                                        pTransaction:=lTransaction)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
 
             End If
@@ -3995,8 +3883,6 @@ Partial Public Class clsLnTrans_pe_det
                 pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
                 pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
-
-
 
             Else
                 '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.
@@ -4755,7 +4641,7 @@ Partial Public Class clsLnTrans_pe_det
             Dim dt As New DataTable
             dad.Fill(dt)
 
-            If dt.Rows.Count > 0 Then
+            If dt.Rows.Count = 1 Then
                 Dim vPresentacion As New clsBeProducto_Presentacion
                 clsLnProducto_presentacion.Cargar(vPresentacion, dt.Rows(0))
                 Get_BePresentacion_By_NoLinea = vPresentacion
@@ -4767,163 +4653,6 @@ Partial Public Class clsLnTrans_pe_det
 
     End Function
 
-    Public Shared Function Marcar_Linea_Stock_Liberado(ByRef oBeTrans_pe_det As clsBeTrans_pe_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
-
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-        Try
-
-            Dim vSQL As String = "update trans_pe_det 
-                    set stock_liberado = 1 Where( IdPedidoEnc=@IdPedidoEnc and IdPedidoDet = @IdPedidoDet)"
-
-
-            Dim cmd As New SqlCommand(vSQL, lConnection) With {.CommandType = CommandType.Text}
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(vSQL, pConection, pTransaction)
-                cmd.CommandTimeout = 60
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                cmd = New SqlCommand(vSQL, lConnection, lTransaction)
-            End If
-
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeTrans_pe_det.IdPedidoEnc))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_pe_det.IdPedidoDet))
-
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            cmd.Dispose()
-
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-            Return rowsAffected
-
-        Catch ex1 As SqlException
-            If Not Es_Transaccion_Remota Then If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex1
-        Catch ex As Exception
-            If Not Es_Transaccion_Remota Then If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
-        Finally
-            If Not Es_Transaccion_Remota Then
-                If lConnection.State = ConnectionState.Open Then lConnection.Close()
-                If lTransaction IsNot Nothing Then lTransaction.Dispose()
-                If lConnection IsNot Nothing Then lConnection.Dispose()
-            End If
-
-        End Try
-
-    End Function
-
-    '#GT17092025: método que retonra el detalle del pedido sin filtrar las lineas que tengan stock_liberado
-    Public Shared Function Get_Detalle_By_IdPedidoEnc_For_Pedido(ByVal pIdPedidoEnc As Integer,
-                                                      ByRef lConnection As SqlConnection,
-                                                      ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_pe_det)
-
-        Dim lReturnList As New List(Of clsBeTrans_pe_det)
-        Dim vIdxProducto As Integer = 0
-
-        Try
-
-            Dim vSQL As String = " SELECT det.*, pb.IdProducto 
-                                   FROM trans_pe_det det
-                                    INNER JOIN producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega
-                                    WHERE det.IdPedidoEnc= @IdPedidoEnc "
-
-            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
-                lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = pTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc)
-
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
-
-                Dim BeTransPeDet As clsBeTrans_pe_det
-
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    Dim lProductos = clsLnProducto.Get_All_By_IdPedidoEnc(pIdPedidoEnc, lConnection, lTransaction)
-
-                    For Each lRow As DataRow In lDataTable.Rows
-
-                        BeTransPeDet = New clsBeTrans_pe_det
-
-                        With BeTransPeDet
-
-                            .IdPedidoDet = IIf(IsDBNull(lRow.Item("IdPedidoDet")), 0, lRow.Item("IdPedidoDet"))
-                            .IdPedidoEnc = IIf(IsDBNull(lRow.Item("IdPedidoEnc")), 0, lRow.Item("IdPedidoEnc"))
-                            .ProductoBodega.IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
-                            .IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
-
-                            .Producto = New clsBeProducto()
-                            .Producto.IdProducto = IIf(IsDBNull(lRow.Item("IdProducto")), 0, lRow.Item("IdProducto"))
-
-                            Dim vIdProducto As Integer = .Producto.IdProducto
-
-                            vIdxProducto = lProductosInMemory.FindIndex(Function(x) x.IdProducto = vIdProducto)
-
-                            If vIdxProducto = -1 Then
-                                .Producto = lProductos.Find(Function(x) x.IdProducto = vIdProducto)
-                                lProductosInMemory.Add(.Producto.Clone())
-                            Else
-                                .Producto = lProductosInMemory(vIdxProducto).Clone()
-                            End If
-
-                            .IdEstado = IIf(IsDBNull(lRow.Item("IdEstado")), 0, lRow.Item("IdEstado"))
-                            .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
-                            .IdUnidadMedidaBasica = IIf(IsDBNull(lRow.Item("IdUnidadMedidaBasica")), 0, lRow.Item("IdUnidadMedidaBasica"))
-                            .Cantidad = IIf(IsDBNull(lRow.Item("Cantidad")), 0.0, lRow.Item("Cantidad"))
-                            .Peso = IIf(IsDBNull(lRow.Item("Peso")), 0.0, lRow.Item("Peso"))
-                            .Precio = IIf(IsDBNull(lRow.Item("Precio")), 0.0, lRow.Item("Precio"))
-                            .No_recepcion = IIf(IsDBNull(lRow.Item("no_recepcion")), 0, lRow.Item("no_recepcion"))
-                            .Ndias = IIf(IsDBNull(lRow.Item("ndias")), 0, lRow.Item("ndias"))
-                            .Cant_despachada = IIf(IsDBNull(lRow.Item("cant_despachada")), 0.0, lRow.Item("cant_despachada"))
-                            .Codigo_Producto = IIf(IsDBNull(lRow.Item("codigo_producto")), "", lRow.Item("codigo_producto"))
-                            .Nombre_producto = IIf(IsDBNull(lRow.Item("nombre_producto")), "", lRow.Item("nombre_producto"))
-                            .Nom_presentacion = IIf(IsDBNull(lRow.Item("nom_presentacion")), "", lRow.Item("nom_presentacion"))
-                            .Nom_unid_med = IIf(IsDBNull(lRow.Item("nom_unid_med")), "", lRow.Item("nom_unid_med"))
-                            .Nom_estado = IIf(IsDBNull(lRow.Item("nom_estado")), "", lRow.Item("nom_estado"))
-                            .User_agr = IIf(IsDBNull(lRow.Item("user_agr")), "", lRow.Item("user_agr"))
-                            .Fec_agr = IIf(IsDBNull(lRow.Item("fec_agr")), Date.Now, lRow.Item("fec_agr"))
-                            .Fecha_especifica = IIf(IsDBNull(lRow.Item("fecha_especifica")), False, lRow.Item("fecha_especifica"))
-                            .RoadDes = IIf(IsDBNull(lRow.Item("RoadDes")), 0.0, lRow.Item("RoadDes"))
-                            .RoadDesMon = IIf(IsDBNull(lRow.Item("RoadDesMon")), 0.0, lRow.Item("RoadDesMon"))
-                            .RoadTotal = IIf(IsDBNull(lRow.Item("RoadTotal")), 0.0, lRow.Item("RoadTotal"))
-                            .RoadPrecioDoc = IIf(IsDBNull(lRow.Item("RoadPrecioDoc")), 0.0, lRow.Item("RoadPrecioDoc"))
-                            .RoadVAL1 = IIf(IsDBNull(lRow.Item("RoadVAL1")), 0.0, lRow.Item("RoadVAL1"))
-                            .RoadVAL2 = IIf(IsDBNull(lRow.Item("RoadVAL2")), "", lRow.Item("RoadVAL2"))
-                            .RoadCantProc = IIf(IsDBNull(lRow.Item("RoadCantProc")), 0.0, lRow.Item("RoadCantProc"))
-                            .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
-                            .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
-                            .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
-                            .EsPadre = IIf(IsDBNull(lRow.Item("EsPadre")), False, lRow.Item("EsPadre"))
-                            .IdPedidoDetPadre = IIf(IsDBNull(lRow.Item("IdPedidoDetPadre")), 0, lRow.Item("IdPedidoDetPadre"))
-                            .IdCliente = IIf(IsDBNull(lRow.Item("IdCliente")), 0, lRow.Item("IdCliente"))
-                            .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
-
-                        End With
-
-                        lReturnList.Add(BeTransPeDet)
-
-                    Next
-
-                End If
-
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
     Public Shared Function Get_All_Stock_Res_By_IdPedidoDet(ByVal pIdPedidoDet As Integer,
                                                             ByVal IdPedidoEnc As Integer,
                                                             ByVal pConnection As SqlConnection,
@@ -4965,50 +4694,6 @@ Partial Public Class clsLnTrans_pe_det
 
         Catch ex As Exception
             Throw ex
-        End Try
-
-    End Function
-    Public Shared Function Get_IdPresentacion_By_IdPedidoDet(ByVal pIdPedidoEnc As Integer, ByVal pIdPedidoDet As Integer) As Integer
-
-        Dim idPresentacion As Integer = 0
-
-        Try
-
-            Dim vSQL As String = "SELECT IdPresentacion 
-                              FROM trans_pe_det 
-                              WHERE IdPedidoEnc = @IdPedidoEnc 
-                                AND IdPedidoDet = @IdPedidoDet"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Using lCmd As New SqlCommand(vSQL, lConnection, lTransaction)
-
-                        lCmd.CommandType = CommandType.Text
-                        lCmd.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
-                        lCmd.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
-
-                        Dim result As Object = lCmd.ExecuteScalar()
-
-                        If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
-                            idPresentacion = CInt(result)
-                        End If
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-            End Using
-
-            Return idPresentacion
-
-        Catch ex As Exception
-            Throw
         End Try
 
     End Function

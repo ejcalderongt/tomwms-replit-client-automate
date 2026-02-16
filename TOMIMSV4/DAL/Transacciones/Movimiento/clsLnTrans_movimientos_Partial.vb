@@ -1,6 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Data.SqlClient
 
 Partial Public Class clsLnTrans_movimientos
 
@@ -68,62 +67,48 @@ Partial Public Class clsLnTrans_movimientos
 
     End Function
 
-    Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer,
-                                       ByVal pFechaDel As Date,
-                                       ByVal pFechaAl As Date,
-                                       Optional ByVal pLote As String = Nothing) As DataTable
+    Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer, ByVal pFechaDel As Date, ByVal pFechaAl As Date, Optional ByVal pLote As String = Nothing) As DataTable
 
-        Dim resultTable As New DataTable("Result")
+        Dim lTable As New DataTable("Result")
 
         Try
-            Dim query As String = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
-                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
-                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
-                        fecha_vence, Cantidad_Presentacion, IdDocIngreso, IdDocSalida, IdTransaccion, Clasificacion,
-                        Area_Origen, Operador, Codigo_Talla As Talla, Codigo_Color as Color 
-                        From VW_Movimientos Where IdBodegaOrigen =@IdBodegaOrigen"
-            Else
-                vSQL = "Select Propietario, IdBodega, Poliza, Producto, Presentación,
-                        [Estado Origen],[Estado Destino],[Unidad de Medida], cantidad, peso, lote, Origen, Destino,
-                        [Tipo Tarea], IdBodegaOrigen, fecha, IdProducto, codigo, codigo_barra, barra_pallet,
-                        fecha_vence, Cantidad_Presentacion, IdDocIngreso, IdDocSalida, IdTransaccion, Clasificacion,
-            Area_Origen, Operador FROM VW_Movimientos WHERE "
+
+            Dim vSQL As String = ""
 
             If pIdBodegaOrigen > 0 Then
-                query += "IdBodegaOrigen = @IdBodegaOrigen"
+                vSQL = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
+                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
+                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
+                        fecha_vence,Cantidad_Presentacion,IdDocIngreso,IdDocSalida, IdTransaccion,Clasificacion,
+                        Area_Origen, Operador, Codigo_Talla as Talla, Codigo_Color as Color 
+                        FROM VW_Movimientos WHERE IdBodegaOrigen=@IdBodegaOrigen"
             Else
-                query += "IdBodegaOrigen = 0"
+                vSQL = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
+                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
+                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
+                        fecha_vence,Cantidad_Presentacion,IdDocIngreso,IdDocSalida,IdTransaccion,Clasificacion,
+                        Area_Origen, Operador, Codigo_Talla as Talla, Codigo_Color as Color  FROM VW_Movimientos WHERE IdBodegaOrigen=0"
             End If
 
-            query += " AND CAST(Fecha AS DATE) BETWEEN @FechaDel AND @FechaAl"
+            vSQL += String.Format(" AND cast(Fecha AS DATE) BETWEEN {0} AND {1}", FormatoFechas.fFecha(pFechaDel), FormatoFechas.fFecha(pFechaAl))
 
-            If Not String.IsNullOrWhiteSpace(pLote) Then
-                query += " AND LOTE LIKE @Lote"
+            If Not pLote Is Nothing Then
+                If Not pLote.Trim = "" Then
+                    vSQL += " AND LOTE LIKE '%" & pLote & "%'"
+                End If
             End If
 
-            query += " ORDER BY fecha"
+            vSQL += "order by fecha"
 
-            Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                Using adapter As New SqlDataAdapter(query, conn)
-                    adapter.SelectCommand.CommandType = CommandType.Text
-                    adapter.SelectCommand.CommandTimeout = 300
-
-                    If pIdBodegaOrigen > 0 Then
-                        adapter.SelectCommand.Parameters.AddWithValue("@IdBodegaOrigen", pIdBodegaOrigen)
-                    End If
-
-                    adapter.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
-                    adapter.SelectCommand.Parameters.AddWithValue("@FechaAl", pFechaAl.Date)
-
-                    If Not String.IsNullOrWhiteSpace(pLote) Then
-                        adapter.SelectCommand.Parameters.AddWithValue("@Lote", "%" & pLote.Trim() & "%")
-                    End If
-
-                    adapter.Fill(resultTable)
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+                    lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                    If pIdBodegaOrigen > 0 Then lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodegaOrigen", pIdBodegaOrigen)
+                    lDataAdapter.Fill(lTable)
                 End Using
             End Using
 
-            Return resultTable
+            Return lTable
 
         Catch ex As Exception
             Throw ex
@@ -1513,46 +1498,6 @@ Partial Public Class clsLnTrans_movimientos
         Dim lReturnList As New List(Of clsBeVW_Movimientos)
 
         Try
-
-            '      Dim vSQL As String = "SELECT t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
-            '                  t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida, t.IdEstadoOrigen,
-            '                  t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación,t.IdTipoTarea,
-            '                  sum(t.Ingresos) as Ingresos,
-            '                  sum(t.Salidas) as Salidas,
-            '                  sum(t.Ajustes_Positivos) as Ajustes_Positivos,
-            '                  sum(t.Ajustes_Negativos) as Ajustes_Negativos,
-            'sum(t.EnMovimiento) as EnMovimiento,
-            't.IdUbicacionorigen, t.IdUbicaciondestino, t.Licencia, t.Fecha
-            '              from(SELECT Codigo,Producto, EstadoOrigen,
-            '                  EstadoDestino,
-            '                  TipoTarea, lote,Fecha_Vence, IdTipoTarea,
-            '                  IdPresentacion, IdUnidadMedida, IdEstadoOrigen,
-            '                  IdProductoBodega,Fecha,
-            '                  Umbas, Presentación,IdUbicacionorigen, IdUbicaciondestino, Licencia,
-            '                  case when IdTipoTarea = 1  then SUM(cantidad) else 0 end AS Ingresos,
-            '                  case when IdTipoTarea = 5  then SUM(cantidad) else 0 end AS Salidas,
-            '                  case when IdTipoTarea = 13 then SUM(cantidad) else 0 end AS Ajustes_Positivos,
-            '                  case when IdTipoTarea = 17 then SUM(cantidad) else 0 end AS Ajustes_Negativos,
-            '                  case when IdTipoTarea = 2 OR 
-            '                            IdTipoTarea = 3 OR 
-            '                            IdTipoTarea = 8 then SUM(cantidad) else 0 end AS EnMovimiento                        
-            '                  FROM VW_Movimientos_N
-            '                  WHERE  TIPOTAREA NOT IN ('AJCANTNI','AJCANTPI','VERI') "
-
-            '      vSQL += String.Format("And Fecha BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
-
-            '      vSQL += " GROUP BY codigo,producto,EstadoOrigen,
-            '                  EstadoDestino, IdProductoBodega,
-            '                  TipoTarea, lote,fecha_vence,
-            '                  IdTipoTarea,Fecha, IdPresentacion,
-            '                  IdUnidadMedida, IdEstadoOrigen,
-            '                  Umbas, EstadoOrigen, Presentación, IdUbicacionorigen, IdUbicaciondestino,Licencia, Fecha) AS t
-            '              group by t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
-            '                          t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida,
-            '                          t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación, t.IdEstadoOrigen,t.IdTipoTarea,
-            '                          t.IdUbicacionorigen, t.IdUbicaciondestino, t.Licencia, t.Fecha
-            '              ORDER BY t.Codigo, t.Lote, t.Fecha"
-
             Dim vSQL As String = "SELECT t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
                                          t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida, t.IdEstadoOrigen,
                                          t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación,t.IdTipoTarea,
@@ -1581,8 +1526,7 @@ Partial Public Class clsLnTrans_movimientos
                                         case when IdTipoTarea = 17 then SUM(cantidad) else 0 end AS Ajustes_Negativos,
                                         case when (IdTipoTarea = 8) then SUM(cantidad) else 0 end AS EnMovimiento                        
                                         FROM VW_Movimientos_N
-                                        WHERE  TIPOTAREA NOT IN ('AJCANTNI','AJCANTPI','VERI','UBIC','CEST','PACK',
-                                                                 'REEMP_NE_PICK', 'REEMP_ME_PICK','REEMP_BE_PICK')  "
+                                        WHERE  TIPOTAREA NOT IN ('AJCANTNI','AJCANTPI','VERI','UBIC','CEST','PACK')  "
 
             vSQL += String.Format("And Fecha BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
 
@@ -1604,7 +1548,7 @@ Partial Public Class clsLnTrans_movimientos
                                                         0 AS Ajustes_Negativos, 
 						                                0 EnMovimiento
                                 FROM VW_Movimientos_N
-                                WHERE  TIPOTAREA in ('UBIC','CEST','REEMP_NE_PICK', 'REEMP_ME_PICK','REEMP_BE_PICK')  "
+                                WHERE  TIPOTAREA in ('UBIC','CEST')  "
 
             vSQL += String.Format(" And Fecha BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
 
@@ -1623,7 +1567,7 @@ Partial Public Class clsLnTrans_movimientos
                              0 AS Ajustes_Negativos, 
 						     0 Cantidad
                       FROM VW_Movimientos_N
-                      WHERE TIPOTAREA in ('UBIC','CEST','REEMP_NE_PICK', 'REEMP_ME_PICK','REEMP_BE_PICK')   "
+                      WHERE TIPOTAREA in ('UBIC','CEST')   "
 
             vSQL += String.Format(" And Fecha BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
 
@@ -1893,8 +1837,7 @@ Partial Public Class clsLnTrans_movimientos
                      AND IdUnidadMedida = @IdUnidadMedida 
                      AND ISNULL(IdPresentacion,0) = @IdPresentacion 
                      AND (fecha_vence IS NULL OR fecha_vence = @FechaVence)
-                     AND IdRecepcion = @IdRecepcionEnc
-                     AND IdRecepcionDet=@IdRecepcioDet"
+                     AND IdRecepcion = @IdRecepcionEnc"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -1908,7 +1851,6 @@ Partial Public Class clsLnTrans_movimientos
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pBeStockAnt.IdPresentacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@FechaVence", pBeStockAnt.Fecha_vence)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pBeStockAnt.IdRecepcionEnc)
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcioDet", pBeStockAnt.IdRecepcionDet)
 
                 Dim lTable As New DataTable
                 lDTA.Fill(lTable)
@@ -3622,9 +3564,7 @@ Partial Public Class clsLnTrans_movimientos
     End Function
 
     Public Shared Function Get_All_Movimientos_Reporte_By_Rango_Fechas(ByVal pFechaDel As Date,
-                                                                       ByVal pFechaAl As Date,
-                                                                       ByVal pCodigo As Integer,
-                                                                       Optional ByVal pIdPropietarioBodega As Integer = Nothing) As List(Of clsBeVW_MovimientosRetroactivo)
+                                                               ByVal pFechaAl As Date, ByVal pCodigo As Integer, Optional ByVal pIdPropietarioBodega As Integer = Nothing) As List(Of clsBeVW_MovimientosRetroactivo)
 
         Dim lReturnList As New List(Of clsBeVW_MovimientosRetroactivo)
 
@@ -3779,6 +3719,17 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.Usuario_agr = oBeTrans_picking_ubic.User_mod
                 BeTransMovimiento.Hora_fin = Now
                 BeTransMovimiento.IdOperadorBodega = oBeTrans_picking_ubic.IdOperadorBodega_Pickeo
+                BeTransMovimiento.IdProductoTallaColor = oBeTrans_picking_ubic.IdProductoTallaColor
+
+                If oBeTrans_picking_ubic.IdProductoTallaColor <> 0 Then
+                    Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                    BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(oBeTrans_picking_ubic.IdProductoTallaColor)
+                    BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                    BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Else
+                    BeTransMovimiento.Talla = ""
+                    BeTransMovimiento.Color = ""
+                End If
 
                 Insertar(BeTransMovimiento,
                          lConnection,
@@ -3851,6 +3802,17 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.Usuario_agr = oBeTrans_picking_ubic.User_mod
                 BeTransMovimiento.Hora_fin = Now
                 BeTransMovimiento.IdOperadorBodega = oBeTrans_picking_ubic.IdOperadorBodega_Verifico
+                BeTransMovimiento.IdProductoTallaColor = oBeTrans_picking_ubic.IdProductoTallaColor
+
+                If oBeTrans_picking_ubic.IdProductoTallaColor <> 0 Then
+                    Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                    BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(oBeTrans_picking_ubic.IdProductoTallaColor)
+                    BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                    BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Else
+                    BeTransMovimiento.Talla = ""
+                    BeTransMovimiento.Color = ""
+                End If
 
                 Insertar_Movimiento_Verificacion = Insertar(BeTransMovimiento,
                                                             lConnection,
@@ -3976,6 +3938,17 @@ Partial Public Class clsLnTrans_movimientos
 
             BeTransMovimiento.Cantidad_hist = BeStockRec.CantidadEnStock
             BeTransMovimiento.Peso_hist = BeStockRec.PesoEnStock
+            BeTransMovimiento.IdProductoTallaColor = BeStockNew.IdProductoTallaColor
+
+            If BeStockNew.IdProductoTallaColor <> 0 Then
+                Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeStockNew.IdProductoTallaColor)
+                BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+            Else
+                BeTransMovimiento.Talla = ""
+                BeTransMovimiento.Color = ""
+            End If
 
             Insertar(BeTransMovimiento,
                      lConnection,
@@ -4510,115 +4483,6 @@ Partial Public Class clsLnTrans_movimientos
 
     End Function
 
-    '#GT06102025: sino existe movimiento segun recepción (datos legacy) validar si existen por lic_plate únicamente
-    Public Shared Function GetSingle_By_LicPlate(ByVal pIdRecepcionEnc As Integer, ByVal pLic_plate As String,
-                                                                          Optional ByVal pConnection As SqlConnection = Nothing,
-                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeTrans_movimientos
-
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-        Dim lDTA As New SqlDataAdapter
-        GetSingle_By_LicPlate = Nothing
-
-        Try
-
-            Dim sp As String = "SELECT * FROM Trans_movimientos Where( IdTransaccion=@IdTransaccion and IdTipoTarea=1) "
-
-            If Not String.IsNullOrEmpty(pLic_plate) Then
-                sp += " and barra_pallet =@pLic_plate "
-            End If
-
-            Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-            If Es_Transaccion_Remota Then
-                lDTA = New SqlDataAdapter(sp, pConnection)
-                lDTA.SelectCommand.Transaction = pTransaction
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                lDTA = New SqlDataAdapter(sp, lConnection)
-            End If
-
-            'lDTA.SelectCommand.Parameters.Add(New SqlParameter("@pIdRecepcionEnc", pIdRecepcionEnc))
-            'lDTA.SelectCommand.Parameters.Add(New SqlParameter("@pIdRecepcionDet", pIdRecepcionDet))
-            lDTA.SelectCommand.Parameters.Add(New SqlParameter("@IdTransaccion", pIdRecepcionEnc))
-
-            If Not String.IsNullOrEmpty(pLic_plate) Then
-                lDTA.SelectCommand.Parameters.Add(New SqlParameter("@pLic_plate", pLic_plate))
-            End If
-
-            Dim dt As New DataTable
-            lDTA.Fill(dt)
-
-            lDTA.Dispose()
-
-            If dt.Rows.Count = 1 Then
-                Dim oBeTrans_movimientos As New clsBeTrans_movimientos
-                Cargar(oBeTrans_movimientos, dt.Rows(0))
-                GetSingle_By_LicPlate = oBeTrans_movimientos
-            End If
-
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
-        End Try
-
-    End Function
-
-    Public Shared Function Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv(ByVal pFechaDel As Date,
-                                                                               ByVal pFechaAl As Date,
-                                                                               ByVal IdBodega As Integer) As DataTable
-
-        Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv = Nothing
-
-        Try
-            Dim vSQL As String = "SELECT codigo, producto, tipotarea, cantidad, ubicorigen, ubicdestino, 
-                                     estadoorigen, estadodestino, fecha, licencia, clasificacion, 
-                                     familia, operador 
-                              FROM VW_Movimientos_N 
-                              WHERE 1 = 1 "
-
-            ' Filtro por fecha con hora
-            vSQL += String.Format(" AND fecha BETWEEN {0} AND {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
-
-            ' Filtro por bodega
-            vSQL += String.Format(" AND IdBodega = {0} ", IdBodega)
-
-            ' Orden final
-            vSQL += " ORDER BY codigo, fecha"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-                    Dim dad As New SqlDataAdapter(cmd)
-                    dad.SelectCommand.CommandType = CommandType.Text
-                    Dim lTable As New DataTable
-                    dad.Fill(lTable)
-
-                    Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv = lTable
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-
-    End Function
-
     Public Shared Function Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv(ByVal pFechaDel As Date,
                                                                                ByVal pFechaAl As Date,
                                                                                ByVal IdBodega As Integer,
@@ -4678,6 +4542,5 @@ Partial Public Class clsLnTrans_movimientos
         End Try
 
     End Function
-
 
 End Class

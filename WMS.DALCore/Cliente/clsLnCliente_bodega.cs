@@ -57,7 +57,10 @@ public class clsLnCliente_bodega
         cmd.Parameters.Add(new SqlParameter("@user_mod", (object?)oBeCliente_bodega.User_mod ?? DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeCliente_bodega.Fec_mod == DateTime.MinValue ? DBNull.Value : oBeCliente_bodega.Fec_mod));
         cmd.Parameters.Add(new SqlParameter("@activo", oBeCliente_bodega.Activo));
-        cmd.Parameters.Add(new SqlParameter("@IdAreaDestino", oBeCliente_bodega.IdAreaDestino));
+        if (oBeCliente_bodega.IdAreaDestino != 0)
+        {
+            cmd.Parameters.Add(new SqlParameter("@IdAreaDestino", oBeCliente_bodega.IdAreaDestino));
+        }
     }
     public static int Insertar(clsBeCliente_bodega oBeCliente_bodega, SqlConnection pConection, SqlTransaction pTransaction)
     {
@@ -83,7 +86,11 @@ public class clsLnCliente_bodega
             Ins.Add("user_mod", "@user_mod", "F");
             Ins.Add("fec_mod", "@fec_mod", "F");
             Ins.Add("activo", "@activo", "F");
-            Ins.Add("idareadestino", "@idareadestino", "F");
+
+            if (oBeCliente_bodega.IdAreaDestino != 0)
+            {
+                Ins.Add("idareadestino", "@idareadestino", "F");
+            }
 
             string sp = Ins.SQL();
 

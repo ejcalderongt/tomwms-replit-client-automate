@@ -25,24 +25,8 @@ Public Class clsLnTrans_ubic_hh_det
                 .No_Linea = IIf(IsDBNull(dr.Item("No_Linea")), 0, dr.Item("No_Linea"))
             End With
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pIdBodega:=oBeTrans_ubic_hh_det.IdBodega,
-                                                  pIdTareaUbicacionEnc:=oBeTrans_ubic_hh_det.IdTareaUbicacionEnc,
-                                                  pIdTareaUbicacionDet:=oBeTrans_ubic_hh_det.IdTareaUbicacionDet,
-                                                  pIdStock:=oBeTrans_ubic_hh_det.IdStock,
-                                                  pIdUMBAs:=oBeTrans_ubic_hh_det.UnidadMedida.IdUnidadMedida,
-                                                  pIdPresentacion:=oBeTrans_ubic_hh_det.ProductoPresentacion.IdPresentacion,
-                                                  pIdUbicacionOrigen:=oBeTrans_ubic_hh_det.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=oBeTrans_ubic_hh_det.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=oBeTrans_ubic_hh_det.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=oBeTrans_ubic_hh_det.IdEstadoDestino,
-                                                  pCantidad:=oBeTrans_ubic_hh_det.Cantidad,
-                                                  pIdOperador:=oBeTrans_ubic_hh_det.IdOperadorBodega)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
     End Sub
@@ -298,11 +282,8 @@ Public Class clsLnTrans_ubic_hh_det
             Return dt
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -336,24 +317,8 @@ Public Class clsLnTrans_ubic_hh_det
             Return True
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pIdBodega:=oBeTrans_ubic_hh_det.IdBodega,
-                                                  pIdTareaUbicacionEnc:=oBeTrans_ubic_hh_det.IdTareaUbicacionEnc,
-                                                  pIdTareaUbicacionDet:=oBeTrans_ubic_hh_det.IdTareaUbicacionDet,
-                                                  pIdStock:=oBeTrans_ubic_hh_det.IdStock,
-                                                  pIdUMBAs:=oBeTrans_ubic_hh_det.UnidadMedida.IdUnidadMedida,
-                                                  pIdPresentacion:=oBeTrans_ubic_hh_det.ProductoPresentacion.IdPresentacion,
-                                                  pIdUbicacionOrigen:=oBeTrans_ubic_hh_det.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=oBeTrans_ubic_hh_det.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=oBeTrans_ubic_hh_det.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=oBeTrans_ubic_hh_det.IdEstadoDestino,
-                                                  pCantidad:=oBeTrans_ubic_hh_det.Cantidad,
-                                                  pIdOperador:=oBeTrans_ubic_hh_det.IdOperadorBodega)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -388,11 +353,8 @@ Public Class clsLnTrans_ubic_hh_det
             cmd.Dispose()
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -423,24 +385,8 @@ Public Class clsLnTrans_ubic_hh_det
             Return True
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pIdBodega:=pBeTrans_ubic_hh_det.IdBodega,
-                                                  pIdTareaUbicacionEnc:=pBeTrans_ubic_hh_det.IdTareaUbicacionEnc,
-                                                  pIdTareaUbicacionDet:=pBeTrans_ubic_hh_det.IdTareaUbicacionDet,
-                                                  pIdStock:=pBeTrans_ubic_hh_det.IdStock,
-                                                  pIdUMBAs:=pBeTrans_ubic_hh_det.UnidadMedida.IdUnidadMedida,
-                                                  pIdPresentacion:=pBeTrans_ubic_hh_det.ProductoPresentacion.IdPresentacion,
-                                                  pIdUbicacionOrigen:=pBeTrans_ubic_hh_det.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=pBeTrans_ubic_hh_det.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=pBeTrans_ubic_hh_det.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=pBeTrans_ubic_hh_det.IdEstadoDestino,
-                                                  pCantidad:=pBeTrans_ubic_hh_det.Cantidad,
-                                                  pIdOperador:=pBeTrans_ubic_hh_det.IdOperadorBodega)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -468,11 +414,8 @@ Public Class clsLnTrans_ubic_hh_det
             Return lMax
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

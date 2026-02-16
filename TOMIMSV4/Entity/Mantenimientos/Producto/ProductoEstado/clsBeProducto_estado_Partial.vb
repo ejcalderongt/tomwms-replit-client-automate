@@ -47,9 +47,4 @@
         End If
     End Sub
 #End Region
-
-End Class
-
-Public Class clsBeProducto_Estado_Cmb : Inherits clsBeProducto_estado
-    Public Property IdProductoBodega As Integer = 0
 End Class

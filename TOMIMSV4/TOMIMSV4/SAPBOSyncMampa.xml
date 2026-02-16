@@ -32,55 +32,6 @@ SAPBOSyncMampa
   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
 </summary>
 </member>
-<member name="M:TOMWMS.clsSAP_Config.CampoDeUsuarioExiste(System.String,System.String)">
- <summary>
- Verifica si un campo de usuario existe en una tabla específica.
- </summary>
- <param name="tableName">Nombre de la tabla.</param>
- <param name="fieldName">Nombre del campo de usuario.</param>
- <returns>True si el campo existe, False en caso contrario.</returns>
-</member>
-<member name="M:TOMWMS.clsSyncSAPDevolucionMercancia.Estado_Linea(System.String)">
- <summary>
- Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
- </summary>
- <param name="itemcode"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.clsSyncSAPSPedidoCliente.Estado_Linea(System.String)">
- <summary>
- Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
- </summary>
- <param name="itemcode"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.clsSyncSAPPedidoTraslado.Estado_Linea(System.String)">
- <summary>
- Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
- </summary>
- <param name="itemcode"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.clsSyncSAPProducto.GetProducto_SAP_HANA_By_Codigo(System.String)">
- <summary>
- Obtiene la lista de productos desde SAP HANA por código
- </summary>
- <returns>DataTable con los productos</returns>
-</member>
-<member name="M:TOMWMS.clsSyncSAPSSolicitudTraslado.Estado_Linea(System.String)">
- <summary>
- Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
- </summary>
- <param name="itemcode"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.clsSyncSAPTrasladoStock.Estado_Linea(System.String)">
- <summary>
- Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
- </summary>
- <param name="itemcode"></param>
- <returns></returns>
-</member>
 <member name="M:TOMWMS.IMS.Listar_PropietariosByEmpresa(System.Windows.Forms.ComboBox@,System.Int32)">
  <summary>
  Creada por Bismarck Traña
@@ -101,25 +52,6 @@ SAPBOSyncMampa
  <param name="pIdPropietario">Filtro para llenar el combobox</param>
  <returns></returns>
  <remarks></remarks>
-</member>
-<member name="M:TOMWMS.clsSyncSAPPedidoCompra.Enviar_Entrada_Mercancia_Sin_Estado_SAP_B1(TOMWMS.clsBeI_nav_config_enc,System.Int32,System.Collections.Generic.List{TOMWMS.clsBeI_nav_transacciones_out},TOMWMS.clsBeTrans_oc_enc,System.String,System.Windows.Forms.RichTextBox@,System.Windows.Forms.ProgressBar@)">
- <summary>
- #EJC20231121_DECIMO_OCTAVA
- </summary>
- <param name="beINavConfigEnc"></param>
- <param name="_Docentry"></param>
- <param name="lINavTransaccionesOut"></param>
- <param name="beTransOCEnc"></param>
- <param name="codigoBodegaDestino"></param>
- <param name="lblPrg"></param>
- <param name="prg"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.m_Global.Conexion_SAP_Hana">
- <summary>
- Prueba la conexión con SAP HANA y retorna True si es exitosa.
- </summary>
- <returns>Boolean - True si la conexión es exitosa, False si hay un error.</returns>
 </member>
 <member name="T:TOMWMS.DSEjecuciones">
 <summary>

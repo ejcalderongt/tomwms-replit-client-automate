@@ -14,7 +14,7 @@ Public Class clsLnLicencia_llave
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeLicencia_llave As clsBeLicencia_llave, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeLicencia_llave As clsBeLicencia_llave, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -343,7 +343,6 @@ Public Class clsLnLicencia_llave
                 pBeLicenciaItem.Vence = BeLicenciaLlave.Vence
                 pBeLicenciaItem.CantHandHeld = BeLicenciaLlave.CantHandHeld
                 pBeLicenciaItem.CantBackOffice = BeLicenciaLlave.CantBackOffice
-                pBeLicenciaItem.CantUx = BeLicenciaLlave.CantUx
                 pBeLicenciaItem.Activa = BeLicenciaLlave.Activa
                 pBeLicenciaItem.IdDisp = BeLicenciaLlave.MacServer
 

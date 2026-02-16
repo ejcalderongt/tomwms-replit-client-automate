@@ -43,242 +43,242 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AppGlobal.dll" size="82432">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AppGlobal.dll" size="83456">
       <assemblyIdentity name="AppGlobal" version="1.3.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>9c4g2XX3jKqPL0DkixuLhcIlHOhtXHo+cpffKgZAiiI=</dsig:DigestValue>
+        <dsig:DigestValue>ItEnDDSUiB0o+tAuxvOwu9yHYfbKZwoGydQNegM4pPs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DAL.dll" size="7874560">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DAL.dll" size="7610880">
       <assemblyIdentity name="DAL" version="1.3.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>fRkmr9XTYtjZopF7U8amrshxbh8MioA7LhxLXw3zhxI=</dsig:DigestValue>
+        <dsig:DigestValue>yVZ9Dmg7rpMs5H05otHbK26AWPilFdUwnTcZhSj5bHw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Data.Desktop.v24.2.dll" size="1142432">
-      <assemblyIdentity name="DevExpress.Data.Desktop.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Data.Desktop.v25.1.dll" size="1277600">
+      <assemblyIdentity name="DevExpress.Data.Desktop.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NrTnWzxn58b7dUrkr3RE91RbGVOK265kWPpVoleXjOM=</dsig:DigestValue>
+        <dsig:DigestValue>LQOW08NWpR2+w+pCUpJzQ9JGRgpP41V5CaEynBQrJWQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Data.v24.2.dll" size="5738656">
-      <assemblyIdentity name="DevExpress.Data.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Data.v25.1.dll" size="5872288">
+      <assemblyIdentity name="DevExpress.Data.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>bFNufJlV7WmbU1vv7dJ77umuqt9KNc/W/7EA1y3kJQc=</dsig:DigestValue>
+        <dsig:DigestValue>JL5RgqrYQZAwAXk23eGv7ofRo6G/b2TJCRGYRKx76jk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Drawing.v24.2.dll" size="1053344">
-      <assemblyIdentity name="DevExpress.Drawing.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Drawing.v25.1.dll" size="1061024">
+      <assemblyIdentity name="DevExpress.Drawing.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>odcgNDpplRWwQ+h05Ga3YW82j6dxR6vmPRBkcPoTLZg=</dsig:DigestValue>
+        <dsig:DigestValue>7e9jfXSkuSnEMx630reWa4NBqySzAlxJroDVVhj1bDs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Office.v24.2.Core.dll" size="3725472">
-      <assemblyIdentity name="DevExpress.Office.v24.2.Core" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Office.v25.1.Core.dll" size="3840672">
+      <assemblyIdentity name="DevExpress.Office.v25.1.Core" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4KwsbRfzxocT27kMFzcuB8DiXaj7LpNzwYSdsW5pgkc=</dsig:DigestValue>
+        <dsig:DigestValue>AHV31ssuWN248FOr9TU3lJ/WEdSyQEyAe22S8/F8HTE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Pdf.v24.2.Core.dll" size="5238432">
-      <assemblyIdentity name="DevExpress.Pdf.v24.2.Core" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Pdf.v25.1.Core.dll" size="5262496">
+      <assemblyIdentity name="DevExpress.Pdf.v25.1.Core" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>K/uQKA8/0FbYP0m3IOzTCXQ/l2szo7Wo9IT3veOJECk=</dsig:DigestValue>
+        <dsig:DigestValue>9Fs/NP0cBSCdmUwrD+DY5Z029vg04lC9AMdIfkOnDi0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Pdf.v24.2.Drawing.dll" size="568992">
-      <assemblyIdentity name="DevExpress.Pdf.v24.2.Drawing" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Pdf.v25.1.Drawing.dll" size="570528">
+      <assemblyIdentity name="DevExpress.Pdf.v25.1.Drawing" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>T2tOQcxbzKaTJI3Nca1NRjwbR/bN4p0CtruTfsoqg4g=</dsig:DigestValue>
+        <dsig:DigestValue>29IvtiVHeOnN1ECyJudmfv9E5G43/UeRPVFjYrU05Mk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Printing.v24.2.Core.dll" size="4621984">
-      <assemblyIdentity name="DevExpress.Printing.v24.2.Core" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Printing.v25.1.Core.dll" size="4624032">
+      <assemblyIdentity name="DevExpress.Printing.v25.1.Core" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8SzmbpsD90sS/+BNFESExnm86TJ8BfMUCh8WrTDeeho=</dsig:DigestValue>
+        <dsig:DigestValue>MET1jlxTeHhpdaRLDnxAS3P8xVP6imx2C3REtDh2eKg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.RichEdit.v24.2.Core.dll" size="9363616">
-      <assemblyIdentity name="DevExpress.RichEdit.v24.2.Core" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.RichEdit.v25.1.Core.dll" size="9387168">
+      <assemblyIdentity name="DevExpress.RichEdit.v25.1.Core" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>q33a9wFTF9qTnpZb0113GUjLnR+DXpyQGKNlXcrJIu0=</dsig:DigestValue>
+        <dsig:DigestValue>8gs6ioly2qs03aR9NgUaMedX+08nrDJl6rpoJvj6Puc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.RichEdit.v24.2.Export.dll" size="264864">
-      <assemblyIdentity name="DevExpress.RichEdit.v24.2.Export" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.RichEdit.v25.1.Export.dll" size="264864">
+      <assemblyIdentity name="DevExpress.RichEdit.v25.1.Export" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ZyJjd9CX3QLd4KFlFKui47oFVgrOBlRS1CS3movHN3o=</dsig:DigestValue>
+        <dsig:DigestValue>kQwFXRUCxUzIS5XCua6R4gdyBaeNyBdDQUCtQBM9AdQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Sparkline.v24.2.Core.dll" size="96416">
-      <assemblyIdentity name="DevExpress.Sparkline.v24.2.Core" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Sparkline.v25.1.Core.dll" size="95392">
+      <assemblyIdentity name="DevExpress.Sparkline.v25.1.Core" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>bjDwWVPUQDq0FD339puraNDWQ7oTyInktQdazutsWsk=</dsig:DigestValue>
+        <dsig:DigestValue>CeCi5Tmid8mLUdMsaLD6VCpOPa2Ay1MmVyJt2z5Bf5Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Utils.v24.2.dll" size="20529824">
-      <assemblyIdentity name="DevExpress.Utils.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.Utils.v25.1.dll" size="20595872">
+      <assemblyIdentity name="DevExpress.Utils.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>f/F7k8kCRzepof3Loju9n5d9ZQpDKMQWaFIkW9nMqL8=</dsig:DigestValue>
+        <dsig:DigestValue>nIo5i1tDCymBOkEILRkpSnnyDrPz+3Wz5I7F08OXTk4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraBars.v24.2.dll" size="7049376">
-      <assemblyIdentity name="DevExpress.XtraBars.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraBars.v25.1.dll" size="7069344">
+      <assemblyIdentity name="DevExpress.XtraBars.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>MMQrnjj+EYqhHJ18bIWAFzCYsaARkajD3gETjKgmDX8=</dsig:DigestValue>
+        <dsig:DigestValue>ZVG47w9O14qRDoXdXj7X13W3q31bfLMLMQmdkq/tAYg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraEditors.v24.2.dll" size="8357024">
-      <assemblyIdentity name="DevExpress.XtraEditors.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraEditors.v25.1.dll" size="8457888">
+      <assemblyIdentity name="DevExpress.XtraEditors.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>H8LAavJnB8DZ88PUoG/25KpO7zHIiWTG81ERKfdc24g=</dsig:DigestValue>
+        <dsig:DigestValue>XygOk0HAFbcVJoVydLLEOW7rpP6C1ctSOLxVFhygZL8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraGrid.v24.2.dll" size="3859616">
-      <assemblyIdentity name="DevExpress.XtraGrid.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraGrid.v25.1.dll" size="3878560">
+      <assemblyIdentity name="DevExpress.XtraGrid.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>bc3DI6SjOY8wNnH3v0kFW2wS82PBA92BGvK8WMxSaVQ=</dsig:DigestValue>
+        <dsig:DigestValue>8lTqSK4eYXX86I4RaD9fZvGxq4uWILa9CL1uTvju8d8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraLayout.v24.2.dll" size="2186912">
-      <assemblyIdentity name="DevExpress.XtraLayout.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraLayout.v25.1.dll" size="2193568">
+      <assemblyIdentity name="DevExpress.XtraLayout.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>UpnF9WuLppaehFYqoYlkGTUYvBG9LVxBrU09upLmQNo=</dsig:DigestValue>
+        <dsig:DigestValue>PGFzLuhQwEgih+og/3UsyZK/YV6UO+2LFIA8PCYEWq0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraPrinting.v24.2.dll" size="1155232">
-      <assemblyIdentity name="DevExpress.XtraPrinting.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraPrinting.v25.1.dll" size="1188000">
+      <assemblyIdentity name="DevExpress.XtraPrinting.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>hinpVLaWaLi+7MhuQ5oqC3kfp82AFYxNPlVpyypL+zY=</dsig:DigestValue>
+        <dsig:DigestValue>IVEo047ilGhWM1+dQDuD+cFS0cJJISB6cux68ziUMuA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraTreeList.v24.2.dll" size="1711264">
-      <assemblyIdentity name="DevExpress.XtraTreeList.v24.2" version="24.2.12.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DevExpress.XtraTreeList.v25.1.dll" size="1719456">
+      <assemblyIdentity name="DevExpress.XtraTreeList.v25.1" version="25.1.4.0" publicKeyToken="B88D1754D700E49A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NKJCjo3OfL8hPIIkxPqM7yieSeBPmfnXPGyG/ZH/qXY=</dsig:DigestValue>
+        <dsig:DigestValue>sDzgETk9cLNL8NcXVKwsGRV8TaXLsYxwSgvRnEd40Oc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Entity.dll" size="1248256">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Entity.dll" size="1225216">
       <assemblyIdentity name="Entity" version="1.3.0.1" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>x0CIk6U7DDN8ALAClldxxEToJshiArMOJAE3PvOCXvU=</dsig:DigestValue>
+        <dsig:DigestValue>A9zsJ6aTbwmN/V9X751qBXLhN0PmjtSD0jHNey/NndY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -302,19 +302,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>7gTOP21Bakh5Bu9t0WN7+9fM2fn2vD9ZH+AnTbKhq6g=</dsig:DigestValue>
+        <dsig:DigestValue>cqUsH9mDNpcx1WUG3IXtMRknVlrCY/ssIDa4dTrTEDI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SAPBOSyncCumbre.exe" size="778240">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SAPBOSyncCumbre.exe" size="778752">
       <assemblyIdentity name="SAPBOSyncCumbre" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>KZQjARzNMUfLD8Mak+dZkDCj7OeW+mCNNPnPjTkQBBQ=</dsig:DigestValue>
+        <dsig:DigestValue>m9qT09/EIKJCt5/psGSJVVX9F2lsG5iDjG/QHTCLYDg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -333,7 +333,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>iQRCBJ44JZyoUz1uNLWuE92EQ+4odTnswwDiaLHLz5E=</dsig:DigestValue>
+      <dsig:DigestValue>Isuk4lw1EtL3h7WGfuYOc0sDjq/uEzRkYJEmuICRZeQ=</dsig:DigestValue>
     </hash>
   </file>
   <file name="remote_32x32-32.ico" size="2238">

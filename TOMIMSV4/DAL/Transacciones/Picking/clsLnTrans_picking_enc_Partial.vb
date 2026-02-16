@@ -1,5 +1,4 @@
-﻿Imports System
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.XtraEditors
 
@@ -1088,15 +1087,7 @@ Partial Public Class clsLnTrans_picking_enc
 
                                 Dim vMensajeLog As String = "Advertencia_202303032146: Se actualizó a procesado_bof el picking_enc: " & pBeTrans_picking_enc.IdPickingEnc
 
-                                '#MECR23102025: Se agrego bitacora para logs de picking
-                                'clsLnLog_error_wms.Agregar_Error(vMensajeLog)
-                                clsLnLog_error_wms_pick.Agregar_Error(vMensajeLog,
-                                                                      pIdPedidoEnc:=pBeTrans_picking_enc.IdPedidoEnc,
-                                                                      pIdPickingEnc:=pBeTrans_picking_enc.IdPickingEnc,
-                                                                      pUserAgr:=pBeTrans_picking_enc.User_mod,
-                                                                      pIdBodega:=pBeTrans_picking_enc.IdBodega,
-                                                                      pConection:=lConnection,
-                                                                      pTransaction:=lTransaction)
+                                clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                             End If
                         End If
                     End If
@@ -1145,12 +1136,6 @@ Partial Public Class clsLnTrans_picking_enc
                                                               lConnection,
                                                               lTransaction)
 
-
-            ' Picking Detalle Operador
-            clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
-                                                                pListBePickingOpe,
-                                                                lConnection,
-                                                                lTransaction)
 
             Guardar = True
 
@@ -1383,13 +1368,8 @@ Partial Public Class clsLnTrans_picking_enc
             End If
 
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoEnc:=pBeTransPickingEnc.IdPedidoEnc,
-                                                  pIdPickingEnc:=pBeTransPickingEnc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1532,22 +1512,15 @@ Partial Public Class clsLnTrans_picking_enc
                                                      lTransaction)
 
                 '#EJC20220708:Agregar log de error de anulación.
-                'clsLnLog_error_wms.Agregar_Error(pIdEmpresa,
-                '                                 pBePickingEnc.IdBodega,
-                '                                 "Picking_Anulado",
-                '                                 Ped.IdPedidoEnc,
-                '                                 pBePickingEnc.IdPickingEnc,
-                '                                 0,
-                '                                 pBePickingEnc.User_mod)
-
-                clsLnLog_error_wms_pick.Agregar_Error($"Picking anulado {pBePickingEnc.IdPickingEnc}",
-                                                      pIdPedidoEnc:=pBePickingEnc.IdPedidoEnc,
-                                                      pIdPickingEnc:=pBePickingEnc.IdPickingEnc,
-                                                      pIdEmpresa:=pIdEmpresa,
-                                                      pIdBodega:=pBePickingEnc.IdBodega,
-                                                      pUserAgr:=pBePickingEnc.User_mod,
-                                                      pTransaction:=lTransaction,
-                                                      pConection:=lConnection)
+                clsLnLog_error_wms.Agregar_Error(pIdEmpresa,
+                                                 pBePickingEnc.IdBodega,
+                                                 "Picking_Anulado",
+                                                 Ped.IdPedidoEnc,
+                                                 pBePickingEnc.IdPickingEnc,
+                                                 0,
+                                                 pBePickingEnc.User_mod,
+                                                 lConnection,
+                                                 lTransaction)
 
             Next
 
@@ -1720,16 +1693,6 @@ Partial Public Class clsLnTrans_picking_enc
                               IIf(Es_Transaccion_Remota, pConection, lConnection),
                               IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
-            'MECR04122025: Se agrego bitacora de logs para verificacion.
-            Dim msgControl As String = "Se actualizo estado verificado el pedido: " + oBeTrans_picking_enc.IdPedidoEnc
-            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-            'pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
-            'pIdBodega:=oBeTrans_picking_enc.IdBodega,
-            '                                        pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-            'pUser_agr:=oBeTrans_picking_enc.User_mod,
-            'pConection:=IIf(Es_Transaccion_Remota, pConection, lConnection),
-            'pTransaction:=IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
-
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Return True
@@ -1872,13 +1835,8 @@ Partial Public Class clsLnTrans_picking_enc
             Return rowsAffected
 
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
-                                                  pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1988,16 +1946,8 @@ Partial Public Class clsLnTrans_picking_enc
                 enc.Estado = "Verificado"
                 clsLnTrans_pe_enc.Actualizar_Estado(enc, conn, trans)
 
-                '#MECR23102025: Se agrego bitacora para logs de picking
                 Dim BeUsuario = clsLnUsuario.GetSingle(Usuario, conn, trans)
-                'clsLnLog_error_wms.Agregar_Error("El usuario" & Usuario & " - " & BeUsuario.Nombres & " verifico el pedido " & enc.IdPedidoEnc)
-                clsLnLog_error_wms_pick.Agregar_Error("El usuario" & Usuario & " - " & BeUsuario.Nombres & " verifico el pedido " & enc.IdPedidoEnc,
-                                                      pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
-                                                      pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-                                                      pIdBodega:=oBeTrans_picking_enc.IdBodega,
-                                                      pUserAgr:=Usuario,
-                                                      pConection:=lConnection,
-                                                      pTransaction:=lTransaction)
+                clsLnLog_error_wms.Agregar_Error("El usuario" & Usuario & " - " & BeUsuario.Nombres & " verifico el pedido " & enc.IdPedidoEnc)
 
             Next
 
@@ -2574,7 +2524,6 @@ Partial Public Class clsLnTrans_picking_enc
                                                                                          pConnection,
                                                                                          pTransaction)
 
-
                     '#GT21032025: infiero que, si verificacion es auto, aplica para cada iteracion pListBeTransPeEnc
                     If (verifica_auto) Then
                         pEstado = "Verificado"
@@ -2583,24 +2532,8 @@ Partial Public Class clsLnTrans_picking_enc
                     End If
 
                     For Each enc In pListBeTransPeEnc
-
-                        '#CKFK 20200430 Se modificó porque el estado debe ser Verificado cuando es automática la Verificacion 
-                        'y de lo contrario debe quedar el pedido en estado Pendiente
-                        'enc.Estado = "Procesado"
-
-                        'If (verifica_auto) Then
-                        '    enc.Estado = "Verificado"
-                        '    clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-                        'Else
-                        '    '#GT10012023: Estado Pickeado para el pedido sino tiene verifica_auto
-                        '    enc.Estado = "Pickeado"
-                        '    clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-                        'End If
-
                         enc.Estado = pEstado
-
                         clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-
                     Next
 
                     '#GT21032025: validamos el estado no solo en el pedido, tambien el picking
@@ -2635,13 +2568,8 @@ Partial Public Class clsLnTrans_picking_enc
                         BeOperador = clsLnOperador.Get_Single_By_IdOperadorBodega(pIdOperadorBodegaCerro, lConnection, lTransaction)
 
                         If Not BeOperador Is Nothing Then
-                            '#MECR23102025: Se agrego bitacora para logs de picking
                             Dim vNombre As String = BeOperador.Nombres & " " & BeOperador.Apellidos
-                            'clsLnLog_error_wms.Agregar_Error(BeOperador.IdEmpresa, beTareaHH.IdBodega, "El IdOperadorBodega: " & pIdOperadorBodegaCerro & " " & vNombre & " cerró el picking " & pIdPickingEnc)
-                            clsLnLog_error_wms_pick.Agregar_Error("El IdOperadorBodega: " & pIdOperadorBodegaCerro & " " & vNombre & " cerró el picking " & pIdPickingEnc,
-                                                                  pIdPedidoEnc:=pIdPickingEnc,
-                                                                  pConection:=lConnection,
-                                                                  pTransaction:=lTransaction)
+                            clsLnLog_error_wms.Agregar_Error(BeOperador.IdEmpresa, beTareaHH.IdBodega, "El IdOperadorBodega: " & pIdOperadorBodegaCerro & " " & vNombre & " cerró el picking " & pIdPickingEnc)
                         End If
 
                     End If
@@ -2659,10 +2587,8 @@ Partial Public Class clsLnTrans_picking_enc
                     End If
 
                     For Each enc In pListBeTransPeEnc
-
                         enc.Estado = pEstado
                         clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-
                     Next
 
                     '#GT21032025: validamos el estado no solo para el pedido, tambien picking
@@ -3212,7 +3138,6 @@ Partial Public Class clsLnTrans_picking_enc
         Guardar = False
 
         Try
-            Dim sSQL As String = "SELECT Estado FROM trans_picking_enc WHERE IdPickingEnc = @IdPickingEnc"
 
             '#GT01022023: Obtener el IdPickingEnc
             Dim vBePickingEncOriginal As New clsBeTrans_picking_enc
@@ -3247,38 +3172,36 @@ Partial Public Class clsLnTrans_picking_enc
                                                        lConnection,
                                                        lTransaction)
 
-                If lRow("Estado") IsNot DBNull.Value Then
-                    estado = lRow("Estado").ToString()
-                End If
+            End If
 
-                ' Picking Detalle
-                clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
+            ' Picking Detalle
+            clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
                                                             pBeTrans_picking_enc.IdBodegaMuelle,
                                                             pListBePickingDet,
                                                             pListBePickingUbic,
                                                             lConnection,
                                                             lTransaction)
 
-                ' Picking Detalle Parametros
-                If pListBePickingDetParametros IsNot Nothing Then
-                    clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
+            ' Picking Detalle Parametros
+            If pListBePickingDetParametros IsNot Nothing Then
+                clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
                                                                                   lConnection,
                                                                                   lTransaction)
-                End If
+            End If
 
-                ' Picking Detalle Operador
-                clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
+            ' Picking Detalle Operador
+            clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
                                                                 pListBePickingOpe,
                                                                 lConnection,
                                                                 lTransaction)
 
-                ' Picking Detalle Ubicacion
-                clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
+            ' Picking Detalle Ubicacion
+            clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
                                                               pListBePickingUbic,
                                                               lConnection,
                                                               lTransaction)
 
-                Guardar = True
+            Guardar = True
 
         Catch ex As Exception
             Throw ex
@@ -3354,45 +3277,6 @@ Partial Public Class clsLnTrans_picking_enc
         End Try
 
     End Function
-    Public Shared Function Get_Estado_By_IdPickingEnc(ByVal IdPickingEnc As Integer) As String
-        Dim estado As String = ""
 
-        Try
-            Dim sSQL As String = "SELECT Estado FROM trans_picking_enc WHERE IdPickingEnc = @IdPickingEnc"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Using lDTA As New SqlDataAdapter(sSQL, lConnection)
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", IdPickingEnc)
-
-                        Dim lDT As New DataTable()
-                        lDTA.Fill(lDT)
-
-                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
-                            Dim lRow As DataRow = lDT.Rows(0)
-
-                            If lRow("Estado") IsNot DBNull.Value Then
-                                estado = lRow("Estado").ToString()
-                            End If
-                        End If
-                    End Using
-
-                    lTransaction.Commit()
-                End Using
-
-                lConnection.Close()
-            End Using
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-        Return estado
-    End Function
 
 End Class

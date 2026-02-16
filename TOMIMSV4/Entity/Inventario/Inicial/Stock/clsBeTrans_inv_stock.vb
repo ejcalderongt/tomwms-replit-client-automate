@@ -34,7 +34,7 @@ Public Class clsBeTrans_inv_stock
     Public Property Temperatura() As Double = 0.0
     Public Property fecha_copia() As Date = Date.Now
     Public Property IdBodega As Integer = 0
-    Public Property Cantidad_Reservada_UMBas As Double = 0
+    Public Property IdProductoTallaColor As Integer = 0
 
     Sub New()
     End Sub

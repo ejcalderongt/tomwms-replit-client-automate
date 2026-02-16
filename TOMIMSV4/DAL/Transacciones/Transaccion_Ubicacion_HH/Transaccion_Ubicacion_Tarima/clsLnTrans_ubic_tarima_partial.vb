@@ -188,10 +188,8 @@ Partial Public Class clsLnTrans_ubic_tarima
             End If
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdTareaUbicacionEnc:=IdTareaUbicacionEnc)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -214,11 +212,8 @@ Partial Public Class clsLnTrans_ubic_tarima
             End If
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

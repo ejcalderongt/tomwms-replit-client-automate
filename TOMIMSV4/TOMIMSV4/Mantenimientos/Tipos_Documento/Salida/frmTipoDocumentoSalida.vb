@@ -96,7 +96,6 @@ Public Class frmTipoDocumentoSalida
                     chkEmpaqueTarima.IsOn = pObjPT.Empaque_Tarima
 
                     chkTransferirUbicacion.IsOn = pObjPT.Transferir_Ubicacion
-                    chkGeneraGuiaRemision.IsOn = pObjPT.Genera_Guia_Remision
 
                     mnuGuardar.Enabled = False
                     mnuActualizar.Enabled = OpcionesMenu.Modificar
@@ -154,7 +153,6 @@ Public Class frmTipoDocumentoSalida
             objPe_Tipo.Recibir_Producto_Auto_Bodega_Destino = chkRecibirProductoAutoBodegaDestino.IsOn
             objPe_Tipo.Empaque_Tarima = chkEmpaqueTarima.IsOn
             objPe_Tipo.Transferir_Ubicacion = chkTransferirUbicacion.IsOn
-            objPe_Tipo.Genera_Guia_Remision = chkGeneraGuiaRemision.IsOn
 
             clsLnTrans_pe_tipo.Insertar(objPe_Tipo)
 
@@ -203,7 +201,6 @@ Public Class frmTipoDocumentoSalida
                 pObjPT.Recibir_Producto_Auto_Bodega_Destino = chkRecibirProductoAutoBodegaDestino.IsOn
                 pObjPT.Empaque_Tarima = chkEmpaqueTarima.IsOn
                 pObjPT.Transferir_Ubicacion = chkTransferirUbicacion.IsOn
-                pObjPT.Genera_Guia_Remision = chkGeneraGuiaRemision.IsOn
 
                 clsLnTrans_pe_tipo.Actualizar(pObjPT)
                 Actualizar = True

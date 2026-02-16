@@ -156,7 +156,7 @@ Public Class clsLnI_nav_ped_traslado_det
             Upd.Add("Color", "@Color", DataType.Parametro)
             Upd.Add("Size", "@Size", DataType.Parametro)
             Upd.Where("NoEnc = @NoEnc" &
-                " AND No = @No")
+                " And No = @No")
 
             Dim sp As String = Upd.SQL()
 
@@ -224,7 +224,7 @@ Public Class clsLnI_nav_ped_traslado_det
             Upd.Add("status", "@status", DataType.Parametro)
             Upd.Add("process_result", "@process_result", DataType.Parametro)
             Upd.Where("NoEnc = @NoEnc" &
-                " AND No = @No")
+                " And No = @No")
 
             Dim sp As String = Upd.SQL()
 
@@ -275,7 +275,7 @@ Public Class clsLnI_nav_ped_traslado_det
             Upd.Init("i_nav_ped_traslado_det")
             Upd.Add("Process_Result", "@Process_Result", DataType.Parametro)
             Upd.Add("Qty_to_Receive", "@Qty_to_Receive", DataType.Parametro)
-            Upd.Where("NoEnc = @NoEnc AND No = @No AND Line_No = @Line_No AND Item_No = @Item_No")
+            Upd.Where("NoEnc = @NoEnc And No = @No And Line_No = @Line_No And Item_No = @Item_No")
 
             Dim sp As String = Upd.SQL()
 
@@ -328,7 +328,7 @@ Public Class clsLnI_nav_ped_traslado_det
 
             Const sp As String = " Delete from I_nav_ped_traslado_det" &
              "  Where(NoEnc = @NoEnc)" &
-             "  AND (No = @No)"
+             "  And (No = @No)"
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -403,7 +403,7 @@ Public Class clsLnI_nav_ped_traslado_det
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_ped_traslado_det"
+            Const sp As String = "Select * FROM I_nav_ped_traslado_det"
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -424,9 +424,9 @@ Public Class clsLnI_nav_ped_traslado_det
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_ped_traslado_det" &
+            Const sp As String = "Select * FROM I_nav_ped_traslado_det" &
             " Where(NoEnc = @NoEnc)" &
-            " AND (No = @No)"
+            " And (No = @No)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -459,7 +459,7 @@ Public Class clsLnI_nav_ped_traslado_det
         Try
 
             Dim lReturnList As New List(Of clsBeI_nav_ped_traslado_det)
-            Const sp As String = "SELECT * FROM I_nav_ped_traslado_det"
+            Const sp As String = "Select * FROM I_nav_ped_traslado_det"
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -494,9 +494,9 @@ Public Class clsLnI_nav_ped_traslado_det
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_ped_traslado_det" &
+            Const sp As String = "Select * FROM I_nav_ped_traslado_det" &
             " Where(NoEnc = @NoEnc)" &
-            " AND (No = @No)"
+            " And (No = @No)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -527,7 +527,7 @@ Public Class clsLnI_nav_ped_traslado_det
 
             Dim lMax As Integer = 0
 
-            Const sp As String = "SELECT ISNULL(Max(NoEnc),0) FROM I_nav_ped_traslado_det"
+            Const sp As String = "Select ISNULL(Max(NoEnc),0) FROM I_nav_ped_traslado_det"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
                 lConnection.Open()
@@ -561,7 +561,7 @@ Public Class clsLnI_nav_ped_traslado_det
 
             Upd.Init("i_nav_ped_traslado_det")
             Upd.Add("IdPedidoDet", "@IdPedidoDet", DataType.Parametro)
-            Upd.Where("NoEnc = @NoEnc AND No = @No AND Line_No = @Line_No AND Item_No = @Item_No")
+            Upd.Where("NoEnc = @NoEnc And No = @No And Line_No = @Line_No And Item_No = @Item_No")
 
             Dim sp As String = Upd.SQL()
 
@@ -611,8 +611,8 @@ Public Class clsLnI_nav_ped_traslado_det
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Const sp As String = "SELECT DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
-            Where(NoEnc = @NoEnc) "
+            Const sp As String = "Select DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
+                                  Where(NoEnc = @NoEnc) "
 
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -647,7 +647,7 @@ Public Class clsLnI_nav_ped_traslado_det
 
     '    Try
 
-    '        Const sp As String = "Select DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
+    '        Const sp As String = "SELECT DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
     '                              Where(NoEnc = @NoEnc) "
 
 

@@ -1085,49 +1085,6 @@ Partial Public Class clsLnProveedor_bodega
 
     End Function
 
-    '#GT25062025: lista de proveedores_bodega por proveedor para exportacion a la nube.
-    Public Shared Function Get_All_By_IdProveedor(ByVal pIdProveedor As Integer, ByRef lConnection As SqlConnection,
-                                                                                 ByRef lTransaction As SqlTransaction) As List(Of clsBeProveedor_bodega)
-
-        Get_All_By_IdProveedor = Nothing
-
-        Try
-
-            Dim vSQL As String = "SELECT * FROM proveedor_bodega WHERE IdProveedor=@IdProveedor "
-
-            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdProveedor", pIdProveedor)
-
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
-
-                Dim Obj As clsBeProveedor_bodega
-
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    Get_All_By_IdProveedor = New List(Of clsBeProveedor_bodega)()
-
-                    For Each lRow As DataRow In lDataTable.Rows
-
-                        Obj = New clsBeProveedor_bodega
-                        Cargar(Obj, lRow, lConnection, lTransaction)
-                        Get_All_By_IdProveedor.Add(Obj)
-
-                    Next
-
-                End If
-
-            End Using
-
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
-
-    End Function
-
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

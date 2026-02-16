@@ -1872,255 +1872,6 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
-    'Public Shared Sub Regularizar_Inventario(ByVal BeTransInvEnc As clsBeTrans_inv_enc,
-    '                                         ByVal ListBeStockNuevo As IList(Of clsBeStock),
-    '                                         ByVal ListBeMovimientos As IList(Of clsBeTrans_movimientos),
-    '                                         ByVal Usuario As clsBeUsuario,
-    '                                         ByVal ListBeAjusteDet As List(Of clsBeTrans_ajuste_det),
-    '                                         ByRef lOperaciones As List(Of KeyValuePair(Of Integer, Integer)),
-    '                                         ByVal pCodigoBodegaERP As String,
-    '                                         ByVal lConnection As SqlConnection,
-    '                                         ByVal lTransaction As SqlTransaction)
-
-    '    Dim IdStock As Integer
-    '    Dim BeStockCiclo As New clsBeStock
-    '    Dim IdAjusteDet As Integer
-    '    Dim objStockHist As New clsBeStock_hist()
-    '    Dim vCantidadHist As Integer = 0
-    '    Dim lIdStocksAEliminar As New List(Of Integer)
-
-    '    Try
-
-    '        Dim vIdPropietarioBodega As Integer = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BeTransInvEnc.Idpropietario,
-    '                                                                                                                            BeTransInvEnc.IdBodega,
-    '                                                                                                                            lConnection,
-    '                                                                                                                            lTransaction)
-
-
-    '        BeTransInvEnc.Regularizado = True
-    '        BeTransInvEnc.Estado = "Finalizado"
-    '        BeTransInvEnc.Hora_fin = Now
-    '        BeTransInvEnc.Activo = True
-
-    '        clsLnTrans_inv_enc.Actualizar(BeTransInvEnc, lConnection, lTransaction)
-
-    '        Dim vCantInv As Double = 0
-    '        Dim vElimino As Boolean = False
-    '        Dim BeStockOriginal As New clsBeStock
-    '        BeStockOriginal = clsLnStock.GetSingle(BeTransInvEnc.IdStock, lConnection, lTransaction)
-
-    '        IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-
-    '        BeTransInvEnc.IdStock = IdStock
-
-    '        For Each pBeStock As clsBeStock In ListBeStockNuevo.OrderBy(Function(x) x.IdProductoBodega)
-
-    '            BeStockCiclo = Get_Existente_By_IdStock(pBeStock.IdStock, lConnection, lTransaction)
-
-    '            vCantInv = pBeStock.Cantidad
-
-    '            If BeStockCiclo IsNot Nothing Then
-
-    '                BeStockCiclo.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
-    '                BeStockCiclo.IdProductoEstado = pBeStock.IdProductoEstado
-    '                BeStockCiclo.Presentacion.IdPresentacion = pBeStock.IdPresentacion
-    '                BeStockCiclo.Lote = pBeStock.Lote
-    '                BeStockCiclo.Fecha_vence = pBeStock.Fecha_vence
-    '                BeStockCiclo.IdUbicacion = pBeStock.IdUbicacion
-
-    '                clsPublic.CopyObject(BeStockCiclo, pBeStock)
-
-    '                '#EJC20180830: Después del copy se restablece la cantidad con ajuste
-    '                'que se capturó en la variable vCantInv antes de perder el valor original
-    '                pBeStock.Cantidad = vCantInv
-
-    '                pBeStock.IdStock = BeStockCiclo.IdStock
-    '                vCantidadHist = BeStockCiclo.Cantidad
-
-    '                If pBeStock.Cantidad < 0 Then
-
-    '                    If BeStockCiclo.Cantidad >= Math.Abs(vCantInv) Then
-    '                        pBeStock.Cantidad = BeStockCiclo.Cantidad + pBeStock.Cantidad
-    '                    Else
-    '                        pBeStock.Cantidad = Math.Abs(pBeStock.Cantidad) - pBeStock.Cantidad
-    '                    End If
-
-    '                ElseIf pBeStock.Cantidad > 0 Then
-
-    '                    '#EJC20180830_0723PM: Se modificó suma por cambio en procedimiento en caliente de último inventario en BYB.
-    '                    'pBeStock.Cantidad = BeStock.Cantidad + pBeStock.Cantidad
-    '                    'EJC202408270855: Christian se mudó a la casa de Carolina. (todavía, todavía) risas.
-    '                    pBeStock.Cantidad = pBeStock.Cantidad
-
-    '                End If
-
-    '                If pBeStock.Cantidad = 0 Then
-    '                    '#EJC20180625: Mantener copia del stock original
-    '                    clsPublic.CopyObject(pBeStock, objStockHist)
-    '                    '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
-    '                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-    '                    objStockHist.IdNuevoStock = BeStockCiclo.IdStock
-    '                    objStockHist.IdPedidoEnc = BeStockCiclo.IdPedidoEnc
-    '                    objStockHist.IdPickingEnc = BeStockCiclo.IdPickingEnc
-    '                    objStockHist.IdUbicacion_anterior = BeStockCiclo.IdUbicacion
-    '                    objStockHist.IdUbicacion = BeStockCiclo.IdUbicacion
-    '                    objStockHist.IdDespachoEnc = 0
-    '                    objStockHist.Fec_agr = Now
-    '                    objStockHist.Fec_mod = Now
-    '                    objStockHist.Cantidad = vCantidadHist
-    '                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-    '                    clsLnStock.Eliminar(BeStockCiclo, lConnection, lTransaction)
-    '                Else
-
-    '                    '#CKFK20250130 Agregué esto para que cuando se cree un nuevo Stock se elimine el original,
-    '                    'si no tiene conteos
-    '                    Dim resultado = Obtener_Existencia_Conteo(pBeStock.IdStock,
-    '                                                              BeTransInvEnc.Idinventarioenc,
-    '                                                              lConnection,
-    '                                                              lTransaction)
-
-    '                    vElimino = False
-    '                    If Not (resultado.ExisteConteoSobreOriginal AndAlso resultado.ConteoSobreOriginalConCambios) Then
-    '                        lIdStocksAEliminar.Add(BeStockCiclo.IdStock)
-    '                        vElimino = True
-    '                    End If
-
-    '                    If Not vElimino Then
-
-    '                        Dim esOriginal As Boolean = False
-
-    '                        If BeStockOriginal IsNot Nothing Then
-    '                            esOriginal = BeStockOriginal.IdProductoEstado = pBeStock.IdProductoEstado AndAlso
-    '                                         BeStockOriginal.Lote = pBeStock.Lote AndAlso
-    '                                         BeStockOriginal.Fecha_vence = pBeStock.Fecha_vence AndAlso
-    '                                         BeStockOriginal.IdUbicacion = pBeStock.IdUbicacion
-    '                        End If
-
-
-    '                        If resultado.ExisteConteoSobreOriginal And esOriginal Then
-    '                            'Actualizo
-    '                            pBeStock.Cantidad = Math.Abs(vCantInv)
-    '                            pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
-    '                            pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
-    '                            pBeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
-    '                            pBeStock.Lote = pBeStock.Lote
-    '                            pBeStock.Fecha_vence = pBeStock.Fecha_vence
-    '                            pBeStock.IdUbicacion = pBeStock.IdUbicacion
-    '                            clsLnStock.Actualizar(pBeStock, lConnection, lTransaction)
-    '                        Else
-    '                            If resultado.ConteoSobreOriginalConCambios Then
-    '                                'Inserto
-    '                                pBeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-    '                                pBeStock.Cantidad = Math.Abs(vCantInv)
-    '                                pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
-    '                                pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
-    '                                pBeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
-    '                                pBeStock.Lote = pBeStock.Lote
-    '                                pBeStock.Fecha_vence = pBeStock.Fecha_vence
-    '                                pBeStock.IdUbicacion = pBeStock.IdUbicacion
-    '                                clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
-    '                                IdStock += 1
-    '                            End If
-    '                        End If
-    '                    Else
-    '                        'Inserto
-    '                        pBeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-    '                        pBeStock.Cantidad = Math.Abs(vCantInv)
-    '                        pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
-    '                        pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
-    '                        pBeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
-    '                        pBeStock.Lote = pBeStock.Lote
-    '                        pBeStock.Fecha_vence = pBeStock.Fecha_vence
-    '                        pBeStock.IdUbicacion = pBeStock.IdUbicacion
-    '                        clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
-    '                        IdStock += 1
-    '                    End If
-
-    '                End If
-
-    '            Else
-    '                '#EJC20181212: 1621 de Erik para Erik :} debemos mejorar el análisis, si no se encuentra el IdStock (lista.count =0) y la cantidad es negativa.
-    '                'Quiere decir que ese producto no se contó en esa ubicación y que probablemente ya no exista allí, por lo que no se debe insertar.
-    '                If vCantInv > 0 Then
-
-    '                    pBeStock.IdStock = IdStock
-    '                    pBeStock.Cantidad = Math.Abs(vCantInv)
-    '                    pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
-    '                    pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
-    '                    pBeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
-    '                    pBeStock.Lote = pBeStock.Lote
-    '                    pBeStock.Fecha_vence = pBeStock.Fecha_vence
-    '                    pBeStock.IdUbicacion = pBeStock.IdUbicacion
-    '                    clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
-    '                    IdStock += 1
-
-    '                Else
-
-    '                    '#EJC20180625: Mantener copia del stock original
-    '                    clsPublic.CopyObject(pBeStock, objStockHist)
-    '                    '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
-    '                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-    '                    objStockHist.IdNuevoStock = 0
-    '                    objStockHist.IdUbicacion_anterior = pBeStock.IdUbicacion
-    '                    objStockHist.IdUbicacion = pBeStock.IdUbicacion
-    '                    objStockHist.IdDespachoEnc = 0
-    '                    objStockHist.Fec_agr = Now
-    '                    objStockHist.Fec_mod = Now
-    '                    objStockHist.Cantidad = vCantidadHist
-    '                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-    '                    clsLnStock.Eliminar(pBeStock, lConnection, lTransaction)
-
-    '                End If
-
-    '            End If
-
-    '        Next
-
-    '        IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1
-
-    '        For Each BeAjusteDet As clsBeTrans_ajuste_det In ListBeAjusteDet
-
-    '            BeStockCiclo = Get_Existente_By_IdStock(BeAjusteDet.IdStock, lConnection, lTransaction)
-
-    '            If BeStockCiclo IsNot Nothing Then
-    '                clsLnStock.Procesar_Ajuste(BeAjusteDet,
-    '                                           Usuario,
-    '                                           lConnection,
-    '                                           lTransaction)
-    '            End If
-
-    '        Next
-
-    '        For Each IdStock In lIdStocksAEliminar
-
-    '            BeStockCiclo = Get_Existente_By_IdStock(IdStock, lConnection, lTransaction)
-
-    '            If BeStockCiclo IsNot Nothing Then
-    '                clsLnStock.Eliminar_By_IdStock(IdStock, lConnection, lTransaction)
-    '            End If
-
-    '        Next
-
-    '        clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc,
-    '                                             6,
-    '                                             4,
-    '                                             lConnection,
-    '                                             lTransaction)
-
-    '        Procesar_Ajustes_SAP(BeTransInvEnc,
-    '                             lConnection,
-    '                             lTransaction,
-    '                             vIdPropietarioBodega,
-    '                             Usuario,
-    '                             pCodigoBodegaERP)
-
-    '    Catch ex As Exception
-    '        Throw New Exception(ex.Message)
-    '    End Try
-
-    'End Sub
-    ' File: Inventario/InventarioLogic.vb
-
     Public Shared Sub Regularizar_Inventario(ByVal BeTransInvEnc As clsBeTrans_inv_enc,
                                              ByVal ListBeStockNuevo As IList(Of clsBeStock),
                                              ByVal ListBeMovimientos As IList(Of clsBeTrans_movimientos),
@@ -2140,154 +1891,196 @@ Partial Public Class clsLnTrans_inv_ciclico
 
         Try
 
-            Dim idStockCounter As Integer = clsLnStock.MaxID(lConnection, lTransaction) + 1
-            Dim vIdPropietarioBodega As Integer = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BeTransInvEnc.Idpropietario, BeTransInvEnc.IdBodega, lConnection, lTransaction)
+            Dim vIdPropietarioBodega As Integer = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BeTransInvEnc.Idpropietario,
+                                                                                                                                BeTransInvEnc.IdBodega,
+                                                                                                                                lConnection,
+                                                                                                                                lTransaction)
 
 
             BeTransInvEnc.Regularizado = True
             BeTransInvEnc.Estado = "Finalizado"
             BeTransInvEnc.Hora_fin = Now
             BeTransInvEnc.Activo = True
-            BeTransInvEnc.IdStock = idStockCounter
 
             clsLnTrans_inv_enc.Actualizar(BeTransInvEnc, lConnection, lTransaction)
 
-            Dim lIdStocksAEliminar As New List(Of Integer)
-            Dim beStockCongelado As New clsBeTrans_inv_stock
+            Dim vCantInv As Double = 0
 
-            For Each pBeStock In ListBeStockNuevo.OrderBy(Function(x) x.IdProductoBodega)
+            IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
 
-                Dim beStockOriginal = Get_Existente_By_IdStock(pBeStock.IdStock, lConnection, lTransaction)
-                Dim cantidadOriginal = pBeStock.Cantidad
-                Dim fechaOriginal = pBeStock.Fecha_vence
-                Dim loteOriginal = pBeStock.Lote
-                Dim ubicacionOriginal = pBeStock.IdUbicacion
-                Dim estadoOriginal = pBeStock.IdProductoEstado
+            BeTransInvEnc.IdStock = IdStock
 
-                beStockCongelado = New clsBeTrans_inv_stock
-                beStockCongelado.IdStock = pBeStock.IdStock
-                beStockCongelado.Idinventario = BeTransInvEnc.Idinventarioenc
-                clsLnTrans_inv_stock.GetSingle(beStockCongelado, lConnection, lTransaction)
+            For Each pBeStock As clsBeStock In ListBeStockNuevo.OrderBy(Function(x) x.IdProductoBodega)
 
-                If beStockOriginal IsNot Nothing Then
+                ListStock = Get_Existente_By_IdStock(pBeStock.IdStock, lConnection, lTransaction)
 
-                    clsPublic.CopyObject(beStockOriginal, pBeStock)
+                If pBeStock.Cantidad = 0 Then
+                    Debug.Write("Pausa")
+                End If
 
-                    pBeStock.Cantidad = cantidadOriginal
-                    pBeStock.IdStock = beStockOriginal.IdStock
+                vCantInv = pBeStock.Cantidad
 
-                    pBeStock.Fecha_vence = fechaOriginal
-                    pBeStock.Lote = loteOriginal
-                    pBeStock.IdUbicacion = ubicacionOriginal
-                    pBeStock.IdProductoEstado = estadoOriginal
+                If ListStock.Count > 0 Then
 
-                    If cantidadOriginal < 0 Then
-                        If beStockOriginal.Cantidad >= Math.Abs(cantidadOriginal) Then
-                            pBeStock.Cantidad = beStockOriginal.Cantidad + cantidadOriginal
+                    For Each BeStock As clsBeStock In ListStock
+
+                        BeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
+                        BeStock.IdProductoEstado = pBeStock.IdProductoEstado
+                        BeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
+                        BeStock.Lote = pBeStock.Lote
+                        BeStock.Fecha_vence = pBeStock.Fecha_vence
+                        BeStock.IdUbicacion = pBeStock.IdUbicacion
+
+                        clsPublic.CopyObject(BeStock, pBeStock)
+
+                        '#EJC20180830: Después del copy se restablece la cantidad con ajuste
+                        'que se capturó en la variable vCantInv antes de perder el valor original
+                        pBeStock.Cantidad = vCantInv
+
+                        pBeStock.IdStock = BeStock.IdStock
+                        vCantidadHist = BeStock.Cantidad
+
+                        If pBeStock.Cantidad < 0 Then
+
+                            If BeStock.Cantidad >= Math.Abs(vCantInv) Then
+                                pBeStock.Cantidad = BeStock.Cantidad + pBeStock.Cantidad
+                            Else
+                                pBeStock.Cantidad = Math.Abs(pBeStock.Cantidad) - pBeStock.Cantidad
+                            End If
+
+                        ElseIf pBeStock.Cantidad > 0 Then
+
+                            '#EJC20180830_0723PM: Se modificó suma por cambio en procedimiento en caliente de último inventario en BYB.
+                            'pBeStock.Cantidad = BeStock.Cantidad + pBeStock.Cantidad
+                            'EJC202408270855: Christian se mudó a la casa de Carolina. (todavía, todavía) risas.
+                            pBeStock.Cantidad = pBeStock.Cantidad
+
+                        End If
+
+                        If pBeStock.Cantidad = 0 Then
+                            '#EJC20180625: Mantener copia del stock original
+                            clsPublic.CopyObject(pBeStock, objStockHist)
+                            '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                            objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                            objStockHist.IdNuevoStock = BeStock.IdStock
+                            objStockHist.IdPedidoEnc = BeStock.IdPedidoEnc
+                            objStockHist.IdPickingEnc = BeStock.IdPickingEnc
+                            objStockHist.IdUbicacion_anterior = BeStock.IdUbicacion
+                            objStockHist.IdUbicacion = BeStock.IdUbicacion
+                            objStockHist.IdDespachoEnc = 0
+                            objStockHist.Fec_agr = Now
+                            objStockHist.Fec_mod = Now
+                            objStockHist.Cantidad = vCantidadHist
+                            objStockHist.IdProductoTallaColor = BeStock.IdProductoTallaColor
+                            clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                            clsLnStock.Eliminar(BeStock, lConnection, lTransaction)
                         Else
-                            pBeStock.Cantidad = Math.Abs(cantidadOriginal) - cantidadOriginal
-                        End If
 
-                    ElseIf pBeStock.Cantidad > 0 Then
+                            '#CKFK20250130 Agregué esto para que cuando se cree un nuevo Stock se elimine el original,
+                            'si no tiene conteos
+                            If Not Existe_Conteo_By_IdStock_And_IdInvEnc_Mayor_0(pBeStock.IdStock,
+                                                                                 BeTransInvEnc.Idinventarioenc,
+                                                                                 lConnection,
+                                                                                 lTransaction) Then
+                                lIdStocksAEliminar.Add(BeStock.IdStock)
+                            End If
 
-                        '#EJC20180830_0723PM: Se modificó suma por cambio en procedimiento en caliente de último inventario en BYB.
-                        'pBeStock.Cantidad = BeStock.Cantidad + pBeStock.Cantidad
-                        'EJC202408270855: Christian se mudó a la casa de Carolina. (todavía, todavía) risas.
-                        pBeStock.Cantidad = pBeStock.Cantidad
-
-                    End If
-
-                    If pBeStock.Cantidad = 0 Then
-                        CrearStockHist(beStockOriginal, cantidadOriginal, lConnection, lTransaction)
-                        clsLnStock.Eliminar(beStockOriginal, lConnection, lTransaction)
-                    Else
-                        Dim resultado = Obtener_Existencia_Conteo(pBeStock.IdStock, BeTransInvEnc.Idinventarioenc, lConnection, lTransaction)
-                        Dim esOriginal As Boolean = False
-
-                        If beStockCongelado IsNot Nothing Then
-                            esOriginal = beStockCongelado.IdProductoEstado = pBeStock.IdProductoEstado AndAlso
-                                         beStockCongelado.Lote = pBeStock.Lote AndAlso
-                                         beStockCongelado.Fecha_vence = pBeStock.Fecha_vence AndAlso
-                                         beStockCongelado.IdUbicacion = pBeStock.IdUbicacion
-                        End If
-
-                        If resultado.ExisteConteoSobreOriginal AndAlso esOriginal Then
-                            pBeStock.Cantidad = Math.Abs(cantidadOriginal)
+                            pBeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                            pBeStock.Cantidad = Math.Abs(vCantInv)
                             pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
                             pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
                             pBeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
-                            clsLnStock.Actualizar(pBeStock, lConnection, lTransaction)
-                        ElseIf resultado.ConteoSobreOriginalConCambios Then
-                            InsertarNuevoStock(pBeStock, Math.Abs(cantidadOriginal), lConnection, lTransaction, idStockCounter)
-                            idStockCounter += 1
-                        Else
-                            lIdStocksAEliminar.Add(beStockOriginal.IdStock)
-                            InsertarNuevoStock(pBeStock, Math.Abs(cantidadOriginal), lConnection, lTransaction, idStockCounter)
-                            idStockCounter += 1
-                        End If
-                    End If
-                ElseIf cantidadOriginal > 0 Then
-                    InsertarNuevoStock(pBeStock, Math.Abs(cantidadOriginal), lConnection, lTransaction, idStockCounter)
-                    idStockCounter += 1
-                Else
-                    CrearStockHist(pBeStock, cantidadOriginal, lConnection, lTransaction)
-                    clsLnStock.Eliminar(pBeStock, lConnection, lTransaction)
+                            pBeStock.Lote = pBeStock.Lote
+                            pBeStock.Fecha_vence = pBeStock.Fecha_vence
+                            pBeStock.IdUbicacion = pBeStock.IdUbicacion
+                            clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
+                            IdStock += 1
 
-                End If
+                        End If
+
+                    Next
+
+                Else
+                    '#EJC20181212: 1621 de Erik para Erik :} debemos mejorar el análisis, si no se encuentra el IdStock (lista.count =0) y la cantidad es negativa.
+                    'Quiere decir que ese producto no se contó en esa ubicación y que probablemente ya no exista allí, por lo que no se debe insertar.
+                    If vCantInv > 0 Then
+
+                        pBeStock.IdStock = IdStock
+                        pBeStock.Cantidad = Math.Abs(vCantInv)
+                        pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
+                        pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
+                        pBeStock.Presentacion.IdPresentacion = pBeStock.IdPresentacion
+                        pBeStock.Lote = pBeStock.Lote
+                        pBeStock.Fecha_vence = pBeStock.Fecha_vence
+                        pBeStock.IdUbicacion = pBeStock.IdUbicacion
+                        clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
+                        IdStock += 1
+
+                    Else
+
+                        '#EJC20180625: Mantener copia del stock original
+                        clsPublic.CopyObject(pBeStock, objStockHist)
+                        '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                        objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                        objStockHist.IdNuevoStock = 0
+                        objStockHist.IdUbicacion_anterior = pBeStock.IdUbicacion
+                        objStockHist.IdUbicacion = pBeStock.IdUbicacion
+                        objStockHist.IdDespachoEnc = 0
+                        objStockHist.Fec_agr = Now
+                        objStockHist.Fec_mod = Now
+                        objStockHist.Cantidad = vCantidadHist
+                        objStockHist.IdProductoTallaColor = pBeStock.IdProductoTallaColor
+                        clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                        clsLnStock.Eliminar(pBeStock, lConnection, lTransaction)
+
+                    End If
 
                 End If
 
             Next
 
-            For Each BeAjusteDet In ListBeAjusteDet
-                Dim beStockOriginal = Get_Existente_By_IdStock(BeAjusteDet.IdStock, lConnection, lTransaction)
-                If beStockOriginal IsNot Nothing Then
-                    clsLnStock.Procesar_Ajuste(BeAjusteDet, Usuario, lConnection, lTransaction)
+            IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1
+
+            For Each BeAjusteDet As clsBeTrans_ajuste_det In ListBeAjusteDet
+
+                ListStock = Get_Existente_By_IdStock(BeAjusteDet.IdStock, lConnection, lTransaction)
+
+                If ListStock.Count > 0 Then
+                    clsLnStock.Procesar_Ajuste(BeAjusteDet,
+                                               Usuario,
+                                               lConnection,
+                                               lTransaction)
                 End If
 
             Next
 
             For Each IdStock In lIdStocksAEliminar
-                Dim beStockOriginal = Get_Existente_By_IdStock(IdStock, lConnection, lTransaction)
-                If beStockOriginal IsNot Nothing Then
+
+                ListStock = Get_Existente_By_IdStock(IdStock, lConnection, lTransaction)
+
+                If ListStock.Count > 0 Then
                     clsLnStock.Eliminar_By_IdStock(IdStock, lConnection, lTransaction)
                 End If
 
             Next
 
-            clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc, 6, 4, lConnection, lTransaction)
+            clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc,
+                                                 6,
+                                                 4,
+                                                 lConnection,
+                                                 lTransaction)
 
-            Procesar_Ajustes_SAP(BeTransInvEnc, lConnection, lTransaction, vIdPropietarioBodega, Usuario, pCodigoBodegaERP)
+            Procesar_Ajustes_SAP(BeTransInvEnc,
+                                 lConnection,
+                                 lTransaction,
+                                 vIdPropietarioBodega,
+                                 Usuario,
+                                 pCodigoBodegaERP)
 
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
 
-    End Sub
-
-    Private Shared Function CrearStockHist(ByVal stock As clsBeStock, ByVal cantidadHist As Integer, ByVal conn As SqlConnection, ByVal tran As SqlTransaction) As clsBeStock_hist
-        Dim hist As New clsBeStock_hist()
-        clsPublic.CopyObject(stock, hist)
-        hist.IdStockHist = clsLnStock_hist.MaxID(conn, tran) + 1
-        hist.IdNuevoStock = If(stock.IdStock > 0, stock.IdStock, 0)
-        hist.IdPedidoEnc = stock.IdPedidoEnc
-        hist.IdPickingEnc = stock.IdPickingEnc
-        hist.IdUbicacion_anterior = stock.IdUbicacion
-        hist.IdUbicacion = stock.IdUbicacion
-        hist.IdDespachoEnc = 0
-        hist.Fec_agr = Now
-        hist.Fec_mod = Now
-        hist.Cantidad = cantidadHist
-        clsLnStock_hist.Insertar(hist, conn, tran)
-        Return hist
-    End Function
-
-    Private Shared Sub InsertarNuevoStock(ByRef stock As clsBeStock, ByVal cantidad As Integer, ByVal conn As SqlConnection, ByVal tran As SqlTransaction, ByVal idStock As Integer)
-        stock.IdStock = idStock
-        stock.Cantidad = cantidad
-        stock.ProductoEstado.IdEstado = stock.IdProductoEstado
-        stock.Presentacion.IdPresentacion = stock.IdPresentacion
-        clsLnStock.Insertar(stock, conn, tran)
     End Sub
 
     Public Shared Sub Inserta_Encabezado_Ajuste(ByVal IdInventario As Integer,
@@ -2334,13 +2127,11 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     Public Shared Function Get_Existente_By_IdStock(ByVal IdStock As Integer,
                                                     ByRef lConnection As SqlConnection,
-                                                    ByRef lTransaction As SqlTransaction) As clsBeStock
-
-        Get_Existente_By_IdStock = Nothing
+                                                    ByRef lTransaction As SqlTransaction) As List(Of clsBeStock)
 
         Try
 
-            Dim lReturnList As clsBeStock = Nothing
+            Dim lReturnList As New List(Of clsBeStock)
 
             Dim vSQL As String = "SELECT * FROM stock WHERE IdStock=@IdStock "
 
@@ -2358,7 +2149,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                 For Each dr As DataRow In lDataTable.Rows
                     vBeTrans_inv_detalle = New clsBeStock
                     clsLnStock.Cargar(vBeTrans_inv_detalle, dr)
-                    Get_Existente_By_IdStock = vBeTrans_inv_detalle
+                    lReturnList.Add(vBeTrans_inv_detalle)
                 Next
 
             End Using
@@ -3381,7 +3172,9 @@ Partial Public Class clsLnTrans_inv_ciclico
     Public Shared Function Actualiza_Conteo_Ciclico_HH(ByVal BeTransInvCiclico As clsBeTrans_inv_ciclico,
                                                        ByVal pReconteo As Integer,
                                                        ByVal esOriginal As Boolean,
-                                                       ByRef Resultado As String) As Integer
+                                                       ByRef Resultado As String,
+                                                       ByVal CrearTallaColor As Boolean,
+                                                       ByVal ProductoTallaColor As clsBeProducto_talla_color) As Integer
         Dim rslt As Integer = 0
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -3417,16 +3210,18 @@ Partial Public Class clsLnTrans_inv_ciclico
                     ProductoTallaColor.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
 
                     If clsLnProducto_talla_color.Insertar(ProductoTallaColor) > 0 Then
-                        Dim PrdTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(ProductoTallaColor.IdProducto, ProductoTallaColor.IdTalla, ProductoTallaColor.IdColor)
+                        Dim PrdTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(ProductoTallaColor.IdProducto,
+                                                                                                    ProductoTallaColor.IdTalla,
+                                                                                                    ProductoTallaColor.IdColor)
 
-                        BeTransInvCiclico.IdProductoTallaColor = PrdTallaColor.IdProductoTallaColor
+                        BeTransInvCiclico.IdProductoTallaColor_nuevo = PrdTallaColor.IdProductoTallaColor
                     End If
                 End If
 
                 If esOriginal And (BeTransInvCiclico.Fecha_vence <> BeTransInvCiclico.Fecha_vence_stock OrElse
                        (BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0) OrElse
                        BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock OrElse
-                       BeTransInvCiclico.IdUbicacion_nuevo <> 0) Then
+                       BeTransInvCiclico.IdUbicacion_nuevo <> 0 OrElse CrearTallaColor OrElse BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0) Then
 
                     BeTransInvCiclico.IdInvCiclico = MaxID(lConnection, lTransaction) + 1
                     BeTransInvCiclico.IdStock = InvCiclico.IdStock
@@ -3736,8 +3531,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                     WHERE IdProductoBodega = @IdProductoBodega AND IdUbicacion  = @IdUbicacion 
                     AND lote_stock = @Lote  AND CONVERT(DATE, Fecha_Vence_Stock) = CONVERT(DATE, @Fecha_Vence)
                     AND IdPresentacion = @IdPresentacion
-                    AND IdInventarioEnc = @IdInventarioEnc
-                    AND IdStock = @IdStock "
+                    AND IdInventarioEnc = @IdInventarioEnc "
 
                 vSQL += " GROUP BY IdProductoBodega, IdProductoEstado, IdPresentacion, IdUbicacion, lote_stock, CONVERT(DATE,fecha_vence_stock) "
 
@@ -3750,7 +3544,6 @@ Partial Public Class clsLnTrans_inv_ciclico
                     lDTA.SelectCommand.Parameters.AddWithValue("@Fecha_Vence", pitem.Fecha_vence_stock)
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pitem.IdPresentacion)
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pitem.Idinventarioenc)
-                    lDTA.SelectCommand.Parameters.AddWithValue("@IdStock", pitem.IdStock)
 
                     Dim lDataTable As New DataTable
                     lDTA.Fill(lDataTable)
@@ -4153,334 +3946,6 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
-    'Public Shared Sub Get_All_Inventario_Regularizacion(ByVal pIdInventario As Integer,
-    '                                                    ByVal prg As Windows.Forms.ProgressBar,
-    '                                                    ByVal rdStockInventarioMovs As Boolean,
-    '                                                    ByVal Fec_agr As Date,
-    '                                                    Optional ByVal lConnection As SqlConnection = Nothing,
-    '                                                    Optional ByVal lTransaction As SqlTransaction = Nothing)
-
-    '    Try
-
-    '        Dim Temp As New clsBeTempComparacionInventario
-    '        Dim vCantidad As Double = 0.0
-    '        Dim vPeso As Double = 0.0
-    '        Dim vEntradasSalidas As Double = 0.0
-    '        Dim ListaMovs As New List(Of clsBeVW_Movimientos)
-    '        Dim TempListaMovs As New List(Of clsBeVW_Movimientos)
-    '        Dim BeStockEnFecha As New clsBeStockEnUnaFecha
-    '        Dim tmpBeStocnEnFecha As New clsBeStockEnUnaFecha
-    '        Dim lBeStockEnFecha As New List(Of clsBeStockEnUnaFecha)
-    '        Dim lBeStockEnFechaFilter As New List(Of clsBeStockEnUnaFecha)
-
-    '        Dim vSQL As String = "SELECT trans_inv_ciclico.idinvciclico, trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, SUM(trans_inv_ciclico.cant_stock) AS cantidad_stock, SUM(trans_inv_ciclico.cantidad) AS cantidad_conteo, 
-    '                                                  SUM(trans_inv_ciclico.cant_reconteo) AS cantidad_reconteo, SUM(trans_inv_ciclico.peso_stock) AS peso_stock, SUM(trans_inv_ciclico.peso) AS peso_conteo, SUM(trans_inv_ciclico.peso_reconteo) AS peso_reconteo, 
-    '                                                  producto.codigo AS Codigo, producto.nombre AS Producto, trans_inv_ciclico.lote_stock as LoteOrigen, trans_inv_ciclico.lote as LoteDestino,  trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate AS Licencia, 
-    '                                                  producto_estado_1.nombre AS Estado, producto_estado.nombre AS EstadoDestino,                   
-    '                                      dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega) as UbicacionOrigen,
-    '                                      ISNULL(dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion_nuevo,trans_inv_ciclico.IdBodega),dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega)) as UbicacionDestino,
-    '                                                  trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.Fec_Mod
-    '                              FROM     trans_inv_ciclico INNER JOIN
-    '                                                  trans_inv_enc ON trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc AND trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc INNER JOIN
-    '                                                  producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega AND trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
-    '                                                  producto ON producto_bodega.IdProducto = producto.IdProducto INNER JOIN
-    '                                                  producto_estado AS producto_estado_1 ON trans_inv_ciclico.IdProductoEstado = producto_estado_1.IdEstado INNER JOIN
-    '                                                  producto_estado ON trans_inv_ciclico.IdProductoEst_nuevo = producto_estado.IdEstado
-    '                              WHERE  (trans_inv_ciclico.idinventarioenc = @idinventario)
-    '                              GROUP BY dbo.trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, producto.codigo, producto.nombre, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate, 
-    '                                                  trans_inv_ciclico.IdProductoEstado, trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.IdUbicacion_nuevo, producto_estado_1.nombre, producto_estado.nombre, 
-    '                                      trans_inv_ciclico.lote_stock,trans_inv_ciclico.IdStock,
-    '                                                  trans_inv_ciclico.IdBodega, trans_inv_ciclico.Fec_Mod,trans_inv_ciclico.idinvciclico 
-    '                               ORDER BY producto.codigo "
-
-    '        Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-    '        Dim dad As New SqlDataAdapter(cmd)
-
-    '        dad.SelectCommand.CommandType = CommandType.Text
-    '        dad.SelectCommand.Parameters.AddWithValue("@idinventario", pIdInventario)
-
-    '        Dim lDataTable As New DataTable
-    '        dad.Fill(lDataTable)
-
-    '        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-    '            Dim vContador As Integer = 0
-
-    '            ListaMovs = clsLnTrans_movimientos.Get_All_Movimientos_By_Rango_Fechas(Fec_agr,
-    '                                                                                   Now,
-    '                                                                                   lConnection,
-    '                                                                                   lTransaction)
-    '            prg.Maximum = lDataTable.Rows.Count
-
-    '            For Each lRow As DataRow In lDataTable.Rows
-
-    '                BeStockEnFecha = New clsBeStockEnUnaFecha
-
-    '                Temp = New clsBeTempComparacionInventario
-    '                Temp.IdInventario = lRow("idinventarioenc")
-    '                Temp.IdInvciclico = lRow("idinvciclico")
-    '                Temp.IdProductoBodega = lRow("IdProductoBodega")
-    '                Temp.IdProducto = clsLnProducto.Get_IdProducto_By_IdProductoBodega(lRow("IdProductoBodega"), lConnection, lTransaction)
-    '                Temp.Codigo = lRow("Codigo")
-    '                Temp.Producto = lRow("Producto")
-    '                Temp.IdUbicacion = lRow("IdUbicacion")
-    '                Temp.Fec_Mod = lRow("Fec_Mod")
-    '                Temp.Cantidad_Stock = lRow("cantidad_stock")
-    '                Temp.Peso_Stock = lRow("peso_stock")
-
-    '                If lRow("cantidad_reconteo") > 0 Then
-    '                    vCantidad = lRow("cantidad_reconteo")
-    '                Else
-    '                    vCantidad = lRow("cantidad_conteo")
-    '                End If
-
-    '                Temp.Cantidad = vCantidad
-
-    '                If lRow("peso_reconteo") > 0 Then
-    '                    vPeso = lRow("peso_reconteo")
-    '                Else
-    '                    vPeso = lRow("peso_conteo")
-    '                End If
-
-    '                Temp.Peso = vPeso
-    '                Temp.LoteOrigen = lRow("LoteOrigen")
-    '                Temp.LoteDestino = lRow("LoteDestino")
-    '                Temp.EstadoOrigen = lRow("Estado")
-    '                Temp.EstadoDestino = lRow("EstadoDestino")
-    '                Temp.UbicacionOrigen = lRow("UbicacionOrigen")
-    '                Temp.UbicacionDestino = lRow("UbicacionDestino")
-    '                Temp.FechaVence = lRow("fecha_vence")
-    '                Temp.Licencia = lRow("Licencia")
-
-    '                If Temp.Cantidad_Stock <> Temp.Cantidad Or rdStockInventarioMovs Then
-
-    '                    If rdStockInventarioMovs Then
-
-    '                        If ListaMovs.Count > 0 Then
-
-    '                            vEntradasSalidas = 0
-
-    '                            'cuando la ubicación es de picking se toma la ubicación origen
-    '                            'cuando no es picking se toma la ubicación destino.
-    '                            TempListaMovs = ListaMovs.FindAll(Function(x) x.IdProductoBodega = Temp.IdProductoBodega _
-    '                                                              And x.Lote = Temp.LoteDestino _
-    '                                                              And x.Fecha_Vence = Temp.FechaVence _
-    '                                                              And x.Lic_Plate = Temp.Licencia _
-    '                                                              And x.Fecha <= Temp.Fec_Mod _
-    '                                                              And (((x.IdUbicacionOrigen = Temp.IdUbicacion) And
-    '                                                                     x.IdTipoTarea <> clsDataContractDI.tTipoTarea.PIK And
-    '                                                                     x.IdTipoTarea <> clsDataContractDI.tTipoTarea.DESP) _
-    '                                                                Or (((x.IdUbicacionOrigen = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen = x.IdUbicacionDestino) OrElse
-    '                                                                     (x.IdUbicacionDestino = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen <> x.IdUbicacionDestino)) And
-    '                                                                     x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
-    '                                                                Or (x.IdUbicacionOrigen = Temp.IdUbicacion And x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK)))
-
-    '                            lBeStockEnFecha.Clear()
-
-    '                            For Each Mov In TempListaMovs
-
-    '                                BeStockEnFecha.Ingresos += Mov.Ingresos
-    '                                BeStockEnFecha.Salidas += Mov.Salidas
-    '                                BeStockEnFecha.Ajuste_Positivo += Mov.Ajustes_Positivos
-    '                                BeStockEnFecha.Ajuste_Negativo += Mov.Ajustes_Negativos
-    '                                BeStockEnFecha.EnMovimiento += Mov.EnMovimiento
-    '                                BeStockEnFecha.Fecha = Mov.Fecha
-    '                                BeStockEnFecha.Fecha_Conteo = Temp.Fec_Mod
-
-    '                                tmpBeStocnEnFecha = New clsBeStockEnUnaFecha
-    '                                clsPublic.CopyObject(Mov, tmpBeStocnEnFecha)
-
-    '                                lBeStockEnFecha.Add(tmpBeStocnEnFecha)
-
-    '                            Next
-
-    '                        End If
-
-    '                        If lBeStockEnFecha.Count > 0 Then
-
-    '                            lBeStockEnFechaFilter = lBeStockEnFecha.FindAll(Function(x) x.Fecha > x.Fecha_Conteo _
-    '                                                                        AndAlso x.IdTipoTarea <> clsDataContractDI.tTipoTarea.VERI)
-
-    '                            '#EJC20250515: Si lo contado es menor que el stock que debió haber existido, buscar si hubo un despacho o picking.
-    '                            If Temp.Cantidad_Stock > Temp.Cantidad Then
-
-    '                                Dim lDespachos = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
-    '                                                .Sum(Function(z) z.Salidas)
-
-    '                                Dim lPickings = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK) _
-    '                                                .Sum(Function(z) z.EnMovimiento)
-
-    '                                Dim lCambioUbic = lBeStockEnFechaFilter _
-    '                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-    '                                                  .Sum(Function(z) z.EnMovimiento)
-
-    '                                Dim lCambioEst = lBeStockEnFechaFilter _
-    '                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
-    '                                                  .Sum(Function(z) z.EnMovimiento)
-
-    '                                'Si la cantidad se despacho vamos a sumársela al conteo                                
-    '                                If lDespachos > 0 Then
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas * -1) + (BeStockEnFecha.EnMovimiento)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lPickings > 0 Then
-    '                                    BeStockEnFecha.Salidas = lPickings * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lCambioUbic > 0 Then
-    '                                    BeStockEnFecha.Salidas = lCambioUbic * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lCambioEst > 0 Then
-    '                                    BeStockEnFecha.Salidas = lCambioEst * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                Else
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-    '                                End If
-
-    '                            ElseIf Temp.Cantidad_Stock < Temp.Cantidad Then
-
-    '                                Dim lEntradas = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) (x.IdTipoTarea = clsDataContractDI.tTipoTarea.RECE OrElse x.IdTipoTarea = clsDataContractDI.tTipoTarea.PACK)) _
-    '                                                .Sum(Function(z) z.Ingresos)
-
-    '                                Dim lAjustesPositivos = lBeStockEnFechaFilter _
-    '                                                        .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTP) _
-    '                                                        .Sum(Function(z) z.Ajustes_Positivos)
-
-    '                                Dim lAjustesNegativos = lBeStockEnFechaFilter _
-    '                                                        .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTN) _
-    '                                                        .Sum(Function(z) z.Ajustes_Negativos)
-
-    '                                Dim lDespachos = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
-    '                                                .Sum(Function(z) z.Salidas)
-
-    '                                Dim lPickings = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK) _
-    '                                                .Sum(Function(z) z.EnMovimiento)
-
-    '                                Dim lCambioUbic = lBeStockEnFechaFilter _
-    '                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-    '                                                  .Sum(Function(z) z.EnMovimiento)
-
-    '                                Dim lCambioEst = lBeStockEnFechaFilter _
-    '                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
-    '                                                  .Sum(Function(z) z.EnMovimiento)
-
-    '                                BeStockEnFecha.Ingresos = lEntradas
-
-    '                                'Dim lUbicaciones = ListaMovs _
-    '                                '                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-    '                                '                .Sum(Function(z) z.EnMovimiento)
-
-    '                                'BeStockEnFecha.EnMovimiento = 0
-
-    '                                If lDespachos > 0 Then
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas * -1) + (BeStockEnFecha.EnMovimiento)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lPickings > 0 Then
-    '                                    BeStockEnFecha.Salidas = lPickings * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lCambioUbic > 0 Then
-    '                                    BeStockEnFecha.Salidas = lCambioUbic * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lCambioEst > 0 Then
-    '                                    BeStockEnFecha.Salidas = lCambioEst * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                Else
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-    '                                End If
-
-    '                            Else
-
-    '                                Dim lDespachos = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
-    '                                                .Sum(Function(z) z.Salidas)
-
-    '                                Dim lPickings = lBeStockEnFechaFilter _
-    '                                                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK) _
-    '                                                .Sum(Function(z) z.EnMovimiento)
-
-    '                                Dim lCambioUbic = lBeStockEnFechaFilter _
-    '                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-    '                                                  .Sum(Function(z) z.EnMovimiento)
-
-    '                                Dim lCambioEst = lBeStockEnFechaFilter _
-    '                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
-    '                                                  .Sum(Function(z) z.EnMovimiento)
-
-    '                                'Si la cantidad se despacho vamos a sumársela al conteo                                
-    '                                If lDespachos > 0 Then
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas * -1) + (BeStockEnFecha.EnMovimiento)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lPickings > 0 Then
-    '                                    BeStockEnFecha.Salidas = lPickings * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lCambioUbic > 0 Then
-    '                                    BeStockEnFecha.Salidas = lCambioUbic * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                ElseIf lCambioEst > 0 Then
-    '                                    BeStockEnFecha.Salidas = lCambioEst * -1
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-    '                                Else
-    '                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-    '                                End If
-
-    '                            End If
-
-    '                        End If
-
-    '                        Temp.Entradas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo)
-    '                        Temp.Salidas = (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-
-    '                    End If
-
-    '                Else
-    '                    vEntradasSalidas = 0
-    '                End If
-
-    '                Temp.Entradas_Salidas = vEntradasSalidas
-
-    '                Dim vDiferencia As Double = ((Temp.Cantidad_Stock + Temp.Entradas_Salidas) - Temp.Cantidad)
-
-    '                If vDiferencia = 0 Then
-    '                    Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
-    '                    oBeTrans_inv_ciclico.Idinventarioenc = pIdInventario
-    '                    oBeTrans_inv_ciclico.IdInvCiclico = Temp.IdInvciclico
-    '                    oBeTrans_inv_ciclico.Regularizar = False
-    '                    Actualizar_Regularizar_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, lConnection, lTransaction)
-    '                Else
-    '                    If Temp.Cantidad = Temp.Cantidad_Stock AndAlso Temp.Entradas_Salidas <> 0 Then
-    '                        Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
-    '                        oBeTrans_inv_ciclico.Idinventarioenc = pIdInventario
-    '                        oBeTrans_inv_ciclico.IdInvCiclico = Temp.IdInvciclico
-    '                        oBeTrans_inv_ciclico.Nuevo_Stock = Math.Abs(Temp.Cantidad_Stock + Temp.Entradas_Salidas)
-    '                        Actualizar_NuevoStock_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, lConnection, lTransaction)
-    '                    Else
-    '                        If Temp.Entradas_Salidas <> 0 Then
-    '                            Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
-    '                            oBeTrans_inv_ciclico.Idinventarioenc = pIdInventario
-    '                            oBeTrans_inv_ciclico.IdInvCiclico = Temp.IdInvciclico
-    '                            oBeTrans_inv_ciclico.Nuevo_Stock = Math.Abs(Temp.Cantidad_Stock + Temp.Entradas_Salidas)
-    '                            Actualizar_NuevoStock_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, lConnection, lTransaction)
-    '                        End If
-    '                    End If
-    '                End If
-
-    '                clsLnTempComparacionInventario.Insertar(Temp, lConnection, lTransaction)
-
-    '                prg.Value = vContador
-
-    '                vContador += 1
-
-    '            Next
-
-    '        End If
-
-    '    Catch ex As Exception
-    '        Throw ex
-    '    End Try
-
-    'End Sub
-
-
     Public Shared Sub Get_All_Inventario_Regularizacion(ByVal pIdInventario As Integer,
                                                         ByVal prg As Windows.Forms.ProgressBar,
                                                         ByVal rdStockInventarioMovs As Boolean,
@@ -4501,116 +3966,33 @@ Partial Public Class clsLnTrans_inv_ciclico
             Dim lBeStockEnFecha As New List(Of clsBeStockEnUnaFecha)
             Dim lBeStockEnFechaFilter As New List(Of clsBeStockEnUnaFecha)
 
-            Dim vSQL As String = "SELECT  
-                    T.idinventarioenc, 
-                    T.IdProductoBodega, 
-                    SUM(T.cantidad_stock) AS cantidad_stock, 
-                    SUM(T.cantidad_conteo) AS cantidad_conteo, 
-                    SUM(T.cantidad_reconteo) AS cantidad_reconteo, 
-                    SUM(T.peso_stock) AS peso_stock, 
-                    SUM(T.peso_conteo) AS peso_conteo, 
-                    SUM(T.peso_reconteo) AS peso_reconteo, 
-                    T.Codigo, 
-                    T.Producto, 
-                    T.LoteOrigen, 
-                    T.LoteDestino,  
-                    T.fecha_vence, 
-                    T.Licencia, 
-                    T.Estado, 
-                    T.EstadoDestino,  
-                    T.UbicacionOrigen,
-                    T.UbicacionDestino,
-                    T.IdUbicacion, 
-                    T.IdUnidadMedida,
-                    MAX(T.Fec_Mod) AS Fec_Mod, 
-                    T.IdPresentacion, 
-                    T.IdProductoEstado, 
-                    T.IdProductoEst_nuevo, 
-                    T.fecha_vence_stock,
-                    SUM(T.Cantidad_Reservada) AS Cantidad_Reservada
-                FROM (
-                    SELECT  
-                        ciclico.idinventarioenc, 
-                        ciclico.IdProductoBodega,  
-                        MAX(ciclico.cant_stock) AS cantidad_stock, 
-                        SUM(ciclico.cantidad) AS cantidad_conteo, 
-                        SUM(ciclico.cant_reconteo) AS cantidad_reconteo, 
-                        MAX(ciclico.peso_stock) AS peso_stock, 
-                        SUM(ciclico.peso) AS peso_conteo, 
-                        SUM(ciclico.peso_reconteo) AS peso_reconteo, 
-                        p.codigo AS Codigo, 
-                        p.nombre AS Producto, 
-                        ciclico.lote_stock AS LoteOrigen, 
-                        ciclico.lote AS LoteDestino,  
-                        ciclico.fecha_vence, 
-                        ciclico.lic_plate AS Licencia, 
-                        est1.nombre AS Estado, 
-                        est2.nombre AS EstadoDestino,  
-                        dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion, ciclico.IdBodega) AS UbicacionOrigen,
-                        ISNULL(
-                            dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion_nuevo, ciclico.IdBodega),
-                            dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion, ciclico.IdBodega)
-                        ) AS UbicacionDestino,
-                        ciclico.IdUbicacion, 
-                        MAX(ciclico.fec_mod) AS Fec_Mod,
-                        ciclico.IdPresentacion, 
-                        ciclico.IdProductoEstado, 
-                        ciclico.IdProductoEst_nuevo, 
-                        ciclico.fecha_vence_stock, 
-                        ciclico.IdUnidadMedida,  
-                        MAX(ciclico.cantidad_reservada_umbas) AS cantidad_reservada
-                    FROM 
-                        trans_inv_ciclico ciclico
-                        INNER JOIN trans_inv_enc enc ON ciclico.idinventarioenc = enc.idinventarioenc
-                        INNER JOIN producto_bodega pb ON ciclico.IdProductoBodega = pb.IdProductoBodega
-                        INNER JOIN producto p ON pb.IdProducto = p.IdProducto
-                        INNER JOIN producto_estado est1 ON ciclico.IdProductoEstado = est1.IdEstado
-                        INNER JOIN producto_estado est2 ON ciclico.IdProductoEst_nuevo = est2.IdEstado
-                    WHERE  
-                        ciclico.idinventarioenc = @IdInventario
-                    GROUP BY 
-                        ciclico.idinventarioenc, 
-                        ciclico.IdProductoBodega, 
-                        p.codigo, 
-                        p.nombre, 
-                        ciclico.lote, 
-                        ciclico.fecha_vence, 
-                        ciclico.lic_plate, 
-                        ciclico.IdProductoEstado, 
-                        ciclico.IdProductoEst_nuevo, 
-                        ciclico.IdUbicacion, 
-                        ciclico.IdUbicacion_nuevo, 
-                        est1.nombre, 
-                        est2.nombre, 
-                        ciclico.lote_stock,
-                        ciclico.IdStock,
-                        ciclico.IdBodega, 
-                        ciclico.IdUnidadMedida,
-                        ciclico.IdPresentacion, 
-                        ciclico.fecha_vence_stock
-                ) T
-               GROUP BY 
-                    T.idinventarioenc, 
-                    T.IdProductoBodega,
-                    T.Codigo, 
-                    T.Producto, 
-                    T.LoteOrigen, 
-                    T.LoteDestino,  
-                    T.fecha_vence, 
-                    T.Licencia, 
-                    T.Estado, 
-                    T.EstadoDestino,  
-                    T.UbicacionOrigen,
-                    T.UbicacionDestino,
-                    T.IdUbicacion,
-                    T.IdUnidadMedida,
-                    T.IdPresentacion, 
-                    T.IdProductoEstado, 
-                    T.IdProductoEst_nuevo, 
-                    T.fecha_vence_stock
-                ORDER BY 
-                    T.Codigo      "
-
+            Dim vSQL As String = "SELECT trans_inv_ciclico.idinvciclico, trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, SUM(trans_inv_ciclico.cant_stock) AS cantidad_stock, SUM(trans_inv_ciclico.cantidad) AS cantidad_conteo, 
+                                                      SUM(trans_inv_ciclico.cant_reconteo) AS cantidad_reconteo, SUM(trans_inv_ciclico.peso_stock) AS peso_stock, SUM(trans_inv_ciclico.peso) AS peso_conteo, SUM(trans_inv_ciclico.peso_reconteo) AS peso_reconteo, 
+                                                      producto.codigo AS Codigo, producto.nombre AS Producto, trans_inv_ciclico.lote_stock as LoteOrigen, trans_inv_ciclico.lote as LoteDestino,  trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate AS Licencia, 
+                                                      producto_estado_1.nombre AS Estado, producto_estado.nombre AS EstadoDestino,                   
+				                                      dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega) as UbicacionOrigen,
+				                                      ISNULL(dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion_nuevo,trans_inv_ciclico.IdBodega),dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega)) as UbicacionDestino,
+                                                      trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.Fec_Mod, color.nombre Color, talla.Codigo Talla, trans_inv_ciclico.IdProductoTallaColor, trans_inv_ciclico.IdProductoTallaColor_nuevo, 
+                                                      talla.Codigo Talla, color.nombre Color, ISNULL(t.Codigo, '') AS TallaNueva, ISNULL(c.nombre, '') AS ColorNuevo
+                                  FROM     trans_inv_ciclico INNER JOIN
+                                                      trans_inv_enc ON trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc AND trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc INNER JOIN
+                                                      producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega AND trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
+                                                      producto ON producto_bodega.IdProducto = producto.IdProducto INNER JOIN
+                                                      producto_estado AS producto_estado_1 ON trans_inv_ciclico.IdProductoEstado = producto_estado_1.IdEstado INNER JOIN
+                                                      producto_estado ON trans_inv_ciclico.IdProductoEst_nuevo = producto_estado.IdEstado LEFT JOIN
+                                                      producto_talla_color ON trans_inv_ciclico.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor LEFT JOIN
+                                                      talla ON talla.IdTalla = producto_talla_color.IdTalla LEFT JOIN
+                                                      color ON color.IdColor = producto_talla_color.IdColor LEFT JOIN
+                                                      producto_talla_color ptc ON trans_inv_ciclico.IdProductoTallaColor_nuevo = ptc.IdProductoTallaColor LEFT JOIN
+                                                      talla t ON t.IdTalla = ptc.IdTalla LEFT JOIN
+                                                      color c ON c.IdColor = ptc.IdColor
+                                  WHERE  (trans_inv_ciclico.idinventarioenc = @idinventario)
+                                  GROUP BY dbo.trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, producto.codigo, producto.nombre, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate, 
+                                                      trans_inv_ciclico.IdProductoEstado, trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.IdUbicacion_nuevo, producto_estado_1.nombre, producto_estado.nombre, 
+				                                      trans_inv_ciclico.lote_stock,trans_inv_ciclico.IdStock,
+                                                      trans_inv_ciclico.IdBodega, trans_inv_ciclico.Fec_Mod,trans_inv_ciclico.idinvciclico, color.nombre, talla.codigo, trans_inv_ciclico.IdProductoTallaColor, trans_inv_ciclico.IdProductoTallaColor_nuevo,
+                                                      talla.codigo, color.nombre, t.Codigo, c.nombre 
+                                   ORDER BY producto.codigo "
 
             Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -4637,7 +4019,7 @@ Partial Public Class clsLnTrans_inv_ciclico
 
                     Temp = New clsBeTempComparacionInventario
                     Temp.IdInventario = lRow("idinventarioenc")
-                    Temp.IdInvciclico = 0
+                    Temp.IdInvciclico = lRow("idinvciclico")
                     Temp.IdProductoBodega = lRow("IdProductoBodega")
                     Temp.IdProducto = clsLnProducto.Get_IdProducto_By_IdProductoBodega(lRow("IdProductoBodega"), lConnection, lTransaction)
                     Temp.Codigo = lRow("Codigo")
@@ -4670,14 +4052,14 @@ Partial Public Class clsLnTrans_inv_ciclico
                     Temp.UbicacionDestino = lRow("UbicacionDestino")
                     Temp.FechaVence = lRow("fecha_vence")
                     Temp.Licencia = lRow("Licencia")
-                    Temp.FechaVenceStock = lRow("fecha_vence_stock")
-                    Temp.IdProductoEstado = lRow("IdProductoEstado")
-                    Temp.IdProductoEst_nuevo = lRow("IdProductoEst_nuevo")
-                    Temp.IdPresentacion = lRow("IdPresentacion")
-                    Temp.IdUnidadMedida = lRow("IdUnidadMedida")
-                    Temp.Cantidad_Reservada_UmBas = lRow("Cantidad_Reservada")
+                    Temp.IdProductoTallaColor = lRow("IdProductoTallaColor")
+                    Temp.IdProductoTallaColor_nuevo = lRow("IdProductoTallaColor_nuevo")
+                    Temp.TallaStock = lRow("Talla")
+                    Temp.ColorStock = lRow("Color")
+                    Temp.TallaNueva = lRow("TallaNueva")
+                    Temp.ColorNuevo = lRow("ColorNuevo")
 
-                    If Temp.Cantidad_Stock <> Temp.Cantidad Or rdStockInventarioMovs Then
+                    If Temp.Cantidad_Stock <> Temp.Cantidad Then
 
                         If rdStockInventarioMovs Then
 
@@ -4688,17 +4070,15 @@ Partial Public Class clsLnTrans_inv_ciclico
                                 'cuando la ubicación es de picking se toma la ubicación origen
                                 'cuando no es picking se toma la ubicación destino.
                                 TempListaMovs = ListaMovs.FindAll(Function(x) x.IdProductoBodega = Temp.IdProductoBodega _
-                                                                  And x.Lote = Temp.LoteDestino _
-                                                                  And x.Fecha_Vence = Temp.FechaVence _
-                                                              And x.Lic_Plate = Temp.Licencia _
-                                                              And x.Fecha <= Temp.Fec_Mod _
-                                                              And (((x.IdUbicacionOrigen = Temp.IdUbicacion) And
-                                                                     x.IdTipoTarea <> clsDataContractDI.tTipoTarea.PIK And
-                                                                     x.IdTipoTarea <> clsDataContractDI.tTipoTarea.DESP) _
-                                                                Or (((x.IdUbicacionOrigen = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen = x.IdUbicacionDestino) OrElse
-                                                                     (x.IdUbicacionDestino = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen <> x.IdUbicacionDestino)) And
-                                                                     x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
-                                                                Or (x.IdUbicacionOrigen = Temp.IdUbicacion And x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK)))
+                                                                  And x.Lote = Temp.LoteDestino And x.Fecha_Vence = Temp.FechaVence _
+                                                                  And x.Lic_Plate = Temp.Licencia _
+                                                                  And (((x.IdUbicacionOrigen = Temp.IdUbicacion) And
+                                                                         x.IdTipoTarea <> clsDataContractDI.tTipoTarea.PIK And
+                                                                         x.IdTipoTarea <> clsDataContractDI.tTipoTarea.DESP) _
+                                                                    Or (((x.IdUbicacionOrigen = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen = x.IdUbicacionDestino) OrElse
+                                                                         (x.IdUbicacionDestino = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen <> x.IdUbicacionDestino)) And
+                                                                         x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
+                                                                    Or (x.IdUbicacionOrigen = Temp.IdUbicacion And x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK)))
 
                                 lBeStockEnFecha.Clear()
 
@@ -4724,167 +4104,101 @@ Partial Public Class clsLnTrans_inv_ciclico
                             If lBeStockEnFecha.Count > 0 Then
 
                                 lBeStockEnFechaFilter = lBeStockEnFecha.FindAll(Function(x) x.Fecha > x.Fecha_Conteo _
-                                                                        AndAlso x.IdTipoTarea <> clsDataContractDI.tTipoTarea.VERI)
+                                                                            AndAlso x.IdTipoTarea <> clsDataContractDI.tTipoTarea.VERI)
 
                                 '#EJC20250515: Si lo contado es menor que el stock que debió haber existido, buscar si hubo un despacho o picking.
-                                Dim lEntradas = lBeStockEnFechaFilter _
-                                                   .Where(Function(x) (x.IdTipoTarea = clsDataContractDI.tTipoTarea.RECE OrElse x.IdTipoTarea = clsDataContractDI.tTipoTarea.PACK)) _
-                                                   .Sum(Function(z) z.Ingresos)
+                                If Temp.Cantidad_Stock > Temp.Cantidad Then
 
-                                Dim lAjustesPositivos = lBeStockEnFechaFilter _
-                                                        .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTP) _
-                                                        .Sum(Function(z) z.Ajustes_Positivos)
+                                    Dim lDespachos = lBeStockEnFechaFilter _
+                                                    .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
+                                                    .Sum(Function(z) z.Salidas)
 
-                                Dim lAjustesNegativos = lBeStockEnFechaFilter _
-                                                        .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTN) _
-                                                        .Sum(Function(z) z.Ajustes_Negativos)
+                                    Dim lPickings = lBeStockEnFechaFilter _
+                                                    .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK) _
+                                                    .Sum(Function(z) z.EnMovimiento)
 
-                                Dim lDespachos = lBeStockEnFechaFilter _
-                                            .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.DESP) _
-                                            .Sum(Function(z) z.Salidas)
+                                    Dim lCambioUbic = lBeStockEnFechaFilter _
+                                                      .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
+                                                      .Sum(Function(z) z.EnMovimiento)
 
-                                Dim lPickings = lBeStockEnFechaFilter _
-                                            .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK) _
-                                            .Sum(Function(z) z.EnMovimiento)
+                                    Dim lCambioEst = lBeStockEnFechaFilter _
+                                                      .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
+                                                      .Sum(Function(z) z.EnMovimiento)
 
-                                Dim lCambioUbic = lBeStockEnFechaFilter _
-                                              .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-                                              .Sum(Function(z) z.EnMovimiento)
-
-                                Dim lCambioUbicIng = lBeStockEnFechaFilter _
-                                              .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-                                              .Sum(Function(z) z.Ingresos)
-
-                                Dim lCambioUbicSal = lBeStockEnFechaFilter _
-                                              .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-                                              .Sum(Function(z) z.Salidas)
-
-                                Dim lCambioEst = lBeStockEnFechaFilter _
-                                              .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
-                                              .Sum(Function(z) z.EnMovimiento)
-
-                                Dim lCambioEstIng = lBeStockEnFechaFilter _
-                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
-                                                  .Sum(Function(z) z.Ingresos)
-
-                                Dim lCambioEstSal = lBeStockEnFechaFilter _
-                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST) _
-                                                  .Sum(Function(z) z.Salidas)
-
-                                Dim lReemplazos = lBeStockEnFechaFilter _
-                                                  .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.REEMP_BE_PICK _
-                                                  OrElse x.IdTipoTarea = clsDataContractDI.tTipoTarea.REEMP_ME_PICK _
-                                                  OrElse x.IdTipoTarea = clsDataContractDI.tTipoTarea.REEMP_NE_PICK) _
-                                                  .Sum(Function(z) z.Salidas)
-
-                                BeStockEnFecha.Ingresos = lEntradas + lCambioUbicIng + lCambioEstIng
-
-                                If lDespachos > 0 Then
-                                    lDespachos = lDespachos + lReemplazos + lCambioUbicSal + lCambioEstSal
-                                    If Temp.Cantidad_Reservada_UmBas > 0 Then
-                                        Temp.Cantidad_Reservada_UmBas = Temp.Cantidad_Reservada_UmBas - lDespachos
+                                    'Si la cantidad se despacho vamos a sumársela al conteo                                
+                                    If lDespachos > 0 Then
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas * -1) + (BeStockEnFecha.EnMovimiento)) - (+BeStockEnFecha.Ajuste_Negativo)
+                                    ElseIf lPickings > 0 Then
+                                        BeStockEnFecha.Salidas = lPickings * -1
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
+                                    ElseIf lCambioUbic > 0 Then
+                                        BeStockEnFecha.Salidas = lCambioUbic * -1
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
+                                    ElseIf lCambioEst > 0 Then
+                                        BeStockEnFecha.Salidas = lCambioEst * -1
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
+                                    Else
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
                                     End If
-                                    BeStockEnFecha.Salidas = (lDespachos * -1)
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas) + (BeStockEnFecha.EnMovimiento)) - (+BeStockEnFecha.Ajuste_Negativo)
-                                ElseIf lPickings > 0 Then
-                                    lPickings = lPickings + lReemplazos + lCambioUbicSal + lCambioEstSal
-                                    If Temp.Cantidad_Reservada_UmBas > 0 Then
-                                        Temp.Cantidad_Reservada_UmBas = Temp.Cantidad_Reservada_UmBas - lPickings
+
+                                ElseIf Temp.Cantidad_Stock < Temp.Cantidad Then
+
+                                    Dim lEntradas = lBeStockEnFechaFilter _
+                                                    .Where(Function(x) (x.IdTipoTarea = clsDataContractDI.tTipoTarea.RECE OrElse x.IdTipoTarea = clsDataContractDI.tTipoTarea.PACK)) _
+                                                    .Sum(Function(z) z.Ingresos)
+
+                                    Dim lAjustes = lBeStockEnFechaFilter _
+                                                    .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTP) _
+                                                    .Sum(Function(z) z.Ajustes_Positivos)
+
+                                    BeStockEnFecha.Ingresos = lEntradas
+
+                                    'Dim lUbicaciones = ListaMovs _
+                                    '                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
+                                    '                .Sum(Function(z) z.EnMovimiento)
+
+                                    BeStockEnFecha.EnMovimiento = 0
+
+                                    If lEntradas > 0 Then
+                                        vEntradasSalidas = 0 '(BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
+
+                                    Else
+                                        vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
                                     End If
-                                    BeStockEnFecha.Salidas = (lPickings * -1)
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas)) - (BeStockEnFecha.Ajuste_Negativo) 'Quité (BeStockEnFecha.EnMovimiento * -1) y puse salidas
-                                ElseIf lCambioUbic > 0 Then
-                                    BeStockEnFecha.Salidas = lCambioUbic * -1
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-                                ElseIf lCambioUbicSal > 0 OrElse lCambioEstSal Then
-                                    BeStockEnFecha.Salidas = (lCambioUbicSal * -1) + (lCambioEstSal * -1)
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.Salidas)) - (+BeStockEnFecha.Ajuste_Negativo)
-                                ElseIf lCambioEst > 0 Then
-                                    BeStockEnFecha.Salidas = lCambioEst * -1
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + (BeStockEnFecha.EnMovimiento * -1)) - (+BeStockEnFecha.Ajuste_Negativo)
-                                Else
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-                                End If
 
-                            ElseIf Temp.Cantidad_Stock < Temp.Cantidad Then
-
-                                Dim lEntradas = lBeStockEnFechaFilter _
-                                            .Where(Function(x) (x.IdTipoTarea = clsDataContractDI.tTipoTarea.RECE OrElse x.IdTipoTarea = clsDataContractDI.tTipoTarea.PACK)) _
-                                            .Sum(Function(z) z.Ingresos)
-
-                                Dim lAjustes = lBeStockEnFechaFilter _
-                                            .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTP) _
-                                            .Sum(Function(z) z.Ajustes_Positivos)
-
-                                BeStockEnFecha.Ingresos = lEntradas
-
-                                'Dim lUbicaciones = ListaMovs _
-                                '                .Where(Function(x) x.IdTipoTarea = clsDataContractDI.tTipoTarea.UBIC) _
-                                '                .Sum(Function(z) z.EnMovimiento)
-
-                                BeStockEnFecha.EnMovimiento = 0
-
-                                If lEntradas > 0 Then
-                                    vEntradasSalidas = 0 '(BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-
-                                Else
-                                    vEntradasSalidas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo + BeStockEnFecha.EnMovimiento) - (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
                                 End If
 
                             End If
 
+                            Temp.Entradas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo)
+                            Temp.Salidas = (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
+
                         End If
 
-                        Temp.Entradas = (BeStockEnFecha.Ingresos + BeStockEnFecha.Ajuste_Positivo)
-                        Temp.Salidas = (BeStockEnFecha.Salidas + BeStockEnFecha.Ajuste_Negativo)
-
+                    Else
+                        vEntradasSalidas = 0
                     End If
 
-                    Else
-                    vEntradasSalidas = 0
-            End If
+                    Temp.Entradas_Salidas = vEntradasSalidas
 
-            Temp.Entradas_Salidas = vEntradasSalidas
+                    Dim vDiferencia As Double = ((Temp.Cantidad_Stock + Temp.Entradas_Salidas) - Temp.Cantidad)
 
-            Dim vDiferencia As Double = ((Temp.Cantidad_Stock + Temp.Entradas_Salidas) - Temp.Cantidad)
+                    If vDiferencia = 0 Then
+                        Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
+                        oBeTrans_inv_ciclico.Idinventarioenc = pIdInventario
+                        oBeTrans_inv_ciclico.IdInvCiclico = Temp.IdInvciclico
+                        oBeTrans_inv_ciclico.Regularizar = False
+                        Actualizar_Regularizar_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, lConnection, lTransaction)
+                    End If
 
-            If Temp.TieneReservaYConteoInsuficiente Then
-                Temp.Observacion = "Conteo menor que la cantidad reservada. No regularizar."
-            End If
+                    clsLnTempComparacionInventario.Insertar(Temp, lConnection, lTransaction)
 
-            If vDiferencia = 0 Then
-                Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
-                Copiar_Temp(oBeTrans_inv_ciclico, Temp)
-                oBeTrans_inv_ciclico.Regularizar = False
-                Actualizar_Regularizar_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, lConnection, lTransaction)
-            Else
-                If Temp.Cantidad = Temp.Cantidad_Stock AndAlso Temp.Entradas_Salidas <> 0 Then
-                    Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
-                    Copiar_Temp(oBeTrans_inv_ciclico, Temp)
-                    oBeTrans_inv_ciclico.Nuevo_Stock = Math.Abs(Temp.Cantidad_Stock + Temp.Entradas_Salidas)
-                    Actualizar_NuevoStock_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, Temp.Entradas_Salidas, lConnection, lTransaction)
-                ElseIf Temp.Entradas_Salidas <> 0 Then
-                    Dim oBeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
-                    Copiar_Temp(oBeTrans_inv_ciclico, Temp)
-                    oBeTrans_inv_ciclico.Nuevo_Stock = Math.Abs(Temp.Cantidad_Stock + Temp.Entradas_Salidas)
-                    Actualizar_NuevoStock_By_IdInventarioEnc_And_IdInvCiclico(oBeTrans_inv_ciclico, Temp.Entradas_Salidas, lConnection, lTransaction)
-                End If
-            End If
+                    prg.Value = vContador
 
-            If Temp.Cantidad_Reservada_UmBas > 0 AndAlso Temp.Cantidad < Temp.Cantidad_Reservada_UmBas Then
-                Temp.TieneReservaYConteoInsuficiente = True
-            Else
-                Temp.TieneReservaYConteoInsuficiente = False
-            End If
+                    vContador += 1
 
-            clsLnTempComparacionInventario.Insertar(Temp, lConnection, lTransaction)
-
-            prg.Value = vContador
-
-            vContador += 1
-
-            Next
+                Next
 
             End If
 
@@ -5029,7 +4343,8 @@ Partial Public Class clsLnTrans_inv_ciclico
             Upd.Add("cantidad", "@cantidad", DataType.Parametro)
             Upd.Add("IdProductoEst_nuevo", "@IdProductoEst_nuevo", DataType.Parametro)
             Upd.Add("IdUbicacion_nuevo", "@IdUbicacion_nuevo", DataType.Parametro)
-            Upd.Add("contado", "@contado", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
             Dim sp As String = Upd.SQL()
@@ -5060,9 +4375,8 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_ciclico.Cantidad))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOEST_NUEVO", IIf(oBeTrans_inv_ciclico.IdProductoEst_nuevo = 0, 0, oBeTrans_inv_ciclico.IdProductoEst_nuevo)))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION_NUEVO", IIf(oBeTrans_inv_ciclico.IdUbicacion_nuevo = 0, 0, oBeTrans_inv_ciclico.IdUbicacion_nuevo)))
-
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
-            cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_ciclico.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -5368,8 +4682,11 @@ Partial Public Class clsLnTrans_inv_ciclico
                                   trans_inv_ciclico.fecha_vence, 
                                   trans_inv_ciclico.IdUbicacion_nuevo,
                                   e1.Nombre as Estado_Nuevo,
-                                  MAX(trans_inv_ciclico.Cantidad_Reservada_UMBas) Cantidad_Reservada_UMBas,
-								  SUM(CASE WHEN trans_inv_ciclico.contado = 1 THEN 1 ELSE 0 END) Contado
+                                  ISNULL(color.nombre, '') Color,
+                                  ISNULL(talla.codigo, '') Talla,
+                                  ISNULL(cn.nombre, '') Color_Nuevo,
+                                  ISNULL(tn.codigo, '') Talla_Nueva,
+                                  um.Nombre UmBas
                                 FROM 
                                   trans_inv_ciclico 
                                   INNER JOIN producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega 
@@ -5385,7 +4702,14 @@ Partial Public Class clsLnTrans_inv_ciclico
                                   LEFT OUTER JOIN operador ON trans_inv_ciclico.idoperador = operador.IdOperador 
                                   LEFT OUTER JOIN producto_estado ON trans_inv_ciclico.IdProductoEstado = producto_estado.IdEstado 
                                   LEFT OUTER JOIN producto_estado e1 ON trans_inv_ciclico.IdProductoEst_Nuevo = e1.IdEstado
-                                  LEFT OUTER JOIN producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion 
+                                  LEFT OUTER JOIN producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion
+                                  LEFT JOIN unidad_medida um ON trans_inv_ciclico.IdUnidadMedida = um.IdUnidadMedida
+                                  LEFT JOIN producto_talla_color ON trans_inv_ciclico.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+                                  LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor
+                                  LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla
+                                  LEFT JOIN producto_talla_color ptc ON trans_inv_ciclico.IdProductoTallaColor_nuevo = ptc.IdProductoTallaColor
+                                  LEFT JOIN color cn ON cn.IdColor = ptc.IdColor
+                                  LEFT JOIN talla tn ON tn.IdTalla = ptc.IdTalla
                                 WHERE 
                                   (
                                     trans_inv_ciclico.idinventarioenc = @idinventario
@@ -5430,7 +4754,12 @@ Partial Public Class clsLnTrans_inv_ciclico
                                   trans_inv_ciclico.IdProductoEst_nuevo, 
                                   trans_inv_ciclico.lote, 
                                   trans_inv_ciclico.fecha_vence, 
-                                  trans_inv_ciclico.IdUbicacion_nuevo 
+                                  trans_inv_ciclico.IdUbicacion_nuevo,
+                                  color.nombre,
+                                  talla.codigo,
+                                  tn.codigo, 
+                                  cn.nombre, 
+                                  um.Nombre
                                 ORDER BY 
                                   Tramo, 
                                   bodega_ubicacion.indice_x, 
@@ -5580,14 +4909,32 @@ Partial Public Class clsLnTrans_inv_ciclico
                         BeTransInvCiclico.IdUbicacion_nuevo = CType(lRow("IdUbicacion_nuevo"), String)
                     End If
 
+                    If lRow("Color") IsNot DBNull.Value AndAlso lRow("Color") IsNot Nothing Then
+                        BeTransInvCiclico.Color = CType(lRow("Color"), String)
+                    End If
+
+                    If lRow("Talla") IsNot DBNull.Value AndAlso lRow("Talla") IsNot Nothing Then
+                        BeTransInvCiclico.Talla = CType(lRow("Talla"), String)
+                    End If
+
+                    If lRow("Color_Nuevo") IsNot DBNull.Value AndAlso lRow("Color_Nuevo") IsNot Nothing Then
+                        BeTransInvCiclico.Color_Nuevo = CType(lRow("Color_Nuevo"), String)
+                    End If
+
+                    If lRow("Talla_Nueva") IsNot DBNull.Value AndAlso lRow("Talla_Nueva") IsNot Nothing Then
+                        BeTransInvCiclico.Talla_Nueva = CType(lRow("Talla_Nueva"), String)
+                    End If
+
+                    If lRow("UmBas") IsNot DBNull.Value AndAlso lRow("UmBas") IsNot Nothing Then
+                        BeTransInvCiclico.UmBas = CType(lRow("UmBas"), String)
+                    End If
+
                     BeTransInvCiclico.TipoProducto = IIf(IsDBNull(lRow("NombreTipoProducto")), "", lRow("NombreTipoProducto"))
                     BeTransInvCiclico.Ubicacion = IIf(IsDBNull(lRow("Nombre_Completo")), "", lRow("Nombre_Completo"))
                     BeTransInvCiclico.IdProducto = IIf(IsDBNull(lRow("IdProducto")), "", lRow("IdProducto"))
                     BeTransInvCiclico.Estado = IIf(IsDBNull(lRow("Estado")), "", lRow("Estado"))
                     BeTransInvCiclico.Ubicacion_Nueva = IIf(IsDBNull(lRow("Nombre_Completo_Destino")), "", lRow("Nombre_Completo_Destino"))
                     BeTransInvCiclico.EstadoNuevo = IIf(IsDBNull(lRow("Estado_Nuevo")), "", lRow("Estado_Nuevo"))
-                    BeTransInvCiclico.Cantidad_Reservada_UMBas = IIf(IsDBNull(lRow("Cantidad_Reservada_UMBas")), 0, lRow("Cantidad_Reservada_UMBas"))
-                    BeTransInvCiclico.Contado = IIf(IsDBNull(lRow("Contado")), False, lRow("Contado"))
 
                     lReturnList.Add(BeTransInvCiclico)
 
@@ -5618,46 +4965,37 @@ Partial Public Class clsLnTrans_inv_ciclico
 
             '#CKFK20250206 Por una mejora que se hizo en el ingreso de los datos, ya se pueden sumar la cantidades contadas
             'y las cantidades del stock, quité ambas del group by
-            Dim vSQL As String = "SELECT t.idinventarioenc, 
-	                                      t.Codigo, 
-	                                      t.Producto,
-	                                      SUM(t.Cantidad_Stock)  Cantidad_Stock, 
-	                                      SUM(t.Cantidad_Ciclico) Cantidad_Ciclico, 
-	                                      t.NombreTipoProducto, 
-	                                      t.IdProducto,
-	                                      t.IdProductoBodega, 
-	                                      SUM(t.Cantidad_Reservada) Cantidad_Reservada
-                                  FROM (SELECT trans_inv_ciclico.idinventarioenc, 
-            producto.codigo AS Codigo,
-            producto.nombre As Producto,
-			                                    MAX(trans_inv_ciclico.cant_stock) AS Cantidad_Stock, 
-                                         SUM(trans_inv_ciclico.cantidad) Cantidad_Ciclico, 
-	                                     producto_tipo.NombreTipoProducto,
-			                                    producto.IdProducto,
-			                                    trans_inv_ciclico.IdProductoBodega,
-			                                    trans_inv_ciclico.IdStock,
-                                                MAX(trans_inv_ciclico.cantidad_reservada_umbas) AS Cantidad_Reservada
-	                                    FROM   trans_inv_ciclico INNER JOIN 
+            Dim vSQL As String = "SELECT MAX(trans_inv_ciclico.Idinvciclico) as Idinvciclico, 
+                                         trans_inv_ciclico.idinventarioenc, 
+	                                     producto.codigo AS Codigo, 
+	                                     producto.nombre AS Producto,
+	                                     SUM(trans_inv_ciclico.cant_stock) AS Cantidad_Stock, 
+	                                     SUM(trans_inv_ciclico.cantidad) Cantidad_Ciclico, 
+	                                     producto_tipo.NombreTipoProducto, 
+	                                     producto.IdProducto,
+                                         trans_inv_ciclico.IdPresentacion,
+                                         ISNULL(producto_presentacion.factor, 0) Factor,
+                                         ISNULL(producto_presentacion.nombre, '') NombrePresentacion,
+                                         unidad_medida.nombre as UmBas
+                                  FROM trans_inv_ciclico INNER JOIN 
                                        producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN 
-                                       producto ON producto_bodega.IdProducto = producto.IdProducto LEFT OUTER JOIN 
+                                       unidad_medida ON trans_inv_ciclico.IdUnidadMedida = unidad_medida.IdUnidadMedida INNER JOIN
+	                                   producto ON producto_bodega.IdProducto = producto.IdProducto LEFT OUTER JOIN 
 	                                   producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto LEFT OUTER JOIN
 	                                   operador ON trans_inv_ciclico.idoperador = operador.IdOperador LEFT OUTER JOIN 
 	                                   producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion 
-                                  WHERE trans_inv_ciclico.idinventarioenc = @idinventario And 
+                                  WHERE trans_inv_ciclico.idinventarioenc = @idinventario AND 
                                         trans_inv_ciclico.IdBodega = @IdBodega 
                                   GROUP BY producto.codigo,
-                                           trans_inv_ciclico.idinventarioenc,
-                                           producto.nombre,
-                                           producto_tipo.NombreTipoProducto,
-			                                    producto.IdProducto,
-		                                        trans_inv_ciclico.IdProductoBodega,
-			                                    trans_inv_ciclico.IdStock)T
-                                GROUP BY t.idinventarioenc, 
-	                                        t.codigo, 
-	                                        t.Producto,
-	                                        t.NombreTipoProducto, 
-	                                        t.IdProducto,
-	                                        t.IdProductoBodega"
+                                           trans_inv_ciclico.idinventarioenc, 
+		                                   producto.nombre, 
+		                                   producto_tipo.NombreTipoProducto,
+		                                   producto.IdProducto, 
+                                           trans_inv_ciclico.IdPresentacion, 
+                                           producto_presentacion.factor, 
+                                           producto_presentacion.nombre, unidad_medida.nombre "
+
+            '#GT31012025: El group by esta jodiendo, por incluir trans_inv_ciclico_cantidad, porque si hay recuento, el produto no va a coincidir en este valor y mostrará 2 lineas o más.
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -5675,7 +5013,7 @@ Partial Public Class clsLnTrans_inv_ciclico
 
                     BeTransInvCiclico = New clsBeTrans_inv_ciclico()
 
-                    'BeTransInvCiclico.IdInvCiclico = lRow("Idinvciclico")
+                    BeTransInvCiclico.IdInvCiclico = lRow("Idinvciclico")
 
                     If lRow("idinventarioenc") IsNot DBNull.Value AndAlso lRow("idinventarioenc") IsNot Nothing Then
                         BeTransInvCiclico.Idinventarioenc = CType(lRow("idinventarioenc"), Integer)
@@ -5697,9 +5035,18 @@ Partial Public Class clsLnTrans_inv_ciclico
                         BeTransInvCiclico.Cantidad = CType(lRow("Cantidad_Ciclico"), Double)
                     End If
 
+                    If lRow("NombrePresentacion") IsNot DBNull.Value AndAlso lRow("NombrePresentacion") IsNot Nothing Then
+                        BeTransInvCiclico.Presentacion = CType(lRow("NombrePresentacion"), String)
+                    End If
+
+                    If lRow("UmBas") IsNot DBNull.Value AndAlso lRow("UmBas") IsNot Nothing Then
+                        BeTransInvCiclico.UnidadMedida = CType(lRow("UmBas"), String)
+                    End If
+
+                    BeTransInvCiclico.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
+                    BeTransInvCiclico.Factor = CType(lRow("Factor"), Double)
                     BeTransInvCiclico.TipoProducto = IIf(IsDBNull(lRow("NombreTipoProducto")), "", lRow("NombreTipoProducto"))
                     BeTransInvCiclico.IdProducto = IIf(IsDBNull(lRow("IdProducto")), "", lRow("IdProducto"))
-                    BeTransInvCiclico.Cantidad_Reservada_UMBas = IIf(IsDBNull(lRow("Cantidad_Reservada")), 0, lRow("Cantidad_Reservada"))
 
                     lReturnList.Add(BeTransInvCiclico)
 
@@ -5953,9 +5300,6 @@ Partial Public Class clsLnTrans_inv_ciclico
                 For Each dr As DataRow In lDataTable.Rows
                     vBeTrans_inv_detalle = New clsBeTrans_inv_ciclico
                     Cargar(vBeTrans_inv_detalle, dr)
-                    If vBeTrans_inv_detalle.Nuevo_Stock <> 0 Then
-                        vBeTrans_inv_detalle.Cant_stock = vBeTrans_inv_detalle.Nuevo_Stock
-                    End If
                     lReturnList.Add(vBeTrans_inv_detalle)
                 Next
 
@@ -6335,7 +5679,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                         IdProductoBodega=@IdProductoBodega AND 
                                         IdOperador=@IdOperador AND 
                                         IdOperador=@IdOperador AND  
-                                        --cantidad = @cantidad AND  
+                                        cantidad = @cantidad AND  
                                         lote = @lote AND  
                                         fecha_vence=@fecha_vence)"
 
@@ -6348,7 +5692,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_ciclico.Idinventarioenc))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_inv_ciclico.IdProductoBodega))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IdOperador", oBeTrans_inv_ciclico.Idoperador))
-            'dad.SelectCommand.Parameters.Add(New SqlParameter("@cantidad", oBeTrans_inv_ciclico.Cantidad))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@cantidad", oBeTrans_inv_ciclico.Cantidad))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@lote", oBeTrans_inv_ciclico.Lote))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@fecha_vence", oBeTrans_inv_ciclico.Fecha_vence))
 
@@ -7349,23 +6693,21 @@ Partial Public Class clsLnTrans_inv_ciclico
 
                     -- NuevoStock con múltiples condiciones
                     CASE 
-                        WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
+                        WHEN Cantidad = (Cantidad_Stock + Entradas) THEN Cantidad
                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
                         ELSE (Cantidad + Entradas_Salidas + Salidas)
                     END AS NuevoStock,
 
                     -- DiferenciaCantidad con múltiples condiciones
                     CASE 
-                        WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
-                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
+                        WHEN Cantidad = (Cantidad_Stock + Entradas) THEN (Cantidad_Stock + Entradas - Cantidad)
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas - Cantidad) * -1
                         ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
                     END AS DiferenciaCantidad,
 
                     -- DiferenciaPeso se mantiene igual
-                    (Peso_Stock - Peso) AS DiferenciaPeso,
-                    Cantidad_Reservada_UmBas,
-                    TieneReservaYConteoInsuficiente,  
-                    Observacion
+                    (Peso_Stock - Peso) AS DiferenciaPeso
+
                 FROM 
                     tempComparacionInventario
                 WHERE 
@@ -7450,55 +6792,6 @@ Partial Public Class clsLnTrans_inv_ciclico
             Throw ex
         End Try
 
-    End Function
-
-    Public Shared Function Obtener_Existencia_Conteo(ByVal pIdStock As Integer,
-                                                     ByVal pIdInventarioEnc As Integer,
-                                                     ByVal pConnection As SqlConnection,
-                                                     ByVal pTransaction As SqlTransaction) As (ExisteConteoSobreOriginal As Boolean, ConteoSobreOriginalConCambios As Boolean)
-        Try
-            Dim ExisteConteoSobreOriginal = EjecutarConteo(
-            "SELECT ISNULL(cantidad,0) 
-             FROM Trans_inv_ciclico 
-             WHERE IdStock = @IdStock AND idinventarioenc = @idinventarioenc 
-               AND cantidad > 0 
-               AND lote = lote_stock 
-               AND fecha_vence = fecha_vence_stock 
-               AND (IdUbicacion = IdUbicacion_nuevo OR IdUbicacion_nuevo = 0) 
-               AND IdProductoEstado = IdProductoEst_nuevo",
-            pIdStock, pIdInventarioEnc, pConnection, pTransaction)
-
-            Dim ConteoSobreOriginalConCambios = EjecutarConteo(
-            "SELECT ISNULL(cantidad,0) 
-             FROM Trans_inv_ciclico 
-             WHERE IdStock = @IdStock AND idinventarioenc = @idinventarioenc 
-               AND cantidad > 0 
-               AND (lote <> lote_stock 
-                    OR fecha_vence <> fecha_vence_stock 
-                    OR (IdUbicacion <> IdUbicacion_nuevo AND IdUbicacion_nuevo <> 0) 
-                    OR IdProductoEstado <> IdProductoEst_nuevo)",
-            pIdStock, pIdInventarioEnc, pConnection, pTransaction)
-
-            Return (ExisteConteoSobreOriginal, ConteoSobreOriginalConCambios)
-
-        Catch ex As Exception
-            Dim msg = $"{MethodBase.GetCurrentMethod.Name} {ex.Message}"
-            clsLnLog_error_wms.Agregar_Error(msg)
-            Throw
-        End Try
-    End Function
-
-    Private Shared Function EjecutarConteo(ByVal sql As String,
-                                           ByVal idStock As Integer,
-                                           ByVal idInventarioEnc As Integer,
-                                           ByVal conn As SqlConnection,
-                                           ByVal tran As SqlTransaction) As Boolean
-        Using cmd As New SqlCommand(sql, conn, tran) With {.CommandType = CommandType.Text}
-            cmd.Parameters.AddWithValue("@IdStock", idStock)
-            cmd.Parameters.AddWithValue("@idinventarioenc", idInventarioEnc)
-            Dim result = cmd.ExecuteScalar()
-            Return result IsNot Nothing AndAlso result IsNot DBNull.Value AndAlso Convert.ToDouble(result) > 1
-        End Using
     End Function
 
     Private Shared Sub Procesar_Ajustes_SAP(gBeInventario As clsBeTrans_inv_enc,
@@ -7629,187 +6922,6 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
-    Public Shared Function Existe_Producto_By_IdOperador_And_IdStock(ByVal IdOperador As Integer,
-                                                         ByVal IdInventario As Integer,
-                                                         ByVal IdProductoBodega As Integer,
-                                                         ByVal IdStock As Integer,
-                                                         lConnection As SqlConnection,
-                                                         lTransaction As SqlTransaction) As Boolean
-
-        Try
-
-            Const sp As String = "SELECT * 
-                                  FROM Trans_inv_ciclico 
-                                  WHERE idinventarioenc = @IdInventarioEnc AND 
-                                        idoperador = @IdOperador AND 
-                                        IdProductoBodega = @IdProductoBodega AND 
-                                        IdStock = @IdStock "
-
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdProductoBodega", IdProductoBodega))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@idinventarioenc", IdInventario))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdOperador", IdOperador))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdStock", IdStock))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            Return dt.Rows.Count > 0
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Sub Copiar_Temp(ByRef oBeTrans_inv_ciclico As clsBeTrans_inv_ciclico, ByRef Temp As clsBeTempComparacionInventario)
-        Try
-            If oBeTrans_inv_ciclico Is Nothing Then
-                oBeTrans_inv_ciclico = New clsBeTrans_inv_ciclico()
-            End If
-
-            With oBeTrans_inv_ciclico
-                .Idinventarioenc = Temp.IdInventario
-                .IdProductoBodega = Temp.IdProductoBodega
-                .Cantidad = Temp.Cantidad
-                .Cant_stock = Temp.Cantidad_Stock
-                .IdUbicacion = Temp.IdUbicacion
-                .IdUbicacion_nuevo = Temp.IdUbicacionDestino
-                .Codigo = Temp.Codigo
-                .Estado = Temp.EstadoOrigen
-                .EstadoNuevo = Temp.EstadoDestino
-                .Fecha_vence = Temp.FechaVence
-                .Fecha_vence_stock = Temp.FechaVenceStock
-                .IdUnidadMedida = Temp.IdUnidadMedida
-                .IdPresentacion = Temp.IdPresentacion
-                .IdProductoEstado = Temp.IdProductoEstado
-                .IdProductoEst_nuevo = Temp.IdProductoEst_nuevo
-                .lic_plate = Temp.Licencia
-            End With
-
-        Catch ex As Exception
-            ' Aquí puedes registrar el error o lanzar una excepción más específica
-            Throw New ApplicationException("Error al copiar datos de Temp a oBeTrans_inv_ciclico: " & ex.Message, ex)
-        End Try
-    End Sub
-
-
-    ''' <summary>
-    ''' #CKFK20250715 GetAll del inventario agrupado
-    ''' </summary>
-    ''' <param name="pIdInvEnc"></param>
-    ''' <param name="lConnection"></param>
-    ''' <param name="lTransaction"></param>
-    ''' <returns></returns>
-    Public Shared Function Get_All_By_IdInventarioEncAgrupado(pIdInvEnc As Integer,
-                                                              ByVal lConnection As SqlConnection,
-                                                              ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_inv_ciclico)
-
-        Try
-
-            Dim lReturnList As New List(Of clsBeTrans_inv_ciclico)
-
-            Dim vSQL As String = "SELECT 0 IdInvCiclico, T.idinventarioenc, T.IdStock, T.IdProductoBodega, T.IdProductoEstado, T.IdPresentacion,
-		                                    T.IdUbicacion, 0 EsNuevo, T.LoteOrigen lote_stock, 
-		                                    T.LoteDestino lote, T.fecha_vence_stock,  T.fecha_vence,
-                                            SUM(T.cantidad_stock) AS cant_stock, 
-		                                    SUM(T.cantidad_conteo) AS cantidad, 
-		                                    SUM(T.cantidad_reconteo) AS cant_reconteo, 
-		                                    MAX(T.peso_stock) AS peso_stock, 
-		                                    SUM(T.peso_conteo) AS peso, 
-		                                    SUM(T.peso_reconteo) AS peso_reconteo, 
-		                                    0 as IdOperador,0 as user_agr, GETDATE() fec_agr,
-		                                    T.IdProductoEst_nuevo, 0 IdPresentacion_nuevo,T.idubicacion_nuevo,
-		                                    0 EsPallet,T.Licencia lic_plate,T.IdUnidadMedida,
-		                                    T.IdBodega,MAX(T.Fec_Mod) Fec_Mod, t.Regularizar, SUM(t.nuevo_stock)nuevo_stock,
-                                            SUM(T.cantidad_reservada_umbas) AS cantidad_reservada_umbas
-                                    FROM (
-                                    SELECT  trans_inv_ciclico.idinventarioenc, 
-                                            trans_inv_ciclico.IdStock,
-                                            trans_inv_ciclico.IdProductoBodega,  
-                                            MAX(trans_inv_ciclico.cant_stock) AS cantidad_stock, 
-		                                    SUM(trans_inv_ciclico.cantidad) AS cantidad_conteo, 
-		                                    SUM(trans_inv_ciclico.cant_reconteo) AS cantidad_reconteo, 
-		                                    MAX(trans_inv_ciclico.peso_stock) AS peso_stock, 
-		                                    SUM(trans_inv_ciclico.peso) AS peso_conteo, 
-		                                    SUM(trans_inv_ciclico.peso_reconteo) AS peso_reconteo, 
-		                                    producto.codigo AS Codigo, producto.nombre AS Producto, trans_inv_ciclico.lote_stock as LoteOrigen, 
-		                                    trans_inv_ciclico.lote as LoteDestino,  trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate AS Licencia, 
-		                                    producto_estado_1.nombre AS Estado, producto_estado.nombre AS EstadoDestino,  
-		                                    dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega) as UbicacionOrigen,
-		                                    ISNULL(dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion_nuevo,trans_inv_ciclico.IdBodega),
-		                                    dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega)) as UbicacionDestino,
-		                                    trans_inv_ciclico.IdUbicacion, MAX(trans_inv_ciclico.fec_mod) Fec_Mod,
-		                                    trans_inv_ciclico.IdPresentacion, trans_inv_ciclico.IdProductoEstado, 
-		                                    trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.fecha_vence_stock, 
-		                                    trans_inv_ciclico.IdUnidadMedida, trans_inv_ciclico.idubicacion_nuevo, trans_inv_ciclico.IdBodega,
-		                                    trans_inv_ciclico.regularizar, MAX(trans_inv_ciclico.nuevo_stock) nuevo_stock,  
-                                            MAX(trans_inv_ciclico.cantidad_reservada_umbas) AS cantidad_reservada_umbas
-                                    FROM     trans_inv_ciclico INNER JOIN
-                                                        trans_inv_enc ON trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc AND trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc INNER JOIN
-                                                        producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega AND trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
-                                                        producto ON producto_bodega.IdProducto = producto.IdProducto INNER JOIN
-                                                        producto_estado AS producto_estado_1 ON trans_inv_ciclico.IdProductoEstado = producto_estado_1.IdEstado INNER JOIN
-                                                        producto_estado ON trans_inv_ciclico.IdProductoEst_nuevo = producto_estado.IdEstado
-                                    WHERE  (trans_inv_ciclico.idinventarioenc = @idinventarioenc )
-                                    GROUP BY dbo.trans_inv_ciclico.idinventarioenc,dbo.trans_inv_ciclico.IdStock, trans_inv_ciclico.IdProductoBodega, producto.codigo, producto.nombre, 
-                                                trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate, 
-                                                trans_inv_ciclico.IdProductoEstado, trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.IdUbicacion, 
-		                                        trans_inv_ciclico.IdUbicacion_nuevo, producto_estado_1.nombre, producto_estado.nombre, 
-		                                        trans_inv_ciclico.lote_stock,trans_inv_ciclico.IdStock,
-		                                        trans_inv_ciclico.IdBodega,trans_inv_ciclico.IdUnidadMedida,
-		                                    trans_inv_ciclico.IdPresentacion, trans_inv_ciclico.IdProductoEstado, 
-		                                    trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.fecha_vence_stock, 
-		                                    trans_inv_ciclico.idubicacion_nuevo, trans_inv_ciclico.IdBodega, trans_inv_ciclico.regularizar) T
-                                    GROUP BY T.idinventarioenc, T.IdProductoBodega,
-		                                    T.Codigo, t.Producto, T.LoteOrigen, 
-		                                    T.LoteDestino,  T.fecha_vence, T.Licencia, 
-		                                    T.Estado, T.EstadoDestino,  
-		                                    T.UbicacionOrigen,
-		                                    T.UbicacionDestino,
-		                                    T.IdUbicacion,
-		                                    T.IdUnidadMedida,
-		                                    T.IdPresentacion, T.IdProductoEstado, 
-		                                    T.IdProductoEst_nuevo, T.fecha_vence_stock, 
-		                                    T.IdStock,T.IdUbicacion_nuevo,
-		                                    T.IdBodega, T.regularizar Order by T.IdProductoBodega"
-
-            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
-
-                lDataAdapter.SelectCommand.CommandType = CommandType.Text
-                lDataAdapter.SelectCommand.Transaction = lTransaction
-                lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInvEnc)
-
-                Dim lDataTable As New DataTable()
-                lDataAdapter.Fill(lDataTable)
-
-                Dim vBeTrans_inv_detalle As New clsBeTrans_inv_ciclico
-
-                For Each dr As DataRow In lDataTable.Rows
-                    vBeTrans_inv_detalle = New clsBeTrans_inv_ciclico
-                    Cargar(vBeTrans_inv_detalle, dr)
-                    If vBeTrans_inv_detalle.Nuevo_Stock <> 0 Then
-                        vBeTrans_inv_detalle.Cant_stock = vBeTrans_inv_detalle.Nuevo_Stock
-                    End If
-                    lReturnList.Add(vBeTrans_inv_detalle)
-                Next
-
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Get_All_By_Regularizacion_Inventario(ByVal pIdInv As Integer,
                                                                 ByVal lConnection As SqlConnection,
                                                                 ByVal lTransaction As SqlTransaction) As DataTable
@@ -7829,6 +6941,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     EstadoDestino,
                                     UbicacionOrigen,
                                     UbicacionDestino,
+                                    TallaStock TallaOrigen,
+                                    ISNULL(TallaNueva, '') AS TallaDestino,
+                                    ColorStock ColorOrigen,
+                                    ISNULL(ColorNuevo, '') AS ColorDestino,
                                     Cantidad_Stock AS CantidadStock,
                                     Peso_Stock AS PesoStock,
                                     Cantidad AS CantidadConteo,
@@ -7836,21 +6952,21 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     Entradas,
                                     Salidas,
                                     Entradas_Salidas,
-
+ 
                                     -- NuevoStock con múltiples condiciones 
                                     CASE 
                                         WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
                                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
                                         ELSE (Cantidad + Entradas_Salidas + Salidas)
                                     END AS NuevoStock,
-
+ 
                                     -- DiferenciaCantidad con múltiples condiciones 
                                     CASE 
                                         WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
                                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
                                         ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
                                     END AS DiferenciaCantidad,
-
+ 
                                     -- DiferenciaPeso se mantiene igual
                                     (Peso_Stock - Peso) AS DiferenciaPeso,
                                     Cantidad_Reservada_UmBas,
@@ -7906,21 +7022,21 @@ Partial Public Class clsLnTrans_inv_ciclico
                     Entradas,
                     Salidas,
                     Entradas_Salidas,
-
+ 
                     -- NuevoStock con múltiples condiciones 
                     CASE 
                         WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
                         ELSE (Cantidad + Entradas_Salidas + Salidas)
                     END AS NuevoStock,
-
+ 
                     -- DiferenciaCantidad con múltiples condiciones 
                     CASE 
                         WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
                         ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
                     END AS DiferenciaCantidad,
-
+ 
                     -- DiferenciaPeso se mantiene igual
                     (Peso_Stock - Peso) AS DiferenciaPeso,
                     Cantidad_Reservada_UmBas,
@@ -7969,6 +7085,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                     EstadoDestino,
                     UbicacionOrigen,
                     UbicacionDestino,
+                    TallaStock TallaOrigen,
+                    ISNULL(TallaNueva, '') AS TallaDestino,
+                    ColorStock ColorOrigen,
+                    ISNULL(ColorNuevo, '') AS ColorDestino,
                     Cantidad_Stock AS CantidadStock,
                     Peso_Stock AS PesoStock,
                     Cantidad AS CantidadConteo,
@@ -7976,21 +7096,21 @@ Partial Public Class clsLnTrans_inv_ciclico
                     Entradas,
                     Salidas,
                     Entradas_Salidas,
-
+ 
                     -- NuevoStock con múltiples condiciones 
                     CASE 
                         WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
                         ELSE (Cantidad + Entradas_Salidas + Salidas)
                     END AS NuevoStock,
-
+ 
                     -- DiferenciaCantidad con múltiples condiciones 
                     CASE 
                         WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
                         WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
                         ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
                     END AS DiferenciaCantidad,
-
+ 
                     -- DiferenciaPeso se mantiene igual
                     (Peso_Stock - Peso) AS DiferenciaPeso,
                     Cantidad_Reservada_UmBas,
@@ -8021,5 +7141,4 @@ Partial Public Class clsLnTrans_inv_ciclico
         End Try
 
     End Function
-
 End Class

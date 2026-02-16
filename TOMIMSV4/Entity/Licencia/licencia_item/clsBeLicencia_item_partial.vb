@@ -6,8 +6,6 @@ Partial Public Class clsBeLicencia_item
     Public Property Tipo() As eTipoHost
     Public Property Bandera() As eTipoLicencia
     Public Property Activa As Boolean = False
-    '#GT09092025:
-    Public Property CantUx() As Integer = 0
 
     Enum eEstatusLicencia
         Pendiente_Solicitud = -1
@@ -16,7 +14,6 @@ Partial Public Class clsBeLicencia_item
     End Enum
 
     Enum eTipoHost
-        UX = 2
         BOF = 1
         HH = 0
     End Enum

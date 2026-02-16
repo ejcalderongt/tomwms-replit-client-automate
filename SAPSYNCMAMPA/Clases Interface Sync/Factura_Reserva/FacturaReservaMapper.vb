@@ -4,6 +4,8 @@ Imports Newtonsoft.Json.Linq
 
 Public Class FacturaReservaMapper
 
+    Shared vHanaService As SapServiceLayerClient
+
     Public Shared Function MapearEncabezado(enc As JObject, codBodega As String) As clsBeI_nav_ped_compra_enc
 
         Dim be As New clsBeI_nav_ped_compra_enc()
@@ -105,11 +107,107 @@ Public Class FacturaReservaMapper
     End Function
 
     Public Shared Async Function MapearDetalleTallaColor(dtDetTallaColor As DataTable,
-                                                         lConnection As SqlConnection,
-                                                         lTransaction As SqlTransaction,
                                                          Usuario As String,
+                                                         lconnection As SqlConnection,
+                                                         ltransaction As SqlTransaction,
                                                          SessionCookie As String,
-                                                         BaseURL As String) As Task(Of List(Of clsBeProducto_talla_color))
+                                                         BaseURL As String,
+                                                         lbl As RichTextBox) As Task(Of List(Of clsBeProducto_talla_color))
+
+        Dim lista As New List(Of clsBeProducto_talla_color)()
+
+        For Each det As DataRow In dtDetTallaColor.Rows
+            Dim d As New clsBeProducto_talla_color()
+
+            Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lconnection, ltransaction)
+            If BeProducto IsNot Nothing Then
+                d.IdProducto = BeProducto.IdProducto
+            Else
+                Await clsSyncSAPProducto.Insertar_Producto_From_Sap_HanaAsync(det("U_Modelo").ToString(),
+                                                                                              lconnection, ltransaction,
+                                                                                              SessionCookie, BaseURL, lbl)
+                BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lconnection, ltransaction)
+                If BeProducto IsNot Nothing Then
+                    d.IdProducto = BeProducto.IdProducto
+                Else
+                    Throw New Exception("No se pudo insertar ni recuperar el producto con código: " & det("U_Modelo").ToString())
+                End If
+            End If
+
+            Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lconnection, ltransaction)
+            If BeTalla IsNot Nothing Then
+                d.IdTalla = BeTalla.IdTalla
+            Else
+                d.IdTalla = Await clsSyncSapTalla.Insertar_Talla_From_Sap_HanaAsync(det("U_Talla").ToString(), SessionCookie, BaseURL, lbl)
+
+                If d.IdTalla = 0 Then
+                    Throw New Exception("No se pudo insertar ni recuperar la talla con código: " & det("U_Color").ToString())
+                End If
+
+            End If
+
+            Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lconnection, ltransaction)
+            If BeColor IsNot Nothing Then
+                d.IdColor = BeColor.IdColor
+            Else
+                d.IdColor = Await clsSyncSapColor.Insertar_Color_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lbl)
+
+                If d.IdColor = 0 Then
+                    Throw New Exception("No se pudo insertar ni recuperar el color con código: " & det("U_Color").ToString())
+                End If
+
+            End If
+
+            d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
+
+            Dim BeCampaña = clsLnCampaña.Get_Single_By_Codigo(det("U_Campania").ToString(), lconnection, ltransaction)
+            If BeCampaña IsNot Nothing Then
+                d.IdCampaña = det("U_Campania").ToString()
+            Else
+                d.IdCampaña = Await clsSyncSAPCampaña.Insertar_Campaña_From_Sap_Hana_SL(det("U_Campania").ToString(), lconnection, ltransaction, SessionCookie, BaseURL, IdUsuario)
+            End If
+
+            d.Fec_agr = Date.Now()
+            d.User_agr = Usuario
+            d.Fec_mod = Date.Now()
+            d.User_mod = Usuario
+
+            clsLnProducto_talla_color.InsertOrUpdate(d, lconnection, ltransaction)
+            lista.Add(d)
+        Next
+
+        Return lista
+    End Function
+
+    Public Shared Function MapearCampaña(enc As DataRow,
+                                         Usuario As String) As clsBeCampaña
+
+        Dim be As clsBeCampaña = clsLnCampaña.Get_Single_By_Codigo(Convert.ToInt32(enc("DocEntry")))
+
+        If be Is Nothing Then
+            be = New clsBeCampaña With {
+                .IdCampaña = Convert.ToInt32(enc("DocEntry")),
+                .Codigo = Convert.ToInt32(enc("DocEntry")),
+                .Nombre = enc("Remark").ToString(),
+                .FechaInicio = Convert.ToDateTime(enc("U_FechaInicial")),
+                .FechaFin = Convert.ToDateTime(enc("U_FechaFinal")),
+                .Activo = True,
+                .Fec_agr = Date.Now(),
+                .Fec_mod = Date.Now(),
+                .User_agr = Usuario,
+                .User_mod = Usuario
+            }
+        End If
+
+        Return be
+    End Function
+
+    Public Shared Async Function MapearDetalleTallaColor(dtDetTallaColor As DataTable,
+                                                        lConnection As SqlConnection,
+                                                        lTransaction As SqlTransaction,
+                                                        Usuario As String,
+                                                        SessionCookie As String,
+                                                        BaseURL As String) As Task(Of List(Of clsBeProducto_talla_color))
 
         Dim lista As New List(Of clsBeProducto_talla_color)()
 
@@ -120,19 +218,37 @@ Public Class FacturaReservaMapper
             If BeProducto IsNot Nothing Then
                 d.IdProducto = BeProducto.IdProducto
             Else
-                d.IdProducto = clsSyncSAPProducto.Insertar_Producto_From_Sap_Hana(det("U_Modelo").ToString(), lConnection, lTransaction)
+                Await clsSyncSAPProducto.Insertar_Producto_From_Sap_HanaAsync(det("U_Modelo").ToString(), lConnection, lTransaction, SessionCookie, BaseURL, Nothing)
+                BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
+                If BeProducto IsNot Nothing Then
+                    d.IdProducto = BeProducto.IdProducto
+                Else
+                    Throw New Exception("No se pudo insertar ni recuperar el producto con código: " & det("U_Modelo").ToString())
+                End If
             End If
 
             Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lConnection, lTransaction)
             If BeTalla IsNot Nothing Then
                 d.IdTalla = BeTalla.IdTalla
+            Else
+                d.IdTalla = Await clsSyncSapTalla.Insertar_Talla_From_Sap_HanaAsync(det("U_Talla").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
+
+                If d.IdTalla = 0 Then
+                    Throw New Exception("No se pudo insertar ni recuperar la talla con código: " & det("U_Color").ToString())
+                End If
+
             End If
 
             Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lConnection, lTransaction)
             If BeColor IsNot Nothing Then
                 d.IdColor = BeColor.IdColor
             Else
-                d.IdColor = clsSyncSapColor.Insertar_Color_From_Sap_Hana(det("U_Color").ToString(), lConnection, lTransaction)
+                d.IdColor = Await clsSyncSapColor.Insertar_Color_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
+
+                If d.IdColor = 0 Then
+                    Throw New Exception("No se pudo insertar ni recuperar el color con código: " & det("U_Color").ToString())
+                End If
+
             End If
 
             d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
@@ -180,5 +296,109 @@ Public Class FacturaReservaMapper
 
         Return be
     End Function
+
+    Public Shared Async Function MapearDetalleTallaColor(dtDetTallaColor As DataTable,
+                                                         Usuario As String,
+                                                         SessionCookie As String,
+                                                         BaseURL As String,
+                                                         lbl As RichTextBox) As Task(Of List(Of clsBeProducto_talla_color))
+
+        Dim lista As New List(Of clsBeProducto_talla_color)()
+
+        For Each det As DataRow In dtDetTallaColor.Rows
+            Dim d As New clsBeProducto_talla_color()
+
+            Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString())
+            If BeProducto IsNot Nothing Then
+                d.IdProducto = BeProducto.IdProducto
+            Else
+
+                Await clsSyncSAPProducto.Insertar_Producto_From_Sap_HanaAsync(det("U_Modelo").ToString(), SessionCookie, BaseURL, lbl)
+
+                BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString())
+
+                If BeProducto IsNot Nothing Then
+                    d.IdProducto = BeProducto.IdProducto
+                Else
+                    Throw New Exception("No se pudo insertar ni recuperar el producto con código: " & det("U_Modelo").ToString())
+                End If
+
+            End If
+
+            Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString())
+            If BeTalla IsNot Nothing Then
+                d.IdTalla = BeTalla.IdTalla
+            Else
+                d.IdTalla = Await clsSyncSapTalla.Insertar_Talla_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lbl)
+
+                If d.IdTalla = 0 Then
+                    Throw New Exception("No se pudo insertar ni recuperar la talla con código: " & det("U_Color").ToString())
+                End If
+
+            End If
+
+            Dim BeColor = clsLnColor.GetSingle_By_CodigoColor(det("U_Color").ToString())
+            If BeColor IsNot Nothing Then
+                d.IdColor = BeColor.IdColor
+            Else
+                d.IdColor = Await clsSyncSapColor.Insertar_Color_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lbl)
+
+                If d.IdColor = 0 Then
+                    Throw New Exception("No se pudo insertar ni recuperar el color con código: " & det("U_Color").ToString())
+                End If
+
+            End If
+
+            d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
+
+            Dim BeCampaña = clsLnCampaña.Get_Single_By_Codigo(det("U_Campania").ToString())
+            If BeCampaña IsNot Nothing Then
+                d.IdCampaña = det("U_Campania").ToString()
+            Else
+                d.IdCampaña = Await clsSyncSAPCampaña.Insertar_Campaña_From_Sap_Hana_SL(det("U_Campania").ToString(), SessionCookie, BaseURL, IdUsuario)
+            End If
+
+            d.Fec_agr = Date.Now()
+            d.User_agr = Usuario
+            d.Fec_mod = Date.Now()
+            d.User_mod = Usuario
+
+            clsLnProducto_talla_color.InsertOrUpdate(d)
+            lista.Add(d)
+        Next
+
+        Return lista
+    End Function
+
+    Public Shared Function ObtenerBodegaUnica(documentLines As JArray) As String
+        If documentLines Is Nothing OrElse documentLines.Count = 0 Then
+            Throw New ApplicationException("No se recibieron líneas para determinar la bodega.")
+        End If
+
+        Dim bodegaUnica As String = Nothing
+
+        For Each linea As JObject In documentLines
+            Dim token = linea("WarehouseCode")
+            If token Is Nothing OrElse token.Type = JTokenType.Null Then Continue For
+
+            Dim whs As String = token.ToString()
+            If String.IsNullOrWhiteSpace(whs) Then Continue For
+
+            whs = whs.Trim()
+
+            If bodegaUnica Is Nothing Then
+                bodegaUnica = whs
+            ElseIf Not whs.Equals(bodegaUnica, StringComparison.OrdinalIgnoreCase) Then
+                Throw New ApplicationException($"Se detectaron múltiples bodegas: '{bodegaUnica}' y '{whs}'.")
+            End If
+        Next
+
+        If bodegaUnica Is Nothing Then
+            Throw New ApplicationException("Ninguna línea contiene WarehouseCode (bodega).")
+        End If
+
+        Return bodegaUnica
+    End Function
+
 
 End Class

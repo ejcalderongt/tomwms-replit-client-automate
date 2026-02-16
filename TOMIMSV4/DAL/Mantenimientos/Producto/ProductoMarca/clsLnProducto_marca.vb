@@ -353,4 +353,67 @@ Public Class clsLnProducto_marca
 
     End Function
 
+    Public Shared Function Get_Single_By_Codigo(ByVal pCodigo As String) As clsBeProducto_marca
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Const sql As String = "SELECT TOP 1 * FROM producto_marca WHERE Codigo = @Codigo;"
+
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+                cmd.Parameters.Add("@Codigo", SqlDbType.VarChar).Value = pCodigo
+
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable()
+                    dad.Fill(dt)
+
+                    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                        Dim be As New clsBeProducto_marca()
+                        Cargar(be, dt.Rows(0))
+                        Return be
+                    End If
+                End Using
+            End Using
+
+            Return Nothing
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
+    Public Shared Function MaxID() As Integer
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lMax As Integer = 0
+
+        Try
+            cn.Open()
+
+            Dim vSQL As String = "SELECT ISNULL(MAX(IdMarca), 0) + 1 FROM producto_marca;"
+
+            Using cmd As New SqlCommand(vSQL, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+
+                Dim result As Object = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    lMax = CInt(result)
+                End If
+            End Using
+
+            Return lMax
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
+
 End Class

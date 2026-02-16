@@ -32,7 +32,7 @@ Public Class clsLnTempComparacionInventario
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTempComparacionInventario As clsBeTempComparacionInventario, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTempComparacionInventario As clsBeTempComparacionInventario, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -61,17 +61,12 @@ Public Class clsLnTempComparacionInventario
             Ins.Add("EstadoDestino", "@EstadoDestino", DataType.Parametro)
             Ins.Add("UbicacionOrigen", "@UbicacionOrigen", DataType.Parametro)
             Ins.Add("UbicacionDestino", "@UbicacionDestino", DataType.Parametro)
-            Ins.Add("IdUbicacion", "@IdUbicacion", DataType.Parametro)
-            Ins.Add("IdUbicacionDestino", "@IdUbicacionDestino", DataType.Parametro)
-            Ins.Add("Fec_Mod", "@Fec_Mod", DataType.Parametro)
-            Ins.Add("IdInvciclico", "@IdInvciclico", DataType.Parametro)
-            Ins.Add("FechaVenceStock", "@FechaVenceStock", DataType.Parametro)
-            Ins.Add("IdProductoEstado", "@IdProductoEstado", DataType.Parametro)
-            Ins.Add("IdProductoEst_nuevo", "@IdProductoEst_nuevo", DataType.Parametro)
-            Ins.Add("IdPresentacion", "@IdPresentacion", DataType.Parametro)
-            Ins.Add("Cantidad_Reservada_UmBas", "@Cantidad_Reservada_UmBas", DataType.Parametro)
-            Ins.Add("TieneReservaYConteoInsuficiente", "@TieneReservaYConteoInsuficiente", DataType.Parametro)
-            Ins.Add("Observacion", "@Observacion", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
+            Ins.Add("TallaStock", "@TallaStock", DataType.Parametro)
+            Ins.Add("ColorStock", "@ColorStock", DataType.Parametro)
+            Ins.Add("TallaNueva", "@TallaNueva", DataType.Parametro)
+            Ins.Add("ColorNuevo", "@ColorNuevo", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -107,17 +102,12 @@ Public Class clsLnTempComparacionInventario
             cmd.Parameters.Add(New SqlParameter("@UBICACIONDESTINO", oBeTempComparacionInventario.UbicacionDestino))
             cmd.Parameters.Add(New SqlParameter("@LICENCIA", oBeTempComparacionInventario.Licencia))
             cmd.Parameters.Add(New SqlParameter("@FECHAVENCE", oBeTempComparacionInventario.FechaVence))
-            cmd.Parameters.Add(New SqlParameter("@IdUbicacion", oBeTempComparacionInventario.IdUbicacion))
-            cmd.Parameters.Add(New SqlParameter("@IdUbicacionDestino", oBeTempComparacionInventario.IdUbicacionDestino))
-            cmd.Parameters.Add(New SqlParameter("@Fec_Mod", oBeTempComparacionInventario.Fec_Mod))
-            cmd.Parameters.Add(New SqlParameter("@IdInvciclico", oBeTempComparacionInventario.IdInvciclico))
-            cmd.Parameters.Add(New SqlParameter("@FechaVenceStock", oBeTempComparacionInventario.FechaVenceStock))
-            cmd.Parameters.Add(New SqlParameter("@IdProductoEstado", oBeTempComparacionInventario.IdProductoEstado))
-            cmd.Parameters.Add(New SqlParameter("@IdProductoEst_nuevo", oBeTempComparacionInventario.IdProductoEst_nuevo))
-            cmd.Parameters.Add(New SqlParameter("@IdPresentacion", oBeTempComparacionInventario.IdPresentacion))
-            cmd.Parameters.Add(New SqlParameter("@Cantidad_Reservada_UmBas", oBeTempComparacionInventario.Cantidad_Reservada_UmBas))
-            cmd.Parameters.Add(New SqlParameter("@TieneReservaYConteoInsuficiente", oBeTempComparacionInventario.TieneReservaYConteoInsuficiente))
-            cmd.Parameters.Add(New SqlParameter("@Observacion", oBeTempComparacionInventario.Observacion))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTempComparacionInventario.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR_NUEVO", oBeTempComparacionInventario.IdProductoTallaColor_nuevo))
+            cmd.Parameters.Add(New SqlParameter("@TALLASTOCK", oBeTempComparacionInventario.TallaStock))
+            cmd.Parameters.Add(New SqlParameter("@COLORSTOCK", oBeTempComparacionInventario.ColorStock))
+            cmd.Parameters.Add(New SqlParameter("@TALLANUEVA", oBeTempComparacionInventario.TallaNueva))
+            cmd.Parameters.Add(New SqlParameter("@COLORNUEVO", oBeTempComparacionInventario.ColorNuevo))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

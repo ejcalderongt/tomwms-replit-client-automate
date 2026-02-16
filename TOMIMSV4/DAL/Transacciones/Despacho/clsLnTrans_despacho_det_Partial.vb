@@ -644,39 +644,4 @@ Partial Public Class clsLnTrans_despacho_det
 
     End Function
 
-    Public Shared Function Get_Cantidad_Despachada(ByVal pIdDespachoEnc As Integer,
-                                                   ByVal pConnection As SqlConnection,
-                                                   ByVal pTransaction As SqlTransaction) As Double
-
-
-        Try
-
-            Dim lCantidadDespachada As Double = 0
-
-            Const sp As String = "SELECT ISNULL(SUM(cantidaddespachada),0) 
-                                  FROM trans_despacho_det 
-                                  WHERE IdDespachoEnc = @IdDespachoEnc  "
-
-            Using lCommand As New SqlCommand(sp, pConnection)
-
-                lCommand.CommandType = CommandType.Text
-                lCommand.Transaction = pTransaction
-                lCommand.Parameters.AddWithValue("@IdDespachoEnc", pIdDespachoEnc)
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lCantidadDespachada = CDbl(lReturnValue)
-                End If
-
-            End Using
-
-            Return lCantidadDespachada
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
 End Class

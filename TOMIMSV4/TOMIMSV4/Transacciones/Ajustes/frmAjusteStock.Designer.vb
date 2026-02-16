@@ -45,7 +45,6 @@ Partial Class frmAjusteStock
         Dim Label8 As System.Windows.Forms.Label
         Dim lblPropietario As System.Windows.Forms.Label
         Dim lblSerie As System.Windows.Forms.Label
-        Dim Label6 As System.Windows.Forms.Label
         Dim Label9 As System.Windows.Forms.Label
         Dim Label10 As System.Windows.Forms.Label
         Dim Label11 As System.Windows.Forms.Label
@@ -149,7 +148,6 @@ Partial Class frmAjusteStock
         Label8 = New System.Windows.Forms.Label()
         lblPropietario = New System.Windows.Forms.Label()
         lblSerie = New System.Windows.Forms.Label()
-        Label6 = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label10 = New System.Windows.Forms.Label()
         Label11 = New System.Windows.Forms.Label()
@@ -353,16 +351,6 @@ Partial Class frmAjusteStock
         lblSerie.Size = New System.Drawing.Size(42, 16)
         lblSerie.TabIndex = 40
         lblSerie.Text = "Serie:"
-        '
-        'Label6
-        '
-        Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(913, 76)
-        Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label6.Name = "Label6"
-        Label6.Size = New System.Drawing.Size(102, 16)
-        Label6.TabIndex = 44
-        Label6.Text = "Centro de costo:"
         '
         'Label9
         '
@@ -654,7 +642,6 @@ Partial Class frmAjusteStock
         Me.GroupControl2.Controls.Add(Me.gcCentroCosto)
         Me.GroupControl2.Controls.Add(Label9)
         Me.GroupControl2.Controls.Add(Me.cmbTipoAjuste)
-        Me.GroupControl2.Controls.Add(Label6)
         Me.GroupControl2.Controls.Add(Me.lcmbCentroCosto)
         Me.GroupControl2.Controls.Add(Me.txtSerie)
         Me.GroupControl2.Controls.Add(lblSerie)

@@ -183,4 +183,42 @@ Partial Public Class clsLnI_nav_cliente
 
     End Function
 
+
+    Public Shared Function EliminarTodos(Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = " Delete from I_nav_cliente"
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection, pTransaction)
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex1 As SqlException
+            Throw ex1
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
 End Class

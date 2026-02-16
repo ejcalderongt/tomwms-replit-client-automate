@@ -25,8 +25,6 @@ Public Class clsLnUsuario
                 .Foto = IIf(IsDBNull(dr.Item("foto")), Nothing, dr.Item("foto"))
                 .Sistema = IIf(IsDBNull(dr.Item("sistema")), False, dr.Item("sistema"))
                 .Clave_autorizacion = IIf(IsDBNull(dr.Item("clave_autorizacion")), "", dr.Item("clave_autorizacion"))
-                .Usuario_sap_b1 = IIf(IsDBNull(dr.Item("usuario_sap_b1")), "", dr.Item("usuario_sap_b1"))
-                .Clave_sap_b1 = IIf(IsDBNull(dr.Item("clave_sap_b1")), "", dr.Item("clave_sap_b1"))
             End With
 
         Catch ex1 As SQLException
@@ -38,7 +36,7 @@ Public Class clsLnUsuario
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeUsuario As clsBeUsuario, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeUsuario As clsBeUsuario, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -65,10 +63,6 @@ Public Class clsLnUsuario
             If Not oBeUsuario.Foto Is Nothing Then Ins.Add("foto", "@foto", DataType.Parametro)
             Ins.Add("sistema", "@sistema", DataType.Parametro)
             Ins.Add("clave_autorizacion", "@clave_autorizacion", DataType.Parametro)
-            '#GT10072025: campos para usuario clave SAP
-            Ins.Add("usuario_sap_b1", "@usuario_sap_b1", DataType.Parametro)
-            Ins.Add("clave_sap_b1", "@clave_sap_b1", DataType.Parametro)
-
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -101,9 +95,6 @@ Public Class clsLnUsuario
             If Not oBeUsuario.Foto Is Nothing Then cmd.Parameters.Add(New SqlParameter("@FOTO", oBeUsuario.Foto))
             cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBeUsuario.Sistema))
             cmd.Parameters.Add(New SqlParameter("@CLAVE_AUTORIZACION", oBeUsuario.Clave_autorizacion))
-            '#GT10072025: campos para usuario clave SAP
-            cmd.Parameters.Add(New SqlParameter("@USUARIO_SAP_B1", oBeUsuario.Usuario_sap_b1))
-            cmd.Parameters.Add(New SqlParameter("@CLAVE_SAP_B1", oBeUsuario.Clave_sap_b1))
 
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
@@ -155,11 +146,6 @@ Public Class clsLnUsuario
             If Not oBeUsuario.Foto Is Nothing Then Upd.Add("foto", "@foto", DataType.Parametro)
             Upd.Add("sistema", "@sistema", DataType.Parametro)
             Upd.Add("clave_autorizacion", "@clave_autorizacion", DataType.Parametro)
-            '#GT10072025: campos para usuario clave SAP
-            Upd.Add("usuario_sap_b1", "@usuario_sap_b1", DataType.Parametro)
-            Upd.Add("clave_sap_b1", "@clave_sap_b1", DataType.Parametro)
-
-
             Upd.Where("IdUsuario = @IdUsuario")
 
             Dim sp As String = Upd.SQL()
@@ -193,9 +179,7 @@ Public Class clsLnUsuario
             If Not oBeUsuario.Foto Is Nothing Then cmd.Parameters.Add(New SqlParameter("@FOTO", oBeUsuario.Foto))
             cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBeUsuario.Sistema))
             cmd.Parameters.Add(New SqlParameter("@CLAVE_AUTORIZACION", oBeUsuario.Clave_autorizacion))
-            '#GT10072025: campos para usuario clave SAP
-            cmd.Parameters.Add(New SqlParameter("@USUARIO_SAP_B1", oBeUsuario.Usuario_sap_b1))
-            cmd.Parameters.Add(New SqlParameter("@CLAVE_SAP_B1", oBeUsuario.Clave_sap_b1))
+
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -535,7 +519,7 @@ Public Class clsLnUsuario
     End Function
 
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 

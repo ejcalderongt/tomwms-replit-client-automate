@@ -101,7 +101,7 @@ Partial Class frmCambioUbicacion
         Dim User_agrLabel As System.Windows.Forms.Label
         Dim Fec_modLabel As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCambioUbicacion))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -228,7 +228,6 @@ Partial Class frmCambioUbicacion
         Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.chkAdvanceMode = New DevExpress.XtraBars.BarToggleSwitchItem()
         IdPropietarioLabel = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label24 = New System.Windows.Forms.Label()
@@ -679,10 +678,10 @@ Partial Class frmCambioUbicacion
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.mnuAsignacion, Me.mnuImprimir1, Me.mnuLiberarStockNoProcesado, Me.lblRegs, Me.mnuImportarListaCambioUbic, Me.mnuPendiente, Me.cmdDescargarPlantilla, Me.cmdEliminarDocumento, Me.chkAdvanceMode})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.mnuAsignacion, Me.mnuImprimir1, Me.mnuLiberarStockNoProcesado, Me.lblRegs, Me.mnuImportarListaCambioUbic, Me.mnuPendiente, Me.cmdDescargarPlantilla, Me.cmdEliminarDocumento})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 14
+        Me.RibbonControl.MaxItemId = 13
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -787,7 +786,6 @@ Partial Class frmCambioUbicacion
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuPendiente)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImportarListaCambioUbic)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdDescargarPlantilla)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAdvanceMode)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar1
@@ -1834,8 +1832,8 @@ Partial Class frmCambioUbicacion
         Me.grdDetalle.Cursor = System.Windows.Forms.Cursors.Default
         Me.grdDetalle.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdDetalle.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        GridLevelNode2.RelationName = "Level1"
-        Me.grdDetalle.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.grdDetalle.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.grdDetalle.Location = New System.Drawing.Point(2, 28)
         Me.grdDetalle.MainView = Me.GridViewDet
         Me.grdDetalle.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -2001,13 +1999,6 @@ Partial Class frmCambioUbicacion
         Me.User_modTextEdit.Size = New System.Drawing.Size(261, 22)
         Me.User_modTextEdit.TabIndex = 10
         '
-        'chkAdvanceMode
-        '
-        Me.chkAdvanceMode.Caption = "Advance Mode"
-        Me.chkAdvanceMode.Id = 13
-        Me.chkAdvanceMode.Name = "chkAdvanceMode"
-        Me.chkAdvanceMode.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
-        '
         'frmCambioUbicacion
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -2017,7 +2008,6 @@ Partial Class frmCambioUbicacion
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar1)
         Me.Controls.Add(Me.RibbonControl)
-        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "frmCambioUbicacion"
         Me.Ribbon = Me.RibbonControl
@@ -2242,5 +2232,8 @@ Partial Class frmCambioUbicacion
     Friend WithEvents Fec_modDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_modTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents hideContainerBottom As DevExpress.XtraBars.Docking.AutoHideContainer
-    Friend WithEvents chkAdvanceMode As DevExpress.XtraBars.BarToggleSwitchItem
+    Friend WithEvents txtColor As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtTalla As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents lblColor As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lblTalla As DevExpress.XtraEditors.LabelControl
 End Class

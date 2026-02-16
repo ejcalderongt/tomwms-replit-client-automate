@@ -36,7 +36,6 @@ Partial Class frmAjustePositivo
         Me.lbUmbas = New DevExpress.XtraEditors.LabelControl()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.txtLicencia = New DevExpress.XtraEditors.TextEdit()
-        Me.lblUbicacion = New System.Windows.Forms.Label()
         Me.dtpFechaVence = New DevExpress.XtraEditors.DateEdit()
         Me.lblFechaVence = New System.Windows.Forms.Label()
         Me.lblLote = New System.Windows.Forms.Label()
@@ -45,7 +44,6 @@ Partial Class frmAjustePositivo
         Me.txtUbicacion = New DevExpress.XtraEditors.TextEdit()
         Me.txtLote = New DevExpress.XtraEditors.TextEdit()
         Me.txtPeso = New System.Windows.Forms.NumericUpDown()
-        Me.cmbProducto = New DevExpress.XtraEditors.LookUpEdit()
         Me.lblOperador = New System.Windows.Forms.Label()
         Me.cmbProductoPresentacion = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbProductoEstado = New DevExpress.XtraEditors.LookUpEdit()
@@ -71,7 +69,6 @@ Partial Class frmAjustePositivo
         CType(Me.txtUbicacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtPeso, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbProductoPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbProductoEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -123,7 +120,6 @@ Partial Class frmAjustePositivo
         Me.grpReconteo.Controls.Add(Me.cmbProductos)
         Me.grpReconteo.Controls.Add(Me.lbUmbas)
         Me.grpReconteo.Controls.Add(Me.GroupBox2)
-        Me.grpReconteo.Controls.Add(Me.cmbProducto)
         Me.grpReconteo.Controls.Add(Me.lblOperador)
         Me.grpReconteo.Controls.Add(Me.cmbProductoPresentacion)
         Me.grpReconteo.Controls.Add(Me.cmbProductoEstado)
@@ -224,7 +220,6 @@ Partial Class frmAjustePositivo
         '
         Me.GroupBox2.Controls.Add(Me.lnkUbicaciones)
         Me.GroupBox2.Controls.Add(Me.txtLicencia)
-        Me.GroupBox2.Controls.Add(Me.lblUbicacion)
         Me.GroupBox2.Controls.Add(Me.dtpFechaVence)
         Me.GroupBox2.Controls.Add(Me.lblFechaVence)
         Me.GroupBox2.Controls.Add(Me.lblLote)
@@ -250,15 +245,6 @@ Partial Class frmAjustePositivo
         Me.txtLicencia.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtLicencia.Size = New System.Drawing.Size(217, 22)
         Me.txtLicencia.TabIndex = 36
-        '
-        'lblUbicacion
-        '
-        Me.lblUbicacion.AutoSize = True
-        Me.lblUbicacion.Location = New System.Drawing.Point(19, 29)
-        Me.lblUbicacion.Name = "lblUbicacion"
-        Me.lblUbicacion.Size = New System.Drawing.Size(66, 16)
-        Me.lblUbicacion.TabIndex = 15
-        Me.lblUbicacion.Text = "Ubicación:"
         '
         'dtpFechaVence
         '
@@ -342,18 +328,6 @@ Partial Class frmAjustePositivo
         Me.txtPeso.Name = "txtPeso"
         Me.txtPeso.Size = New System.Drawing.Size(217, 23)
         Me.txtPeso.TabIndex = 30
-        '
-        'cmbProducto
-        '
-        Me.cmbProducto.Location = New System.Drawing.Point(149, 106)
-        Me.cmbProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.cmbProducto.MenuManager = Me.RibbonControl
-        Me.cmbProducto.Name = "cmbProducto"
-        Me.cmbProducto.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbProducto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbProducto.Properties.NullText = ""
-        Me.cmbProducto.Size = New System.Drawing.Size(309, 22)
-        Me.cmbProducto.TabIndex = 38
         '
         'lblOperador
         '
@@ -485,7 +459,6 @@ Partial Class frmAjustePositivo
         CType(Me.txtUbicacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtPeso, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbProductoPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbProductoEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidad, System.ComponentModel.ISupportInitialize).EndInit()
@@ -499,7 +472,6 @@ Partial Class frmAjustePositivo
     Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
     Friend WithEvents grpReconteo As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents cmbProducto As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents lblOperador As Label
     Friend WithEvents lblLicPlate As Label
     Friend WithEvents cmbProductoPresentacion As DevExpress.XtraEditors.LookUpEdit
@@ -511,7 +483,6 @@ Partial Class frmAjustePositivo
     Friend WithEvents lblLote As Label
     Friend WithEvents lblFechaVence As Label
     Friend WithEvents dtpFechaVence As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents lblUbicacion As Label
     Friend WithEvents lblPresentacion As Label
     Friend WithEvents lblEstadoProducto As Label
     Friend WithEvents lbIdStock As Label

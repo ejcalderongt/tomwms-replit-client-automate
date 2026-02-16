@@ -1,5 +1,4 @@
-﻿Imports System
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProveedor
@@ -1388,80 +1387,32 @@ Partial Public Class clsLnProveedor
 
     End Function
 
-    '#GT25062025: obtener proveedores asociados a un propietario (pueden ser varios)
-    Public Shared Function GetListProveedores_By_Activo_and_IdPropietario(ByVal pIdPropietario As Integer, ByVal pActivo As Boolean,
-                                                                          ByRef lConection As SqlConnection,
-                                                                          ByRef lTransaction As SqlTransaction) As List(Of clsBeProveedor)
-
-        GetListProveedores_By_Activo_and_IdPropietario = Nothing
-
+    Public Shared Function Existe_Proveedor(ByVal pCodigo As String, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
         Try
             Dim vSQL As String = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo"
 
-            Dim vSQL As String = "SELECT * FROM VW_Proveedor WHERE 1 > 0 "
-
-            If pActivo = True Then
-                vSQL += " AND Activo=1"
-            Else
-                vSQL += " AND Activo=0"
-            End If
-
-            If pIdPropietario <> 0 Then
-                vSQL += " AND IdPropietario=@IdPropietario"
-            End If
-
-
-            Using lDTA As New SqlDataAdapter(vSQL, lConection)
-
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
 
-                If pIdPropietario <> 0 Then lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
-
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
-
-                Dim BeProveedor As clsBeProveedor
-
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    GetListProveedores_By_Activo_and_IdPropietario = New List(Of clsBeProveedor)
-
-                    For Each lRow As DataRow In lDataTable.Rows
-
-                        BeProveedor = New clsBeProveedor
-                        BeProveedor.Empresa = New clsBeEmpresa
-                        BeProveedor.Propietario = New clsBePropietarios
-                        Cargar(BeProveedor, lRow)
-
-                        If lRow("Empresa") IsNot DBNull.Value AndAlso lRow("Empresa") IsNot Nothing Then
-                            BeProveedor.Empresa.Nombre = CType(lRow("Empresa"), String)
-                        End If
-
-                        If lRow("Propietario") IsNot DBNull.Value AndAlso lRow("Propietario") IsNot Nothing Then
-                            BeProveedor.Propietario.Nombre_comercial = CType(lRow("Propietario"), String)
-                        End If
-
-                        GetListProveedores_By_Activo_and_IdPropietario.Add(BeProveedor)
-
-                    Next
-
-                End If
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
 
                 Return (lDT IsNot Nothing AndAlso lDT.Rows.Count > 0)
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
-
     End Function
 
     Public Shared Function Insert_Proveedor_Interface(INavBeProveedor As clsBeI_nav_bodega, BeConfigEnc As clsBeI_nav_config_enc, ByVal User As String) As Boolean
+
         Insert_Proveedor_Interface = False
 
-
         Try
+
             Dim BeProveedor As New clsBeProveedor
             BeProveedor.IdProveedor = MaxID() + 1
             BeProveedor.IdEmpresa = BeConfigEnc.Idempresa
@@ -1490,60 +1441,12 @@ Partial Public Class clsLnProveedor
 
             Insert_Proveedor_Interface = True
 
-
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
     End Function
-    Public Shared Function Get_Codigo_By_IdProveedorBodega(ByVal IdProveedorBodega As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As String
 
-        Get_Codigo_By_IdProveedorBodega = String.Empty
-
-        Try
-
-            Const sp As String = "SELECT Codigo FROM Proveedor p JOIN proveedor_bodega pb ON p.IdProveedor = pb.IdProveedor
-                                  WHERE(pb.IdAsignacion= @IdProveedorBodega)"
-
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdProveedorBodega", IdProveedorBodega))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count = 1 Then
-                Get_Codigo_By_IdProveedorBodega = IIf(IsDBNull(dt.Rows(0).Item("Codigo")), "", dt.Rows(0).Item("Codigo"))
-            End If
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-    Public Shared Function Existe_Proveedor(ByVal pCodigo As String, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
-        Try
-            Dim vSQL As String = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo"
-
-            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
-
-                Dim lDT As New DataTable()
-                lDTA.Fill(lDT)
-
-                Return (lDT IsNot Nothing AndAlso lDT.Rows.Count > 0)
-            End Using
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-    End Function
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

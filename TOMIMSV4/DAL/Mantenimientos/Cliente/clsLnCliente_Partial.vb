@@ -1611,7 +1611,6 @@ Partial Public Class clsLnCliente
         Dim lReturnList As New List(Of clsBeCliente)
 
         Try
-            Const lSQL As String = "SELECT * FROM cliente WHERE activo = 1"
 
             Const lSQl As String = "SELECT * FROM cliente 
                                     WHERE activo = 1 "
@@ -1645,7 +1644,6 @@ Partial Public Class clsLnCliente
         Catch ex As Exception
             Throw New Exception("Cliente_GetAll: " & ex.Message)
         End Try
-    End Function
 
     End Function
 
@@ -2631,201 +2629,7 @@ Partial Public Class clsLnCliente
             End Using
 
         Catch ex As Exception
-            Throw New Exception("Cliente_GetAll_By_IdCliente: " & ex.Message)
-        End Try
-
-    End Function
-
-    Public Shared Function Get_All(lConnection As SqlConnection, lTransaction As SqlTransaction) As List(Of clsBeCliente)
-        Dim lReturnList As New List(Of clsBeCliente)
-
-        Try
-            Const lSQL As String = "SELECT * FROM cliente WHERE activo = 1"
-
-            Using lDTA As New SqlDataAdapter(lSQL, lConnection)
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-                Dim lDataTable As New DataTable()
-                lDTA.Fill(lDataTable)
-
-                For Each lRow As DataRow In lDataTable.Rows
-                    Dim Obj As New clsBeCliente()
-                    Cargar(Obj, lRow)
-                    lReturnList.Add(Obj)
-                Next
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw New Exception("Cliente_GetAll: " & ex.Message)
-        End Try
-    End Function
-
-    Public Shared Function Get_All_Clientes_By_IdCliente(ByVal IdPropietario As Integer,
-                                                         ByVal IdBodega As Integer,
-                                                         ByVal IdCliente As Integer) As DataTable
-
-
-        Try
-
-            Using lConnecion As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnecion.Open()
-
-                Using lTransaction As SqlTransaction = lConnecion.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Dim lSQl As String = "SELECT IdCliente as Correlativo, 
-                                          Empresa as Empresa, 
-                                          Propietario as Propietario, 
-                                          [Tipo Cliente] as Tipo,
-                                          Codigo as Código,
-                                          nombre_comercial as Nombre,
-                                          nombre_contacto as Contacto,
-                                          activo as Activo,
-                                          sistema as Sistema,
-                                          es_bodega_recepcion as Es_Bodega_RecepcionWMS,
-                                          es_bodega_traslado as Es_Bodega_TrasladoWMS
-                                          FROM VW_Cliente 
-                                          WHERE IdBodega=@IdBodega 
-                                          AND IdPropietario = @IdPropietario 
-                                          AND IdCliente = @IdCliente "
-
-                    Using lDTA As New SqlDataAdapter(lSQl, lConnecion)
-
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", IdPropietario)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
-
-                        Get_All_Clientes_By_IdCliente = lDataTable
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnecion.Close()
-
-            End Using
-
-        Catch ex As Exception
             Throw ex
-        End Try
-
-    End Function
-
-
-    Public Shared Function Get_IdUbicacionAbastecerCon_By_IdCliente(ByVal IdCliente As Integer,
-                                                                    ByVal lConnection As SqlConnection,
-                                                                    ByVal lTransaction As SqlTransaction) As Integer
-
-        Get_IdUbicacionAbastecerCon_By_IdCliente = 0
-
-        Try
-
-            Const sp As String = "SELECT IdUbicacionAbastecerCon FROM Cliente 
-                                  Where (IdCliente = @IdCliente) "
-
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdCliente", IdCliente))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count = 1 Then
-                Get_IdUbicacionAbastecerCon_By_IdCliente = IIf(IsDBNull(dt.Rows(0).Item("IdUbicacionAbastecerCon")), 0, dt.Rows(0).Item("IdUbicacionAbastecerCon"))
-            End If
-
-        Catch ex1 As SqlException
-            Throw ex1
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Get_All() As List(Of clsBeCliente)
-        Dim lReturnList As New List(Of clsBeCliente)
-
-        Try
-            Const lSQL As String = "SELECT * FROM cliente WHERE activo = 1"
-
-            Dim connectionString As String = Configuration.ConfigurationManager.AppSettings("CST")
-
-            Using lConnection As New SqlConnection(connectionString)
-                Using lDTA As New SqlDataAdapter(lSQL, lConnection)
-                    lDTA.SelectCommand.CommandType = CommandType.Text
-
-                    Dim lDataTable As New DataTable()
-                    lDTA.Fill(lDataTable)
-
-                    For Each lRow As DataRow In lDataTable.Rows
-                        Dim Obj As New clsBeCliente()
-                        Cargar(Obj, lRow)
-                        lReturnList.Add(Obj)
-                    Next
-                End Using
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw New Exception("Cliente_GetAll: " & ex.Message)
-        End Try
-    End Function
-
-    '#GT25062025: metodo para obtener los clientes asociados a la lista de propietarios en el pedido para exportar a la nube.
-    Public Shared Function GetClientes_Activos_By_IdCPropietario(ByVal pIdPropietario As Integer,
-                                                                 ByRef lConnection As SqlConnection,
-                                                                 ByRef lTransaction As SqlTransaction) As List(Of clsBeCliente)
-
-        GetClientes_Activos_By_IdCPropietario = Nothing
-
-        Dim lReturnList As New List(Of clsBeCliente)
-
-        Try
-
-            Const lSQl As String = "SELECT * FROM cliente 
-                                    WHERE (activo=1 and IdPropietario = @IdPropietario) "
-
-            Using lDTA As New SqlDataAdapter(lSQl, lConnection)
-
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
-
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
-
-                Dim Obj As clsBeCliente
-
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    GetClientes_Activos_By_IdCPropietario = New List(Of clsBeCliente)()
-
-                    For Each lRow As DataRow In lDataTable.Rows
-
-                        Obj = New clsBeCliente
-                        Cargar(Obj, lRow)
-                        GetClientes_Activos_By_IdCPropietario.Add(Obj)
-
-                    Next
-
-                End If
-
-            End Using
-
-        Catch ex As Exception
-            Throw New Exception("Cliente_GetAll_By_IdCliente: " & ex.Message)
         End Try
 
     End Function

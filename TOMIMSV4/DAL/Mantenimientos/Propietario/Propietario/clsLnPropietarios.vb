@@ -31,7 +31,6 @@ Public Class clsLnPropietarios
                 .Codigo = IIf(IsDBNull(dr.Item("codigo")), "", dr.Item("codigo"))
                 .Sistema = IIf(IsDBNull(dr.Item("Sistema")), False, dr.Item("Sistema"))
                 .Es_Consolidador = IIf(IsDBNull(dr.Item("es_consolidador")), False, dr.Item("es_consolidador"))
-                .ControlUx = IIf(IsDBNull(dr.Item("controlux")), False, dr.Item("controlux"))
 
             End With
 
@@ -83,7 +82,7 @@ Public Class clsLnPropietarios
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBePropietarios As clsBePropietarios, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBePropietarios As clsBePropietarios, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -113,7 +112,6 @@ Public Class clsLnPropietarios
             Ins.Add("codigo", "@codigo", DataType.Parametro)
             Ins.Add("sistema", "@sistema", DataType.Parametro)
             Ins.Add("es_consolidador", "@es_consolidador", DataType.Parametro)
-            Ins.Add("controlux", "@controlux", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -146,7 +144,7 @@ Public Class clsLnPropietarios
             cmd.Parameters.Add(New SqlParameter("@CODIGO", oBePropietarios.Codigo))
             cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBePropietarios.Sistema))
             cmd.Parameters.Add(New SqlParameter("@ES_CONSOLIDADOR", oBePropietarios.Es_Consolidador))
-            cmd.Parameters.Add(New SqlParameter("@CONTROLUX", oBePropietarios.ControlUx))
+
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -202,7 +200,6 @@ Public Class clsLnPropietarios
             Upd.Add("codigo", "@codigo", DataType.Parametro)
             Upd.Add("sistema", "@sistema", DataType.Parametro)
             Upd.Add("es_consolidador", "@es_consolidador", DataType.Parametro)
-            Upd.Add("controlux", "@controlux", DataType.Parametro)
             Upd.Where("IdPropietario = @IdPropietario")
 
 
@@ -241,7 +238,7 @@ Public Class clsLnPropietarios
             cmd.Parameters.Add(New SqlParameter("@CODIGO", oBePropietarios.Codigo))
             cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBePropietarios.Sistema))
             cmd.Parameters.Add(New SqlParameter("@ES_CONSOLIDADOR", oBePropietarios.Es_Consolidador))
-            cmd.Parameters.Add(New SqlParameter("@CONTROLUX", oBePropietarios.ControlUx))
+
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -609,7 +606,7 @@ Public Class clsLnPropietarios
 
     End Function
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 

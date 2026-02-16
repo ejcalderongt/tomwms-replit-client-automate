@@ -1,5 +1,4 @@
-﻿Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProducto_presentacion
@@ -3349,123 +3348,52 @@ Partial Public Class clsLnProducto_presentacion
 
     End Function
 
-    Public Shared Function Get_By_Codigo_Producto_And_Nombre_Presentacion(ByVal pCodigoProducto As String,
-                                                                          ByVal pNombrePresentacion As String,
-                                                                          ByRef lConnection As SqlConnection,
-                                                                          ByRef lTransaction As SqlTransaction) As clsBeProducto_Presentacion
-        Get_By_Codigo_Producto_And_Nombre_Presentacion = Nothing
+    '#GT20012025: cargar presentacion para preimpresion mhs
+    Public Shared Function Get_Single_By_IdPresentacion(ByVal pIdPresentacion As Integer) As clsBeProducto_Presentacion
+
+        Get_Single_By_IdPresentacion = Nothing
 
         Try
 
-            Dim vSQL As String = "SELECT pp.*
-                                  FROM producto_presentacion pp INNER JOIN producto p ON pp.IdProducto = p.IdProducto
-                                  WHERE pp.nombre=@NombrePresentacion and p.Codigo = @CodigoProducto"
+            Dim vSQL As String = "SELECT * FROM producto_presentacion WHERE IdPresentacion=@IdPresentacion"
 
-            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-                lDataAdapter.SelectCommand.CommandType = CommandType.Text
-                lDataAdapter.SelectCommand.Transaction = lTransaction
-                lDataAdapter.SelectCommand.Parameters.AddWithValue("@CodigoProducto", pCodigoProducto)
-                lDataAdapter.SelectCommand.Parameters.AddWithValue("@NombrePresentacion", pNombrePresentacion)
+                lConnection.Open()
 
-                Dim lDataTable As New DataTable()
-                lDataAdapter.Fill(lDataTable)
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
 
-                    Dim lRow As DataRow = lDataTable.Rows(0)
-                    Dim Obj As New clsBeProducto_Presentacion()
-                    Cargar(Obj, lRow)
-                    Get_By_Codigo_Producto_And_Nombre_Presentacion = Obj
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pIdPresentacion)
 
-                End If
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
 
-            End Using
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-        Catch ex As Exception
-            Throw ex
-        End Try
+                            Dim lRow As DataRow = lDataTable.Rows(0)
+                            Dim Obj As New clsBeProducto_Presentacion()
 
-    End Function
+                            Cargar(Obj, lRow)
 
-    Public Shared Function Get_All_Presentacion_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As List(Of clsBeProducto_Presentacion)
+                            If lRow("factor") IsNot DBNull.Value AndAlso lRow("factor") IsNot Nothing Then
+                                Obj.Factor = CType(lRow("factor"), Double)
+                            End If
 
-        Dim lReturnList As New List(Of clsBeProducto_Presentacion)
+                            Get_Single_By_IdPresentacion = Obj
 
-        Try
-            Dim vSQL As String = "SELECT DISTINCT IdPresentacion, nombre, IdProductoBodega, IdPropietarioBodega, IdPropietario, 
-                                        IdProducto, codigo_barra, imprime_barra, peso, alto, largo, ancho, factor, 
-                                        MinimoExistencia, MaximoExistencia, user_agr, fec_agr, user_mod, fec_mod, activo, IdBodega, 
-                                        EsPallet, Precio, MinimoPeso, MaximoPeso, Costo, CamasPorTarima, CajasPorCama, genera_lp_auto, permitir_paletizar, 
-                                        sistema, IdPresentacionPallet, codigo
-                                FROM VW_StockPresentaciones WHERE IdProductoBodega IN (SELECT IdProductoBodega FROM trans_pe_det WHERE IdPedidoEnc = @IdPedidoEnc)
-                                ORDER BY Nombre"
+                        End If
 
-            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                    End Using
 
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                    lTransaction.Commit()
 
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
+                End Using
 
-                For Each lRow As DataRow In lDataTable.Rows
-
-                    Dim Obj As New clsBeProducto_Presentacion
-
-                    Cargar(Obj, lRow)
-
-                    Obj.IdPresentacion = Convert.ToInt32(lRow("IdPresentacion"))
-
-                    If Not IsDBNull(lRow("Nombre")) Then Obj.Nombre = lRow("Nombre").ToString()
-                    If Not IsDBNull(lRow("activo")) Then Obj.Activo = Convert.ToBoolean(lRow("activo"))
-                    If Not IsDBNull(lRow("Imprime_Barra")) Then Obj.Imprime_barra = Convert.ToBoolean(lRow("Imprime_Barra"))
-                    If Not IsDBNull(lRow("Peso")) Then Obj.Peso = Convert.ToDouble(lRow("Peso"))
-                    If Not IsDBNull(lRow("Alto")) Then Obj.Alto = Convert.ToDouble(lRow("Alto"))
-                    If Not IsDBNull(lRow("Largo")) Then Obj.Largo = Convert.ToDouble(lRow("Largo"))
-                    If Not IsDBNull(lRow("Ancho")) Then Obj.Ancho = Convert.ToDouble(lRow("Ancho"))
-                    If Not IsDBNull(lRow("Factor")) Then Obj.Factor = Convert.ToDouble(lRow("Factor"))
-
-                    lReturnList.Add(Obj)
-
-                Next
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw New Exception("Error en Get_All_Presentacion_By_IdPedidoEnc: " & ex.Message)
-        End Try
-
-    End Function
-
-    Public Shared Function Get_IdPresentacion_By_Codigo(ByVal pCodigo As String,
-                                                        ByVal pIdProducto As String,
-                                                        ByVal pConnection As SqlConnection,
-                                                        ByVal pTransaction As SqlTransaction) As Integer
-
-        Get_IdPresentacion_By_Codigo = 0
-
-        Try
-
-            Dim vSQL As String = "SELECT IdPresentacion FROM producto_presentacion WHERE Codigo=@pCodigo AND IdProducto = @pIdProducto "
-
-            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
-
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = pTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@pCodigo", pCodigo)
-                lDTA.SelectCommand.Parameters.AddWithValue("@pIdProducto", pIdProducto)
-
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
-
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    Get_IdPresentacion_By_Codigo = lDataTable.Rows(0).Item("IdPresentacion")
-
-                End If
+                lConnection.Close()
 
             End Using
 

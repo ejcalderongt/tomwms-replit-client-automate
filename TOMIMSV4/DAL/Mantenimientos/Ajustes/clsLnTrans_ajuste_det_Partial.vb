@@ -348,7 +348,7 @@ Partial Public Class clsLnTrans_ajuste_det
             Dim vSQL As String = "SELECT top(1) IdStock FROM Trans_ajuste_det WHERE IdAjusteDet = @IdAjusteDet"
 
             Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-                lCommand.Parameters.AddWithValue("@IdAjusteDet", pIdAjusteDet)
+                lCommand.Parameters.AddWithValue(" @IdAjusteDet", pIdAjusteDet)
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
                     lMax = CInt(lReturnValue)
@@ -375,7 +375,7 @@ Partial Public Class clsLnTrans_ajuste_det
                                   WHERE IdAjusteEnc in (SELECT IdAjusteEnc FROM trans_ajuste_det WHERE  IdAjusteDet = @IdAjusteDet)"
 
             Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-                lCommand.Parameters.AddWithValue("@IdAjusteDet", pIdAjusteDet)
+                lCommand.Parameters.AddWithValue(" @IdAjusteDet", pIdAjusteDet)
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
                     lMax = CInt(lReturnValue)
@@ -400,7 +400,7 @@ Partial Public Class clsLnTrans_ajuste_det
 
             Upd.Init("trans_ajuste_det")
             Upd.Add("enviado", "@enviado", DataType.Parametro)
-            Upd.Where("idstock = @idstock AND IdAjusteEnc IN (SELECT IdAjusteEnc FROM trans_ajuste_enc WHERE ajuste_por_inventario =  @IdInventario)")
+            Upd.Where("idstock = @idstock AND IdAjusteEnc IN (SELECT IdAjusteEnc FROM trans_ajuste_enc WHERE IdInventarioEnc =  @IdInventario)")
 
             Dim sp As String = Upd.SQL()
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -432,67 +432,20 @@ Partial Public Class clsLnTrans_ajuste_det
 
             Dim lReturnList As New List(Of clsBeTrans_ajuste_det)
 
-            Dim vSQL As String = "SELECT 0 IdAjustedet, 0 IdAjusteEnc, 
-                                        MAX(IdStock) IdStock, 
-                                        0 IdPropietarioBodega, 
-                                        t.IdProductoBodega,
-                                        MAX(IdProductoEstado) IdProductoEstado,
-                                        IdPresentacion, IdUnidadMedida,
-                                        MAX(IdUbicacion) IdUbicacion, 
-                                        MAX(LoteOrigen) lote_original, 
-                                        MAX(LoteOrigen) lote_nuevo, 
-                                        MAX(fecha_vence_stock) fecha_vence_original, 
-                                        MAX(fecha_vence_stock) fecha_vence_nueva, 
-                                        MAX(peso_stock) peso_original, 
-                                        SUM(peso_conteo) peso_nuevo, 
-                                        SUM(cantidad_stock) cantidad_original, 
-                                        SUM(cantidad_conteo) cantidad_nueva, 
-                                        p.codigo codigo_producto, 
-                                        p.nombre nombre_producto, 
-                                        0 idtipoajuste,
-                                        0 idmotivoajuste, 
-                                        '' observacion, 
-                                        '' codigo_ajuste,
-                                        0 enviado,
-                                        0 IdBodegaERP,
-                                        MAX(Licencia)  lic_plate, 
-                                        '' referencia_ajuste_erp, 
-                                        0 estado_ajuste_erp
-                                  FROM (SELECT  trans_inv_ciclico.idinventarioenc, 
-                                                trans_inv_ciclico.IdStock,
-                                                trans_inv_ciclico.IdProductoBodega, 
-		                                        MAX(case when trans_inv_ciclico.nuevo_stock <>0 then case when trans_inv_ciclico.nuevo_stock = -1 then 0 else trans_inv_ciclico.nuevo_stock end else trans_inv_ciclico.cant_stock end) cantidad_stock,
-                                                --MAX(trans_inv_ciclico.cant_stock) AS cantidad_stock, 
-                                                SUM(trans_inv_ciclico.cantidad) AS cantidad_conteo, 
-                                                SUM(trans_inv_ciclico.cant_reconteo) AS cantidad_reconteo, 
-                                                MAX(trans_inv_ciclico.peso_stock) AS peso_stock, 
-                                                SUM(trans_inv_ciclico.peso) AS peso_conteo, 
-                                                SUM(trans_inv_ciclico.peso_reconteo) AS peso_reconteo, 
-                                                trans_inv_ciclico.lote_stock as LoteOrigen, 
-                                                trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate AS Licencia, 
-                                                dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega) as UbicacionOrigen,
-                                                trans_inv_ciclico.IdUbicacion, MAX(trans_inv_ciclico.fec_mod) Fec_Mod,
-                                                trans_inv_ciclico.IdPresentacion, trans_inv_ciclico.IdProductoEstado, 
-                                                trans_inv_ciclico.fecha_vence_stock, 
-                                                trans_inv_ciclico.IdUnidadMedida, trans_inv_ciclico.IdBodega,
-                                                trans_inv_ciclico.regularizar, MAX(trans_inv_ciclico.nuevo_stock) nuevo_stock
-                                        FROM    trans_inv_ciclico INNER JOIN
-                                                trans_inv_enc ON trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc AND trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc 
-                                        WHERE  (trans_inv_ciclico.idinventarioenc = @idinventario) AND 
-                                               (trans_inv_ciclico.Cantidad >= trans_inv_ciclico.cantidad_reservada_umbas )
-                                        GROUP BY dbo.trans_inv_ciclico.idinventarioenc,dbo.trans_inv_ciclico.IdStock, trans_inv_ciclico.IdProductoBodega,  
-                                                    trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate, 
-                                                    trans_inv_ciclico.IdProductoEstado, trans_inv_ciclico.IdUbicacion, 
-                                                    trans_inv_ciclico.lote_stock,trans_inv_ciclico.IdStock,
-                                                    trans_inv_ciclico.IdBodega,trans_inv_ciclico.IdUnidadMedida,
-			                                        trans_inv_ciclico.IdPresentacion, trans_inv_ciclico.IdProductoEstado, 
-			                                        trans_inv_ciclico.fecha_vence_stock,trans_inv_ciclico.IdBodega, 
-			                                        trans_inv_ciclico.regularizar) t INNER JOIN 
-                                        producto_bodega pb ON t.IdProductoBodega = pb.IdProductoBodega INNER JOIN
-            producto p ON p.IdProducto = pb.IdProducto
-                                  WHERE idinventarioenc = @idinventario And regularizar = 1 
-                                GROUP BY t.IdProductoBodega, idPresentacion, IdUnidadMedida, p.codigo, p.nombre
-                                HAVING SUM(cantidad_stock-cantidad_conteo) <>0"
+            Dim vSQL As String = "SELECT 0 IdAjustedet, 0 IdAjusteEnc, MAX(IdStock) IdStock, 0 IdPropietarioBodega, trans_inv_ciclico.IdProductoBodega,
+                                         MAX(IdProductoEstado) IdProductoEstado, IdPresentacion, IdUnidadMedida, MAX(IdUbicacion) IdUbicacion, 
+	                                     MAX(lote_stock) lote_original, MAX(lote_stock) lote_nuevo, 
+	                                     MAX(fecha_vence_stock) fecha_vence_original, MAX(fecha_vence_stock) fecha_vence_nueva, 
+	                                     SUM(peso_stock) peso_original, SUM(peso_stock) peso_nuevo, 
+	                                     SUM(cant_stock) cantidad_original, SUM(cantidad) cantidad_nueva, p.codigo codigo_producto, 
+	                                     p.nombre nombre_producto, 0 idtipoajuste, 0 idmotivoajuste, '' observacion, '' codigo_ajuste,0 enviado,
+	                                     0 IdBodegaERP, MAX(lic_plate)  lic_plate, '' referencia_ajuste_erp, 0 estado_ajuste_erp
+                                  FROM trans_inv_ciclico INNER JOIN 
+                                       producto_bodega pb ON trans_inv_ciclico.IdProductoBodega = pb.IdProductoBodega INNER JOIN
+	                                   producto p ON p.IdProducto = pb.IdProducto
+                                  WHERE idinventarioenc = @idinventario AND regularizar = 1 
+                                  GROUP BY trans_inv_ciclico.IdProductoBodega, idPresentacion, IdUnidadMedida, p.codigo, p.nombre
+                                  HAVING SUM(cant_stock-cantidad) <>0 "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

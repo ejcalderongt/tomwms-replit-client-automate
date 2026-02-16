@@ -147,7 +147,6 @@ Public Class clsLnTalla
 
     End Function
 
-
     Public Shared Function Eliminar(ByRef oBeTalla As clsBeTalla, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -429,12 +428,12 @@ Public Class clsLnTalla
 
                     Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-    Dim lReturnValue As Object = lCommand.ExecuteScalar()
-    If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
                             lMax = CInt(lReturnValue)
                         End If
 
-    End Using
+                    End Using
 
                     lTransaction.Commit()
 
@@ -444,11 +443,11 @@ Public Class clsLnTalla
 
             End Using
 
-    Return lMax
+            Return lMax
 
-    Catch ex As Exception
-    Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-    End Try
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
 
     End Function
 
@@ -704,6 +703,7 @@ Public Class clsLnTalla
         End Try
 
     End Function
+
     Public Shared Function Listar_For_Combo() As List(Of clsBeTalla)
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -828,9 +828,9 @@ Public Class clsLnTalla
 
     End Function
 
-    Public Shared Function GetSingleCodigo(CodigoTalla As String) As clsBeTalla
+    Public Shared Function Get_Single_By_Codigo(CodigoTalla As String) As clsBeTalla
 
-        GetSingleCodigo = Nothing
+        Get_Single_By_Codigo = Nothing
 
         Try
 
@@ -858,7 +858,7 @@ Public Class clsLnTalla
                         If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
                             Cargar(vBeTalla, lDataTable.Rows(0))
 
-                            GetSingleCodigo = vBeTalla
+                            Get_Single_By_Codigo = vBeTalla
 
                         End If
 

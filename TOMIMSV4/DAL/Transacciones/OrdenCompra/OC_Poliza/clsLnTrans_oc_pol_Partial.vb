@@ -539,49 +539,4 @@ Partial Public Class clsLnTrans_oc_pol
 
     End Function
 
-    Public Shared Function Eliminar_Poliza_By_IdOrdenCompra(ByVal pIdOrdenCompraEnc As Integer,
-                                                            Optional ByVal pConection As SqlConnection = Nothing,
-                                                            Optional ByVal pTransaction As SqlTransaction = Nothing) As Boolean
-
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-        Dim cmd As New SqlCommand
-
-        Eliminar_Poliza_By_IdOrdenCompra = False
-
-        Try
-
-            Dim sp As String = "DELETE FROM trans_oc_pol Where  IdOrdenCompraEnc = @IdOrdenCompraEnc"
-
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            cmd.CommandType = CommandType.Text
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
-
-            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraEnc", pIdOrdenCompraEnc))
-
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-            Eliminar_Poliza_By_IdOrdenCompra = True
-
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
-            cmd.Dispose()
-        End Try
-
-    End Function
-
 End Class

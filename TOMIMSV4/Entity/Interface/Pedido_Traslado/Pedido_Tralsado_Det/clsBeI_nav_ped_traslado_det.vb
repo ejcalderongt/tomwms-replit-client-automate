@@ -1,20 +1,3 @@
-' ***********************************************************************
-' Assembly         : Entity
-' Author           : ejcalderon
-' Created          : 10-12-2017
-'
-' Last Modified By : ejcalderon
-' Last Modified On : 01-08-2018
-' ***********************************************************************
-' <copyright file="clsBeI_nav_ped_traslado_det.vb" company="TEAM OS">
-'     Copyright ©  2016
-' </copyright>
-' <summary></summary>
-' ***********************************************************************
-''' <summary>
-''' Class clsBeI_nav_ped_traslado_det.
-''' </summary>
-''' <seealso cref="System.ICloneable" />
 Public Class clsBeI_nav_ped_traslado_det
     Implements ICloneable
 

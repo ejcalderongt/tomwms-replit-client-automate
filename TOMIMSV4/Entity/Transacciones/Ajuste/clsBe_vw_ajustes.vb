@@ -27,7 +27,6 @@ Public Class clsBe_vw_ajustes
     Public Property Seccion As String = ""
     Public Property IdProductoFamilia As Integer = 0
     Public Property Nombre_Presentacion As String = ""
-
     Public Property Factor As Double = 0
     Public Property Codigo_Centro_Costo As String = ""
     Public Property Nombre_Centro_Costo As String = ""
@@ -56,12 +55,12 @@ Public Class clsBe_vw_ajustes
         Me.IdBodegaERP = IdBodegaERP
         Me.Codigo_Bodega = Codigo_Bodega
         Me.Nombre_Bodega = Nombre_Bodega
-        Me.Cantidad_original = cantidad_original
-        Me.Cantidad_nueva = cantidad_nueva
-        Me.Peso_nuevo = peso_nuevo
-        Me.Peso_original = peso_original
-        Me.Fecha_vence_nueva = fecha_vence_nueva
-        Me.Fecha_vence_original = fecha_vence_original
+        Me.Cantidad_original = Cantidad_original
+        Me.Cantidad_nueva = Cantidad_nueva
+        Me.Peso_nuevo = Peso_nuevo
+        Me.Peso_original = Peso_original
+        Me.Fecha_vence_nueva = Fecha_vence_nueva
+        Me.Fecha_vence_original = Fecha_vence_original
         Me.Lote_Original = Lote_Original
         Me.Lote_Nuevo = Lote_Nuevo
         Me.Tipo_Ajuste = Tipo_Ajuste

@@ -77,7 +77,7 @@ Partial Class frmPedido_List
         Me.gviewDetallePedido = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.RepositoryItemPictureEdit2 = New DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.chkTemporales = New DevExpress.XtraBars.BarCheckItem()
+        Me.ToastNotificationsManager1 = New DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager(Me.components)
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DgridPedido, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gviewEncabezadoPedido, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -100,10 +100,10 @@ Partial Class frmPedido_List
         Me.RibbonControl.AutoSaveLayoutToXml = True
         Me.RibbonControl.AutoSaveLayoutToXmlPath = "frmPedidosListRibbonSettings.xml"
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImportarExcel, Me.BarButtonItem1, Me.cmdImprimir, Me.mnuMI3Sync, Me.BarCheckItem2, Me.chkAnulados, Me.mnuEliminarLayoutGrid, Me.chkDespachados, Me.chkMostrarGridDetalle, Me.mnuGuardarLayoutGrid, Me.mnuEliminarPedido, Me.mnuExportarExcel, Me.chkSinExistencias, Me.chkSinExistenciasERP, Me.chkTemporales})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImportarExcel, Me.BarButtonItem1, Me.cmdImprimir, Me.mnuMI3Sync, Me.BarCheckItem2, Me.chkAnulados, Me.mnuEliminarLayoutGrid, Me.chkDespachados, Me.chkMostrarGridDetalle, Me.mnuGuardarLayoutGrid, Me.mnuEliminarPedido, Me.mnuExportarExcel, Me.chkSinExistencias, Me.chkSinExistenciasERP})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 23
+        Me.RibbonControl.MaxItemId = 22
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -274,7 +274,6 @@ Partial Class frmPedido_List
         Me.RibbonPageGroup2.ItemLinks.Add(Me.chkDespachados)
         Me.RibbonPageGroup2.ItemLinks.Add(Me.chkSinExistencias)
         Me.RibbonPageGroup2.ItemLinks.Add(Me.chkSinExistenciasERP)
-        Me.RibbonPageGroup2.ItemLinks.Add(Me.chkTemporales)
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         Me.RibbonPageGroup2.Text = "Filtros"
         '
@@ -526,12 +525,10 @@ Partial Class frmPedido_List
         Me.SplitContainer1.SplitterWidth = 6
         Me.SplitContainer1.TabIndex = 10
         '
-        'chkTemporales
+        'ToastNotificationsManager1
         '
-        Me.chkTemporales.Caption = "Temporales"
-        Me.chkTemporales.CheckBoxVisibility = DevExpress.XtraBars.CheckBoxVisibility.BeforeText
-        Me.chkTemporales.Id = 22
-        Me.chkTemporales.Name = "chkTemporales"
+        Me.ToastNotificationsManager1.ApplicationId = "4ca7c89b-6aab-4e14-9588-4d1f0b45ecfb"
+        Me.ToastNotificationsManager1.ApplicationName = "TOMWMS"
         '
         'frmPedido_List
         '
@@ -620,5 +617,4 @@ Partial Class frmPedido_List
     Friend WithEvents lbOk As DevExpress.XtraEditors.LabelControl
     Friend WithEvents lbGuia As DevExpress.XtraEditors.LabelControl
     Friend WithEvents ToastNotificationsManager1 As DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager
-    Friend WithEvents chkTemporales As DevExpress.XtraBars.BarCheckItem
 End Class

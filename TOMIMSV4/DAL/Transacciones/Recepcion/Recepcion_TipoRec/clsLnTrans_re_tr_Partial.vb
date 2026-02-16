@@ -264,7 +264,6 @@ Public Class clsLnTrans_re_tr_Partial : Inherits clsLnTrans_re_tr
 
     End Function
 
-
     Public Overloads Shared Function GetAll(ByVal pIngreso As Boolean, ByVal pUsaHH As Boolean, ByVal pRefer As Boolean) As List(Of clsBeTrans_re_tr)
 
         Try

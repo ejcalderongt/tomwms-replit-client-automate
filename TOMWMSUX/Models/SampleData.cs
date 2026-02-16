@@ -1,7 +1,5 @@
-namespace TOMWMSUX.Models
-{
-    static class SampleData
-    {
+namespace TOMWMSUX.Models {
+    static class SampleData {
         public static List<SampleOrder> Orders = new List<SampleOrder>() {
             new SampleOrder {
                 OrderID = 10248,

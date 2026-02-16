@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>499</ApplicationRevision>
+    <ApplicationRevision>512</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -230,9 +230,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 9.0\Visual Studio Tools for Office\PIA\Office12\Microsoft.Office.Interop.Excel.dll</HintPath>
@@ -325,14 +322,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </Compile>
-    <Compile Include="IA\AiClient.vb" />
-    <Compile Include="IA\frmIA_Chat.Designer.vb">
-      <DependentUpon>frmIA_Chat.vb</DependentUpon>
-    </Compile>
-    <Compile Include="IA\frmIA_Chat.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IA\PromptEngine.vb" />
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.Designer.vb">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </Compile>
@@ -379,6 +368,12 @@
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Email\frmcorreorpt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.Designer.vb">
+      <DependentUpon>frmImpresion_OC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Impresion_Recepcion\frmImpresionRecepcion.Designer.vb">
@@ -1438,22 +1433,10 @@
     <Compile Include="Transacciones\Ajustes\Ajustes_Positivos\frmAjustePositivo.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\Ajustes\frmInventarioRes.Designer.vb">
-      <DependentUpon>frmInventarioRes.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Ajustes\frmInventarioRes.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.Designer.vb">
       <DependentUpon>frmListaStockControlCalidad.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Implosion\frmImplosion.Designer.vb">
-      <DependentUpon>frmImplosion.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Implosion\frmImplosion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
@@ -1490,12 +1473,6 @@
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.Designer.vb">
-      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Picking\frmPicking.Designer.vb">
@@ -3157,9 +3134,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="IA\frmIA_Chat.resx">
-      <DependentUpon>frmIA_Chat.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.resx">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </EmbeddedResource>
@@ -3237,6 +3211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Email\frmcorreorpt.resx">
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Impresion_OC\frmImpresion_OC.resx">
+      <DependentUpon>frmImpresion_OC.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Impresion_Recepcion\frmImpresionRecepcion.resx">
       <DependentUpon>frmImpresionRecepcion.vb</DependentUpon>
@@ -3687,14 +3664,8 @@
     <EmbeddedResource Include="Transacciones\Ajustes\Ajustes_Positivos\frmAjustePositivo.resx">
       <DependentUpon>frmAjustePositivo.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Ajustes\frmInventarioRes.resx">
-      <DependentUpon>frmInventarioRes.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.resx">
       <DependentUpon>frmListaStockControlCalidad.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Implosion\frmImplosion.resx">
-      <DependentUpon>frmImplosion.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
@@ -3714,9 +3685,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Picking\frmCantidadreemplazo.resx">
-      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Picking\frmPicking.resx">
       <DependentUpon>frmPicking.vb</DependentUpon>
@@ -4439,10 +4407,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="apiConfig.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="app.config" />
     <Content Include="Conn_Becofarma.ini" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
@@ -4461,7 +4425,6 @@
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
-    <None Include="ConnDev.ini" />
     <None Include="Conn_CLC_Fiscal.ini" />
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
@@ -4487,7 +4450,6 @@
     <None Include="Dset_Regla_Vence.xss">
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </None>
-    <None Include="IA\prompts.json" />
     <None Include="Mantenimientos\Motivo_Correccion\DsMotivoCorreccionPoliza.xsc">
       <DependentUpon>DsMotivoCorreccionPoliza.xsd</DependentUpon>
     </None>
@@ -4521,7 +4483,6 @@
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
     <None Include="SAPBOSyncMampa.exe.config" />
-    <None Include="SAPBOSyncKillios.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4591,7 +4552,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncKillios.exe" />
+    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

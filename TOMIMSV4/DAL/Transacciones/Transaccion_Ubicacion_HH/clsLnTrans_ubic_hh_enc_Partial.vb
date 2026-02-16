@@ -405,14 +405,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             End If
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pIdBodega:=BeTransUbicHHEnc.IdBodega,
-                                                  pIdTareaUbicacionEnc:=BeTransUbicHHEnc.IdTareaUbicacionEnc,
-                                                  pIdMotivoUbicacion:=BeTransUbicHHEnc.IdMotivoUbicacion)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1496,14 +1490,11 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 beUbicHHDet.Stock.Serial = pStock.Serial
                 beUbicHHDet.IdEstadoOrigen = pStock.IdProductoEstado
                 beUbicHHDet.IdEstadoDestino = IdEstadoDest
-                '#AT20260105 Guardar la cantidad sin aplicar la conversión 
-                beUbicHHDet.Cantidad = CantDañada
+                beUbicHHDet.Cantidad = IIf(pStock.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada)
                 beUbicHHDet.Recibido = 0
                 beUbicHHDet.Estado = "Pendiente"
                 beUbicHHDet.Operador = New clsBeOperador
                 beUbicHHDet.IdOperadorBodega = UsuarioHH
-                '#CKFK20251229 Agregamos el campo IdBodega que no se estaba enviando
-                beUbicHHDet.IdBodega = IdBodega
                 beUbicHHDet.Activo = True
                 beListUbicHHDet.Add(beUbicHHDet)
 
@@ -1574,9 +1565,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             pMov.Lic_plate = bePickingUbic.Lic_plate
 
             'Modificar campos en el stock
-            '#AT20260105 pStock se utiliza para guardar stock res, siempre se debe guardar en umbas (cantidad)
-            'pStock.Cantidad = CantDañada
-            pStock.Cantidad = IIf(pStock.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada)
+            pStock.Cantidad = CantDañada
             pStock.IdProductoEstado = IdEstadoDest
             pStock.ProductoEstado.IdEstado = IdEstadoDest
             'pStock.IdUbicacion = IdUbicDest '#CKFK 20180219 Agregué al stock que la ubicación origen es la ubicación destino cuando genero la tarea de cambio de estado
@@ -2217,10 +2206,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            ' clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

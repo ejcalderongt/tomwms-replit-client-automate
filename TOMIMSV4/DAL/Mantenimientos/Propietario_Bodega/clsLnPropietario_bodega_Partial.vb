@@ -1036,42 +1036,6 @@ Partial Public Class clsLnPropietario_bodega
 
     End Function
 
-    Public Shared Function Get_IdPropietario_By_IdBodega_IdPropietarioBodega(ByVal pIdBodega As Integer,
-                                                                             ByVal pIdPropietarioBodega As Integer,
-                                                                             ByVal lConnection As SqlConnection,
-                                                                             ByVal lTransaction As SqlTransaction) As Integer
-
-        Get_IdPropietario_By_IdBodega_IdPropietarioBodega = 0
-
-        Try
-
-            Dim vSQL As String = "SELECT pb.IdPropietario
-                                  FROM propietario_bodega AS pb 
-                                     INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
-                                  WHERE p.activo=1 AND pb.IdBodega=@IdBodega AND pb.IdPropietarioBodega=@IdPropietarioBodega"
-
-            Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-
-                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
-                lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    Get_IdPropietario_By_IdBodega_IdPropietarioBodega = CInt(lReturnValue)
-                End If
-
-            End Using
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-
-    End Function
-
     Public Shared Function Get_IdPropietarioBodega_By_IdBodega(ByVal pIdBodega As Integer) As Integer
 
         Get_IdPropietarioBodega_By_IdBodega = 0
@@ -1277,7 +1241,6 @@ Partial Public Class clsLnPropietario_bodega
         End Try
 
     End Function
-
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

@@ -21,5 +21,10 @@
     Public Property Factor As Double = 0
     Public Property Nombre_Completo_Destino As String = ""
     Public Property Ubicacion_Nueva As String = ""
+    Public Property Color As String = ""
+    Public Property Talla As String = ""
+    Public Property Color_Nuevo As String = ""
+    Public Property Talla_Nueva As String = ""
+    Public Property UmBas As String = ""
 
 End Class

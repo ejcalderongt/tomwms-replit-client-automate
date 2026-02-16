@@ -649,29 +649,59 @@ Public Class clsLnTipo_etiqueta
 
     End Function
 
-    Public Shared Function GetSingle_By_IdTipoEtiqueta(ByVal pIdTipoEtiqueta As Integer) As clsBeTipo_etiqueta
 
-        Dim Be As clsBeTipo_etiqueta = Nothing
+    Public Shared Function Get_Single_By_IdTipoEtiqueta(
+    ByVal IdTipoEtiqueta As Integer,
+    ByVal IdSimbologia As Integer,
+    ByVal IdClasificacionEtiqueta As Integer,
+    ByVal lConnection As SqlConnection,
+    ByVal lTransaction As SqlTransaction) As clsBeTipo_etiqueta
 
-        Dim vSQL As String = "SELECT * FROM tipo_etiqueta
-                               WHERE IdTipoEtiqueta = @id_tipo_etiqueta"
+        Get_Single_By_IdTipoEtiqueta = Nothing
 
-        Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-            Using cmd As New SqlCommand(vSQL, cn)
-                cmd.Parameters.AddWithValue("@id_tipo_etiqueta", pIdTipoEtiqueta)
+        Try
+            Const sp As String =
+            "SELECT TE.* FROM TIPO_ETIQUETA TE " &
+            "LEFT OUTER JOIN PRODUCTO_CLASIFICACION_ETIQUETA CE ON " &
+            "TE.IDCLASIFICACION_ETIQUETA=CE.IDCLASIFICACION_ETIQUETA " &
+            "WHERE(IDTIPOETIQUETA = @IDTIPOETIQUETA AND CE.Idclasificacion_etiqueta = @IDCLASIDICACIONETIQUETA) "
 
-                Dim dad As New SqlDataAdapter(cmd)
-                Dim dt As New DataTable
-                dad.Fill(dt)
+            Using cmd As New SqlCommand(sp, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETA", IdTipoEtiqueta))
+                cmd.Parameters.Add(New SqlParameter("@IDCLASIDICACIONETIQUETA", IdClasificacionEtiqueta))
 
-                If dt.Rows.Count = 1 Then
-                    Be = New clsBeTipo_etiqueta
-                    Cargar(Be, dt.Rows(0))
-                End If
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
+
+                    If dt.Rows.Count = 1 Then
+                        Dim pTipoSimbologia As clsDataContractDI.tSimbologiaEtiqueta =
+                        CType(IdSimbologia, clsDataContractDI.tSimbologiaEtiqueta)
+
+                        Dim pBeTipo_etiqueta As New clsBeTipo_etiqueta
+
+                        Cargar(pBeTipo_etiqueta, dt.Rows(0))
+
+                        Select Case pTipoSimbologia
+                            Case clsDataContractDI.tSimbologiaEtiqueta.QRCode
+                                pBeTipo_etiqueta.codigo_zpl =
+                                clsPublic.Conversion_ZPL_Codabar_to_QR(pBeTipo_etiqueta.codigo_zpl)
+                            Case clsDataContractDI.tSimbologiaEtiqueta.Codabar
+                                pBeTipo_etiqueta.codigo_zpl =
+                                clsPublic.Conversion_ZPL_Codabar_to_Codabar(pBeTipo_etiqueta.codigo_zpl)
+                        End Select
+
+                        Get_Single_By_IdTipoEtiqueta = pBeTipo_etiqueta
+                    End If
+                End Using
             End Using
-        End Using
 
-        Return Be
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        End Try
 
     End Function
 

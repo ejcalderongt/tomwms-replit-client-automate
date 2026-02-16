@@ -186,9 +186,8 @@ Public Class frmConteo
             cTrans.Begin_Transaction()
 
             If txtCantidadAnterior.Value = 0 Then
-                If XtraMessageBox.Show("La cantidad debe ser mayor que 0, está seguro de continuar", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.No Then
-                    Exit Function
-                End If
+                XtraMessageBox.Show("La cantidad debe ser mayor que 0", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Function
             End If
 
             gBeCiclico.IdProductoEst_nuevo = cmbEstadoProducto.EditValue
@@ -200,7 +199,6 @@ Public Class frmConteo
             gBeCiclico.User_agr = AP.UsuarioAp.IdUsuario
             gBeCiclico.Fec_Mod = Now
             gBeCiclico.Idoperador = cmbOperador.EditValue
-            gBeCiclico.Contado = True
 
             If gBeCiclico.IdPresentacion > 0 Then
 

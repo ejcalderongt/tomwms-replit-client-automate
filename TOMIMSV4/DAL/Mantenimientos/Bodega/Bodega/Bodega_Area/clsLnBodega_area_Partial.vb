@@ -817,35 +817,6 @@ Partial Public Class clsLnBodega_area
     End Function
 
 
-    '#GT06082025: mostrar las areas (bodegas) de cealsa en combo
-    Public Shared Function Get_All_For_Combo() As DataTable
-
-        Try
-
-            Dim vSQL As String = "SELECT IdArea,Descripcion as Nombre FROM bodega_area 
-                                        group by IdArea,Descripcion "
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-
-                    lDTA.SelectCommand.CommandType = CommandType.Text
-
-                    Dim lDataTable As New DataTable
-                    lDTA.Fill(lDataTable)
-
-                    Return lDataTable
-
-                End Using
-
-            End Using
-
-        Catch ex As Exception
-            Throw New Exception("BodegaArea_getAllAreaByBodega: " & ex.Message)
-        End Try
-
-    End Function
-
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

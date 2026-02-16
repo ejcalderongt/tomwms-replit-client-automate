@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -45,22 +45,22 @@ namespace TOMWMSUX.Pages.Login
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
 
-                //Iniciar sesi?n con cookie
+                //Iniciar sesi�n con cookie
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     principal,
                     new AuthenticationProperties
                     {
-                        IsPersistent = true, // persistente (o false si quieres que expire con la sesi?n)
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(60) // duraci?n
+                        IsPersistent = true, // persistente (o false si quieres que expire con la sesi�n)
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(60) // duraci�n
                     });
 
-                //Redirigir a la p?gina principal
+                //Redirigir a la p�gina principal
                 return RedirectToPage("/Index");
             }
 
             //Si las credenciales no son correctas
-            ErrorMessage = "Usuario o contrase?a incorrectos.";
+            ErrorMessage = "Usuario o contrase�a incorrectos.";
             return Page();
         }
 

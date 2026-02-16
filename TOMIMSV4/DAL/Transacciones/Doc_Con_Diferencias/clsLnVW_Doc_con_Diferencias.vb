@@ -403,7 +403,7 @@ Public Class clsLnVW_Doc_con_Diferencias
 					cantidad as Solicitado, cantidad_recibida as Recibido, diferencia as Diferencia,
 					Referencia as Referencia,
 					NOMBRE_INGRESOOC as TipoDocumento, Fecha_Creacion as Fecha_Documento, 
-                    ESTADO as Estado_Documento, Enviado_A_ERP MI3_Estatus, Talla, Color, Observacion 
+                    ESTADO as Estado_Documento, Enviado_A_ERP MI3_Estatus, Talla, Color 
 					FROM VW_Doc_Con_Diferencias
                     WHERE DIFERENCIA <> 0 "
 
@@ -474,7 +474,7 @@ Public Class clsLnVW_Doc_con_Diferencias
             vSQL = "SELECT IDORDENCOMPRAENC AS IDDOCUMENTOINGRESO, ORDENCOMPRA,CODIGO_PRODUCTO,NOMBRE_PRODUCTO,CANTIDAD,CANTIDAD_RECIBIDA,
 					DIFERENCIA,PRESENTACION,IDPROPIETARIOBODEGA,BODEGA,PROPIETARIO,IDPROVEEDORBODEGA,
 					IDTIPOINGRESOOC,NOMBRE_INGRESOOC,IDPRODUCTOBODEGA,IDPRESENTACION,IDUNIDADMEDIDABASICA,UMBas,
-					ESTADO,ACTIVO,FECHA_CREACION, OBSERVACION
+					ESTADO,ACTIVO,FECHA_CREACION
                     FROM VW_Doc_Con_Diferencias
                     WHERE  DIFERENCIA <>0 AND IDPRODUCTOBODEGA=@IdProductoBodega"
 
@@ -545,7 +545,7 @@ Public Class clsLnVW_Doc_con_Diferencias
             vSQL = "SELECT ORDENCOMPRA,CODIGO_PRODUCTO,NOMBRE_PRODUCTO,CANTIDAD,CANTIDAD_RECIBIDA,
 					DIFERENCIA,PRESENTACION,IDPROPIETARIOBODEGA,BODEGA,PROPIETARIO,POLIZA,IDPROVEEDORBODEGA,
 					IDTIPOINGRESOOC,NOMBRE_INGRESOOC,IDPRODUCTOBODEGA,IDPRESENTACION,IDUNIDADMEDIDABASICA,UMBas,
-					ESTADO,ACTIVO,FECHA_CREACION, OBSERVACION
+					ESTADO,ACTIVO,FECHA_CREACION
                     FROM VW_Doc_Con_Diferencias
                     WHERE DIFERENCIA <>0 AND IdBodega=@IdBodega AND IdPropietario=@IdPropietario"
 

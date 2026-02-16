@@ -40,14 +40,12 @@ Public Class clsBeTempComparacionInventario
     Public Property IdUbicacionDestino As Integer = 0
     Public Property Fec_Mod As Date = New Date(1900, 1, 1)
     Public Property IdInvciclico As Integer = 0
-    Public Property FechaVenceStock() As Date
-    Public Property IdProductoEstado As Integer = 0
-    Public Property IdProductoEst_nuevo As Integer = 0
-    Public Property IdPresentacion As Integer = 0
-    Public Property Cantidad_Reservada_UmBas As Double = 0
-    Public Property TieneReservaYConteoInsuficiente As Boolean
-    Public Property Observacion As String = ""
-
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property IdProductoTallaColor_nuevo As Integer = 0
+    Public Property TallaStock As String = ""
+    Public Property ColorStock As String = ""
+    Public Property TallaNueva As String = ""
+    Public Property ColorNuevo As String = ""
     Sub New()
     End Sub
 

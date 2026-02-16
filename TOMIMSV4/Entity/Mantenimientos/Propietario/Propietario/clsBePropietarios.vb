@@ -2,7 +2,6 @@
 Public Class clsBePropietarios
     Implements ICloneable
     Implements IDisposable
-
     Public Property IdPropietario() As Integer = 0
     Public Property IdEmpresa() As Integer = 0
     Public Property IdTipoActualizacionCosto() As Integer = 0
@@ -25,7 +24,6 @@ Public Class clsBePropietarios
     Public Property Es_Consolidador As Boolean = False
     Public Property Codigo_Acceso As String = ""
     Public Property Clave_Acceso As String = ""
-    Public Property ControlUx As Boolean = False
 
     Sub New()
     End Sub

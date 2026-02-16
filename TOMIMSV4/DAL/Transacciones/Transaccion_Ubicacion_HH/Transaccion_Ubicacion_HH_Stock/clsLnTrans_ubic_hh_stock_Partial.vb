@@ -24,10 +24,8 @@ Partial Public Class clsLnTrans_ubic_hh_stock
             Return lMax
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -63,10 +61,8 @@ Partial Public Class clsLnTrans_ubic_hh_stock
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdTareaUbicacionEnc:=IdTareaUbicacion)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -101,10 +97,8 @@ Partial Public Class clsLnTrans_ubic_hh_stock
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdTareaUbicacionEnc:=IdTareaUbicacion)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -177,27 +171,25 @@ Partial Public Class clsLnTrans_ubic_hh_stock
             End If
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdTareaUbicacionEnc:=IdTareaUbicacionEnc)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
     End Function
 
     '#EJC20171025_1149AM: Se convirtió en transaccional función GetIdStockTransUbicHHDet
-    Public Shared Function GetIdStockTransUbicHHDet(ByRef pBeTrans_ubic_hh_stock As clsBeTrans_ubic_hh_stock,
-                                                     ByRef lConnection As SqlConnection,
+    Public Shared Function GetIdStockTransUbicHHDet(ByRef pBeTrans_ubic_hh_stock As clsBeTrans_ubic_hh_stock, _
+                                                     ByRef lConnection As SqlConnection, _
                                                      ByRef lTransaction As SqlTransaction) As Integer
 
         GetIdStockTransUbicHHDet = 0
 
         Try
 
-            Const sp As String = "SELECT IdStockTransUbicHHDet FROM Trans_ubic_hh_stock" &
-            " Where(IdTareaUbicacionEnc = @IdTareaUbicacionEnc)" &
-            " And (IdTareaUbicacionDet = @IdTareaUbicacionDet) " &
+            Const sp As String = "SELECT IdStockTransUbicHHDet FROM Trans_ubic_hh_stock" & _
+            " Where(IdTareaUbicacionEnc = @IdTareaUbicacionEnc)" & _
+            " And (IdTareaUbicacionDet = @IdTareaUbicacionDet) " & _
             " And (IdStock = @IdStock)"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}

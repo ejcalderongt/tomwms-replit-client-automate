@@ -1,21 +1,3 @@
-' ***********************************************************************
-' Assembly         : Entity
-' Author           : ejcalderon
-' Created          : 08-14-2017
-'
-' Last Modified By : ejcalderon
-' Last Modified On : 08-04-2017
-' ***********************************************************************
-' <copyright file="clsBeProveedor_tiempos.vb" company="TEAM OS">
-'     Copyright ©  2016
-' </copyright>
-' <summary></summary>
-' ***********************************************************************
-''' <summary>
-''' Class clsBeProveedor_tiempos.
-''' </summary>
-''' <seealso cref="System.ICloneable" />
-''' <seealso cref="System.IDisposable" />
 Public Class clsBeProveedor_tiempos
     Implements ICloneable
     Implements IDisposable

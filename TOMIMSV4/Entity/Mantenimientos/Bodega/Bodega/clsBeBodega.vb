@@ -134,9 +134,7 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Escanear_Licencia_Picking As Boolean = False
 
     Public Property IdTipoEtiquetaLicencia As Integer = 0
-    Public Property IdTipoEtiquetaVerificacion As Integer = 0
 
-    Public Property impresion_verificacion As Boolean = False
     Public Property IdSimbologiaLicencia As Integer = 0
 
     Public Property Interface_SAP As Boolean = False
@@ -164,8 +162,6 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Centro_Costo_Erp As String = ""
     Public Property Centro_Costo_Dir_Erp As String = ""
     Public Property Centro_Costo_Dep_Erp As String = ""
-    Public Property Priorizar_Cantidad_Superior As Boolean = False
-
 
     Sub New()
     End Sub

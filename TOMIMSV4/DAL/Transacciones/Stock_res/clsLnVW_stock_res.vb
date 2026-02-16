@@ -164,10 +164,6 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("Nombre_Color") Then .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
                 If dr.Table.Columns.Contains("CodigoSKU") Then .CodigoSKU = IIf(IsDBNull(dr.Item("CodigoSKU")), "", dr.Item("CodigoSKU"))
 
-                If dr.Table.Columns.Contains("IdUbicacion_anterior") Then .IdStock = IIf(IsDBNull(dr.Item("IdUbicacion_anterior")), 0, dr.Item("IdUbicacion_anterior"))
-                If dr.Table.Columns.Contains("Codigo_Barra") Then .Codigo_Barra = IIf(IsDBNull(dr.Item("Codigo_Barra")), "", dr.Item("Codigo_Barra"))
-
-
             End With
 
         Catch ex As Exception

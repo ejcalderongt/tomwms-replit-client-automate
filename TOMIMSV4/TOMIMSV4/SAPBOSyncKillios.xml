@@ -42,9 +42,7 @@ SAPBOSyncKillios
 </member>
 <member name="M:TOMWMS.clsSyncSAPProducto.Get_Productos_From_SAP(TOMWMS.m_Global.pEmpresa)">
  <summary>
- '#EJC20241001: Tome la decisión de manejar en UMBas UN la medida base del producto 
- porque SAP maneja en presentación los pedidos pero la unidad base no está relacionada 
- de forma precisa o correcta con la del maestro del producto.
+ '#EJC20241001: Tome la decisión de manejar en UMBas UN la medida base del producto porque SAP maneja en presentación los pedidos pero la unidad base no está relacionada de forma precisa o correcta con la del maestro del producto.
  </summary>
  <param name="pTEmpresa"></param>
  <returns></returns>
@@ -69,17 +67,6 @@ SAPBOSyncKillios
  <param name="pIdPropietario">Filtro para llenar el combobox</param>
  <returns></returns>
  <remarks></remarks>
-</member>
-<member name="M:TOMWMS.SapHelper.GetUoMFromTransferRequest(SAPbobsCOM.Company,System.Int32,System.String,System.Int32,TOMWMS.SapHelper.UoMInfo@)">
- <summary>
- Obtiene UoMEntry y UoMCode de una línea de una Inventory Transfer Request.
- </summary>
- <param name="company">Instancia conectada de SAPbobsCOM.Company</param>
- <param name="docEntry">DocEntry del documento (Transfer Request)</param>
- <param name="itemCode">Código de artículo (ItemCode) a buscar</param>
- <param name="lineNum">Número de línea EXACTO (base 0 en SAP B1)</param>
- <param name="result">Estructura de salida con UoMEntry y UoMCode</param>
- <returns>True si encontró la línea y llenó result; False en caso contrario</returns>
 </member>
 <member name="T:TOMWMS.DSEjecuciones">
 <summary>

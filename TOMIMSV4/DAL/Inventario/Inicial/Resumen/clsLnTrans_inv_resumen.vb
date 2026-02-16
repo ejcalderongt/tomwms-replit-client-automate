@@ -19,15 +19,13 @@ Public Class clsLnTrans_inv_resumen
                 .Host = IIf(IsDBNull(dr.Item("host")), "", dr.Item("host"))
                 .Nom_producto = IIf(IsDBNull(dr.Item("nom_producto")), "", dr.Item("nom_producto"))
                 .Nom_operador = IIf(IsDBNull(dr.Item("nom_operador")), "", dr.Item("nom_operador"))
-                .IdUbicacion = IIf(IsDBNull(dr.Item("idubicacion")), 0, dr.Item("idubicacion"))
-                .Lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), 0, dr.Item("lic_plate"))
             End With
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_resumen As clsBeTrans_inv_resumen, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_resumen As clsBeTrans_inv_resumen, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -128,7 +126,6 @@ Public Class clsLnTrans_inv_resumen
             Upd.Add("nom_producto", "@nom_producto", DataType.Parametro)
             Upd.Add("nom_operador", "@nom_operador", DataType.Parametro)
             Upd.Add("idubicacion", "@idubicacion", DataType.Parametro)
-            Upd.Add("lic_plate", "@lic_plate", DataType.Parametro)
             Upd.Where("idinventariores = @idinventariores")
 
             Dim sp As String = Upd.SQL()
@@ -158,7 +155,7 @@ Public Class clsLnTrans_inv_resumen
             cmd.Parameters.Add(New SqlParameter("@NOM_PRODUCTO", oBeTrans_inv_resumen.Nom_producto))
             cmd.Parameters.Add(New SqlParameter("@NOM_OPERADOR", oBeTrans_inv_resumen.Nom_operador))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeTrans_inv_resumen.IdUbicacion))
-            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_inv_resumen.Lic_plate))
+
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()

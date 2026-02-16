@@ -1,5 +1,10 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Net
+Imports System.Net.Http
+Imports System.Net.Http.Headers
 Imports System.Reflection
+Imports System.Text
+Imports Newtonsoft.Json.Linq
 Public Class clsSyncSAPCliente
 
     Private Shared BeNavEjecucionEnc As New clsBeI_nav_ejecucion_enc()
@@ -9,6 +14,7 @@ Public Class clsSyncSAPCliente
     Public Shared ListaDetalleConfigDet As New List(Of clsBeI_nav_config_det)()
     Private Shared VContadorBitacoraTOMWMS As Integer = 0
     Private Shared VContadorBitacoraIntermedia As Integer = 0
+    Shared vHanaService As SapServiceLayerClient
 
     Public Shared Sub Iniciar_Ejecucion(lbl As RichTextBox, cnnLog As SqlConnection)
         Try
@@ -37,54 +43,7 @@ Public Class clsSyncSAPCliente
             Throw
         End Try
     End Sub
-    Public Shared Function Importar_Clientes_Desde_SAP_Hana_A_TablaIntermedia(lbl As RichTextBox,
-                                                                              ByRef prg As ProgressBar,
-                                                                              ByRef cnnLog As SqlConnection) As Boolean
-        Dim cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim tran As SqlTransaction = Nothing
-        Importar_Clientes_Desde_SAP_Hana_A_TablaIntermedia = False
 
-        Try
-            clsPublic.Actualizar_Progreso(lbl, "Consultando clientes nuevos en SAP...")
-            Dim lista = clsSyncSAPProveedor.Get_Clientes_SAP_Hana()
-            clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, cnnLog)
-            Application.DoEvents()
-
-            prg.Maximum = lista.Count
-            prg.Value = 0
-            VContadorBitacoraIntermedia = 0
-
-            cnn.Open() : tran = cnn.BeginTransaction(IsolationLevel.ReadUncommitted)
-            clsLnI_nav_cliente.Eliminar_Todos(cnn, tran)
-            If cnnLog.State = ConnectionState.Closed Then cnnLog.Open()
-
-            For Each cli In lista
-                Try
-                    cli.IdCliente = clsLnI_nav_cliente.MaxID(cnn, tran) + 1
-                    clsPublic.Actualizar_Progreso(lbl, $"Insertando cliente: {cli.No}")
-                    clsLnI_nav_cliente.Insertar(cli, cnn, tran)
-                    VContadorBitacoraIntermedia += 1
-                    prg.Value += 1
-                    Application.DoEvents()
-                Catch ex As Exception
-                    clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, cli.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
-                    clsPublic.Actualizar_Progreso(lbl, $"Error al insertar {cli.No}: {ex.Message}")
-                End Try
-            Next
-
-            tran.Commit()
-            clsPublic.Actualizar_Progreso(lbl, "Importación de clientes a tabla intermedia finalizada.")
-            Importar_Clientes_Desde_SAP_Hana_A_TablaIntermedia = True
-
-        Catch ex As Exception
-            If tran IsNot Nothing Then tran.Rollback()
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
-            clsPublic.Actualizar_Progreso(lbl, $"Error general en importación de clientes: {ex.Message}")
-            Throw
-        Finally
-            If cnn.State = ConnectionState.Open Then cnn.Close()
-        End Try
-    End Function
     Public Shared Sub ProcesarClientes(clientes As List(Of clsBeI_nav_cliente),
                                         cnn As SqlConnection,
                                         tran As SqlTransaction,
@@ -119,7 +78,8 @@ Public Class clsSyncSAPCliente
                         .Nit = navCli.VAT_Registratrion_No,
                         .Direccion = navCli.Adress,
                         .Nombre_contacto = navCli.ContactName,
-                        .Activo = True
+                        .Activo = True,
+                        .IdTipoCliente = 1
                     }
 
                     clsLnCliente.Actualizar(cliente, cnn, tran)
@@ -147,7 +107,8 @@ Public Class clsSyncSAPCliente
                         .User_agr = BeConfigEnc.IdUsuario,
                         .Fec_agr = Date.UtcNow,
                         .User_mod = BeConfigEnc.IdUsuario,
-                        .Fec_mod = Date.UtcNow
+                        .Fec_mod = Date.UtcNow,
+                        .IdTipoCliente = 1
                     }
 
                     clsLnCliente.Insertar(cliente, cnn, tran)
@@ -184,11 +145,10 @@ Public Class clsSyncSAPCliente
         Next
     End Sub
 
-    Public Shared Function Insertar_Clientes_Desde_TablaIntermedia_A_Tabla_TOMWMS(lbl As RichTextBox,
+    Public Shared Async Function Insertar_Clientes_Desde_TablaIntermedia_A_Tabla_TOMWMSAsync(lbl As RichTextBox,
                                                                                    prg As ProgressBar,
                                                                                    Optional ForzarEjecucion As Boolean = False,
-                                                                                   Optional Preguntar As Boolean = False) As Boolean
-        Insertar_Clientes_Desde_TablaIntermedia_A_Tabla_TOMWMS = False
+                                                                                   Optional Preguntar As Boolean = False) As Task(Of Boolean)
 
         Dim cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim cnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
@@ -199,34 +159,42 @@ Public Class clsSyncSAPCliente
             clsPublic.Actualizar_Progreso(lbl, $"Force_Ejecución: {ForzarEjecucion}")
             If Not ForzarEjecucion AndAlso Not clsSyncSAPProveedor.Ejecutar_Interfaz("Cliente") Then
                 clsPublic.Actualizar_Progreso(lbl, "La configuración de la interfaz indica que no debe ejecutarse ahora.")
-                Exit Function
+                Return True
             End If
 
             cnnLog.Open()
-            clsSyncSAPProveedor.Iniciar_Ejecucion(lbl, cnnLog)
+            clsSyncSAPCliente.Iniciar_Ejecucion(lbl, cnnLog)
 
             cnn.Open()
             tran = cnn.BeginTransaction()
             Cargar_Config_Desde_DB(cnn, tran)
 
-            If Not clsSyncSAPProveedor.Continuar_Importacion(Preguntar,
-                                                             "¿Deseas llenar tabla intermedia de clientes desde SAP?",
-                                                             Function() Importar_Clientes_Desde_SAP_Hana_A_TablaIntermedia(lbl, prg, cnnLog),
-                                                             lbl) Then
-                Exit Function
+            If Preguntar Then
+                If MessageBox.Show("¿Deseas llenar tabla intermedia de clientes desde SAP?", "Confirmar importación", MessageBoxButtons.YesNo) = DialogResult.Yes Then
+                    Await Importar_Clientes_Desde_SAP_A_TablaIntermediaAsync(lbl, prg, cnnLog)
+                Else
+                    Return False
+                End If
             End If
 
             Dim lista = clsLnI_nav_cliente.Get_All(cnn, tran)
             If lista.Count = 0 Then
                 clsPublic.Actualizar_Progreso(lbl, "No se encontraron clientes en tabla intermedia.")
-                Exit Function
+                Return True
             End If
 
             ProcesarClientes(lista, cnn, tran, cnnLog, lbl, prg, clientesActualizados)
 
+            For Each codigo In clientesActualizados
+                Await Marcar_Cliente_Sincronizado_SLAsync(codigo, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
+                clsPublic.Actualizar_Progreso(lbl, "Cliente sincronizado " & codigo)
+            Next
+
             tran.Commit()
-            clsSyncSAPProveedor.Finalizar_Ejecucion(lbl, cnnLog, "Clientes procesados correctamente")
-            Insertar_Clientes_Desde_TablaIntermedia_A_Tabla_TOMWMS = True
+
+            Finalizar_Ejecucion(lbl, cnnLog, "Clientes procesados correctamente")
+
+            Return True
 
         Catch ex As Exception
             If tran IsNot Nothing Then tran.Rollback()
@@ -238,6 +206,7 @@ Public Class clsSyncSAPCliente
             prg.Value = 0 : prg.Visible = False
         End Try
     End Function
+
     Public Shared Sub Finalizar_Ejecucion(lbl As RichTextBox, cnnLog As SqlConnection, resumen As String)
         Try
             clsPublic.Actualizar_Progreso(lbl, "Fin de inserción en TOMWMS.")
@@ -282,5 +251,335 @@ Public Class clsSyncSAPCliente
             Throw New Exception("No se pudo cargar la configuración de interface (BeConfigEnc).")
         End If
     End Sub
+
+    Public Shared Async Function Get_Clientes_SAP_SLAsync(sessionCookie As String,
+                                                          baseUrl As String,
+                                                          lbl As RichTextBox) As Task(Of List(Of clsBeI_nav_cliente))
+
+        Try
+
+            ' Filtro OData para clientes activos
+            Dim filtro = $"CardType eq 'cCustomer' and Valid eq 'tYES' and (U_ENVIADO_WMS eq 2 or U_ENVIADO_WMS eq null) "
+            Dim pageSize As Integer = 100
+            Dim skip As Integer = 0
+
+            Dim lClientes As New List(Of clsBeI_nav_cliente)
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+                    Dim hayMas As Boolean = True
+
+                    While hayMas
+
+                        Dim requestUrl As String = $"BusinessPartners?$filter={Uri.EscapeDataString(filtro)}&$top={pageSize}&$skip={skip}"
+
+                        Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
+
+                            request.Headers.ConnectionClose = True
+                            request.Headers.Add("Cookie", sessionCookie)
+                            request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                            Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                            If Not response.IsSuccessStatusCode Then
+                                Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                Throw New Exception($"Error al obtener cliente. Código: {response.StatusCode}, Detalle: {errContent}")
+                            End If
+
+                            Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Dim obj = JObject.Parse(jsonResponse)
+                            Dim rows = obj("value")
+
+                            If rows Is Nothing OrElse Not rows.HasValues Then
+                                ' Ya no hay más páginas
+                                hayMas = False
+                                Exit While
+                            End If
+
+                            Dim filasPagina As Integer = rows.Count()
+
+                            For Each clienteJson In rows
+
+                                Dim cliente As New clsBeI_nav_cliente With {
+                                    .IdCliente = 1,
+                                    .Nombre_cliente = clienteJson.Value(Of String)("CardName"),
+                                    .Nit = clienteJson.Value(Of String)("U_NIT"),
+                                    .Razon_social = clienteJson.Value(Of String)("CardName"),
+                                    .Procesado_wms = False,
+                                    .No = clienteJson.Value(Of String)("CardCode"),
+                                    .Name = clienteJson.Value(Of String)("CardName"),
+                                    .Adress = clienteJson.Value(Of String)("Address"),
+                                    .City = clienteJson.Value(Of String)("City"),
+                                    .Country = clienteJson.Value(Of String)("Country"),
+                                    .Phone_No = clienteJson.Value(Of String)("Phone1"),
+                                    .ContactName = "",
+                                    .Search_Name = "",
+                                    .Location_Code = ""
+                                }
+
+                                If clsLnCliente.Existe(cliente.No) Is Nothing Then
+                                    lClientes.Add(cliente)
+                                    If lbl IsNot Nothing Then
+                                        clsPublic.Actualizar_Progreso(lbl, $"Cliente agregado: {cliente.No}")
+                                    End If
+                                End If
+
+                            Next
+
+                            ' Avanzar al siguiente bloque
+                            skip += filasPagina
+
+                        End Using
+
+                    End While
+
+                End Using
+
+            End Using
+
+            Return lClientes
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Proveedores_SAP_SLAsync: " & ex.Message, ex)
+        End Try
+
+    End Function
+
+    Public Shared Async Function Importar_Clientes_Desde_SAP_A_TablaIntermediaAsync(lbl As RichTextBox,
+                                                                                    prg As ProgressBar,
+                                                                                    cnnLog As SqlConnection) As Task(Of Boolean)
+        Dim cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+        Dim tran As SqlTransaction = Nothing
+
+        Try
+            clsPublic.Actualizar_Progreso(lbl, "Consultando clientes nuevos en SAP...")
+
+            vHanaService = New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lbl, "No se pudo obtener sesión.")
+                Return False
+            Else
+                clsPublic.Actualizar_Progreso(lbl, "Conexión correcta.")
+            End If
+
+            Dim lista As List(Of clsBeI_nav_cliente) = Await Get_Clientes_SAP_SLAsync(vHanaService.SessionCookie, BD.Instancia.HANA_SL, lbl)
+            BeNavEjecucionRes.Registros_ws = lista.Count
+            clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, cnnLog)
+            Application.DoEvents()
+
+            prg.Maximum = lista.Count
+            prg.Value = 0
+            VContadorBitacoraIntermedia = 0
+
+            cnn.Open() : tran = cnn.BeginTransaction(IsolationLevel.ReadUncommitted)
+            clsLnI_nav_cliente.EliminarTodos(cnn, tran)
+            If cnnLog.State = ConnectionState.Closed Then cnnLog.Open()
+
+            For Each cliente In lista
+                Try
+                    clsPublic.Actualizar_Progreso(lbl, $"Insertando cliente: {cliente.No}")
+                    cliente.IdCliente = clsLnI_nav_cliente.MaxID(cnn, tran) + 1
+                    clsLnI_nav_cliente.Insertar(cliente, cnn, tran)
+                    VContadorBitacoraIntermedia += 1
+                    prg.Value += 1
+                    Application.DoEvents()
+                Catch ex As Exception
+                    clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, cliente.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
+                    clsPublic.Actualizar_Progreso(lbl, $"Error al insertar {cliente.No}: {ex.Message}")
+                End Try
+            Next
+
+            tran.Commit()
+            clsPublic.Actualizar_Progreso(lbl, "Importación a tabla intermedia finalizada.")
+
+            Return True
+
+        Catch ex As Exception
+            If tran IsNot Nothing Then tran.Rollback()
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
+            clsPublic.Actualizar_Progreso(lbl, $"Error general en importación: {ex.Message}")
+            Throw
+        Finally
+            If cnn.State = ConnectionState.Open Then cnn.Close()
+        End Try
+    End Function
+
+    Public Shared Async Function Marcar_Proveedor_Sincronizado_SLAsync(codigo As String,
+                                                                       sessionCookie As String,
+                                                                       baseUrl As String) As Task(Of Boolean)
+        Try
+            If String.IsNullOrWhiteSpace(codigo) Then Return False
+
+            Dim requestUrl As String = $"BusinessPartners('{codigo}')"
+            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al actualizar OCRD. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"Error al marcar proveedor como sincronizado (SL): {ex.Message}", ex)
+        End Try
+    End Function
+
+    Public Shared Async Function Marcar_Cliente_Sincronizado_SLAsync(codigo As String,
+                                                                     sessionCookie As String,
+                                                                     baseUrl As String) As Task(Of Boolean)
+        Try
+            If String.IsNullOrWhiteSpace(codigo) Then Return False
+
+            Dim requestUrl As String = $"BusinessPartners('{codigo}')"
+            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al actualizar OCRD. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"Error al marcar proveedor como sincronizado (SL): {ex.Message}", ex)
+        End Try
+    End Function
+
+    Public Shared Async Function Get_Cliente_SAP_SLAsync(sessionCookie As String,
+                                                         baseUrl As String,
+                                                         cardCode As String,
+                                                         lbl As RichTextBox) As Task(Of clsBeI_nav_cliente)
+
+        Try
+            If String.IsNullOrWhiteSpace(cardCode) Then
+                Throw New ArgumentException("CardCode es obligatorio.")
+            End If
+
+            ' Filtro OData para un cliente específico, activo y no enviado (o null)
+            Dim filtro = $"CardCode eq '{cardCode.Replace("'", "''")}' and CardType eq 'cCustomer' and Valid eq 'tYES' and (U_ENVIADO_WMS eq 2 or U_ENVIADO_WMS eq null)"
+
+            ' Traer solo campos necesarios
+            Dim selectFields = "CardCode,CardName,Address,City,Country,Phone1,U_NIT"
+
+            Dim requestUrl As String = $"BusinessPartners?$select={selectFields}&$filter={Uri.EscapeDataString(filtro)}&$top=1"
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    ' Recomendado: no forzar ConnectionClose
+                    ' client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If Not response.IsSuccessStatusCode Then
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al obtener cliente. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+
+                        Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                        Dim obj = JObject.Parse(jsonResponse)
+                        Dim rows = obj("value")
+
+                        If rows Is Nothing OrElse Not rows.HasValues Then
+                            ' No encontrado
+                            Return Nothing
+                        End If
+
+                        Dim clienteJson = rows(0)
+
+                        Dim cliente As New clsBeI_nav_cliente With {
+                            .IdCliente = 1,
+                            .Nombre_cliente = clienteJson.Value(Of String)("CardName"),
+                            .Nit = clienteJson.Value(Of String)("U_NIT"),
+                            .Razon_social = clienteJson.Value(Of String)("CardName"),
+                            .Procesado_wms = False,
+                            .No = clienteJson.Value(Of String)("CardCode"),
+                            .Name = clienteJson.Value(Of String)("CardName"),
+                            .Adress = clienteJson.Value(Of String)("Address"),
+                            .City = clienteJson.Value(Of String)("City"),
+                            .Country = clienteJson.Value(Of String)("Country"),
+                            .Phone_No = clienteJson.Value(Of String)("Phone1"),
+                            .ContactName = "",
+                            .Search_Name = "",
+                            .Location_Code = ""
+                        }
+
+                        ' Mantengo tu validación local
+                        If clsLnCliente.Existe(cliente.No) Is Nothing Then
+                            If lbl IsNot Nothing Then
+                                clsPublic.Actualizar_Progreso(lbl, $"Cliente encontrado: {cliente.No}")
+                            End If
+                            Return cliente
+                        Else
+                            If lbl IsNot Nothing Then
+                                clsPublic.Actualizar_Progreso(lbl, $"Cliente ya existe localmente: {cliente.No}")
+                            End If
+                            Return Nothing
+                        End If
+
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Cliente_SAP_SLAsync: " & ex.Message, ex)
+        End Try
+
+    End Function
 
 End Class

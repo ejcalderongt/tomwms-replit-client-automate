@@ -332,7 +332,6 @@ Partial Class frmMenu
         Me.mnuProductividadPicking = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuInterfaceDMS = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuVerificacionBOF = New DevExpress.XtraBars.BarButtonItem()
-        Me.cmdOcupacionArea = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonMiniToolbar1 = New DevExpress.XtraBars.Ribbon.RibbonMiniToolbar(Me.components)
         Me.rpCatalogos = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.pgEmpresa = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -357,7 +356,6 @@ Partial Class frmMenu
         Me.grpStockRes = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgCotizar = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgVerificacionBOF = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.pgPacking = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpServicios = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.pgRegistroServicios = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgReporteServicios = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -416,7 +414,6 @@ Partial Class frmMenu
         Me.BarButtonItem12 = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuReporteTransNav = New DevExpress.XtraBars.BarSubItem()
         Me.PopupMenu3 = New DevExpress.XtraBars.PopupMenu(Me.components)
-        Me.cmdIA = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PopupMenu2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemBreadCrumbEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -438,10 +435,10 @@ Partial Class frmMenu
         Me.rbMain.AutoSaveLayoutToXml = True
         Me.rbMain.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(174)
         Me.rbMain.ExpandCollapseItem.Id = 0
-        Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuBodega, Me.mnuUbicacion, Me.mnuProductos, Me.mnuMantClas, Me.mnuFamilia, Me.mnuMarca, Me.mnuMantEstados, Me.mnuMantTipo, Me.mnuMantUnidMed, Me.mnuMantProducto, Me.mnuMantOperadores, Me.SkinRibbonGalleryBarItem1, Me.RibbonGalleryBarItem1, Me.SkinRibbonGalleryBarItem2, Me.mnuMantPropietarios, Me.mnuEmpresa, Me.mnuMuelles, Me.mnuMantMotivoAnul, Me.mnuMantMotivoDevol, Me.mnuMantEmpresa, Me.mnuClientes, Me.mnuMantCliente, Me.mnuTipoCliente, Me.mnuTiemposAceptacion, Me.mnuProveedores, Me.mnuSeguridad, Me.mnuMantUsuarios, Me.mnuRolesUsuario, Me.lblNombrePCCliente, Me.lblVersion, Me.mnuOrdenesCompra, Me.mnuRecepcion, Me.mnuRepIngresoRapido, Me.mnuLogistica, Me.mnuEmpTrans, Me.mnuVehiculos, Me.mnuCambioUbicacion, Me.mnuCambioEstado, Me.mnuCotizar, Me.mnuPedidoVenta, Me.mnuPicking, Me.mnuPacking, Me.mnuDespachos, Me.BarButtonItem38, Me.BarButtonItem39, Me.BarButtonItem40, Me.mnuRepSalidasRapido, Me.mnuInventarios, Me.mnuMantJornadaLab, Me.mnuControlMontacargas, Me.lblUsuario, Me.mnuMantPais, Me.mnuMantHorarioLab, Me.mnuMantTurnoLab, Me.mnuPiloto, Me.mnuPropietarioBodega, Me.BarButtonGroup1, Me.BarButtonGroup2, Me.BarButtonGroup3, Me.BarButtonGroup4, Me.BarMdiChildrenListItem1, Me.mnuMantBodega, Me.BarButtonItem1, Me.BarSubProveedor, Me.cmdProveedor, Me.cmdProveedores, Me.cmdArancel, Me.BarButtonItem3, Me.BarButtonGroup5, Me.BarButtonItem4, Me.mnuVendedorRoad, Me.mnuVendedorRuta, Me.mnuFallaMontacarga, Me.mnuRolesOperador, Me.cmdCalendario, Me.mnuTraslados, Me.BarSubItem1, Me.BarLinkContainerItem1, Me.BarMdiChildrenListItem2, Me.BarButtonItem5, Me.BarButtonItem6, Me.mnuGeograficos, Me.mnuDepartamento, Me.mnuMunicpio, Me.mnuRegion, Me.mnuMotivoUbic, Me.lblHoraActual, Me.mnuExistencias, Me.BarButtonItem7, Me.cmdDetalleExistencia, Me.cmdDetalleSerie, Me.cmdDetalleParametro, Me.BarButtonItem9, Me.mnuTipoTarima, Me.mnuTipoConte, Me.mnuTarima, Me.BarButtonItem13, Me.BarButtonItem14, Me.mnuPropietarios, Me.mnuMantPropietario, Me.mnuMantReglaMsj, Me.mnuMantReglaRc, Me.BarButtonItem18, Me.mnuMonitor, Me.mnuConfigurarMonitor, Me.mnuMostrarMonitor, Me.cmdImpresora, Me.cmdConexionBD, Me.lblServerAPP, Me.lblBDAPP, Me.cmdUbicacionPicking, Me.cmdTipoIngreso, Me.mnuOrdenCompra, Me.mnuUbicSug, Me.mnuIndiceRot, Me.mnuReglaUbicacion, Me.mnuReglasList, Me.BarEditItem1, Me.BarButtonItem24, Me.cmdIngresos, Me.BarButtonItem25, Me.mnuReglaUbicPrio, Me.BarButtonItem27, Me.mnuConversion, Me.cmdLetra, Me.cmdTipoEtiqueta, Me.mnuImpEtiqueta, Me.mnuInterfaceNav, Me.lblEmpresa, Me.lblBodega, Me.cmdExistenciasProductos, Me.cmdValorizacion, Me.cmdMovimientos, Me.cmdMovimiento, Me.cmdMovimientosDet, Me.mnuLicencia, Me.mnuLicencias, Me.cmdUnidadMedidaconversion, Me.cmdResumenExistencia, Me.cmdResumenExistenciasUMBas, Me.mnuEstructuraInicial, Me.cmdMovimientosCardex, Me.BarButtonItem8, Me.mnuAjusteStock, Me.cmdMotivoAjuste, Me.cmdTipoAjuste, Me.cmdAjusteInventario, Me.BarButtonItem10, Me.cmdExistenciasEstado, Me.cmdMovimientosUbic, Me.cmdControl, Me.cmdProximosVencer, Me.cmdMinMax, Me.cmdPendientesReq, Me.cmdStockTrans, Me.cmdRotacionProd, Me.cmdTrazaLote, Me.mnuResetMenuLayOut, Me.cmdStockEnFecha, Me.mnuTareasPreIngreso, Me.cmdExistenciasUbic, Me.cmdExistenciaspordocumento, Me.mnuCambiarContraseña, Me.cmdExistenciasPorLote, Me.cmdDetalleLotePorUbi, Me.cmdMovCardexConDocs, Me.cmdStockRes, Me.mnuEstadoEnviosNAV, Me.cmdExistenciaPorTipoProd, Me.mnuBackup, Me.mnuCambioDeUsuario, Me.cmdDetalleInventario, Me.cmdSerieDocs, Me.cmdRpExitLP, Me.cmdExistCnRec, Me.cmdTransOut, Me.cmdBarrasPlt, Me.cmdMi3, Me.cmdTransaccionesOut, Me.cmdBarrasPallet, Me.cmdCodBarras, Me.cmdPrintSvr, Me.cmdLogInterface, Me.cmdPrint, Me.mnuDashBoardDesigner, Me.mnuTipoCuadrilla, Me.mnuCuadrilla, Me.mnuReporteDistribucionPorTramo, Me.mnuServicios, Me.mnuTarifas, Me.mnuRegimenFiscal, Me.mnuConfiguracionInt, Me.cmdDocConDiferencias, Me.mnuRepSalidaRapido, Me.cmdDocPeConDiferencias, Me.mnuRepSalidasRapidoD, Me.cmdExistFiscal, Me.mnuTiemposTareas, Me.mnuRepFiscales, Me.cmdCtaOrden, Me.BarSubItem2, Me.cmdHistResGeneral, Me.cmdHistResFiscal, Me.cmdResumenCliente, Me.mnuRepFiscal, Me.mnuMantConsolidador, Me.cmdCtas, Me.cmdCtasOrden, Me.cmdCtaOrdenPoliza, Me.cmdMovimiento_Reporte, Me.bbiCambiaBodega, Me.sddiSkinWMS, Me.cmdExistConsolidador, Me.cmdExistPorClasif, Me.cmdExistenciasPropietario, Me.cmdExistenciasPorLote_Posicion, Me.cmdStockJornadaSistema, Me.cmdServicios, Me.mnuReporteServicios, Me.btnServicios, Me.mnuReportesGallery, Me.mnuIndicadores, Me.mnuAnalitica1, Me.mnuRegistroServicios, Me.mnuServiciosIngreso, Me.mnuServiciosSalidas, Me.mnuTiposDocumentoIngreso, Me.mnuTiposDocumentoSalida, Me.mnuKardexLote, Me.cmdValorizacionOC, Me.cmdStockResJornada, Me.cmdResValorizacion, Me.cmdMovporLote, Me.cmdResValorizacionMerca, Me.btInvInicial, Me.mnuAnalitica2, Me.mnuAnalitica3, Me.cmdEstacionalidadProducto, Me.cmdStockEnLinea, Me.cmdMovimientosPoliza, Me.mnuMantCentroCostos, Me.cmdAuditoriaPicking, Me.mnuZonaPicking, Me.cmdStockJornada, Me.BarButtonItem15, Me.mnuParametros, Me.cmdParametroA, Me.cmdParametroB, Me.cmdMovimientosDoc, Me.cmdSalidasDiasPiso, Me.mnuLogErrorWMS, Me.cmdAuditoriaRetroactivo, Me.cmdLicenciasPorUbicacion, Me.mnuAnalitica, Me.cmdIngresoPoliza, Me.mnuQAEscenariosReserva, Me.mnuCaso1ReservaIdealsa, Me.mnuQAReservas, Me.lblModoDebug, Me.mnuReportesSAT, Me.mnuRptIngresosSAT, Me.mnuRptSalidasSAT, Me.mnurptExistenciasSAT, Me.mnuActualizarBD, Me.mnuActualizarIndices, Me.mnuGestionInventarioCalidad, Me.mnuHabilitacionLotes, Me.mnuReportesControlCalidad, Me.cmdMovimientosControlCalidad, Me.mnuTamañoTablas, Me.lblWSHHURL, Me.cmdReglasVencimiento, Me.mnuManufactura, Me.cmdTransaccionesManufactura, Me.cmdTipo, Me.mnuPreFacturacion, Me.cmdPreFacturar, Me.cmdAcuerdosyServicios, Me.cmdMercaVencida, Me.mnuTiemposRecepcion, Me.mnuRptAjustesInventario, Me.mnuTiemposDespacho, Me.mnuKPIResumen, Me.mnuVisualizarTableroWMS, Me.mnuTransaccionesPendientesReenvio, Me.cmdMovimientosEstado, Me.cmdPackingDespachados, Me.mnuTalla, Me.mnuColor, Me.mnuProductividad, Me.mnuProductividadPicking, Me.mnurptTransaccionesOP, Me.mnuCampaña, Me.mnuInterfaceDMS, Me.mnuVerificacionBOF, Me.cmdOcupacionArea, Me.cmdIA})
+        Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuBodega, Me.mnuUbicacion, Me.mnuProductos, Me.mnuMantClas, Me.mnuFamilia, Me.mnuMarca, Me.mnuMantEstados, Me.mnuMantTipo, Me.mnuMantUnidMed, Me.mnuMantProducto, Me.mnuMantOperadores, Me.SkinRibbonGalleryBarItem1, Me.RibbonGalleryBarItem1, Me.SkinRibbonGalleryBarItem2, Me.mnuMantPropietarios, Me.mnuEmpresa, Me.mnuMuelles, Me.mnuMantMotivoAnul, Me.mnuMantMotivoDevol, Me.mnuMantEmpresa, Me.mnuClientes, Me.mnuMantCliente, Me.mnuTipoCliente, Me.mnuTiemposAceptacion, Me.mnuProveedores, Me.mnuSeguridad, Me.mnuMantUsuarios, Me.mnuRolesUsuario, Me.lblNombrePCCliente, Me.lblVersion, Me.mnuOrdenesCompra, Me.mnuRecepcion, Me.mnuRepIngresoRapido, Me.mnuLogistica, Me.mnuEmpTrans, Me.mnuVehiculos, Me.mnuCambioUbicacion, Me.mnuCambioEstado, Me.mnuCotizar, Me.mnuPedidoVenta, Me.mnuPicking, Me.mnuPacking, Me.mnuDespachos, Me.BarButtonItem38, Me.BarButtonItem39, Me.BarButtonItem40, Me.mnuRepSalidasRapido, Me.mnuInventarios, Me.mnuMantJornadaLab, Me.mnuControlMontacargas, Me.lblUsuario, Me.mnuMantPais, Me.mnuMantHorarioLab, Me.mnuMantTurnoLab, Me.mnuPiloto, Me.mnuPropietarioBodega, Me.BarButtonGroup1, Me.BarButtonGroup2, Me.BarButtonGroup3, Me.BarButtonGroup4, Me.BarMdiChildrenListItem1, Me.mnuMantBodega, Me.BarButtonItem1, Me.BarSubProveedor, Me.cmdProveedor, Me.cmdProveedores, Me.cmdArancel, Me.BarButtonItem3, Me.BarButtonGroup5, Me.BarButtonItem4, Me.mnuVendedorRoad, Me.mnuVendedorRuta, Me.mnuFallaMontacarga, Me.mnuRolesOperador, Me.cmdCalendario, Me.mnuTraslados, Me.BarSubItem1, Me.BarLinkContainerItem1, Me.BarMdiChildrenListItem2, Me.BarButtonItem5, Me.BarButtonItem6, Me.mnuGeograficos, Me.mnuDepartamento, Me.mnuMunicpio, Me.mnuRegion, Me.mnuMotivoUbic, Me.lblHoraActual, Me.mnuExistencias, Me.BarButtonItem7, Me.cmdDetalleExistencia, Me.cmdDetalleSerie, Me.cmdDetalleParametro, Me.BarButtonItem9, Me.mnuTipoTarima, Me.mnuTipoConte, Me.mnuTarima, Me.BarButtonItem13, Me.BarButtonItem14, Me.mnuPropietarios, Me.mnuMantPropietario, Me.mnuMantReglaMsj, Me.mnuMantReglaRc, Me.BarButtonItem18, Me.mnuMonitor, Me.mnuConfigurarMonitor, Me.mnuMostrarMonitor, Me.cmdImpresora, Me.cmdConexionBD, Me.lblServerAPP, Me.lblBDAPP, Me.cmdUbicacionPicking, Me.cmdTipoIngreso, Me.mnuOrdenCompra, Me.mnuUbicSug, Me.mnuIndiceRot, Me.mnuReglaUbicacion, Me.mnuReglasList, Me.BarEditItem1, Me.BarButtonItem24, Me.cmdIngresos, Me.BarButtonItem25, Me.mnuReglaUbicPrio, Me.BarButtonItem27, Me.mnuConversion, Me.cmdLetra, Me.cmdTipoEtiqueta, Me.mnuImpEtiqueta, Me.mnuInterfaceNav, Me.lblEmpresa, Me.lblBodega, Me.cmdExistenciasProductos, Me.cmdValorizacion, Me.cmdMovimientos, Me.cmdMovimiento, Me.cmdMovimientosDet, Me.mnuLicencia, Me.mnuLicencias, Me.cmdUnidadMedidaconversion, Me.cmdResumenExistencia, Me.cmdResumenExistenciasUMBas, Me.mnuEstructuraInicial, Me.cmdMovimientosCardex, Me.BarButtonItem8, Me.mnuAjusteStock, Me.cmdMotivoAjuste, Me.cmdTipoAjuste, Me.cmdAjusteInventario, Me.BarButtonItem10, Me.cmdExistenciasEstado, Me.cmdMovimientosUbic, Me.cmdControl, Me.cmdProximosVencer, Me.cmdMinMax, Me.cmdPendientesReq, Me.cmdStockTrans, Me.cmdRotacionProd, Me.cmdTrazaLote, Me.mnuResetMenuLayOut, Me.cmdStockEnFecha, Me.mnuTareasPreIngreso, Me.cmdExistenciasUbic, Me.cmdExistenciaspordocumento, Me.mnuCambiarContraseña, Me.cmdExistenciasPorLote, Me.cmdDetalleLotePorUbi, Me.cmdMovCardexConDocs, Me.cmdStockRes, Me.mnuEstadoEnviosNAV, Me.cmdExistenciaPorTipoProd, Me.mnuBackup, Me.mnuCambioDeUsuario, Me.cmdDetalleInventario, Me.cmdSerieDocs, Me.cmdRpExitLP, Me.cmdExistCnRec, Me.cmdTransOut, Me.cmdBarrasPlt, Me.cmdMi3, Me.cmdTransaccionesOut, Me.cmdBarrasPallet, Me.cmdCodBarras, Me.cmdPrintSvr, Me.cmdLogInterface, Me.cmdPrint, Me.mnuDashBoardDesigner, Me.mnuTipoCuadrilla, Me.mnuCuadrilla, Me.mnuReporteDistribucionPorTramo, Me.mnuServicios, Me.mnuTarifas, Me.mnuRegimenFiscal, Me.mnuConfiguracionInt, Me.cmdDocConDiferencias, Me.mnuRepSalidaRapido, Me.cmdDocPeConDiferencias, Me.mnuRepSalidasRapidoD, Me.cmdExistFiscal, Me.mnuTiemposTareas, Me.mnuRepFiscales, Me.cmdCtaOrden, Me.BarSubItem2, Me.cmdHistResGeneral, Me.cmdHistResFiscal, Me.cmdResumenCliente, Me.mnuRepFiscal, Me.mnuMantConsolidador, Me.cmdCtas, Me.cmdCtasOrden, Me.cmdCtaOrdenPoliza, Me.cmdMovimiento_Reporte, Me.bbiCambiaBodega, Me.sddiSkinWMS, Me.cmdExistConsolidador, Me.cmdExistPorClasif, Me.cmdExistenciasPropietario, Me.cmdExistenciasPorLote_Posicion, Me.cmdStockJornadaSistema, Me.cmdServicios, Me.mnuReporteServicios, Me.btnServicios, Me.mnuReportesGallery, Me.mnuIndicadores, Me.mnuAnalitica1, Me.mnuRegistroServicios, Me.mnuServiciosIngreso, Me.mnuServiciosSalidas, Me.mnuTiposDocumentoIngreso, Me.mnuTiposDocumentoSalida, Me.mnuKardexLote, Me.cmdValorizacionOC, Me.cmdStockResJornada, Me.cmdResValorizacion, Me.cmdMovporLote, Me.cmdResValorizacionMerca, Me.btInvInicial, Me.mnuAnalitica2, Me.mnuAnalitica3, Me.cmdEstacionalidadProducto, Me.cmdStockEnLinea, Me.cmdMovimientosPoliza, Me.mnuMantCentroCostos, Me.cmdAuditoriaPicking, Me.mnuZonaPicking, Me.cmdStockJornada, Me.BarButtonItem15, Me.mnuParametros, Me.cmdParametroA, Me.cmdParametroB, Me.cmdMovimientosDoc, Me.cmdSalidasDiasPiso, Me.mnuLogErrorWMS, Me.cmdAuditoriaRetroactivo, Me.cmdLicenciasPorUbicacion, Me.mnuAnalitica, Me.cmdIngresoPoliza, Me.mnuQAEscenariosReserva, Me.mnuCaso1ReservaIdealsa, Me.mnuQAReservas, Me.lblModoDebug, Me.mnuReportesSAT, Me.mnuRptIngresosSAT, Me.mnuRptSalidasSAT, Me.mnurptExistenciasSAT, Me.mnuActualizarBD, Me.mnuActualizarIndices, Me.mnuGestionInventarioCalidad, Me.mnuHabilitacionLotes, Me.mnuReportesControlCalidad, Me.cmdMovimientosControlCalidad, Me.mnuTamañoTablas, Me.lblWSHHURL, Me.cmdReglasVencimiento, Me.mnuManufactura, Me.cmdTransaccionesManufactura, Me.cmdTipo, Me.mnuPreFacturacion, Me.cmdPreFacturar, Me.cmdAcuerdosyServicios, Me.cmdMercaVencida, Me.mnuTiemposRecepcion, Me.mnuRptAjustesInventario, Me.mnuTiemposDespacho, Me.mnuKPIResumen, Me.mnuVisualizarTableroWMS, Me.mnuTransaccionesPendientesReenvio, Me.cmdMovimientosEstado, Me.cmdPackingDespachados, Me.mnuTalla, Me.mnuColor, Me.mnuProductividad, Me.mnuProductividadPicking, Me.mnurptTransaccionesOP, Me.mnuCampaña, Me.mnuInterfaceDMS, Me.mnuVerificacionBOF})
         Me.rbMain.Location = New System.Drawing.Point(0, 0)
         Me.rbMain.Margin = New System.Windows.Forms.Padding(38, 48, 38, 48)
-        Me.rbMain.MaxItemId = 376
+        Me.rbMain.MaxItemId = 373
         Me.rbMain.MiniToolbars.Add(Me.RibbonMiniToolbar1)
         Me.rbMain.Name = "rbMain"
         Me.rbMain.OptionsMenuMinWidth = 1962
@@ -718,10 +715,6 @@ Partial Class frmMenu
         GalleryItem1.Caption = "Item4"
         GalleryItemGroup1.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem1})
         Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup1})
-        GalleryItemGroup2.Caption = "Group4"
-        GalleryItem2.Caption = "Item4"
-        GalleryItemGroup2.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem2})
-        Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup2})
         Me.RibbonGalleryBarItem1.Id = 25
         Me.RibbonGalleryBarItem1.Name = "RibbonGalleryBarItem1"
         '
@@ -918,18 +911,18 @@ Partial Class frmMenu
         Me.mnuOrdenesCompra.ImageOptions.Image = CType(resources.GetObject("mnuOrdenesCompra.ImageOptions.Image"), System.Drawing.Image)
         Me.mnuOrdenesCompra.ImageOptions.LargeImage = CType(resources.GetObject("mnuOrdenesCompra.ImageOptions.LargeImage"), System.Drawing.Image)
         Me.mnuOrdenesCompra.Name = "mnuOrdenesCompra"
-        ToolTipTitleItem3.Text = "Ingreso / Orden de compra"
-        ToolTipItem2.LeftIndent = 6
-        ToolTipItem2.Text = "Permite registrar la orden de compra de un proveedor para ser recibida posteriorm" &
+        ToolTipTitleItem1.Text = "Ingreso / Orden de compra"
+        ToolTipItem1.LeftIndent = 6
+        ToolTipItem1.Text = "Permite registrar la orden de compra de un proveedor para ser recibida posteriorm" &
     "ente."
-        ToolTipTitleItem4.LeftIndent = 6
-        ToolTipTitleItem4.Text = "Muestra el listado de ordenes de compra para filtro, creación o modificación de u" &
+        ToolTipTitleItem2.LeftIndent = 6
+        ToolTipTitleItem2.Text = "Muestra el listado de ordenes de compra para filtro, creación o modificación de u" &
     "na O.C. ya existente."
-        SuperToolTip2.Items.Add(ToolTipTitleItem3)
-        SuperToolTip2.Items.Add(ToolTipItem2)
-        SuperToolTip2.Items.Add(ToolTipSeparatorItem2)
-        SuperToolTip2.Items.Add(ToolTipTitleItem4)
-        Me.mnuOrdenesCompra.SuperTip = SuperToolTip2
+        SuperToolTip1.Items.Add(ToolTipTitleItem1)
+        SuperToolTip1.Items.Add(ToolTipItem1)
+        SuperToolTip1.Items.Add(ToolTipSeparatorItem1)
+        SuperToolTip1.Items.Add(ToolTipTitleItem2)
+        Me.mnuOrdenesCompra.SuperTip = SuperToolTip1
         '
         'mnuRecepcion
         '
@@ -1336,7 +1329,7 @@ Partial Class frmMenu
         '
         'cmdDetalleSerie
         '
-        Me.cmdDetalleSerie.Caption = "7. Exitencias con series"
+        Me.cmdDetalleSerie.Caption = "7. Existencias con series"
         Me.cmdDetalleSerie.Id = 115
         Me.cmdDetalleSerie.Name = "cmdDetalleSerie"
         '
@@ -2405,7 +2398,6 @@ Partial Class frmMenu
         '
         Me.mnuVisualizarTableroWMS.Caption = "Visualizador de tableros"
         Me.mnuVisualizarTableroWMS.Id = 360
-        Me.mnuVisualizarTableroWMS.ImageOptions.SvgImage = CType(resources.GetObject("mnuVisualizarTableroWMS.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuVisualizarTableroWMS.Name = "mnuVisualizarTableroWMS"
         '
         'mnuProductividad
@@ -2430,16 +2422,12 @@ Partial Class frmMenu
         Me.mnuInterfaceDMS.Name = "mnuInterfaceDMS"
         '
         'mnuVerificacionBOF
-        'cmdOcupacionArea
         '
         Me.mnuVerificacionBOF.Caption = "Verificacion BOF"
         Me.mnuVerificacionBOF.Hint = "Verificación por BOF"
         Me.mnuVerificacionBOF.Id = 372
         Me.mnuVerificacionBOF.ImageOptions.SvgImage = CType(resources.GetObject("mnuVerificacionBOF.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuVerificacionBOF.Name = "mnuVerificacionBOF"
-        Me.cmdOcupacionArea.Caption = "25. Ocupación por área"
-        Me.cmdOcupacionArea.Id = 373
-        Me.cmdOcupacionArea.Name = "cmdOcupacionArea"
         '
         'rpCatalogos
         '
@@ -2525,7 +2513,7 @@ Partial Class frmMenu
         '
         'rpSalidas
         '
-        Me.rpSalidas.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.pgPedidoVenta, Me.pgPicking, Me.pgDespacho, Me.grpStockRes, Me.pgCotizar, Me.pgVerificacionBOF, Me.pgPacking})
+        Me.rpSalidas.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.pgPedidoVenta, Me.pgPicking, Me.pgDespacho, Me.grpStockRes, Me.pgCotizar, Me.pgVerificacionBOF})
         Me.rpSalidas.Name = "rpSalidas"
         Me.rpSalidas.Text = "Salidas"
         '
@@ -2556,13 +2544,9 @@ Partial Class frmMenu
         Me.pgCotizar.Visible = False
         '
         'pgVerificacionBOF
-        'pgPacking
         '
         Me.pgVerificacionBOF.ItemLinks.Add(Me.mnuVerificacionBOF)
         Me.pgVerificacionBOF.Name = "pgVerificacionBOF"
-        Me.pgPacking.ItemLinks.Add(Me.mnuPacking)
-        Me.pgPacking.Name = "pgPacking"
-        Me.pgPacking.Visible = False
         '
         'rpServicios
         '
@@ -2723,7 +2707,6 @@ Partial Class frmMenu
         'pgBackup
         '
         Me.pgBackup.ItemLinks.Add(Me.mnuBackup)
-        Me.pgBackup.ItemLinks.Add(Me.cmdIA)
         Me.pgBackup.Name = "pgBackup"
         '
         'rpgCambioDeUsuario
@@ -2830,10 +2813,10 @@ Partial Class frmMenu
         Me.lblprg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblprg.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.lblprg.Location = New System.Drawing.Point(0, 390)
-        Me.lblprg.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.lblprg.Location = New System.Drawing.Point(0, 391)
+        Me.lblprg.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.Size = New System.Drawing.Size(1714, 123)
+        Me.lblprg.Size = New System.Drawing.Size(1714, 122)
         Me.lblprg.TabIndex = 35
         Me.lblprg.Text = ""
         Me.lblprg.Visible = False
@@ -2929,13 +2912,6 @@ Partial Class frmMenu
         Me.PopupMenu3.Name = "PopupMenu3"
         Me.PopupMenu3.Ribbon = Me.rbMain
         '
-        'cmdIA
-        '
-        Me.cmdIA.Caption = "Ayuda"
-        Me.cmdIA.Id = 375
-        Me.cmdIA.ImageOptions.SvgImage = CType(resources.GetObject("cmdIA.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdIA.Name = "cmdIA"
-        '
         'frmMenu
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -2946,7 +2922,7 @@ Partial Class frmMenu
         Me.Controls.Add(Me.rbMain)
         Me.IsMdiContainer = True
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmMenu"
         Me.Ribbon = Me.rbMain
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -3054,7 +3030,6 @@ Partial Class frmMenu
     Friend WithEvents mnuPicking As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents pgPicking As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents mnuPacking As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents pgPacking As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents RibbonPageGroup7 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents mnuDespachos As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents pgDespacho As DevExpress.XtraBars.Ribbon.RibbonPageGroup
@@ -3372,7 +3347,5 @@ Partial Class frmMenu
     Friend WithEvents mnuInterfaceDMS As BarButtonItem
     Friend WithEvents mnuVerificacionBOF As BarButtonItem
     Friend WithEvents pgVerificacionBOF As Ribbon.RibbonPageGroup
-    Friend WithEvents cmdOcupacionArea As BarButtonItem
-    Friend WithEvents cmdIA As BarButtonItem
     'Friend WithEvents Picking_Service1 As wWSPicking.Picking_Service
 End Class

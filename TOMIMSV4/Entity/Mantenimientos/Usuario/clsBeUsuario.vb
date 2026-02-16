@@ -20,9 +20,6 @@ Public Class clsBeUsuario
     Public Property Foto As Byte()
     Public Property Sistema As Boolean = False
     Public Property Clave_autorizacion As String = ""
-    '#GT10072025: campos para conexión a sap
-    Public Property Usuario_sap_b1 As String = ""
-    Public Property Clave_sap_b1 As String = ""
 
     Sub New()
     End Sub

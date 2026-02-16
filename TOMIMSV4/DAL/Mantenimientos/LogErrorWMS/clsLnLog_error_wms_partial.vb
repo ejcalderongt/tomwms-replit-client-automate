@@ -69,7 +69,7 @@ Partial Public Class clsLnLog_error_wms
             oBeLog_error_wms.Fecha = Now
             oBeLog_error_wms.IdEmpresa = pIdEmpresa
             oBeLog_error_wms.IdBodega = pIdBodega
-            Insertar(oBeLog_error_wms)
+            Insertar(oBeLog_error_wms, lConnection, lTransaction)
 
             lTransaction.Commit()
 
@@ -90,33 +90,31 @@ Partial Public Class clsLnLog_error_wms
 
     End Sub
 
-    Public Shared Sub Agregar_Error(ByVal pMensajeExcepcion As String)
+    Public Shared Function MaxID(ByVal lConnection As SqlConnection,
+                                 ByVal lTransaction As SqlTransaction) As Integer
 
         Try
 
-            Dim oBeLog_error_wms As New clsBeLog_error_wms()
-            oBeLog_error_wms.IdError = MaxID() + 1
-            oBeLog_error_wms.MensajeError = pMensajeExcepcion
-            oBeLog_error_wms.Fecha = Now
-            oBeLog_error_wms.IdEmpresa = 0
-            oBeLog_error_wms.IdBodega = 0
-            Insertar(oBeLog_error_wms)
+            Dim lMax As Integer = 0
 
-            Dim lReturnValue As Object = lCommand.ExecuteScalar()
-            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                lMax = CInt(lReturnValue)
-            End If
+            Const sp As String = "SELECT ISNULL(Max(IdError),0) FROM Log_error_wms"
+
+            Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    lMax = CInt(lReturnValue)
+                End If
 
             End Using
 
             Return lMax
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw ex
         End Try
 
-    End Sub
+    End Function
 
     'Public Shared Sub Agregar_Error(ByVal pMensajeExcepcion As String,
     '                                ByVal lConnection As SqlConnection,
@@ -167,7 +165,7 @@ Partial Public Class clsLnLog_error_wms
             oBeLog_error_wms.IdPickingEnc = pIdPIckingEnc
             oBeLog_error_wms.IdRecepcionEnc = pIdRecepcionEnc
             oBeLog_error_wms.IdUsuarioAgr = pIdUsuarioAgr
-            Insertar(oBeLog_error_wms)
+            Insertar(oBeLog_error_wms, lConnection, lTransaction)
 
             lTransaction.Commit()
 
@@ -245,7 +243,7 @@ Partial Public Class clsLnLog_error_wms
                 oBeLog_error_wms.Item_No = pBeStockAReservar.IdProductoBodega
                 oBeLog_error_wms.UmBas = pBeStockAReservar.IdUnidadMedida
 
-                Insertar(oBeLog_error_wms)
+                Insertar(oBeLog_error_wms, lConnection, lTransaction)
 
             End If
 

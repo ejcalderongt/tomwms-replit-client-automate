@@ -199,75 +199,42 @@ Partial Public Class clsLnTrans_inv_stock
                                 [temperatura], 
                                 [fecha_copia],
                                 [IdBodega],
-								[cantidad_reservada_umbas])
+                                [IdProductoTallaColor])
                                 SELECT 
                                     @idinventario,
-                                    s.[IdStock], 
-                                    s.[IdPropietarioBodega], 
-                                    s.[IdProductoBodega], 
-                                    s.[IdProductoEstado], 
-                                    s.[IdPresentacion], 
-                                    s.[IdUnidadMedida], 
-                                    s.[IdUbicacion], 
-                                    s.[IdUbicacion_anterior], 
-                                    s.[IdRecepcionEnc], 
-                                    s.[IdRecepcionDet], 
-                                    s.[IdPedidoEnc], [IdPickingEnc], 
-                                    s.[IdDespachoEnc], 
-                                    ISNULL(s.[lote], '') AS lote, 
-                                    s.[lic_plate], 
-                                    s.[serial], 
-                                    s.[cantidad], 
-                                    s.[fecha_ingreso], 
-                                    ISNULL(s.[fecha_vence],'19000101') AS fecha_vence, 
-                                    s.[uds_lic_plate], 
-                                    s.[no_bulto], 
-                                    s.[fecha_manufactura], 
-                                    s.[añada], 
-                                    s.[user_agr], 
-                                    s.[fec_agr], 
-                                    s.[user_mod], 
-                                    s.[fec_mod], 
-                                    s.[activo], 
-                                    s.[peso], 
-                                    s.[temperatura], 
+                                    [IdStock], 
+                                    [IdPropietarioBodega], 
+                                    [IdProductoBodega], 
+                                    [IdProductoEstado], 
+                                    [IdPresentacion], 
+                                    [IdUnidadMedida], 
+                                    [IdUbicacion], 
+                                    [IdUbicacion_anterior], 
+                                    [IdRecepcionEnc], 
+                                    [IdRecepcionDet], 
+                                    [IdPedidoEnc], [IdPickingEnc], 
+                                    [IdDespachoEnc], 
+                                    ISNULL([lote], '') AS lote, 
+                                    [lic_plate], 
+                                    [serial], 
+                                    [cantidad], 
+                                    [fecha_ingreso], 
+                                    ISNULL([fecha_vence],'19000101') AS fecha_vence, 
+                                    [uds_lic_plate], 
+                                    [no_bulto], 
+                                    [fecha_manufactura], 
+                                    [añada], 
+                                    [user_agr], 
+                                    [fec_agr], 
+                                    [user_mod], 
+                                    [fec_mod], 
+                                    [activo], 
+                                    [peso], 
+                                    [temperatura], 
                                     GETDATE(),
-                                    s.[IdBodega],
-                                    ISNULL(SUM(sr.cantidad), 0) AS cantidad_reservada_umbas 
-                                    FROM stock s
-                                    LEFT JOIN stock_res sr ON sr.IdStock = s.IdStock
-                                    GROUP BY 
-                                        s.[IdStock], 
-                                        s.[IdPropietarioBodega], 
-                                        s.[IdProductoBodega], 
-                                        s.[IdProductoEstado], 
-                                        s.[IdPresentacion], 
-                                        s.[IdUnidadMedida], 
-                                        s.[IdUbicacion], 
-                                        s.[IdUbicacion_anterior], 
-                                        s.[IdRecepcionEnc], 
-                                        s.[IdRecepcionDet], 
-                                        s.[IdPedidoEnc], 
-                                        s.[IdPickingEnc], 
-                                        s.[IdDespachoEnc], 
-                                        s.[lote], 
-                                        s.[lic_plate], 
-                                        s.[serial], 
-                                        s.[cantidad], 
-                                        s.[fecha_ingreso], 
-                                        s.[fecha_vence], 
-                                        s.[uds_lic_plate], 
-                                        s.[no_bulto], 
-                                        s.[fecha_manufactura], 
-                                        s.[añada], 
-                                        s.[user_agr], 
-                                        s.[fec_agr], 
-                                        s.[user_mod], 
-                                        s.[fec_mod], 
-                                        s.[activo], 
-                                        s.[peso], 
-                                        s.[temperatura], 
-                                        s.[IdBodega] "
+                                    [IdBodega], 
+                                    [IdProductoTallaColor]
+                                    FROM stock"
 
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
@@ -677,7 +644,7 @@ Partial Public Class clsLnTrans_inv_stock
                             gBeInventarioCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                             gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                             gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
-                            gBeInventarioCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
+                            gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
 
                             clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
 
@@ -816,7 +783,7 @@ Partial Public Class clsLnTrans_inv_stock
                                     gBeInventarioCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                                     gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                                     gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
-                                    gBeInventarioCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
+                                    gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
 
                                     clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
 
@@ -940,20 +907,31 @@ Partial Public Class clsLnTrans_inv_stock
         Try
             '#ejc, agruegué transacción: 241211
             '#CKFK 20180627 modifiqué la forma de obtener el nombre completo de la ubicacion
-            Dim vSQL As String = "SELECT producto.codigo AS Codigo, producto.nombre AS Producto, unidad_medida.Nombre AS UMBas,  
-                                         producto_presentacion.nombre AS Presentacion, producto_estado.nombre AS Estado, trans_inv_stock.Lote, 
-                                         trans_inv_stock.Fecha_vence, trans_inv_stock.Cantidad,  trans_inv_stock.Peso,
-                                         dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion,trans_inv_stock.IdBodega) AS Ubicacion, 
-                                         trans_inv_stock.IdStock, trans_inv_stock.lic_plate Licencia, pt.NombreTipoProducto AS TipoProducto,  
-                                         trans_inv_stock.IdUbicacion, trans_inv_stock.IdProductoBodega,
-                                         ISNULL(trans_inv_stock.cantidad_reservada_umbas,0) AS Cantidad_Reservada_UmBas
-            From trans_inv_stock INNER Join
-                                         producto_bodega ON trans_inv_stock.IdProductoBodega = producto_bodega.IdProductoBodega  INNER JOIN  
-                                         producto ON producto_bodega.IdProducto = producto.IdProducto  LEFT OUTER JOIN  
-                                         producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion LEFT OUTER JOIN
-                                         unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida INNER JOIN  
-                                         producto_tipo pt on producto.IdTipoProducto = pt.IdTipoProducto INNER JOIN  
-                                         producto_estado on trans_inv_stock.IdProductoEstado = producto_estado.IdEstado "
+            Dim vSQL As String = "SELECT producto.codigo AS Codigo, 
+                                    producto.nombre AS Producto, 
+                                    unidad_medida.Nombre AS UMBas, 
+                                    producto_presentacion.nombre AS Presentacion,
+                                    producto_estado.nombre AS Estado, 
+                                    trans_inv_stock.Lote, 
+                                    trans_inv_stock.Fecha_vence, 
+                                    trans_inv_stock.Cantidad,
+                                    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / producto_presentacion.Factor, 0) AS CantidadPresentacion, 
+                                    trans_inv_stock.Peso,
+                                    dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion,trans_inv_stock.IdBodega) AS Ubicacion, trans_inv_stock.IdStock, pt.NombreTipoProducto AS TipoProducto, 
+                                    trans_inv_stock.IdUbicacion, 
+                                    trans_inv_stock.IdProductoBodega,
+                                    color.nombre Color,
+                                    talla.codigo Talla
+                                    FROM trans_inv_stock INNER JOIN
+                                    producto_bodega ON trans_inv_stock.IdProductoBodega = producto_bodega.IdProductoBodega 
+                                    INNER JOIN producto ON producto_bodega.IdProducto = producto.IdProducto 
+                                    LEFT OUTER JOIN producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion LEFT OUTER JOIN
+                                    unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida 
+                                    inner join producto_tipo pt on producto.IdTipoProducto = pt.IdTipoProducto 
+                                    inner join producto_estado on trans_inv_stock.IdProductoEstado = producto_estado.IdEstado
+                                    left join producto_talla_color on trans_inv_stock.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor 
+                                    left join color on color.IdColor = producto_talla_color.IdColor 
+                                    left join talla on talla.IdTalla = producto_talla_color.IdTalla "
 
             vSQL += "WHERE trans_inv_stock.IdInventario=@IdInventario AND trans_inv_stock.IdBodega = @IdBodega"
 
@@ -982,15 +960,10 @@ Partial Public Class clsLnTrans_inv_stock
 
         Try
 
-            Const sp As String = "SELECT top(1) s.* 
-                                  FROM trans_inv_stock s INNER JOIN 
-                                       VW_ProductoSI pb ON s.IdProductoBodega = pb.IdProductoBodega
-							      WHERE (s.Lic_plate = @Licencia OR pb.codigo = @Licencia Or 
-								        pb.codigo_barra=@Licencia Or pb.codigo_barra_pcb =@Licencia Or 
-										pb.codigo_barra_presentacion =@Licencia or pb.codigo_barra=@Licencia)
-							            AND s.IdBodega = @IdBodega 
-							            AND s.IdInventario = @IdInventario
-							            AND s.IdUbicacion = @IdUbicacion "
+            Const sp As String = "SELECT * FROM trans_inv_stock 
+							  WHERE Lic_plate = @Licencia 
+							  AND IdBodega = @IdBodega 
+							  AND IdInventario = @IdInventario"
 
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -1005,7 +978,6 @@ Partial Public Class clsLnTrans_inv_stock
                         lDTA.SelectCommand.Parameters.AddWithValue("@Licencia", pInvCiclico.lic_plate)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pInvCiclico.IdBodega)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdInventario", pInvCiclico.Idinventarioenc)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pInvCiclico.IdUbicacion)
 
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)
@@ -1043,36 +1015,6 @@ Partial Public Class clsLnTrans_inv_stock
                 lConnection.Close()
 
             End Using
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function GetSingle(ByRef pBeTrans_inv_stock As clsBeTrans_inv_stock,
-                                     ByVal pConnection As SqlConnection,
-                                     ByVal pTransaction As SqlTransaction)
-
-        Try
-
-            Const sp As String = "SELECT * FROM Trans_inv_stock 
-                                  Where(idinventario = @idinventario) 
-                                        AND (IdStock = @IdStock)"
-
-            Dim cmd As New SqlCommand(sp, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDINVENTARIO", pBeTrans_inv_stock.Idinventario))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDSTOCK", pBeTrans_inv_stock.IdStock))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count = 1 Then
-                Cargar(pBeTrans_inv_stock, dt.Rows(0))
-            End If
-
-            Return True
 
         Catch ex As Exception
             Throw ex

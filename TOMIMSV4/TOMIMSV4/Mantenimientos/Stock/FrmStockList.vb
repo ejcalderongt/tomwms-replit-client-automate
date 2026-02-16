@@ -36,10 +36,6 @@ Public Class FrmStockList
     '#GT28102024: validar si mostrar seleccion multiple para cambio de ubicacion y no de estado.
     Public Property Es_Seleccion_Multiple As Boolean
 
-    '#GT28112024: guardar selección multiple, previo a aplicar filtros
-    Private selectedKeys As New HashSet(Of Object)()
-    Public Property AdvancedMode As Boolean = False
-
     Public Sub New()
         InitializeComponent()
         Listar_Stock_DesdeHilo()
@@ -352,15 +348,10 @@ Public Class FrmStockList
             clsTransaccion.Begin_Transaction()
 
             If ForceUpdateList Then
-
                 If IdBodega = 0 Then
                     DTStock = clsLnStock.Get_All_Stock_DT(AP.IdBodega, pIdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                 Else
-                    If Not AdvancedMode Then
-                        DTStock = clsLnStock.Get_All_Stock_DT(IdBodega, pIdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    Else
-                        DTStock = clsLnStock.Get_All_Stock_DT_AM(IdBodega, pIdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    End If
+                    DTStock = clsLnStock.Get_All_Stock_DT(IdBodega, pIdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                 End If
 
                 DTStockForMemory = DTStock.Copy()
@@ -855,37 +846,6 @@ Public Class FrmStockList
         End Try
 
 
-    End Sub
-
-    '#GT18072025
-    Private Sub grdvStock_ColumnFilterChanged(sender As Object, e As EventArgs) Handles grdvStock.ColumnFilterChanged
-        SaveSelectedRows()
-        RestoreSelectedRows()
-    End Sub
-
-    Private Sub SaveSelectedRows()
-
-        Dim selectedRowHandles As Integer() = grdvStock.GetSelectedRows()
-
-        For Each handle As Integer In selectedRowHandles
-            If handle >= 0 Then
-                Dim key As Object = grdvStock.GetRowCellValue(handle, "IdStock") ' Cambia "ID" a tu columna clave única
-                If key IsNot Nothing Then
-                    selectedKeys.Add(key)
-                End If
-            End If
-        Next
-    End Sub
-
-    Private Sub RestoreSelectedRows()
-        grdvStock.ClearSelection()
-
-        For i As Integer = 0 To grdvStock.RowCount - 1
-            Dim key As Object = grdvStock.GetRowCellValue(i, "IdStock") ' Cambia "ID" a tu columna clave única
-            If key IsNot Nothing AndAlso selectedKeys.Contains(key) Then
-                grdvStock.SelectRow(i)
-            End If
-        Next
     End Sub
 
 End Class

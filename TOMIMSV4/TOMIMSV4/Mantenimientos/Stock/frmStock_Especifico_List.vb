@@ -23,9 +23,7 @@ Public Class frmStock_Especifico_List
     Private TieneTiempos As Boolean = False
 
     Public threadListar_Stock As New Thread(AddressOf Listar_Stock_With_DT) With {.IsBackground = True}
-
     ReadOnly CallBindProductos_To_Grid As New MethodInvoker(AddressOf BindProductos_To_Grid)
-
     Public Property ForceUpdateList As Boolean = True
 
     Public Property Termino_Carga_De_Datos As Boolean = False
@@ -33,13 +31,9 @@ Public Class frmStock_Especifico_List
     Dim DTStock As New DataTable
     Dim DTStockForMemory As New DataTable
     Public Property ProductoEspecifico As New clsBeProducto
-
     Private lPresentacion As New List(Of clsBeProducto_Presentacion)
-
     Public BuscarPoliza As Boolean = False
-
     Public IdProductoEstadoDefault As Integer = 0
-    Public Property IdPresentacion As Integer = 0
 
     '#GT27082025: bandera para mostrar talla-color
     Public Mostrar_Talla_Color As Boolean = False
@@ -305,8 +299,7 @@ Public Class frmStock_Especifico_List
                                         If Not Presentacion Is Nothing Then
                                             lPresentacion.Add(Presentacion)
                                         End If
-                                    Else
-                                        Presentacion = lPresentacion(vIdxPresentacion)
+
                                     End If
 
                                     If Not Presentacion Is Nothing Then
@@ -368,23 +361,21 @@ Public Class frmStock_Especifico_List
 
             Dim watch As Stopwatch = Stopwatch.StartNew()
 
-            Dim idBodegaFinal As Integer = If(IdBodega = 0, AP.IdBodega, IdBodega)
-
-            Dim noPoliza As String = ""
-            Dim idPropietario As Integer = pIdPropietarioBodega
-
             If chkFiltroPolizaActivo.Checked AndAlso txtNoPoliza.Text.Trim <> "" Then
-                noPoliza = txtNoPoliza.Text.Trim
-                idPropietario = 0
-            End If
 
-            DTStock = clsLnStock.Get_All_Stock_Especifico_DT(idBodegaFinal,
-                                                             IdCliente,
-                                                             TieneTiempos,
-                                                             noPoliza,
-                                                             idPropietario,
-                                                             IdProductoEstadoDefault,
-                                                             IdPresentacion)
+                If IdBodega = 0 Then
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                Else
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                End If
+
+            Else
+
+                If IdBodega = 0 Then
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                Else
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                End If
 
             End If
 
@@ -446,7 +437,6 @@ Public Class frmStock_Especifico_List
 
                     pObjStock = clsLnStock.Get_Single_By_IdStock(Dr.Item("IdStock"))
                     pObjStock.CantidadUmBas = Dr.Item("Disponible_UMBas")
-                    pObjStock.CantidadPresentacion = Dr.Item("Cantidad_Presentacion")
 
                     If Dr.Item("Aplica") = "No" AndAlso TieneTiempos Then
                         If XtraMessageBox.Show("No aplica a los tiempos del cliente. ¿Desea agregar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
@@ -734,7 +724,7 @@ Public Class frmStock_Especifico_List
 
     End Sub
 
-    Public Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
+    Private Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
 
         Try
 
@@ -1379,7 +1369,4 @@ Public Class frmStock_Especifico_List
 
     End Sub
 
-    Private Sub grdStock_Click(sender As Object, e As EventArgs) Handles grdStock.Click
-
-    End Sub
 End Class

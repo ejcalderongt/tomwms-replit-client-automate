@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
 using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
 using WMSWebAPI.Services;
 
 namespace WMSWebAPI.Controllers
@@ -220,6 +220,137 @@ namespace WMSWebAPI.Controllers
                 }
             }
         }
+
+        // POST: 
+        [HttpPost("/api/Productos/mi3/asociar_bodega")]
+        public IActionResult AsociarProductoABodega(
+            [FromBody] ProductoBodegaRequestDto request,
+            [FromServices] IConfiguration configuration)
+        {
+            if (request == null)
+                return BadRequest("El cuerpo de la petición es nulo.");
+
+            if (string.IsNullOrWhiteSpace(request.CodigoProducto))
+                return BadRequest("El código de producto es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(request.CodigoBodega))
+                return BadRequest("El código de bodega es obligatorio.");
+
+            string? connectionString = configuration.GetConnectionString("CST");
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return StatusCode(500, new { Exito = false, Mensaje = "La cadena de conexión no está configurada." });
+            }
+
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted
+            }, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            var effectiveTx = transaction;
+                            var now = DateTime.Now;                            
+
+                            // 1. Obtener producto por código
+                            var productoActual = clsLnProducto.Get_By_Codigo(
+                                request.CodigoProducto,
+                                connection,
+                                effectiveTx);
+
+                            if (productoActual is null || productoActual.IdProducto <= 0)
+                            {
+                                transaction.Rollback();
+                                return NotFound(new
+                                {
+                                    Exito = false,
+                                    Mensaje = $"No se encontró el producto con código: '{request.CodigoProducto}'."
+                                });
+                            }
+
+                            // 2. Obtener IdBodega por código
+                            int idBodega = clsLnBodega.Get_IdBodega_By_Codigo(
+                                request.CodigoBodega,
+                                connection,
+                                effectiveTx);
+
+                            if (idBodega <= 0)
+                            {
+                                transaction.Rollback();
+                                return NotFound(new
+                                {
+                                    Exito = false,
+                                    Mensaje = $"No se encontró la bodega con código: '{request.CodigoBodega}'."
+                                });
+                            }
+
+                            clsBeI_nav_config_enc? BeInavConfigEnc = new clsBeI_nav_config_enc();
+                            BeInavConfigEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(idBodega,connection,effectiveTx);
+
+                            if (BeInavConfigEnc==null)
+                                return NotFound(new
+                                {
+                                    Exito = false,
+                                    Mensaje = $"No se encontró la configuración de interface para la bodega con código: '{request.CodigoBodega}'."
+                                });
+
+                            // 3. Obtener siguiente IdProductoBodega
+                            int nextIdProductoBodega = clsLnProducto_bodega.MaxID(connection, effectiveTx) + 1;
+
+                            // 4. Crear relación producto-bodega
+                            var productoBodega = new clsBeProducto_bodega
+                            {
+                                IdProductoBodega = nextIdProductoBodega,
+                                IdProducto = productoActual.IdProducto,
+                                IdBodega = idBodega,
+                                Activo = true,
+                                Sistema = false,
+                                Fec_agr = now,
+                                Fec_mod = now,
+                                User_agr = BeInavConfigEnc.IdUsuario.ToString(),
+                                User_mod = BeInavConfigEnc.IdUsuario.ToString()
+                            };
+
+                            // 5. Insertar relación
+                            clsLnProducto_bodega.Insertar(productoBodega, connection, effectiveTx);
+
+                            transaction.Commit();
+                            scope.Complete();
+
+                            return Ok(new
+                            {
+                                Exito = true,
+                                Mensaje = "Producto asociado a la bodega correctamente.",
+                                Data = new
+                                {
+                                    productoBodega.IdProductoBodega,
+                                    productoBodega.IdProducto,
+                                    request.CodigoProducto,
+                                    productoBodega.IdBodega,
+                                    request.CodigoBodega
+                                }
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            return StatusCode(500, new
+                            {
+                                Exito = false,
+                                Mensaje = "Error al asociar el producto a la bodega → " + ex.Message
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
 
     }
 }

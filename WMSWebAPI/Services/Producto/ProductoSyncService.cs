@@ -4,11 +4,7 @@ using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
-using WMSWebAPI.Entity.Producto;
-using WMSWebAPI.Entity.Propietario;
 using WMSWebAPI.Services;
-
 public class ProductoSyncService : IProductoSyncService
 {
     private readonly IConfiguration _configuration;
@@ -116,43 +112,6 @@ public class ProductoSyncService : IProductoSyncService
             throw new Exception("Error al procesar ParametroB → " + ex.Message, ex);
         }
 
-        //try
-        //{
-        //    if (dto.Presentaciones != null)
-        //    {
-        //        var presentaciones = _mapper.Map<List<clsBeProducto_presentacion>>(dto.Presentaciones);
-        //        clsLnProducto_presentacion.InsertOrUpdate(_configuration, presentaciones, conn, tx);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    throw new Exception("Error al procesar Presentaciones → " + ex.Message, ex);
-        //}
-
-        //try
-        //{
-        //    if (dto.ProductoBodega != null)
-        //    {
-        //        var producto_bodega = _mapper.Map<List<clsBeProducto_bodega>>(dto.ProductoBodega);
-        //        clsLnProducto_bodega.InsertOrUpdate(_configuration, producto_bodega, conn, tx);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    throw new Exception("Error al procesar Productos_Bodega → " + ex.Message, ex);
-        //}
-        //try
-        //{
-        //    if (dto.ProductoEstado != null)
-        //    {
-        //        var producto_estado = _mapper.Map<List<clsBeProducto_estado>>(dto.ProductoEstado);
-        //        clsLnProducto_estado.InsertOrUpdate(_configuration, producto_estado, conn, tx);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    throw new Exception("Error al procesar Producto_Estado → " + ex.Message, ex);
-        //}
         try
         {
             if (dto.Presentaciones != null)

@@ -67,7 +67,8 @@ namespace WMSWebAPI.Dtos.Picking
         public string ProductoEstado { get; set; } = string.Empty;
         public clsBeBodega_ubicacion Ubicacion { get; set; } = new clsBeBodega_ubicacion();
         public decimal CantidadDañada { get; set; }
-        public string Tarima { get; set; } = string.Empty;
+        //public string Tarima { get; set; } = string.Empty;
+        public double Tarima { get; set; } = 0;
         public string NombreArea { get; set; } = string.Empty;
         public string NombreClasificacion { get; set; } = string.Empty;
         public string Referencia { get; set; } = string.Empty;

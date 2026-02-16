@@ -829,9 +829,6 @@ Public Class frmImprimir_Etiqueta
 #End Region
 
     Private Function Get_Lote_Archivo() As String
-        Dim rutaCarpeta As String = "C:\DTS_QuickTag_Lote"
-        Dim rutaArchivo As String = Path.Combine(rutaCarpeta, "lote.txt")
-        Dim nuevoLote As String = "000001"
 
         Get_Lote_Archivo = "0"
 
@@ -843,20 +840,20 @@ Public Class frmImprimir_Etiqueta
             If File.Exists(rutaArchivo) Then
 
                 Dim contenido As String = File.ReadAllText(rutaArchivo).Trim()
-                Dim longitudOriginal As Integer = contenido.Length
-                Dim valorNumerico As Integer
+                Dim valorLeido As Integer
 
-                If Integer.TryParse(contenido, valorNumerico) Then
-                    valorNumerico += 1
-                    nuevoLote = valorNumerico.ToString().PadLeft(longitudOriginal, "0"c)
+                If Integer.TryParse(contenido, valorLeido) Then
+                    pLote = valorLeido + 1
+                Else
+                    pLote = 0 ' En caso que el contenido no sea numérico válido
                 End If
 
             End If
 
         End If
 
-        txtLoteTxt.Text = nuevoLote
-        Return nuevoLote
+        txtLoteTxt.Text = pLote
+
     End Function
 
 End Class

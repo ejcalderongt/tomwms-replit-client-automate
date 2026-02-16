@@ -1,4 +1,3 @@
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -36,20 +35,14 @@ Public Class clsLnTrans_picking_enc
                 .IdBodegaMuelle = IIf(IsDBNull(dr.Item("IdBodegaMuelle")), 0, dr.Item("IdBodegaMuelle"))
                 .IdPrioridadPicking = IIf(IsDBNull(dr.Item("IdPrioridadPicking")), 0, dr.Item("IdPrioridadPicking"))
                 .IdTipoPicking = IIf(IsDBNull(dr.Item("IdTipoPicking")), 0, dr.Item("IdTipoPicking"))
-                .Observacion = IIf(IsDBNull(dr.Item("Observacion")), "", dr.Item("Observacion"))
 
             End With
 
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
-                                                  pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
     End Sub
@@ -87,7 +80,6 @@ Public Class clsLnTrans_picking_enc
             Ins.Add("fotografia_verificacion", "@fotografia_verificacion", DataType.Parametro)
             Ins.Add("idprioridadpicking", "@idprioridadpicking", DataType.Parametro)
             Ins.Add("IdTipoPicking", "@IdTipoPicking", DataType.Parametro)
-            Ins.Add("Observacion", "@Observacion", DataType.Parametro)
 
 
             If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then Ins.Add("idbodegamuelle", "@idbodegamuelle", DataType.Parametro)
@@ -131,7 +123,6 @@ Public Class clsLnTrans_picking_enc
             If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then cmd.Parameters.Add(New SqlParameter("@IDBODEGAMUELLE", oBeTrans_picking_enc.IdBodegaMuelle))
             cmd.Parameters.Add(New SqlParameter("@IDPRIORIDADPICKING", oBeTrans_picking_enc.IdPrioridadPicking))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOPICKING", oBeTrans_picking_enc.IdTipoPicking))
-            cmd.Parameters.Add(New SqlParameter("@OBSERVACION", oBeTrans_picking_enc.Observacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -190,7 +181,6 @@ Public Class clsLnTrans_picking_enc
             If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then Upd.Add("idbodegamuelle", "@idbodegamuelle", DataType.Parametro)
             Upd.Add("idprioridadpicking", "@idprioridadpicking", DataType.Parametro)
             Upd.Add("IdTipoPicking", "@IdTipoPicking", DataType.Parametro)
-            Upd.Add("Observacion", "@Observacion", DataType.Parametro)
             Upd.Where("IdPickingEnc = @IdPickingEnc")
 
             Dim sp As String = Upd.SQL()
@@ -232,7 +222,6 @@ Public Class clsLnTrans_picking_enc
             If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then cmd.Parameters.Add(New SqlParameter("@IDBODEGAMUELLE", oBeTrans_picking_enc.IdBodegaMuelle))
             cmd.Parameters.Add(New SqlParameter("@IDPRIORIDADPICKING", oBeTrans_picking_enc.IdPrioridadPicking))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOPICKING", oBeTrans_picking_enc.IdTipoPicking))
-            cmd.Parameters.Add(New SqlParameter("@OBSERVACION", oBeTrans_picking_enc.Observacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -351,10 +340,8 @@ Public Class clsLnTrans_picking_enc
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -388,13 +375,8 @@ Public Class clsLnTrans_picking_enc
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
-                                                  pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -429,10 +411,8 @@ Public Class clsLnTrans_picking_enc
             Return lReturnList
 
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -463,13 +443,8 @@ Public Class clsLnTrans_picking_enc
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoEnc:=pBeTrans_picking_enc.IdPedidoEnc,
-                                                  pIdPickingEnc:=pBeTrans_picking_enc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -504,19 +479,14 @@ Public Class clsLnTrans_picking_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdPedidoEnc:=pBeTrans_picking_enc.IdPedidoEnc,
-                                                  pIdPickingEnc:=pBeTrans_picking_enc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
     End Function
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 
@@ -541,10 +511,8 @@ Public Class clsLnTrans_picking_enc
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -580,7 +548,6 @@ Public Class clsLnTrans_picking_enc
             End If
 
             cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", pIdPickingEnc))
-            'cmd.Parameters.Add(New SqlParameter("@ESTADO", "Procesado"))
             cmd.Parameters.Add(New SqlParameter("@ESTADO", pEstadoPicking))
             cmd.Parameters.Add(New SqlParameter("@HORA_FIN", Now))
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", Now))

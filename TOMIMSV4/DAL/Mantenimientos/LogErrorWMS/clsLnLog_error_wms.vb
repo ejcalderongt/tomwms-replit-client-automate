@@ -1,4 +1,3 @@
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -41,58 +40,58 @@ Public Class clsLnLog_error_wms
 
         Try
 
-            'Ins.Init("log_error_wms")
-            'Ins.Add("iderror", "@iderror", DataType.Parametro)
-            'Ins.Add("idempresa", "@idempresa", DataType.Parametro)
-            'Ins.Add("idbodega", "@idbodega", DataType.Parametro)
-            'Ins.Add("fecha", "@fecha", DataType.Parametro)
-            'Ins.Add("mensajeerror", "@mensajeerror", DataType.Parametro)
-            'Ins.Add("IdPedidoEnc", "@IdPedidoEnc", DataType.Parametro)
-            'Ins.Add("IdPickingEnc", "@IdPickingEnc", DataType.Parametro)
-            'Ins.Add("IdRecepcionEnc", "@IdRecepcionEnc", DataType.Parametro)
-            'Ins.Add("IdUsuarioAgr", "@IdUsuarioAgr", DataType.Parametro)
+            Ins.Init("log_error_wms")
+            Ins.Add("iderror", "@iderror", DataType.Parametro)
+            Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+            Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+            Ins.Add("fecha", "@fecha", DataType.Parametro)
+            Ins.Add("mensajeerror", "@mensajeerror", DataType.Parametro)
+            Ins.Add("IdPedidoEnc", "@IdPedidoEnc", DataType.Parametro)
+            Ins.Add("IdPickingEnc", "@IdPickingEnc", DataType.Parametro)
+            Ins.Add("IdRecepcionEnc", "@IdRecepcionEnc", DataType.Parametro)
+            Ins.Add("IdUsuarioAgr", "@IdUsuarioAgr", DataType.Parametro)
 
-            'If Not oBeLog_error_wms.Line_No = 0 Then Ins.Add("Line_No", "@Line_No", DataType.Parametro)
-            'If Not oBeLog_error_wms.UmBas = "" Then Ins.Add("UmBas", "@UmBas", DataType.Parametro)
-            'If Not oBeLog_error_wms.Variant_Code = "" Then Ins.Add("Variant_Code", "@Variant_Code", DataType.Parametro)
-            'If Not oBeLog_error_wms.Item_No = "" Then Ins.Add("Item_No", "@Item_No", DataType.Parametro)
-            'If Not oBeLog_error_wms.Cantidad = 0 Then Ins.Add("Cantidad", "@Cantidad", DataType.Parametro)
-            'If Not oBeLog_error_wms.Referencia_Documento = "" Then Ins.Add("Referencia_Documento", "@Referencia_Documento", DataType.Parametro)
+            If Not oBeLog_error_wms.Line_No = 0 Then Ins.Add("Line_No", "@Line_No", DataType.Parametro)
+            If Not oBeLog_error_wms.UmBas = "" Then Ins.Add("UmBas", "@UmBas", DataType.Parametro)
+            If Not oBeLog_error_wms.Variant_Code = "" Then Ins.Add("Variant_Code", "@Variant_Code", DataType.Parametro)
+            If Not oBeLog_error_wms.Item_No = "" Then Ins.Add("Item_No", "@Item_No", DataType.Parametro)
+            If Not oBeLog_error_wms.Cantidad = 0 Then Ins.Add("Cantidad", "@Cantidad", DataType.Parametro)
+            If Not oBeLog_error_wms.Referencia_Documento = "" Then Ins.Add("Referencia_Documento", "@Referencia_Documento", DataType.Parametro)
 
-            'Dim sp As String = Ins.SQL()
-            'Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+            Dim sp As String = Ins.SQL()
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
-            'Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-            'If Es_Transaccion_Remota Then
-            '    cmd = New SqlCommand(sp, pConection, pTransaction)
-            'Else
-            '    lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-            '    cmd = New SqlCommand(sp, lConnection, lTransaction)
-            'End If
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection, pTransaction)
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
 
-            'cmd.Parameters.Add(New SqlParameter("@IDERROR", oBeLog_error_wms.IdError))
-            'cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeLog_error_wms.IdEmpresa))
-            'cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeLog_error_wms.IdBodega))
-            'cmd.Parameters.Add(New SqlParameter("@FECHA", oBeLog_error_wms.Fecha))
-            'cmd.Parameters.Add(New SqlParameter("@MENSAJEERROR", oBeLog_error_wms.MensajeError))
-            'cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeLog_error_wms.IdPedidoEnc))
-            'cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", oBeLog_error_wms.IdPickingEnc))
-            'cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeLog_error_wms.IdRecepcionEnc))
-            'cmd.Parameters.Add(New SqlParameter("@IDUSUARIOAGR", oBeLog_error_wms.IdUsuarioAgr))
+            cmd.Parameters.Add(New SqlParameter("@IDERROR", oBeLog_error_wms.IdError))
+            cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeLog_error_wms.IdEmpresa))
+            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeLog_error_wms.IdBodega))
+            cmd.Parameters.Add(New SqlParameter("@FECHA", oBeLog_error_wms.Fecha))
+            cmd.Parameters.Add(New SqlParameter("@MENSAJEERROR", oBeLog_error_wms.MensajeError))
+            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeLog_error_wms.IdPedidoEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", oBeLog_error_wms.IdPickingEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeLog_error_wms.IdRecepcionEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDUSUARIOAGR", oBeLog_error_wms.IdUsuarioAgr))
 
-            'If Not oBeLog_error_wms.Line_No = 0 Then cmd.Parameters.Add(New SqlParameter("@LINE_NO", oBeLog_error_wms.Line_No))
-            'If Not oBeLog_error_wms.UmBas = "" Then cmd.Parameters.Add(New SqlParameter("@UMBAS", oBeLog_error_wms.UmBas))
-            'If Not oBeLog_error_wms.Variant_Code = "" Then cmd.Parameters.Add(New SqlParameter("@VARIANT_CODE", oBeLog_error_wms.Variant_Code))
-            'If Not oBeLog_error_wms.Item_No = "" Then cmd.Parameters.Add(New SqlParameter("@ITEM_NO", oBeLog_error_wms.Item_No))
-            'If Not oBeLog_error_wms.Cantidad = 0 Then cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeLog_error_wms.Cantidad))
-            'If Not oBeLog_error_wms.Referencia_Documento = "" Then cmd.Parameters.Add(New SqlParameter("@Referencia_Documento", oBeLog_error_wms.Referencia_Documento))
+            If Not oBeLog_error_wms.Line_No = 0 Then cmd.Parameters.Add(New SqlParameter("@LINE_NO", oBeLog_error_wms.Line_No))
+            If Not oBeLog_error_wms.UmBas = "" Then cmd.Parameters.Add(New SqlParameter("@UMBAS", oBeLog_error_wms.UmBas))
+            If Not oBeLog_error_wms.Variant_Code = "" Then cmd.Parameters.Add(New SqlParameter("@VARIANT_CODE", oBeLog_error_wms.Variant_Code))
+            If Not oBeLog_error_wms.Item_No = "" Then cmd.Parameters.Add(New SqlParameter("@ITEM_NO", oBeLog_error_wms.Item_No))
+            If Not oBeLog_error_wms.Cantidad = 0 Then cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeLog_error_wms.Cantidad))
+            If Not oBeLog_error_wms.Referencia_Documento = "" Then cmd.Parameters.Add(New SqlParameter("@Referencia_Documento", oBeLog_error_wms.Referencia_Documento))
 
-            Dim rowsAffected As Integer = 1 'cmd.ExecuteNonQuery()
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-            'cmd.Dispose()
+            cmd.Dispose()
 
-            'If Not Es_Transaccion_Remota Then lTransaction.Commit()
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Return rowsAffected
 
@@ -345,80 +344,36 @@ Public Class clsLnLog_error_wms
 
     End Sub
 
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            'Const sp As String = "SELECT ISNULL(Max(IdError),0) FROM Log_error_wms "
-
-            'Using lCommand As New SqlCommand(sp, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-
-            '    Dim lReturnValue As Object = lCommand.ExecuteScalar()
-            '    If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-            '        lMax = CInt(lReturnValue)
-            '    End If
-
-            'End Using
-
-            ''Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-
-            ''    lConnection.Open()
-
-            ''    Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-
-
-            ''        lTransaction.Commit()
-
-            ''    End Using
-
-            ''    lConnection.Close()
-
-            ''End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function MaxID() As Integer
 
         Try
 
             Dim lMax As Integer = 0
 
-            'Const sp As String = "SELECT ISNULL(Max(IdError),0) FROM Log_error_wms "
+            Const sp As String = "SELECT ISNULL(Max(IdError),0) FROM Log_error_wms "
 
-            'Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
-            '    lConnection.Open()
+                lConnection.Open()
 
-            '    Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
-            '        Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-            '            Dim lReturnValue As Object = lCommand.ExecuteScalar()
-            '            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-            '                lMax = CInt(lReturnValue)
-            '            End If
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            lMax = CInt(lReturnValue)
+                        End If
 
-            '        End Using
+                    End Using
 
-            '        lTransaction.Commit()
+                    lTransaction.Commit()
 
-            '    End Using
+                End Using
 
-            '    lConnection.Close()
+                lConnection.Close()
 
-            'End Using
+            End Using
 
             Return lMax
 

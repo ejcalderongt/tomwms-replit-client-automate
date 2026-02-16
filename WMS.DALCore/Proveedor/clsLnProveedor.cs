@@ -680,7 +680,9 @@ public class clsLnProveedor
         {
             if (!string.IsNullOrEmpty(pBeProveedor.Codigo))
             {
-                BeProveedor.IdPropietario = MaxID(conn, tx) + 1;
+                BeProveedor.IdProveedor = MaxID(conn, tx) + 1;
+                BeProveedor.IdEmpresa = BeInavConfigEnc.Idempresa;
+                BeProveedor.IdPropietario = BeInavConfigEnc.IdPropietario;
                 BeProveedor.Codigo = pBeProveedor.Codigo;
                 BeProveedor.Nombre = pBeProveedor.Nombre ?? pBeProveedor.Codigo;
                 BeProveedor.Nit = pBeProveedor.Nit;
@@ -689,8 +691,7 @@ public class clsLnProveedor
                 BeProveedor.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 BeProveedor.Fec_agr = DateTime.Now;
                 BeProveedor.Fec_mod = DateTime.Now;
-                BeProveedor.Activo = pBeProveedor.Activo;
-                BeProveedor.IdPropietario = pBeProveedor.IdPropietario;
+                BeProveedor.Activo = pBeProveedor.Activo;               
                 Insertar(BeProveedor, conn, tx);
 
                 var listBeBodega = clsLnBodega.GetAll(conn, tx);
@@ -704,8 +705,8 @@ public class clsLnProveedor
                         continue;
 
                     BeProveedor_Bodega = new clsBeProveedor_bodega();
-                    BeProveedor_Bodega.IdAsignacion = BeProveedor.IdProveedor;
-                    BeProveedor_Bodega.IdProveedor = clsLnProveedor_bodega.MaxID(conn, tx) + 1;
+                    BeProveedor_Bodega.IdAsignacion = clsLnProveedor_bodega.MaxID(conn, tx) + 1; 
+                    BeProveedor_Bodega.IdProveedor = BeProveedor.IdProveedor;
                     BeProveedor_Bodega.IdBodega = BeBodega.IdBodega;
                     BeProveedor_Bodega.IdAreaOrigen = 0;
                     BeProveedor_Bodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
@@ -950,14 +951,15 @@ public class clsLnProveedor
 
                     Cargar(ref BeProveedor, lRow);
 
-                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();
-                    BeProveedorBodega.IdAsignacion = BeProveedor.IdProveedor;
+                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();                    
                     BeProveedorBodega.IdBodega = pIdBodega;
+                    BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
 
                     if (!clsLnProveedor_bodega.Get_Single_By_IdBodega_And_IdAsignacion(ref BeProveedorBodega, lConection, lTransaction))
                     {
 
-                        BeProveedorBodega.IdProveedor = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                        BeProveedorBodega.IdAsignacion = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                        BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
                         BeProveedorBodega.Proveedor = BeProveedor;
                         BeProveedorBodega.User_agr = BeConfigEnc.User_agr;
                         BeProveedorBodega.User_mod = BeConfigEnc.User_mod;

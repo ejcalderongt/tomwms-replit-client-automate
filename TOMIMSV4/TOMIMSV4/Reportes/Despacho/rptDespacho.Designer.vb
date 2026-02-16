@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Public Class rptDespacho
     Inherits DevExpress.XtraReports.UI.XtraReport
 
     'XtraReport overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Public Class rptDespacho
     'NOTE: The following procedure is required by the Designer
     'It can be modified using the Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim CustomSqlQuery1 As DevExpress.DataAccess.Sql.CustomSqlQuery = New DevExpress.DataAccess.Sql.CustomSqlQuery()
@@ -113,8 +113,6 @@ Partial Public Class rptDespacho
         Me.GrandTotalBackground3 = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageInfo = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageHeader = New DevExpress.XtraReports.UI.PageHeaderBand()
-        Me.XrLabel43 = New DevExpress.XtraReports.UI.XRLabel()
-        Me.XrLabel42 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel25 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel39 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel38 = New DevExpress.XtraReports.UI.XRLabel()
@@ -147,7 +145,6 @@ Partial Public Class rptDespacho
         Me.Empresa = New DevExpress.XtraReports.Parameters.Parameter()
         Me.ReportHeader = New DevExpress.XtraReports.UI.ReportHeaderBand()
         Me.XrLogo = New DevExpress.XtraReports.UI.XRPictureBox()
-        Me.IdPedidoEnc = New DevExpress.XtraReports.Parameters.Parameter()
         CType(Me.XrTable3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -277,7 +274,6 @@ Partial Public Class rptDespacho
         Me.XrPageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime
         Me.XrPageInfo1.SizeF = New System.Drawing.SizeF(313.0!, 23.0!)
         Me.XrPageInfo1.StyleName = "PageInfo"
-        Me.XrPageInfo1.TextFormatString = "{0:dddd, d 'de' MMMM 'de' yyyy HH:mm}"
         '
         'XrPageInfo2
         '
@@ -876,29 +872,9 @@ Partial Public Class rptDespacho
         '
         'PageHeader
         '
-        Me.PageHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel43, Me.XrLabel42, Me.XrLabel25, Me.XrLabel39, Me.XrLabel38, Me.XrLabel37, Me.XrLabel36, Me.XrLabel35, Me.XrLabel34, Me.XrLabel33, Me.XrLabel15, Me.XrLabel32, Me.XrLabel31, Me.XrLabel30, Me.XrLabel29, Me.XrLabel28, Me.XrLabel27, Me.XrLabel26, Me.XrLabel24, Me.XrLabel1, Me.XrLabel22, Me.XrLabel12, Me.XrLabel21, Me.XrLabel20, Me.XrLabel19, Me.XrLabel18, Me.XrLabel17, Me.XrLabel16, Me.XrLabel14, Me.XrLabel13, Me.XrLabel23})
+        Me.PageHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel25, Me.XrLabel39, Me.XrLabel38, Me.XrLabel37, Me.XrLabel36, Me.XrLabel35, Me.XrLabel34, Me.XrLabel33, Me.XrLabel15, Me.XrLabel32, Me.XrLabel31, Me.XrLabel30, Me.XrLabel29, Me.XrLabel28, Me.XrLabel27, Me.XrLabel26, Me.XrLabel24, Me.XrLabel1, Me.XrLabel22, Me.XrLabel12, Me.XrLabel21, Me.XrLabel20, Me.XrLabel19, Me.XrLabel18, Me.XrLabel17, Me.XrLabel16, Me.XrLabel14, Me.XrLabel13, Me.XrLabel23})
         Me.PageHeader.HeightF = 262.9169!
         Me.PageHeader.Name = "PageHeader"
-        '
-        'XrLabel43
-        '
-        Me.XrLabel43.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
-        Me.XrLabel43.LocationFloat = New DevExpress.Utils.PointFloat(11.21014!, 200.4167!)
-        Me.XrLabel43.Name = "XrLabel43"
-        Me.XrLabel43.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel43.SizeF = New System.Drawing.SizeF(85.66309!, 23.0!)
-        Me.XrLabel43.StylePriority.UseFont = False
-        Me.XrLabel43.Text = "Ref. Pedido :"
-        '
-        'XrLabel42
-        '
-        Me.XrLabel42.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?IdPedidoEnc")})
-        Me.XrLabel42.LocationFloat = New DevExpress.Utils.PointFloat(96.87322!, 200.4167!)
-        Me.XrLabel42.Multiline = True
-        Me.XrLabel42.Name = "XrLabel42"
-        Me.XrLabel42.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel42.SizeF = New System.Drawing.SizeF(178.3107!, 23.0!)
-        Me.XrLabel42.Text = "XrLabel42"
         '
         'XrLabel25
         '
@@ -1038,7 +1014,7 @@ Partial Public Class rptDespacho
         Me.XrLabel28.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel28.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel28.Text = "XrLabel28"
-        Me.XrLabel28.TextFormatString = "{0:d/MM/yyyy HH:mm}"
+        Me.XrLabel28.TextFormatString = "{0:dd/MM/yy}"
         '
         'XrLabel27
         '
@@ -1197,11 +1173,6 @@ Partial Public Class rptDespacho
         Me.XrLogo.SizeF = New System.Drawing.SizeF(197.3107!, 100.0!)
         Me.XrLogo.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage
         '
-        'IdPedidoEnc
-        '
-        Me.IdPedidoEnc.Description = "IdPedidoEnc"
-        Me.IdPedidoEnc.Name = "IdPedidoEnc"
-        '
         'rptDespacho
         '
         Me.Bands.AddRange(New DevExpress.XtraReports.UI.Band() {Me.Detail, Me.TopMargin, Me.BottomMargin, Me.GroupHeaderBand1, Me.GroupHeaderBand2, Me.GroupFooterBand1, Me.GroupFooterBand2, Me.ReportFooterBand1, Me.PageHeader, Me.ReportHeader})
@@ -1209,7 +1180,7 @@ Partial Public Class rptDespacho
         Me.DataMember = "VW_Despacho_Rep"
         Me.DataSource = Me.SqlDataSource1
         Me.Margins = New DevExpress.Drawing.DXMargins(100.0!, 100.0!, 1.041667!, 100.0!)
-        Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Empresa, Me.Bodega, Me.IdPedidoEnc})
+        Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Empresa, Me.Bodega})
         Me.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic
         Me.StyleSheet.AddRange(New DevExpress.XtraReports.UI.XRControlStyle() {Me.Title, Me.GroupCaption3, Me.GroupData3, Me.DetailCaption3, Me.DetailData3, Me.DetailData3_Odd, Me.DetailCaptionBackground3, Me.TotalCaption3, Me.TotalData3, Me.TotalBackground3, Me.GrandTotalCaption3, Me.GrandTotalData3, Me.GrandTotalBackground3, Me.PageInfo})
         Me.Version = "24.1"
@@ -1218,11 +1189,11 @@ Partial Public Class rptDespacho
         XrWatermark1.TextTransparency = 164
         Me.Watermarks.AddRange(New DevExpress.XtraPrinting.Drawing.Watermark() {XrWatermark1})
         CType(Me.XrTable3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.XrTable1,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.XrTable2,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me,System.ComponentModel.ISupportInitialize).EndInit
 
-    End Sub
+End Sub
     Friend WithEvents Detail As DevExpress.XtraReports.UI.DetailBand
     Friend WithEvents TopMargin As DevExpress.XtraReports.UI.TopMarginBand
     Friend WithEvents BottomMargin As DevExpress.XtraReports.UI.BottomMarginBand
@@ -1342,7 +1313,4 @@ Partial Public Class rptDespacho
     Friend WithEvents ReportHeader As DevExpress.XtraReports.UI.ReportHeaderBand
     Friend WithEvents XrLogo As DevExpress.XtraReports.UI.XRPictureBox
     Friend WithEvents XrLabel25 As DevExpress.XtraReports.UI.XRLabel
-    Friend WithEvents XrLabel43 As DevExpress.XtraReports.UI.XRLabel
-    Friend WithEvents XrLabel42 As DevExpress.XtraReports.UI.XRLabel
-    Friend WithEvents IdPedidoEnc As DevExpress.XtraReports.Parameters.Parameter
 End Class

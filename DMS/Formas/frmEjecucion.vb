@@ -1,136 +1,20 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Timers
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Repository
-Imports DevExpress.XtraSplashScreen
 Imports TOMWMS
-Imports TOMWMS.clsHelper
 
 
 Public Class frmEjecucion
 
-    Dim listaPropietarios As New List(Of Integer)()
-    Dim listaPropietariosBodega As New List(Of Integer)
-
-    Dim PropietariosList As New List(Of clsBePropietarios)()
-
     Dim fechasPorTabla As New Dictionary(Of String, DateTime)
     Private ListaInstancias As New List(Of clsCadenaConexion)
-    Private Horario_DMS As New clsBeI_nav_config_det()
-    Private ModoQA As Boolean = False
-    Private ProcesoEjecutandose As Boolean = False
-
-
-    Private Sub RefrescarHorarios()
-        Horario_DMS = New clsBeI_nav_config_det()
-        Dim diaHoy As Integer = CInt(DateTime.Now.DayOfWeek)
-        If diaHoy = 0 Then diaHoy = 7 ' ajusta domingo si tu tabla usa 7
-        Horario_DMS.Dia = diaHoy
-        Horario_DMS.IdNavEnt = 1 'actualmente hay solo una entidad en la tabla DMS.Exe
-        Horario_DMS = clsLnI_nav_config_det.GetSingle_By_Dia_And_Entidad(Horario_DMS)
-    End Sub
-
-    ' Control de última carga
-    Private UltimaLecturaHorarios As DateTime = DateTime.MinValue
-    Private ejecutandoProcesoDMS As Boolean = False
-    Private minutoUltimaEjecucionDMS As Integer = -1
-
-    Private Async Sub TimerElapsed(ByVal sender As Object, ByVal e As Timers.ElapsedEventArgs)
-        Try
-
-            ' Refrescar horarios desde BD cada 60 segundos
-            If (DateTime.Now - UltimaLecturaHorarios).TotalSeconds >= 60 Then
-                RefrescarHorarios()
-            End If
-
-            Dim ahora As TimeSpan = DateTime.Now.TimeOfDay
-
-            '#GT25072025: valida la ejecución de DMS
-            If Horario_DMS Is Nothing Then Exit Sub
-
-            Dim diaHoy As Integer = CInt(DateTime.Now.DayOfWeek)
-            If diaHoy = 0 Then diaHoy = 7 ' Ajustar domingo si es necesario
-
-            If diaHoy = Horario_DMS.Dia Then
-
-                If ahora >= Horario_DMS.HoraInicio.TimeOfDay AndAlso ahora <= Horario_DMS.HoraFin.TimeOfDay Then
-
-                    Dim minutosDesdeInicio As Integer = CInt((ahora - Horario_DMS.HoraInicio.TimeOfDay).TotalMinutes)
-
-
-                    '#GT29072025: bandera para saber si ejecutara el proceso o no
-                    Debug.WriteLine($"Frecuencia: {minutosDesdeInicio}")
-
-                    Dim cumpleFrecuencia As Boolean = (minutosDesdeInicio Mod Horario_DMS.Frecuencia = 0)
-
-                    If cumpleFrecuencia AndAlso Not ejecutandoProcesoDMS AndAlso minutosDesdeInicio <> minutoUltimaEjecucionDMS Then
-                        ejecutandoProcesoDMS = True
-                        minutoUltimaEjecucionDMS = minutosDesdeInicio
-
-                        Try
-
-                            If Not ProcesoEjecutandose Then
-
-                                If SplashScreenManager.Default IsNot Nothing Then
-                                    SplashScreenManager.Default.SetWaitFormDescription("Generando Exportación a portal web...")
-                                End If
-
-                                Await EjecutarSecuenciaAutomaticaAsync()
-                            End If
-
-                        Catch ex As Exception
-                            clsLnLog_error_wms.Agregar_Error(ex.Message)
-                        Finally
-                            ejecutandoProcesoDMS = False
-                        End Try
-
-                    End If
-
-                End If
-
-            End If
-
-        Catch ex As Exception
-            clsLnLog_error_wms.Agregar_Error(ex.Message)
-        End Try
-    End Sub
-
-    Private Sub setAPP()
-
-        Try
-
-            lblServerAPP.Caption += " " & clsBD.Instancia.Server
-            lblBDAPP.Caption += " " & clsBD.Instancia.NombreBD
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
 
     Private Sub frmEjecucion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
-        Dim BeLogSincronizacion As New clsBeDMS_Log_sincronizacion_nube()
+        Dim BeLogSincronizacion As New clsBeLog_sincronizacion_nube()
 
         Try
-
-            Dim args() As String = Environment.GetCommandLineArgs()
-            Dim esInvocacionAutomatica As Boolean = args.Any(Function(a) a.ToLower() = "/auto")
-            Dim ModoQA = args.Any(Function(a) a.TrimStart("-"c) = "1")
-
-            '#GT13032023: controla la hora a ejecutar
-            Dim timer As Timers.Timer = New Timers.Timer(1000)
-            AddHandler timer.Elapsed, New ElapsedEventHandler(AddressOf TimerElapsed)
-            timer.Start()
 
 
             If Not AP.Existe_Ini() Then
@@ -161,11 +45,7 @@ Public Class frmEjecucion
 
                         Actualiza_APP_Config()
 
-                        Cargar_Propietarios_Ux()
-
                         VerificarSincronizacionInicial()
-
-                        setAPP()
 
                     Else
                         Throw New Exception("No se pudo establecer una conexión hacia la instancia")
@@ -181,116 +61,6 @@ Public Class frmEjecucion
            MessageBoxIcon.Error)
         End Try
 
-    End Sub
-
-
-    Private Async Function EjecutarSecuenciaAutomaticaAsync() As Task
-        Await EjecutarProductosAsync()
-        Await EjecutarIngresosAsync()
-        Await EjecutarSalidasAsync()
-    End Function
-
-
-    Private Async Sub cmdProductos_ItemClickAsync(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdProductos.ItemClick
-        Try
-            'ProcesoEjecutandose = True
-            'HabilitarOpciones(False)
-            'Await EjecutarProductosAsync()
-            'HabilitarOpciones(True)
-            'ProcesoEjecutandose = False
-
-            Await EjecutarProductosAsync()
-
-        Catch ex As Exception
-            clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Sub
-
-    Private Async Function EjecutarProductosAsync() As Task
-        Try
-            ProcesoEjecutandose = True
-            HabilitarOpciones(False)
-            Await clsLnProductoDMS.Exportacion_ProductosAsync(lblprg, listaPropietarios)
-            HabilitarOpciones(True)
-            ProcesoEjecutandose = False
-
-        Catch ex As Exception
-            clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Function
-
-
-    Private Async Function EjecutarIngresosAsync() As Task
-        Try
-            ProcesoEjecutandose = True
-            HabilitarOpciones(False)
-            Await clsLnTrans_oc_encDMS.Exportacion_IngresosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
-            HabilitarOpciones(True)
-            ProcesoEjecutandose = False
-        Catch ex As Exception
-            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Function
-
-
-    Private Async Function EjecutarSalidasAsync() As Task
-        Try
-            ProcesoEjecutandose = True
-            HabilitarOpciones(False)
-            Await clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
-            HabilitarOpciones(True)
-            ProcesoEjecutandose = False
-        Catch ex As Exception
-            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Function
-
-    Private Async Sub cmdIngresos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdIngresos.ItemClick
-        Try
-
-            'HabilitarOpciones(False)
-            'clsLnTrans_oc_encDMS.Exportacion_IngresosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
-            'HabilitarOpciones(True)
-
-            Await EjecutarIngresosAsync()
-
-
-        Catch ex As Exception
-            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Sub
-
-    Private Async Sub cmdSalidas_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdSalidas.ItemClick
-        Try
-
-            'HabilitarOpciones(False)
-            'clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
-            'HabilitarOpciones(True)
-
-            Await EjecutarSalidasAsync()
-
-        Catch ex As Exception
-
-            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
     End Sub
 
 
@@ -432,143 +202,91 @@ Public Class frmEjecucion
     End Sub
 
     Private Sub cmdFechaBaseSync_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdFechaBaseSync.ItemClick
-        cmdFechaBaseSync.Enabled = False
         VerificarSincronizacionInicial()
-        cmdFechaBaseSync.Enabled = True
     End Sub
 
     Private Sub VerificarSincronizacionInicial()
         Dim clsTransaccion As New clsTransaccion()
-        Dim listaPropietariosSinFechaSincro As New List(Of Integer)
         Try
 
             clsTransaccion.Begin_Transaction()
 
-            Dim listaDuplasSinFecha As New List(Of Tuple(Of String, Integer))
-            'Dim fechaInicio As DateTime?
-            Dim tablas As List(Of String) = clsHelper.GetTablasSincronizables()
+            Dim fechaInicio As DateTime?
+            fechasPorTabla = New Dictionary(Of String, DateTime)
+            Dim pTablasNoSincronizadas = ObtenerFechasDeSincronizacionParaTablas(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-            '#GT16072025: PRIMERA ETAPA: Buscar nuevos propietarios sin fecha inicial de sincronización
-            If listaPropietarios Is Nothing OrElse listaPropietarios.Count = 0 Then
-                clsHelper.LogMensaje(lblprg, "No hay propietarios definidos para sincronización.", clsHelper.TipoMensaje.Advertencia)
-                HabilitarOpciones(False)
-                cmdFechaBaseSync.Enabled = True
-                'clsTransaccion.RollBack_Transaction()
-                Return
-            End If
+            If pTablasNoSincronizadas > 0 Then
+                fechaInicio = PedirFechaBaseConDevExpress("")
+                If Not fechaInicio.HasValue Then
 
-            For Each tabla In tablas
-                For Each pIdPropietario In listaPropietarios
-                    If Not clsLnDMS_Log_sincronizacion_nube.Existe_By_Tabla_and_IdPropietario(tabla, pIdPropietario, clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
-                        Dim dupla = Tuple.Create(tabla, pIdPropietario)
-                        ' Validar si ya existe en la lista
-                        If Not listaDuplasSinFecha.Any(Function(x) x.Item1 = tabla AndAlso x.Item2 = pIdPropietario) Then
-                            listaDuplasSinFecha.Add(dupla)
-                            clsHelper.LogMensaje(lblprg, $"Fecha de sincronización pendiente para propietario {pIdPropietario} y tabla {tabla}", clsHelper.TipoMensaje.Error_)
-                        End If
+                    clsHelper.LogMensaje(lblprg, "No se ingresó una fecha base. Se cancelará el proceso de sincronización.", clsHelper.TipoMensaje.Error_)
+                    HabilitarOpciones(False)
+                Else
 
-                    End If
-                Next
-            Next
 
-            '#GT16072025: SEGUNDA ETAPA: ¿hay duplas sin fecha?
-            If listaDuplasSinFecha.Count > 0 Then
+                    Dim BeLogSincronizacion As New clsBeLog_sincronizacion_nube()
+                    Dim MaxId = clsLnLog_sincronizacion_nube.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                '#GT07082025: pedir fechas en una lista y no en un ciclo.
-                ' Una nueva clase auxiliar para gestionar cada fila
-                Dim listaDuplas As New List(Of DuplaSinFecha)
+                    For Each tabla In fechasPorTabla
+                        BeLogSincronizacion = New clsBeLog_sincronizacion_nube()
+                        BeLogSincronizacion.IdLog = MaxId
+                        BeLogSincronizacion.Fecha_sincronizacion = fechaInicio.Value
+                        BeLogSincronizacion.Registros_enviados = 0
+                        BeLogSincronizacion.Estado = "Ok"
+                        BeLogSincronizacion.Mensaje_error = "Sincronización inicial"
+                        BeLogSincronizacion.Tiempo_de_envio = 0
+                        BeLogSincronizacion.User_agr = AP.UsuarioAp.IdUsuario
+                        BeLogSincronizacion.Fec_agr = Now
+                        BeLogSincronizacion.Entidad = tabla.Key
+                        clsLnLog_sincronizacion_nube.Insertar(BeLogSincronizacion, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsHelper.LogMensaje(lblprg, "Se agregó fecha base para sincronizar la tabla " & tabla.Key, clsHelper.TipoMensaje.Exito)
 
-                For Each dupla In listaDuplasSinFecha
-                    listaDuplas.Add(New DuplaSinFecha With {
-                    .Tabla = dupla.Item1,
-                    .IdPropietario = dupla.Item2,
-                    .Nombre = PropietariosList.Find(Function(x) x.IdPropietario = dupla.Item2).Nombre_comercial,
-                    .FechaSincronizacion = Nothing
-                    })
-                Next
+                        MaxId += 1
+                    Next
 
-                clsTransaccion.Commit_Transaction()
+                    clsTransaccion.Commit_Transaction()
 
-                If listaDuplas.Count > 0 Then
-                    Dim frm As New frmRegistraFechaExpotacion(listaDuplas)
+                    HabilitarOpciones(True)
 
-                    If frm.ShowDialog() <> DialogResult.OK Then
-                        clsHelper.LogMensaje(lblprg, "No se ingresaron fechas individuales. Se cancelará el proceso de sincronización.", clsHelper.TipoMensaje.Error_)
-                        HabilitarOpciones(False)
-                        Return
-                    End If
-
-                    Dim listaResultado As List(Of DuplaSinFecha) = frm.Resultado
-                    ' Aquí puedes usar listaResultado con las fechas ingresadas
                 End If
-
             Else
-                ' No hay propietarios sin fecha inicial
                 HabilitarOpciones(True)
-                cmdFechaBaseSync.Enabled = False
             End If
-
-            'clsTransaccion.Commit_Transaction()
 
         Catch ex As Exception
-            'clsTransaccion.RollBack_Transaction()
+            clsTransaccion.RollBack_Transaction()
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
-            'clsTransaccion.Close_Conection()
+            clsTransaccion.Close_Conection()
         End Try
     End Sub
+
+
+    Private Function ObtenerFechasDeSincronizacionParaTablas(ByVal pConnection As SqlConnection, ByVal pTransaction As SqlTransaction) As Integer
+
+        Dim tablas As List(Of String) = clsHelper.GetTablasSincronizables()
+        Dim contador As Integer = 0
+
+        For Each tabla In tablas
+            Dim log = clsLnLog_sincronizacion_nube.GetLastSync(tabla, pConnection, pTransaction)
+
+            If log Is Nothing Then
+                fechasPorTabla.Add(tabla, Now.Date)
+                clsHelper.LogMensaje(lblprg, "No se encontró sincronización previa para la tabla " & tabla & ".", True)
+                contador += 1
+            End If
+        Next
+
+        Return contador
+
+    End Function
+
 
     ''' <summary>
     ''' Muestra una ventana DevExpress para seleccionar fecha y hora base.
     ''' Devuelve Nothing si el usuario cancela o cierra la ventana.
     ''' </summary>
     Private Function PedirFechaBaseConDevExpress(tabla As String) As DateTime?
-
-        Dim dateEdit As New DateEdit()
-        dateEdit.EditValue = Date.Now
-        dateEdit.Dock = DockStyle.Fill
-
-        With dateEdit.Properties
-            .CalendarView = CalendarView.Classic
-            .VistaDisplayMode = DevExpress.Utils.DefaultBoolean.True
-            .Mask.EditMask = "yyyy-MM-dd HH:mm"
-            .Mask.UseMaskAsDisplayFormat = True
-            .DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-            .DisplayFormat.FormatString = "yyyy-MM-dd HH:mm"
-            .EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-            .EditFormat.FormatString = "yyyy-MM-dd HH:mm"
-            .VistaTimeProperties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-            .VistaTimeProperties.DisplayFormat.FormatString = "HH:mm"
-            .VistaTimeProperties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-            .VistaTimeProperties.EditFormat.FormatString = "HH:mm"
-        End With
-
-        Dim tablas As List(Of String) = clsHelper.GetTablasSincronizables()
-        Dim contador As Integer = 0
-
-        Dim args As New XtraInputBoxArgs()
-        args.Caption = "Fecha y hora de sincronización"
-        args.Prompt = $"Se han encontrado '{tabla}'." & vbCrLf &
-                  "Seleccione la fecha y hora base para iniciar la sincronización:"
-        args.DefaultButtonIndex = 0
-        args.Editor = dateEdit
-
-        Dim result = XtraInputBox.Show(args)
-
-        If result Is Nothing OrElse String.IsNullOrWhiteSpace(result.ToString()) Then
-            Return Nothing
-        End If
-        Next
-
-        Dim fecha As DateTime
-        If DateTime.TryParse(result.ToString(), fecha) Then
-            Return fecha
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Private Function PedirFechaBaseConDevExpress(tabla As String, propietarioId As Integer) As DateTime?
         ' Crear editor de fecha con hora
         Dim dateEdit As New DateEdit()
         dateEdit.EditValue = Date.Now
@@ -598,7 +316,7 @@ Public Class frmEjecucion
         ' Preparar ventana modal
         Dim args As New XtraInputBoxArgs()
         args.Caption = "Fecha y hora de sincronización"
-        args.Prompt = $"No se encontró sincronización previa para la tabla '{tabla}' y el propietario ID {propietarioId}." & vbCrLf &
+        args.Prompt = $"No se encontró sincronización previa para la tabla '{tabla}'." & vbCrLf &
                   "Seleccione la fecha y hora base para iniciar la sincronización:"
         args.DefaultButtonIndex = 0
         args.Editor = dateEdit
@@ -607,95 +325,18 @@ Public Class frmEjecucion
         ' Mostrar cuadro
         Dim result = XtraInputBox.Show(args)
 
-    If result Is Nothing OrElse String.IsNullOrWhiteSpace(result.ToString()) Then
-    Return Nothing
-    End If
+        If result Is Nothing OrElse String.IsNullOrWhiteSpace(result.ToString()) Then
+            Return Nothing
+        End If
 
-    ' Convertir resultado
-    Dim fecha As DateTime
-    If DateTime.TryParse(result.ToString(), fecha) Then
-    Return fecha
-    Else
-    Return Nothing
-    End If
+        ' Convertir resultado
+        Dim fecha As DateTime
+        If DateTime.TryParse(result.ToString(), fecha) Then
+            Return fecha
+        Else
+            Return Nothing
+        End If
     End Function
 
 
-    Private Sub cmdLogErrores_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdLogErrores.ItemClick
-        Try
-
-            Dim frmErrores As New frmLogEventos
-            frmErrores.ShowDialog()
-
-        Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-        Text,
-        MessageBoxButtons.OK,
-        MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub Cargar_Propietarios_Ux()
-        Try
-            If clsLnPropietarioDMS.Get_All_UX().Count < 1 Then
-                Throw New Exception("No se encontraron propietarios para el proceso de exportación.")
-            Else
-
-                PropietariosList = clsLnPropietarios.Get_Propietarios_By_UX()
-
-
-                If PropietariosList IsNot Nothing AndAlso PropietariosList.Count > 0 Then
-                    For Each p In PropietariosList
-                        listaPropietarios.Add(p.IdPropietario)
-                    Next
-                End If
-
-                'listaPropietarios = clsLnPropietarioDMS.Get_All_UX()
-
-                If listaPropietarios IsNot Nothing AndAlso listaPropietarios.Count > 0 Then
-                    listaPropietariosBodega = clsLnPropietarioDMS.Get_Propietarios_Bodega_By_IdPropietario(listaPropietarios)
-                End If
-
-            End If
-
-        Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-        Text,
-        MessageBoxButtons.OK,
-        MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub cmdParametrizacion_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdParametrizacion.ItemClick
-        Try
-
-            Dim frm As New frmConfiguracionHorarios()
-            frm.Show(Me) ' Pasas el formulario actual como dueño
-            frm.BringToFront()
-
-
-        Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-       Text,
-       MessageBoxButtons.OK,
-       MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarButtonItem1.ItemClick
-        Dim clsTransaccion As New clsTransaccion()
-
-        Try
-            clsTransaccion.Begin_Transaction()
-
-            clsLnDMS_Log_sincronizacion_fallos.Eliminar_Todo(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-            clsLnDMS_Log_sincronizacion_nube.Eliminar(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-            clsTransaccion.Commit_Transaction()
-
-        Catch ex As Exception
-            clsTransaccion.RollBack_Transaction()
-        End Try
-
-    End Sub
 End Class

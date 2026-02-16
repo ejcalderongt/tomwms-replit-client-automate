@@ -29,7 +29,7 @@ Public Class clsLnI_nav_producto
                 .BatchControl = IIf(IsDBNull(dr.Item("BatchControl")), False, dr.Item("BatchControl"))
                 .Product_Class_Code = IIf(IsDBNull(dr.Item("Product_Class_Code")), "", dr.Item("Product_Class_Code"))
                 .Product_Class_Name = IIf(IsDBNull(dr.Item("Product_Class_Name")), "", dr.Item("Product_Class_Name"))
-                .ExpirationControl = IIf(IsDBNull(dr.Item("ExpirationControl")), False, dr.Item("ExpirationControl"))
+
             End With
 
         Catch ex1 As SqlException
@@ -68,7 +68,6 @@ Public Class clsLnI_nav_producto
             If Not oBeI_nav_producto.Producto_Group_Name Is Nothing Then Ins.Add("Producto_Group_Name", "@Producto_Group_Name", DataType.Parametro)
             If Not oBeI_nav_producto.Manufacturing_Process Is Nothing Then Ins.Add("Manufacturing_Process", "@Manufacturing_Process", DataType.Parametro)
             Ins.Add("BATCHCONTROL", "@BATCHCONTROL", DataType.Parametro)
-            Ins.Add("EXPIRATIONCONTROL", "@EXPIRATIONCONTROL", DataType.Parametro)
 
             If Not oBeI_nav_producto.Product_Class_Code = "" Then Ins.Add("PRODUCT_CLASS_CODE", "@PRODUCT_CLASS_CODE", DataType.Parametro)
             If Not oBeI_nav_producto.Product_Class_Name = "" Then Ins.Add("PRODUCT_CLASS_NAME", "@PRODUCT_CLASS_NAME", DataType.Parametro)
@@ -96,7 +95,6 @@ Public Class clsLnI_nav_producto
             If Not oBeI_nav_producto.Manufacturing_Process Is Nothing Then cmd.Parameters.Add(New SqlParameter("@MANUFACTURING_PROCESS", oBeI_nav_producto.Manufacturing_Process))
             If Not oBeI_nav_producto.Product_Class_Code = "" Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_CLASS_CODE", oBeI_nav_producto.Product_Class_Code))
             If Not oBeI_nav_producto.Product_Class_Name = "" Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_CLASS_NAME", oBeI_nav_producto.Product_Class_Name))
-            cmd.Parameters.Add(New SqlParameter("@EXPIRATIONCONTROL", oBeI_nav_producto.ExpirationControl))
 
             cmd.Parameters.Add(New SqlParameter("@BATCHCONTROL", oBeI_nav_producto.BatchControl))
 
@@ -143,7 +141,6 @@ Public Class clsLnI_nav_producto
             If Not oBeI_nav_producto.Product_Class_Code = "" Then Upd.Add("PRODUCT_CLASS_CODE", "@PRODUCT_CLASS_CODE", DataType.Parametro)
             If Not oBeI_nav_producto.Product_Class_Name = "" Then Upd.Add("PRODUCT_CLASS_NAME", "@PRODUCT_CLASS_NAME", DataType.Parametro)
             Upd.Add("BATCHCONTROL", "@Manufacturing_Process", DataType.Parametro)
-            Upd.Add("EXPIRATIONCONTROL", "@EXPIRATIONCONTROL", DataType.Parametro)
             Upd.Where("No = @No")
 
             Dim sp As String = Upd.SQL()
@@ -170,7 +167,6 @@ Public Class clsLnI_nav_producto
             If Not oBeI_nav_producto.Product_Class_Code = "" Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_CLASS_CODE", oBeI_nav_producto.Product_Class_Code))
             If Not oBeI_nav_producto.Product_Class_Name = "" Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_CLASS_NAME", oBeI_nav_producto.Product_Class_Name))
             cmd.Parameters.Add(New SqlParameter("@BATCHCONTROL", oBeI_nav_producto.BatchControl))
-            cmd.Parameters.Add(New SqlParameter("@EXPIRATIONCONTROL", oBeI_nav_producto.ExpirationControl))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -302,5 +298,84 @@ Public Class clsLnI_nav_producto
         End Try
 
     End Function
+
+    ' Inserta sin recibir conexión/tx como parámetro.
+    ' - Abre y cierra su propia conexión.
+    ' - NO usa transacción explícita (cada INSERT es autocommit).
+    Public Shared Function Insertar(ByRef oBeI_nav_producto As clsBeI_nav_producto) As Integer
+        Dim cn As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Ins.Init("i_nav_producto")
+            If oBeI_nav_producto.No IsNot Nothing Then Ins.Add("no", "@no", DataType.Parametro)
+            If oBeI_nav_producto.Description IsNot Nothing Then Ins.Add("description", "@description", DataType.Parametro)
+            If oBeI_nav_producto.Description_2 IsNot Nothing Then Ins.Add("description_2", "@description_2", DataType.Parametro)
+            If oBeI_nav_producto.Inventory IsNot Nothing Then Ins.Add("inventory", "@inventory", DataType.Parametro)
+            If oBeI_nav_producto.Base_Unit_Of_Measure IsNot Nothing Then Ins.Add("base_unit_of_measure", "@base_unit_of_measure", DataType.Parametro)
+            If oBeI_nav_producto.Unit_Cost IsNot Nothing Then Ins.Add("unit_cost", "@unit_cost", DataType.Parametro)
+            If oBeI_nav_producto.Inventory_Posting_Group IsNot Nothing Then Ins.Add("inventory_posting_group", "@inventory_posting_group", DataType.Parametro)
+            If oBeI_nav_producto.Gen_Prod_Posting_Group IsNot Nothing Then Ins.Add("gen_prod_posting_group", "@gen_prod_posting_group", DataType.Parametro)
+            If oBeI_nav_producto.Search_Description IsNot Nothing Then Ins.Add("search_description", "@search_description", DataType.Parametro)
+            If oBeI_nav_producto.Item_Category_Code IsNot Nothing Then Ins.Add("item_category_code", "@item_category_code", DataType.Parametro)
+            If oBeI_nav_producto.Product_Group_Code IsNot Nothing Then Ins.Add("product_group_code", "@product_group_code", DataType.Parametro)
+            If oBeI_nav_producto.Sales_Unit IsNot Nothing Then Ins.Add("sales_unit", "@sales_unit", DataType.Parametro)
+            If oBeI_nav_producto.Item_Tracking_Code IsNot Nothing Then Ins.Add("item_tracking_code", "@item_tracking_code", DataType.Parametro)
+
+            If oBeI_nav_producto.Item_Category_Name IsNot Nothing Then Ins.Add("Item_Category_Name", "@Item_Category_Name", DataType.Parametro)
+            If oBeI_nav_producto.Gen_Prod_Posting_Name IsNot Nothing Then Ins.Add("Gen_Prod_Posting_Name", "@Gen_Prod_Posting_Name", DataType.Parametro)
+            If oBeI_nav_producto.Producto_Group_Name IsNot Nothing Then Ins.Add("Producto_Group_Name", "@Producto_Group_Name", DataType.Parametro)
+            If oBeI_nav_producto.Manufacturing_Process IsNot Nothing Then Ins.Add("Manufacturing_Process", "@Manufacturing_Process", DataType.Parametro)
+
+            Ins.Add("BATCHCONTROL", "@BATCHCONTROL", DataType.Parametro)
+
+            If Not String.IsNullOrEmpty(oBeI_nav_producto.Product_Class_Code) Then Ins.Add("PRODUCT_CLASS_CODE", "@PRODUCT_CLASS_CODE", DataType.Parametro)
+            If Not String.IsNullOrEmpty(oBeI_nav_producto.Product_Class_Name) Then Ins.Add("PRODUCT_CLASS_NAME", "@PRODUCT_CLASS_NAME", DataType.Parametro)
+
+            Dim sp As String = Ins.SQL()
+
+            Using cmd As New SqlCommand(sp, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60 ' ajusta si aplica
+
+                If oBeI_nav_producto.No IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@NO", oBeI_nav_producto.No))
+                If oBeI_nav_producto.Description IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@DESCRIPTION", oBeI_nav_producto.Description))
+                If oBeI_nav_producto.Description_2 IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@DESCRIPTION_2", oBeI_nav_producto.Description_2))
+                If oBeI_nav_producto.Inventory IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@INVENTORY", oBeI_nav_producto.Inventory))
+                If oBeI_nav_producto.Base_Unit_Of_Measure IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@BASE_UNIT_OF_MEASURE", oBeI_nav_producto.Base_Unit_Of_Measure))
+                If oBeI_nav_producto.Unit_Cost IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@UNIT_COST", oBeI_nav_producto.Unit_Cost))
+                If oBeI_nav_producto.Inventory_Posting_Group IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@INVENTORY_POSTING_GROUP", oBeI_nav_producto.Inventory_Posting_Group))
+                If oBeI_nav_producto.Gen_Prod_Posting_Group IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@GEN_PROD_POSTING_GROUP", oBeI_nav_producto.Gen_Prod_Posting_Group))
+                If oBeI_nav_producto.Search_Description IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@SEARCH_DESCRIPTION", oBeI_nav_producto.Search_Description))
+                If oBeI_nav_producto.Item_Category_Code IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@ITEM_CATEGORY_CODE", oBeI_nav_producto.Item_Category_Code))
+                If oBeI_nav_producto.Product_Group_Code IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_GROUP_CODE", oBeI_nav_producto.Product_Group_Code))
+                If oBeI_nav_producto.Sales_Unit IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@SALES_UNIT", oBeI_nav_producto.Sales_Unit))
+                If oBeI_nav_producto.Item_Tracking_Code IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@ITEM_TRACKING_CODE", oBeI_nav_producto.Item_Tracking_Code))
+
+                If oBeI_nav_producto.Item_Category_Name IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@ITEM_CATEGORY_NAME", oBeI_nav_producto.Item_Category_Name))
+                If oBeI_nav_producto.Gen_Prod_Posting_Name IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@GEN_PROD_POSTING_NAME", oBeI_nav_producto.Gen_Prod_Posting_Name))
+                If oBeI_nav_producto.Producto_Group_Name IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@PRODUCTO_GROUP_NAME", oBeI_nav_producto.Producto_Group_Name))
+                If oBeI_nav_producto.Manufacturing_Process IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@MANUFACTURING_PROCESS", oBeI_nav_producto.Manufacturing_Process))
+
+                If Not String.IsNullOrEmpty(oBeI_nav_producto.Product_Class_Code) Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_CLASS_CODE", oBeI_nav_producto.Product_Class_Code))
+                If Not String.IsNullOrEmpty(oBeI_nav_producto.Product_Class_Name) Then cmd.Parameters.Add(New SqlParameter("@PRODUCT_CLASS_NAME", oBeI_nav_producto.Product_Class_Name))
+
+                cmd.Parameters.Add(New SqlParameter("@BATCHCONTROL", oBeI_nav_producto.BatchControl))
+
+                Return cmd.ExecuteNonQuery()
+            End Using
+
+        Catch ex1 As SqlException
+            Throw
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
 
 End Class

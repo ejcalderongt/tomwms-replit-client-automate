@@ -38,7 +38,6 @@ Public Class clsLnTrans_pe_tipo
                 .Escanear_Muelle_Picking = IIf(IsDBNull(dr.Item("escanear_muelle_picking")), False, dr.Item("escanear_muelle_picking"))
                 .Transferir_Ubicacion = IIf(IsDBNull(dr.Item("transferir_ubicacion")), False, dr.Item("transferir_ubicacion"))
                 .Verificar_con_imagen = IIf(IsDBNull(dr.Item("verificar_con_imagen")), False, dr.Item("verificar_con_imagen"))
-                .Genera_Guia_Remision = IIf(IsDBNull(dr.Item("genera_guia_remision")), False, dr.Item("genera_guia_remision"))
 
             End With
 
@@ -52,7 +51,7 @@ Public Class clsLnTrans_pe_tipo
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -90,8 +89,6 @@ Public Class clsLnTrans_pe_tipo
 
             Ins.Add("mover_producto_zona_muelle", "@mover_producto_zona_muelle", DataType.Parametro)
             Ins.Add("escanear_muelle_picking", "@escanear_muelle_picking", DataType.Parametro)
-            Ins.Add("Transferir_Ubicacion", "@Transferir_Ubicacion", DataType.Parametro)
-            Ins.Add("Genera_Guia_Remision", "@Genera_Guia_Remision", DataType.Parametro)
 
 
             Dim sp As String = Ins.SQL()
@@ -138,7 +135,6 @@ Public Class clsLnTrans_pe_tipo
             cmd.Parameters.Add(New SqlParameter("@MOVER_PRODUCTO_ZONA_MUELLE", oBeTrans_pe_tipo.Mover_Producto_Zona_Muelle))
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_MUELLE_PICKING", oBeTrans_pe_tipo.Escanear_Muelle_Picking))
             cmd.Parameters.Add(New SqlParameter("@TRANSFERIR_UBICACION", oBeTrans_pe_tipo.Transferir_Ubicacion))
-            cmd.Parameters.Add(New SqlParameter("@GENERA_GUIA_REMISION", oBeTrans_pe_tipo.Genera_Guia_Remision))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -201,7 +197,6 @@ Public Class clsLnTrans_pe_tipo
             Upd.Add("escanear_muelle_picking", "@escanear_muelle_picking", DataType.Parametro)
 
             Upd.Add("transferir_ubicacion", "@transferir_ubicacion", DataType.Parametro)
-            Upd.Add("genera_guia_remision", "@Genera_Guia_Remision", DataType.Parametro)
 
             Upd.Where("IdTipoPedido = @IdTipoPedido")
 
@@ -249,7 +244,6 @@ Public Class clsLnTrans_pe_tipo
             cmd.Parameters.Add(New SqlParameter("@MOVER_PRODUCTO_ZONA_MUELLE", oBeTrans_pe_tipo.Mover_Producto_Zona_Muelle))
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_MUELLE_PICKING", oBeTrans_pe_tipo.Escanear_Muelle_Picking))
             cmd.Parameters.Add(New SqlParameter("@TRANSFERIR_UBICACION", oBeTrans_pe_tipo.Transferir_Ubicacion))
-            cmd.Parameters.Add(New SqlParameter("@GENERA_GUIA_REMISION", oBeTrans_pe_tipo.Genera_Guia_Remision))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -381,7 +375,7 @@ Public Class clsLnTrans_pe_tipo
 
         Try
 
-            Const sp As String = "SELECT * FROM Trans_pe_tipo" &
+            Const sp As String = "SELECT * FROM Trans_pe_tipo" & _
             " Where(IdTipoPedido = @IdTipoPedido)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -487,7 +481,7 @@ Public Class clsLnTrans_pe_tipo
 
     End Function
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 

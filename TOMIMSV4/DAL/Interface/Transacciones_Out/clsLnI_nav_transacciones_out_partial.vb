@@ -1,5 +1,3 @@
-Imports System
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports TOMWMS.clsDataContractDI
@@ -420,8 +418,8 @@ Partial Public Class clsLnI_nav_transacciones_out
                         Dim Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction)
                         Dim Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction)
 
-                        BeInavTransaccionesOUT.Talla = Talla?.Nombre
-                        BeInavTransaccionesOUT.Color = Color?.Nombre
+                        BeInavTransaccionesOUT.Talla = Talla?.Codigo
+                        BeInavTransaccionesOUT.Color = Color?.Codigo
                     End If
                 End If
 
@@ -516,17 +514,6 @@ Partial Public Class clsLnI_nav_transacciones_out
                     If BeConfigEnc.Interface_SAP Then
                         '#EJC20250609: Validar si no afecta esta condición en la cumbre.
                         vEnviado = BePedidoEnc.Enviado_A_ERP
-
-                        '#EJC20251010: Si ya tiene no_picking_erp = transferencia_sap (para Killios), entonces actualizo el no_picking_erp vacío.
-                        'para que se pueda enviar nuevamente por la interface.
-                        Dim vNoPickingErp As String = clsLnTrans_pe_enc.Get_No_Picking_ERP_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
-                        If Not vNoPickingErp = "" Then
-                            BePedidoEnc.No_Picking_ERP = ""
-                            pBeDespachoEnc.No_pase = 0
-                            clsLnTrans_pe_enc.Actualizar_No_Picking_ERP(BePedidoEnc, lConnection, lTransaction)
-                            clsLnTrans_despacho_enc.Actualizar_No_Pase(pBeDespachoEnc, lConnection, lTransaction)
-                        End If
-
                     End If
 
                     For Each BeDespachoDet As clsBeTrans_despacho_det In pBeDespachoEnc.ListaDetalle.Where(Function(x) (x.IdPedidoEnc = BePedidoEnc.IdPedidoEnc AndAlso
@@ -1080,7 +1067,6 @@ Partial Public Class clsLnI_nav_transacciones_out
             For Each dr As DataRow In dt.Rows
                 vBeI_nav_transacciones_out = New clsBeI_nav_transacciones_out
                 Cargar(vBeI_nav_transacciones_out, dr)
-                vBeI_nav_transacciones_out.Codigo_Bodega_Origen = clsLnBodega.Get_Codigo_By_IdBodega(vBeI_nav_transacciones_out.Idbodega, lConnection, lTransaction)
                 lReturnList.Add(vBeI_nav_transacciones_out)
             Next
 
@@ -2745,9 +2731,11 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                         clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
 
-                        Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
-                                                                                         lConnection,
-                                                                                         lTransaction)
+                        Dim BeBodega As New clsBeBodega
+                        BeBodega.IdBodega = AjEnc.IdBodega
+                        clsLnBodega.GetSingle(BeBodega, lConnection, lTransaction)
+
+                        Dim vCodigoBodega As String = BeBodega.Codigo
                         Dim vCodigoBodegaERP As String = ""
 
                         For Each AjDet In lVistaAjustesPendientesEnvio
@@ -3471,12 +3459,6 @@ Partial Public Class clsLnI_nav_transacciones_out
 
     End Function
 
-    ''' <summary>
-    ''' #EJC202309261339: Se utiliza en la interface SAP La Cumbre, para enviar entrega de mercancía a orden de compra.
-    ''' </summary>
-    ''' <param name="lConnection"></param>
-    ''' <param name="lTransaction"></param>
-    ''' <returns></returns>
     Public Shared Function Get_Lotes_Ingreso_Pendientes_Envio(ByVal lConnection As SqlConnection,
                                                               ByVal lTransaction As SqlTransaction,
                                                               ByVal pIdBodega As Integer) As List(Of clsBeI_nav_transacciones_out)
@@ -4116,7 +4098,6 @@ Partial Public Class clsLnI_nav_transacciones_out
 
     '#CKFK20241212 Obtener ajustes por inventario cíclico
     Public Shared Function Get_Ajustes_Auditados_Pendientes_Envio_MI3_By_Inventario(ByRef pResult As String,
-                                                                                    ByRef lblprg As RichTextBox,
                                                                                     ByRef lConnection As SqlConnection,
                                                                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeAjustesMI3)
 
@@ -4455,41 +4436,6 @@ Partial Public Class clsLnI_nav_transacciones_out
             Next
 
             Return lReturnList
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Get_Cantidad_Despachada(ByVal pIdDespachoEnc As Integer,
-                                                   ByVal pConnection As SqlConnection,
-                                                   ByVal pTransaction As SqlTransaction) As Double
-
-
-        Try
-
-            Dim lCantidadDespachada As Double = 0
-
-            Const sp As String = "SELECT ISNULL(SUM(cantidad),0) 
-                                  FROM I_nav_transacciones_out 
-                                  WHERE IdDespachoEnc = @IdDespachoEnc  "
-
-            Using lCommand As New SqlCommand(sp, pConnection)
-
-                lCommand.CommandType = CommandType.Text
-                lCommand.Transaction = pTransaction
-                lCommand.Parameters.AddWithValue("@IdDespachoEnc", pIdDespachoEnc)
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lCantidadDespachada = CDbl(lReturnValue)
-                End If
-
-            End Using
-
-            Return lCantidadDespachada
 
         Catch ex As Exception
             Throw ex

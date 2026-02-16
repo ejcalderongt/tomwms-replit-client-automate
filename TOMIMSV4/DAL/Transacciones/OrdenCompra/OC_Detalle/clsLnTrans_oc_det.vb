@@ -77,6 +77,7 @@ Public Class clsLnTrans_oc_det
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
         Dim cmd As New SqlCommand
+        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Insertar = 0
 
@@ -141,8 +142,6 @@ Public Class clsLnTrans_oc_det
 
             Dim sp As String = Ins.SQL()
 
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
             cmd.CommandType = CommandType.Text
 
             If Es_Transaccion_Remota Then
@@ -206,6 +205,8 @@ Public Class clsLnTrans_oc_det
             If Not oBeTrans_oc_det.IdEmbarcador = 0 Then cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
             If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det.IdProductoTallaColor))
 
+            Debug.Print(oBeTrans_oc_det.Codigo_Producto)
+
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
@@ -216,9 +217,11 @@ Public Class clsLnTrans_oc_det
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
+            If Not Es_Transaccion_Remota Then
+                If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then lConnection.Dispose()
+            End If
             cmd.Dispose()
         End Try
 

@@ -661,7 +661,6 @@ Public Class frmListaStockControlCalidad
         Try
 
             pListStockMov.Clear()
-            pListMovimiento.Clear()
 
             '#GT27120223: llenar la lista con las filas seleccionadas del grid, para luego cargar Estados
             '#GT27122023: mostrar estados de un único propietario.
@@ -801,6 +800,17 @@ Public Class frmListaStockControlCalidad
                         mov.Usuario_agr = AP.IdRol
                         mov.Cantidad_hist = Stock.CantidadUmBas
                         mov.Peso_hist = Stock.Peso
+                        mov.IdProductoTallaColor = pObjStock.IdProductoTallaColor
+
+                        If pObjStock.IdProductoTallaColor <> 0 Then
+                            Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                            BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(pObjStock.IdProductoTallaColor)
+                            mov.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                            mov.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                        Else
+                            mov.Talla = ""
+                            mov.Color = ""
+                        End If
 
                         If Stock.IdPresentacion <> 0 Then
 
@@ -811,8 +821,8 @@ Public Class frmListaStockControlCalidad
                                 If BePresentacion.Factor = 0 Then
                                     Throw New Exception("ERR20220202_1458: El factor de la presentación es 0. esto crearía un movimiento no válido para el sistema, valide el factor de la presentación. Identificador de presentación: " & mov.IdPresentacion)
                                 Else
-                                    mov.Cantidad = Math.Round(mov.Cantidad / BePresentacion.Factor, 6)
-                                    mov.Cantidad_hist = Math.Round(mov.Cantidad_hist / BePresentacion.Factor, 6)
+                                    mov.Cantidad = Math.Round(mov.Cantidad * BePresentacion.Factor, 6)
+                                    mov.Cantidad_hist = Math.Round(mov.Cantidad_hist * BePresentacion.Factor, 6)
                                 End If
                             Else
                                 Throw New Exception("ERR20220202_1458: No se encontró el objeto de presentación para el identificador: " & mov.IdPresentacion)
@@ -1008,29 +1018,46 @@ Public Class frmListaStockControlCalidad
                 Dim idBodega As Integer = (From row In DT.AsEnumerable()
                                            Select row.Field(Of Integer)("IdBodega")).FirstOrDefault()
 
-                Dim vNombreBodega As String = clsLnBodega.Get_Nombre_Bodega_By_IdBodega(idBodega)
-                Dim IdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(idBodega)
-                Dim vNombreEmpresa As String = clsLnEmpresa.Get_Nombre_Empresa_By_IdEmpresa(IdEmpresa)
+                Dim beBodega As New clsBeBodega() With {.IdBodega = idBodega}
+                clsLnBodega.GetSingle(beBodega)
 
-                Rep.ShowPreview()
-            Else
-                Dim Rep As New rptControlCalidadCambioEstado
-                Rep.DataSource = DT
-                Rep.DataMember = "Result"
-                Rep.Parameters("Empresa").Value = vNombreEmpresa
-                Rep.Parameters("Empresa").Visible = False
-                Rep.Parameters("Bodega").Value = vNombreBodega
-                Rep.Parameters("Bodega").Visible = False
-                Rep.RequestParameters = False
+                Dim vNombreEmpresa As String = clsLnEmpresa.Get_Nombre_Empresa_By_IdEmpresa(beBodega.IdEmpresa)
 
-                If clsLnEmpresa.GetImagen(IdEmpresa) Is Nothing Then
-                    Rep.XrLogo.Image = Nothing
+                If beBodega.Control_Talla_Color Then
+                    Dim Rep As New rptControlCalidadCambioEstadoMampa
+                    Rep.DataSource = DT
+                    Rep.DataMember = "Result"
+                    Rep.Parameters("Empresa").Value = vNombreEmpresa
+                    Rep.Parameters("Empresa").Visible = False
+                    Rep.Parameters("Bodega").Value = beBodega.Nombre
+                    Rep.Parameters("Bodega").Visible = False
+                    Rep.RequestParameters = False
+
+                    If clsLnEmpresa.GetImagen(beBodega.IdEmpresa) Is Nothing Then
+                        Rep.XrLogo.Image = Nothing
+                    Else
+                        Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(beBodega.IdEmpresa))
+                    End If
+
+                    Rep.ShowPreview()
                 Else
-                    Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(IdEmpresa))
-                End If
+                    Dim Rep As New rptControlCalidadCambioEstado
+                    Rep.DataSource = DT
+                    Rep.DataMember = "Result"
+                    Rep.Parameters("Empresa").Value = vNombreEmpresa
+                    Rep.Parameters("Empresa").Visible = False
+                    Rep.Parameters("Bodega").Value = beBodega.Nombre
+                    Rep.Parameters("Bodega").Visible = False
+                    Rep.RequestParameters = False
 
-                Rep.ShowPreview()
-            End If
+                    If clsLnEmpresa.GetImagen(beBodega.IdEmpresa) Is Nothing Then
+                        Rep.XrLogo.Image = Nothing
+                    Else
+                        Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(beBodega.IdEmpresa))
+                    End If
+
+                    Rep.ShowPreview()
+                End If
 
             End If
 

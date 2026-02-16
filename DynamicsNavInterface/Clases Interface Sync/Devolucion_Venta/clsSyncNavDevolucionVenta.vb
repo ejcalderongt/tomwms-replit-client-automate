@@ -162,7 +162,6 @@ Public Class clsSyncNavDevolucionVenta : Inherits clsInterfaceBase
                     Try
                         '#EJC20180503: Es un documento de compra de proveedor
                         BeI_nav_PedidoCompra.Is_Internal_Transfer = False
-                        BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Devolucion_Venta
 
                         'Insertar encabezado
                         clsLnI_nav_ped_compra_enc.Insertar(BeI_nav_PedidoCompra, lConnection, lTransaction)

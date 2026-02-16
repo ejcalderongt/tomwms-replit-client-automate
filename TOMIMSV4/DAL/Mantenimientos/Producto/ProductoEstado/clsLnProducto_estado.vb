@@ -27,7 +27,6 @@ Public Class clsLnProducto_estado
                 .Codigo_Bodega_ERP = IIf(IsDBNull(dr.Item("Codigo_Bodega_ERP")), "", dr.Item("Codigo_Bodega_ERP"))
                 .Dias_Vencimiento_Clasificacion = IIf(IsDBNull(dr.Item("Dias_Vencimiento_Clasificacion")), 0, dr.Item("Dias_Vencimiento_Clasificacion"))
                 .Tolerancia_Dias_Vencimiento = IIf(IsDBNull(dr.Item("Tolerancia_Dias_Vencimiento")), 0, dr.Item("Tolerancia_Dias_Vencimiento"))
-                .Reservar_En_UmBas = IIf(IsDBNull(dr.Item("Reservar_En_UmBas")), False, dr.Item("Reservar_En_UmBas"))
             End With
 
         Catch ex1 As SqlException
@@ -63,7 +62,6 @@ Public Class clsLnProducto_estado
             Ins.Add("codigo_bodega_erp", "@codigo_bodega_erp", DataType.Parametro)
             Ins.Add("dias_vencimiento_clasificacion", "@dias_vencimiento_clasificacion", DataType.Parametro)
             Ins.Add("tolerancia_dias_vencimiento", "@tolerancia_dias_vencimiento", DataType.Parametro)
-            Ins.Add("reservar_en_umbas", "@reservar_en_umbas", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -91,7 +89,7 @@ Public Class clsLnProducto_estado
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BODEGA_ERP", oBeProducto_estado.Codigo_Bodega_ERP))
             cmd.Parameters.Add(New SqlParameter("@DIAS_VENCIMIENTO_CLASIFICACION", oBeProducto_estado.Dias_Vencimiento_Clasificacion))
             cmd.Parameters.Add(New SqlParameter("@TOLERANCIA_DIAS_VENCIMIENTO", oBeProducto_estado.Tolerancia_Dias_Vencimiento))
-            cmd.Parameters.Add(New SqlParameter("@RESERVAR_EN_UMBAS", oBeProducto_estado.Reservar_En_UmBas))
+
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
@@ -135,7 +133,6 @@ Public Class clsLnProducto_estado
             Upd.Add("codigo_bodega_erp", "@codigo_bodega_erp", DataType.Parametro)
             Upd.Add("dias_vencimiento_clasificacion", "@dias_vencimiento_clasificacion", DataType.Parametro)
             Upd.Add("tolerancia_dias_vencimiento", "@tolerancia_dias_vencimiento", DataType.Parametro)
-            Upd.Add("reservar_en_umbas", "@reservar_en_umbas", DataType.Parametro)
             Upd.Where("IdEstado = @IdEstado")
 
             Dim sp As String = Upd.SQL()
@@ -165,7 +162,6 @@ Public Class clsLnProducto_estado
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BODEGA_ERP", oBeProducto_estado.Codigo_Bodega_ERP))
             cmd.Parameters.Add(New SqlParameter("@DIAS_VENCIMIENTO_CLASIFICACION", oBeProducto_estado.Dias_Vencimiento_Clasificacion))
             cmd.Parameters.Add(New SqlParameter("@TOLERANCIA_DIAS_VENCIMIENTO", oBeProducto_estado.Tolerancia_Dias_Vencimiento))
-            cmd.Parameters.Add(New SqlParameter("@RESERVAR_EN_UMBAS", oBeProducto_estado.Reservar_En_UmBas))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

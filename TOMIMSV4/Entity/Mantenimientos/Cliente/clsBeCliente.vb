@@ -30,7 +30,6 @@ Public Class clsBeCliente
     Public Property IdBodegaAreaSAP As Integer = 0
     Public Property Es_Proveedor As Boolean = False
     Public Property Codigo_Empresa_ERP As String = ""
-    Public Property IdProductoEstadoDefecto As Integer = 0
 
     Sub New()
     End Sub

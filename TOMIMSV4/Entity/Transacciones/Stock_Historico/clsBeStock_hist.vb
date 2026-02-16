@@ -56,23 +56,23 @@ Public Class clsBeStock_hist
         Me.IdPedidoEnc = IdPedidoEnc
         Me.IdPickingEnc = IdPickingEnc
         Me.IdDespachoEnc = IdDespachoEnc
-        Me.Lote = lote
-        Me.Lic_plate = lic_plate
-        Me.Serial = serial
-        Me.Cantidad = cantidad
-        Me.Fecha_ingreso = fecha_ingreso
-        Me.Fecha_vence = fecha_vence
-        Me.Uds_lic_plate = uds_lic_plate
-        Me.No_bulto = no_bulto
-        Me.Fecha_manufactura = fecha_manufactura
-        Me.Añada = añada
-        Me.User_agr = user_agr
-        Me.Fec_agr = fec_agr
-        Me.User_mod = user_mod
-        Me.Fec_mod = fec_mod
-        Me.Activo = activo
-        Me.Peso = peso
-        Me.Temperatura = temperatura
+        Me.Lote = Lote
+        Me.Lic_plate = Lic_plate
+        Me.Serial = Serial
+        Me.Cantidad = Cantidad
+        Me.Fecha_ingreso = Fecha_ingreso
+        Me.Fecha_vence = Fecha_vence
+        Me.Uds_lic_plate = Uds_lic_plate
+        Me.No_bulto = No_bulto
+        Me.Fecha_manufactura = Fecha_manufactura
+        Me.Añada = Añada
+        Me.User_agr = User_agr
+        Me.Fec_agr = Fec_agr
+        Me.User_mod = User_mod
+        Me.Fec_mod = Fec_mod
+        Me.Activo = Activo
+        Me.Peso = Peso
+        Me.Temperatura = Temperatura
     End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone

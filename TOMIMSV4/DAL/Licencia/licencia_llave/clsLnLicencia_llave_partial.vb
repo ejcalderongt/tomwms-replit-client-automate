@@ -41,7 +41,7 @@ Partial Public Class clsLnLicencia_llave
         Dim vParsingClaveDesencriptada() As String
         Dim vClaveDesencriptada As String
         Dim vFechaVence As Date
-        Dim vNoLicenciasBOF, vNoLicenciasHH, vNoLicenciasUx, yy, mm, dd As Integer
+        Dim vNoLicenciasBOF, vNoLicenciasHH, yy, mm, dd As Integer
 
         Try
 
@@ -50,35 +50,25 @@ Partial Public Class clsLnLicencia_llave
             If vClaveDesencriptada.Length < 10 Then
                 '#EJC20171108_REF02_0605PM: Mensaje explicito en error de desencripción < 10 
                 Throw New Exception("El valor obtenido de la licencia no es válido")
-            ElseIf vClaveDesencriptada.StartsWith("SERVLIC") Then 'Es una licencia de server
+            ElseIf vClaveDesencriptada.StartsWith("SERVLIC") 'Es una licencia de server
 
                 Dim vLlave As String = vClaveDesencriptada.Remove(0, 7) 'Remover identificador lic: SERVLIC
                 Dim vMacServer As String = mid(vLlave, 1, vLlave.IndexOf("#")) 'Remover identificador lic: SERVLIC
 
                 vLlave = vLlave.Remove(0, vMacServer.Length + 1) 'Remover MaccAdrr + indicador "#"
 
-                '#GT16092025: si la cadena original tiene 6 valores, significa que es servidor legacy, que aun no maneja licencias UX
-                'Se añade el valor 0 como licencia UX
-
                 vParsingClaveDesencriptada = vLlave.Split(",")
-                If vParsingClaveDesencriptada.Length = 6 Then
-                    Dim lista As List(Of String) = vParsingClaveDesencriptada.ToList()
-                    lista.Insert(3, 0)
-                    vParsingClaveDesencriptada = lista.ToArray()
-                End If
 
                 vNoLicenciasBOF = vParsingClaveDesencriptada(1)
                 vNoLicenciasHH = vParsingClaveDesencriptada(2)
-                vNoLicenciasUx = vParsingClaveDesencriptada(3) '#GT09092025: licencias para propietarios en portal web, se corre un valor en el index para los demas campos
-                yy = vParsingClaveDesencriptada(4) + 2000
-                mm = vParsingClaveDesencriptada(5)
-                dd = vParsingClaveDesencriptada(6)
+                yy = vParsingClaveDesencriptada(3) + 2000
+                mm = vParsingClaveDesencriptada(4)
+                dd = vParsingClaveDesencriptada(5)
 
                 vFechaVence = New DateTime(yy, mm, dd)
 
                 pLicencia.CantBackOffice = vNoLicenciasBOF
                 pLicencia.CantHandHeld = vNoLicenciasHH
-                pLicencia.CantUx = vNoLicenciasUx
                 pLicencia.MacServer = vMacServer
                 pLicencia.Vence = vFechaVence
 
@@ -88,16 +78,14 @@ Partial Public Class clsLnLicencia_llave
 
                 vNoLicenciasBOF = vParsingClaveDesencriptada(0)
                 vNoLicenciasHH = vParsingClaveDesencriptada(1)
-                vNoLicenciasUx = vParsingClaveDesencriptada(2) '#GT09092025: licencias para propietarios en portal web, se corre un valor en el index para los demas campos
-                yy = vParsingClaveDesencriptada(3) + 2000
-                mm = vParsingClaveDesencriptada(4)
-                dd = vParsingClaveDesencriptada(5)
+                yy = vParsingClaveDesencriptada(2) + 2000
+                mm = vParsingClaveDesencriptada(3)
+                dd = vParsingClaveDesencriptada(4)
 
                 vFechaVence = New DateTime(yy, mm, dd)
 
                 pLicencia.CantBackOffice = vNoLicenciasBOF
                 pLicencia.CantHandHeld = vNoLicenciasHH
-                pLicencia.CantUx = vNoLicenciasUx
                 pLicencia.Vence = vFechaVence
             End If
 

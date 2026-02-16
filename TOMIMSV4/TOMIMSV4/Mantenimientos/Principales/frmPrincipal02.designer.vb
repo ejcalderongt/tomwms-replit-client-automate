@@ -23,16 +23,16 @@ Partial Class frmPrincipal02
         Dim lblFechaInicioTareas As System.Windows.Forms.Label
         Dim lblFechaFinTareas As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPrincipal02))
-        Dim TimeRuler8 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
-        Dim TimeRuler9 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
         Dim TimeRuler1 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
         Dim TimeRuler2 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
-        Dim ArcScaleRange4 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
-        Dim ArcScaleRange5 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
-        Dim ArcScaleRange6 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
         Dim TimeRuler3 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
         Dim TimeRuler4 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
-        Dim TimeRuler10 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
+        Dim ArcScaleRange1 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim ArcScaleRange2 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim ArcScaleRange3 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim TimeRuler5 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
+        Dim TimeRuler6 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
+        Dim TimeRuler7 As DevExpress.XtraScheduler.TimeRuler = New DevExpress.XtraScheduler.TimeRuler()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -229,10 +229,10 @@ Partial Class frmPrincipal02
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(lblFechaInicioTareas, DevExpress.Utils.DefaultBoolean.[Default])
         lblFechaInicioTareas.AutoSize = True
-        lblFechaInicioTareas.Location = New System.Drawing.Point(94, 20)
-        lblFechaInicioTareas.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        lblFechaInicioTareas.Location = New System.Drawing.Point(110, 25)
+        lblFechaInicioTareas.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         lblFechaInicioTareas.Name = "lblFechaInicioTareas"
-        lblFechaInicioTareas.Size = New System.Drawing.Size(68, 13)
+        lblFechaInicioTareas.Size = New System.Drawing.Size(80, 16)
         lblFechaInicioTareas.TabIndex = 8
         lblFechaInicioTareas.Text = "Fecha Inicio:"
         '
@@ -240,25 +240,25 @@ Partial Class frmPrincipal02
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(lblFechaFinTareas, DevExpress.Utils.DefaultBoolean.[Default])
         lblFechaFinTareas.AutoSize = True
-        lblFechaFinTareas.Location = New System.Drawing.Point(421, 20)
-        lblFechaFinTareas.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        lblFechaFinTareas.Location = New System.Drawing.Point(491, 25)
+        lblFechaFinTareas.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         lblFechaFinTareas.Name = "lblFechaFinTareas"
-        lblFechaFinTareas.Size = New System.Drawing.Size(57, 13)
+        lblFechaFinTareas.Size = New System.Drawing.Size(67, 16)
         lblFechaFinTareas.TabIndex = 10
         lblFechaFinTareas.Text = "Fecha Fin:"
         '
         'RibbonControl
         '
-        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(39, 37, 39, 37)
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(45, 46, 45, 46)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.BarButtonItem1, Me.mnuActualizarFromMenu, Me.mnuPosponerTodo, Me.mnuPosponerSeleccionados, Me.mnuEnviarTarea, Me.lblprg, Me.BarButtonGroup1, Me.mnuDashBoard, Me.BarSubItem1, Me.mnuReabastecimiento, Me.mnuCalcularIndicesRotacion, Me.mnuExcluirArribaDelMinimo, Me.mnuExcluirArribaDeMaximo, Me.mnuExcluirSinExistencia, Me.mnuExcluirStockInferior, Me.mnuTimerMonitor, Me.chkOcultarTareasPendientesReabasto, Me.chkExcluirUbicacionDestinoLlena, Me.mnuOcultarLogReabasto})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.RibbonControl.MaxItemId = 24
         Me.RibbonControl.Name = "RibbonControl"
-        Me.RibbonControl.OptionsMenuMinWidth = 441
+        Me.RibbonControl.OptionsMenuMinWidth = 514
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1332, 158)
+        Me.RibbonControl.Size = New System.Drawing.Size(1739, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
@@ -471,11 +471,11 @@ Partial Class frmPrincipal02
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblprg)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 641)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 788)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1332, 24)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1739, 30)
         Me.RibbonStatusBar.Visible = False
         '
         'DgridTareas
@@ -483,12 +483,12 @@ Partial Class frmPrincipal02
         Me.DgridTareas.Cursor = System.Windows.Forms.Cursors.Default
         Me.DgridTareas.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DgridTareas.EmbeddedNavigator.Appearance.Options.UseBackColor = True
-        Me.DgridTareas.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.DgridTareas.Location = New System.Drawing.Point(0, 53)
+        Me.DgridTareas.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.DgridTareas.Location = New System.Drawing.Point(0, 65)
         Me.DgridTareas.MainView = Me.GridView1
-        Me.DgridTareas.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.DgridTareas.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.DgridTareas.Name = "DgridTareas"
-        Me.DgridTareas.Size = New System.Drawing.Size(1332, 397)
+        Me.DgridTareas.Size = New System.Drawing.Size(1739, 489)
         Me.DgridTareas.TabIndex = 0
         Me.DgridTareas.ToolTipController = Me.ToolTipController1
         Me.DgridTareas.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
@@ -499,17 +499,17 @@ Partial Class frmPrincipal02
         Me.GridView1.Appearance.HeaderPanel.Options.UseFont = True
         Me.GridView1.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GridView1.Appearance.Row.Options.UseFont = True
-        Me.GridView1.DetailHeight = 554
+        Me.GridView1.DetailHeight = 682
         Me.GridView1.GridControl = Me.DgridTareas
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.Editable = False
-        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 857
+        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 1000
         Me.GridView1.OptionsFilter.FilterEditorUseMenuForOperandsAndOperators = True
         Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
         Me.GridView1.OptionsView.ShowFilterPanelMode = DevExpress.XtraGrid.Views.Base.ShowFilterPanelMode.ShowAlways
         Me.GridView1.OptionsView.ShowFooter = True
-        Me.GridView1.RowHeight = 50
+        Me.GridView1.RowHeight = 62
         '
         'ToolTipController1
         '
@@ -522,8 +522,8 @@ Partial Class frmPrincipal02
         '
         Me.SchedulerM.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SchedulerM.GroupType = DevExpress.XtraScheduler.SchedulerGroupType.Resource
-        Me.SchedulerM.Location = New System.Drawing.Point(2, 42)
-        Me.SchedulerM.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.SchedulerM.Location = New System.Drawing.Point(2, 80)
+        Me.SchedulerM.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.SchedulerM.MenuManager = Me.RibbonControl
         Me.SchedulerM.Name = "SchedulerM"
         Me.SchedulerM.OptionsRangeControl.RangeMaximum = New Date(2021, 10, 1, 0, 0, 0, 0)
@@ -532,14 +532,14 @@ Partial Class frmPrincipal02
         Me.SchedulerM.OptionsView.ResourceHeaders.ImageAlign = DevExpress.XtraScheduler.HeaderImageAlign.Top
         Me.SchedulerM.OptionsView.ResourceHeaders.ImageSize = New System.Drawing.Size(150, 50)
         Me.SchedulerM.OptionsView.ResourceHeaders.ImageSizeMode = DevExpress.XtraScheduler.HeaderImageSizeMode.ZoomImage
-        Me.SchedulerM.Size = New System.Drawing.Size(747, 439)
+        Me.SchedulerM.Size = New System.Drawing.Size(263, 513)
         Me.SchedulerM.Start = New Date(2016, 5, 18, 0, 0, 0, 0)
         Me.SchedulerM.TabIndex = 1
         Me.SchedulerM.Text = "SchedulerControl1"
         Me.SchedulerM.ToolTipController = Me.ToolTipController1
-        Me.SchedulerM.Views.DayView.TimeRulers.Add(TimeRuler8)
+        Me.SchedulerM.Views.DayView.TimeRulers.Add(TimeRuler1)
         Me.SchedulerM.Views.WeekView.ResourcesPerPage = 3
-        Me.SchedulerM.Views.WorkWeekView.TimeRulers.Add(TimeRuler9)
+        Me.SchedulerM.Views.WorkWeekView.TimeRulers.Add(TimeRuler2)
         Me.SchedulerM.Views.YearView.UseOptimizedScrolling = False
         '
         'TareahhBindingSource
@@ -562,7 +562,7 @@ Partial Class frmPrincipal02
         Me.ResourcesPopupCheckedListBoxControl3.Dock = System.Windows.Forms.DockStyle.Top
         Me.ResourcesPopupCheckedListBoxControl3.EditValue = "(None)"
         Me.ResourcesPopupCheckedListBoxControl3.Location = New System.Drawing.Point(2, 2)
-        Me.ResourcesPopupCheckedListBoxControl3.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.ResourcesPopupCheckedListBoxControl3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.ResourcesPopupCheckedListBoxControl3.Name = "ResourcesPopupCheckedListBoxControl3"
         Me.ResourcesPopupCheckedListBoxControl3.Properties.AutoHeight = False
         Me.ResourcesPopupCheckedListBoxControl3.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -576,7 +576,7 @@ Partial Class frmPrincipal02
         Me.ResourcesPopupCheckedListBoxControl3.ResourcesCheckedListBoxControl.Size = New System.Drawing.Size(200, 100)
         Me.ResourcesPopupCheckedListBoxControl3.ResourcesCheckedListBoxControl.TabIndex = 0
         Me.ResourcesPopupCheckedListBoxControl3.SchedulerControl = Me.SchedulerM
-        Me.ResourcesPopupCheckedListBoxControl3.Size = New System.Drawing.Size(747, 40)
+        Me.ResourcesPopupCheckedListBoxControl3.Size = New System.Drawing.Size(263, 78)
         Me.ResourcesPopupCheckedListBoxControl3.TabIndex = 0
         '
         'PanelControl7
@@ -589,17 +589,17 @@ Partial Class frmPrincipal02
         Me.PanelControl7.Controls.Add(Me.ResourcesPopupCheckedListBoxControl4)
         Me.PanelControl7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl7.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl7.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.PanelControl7.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.PanelControl7.Name = "PanelControl7"
-        Me.PanelControl7.Size = New System.Drawing.Size(1113, 483)
+        Me.PanelControl7.Size = New System.Drawing.Size(1298, 595)
         Me.PanelControl7.TabIndex = 0
         '
         'SchedulerP
         '
         Me.SchedulerP.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SchedulerP.GroupType = DevExpress.XtraScheduler.SchedulerGroupType.Resource
-        Me.SchedulerP.Location = New System.Drawing.Point(2, 50)
-        Me.SchedulerP.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.SchedulerP.Location = New System.Drawing.Point(2, 94)
+        Me.SchedulerP.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.SchedulerP.MenuManager = Me.RibbonControl
         Me.SchedulerP.Name = "SchedulerP"
         Me.SchedulerP.OptionsRangeControl.RangeMaximum = New Date(2021, 10, 1, 0, 0, 0, 0)
@@ -608,14 +608,14 @@ Partial Class frmPrincipal02
         Me.SchedulerP.OptionsView.ResourceHeaders.ImageAlign = DevExpress.XtraScheduler.HeaderImageAlign.Top
         Me.SchedulerP.OptionsView.ResourceHeaders.ImageSize = New System.Drawing.Size(150, 50)
         Me.SchedulerP.OptionsView.ResourceHeaders.ImageSizeMode = DevExpress.XtraScheduler.HeaderImageSizeMode.ZoomImage
-        Me.SchedulerP.Size = New System.Drawing.Size(807, 431)
+        Me.SchedulerP.Size = New System.Drawing.Size(744, 499)
         Me.SchedulerP.Start = New Date(2016, 5, 18, 0, 0, 0, 0)
         Me.SchedulerP.TabIndex = 1
         Me.SchedulerP.Text = "SchedulerControl2"
         Me.SchedulerP.ToolTipController = Me.ToolTipController1
-        Me.SchedulerP.Views.DayView.TimeRulers.Add(TimeRuler1)
+        Me.SchedulerP.Views.DayView.TimeRulers.Add(TimeRuler3)
         Me.SchedulerP.Views.WeekView.ResourcesPerPage = 3
-        Me.SchedulerP.Views.WorkWeekView.TimeRulers.Add(TimeRuler2)
+        Me.SchedulerP.Views.WorkWeekView.TimeRulers.Add(TimeRuler4)
         Me.SchedulerP.Views.YearView.UseOptimizedScrolling = False
         '
         'DateNavigator4
@@ -625,12 +625,12 @@ Partial Class frmPrincipal02
         Me.DateNavigator4.DateTime = New Date(2016, 5, 18, 0, 0, 0, 0)
         Me.DateNavigator4.Dock = System.Windows.Forms.DockStyle.Right
         Me.DateNavigator4.EditValue = New Date(2016, 5, 18, 0, 0, 0, 0)
-        Me.DateNavigator4.FirstDayOfWeek = System.DayOfWeek.Monday
-        Me.DateNavigator4.Location = New System.Drawing.Point(809, 50)
-        Me.DateNavigator4.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.DateNavigator4.FirstDayOfWeek = System.DayOfWeek.Sunday
+        Me.DateNavigator4.Location = New System.Drawing.Point(746, 94)
+        Me.DateNavigator4.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.DateNavigator4.Name = "DateNavigator4"
         Me.DateNavigator4.SchedulerControl = Me.SchedulerP
-        Me.DateNavigator4.Size = New System.Drawing.Size(302, 431)
+        Me.DateNavigator4.Size = New System.Drawing.Size(550, 499)
         Me.DateNavigator4.TabIndex = 2
         '
         'ResourcesPopupCheckedListBoxControl4
@@ -638,7 +638,7 @@ Partial Class frmPrincipal02
         Me.ResourcesPopupCheckedListBoxControl4.Dock = System.Windows.Forms.DockStyle.Top
         Me.ResourcesPopupCheckedListBoxControl4.EditValue = "(None)"
         Me.ResourcesPopupCheckedListBoxControl4.Location = New System.Drawing.Point(2, 2)
-        Me.ResourcesPopupCheckedListBoxControl4.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.ResourcesPopupCheckedListBoxControl4.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.ResourcesPopupCheckedListBoxControl4.Name = "ResourcesPopupCheckedListBoxControl4"
         Me.ResourcesPopupCheckedListBoxControl4.Properties.AutoHeight = False
         Me.ResourcesPopupCheckedListBoxControl4.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -652,7 +652,7 @@ Partial Class frmPrincipal02
         Me.ResourcesPopupCheckedListBoxControl4.ResourcesCheckedListBoxControl.Size = New System.Drawing.Size(200, 100)
         Me.ResourcesPopupCheckedListBoxControl4.ResourcesCheckedListBoxControl.TabIndex = 0
         Me.ResourcesPopupCheckedListBoxControl4.SchedulerControl = Me.SchedulerP
-        Me.ResourcesPopupCheckedListBoxControl4.Size = New System.Drawing.Size(1109, 48)
+        Me.ResourcesPopupCheckedListBoxControl4.Size = New System.Drawing.Size(1294, 92)
         Me.ResourcesPopupCheckedListBoxControl4.TabIndex = 0
         '
         'PropietariosBindingSource
@@ -685,13 +685,13 @@ Partial Class frmPrincipal02
         Me.TabPane1.Controls.Add(Me.TabNavigationPage1)
         Me.TabPane1.Controls.Add(Me.Calendario)
         Me.TabPane1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabPane1.Location = New System.Drawing.Point(0, 158)
-        Me.TabPane1.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.TabPane1.Location = New System.Drawing.Point(0, 193)
+        Me.TabPane1.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.TabPane1.Name = "TabPane1"
         Me.TabPane1.Pages.AddRange(New DevExpress.XtraBars.Navigation.NavigationPageBase() {Me.TabTareas, Me.TabRellenado, Me.TabTareasMuelle, Me.TabTareasCalendario, Me.tabOcupacion, Me.tabInidcadores, Me.TabDashPicking, Me.tabIndicadoresBodProp, Me.TabNavigationPage1, Me.Calendario})
-        Me.TabPane1.RegularSize = New System.Drawing.Size(1332, 483)
+        Me.TabPane1.RegularSize = New System.Drawing.Size(1739, 595)
         Me.TabPane1.SelectedPage = Me.TabTareas
-        Me.TabPane1.Size = New System.Drawing.Size(1332, 483)
+        Me.TabPane1.Size = New System.Drawing.Size(1739, 595)
         Me.TabPane1.TabIndex = 3
         Me.TabPane1.Text = "TabPane1"
         '
@@ -701,9 +701,9 @@ Partial Class frmPrincipal02
         Me.TabTareas.Caption = "Tareas"
         Me.TabTareas.Controls.Add(Me.DgridTareas)
         Me.TabTareas.Controls.Add(Me.PanelControl1)
-        Me.TabTareas.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.TabTareas.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.TabTareas.Name = "TabTareas"
-        Me.TabTareas.Size = New System.Drawing.Size(1332, 450)
+        Me.TabTareas.Size = New System.Drawing.Size(1739, 554)
         '
         'PanelControl1
         '
@@ -714,29 +714,29 @@ Partial Class frmPrincipal02
         Me.PanelControl1.Controls.Add(lblFechaFinTareas)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelControl1.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1332, 53)
+        Me.PanelControl1.Size = New System.Drawing.Size(1739, 65)
         Me.PanelControl1.TabIndex = 1
         '
         'dtpFechaInicio
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.dtpFechaInicio, DevExpress.Utils.DefaultBoolean.[Default])
         Me.dtpFechaInicio.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaInicio.Location = New System.Drawing.Point(173, 18)
-        Me.dtpFechaInicio.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.dtpFechaInicio.Location = New System.Drawing.Point(202, 22)
+        Me.dtpFechaInicio.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpFechaInicio.Name = "dtpFechaInicio"
-        Me.dtpFechaInicio.Size = New System.Drawing.Size(170, 21)
+        Me.dtpFechaInicio.Size = New System.Drawing.Size(198, 23)
         Me.dtpFechaInicio.TabIndex = 9
         '
         'dtpFechaFin
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.dtpFechaFin, DevExpress.Utils.DefaultBoolean.[Default])
         Me.dtpFechaFin.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaFin.Location = New System.Drawing.Point(489, 18)
-        Me.dtpFechaFin.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.dtpFechaFin.Location = New System.Drawing.Point(570, 22)
+        Me.dtpFechaFin.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpFechaFin.Name = "dtpFechaFin"
-        Me.dtpFechaFin.Size = New System.Drawing.Size(170, 21)
+        Me.dtpFechaFin.Size = New System.Drawing.Size(198, 23)
         Me.dtpFechaFin.TabIndex = 11
         '
         'TabRellenado
@@ -745,16 +745,16 @@ Partial Class frmPrincipal02
         Me.TabRellenado.Caption = "Reabastecimiento"
         Me.TabRellenado.Controls.Add(Me.SplitContainer1)
         Me.TabRellenado.Controls.Add(Me.prg)
-        Me.TabRellenado.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.TabRellenado.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.TabRellenado.Name = "TabRellenado"
-        Me.TabRellenado.Size = New System.Drawing.Size(1332, 450)
+        Me.TabRellenado.Size = New System.Drawing.Size(1739, 554)
         '
         'SplitContainer1
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.SplitContainer1, DevExpress.Utils.DefaultBoolean.[Default])
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer1.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(4)
+        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(5)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
@@ -767,20 +767,20 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.SplitContainer1.Panel2, DevExpress.Utils.DefaultBoolean.[Default])
         Me.SplitContainer1.Panel2.Controls.Add(Me.txtprgreabasto)
         Me.SplitContainer1.Panel2.Controls.Add(Me.dgridTareasPendientesReabasto)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1332, 407)
-        Me.SplitContainer1.SplitterDistance = 933
-        Me.SplitContainer1.SplitterWidth = 5
+        Me.SplitContainer1.Size = New System.Drawing.Size(1739, 501)
+        Me.SplitContainer1.SplitterDistance = 1219
+        Me.SplitContainer1.SplitterWidth = 6
         Me.SplitContainer1.TabIndex = 4
         '
         'dgridRellenado
         '
         Me.dgridRellenado.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridRellenado.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridRellenado.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(6)
         Me.dgridRellenado.Location = New System.Drawing.Point(0, 0)
         Me.dgridRellenado.MainView = Me.gvdRellenado
-        Me.dgridRellenado.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridRellenado.Margin = New System.Windows.Forms.Padding(6)
         Me.dgridRellenado.Name = "dgridRellenado"
-        Me.dgridRellenado.Size = New System.Drawing.Size(933, 407)
+        Me.dgridRellenado.Size = New System.Drawing.Size(1219, 501)
         Me.dgridRellenado.TabIndex = 1
         Me.dgridRellenado.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvdRellenado})
         '
@@ -788,10 +788,10 @@ Partial Class frmPrincipal02
         '
         Me.gvdRellenado.Appearance.SelectedRow.BackColor = System.Drawing.Color.Transparent
         Me.gvdRellenado.Appearance.SelectedRow.Options.UseBackColor = True
-        Me.gvdRellenado.DetailHeight = 554
+        Me.gvdRellenado.DetailHeight = 682
         Me.gvdRellenado.GridControl = Me.dgridRellenado
         Me.gvdRellenado.Name = "gvdRellenado"
-        Me.gvdRellenado.OptionsEditForm.PopupEditFormWidth = 857
+        Me.gvdRellenado.OptionsEditForm.PopupEditFormWidth = 1000
         Me.gvdRellenado.OptionsView.ColumnAutoWidth = False
         Me.gvdRellenado.OptionsView.ShowAutoFilterRow = True
         Me.gvdRellenado.OptionsView.ShowFilterPanelMode = DevExpress.XtraGrid.Views.Base.ShowFilterPanelMode.ShowAlways
@@ -802,21 +802,22 @@ Partial Class frmPrincipal02
         Me.txtprgreabasto.BackColor = System.Drawing.Color.White
         Me.txtprgreabasto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtprgreabasto.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtprgreabasto.Location = New System.Drawing.Point(0, 216)
+        Me.txtprgreabasto.Location = New System.Drawing.Point(0, 519)
+        Me.txtprgreabasto.Margin = New System.Windows.Forms.Padding(4)
         Me.txtprgreabasto.Name = "txtprgreabasto"
-        Me.txtprgreabasto.Size = New System.Drawing.Size(394, 191)
+        Me.txtprgreabasto.Size = New System.Drawing.Size(514, 0)
         Me.txtprgreabasto.TabIndex = 4
         Me.txtprgreabasto.Text = ""
         '
         'dgridTareasPendientesReabasto
         '
         Me.dgridTareasPendientesReabasto.Dock = System.Windows.Forms.DockStyle.Top
-        Me.dgridTareasPendientesReabasto.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridTareasPendientesReabasto.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(6)
         Me.dgridTareasPendientesReabasto.Location = New System.Drawing.Point(0, 0)
         Me.dgridTareasPendientesReabasto.MainView = Me.gvReabastoPendiente
-        Me.dgridTareasPendientesReabasto.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridTareasPendientesReabasto.Margin = New System.Windows.Forms.Padding(6)
         Me.dgridTareasPendientesReabasto.Name = "dgridTareasPendientesReabasto"
-        Me.dgridTareasPendientesReabasto.Size = New System.Drawing.Size(394, 216)
+        Me.dgridTareasPendientesReabasto.Size = New System.Drawing.Size(514, 519)
         Me.dgridTareasPendientesReabasto.TabIndex = 2
         Me.dgridTareasPendientesReabasto.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvReabastoPendiente})
         '
@@ -824,12 +825,12 @@ Partial Class frmPrincipal02
         '
         Me.gvReabastoPendiente.Appearance.SelectedRow.BackColor = System.Drawing.Color.Transparent
         Me.gvReabastoPendiente.Appearance.SelectedRow.Options.UseBackColor = True
-        Me.gvReabastoPendiente.DetailHeight = 554
+        Me.gvReabastoPendiente.DetailHeight = 682
         Me.gvReabastoPendiente.GridControl = Me.dgridTareasPendientesReabasto
         Me.gvReabastoPendiente.Name = "gvReabastoPendiente"
         Me.gvReabastoPendiente.OptionsBehavior.Editable = False
         Me.gvReabastoPendiente.OptionsBehavior.ReadOnly = True
-        Me.gvReabastoPendiente.OptionsEditForm.PopupEditFormWidth = 857
+        Me.gvReabastoPendiente.OptionsEditForm.PopupEditFormWidth = 1000
         Me.gvReabastoPendiente.OptionsFind.AllowFindPanel = False
         Me.gvReabastoPendiente.OptionsView.ColumnAutoWidth = False
         Me.gvReabastoPendiente.OptionsView.ShowAutoFilterRow = True
@@ -839,11 +840,11 @@ Partial Class frmPrincipal02
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prg.Location = New System.Drawing.Point(0, 407)
-        Me.prg.Margin = New System.Windows.Forms.Padding(4)
+        Me.prg.Location = New System.Drawing.Point(0, 501)
+        Me.prg.Margin = New System.Windows.Forms.Padding(5)
         Me.prg.MenuManager = Me.RibbonControl
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1332, 43)
+        Me.prg.Size = New System.Drawing.Size(1739, 53)
         Me.prg.TabIndex = 2
         '
         'TabTareasMuelle
@@ -851,10 +852,10 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.TabTareasMuelle, DevExpress.Utils.DefaultBoolean.[Default])
         Me.TabTareasMuelle.Caption = "Ocupación por muelle"
         Me.TabTareasMuelle.Controls.Add(Me.PanelControl6)
-        Me.TabTareasMuelle.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.TabTareasMuelle.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.TabTareasMuelle.Name = "TabTareasMuelle"
         Me.TabTareasMuelle.PageVisible = False
-        Me.TabTareasMuelle.Size = New System.Drawing.Size(1113, 483)
+        Me.TabTareasMuelle.Size = New System.Drawing.Size(1298, 595)
         '
         'PanelControl6
         '
@@ -864,9 +865,9 @@ Partial Class frmPrincipal02
         Me.PanelControl6.Controls.Add(Me.DateNavigator3)
         Me.PanelControl6.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl6.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl6.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.PanelControl6.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.PanelControl6.Name = "PanelControl6"
-        Me.PanelControl6.Size = New System.Drawing.Size(1113, 483)
+        Me.PanelControl6.Size = New System.Drawing.Size(1298, 595)
         Me.PanelControl6.TabIndex = 0
         '
         'DateNavigator3
@@ -876,12 +877,12 @@ Partial Class frmPrincipal02
         Me.DateNavigator3.DateTime = New Date(2016, 5, 18, 0, 0, 0, 0)
         Me.DateNavigator3.Dock = System.Windows.Forms.DockStyle.Right
         Me.DateNavigator3.EditValue = New Date(2016, 5, 18, 0, 0, 0, 0)
-        Me.DateNavigator3.FirstDayOfWeek = System.DayOfWeek.Monday
-        Me.DateNavigator3.Location = New System.Drawing.Point(749, 2)
-        Me.DateNavigator3.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.DateNavigator3.FirstDayOfWeek = System.DayOfWeek.Sunday
+        Me.DateNavigator3.Location = New System.Drawing.Point(265, 2)
+        Me.DateNavigator3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.DateNavigator3.Name = "DateNavigator3"
         Me.DateNavigator3.SchedulerControl = Me.SchedulerM
-        Me.DateNavigator3.Size = New System.Drawing.Size(362, 479)
+        Me.DateNavigator3.Size = New System.Drawing.Size(1031, 591)
         Me.DateNavigator3.TabIndex = 2
         '
         'TabTareasCalendario
@@ -889,27 +890,27 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.TabTareasCalendario, DevExpress.Utils.DefaultBoolean.[Default])
         Me.TabTareasCalendario.Caption = "Planificación"
         Me.TabTareasCalendario.Controls.Add(Me.PanelControl7)
-        Me.TabTareasCalendario.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
+        Me.TabTareasCalendario.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.TabTareasCalendario.Name = "TabTareasCalendario"
         Me.TabTareasCalendario.PageVisible = False
-        Me.TabTareasCalendario.Size = New System.Drawing.Size(1113, 483)
+        Me.TabTareasCalendario.Size = New System.Drawing.Size(1298, 595)
         '
         'tabOcupacion
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.tabOcupacion, DevExpress.Utils.DefaultBoolean.[Default])
         Me.tabOcupacion.Caption = "Ocupación"
         Me.tabOcupacion.Controls.Add(Me.TableLayoutPanel)
-        Me.tabOcupacion.Margin = New System.Windows.Forms.Padding(5)
+        Me.tabOcupacion.Margin = New System.Windows.Forms.Padding(6)
         Me.tabOcupacion.Name = "tabOcupacion"
-        Me.tabOcupacion.Size = New System.Drawing.Size(1332, 450)
+        Me.tabOcupacion.Size = New System.Drawing.Size(1739, 554)
         '
         'TableLayoutPanel
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.TableLayoutPanel, DevExpress.Utils.DefaultBoolean.[Default])
         Me.TableLayoutPanel.ColumnCount = 3
-        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.24868!))
-        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 72.75132!))
-        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 276.0!))
+        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.91676!))
+        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.08324!))
+        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 760.0!))
         Me.TableLayoutPanel.Controls.Add(Me.lblCantPosiciones, 2, 0)
         Me.TableLayoutPanel.Controls.Add(Me.lblGauguePorcentajeOcupacion, 0, 0)
         Me.TableLayoutPanel.Controls.Add(Me.ccOcupacion, 1, 1)
@@ -918,13 +919,13 @@ Partial Class frmPrincipal02
         Me.TableLayoutPanel.Controls.Add(Me.GroupControl1, 2, 1)
         Me.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel.Margin = New System.Windows.Forms.Padding(5)
+        Me.TableLayoutPanel.Margin = New System.Windows.Forms.Padding(6)
         Me.TableLayoutPanel.Name = "TableLayoutPanel"
         Me.TableLayoutPanel.RowCount = 2
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.148936!))
         Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90.85107!))
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32.0!))
-        Me.TableLayoutPanel.Size = New System.Drawing.Size(1332, 450)
+        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39.0!))
+        Me.TableLayoutPanel.Size = New System.Drawing.Size(1739, 554)
         Me.TableLayoutPanel.TabIndex = 0
         '
         'lblCantPosiciones
@@ -933,10 +934,10 @@ Partial Class frmPrincipal02
         Me.lblCantPosiciones.BackColor = System.Drawing.Color.Honeydew
         Me.lblCantPosiciones.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblCantPosiciones.Font = New System.Drawing.Font("Tahoma", 13.8!, System.Drawing.FontStyle.Bold)
-        Me.lblCantPosiciones.Location = New System.Drawing.Point(1060, 0)
-        Me.lblCantPosiciones.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.lblCantPosiciones.Location = New System.Drawing.Point(984, 0)
+        Me.lblCantPosiciones.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblCantPosiciones.Name = "lblCantPosiciones"
-        Me.lblCantPosiciones.Size = New System.Drawing.Size(267, 41)
+        Me.lblCantPosiciones.Size = New System.Drawing.Size(749, 50)
         Me.lblCantPosiciones.TabIndex = 5
         Me.lblCantPosiciones.Text = "Cantidad de ubicaciones"
         Me.lblCantPosiciones.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -947,43 +948,43 @@ Partial Class frmPrincipal02
         Me.lblGauguePorcentajeOcupacion.BackColor = System.Drawing.Color.OldLace
         Me.lblGauguePorcentajeOcupacion.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblGauguePorcentajeOcupacion.Font = New System.Drawing.Font("Tahoma", 13.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGauguePorcentajeOcupacion.Location = New System.Drawing.Point(5, 0)
-        Me.lblGauguePorcentajeOcupacion.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.lblGauguePorcentajeOcupacion.Location = New System.Drawing.Point(6, 0)
+        Me.lblGauguePorcentajeOcupacion.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblGauguePorcentajeOcupacion.Name = "lblGauguePorcentajeOcupacion"
-        Me.lblGauguePorcentajeOcupacion.Size = New System.Drawing.Size(277, 41)
+        Me.lblGauguePorcentajeOcupacion.Size = New System.Drawing.Size(496, 50)
         Me.lblGauguePorcentajeOcupacion.TabIndex = 2
-        Me.lblGauguePorcentajeOcupacion.Text = "% Ocupación bodega"
+        Me.lblGauguePorcentajeOcupacion.Text = "Porcentaje de ocupación de bodega"
         Me.lblGauguePorcentajeOcupacion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'ccOcupacion
         '
         Me.ccOcupacion.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ccOcupacion.Legend.Name = "Default Legend"
-        Me.ccOcupacion.Location = New System.Drawing.Point(292, 46)
-        Me.ccOcupacion.Margin = New System.Windows.Forms.Padding(5)
+        Me.ccOcupacion.Location = New System.Drawing.Point(514, 56)
+        Me.ccOcupacion.Margin = New System.Windows.Forms.Padding(6)
         Me.ccOcupacion.Name = "ccOcupacion"
         Me.ccOcupacion.PaletteName = "Violet II"
         Me.ccOcupacion.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
-        Me.ccOcupacion.Size = New System.Drawing.Size(758, 399)
+        Me.ccOcupacion.Size = New System.Drawing.Size(458, 492)
         Me.ccOcupacion.TabIndex = 1
         '
         'GaugeControl
         '
         Me.GaugeControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GaugeControl.Gauges.AddRange(New DevExpress.XtraGauges.Base.IGauge() {Me.cgOcupacionBodega})
-        Me.GaugeControl.LayoutInterval = 8
-        Me.GaugeControl.LayoutPadding = New DevExpress.XtraGauges.Core.Base.Thickness(8, 7, 8, 7)
-        Me.GaugeControl.Location = New System.Drawing.Point(5, 46)
-        Me.GaugeControl.Margin = New System.Windows.Forms.Padding(5)
+        Me.GaugeControl.LayoutInterval = 9
+        Me.GaugeControl.LayoutPadding = New DevExpress.XtraGauges.Core.Base.Thickness(9)
+        Me.GaugeControl.Location = New System.Drawing.Point(6, 56)
+        Me.GaugeControl.Margin = New System.Windows.Forms.Padding(6)
         Me.GaugeControl.Name = "GaugeControl"
-        Me.GaugeControl.Size = New System.Drawing.Size(277, 399)
+        Me.GaugeControl.Size = New System.Drawing.Size(496, 492)
         Me.GaugeControl.TabIndex = 0
         Me.GaugeControl.ToolTipController = Me.DefaultToolTipController1.DefaultController
         '
         'cgOcupacionBodega
         '
         Me.cgOcupacionBodega.BackgroundLayers.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleBackgroundLayerComponent() {Me.ArcScaleBackgroundLayerComponent1})
-        Me.cgOcupacionBodega.Bounds = New System.Drawing.Rectangle(8, 7, 261, 385)
+        Me.cgOcupacionBodega.Bounds = New System.Drawing.Rectangle(9, 9, 478, 474)
         Me.cgOcupacionBodega.Name = "cgOcupacionBodega"
         Me.cgOcupacionBodega.Needles.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleNeedleComponent() {Me.ArcScaleNeedleComponent1})
         Me.cgOcupacionBodega.Scales.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleComponent() {Me.ArcScaleComponent1})
@@ -994,7 +995,7 @@ Partial Class frmPrincipal02
         Me.ArcScaleBackgroundLayerComponent1.ArcScale = Me.ArcScaleComponent1
         Me.ArcScaleBackgroundLayerComponent1.Name = "bg"
         Me.ArcScaleBackgroundLayerComponent1.ScaleCenterPos = New DevExpress.XtraGauges.Core.Base.PointF2D(0.5!, 0.685!)
-        Me.ArcScaleBackgroundLayerComponent1.ShapeType = DevExpress.XtraGauges.Core.Model.BackgroundLayerShapeType.Linear_Style1
+        Me.ArcScaleBackgroundLayerComponent1.ShapeType = DevExpress.XtraGauges.Core.Model.BackgroundLayerShapeType.CircularHalf_Style20
         Me.ArcScaleBackgroundLayerComponent1.Size = New System.Drawing.SizeF(250.0!, 179.0!)
         Me.ArcScaleBackgroundLayerComponent1.ZOrder = 1000
         '
@@ -1021,27 +1022,27 @@ Partial Class frmPrincipal02
         Me.ArcScaleComponent1.MinorTickmark.ShapeType = DevExpress.XtraGauges.Core.Model.TickmarkShapeType.Circular_Style20_2
         Me.ArcScaleComponent1.Name = "scale1"
         Me.ArcScaleComponent1.RadiusY = 98.0!
-        ArcScaleRange4.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#96C562")
-        ArcScaleRange4.EndThickness = 5.0!
-        ArcScaleRange4.EndValue = 33.0!
-        ArcScaleRange4.Name = "Range0"
-        ArcScaleRange4.ShapeOffset = 6.0!
-        ArcScaleRange4.StartThickness = 5.0!
-        ArcScaleRange5.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#FCD66B")
-        ArcScaleRange5.EndThickness = 5.0!
-        ArcScaleRange5.EndValue = 66.0!
-        ArcScaleRange5.Name = "Range1"
-        ArcScaleRange5.ShapeOffset = 6.0!
-        ArcScaleRange5.StartThickness = 5.0!
-        ArcScaleRange5.StartValue = 33.0!
-        ArcScaleRange6.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#EA836D")
-        ArcScaleRange6.EndThickness = 5.0!
-        ArcScaleRange6.EndValue = 100.0!
-        ArcScaleRange6.Name = "Range2"
-        ArcScaleRange6.ShapeOffset = 6.0!
-        ArcScaleRange6.StartThickness = 5.0!
-        ArcScaleRange6.StartValue = 66.0!
-        Me.ArcScaleComponent1.Ranges.AddRange(New DevExpress.XtraGauges.Core.Model.IRange() {ArcScaleRange4, ArcScaleRange5, ArcScaleRange6})
+        ArcScaleRange1.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#96C562")
+        ArcScaleRange1.EndThickness = 5.0!
+        ArcScaleRange1.EndValue = 33.0!
+        ArcScaleRange1.Name = "Range0"
+        ArcScaleRange1.ShapeOffset = 6.0!
+        ArcScaleRange1.StartThickness = 5.0!
+        ArcScaleRange2.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#FCD66B")
+        ArcScaleRange2.EndThickness = 5.0!
+        ArcScaleRange2.EndValue = 66.0!
+        ArcScaleRange2.Name = "Range1"
+        ArcScaleRange2.ShapeOffset = 6.0!
+        ArcScaleRange2.StartThickness = 5.0!
+        ArcScaleRange2.StartValue = 33.0!
+        ArcScaleRange3.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#EA836D")
+        ArcScaleRange3.EndThickness = 5.0!
+        ArcScaleRange3.EndValue = 100.0!
+        ArcScaleRange3.Name = "Range2"
+        ArcScaleRange3.ShapeOffset = 6.0!
+        ArcScaleRange3.StartThickness = 5.0!
+        ArcScaleRange3.StartValue = 66.0!
+        Me.ArcScaleComponent1.Ranges.AddRange(New DevExpress.XtraGauges.Core.Model.IRange() {ArcScaleRange1, ArcScaleRange2, ArcScaleRange3})
         Me.ArcScaleComponent1.StartAngle = -180.0!
         Me.ArcScaleComponent1.Value = 22.0!
         '
@@ -1068,12 +1069,12 @@ Partial Class frmPrincipal02
         Me.LabelGrafica.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.LabelGrafica.Dock = System.Windows.Forms.DockStyle.Fill
         Me.LabelGrafica.Font = New System.Drawing.Font("Tahoma", 13.8!, System.Drawing.FontStyle.Bold)
-        Me.LabelGrafica.Location = New System.Drawing.Point(292, 0)
-        Me.LabelGrafica.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.LabelGrafica.Location = New System.Drawing.Point(514, 0)
+        Me.LabelGrafica.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.LabelGrafica.Name = "LabelGrafica"
-        Me.LabelGrafica.Size = New System.Drawing.Size(758, 41)
+        Me.LabelGrafica.Size = New System.Drawing.Size(458, 50)
         Me.LabelGrafica.TabIndex = 3
-        Me.LabelGrafica.Text = "Dispersión"
+        Me.LabelGrafica.Text = "Gráfico de ocupación de bodega"
         Me.LabelGrafica.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'txtUbicacionesVacias
@@ -1082,10 +1083,10 @@ Partial Class frmPrincipal02
         Me.txtUbicacionesVacias.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtUbicacionesVacias.Dock = System.Windows.Forms.DockStyle.Top
         Me.txtUbicacionesVacias.Font = New System.Drawing.Font("Tahoma", 12.0!)
-        Me.txtUbicacionesVacias.Location = New System.Drawing.Point(2, 294)
-        Me.txtUbicacionesVacias.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.txtUbicacionesVacias.Location = New System.Drawing.Point(2, 448)
+        Me.txtUbicacionesVacias.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.txtUbicacionesVacias.Name = "txtUbicacionesVacias"
-        Me.txtUbicacionesVacias.Size = New System.Drawing.Size(265, 52)
+        Me.txtUbicacionesVacias.Size = New System.Drawing.Size(747, 103)
         Me.txtUbicacionesVacias.TabIndex = 5
         Me.txtUbicacionesVacias.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -1094,40 +1095,40 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.tabInidcadores, DevExpress.Utils.DefaultBoolean.[Default])
         Me.tabInidcadores.Caption = "Indicadores"
         Me.tabInidcadores.Controls.Add(Me.dgridInidicesRotacion)
-        Me.tabInidcadores.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabInidcadores.Margin = New System.Windows.Forms.Padding(5)
         Me.tabInidcadores.Name = "tabInidcadores"
         Me.tabInidcadores.PageVisible = False
-        Me.tabInidcadores.Size = New System.Drawing.Size(1113, 483)
+        Me.tabInidcadores.Size = New System.Drawing.Size(1298, 595)
         '
         'dgridInidicesRotacion
         '
         Me.dgridInidicesRotacion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridInidicesRotacion.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInidicesRotacion.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
         Me.dgridInidicesRotacion.Location = New System.Drawing.Point(0, 0)
         Me.dgridInidicesRotacion.MainView = Me.GridView2
-        Me.dgridInidicesRotacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInidicesRotacion.Margin = New System.Windows.Forms.Padding(5)
         Me.dgridInidicesRotacion.MenuManager = Me.RibbonControl
         Me.dgridInidicesRotacion.Name = "dgridInidicesRotacion"
-        Me.dgridInidicesRotacion.Size = New System.Drawing.Size(1113, 483)
+        Me.dgridInidicesRotacion.Size = New System.Drawing.Size(1298, 595)
         Me.dgridInidicesRotacion.TabIndex = 0
         Me.dgridInidicesRotacion.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2})
         '
         'GridView2
         '
-        Me.GridView2.DetailHeight = 444
+        Me.GridView2.DetailHeight = 546
         Me.GridView2.GridControl = Me.dgridInidicesRotacion
         Me.GridView2.Name = "GridView2"
-        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 857
+        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 1000
         '
         'TabDashPicking
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.TabDashPicking, DevExpress.Utils.DefaultBoolean.[Default])
         Me.TabDashPicking.Caption = "Tablero de picking"
         Me.TabDashPicking.Controls.Add(Me.dvPicking)
-        Me.TabDashPicking.Margin = New System.Windows.Forms.Padding(4)
+        Me.TabDashPicking.Margin = New System.Windows.Forms.Padding(5)
         Me.TabDashPicking.Name = "TabDashPicking"
         Me.TabDashPicking.PageVisible = False
-        Me.TabDashPicking.Size = New System.Drawing.Size(1113, 483)
+        Me.TabDashPicking.Size = New System.Drawing.Size(1298, 595)
         '
         'dvPicking
         '
@@ -1137,9 +1138,9 @@ Partial Class frmPrincipal02
         Me.dvPicking.AsyncMode = True
         Me.dvPicking.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dvPicking.Location = New System.Drawing.Point(0, 0)
-        Me.dvPicking.Margin = New System.Windows.Forms.Padding(4)
+        Me.dvPicking.Margin = New System.Windows.Forms.Padding(5)
         Me.dvPicking.Name = "dvPicking"
-        Me.dvPicking.Size = New System.Drawing.Size(1113, 483)
+        Me.dvPicking.Size = New System.Drawing.Size(1298, 595)
         Me.dvPicking.TabIndex = 0
         '
         'tabIndicadoresBodProp
@@ -1151,7 +1152,7 @@ Partial Class frmPrincipal02
         Me.tabIndicadoresBodProp.Margin = New System.Windows.Forms.Padding(4)
         Me.tabIndicadoresBodProp.Name = "tabIndicadoresBodProp"
         Me.tabIndicadoresBodProp.PageVisible = False
-        Me.tabIndicadoresBodProp.Size = New System.Drawing.Size(1113, 483)
+        Me.tabIndicadoresBodProp.Size = New System.Drawing.Size(1298, 595)
         '
         'TableLayoutPanel1
         '
@@ -1160,12 +1161,13 @@ Partial Class frmPrincipal02
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(879, 0)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(656, 0)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(234, 483)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(642, 595)
         Me.TableLayoutPanel1.TabIndex = 17
         '
         'GroupControl2
@@ -1177,9 +1179,9 @@ Partial Class frmPrincipal02
         Me.GroupControl2.Controls.Add(Me.lblBodega)
         Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Left
         Me.GroupControl2.Location = New System.Drawing.Point(0, 0)
-        Me.GroupControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(879, 483)
+        Me.GroupControl2.Size = New System.Drawing.Size(656, 595)
         Me.GroupControl2.TabIndex = 8
         Me.GroupControl2.ToolTipController = Me.DefaultToolTipController1.DefaultController
         '
@@ -1187,9 +1189,10 @@ Partial Class frmPrincipal02
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.Label1, DevExpress.Utils.DefaultBoolean.[Default])
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(7, 106)
+        Me.Label1.Location = New System.Drawing.Point(8, 130)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(63, 13)
+        Me.Label1.Size = New System.Drawing.Size(74, 16)
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Propietario:"
         '
@@ -1197,13 +1200,13 @@ Partial Class frmPrincipal02
         '
         Me.cmbPropietario.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmbPropietario.Location = New System.Drawing.Point(7, 128)
-        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbPropietario.Location = New System.Drawing.Point(8, 158)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmbPropietario.MenuManager = Me.RibbonControl
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietario.Properties.NullText = ""
-        Me.cmbPropietario.Size = New System.Drawing.Size(450, 20)
+        Me.cmbPropietario.Size = New System.Drawing.Size(400, 22)
         Me.cmbPropietario.TabIndex = 6
         '
         'GroupControl4
@@ -1214,10 +1217,10 @@ Partial Class frmPrincipal02
         Me.GroupControl4.Controls.Add(Me.dtpFechaDel)
         Me.GroupControl4.Controls.Add(Me.lblAl)
         Me.GroupControl4.Controls.Add(Me.lblDel)
-        Me.GroupControl4.Location = New System.Drawing.Point(9, 284)
-        Me.GroupControl4.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupControl4.Location = New System.Drawing.Point(10, 350)
+        Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(450, 46)
+        Me.GroupControl4.Size = New System.Drawing.Size(400, 90)
         Me.GroupControl4.TabIndex = 4
         Me.GroupControl4.Text = "Rango de Fechas"
         Me.GroupControl4.ToolTipController = Me.DefaultToolTipController1.DefaultController
@@ -1228,10 +1231,10 @@ Partial Class frmPrincipal02
         Me.dtpFechaAl.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dtpFechaAl.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaAl.Location = New System.Drawing.Point(39, 88)
-        Me.dtpFechaAl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.dtpFechaAl.Location = New System.Drawing.Point(46, 108)
+        Me.dtpFechaAl.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.dtpFechaAl.Name = "dtpFechaAl"
-        Me.dtpFechaAl.Size = New System.Drawing.Size(404, 21)
+        Me.dtpFechaAl.Size = New System.Drawing.Size(346, 23)
         Me.dtpFechaAl.TabIndex = 4
         '
         'dtpFechaDel
@@ -1240,19 +1243,20 @@ Partial Class frmPrincipal02
         Me.dtpFechaDel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dtpFechaDel.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaDel.Location = New System.Drawing.Point(39, 42)
-        Me.dtpFechaDel.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.dtpFechaDel.Location = New System.Drawing.Point(46, 52)
+        Me.dtpFechaDel.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.dtpFechaDel.Name = "dtpFechaDel"
-        Me.dtpFechaDel.Size = New System.Drawing.Size(404, 21)
+        Me.dtpFechaDel.Size = New System.Drawing.Size(346, 23)
         Me.dtpFechaDel.TabIndex = 4
         '
         'lblAl
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.lblAl, DevExpress.Utils.DefaultBoolean.[Default])
         Me.lblAl.AutoSize = True
-        Me.lblAl.Location = New System.Drawing.Point(8, 96)
+        Me.lblAl.Location = New System.Drawing.Point(9, 118)
+        Me.lblAl.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblAl.Name = "lblAl"
-        Me.lblAl.Size = New System.Drawing.Size(20, 13)
+        Me.lblAl.Size = New System.Drawing.Size(23, 16)
         Me.lblAl.TabIndex = 4
         Me.lblAl.Text = "Al:"
         '
@@ -1260,9 +1264,10 @@ Partial Class frmPrincipal02
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.lblDel, DevExpress.Utils.DefaultBoolean.[Default])
         Me.lblDel.AutoSize = True
-        Me.lblDel.Location = New System.Drawing.Point(9, 50)
+        Me.lblDel.Location = New System.Drawing.Point(10, 62)
+        Me.lblDel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblDel.Name = "lblDel"
-        Me.lblDel.Size = New System.Drawing.Size(26, 13)
+        Me.lblDel.Size = New System.Drawing.Size(30, 16)
         Me.lblDel.TabIndex = 4
         Me.lblDel.Text = "Del:"
         '
@@ -1270,22 +1275,23 @@ Partial Class frmPrincipal02
         '
         Me.cmbBodega.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmbBodega.Location = New System.Drawing.Point(7, 66)
-        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbBodega.Location = New System.Drawing.Point(8, 81)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmbBodega.MenuManager = Me.RibbonControl
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Properties.NullText = ""
-        Me.cmbBodega.Size = New System.Drawing.Size(450, 20)
+        Me.cmbBodega.Size = New System.Drawing.Size(400, 22)
         Me.cmbBodega.TabIndex = 4
         '
         'lblBodega
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.lblBodega, DevExpress.Utils.DefaultBoolean.[Default])
         Me.lblBodega.AutoSize = True
-        Me.lblBodega.Location = New System.Drawing.Point(7, 47)
+        Me.lblBodega.Location = New System.Drawing.Point(8, 58)
+        Me.lblBodega.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblBodega.Name = "lblBodega"
-        Me.lblBodega.Size = New System.Drawing.Size(47, 13)
+        Me.lblBodega.Size = New System.Drawing.Size(54, 16)
         Me.lblBodega.TabIndex = 4
         Me.lblBodega.Text = "Bodega:"
         '
@@ -1304,9 +1310,9 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.TabNavigationPage1, DevExpress.Utils.DefaultBoolean.[Default])
         Me.TabNavigationPage1.Caption = "Información de sistema"
         Me.TabNavigationPage1.Controls.Add(Me.GroupControl3)
-        Me.TabNavigationPage1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.TabNavigationPage1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.TabNavigationPage1.Name = "TabNavigationPage1"
-        Me.TabNavigationPage1.Size = New System.Drawing.Size(1491, 450)
+        Me.TabNavigationPage1.Size = New System.Drawing.Size(1739, 554)
         '
         'GroupControl3
         '
@@ -1323,17 +1329,17 @@ Partial Class frmPrincipal02
         Me.GroupControl3.Controls.Add(Me.lblOSVersion)
         Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl3.Location = New System.Drawing.Point(0, 0)
-        Me.GroupControl3.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.GroupControl3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(1491, 450)
+        Me.GroupControl3.Size = New System.Drawing.Size(1739, 554)
         Me.GroupControl3.TabIndex = 0
         Me.GroupControl3.Text = "Información de sistema"
         Me.GroupControl3.ToolTipController = Me.DefaultToolTipController1.DefaultController
         '
         'chkConexionInternet
         '
-        Me.chkConexionInternet.Location = New System.Drawing.Point(45, 335)
-        Me.chkConexionInternet.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.chkConexionInternet.Location = New System.Drawing.Point(52, 412)
+        Me.chkConexionInternet.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.chkConexionInternet.MenuManager = Me.RibbonControl
         Me.chkConexionInternet.Name = "chkConexionInternet"
         Me.chkConexionInternet.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
@@ -1343,7 +1349,7 @@ Partial Class frmPrincipal02
         Me.chkConexionInternet.Properties.OffText = "Sin conexión a internet"
         Me.chkConexionInternet.Properties.OnText = "Conectado a internet"
         Me.chkConexionInternet.Properties.ReadOnly = True
-        Me.chkConexionInternet.Size = New System.Drawing.Size(248, 21)
+        Me.chkConexionInternet.Size = New System.Drawing.Size(289, 25)
         Me.chkConexionInternet.TabIndex = 1
         '
         'lblDotNetVersion
@@ -1355,10 +1361,10 @@ Partial Class frmPrincipal02
         Me.lblDotNetVersion.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top
         Me.lblDotNetVersion.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap
         Me.lblDotNetVersion.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.Horizontal
-        Me.lblDotNetVersion.Location = New System.Drawing.Point(45, 304)
-        Me.lblDotNetVersion.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblDotNetVersion.Location = New System.Drawing.Point(52, 374)
+        Me.lblDotNetVersion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblDotNetVersion.Name = "lblDotNetVersion"
-        Me.lblDotNetVersion.Size = New System.Drawing.Size(104, 17)
+        Me.lblDotNetVersion.Size = New System.Drawing.Size(130, 21)
         Me.lblDotNetVersion.TabIndex = 9
         Me.lblDotNetVersion.Text = "lblVersionDotNET"
         '
@@ -1371,10 +1377,10 @@ Partial Class frmPrincipal02
         Me.lblSqlServerVersion.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top
         Me.lblSqlServerVersion.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap
         Me.lblSqlServerVersion.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
-        Me.lblSqlServerVersion.Location = New System.Drawing.Point(45, 220)
-        Me.lblSqlServerVersion.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblSqlServerVersion.Location = New System.Drawing.Point(52, 271)
+        Me.lblSqlServerVersion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSqlServerVersion.Name = "lblSqlServerVersion"
-        Me.lblSqlServerVersion.Size = New System.Drawing.Size(446, 72)
+        Me.lblSqlServerVersion.Size = New System.Drawing.Size(520, 89)
         Me.lblSqlServerVersion.TabIndex = 8
         Me.lblSqlServerVersion.Text = "lblSqlServerVersion"
         '
@@ -1382,10 +1388,10 @@ Partial Class frmPrincipal02
         '
         Me.lblAppMemoryUsage.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblAppMemoryUsage.Appearance.Options.UseFont = True
-        Me.lblAppMemoryUsage.Location = New System.Drawing.Point(45, 198)
-        Me.lblAppMemoryUsage.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblAppMemoryUsage.Location = New System.Drawing.Point(52, 244)
+        Me.lblAppMemoryUsage.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblAppMemoryUsage.Name = "lblAppMemoryUsage"
-        Me.lblAppMemoryUsage.Size = New System.Drawing.Size(123, 17)
+        Me.lblAppMemoryUsage.Size = New System.Drawing.Size(151, 21)
         Me.lblAppMemoryUsage.TabIndex = 7
         Me.lblAppMemoryUsage.Text = "lblAppMemoryUsage"
         '
@@ -1393,10 +1399,10 @@ Partial Class frmPrincipal02
         '
         Me.lblAvailableMemory.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblAvailableMemory.Appearance.Options.UseFont = True
-        Me.lblAvailableMemory.Location = New System.Drawing.Point(45, 176)
-        Me.lblAvailableMemory.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblAvailableMemory.Location = New System.Drawing.Point(52, 217)
+        Me.lblAvailableMemory.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblAvailableMemory.Name = "lblAvailableMemory"
-        Me.lblAvailableMemory.Size = New System.Drawing.Size(113, 17)
+        Me.lblAvailableMemory.Size = New System.Drawing.Size(143, 21)
         Me.lblAvailableMemory.TabIndex = 6
         Me.lblAvailableMemory.Text = "lblAvailableMemory"
         '
@@ -1404,10 +1410,10 @@ Partial Class frmPrincipal02
         '
         Me.lblUsedMemory.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblUsedMemory.Appearance.Options.UseFont = True
-        Me.lblUsedMemory.Location = New System.Drawing.Point(45, 154)
-        Me.lblUsedMemory.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblUsedMemory.Location = New System.Drawing.Point(52, 190)
+        Me.lblUsedMemory.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsedMemory.Name = "lblUsedMemory"
-        Me.lblUsedMemory.Size = New System.Drawing.Size(92, 17)
+        Me.lblUsedMemory.Size = New System.Drawing.Size(113, 21)
         Me.lblUsedMemory.TabIndex = 5
         Me.lblUsedMemory.Text = "lblUsedMemory"
         '
@@ -1415,10 +1421,10 @@ Partial Class frmPrincipal02
         '
         Me.lblProcessor.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblProcessor.Appearance.Options.UseFont = True
-        Me.lblProcessor.Location = New System.Drawing.Point(45, 132)
-        Me.lblProcessor.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblProcessor.Location = New System.Drawing.Point(52, 162)
+        Me.lblProcessor.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblProcessor.Name = "lblProcessor"
-        Me.lblProcessor.Size = New System.Drawing.Size(72, 17)
+        Me.lblProcessor.Size = New System.Drawing.Size(89, 21)
         Me.lblProcessor.TabIndex = 4
         Me.lblProcessor.Text = "lblProcessor"
         '
@@ -1426,10 +1432,10 @@ Partial Class frmPrincipal02
         '
         Me.lblMacAddress.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMacAddress.Appearance.Options.UseFont = True
-        Me.lblMacAddress.Location = New System.Drawing.Point(45, 110)
-        Me.lblMacAddress.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblMacAddress.Location = New System.Drawing.Point(52, 135)
+        Me.lblMacAddress.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblMacAddress.Name = "lblMacAddress"
-        Me.lblMacAddress.Size = New System.Drawing.Size(84, 17)
+        Me.lblMacAddress.Size = New System.Drawing.Size(107, 21)
         Me.lblMacAddress.TabIndex = 3
         Me.lblMacAddress.Text = "lblMacAddress"
         '
@@ -1437,10 +1443,10 @@ Partial Class frmPrincipal02
         '
         Me.lblSerialNumber.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblSerialNumber.Appearance.Options.UseFont = True
-        Me.lblSerialNumber.Location = New System.Drawing.Point(45, 89)
-        Me.lblSerialNumber.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblSerialNumber.Location = New System.Drawing.Point(52, 110)
+        Me.lblSerialNumber.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSerialNumber.Name = "lblSerialNumber"
-        Me.lblSerialNumber.Size = New System.Drawing.Size(92, 17)
+        Me.lblSerialNumber.Size = New System.Drawing.Size(116, 21)
         Me.lblSerialNumber.TabIndex = 2
         Me.lblSerialNumber.Text = "lblSerialNumber"
         '
@@ -1448,10 +1454,10 @@ Partial Class frmPrincipal02
         '
         Me.lblDiskSpace.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblDiskSpace.Appearance.Options.UseFont = True
-        Me.lblDiskSpace.Location = New System.Drawing.Point(45, 67)
-        Me.lblDiskSpace.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblDiskSpace.Location = New System.Drawing.Point(52, 82)
+        Me.lblDiskSpace.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblDiskSpace.Name = "lblDiskSpace"
-        Me.lblDiskSpace.Size = New System.Drawing.Size(74, 17)
+        Me.lblDiskSpace.Size = New System.Drawing.Size(93, 21)
         Me.lblDiskSpace.TabIndex = 1
         Me.lblDiskSpace.Text = "lblDiskSpace"
         '
@@ -1459,10 +1465,10 @@ Partial Class frmPrincipal02
         '
         Me.lblOSVersion.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblOSVersion.Appearance.Options.UseFont = True
-        Me.lblOSVersion.Location = New System.Drawing.Point(45, 45)
-        Me.lblOSVersion.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblOSVersion.Location = New System.Drawing.Point(52, 55)
+        Me.lblOSVersion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblOSVersion.Name = "lblOSVersion"
-        Me.lblOSVersion.Size = New System.Drawing.Size(74, 17)
+        Me.lblOSVersion.Size = New System.Drawing.Size(93, 21)
         Me.lblOSVersion.TabIndex = 0
         Me.lblOSVersion.Text = "lblOSVersion"
         '
@@ -1471,28 +1477,28 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.Calendario, DevExpress.Utils.DefaultBoolean.[Default])
         Me.Calendario.Caption = "Calendario"
         Me.Calendario.Controls.Add(Me.SchedulerControl1)
-        Me.Calendario.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.Calendario.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.Calendario.Name = "Calendario"
-        Me.Calendario.Size = New System.Drawing.Size(1491, 450)
+        Me.Calendario.Size = New System.Drawing.Size(1739, 554)
         '
         'SchedulerControl1
         '
         Me.SchedulerControl1.DataStorage = Me.SchedulerDataStorage1
         Me.SchedulerControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SchedulerControl1.Location = New System.Drawing.Point(0, 0)
-        Me.SchedulerControl1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.SchedulerControl1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.SchedulerControl1.MenuManager = Me.RibbonControl
         Me.SchedulerControl1.Name = "SchedulerControl1"
-        Me.SchedulerControl1.Size = New System.Drawing.Size(1491, 450)
+        Me.SchedulerControl1.Size = New System.Drawing.Size(1739, 554)
         Me.SchedulerControl1.Start = New Date(2024, 6, 12, 0, 0, 0, 0)
         Me.SchedulerControl1.TabIndex = 0
         Me.SchedulerControl1.Text = "SchedulerControl1"
         Me.SchedulerControl1.ToolTipController = Me.ToolTipController1
-        Me.SchedulerControl1.Views.DayView.TimeRulers.Add(TimeRuler3)
+        Me.SchedulerControl1.Views.DayView.TimeRulers.Add(TimeRuler5)
         Me.SchedulerControl1.Views.FullWeekView.Enabled = True
-        Me.SchedulerControl1.Views.FullWeekView.TimeRulers.Add(TimeRuler4)
+        Me.SchedulerControl1.Views.FullWeekView.TimeRulers.Add(TimeRuler6)
         Me.SchedulerControl1.Views.WeekView.Enabled = False
-        Me.SchedulerControl1.Views.WorkWeekView.TimeRulers.Add(TimeRuler10)
+        Me.SchedulerControl1.Views.WorkWeekView.TimeRulers.Add(TimeRuler7)
         Me.SchedulerControl1.Views.YearView.UseOptimizedScrolling = False
         '
         'SchedulerDataStorage1
@@ -1525,10 +1531,10 @@ Partial Class frmPrincipal02
         Me.GroupControl1.Controls.Add(Me.txtCantidadPosiciones)
         Me.GroupControl1.Controls.Add(Me.lblCantidadPosiciones)
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl1.Location = New System.Drawing.Point(1059, 45)
-        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupControl1.Location = New System.Drawing.Point(983, 55)
+        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(5)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(269, 401)
+        Me.GroupControl1.Size = New System.Drawing.Size(751, 494)
         Me.GroupControl1.TabIndex = 4
         Me.GroupControl1.ToolTipController = Me.DefaultToolTipController1.DefaultController
         '
@@ -1538,18 +1544,18 @@ Partial Class frmPrincipal02
         Me.lblUbicacionesVacias.Appearance.Options.UseFont = True
         Me.lblUbicacionesVacias.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
         Me.lblUbicacionesVacias.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblUbicacionesVacias.Location = New System.Drawing.Point(2, 237)
-        Me.lblUbicacionesVacias.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblUbicacionesVacias.Location = New System.Drawing.Point(2, 378)
+        Me.lblUbicacionesVacias.Margin = New System.Windows.Forms.Padding(5)
         Me.lblUbicacionesVacias.Name = "lblUbicacionesVacias"
-        Me.lblUbicacionesVacias.Size = New System.Drawing.Size(265, 57)
+        Me.lblUbicacionesVacias.Size = New System.Drawing.Size(747, 70)
         Me.lblUbicacionesVacias.TabIndex = 4
         Me.lblUbicacionesVacias.Text = "Vacías"
         '
         'txtUbicacionesOcupadas
         '
         Me.txtUbicacionesOcupadas.Dock = System.Windows.Forms.DockStyle.Top
-        Me.txtUbicacionesOcupadas.Location = New System.Drawing.Point(2, 183)
-        Me.txtUbicacionesOcupadas.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtUbicacionesOcupadas.Location = New System.Drawing.Point(2, 273)
+        Me.txtUbicacionesOcupadas.Margin = New System.Windows.Forms.Padding(5)
         Me.txtUbicacionesOcupadas.MenuManager = Me.RibbonControl
         Me.txtUbicacionesOcupadas.Name = "txtUbicacionesOcupadas"
         Me.txtUbicacionesOcupadas.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1559,7 +1565,7 @@ Partial Class frmPrincipal02
         Me.txtUbicacionesOcupadas.Properties.AutoHeight = False
         Me.txtUbicacionesOcupadas.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtUbicacionesOcupadas.Properties.ReadOnly = True
-        Me.txtUbicacionesOcupadas.Size = New System.Drawing.Size(265, 54)
+        Me.txtUbicacionesOcupadas.Size = New System.Drawing.Size(747, 105)
         Me.txtUbicacionesOcupadas.TabIndex = 3
         '
         'lblUbicacionesOcupadas
@@ -1568,18 +1574,18 @@ Partial Class frmPrincipal02
         Me.lblUbicacionesOcupadas.Appearance.Options.UseFont = True
         Me.lblUbicacionesOcupadas.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
         Me.lblUbicacionesOcupadas.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblUbicacionesOcupadas.Location = New System.Drawing.Point(2, 126)
-        Me.lblUbicacionesOcupadas.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblUbicacionesOcupadas.Location = New System.Drawing.Point(2, 203)
+        Me.lblUbicacionesOcupadas.Margin = New System.Windows.Forms.Padding(5)
         Me.lblUbicacionesOcupadas.Name = "lblUbicacionesOcupadas"
-        Me.lblUbicacionesOcupadas.Size = New System.Drawing.Size(265, 57)
+        Me.lblUbicacionesOcupadas.Size = New System.Drawing.Size(747, 70)
         Me.lblUbicacionesOcupadas.TabIndex = 2
         Me.lblUbicacionesOcupadas.Text = "Ocupadas"
         '
         'txtCantidadPosiciones
         '
         Me.txtCantidadPosiciones.Dock = System.Windows.Forms.DockStyle.Top
-        Me.txtCantidadPosiciones.Location = New System.Drawing.Point(2, 80)
-        Me.txtCantidadPosiciones.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCantidadPosiciones.Location = New System.Drawing.Point(2, 98)
+        Me.txtCantidadPosiciones.Margin = New System.Windows.Forms.Padding(5)
         Me.txtCantidadPosiciones.MenuManager = Me.RibbonControl
         Me.txtCantidadPosiciones.Name = "txtCantidadPosiciones"
         Me.txtCantidadPosiciones.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1589,7 +1595,7 @@ Partial Class frmPrincipal02
         Me.txtCantidadPosiciones.Properties.AutoHeight = False
         Me.txtCantidadPosiciones.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtCantidadPosiciones.Properties.ReadOnly = True
-        Me.txtCantidadPosiciones.Size = New System.Drawing.Size(265, 46)
+        Me.txtCantidadPosiciones.Size = New System.Drawing.Size(747, 105)
         Me.txtCantidadPosiciones.TabIndex = 1
         '
         'lblCantidadPosiciones
@@ -1598,10 +1604,10 @@ Partial Class frmPrincipal02
         Me.lblCantidadPosiciones.Appearance.Options.UseFont = True
         Me.lblCantidadPosiciones.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
         Me.lblCantidadPosiciones.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblCantidadPosiciones.Location = New System.Drawing.Point(2, 23)
-        Me.lblCantidadPosiciones.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblCantidadPosiciones.Location = New System.Drawing.Point(2, 28)
+        Me.lblCantidadPosiciones.Margin = New System.Windows.Forms.Padding(5)
         Me.lblCantidadPosiciones.Name = "lblCantidadPosiciones"
-        Me.lblCantidadPosiciones.Size = New System.Drawing.Size(265, 57)
+        Me.lblCantidadPosiciones.Size = New System.Drawing.Size(747, 70)
         Me.lblCantidadPosiciones.TabIndex = 0
         Me.lblCantidadPosiciones.Text = "Posiciones"
         '
@@ -1615,9 +1621,9 @@ Partial Class frmPrincipal02
         'frmPrincipal02
         '
         Me.DefaultToolTipController1.SetAllowHtmlText(Me, DevExpress.Utils.DefaultBoolean.[Default])
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1332, 665)
+        Me.ClientSize = New System.Drawing.Size(1739, 818)
         Me.Controls.Add(Me.TabPane1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)

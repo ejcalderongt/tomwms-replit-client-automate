@@ -1284,7 +1284,7 @@ public class clsLnProducto
 
                 // Actualizar
                 Actualizar(pProducto, connection, effectiveTx);
-
+                
                 idProductoResult = productoActual.IdProducto;
             }
 

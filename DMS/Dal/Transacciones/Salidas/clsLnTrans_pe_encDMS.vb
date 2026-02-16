@@ -1,20 +1,15 @@
-﻿Imports System.Data.SqlClient
-Imports System.Drawing.Drawing2D
+﻿Imports System.Drawing.Drawing2D
 Imports System.Reflection
 Imports System.Security.Cryptography
-Imports DevExpress.Compatibility
 Imports DevExpress.Data.Helpers
-Imports DevExpress.Utils
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.TextEditController
 Imports DevExpress.XtraPrinting.Native
-Imports Newtonsoft
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS
 Public Class clsLnTrans_pe_encDMS
 
-    Private Shared listaIdsEnviados As New List(Of Integer)
 
     Public Shared Async Sub Exportacion_PedidosAsync(ByVal lblprg As RichTextBox)
         Dim api As New ApiService()
@@ -26,8 +21,6 @@ Public Class clsLnTrans_pe_encDMS
         Dim resultado As String = ""
         Dim pRegistrosFallidos As Integer = 0
         Dim pRegistrosExitosos As Integer = 0
-        Dim vTotalRegistrosEncontrados As Integer = 0
-        Dim listaPedidosPendientes As List(Of Integer) = Nothing
         Try
 
             reloj.Start()
@@ -37,80 +30,70 @@ Public Class clsLnTrans_pe_encDMS
             '#GT18062025: obtener los ingresos no sincronizados
             listPE = GetAll_By_CDC(pTablaSincronizada, listPE)
 
-            If listaPedidosPendientes.Count > 0 Then
-                listPE = New List(Of clsBeTrans_pe_enc)()
-                vTotalRegistrosEncontrados = listaPedidosPendientes.Count
-                clsHelper.LogMensaje(lblprg,
-                                  String.Format("Se encontraron {0} pedido(s) pendientes de sincronizar.", vTotalRegistrosEncontrados),
-                                  clsHelper.TipoMensaje.Info)
+            If listPE IsNot Nothing AndAlso listPE.Count > 0 Then
+                RegistrosEncontrados = listPE.Count
+                clsHelper.LogMensaje(lblprg, "Pedidos encontrados " & listPE.Count, clsHelper.TipoMensaje.Exito)
+            Else
+                clsHelper.LogMensaje(lblprg, "Pedidos no encontrados ", clsHelper.TipoMensaje.Error_)
+                Exit Sub
+            End If
 
-                listPE = GetAll_By_CDC_Pendientes(pTablaSincronizada, listPE, listaPedidosPendientes)
-                If listPE IsNot Nothing AndAlso listPE.Count > 0 Then
-                    RegistrosEncontrados = listPE.Count
-                    clsHelper.LogMensaje(lblprg, "Pedidos encontrados " & listPE.Count, clsHelper.TipoMensaje.Exito)
+            '#Iteramos por pedido y enviamos a la nube para no hacer un proceso único pesado
+            For Each pPeEnc In listPE
+                Contador += 1
+                Dim enviado As Boolean = False
+                Dim intento As Integer = 0
+                Const maxIntentos As Integer = 3
+
+                clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & RegistrosEncontrados, clsHelper.TipoMensaje.Info)
+                Dim JsonOC = Crear_Json(lblprg, pPeEnc)
+
+                If String.IsNullOrEmpty(JsonOC) Then
+                    pRegistrosFallidos += 1
+                    resultado = "No se generó el archivo json correspondiente."
+                    Guadar_Envio_Rechazado(pPeEnc.IdPedidoEnc, resultado)
+                    Continue For
                 Else
-                    clsHelper.LogMensaje(lblprg, "Pedidos no encontrados ", clsHelper.TipoMensaje.Error_)
-                    Exit Sub
-                End If
+                    While Not enviado And intento <= maxIntentos
 
-                '#Iteramos por pedido y enviamos a la nube para no hacer un proceso único pesado
-                For Each pPeEnc In listPE
-                    Contador += 1
-                    Dim enviado As Boolean = False
-                    Dim intento As Integer = 0
-                    Const maxIntentos As Integer = 3
+                        resultado = Await api.EnviarJsonOCAsync(JsonOC, lblprg)
 
-                    clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & RegistrosEncontrados, clsHelper.TipoMensaje.Info)
-                    Dim JsonOC = Crear_Json(lblprg, pPeEnc)
-
-                    If String.IsNullOrEmpty(JsonOC) Then
-                        pRegistrosFallidos += 1
-                        resultado = "No se generó el archivo json correspondiente."
-                        Guadar_Envio_Rechazado(pPeEnc.IdPedidoEnc, resultado)
-                        Continue For
-                    Else
-                        While Not enviado And intento <= maxIntentos
-                            resultado = Await api.EnviarJsonPEAsync(JsonPE, lblprg)
-
-                            resultado = Await api.EnviarJsonOCAsync(JsonOC, lblprg)
-
-                            If resultado = "Ok" Then
-                                enviado = True
-                                pRegistrosExitosos += 1
-                                '#GT marcar como enviado MI3 en oc_enc
-                            Else
-                                intento += 1
-                                clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
-                                Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
-                            End If
-
-                        End While
-
-                        ' Si el registro no fue enviado, se guarda el fallo
-                        If Not enviado Then
-                            pRegistrosFallidos += 1
-                            Guadar_Envio_Rechazado(pPeEnc.IdPedidoEnc, resultado)
+                        If resultado = "Ok" Then
+                            enviado = True
+                            pRegistrosExitosos += 1
+                            '#GT marcar como enviado MI3 en oc_enc
+                        Else
+                            intento += 1
+                            clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
+                            Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
                         End If
 
+                    End While
+
+                    If Not enviado Then
+                        pRegistrosFallidos += 1
+                        Guadar_Envio_Rechazado(pPeEnc.IdPedidoEnc, resultado)
                     End If
 
-                Next
-
-                reloj.Stop()
-
-                Dim pRespuesta As String = ""
-                If pRegistrosFallidos > 0 AndAlso pRegistrosExitosos > 0 Then
-                    pRespuesta = $"Parcial:  no se sincronizaron {pRegistrosFallidos} registros. Total enviados: {RegistrosEncontrados}"
-                ElseIf pRegistrosFallidos > 0 Then
-                    pRespuesta = $"Error al sincronizar todos los registros ({pRegistrosFallidos})"
-                Else
-                    pRespuesta = "Ok"
                 End If
 
-                Dim mensajeFinal As String = $"Sincronización finalizada. Tiempo total: {reloj.Elapsed.TotalSeconds} segundos."
-                clsHelper.LogMensaje(lblprg, mensajeFinal, clsHelper.TipoMensaje.Exito)
+            Next
 
-                clsHelper.Registrar_Log(pRespuesta, pTablaSincronizada, CInt(reloj.Elapsed.TotalSeconds))
+            reloj.Stop()
+
+            Dim pRespuesta As String = ""
+            If pRegistrosFallidos > 0 AndAlso pRegistrosExitosos > 0 Then
+                pRespuesta = $"Parcial:  no se sincronizaron {pRegistrosFallidos} registros. Total enviados: {RegistrosEncontrados}"
+            ElseIf pRegistrosFallidos > 0 Then
+                pRespuesta = $"Error al sincronizar todos los registros ({pRegistrosFallidos})"
+            Else
+                pRespuesta = "Ok"
+            End If
+
+            Dim mensajeFinal As String = $"Sincronización finalizada. Tiempo total: {reloj.Elapsed.TotalSeconds} segundos."
+            clsHelper.LogMensaje(lblprg, mensajeFinal, clsHelper.TipoMensaje.Exito)
+
+            clsHelper.Registrar_Log(pRespuesta, pTablaSincronizada, CInt(reloj.Elapsed.TotalSeconds))
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
@@ -125,8 +108,6 @@ Public Class clsLnTrans_pe_encDMS
     Public Shared Function GetAll_By_CDC(ByVal pTablaSincronizada As String, ByRef pListPE As List(Of clsBeTrans_pe_enc)) As List(Of clsBeTrans_pe_enc)
         Dim BeLogUltimaSincronizacion As New clsBeLog_sincronizacion_nube()
         Dim clsTransaccion As New clsTransaccion()
-        Dim listPropietarios As New List(Of clsBePropietarios)()
-
         Try
 
             clsTransaccion.Begin_Transaction()
@@ -136,31 +117,6 @@ Public Class clsLnTrans_pe_encDMS
             If BeLogUltimaSincronizacion IsNot Nothing Then
                 pListPE = clsLnTrans_pe_enc.GetAll_By_CDC(BeLogUltimaSincronizacion.Fecha_sincronizacion, clsTransaccion.lConnection, clsTransaccion.lTransaction)
             End If
-
-            End If
-
-            End If
-
-            Next
-
-            End If
-
-
-            'If listaPropietarioBodega IsNot Nothing AndAlso listaPropietarioBodega.Count > 0 Then
-
-            '    For Each pIdPropietarioBodega In listaPropietarioBodega
-            '        BeLogUltimaSincronizacion = New clsBeDMS_Log_sincronizacion_nube()
-            '        BeLogUltimaSincronizacion = clsLnDMS_Log_sincronizacion_nube.GetLastSync(pTablaSincronizada, pIdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-            '        If BeLogUltimaSincronizacion IsNot Nothing Then
-            '            Dim lista = clsLnTrans_pe_enc.GetAll_By_CDC(BeLogUltimaSincronizacion.Fecha_sincronizacion, pIdPropietarioBodega, listaPedidosPendientes, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-            '            pListPE.AddRange(lista)
-
-            '        End If
-
-            '    Next
-
-            'End If
 
             clsTransaccion.Commit_Transaction()
 
@@ -192,44 +148,8 @@ Public Class clsLnTrans_pe_encDMS
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
-        End If
-        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
-
-        Finally
-        ' Cierre solo si es local
-        If localConnection AndAlso lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
-            lConnection.Close()
-        End If
-        End Try
     End Sub
 
-
-    Public Shared Sub Actualizar_Envio_Rechazado(ByVal pPedidoEnc As clsBeTrans_pe_enc)
-        Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
-        Dim clsTransaccion As New clsTransaccion()
-        Try
-            clsTransaccion.Begin_Transaction()
-
-            If clsLnDMS_Log_sincronizacion_fallos.Existe_by_Pedido(pPedidoEnc.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
-                BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
-                BeLogSyncError.IdOrdenCompraEnc = 0
-                BeLogSyncError.IdPedidoEnc = pPedidoEnc.IdPedidoEnc
-                BeLogSyncError.IdPropietario = pPedidoEnc.PropietarioBodega.IdPropietario
-                BeLogSyncError.IdProducto = 0
-                BeLogSyncError.Estado = "Ok"
-                BeLogSyncError.Fec_mod = Now
-
-                clsLnDMS_Log_sincronizacion_fallos.Actualizar_Registro(BeLogSyncError, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-            End If
-            clsTransaccion.Commit_Transaction()
-
-        Catch ex As Exception
-            clsTransaccion.RollBack_Transaction()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            clsTransaccion.Close_Conection()
-        End Try
-    End Sub
 
     Public Shared Function Crear_Json(ByRef lblprg As RichTextBox, ByVal pBePeEnc As clsBeTrans_pe_enc) As String
         Crear_Json = ""
@@ -242,31 +162,18 @@ Public Class clsLnTrans_pe_encDMS
         Dim pePicking As New Object()
         Dim peMuelle As New Object()
         Dim pPickingOperadoresList As New List(Of Object)
-        Dim operadorBodegaList As New List(Of Object)
-        Dim operadorList As New List(Of Object)
         Dim pPickingImgList As New List(Of Object)
         Dim ListPickingOp As New List(Of clsBeTrans_picking_op)()
         Dim pPickingPrioridad As New clsBeTrans_picking_prioridad()
         Dim pListPE As New List(Of clsBeTrans_pe_enc)()
-        Dim clienteList As New List(Of Object)
-        Dim ListClientes As New List(Of clsBeCliente)()
-        Dim resultado As String = ""
         Try
 
-
-            clsTransaccion.Begin_Transaction()
-
-            clsHelper.LogMensaje(lblprg, "Procesando pedido: " & pBePeEnc.IdPedidoEnc, clsHelper.TipoMensaje.Info)
 
             '#GT23052025: limpiar los objetos para no duplicar registros
             peEncList = New List(Of Object)()
             pPickingOperadoresList = New List(Of Object)
-            operadorBodegaList = New List(Of Object)
-            operadorList = New List(Of Object)
             pPickingImgList = New List(Of Object)
             peMuelle = New Object()
-            clienteList = New List(Of Object)
-            ListClientes = New List(Of clsBeCliente)()
 
             If pBePeEnc.TipoPedido.Control_Poliza Then
                 pBePeEnc.ObjPoliza = clsLnTrans_pe_pol.GetSingleId(pBePeEnc.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -501,7 +408,7 @@ Public Class clsLnTrans_pe_encDMS
                                                  .poliza = If(pBePeEnc.TipoPedido.Control_Poliza,
                                                               New List(Of clsBeTrans_pe_pol) From {pBePeEnc.ObjPoliza},
                                                               New List(Of clsBeTrans_pe_pol) From {New clsBeTrans_pe_pol With {
-            .IdOrdenPedidoPol = 0,
+                                                                                                                            .IdOrdenPedidoPol = 0,
                                                                                                                             .IdOrdenPedidoEnc = 0,
                                                                                                                             .Bl_No = "",
                                                                                                                             .NoPoliza = "",
@@ -683,7 +590,6 @@ Public Class clsLnTrans_pe_encDMS
                         If ListPickingOp IsNot Nothing AndAlso ListPickingOp.Count > 0 Then
 
                             For Each OperadorPicking In ListPickingOp
-
                                 pPickingOperadoresList.Add(New With {
                                                                     .IdOperadorPicking = OperadorPicking.IdOperadorPicking,
                                                                     .IdPickingEnc = OperadorPicking.IdPickingEnc,
@@ -693,64 +599,6 @@ Public Class clsLnTrans_pe_encDMS
                                                                     .user_mod = OperadorPicking.User_mod,
                                                                     .fec_mod = OperadorPicking.Fec_mod
                                                            })
-
-
-
-                                '#GT19052025: obtener operador-bodega
-                                Dim pOperadorBodega As New clsBeOperador_bodega()
-                                pOperadorBodega = clsLnOperador_bodega.GetSingle_By_IdOperadorBodega(OperadorPicking.IdOperadorBodega,
-                                                                                                                    clsTransaccion.lConnection,
-                                                                                                                    clsTransaccion.lTransaction)
-
-                                If pOperadorBodega IsNot Nothing Then
-                                    operadorBodegaList.Add(New With {
-                                                                                .IdOperadorBodega = pOperadorBodega.IdOperadorBodega,
-                                                                                .IdOperador = pOperadorBodega.IdOperador,
-                                                                                .IdBodega = pOperadorBodega.IdBodega,
-                                                                                .activo = pOperadorBodega.Activo,
-                                                                                .user_agr = pOperadorBodega.User_agr,
-                                                                                .fec_agr = pOperadorBodega.Fec_agr,
-                                                                                .user_mod = pOperadorBodega.User_mod,
-                                                                                .fec_mod = pOperadorBodega.Fec_mod
-                                                                               })
-
-                                End If
-
-                                Dim pBeOperador As New clsBeOperador()
-                                pBeOperador = clsLnOperador.Get_Single_By_IdOperador(pOperadorBodega.IdOperador,
-                                                                                                 clsTransaccion.lConnection,
-                                                                                                 clsTransaccion.lTransaction)
-                                If pBeOperador IsNot Nothing Then
-                                    operadorList.Add(New With {
-                                                                            .IdOperador = pBeOperador.IdOperador,
-                                                                            .IdEmpresa = pBeOperador.IdEmpresa,
-                                                                            .IdRolOperador = pBeOperador.IdRolOperador,
-                                                                            .IdJornada = pBeOperador.IdJornada,
-                                                                            .nombres = pBeOperador.Nombres,
-                                                                            .apellidos = pBeOperador.Apellidos,
-                                                                            .direccion = pBeOperador.Direccion,
-                                                                            .telefono = pBeOperador.Telefono,
-                                                                            .codigo = pBeOperador.Codigo,
-                                                                            .clave = pBeOperador.Clave,
-                                                                            .activo = pBeOperador.Activo,
-                                                                            .user_agr = pBeOperador.User_agr,
-                                                                            .fec_agr = pBeOperador.Fec_agr,
-                                                                            .user_mod = pBeOperador.User_mod,
-                                                                            .fec_mod = pBeOperador.Fec_mod,
-                                                                            .costo_hora = pBeOperador.Costo_hora,
-                                                                            .usa_hh = pBeOperador.Usa_hh,
-                                                                            .foto = pBeOperador.Foto,
-                                                                            .recibe = pBeOperador.Recibe,
-                                                                            .ubica = pBeOperador.Ubica,
-                                                                            .transporta = pBeOperador.Transporta,
-                                                                            .pickea = pBeOperador.Pickea,
-                                                                            .verifica = pBeOperador.Verifica,
-                                                                            .montacarga = pBeOperador.Montacarga,
-                                                                            .sistema = pBeOperador.Sistema
-                                                                         })
-                                End If
-
-
                             Next
                         Else
                             pPickingOperadoresList.Add(New With {
@@ -1027,12 +875,9 @@ Public Class clsLnTrans_pe_encDMS
 
                     End If
 
-                    For Each IdPedidoEnc As Integer In listaPedidos
-                        Dim pPedido = clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                        pListPedidos.Add(pPedido)
-                    Next
+                Next
 
-                    End If
+            End If
 
             clsTransaccion.Commit_Transaction()
 
@@ -1046,6 +891,5 @@ Public Class clsLnTrans_pe_encDMS
         End Try
 
     End Function
-
 
 End Class

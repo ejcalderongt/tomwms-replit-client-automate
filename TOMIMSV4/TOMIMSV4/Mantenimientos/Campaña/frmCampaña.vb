@@ -5,7 +5,6 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraSplashScreen
 Imports DocumentFormat.OpenXml.Presentation
-Imports System.Reflection
 
 Public Class frmCampaña
 

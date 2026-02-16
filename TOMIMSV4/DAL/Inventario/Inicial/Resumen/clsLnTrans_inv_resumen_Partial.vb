@@ -203,8 +203,7 @@ Partial Public Class clsLnTrans_inv_resumen
     Public Shared Function Get_CantidadInvVer_By_Producto(pIdUbicacion As Integer,
                                                           pIdProducto As Integer,
                                                           pIdBodega As Integer,
-                                                          pIdPresentacion As Integer,
-                                                          pIdInventarioEnc As Integer) As clsBeTrans_inv_resumen
+                                                          pIdPresentacion As Integer) As clsBeTrans_inv_resumen
 
         Dim lReturnValue As New clsBeTrans_inv_resumen
 
@@ -226,8 +225,7 @@ Partial Public Class clsLnTrans_inv_resumen
                                     idubicacion 
                                     from trans_inv_resumen
                                     where idubicacion = @idubicacion
-                                    and idproducto =  @idproducto
-                                    and idinventarioenct = @idinventarioenct"
+                                    and idproducto =  @idproducto"
 
             If pIdPresentacion <> 0 Then
                 vSQL += " And idpresentacion = @idpresentacion"
@@ -249,7 +247,7 @@ Partial Public Class clsLnTrans_inv_resumen
                         lDataAdapter.SelectCommand.CommandType = CommandType.Text
                         lDataAdapter.SelectCommand.Parameters.AddWithValue("@idubicacion", pIdUbicacion)
                         lDataAdapter.SelectCommand.Parameters.AddWithValue("@idproducto", pIdProducto)
-                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenct", pIdInventarioEnc)
+
 
                         If pIdPresentacion <> 0 Then
                             lDataAdapter.SelectCommand.Parameters.AddWithValue("@idpresentacion", pIdPresentacion)

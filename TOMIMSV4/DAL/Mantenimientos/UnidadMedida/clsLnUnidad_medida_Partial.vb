@@ -1715,4 +1715,85 @@ Partial Public Class clsLnUnidad_medida
 
     End Function
 
+    Public Shared Function Existe_By_Nombre(ByVal pNomUnidadMedida As String) As clsBeUnidad_medida
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Dim sql As String = "SELECT * FROM unidad_medida WHERE Nombre = @Nombre;"
+
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+                cmd.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = pNomUnidadMedida
+
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable()
+                    dad.Fill(dt)
+
+                    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                        Dim row As DataRow = dt.Rows(0)
+                        Dim obj As New clsBeUnidad_medida()
+                        Cargar(obj, row)
+                        Return obj
+                    End If
+                End Using
+            End Using
+
+            Return Nothing
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
+    Public Shared Function InsertarFromInterface(ByRef oBeUnidad_medida As clsBeUnidad_medida) As Integer
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Ins.Init("unidad_medida")
+            Ins.Add("idunidadmedida", "@idunidadmedida", DataType.Parametro)
+            Ins.Add("idpropietario", "@idpropietario", DataType.Parametro)
+            Ins.Add("codigo", "@codigo", DataType.Parametro)
+            Ins.Add("nombre", "@nombre", DataType.Parametro)
+            Ins.Add("activo", "@activo", DataType.Parametro)
+            Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+            Ins.Add("user_mod", "@user_mod", DataType.Parametro)
+            Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
+            Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+
+            Dim sp As String = Ins.SQL()
+
+            Using cmd As New SqlCommand(sp, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+
+                cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeUnidad_medida.IdUnidadMedida))
+                cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIO", oBeUnidad_medida.IdPropietario))
+                cmd.Parameters.Add(New SqlParameter("@NOMBRE", oBeUnidad_medida.Nombre))
+                cmd.Parameters.Add(New SqlParameter("@CODIGO", oBeUnidad_medida.Codigo))
+                cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeUnidad_medida.Activo))
+                cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeUnidad_medida.Fec_agr))
+                cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeUnidad_medida.User_mod))
+                cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeUnidad_medida.Fec_mod))
+                cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeUnidad_medida.User_agr))
+
+                Return cmd.ExecuteNonQuery()
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        Finally
+            If cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
+
+
 End Class

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
+using WMSWebAPI.Mapping_Profile;
 using WMSWebAPI.Services;
 using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
@@ -14,9 +15,9 @@ using WMSWebAPI.Services.Producto.Marca;
 using WMSWebAPI.Services.Producto.Presentacion;
 using WMSWebAPI.Services.Producto.Tipo;
 using WMSWebAPI.Services.Producto.Umbas;
+using WMSWebAPI.Services.Proveedor;
 using WMSWebAPI.Services.Reset_Password;
 using WMSWebAPI.Services.Salidas;
-using WMSWebAPI.Mapping_Profile;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,10 +56,10 @@ builder.Services.AddScoped<IClienteMi3SyncService,ClienteMi3SyncService>();
 builder.Services.AddScoped<IProductoTipoMi3SyncService,ProductoTipoMi3SyncService>();
 builder.Services.AddScoped<IUmbasMi3SyncService, UmbasMi3SyncService>();
 builder.Services.AddScoped<IPresentacionMi3SyncService, PresentacionMi3SyncService>();
+builder.Services.AddScoped<ISyncProveedorService, SyncProveedorService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";
-
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -97,7 +98,6 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -182,7 +182,6 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger"; // UI en {base}/swagger
 });
 
-app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();

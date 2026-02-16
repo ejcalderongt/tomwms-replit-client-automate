@@ -31,7 +31,7 @@ Public Class clsLnBodega_muelles
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeBodega_muelles As clsBeBodega_muelles, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeBodega_muelles As clsBeBodega_muelles, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -455,7 +455,7 @@ Public Class clsLnBodega_muelles
 
     End Function
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 

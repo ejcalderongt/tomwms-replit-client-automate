@@ -350,9 +350,6 @@ Partial Public Class rptRepcionOC
         Me.DetailData3_Odd = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageInfo = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageHeader = New DevExpress.XtraReports.UI.PageHeaderBand()
-        Me.XrLabel39 = New DevExpress.XtraReports.UI.XRLabel()
-        Me.Factura = New DevExpress.XtraReports.Parameters.Parameter()
-        Me.XrLabel40 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel38 = New DevExpress.XtraReports.UI.XRLabel()
         Me.Tipo = New DevExpress.XtraReports.Parameters.Parameter()
         Me.XrLabel37 = New DevExpress.XtraReports.UI.XRLabel()
@@ -550,7 +547,6 @@ Partial Public Class rptRepcionOC
         Me.XrPageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime
         Me.XrPageInfo1.SizeF = New System.Drawing.SizeF(313.0!, 23.0!)
         Me.XrPageInfo1.StyleName = "PageInfo"
-        Me.XrPageInfo1.TextFormatString = "{0:dddd, d 'de' MMMM 'de' yyyy HH:mm}"
         '
         'XrPageInfo2
         '
@@ -916,31 +912,6 @@ Partial Public Class rptRepcionOC
         Me.PageHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel39, Me.XrLabel40, Me.XrLabel38, Me.XrLabel37, Me.XrLabel36, Me.XrLabel33, Me.XrLabel32, Me.XrLabel31, Me.XrLabel30, Me.XrLabel29, Me.XrLabel28, Me.XrLabel26, Me.XrLabel25, Me.XrLabel24, Me.XrLabel23, Me.XrLabel22, Me.XrLabel21, Me.XrLabel20, Me.XrLabel15, Me.XrLabel14, Me.XrLabel13, Me.XrLabel12, Me.XrLabel11, Me.XrLabel10, Me.XrLabel9, Me.XrLabel8, Me.XrLabel7, Me.XrLabel6, Me.XrLabel5, Me.XrLabel4, Me.XrLabel3, Me.XrLabel2, Me.XrLabel27, Me.XrLabel1})
         Me.PageHeader.HeightF = 288.4166!
         Me.PageHeader.Name = "PageHeader"
-        '
-        'XrLabel39
-        '
-        Me.XrLabel39.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding(Me.Factura, "Text", "")})
-        Me.XrLabel39.LocationFloat = New DevExpress.Utils.PointFloat(562.0867!, 233.4167!)
-        Me.XrLabel39.Multiline = True
-        Me.XrLabel39.Name = "XrLabel39"
-        Me.XrLabel39.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel39.SizeF = New System.Drawing.SizeF(174.9132!, 44.99992!)
-        Me.XrLabel39.Text = "XrLabel39"
-        '
-        'Factura
-        '
-        Me.Factura.Description = "Factura"
-        Me.Factura.Name = "Factura"
-        '
-        'XrLabel40
-        '
-        Me.XrLabel40.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold)
-        Me.XrLabel40.LocationFloat = New DevExpress.Utils.PointFloat(400.9201!, 233.4167!)
-        Me.XrLabel40.Name = "XrLabel40"
-        Me.XrLabel40.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel40.SizeF = New System.Drawing.SizeF(120.7916!, 22.99998!)
-        Me.XrLabel40.StylePriority.UseFont = False
-        Me.XrLabel40.Text = "Facturas:"
         '
         'XrLabel38
         '

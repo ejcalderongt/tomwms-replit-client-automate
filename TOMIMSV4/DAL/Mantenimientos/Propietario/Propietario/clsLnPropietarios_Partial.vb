@@ -1,9 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Data.SqlClient
-Imports DevExpress.DataAccess.Native
-Imports System.Data.Common
-Imports DevExpress.Xpo.Helpers
 
 Partial Public Class clsLnPropietarios
     Implements IDisposable
@@ -53,7 +49,7 @@ Partial Public Class clsLnPropietarios
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -104,7 +100,7 @@ Partial Public Class clsLnPropietarios
             End If
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -159,7 +155,7 @@ Partial Public Class clsLnPropietarios
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -213,7 +209,7 @@ Partial Public Class clsLnPropietarios
             End If
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -310,7 +306,7 @@ Partial Public Class clsLnPropietarios
             Return Nothing
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -345,7 +341,7 @@ Partial Public Class clsLnPropietarios
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -392,7 +388,7 @@ Partial Public Class clsLnPropietarios
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -440,7 +436,7 @@ Partial Public Class clsLnPropietarios
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -475,7 +471,7 @@ Partial Public Class clsLnPropietarios
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -506,7 +502,7 @@ Partial Public Class clsLnPropietarios
             End With
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Sub
@@ -545,7 +541,7 @@ Partial Public Class clsLnPropietarios
             Return True
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -581,7 +577,7 @@ Partial Public Class clsLnPropietarios
             End If
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -622,7 +618,7 @@ Partial Public Class clsLnPropietarios
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -654,7 +650,7 @@ Partial Public Class clsLnPropietarios
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             lConnection.Dispose()
@@ -709,7 +705,7 @@ Partial Public Class clsLnPropietarios
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             lConnection.Dispose()
@@ -776,7 +772,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -814,7 +810,7 @@ Partial Public Class clsLnPropietarios
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -861,7 +857,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -914,7 +910,7 @@ Partial Public Class clsLnPropietarios
             End If
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -955,7 +951,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -997,7 +993,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1026,7 +1022,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1064,7 +1060,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1089,7 +1085,7 @@ Partial Public Class clsLnPropietarios
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             lConnection.Dispose()
@@ -1340,7 +1336,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1388,7 +1384,7 @@ Partial Public Class clsLnPropietarios
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1434,7 +1430,7 @@ Partial Public Class clsLnPropietarios
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1473,7 +1469,7 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1528,129 +1524,10 @@ Partial Public Class clsLnPropietarios
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
-
-    '#GT24062025: Obtener lista de propietarios que son afectos a exportación  a la nube, mediante parametro ux
-    'Public Shared Function Get_Propietarios_By_UX(ByRef lConnection As SqlConnection, ByRef lTransaction As SqlTransaction) As List(Of clsBePropietarios)
-    '    Get_Propietarios_By_UX = Nothing
-
-    '    Try
-
-    '        Const sp As String = "SELECT * FROM Propietarios Where (controlux = 1) "
-
-    '        Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-
-
-    '            Dim dt As New DataTable
-    '            Dim dad As New SqlDataAdapter(lCommand)
-    '            dad.Fill(dt)
-
-    '            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-    '                Get_Propietarios_By_UX = New List(Of clsBePropietarios)()
-
-    '                For Each lRow As DataRow In dt.Rows
-    '                    Dim oBePropietarios = New clsBePropietarios()
-    '                    Cargar(oBePropietarios, lRow)
-    '                    Get_Propietarios_By_UX.Add(oBePropietarios)
-    '                Next
-
-    '            End If
-
-    '        End Using
-
-    '    Catch ex1 As SqlException
-    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex1.Message))
-    '    Catch ex As Exception
-    '        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
-    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-    '    End Try
-
-    'End Function
-
-    Public Shared Function Get_Propietarios_By_UX(
-    Optional ByRef lConnection As SqlConnection = Nothing,
-    Optional ByRef lTransaction As SqlTransaction = Nothing
-) As List(Of clsBePropietarios)
-
-        Get_Propietarios_By_UX = Nothing
-
-        Dim localConnection As Boolean = False
-        Dim localTransaction As Boolean = False
-
-        Try
-            ' Si no se pasó conexión externa, crear una local con la cadena de conexión configurada
-            If lConnection Is Nothing Then
-                lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-                localConnection = True
-            End If
-
-            ' Si no se pasó transacción externa, crear una local
-            If lTransaction Is Nothing Then
-                lTransaction = lConnection.BeginTransaction()
-                localTransaction = True
-            End If
-
-            Const sp As String = "SELECT * FROM Propietarios WHERE (controlux = 1)"
-
-            Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-                Dim dt As New DataTable
-                Dim dad As New SqlDataAdapter(lCommand)
-                dad.Fill(dt)
-
-                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                    Get_Propietarios_By_UX = New List(Of clsBePropietarios)()
-
-                    For Each lRow As DataRow In dt.Rows
-                        Dim oBePropietarios As New clsBePropietarios()
-                        Cargar(oBePropietarios, lRow)
-                        Get_Propietarios_By_UX.Add(oBePropietarios)
-                    Next
-                End If
-            End Using
-
-            ' Si la transacción es local, confirmarla
-            If localTransaction AndAlso lTransaction IsNot Nothing Then
-                lTransaction.Commit()
-            End If
-
-        Catch ex1 As SqlException
-            ' Rollback si la transacción es local
-            If localTransaction AndAlso lTransaction IsNot Nothing Then
-                Try
-                    lTransaction.Rollback()
-                Catch
-                    ' Ignorar fallo en rollback
-                End Try
-            End If
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex1.Message))
-
-        Catch ex As Exception
-            ' Rollback si la transacción es local
-            If localTransaction AndAlso lTransaction IsNot Nothing Then
-                Try
-                    lTransaction.Rollback()
-                Catch
-                    ' Ignorar fallo en rollback
-                End Try
-            End If
-
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
-
-        Finally
-            ' Cerrar conexión solo si es local
-            If localConnection AndAlso lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
-                lConnection.Close()
-            End If
-        End Try
-
-    End Function
-
-
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

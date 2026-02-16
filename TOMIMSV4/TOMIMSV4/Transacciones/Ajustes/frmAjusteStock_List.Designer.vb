@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmAjusteStock_List
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmAjusteStock_List
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAjusteStock_List))
@@ -39,15 +39,14 @@ Partial Class frmAjusteStock_List
         Me.cmdImportarExcel = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdImprimir = New DevExpress.XtraBars.BarButtonItem()
-        Me.mnuImprimirConsolidado = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView1,System.ComponentModel.ISupportInitialize).BeginInit
+        CType(Me.Dgrid,System.ComponentModel.ISupportInitialize).BeginInit
+        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).BeginInit
         Me.GroupBox1.SuspendLayout
         Me.SuspendLayout
         '
@@ -181,13 +180,6 @@ Partial Class frmAjusteStock_List
         Me.cmdImprimir.ImageOptions.SvgImage = CType(resources.GetObject("cmdImprimir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdImprimir.Name = "cmdImprimir"
         '
-        'mnuImprimirConsolidado
-        '
-        Me.mnuImprimirConsolidado.Caption = "Imprimir Consolidado"
-        Me.mnuImprimirConsolidado.Id = 10
-        Me.mnuImprimirConsolidado.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimirConsolidado.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuImprimirConsolidado.Name = "mnuImprimirConsolidado"
-        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -199,7 +191,6 @@ Partial Class frmAjusteStock_List
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuNuevo)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuActualizar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImprimir)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImprimirConsolidado)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuSalir)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
@@ -256,15 +247,15 @@ Partial Class frmAjusteStock_List
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Listado de ajustes de stock"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
-        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBox1.ResumeLayout(False)
+        CType(Me.GridView1,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.Dgrid,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).EndInit
+        Me.GroupBox1.ResumeLayout(false)
         Me.GroupBox1.PerformLayout
-        Me.ResumeLayout(False)
+        Me.ResumeLayout(false)
         Me.PerformLayout
 
-    End Sub
+End Sub
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents lblHasta As Label
     Friend WithEvents lbldesde As Label
@@ -285,5 +276,4 @@ Partial Class frmAjusteStock_List
     Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
     Friend WithEvents dtpFechaAl As DateTimePicker
     Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents mnuImprimirConsolidado As DevExpress.XtraBars.BarButtonItem
 End Class

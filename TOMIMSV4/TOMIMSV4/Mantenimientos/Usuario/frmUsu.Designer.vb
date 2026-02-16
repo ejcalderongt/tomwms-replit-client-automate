@@ -48,10 +48,6 @@ Partial Class frmUsu
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmUsu))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim lblUsuarioSap As System.Windows.Forms.Label
-        Dim lblClaveSap As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -113,10 +109,6 @@ Partial Class frmUsu
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
-        Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
-        Me.txtUsuarioSap = New DevExpress.XtraEditors.TextEdit()
-        Me.txtClaveSap = New DevExpress.XtraEditors.TextEdit()
         IdUsuarioLabel = New System.Windows.Forms.Label()
         NombresLabel = New System.Windows.Forms.Label()
         ApellidosLabel = New System.Windows.Forms.Label()
@@ -143,8 +135,6 @@ Partial Class frmUsu
         lblSerie = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
-        lblUsuarioSap = New System.Windows.Forms.Label()
-        lblClaveSap = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -196,12 +186,6 @@ Partial Class frmUsu
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl1.SuspendLayout()
-        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl3.SuspendLayout()
-        CType(Me.txtUsuarioSap.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtClaveSap.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdUsuarioLabel
@@ -443,32 +427,6 @@ Partial Class frmUsu
         lblSerie.Size = New System.Drawing.Size(42, 16)
         lblSerie.TabIndex = 2
         lblSerie.Text = "Serie:"
-        '
-        'Label3
-        '
-        Label3.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label3.AutoSize = True
-        Label3.ForeColor = System.Drawing.Color.Red
-        Label3.Location = New System.Drawing.Point(449, 202)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(112, 16)
-        Label3.TabIndex = 32
-        Label3.Text = "*máximo 9 digitos"
-        '
-        'Label4
-        '
-        Label4.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label4.AutoSize = True
-        Label4.ForeColor = System.Drawing.Color.Red
-        Label4.Location = New System.Drawing.Point(449, 142)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(135, 16)
-        Label4.TabIndex = 33
-        Label4.Text = "*máximo 3 caracteres"
         '
         'RibbonControl
         '
@@ -1236,14 +1194,6 @@ Partial Class frmUsu
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupControl1.ResumeLayout(False)
-        Me.GroupControl1.PerformLayout()
-        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupControl3.ResumeLayout(False)
-        Me.GroupControl3.PerformLayout()
-        CType(Me.txtUsuarioSap.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtClaveSap.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1310,8 +1260,4 @@ Partial Class frmUsu
     Friend WithEvents GrdResolucion As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents GridView6 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents chkActivoPR As DevExpress.XtraEditors.CheckEdit
-    Friend WithEvents GroupControl3 As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents txtUsuarioSap As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtClaveSap As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
 End Class

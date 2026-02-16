@@ -39,7 +39,7 @@ Public Class clsLnTrans_inv_stock
                 .Temperatura = IIf(IsDBNull(dr.Item("temperatura")), 0.0, dr.Item("temperatura"))
                 .fecha_copia = IIf(IsDBNull(dr.Item("fecha_copia")), Date.Now, dr.Item("fecha_copia"))
                 .IdBodega = IIf(IsDBNull(dr.Item("IdBodega")), 0, dr.Item("IdBodega"))
-                .Cantidad_Reservada_UMBas = IIf(IsDBNull(dr.Item("Cantidad_Reservada_UMBas")), 0, dr.Item("Cantidad_Reservada_UMBas"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
         Catch ex As Exception
@@ -47,7 +47,7 @@ Public Class clsLnTrans_inv_stock
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_stock As clsBeTrans_inv_stock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_stock As clsBeTrans_inv_stock, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -564,19 +564,15 @@ Public Class clsLnTrans_inv_stock
 
     Public Shared Function GetSingle(ByRef pBeTrans_inv_stock As clsBeTrans_inv_stock)
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-
         Try
 
             Const sp As String = "SELECT * FROM Trans_inv_stock" &
             " Where(idinventario = @idinventario)" &
             " AND (IdStock = @IdStock)"
 
-            lConnection.Open()
-            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IDINVENTARIO", pBeTrans_inv_stock.IDINVENTARIO))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IDSTOCK", pBeTrans_inv_stock.IDSTOCK))
@@ -588,23 +584,15 @@ Public Class clsLnTrans_inv_stock
                 Cargar(pBeTrans_inv_stock, dt.Rows(0))
             End If
 
-            lTransaction.Commit()
-
             Return True
 
         Catch ex As Exception
-            If lTransaction IsNot Nothing Then
-                lTransaction.Rollback()
-            End If
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
 
-    Public Shared Function MaxID() As Integer
+    Public Shared Function MaxID() as Integer
 
         Try
 

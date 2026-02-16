@@ -9,8 +9,6 @@ Public Class frmAjustePositivo
     Public Property pStockIdPropietarioBodega As Integer
     Public Property pStockBodegaFiltro As Integer
     Public Property vProducto As New clsBeProducto
-
-    Private pIdProductoBodega As Integer
     Public Property pStockTemporal As clsBeStock
     Public Property pUbicacion As clsBeBodega_ubicacion
 
@@ -210,7 +208,6 @@ Public Class frmAjustePositivo
                 Else
                     Throw New Exception("No se cargaron los atributos del producto seleccionado.")
                 End If
-
             Else
 
                 '#GT26112024: deshabilitar los campos cuando no hay producto seleccionado en el combo
@@ -218,7 +215,6 @@ Public Class frmAjustePositivo
                 txtLote.Enabled = False
                 txtPeso.Enabled = False
                 dtpFechaVence.Enabled = False
-
             End If
 
         Catch ex As Exception
@@ -309,7 +305,6 @@ Public Class frmAjustePositivo
             pStockTemporal.Cantidad = 0
             pStockTemporal.IdUbicacion = pUbicacion.IdUbicacion
             '#GT: parametros del producto
-            pStockTemporal.Lic_plate = IIf(vProducto.Genera_lp, txtLicencia.EditValue, DBNull.Value)
             pStockTemporal.Fecha_vence = IIf(vProducto.Control_vencimiento, dtpFechaVence.DateTime, Now.ToString("1900-01-01"))
             pStockTemporal.Peso = IIf(vProducto.Control_peso, txtPeso.Value, 0)
             pStockTemporal.Lote = IIf(vProducto.Genera_lote, txtLote.EditValue, "")

@@ -18,15 +18,11 @@ Module m_Global
     Public vRutaInterfaceSAP As String = CurDir() & "/SAPBOSync.exe"
     Public vRutaServicio As String = CurDir() & "/WMS_PrintService.exe"
     Public vRutaInterfaceCEALSA As String = CurDir() & "/CEALSASync.exe"
-
-    Public Property gVersionApp As String = "7.9.6"
-
+    Public Property gVersionApp As String = "7.9.3"
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2025, 12, 8)
+    Public Property gFechaVersion As Date = New Date(2026, 2, 11)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
-
     Public gIndiceInstancia As Integer = -1
-
     Public Property lConfiguracionAliasCampos As New List(Of clsBeConfiguracion_alias_campos)
 
     Public Sub CopyObject(Of tom)(ByVal ObjOrigen As Object, ByRef ObjDestino As tom)
@@ -296,7 +292,7 @@ Module m_Global
         End Try
 
     End Function
-    Public Sub ShellandWait(ByVal ProcessPath As String,
+    Private Sub ShellandWait(ByVal ProcessPath As String,
                              ByVal Args As String,
                              ByVal frm As RibbonForm)
 
@@ -523,118 +519,6 @@ Module m_Global
         End Try
 
     End Function
-
-    Public Function Ejecutar_Interface(ByVal ParametroEjecucion As String, ByVal frm As RibbonForm, Optional pEjecutable As String = "") As Boolean
-
-        Dim vRutaInterface As String = ""
-        Dim vNombre_Ejecutable As String = ""
-
-        Ejecutar_Interface = False
-
-        Try
-
-            If Not String.IsNullOrEmpty(pEjecutable) Then
-
-                If clsLnI_nav_config_enc.Get_Existe_by_Ejecutable(pEjecutable) Then
-                    vNombre_Ejecutable = pEjecutable
-                End If
-
-            Else
-                vNombre_Ejecutable = clsLnI_nav_config_enc.Get_Nombre_Ejecutable(AP.IdConfiguracionInterface)
-            End If
-
-
-            If Not vNombre_Ejecutable = "" Then
-
-                vRutaInterface = CurDir() & "\" & vNombre_Ejecutable
-
-                If IO.File.Exists(vRutaInterface) Then
-
-                    If ParametroEjecucion <> "" Then
-                        ShellandWait(vRutaInterface, ParametroEjecucion, frm)
-                    Else
-                        Dim startInfo As New ProcessStartInfo() With {.FileName = vRutaInterface,
-                                                                      .Arguments = ParametroEjecucion}
-                        Process.Start(startInfo)
-                    End If
-
-                    Ejecutar_Interface = True
-
-                Else
-                    MessageBox.Show("No existe archivo de interface " & vRutaInterface,
-                                    "Exec_MI3_Sync",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Exclamation)
-                End If
-
-            End If
-
-        Catch ex As Exception
-            MessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            "Exec_MI3_Sync",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation)
-        End Try
-
-    End Function
-
-
-    '#GT28072025: interface para ejecutar otros procesos ajenos a MI3
-    Public Function Ejecutar_Interface_Exe(ByVal ParametroEjecucion As String, ByVal frm As RibbonForm, Optional pEjecutable As String = "") As Boolean
-
-        Dim vRutaInterface As String = ""
-        Dim vNombre_Ejecutable As String = ""
-
-        Ejecutar_Interface_Exe = False
-
-        Try
-
-            If Not String.IsNullOrEmpty(pEjecutable) Then
-
-                If clsLnI_nav_config_enc.Get_Existe_by_Ejecutable(pEjecutable) Then
-                    vNombre_Ejecutable = pEjecutable
-                End If
-
-            Else
-                vNombre_Ejecutable = clsLnI_nav_config_enc.Get_Nombre_Ejecutable(AP.IdConfiguracionInterface)
-            End If
-
-
-            If Not vNombre_Ejecutable = "" Then
-
-                vRutaInterface = CurDir() & "\" & vNombre_Ejecutable
-
-                If IO.File.Exists(vRutaInterface) Then
-
-
-                    If ParametroEjecucion <> "" Then
-                        ShellandWait(vRutaInterface, ParametroEjecucion, frm)
-                    Else
-                        Dim startInfo As New ProcessStartInfo() With {.FileName = vRutaInterface,
-                                                                      .Arguments = ParametroEjecucion}
-                        Process.Start(startInfo)
-                    End If
-
-                    Ejecutar_Interface_Exe = True
-
-                Else
-                    MessageBox.Show("No existe archivo de interface " & vRutaInterface,
-                                    "Exec_Sync",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Exclamation)
-                End If
-
-            End If
-
-        Catch ex As Exception
-            MessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            "Exec_MI3_Sync",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation)
-        End Try
-
-    End Function
-
 
 End Module
 

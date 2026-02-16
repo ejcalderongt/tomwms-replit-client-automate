@@ -61,7 +61,6 @@ Public Class clsBeTrans_picking_enc
     Public Property IdBodegaMuelle() As Integer = 0
 
     Public Property IdPrioridadPicking() As Integer = 0
-    Public Property Observacion As String = ""
 
     Sub New()
     End Sub

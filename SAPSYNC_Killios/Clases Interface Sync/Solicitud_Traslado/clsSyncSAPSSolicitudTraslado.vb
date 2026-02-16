@@ -1,11 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.ServiceModel
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar
-Imports DevExpress.Office.Services
 Imports SAPbobsCOM
 Imports TOMWMS.clsDataContractDI
-Imports TOMWMS.SapHelper
 
 Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
     Public Shared Sub Enviar_Transacciones_De_Salida(ByRef lblprg As RichTextBox,
@@ -25,12 +21,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
             lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo)
 
-            lTransaccionesSalida.ForEach(Sub(t)
-                                             If t.No_pedido.StartsWith("K") OrElse t.No_pedido.StartsWith("G") Then
-                                                 t.No_pedido = t.No_pedido.Substring(1)
-                                             End If
-                                         End Sub)
-
             If Not lTransaccionesSalida Is Nothing AndAlso lTransaccionesSalida.Count > 0 Then
 
                 Dim ListaPedidosTransf = (From i In lTransaccionesSalida
@@ -45,7 +35,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                 For Each PT In ListaPedidosTransf
 
-                    Enviado_A_Erp = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP_By_IdPedidoEnc(PT.Idpedidoenc)
+                    Enviado_A_Erp = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido)
 
                     clsPublic.Actualizar_Progreso(lblprg, "Enviando documento: " & PT.No_pedido)
 
@@ -71,10 +61,10 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                             Catch ex As Exception
 
-                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al registrar el pedido:{0} en el ERP. Error: {1}", vNoPedido, ex.Message))
+                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al registrar el pedido:{0} en el ERP. Error: {1}", PT.No_pedido, ex.Message))
 
-                                clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al registrar el pedido:{0} en el ERP. Error: {1}", vNoPedido, ex.Message),
-                                                                          vNoPedido,
+                                clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al registrar el pedido:{0} en el ERP. Error: {1}", PT.No_pedido, ex.Message),
+                                                                           PT.No_pedido,
                                                                            BeNavEjecucionEnc.IdEjecucionEnc,
                                                                            BeConfigDet.Idnavconfigdet, CnnLog)
 
@@ -122,7 +112,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         Dim Sublista_A_Actualizar As New List(Of clsBeI_nav_transacciones_out)
         Dim Lista_A_Actualizar As New List(Of clsBeI_nav_transacciones_out)
         Dim vCodigoAnterior As String = ""
-        Dim vNoLineaAnterior As Integer = 0
         Dim vCodigoBodegaERP As String = ""
         Dim vAgregarEntrega As Boolean = False
         Dim NoLineaEntrega As Integer = 0
@@ -139,7 +128,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             Dim vCodigoProductoSAP As String = ""
             Dim vCodigoProductoWMS As String = ""
             Dim BePresentacion As New clsBeProducto_Presentacion
-            Dim ProductosParaSAP As New List(Of ProductoTransferSAP)
+            Dim ProductosParaSAP As New List(Of ProductoTransferSAPProrrateo)
             Dim vUnidadesEncontradas As Boolean = False
 
             oTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oStockTransfer), StockTransfer)
@@ -147,7 +136,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
 #Region "Agrupar por ID del pedido y No_Pedido, y recoger los productos"
 
-            Dim DistinctIdPedidoEncByTraslado = lINavTransaccionesOut.GroupBy(Function(x) New With {Key x.Idordencompra, Key x.No_pedido, Key x.No_linea}).
+            Dim DistinctIdPedidoEncByTraslado = lINavTransaccionesOut.GroupBy(Function(x) New With {Key x.Idordencompra, Key x.No_pedido, Key x.Idpresentacion, Key x.No_linea}).
                     Select(Function(g) New With {
                         .Idordencompra = g.Key.Idordencompra,
                         .No_Pedido = g.Key.No_pedido,
@@ -182,54 +171,13 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                     vCodigoProductoSAP = BeProducto.Noserie
                             End Select
 
-                            '#CKFK20251016 ´Modificamos esta funcion para enviar correctamente las unidades a SAP,
-                            'cuando se envían decimales en el documento de ingreso y en WMS se reciben unidades
-                            Dim info As UoMInfo = Nothing
-
-                            Dim ok As Boolean = GetUoMFromTransferRequest(oCompany, _Docentry, vCodigoProductoSAP, producto.No_Linea, info)
-
-                            Dim IdPresentacionOC As Integer = 0
-
-                            If ok Then
-                                IdPresentacionOC = clsLnProducto_presentacion.Get_IdPresentacion_By_Codigo(info.UoMCode,
-                                                                                                           BeProducto.IdProducto,
-                                                                                                           lConnection,
-                                                                                                           lTransaction)
-                            Else
-                                Console.WriteLine("No se encontró la línea solicitada.")
-                            End If
-
                             Dim vIdPresentacion As Integer = producto.IdPresentacion
 
-                            If IdPresentacionOC <> producto.IdPresentacion Then
-
-                                ' Calcular cantidad ajustada para esta transacción
-                                Dim ProductoAgrupado As New clsBeI_nav_transacciones_out_agrupado
-                                ProductoAgrupado.Idpedidoenc = 0
-                                ProductoAgrupado.Codigo_producto = producto.Codigo_Producto
-                                ProductoAgrupado.No_linea = producto.No_Linea
-                                ProductoAgrupado.IdPresentacion = producto.IdPresentacion
-                                ProductoAgrupado.IdDespachoDet = 0
-                                ProductoAgrupado.Cantidad_Total = producto.Cantidad_Total
-
-                                Dim cantidadAjustada As Decimal
-                                cantidadAjustada = AjustarCantidadPorPresentacion(ProductoAgrupado,
-                                                                                  IdPresentacionOC,
-                                                                                  info.UoMEntry,
-                                                                                  info.UoMCode,
+                            BePresentacion = clsLnProducto_presentacion.GetSingle(producto.IdPresentacion,
                                                                                   lConnection,
                                                                                   lTransaction)
-                                producto.Cantidad_Total = cantidadAjustada
-                                vIdPresentacion = IdPresentacionOC
 
-                            End If
-
-                            BePresentacion = Nothing
                             CodigoPresentacion = ""
-
-                            BePresentacion = clsLnProducto_presentacion.GetSingle(IdPresentacionOC,
-                                                                                  lConnection,
-                                                                                  lTransaction)
 
                             If Not BePresentacion Is Nothing Then
                                 CodigoPresentacion = BePresentacion.Codigo
@@ -248,7 +196,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                                                     p.CodigoPresentacion <> CodigoPresentacion)
 
                                 If existente1 IsNot Nothing Then
-                                    existente1.Cantidad_Total += Math.Round(producto.Cantidad_Total / existente1.Factor, 4)
+                                    existente1.CantidadBase += Math.Round(producto.Cantidad_Total / existente1.Factor, 4)
                                     vUnidadesEncontradas = True
                                 End If
 
@@ -256,14 +204,14 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                             If existente IsNot Nothing Then
                                 ' Sumar cantidad                                
-                                existente.Cantidad_Total += producto.Cantidad_Total
+                                existente.CantidadBase += producto.Cantidad_Total
                             ElseIf Not vUnidadesEncontradas Then
                                 ' Agregar nuevo
-                                Dim prodSap As New ProductoTransferSAP With {
+                                Dim prodSap As New ProductoTransferSAPProrrateo With {
                                                 .IdPedidoEnc = producto.Idordencompra,
                                                 .CodigoProductoSAP = vCodigoProductoSAP,
                                                 .CodigoProductoWMS = BeProducto.Codigo,
-                                                .Cantidad_Total = producto.Cantidad_Total,
+                                                .CantidadBase = producto.Cantidad_Total,
                                                 .CodigoPresentacion = CodigoPresentacion,
                                                 .No_Pedido = Pedido.No_Pedido,
                                                 .No_Linea = producto.No_Linea,
@@ -314,12 +262,11 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     Dim DistinctProductosLineasPres = ProductosParaSAP.Where(Function(x) x.CodigoProductoSAP = vCodigoProductoSAP _
                                                                               AndAlso x.No_Linea = vNoLineaOCSAP).
-                                                                        GroupBy(Function(x) New With {Key x.CodigoProductoSAP, Key x.No_Linea, Key x.CodigoPresentacion}).
+                                                                        GroupBy(Function(x) New With {Key x.CodigoProductoSAP, Key x.No_Linea}).
                                                                         Select(Function(g) New With {
                                                                             g.Key.CodigoProductoSAP,
                                                                             g.Key.No_Linea,
-                                                                            g.Key.CodigoPresentacion,
-                                                                            .Cantidad_Total = g.Sum(Function(x) x.Cantidad_Total)
+                                                                            .Cantidad_Total = g.Sum(Function(x) x.CantidadBase)
                                                                         }).ToList()
 
                     If DistinctProductosLineasPres.Any() Then
@@ -330,8 +277,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                                 If ProductoSalida.Cantidad_Total <= oTransferRequest.Lines.Quantity Then
 
-                                    Dim nuevaLineaEntrega As Boolean = (vCodigoAnterior <> ProductoSalida.CodigoProductoSAP OrElse
-                                                                         vNoLineaAnterior <> ProductoSalida.No_Linea)
+                                    Dim nuevaLineaEntrega As Boolean = (vCodigoAnterior <> ProductoSalida.CodigoProductoSAP)
 
                                     If nuevaLineaEntrega Then
 
@@ -342,14 +288,10 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                         oTransfer.Lines.Quantity = ProductoSalida.Cantidad_Total
                                         oTransfer.Lines.FromWarehouseCode = FromWhs
                                         oTransfer.Lines.WarehouseCode = ToWhs
-
                                         If vUoMEntry > 0 AndAlso vUoMCode <> "Unidad" Then
                                             oTransfer.Lines.UoMEntry = vUoMEntry
                                         End If
-
                                         vCodigoAnterior = oTransfer.Lines.ItemCode
-                                        vNoLineaAnterior = oTransfer.Lines.LineNum
-
                                         oTransfer.Lines.Add()
 
                                         vAgregarEntrega = True
@@ -544,7 +486,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Pedido: {0}-{1}", PT.Idpedidoenc, PT.No_pedido))
 
-                    Enviado_A_Erp = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP_By_IdPedidoEnc(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
+                    Enviado_A_Erp = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido, clsTrans.lConnection, clsTrans.lTransaction)
                     Dim vCodEmpresaPed As String = clsLnTrans_pe_enc.Get_Empresa_By_IdPedidoEnc(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
 
                     If Not Enviado_A_Erp Then
@@ -552,19 +494,11 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                         Dim vvEmpresa As pEmpresa = [Enum].Parse(GetType(pEmpresa), vCodEmpresaPed)
                         Dim vDocEntrySAP As Integer = 0
 
-                        vDocEntrySAP = If(PT.No_pedido.StartsWith("K") OrElse PT.No_pedido.StartsWith("G"), PT.No_pedido.Substring(1), PT.No_pedido)
-
-                        lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x)
-                                                                                      Dim pedido = If(x.No_pedido.StartsWith("K") OrElse x.No_pedido.StartsWith("G"), x.No_pedido.Substring(1), x.No_pedido)
-                                                                                      Return pedido.Trim() = vDocEntrySAP
-                                                                                  End Function)
-
-
-                        lTransaccionesSalidaSingle.ForEach(Sub(t)
-                                                               If t.No_pedido.StartsWith("K") OrElse t.No_pedido.StartsWith("G") Then
-                                                                   t.No_pedido = t.No_pedido.Substring(1)
-                                                               End If
-                                                           End Sub)
+                        If PT.No_pedido.StartsWith("K") OrElse PT.No_pedido.StartsWith("G") Then
+                            vDocEntrySAP = PT.No_pedido.Substring(1)
+                        Else
+                            vDocEntrySAP = Val(PT.No_pedido)
+                        End If
 
                         lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido AndAlso x.Idpedidoenc = PT.Idpedidoenc)
 
@@ -624,7 +558,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         End Try
 
     End Function
-    Private Shared Function Enviar_Solicitud_Traslado_SAP(ByVal lINavTransaccionesOut As List(Of ProductoTransferSAP),
+    Private Shared Function Enviar_Solicitud_Traslado_SAP(ByVal lINavTransaccionesOut As List(Of ProductoTransferSAPProrrateo),
                                                           ByVal FromWhs As String,
                                                           ByVal ToWhs As String,
                                                           ByRef vTrasladoDocEntry As String,
@@ -639,8 +573,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                           ByRef prg As ProgressBar) As Boolean
 
         Enviar_Solicitud_Traslado_SAP = False
-
-        Dim vLineasAgregadas As Integer = 0
 
         Try
             If lINavTransaccionesOut Is Nothing OrElse Not lINavTransaccionesOut.Any() Then
@@ -674,23 +606,25 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             Dim vCodigoAnterior As String = ""
             Dim vNoLineaAnterior As Integer = -1
 
-            Dim ProductosAgrupadosParaSolicitud = lINavTransaccionesOut.Where(Function(x) x.IdPedidoEnc = IdPedidoEnc).
-                                GroupBy(Function(p) New With {Key p.CodigoProductoSAP, Key p.CodigoProductoWMS, Key p.No_Linea, Key p.CodigoPresentacion}).
-                                Select(Function(g) New With {
-                                    g.Key.No_Linea,
-                                    g.Key.CodigoProductoSAP,
-                                    g.Key.CodigoProductoWMS,
-                                    g.Key.CodigoPresentacion,
-                                    .Cantidad = g.Sum(Function(x) x.Cantidad_Total)
-                                }).ToList()
-
             For i As Integer = 0 To solicitudTransfer.Lines.Count - 1
 
                 solicitudTransfer.Lines.SetCurrentLine(i)
 
                 Dim codigoProductoSAP As String = solicitudTransfer.Lines.ItemCode
                 Dim lineaSAP As Integer = solicitudTransfer.Lines.LineNum
-                Dim productosLinea = ProductosAgrupadosParaSolicitud.FindAll(Function(x) x.CodigoProductoSAP = codigoProductoSAP AndAlso x.No_Linea = lineaSAP).ToList()
+
+                Dim productosLinea = lINavTransaccionesOut.
+                                Where(Function(p) p.CodigoProductoSAP = codigoProductoSAP AndAlso
+                                                  p.No_Linea = lineaSAP AndAlso
+                                                  p.IdPedidoEnc = IdPedidoEnc).
+                                GroupBy(Function(p) New With {Key p.CodigoProductoSAP, Key p.CodigoProductoWMS, Key p.No_Linea, Key p.CodigoPresentacion}).
+                                Select(Function(g) New With {
+                                    g.Key.No_Linea,
+                                    g.Key.CodigoProductoSAP,
+                                    g.Key.CodigoProductoWMS,
+                                    g.Key.CodigoPresentacion,
+                                    .Cantidad = g.Sum(Function(x) x.CantidadBase)
+                                }).ToList()
 
                 If productosLinea.Any() Then
 
@@ -708,18 +642,14 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                     oTransfer.Lines.FromWarehouseCode = FromWhs
                                     oTransfer.Lines.WarehouseCode = ToWhs
 
-                                    Dim resultado = SapHelper.Obtener_UoMEntry_De_InventoryUOM(prod.CodigoProductoSAP, oCompany)
-                                    Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_SolTraslado(solicitudTransfer, prod.CodigoProductoSAP, prod.No_Linea)
-                                    If resultado.UoMEntry > 0 Then
-                                        If resultado.UoMEntry <> umEntryOrdenVenta Then
-                                            oTransfer.Lines.Quantity = Math.Round(prod.Cantidad / resultado.Factor, 6)
-                                        End If
-                                        oTransfer.Lines.UoMEntry = resultado.UoMEntry
+                                    Dim vIdUMEntrySAP As Integer = SapHelper.Obtener_UoMEntry_Por_Codigo_Con_Recordset(prod.CodigoPresentacion, oCompany)
+                                    If vIdUMEntrySAP > 0 Then
+                                        oTransfer.Lines.UoMEntry = vIdUMEntrySAP
                                     End If
 
                                     vCodigoAnterior = prod.CodigoProductoSAP
                                     vNoLineaAnterior = prod.No_Linea
-                                    oTransfer.Lines.Add() : vLineasAgregadas += 1
+                                    oTransfer.Lines.Add()
 
                                 End If
 
@@ -739,82 +669,46 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
             Next
 
-            If vLineasAgregadas > 0 Then
+            ' Intentar agregar en SAP
+            Dim oResultado As Integer = oTransfer.Add()
+            If oResultado <> 0 Then
+                Throw New Exception($"#ERROR_SAP_{oResultado}: {oCompany.GetLastErrorDescription()}")
+            End If
 
-                ' Intentar agregar en SAP
-                Dim oResultado As Integer = oTransfer.Add()
-                If oResultado <> 0 Then
-                    Throw New Exception($"#ERROR_SAP_{oResultado}: {oCompany.GetLastErrorDescription()}")
-                End If
+            ' Obtener el nuevo DocEntry
+            Dim newObjectCode As String = ""
+            oCompany.GetNewObjectCode(newObjectCode)
 
-                ' Obtener el nuevo DocEntry
-                Dim newObjectCode As String = ""
-                oCompany.GetNewObjectCode(newObjectCode)
+            Dim vSolTrasDocEntry As Integer = 0
 
-                Dim vSolTrasDocEntry As Integer = 0
+            If Not Integer.TryParse(newObjectCode, vSolTrasDocEntry) Then
+                Throw New Exception("No se pudo obtener el DocEntry del traslado generado.")
+            End If
 
-                If Not Integer.TryParse(newObjectCode, vSolTrasDocEntry) Then
-                    Throw New Exception("No se pudo obtener el DocEntry del traslado generado.")
-                End If
-
-                ' Obtener y actualizar datos relacionados
-                Dim tmpTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oInventoryTransferRequest), StockTransfer)
-
-                If tmpTransfer.GetByKey(CInt(vSolTrasDocEntry)) Then
-                    Dim vMsgSol = "Solicitud de Traslado generada por WMS en base a Transferencia SAP No. " & vTrasladoDocEntry
-                    clsPublic.Actualizar_Progreso(lblprg, vMsgSol)
-                    clsLnLog_error_wms.Agregar_Error("#TRPSAP20250610A: " & vMsgSol)
-                    BeDespachoEnc.No_pase = tmpTransfer.DocNum
-                    clsLnTrans_despacho_enc.Actualizar_No_Pase(BeDespachoEnc, lConnection, lTransaction)
-                    Enviar_Solicitud_Traslado_SAP = True
-                End If
-            Else
-                Throw New Exception("Error2025510101216: El documento no tiene líneas válidas para SAP.")
+            ' Obtener y actualizar datos relacionados
+            Dim tmpTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oInventoryTransferRequest), StockTransfer)
+            If tmpTransfer.GetByKey(CInt(vTrasladoDocEntry)) Then
+                Dim vMsgSol = "Solicitud de Traslado generada por WMS en base a Transferencia SAP No. " & vTrasladoDocEntry
+                clsPublic.Actualizar_Progreso(lblprg, vMsgSol)
+                clsLnLog_error_wms.Agregar_Error("#TRPSAP20250610A: " & vMsgSol)
+                BeDespachoEnc.No_pase = tmpTransfer.DocNum
+                clsLnTrans_despacho_enc.Actualizar_No_Pase(BeDespachoEnc, lConnection, lTransaction)
+                Enviar_Solicitud_Traslado_SAP = True
             End If
 
         Catch ex As Exception
-            clsLnI_nav_ejecucion_det_error.Inserta_Log($"Error al enviar traslado entre almacenes a SAP: {MethodBase.GetCurrentMethod.Name()} {ex.Message}",
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(
+            $"Error al enviar traslado entre almacenes a SAP: {MethodBase.GetCurrentMethod.Name()} {ex.Message}",
             "",
             BeNavEjecucionEnc.IdEjecucionEnc,
             BeConfigDet.Idnavconfigdet)
 
             clsPublic.Actualizar_Progreso(lblprg, $"Error al enviar solicitud de traslado entre almacenes a SAP:{vbNewLine}{ex.Message}")
-            Throw New Exception($"Error al enviar solicitud de traslado entre almacenes a SAP:{vbNewLine}{ex.Message}")
+            Throw
         End Try
 
     End Function
 
-    'For Each producto In lINavTransaccionesOut
-
-    '    Dim productosLinea = lINavTransaccionesOut.
-    '    Where(Function(p) p.CodigoProductoSAP = producto.CodigoProductoSAP AndAlso
-    '                      p.No_Linea = producto.No_Linea AndAlso
-    '                      p.IdPedidoEnc = producto.IdPedidoEnc).
-    '    GroupBy(Function(p) New With {Key p.CodigoProductoSAP, Key p.CodigoProductoWMS}).
-    '    Select(Function(g) New With {
-    '        g.Key.CodigoProductoSAP,
-    '        g.Key.CodigoProductoWMS,
-    '        .Cantidad = g.Sum(Function(x) x.CantidadBase)
-    '    }).ToList()
-
-    '    ' Solo agregar línea si cambia el producto o línea
-    '    Dim nuevaLineaTransfer As Boolean = (vCodigoAnterior <> producto.CodigoProductoSAP OrElse vNoLineaAnterior <> producto.No_Linea)
-    '    If nuevaLineaTransfer Then
-    '        oTransfer.Lines.ItemCode = producto.CodigoProductoSAP
-    '        oTransfer.Lines.Quantity = producto.CantidadBase
-    '        oTransfer.Lines.FromWarehouseCode = FromWhs
-    '        oTransfer.Lines.WarehouseCode = ToWhs
-
-    '        Dim vIdUMEntrySAP As Integer = SapHelper.Obtener_UoMEntry_Por_Codigo_Con_Recordset(producto.CodigoPresentacion, oCompany)
-    '        If vIdUMEntrySAP > 0 Then
-    '            oTransfer.Lines.UoMEntry = vIdUMEntrySAP
-    '        End If
-
-    '        vCodigoAnterior = producto.CodigoProductoSAP
-    '        vNoLineaAnterior = producto.No_Linea
-    '        oTransfer.Lines.Add()
-    '    End If
-    'Next
     Public Shared Function Importar_Solicitud_Traslado_Entrada_SAP(ByRef lblprg As RichTextBox,
                                                                     ByRef prg As Windows.Forms.ProgressBar,
                                                                     Optional ByVal ForzarEjecucion As Boolean = False,
@@ -950,7 +844,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         End Try
 
     End Function
-
     Private Shared Function Procesar_Solicitudes_Traslado_Entrada_SAP(ByVal BeI_nav_config_enc As clsBeI_nav_config_enc,
                                                                       ByVal lblprg As RichTextBox,
                                                                       ByVal FlujoEntrada As Boolean,
@@ -1002,7 +895,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando Solicitud de Traslado (OWTQ) de {NombreEmpresa}: {Pedido.No}/{Pedido.Vendor_Invoice_No}{vbNewLine}")
 
                 If Not clsLnProveedor.Existe_Proveedor(Pedido.Buy_From_Vendor_No) Then
-                    If Inserta_Proveedor_Desde_SAP(Pedido.Buy_From_Vendor_No, Pedido.Company_Code, cnnLog) Then
+                    If Inserta_Proveedor_Desde_SAP(Pedido.Buy_From_Vendor_No, Pedido.Buy_From_Vendor_Name, cnnLog) Then
                         clsPublic.Actualizar_Progreso(lblprg, vbTab & $"El proveedor: {Pedido.Buy_From_Vendor_No} No existía en WMS y fue insertado.")
                     End If
                 End If
@@ -1011,11 +904,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     Dim BePedidoCompraEnc As New clsBeTrans_oc_enc
                     Dim vResult As String = ""
-
-                    If Pedido.Company_Code <> "" Then
-                        Pedido.No = Pedido.Company_Code.Substring(0, 1) & Pedido.No
-                    End If
-
                     If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(Pedido, BePedidoCompraEnc, vResult) Then
                         clsPublic.Actualizar_Progreso(lblprg, $"Se creó el documento de traslado de {NombreEmpresa}: {vResult}")
                     Else
@@ -1023,15 +911,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                     End If
 
                     If BePedidoCompraEnc IsNot Nothing Then
-
-                        Dim vNoPedido As String = Pedido.No
-
-                        If Pedido.No.Substring(0, 1) = "K" OrElse Pedido.No.Substring(0, 1) = "G" Then
-                            vNoPedido = vNoPedido.Substring(1)
-                        End If
-
-                        Marcar_Solicitud_Trasladado_Sincronizado_SAP(vNoPedido, Estado_Enviado_SAP.Enviado, lblprg, Empresa)
-
+                        Marcar_Solicitud_Trasladado_Sincronizado_SAP(Pedido.No, Estado_Enviado_SAP.Enviado, lblprg, Empresa)
                     End If
 
                 Catch ex As Exception
@@ -1225,7 +1105,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         prg.Maximum = lINavTransaccionesOut.Count
         prg.Visible = True
 
-        Dim ProductosParaSAP As New List(Of ProductoTransferSAP)
+        Dim ProductosParaSAP As New List(Of ProductoTransferSAPProrrateo)
         Dim clsTrans As New clsTransaccion
         Dim clsSapTrans As clsSapTransaction = Nothing
         Dim oCompany As Company = Nothing
@@ -1260,14 +1140,12 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
             If Not BeBodega Is Nothing Then
                 Dim BeConfigEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(BePedidoEnc.IdBodega, clsTrans.lConnection, clsTrans.lTransaction)
-                'If BeConfigEnc IsNot Nothing Then
-                '    If Not BeConfigEnc.Bodega_Prorrateo.Equals(BePedidoEnc.Bodega_Destino) OrElse Not BeConfigEnc.Bodega_Prorrateo1.Equals(BePedidoEnc.Bodega_Destino) Then
-                '        clsPublic.Actualizar_Progreso(lblprg, "❌ La bodega de prorrateo no coincide con la bodega del cliente en el pedido.")
-                '        Exit Function
-                '    End If
-                'End If
-            End If
-            End If
+                If BeConfigEnc IsNot Nothing Then
+                    If Not BeConfigEnc.Bodega_Prorrateo.Equals(BePedidoEnc.Cliente.Codigo) OrElse Not BeConfigEnc.Bodega_Prorrateo1.Equals(BePedidoEnc.Cliente.Codigo) Then
+                        clsPublic.Actualizar_Progreso(lblprg, "❌ La bodega de prorrateo no coincide con la bodega del cliente en el pedido.")
+                        Exit Function
+                    End If
+                End If
             End If
 
             Dim oTransfer As StockTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oStockTransfer), StockTransfer)
@@ -1293,8 +1171,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                         Continue For
                     End If
 
-                    If prod.Cantidad_Total > oTransferRequest.Lines.Quantity Then
-                        Throw New Exception($"WMS intenta generar un traslado por {prod.Cantidad_Total} de {codigoSAP}, pero SAP muestra {oTransferRequest.Lines.Quantity}.")
+                    If prod.CantidadBase > oTransferRequest.Lines.Quantity Then
+                        Throw New Exception($"WMS intenta generar un traslado por {prod.CantidadBase} de {codigoSAP}, pero SAP muestra {oTransferRequest.Lines.Quantity}.")
                     End If
 
                     oTransfer.Lines.SetCurrentLine(NoLineaTransfer)
@@ -1302,17 +1180,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                     oTransfer.Lines.BaseEntry = _DocEntry
                     oTransfer.Lines.BaseLine = lineaSAP
                     oTransfer.Lines.ItemCode = codigoSAP
-
-                    Dim resultado = SapHelper.Obtener_UoMEntry_De_InventoryUOM(prod.CodigoProductoSAP, oCompany)
-                    Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_SolTraslado(oTransferRequest, prod.CodigoProductoSAP, prod.No_Linea)
-                    If resultado.UoMEntry > 0 Then
-                        If resultado.UoMEntry <> umEntryOrdenVenta Then
-                            oTransfer.Lines.Quantity = Math.Round(prod.Cantidad_Total / resultado.Factor, 6)
-                        End If
-                        oTransfer.Lines.UoMEntry = resultado.UoMEntry
-                    End If
-
-                    oTransfer.Lines.Quantity = prod.Cantidad_Total
+                    oTransfer.Lines.Quantity = prod.CantidadBase
                     oTransfer.Lines.FromWarehouseCode = oTransferRequest.FromWarehouse
                     oTransfer.Lines.WarehouseCode = BePedidoEnc.Cliente.Codigo
                     oTransfer.Lines.Add()
@@ -1377,9 +1245,9 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
     End Function
     Private Shared Function AgruparProductosParaTraslado(lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
                                                          pEmpresa As pEmpresa,
-                                                         clsTrans As clsTransaccion) As List(Of ProductoTransferSAP)
+                                                         clsTrans As clsTransaccion) As List(Of ProductoTransferSAPProrrateo)
 
-        Dim ProductosParaSAP As New List(Of ProductoTransferSAP)
+        Dim ProductosParaSAP As New List(Of ProductoTransferSAPProrrateo)
 
         ' Agrupar por ID del pedido, línea y presentación
         Dim agrupados = lINavTransaccionesOut.
@@ -1420,28 +1288,15 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                 CantidadBase = Math.Round(CantidadBase / BePresentacion.Factor, 6)
             End If
 
-            ' Buscar si ya existe un agrupado con misma clave
-            Dim existente = ProductosParaSAP.FirstOrDefault(Function(x) x.CodigoProductoSAP = CodigoSAP AndAlso
-                                                            x.No_Linea = item.No_linea AndAlso
-                                                            x.IdPedidoEnc = item.Idpedidoenc)
-
-            If existente IsNot Nothing Then
-                ' Sumar cantidades y anexar transacción
-                existente.Cantidad_Total += CantidadBase
-            Else
-                ' Crear nuevo agrupado
-                ProductosParaSAP.Add(New ProductoTransferSAP With {
+            ProductosParaSAP.Add(New ProductoTransferSAPProrrateo With {
             .IdPedidoEnc = item.Idpedidoenc,
             .CodigoProductoSAP = CodigoSAP,
             .CodigoProductoWMS = item.CodigoProducto,
-                    .Cantidad_Total = CantidadBase,
+            .CantidadBase = CantidadBase,
             .CodigoPresentacion = CodigoPresentacion,
             .No_Pedido = item.No_pedido,
             .No_Linea = item.No_linea
         })
-            End If
-
-
         Next
 
         Return ProductosParaSAP
@@ -1533,9 +1388,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
             ' Enviar traslado a SAP
             If transferencia.Add() <> 0 Then
-                Dim ErrorSap As String = $"#ERROR_SAP: {oCompany.GetLastErrorDescription()}"
-                clsPublic.Actualizar_Progreso(lblprg, ErrorSap)
-                Throw New Exception(ErrorSap)
+                Throw New Exception($"#ERROR_SAP: {oCompany.GetLastErrorDescription()}")
             End If
 
             ' Obtener DocEntry generado
@@ -1563,11 +1416,9 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             clsPublic.Actualizar_Progreso(lblprg, mensaje)
             clsLnLog_error_wms.Agregar_Error("#TRSAPSOL20250610: " & mensaje)
 
-            Dim solicitudTraslado As Boolean = False
-
             ' Enviar traslado final si aplica
             If Not String.IsNullOrEmpty(bodegaDestinoFinal) Then
-                solicitudTraslado = Enviar_Solicitud_Traslado_SAP(productosAgrupados,
+                Enviar_Solicitud_Traslado_SAP(productosAgrupados,
                                               bodegaIntermedia,
                                               bodegaDestinoFinal,
                                               nuevoDocEntry,
@@ -1580,17 +1431,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                               clsTrans.lTransaction,
                                               lblprg,
                                               prg)
-            End If
-
-            If Not String.IsNullOrEmpty(bodegaDestinoFinal) Then
-
-                If Not solicitudTraslado Then
-                    Dim vSolicitud As Integer = clsLnTrans_despacho_enc.Get_No_Pase_By_IdDespachoEnc(despachoEnc.IdDespachoEnc, clsTrans.lConnection, clsTrans.lTransaction)
-                    If vSolicitud = 0 Then
-                        Throw New Exception("No se pudo generar la solicitud de traslado.")
-                    End If
-                End If
-
             End If
 
             ' Marcar registros como enviados            
@@ -1618,7 +1458,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
     End Function
     Private Shared Function AgregarLineasTransferencia(ByRef transferencia As StockTransfer,
                                                        ByVal solicitudTransfer As StockTransfer,
-                                                       ByVal productosAgrupados As List(Of ProductoTransferSAP),
+                                                       ByVal productosAgrupados As List(Of ProductoTransferSAPProrrateo),
                                                        ByVal pedidoEnc As clsBeTrans_pe_enc,
                                                        ByVal noReferenciaWMS As String,
                                                        ByRef transaccionesOut As List(Of clsBeI_nav_transacciones_out),
@@ -1628,19 +1468,12 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         Dim lineasAgregadas As Boolean = False
         Dim noLineaTransfer As Integer = 0
 
-        noReferenciaWMS = productosAgrupados.FirstOrDefault.No_Pedido
-
         For i As Integer = 0 To solicitudTransfer.Lines.Count - 1
 
             solicitudTransfer.Lines.SetCurrentLine(i)
 
             Dim codigoProductoSAP As String = solicitudTransfer.Lines.ItemCode
             Dim lineaSAP As Integer = solicitudTransfer.Lines.LineNum
-            Dim estadoLinea As BoStatus = solicitudTransfer.Lines.LineStatus
-            If estadoLinea = BoStatus.bost_Close Then
-                clsPublic.Actualizar_Progreso(lblprg, $"La línea {codigoProductoSAP} aparece estar cerrada en sap.")
-                clsLnLog_error_wms.Agregar_Error(1, pedidoEnc.IdPedidoEnc, $"La línea {codigoProductoSAP} aparece estar cerrada en sap (se enviará de todas formas)")
-            End If
 
             Dim productosLinea = productosAgrupados.
             Where(Function(p) p.CodigoProductoSAP = codigoProductoSAP AndAlso
@@ -1650,7 +1483,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             Select(Function(g) New With {
                 g.Key.CodigoProductoSAP,
                 g.Key.CodigoProductoWMS,
-                .Cantidad = g.Sum(Function(x) x.Cantidad_Total)
+                .Cantidad = g.Sum(Function(x) x.CantidadBase)
             }).ToList()
 
             If productosLinea.Any() Then
@@ -1710,37 +1543,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
         Return lineasAgregadas
 
-    End Function
-
-    Private Shared Function Buscar_UoMEntry_SolTraslado(oTransferRequest As StockTransfer, itemCode As String, lineNum As Integer) As Integer
-        For i As Integer = 0 To oTransferRequest.Lines.Count - 1
-            oTransferRequest.Lines.SetCurrentLine(i)
-            If oTransferRequest.Lines.ItemCode = itemCode AndAlso oTransferRequest.Lines.LineNum = lineNum Then
-                Return oTransferRequest.Lines.UoMEntry
-            End If
-        Next
-        Return -1 ' No encontrado
-    End Function
-
-    Private Shared Function AjustarCantidadPorPresentacion(prod As clsBeI_nav_transacciones_out_agrupado,
-                                                          IdPresentacionOC As Integer,
-                                                          uomEntry As Integer,
-                                                          uomCode As String,
-                                                          lconnection As SqlConnection,
-                                                          ltransaction As SqlTransaction) As Decimal
-
-        Dim presentacion = clsLnProducto_presentacion.GetSingle(IdPresentacionOC, lconnection, ltransaction)
-
-        If prod.IdPresentacion = 0 AndAlso uomEntry > 0 AndAlso uomCode <> "Unidad" AndAlso presentacion IsNot Nothing Then
-            Return Math.Round(prod.Cantidad_Total / presentacion.Factor, 6)
-        End If
-
-        If prod.IdPresentacion <> 0 AndAlso (uomEntry = 0 OrElse uomCode = "Unidad") AndAlso
-            presentacion IsNot Nothing Then
-            Return Math.Round(prod.Cantidad_Total * presentacion.Factor, 6)
-        End If
-
-        Return prod.Cantidad_Total
     End Function
     Public Class ProductoTransferSAPProrrateo
         Public Property IdPedidoEnc As Integer

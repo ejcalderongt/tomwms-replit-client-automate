@@ -165,14 +165,6 @@ DAL
  <param name="pNoPedido"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction,System.Int32)">
- <summary>
- #EJC202309261339: Se utiliza en la interface SAP La Cumbre, para enviar entrega de mercancía a orden de compra.
- </summary>
- <param name="lConnection"></param>
- <param name="lTransaction"></param>
- <returns></returns>
-</member>
 <member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #CKFK20241021: Se utiliza en la interface SAP Becofarma, para enviar entrega de mercancía a orden de compra.
@@ -205,32 +197,12 @@ DAL
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEncAgrupado(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
- <summary>
- #CKFK20250715 GetAll del inventario agrupado
- </summary>
- <param name="pIdInvEnc"></param>
- <param name="lConnection"></param>
- <param name="lTransaction"></param>
- <returns></returns>
-</member>
 <member name="M:TOMWMS.clsLnTrans_inv_stock_prod.Get_All_By_Codigo_O_Licencia(System.Int32,System.String,System.Int32)">
  <summary>
  ·EJC20220502: Obtener el inv. teòrico a partir de una licencia o còdigo.
  </summary>
  <param name="pIdInventario"></param>
  <param name="pCodigo"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(TOMWMS.clsBeI_nav_ped_compra_enc@,TOMWMS.clsBeTrans_oc_enc@,System.Windows.Forms.RichTextBox@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
- <summary>
- Procesar_Pedido_Compra_MI3 (Con transacción)
- </summary>
- <param name="navPedidoCompraEnc"></param>
- <param name="OutBeOrdenCompra"></param>
- <param name="lblprg"></param>
- <param name="lConnection"></param>
- <param name="lTransInterface"></param>
  <returns></returns>
 </member>
 <member name="M:TOMWMS.clsLnI_nav_ped_traslado_enc.Actualizar_Estado(TOMWMS.clsBeI_nav_ped_traslado_enc@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
@@ -560,14 +532,6 @@ DAL
  <param name="pFiltro">Buscar en la lista por este nombre  y los filtra</param>
  <returns></returns>
  <remarks></remarks>
-</member>
-<member name="M:TOMWMS.clsLnVW_Despacho_Rep.Get_Ultimo_Lote_By_IdCliente(System.Int32,System.Int32)">
- <summary>
- #EJC20190313: Devuelve el último lote despachado para un cliente  y producto.
- </summary>
- <param name="pIdCliente">Id de cliente</param>
- <param name="pIdProductoBodega">Id de producto</param>
- <returns>El número de lote</returns>
 </member>
 <member name="M:TOMWMS.clsLnTrans_despacho_det.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>

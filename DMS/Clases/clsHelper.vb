@@ -19,8 +19,6 @@ Public Class clsHelper
     ''' <param name="tipo">Tipo de mensaje (Info, Error, etc.).</param>
     ''' <param name="incluirHora">Si se desea mostrar la hora actual.</param>
     Public Shared Sub LogMensaje(logBox As RichTextBox, mensaje As String, Optional tipo As TipoMensaje = TipoMensaje.Info, Optional incluirHora As Boolean = True)
-        If logBox Is Nothing Then Exit Sub
-
         If incluirHora Then
             mensaje = $"{Now:HH:mm:ss} - {mensaje}"
         End If
@@ -29,15 +27,15 @@ Public Class clsHelper
         Dim color As Color
         Select Case tipo
             Case TipoMensaje.Info
-                color = color.Black
+                color = Color.Black
             Case TipoMensaje.Exito
-                color = color.Green
+                color = Color.Green
             Case TipoMensaje.Advertencia
-                color = color.Blue
+                color = Color.Blue
             Case TipoMensaje.Error_
-                color = color.Red
+                color = Color.Red
             Case Else
-                color = color.Black
+                color = Color.Black
         End Select
 
         ' Escribir el mensaje con el color definido
@@ -50,14 +48,6 @@ Public Class clsHelper
         logBox.Refresh()
         logBox.SelectionStart = logBox.TextLength
         logBox.ScrollToCaret()
-    End Sub
-
-    ' Ejecutar en el hilo de la UI si es necesario
-    If logBox.InvokeRequired Then
-            logBox.Invoke(escribir)
-        Else
-            escribir()
-        End If
     End Sub
 
     Public Shared Function FragmentarPorTamanoEnBytes(Of T)(lista As List(Of T), tamañoMaximoBytes As Integer) As List(Of String)
@@ -128,8 +118,6 @@ Public Class clsHelper
             BeLogSincronizacion.Fec_agr = Now
             BeLogSincronizacion.Estado = "Ok"
             BeLogSincronizacion.Entidad = pTablaSincronizada
-            BeLogSincronizacion.IdPropietario = IdPropietario
-            BeLogSincronizacion.Registros_enviados = pRegistrosEnviados
 
             If pTiempo > 0 Then
                 BeLogSincronizacion.Tiempo_de_envio = pTiempo
@@ -146,17 +134,9 @@ Public Class clsHelper
             clsLnLog_sincronizacion_nube.Insertar(BeLogSincronizacion)
 
         Catch ex As Exception
-    Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-    End Try
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
     End Sub
-
-    ' Una nueva clase auxiliar para gestionar cada fila
-    Public Class DuplaSinFecha
-        Public Property Tabla As String
-        Public Property IdPropietario As Integer
-        Public Property Nombre As String
-        Public Property FechaSincronizacion As Date?
-    End Class
 
 End Class
 

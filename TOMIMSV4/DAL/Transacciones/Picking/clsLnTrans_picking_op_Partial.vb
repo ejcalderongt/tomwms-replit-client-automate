@@ -1,6 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Data.SqlClient
 
 Partial Public Class clsLnTrans_picking_op
 
@@ -141,8 +140,6 @@ Partial Public Class clsLnTrans_picking_op
 
     End Function
 
-
-
     Public Shared Function Delete(ByVal pIdOperadorPicking As Integer) As Integer
 
         Delete = 0
@@ -201,11 +198,9 @@ Partial Public Class clsLnTrans_picking_op
             Next
 
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingEnc:=IdPickingEnc, pStackTrace:=ex.StackTrace)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
         End Try
 
     End Sub

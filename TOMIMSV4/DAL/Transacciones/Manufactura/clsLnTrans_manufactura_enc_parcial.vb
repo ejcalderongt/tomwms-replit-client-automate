@@ -2,7 +2,7 @@ Imports System.Data.SqlClient
 Partial Public Class clsLnTrans_manufactura_enc
 
     ''' <summary>
-    ''' #EJC202404020635: Inserta la transacciÃ³n de manufactura despuÃ©s de que se inserta el pedido de SAP.
+    ''' #EJC202404020635: Inserta la transacción de manufactura después de que se inserta el pedido de SAP.
     ''' </summary>
     ''' <param name="INavPedidoCliente"></param>
     ''' <param name="BePedidoEncResult"></param>
@@ -56,7 +56,7 @@ Partial Public Class clsLnTrans_manufactura_enc
                     Dim lProductoConBonoEnPedido = BePedidoEncResult.Detalle.FindAll(Function(x) lProductoConBono.Contains(x.IdProductoBodega))
 
                     If lProductoConBonoEnPedido.Count = 0 Then
-                        Throw New Exception("MSG_240506: La tarea de manufactura es pegar_stickers pero ningÃºn producto tiene bono en el pedido.")
+                        Throw New Exception("MSG_240506: La tarea de manufactura es pegar_stickers pero ningún producto tiene bono en el pedido.")
                     End If
 
                     If Not lStockResByPedido Is Nothing Then
@@ -124,7 +124,7 @@ Partial Public Class clsLnTrans_manufactura_enc
             End If
 
             If vCantidadLineas = 0 Then
-                Throw New Exception("La tarea de manufactura no se creÃ³, revise si las lÃ­neas de detalle aplican a tarea de manufactura ligera.")
+                Throw New Exception("La tarea de manufactura no se creó, revise si las líneas de detalle aplican a tarea de manufactura ligera.")
             End If
 
             lTransaction.Commit()

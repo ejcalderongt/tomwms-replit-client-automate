@@ -40,9 +40,6 @@ Partial Class frmrptUbicacionesVacias
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.prg = New DevExpress.XtraEditors.ProgressBarControl()
         Me.sf = New System.Windows.Forms.SaveFileDialog()
-        Me.chkUbicaciones = New DevExpress.XtraBars.BarToggleSwitchItem()
-        Me.chkTodas = New DevExpress.XtraBars.BarToggleSwitchItem()
-        Me.chkDetallado = New DevExpress.XtraBars.BarToggleSwitchItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -57,16 +54,15 @@ Partial Class frmrptUbicacionesVacias
         '
         Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdImprimir, Me.cmdActualizar, Me.cmdSalir, Me.lblRegs, Me.cmdExToExcel, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid, Me.chkUbicaciones, Me.chkTodas, Me.chkDetallado})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdImprimir, Me.cmdActualizar, Me.cmdSalir, Me.lblRegs, Me.cmdExToExcel, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.RibbonControl.MaxItemId = 17
+        Me.RibbonControl.MaxItemId = 13
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.OpcionesLista})
         Me.RibbonControl.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemProgressBar1, Me.RepositoryItemProgressBar2, Me.RepositoryItemMarqueeProgressBar1, Me.RepositoryItemProgressBar3})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1255, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1076, 158)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdImprimir
@@ -131,9 +127,6 @@ Partial Class frmrptUbicacionesVacias
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuGuardarLayoutGrid)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarLayoutGrid)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdSalir)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkUbicaciones)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkTodas)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkDetallado)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RepositoryItemProgressBar1
@@ -156,24 +149,21 @@ Partial Class frmrptUbicacionesVacias
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 747)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 607)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1255, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1076, 24)
         '
         'dgAuditoriaPicking
         '
         Me.dgAuditoriaPicking.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgAuditoriaPicking.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         GridLevelNode1.RelationName = "Level1"
         Me.dgAuditoriaPicking.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
-        Me.dgAuditoriaPicking.Location = New System.Drawing.Point(0, 193)
+        Me.dgAuditoriaPicking.Location = New System.Drawing.Point(0, 158)
         Me.dgAuditoriaPicking.MainView = Me.GridView1
-        Me.dgAuditoriaPicking.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgAuditoriaPicking.MenuManager = Me.RibbonControl
         Me.dgAuditoriaPicking.Name = "dgAuditoriaPicking"
-        Me.dgAuditoriaPicking.Size = New System.Drawing.Size(1255, 532)
+        Me.dgAuditoriaPicking.Size = New System.Drawing.Size(1076, 431)
         Me.dgAuditoriaPicking.TabIndex = 0
         Me.dgAuditoriaPicking.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -183,7 +173,6 @@ Partial Class frmrptUbicacionesVacias
         Me.GridView1.GridControl = Me.dgAuditoriaPicking
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True
-        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 933
         Me.GridView1.OptionsFind.AlwaysVisible = True
         Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
@@ -192,46 +181,26 @@ Partial Class frmrptUbicacionesVacias
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prg.Location = New System.Drawing.Point(0, 725)
-        Me.prg.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.prg.Location = New System.Drawing.Point(0, 589)
         Me.prg.MenuManager = Me.RibbonControl
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1255, 22)
+        Me.prg.Size = New System.Drawing.Size(1076, 18)
         Me.prg.TabIndex = 6
         '
         'sf
         '
         Me.sf.CheckFileExists = True
         '
-        'chkUbicaciones
-        '
-        Me.chkUbicaciones.Caption = "Ocupadas"
-        Me.chkUbicaciones.Id = 14
-        Me.chkUbicaciones.Name = "chkUbicaciones"
-        '
-        'chkTodas
-        '
-        Me.chkTodas.Caption = "Todas"
-        Me.chkTodas.Id = 15
-        Me.chkTodas.Name = "chkTodas"
-        '
-        'chkDetallado
-        '
-        Me.chkDetallado.Caption = "Detallado"
-        Me.chkDetallado.Id = 16
-        Me.chkDetallado.Name = "chkDetallado"
-        '
         'frmrptUbicacionesVacias
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1255, 777)
+        Me.ClientSize = New System.Drawing.Size(1076, 631)
         Me.Controls.Add(Me.dgAuditoriaPicking)
         Me.Controls.Add(Me.prg)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmrptUbicacionesVacias"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -269,7 +238,4 @@ Partial Class frmrptUbicacionesVacias
     Friend WithEvents sf As SaveFileDialog
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents chkUbicaciones As DevExpress.XtraBars.BarToggleSwitchItem
-    Friend WithEvents chkTodas As DevExpress.XtraBars.BarToggleSwitchItem
-    Friend WithEvents chkDetallado As DevExpress.XtraBars.BarToggleSwitchItem
 End Class

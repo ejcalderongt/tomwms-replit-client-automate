@@ -6,11 +6,9 @@ using WMSWebAPI.Dtos.Ingresos;
 namespace WMSWebAPI.Services.Proveedor
 {
     public interface ISyncProveedorService
-    {
-        void ProcesarProveedorListDto(List<ProveedorDto> listaDto, SqlConnection conn, SqlTransaction tx);
+    {        
 
-        void ProcesarProveedorDto(ProveedorDto dto, SqlConnection conn, SqlTransaction tx);
-        // Firma para la interfaz ISyncProveedorService
+        void Procesarmi3ProveedorDto(mi3ProveedorDto dto, SqlConnection conn, SqlTransaction tx);
         List<clsBeProveedor> Get_All();
 
     }

@@ -598,9 +598,7 @@ Partial Public Class clsLnProducto_codigos_barra
 
         Try
 
-            Dim sp As String = String.Format("SELECT TOP 1 * FROM producto_codigos_barra 
-                                              WHERE IdProducto={0} AND IdProveedor={1} AND 
-                                              codigo_barra='{2}'", pIdProducto, pIdProveedor, pCodigoBarra)
+            Dim sp As String = String.Format("SELECT TOP 1 * FROM producto_codigos_barra WHERE IdProducto={0} AND IdProveedor={1} AND codigo_barra='{2}'", pIdProducto, pIdProveedor, pCodigoBarra)
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction)
             Dim dad As New SqlDataAdapter(cmd)
             Dim dt As New DataTable

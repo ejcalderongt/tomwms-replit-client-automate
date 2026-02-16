@@ -63,7 +63,6 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
 
     End Function
 
-
     Public Shared Function Listar(ByVal pActivo As Boolean) As DataTable
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -105,7 +104,6 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
 
     End Function
 
-
     Public Shared Function MaxID() As Integer
 
         Try
@@ -134,7 +132,6 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
         End Try
 
     End Function
-
 
     Public Shared Function ExisteDPI(ByVal pDPI As String) As Boolean
 

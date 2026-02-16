@@ -233,16 +233,8 @@ Public Class frmCambioUbicacion_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
-                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -329,18 +321,8 @@ Public Class frmCambioUbicacion_List
             ListarTransaccionUbicHhEnc()
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
-                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
     End Sub
 

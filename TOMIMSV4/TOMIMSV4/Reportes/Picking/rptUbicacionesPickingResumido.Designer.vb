@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Public Class rptUbicacionesPickingResumido
     Inherits DevExpress.XtraReports.UI.XtraReport
 
     'XtraReport overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Public Class rptUbicacionesPickingResumido
     'NOTE: The following procedure is required by the Designer
     'It can be modified using the Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim SelectQuery1 As DevExpress.DataAccess.Sql.SelectQuery = New DevExpress.DataAccess.Sql.SelectQuery()
@@ -458,7 +458,7 @@ Partial Public Class rptUbicacionesPickingResumido
         Me.Title.Font = New DevExpress.Drawing.DXFont("Arial", 14.25!)
         Me.Title.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.Title.Name = "Title"
-        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(15), CInt(15), CInt(0), CInt(0), CSng(254.0!))
+        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(15, 15, 0, 0, 254.0!)
         '
         'DetailCaption1
         '
@@ -469,7 +469,7 @@ Partial Public Class rptUbicacionesPickingResumido
         Me.DetailCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.DetailCaption1.ForeColor = System.Drawing.Color.White
         Me.DetailCaption1.Name = "DetailCaption1"
-        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(15), CInt(15), CInt(0), CInt(0), CSng(254.0!))
+        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(15, 15, 0, 0, 254.0!)
         Me.DetailCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData1
@@ -480,7 +480,7 @@ Partial Public Class rptUbicacionesPickingResumido
         Me.DetailData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData1.ForeColor = System.Drawing.Color.Black
         Me.DetailData1.Name = "DetailData1"
-        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(15), CInt(15), CInt(0), CInt(0), CSng(254.0!))
+        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(15, 15, 0, 0, 254.0!)
         Me.DetailData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData3_Odd
@@ -492,7 +492,7 @@ Partial Public Class rptUbicacionesPickingResumido
         Me.DetailData3_Odd.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData3_Odd.ForeColor = System.Drawing.Color.Black
         Me.DetailData3_Odd.Name = "DetailData3_Odd"
-        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(15), CInt(15), CInt(0), CInt(0), CSng(254.0!))
+        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(15, 15, 0, 0, 254.0!)
         Me.DetailData3_Odd.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'PageInfo
@@ -500,7 +500,7 @@ Partial Public Class rptUbicacionesPickingResumido
         Me.PageInfo.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.PageInfo.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.PageInfo.Name = "PageInfo"
-        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(15), CInt(15), CInt(0), CInt(0), CSng(254.0!))
+        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(15, 15, 0, 0, 254.0!)
         '
         'XrLabel1
         '
@@ -510,7 +510,7 @@ Partial Public Class rptUbicacionesPickingResumido
         Me.XrLabel1.LocationFloat = New DevExpress.Utils.PointFloat(1317.25!, 61.45361!)
         Me.XrLabel1.Multiline = True
         Me.XrLabel1.Name = "XrLabel1"
-        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(96.0!))
+        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96.0!)
         Me.XrLabel1.SizeF = New System.Drawing.SizeF(254.0!, 58.42!)
         Me.XrLabel1.StylePriority.UseFont = False
         Me.XrLabel1.StylePriority.UseTextAlignment = False

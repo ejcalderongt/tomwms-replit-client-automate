@@ -109,7 +109,7 @@ Partial Public Class rptAjuste
         '
         Me.XrTableCell5.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.Producto")})
         Me.XrTableCell5.Name = "XrTableCell5"
-        Me.XrTableCell5.Weight = 1.2740373947533647R
+        Me.XrTableCell5.Weight = 1.2740373947533648R
         '
         'XrTableCell6
         '

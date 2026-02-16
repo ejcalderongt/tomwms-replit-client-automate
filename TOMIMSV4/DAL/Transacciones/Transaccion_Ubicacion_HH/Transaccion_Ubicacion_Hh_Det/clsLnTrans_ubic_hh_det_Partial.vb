@@ -721,23 +721,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
                             End If
 
-                            '#MECR19112025: Se agregó bitacora de logs para implosion
-                            Dim vMsgInformacion As String = "Se agrego implosion, Licencia: " + pMovimiento.Lic_plate + " por el operador: " + pMovimiento.IdOperadorBodega.ToString()
-                            clsLnLog_error_wms_pack.Agregar_Error(vMsgInformacion,
-                                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
-                                                                  pIdBodega:=pMovimiento.IdBodegaDestino,
-                                                                  pIdPedidoEnc:=pMovimiento.IdPedidoEnc,
-                                                                  pIdDespachoEnc:=pMovimiento.IdDespachoEnc,
-                                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
-                                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
-                                                                  pIdUnidadMedida:=pMovimiento.IdUnidadMedida,
-                                                                  pLic_Plate:=pMovimiento.Lic_plate,
-                                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
-                                                                  pUsuario_agr:=pMovimiento.Usuario_agr,
-                                                                  pEsImplosion:=True)
-
-                        Else
-                            Throw New Exception("No hay cantidad disponible para implosionar")
                         End If
 
                     Next
@@ -815,7 +798,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -825,24 +808,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: " & pStockRes.IdUbicacion & " ubicacion anterior " & pStockRes.IdUbicacion_Anterior & "opoerador " & pMovimiento.IdOperadorBodega
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
-                                                  pUsrAgr:=pMovimiento.Usuario_agr,
-                                                  pIdTareaUbicacionEnc:=pIdMovimiento,
-                                                  pIdStock:=pStockRes.IdStock,
-                                                  pIdUMBAs:=pMovimiento.IdUnidadMedida,
-                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
-                                                  pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
-                                                  pCantidad:=pMovimiento.Cantidad,
-                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
-                                                  pTransaction:=lTransaction,
-                                                  pConection:=lConnection)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             If pStockRes.Lic_plate = "" Then
                 ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes,
@@ -967,48 +934,11 @@ Partial Public Class clsLnTrans_ubic_hh_det
                     Aplica_Cambio_Estado_Ubic = (IdStockNuevo <> 0)
 
                 Else
-                    '#MECR03112025: Se agrego bitacora de ubicacion
-                    'clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock)
-                    Dim msgError As String = "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock
-                    clsLnLog_error_wms_ubic.Agregar_Error(msgError,
-                                                          pIdEmpresa:=pMovimiento.IdEmpresa,
-                                                          pUsrAgr:=pMovimiento.Usuario_agr,
-                                                          pIdTareaUbicacionEnc:=pIdMovimiento,
-                                                          pIdStock:=pStockRes.IdStock,
-                                                          pIdUMBAs:=pMovimiento.IdUnidadMedida,
-                                                          pIdPresentacion:=pMovimiento.IdPresentacion,
-                                                          pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
-                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
-                                                          pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
-                                                          pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
-                                                          pCantidad:=pMovimiento.Cantidad,
-                                                          pIdOperador:=pMovimiento.IdOperadorBodega,
-                                                          pTransaction:=lTransaction,
-                                                          pConection:=lConnection)
-
-                    Throw New Exception("ERROR_202208241645A: Es probable que la licencia haya tenido una actualización, recargue la licencia.")
+                    Throw New Exception("ERROR_202208241645A: No se pudo obtener la información de stock con los parámetros solicitados (lista.count =0 )")
                 End If
 
             Else
-                '#MECR03112025: Se agrego bitacora de ubicacion
-                'clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock)
-                Dim msgError As String = "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock
-                clsLnLog_error_wms_ubic.Agregar_Error(msgError,
-                                                          pIdEmpresa:=pMovimiento.IdEmpresa,
-                                                          pUsrAgr:=pMovimiento.Usuario_agr,
-                                                          pIdTareaUbicacionEnc:=pIdMovimiento,
-                                                          pIdStock:=pStockRes.IdStock,
-                                                          pIdUMBAs:=pMovimiento.IdUnidadMedida,
-                                                          pIdPresentacion:=pMovimiento.IdPresentacion,
-                                                          pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
-                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
-                                                          pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
-                                                          pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
-                                                          pCantidad:=pMovimiento.Cantidad,
-                                                          pIdOperador:=pMovimiento.IdOperadorBodega,
-                                                          pTransaction:=lTransaction,
-                                                          pConection:=lConnection)
-
+                clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock)
                 Throw New Exception("ERROR_202208241645B: No se pudo obtener la información de stock con los parámetros solicitados (lista is nothing)")
             End If
 
@@ -1120,23 +1050,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Return result
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
-                                                  pLicencia:=pMovimiento.Lic_plate,
-                                                  pIdStock:=pStockRes.IdStock,
-                                                  pIdUMBAs:=pMovimiento.IdUnidadMedida,
-                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
-                                                  pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
-                                                  pCantidad:=pMovimiento.Cantidad,
-                                                  pIdOperador:=pMovimiento.IdOperadorBodega)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1165,11 +1080,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -1229,11 +1141,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
             End If
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdTareaUbicacionEnc:=IdTareaUbicacionEnc)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

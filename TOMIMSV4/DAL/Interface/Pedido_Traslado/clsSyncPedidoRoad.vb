@@ -39,7 +39,7 @@ Public Class clsSyncPedidoRoad
                 End If
 
                 Dim BePedidoEnc As New clsBeTrans_pe_enc
-                BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PC, lblprg, Nothing, Nothing)
+                BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PC, lblprg)
 
                 If Not BePedidoEnc Is Nothing Then
 

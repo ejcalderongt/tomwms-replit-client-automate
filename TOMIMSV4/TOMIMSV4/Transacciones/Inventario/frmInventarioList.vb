@@ -12,7 +12,6 @@ Public Class frmInventarioList
 
     Public Property Modo As pModo
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
-    Public Call_Bind_Listar_Inventarios As New MethodInvoker(AddressOf Cargar)
 
     Enum pModo
         Lista = 1

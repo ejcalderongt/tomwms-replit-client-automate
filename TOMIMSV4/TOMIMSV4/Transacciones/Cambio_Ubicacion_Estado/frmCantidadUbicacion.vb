@@ -52,27 +52,8 @@ Public Class frmCantidadUbicacion
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=pListObjDet.IdTareaUbicacionEnc,
-                                                  pIdTareaUbicacionDet:=pListObjDet.IdTareaUbicacionDet,
-                                                  pIdStock:=pListObjDet.IdStock,
-                                                  pIdUMBAs:=pListObjDet.UnidadMedida.IdUnidadMedida,
-                                                  pIdPresentacion:=pListObjDet.ProductoPresentacion.IdPresentacion,
-                                                  pIdUbicacionOrigen:=pListObjDet.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=pListObjDet.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=pListObjDet.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=pListObjDet.IdEstadoDestino,
-                                                  pCantidad:=pListObjDet.Cantidad,
-                                                  pIdOperador:=pListObjDet.IdOperadorBodega)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Sub
@@ -119,27 +100,8 @@ Public Class frmCantidadUbicacion
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=pListObjDet.IdTareaUbicacionEnc,
-                                                  pIdTareaUbicacionDet:=pListObjDet.IdTareaUbicacionDet,
-                                                  pIdStock:=pListObjDet.IdStock,
-                                                  pIdUMBAs:=pListObjDet.UnidadMedida.IdUnidadMedida,
-                                                  pIdPresentacion:=pListObjDet.ProductoPresentacion.IdPresentacion,
-                                                  pIdUbicacionOrigen:=pListObjDet.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=pListObjDet.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=pListObjDet.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=pListObjDet.IdEstadoDestino,
-                                                  pCantidad:=pListObjDet.Cantidad,
-                                                  pIdOperador:=pListObjDet.IdOperadorBodega)
-
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Sub

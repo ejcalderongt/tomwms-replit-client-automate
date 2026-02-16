@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmProximos_A_Vencer
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmProximos_A_Vencer
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProximos_A_Vencer))
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
@@ -46,20 +46,14 @@ Partial Class frmProximos_A_Vencer
         Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem2 = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuImprimir = New DevExpress.XtraBars.BarButtonItem()
-        Me.cmdExcel = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
-        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
-        Me.tabDatos = New DevExpress.XtraTab.XtraTabPage()
         Me.Dgrid = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.PanelControl3 = New DevExpress.XtraEditors.PanelControl()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.TrackBarControl1 = New DevExpress.XtraEditors.TrackBarControl()
-        Me.tabGrafico = New DevExpress.XtraTab.XtraTabPage()
-        Me.ChartControl1 = New DevExpress.XtraCharts.ChartControl()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.lblEstatus = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -74,18 +68,11 @@ Partial Class frmProximos_A_Vencer
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl1.SuspendLayout()
-        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.XtraTabControl1.SuspendLayout()
-        Me.tabDatos.SuspendLayout()
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelControl3.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.TrackBarControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBarControl1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.tabGrafico.SuspendLayout()
-        CType(Me.ChartControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl2.SuspendLayout()
         CType(Me.cmbPropietarioBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -133,13 +120,6 @@ Partial Class frmProximos_A_Vencer
         Me.mnuImprimir.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuImprimir.Name = "mnuImprimir"
         '
-        'cmdExcel
-        '
-        Me.cmdExcel.Caption = "Exportar a Excel"
-        Me.cmdExcel.Id = 4
-        Me.cmdExcel.ImageOptions.SvgImage = CType(resources.GetObject("cmdExcel.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdExcel.Name = "cmdExcel"
-        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -150,7 +130,6 @@ Partial Class frmProximos_A_Vencer
         '
         Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem1)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImprimir)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdExcel)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem2)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
@@ -172,24 +151,6 @@ Partial Class frmProximos_A_Vencer
         Me.PanelControl1.Name = "PanelControl1"
         Me.PanelControl1.Size = New System.Drawing.Size(1452, 487)
         Me.PanelControl1.TabIndex = 2
-        '
-        'XtraTabControl1
-        '
-        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.XtraTabControl1.Location = New System.Drawing.Point(213, 2)
-        Me.XtraTabControl1.Name = "XtraTabControl1"
-        Me.XtraTabControl1.SelectedTabPage = Me.tabDatos
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1237, 483)
-        Me.XtraTabControl1.TabIndex = 13
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDatos, Me.tabGrafico})
-        '
-        'tabDatos
-        '
-        Me.tabDatos.Controls.Add(Me.Dgrid)
-        Me.tabDatos.Controls.Add(Me.PanelControl3)
-        Me.tabDatos.Name = "tabDatos"
-        Me.tabDatos.Size = New System.Drawing.Size(1235, 453)
-        Me.tabDatos.Text = "Análisis de datos"
         '
         'Dgrid
         '
@@ -214,16 +175,6 @@ Partial Class frmProximos_A_Vencer
         Me.GridView1.OptionsFind.AlwaysVisible = True
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
         Me.GridView1.OptionsView.ShowFooter = True
-        '
-        'PanelControl3
-        '
-        Me.PanelControl3.Controls.Add(Me.GroupBox1)
-        Me.PanelControl3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.PanelControl3.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.PanelControl3.Name = "PanelControl3"
-        Me.PanelControl3.Size = New System.Drawing.Size(1235, 127)
-        Me.PanelControl3.TabIndex = 13
         '
         'GroupBox1
         '
@@ -310,25 +261,8 @@ Partial Class frmProximos_A_Vencer
         Me.TrackBarControl1.Size = New System.Drawing.Size(1019, 87)
         Me.TrackBarControl1.TabIndex = 1
         '
-        'tabGrafico
-        '
-        Me.tabGrafico.Controls.Add(Me.ChartControl1)
-        Me.tabGrafico.Name = "tabGrafico"
-        Me.tabGrafico.Size = New System.Drawing.Size(1235, 453)
-        Me.tabGrafico.Text = "Gráfico"
-        '
-        'ChartControl1
-        '
-        Me.ChartControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ChartControl1.Location = New System.Drawing.Point(0, 0)
-        Me.ChartControl1.Name = "ChartControl1"
-        Me.ChartControl1.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
-        Me.ChartControl1.Size = New System.Drawing.Size(1235, 453)
-        Me.ChartControl1.TabIndex = 0
-        '
         'PanelControl2
         '
-        Me.PanelControl2.Controls.Add(Me.chkIncluirVencidos)
         Me.PanelControl2.Controls.Add(Me.lblEstatus)
         Me.PanelControl2.Controls.Add(Me.Label2)
         Me.PanelControl2.Controls.Add(Me.cmbPropietarioBodega)
@@ -455,19 +389,12 @@ Partial Class frmProximos_A_Vencer
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl1.ResumeLayout(False)
-        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.XtraTabControl1.ResumeLayout(False)
-        Me.tabDatos.ResumeLayout(False)
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PanelControl3.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         CType(Me.TrackBarControl1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBarControl1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.tabGrafico.ResumeLayout(False)
-        CType(Me.ChartControl1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl2.ResumeLayout(False)
         Me.PanelControl2.PerformLayout()
@@ -508,6 +435,4 @@ Partial Class frmProximos_A_Vencer
     Friend WithEvents tabDatos As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents tabGrafico As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents ChartControl1 As DevExpress.XtraCharts.ChartControl
-    Friend WithEvents cmdExcel As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents chkIncluirVencidos As DevExpress.XtraEditors.CheckEdit
 End Class
