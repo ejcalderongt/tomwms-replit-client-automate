@@ -35,6 +35,7 @@ Partial Class frmAjustePositivo
         Me.GridLookUpEdit1View = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.lbUmbas = New DevExpress.XtraEditors.LabelControl()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.lnkUbicaciones = New System.Windows.Forms.LinkLabel()
         Me.txtLicencia = New DevExpress.XtraEditors.TextEdit()
         Me.dtpFechaVence = New DevExpress.XtraEditors.DateEdit()
         Me.lblFechaVence = New System.Windows.Forms.Label()
@@ -53,7 +54,6 @@ Partial Class frmAjustePositivo
         Me.lblEstadoProducto = New System.Windows.Forms.Label()
         Me.lbIdStock = New System.Windows.Forms.Label()
         Me.lblId = New System.Windows.Forms.Label()
-        Me.lnkUbicaciones = New System.Windows.Forms.LinkLabel()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpReconteo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpReconteo.SuspendLayout()
@@ -105,7 +105,7 @@ Partial Class frmAjustePositivo
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 543)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 597)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1012, 30)
@@ -133,7 +133,7 @@ Partial Class frmAjustePositivo
         Me.grpReconteo.Location = New System.Drawing.Point(0, 193)
         Me.grpReconteo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grpReconteo.Name = "grpReconteo"
-        Me.grpReconteo.Size = New System.Drawing.Size(1012, 350)
+        Me.grpReconteo.Size = New System.Drawing.Size(1012, 404)
         Me.grpReconteo.TabIndex = 3
         '
         'cmbUmbas
@@ -228,13 +228,24 @@ Partial Class frmAjustePositivo
         Me.GroupBox2.Controls.Add(Me.txtUbicacion)
         Me.GroupBox2.Controls.Add(Me.txtLote)
         Me.GroupBox2.Controls.Add(Me.txtPeso)
-        Me.GroupBox2.Location = New System.Drawing.Point(483, 45)
+        Me.GroupBox2.Location = New System.Drawing.Point(479, 67)
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Padding = New System.Windows.Forms.Padding(4)
         Me.GroupBox2.Size = New System.Drawing.Size(495, 212)
         Me.GroupBox2.TabIndex = 39
         Me.GroupBox2.TabStop = False
+        '
+        'lnkUbicaciones
+        '
+        Me.lnkUbicaciones.AutoSize = True
+        Me.lnkUbicaciones.Location = New System.Drawing.Point(19, 32)
+        Me.lnkUbicaciones.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lnkUbicaciones.Name = "lnkUbicaciones"
+        Me.lnkUbicaciones.Size = New System.Drawing.Size(66, 16)
+        Me.lnkUbicaciones.TabIndex = 86
+        Me.lnkUbicaciones.TabStop = True
+        Me.lnkUbicaciones.Text = "Ubicacion:"
         '
         'txtLicencia
         '
@@ -419,22 +430,11 @@ Partial Class frmAjustePositivo
         Me.lblId.TabIndex = 2
         Me.lblId.Text = "IdStock:"
         '
-        'lnkUbicaciones
-        '
-        Me.lnkUbicaciones.AutoSize = True
-        Me.lnkUbicaciones.Location = New System.Drawing.Point(19, 32)
-        Me.lnkUbicaciones.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lnkUbicaciones.Name = "lnkUbicaciones"
-        Me.lnkUbicaciones.Size = New System.Drawing.Size(66, 16)
-        Me.lnkUbicaciones.TabIndex = 86
-        Me.lnkUbicaciones.TabStop = True
-        Me.lnkUbicaciones.Text = "Ubicacion:"
-        '
         'frmAjustePositivo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1012, 573)
+        Me.ClientSize = New System.Drawing.Size(1012, 627)
         Me.Controls.Add(Me.grpReconteo)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)

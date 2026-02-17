@@ -11771,7 +11771,6 @@ Public Class TOMHHWS
 
     End Sub
 
-
     '#MA20250210 migracion de xml a Json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub ml_get_ubicacion_sugerida_JSON(ByVal pIdProducto As Integer,
@@ -11849,6 +11848,7 @@ Public Class TOMHHWS
                 End If
 
             End If
+
             Dim errorJson As String = JsonConvert.SerializeObject(New With {
                                                                     .Error = True,
                                                                     .Mensaje = ex.Message
@@ -12683,17 +12683,11 @@ Public Class TOMHHWS
 
     End Function
 
-
     '#MA20251410 migracion de xml a json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
-    Public Function Es_Pallet_No_Estandar_JSON(ByVal pStock As clsBeStock) As Boolean
-
-        Dim curContext As HttpContext = HttpContext.Current
-
-        ' Es_Pallet_No_Estandar = False
+    Public Function Es_Pallet_No_Estandar_JSON(ByVal pStock As clsBeStock) As Object
 
         Try
-
             Dim esNoEstandar As Boolean = clsLnStock.Es_Pallet_No_Estandar(pStock)
 
             Return New With {
@@ -12704,25 +12698,22 @@ Public Class TOMHHWS
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(ex.Message)
 
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
+            ' Si necesitas mantener el comportamiento legacy por SoapHeader:
+            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+                Throw New Exception(ex.Message, ex)
+            End If
 
-            If mArch IsNot Nothing Then
-
-                ' Si necesitas mantener el comportamiento legacy por SoapHeader:
-                If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
-                    Throw New Exception(ex.Message, ex)
-                End If
-
-                ' Devuelve JSON de error consistente
-                Return New With {
-                .Error = True,
-                .Mensaje = ex.Message
-            }
+            ' Devuelve JSON de error consistente
+            Return New With {
+            .Error = True,
+            .Mensaje = ex.Message
+        }
         End Try
 
     End Function
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Es_Pallet_No_Estandar(ByVal pStock As clsBeStock) As Boolean
 
@@ -12737,7 +12728,6 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -12765,6 +12755,7 @@ Public Class TOMHHWS
 
         End Try
 
+    End Function
     <WebMethod(), SoapHeader("mArch")>
     Public Function Tiene_Posiciones(ByVal pStock As clsBeStock) As Integer
 
@@ -12779,7 +12770,6 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -15278,16 +15268,16 @@ New JsonSerializerSettings With {
     Public Function Get_CantidadInvVer_By_Producto(ByVal pIdUbicacion As Integer,
                                                    ByVal pIdProducto As Integer,
                                                    ByVal pIdBodega As Integer,
-                                                   ByVal pIdPresentacion As Integer) As clsBeTrans_inv_resumen
+                                                   ByVal pIdPresentacion As Integer,
+                                                   ByVal pIdInventarioEnc As Integer) As clsBeTrans_inv_resumen
 
 
         Get_CantidadInvVer_By_Producto = Nothing
 
         Try
-            Return clsLnTrans_inv_resumen.Get_CantidadInvVer_By_Producto(pIdUbicacion, pIdProducto, pIdBodega, pIdPresentacion)
+            Return clsLnTrans_inv_resumen.Get_CantidadInvVer_By_Producto(pIdUbicacion, pIdProducto, pIdBodega, pIdPresentacion, pIdInventarioEnc)
 
         Catch ex As Exception
-
 
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -15318,6 +15308,7 @@ New JsonSerializerSettings With {
 
         End Try
 
+    End Function
     'AT20240527 Obtiene inventario por licencia de Trans_inv_stock_prod
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_InventarioItem_By_Licencia(ByVal pLicencia As String,
@@ -15332,7 +15323,6 @@ New JsonSerializerSettings With {
 
         Catch ex As Exception
 
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
@@ -18770,6 +18760,7 @@ New JsonSerializerSettings With {
 
     End Function
 
+    ' #MA20251222 Reimprimir
     <WebMethod(), SoapHeader("mArch")>
     Public Function Obtener_Etiqueta_Verificacion_WS(ByVal pIdPedidoEnc As Integer,
                                                      ByVal pIdProductoBodega As Integer,
@@ -18816,6 +18807,7 @@ New JsonSerializerSettings With {
                                                                          host)
 
         Catch ex As Exception
+
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -18847,7 +18839,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-    '#MA20251204'
+    '#MA20260116
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
         Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
