@@ -1095,70 +1095,59 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
         End Try
     End Sub
 
-    Public Shared Async Function Insertar_Producto_From_Sap_HanaAsync(ByVal codigo As String,
-                                                                      lConnection As SqlConnection,
-                                                                      lTransaction As SqlTransaction,
-                                                                      SessionCookie As String,
-                                                                      baseUrl As String,
-                                                                      lbl As RichTextBox) As Task(Of Integer)
+    Public Shared Async Function Insertar_Producto_From_Sap_HanaAsync(
+    ByVal codigo As String,
+    lConnection As SqlConnection,
+    lTransaction As SqlTransaction,
+    SessionCookie As String,
+    baseUrl As String,
+    lbl As RichTextBox
+) As Task(Of Integer)
 
-        Dim RegistrosNoEncontrados As Boolean = False
+        Dim registrosNoEncontrados As Boolean = False
+        Dim resultado As Integer = 0
 
         Try
-
-            Dim vContador As Integer = 0
-
             clsLnI_nav_producto.EliminarTodos(lConnection, lTransaction)
             clsLnI_nav_producto_presentacion.EliminarTodos(lConnection, lTransaction)
 
-            Dim lFichaProducto As List(Of clsBeI_nav_producto) = Await Get_Productos_SAP_SL(SessionCookie, baseUrl, lbl, codigo)
+            Dim lFichaProducto As List(Of clsBeI_nav_producto) =
+            Await Get_Productos_SAP_SL(SessionCookie, baseUrl, lbl, codigo)
 
             BeNavEjecucionRes.Registros_ws = 1
 
-            If Not lFichaProducto Is Nothing Then
-
+            If lFichaProducto IsNot Nothing Then
                 For Each fichaProducto In lFichaProducto
-
                     Try
-
-                        RegistrosNoEncontrados = True
-
+                        registrosNoEncontrados = True
                         clsLnI_nav_producto.Insertar(fichaProducto, lConnection, lTransaction)
-
                     Catch ex As Exception
-
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                   fichaProducto.No,
-                                                                   BeNavEjecucionEnc.IdEjecucionEnc,
-                                                                   BeConfigDet.Idnavconfigdet)
-
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log(
+                        ex.Message,
+                        fichaProducto.No,
+                        BeNavEjecucionEnc.IdEjecucionEnc,
+                        BeConfigDet.Idnavconfigdet
+                    )
                         Application.DoEvents()
-
                     End Try
-
                 Next
 
-                Dim resultado As Integer
-
-                If RegistrosNoEncontrados Then
+                If registrosNoEncontrados Then
                     resultado = Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS()
                 End If
-
-                Return resultado > 1
-
             End If
 
+            Return resultado
+
         Catch ex As Exception
-
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                       MethodBase.GetCurrentMethod.Name(),
-                                                       BeNavEjecucionEnc.IdEjecucionEnc,
-                                                       BeConfigDet.Idnavconfigdet)
-
-            Throw ex
-
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(
+            ex.Message,
+            MethodBase.GetCurrentMethod.Name(),
+            BeNavEjecucionEnc.IdEjecucionEnc,
+            BeConfigDet.Idnavconfigdet
+        )
+            Throw
         End Try
-
     End Function
 
     Public Shared Async Function Insertar_Producto_From_Sap_HanaAsync(ByVal codigo As String,

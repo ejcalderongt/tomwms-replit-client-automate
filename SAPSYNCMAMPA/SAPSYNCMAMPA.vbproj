@@ -236,8 +236,6 @@
     <Compile Include="Dtos\LoginResponseDto.vb" />
     <Compile Include="Clases\SapServiceLayerClient.vb" />
     <Compile Include="Clases Interface Sync\Bodega\clsSyncSAPBodega.vb" />
-    <Compile Include="Clases Interface Sync\Devolucion Mercancia Cliente\clsSyncSAPDevolucionMeracnciaCliente.vb" />
-    <Compile Include="Clases Interface Sync\Devolucion_Mercancia\clsSyncSAPDevolucionMercancia.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\clsSyncSapFacturaReserva.vb" />
     <Compile Include="Clases Interface Sync\Lotes\clsSyncLotes.vb" />
     <Compile Include="Clases Interface Sync\Pedido_Cliente\clsSyncSAPSPedidoCliente.vb" />

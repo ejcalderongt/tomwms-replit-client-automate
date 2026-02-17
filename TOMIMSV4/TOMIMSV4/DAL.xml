@@ -165,6 +165,14 @@ DAL
  <param name="pNoPedido"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction,System.Int32)">
+ <summary>
+ #EJC202309261339: Se utiliza en la interface SAP La Cumbre, para enviar entrega de mercancía a orden de compra.
+ </summary>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
 <member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #CKFK20241021: Se utiliza en la interface SAP Becofarma, para enviar entrega de mercancía a orden de compra.
@@ -191,6 +199,15 @@ DAL
 <member name="M:TOMWMS.clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEnc(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC20240827: El día que teco temió
+ </summary>
+ <param name="pIdInvEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEncAgrupado(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #CKFK20250715 GetAll del inventario agrupado
  </summary>
  <param name="pIdInvEnc"></param>
  <param name="lConnection"></param>
@@ -532,6 +549,14 @@ DAL
  <param name="pFiltro">Buscar en la lista por este nombre  y los filtra</param>
  <returns></returns>
  <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnVW_Despacho_Rep.Get_Ultimo_Lote_By_IdCliente(System.Int32,System.Int32)">
+ <summary>
+ #EJC20190313: Devuelve el último lote despachado para un cliente  y producto.
+ </summary>
+ <param name="pIdCliente">Id de cliente</param>
+ <param name="pIdProductoBodega">Id de producto</param>
+ <returns>El número de lote</returns>
 </member>
 <member name="M:TOMWMS.clsLnTrans_despacho_det.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
