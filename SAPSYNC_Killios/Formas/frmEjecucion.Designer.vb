@@ -29,6 +29,7 @@ Partial Class frmEjecucion
         Me.mnuImprimirgrid2 = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuReporteEjecuciones = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEnviarPedidosCompra = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEnviarPedidosTransferencia = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdRptTransac = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuProductosI = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
@@ -69,7 +70,7 @@ Partial Class frmEjecucion
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuActualizarProveedores, Me.BarButtonItem2, Me.mnuImprimir, Me.mnuImprimirGrid1, Me.mnuImprimirgrid2, Me.mnuReporteEjecuciones, Me.mnuEnviarPedidosCompra, Me.cmdRptTransac, Me.mnuProductosI, Me.BarButtonItem1, Me.mnuPedidoCliente, Me.mnuPedidosCompra, Me.mnuBodegas, Me.mnuSolicitudTraslado, Me.mnuTransferenciaStock, Me.mnuDevolucionMercancia, Me.mnuEnvioPedidosCompra, Me.mnuEnviaPedidosTransferencia, Me.mnuEnviarAjustes, Me.mnuTestConexion, Me.mnuProductoPresentacion, Me.mnuDevolucionCliente, Me.mnuEnviarTrasladosProrrateo, Me.mnuTransferenciaIngreso, Me.BarButtonItem4, Me.mnuEnviarDevolProveedor, Me.mnuEnviarTrasladosDesdeSol, Me.mnuActualizarCodigosBarra, Me.cmdSyncClientes})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuActualizarProveedores, Me.BarButtonItem2, Me.mnuImprimir, Me.mnuImprimirGrid1, Me.mnuImprimirgrid2, Me.mnuReporteEjecuciones, Me.mnuEnviarPedidosCompra, Me.mnuEnviarPedidosTransferencia, Me.cmdRptTransac, Me.mnuProductosI, Me.BarButtonItem1, Me.mnuPedidoCliente, Me.mnuPedidosCompra, Me.mnuBodegas, Me.mnuSolicitudTraslado, Me.mnuTransferenciaStock, Me.mnuDevolucionMercancia, Me.mnuEnvioPedidosCompra, Me.mnuEnviaPedidosTransferencia, Me.mnuEnviarAjustes, Me.mnuTestConexion, Me.mnuProductoPresentacion, Me.mnuDevolucionCliente, Me.mnuEnviarTrasladosProrrateo, Me.mnuTransferenciaIngreso, Me.BarButtonItem4, Me.mnuEnviarDevolProveedor, Me.mnuEnviarTrasladosDesdeSol, Me.mnuActualizarCodigosBarra, Me.cmdSyncClientes})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 61
@@ -127,6 +128,12 @@ Partial Class frmEjecucion
         Me.mnuEnviarPedidosCompra.Caption = "Pedidos de compra"
         Me.mnuEnviarPedidosCompra.Id = 25
         Me.mnuEnviarPedidosCompra.Name = "mnuEnviarPedidosCompra"
+        '
+        'mnuEnviarPedidosTransferencia
+        '
+        Me.mnuEnviarPedidosTransferencia.Caption = "Pedidos de transferencia"
+        Me.mnuEnviarPedidosTransferencia.Id = 26
+        Me.mnuEnviarPedidosTransferencia.Name = "mnuEnviarPedidosTransferencia"
         '
         'cmdRptTransac
         '
@@ -241,7 +248,7 @@ Partial Class frmEjecucion
         '
         Me.mnuEnviarTrasladosProrrateo.Caption = "Enviar Traslados Prorrateo"
         Me.mnuEnviarTrasladosProrrateo.Id = 54
-        Me.mnuEnviarTrasladosProrrateo.ImageOptions.SvgImage = CType(resources.GetObject("mnuEnviarTrasladosProrrateo.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEnviarTrasladosProrrateo.ImageOptions.SvgImage = CType(resources.GetObject("mnuEnviarTraslados.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuEnviarTrasladosProrrateo.Name = "mnuEnviarTrasladosProrrateo"
         '
         'mnuTransferenciaIngreso
@@ -346,7 +353,6 @@ Partial Class frmEjecucion
         Me.lblprg.Location = New System.Drawing.Point(0, 262)
         Me.lblprg.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.ReadOnly = True
         Me.lblprg.Size = New System.Drawing.Size(1760, 492)
         Me.lblprg.TabIndex = 2
         Me.lblprg.Text = ""
@@ -426,6 +432,7 @@ End Sub
     Friend WithEvents timerProducto As Timer
     Friend WithEvents mnuReporteEjecuciones As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEnviarPedidosCompra As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuEnviarPedidosTransferencia As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents cmdRptTransac As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuProductosI As DevExpress.XtraBars.BarButtonItem

@@ -39,12 +39,12 @@ Public Class SapHelper
         Dim UoMEntry As Integer = 0
 
         Try
-            Dim query As String = $"SELECT TOP 1 U.UomEntry 
-                              From OITM I 
-                              JOIN OUGP UG ON I.UgpEntry = UG.UgpEntry 
-                              JOIN UGP1 U1 ON UG.UgpEntry = U1.UgpEntry 
-                              Join OUOM U ON U1.UomEntry = U.UomEntry 
-                              Where I.ItemCode = '{ItemCode}' AND U.UomName = '{NombreUOM}'"
+            Dim query As String = $"SELECT TOP 1 U.UomEntry " &
+                              $"FROM OITM I " &
+                              $"JOIN OUGP UG ON I.UgpEntry = UG.UgpEntry " &
+                              $"JOIN UGP1 U1 ON UG.UgpEntry = U1.UgpEntry " &
+                              $"JOIN OUOM U ON U1.UomEntry = U.UomEntry " &
+                              $"WHERE I.ItemCode = '{ItemCode}' AND U.UomName = '{NombreUOM}'"
 
             oRs.DoQuery(query)
 
@@ -99,8 +99,55 @@ Public Class SapHelper
             End If
         End Try
     End Function
-    Public Shared Function Obtener_UoMEntry_De_InventoryUOM(ByVal ItemCode As String,
+
+
+
+    Public Shared Function Obtener_UoM_Por_Cantidad(ByVal ItemCode As String,
+                                                    ByVal TotalUnidades As Integer,
                                                     ByRef oCompany As Company) As (UoMEntry As Integer, Factor As Integer)
+
+        Dim rs As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+
+        Dim sql As String = " SELECT U.UomEntry, U.UomCode, G.BaseQty
+                              FROM OITM I
+                                   INNER JOIN UGP1 G ON I.UgpEntry = G.UgpEntry
+                                   INNER JOIN OUOM U ON G.UomEntry = U.UomEntry
+                              WHERE I.ItemCode = '" & ItemCode & "'"
+
+        rs.DoQuery(sql)
+
+        Dim mejorUomEntry As Integer = 0
+        Dim mejorFactor As Integer = 1
+        Dim factor As Integer = 0
+
+        While Not rs.EoF
+            Dim uomEntry As Integer = CInt(rs.Fields.Item("UomEntry").Value)
+            Dim factor1 As Integer = CInt(rs.Fields.Item("BaseQty").Value)
+
+            If factor1 > 0 Then
+
+                If factor1 > factor AndAlso TotalUnidades >= factor1 Then
+                    factor = factor1
+
+                    mejorUomEntry = uomEntry
+                    mejorFactor = factor
+                End If
+
+            End If
+
+            rs.MoveNext()
+        End While
+
+        ' Liberar objeto COM
+        Runtime.InteropServices.Marshal.ReleaseComObject(rs)
+        rs = Nothing
+
+        Return (mejorUomEntry, mejorFactor)
+
+    End Function
+
+    Public Shared Function Obtener_UoMEntry_De_InventoryUOM(ByVal ItemCode As String,
+                                                            ByRef oCompany As Company) As (UoMEntry As Integer, Factor As Integer)
 
         Dim oRS As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
 
@@ -118,109 +165,4 @@ Public Class SapHelper
             Throw New Exception("No se encontró InventoryUOM para el artículo " & ItemCode)
         End If
     End Function
-    Public Shared Function Obtener_FactorConversion(ByVal ItemCode As String,
-                                                    ByVal UomEntry As Integer,
-                                                    ByVal oCompany As Company) As Double
-
-        Dim oRs As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-        Dim factor As Double = 0
-
-        Try
-            Dim query As String = $"
-            SELECT TOP 1 
-                U1.BaseQty AS FactorConversion
-            FROM OITM I
-            JOIN OUGP UG ON I.UgpEntry = UG.UgpEntry
-            JOIN UGP1 U1 ON UG.UgpEntry = U1.UgpEntry
-            WHERE I.ItemCode = '{ItemCode}' AND U1.UomEntry = {UomEntry}
-        "
-
-            oRs.DoQuery(query)
-
-            If Not oRs.EoF Then
-                factor = Convert.ToDouble(oRs.Fields.Item("FactorConversion").Value)
-            End If
-
-        Catch ex As Exception
-            Throw New Exception($"Error al obtener el factor de conversión del producto {ItemCode}: {ex.Message}")
-        Finally
-            Runtime.InteropServices.Marshal.ReleaseComObject(oRs)
-            oRs = Nothing
-            GC.Collect()
-        End Try
-
-        Return factor
-    End Function
-
-    Public Structure UoMInfo
-        Public UoMEntry As Integer
-        Public UoMCode As String
-    End Structure
-
-    ''' <summary>
-    ''' Obtiene UoMEntry y UoMCode de una línea de una Inventory Transfer Request.
-    ''' </summary>
-    ''' <param name="company">Instancia conectada de SAPbobsCOM.Company</param>
-    ''' <param name="docEntry">DocEntry del documento (Transfer Request)</param>
-    ''' <param name="itemCode">Código de artículo (ItemCode) a buscar</param>
-    ''' <param name="lineNum">Número de línea EXACTO (base 0 en SAP B1)</param>
-    ''' <param name="result">Estructura de salida con UoMEntry y UoMCode</param>
-    ''' <returns>True si encontró la línea y llenó result; False en caso contrario</returns>
-    Public Shared Function GetUoMFromTransferRequest(
-        ByVal company As SAPbobsCOM.Company,
-        ByVal docEntry As Integer,
-        ByVal itemCode As String,
-        ByVal lineNum As Integer,
-        ByRef result As UoMInfo
-    ) As Boolean
-
-        If company Is Nothing OrElse company.Connected = False Then
-            Throw New InvalidOperationException("La conexión a SAP (Company) no está establecida.")
-        End If
-
-        ' Obtener el documento de tipo Inventory Transfer Request
-        Dim trq As SAPbobsCOM.StockTransfer =
-            CType(company.GetBusinessObject(BoObjectTypes.oInventoryTransferRequest), SAPbobsCOM.StockTransfer)
-
-        If trq Is Nothing Then
-            Throw New ApplicationException("No se pudo crear el objeto oInventoryTransferRequest.")
-        End If
-
-        If Not trq.GetByKey(docEntry) Then
-            ' No existe el DocEntry solicitado
-            Return False
-        End If
-
-        ' Recorrer líneas y encontrar coincidencia por ItemCode y LineNum
-        For i As Integer = 0 To trq.Lines.Count - 1
-            trq.Lines.SetCurrentLine(i)
-
-            ' Comparación estricta por línea e ItemCode
-            If trq.Lines.LineNum = lineNum AndAlso
-               String.Equals(trq.Lines.ItemCode, itemCode, StringComparison.OrdinalIgnoreCase) Then
-
-                result = New UoMInfo With {
-                    .UoMEntry = trq.Lines.UoMEntry,
-                    .UoMCode = trq.Lines.UoMCode
-                }
-                Return True
-            End If
-        Next
-
-        ' Si no se encontró la línea exacta, intentar por ItemCode y devolver la primera coincidencia (opcional).
-        ' Descomenta este bloque si quieres fallback por ItemCode:
-        'For i As Integer = 0 To trq.Lines.Count - 1
-        '    trq.Lines.SetCurrentLine(i)
-        '    If String.Equals(trq.Lines.ItemCode, itemCode, StringComparison.OrdinalIgnoreCase) Then
-        '        result = New UoMInfo With {
-        '            .UoMEntry = trq.Lines.UoMEntry,
-        '            .UoMCode = trq.Lines.UoMCode
-        '        }
-        '        Return True
-        '    End If
-        'Next
-
-        Return False
-    End Function
-
 End Class

@@ -198,10 +198,8 @@ Public Class clsSyncSapSolDevolucionProveedor : Inherits clsInterfaceBase : Impl
 
                         End If
 
-                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
-                                                                                                                                            lblprg,
-                                                                                                                                            Nothing,
-                                                                                                                                            Nothing)
+                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
+                                                                                                                                               lblprg)
 
                         If Not BePedidoEncResult Is Nothing Then
 

@@ -13,53 +13,10 @@ Public Class ApiService
     'Dim urlIngreso As String = GetFullUrl("/WMSWEB/api/sync/ingresos/documento-ingreso")
     'Dim urlPedido As String = GetFullUrl("/WMSWEB/api/sync/salidas/documento-salida")
 
-    'Dim urlProducto As String = GetFullUrl("/api/Productos/sincronizar")
-    Dim urlProducto As String = GetFullUrl("/api/Productos/list/insert")
-    Dim urlIngreso As String = GetFullUrl("/api/sync/ingresos/documento-ingreso")
-    Dim urlPedido As String = GetFullUrl("/api/sync/salidas/documento-salida")
-
-
-    ''' <summary>
-    ''' Concatena la URL base del archivo de configuración con el endpoint, asegurando el formato correcto.
-    ''' </summary>
-    ''' <param name="relativeEndpoint">Endpoint relativo, debe comenzar con una barra (ej. "/api/...")</param>
-    ''' <returns>URL completa bien formada</returns>
-    Public Shared Function GetFullUrl(relativeEndpoint As String) As String
-        Try
-
-            'Dim baseUrl As String = ConfigurationManager.AppSettings("ApiBaseUrl")
-
-            Dim baseUrl As String = ApiConfig.ObtenerApiBaseUrl()
-
-            If String.IsNullOrWhiteSpace(baseUrl) Then
-                Throw New Exception("No se ha definido 'ApiBaseUrl' en ApiConfig.json")
-            End If
-
-            If Not relativeEndpoint.StartsWith("/") Then
-                relativeEndpoint = "/" & relativeEndpoint
-            End If
-
-            Dim fullUrl As String = baseUrl.TrimEnd("/"c) & relativeEndpoint
-
-            If Not Uri.IsWellFormedUriString(fullUrl, UriKind.Absolute) Then
-                Throw New UriFormatException("URL malformada: " & fullUrl)
-            End If
-
-            Return fullUrl
-
-        Catch ex As Exception
-            Throw New Exception("GetFullUrl Error: " & ex.Message)
-        End Try
-    End Function
 
     Public Async Function EnviarJsonProductoAsync(pJsonOC As String, lblprg As RichTextBox) As Task(Of String)
         Dim respuesta As String = ""
         Try
-
-            If Not Uri.IsWellFormedUriString(urlProducto, UriKind.Absolute) Then
-                Throw New Exception("URL malformada: " & urlProducto)
-            End If
-
             clsHelper.LogMensaje(lblprg, "Enviando producto a la nube...", clsHelper.TipoMensaje.Info)
 
             Using cliente As New HttpClient()
@@ -144,7 +101,6 @@ Public Class ApiService
             clsHelper.LogMensaje(lblprg, respuesta, clsHelper.TipoMensaje.Error_)
         End Try
 
-        Return respuesta
     End Function
 
 

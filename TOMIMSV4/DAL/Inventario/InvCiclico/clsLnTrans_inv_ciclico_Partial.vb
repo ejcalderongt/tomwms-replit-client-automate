@@ -3241,6 +3241,7 @@ Partial Public Class clsLnTrans_inv_ciclico
         End Try
 
     End Function
+
     Public Shared Function GetAllByItemInv(ByVal pitem As clsBeTrans_inv_ciclico_vw) As List(Of clsBeTrans_inv_ciclico)
 
         Try
@@ -3366,6 +3367,77 @@ Partial Public Class clsLnTrans_inv_ciclico
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    '#AT20241205 Nueva Funcion para manejar el conteo del inventario ciclico
+    Public Shared Function Actualiza_Conteo_Ciclico_HH(ByVal BeTransInvCiclico As clsBeTrans_inv_ciclico,
+                                                       ByVal pReconteo As Integer,
+                                                       ByVal esOriginal As Boolean,
+                                                       ByRef Resultado As String) As Integer
+        Dim rslt As Integer = 0
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Dim pBeProducto As New clsBeProducto
+        Dim pCampos(2) As clsBeProducto.ProdPropiedades
+        Dim InvCiclico As clsBeTrans_inv_ciclico = Nothing
+
+        Actualiza_Conteo_Ciclico_HH = Nothing
+
+        Try
+
+            If pReconteo = 0 Then
+
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                pCampos(0) = clsBeProducto.ProdPropiedades.Control_lote
+                pCampos(1) = clsBeProducto.ProdPropiedades.Control_vencimiento
+                pBeProducto.IdProducto = clsLnProducto.Get_Id_Producto_By_IdProductoBodega(BeTransInvCiclico.IdProductoBodega,
+                                                                                           lConnection,
+                                                                                           lTransaction)
+
+                pBeProducto = clsLnProducto.GetSingle(pBeProducto.IdProducto,
+                                                      pCampos,
+                                                      lConnection,
+                                                      lTransaction)
+
+                InvCiclico = Get_Inventario_Ciclico(BeTransInvCiclico, pBeProducto, lConnection, lTransaction)
+
+
+                If esOriginal And (BeTransInvCiclico.Fecha_vence <> BeTransInvCiclico.Fecha_vence_stock OrElse
+                       (BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0) OrElse
+                       BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock OrElse
+                       BeTransInvCiclico.IdUbicacion_nuevo <> 0) Then
+
+                    BeTransInvCiclico.IdInvCiclico = MaxID(lConnection, lTransaction) + 1
+                    BeTransInvCiclico.IdStock = InvCiclico.IdStock
+                    BeTransInvCiclico.IdUnidadMedida = InvCiclico.IdUnidadMedida
+                    BeTransInvCiclico.IdBodega = InvCiclico.IdBodega
+                    BeTransInvCiclico.Cant_stock = 0
+                    BeTransInvCiclico.Fec_agr = Now
+                    BeTransInvCiclico.Fec_Mod = Now
+
+                    rslt = Insertar(BeTransInvCiclico, lConnection, lTransaction)
+
+                Else
+                    BeTransInvCiclico.Fec_Mod = Now
+                    rslt = Act_Inventario_Ciclico(BeTransInvCiclico, pBeProducto, lConnection, lTransaction)
+                End If
+
+                lTransaction.Commit()
+
+            End If
+
+            Return rslt
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
     End Function

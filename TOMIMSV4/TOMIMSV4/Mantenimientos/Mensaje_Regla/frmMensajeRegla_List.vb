@@ -22,7 +22,7 @@ Public Class frmMensajeRegla_List
             DT.Columns.Add("Código", GetType(Integer))
             DT.Columns.Add("Nombre", GetType(String))
 
-            Dim l As List(Of clsBeMensaje_regla) = clsLnMensaje_regla.GetAll(chkActivos.Checked)
+            Dim l As List(Of clsBeMensaje_regla) = clsLnMensaje_regla.GetAll(chkActivos.Checked, IdReglaRecepcion)
 
             For Each Obj As clsBeMensaje_regla In l
                 DT.Rows.Add(Obj.IdMensajeRegla, Obj.Nombre)

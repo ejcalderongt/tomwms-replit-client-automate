@@ -78,7 +78,7 @@ Public Class clsSyncSAPCodigosBarra_SL
                         While hayMas
 
                             Dim requestUrl As String =
-                            $"{baseSl}U_CODIGO_BARRAS?$filter=U_ENVIADO_WMS eq 2&$top={pageSize}&$skip={skip}"
+                            $"{baseSl}U_CODIGO_BARRAS?$filter=(U_ENVIADO_WMS eq 2 or U_ENVIADO_WMS eq null)&$top={pageSize}&$skip={skip}"
 
                             Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
                                 request.Headers.ConnectionClose = True

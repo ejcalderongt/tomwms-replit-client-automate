@@ -54,46 +54,22 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
             End If
 
             Dim RsEnc As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-            'Dim SAP_Traslados As String = $"
-            'SELECT T0.DOCENTRY, T0.DOCNUM, T0.DOCDATE, T0.CARDCODE, T0.CARDNAME, T0.DOCCUR,
-            '       T0.DOCTOTAL, T0.JRNLMEMO, T0.CANCELED, T0.DOCSTATUS,
-            '       CASE WHEN T0.DOCTYPE = 'I' THEN 'ARTICULO' ELSE 'SERVICIO' END AS TIPO_ORDEN_VENTA,
-            '       T1.FromWhsCod AS Codigo_Bodega_Origen, OW1.WhsName AS Nombre_Bodega_Origen,
-            '       T1.WhsCode AS Codigo_Bodega_Destino, OW2.WhsName AS Nombre_Bodega_Destino,
-            '       T0.U_ToWhsCode
-            'FROM OWTQ T0
-            'INNER JOIN WTQ1 T1 ON T0.DocEntry = T1.DocEntry
-            'INNER JOIN OWHS OW1 ON T1.FromWhsCod = OW1.WhsCode
-            'INNER JOIN OWHS OW2 ON T1.WhsCode = OW2.WhsCode
-            'WHERE T0.DOCSTATUS = 'O' AND T0.U_Enviado_WMS = 2
-            '  AND ((T1.FromWhsCod = '{pCodigoBodegaInterface}' OR T1.WhsCode = '{pCodigoBodegaInterface}')
-            '  OR (T0.U_ToWhsCode = '{pCodigoBodegaInterface}'))
-            '  {(If(pNoDocumentoSAP <> "", " And T0.DocNum = " & pNoDocumentoSAP, ""))}
-            'ORDER BY T0.DOCENTRY DESC"
-            Dim SAP_Traslados As String =
-                "SELECT " & vbCrLf &
-                "    T0.DOCENTRY, T0.DOCNUM, T0.DOCDATE, T0.CARDCODE, T0.CARDNAME, T0.DOCCUR," & vbCrLf &
-                "    T0.DOCTOTAL, T0.JRNLMEMO, T0.CANCELED, T0.DOCSTATUS," & vbCrLf &
-                "    CASE WHEN T0.DOCTYPE = 'I' THEN 'ARTICULO' ELSE 'SERVICIO' END AS TIPO_ORDEN_VENTA," & vbCrLf &
-                "    T1.FromWhsCod AS Codigo_Bodega_Origen, OW1.WhsName AS Nombre_Bodega_Origen," & vbCrLf &
-                "    T1.WhsCode AS Codigo_Bodega_Destino, OW2.WhsName AS Nombre_Bodega_Destino," & vbCrLf &
-                "    T0.U_ToWhsCode" & vbCrLf &
-                "FROM OWTQ T0" & vbCrLf &
-                "INNER JOIN (" & vbCrLf &
-                "    SELECT DocEntry, MIN(LineNum) AS LineNum" & vbCrLf &
-                "    FROM WTQ1" & vbCrLf &
-                "    GROUP BY DocEntry" & vbCrLf &
-                ") AS FirstLine ON FirstLine.DocEntry = T0.DocEntry" & vbCrLf &
-                "INNER JOIN WTQ1 T1 ON T1.DocEntry = FirstLine.DocEntry AND T1.LineNum = FirstLine.LineNum" & vbCrLf &
-                "INNER JOIN OWHS OW1 ON T1.FromWhsCod = OW1.WhsCode" & vbCrLf &
-                "INNER JOIN OWHS OW2 ON T1.WhsCode = OW2.WhsCode" & vbCrLf &
-                "WHERE T0.DOCSTATUS = 'O'" & vbCrLf &
-                "  AND T0.U_Enviado_WMS = 2" & vbCrLf &
-                "  AND ( (T1.FromWhsCod = '" & pCodigoBodegaInterface & "' OR T1.WhsCode = '" & pCodigoBodegaInterface & "')" & vbCrLf &
-                "        OR (T0.U_ToWhsCode = '" & pCodigoBodegaInterface & "')" & vbCrLf &
-                "      )" & vbCrLf &
-                If(pNoDocumentoSAP <> "", "  AND T0.DocNum = " & pNoDocumentoSAP & vbCrLf, "") &
-                "ORDER BY T0.DocEntry DESC"
+            Dim SAP_Traslados As String = $"
+            SELECT T0.DOCENTRY, T0.DOCNUM, T0.DOCDATE, T0.CARDCODE, T0.CARDNAME, T0.DOCCUR,
+                   T0.DOCTOTAL, T0.JRNLMEMO, T0.CANCELED, T0.DOCSTATUS,
+                   CASE WHEN T0.DOCTYPE = 'I' THEN 'ARTICULO' ELSE 'SERVICIO' END AS TIPO_ORDEN_VENTA,
+                   T1.FromWhsCod AS Codigo_Bodega_Origen, OW1.WhsName AS Nombre_Bodega_Origen,
+                   T1.WhsCode AS Codigo_Bodega_Destino, OW2.WhsName AS Nombre_Bodega_Destino,
+                   T0.U_ToWhsCode
+            FROM OWTQ T0
+            INNER JOIN WTQ1 T1 ON T0.DocEntry = T1.DocEntry
+            INNER JOIN OWHS OW1 ON T1.FromWhsCod = OW1.WhsCode
+            INNER JOIN OWHS OW2 ON T1.WhsCode = OW2.WhsCode
+            WHERE T0.DOCSTATUS = 'O' AND T0.U_Enviado_WMS = 2
+              AND ((T1.FromWhsCod = '{pCodigoBodegaInterface}' OR T1.WhsCode = '{pCodigoBodegaInterface}')
+              OR (T0.U_ToWhsCode = '{pCodigoBodegaInterface}'))
+              {(If(pNoDocumentoSAP <> "", " And T0.DocNum = " & pNoDocumentoSAP, ""))}
+            ORDER BY T0.DOCENTRY DESC"
 
             RsEnc.DoQuery(SAP_Traslados)
 
@@ -292,7 +268,6 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
             Procesar_Solicitud_Traslado_SAP = procesado
 
         Catch ex As Exception
-
             clsTrans.RollBack_Transaction()
 
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
@@ -344,8 +319,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                 Dim debeProcesar As Boolean = Not destinoEsWMS OrElse Not origenEsWMS OrElse (origenEsWMS AndAlso destinoEsWMS)
 
                 If debeProcesar Then
-                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
-                    clsPublic.Actualizar_Progreso(lblprg, Resultado)
+                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
                     If pedidoEnc IsNot Nothing AndAlso Marcar_PI_Sincronizado_SAP(solicitud.No, empresa, oCompany) Then
                         clsPublic.Actualizar_Progreso(lblprg, Resultado)
                         Return True
@@ -354,8 +328,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
 
                 Dim destinoWMS As clsBeBodega = clsLnBodega.GetSingle_By_Codigo(solicitud.Transfer_to_Code, clsTrans.lConnection, clsTrans.lTransaction)
                 If destinoWMS IsNot Nothing Then
-                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
-                    clsPublic.Actualizar_Progreso(lblprg, Resultado)
+                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
                     If pedidoEnc IsNot Nothing AndAlso Marcar_PI_Sincronizado_SAP(solicitud.No, empresa, oCompany) Then
                         clsPublic.Actualizar_Progreso(lblprg, Resultado)
                         Return True
@@ -366,8 +339,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
             Return False
 
         Catch ex As Exception
-            'clsPublic.Actualizar_Progreso(lblprg, ex.Message)
-            Throw ex
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
         Finally
             If conn IsNot Nothing Then
                 sapPool.ReleaseConnection(conn)
@@ -424,7 +396,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                 .User_mod = BeConfigEnc.IdUsuario,
                 .Fec_agr = Now,
                 .Fec_mod = Now,
-                .cliente = cliente
+                .Cliente = cliente
             }
 
                 clsLnCliente_bodega.Insertar_From_Interface(clienteBodega, conn, trx)

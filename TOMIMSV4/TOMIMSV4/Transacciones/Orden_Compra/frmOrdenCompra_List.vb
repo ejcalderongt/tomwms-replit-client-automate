@@ -160,10 +160,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -204,10 +202,8 @@ Public Class frmOrdenCompra_List
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -226,10 +222,7 @@ Public Class frmOrdenCompra_List
 
                     Cierra_Instancia_Previa(frmOrdenCompra)
 
-                    '#MECR03102025: Se agrego nueva bitacora de logs para OC
-                    Dim vMsgAdvertencia As String = "ADVERTENCIA_202302231652: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc
-                    'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231652: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
-                    clsLnLog_error_wms_oc.Agregar_Error(vMsgAdvertencia, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
+                    clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231652: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
 
                     With frmOrdenCompra
 
@@ -242,7 +235,6 @@ Public Class frmOrdenCompra_List
                         .InvokeCargarPedidoCompra = AddressOf Procesar_Registro
                         .MdiParent = MdiParent
                         .WindowState = FormWindowState.Normal
-                        .Text = gBeOrdenCompra.IdOrdenCompraEnc & " - " & gBeOrdenCompra.Referencia
 
                         If OpcionesMenu IsNot Nothing Then
                             .OpcionesMenu = OpcionesMenu
@@ -322,10 +314,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -356,10 +346,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -378,10 +366,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -410,10 +396,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -483,12 +467,6 @@ Public Class frmOrdenCompra_List
             mnuNuevo.Enabled = clsLnMenu_rol.Permiso_Funcionalidad("2.1.1.1", AP.IdRol)
             vNombreArchivoLayOutGrid = "grdPedidoListDocIngresos.xml"
 
-            If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
-                mnuEliminarDocumentoIngreso.Visibility = BarItemVisibility.Always
-            Else
-                mnuEliminarDocumentoIngreso.Visibility = BarItemVisibility.Never
-            End If
-
             Listar_Pedidos_Compra()
 
             '#EJC20210317: Verificar el parámetro para hablitar o no el botón
@@ -501,10 +479,8 @@ Public Class frmOrdenCompra_List
             End If
 
         Catch ex As Exception
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Sub
@@ -550,10 +526,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -601,10 +575,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -732,10 +704,8 @@ Public Class frmOrdenCompra_List
             End Try
 
         Catch ex As Exception
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Sub
@@ -760,10 +730,8 @@ Public Class frmOrdenCompra_List
                               MessageBoxButtons.OK,
                               MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -817,10 +785,8 @@ Public Class frmOrdenCompra_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
-            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -830,88 +796,4 @@ Public Class frmOrdenCompra_List
         lblRegs.Caption = String.Format("Registros: {0}", String.Format("{0:#,##0.00}", GridView1.DataRowCount.ToString()))
     End Sub
 
-    Private Sub mnuEliminarDocumentoIngreso_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarDocumentoIngreso.ItemClick
-
-        Try
-
-            If Not permiteMenu("3.2.1.2") Then
-                Return
-            End If
-
-            If (GridView1.RowCount > 0) Then
-
-                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                SplashScreenManager.Default.SetWaitFormDescription("Eliminando documento...")
-
-                Dim Dr As DataRowView = GridView1.GetFocusedRow
-
-                If Not Dr Is Nothing Then
-
-                    gBeOrdenCompra = New clsBeTrans_oc_enc
-                    gBeOrdenCompra = clsLnTrans_oc_enc.GetSingle(Dr.Item("Código"))
-
-                    Dim lSelectionIndex As Integer = GridView1.FocusedRowHandle
-
-                    If Modo = pModo.Lista Then
-
-                        If clsLnTrans_re_oc.Tiene_Recepciones(gBeOrdenCompra.IdOrdenCompraEnc) Then
-
-                            SplashScreenManager.CloseForm(False)
-
-                            XtraMessageBox.Show("No se puede eliminar el documento tiene una o mas tareas de recepción asociadas.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-
-                        Else
-
-                            If gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA Then
-
-                                SplashScreenManager.CloseForm(False)
-
-                                If XtraMessageBox.Show("¿Eliminar documento de ingreso:" & gBeOrdenCompra.Referencia & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-
-                                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                                    SplashScreenManager.Default.SetWaitFormDescription("Eliminando...")
-
-                                    If clsLnTrans_oc_enc.Eliminar_OC(gBeOrdenCompra, AP.UsuarioAp) Then
-
-                                        '#MECR03102025: Se agrego nueva bitacora de logs para OC
-                                        Dim vMsgAdvertencia As String = "ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " eliminó la Orden Compra Enc: " & gBeOrdenCompra.IdOrdenCompraEnc
-                                        'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " eliminó la Orden Compra Enc: " & gBeOrdenCompra.IdOrdenCompraEnc)
-                                        clsLnLog_error_wms_oc.Agregar_Error(vMsgAdvertencia, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
-
-                                        SplashScreenManager.CloseForm(False)
-
-                                        XtraMessageBox.Show("Documento de ingreso eliminado correctamente.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-                                        Listar_Pedidos_Compra()
-
-                                    Else
-                                        SplashScreenManager.CloseForm(False)
-                                        XtraMessageBox.Show("No se pudo eliminar el documento de ingreso.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                                    End If
-
-                                End If
-
-                            End If
-
-                        End If
-
-                    End If
-
-                End If
-
-            End If
-
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        Finally
-
-            If Not SplashScreenManager.Default Is Nothing Then
-                If SplashScreenManager.Default.IsSplashFormVisible Then
-                    SplashScreenManager.CloseForm(False)
-                End If
-            End If
-
-        End Try
-
-    End Sub
 End Class

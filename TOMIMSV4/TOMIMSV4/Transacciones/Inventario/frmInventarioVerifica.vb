@@ -120,16 +120,6 @@ Public Class frmInventarioVerifica
         Actualizar = False
 
         Try
-            '#MA20251229 
-            If cmbPresentacion.EditValue Is Nothing Then
-                gBeTransInvVer.Idpresentacion = 0
-            Else
-                gBeTransInvVer.Idpresentacion = CInt(cmbPresentacion.EditValue)
-            End If
-
-            If cmbOperador.EditValue IsNot Nothing Then
-                gBeTransInvVer.Idoperador = CInt(cmbOperador.EditValue)
-            End If
 
             gBeTransInvVer.Idpresentacion = cmbPresentacion.EditValue
             gBeTransInvVer.Fecha_captura = Now
@@ -178,11 +168,5 @@ Public Class frmInventarioVerifica
         End Try
     End Function
 
-    '#MA20251230 
-    Private Sub cmbPresentacion_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbPresentacion.KeyDown
-        If e.KeyCode = Keys.Delete OrElse e.KeyCode = Keys.Back Then
-            cmbPresentacion.EditValue = Nothing
-            e.Handled = True
-        End If
-    End Sub
+
 End Class

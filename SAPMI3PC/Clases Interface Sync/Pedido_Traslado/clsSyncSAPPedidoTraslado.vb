@@ -168,9 +168,7 @@ Public Class clsSyncSAPPedidoTraslado : Inherits clsInterfaceBase
                     Actualizar_Progreso(lblprg, "El cliente: " & PC.Transfer_to_Code & " No existía en WMS y fue insertado.")
                 End If
 
-                clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PC, lblprg, Nothing, Nothing)
-
-                Actualizar_Progreso(lblprg, Resultado)
+                clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PC, lblprg)
 
             Next
 
