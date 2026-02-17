@@ -474,4 +474,12 @@ Public Class frmPicking_List
 
     End Sub
 
+    Private Sub frmPicking_List_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+
+        If AP.Bodega.Rango_Dias_Documentos > 0 Then
+            dtpFechaDel.Value = Now.Date.AddDays(-(AP.Bodega.Rango_Dias_Documentos))
+            dtpFechaAl.Value = Now.Date.AddDays(AP.Bodega.Rango_Dias_Documentos)
+        End If
+
+    End Sub
 End Class

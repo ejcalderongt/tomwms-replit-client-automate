@@ -1090,7 +1090,8 @@ public class clsLnTrans_pe_det
                                                           ref List<clsBeStock_res> pListStockResOUT,
                                                           ref object plblprg,
                                                           SqlConnection lConnection,
-                                                          SqlTransaction lTransaction)
+                                                          SqlTransaction lTransaction,
+                                                          bool pEsManufactura = false)
     {
         bool result = false;
 
@@ -1179,7 +1180,8 @@ public class clsLnTrans_pe_det
                                                                               pBeTrasladoDet.Line_No,
                                                                               false,
                                                                               pBeTrasladoDet,
-                                                                              pBePedidoDet))
+                                                                              pBePedidoDet,
+                                                                              pEsManufactura))
                             {
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
                                 var firstPicking = pBePedidoDet.ListaPickingUbic?.FirstOrDefault();
@@ -1224,7 +1226,8 @@ public class clsLnTrans_pe_det
                                                                      pBeTrasladoDet.Line_No,
                                                                      false,
                                                                      pBeTrasladoDet,
-                                                                     pBePedidoDet))
+                                                                     pBePedidoDet,
+                                                                     pEsManufactura))
                     {
                         result = true;
                         pBeTrasladoDet.Qty_to_Receive = Qty_received2;
@@ -1319,7 +1322,8 @@ public class clsLnTrans_pe_det
                                                           clsBeI_nav_config_enc pBeConfigEnc,
                                                           int IdPropietarioBodega,
                                                           SqlConnection lConnection,
-                                                          SqlTransaction lTransaction)
+                                                          SqlTransaction lTransaction,
+                                                          bool pEsManufactura = false)
     {
         bool result = false;
 
@@ -1398,7 +1402,8 @@ public class clsLnTrans_pe_det
                                                                              ref pListStockResOUT,
                                                                              lConnection,
                                                                              lTransaction,
-                                                                             pBePedidoDet: pBePedidoDet))
+                                                                             pBePedidoDet: ref pBePedidoDet,
+                                                                             pEsManufactura: pEsManufactura))
                             {
                                 
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
@@ -1453,7 +1458,8 @@ public class clsLnTrans_pe_det
                                                                 0,
                                                                 false,
                                                                 pBeTrasladoDet,
-                                                                pBePedidoDet))
+                                                                pBePedidoDet,
+                                                                pEsManufactura))
                 {
                     result = true;
                     Qty_received = pBeTrasladoDet.Qty_to_Receive;

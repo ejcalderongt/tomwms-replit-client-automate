@@ -216,8 +216,10 @@ Partial Public Class clsLnTrans_picking_det_parametros
             Next
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -266,8 +268,57 @@ Partial Public Class clsLnTrans_picking_det_parametros
             Insertar_Parametros_Stock_Para_Picking = True
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingDet:=pIdPickingDet, pStackTrace:=ex.StackTrace)
+
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_By_IdPickingEnc(ByVal pIdPickingEnc As Integer,
+                                                   ByRef lConnection As SqlConnection,
+                                                   ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_det_parametros)
+
+        Dim lReturnList As New List(Of clsBeTrans_picking_det_parametros)
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM trans_picking_det_parametros pp
+                                  JOIN trans_picking_det pd on pd.IdPickingEnc = pp.IdPickingDet 
+                                  WHERE pd.IdPickingEnc=@IdPickingEnc"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeTrans_picking_det_parametros
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        Obj = New clsBeTrans_picking_det_parametros
+                        Cargar(Obj, lRow)
+                        Obj.IsNew = False
+                        lReturnList.Add(Obj)
+
+                    Next
+
+                End If
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
             Throw ex
         End Try
 

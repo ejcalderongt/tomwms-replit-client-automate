@@ -22,7 +22,7 @@ Public Class clsLnProducto_codigos_barra
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeProducto_codigos_barra As clsBeProducto_codigos_barra, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeProducto_codigos_barra As clsBeProducto_codigos_barra, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

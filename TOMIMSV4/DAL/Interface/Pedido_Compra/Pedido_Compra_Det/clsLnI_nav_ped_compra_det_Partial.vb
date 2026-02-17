@@ -43,6 +43,42 @@ Partial Public Class clsLnI_nav_ped_compra_det
         End Try
 
     End Function
+
+    'Public Shared Function GetAllByNoEnc(ByVal pNoEnc As String) As List(Of clsBeI_nav_ped_compra_det)
+
+    '    Try
+
+    '        Dim lReturnList As New List(Of clsBeI_nav_ped_compra_det)
+    '        Const sp As String = "SELECT * FROM I_nav_ped_compra_det WHERE NoEnc = @NoEnc"
+    '        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+    '        Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+    '        Dim dad As New SqlDataAdapter(cmd)
+    '        dad.SelectCommand.Parameters.AddWithValue("@NoEnc", pNoEnc)
+    '        Dim dt As New DataTable
+
+    '        dad.Fill(dt)
+
+    '        Dim vBeI_nav_ped_compra_det As New clsBeI_nav_ped_compra_det
+
+    '        For Each dr As DataRow In dt.Rows
+
+    '            vBeI_nav_ped_compra_det = New clsBeI_nav_ped_compra_det
+    '            Cargar(vBeI_nav_ped_compra_det, dr)
+    '            lReturnList.Add(vBeI_nav_ped_compra_det)
+
+    '        Next
+
+    '        lConnection.Dispose()
+    '        cmd.Dispose()
+
+    '        Return lReturnList
+
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
+
+    'End Function
+
     Public Shared Function Get_All_By_NoEnc(ByRef lConnection As SqlConnection,
                                   ByRef lTrans As SqlTransaction,
                                   ByVal pNoEnc As String) As List(Of clsBeI_nav_ped_compra_det)

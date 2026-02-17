@@ -11,6 +11,7 @@ Public Class clsBeCliente_lotes
 	Public Property Fec_mod() As Date = Date.Now
 	Public Property Activo() As Boolean = False
 	Public Property Bloquear() As Boolean = False
+	Public Property IdProducto() As Integer = 0
 
 	Sub New()
 		'#EJC: Add your constructor here... 

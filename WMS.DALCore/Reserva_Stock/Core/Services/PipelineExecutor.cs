@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using WMS.StockReservation.Core.Domain;
 using WMS.StockReservation.Core.Interfaces;
 
@@ -66,6 +67,8 @@ namespace WMS.StockReservation.Core.Services
 
             _logger.LogCheckpoint("=== FIN PIPELINE RESERVA ===");
 
+            MarkZoneUsage(context);
+
             return new ReservationResult
             {
                 Success = !context.HasError && context.IsQuantityFullyReserved(),
@@ -73,6 +76,34 @@ namespace WMS.StockReservation.Core.Services
                 RemainingQuantity = context.PendingQuantity,
                 Messages = _logger.GetMessages()
             };
+        }
+
+        public ReservationResultDto ExecuteWithDetails(ReservationContext context)
+        {
+            var legacyResult = Execute(context);
+            return ReservationResultDto.FromContext(context);
+        }
+
+        private void MarkZoneUsage(ReservationContext context)
+        {
+            if (context.CreatedReservations == null || context.CreatedReservations.Count == 0)
+                return;
+
+            foreach (var res in context.CreatedReservations)
+            {
+                var stock = context.WorkingStockList?.FirstOrDefault(s => s.IdStock == res.IdStock);
+                if (stock == null) continue;
+
+                bool isPickingLocation = context.StockListPickingZone?
+                    .Any(s => s.IdUbicacion == stock.IdUbicacion) ?? false;
+
+                if (isPickingLocation)
+                    context.UsedPickingZone = true;
+                else
+                    context.UsedNonPickingZone = true;
+            }
+
+            context.ExplosionModeEnabled = context.IsExplosionModeEnabled;
         }
     }
 }

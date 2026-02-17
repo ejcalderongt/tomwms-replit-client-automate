@@ -1,6 +1,4 @@
 using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
@@ -621,4 +619,156 @@ public class clsLnProducto_bodega
 
         return result;
     }
+    public static async Task<Dictionary<int, clsBeProducto_bodega>> GetByIdsAsync(IConfiguration configuration, List<int> idsProductoBodega)
+    {
+        var result = new Dictionary<int, clsBeProducto_bodega>();
+
+        if (idsProductoBodega == null || idsProductoBodega.Count == 0)
+            return result;
+
+        idsProductoBodega = idsProductoBodega.Where(id => id > 0).Distinct().ToList();
+        if (idsProductoBodega.Count == 0)
+            return result;
+
+        const string sql = "SELECT * FROM Producto_bodega WHERE IdProductoBodega IN ({0})";
+
+        using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        await conn.OpenAsync();
+
+        using var tran = (SqlTransaction)await conn.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+        try
+        {
+            var paramNames = idsProductoBodega.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, conn, tran)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsProductoBodega.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsProductoBodega[i]
+                });
+            }
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            // Obtener todos los IdProducto únicos
+            var idsProducto = dt.AsEnumerable()
+                .Where(r => !r.IsNull("IdProducto"))
+                .Select(r => Convert.ToInt32(r["IdProducto"]))
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            // Cargar todos los productos en una sola llamada
+            var productos = new Dictionary<int, clsBeProducto>();
+            if (idsProducto.Any())
+            {
+                productos = await clsLnProducto.GetByIdsAsync(configuration, idsProducto);
+            }
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_bodega();
+                Cargar(ref be, dr);
+
+                if (be.IdProducto > 0 && productos.TryGetValue(be.IdProducto, out var producto))
+                {
+                    be.Producto = producto;
+                }
+
+                result[be.IdProductoBodega] = be;
+            }
+
+            await tran.CommitAsync();
+            return result;
+        }
+        catch
+        {
+            await tran.RollbackAsync();
+            throw;
+        }
+    }
+
+    public static async Task<Dictionary<int, clsBeProducto_bodega>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsProductoBodega)
+    {
+        var result = new Dictionary<int, clsBeProducto_bodega>();
+
+        if (idsProductoBodega == null || idsProductoBodega.Count == 0)
+            return result;
+
+        idsProductoBodega = idsProductoBodega.Where(id => id > 0).Distinct().ToList();
+        if (idsProductoBodega.Count == 0)
+            return result;
+
+        const string sql = "SELECT * FROM Producto_bodega WHERE IdProductoBodega IN ({0})";
+
+        try
+        {
+            var paramNames = idsProductoBodega.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsProductoBodega.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsProductoBodega[i]
+                });
+            }
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            // Obtener todos los IdProducto únicos
+            var idsProducto = dt.AsEnumerable()
+                .Where(r => !r.IsNull("IdProducto"))
+                .Select(r => Convert.ToInt32(r["IdProducto"]))
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            // Cargar todos los productos en una sola llamada
+            var productos = new Dictionary<int, clsBeProducto>();
+            if (idsProducto.Any())
+            {
+                productos = await clsLnProducto.GetByIdsAsync(connection, transaction, idsProducto);
+            }
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_bodega();
+                Cargar(ref be, dr);
+
+                if (be.IdProducto > 0 && productos.TryGetValue(be.IdProducto, out var producto))
+                {
+                    be.Producto = producto;
+                }
+
+                result[be.IdProductoBodega] = be;
+            }
+
+            return result;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
 }

@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnI_nav_config_det
@@ -7,8 +8,7 @@ Partial Public Class clsLnI_nav_config_det
         Try
 
             '#HS20171023_1620pm: Quité String.Format.
-            sp = "SELECT * FROM VW_navdetalleconfiguracion  where idnavconfigenc= 
-idnavconfigenc"
+            sp = "SELECT * FROM VW_navdetalleconfiguracion  where idnavconfigenc= idnavconfigenc"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -207,8 +207,8 @@ idnavconfigenc"
 
     End Function
 
-    Public Shared Function MaxID(ByRef lConnection As SqlConnection, _
-                                     ByRef lTransaction As SqlTransaction) as Integer
+    Public Shared Function MaxID(ByRef lConnection As SqlConnection,
+                                     ByRef lTransaction As SqlTransaction) As Integer
 
         Try
 
@@ -233,6 +233,62 @@ idnavconfigenc"
             Throw ex
         End Try
 
+    End Function
+
+
+    '#GT22072025: validar si existe el día asociado a la interface y ejecutable.
+    Public Shared Function Exists(ByVal pInavConfigDet As clsBeI_nav_config_det, Optional pConection As SqlConnection = Nothing, Optional pTransaction As SqlTransaction = Nothing) As Boolean
+
+        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lDTA As New SqlDataAdapter
+        Dim Es_Transaccion_Remota As Boolean
+        Exists = False
+
+        Try
+
+            Dim lExists As Boolean = False
+
+            Dim vSQL As String = "SELECT COUNT(1) FROM i_nav_config_det WHERE (idnavconfigenc=@idnavconfigenc and dia=@dia and idnavent=@idnavent and activo=1)"
+
+            Es_Transaccion_Remota = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Es_Transaccion_Remota Then
+                lDTA = New SqlDataAdapter(vSQL, pConection)
+                lDTA.SelectCommand.Transaction = pTransaction
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lDTA = New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.Transaction = lTransaction
+            End If
+
+
+
+            lDTA.SelectCommand.CommandType = CommandType.Text
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdNavConfigEnc", pInavConfigDet.IdNavConfigEnc)
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdNavEnt", pInavConfigDet.IdNavEnt)
+            lDTA.SelectCommand.Parameters.AddWithValue("@Dia", pInavConfigDet.Dia)
+
+
+            Dim lReturnValue As Object = lDTA.SelectCommand.ExecuteScalar()
+            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                Exists = CInt(lReturnValue) > 0
+            End If
+
+
+        Catch ex As Exception
+            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then
+                lTransaction.Rollback()
+            End If
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            If Not Es_Transaccion_Remota Then
+                If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then lConnection.Dispose()
+            End If
+        End Try
     End Function
 
 End Class

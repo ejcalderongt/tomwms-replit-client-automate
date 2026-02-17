@@ -102,6 +102,7 @@ Partial Class frmOrdenCompra
         Me.cmdImprimeBarras = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdRecepcionesAsociadas = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdPreImpresionOC = New DevExpress.XtraBars.BarButtonItem()
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
         Me.mnuEstadoEnviadoAERP = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuCerrarPedidoCompra = New DevExpress.XtraBars.BarButtonItem()
@@ -116,6 +117,7 @@ Partial Class frmOrdenCompra
         Me.cmdCorreccionPoliza = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdImprimirEtiquetasRecepcion = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdDuplicar = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdEliminarDocumento = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RepositoryItemTextEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemTextEdit()
@@ -320,7 +322,6 @@ Partial Class frmOrdenCompra
         Me.cmdImportar = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem6 = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem7 = New DevExpress.XtraBars.BarButtonItem()
-        Me.cmdPreImpresionOC = New DevExpress.XtraBars.BarButtonItem()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -1076,16 +1077,16 @@ Partial Class frmOrdenCompra
         'grpEncRec
         '
         Me.grpEncRec.ExpandCollapseItem.Id = 0
-        Me.grpEncRec.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.grpEncRec.ExpandCollapseItem, Me.mnuGuardar, Me.mnuAsignacion, Me.BarButtonItem1, Me.BarButtonItem2, Me.BarButtonItem3, Me.cmdCodigoBarra, Me.cmdImprimeCodigoBarra, Me.cmdImprmirCodigoBarra, Me.cmdActualizar, Me.cmdEliminar, Me.cmdUbicacion, Me.cmdImprimir, Me.SubImprimir, Me.cmdPreIngreso, Me.cmdCostoArancel, Me.cmdImprimeBarras, Me.lblRegs, Me.BarButtonItem4, Me.mnuEstadoEnviadoAERP, Me.cmdRecepcionesAsociadas, Me.mnuCerrarPedidoCompra, Me.cmdBackorder, Me.cmdActualizarDetalle, Me.BarButtonItem5, Me.cmdImportarExcel, Me.mnuTareaRecepcion, Me.mnuExportarExcel, Me.mnuEliminarLayoutGrid, Me.mnuRegistrarEnNAV, Me.cmdCorreccionPoliza, Me.cmdImprimirEtiquetasRecepcion, Me.cmdDuplicar, Me.cmdPreImpresionOC})
+        Me.grpEncRec.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.grpEncRec.ExpandCollapseItem, Me.mnuGuardar, Me.mnuAsignacion, Me.BarButtonItem1, Me.BarButtonItem2, Me.BarButtonItem3, Me.cmdCodigoBarra, Me.cmdImprimeCodigoBarra, Me.cmdImprmirCodigoBarra, Me.cmdActualizar, Me.cmdEliminar, Me.cmdUbicacion, Me.cmdImprimir, Me.SubImprimir, Me.cmdPreIngreso, Me.cmdCostoArancel, Me.cmdImprimeBarras, Me.lblRegs, Me.BarButtonItem4, Me.mnuEstadoEnviadoAERP, Me.cmdRecepcionesAsociadas, Me.mnuCerrarPedidoCompra, Me.cmdBackorder, Me.cmdActualizarDetalle, Me.BarButtonItem5, Me.cmdImportarExcel, Me.mnuTareaRecepcion, Me.mnuExportarExcel, Me.mnuEliminarLayoutGrid, Me.mnuRegistrarEnNAV, Me.cmdCorreccionPoliza, Me.cmdImprimirEtiquetasRecepcion, Me.cmdDuplicar, Me.cmdEliminarDocumento, Me.cmdPreImpresionOC})
         Me.grpEncRec.Location = New System.Drawing.Point(0, 0)
         Me.grpEncRec.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.grpEncRec.MaxItemId = 40
+        Me.grpEncRec.MaxItemId = 41
         Me.grpEncRec.Name = "grpEncRec"
         Me.grpEncRec.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.grpEncRec.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemTextEdit1, Me.RepositoryItemTextEdit2})
         Me.grpEncRec.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.grpEncRec.Size = New System.Drawing.Size(1632, 193)
-        Me.grpEncRec.StatusBar = Me.RibbonStatusBar1
+        Me.grpEncRec.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
         '
@@ -1218,6 +1219,12 @@ Partial Class frmOrdenCompra
         Me.cmdRecepcionesAsociadas.Id = 22
         Me.cmdRecepcionesAsociadas.Name = "cmdRecepcionesAsociadas"
         '
+        'cmdPreImpresionOC
+        '
+        Me.cmdPreImpresionOC.Caption = "Preimpresión etiquetas"
+        Me.cmdPreImpresionOC.Id = 40
+        Me.cmdPreImpresionOC.Name = "cmdPreImpresionOC"
+        '
         'lblRegs
         '
         Me.lblRegs.Caption = "Registros: 0"
@@ -1316,6 +1323,13 @@ Partial Class frmOrdenCompra
         Me.cmdDuplicar.ImageOptions.SvgImage = CType(resources.GetObject("cmdDuplicar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdDuplicar.Name = "cmdDuplicar"
         '
+        'cmdEliminarDocumento
+        '
+        Me.cmdEliminarDocumento.Caption = "Eliminar documento"
+        Me.cmdEliminarDocumento.Id = 39
+        Me.cmdEliminarDocumento.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarDocumento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdEliminarDocumento.Name = "cmdEliminarDocumento"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -1340,6 +1354,7 @@ Partial Class frmOrdenCompra
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdCorreccionPoliza, "2.1.1.2")
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImprimirEtiquetasRecepcion)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdDuplicar)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdEliminarDocumento)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RepositoryItemTextEdit1
@@ -1947,7 +1962,7 @@ Partial Class frmOrdenCompra
         'lblUsuarioERP
         '
         Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -1578)
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -2835)
         Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsuarioERP.Name = "lblUsuarioERP"
         Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
@@ -1969,7 +1984,7 @@ Partial Class frmOrdenCompra
         '
         Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -1626)
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -2883)
         Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
         Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
@@ -1990,7 +2005,7 @@ Partial Class frmOrdenCompra
         'lblNoDocumentoRecepcion
         '
         Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -1626)
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -2883)
         Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
         Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
@@ -2011,7 +2026,7 @@ Partial Class frmOrdenCompra
         'lblSociedadERP
         '
         Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -1627)
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -2884)
         Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSociedadERP.Name = "lblSociedadERP"
         Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
@@ -2445,13 +2460,13 @@ Partial Class frmOrdenCompra
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("0edba7b8-5062-4fcb-b46c-8fbffdcf2fc4")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 784)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 123)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1632, 154)
+        Me.DockPanel1.Size = New System.Drawing.Size(1554, 123)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -2468,7 +2483,7 @@ Partial Class frmOrdenCompra
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1624, 116)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1546, 85)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtraOrdenCompra
@@ -3656,12 +3671,6 @@ Partial Class frmOrdenCompra
         Me.BarButtonItem7.Id = 7
         Me.BarButtonItem7.Name = "BarButtonItem7"
         '
-        'cmdPreImpresionOC
-        '
-        Me.cmdPreImpresionOC.Caption = "PreImpresión Etiqueta OC"
-        Me.cmdPreImpresionOC.Id = 39
-        Me.cmdPreImpresionOC.Name = "cmdPreImpresionOC"
-        '
         'frmOrdenCompra
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -4098,5 +4107,6 @@ Partial Class frmOrdenCompra
     Friend WithEvents grpDatosERP As DevExpress.XtraEditors.GroupControl
     Friend WithEvents txtUsuarioERP As TextBox
     Friend WithEvents lblUsuarioERP As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents cmdEliminarDocumento As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents cmdPreImpresionOC As DevExpress.XtraBars.BarButtonItem
 End Class

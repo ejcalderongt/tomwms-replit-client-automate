@@ -14,7 +14,9 @@ Partial Public Class clsLnI_nav_barras_pallet
             Upd.Add("recibido", "@recibido", DataType.Parametro)
             Upd.Add("idrecepcion", "@idrecepcion", DataType.Parametro)
             Upd.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
-            Upd.Where("codigo_barra = @codigo_barra ")
+            Upd.Where("codigo_barra = @codigo_barra " &
+                      IIf(oBeI_nav_barras_pallet.Bodega_Origen <> "", " AND bodega_origen = @bodega_origen", "") &
+                      " AND idrecepcion = 0 ")
 
             Dim sp As String = Upd.SQL()
 
@@ -33,7 +35,7 @@ Partial Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeI_nav_barras_pallet.IdRecepcion))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeI_nav_barras_pallet.Bodega_Destino))
-
+            If oBeI_nav_barras_pallet.Bodega_Origen <> "" Then cmd.Parameters.Add(New SqlParameter("@BODEGA_ORIGEN", oBeI_nav_barras_pallet.Bodega_Origen))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

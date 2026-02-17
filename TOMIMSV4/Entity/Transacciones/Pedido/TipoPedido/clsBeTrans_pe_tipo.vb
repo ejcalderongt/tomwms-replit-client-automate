@@ -80,6 +80,7 @@ Public Class clsBeTrans_pe_tipo
     Public Property Transferir_Ubicacion As Boolean = False
 
     Public Property Verificar_con_imagen As Boolean = False
+    Public Property Genera_Guia_Remision As Boolean = False
 
     Sub New()
     End Sub

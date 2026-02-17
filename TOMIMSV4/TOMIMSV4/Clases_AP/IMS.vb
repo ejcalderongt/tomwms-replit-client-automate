@@ -1,3 +1,4 @@
+Imports System
 Imports System.Data.SqlClient
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
@@ -3122,7 +3123,7 @@ Public Class IMS
 
     End Function
 
-    Public Overloads Shared Function Listar_Productos(ByRef Cmb As LookUpEdit, IdBodega As Integer) As Boolean
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As DevExpress.XtraEditors.GridLookUpEdit, IdBodega As Integer) As Boolean
 
         Listar_Productos = False
 
@@ -3132,14 +3133,51 @@ Public Class IMS
 
             DT = clsLnProducto.Get_All_By_Bodega_DT(IdBodega)
 
-            If DT.Rows.Count > 0 Then
-                Cmb.Properties.DisplayMember = "Nombre"
-                Cmb.Properties.ValueMember = "IdProducto"
-                Cmb.Properties.DataSource = DT
-                Cmb.ItemIndex = 0
+            '#MA20251230 Filtro en cmbProducto se cambio de LookUpEdit a GridLookUpEdit
+            If DT Is Nothing OrElse DT.Rows.Count = 0 Then Return False
+
+            With Cmb.Properties
+                .DataSource = DT
+                .DisplayMember = "Nombre"
+                .ValueMember = "IdProducto"
+                .NullText = ""
+                .ImmediatePopup = True
+                .PopupFilterMode = PopupFilterMode.Contains
+                .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
+                .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoFilter
+                .PopupFormSize = New Size(500, 250)
+
+                .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFit
+                .PopupSizeable = True
+                .ShowFooter = True
+            End With
+
+            Cmb.Properties.PopulateViewColumns()
+            Dim view = Cmb.Properties.View
+
+            If view.Columns("IdProducto") IsNot Nothing Then
+                view.Columns("IdProducto").Caption = "ID"
+                view.Columns("IdProducto").Visible = True
             End If
 
-            Listar_Productos = DT.Rows.Count > 0
+            If view.Columns("Nombre") IsNot Nothing Then
+                view.Columns("Nombre").Caption = "Producto"
+                view.Columns("Nombre").Visible = True
+            End If
+
+            view.OptionsView.ColumnAutoWidth = False
+            view.OptionsView.ShowAutoFilterRow = True
+            view.OptionsBehavior.Editable = False
+
+            view.BestFitColumns()
+
+            If view.Columns("Nombre") IsNot Nothing Then
+                If view.Columns("Nombre").Width > 450 Then
+                    view.Columns("Nombre").Width = 450
+                End If
+            End If
+
+            Listar_Productos = True
 
         Catch ex As Exception
             Throw New Exception(ex.Message)
@@ -3398,6 +3436,40 @@ Public Class IMS
         End Try
 
     End Sub
+    Public Shared Function Listar_Clientes_By_IdCliente(ByRef Cmb As GridLookUpEdit,
+                                                         ByVal pIdPropietario As Integer,
+                                                         ByVal pIdBodega As Integer,
+                                                         ByVal IdCliente As Integer) As Boolean
+
+        Listar_Clientes_By_IdCliente = False
+
+        Try
+
+            Dim DT As DataTable = clsLnCliente.Get_All_Clientes_By_IdCliente(pIdPropietario,
+                                                                             pIdBodega,
+                                                                             IdCliente)
+
+            If DT.Rows.Count > 0 Then
+                Cmb.Properties.DisplayMember = "Nombre"
+                Cmb.Properties.ValueMember = "Correlativo"
+                Cmb.Properties.DataSource = DT
+                Cmb.Properties.PopulateViewColumns()
+                Cmb.Properties.View.Columns(1).Visible = False
+                Cmb.Properties.View.Columns(2).Visible = False
+                Cmb.Properties.View.Columns(3).Visible = False
+                Cmb.Properties.View.Columns(5).Width = 200
+                Cmb.Properties.PopupFormSize = New Size(900, 200)
+                Cmb.Properties.View.BestFitColumns()
+                Cmb.Properties.NullText = ""
+            End If
+
+            Listar_Clientes_By_IdCliente = DT.Rows.Count > 0
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+
+    End Function
 
     Public Shared Sub Llena_Pilotos(ByRef cmbPiloto As LookUpEdit,
                                     ByVal pIdEmpresaTransporte As Integer,
@@ -3432,5 +3504,100 @@ Public Class IMS
         End Try
 
     End Sub
+    Public Shared Function Listar_Producto_Estado_Grid(ByRef Cmb As GridLookUpEdit) As Boolean
 
+        Listar_Producto_Estado_Grid = False
+
+        Try
+
+            Dim DT As DataTable = clsLnProducto_estado.GetAllByForCombo()
+
+            If Not DT Is Nothing Then
+
+                If DT.Rows.Count > 0 Then
+                    Cmb.Properties.DisplayMember = "nombre"
+                    Cmb.Properties.ValueMember = "IdEstado"
+                    Cmb.Properties.DataSource = DT
+                    Cmb.Properties.PopulateViewColumns()
+                    'Cmb.Properties.View.Columns(1).Visible = False
+                    Cmb.Properties.PopupFormSize = New Size(1000, 200)
+                    Cmb.Properties.View.BestFitColumns()
+                    Cmb.Properties.NullText = ""
+                End If
+
+                Listar_Producto_Estado_Grid = DT.Rows.Count > 0
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+
+    End Function
+
+    Public Overloads Shared Function Listar_Color(ByRef Cmb As LookUpEdit) As Boolean
+
+        Listar_Color = False
+
+        Dim DT As New DataTable
+
+        Try
+
+            DT = clsLnColor.Listar()
+
+            If DT.Rows.Count > 0 Then
+                Dim dtFiltrado As New DataTable()
+                dtFiltrado.Columns.Add("IdColor", GetType(Integer))
+                dtFiltrado.Columns.Add("Nombre", GetType(String))
+
+                For Each row As DataRow In DT.Rows
+                    dtFiltrado.Rows.Add(row("IdColor"), row("Nombre"))
+                Next
+
+                Cmb.Properties.DisplayMember = "Nombre"
+                Cmb.Properties.ValueMember = "IdColor"
+                Cmb.Properties.DataSource = dtFiltrado
+                Cmb.ItemIndex = 0
+            End If
+
+            Listar_Color = DT.Rows.Count > 0
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
+    Public Overloads Shared Function Listar_Tallas(ByRef Cmb As LookUpEdit) As Boolean
+
+        Listar_Tallas = False
+
+        Dim DT As New DataTable
+
+        Try
+
+            DT = clsLnTalla.Listar()
+
+            If DT.Rows.Count > 0 Then
+                Dim dtFiltrado As New DataTable()
+                dtFiltrado.Columns.Add("IdTalla", GetType(Integer))
+                dtFiltrado.Columns.Add("Codigo", GetType(String))
+
+                For Each row As DataRow In DT.Rows
+                    dtFiltrado.Rows.Add(row("IdTalla"), row("Codigo"))
+                Next
+
+                Cmb.Properties.DisplayMember = "Codigo"
+                Cmb.Properties.ValueMember = "IdTalla"
+                Cmb.Properties.DataSource = dtFiltrado
+                Cmb.ItemIndex = 0
+            End If
+
+            Listar_Tallas = DT.Rows.Count > 0
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
 End Class

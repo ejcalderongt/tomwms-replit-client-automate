@@ -5,6 +5,7 @@ using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Services;
+
 public class ProductoSyncService : IProductoSyncService
 {
     private readonly IConfiguration _configuration;
@@ -111,7 +112,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             throw new Exception("Error al procesar ParametroB → " + ex.Message, ex);
         }
-
+        
         try
         {
             if (dto.Presentaciones != null)

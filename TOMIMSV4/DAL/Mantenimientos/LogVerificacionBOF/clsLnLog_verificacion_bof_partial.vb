@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
-Partial Public Class clsLnLog_verificacion_bof
+Partial Public Class clsLnLog_verificacion_bof_error
 
     Public Shared Sub Agregar_Error(ByVal pMensajeExcepcion As String,
                                     Optional ByVal pIdBodega As Integer = 0,
@@ -21,7 +21,7 @@ Partial Public Class clsLnLog_verificacion_bof
                                     Optional ByVal pTransaction As SqlTransaction = Nothing)
 
         Try
-            Dim oBe As New clsBeLog_verificacion_bof()
+            Dim oBe As New clsBeLog_verificacion_bof_error()
 
             ' Obligatorios
             oBe.MensajeError = pMensajeExcepcion

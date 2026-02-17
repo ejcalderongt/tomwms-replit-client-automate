@@ -3,10 +3,6 @@ Imports TOMWMS.clsHelper
 
 Public Class frmRegistraFechaExpotacion
 
-    'Public listaDuplas As New List(Of DuplaSinFecha)
-
-    'Public Property listaDuplas As List(Of DuplaSinFecha)
-
     Private _listaOriginal As List(Of DuplaSinFecha)
     Public Property Resultado As List(Of DuplaSinFecha)
 
@@ -19,23 +15,6 @@ Public Class frmRegistraFechaExpotacion
 
     Private Sub frmRegistraFechaExpotacion_Load(sender As Object, e As EventArgs) Handles Me.Load
         Try
-
-            'Dim listaUnica As List(Of DuplaSinFecha) = _listaOriginal _
-            '    .GroupBy(Function(x) x.IdPropietario) _
-            '    .Select(Function(g) New DuplaSinFecha With {
-            '    .Tabla = "", ' Oculta la tabla
-            '    .IdPropietario = g.Key,
-            '    .FechaSincronizacion = Nothing
-            '    }).ToList()
-
-            'Dim listaUnica As List(Of DuplaSinFecha) = _listaOriginal _
-            '    .GroupBy(Function(x) New With {x.IdPropietario, x.Nombre}) _
-            '    .Select(Function(g) New DuplaSinFecha With {
-            '    .Tabla = "", ' Oculta la tabla
-            '    .IdPropietario = g.Key.IdPropietario,
-            '    .Nombre = g.Key.Nombre,
-            '    .FechaSincronizacion = Nothing
-            '    }).ToList()
 
             Dim listaUnica As List(Of DuplaSinFecha) =
                 _listaOriginal _

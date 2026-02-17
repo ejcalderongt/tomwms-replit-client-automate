@@ -160,6 +160,13 @@ Entity
  </summary>
  <returns></returns>
 </member>
+<member name="T:TOMWMS.clsBeProveedor_tiempos">
+ <summary>
+ Class clsBeProveedor_tiempos.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+ <seealso cref="T:System.IDisposable" />
+</member>
 <member name="P:TOMWMS.clsBeProveedor_tiempos.IdTiempoProveedor">
  <summary>
  Gets or sets the identifier tiempo proveedor.
@@ -1116,6 +1123,190 @@ Entity
  Creates a new object that is a copy of the current instance.
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_bodega">
+ <summary>
+ Class clsBeI_nav_bodega.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="M:TOMWMS.clsBeI_nav_bodega.#ctor(System.String@,System.String)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_bodega"/> class.
+ </summary>
+ <param name="bodega_code">The bodega_code.</param>
+ <param name="bodega_name">The bodega_name.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_bodega.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ped_compra_enc">
+ <summary>
+ Class clsBeI_nav_ped_compra_enc.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.No">
+ <summary>
+ Gets or sets the no.
+ </summary>
+ <value>The no.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Buy_From_Vendor_No">
+ <summary>
+ Gets or sets the buy_ from_ vendor_ no.
+ </summary>
+ <value>The buy_ from_ vendor_ no.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Buy_From_Vendor_Name">
+ <summary>
+ Gets or sets the name of the buy_ from_ vendor_.
+ </summary>
+ <value>The name of the buy_ from_ vendor_.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Posting_Description">
+ <summary>
+ Gets or sets the posting_ description.
+ </summary>
+ <value>The posting_ description.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Posting_Date">
+ <summary>
+ Gets or sets the posting_ date.
+ </summary>
+ <value>The posting_ date.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Order_Date">
+ <summary>
+ Gets or sets the order_ date.
+ </summary>
+ <value>The order_ date.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Document_Date">
+ <summary>
+ Gets or sets the document_ date.
+ </summary>
+ <value>The document_ date.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Vendor_Invoice_No">
+ <summary>
+ #EJC202406062666: DocNum en interface SAP, Cumbre, HND.
+ </summary>
+ <value>The vendor_ invoice_ no.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Status">
+ <summary>
+ Gets or sets the status.
+ </summary>
+ <value>The status.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Payment_Terms_Code">
+ <summary>
+ Gets or sets the payment_ terms_ code.
+ </summary>
+ <value>The payment_ terms_ code.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Ship_To_Name">
+ <summary>
+ Gets or sets the name of the ship_ to_.
+ </summary>
+ <value>The name of the ship_ to_.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Location_Code">
+ <summary>
+ Gets or sets the location_ code.
+ </summary>
+ <value>The location_ code.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Ship_To_Contact">
+ <summary>
+ #EJC202406062666: NoContenedor interface SAP, Cumbre, HND.
+ </summary>
+ <value>The ship_ to_ contact.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Expected_Receipt_Date">
+ <summary>
+ Gets or sets the expected_ receipt_ date.
+ </summary>
+ <value>The expected_ receipt_ date.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Is_Internal_Transfer">
+ <summary>
+ Gets or sets a value indicating if the documents is an [transferencia interna].
+ From other warehouse pej.
+ </summary>
+ <value>
+   <c>true</c> if [transferencia interna]; otherwise, <c>Is a Order from provider</c>.
+ </value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Product_Owner_Code">
+ <summary>
+ c�digo de Propietario.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Internal_Transfer_Document_No">
+ <summary>
+ n�mero de referencia del pedido de cliente en la bodega origen (Emisora) de merncanc�as.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.IsImport">
+ <summary>
+ #EJC20231027: Determina si el documento de ingreso es o no una importaci�n para considerar la generaci�n de NC en SAP.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Company_Code">
+ <summary>
+ #EJC20240807: Identificador de empresa o sociedad de SAP.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Campaign_No">
+ <summary>
+ #EJC20250428: Identifica el n�mero de campa�a (SAP Mampa)
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ped_compra_enc.#ctor(System.String@,System.String,System.String,System.String,System.DateTime,System.DateTime,System.DateTime,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ped_compra_enc"/> class.
+ </summary>
+ <param name="No">The no.</param>
+ <param name="Buy_From_Vendor_No">The buy_ from_ vendor_ no.</param>
+ <param name="Buy_From_Vendor_Name">Name of the buy_ from_ vendor_.</param>
+ <param name="Posting_Description">The posting_ description.</param>
+ <param name="Posting_Date">The posting_ date.</param>
+ <param name="Order_Date">The order_ date.</param>
+ <param name="Document_Date">The document_ date.</param>
+ <param name="Vendor_Invoice_No">The vendor_ invoice_ no.</param>
+ <param name="Status">The status.</param>
+ <param name="Payment_Terms_Code">The payment_ terms_ code.</param>
+ <param name="Ship_To_Name">Name of the ship_ to_.</param>
+ <param name="Location_Code">The location_ code.</param>
+ <param name="Ship_To_Contact">The ship_ to_ contact.</param>
+ <param name="Expected_Receipt_Date">The expected_ receipt_ date.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ped_compra_enc.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_ped_compra_enc.Lineas_Detalle">
+ <summary>
+ The list of details in resume
+ </summary>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ped_traslado_det">
+ <summary>
+ Class clsBeI_nav_ped_traslado_det.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
 </member>
 <member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.NoEnc">
  <summary>
@@ -3742,6 +3933,13 @@ Entity
 <member name="P:TOMWMS.clsBeProducto_estado.Tolerancia_Dias_Vencimiento">
  <summary>
  #EJC20231118: Tolerancia_DiasVencimiento para definir estado del producto en base a la fecha
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Reservar_En_UmBas">
+ <summary>
+ #CKFK20250910: Campo para saber si el estado del producto en la reserva requiere UMBas,
+ esto aplica si el cliente tiene definido un estado de producto a importar
  </summary>
  <returns></returns>
 </member>

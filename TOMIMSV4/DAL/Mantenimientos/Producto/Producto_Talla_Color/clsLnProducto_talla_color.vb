@@ -276,6 +276,7 @@ Public Class clsLnProducto_talla_color
 			Const sp As String = " SELECT * FROM Producto_talla_color " &
 								 " Where(IdProductoTallaColor = @IdProductoTallaColor)"
 
+
 			Using lDTA As New SqlDataAdapter(sp, lConnection)
 
 				lDTA.SelectCommand.CommandType = CommandType.Text
@@ -337,6 +338,7 @@ Public Class clsLnProducto_talla_color
 		End Try
 
 	End Function
+
 	Public Shared Function Existe(ByVal idProductoTallaColor As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Boolean
 
 		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -375,37 +377,18 @@ Public Class clsLnProducto_talla_color
 		End Try
 	End Function
 
-	Public Shared Sub InsertOrUpdate(ByRef oBeProducto_talla_color As clsBeProducto_talla_color,
-								 Optional ByVal pConection As SqlConnection = Nothing,
-								 Optional ByVal pTransaction As SqlTransaction = Nothing)
-
-		Dim localConn As SqlConnection = Nothing
-		Dim usarLocal As Boolean = (pConection Is Nothing)
-
+	Public Shared Sub InsertOrUpdate(ByRef oBeProducto_talla_color As clsBeProducto_talla_color, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing)
 		Try
-			If usarLocal Then
-				localConn = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-				localConn.Open()
-				pConection = localConn
-				pTransaction = Nothing
-			End If
-
 			If ExisteBySKU(oBeProducto_talla_color.CodigoSKU, pConection, pTransaction) Then
 				Actualizar(oBeProducto_talla_color, pConection, pTransaction)
 			Else
 				oBeProducto_talla_color.IdProductoTallaColor = MaxID(pConection, pTransaction) + 1
 				Insertar(oBeProducto_talla_color, pConection, pTransaction)
 			End If
-
 		Catch ex As Exception
-			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
-		Finally
-			If usarLocal AndAlso localConn IsNot Nothing AndAlso localConn.State = ConnectionState.Open Then
-				localConn.Close()
-			End If
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		End Try
 	End Sub
-
 
 	Public Shared Function ExisteBySKU(ByVal CodigoSku As String, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Boolean
 

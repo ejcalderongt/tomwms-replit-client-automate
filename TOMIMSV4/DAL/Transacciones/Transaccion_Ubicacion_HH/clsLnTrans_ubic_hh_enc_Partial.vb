@@ -405,8 +405,14 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             End If
 
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=BeTransUbicHHEnc.IdBodega,
+                                                  pIdTareaUbicacionEnc:=BeTransUbicHHEnc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=BeTransUbicHHEnc.IdMotivoUbicacion)
             Throw ex
         End Try
 
@@ -464,10 +470,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 clsLnTarea_hh.Guardar_Tarea_Ubicacion_HH(BeTrans_ubic_hh_enc, pIdPropietario, lConnection, lTransaction)
                 clsLnStock_res.Guardar_Stock_Res(BeTrans_ubic_hh_enc.IdTareaUbicacionEnc, pListObjStock, pHostSolicita, lConnection, lTransaction)
             Else
-                '#EJC20171016_0228PM: Cuando se cambia la transacción a BOF, eliminar tarea de la HH.
                 clsLnTarea_hh.Eliminar_By_IdTareaHH(pIdTareaHH, lConnection, lTransaction)
-                '#EJC20171018_0636PM: Si la transacción era antes con HH y se cambio a BOF eliminar el stock reservado.
-                '#CKFK20240624 Si la tarea es de tipo reabasto el tipo de transaccion es diferente
                 If BeTrans_ubic_hh_enc.IdReabastecimientoLog > 0 Then
                     clsLnStock_res.Eliminar_Stock_Res_Reabasto(BeTrans_ubic_hh_enc.IdTareaUbicacionEnc, lConnection, lTransaction)
                 Else
@@ -476,8 +479,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 clsLnStock.Actualizar_Stock_Por_Cambio_de_Ubicacion(pListObjStock, pListObjDet, (BeTrans_ubic_hh_enc.IdReabastecimientoLog <> 0), lConnection, lTransaction)
             End If
 
-            'GT20122021: envio el pObjEnc, con IsNew para insert o update
-            'clsLnTrans_ubic_hh_op.Guarda_Operadores(pObjEnc.IdTareaUbicacionEnc, pListObjOp, lConnection, lTransaction)
             clsLnTrans_ubic_hh_op.Guarda_Operadores_By_Enc(BeTrans_ubic_hh_enc, pListObjOp, lConnection, lTransaction)
             If Not Con_HH Then clsLnTrans_movimientos.Guardar_Movimientos(BeTrans_ubic_hh_enc.IdTareaUbicacionEnc, pListObjMov, lConnection, lTransaction)
             clsLnTrans_ubic_tarima.Guardar_Tarimas_Usadas(BeTrans_ubic_hh_enc.IdTareaUbicacionEnc, pListObjTransUbicTarimasUsadas, lConnection, lTransaction)
@@ -746,8 +747,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 If Not EsPicking Then
                     bePickingUbicExistente.Cantidad_Recibida -= CantDañada
                 End If
-
-                'clsLnTrans_picking_ubic.Actualizar(bePickingUbicExistente, lConnection, lTransaction)
 
                 '#CKFK 20180220 11:03 PM 
                 'Si la cantidad del picking_ubic es mayor a la cantidad dañada se crea un nuevo picking_ubic 
@@ -1111,14 +1110,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
                 '#CKFK 20180501 Agregué el IdStockRes porque estaba guardando el anterior
                 bePickingUbicExistente.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction)
-                clsLnTrans_picking_ubic.Insertar(bePickingUbicNuevo)
-
-                'CM_10012019: Puse en comentario esto porque al actualizar el IdStockres se le estaba quitando la cantidad dañada y no se si sea
-                'correcto porque es el mismo IdStockRes. (Consultar con Erik)
-                'clsLnStock_res.Actualizar_Stock_Reservado_By_IdStockRes(vIdStockResOriginal,
-                '                                                        IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaPresentacion, CantDañada),
-                '                                                        lConnection,
-                '                                                        lTransaction)
+                clsLnTrans_picking_ubic.Insertar(bePickingUbicNuevo, lConnection, lTransaction)
 
             Else
                 Throw New Exception(String.Format("La cantidad disponible: {0} es menor a la cantidad dañada:{1} ", beStockRes.Cantidad, CantDañada))
@@ -1224,8 +1216,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 beUbicHHDet.Estado = "Pendiente"
                 beUbicHHDet.Realizado = False
                 beUbicHHDet.Operador = New clsBeOperador
-                'beUbicHHDet.IdOperador = UsuarioHH
-
                 beUbicHHDet.Activo = True
 
                 beListUbicHHDet.Add(beUbicHHDet)
@@ -1269,7 +1259,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             pStock.Cantidad = CantDañada
             pStock.IdProductoEstado = IdEstadoDest
             pStock.ProductoEstado.IdEstado = IdEstadoDest
-            'pStock.IdUbicacion = IdUbicDest '#CKFK 20180219 Agregué al stock que la ubicación origen es la ubicación destino cuando genero la tarea de cambio de estado
 
             pListMov.Add(pMov)
 
@@ -1396,7 +1385,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             Dim beUbicHHEnc As New clsBeTrans_ubic_hh_enc
             Dim beTareaHH As New clsBeTarea_hh()
 
-
             If Not UbicaAuto Then
 
                 'Encabezado de ubicación con HH por cambio de estado
@@ -1490,11 +1478,14 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 beUbicHHDet.Stock.Serial = pStock.Serial
                 beUbicHHDet.IdEstadoOrigen = pStock.IdProductoEstado
                 beUbicHHDet.IdEstadoDestino = IdEstadoDest
-                beUbicHHDet.Cantidad = IIf(pStock.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada)
+                '#AT20260105 Guardar la cantidad sin aplicar la conversión 
+                beUbicHHDet.Cantidad = CantDañada
                 beUbicHHDet.Recibido = 0
                 beUbicHHDet.Estado = "Pendiente"
                 beUbicHHDet.Operador = New clsBeOperador
                 beUbicHHDet.IdOperadorBodega = UsuarioHH
+                '#CKFK20251229 Agregamos el campo IdBodega que no se estaba enviando
+                beUbicHHDet.IdBodega = IdBodega
                 beUbicHHDet.Activo = True
                 beListUbicHHDet.Add(beUbicHHDet)
 
@@ -1565,7 +1556,9 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             pMov.Lic_plate = bePickingUbic.Lic_plate
 
             'Modificar campos en el stock
-            pStock.Cantidad = CantDañada
+            '#AT20260105 pStock se utiliza para guardar stock res, siempre se debe guardar en umbas (cantidad)
+            'pStock.Cantidad = CantDañada
+            pStock.Cantidad = IIf(pStock.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada)
             pStock.IdProductoEstado = IdEstadoDest
             pStock.ProductoEstado.IdEstado = IdEstadoDest
             'pStock.IdUbicacion = IdUbicDest '#CKFK 20180219 Agregué al stock que la ubicación origen es la ubicación destino cuando genero la tarea de cambio de estado
@@ -1685,10 +1678,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 '#AT 20220110 Se cambio del valor a true 
                 bePickingUbic.Dañado_picking = True
                 bePickingUbic.Cantidad_Solicitada = CantDañada
-
-                '#CM_21012019: Lo puse en comentario porque esto hace referencia al picking nuevo y tengo que hacer las
-                'modificaciones sobre el picking original.
-                'clsLnTrans_picking_ubic.Insertar(bePickingUbic)
 
                 clsLnStock_res.Actualizar_Stock_Reservado_By_IdStockRes(IdStockRes, IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada), pConnection, pTransaction)
 
@@ -1967,10 +1956,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 bePickingUbic.Cantidad_Solicitada = CantDañada
                 bePickingUbic.No_packing = 0
 
-                '#CM_21012019: Lo puse en comentario porque esto hace referencia al picking nuevo y tengo que hacer las
-                'modificaciones sobre el picking original.
-                'clsLnTrans_picking_ubic.Insertar(bePickingUbic)
-
                 clsLnStock_res.Actualizar_Stock_Reservado_By_IdStockRes(IdStockRes,
                                                                         IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaUMBas, CantDañada),
                                                                         pConnection,
@@ -2041,11 +2026,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
                 pStock.IdPresentacion = bePickingUbic.IdPresentacion
 
-                'If pStock.IdPresentacion <> 0 Then
-                '    Factor = 0
-                '    Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pStock.IdProductoBodega, pStock.IdPresentacion, pConnection, pTransaction)
-                '    CantidadDañadaUMBas = Math.Round(CantDañada / Factor, 6)
-                'End If
 
                 'Detalle de ubicación con HH por cambio de estado
                 Dim beListUbicHHDet As New List(Of clsBeTrans_ubic_hh_det)
@@ -2206,19 +2186,20 @@ Partial Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
     End Function
 
     Private Shared Sub Libera_Inventario_Reservado(ByVal pIdPedidoDet As Integer,
-                                            ByVal pIdPropietarioBodega As Integer,
-                                            ByVal pIdPickingEnc As Integer,
-                                            ByVal pIdPedidoEnc As Integer,
-                                            Optional ByRef pConnection As SqlConnection = Nothing,
-                                            Optional ByRef pTransaction As SqlTransaction = Nothing)
+                                                   ByVal pIdPropietarioBodega As Integer,
+                                                   ByVal pIdPickingEnc As Integer,
+                                                   ByVal pIdPedidoEnc As Integer,
+                                                   Optional ByRef pConnection As SqlConnection = Nothing,
+                                                   Optional ByRef pTransaction As SqlTransaction = Nothing)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -2277,7 +2258,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
             If Not Es_Transaccion_Remota Then
 
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                 Actualizar(oBeTrans_ubic_hh_enc, lConnection, lTransaction)
 

@@ -16,11 +16,11 @@ namespace WMS.DALCore.Picking
                 oBeTrans_picking_det_parametros.IdParametroPicking = (dr["IdParametroPicking"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["IdParametroPicking"]);
                 oBeTrans_picking_det_parametros.IdPickingDet = (dr["IdPickingDet"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["IdPickingDet"]);
                 oBeTrans_picking_det_parametros.IdProductoParametro = (dr["IdProductoParametro"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["IdProductoParametro"]);
-                oBeTrans_picking_det_parametros.Valor_texto = (dr["valor_texto"] == DBNull.Value) ? "" : Convert.ToString(dr["valor_texto"]);
+                oBeTrans_picking_det_parametros.Valor_texto =dr["valor_texto"] as string ?? string.Empty;
                 oBeTrans_picking_det_parametros.Valor_numerico = (dr["valor_numerico"] == DBNull.Value) ? 0.0 : Convert.ToDouble(dr["valor_numerico"]);
                 oBeTrans_picking_det_parametros.Valor_fecha = (dr["valor_fecha"] == DBNull.Value) ? DateTime.Now : Convert.ToDateTime(dr["valor_fecha"]);
                 oBeTrans_picking_det_parametros.Valor_logico = (dr["valor_logico"] == DBNull.Value) ? false : Convert.ToBoolean(dr["valor_logico"]);
-                oBeTrans_picking_det_parametros.User_agr = (dr["user_agr"] == DBNull.Value) ? "" : Convert.ToString(dr["user_agr"]);
+                oBeTrans_picking_det_parametros.User_agr = dr["user_agr"] as string ?? string.Empty;
                 oBeTrans_picking_det_parametros.Fec_agr = (dr["fec_agr"] == DBNull.Value) ? DateTime.Now : Convert.ToDateTime(dr["fec_agr"]);
             }
             catch (Exception)

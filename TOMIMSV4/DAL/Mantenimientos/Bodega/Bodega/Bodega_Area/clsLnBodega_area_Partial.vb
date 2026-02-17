@@ -817,6 +817,78 @@ Partial Public Class clsLnBodega_area
     End Function
 
 
+    '#GT06082025: mostrar las areas (bodegas) de cealsa en combo
+    Public Shared Function Get_All_For_Combo() As DataTable
+
+        Try
+
+            Dim vSQL As String = "SELECT IdArea,Descripcion as Nombre FROM bodega_area 
+                                        group by IdArea,Descripcion "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                    lDTA.SelectCommand.CommandType = CommandType.Text
+
+                    Dim lDataTable As New DataTable
+                    lDTA.Fill(lDataTable)
+
+                    Return lDataTable
+
+                End Using
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("BodegaArea_getAllAreaByBodega: " & ex.Message)
+        End Try
+
+    End Function
+
+    '#GT14012025: listar todas las areas según el idarea de la ubicacion en stock para portal web cealsa
+    Public Shared Function Get_All_By_IdArea(ByVal pIdArea As Integer,
+                                             ByRef lConnection As SqlConnection,
+                                             ByRef lTransaction As SqlTransaction) As List(Of clsBeBodega_area)
+
+        Get_All_By_IdArea = Nothing
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeBodega_area)
+
+            Dim vSQL As String = "SELECT * FROM bodega_area WHERE (IdArea=@IdArea AND Activo=1) "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdArea", pIdArea)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    Dim Obj As clsBeBodega_area
+                    Get_All_By_IdArea = New List(Of clsBeBodega_area)()
+
+                    For Each lRow As DataRow In lDataTable.Rows
+                        Obj = New clsBeBodega_area()
+                        Cargar(Obj, lRow)
+                        Get_All_By_IdArea.Add(Obj)
+                    Next
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("BodegaArea_GetAllByAreaBodega: " & ex.Message)
+        End Try
+
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

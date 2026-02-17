@@ -35,6 +35,9 @@ Public Class clsBeVW_stock_res_CI
     Public Property Codigo_Color As String = ""
     Public Property Nombre_Color As String = ""
     Public Property CodigoSKU As String = ""
+    '#GT25072025: campo para la HH en existencias
+    Public Property IdUbicacionAnterior As Integer = 0
+    Public Property Codigo_Barra As String = ""
 
     Sub New()
     End Sub

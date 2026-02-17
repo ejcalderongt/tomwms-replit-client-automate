@@ -21,6 +21,7 @@ Public Class clsLnTrans_re_det_lote_num
             Throw ex
         End Try
     End Sub
+
     Public Shared Function Insertar(ByRef oBeTrans_re_det_lote_num As clsBeTrans_re_det_lote_num, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -78,6 +79,7 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
     Public Shared Function Actualizar(ByRef oBeTrans_re_det_lote_num As clsBeTrans_re_det_lote_num, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -136,6 +138,8 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
+
     Public Shared Function Eliminar(ByRef oBeTrans_re_det_lote_num As clsBeTrans_re_det_lote_num, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -176,6 +180,7 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
     Public Shared Function EliminarTodos(Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -211,6 +216,7 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
     Public Shared Function Listar() As DataTable
 
         Try
@@ -232,6 +238,7 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
     Public Shared Function Obtener(ByRef oBeTrans_re_det_lote_num As clsBeTrans_re_det_lote_num) As Boolean
 
         Try
@@ -262,6 +269,7 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
     Public Shared Function GetAll() As List(Of clsBeTrans_re_det_lote_num)
 
         Try
@@ -297,6 +305,7 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
+
     Public Shared Function GetSingle(ByRef pBeTrans_re_det_lote_num As clsBeTrans_re_det_lote_num)
 
         Try
@@ -324,7 +333,8 @@ Public Class clsLnTrans_re_det_lote_num
         End Try
 
     End Function
-    Public Shared Function MaxID() as Integer
+
+    Public Shared Function MaxID() As Integer
 
         Try
 

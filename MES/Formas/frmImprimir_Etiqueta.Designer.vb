@@ -86,10 +86,11 @@ Partial Class frmImprimir_Etiqueta
         '
         'lblVersion
         '
-        Me.lblVersion.Caption = "Versión 20250513"
+        Me.lblVersion.Caption = "Versión 20260129"
         Me.lblVersion.Id = 1
         Me.lblVersion.ImageOptions.SvgImage = CType(resources.GetObject("lblVersion.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.lblVersion.Name = "lblVersion"
+        Me.lblVersion.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph
         '
         'RibbonControl
         '

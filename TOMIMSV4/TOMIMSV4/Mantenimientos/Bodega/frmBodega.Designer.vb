@@ -178,11 +178,11 @@ Partial Class frmBodega
         Dim Label89 As System.Windows.Forms.Label
         Dim Label90 As System.Windows.Forms.Label
         Dim Label91 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim ButtonImageOptions1 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
-        Dim Code128Generator1 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Dim Label92 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
+        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim ButtonImageOptions2 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
+        Dim Code128Generator2 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Me.lblControlGondola = New System.Windows.Forms.Label()
         Me.Label80 = New System.Windows.Forms.Label()
         Me.Label81 = New System.Windows.Forms.Label()
@@ -289,6 +289,10 @@ Partial Class frmBodega
         Me.grpDatosGen = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl = New DevExpress.XtraEditors.XtraScrollableControl()
         Me.gpSmtp = New DevExpress.XtraEditors.GroupControl()
+        Me.txtPassword = New DevExpress.XtraEditors.TextEdit()
+        Me.txtUsuario = New DevExpress.XtraEditors.TextEdit()
+        Me.txtPuerto = New DevExpress.XtraEditors.TextEdit()
+        Me.txtServidor = New DevExpress.XtraEditors.TextEdit()
         Me.chkSsl = New DevExpress.XtraEditors.CheckEdit()
         Me.gcCentroCosto = New DevExpress.XtraEditors.GroupControl()
         Me.cmbCentroCostoDepERP = New DevExpress.XtraEditors.LookUpEdit()
@@ -530,10 +534,10 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.txtServidor = New DevExpress.XtraEditors.TextEdit()
-        Me.txtPuerto = New DevExpress.XtraEditors.TextEdit()
-        Me.txtUsuario = New DevExpress.XtraEditors.TextEdit()
-        Me.txtPassword = New DevExpress.XtraEditors.TextEdit()
+        Me.chkImprimir_Verificacion = New DevExpress.XtraEditors.CheckEdit()
+        Me.Label100 = New System.Windows.Forms.Label()
+        Me.cmbEtiquetaVerificacion = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label99 = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -739,6 +743,10 @@ Partial Class frmBodega
         Me.XtraScrollableControl.SuspendLayout()
         CType(Me.gpSmtp, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gpSmtp.SuspendLayout()
+        CType(Me.txtPassword.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtUsuario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtPuerto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtServidor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkSsl.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gcCentroCosto, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gcCentroCosto.SuspendLayout()
@@ -959,10 +967,8 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtServidor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtPuerto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtUsuario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtPassword.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -2323,6 +2329,16 @@ Partial Class frmBodega
         Label91.TabIndex = 56
         Label91.Text = "Cifrado Ssl:"
         '
+        'Label92
+        '
+        Label92.AutoSize = True
+        Label92.Location = New System.Drawing.Point(11, 182)
+        Label92.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label92.Name = "Label92"
+        Label92.Size = New System.Drawing.Size(67, 16)
+        Label92.TabIndex = 60
+        Label92.Text = "Password:"
+        '
         'lblControlGondola
         '
         Me.lblControlGondola.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -3269,8 +3285,8 @@ Partial Class frmBodega
         '
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        GridLevelNode1.RelationName = "Level1"
-        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
+        GridLevelNode2.RelationName = "Level1"
+        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
         Me.Dgrid.Location = New System.Drawing.Point(0, 180)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -3454,7 +3470,7 @@ Partial Class frmBodega
         Me.gpSmtp.Controls.Add(Label88)
         Me.gpSmtp.Controls.Add(Label89)
         Me.gpSmtp.Controls.Add(Label90)
-        Me.gpSmtp.CustomHeaderButtons.AddRange(New DevExpress.XtraEditors.ButtonPanel.IBaseButton() {New DevExpress.XtraEditors.ButtonsPanelControl.GroupBoxButton("Limpiar", True, ButtonImageOptions1, DevExpress.XtraBars.Docking2010.ButtonStyle.PushButton, "", -1, True, Nothing, True, False, True, Nothing, -1)})
+        Me.gpSmtp.CustomHeaderButtons.AddRange(New DevExpress.XtraEditors.ButtonPanel.IBaseButton() {New DevExpress.XtraEditors.ButtonsPanelControl.GroupBoxButton("Limpiar", True, ButtonImageOptions2, DevExpress.XtraBars.Docking2010.ButtonStyle.PushButton, "", -1, True, Nothing, True, False, True, Nothing, -1)})
         Me.gpSmtp.CustomHeaderButtonsLocation = DevExpress.Utils.GroupElementLocation.AfterText
         Me.gpSmtp.Location = New System.Drawing.Point(687, 320)
         Me.gpSmtp.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
@@ -3463,6 +3479,39 @@ Partial Class frmBodega
         Me.gpSmtp.TabIndex = 57
         Me.gpSmtp.Text = "Configuración smtp"
         Me.gpSmtp.Visible = False
+        '
+        'txtPassword
+        '
+        Me.txtPassword.Location = New System.Drawing.Point(107, 179)
+        Me.txtPassword.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtPassword.Name = "txtPassword"
+        Me.txtPassword.Size = New System.Drawing.Size(436, 22)
+        Me.txtPassword.TabIndex = 61
+        '
+        'txtUsuario
+        '
+        Me.txtUsuario.Location = New System.Drawing.Point(107, 147)
+        Me.txtUsuario.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtUsuario.Name = "txtUsuario"
+        Me.txtUsuario.Size = New System.Drawing.Size(436, 22)
+        Me.txtUsuario.TabIndex = 59
+        '
+        'txtPuerto
+        '
+        Me.txtPuerto.EditValue = CType(0, Short)
+        Me.txtPuerto.Location = New System.Drawing.Point(107, 77)
+        Me.txtPuerto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtPuerto.Name = "txtPuerto"
+        Me.txtPuerto.Size = New System.Drawing.Size(436, 22)
+        Me.txtPuerto.TabIndex = 58
+        '
+        'txtServidor
+        '
+        Me.txtServidor.Location = New System.Drawing.Point(107, 43)
+        Me.txtServidor.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtServidor.Name = "txtServidor"
+        Me.txtServidor.Size = New System.Drawing.Size(436, 22)
+        Me.txtServidor.TabIndex = 57
         '
         'chkSsl
         '
@@ -5053,6 +5102,8 @@ Partial Class frmBodega
         '
         'GroupBox4
         '
+        Me.GroupBox4.Controls.Add(Me.chkImprimir_Verificacion)
+        Me.GroupBox4.Controls.Add(Me.Label100)
         Me.GroupBox4.Controls.Add(Me.chkAdvertirMpqUmbas)
         Me.GroupBox4.Controls.Add(Me.Label87)
         Me.GroupBox4.Controls.Add(Me.chkAgrupar_sin_lic_veri_no_cons)
@@ -5607,6 +5658,8 @@ Partial Class frmBodega
         '
         'GroupControl2
         '
+        Me.GroupControl2.Controls.Add(Me.cmbEtiquetaVerificacion)
+        Me.GroupControl2.Controls.Add(Me.Label99)
         Me.GroupControl2.Controls.Add(Me.Bcc)
         Me.GroupControl2.Controls.Add(Me.cmbSymbology)
         Me.GroupControl2.Controls.Add(lblSimbologia)
@@ -5668,7 +5721,7 @@ Partial Class frmBodega
         Me.Bcc.Name = "Bcc"
         Me.Bcc.Padding = New System.Windows.Forms.Padding(12, 2, 12, 0)
         Me.Bcc.Size = New System.Drawing.Size(195, 53)
-        Me.Bcc.Symbology = Code128Generator1
+        Me.Bcc.Symbology = Code128Generator2
         Me.Bcc.TabIndex = 45
         '
         'cmbSymbology
@@ -6221,48 +6274,44 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'txtServidor
+        'chkImprimir_Verificacion
         '
-        Me.txtServidor.Location = New System.Drawing.Point(107, 43)
-        Me.txtServidor.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtServidor.Name = "txtServidor"
-        Me.txtServidor.Size = New System.Drawing.Size(436, 22)
-        Me.txtServidor.TabIndex = 57
+        Me.chkImprimir_Verificacion.Location = New System.Drawing.Point(688, 149)
+        Me.chkImprimir_Verificacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkImprimir_Verificacion.Name = "chkImprimir_Verificacion"
+        Me.chkImprimir_Verificacion.Properties.Caption = ""
+        Me.chkImprimir_Verificacion.Size = New System.Drawing.Size(23, 24)
+        Me.chkImprimir_Verificacion.TabIndex = 127
         '
-        'txtPuerto
+        'Label100
         '
-        Me.txtPuerto.EditValue = CType(0, Short)
-        Me.txtPuerto.Location = New System.Drawing.Point(107, 77)
-        Me.txtPuerto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtPuerto.Name = "txtPuerto"
-        Me.txtPuerto.Size = New System.Drawing.Size(436, 22)
-        Me.txtPuerto.TabIndex = 58
+        Me.Label100.AutoSize = True
+        Me.Label100.Location = New System.Drawing.Point(383, 149)
+        Me.Label100.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label100.Name = "Label100"
+        Me.Label100.Size = New System.Drawing.Size(124, 16)
+        Me.Label100.TabIndex = 126
+        Me.Label100.Text = "Imprimir verificacion"
         '
-        'txtUsuario
+        'cmbEtiquetaVerificacion
         '
-        Me.txtUsuario.Location = New System.Drawing.Point(107, 147)
-        Me.txtUsuario.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtUsuario.Name = "txtUsuario"
-        Me.txtUsuario.Size = New System.Drawing.Size(436, 22)
-        Me.txtUsuario.TabIndex = 59
+        Me.cmbEtiquetaVerificacion.Location = New System.Drawing.Point(258, 670)
+        Me.cmbEtiquetaVerificacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbEtiquetaVerificacion.Name = "cmbEtiquetaVerificacion"
+        Me.cmbEtiquetaVerificacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEtiquetaVerificacion.Properties.NullText = ""
+        Me.cmbEtiquetaVerificacion.Size = New System.Drawing.Size(124, 22)
+        Me.cmbEtiquetaVerificacion.TabIndex = 49
         '
-        'txtPassword
+        'Label99
         '
-        Me.txtPassword.Location = New System.Drawing.Point(107, 179)
-        Me.txtPassword.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtPassword.Name = "txtPassword"
-        Me.txtPassword.Size = New System.Drawing.Size(436, 22)
-        Me.txtPassword.TabIndex = 61
-        '
-        'Label92
-        '
-        Label92.AutoSize = True
-        Label92.Location = New System.Drawing.Point(11, 182)
-        Label92.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label92.Name = "Label92"
-        Label92.Size = New System.Drawing.Size(67, 16)
-        Label92.TabIndex = 60
-        Label92.Text = "Password:"
+        Me.Label99.AutoSize = True
+        Me.Label99.Location = New System.Drawing.Point(21, 670)
+        Me.Label99.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label99.Name = "Label99"
+        Me.Label99.Size = New System.Drawing.Size(123, 16)
+        Me.Label99.TabIndex = 48
+        Me.Label99.Text = "Etiqueta Verificación"
         '
         'frmBodega
         '
@@ -6367,6 +6416,10 @@ Partial Class frmBodega
         CType(Me.gpSmtp, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gpSmtp.ResumeLayout(False)
         Me.gpSmtp.PerformLayout()
+        CType(Me.txtPassword.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtUsuario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtPuerto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtServidor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkSsl.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gcCentroCosto, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gcCentroCosto.ResumeLayout(False)
@@ -6610,10 +6663,8 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtServidor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtPuerto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtUsuario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtPassword.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -6969,4 +7020,8 @@ Partial Class frmBodega
     Friend WithEvents txtUsuario As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtPuerto As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtServidor As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents chkImprimir_Verificacion As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents Label100 As Label
+    Friend WithEvents cmbEtiquetaVerificacion As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents Label99 As Label
 End Class

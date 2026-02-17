@@ -56,9 +56,13 @@ Partial Public Class clsLnStock_rec
                 lCommand.CommandType = CommandType.Text
                 lCommand.Transaction = pTransaction
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
+
+                'If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                '    lMax = CInt(lReturnValue)
+                'End If
+
+                lMax = Convert.ToInt32(lReturnValue)
+
             End Using
 
             Return lMax

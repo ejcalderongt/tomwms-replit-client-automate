@@ -89,6 +89,240 @@ Public Class clsLnVW_Despacho_Rep
         End Try
 
     End Sub
+
+    Public Shared Function Eliminar(ByRef oBeTmp_VW_Despacho_Rep As clsBeVW_Despacho_Rep, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = " Delete from Tmp_VW_Despacho_Rep"
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+    End Function
+
+    Public Shared Function EliminarTodos(Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = " Delete from Tmp_VW_Despacho_Rep"
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Listar() As DataTable
+
+        Try
+
+            Const sp As String = "SELECT * FROM Tmp_VW_Despacho_Rep"
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Obtener(ByRef oBeTmp_VW_Despacho_Rep As clsBeVW_Despacho_Rep) As Boolean
+
+        Try
+
+            Const sp As String = "SELECT * FROM Tmp_VW_Despacho_Rep "
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Cargar(oBeTmp_VW_Despacho_Rep, dt.Rows(0))
+            Else
+                Throw New Exception("No se pudo obtener el registro")
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetAll() As List(Of clsBeVW_Despacho_Rep)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeVW_Despacho_Rep)
+            Const sp As String = "SELECT * FROM VW_Despacho_Rep "
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeTmp_VW_Despacho_Rep As New clsBeVW_Despacho_Rep
+
+            For Each dr As DataRow In dt.Rows
+                vBeTmp_VW_Despacho_Rep = New clsBeVW_Despacho_Rep
+                Cargar(vBeTmp_VW_Despacho_Rep, dr)
+                lReturnList.Add(vBeTmp_VW_Despacho_Rep)
+            Next
+
+            Return lReturnList
+
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lConnection.Dispose()
+            cmd.Dispose()
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetSingle(ByRef pBeTmp_VW_Despacho_Rep As clsBeVW_Despacho_Rep)
+
+        Try
+
+            Const sp As String = "SELECT * FROM Tmp_VW_Despacho_Rep"
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Cargar(pBeTmp_VW_Despacho_Rep, dt.Rows(0))
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function MaxID() As Integer
+
+        Try
+
+            Dim lMax As Integer = 0
+
+            Const sp As String = "SELECT * FROM Tmp_VW_Despacho_Rep "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            lMax = CInt(lReturnValue)
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lMax
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function Get_All_By_Rango_Fechas(ByVal pFechaDel As Date, ByVal pFechaAl As Date, ByVal pBodega As clsBeBodega) As List(Of clsBeVW_Despacho_Rep)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -139,6 +373,13 @@ Public Class clsLnVW_Despacho_Rep
         End Try
 
     End Function
+
+    ''' <summary>
+    ''' #EJC20190313: Devuelve el último lote despachado para un cliente  y producto.
+    ''' </summary>
+    ''' <param name="pIdCliente">Id de cliente</param>
+    ''' <param name="pIdProductoBodega">Id de producto</param>
+    ''' <returns>El número de lote</returns>
     Public Shared Function Get_Ultimo_Lote_By_IdCliente(ByVal pIdCliente As Integer,
                                                         ByVal pIdProductoBodega As Integer) As String
 
@@ -203,6 +444,7 @@ Public Class clsLnVW_Despacho_Rep
         End Try
 
     End Function
+
 
     Public Shared Function Get_Ultimo_Lote_By_IdCliente(ByVal pIdCliente As Integer,
                                                         ByVal pIdProductoBodega As Integer,

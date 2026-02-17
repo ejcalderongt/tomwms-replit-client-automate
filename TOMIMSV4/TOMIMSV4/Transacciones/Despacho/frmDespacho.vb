@@ -290,7 +290,13 @@ Public Class frmDespacho
 
                                 If Not Det.ListaPickingUbic Is Nothing Then
 
-                                    For Each Pu In Det.ListaPickingUbic
+                                    '#EJC20250804: Filtrar registros que no fueron pickeados (aceptado) y que no estén dañados en picking o verificación
+                                    Dim lPickingUbicValido = Det.ListaPickingUbic.FindAll(Function(x) x.Dañado_verificacion = False AndAlso
+                                                                                              x.Dañado_picking = False AndAlso
+                                                                                              x.No_encontrado = False AndAlso
+                                                                                              x.Cantidad_Recibida > 0)
+
+                                    For Each Pu In lPickingUbicValido
 
                                         If (Pu.Cantidad_Solicitada - Pu.Cantidad_Verificada) <> 0 Then
 
@@ -440,7 +446,7 @@ Public Class frmDespacho
             BeDespachoEnc.Observacion = txtObservacion.Text.Trim
             BeDespachoEnc.Hora_ini = dtmHoraIhh.Value
             BeDespachoEnc.Hora_fin = dtmHoraFhh.Value
-            BeDespachoEnc.Estado = "Finalizado" 'lblEstado.Text
+            BeDespachoEnc.Estado = "Finalizado"
             BeDespachoEnc.Numero = txtNumero.Value
             BeDespachoEnc.Marchamo = txtMarchamo.Text.Trim
             BeDespachoEnc.Cant_bultos = txtCantidadBultos.Value
@@ -719,26 +725,26 @@ Public Class frmDespacho
 
                     End If
 
-                    Dim vPedidosConPicking = vPedido.Detalle.Where(Function(x) x.ListaPickingUbic.Count > 0)
+                    Dim vPedidosConPicking = vPedido.Detalle.Where(Function(x) x.ListaPickingUbic.Count > 0 AndAlso x.Stock_Liberado = 0)
 
                     For Each BePedidoDet As clsBeTrans_pe_det In vPedidosConPicking
                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                         SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
-                        Get_Stock_Res(BePedidoDet, True)
-                        Application.DoEvents()
-                    Next
+                    Get_Stock_Res(BePedidoDet, True)
+                    Application.DoEvents()
+                Next
 
-                    If vPedido.IdPickingEnc <> 0 Then
+                If vPedido.IdPickingEnc <> 0 Then
 
-                        Dim vTienePacking = clsLnTrans_pe_enc.Tiene_Packing(vPedido.IdPedidoEnc)
+                        Dim vTienePacking = clsLnTrans_pe_enc.Tiene_Packing(vPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
                         If vTienePacking Then
-                            Llena_Packing(vPedido.IdPickingEnc, vPedido.IdPedidoEnc, BeDespachoEnc.IdDespachoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                        End If
-
+                        Llena_Packing(vPedido.IdPickingEnc, vPedido.IdPedidoEnc, BeDespachoEnc.IdDespachoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                     End If
 
-                    'Get_Stock_Res(vPedido, True)
+                End If
+
+                'Get_Stock_Res(vPedido, True)
 
                 Next
 
@@ -1557,12 +1563,14 @@ Public Class frmDespacho
                 Dim bo As New frmPedidoDetalleBuscador() With {.Modo = frmPedidoDetalleBuscador.ProcesoSolicitante.Despacho,
                                                             .pListaPedidos = pListaPedidos,
                                                             .IdBodega = cmbBodega.EditValue,
-                                                            .IdPropietarioBodega = cmbPropietario.EditValue}
+                                                            .idPropietarioBodega = cmbPropietario.EditValue}
                 Dim Result As DialogResult = bo.ShowDialog()
 
                 If Result = DialogResult.OK Then
 
                     If bo.pBePedidoEnc IsNot Nothing Then
+
+                        'bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
 
                         If bo.pBePedidoEnc.Detalle IsNot Nothing Then
 
@@ -1601,7 +1609,24 @@ Public Class frmDespacho
 
                                     XtraTabControl1.SelectedTabPage = tbDetalleProducto
 
-                                    For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle
+                                    ' Obtener IDs de ProductoBodega donde hay diferencia entre lo verificado y lo despachado
+                                    Dim idsConDiferencia = bo.pBePedidoEnc.Picking.ListaPickingUbic _
+                                                            .Where(Function(x) x.Cantidad_Verificada > x.Cantidad_despachada) _
+                                                            .Select(Function(x) x.IdProductoBodega) _
+                                                            .Distinct() _
+                                                            .ToList()
+
+                                    ' Recorrer los detalles del pedido que coincidan con esos IDs
+                                    '#GT16092025: tomar detalle de pedido que no tenga lineas liberadas de stock
+                                    'For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle.Where(Function(x) idsConDiferencia.Contains(x.IdProductoBodega))
+
+                                    '    SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                                    '    SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
+                                    'Next
+
+                                    '#CKFK20251203 Puse esto en comentario porque provoca que no pueda despachar el pedido
+                                    For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle '.Where(Function(x) idsConDiferencia.Contains(x.IdProductoBodega))
+
                                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                                         SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
                                     Next
@@ -1689,6 +1714,7 @@ Public Class frmDespacho
 
     End Sub
 
+    Dim Pedido_Cargado_Desde_Picking As Boolean
     Public Sub Agregar_Pedido(ByVal pBePedidoEnc As clsBeTrans_pe_enc)
 
         Dim clsTransaccion As New clsTransaccion
@@ -2293,6 +2319,10 @@ Public Class frmDespacho
 
                     BePedidoDet = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoDet = Obj.IdPedidoDet)
 
+                    '#EJC20190214_1210PM: Se optimizó a traves de la lista y búsqueda en memoria porque consumía muchos recursos..
+                    'BePedidoDet.IdPedidoDet = Obj.IdPedidoDet
+                    'clsLnTrans_pe_det.GetSingle(BePedidoDet)
+
                     If (Obj.IdPresentacion = 0) OrElse (BePedidoDet.IdPresentacion = 0) Then
                         vCantidadReservadaUMBas = Obj.CantidadReservadaUMBas
                         vCantidadReservadaPres = 0
@@ -2332,6 +2362,7 @@ Public Class frmDespacho
 
                         End If
 
+                        'vCantidadReservadaUMBas = Obj.CantidadReservadaUMBas
                         vPesoReservado = Obj.Peso
 
                     End If
@@ -2342,42 +2373,55 @@ Public Class frmDespacho
                         vCantPendiente = Obj.Cantidad_Pickeada - Obj.Cantidad_Verificada
                     End If
 
-                    DTStockRes.Rows.Add(
-                                    Obj.IdPedido,
-                                    Obj.IdPicking,
-                                    Obj.Codigo_Producto,
-                                    Obj.Nombre_Producto,
-                                    Obj.Nombre_Presentacion,
-                                    Obj.NomEstado,
-                                    Obj.UMBas,
-                                    Obj.Propietario,
-                                    Obj.UbicacionActual.NombreCompleto,
-                                    Obj.Lote,
-                                    Obj.Lic_plate,
-                                    Obj.Fecha_Vence,
-                                    Obj.Factor,
-                                    vCantidadReservadaPres,
-                                    vCantidadReservadaUMBas,
-                                    vCantidadRecPres,
-                                    Obj.Cantidad_Pickeada,
-                                    vCantidadVerPres,
-                                    Obj.Cantidad_Verificada,
-                                    vCantidadDespPres,
-                                    Obj.Cantidad_Despachada,
-                                    vCantPendiente,
-                                    Obj.peso_pickeado,
-                                    Obj.peso_verificado,
-                                    Obj.encontrado,
-                                    Obj.acepto,
-                                    Obj.Fecha_ingreso,
-                                    Obj.IdStockRes,
-                                    Obj.IdProductoTallaColor,
-                                    Obj.Codigo_Talla,
-                                    Obj.Codigo_Color)
 
-                    Application.DoEvents()
+                    '#GT29012026: el metodo se invoca 2 veces, una en el load de componentes y otra por la invocación desde picking
+                    'evitamos agregar 2 veces el mismo registro en la datatable.
+
+                    If DTStockRes.Select("Pedido = " & Obj.IdPedido &
+                     " AND Picking = " & Obj.IdPicking &
+                     " AND IdStockRes = " & Obj.IdStockRes).Length = 0 Then
+
+                        DTStockRes.Rows.Add(
+                                        Obj.IdPedido,
+                                        Obj.IdPicking,
+                                        Obj.Codigo_Producto,
+                                        Obj.Nombre_Producto,
+                                        Obj.Nombre_Presentacion,
+                                        Obj.NomEstado,
+                                        Obj.UMBas,
+                                        Obj.Propietario,
+                                        Obj.UbicacionActual.NombreCompleto,
+                                        Obj.Lote,
+                                        Obj.Lic_plate,
+                                        Obj.Fecha_Vence,
+                                        Obj.Factor,
+                                        vCantidadReservadaPres,
+                                        vCantidadReservadaUMBas,
+                                        vCantidadRecPres,
+                                        Obj.Cantidad_Pickeada,
+                                        vCantidadVerPres,
+                                        Obj.Cantidad_Verificada,
+                                        vCantidadDespPres,
+                                        Obj.Cantidad_Despachada,
+                                        vCantPendiente,
+                                        Obj.peso_pickeado,
+                                        Obj.peso_verificado,
+                                        Obj.encontrado,
+                                        Obj.acepto,
+                                        Obj.Fecha_ingreso,
+                                        Obj.IdStockRes,
+                                        Obj.IdProductoTallaColor,
+                                        Obj.Codigo_Talla,
+                                        Obj.Codigo_Color)
+
+                    End If
 
                 Next
+
+                '#GT29012026: esta bandera evita que en la siguiente carga no vuelva a insertar los mismos valores.
+                Pedido_Cargado_Desde_Picking = True
+
+                'Application.DoEvents()
 
             End If
 
@@ -2711,7 +2755,7 @@ Public Class frmDespacho
                         Rep.ShowPreview()
 
                     Case 5 '#MECR29082025: Formato para MAMPA
-                        Dim Rep As New rptDespachoMAMPA
+                        Dim Rep As New rptDespachoMampa
                         Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
                         Rep.DataMember = "Result"
                         Rep.Parameters("Empresa").Value = AP.NomEmpresa
@@ -2756,7 +2800,6 @@ Public Class frmDespacho
         End Try
 
     End Sub
-
 
     Private Sub Generar_Reporte_Packing()
 
@@ -2905,6 +2948,13 @@ Public Class frmDespacho
                     dtmFechaTarea.DateTime = hora_server
                     BeDespachoEnc = New clsBeTrans_despacho_enc With {.IsNew = True}
                     txtDocumentoExterno.Text = ""
+
+                    If BePedidoEnc.IdPedidoEnc > 0 Then
+                        If Not Pedido_Cargado_Desde_Picking Then
+                            Agregar_Pedido(BePedidoEnc)
+                        End If
+
+                    End If
 
                 Case TipoTrans.Editar
 
@@ -3552,16 +3602,16 @@ Public Class frmDespacho
 
                         Dim vCantidadPacking As Double = 0
 
-                        gvPacking.Columns("cantidad_bultos_packing").Summary.Add(DevExpress.Data.SummaryItemType.Sum, "", "{0:N2}")
+                        gvPacking.Columns("cantidad_bultos_packing").Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
 
                         vCantidadPacking = Math.Round(Convert.ToDouble(gvPacking.Columns("cantidad_bultos_packing").SummaryItem.SummaryValue), 6)
 
                         Dim vCantidadADespachar As Double = 0
                         Dim vCantidadDespachada As Double = 0
 
-                        grdvPickingUbic.Columns(18).Summary.Add(DevExpress.Data.SummaryItemType.Sum, "", "{0:N2}")
+                        grdvPickingUbic.Columns(18).Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
                         vCantidadADespachar = Math.Round(Convert.ToDouble(grdvPickingUbic.Columns(18).SummaryItem.SummaryValue), 6)
-                        grdvPickingUbic.Columns(20).Summary.Add(DevExpress.Data.SummaryItemType.Sum, "", "{0:N2}")
+                        grdvPickingUbic.Columns(20).Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
                         vCantidadDespachada = Math.Round(Convert.ToDouble(grdvPickingUbic.Columns(20).SummaryItem.SummaryValue), 6)
 
                         If vCantidadADespachar - vCantidadDespachada <> vCantidadPacking Then

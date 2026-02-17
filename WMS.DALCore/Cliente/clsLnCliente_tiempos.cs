@@ -34,6 +34,7 @@
                 oBeCliente_tiempos.User_mod = GetString("user_mod");
                 oBeCliente_tiempos.Fec_mod = GetDate("fec_mod");
                 oBeCliente_tiempos.Activo = GetBool("activo");
+                oBeCliente_tiempos.Es_Manufactura = GetBool("es_manufactura");
             }
             catch (Exception ex)
             {

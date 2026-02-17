@@ -7,7 +7,7 @@ Public Class clsLnI_nav_ped_compra_det
         Try
             With oBeI_nav_ped_compra_det
                 .NoEnc = IIf(IsDBNull(dr.Item("NoEnc")), "", dr.Item("NoEnc"))
-                .Line_No = IIf(IsDBNull(dr.Item("Line_No")), "", dr.Item("Line_No"))
+                .Line_No = IIf(IsDBNull(dr.Item("Line_No")), "0", dr.Item("Line_No"))
                 .Variant_Code = IIf(IsDBNull(dr.Item("Variant_Code")), "", dr.Item("Variant_Code"))
                 .No = IIf(IsDBNull(dr.Item("No")), "", dr.Item("No"))
                 .Type = IIf(IsDBNull(dr.Item("Type")), "", dr.Item("Type"))

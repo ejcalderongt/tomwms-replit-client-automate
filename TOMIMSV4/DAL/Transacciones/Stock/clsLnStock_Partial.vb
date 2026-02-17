@@ -108,6 +108,8 @@ Partial Public Class clsLnStock
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
+        'GT 27082021: Se agregó otro campo en la relación vw_stock_res y bodega_ubicacion
+
         Get_All_Stock_By_IdBodega_And_IdPropietarioBodega = Nothing
 
         Try
@@ -566,7 +568,7 @@ Partial Public Class clsLnStock
                                     VW_Stock_Res.parametro_b, 
                                     VW_Stock_Res.precio_producto, 
                                     VW_Stock_Res.costo_producto, 
-                                    VW_Stock_Res.costo_ingreso                                   
+                                    VW_Stock_Res.costo_ingreso 
                                 FROM 
                                     VW_Stock_Res 
                                   WHERE 1 > 0   "
@@ -1701,6 +1703,23 @@ Partial Public Class clsLnStock
 
                     Else
                         '#CKFK20221017 Modifiqué la vista VW_Stock_Resumen por la VW_Stock_Res
+                        '                  vSQL = "SELECT 
+                        '                  Isnull( cast(movimiento as nvarchar(50)),'Error') IMovimiento,
+                        '                  Isnull( cast(IdStock as nvarchar(50)),'Error') IdStock,
+                        '                  codigo as Código,
+                        'nombre as Producto,
+                        'Disponible_UMBas,
+                        'UnidadMedida,
+                        'Presentacion as Presentación,
+                        'NomEstado as Estado,
+                        'Fecha_Ingreso,Fecha_Vence,IdUbicacion,
+                        'Ubicacion_Tramo as Rack,
+                        'Nombre_Completo as UbicacionCompleta,IdRecepcionEnc,
+                        'MotivoDevolucion,codigo_poliza,numero_poliza,
+                        '                  Referencia,No_Docto AS No_Docto_Rec
+                        'from [VW_Stock_CLC] 
+                        'WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega "
+
                         vSQL = "SELECT codigo as Código,
 						nombre as Producto,
 						Disponible_UMBas,
@@ -4327,9 +4346,9 @@ Partial Public Class clsLnStock
                     ElseIf (S.IdPresentacion > 0 AndAlso pProducto.IdPresentacion > 0) Then
 
                         BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(S.IdPresentacion,
-                                                                            pProducto.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                        pProducto.IdPresentacion,
+                        pConnection,
+                        pTransaction)
 
                         If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -4353,9 +4372,9 @@ Partial Public Class clsLnStock
                         Else
 
                             BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(pProducto.IdPresentacion,
-                                                                            S.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                            S.IdPresentacion,
+                            pConnection,
+                            pTransaction)
 
                             If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -4515,9 +4534,9 @@ Partial Public Class clsLnStock
                     ElseIf (S.IdPresentacion > 0 AndAlso pProducto.IdPresentacion > 0) Then
 
                         BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(S.IdPresentacion,
-                                                                            pProducto.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                        pProducto.IdPresentacion,
+                        pConnection,
+                        pTransaction)
 
                         If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -4541,9 +4560,9 @@ Partial Public Class clsLnStock
                         Else
 
                             BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(pProducto.IdPresentacion,
-                                                                            S.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                            S.IdPresentacion,
+                            pConnection,
+                            pTransaction)
 
                             If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -5701,6 +5720,7 @@ Partial Public Class clsLnStock
 
     Private Shared lTipoRotacion As New List(Of clsBeTipo_rotacion)
 
+
     Public Shared Function lStock(ByRef pBeStockRes As clsBeStock_res,
                                   ByRef pBeProductoOutput As clsBeProducto,
                                   ByVal DiasVencimiento As Integer,
@@ -6421,6 +6441,7 @@ Partial Public Class clsLnStock
 						 trans_re_det_lote_num ON stock.IdProductoBodega = trans_re_det_lote_num.IdProductoBodega 
 						 AND stock.lote = trans_re_det_lote_num.Lote "
             End If
+
 
             vSQL += " WHERE bodega_ubicacion.Activo = 1 
                       and bodega_ubicacion.bloqueada = 0
@@ -7569,7 +7590,9 @@ Partial Public Class clsLnStock
     'Se agregó indice.
     Public Shared Function Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(ByVal pIdProducto As Integer,
                                                                                          ByVal pIdBodega As Integer,
-                                                                                         ByVal pIdPropietarioBodega As Integer, ByVal pMaxRange As Integer) As DataTable
+                                                                                         ByVal pIdPropietarioBodega As Integer,
+                                                                                         ByVal pMaxRange As Integer,
+                                                                                         ByVal pIncluirVencidos As Boolean) As DataTable
 
         Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega = Nothing
 
@@ -7603,10 +7626,18 @@ Partial Public Class clsLnStock
                                  AND IdPropietarioBodega=@IdPropietarioBodega "
                     End If
 
-                    If pMaxRange > 0 Then
-                        vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
-                    ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
-                        vSQL += " AND Tolerancia_dias < 0 "
+                    If pIncluirVencidos Then
+                        If pMaxRange = 0 Then
+                            vSQL += " AND (Tolerancia_dias < 0  )"
+                        Else
+                            vSQL += " AND (Tolerancia_dias BETWEEN 0 and @MaxRange OR Tolerancia_dias < 0  )"
+                        End If
+                    Else
+                        If pMaxRange > 0 Then
+                            vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
+                        ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
+                            vSQL += " AND Tolerancia_dias < 0 "
+                        End If
                     End If
 
                     vSQL += "GROUP BY Bodega,Propietario, Codigo , nombre, UnidadMedida, 
@@ -10018,6 +10049,8 @@ Partial Public Class clsLnStock
                 Existe_Stock = True
             End If
 
+            Return dt.Rows.Count > 0
+
         Catch ex As Exception
             Throw ex
         End Try
@@ -10865,6 +10898,21 @@ Partial Public Class clsLnStock
                     clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(clsBeRes_Operador, lConnection, lTransaction)
                 End If
 
+                '#MECR25112025: Se agrego bitacora de logs para reabastecimiento
+                Dim msjInsercion As String = "Se creó reabastecimiento con licencia: " + pLic_Plate + " , Por el usuario: " + pIdUsuario.ToString
+                clsLnLog_error_wms_reab.Agregar_Error(msjInsercion,
+                                                      pIdBodega:=pIdBodega,
+                                                      pIdStock:=pIdStock,
+                                                      pIdMovimiento:=pIdMovimiento,
+                                                      pLic_Plate_Anterior:=pLic_Plate_Ant,
+                                                      pLic_Plate:=pLic_Plate,
+                                                      pIdResolucion:=pIdResolucion,
+                                                      pIdProductoBodega:=BeProdPallet.IdProductoBodega,
+                                                      pCantidad:=BeProdPallet.Cantidad,
+                                                      pUser_agr:=pIdUsuario,
+                                                      pConection:=lConnection,
+                                                      pTransaction:=lTransaction)
+
                 Actualizar_PalletId_Por_Explosion = True
 
             Else
@@ -10942,17 +10990,9 @@ Partial Public Class clsLnStock
                     '#EJC20171018_0829: Validar que aún no se ha realizado el cambio en la HH.
                     vTransUbicHHDet = pListObjDet.Find(Function(x) x.IdStock = ObjStockDestino.IdStock AndAlso x.IdUbicacionDestino = ObjStockDestino.IdUbicacion)
 
-                    'file.WriteLine("IdUbicación: " & ObjStockDestino.IdUbicacion)
-                    'file.WriteLine("ObjStockDestino.IdStock: " & ObjStockDestino.IdStock)
-                    'file.WriteLine("vTransUbicHHDet.Realizado: " & vTransUbicHHDet.Realizado)
-
                     If Not vTransUbicHHDet Is Nothing Then
 
                         If Not (vTransUbicHHDet.Realizado) Then
-
-                            '#EJC20171023_0852AM: Se comentarió función por que el GetSingle, no devolvía los parámetros ni el objeto de presentación.
-                            '#EJC20171022_0852AM: Se renombró función a GetSingle, antes se llamaba a GetSingleStock de la clase de cambio de ubicación, se ordenó la función a donde corresponde.
-                            'objStockOrigen = GetSingle(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
 
                             '#EJC20171023_0852AM_REF: Obtener el stock con parámetros para actualizar el IdStock
                             objStockOrigen = Get_Single_Stock_By_IdStock(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
@@ -10972,9 +11012,6 @@ Partial Public Class clsLnStock
                             If BePres.IdPresentacion <> 0 Then
 
                                 BePres.IdPresentacion = ObjStockDestino.IdPresentacion
-
-                                '#EJC20171023_0852AM: Desactivado por este cambio -> '#EJC20171023_0852AM_REF
-                                'clsLnProducto_presentacion.GetSingle(BePres, lConnection, lTransaction)
 
                                 'Llevar la cantidad de la presentación a UMBas antes de insertar #EJC20170910
                                 If BePres.EsPallet Then
@@ -11078,17 +11115,12 @@ Partial Public Class clsLnStock
 
                             Else
 
-                                '#EJC20171018_1035AM_REF: Llenar el objeto estado con el IdProductoEstado porque ese es el objeto que se utiliza para insertar el stock
-                                'ObjStockDestino.Estado.IdEstado = ObjStockDestino.IdProductoEstado
-
                                 'Se cambio porque en cambio de estado desde BOF IdEstado tenía el estado origen, ver -> '#EJC20171018_1035AM_REF
                                 ObjStockDestino.ProductoEstado.IdEstado = vTransUbicHHDet.IdEstadoDestino
                                 ObjStockDestino.IdProductoEstado = vTransUbicHHDet.IdEstadoDestino
 
                                 'Insertar nuevo stock (ubicación/estado)
                                 Insertar(ObjStockDestino, lConnection, lTransaction)
-
-                                'file.WriteLine("New Stock Inserted As Id: " & ObjStockDestino.IdStock)
 
                                 If ParametrosAActualizar.Count > 0 Then
                                     '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
@@ -11097,12 +11129,6 @@ Partial Public Class clsLnStock
 
                                 objStockOrigen.Cantidad -= ObjStockDestino.Cantidad
                                 objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-
-                                'file.WriteLine("Origen Stock Id is At: " & objStockOrigen.IdStock)
-                                'file.WriteLine("Origen_Quantity : " & objStockOrigen.Cantidad)
-
-                                'file.WriteLine("Destino Stock Id is At: " & ObjStockDestino.IdStock)
-                                'file.WriteLine("Destino_Quantity: " & ObjStockDestino.Cantidad)
 
                                 '#EJC20171018_0707PM: Eliminar IdStock con cantidad =0
                                 If objStockOrigen.Cantidad = 0 Then
@@ -11119,11 +11145,7 @@ Partial Public Class clsLnStock
                                     objStockHist.Fec_mod = Now
                                     objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                                    '#EJC20180625:1036AM => Fin_Stock_Hist
-                                    'file.WriteLine("Stock History inserted: " & objStockOrigen.IdStock)
-
-                                    'Insertar en stock_histórico?
-                                    '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
+                                    '#EJC20180625:1036AM => Fin_Stock_Hist                                    
 
                                     clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
                                     Eliminar(objStockOrigen, lConnection, lTransaction)
@@ -11131,7 +11153,6 @@ Partial Public Class clsLnStock
                                 Else
                                     '#EJC20171014_1140PM
                                     Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-                                    'file.WriteLine("Quantity updated for IdStock: " & objStockOrigen.IdStock & " new value is: " & objStockOrigen.Cantidad)
                                 End If
 
                             End If
@@ -11162,234 +11183,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Sub
-
-    'Public Shared Sub Actualizar_Stock_Por_Cambio_de_Ubicacion(ByRef pListObjStock As List(Of clsBeStock),
-    '                                                           ByVal pListObjDet As List(Of clsBeTrans_ubic_hh_det),
-    '                                                           ByVal EsReabasto As Boolean,
-    '                                                           ByRef lConnection As SqlConnection,
-    '                                                           ByRef lTransaction As SqlTransaction)
-
-    '    Try
-
-    '        Dim lMaxS As Integer
-    '        Dim objStockOrigen As New clsBeStock()
-    '        Dim objStockHist As New clsBeStock_hist()
-    '        Dim vCantidadDisponible As Double = 0
-    '        Dim BePres As New clsBeProducto_Presentacion
-    '        Dim vTransUbicHHDet As New clsBeTrans_ubic_hh_det
-    '        Dim ParametrosAActualizar As New List(Of clsBeStock_parametro)
-    '        Dim ParametroAActualizar As New clsBeStock_parametro
-    '        Dim vCantidadInicial As Double = 0
-
-    '        If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
-
-    '            For Each ObjStockDestino As clsBeStock In pListObjStock
-
-    '                '#EJC20171018_0829: Validar que aún no se ha realizado el cambio en la HH.
-    '                vTransUbicHHDet = pListObjDet.Find(Function(x) x.IdStock = ObjStockDestino.IdStock AndAlso x.IdUbicacionDestino = ObjStockDestino.IdUbicacion)
-
-    '                'file.WriteLine("IdUbicación: " & ObjStockDestino.IdUbicacion)
-    '                'file.WriteLine("ObjStockDestino.IdStock: " & ObjStockDestino.IdStock)
-    '                'file.WriteLine("vTransUbicHHDet.Realizado: " & vTransUbicHHDet.Realizado)
-
-    '                If Not vTransUbicHHDet Is Nothing Then
-
-    '                    If Not (vTransUbicHHDet.Realizado) Then
-
-    '                        '#EJC20171023_0852AM: Se comentarió función por que el GetSingle, no devolvía los parámetros ni el objeto de presentación.
-    '                        '#EJC20171022_0852AM: Se renombró función a GetSingle, antes se llamaba a GetSingleStock de la clase de cambio de ubicación, se ordenó la función a donde corresponde.
-    '                        'objStockOrigen = GetSingle(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
-
-    '                        '#EJC20171023_0852AM_REF: Obtener el stock con parámetros para actualizar el IdStock
-    '                        objStockOrigen = Get_Single_Stock_By_IdStock(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
-
-    '                        '#EJC20180625: Mantener copia del stock original
-    '                        clsPublic.CopyObject(objStockOrigen, objStockHist)
-
-    '                        '#EJC20171024_0629PM:Colocar el IdPresentacion en el objeto de presentación porque ese es el que se uitlizar para el insert, si no se tiene idpresentación Null en stock cuando se hace cambio de ubicación/estado.
-    '                        ObjStockDestino.Presentacion.IdPresentacion = ObjStockDestino.IdPresentacion
-
-    '                        BePres.IdPresentacion = ObjStockDestino.IdPresentacion
-
-    '                        '#EJC20171024_0531PM: La presentación del stock origen y el destino deberían ser la misma (de momento no se me ocurre otro escenario)                            
-    '                        BePres = objStockOrigen.Presentacion
-
-    '                        '#EJC20170913
-    '                        If BePres.IdPresentacion <> 0 Then
-
-    '                            BePres.IdPresentacion = ObjStockDestino.IdPresentacion
-
-    '                            '#EJC20171023_0852AM: Desactivado por este cambio -> '#EJC20171023_0852AM_REF
-    '                            'clsLnProducto_presentacion.GetSingle(BePres, lConnection, lTransaction)
-
-    '                            'Llevar la cantidad de la presentación a UMBas antes de insertar #EJC20170910
-    '                            If BePres.EsPallet Then
-    '                                vCantidadDisponible = Math.Round((ObjStockDestino.Cantidad * BePres.Factor * BePres.CamasPorTarima * BePres.CajasPorCama), 6)
-    '                            Else
-    '                                If EsReabasto Then
-    '                                    vCantidadDisponible = ObjStockDestino.Cantidad
-    '                                Else
-    '                                    '#EJC20240602 Si lo necesitan modificar avisen!
-    '                                    vCantidadDisponible = Math.Round((ObjStockDestino.Cantidad / BePres.Factor), 6)
-    '                                End If
-
-
-    '                            End If
-
-    '                        Else
-    '                            vCantidadDisponible = ObjStockDestino.Cantidad
-    '                        End If
-
-    '                        vCantidadInicial = ObjStockDestino.Cantidad
-
-    '                        ObjStockDestino.Cantidad = vCantidadDisponible
-
-    '                        lMaxS = MaxID(lConnection, lTransaction) + 1
-
-    '                        ObjStockDestino.IdStock = lMaxS
-
-    '                        '#EJC20171023_0217PM: Validar si tiene parámetros el stock
-    '                        If Not objStockOrigen.Parametros Is Nothing Then
-
-    '                            '#EJC20171023_0158PM: Actualizar el IdStock en parámetros.
-    '                            For Each StockParam In objStockOrigen.Parametros
-    '                                ParametroAActualizar = New clsBeStock_parametro
-    '                                ParametroAActualizar = StockParam
-    '                                ParametrosAActualizar.Add(StockParam)
-    '                            Next
-
-    '                        End If
-
-    '                        If BePres.IdPresentacion <> 0 Then
-
-    '                            'Se cambio porque en cambio de estado desde BOF IdEstado tenía el estado origen, ver -> '#EJC20171018_1035AM_REF
-    '                            ObjStockDestino.ProductoEstado.IdEstado = vTransUbicHHDet.IdEstadoDestino
-    '                            ObjStockDestino.IdProductoEstado = vTransUbicHHDet.IdEstadoDestino
-
-    '                            If BePres.EsPallet Then
-    '                                '#EJC20170918                                    
-    '                                ActualizaIdUbicacionPallet(objStockOrigen, ObjStockDestino.IdUbicacion, lConnection, lTransaction)
-    '                            Else
-
-    '                                Insertar(ObjStockDestino, lConnection, lTransaction)
-
-    '                                '#EJC20171024_0610PM: Se quitó la multiplicación por cantidad porque canto objStockOrigen.Cantidad como ObjStockDestino.Cantidad  están en unidad de medida básica.
-    '                                objStockOrigen.Cantidad -= ObjStockDestino.Cantidad
-    '                                objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-
-    '                                '#EJC20171024_0613PM: Si la cantidad es 0 eliminar el id stock cuando tiene presentación
-    '                                If objStockOrigen.Cantidad = 0 Then
-
-    '                                    '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
-    '                                    clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
-    '                                    Eliminar(objStockOrigen, lConnection, lTransaction)
-
-    '                                    '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
-    '                                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-    '                                    objStockHist.IdNuevoStock = ObjStockDestino.IdStock
-    '                                    objStockHist.IdPedidoEnc = objStockOrigen.IdPedidoEnc
-    '                                    objStockHist.IdPickingEnc = objStockOrigen.IdPickingEnc
-    '                                    objStockHist.IdUbicacion_anterior = objStockOrigen.IdUbicacion
-    '                                    objStockHist.IdUbicacion = ObjStockDestino.IdUbicacion
-    '                                    objStockHist.IdDespachoEnc = 0
-    '                                    objStockHist.Fec_agr = Now
-    '                                    objStockHist.Fec_mod = Now
-    '                                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-    '                                    '#EJC20180625:1036AM => Fin_Stock_Hist
-
-    '                                Else
-    '                                    '#EJC20171014_1140PM
-    '                                    Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-    '                                End If
-
-    '                            End If
-
-    '                        Else
-
-    '                            '#EJC20171018_1035AM_REF: Llenar el objeto estado con el IdProductoEstado porque ese es el objeto que se utiliza para insertar el stock
-    '                            'ObjStockDestino.Estado.IdEstado = ObjStockDestino.IdProductoEstado
-
-    '                            'Se cambio porque en cambio de estado desde BOF IdEstado tenía el estado origen, ver -> '#EJC20171018_1035AM_REF
-    '                            ObjStockDestino.ProductoEstado.IdEstado = vTransUbicHHDet.IdEstadoDestino
-    '                            ObjStockDestino.IdProductoEstado = vTransUbicHHDet.IdEstadoDestino
-
-    '                            'Insertar nuevo stock (ubicación/estado)
-    '                            Insertar(ObjStockDestino, lConnection, lTransaction)
-
-    '                            'file.WriteLine("New Stock Inserted As Id: " & ObjStockDestino.IdStock)
-
-    '                            If ParametrosAActualizar.Count > 0 Then
-    '                                '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
-    '                                clsLnStock_parametro.Insertar_Stock_Parametro_Cambio_Ubicacion(ParametrosAActualizar, lMaxS, lConnection, lTransaction)
-    '                            End If
-
-    '                            objStockOrigen.Cantidad -= ObjStockDestino.Cantidad
-    '                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-
-    '                            'file.WriteLine("Origen Stock Id is At: " & objStockOrigen.IdStock)
-    '                            'file.WriteLine("Origen_Quantity : " & objStockOrigen.Cantidad)
-
-    '                            'file.WriteLine("Destino Stock Id is At: " & ObjStockDestino.IdStock)
-    '                            'file.WriteLine("Destino_Quantity: " & ObjStockDestino.Cantidad)
-
-    '                            '#EJC20171018_0707PM: Eliminar IdStock con cantidad =0
-    '                            If objStockOrigen.Cantidad = 0 Then
-
-    '                                '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                    
-    '                                objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-    '                                objStockHist.IdNuevoStock = ObjStockDestino.IdStock
-    '                                objStockHist.IdPedidoEnc = objStockOrigen.IdPedidoEnc
-    '                                objStockHist.IdPickingEnc = objStockOrigen.IdPickingEnc
-    '                                objStockHist.IdUbicacion_anterior = objStockOrigen.IdUbicacion
-    '                                objStockHist.IdUbicacion = ObjStockDestino.IdUbicacion
-    '                                objStockHist.IdDespachoEnc = 0
-    '                                objStockHist.Fec_agr = Now
-    '                                objStockHist.Fec_mod = Now
-    '                                clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-    '                                '#EJC20180625:1036AM => Fin_Stock_Hist
-    '                                'file.WriteLine("Stock History inserted: " & objStockOrigen.IdStock)
-
-    '                                'Insertar en stock_histórico?
-    '                                '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
-
-    '                                clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
-    '                                Eliminar(objStockOrigen, lConnection, lTransaction)
-
-    '                            Else
-    '                                '#EJC20171014_1140PM
-    '                                Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-    '                                'file.WriteLine("Quantity updated for IdStock: " & objStockOrigen.IdStock & " new value is: " & objStockOrigen.Cantidad)
-    '                            End If
-
-    '                        End If
-
-    '                        vTransUbicHHDet.Realizado = True
-
-    '                        '#EJC20170913
-    '                        clsLnTrans_ubic_hh_det.Actualizar(vTransUbicHHDet, lConnection, lTransaction)
-
-    '                    Else
-    '                        Throw New Exception("La tarea está realizada, nothing to do")
-    '                    End If
-
-    '                Else
-    '                    Throw New Exception("Reporte éste error a desarrollo, no se pudo obtener el IdStock antes de actualizar el stock " & ObjStockDestino.IdStock)
-    '                End If
-
-    '            Next
-
-    '        Else
-    '            Throw New Exception("Lista vacía para actualización de stock, se desconoce si esta es una condición válida, Erik C. 20181211 ")
-    '        End If
-
-    '    Catch ex As Exception
-    '        Throw ex
-    '    Finally
-    '        'If Not file Is Nothing Then file.Close()
-    '    End Try
-
-    'End Sub
-
 
     Public Shared Sub Actualizar_Stock_Por_Cambio_de_Ubicacion_Traslado(ByRef pListObjStock As List(Of clsBeStock),
                                                                         ByVal pListObjDet As List(Of clsBeTrans_ubic_hh_det),
@@ -11602,292 +11395,202 @@ Partial Public Class clsLnStock
                                                     ByRef lTransaction As SqlTransaction)
 
         Dim vMensaje As String = ""
-
+        Dim vCantidadDisponible As Double = 0
 
         Try
 
-            Dim objStockOrigen As New clsBeStock()
-            Dim objStockDet As New clsBeStock_det()
-            Dim objStockHist As New clsBeStock_hist()
-            Dim vCantidadDisponible As Double = 0
-            Dim vCantidadSolicitadaPedido As Double = 0
-            Dim vCantPosiciones As Double = 1
-            Dim BeTransPeDet As New clsBeTrans_pe_det
+            Dim objStockOrigen As clsBeStock = Get_Single_Stock_By_IdStock_And_IdProducto_Bodega(pPickingUbic.IdStock,
+                                                                                            pPickingUbic.IdProductoBodega,
+                                                                                            lConnection,
+                                                                                            lTransaction)
 
-            objStockOrigen = Get_Single_Stock_By_IdStock_And_IdProducto_Bodega(pPickingUbic.IdStock,
-                                                                               pPickingUbic.IdProductoBodega,
-                                                                               lConnection,
-                                                                               lTransaction)
+            Dim objStockDet As clsBeStock_det = clsLnStock_det.GetSingle(pPickingUbic.IdStock, lConnection, lTransaction)
 
-            objStockDet = clsLnStock_det.GetSingle(pPickingUbic.IdStock, lConnection, lTransaction)
+            If objStockOrigen Is Nothing Then
+                Dim vMsgError As String = String.Format("{0} Stock origen no encontrado. IdStock:{1} IdProductoBodega:{2}",
+                                                    MethodBase.GetCurrentMethod.Name(),
+                                                    pPickingUbic.IdStock,
+                                                    pPickingUbic.IdProductoBodega)
+                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                Exit Sub
+            End If
 
-            If objStockOrigen IsNot Nothing Then
+            Dim BeTransPeDet As New clsBeTrans_pe_det With {.IdPedidoDet = pPickingUbic.IdPedidoDet}
+            clsLnTrans_pe_det.GetSingle(BeTransPeDet, lConnection, lTransaction)
 
-                BeTransPeDet.IdPedidoDet = pPickingUbic.IdPedidoDet
-                clsLnTrans_pe_det.GetSingle(BeTransPeDet, lConnection, lTransaction)
+            If (objStockOrigen.Presentacion.IdPresentacion = 0) OrElse (BeTransPeDet.IdPresentacion = 0) Then
+                vCantidadDisponible = Math.Round(objStockOrigen.Cantidad, 6)
+            Else
 
-                If (objStockOrigen.Presentacion.IdPresentacion = 0) OrElse (BeTransPeDet.IdPresentacion = 0) Then
-                    vCantidadDisponible = Math.Round(objStockOrigen.Cantidad, 6)
+                If objStockOrigen.Presentacion.EsPallet Then
+                    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                 Else
 
-                    If objStockOrigen.Presentacion.EsPallet Then
-                        vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
-                    Else
+                    '#EJC20251209 Originalmente estaba asi
+                    'vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+
+                    '#EJC20251209 Agregó validación por error reportado en el despacho
+                    If objStockOrigen.Cantidad >= objStockOrigen.Presentacion.Factor Then
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                    Else
+                        vCantidadDisponible = objStockOrigen.Cantidad
                     End If
 
                 End If
 
-                vCantidadSolicitadaPedido = BeTransPeDet.Cantidad
+            End If
 
-                If Not objStockDet Is Nothing Then
-                    vCantPosiciones = objStockDet.Posiciones
+            Dim vCantidadSolicitadaPedido As Double = BeTransPeDet.Cantidad
+            Dim vCantPosiciones As Double = If(objStockDet IsNot Nothing, objStockDet.Posiciones, 1)
+
+            Dim vMensajeSingularidadPalletCealsa As String =
+            String.Format("Hipotéticamente: lo que solicita no debería ocurrir:
+En teoría se está despachando un pallet, el prorrateo de las posiciones que ocupa no permite un despacho parcial del mismo, 
+la cantidad restante de posiciones resulta en un valor no entero no válido para la cantida de posiciones que ocupa al despacharle parcialmente.
+El IdStock: {0} reporta una cantidad: {1} de la que se intentarán restar: {2}, 
+pero se cuentan con {3} posiciones esto generaría una cantidad de posiciones decimales no válidas para el sistema, 
+de forma preventiva se ha restringido el despacho de este documento,
+En verdad, lamento interrumpir el proceso, lo mejor que puedo hacer es eliminar las posiciones ocupadas por la mercancía, proceder de esta forma?.",
+                          objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada, vCantPosiciones)
+
+            vMensaje = String.Format("No se puede realizar el despacho,
+éste es un error poco usual y estamos trabajando para resolverlo.
+El IdStock: {0} reporta una cantidad: {1} de la que se intentarán restar: {2},
+esto generaría un stock negativo no válido para el sistema, de forma preventiva se ha restringido el despacho de este documento.",
+                                 objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada)
+
+            Dim vMensaje1 As String =
+            "No se puede realizar el despacho,
+éste es un error poco usual y estamos trabajando para resolverlo.
+El Picking reporta una cantidad verificada mayor a la solicitada en el pedido,
+esto generaría un desfase de stock no válido para el sistema, de forma preventiva se ha restringido el despacho de este documento.
+Por favor reportar este problema a DevOps."
+
+            '=========================================================
+            ' Validación: no despachar más de lo solicitado en el pedido
+            '=========================================================
+            If pPickingUbic.IdPresentacion = BeTransPeDet.IdPresentacion Then
+
+                If (pPickingUbic.Cantidad_Verificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
+                    Throw New Exception(vMensaje1)
                 End If
 
-                Dim vMensajeSingularidadPalletCealsa As String = String.Format("Hipotéticamente: lo que solicita no debería ocurrir:
-									                                            En teoría se está despachando un pallet, el prorrateo de las posiciones que ocupa no permite un despacho parcial del mismo, 
-                                                                                la cantidad restante de posiciones resulta en un valor no entero no válido para la cantida de posiciones que ocupa al despacharle parcialmente.
-									                                            El IdStock: {0} reporta una cantidad: {1} de la que se intentarán restar: {2}, 
-									                                            pero se cuentan con {3} posiciones esto generaría una cantidad de posiciones decimales no válidas para el sistema, 
-                                                                                de forma preventiva se ha restringido el despacho de este documento,
-									                                            En verdad, lamento interrumpir el proceso, lo mejor que puedo hacer es eliminar las posiciones ocupadas por la mercancía, proceder de esta forma?.", objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada, vCantPosiciones)
+            Else
 
-                vMensaje = String.Format("No se puede realizar el despacho, 
-									éste es un error poco usual y estamos trabajando para resolverlo. 
-									El IdStock: {0} reporta una cantidad: {1} de la que se intentarán restar: {2}, 
-									esto generaría un stock negativo no válido para el sistema, de forma preventiva se ha restringido el despacho de este documento,
-									lo sentimos, EJC.", objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada)
+                'Picking con presentación y pedido sin presentación -> convertir a UMBAS
+                If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
 
-                Dim vMensaje1 As String = String.Format("No se puede realizar el despacho, 
-									éste es un error poco usual y estamos trabajando para resolverlo. 
-									El Picking reporta una cantidad verificada mayor a la solicitada en el pedido
-                                    esto generaría un desfase de stock no válido para el sistema, 
-                                    de forma preventiva se ha restringido el despacho de este documento.
-									Por favor reportar este problema a DevOps.", objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada)
+                    Dim vFactor As Integer = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                                  pPickingUbic.IdPresentacion,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+                    Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada * vFactor
 
-                '#EJC20190108: Punto de control agregado para evitar que se generen despachos con más cantidad de la solicitada en el pedido.
-                'Lo sé, es extraño pero anda un error errante en el picking que hacer que la cantidad_solicitada sea mayor a la cantidad en el pedido.
-                'Sos-pecho, que también puede ser un problema en la edición del pedido.
-                If pPickingUbic.IdPresentacion = BeTransPeDet.IdPresentacion Then
+                    If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
+                        Throw New Exception(vMensaje1)
+                    End If
+
+                    'Picking sin presentación y pedido con presentación -> convertir a "presentaciones" o asegurar unidad
+                ElseIf (pPickingUbic.IdPresentacion = 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
+
+                    Dim vFactor As Integer = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                                  BeTransPeDet.IdPresentacion,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+                    If vFactor <= 0 Then Throw New Exception("El factor de la presentación del pedido es 0, no se puede validar cantidades.")
+
+                    Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada / vFactor
+
+                    If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
+                        Throw New Exception(vMensaje1)
+                    End If
+
+                Else
                     If (pPickingUbic.Cantidad_Verificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
                         Throw New Exception(vMensaje1)
                     End If
-                Else
-                    If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
-                        Dim vFactor As Integer
-                        vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         pPickingUbic.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
-                        Dim vCantidadVerificada As Integer = pPickingUbic.Cantidad_Verificada * vFactor
-
-                        If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
-                            Throw New Exception(vMensaje1)
-                        End If
-                    Else
-                        If (pPickingUbic.Cantidad_Verificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
-                            Throw New Exception(vMensaje1)
-                        End If
-                    End If
                 End If
 
-                Dim vDiferenciaDespachoParcial As Double = pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
+            End If
 
-                If vDiferenciaDespachoParcial < 0.00000000001 Then
-                    vDiferenciaDespachoParcial = 0
-                End If
+            '=========================================================
+            ' Diferencia por despacho parcial
+            '=========================================================
+            Dim vDiferenciaDespachoParcial As Double = pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
+            If vDiferenciaDespachoParcial < 0.00000000001 Then vDiferenciaDespachoParcial = 0
 
-                '#EJC20180619: Punto de control agregado para evitar que se generen despachos sobre cantidad 0.
-                If vCantidadDisponible < 0 OrElse (vDiferenciaDespachoParcial > vCantidadDisponible) AndAlso Not AllowNegativeExceptionOnStock Then
-                    Throw New Exception(vMensaje)
+            If vCantidadDisponible < 0 OrElse ((vDiferenciaDespachoParcial > vCantidadDisponible) AndAlso Not AllowNegativeExceptionOnStock) Then
+                Throw New Exception(vMensaje)
+            End If
+
+            Dim objStockHist As New clsBeStock_hist()
+
+            '=========================================================
+            ' Actualización de stock
+            '=========================================================
+            If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
+
+                If objStockOrigen.Presentacion.EsPallet Then
+
+                    Despacha_Pallet(objStockOrigen, lConnection, lTransaction)
+
                 Else
 
-                    If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
+                    Dim Res As Double = Math.Round(vCantidadDisponible - vDiferenciaDespachoParcial, 6)
+                    objStockOrigen.Cantidad = Math.Round(Res * objStockOrigen.Presentacion.Factor, 6)
 
-                        If objStockOrigen.Presentacion.EsPallet Then
-                            Despacha_Pallet(objStockOrigen, lConnection, lTransaction)
-                        Else
+                    'FIX: descontar una sola vez
+                    objStockOrigen.Peso = Math.Round(objStockOrigen.Peso - Math.Round(pPickingUbic.Peso_verificado, 6), 6)
 
-                            '#CKFK20220719 Modifiqué la forma en que se obtiene el valor a restar
-                            'Dim Res As Double = Math.Round(vCantidadDisponible - pPickingUbic.Cantidad_Verificada, 6)
-                            Dim Res As Double = Math.Round(vCantidadDisponible - vDiferenciaDespachoParcial, 6)
+                    If objStockOrigen.Cantidad = 0 Then
 
-                            objStockOrigen.Cantidad = Math.Round(Res * objStockOrigen.Presentacion.Factor, 6)
-                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
+                        clsPublic.CopyObject(objStockOrigen, objStockHist)
+                        objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                        objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
+                        objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
+                        objStockHist.IdDespachoEnc = IdDespachoEnc
+                        objStockHist.IdNuevoStock = 0
+                        objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
+                        objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
+                        objStockHist.Fec_agr = Now
+                        objStockHist.Fec_mod = Now
+                        objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
+                        clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
 
-                            objStockOrigen.Peso -= pPickingUbic.Peso_verificado
-                            objStockOrigen.Peso -= Math.Round(pPickingUbic.Peso_verificado, 6)
+                        clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
+                        Eliminar(objStockOrigen, lConnection, lTransaction)
 
-                            If objStockOrigen.Cantidad = 0 Then
+                        If objStockDet IsNot Nothing Then clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
 
-                                '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
-                                clsPublic.CopyObject(objStockOrigen, objStockHist)
-                                objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-                                objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
-                                objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
-                                objStockHist.IdDespachoEnc = IdDespachoEnc
-                                objStockHist.IdNuevoStock = 0
-                                objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
-                                objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
-                                objStockHist.Fec_agr = Now
-                                objStockHist.Fec_mod = Now
-                                objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
-                                clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                                '#EJC20180625:1036AM => Fin_Stock_Hist
+                    ElseIf objStockOrigen.Cantidad > 0 Then
 
-                                clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
+                        Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
 
-                                Eliminar(objStockOrigen, lConnection, lTransaction)
+                    ElseIf objStockOrigen.Cantidad < 0 Then
 
-                                '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                                If Not objStockDet Is Nothing Then
-                                    clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                                End If
-
-                            ElseIf objStockOrigen.Cantidad > 0 Then
-                                Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-                            ElseIf objStockOrigen.Cantidad < 0 Then
-
-                                'If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
-                                If AllowNegativeExceptionOnStock Then
-                                    '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
-                                    clsPublic.CopyObject(objStockOrigen, objStockHist)
-                                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-                                    objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
-                                    objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
-                                    objStockHist.IdDespachoEnc = IdDespachoEnc
-                                    objStockHist.IdNuevoStock = 0
-                                    objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
-                                    objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
-                                    objStockHist.Fec_agr = Now
-                                    objStockHist.Fec_mod = Now
-                                    objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
-                                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                                    '#EJC20180625:1036AM => Fin_Stock_Hist
-                                End If
-
-                                '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                                If Not objStockDet Is Nothing Then
-
-                                    If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
-                                        '#EJC20210603: En teoría si llegamos a este punto, algo ocurrió mal en el inicio de los tiempos, es decir en la repceción o en la ubicación.
-                                        If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
-                                            clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                                        End If
-                                    Else
-                                        clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                                    End If
-
-                                End If
-
-                            End If
-
-                        End If
-
-                    Else
-
-                        Dim vFactorPres As Integer = 0
-
-                        If pPickingUbic.IdPresentacion <> 0 Then
-                            vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                             pPickingUbic.IdPresentacion,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
-                            If vFactorPres = 0 Then
-                                Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
-                            End If
-
-                        End If
-
-                        If pPickingUbic.IdPresentacion <> 0 Then
-                            objStockOrigen.Cantidad -= (pPickingUbic.Cantidad_Verificada * vFactorPres) - (pPickingUbic.Cantidad_despachada * vFactorPres)
-                            objStockOrigen.Peso -= pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado
-                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-                        Else
-                            objStockOrigen.Cantidad -= pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
-                            objStockOrigen.Peso -= pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado
-                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-                        End If
-
-                        If objStockOrigen.Cantidad = 0 Then
-
-                            '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
+                        If AllowNegativeExceptionOnStock Then
                             clsPublic.CopyObject(objStockOrigen, objStockHist)
                             objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
                             objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
                             objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
-
                             objStockHist.IdDespachoEnc = IdDespachoEnc
                             objStockHist.IdNuevoStock = 0
-
-                            If pPickingUbic.IdPresentacion <> 0 Then
-                                objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada * vFactorPres, 6)
-                            Else
-                                objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
-                            End If
-
+                            objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
                             objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                             objStockHist.Fec_agr = Now
                             objStockHist.Fec_mod = Now
-                            objStockHist.Posiciones = vCantPosiciones
                             objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                             clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                            '#EJC20180625:1036AM => Fin_Stock_Hist
+                        End If
 
-                            clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
-
-                            Eliminar(objStockOrigen, lConnection, lTransaction)
-
-                            '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                            If Not objStockDet Is Nothing Then
-                                clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                            End If
-
-                        ElseIf objStockOrigen.Cantidad > 0 Then
-
-                            Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-
-                            '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                            If Not objStockDet Is Nothing Then
-
-                                If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
-                                    '#EJC20210603: En teoría si llegamos a este punto, algo ocurrió mal en el inicio de los tiempos, es decir en la repceción o en la ubicación.
-                                    If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
-                                        clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                                    Else
-                                        Throw New Exception(vMensajeSingularidadPalletCealsa)
-                                    End If
-                                Else
+                        If objStockDet IsNot Nothing Then
+                            If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
+                                If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
                                     clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
                                 End If
-
+                            Else
+                                clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
                             End If
-
-                        ElseIf objStockOrigen.Cantidad < 0 Then
-
-                            If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
-                                '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
-                                clsPublic.CopyObject(objStockOrigen, objStockHist)
-                                objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-                                objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
-                                objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
-                                objStockHist.IdDespachoEnc = IdDespachoEnc
-                                objStockHist.IdNuevoStock = 0
-
-                                If pPickingUbic.IdPresentacion <> 0 Then
-                                    objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada * vFactorPres, 6)
-                                Else
-                                    objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
-                                End If
-
-                                objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
-                                objStockHist.Fec_agr = Now
-                                objStockHist.Fec_mod = Now
-                                objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
-                                clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                                '#EJC20180625:1036AM => Fin_Stock_Hist
-                            End If
-
                         End If
 
                     End If
@@ -11895,17 +11598,103 @@ Partial Public Class clsLnStock
                 End If
 
             Else
-                Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), vMensaje)
-                clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+                Dim vFactorPres As Integer = 0
+                If pPickingUbic.IdPresentacion <> 0 Then
+                    vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                       pPickingUbic.IdPresentacion,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+                    If vFactorPres = 0 Then Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
+                End If
+
+                If pPickingUbic.IdPresentacion <> 0 Then
+                    objStockOrigen.Cantidad -= (pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada) * vFactorPres
+                Else
+                    objStockOrigen.Cantidad -= (pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada)
+                End If
+
+                objStockOrigen.Peso -= (pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado)
+                objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
+
+                If objStockOrigen.Cantidad = 0 Then
+
+                    clsPublic.CopyObject(objStockOrigen, objStockHist)
+                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                    objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
+                    objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
+                    objStockHist.IdDespachoEnc = IdDespachoEnc
+                    objStockHist.IdNuevoStock = 0
+
+                    If pPickingUbic.IdPresentacion <> 0 Then
+                        objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada * vFactorPres, 6)
+                    Else
+                        objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
+                    End If
+
+                    objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
+                    objStockHist.Fec_agr = Now
+                    objStockHist.Fec_mod = Now
+                    objStockHist.Posiciones = vCantPosiciones
+                    objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
+                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+
+                    clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
+                    Eliminar(objStockOrigen, lConnection, lTransaction)
+
+                    If objStockDet IsNot Nothing Then clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+
+                ElseIf objStockOrigen.Cantidad > 0 Then
+
+                    Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
+
+                    If objStockDet IsNot Nothing Then
+                        If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
+                            If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                                clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                            Else
+                                Throw New Exception(vMensajeSingularidadPalletCealsa)
+                            End If
+                        Else
+                            clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                        End If
+                    End If
+
+                ElseIf objStockOrigen.Cantidad < 0 Then
+
+                    If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                        clsPublic.CopyObject(objStockOrigen, objStockHist)
+                        objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                        objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
+                        objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
+                        objStockHist.IdDespachoEnc = IdDespachoEnc
+                        objStockHist.IdNuevoStock = 0
+
+                        If pPickingUbic.IdPresentacion <> 0 Then
+                            objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada * vFactorPres, 6)
+                        Else
+                            objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
+                        End If
+
+                        objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
+                        objStockHist.Fec_agr = Now
+                        objStockHist.Fec_mod = Now
+                        objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
+                        clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                    End If
+
+                End If
+
             End If
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
+            Throw
         End Try
 
     End Sub
+
 
     Public Shared Sub Actualizar_Stock_Por_Traslado(ByRef pBePickingUbic As clsBeTrans_picking_ubic,
                                                     ByVal pIdUbicacionVirtualDestino As Integer,
@@ -12992,6 +12781,7 @@ Partial Public Class clsLnStock
 
             If Existe_Stock(pBeStockAnt, lConnection, lTransaction) Then
 
+                '#GT02072025: se obtiene el movimiento basado en IdrecepcionEnc y Det
                 lMovimientos = clsLnTrans_movimientos.Get_Movimiento_By_Stock(pBeStockAnt, lConnection, lTransaction)
 
                 If lMovimientos.Count > 0 Then
@@ -13272,7 +13062,9 @@ Partial Public Class clsLnStock
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    vResult = lReturnValue
+                    vResult = Convert.ToBoolean(lReturnValue)
+                Else
+                    vResult = False ' caso 1: Nothing (sin filas) / caso 2: DBNull (NULL)
                 End If
             End Using
 
@@ -16099,12 +15891,12 @@ Partial Public Class clsLnStock
 
             Dim vSQL As String = "select Noenc as Pedido, no Código, p.nombre as Nombre, dbo.Nombre_Area(u.IdArea, s.IdBodega) Area, Sum(cantidad) Cantidad, 
                                     size as Talla, color as Color
-                                    from stock s inner join 
-                                        producto_bodega pb on s.IdProductoBodega = pb.IdProductoBodega inner join
-	                                    producto p on pb.IdProducto = p.IdProducto inner join 
-	                                    i_nav_ped_traslado_det i on p.codigo = i.No inner join 
-	                                    bodega_ubicacion u on s.IdUbicacion = u.IdUbicacion and s.IdBodega = u.IdBodega
-                                    WHERE Process_Result<>'OK' AND NoEnc = @Referencia
+            From stock s inner Join
+                producto_bodega pb on s.IdProductoBodega = pb.IdProductoBodega inner Join
+                producto p on pb.IdProducto = p.IdProducto inner Join
+                i_nav_ped_traslado_det i on p.codigo = i.No inner Join
+                bodega_ubicacion u on s.IdUbicacion = u.IdUbicacion And s.IdBodega = u.IdBodega
+                                    Where Process_Result <>'OK' AND NoEnc = @Referencia
                                     Group by Noenc, no, dbo.Nombre_Area(u.IdArea, s.IdBodega), p.nombre, size, color  "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -16576,6 +16368,57 @@ Partial Public Class clsLnStock
 
     End Function
 
+    Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer) As clsBeStock
+
+        GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet = Nothing
+
+        Try
+
+            Dim Obj As New clsBeStock
+
+            Dim vSQL As String = "Select * from stock where (IdRecepcionEnc = @IdRecepcionEnc and IdRecepcionDet=@IdRecepcionDet) "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", IdRecepcionEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionDet", IdRecepcionDet)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            Obj = New clsBeStock
+                            Dim lRow As DataRow = lDataTable.Rows(0)
+                            Cargar(Obj, lRow)
+                            GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet = Obj
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer,
                                                                           Optional ByVal pConnection As SqlConnection = Nothing,
                                                                           Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeStock
@@ -16625,6 +16468,234 @@ Partial Public Class clsLnStock
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
             If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Lotes_Disponibles_DT_By_IdCliente(ByVal pIdBodega As Integer, ByVal pIdCliente As Integer, Optional ByVal Edicion As Boolean = False) As DataTable
+
+        Get_Lotes_Disponibles_DT_By_IdCliente = Nothing
+
+        Dim lDataTable As New DataTable
+
+        Try
+            Dim vSQL As String = "SELECT DISTINCT 
+                                    BODEGA AS Bodega, 
+                                    codigo AS Codigo, 
+                                    nombre AS Nombre, 
+                                    LOTE AS Lote,     
+                                    NomEstado,
+                                    SUM(cantidad) AS Cantidad,
+                                    ISNULL(Presentacion,unidadmedida) as UM,
+                                    fecha_vence,
+                                    IdProductoEstado,
+                                    IdProducto
+                                    FROM VW_Stock_Res
+                                    WHERE 1 > 0 "
+
+            If Not Edicion Then
+                vSQL += " AND LOTE NOT IN (
+                                    SELECT Lote 
+                                    FROM cliente_lotes 
+                                    WHERE IdCliente = @IdCliente
+                                )"
+            End If
+
+
+            vSQL += " And IdBodega = @IdBodega
+                      And lote Is Not null
+                      And lote <> '' 
+                      GROUP BY BODEGA,
+                        codigo, 
+                        nombre, 
+                        LOTE,     
+                        NomEstado,
+                        fecha_vence,
+                        IdProductoEstado,
+                        IdProducto,
+                        Presentacion,
+                        UnidadMedida
+                        ORDER BY Codigo, Lote"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", pIdCliente)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.Fill(lDataTable)
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lDataTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Estados_Producto_En_Stock() As DataTable
+
+        Get_Estados_Producto_En_Stock = Nothing
+
+        Dim lDataTable As New DataTable
+
+        Try
+            Dim vSQL As String = "SELECT IdEstado, nombre FROM producto_estado
+                                  WHERE IdEstado in (select IdEstado from stock)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.Fill(lDataTable)
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+            End Using
+
+            Return lDataTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Reporte_Stock_By_IdBodega_and_IdPropietario_For_Implosion(ByVal pIdBodega As Integer,
+                                                                                         ByVal pIdPropietarioBodega As Integer) As DataTable
+
+        Get_Reporte_Stock_By_IdBodega_and_IdPropietario_For_Implosion = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT Bodega,Propietario,IdProducto,Codigo,
+							      nombre as Producto,NomEstado as Estado,
+							      IdPresentacion,sum(isnull(CantidadSF,0)) as CantidadUMBas,
+							      UnidadMedida,
+							      SUM(isnull(Cantidad_Presentacion,0)) as CantidadPresentacion,
+                                  Presentacion,
+							      SUM(isnull(CantidadReservada,0)) as Cantidad_Reservada_UMBas, 
+							      SUM(isnull(Cantidad_Reservada_Pres,0)) AS Cantidad_Reservada_Pres,							      
+                                  SUM(isnull(Disponible_UMBas,0))  as Disponible_UMBas, 
+							      SUM(isnull(Disponible_Presentacion,0)) AS Disponible_Presentación,
+							      Peso,Lote,lic_plate as Licencia,
+                                  Fecha_Ingreso,
+                                  Fecha_Vence, Nombre_Completo AS [Ubicación],
+                                  codigo_poliza,Numero_poliza numero_orden,ubicacion_picking, Area, Factor, IdUbicacion, 
+                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock
+							      FROM VW_Stock_Res WHERE 1 > 0 AND IdPresentacion IS NULL "
+
+            If pIdBodega <> 0 Then
+                vSQL += " AND IdBodega = @IdBodega "
+            End If
+
+            If pIdPropietarioBodega <> 0 Then
+                vSQL += " and IdPropietarioBodega= @IdPropietarioBodega "
+            End If
+
+            vSQL += " Group by Bodega,Propietario,IdProducto,NomEstado,Fecha_Ingreso,Codigo,
+					  Nombre,Presentacion,IdPresentacion,UnidadMedida,peso, 
+					  Lote,fecha_vence, Nombre_Completo,lic_plate,
+				      Factor,codigo_poliza,Numero_poliza, CantidadReservada,Cantidad,
+                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock "
+
+            vSQL += "ORDER BY CODIGO, Nombre_Completo, IdStock "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+
+                        If pIdBodega <> 0 Then
+                            lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        End If
+
+                        If pIdPropietarioBodega <> 0 Then
+                            lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                        End If
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Return lDataTable
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_Stock_DT_AM(ByVal IdBodega As Integer,
+                                               ByVal IdPropietarioBodega As Integer,
+                                               ByVal lConnection As SqlConnection,
+                                               ByVal lTransaction As SqlTransaction) As DataTable
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM VW_Stock_Res WHERE IdBodega=@IdBodega and disponible_umbas > 0 AND IdPropietarioBodega = @IdPropietarioBodega AND IdStock IN (Select IdStock FROM trans_am_stock) "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", IdPropietarioBodega)
+
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Return lDataTable
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function

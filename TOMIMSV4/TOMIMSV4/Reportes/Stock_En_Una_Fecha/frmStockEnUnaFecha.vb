@@ -71,28 +71,14 @@ Public Class frmMov_Reporte
             If txtIdProducto.Text.Trim <> "" AndAlso Not ProductoEspecifico Is Nothing Then
 
                 IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(ProductoEspecifico.IdProducto, cmbBodega.EditValue)
-
-                'ListaMovimientos = clsLnTrans_movimientos.Get_All_Movimientos_By_IdProducto(dtpFechaDesde.Value,
-                '                                                                            dtpfechaHasta.Value,
-                '                                                                            IdProductoBodega,
-                '                                                                            cmbBodega.EditValue,
-                '                                                                            cmbPropietario.EditValue)
-            Else
-
-                'If ProductoEspecifico Is Nothing OrElse ProductoEspecifico.IdProducto = 0 Then
-                '    lblPrg.Text = "Obteniendo listado de productos"
-                '    lblPrg.Refresh()
-                '    ListaMovimientos = clsLnTrans_movimientos.Get_All_Movimientos_By_Rango_Fechas(dtpFechaDesde.Value,
-                '                                                                                  dtpfechaHasta.Value)
-                'End If
-
             End If
 
             ListaMovimientos = clsLnTrans_movimientos.Get_All_Movimientos_By_IdProducto(dtpFechaDesde.Value,
-                                                                                            dtpfechaHasta.Value,
-                                                                                            IdProductoBodega,
-                                                                                            cmbBodega.EditValue,
-                                                                                            cmbPropietario.EditValue)
+                                                                                        dtpfechaHasta.Value,
+                                                                                        IdProductoBodega,
+                                                                                        cmbBodega.EditValue,
+                                                                                        cmbPropietario.EditValue,
+                                                                                        txtLote.Text.Trim())
 
             If Not ListaMovimientos Is Nothing Then
                 Get_Lista_Movimientos = ListaMovimientos.Count > 0

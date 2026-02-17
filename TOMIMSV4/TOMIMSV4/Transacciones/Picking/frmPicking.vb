@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System
+Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Mvvm.Native
@@ -9,6 +10,7 @@ Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraGrid.Views.Grid.ViewInfo
+Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
 
@@ -41,6 +43,8 @@ Public Class frmPicking
     Private lBePedidoDet As New List(Of clsBeTrans_pe_det)
     Public Property Llamado_Desde_Pedido As Boolean = False
     Public Property IsClosing As Boolean = False
+    Public Property pIdPedidoEnc As DataGridViewCell
+    Private IsGettingValoresGrid As Boolean = False
 
     Private BeBodega As clsBeBodega
 
@@ -70,13 +74,14 @@ Public Class frmPicking
         InitializeComponent()
     End Sub
 
-    Private Sub Lista_Productos_Dañados()
+    Private Sub Lista_Productos_Dañados(ByVal lConnection As SqlConnection,
+                                        ByVal lTransaction As SqlTransaction)
 
         Try
 
             Dim DT As New DataTable
 
-            DT = clsLnTrans_picking_enc.Get_Dañados_Verificacion_Picking_ByPickingEnc(BePickingEnc.IdPickingEnc)
+            DT = clsLnTrans_picking_enc.Get_Dañados_Verificacion_Picking_ByPickingEnc(BePickingEnc.IdPickingEnc, lConnection, lTransaction)
 
             If DT.Rows.Count > 0 Then
 
@@ -101,8 +106,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -113,6 +126,7 @@ Public Class frmPicking
         mnuGuardar.Enabled = False
         mnuActualizar.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuEliminar.Enabled = BePickingEnc.Estado <> "Despachado"
+        lnkQuitarPedido.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdImprimir.Enabled = True
         mnuProcesar.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuProcesarLinea.Enabled = BePickingEnc.Estado <> "Despachado"
@@ -173,30 +187,30 @@ Public Class frmPicking
             dgridDetallePicking.EndEdit()
 
             If cmbBodegas.ItemIndex = -1 Then
-                XtraTabControl1.SelectedTabPage = XtratabPageDato
+                xtpDatosPicking.SelectedTabPage = XtratabPageDato
                 'Throw New Exception("Seleccione Bodega.")
                 XtraMessageBox.Show("Seleccione Bodega.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             ElseIf cmbPropietario.ItemIndex = -1 Then
-                XtraTabControl1.SelectedTabPage = XtratabPageDato
+                xtpDatosPicking.SelectedTabPage = XtratabPageDato
                 'Throw New Exception("Seleccione Propietario.")
                 XtraMessageBox.Show("Seleccione Propietario.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             ElseIf String.IsNullOrEmpty(txtIdUbicacion.Text.Trim) OrElse Val(txtIdUbicacion.Text = 0) Then
-                XtraTabControl1.SelectedTabPage = XtratabPageDato
+                xtpDatosPicking.SelectedTabPage = XtratabPageDato
                 txtIdUbicacion.Focus()
                 'Throw New Exception("Ingrese una ubicación de picking válida.")
                 XtraMessageBox.Show("Ingrese una ubicación de picking válida.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             ElseIf chkDetalleOperador.Checked AndAlso Not ValidaDetalleOperadores() Then '#CKFK 20210803 Cambié el AND por al ANDALSO porque daba error con los operadores
                 dgridPedidos.Focus()
             ElseIf BeListPickingDet Is Nothing OrElse BeListPickingDet.Count > 0 = False Then
-                XtraTabControl1.SelectedTabPage = XtratabPagePedido
+                xtpDatosPicking.SelectedTabPage = XtratabPagePedido
                 XtraMessageBox.Show("Debe ingresar Pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             ElseIf Not chkDetalleOperador.Checked And Not ValidaDetalleOperadores_manual() Then
-                XtraTabControl1.SelectedTabPage = XtraTabPageUbicacionPicking
+                xtpDatosPicking.SelectedTabPage = XtraTabPageUbicacionPicking
                 XtraMessageBox.Show("Debe seleccionar un operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             ElseIf Not ValidaFilas() Then
-                XtraTabControl1.SelectedTabPage = XtratabPagePedido
+                xtpDatosPicking.SelectedTabPage = XtratabPagePedido
             ElseIf Pedidos_Requieren_Muelle() AndAlso cmbMuelle.Text = "" Then
-                XtraTabControl1.SelectedTabPage = XtraTabPageUbicacionPicking
+                xtpDatosPicking.SelectedTabPage = XtraTabPageUbicacionPicking
                 XtraMessageBox.Show("Debe seleccionar un muelle porque algún pedido del picking lo requiere.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Else
                 ' validar que el codigo ingresado en la ubicacion de picking si exista 
@@ -217,8 +231,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -289,7 +311,7 @@ Public Class frmPicking
         If dgridDetallePicking.Rows.Count > 0 Then
             For i As Integer = 0 To dgridDetallePicking.Rows.Count - 1
                 If dgridDetallePicking.Rows(i).Cells("Producto").Value IsNot Nothing AndAlso dgridDetallePicking.Rows(i).Cells("OperadorBodega").Value Is Nothing Then
-                    XtraTabControl1.SelectedTabPage = XtratabPagePedido
+                    xtpDatosPicking.SelectedTabPage = XtratabPagePedido
                     XtraMessageBox.Show(String.Format("Debe seleccionar Operador en la fila ", i + 1),
                                                 Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     ValidaDetalleOperadores = False
@@ -315,6 +337,14 @@ Public Class frmPicking
             If Ubicacion.pObj IsNot Nothing AndAlso Ubicacion.pObj.IdUbicacion <> 0 Then
                 txtIdUbicacion.Text = Ubicacion.pObj.IdUbicacion
                 txtNombreUbicacion.Text = Ubicacion.pObj.Descripcion
+
+                If Ubicacion.pObj.IdArea > 0 Then
+                    Dim BeBodegaArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(Ubicacion.pObj.IdArea, Ubicacion.pObj.IdBodega)
+                    If BeBodegaArea IsNot Nothing Then
+                        txtArea.Text = BeBodegaArea.Descripcion
+                    End If
+                End If
+
             End If
 
             Ubicacion.Close()
@@ -327,8 +357,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -398,7 +436,11 @@ Public Class frmPicking
             BePickingEnc.Fecha_picking = dtmFechaPicking.EditValue
             BePickingEnc.Hora_ini = dtmHoraIhh.Value
             BePickingEnc.Hora_fin = dtmHoraFhh.Value
+            'If BePickingEnc.IsNew Then
+            '    BePickingEnc.Estado = "Guardando"
+            'Else
             BePickingEnc.Estado = lblEstado.Text
+            'End If
             BePickingEnc.User_mod = AP.UsuarioAp.IdUsuario
             BePickingEnc.Fec_mod = Now
             BePickingEnc.Detalle_operador = chkDetalleOperador.Checked
@@ -425,6 +467,7 @@ Public Class frmPicking
             End If
 
             BePickingEnc.Referencia = txtReferencia.Text
+            BePickingEnc.Observacion = clsPublic.Quitar_Caracteres_No_Permitidos(txtObservacion.Text.Trim)
             BePickingEnc.IdBodegaMuelle = cmbMuelle.EditValue
 
             If rbAlto.Checked Then
@@ -449,9 +492,23 @@ Public Class frmPicking
 
                     '#GT27022023: se guarda log del picking
                     If BePickingEnc.IsNew Then
-                        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPickingEnc: " & BePickingEnc.IdPickingEnc)
+                        '#MECR23102025: Se agrego bitacora para logs de picking
+                        'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPickingEnc: " & BePickingEnc.IdPickingEnc)
+                        clsLnLog_error_wms_pick.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPickingEnc: " & BePickingEnc.IdPickingEnc,
+                                                              pIdEmpresa:=AP.IdEmpresa,
+                                                              pIdBodega:=AP.IdBodega,
+                                                              pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                              pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                              pIdPickingEnc:=BePickingEnc.IdPickingEnc)
                     Else
-                        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPickingEnc: " & BePickingEnc.IdPickingEnc)
+                        '#MECR23102025: Se agrego bitacora para logs de picking
+                        'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPickingEnc: " & BePickingEnc.IdPickingEnc)
+                        clsLnLog_error_wms_pick.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPickingEnc: " & BePickingEnc.IdPickingEnc,
+                                                              pIdEmpresa:=AP.IdEmpresa,
+                                                              pIdBodega:=AP.IdBodega,
+                                                              pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                              pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                              pIdPickingEnc:=BePickingEnc.IdPickingEnc)
                     End If
 
                     Cargar_Datos()
@@ -486,8 +543,16 @@ Public Class frmPicking
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -517,8 +582,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -679,8 +752,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -744,8 +825,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -775,8 +864,16 @@ Public Class frmPicking
            MessageBoxButtons.OK,
            MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -1018,8 +1115,16 @@ Public Class frmPicking
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message & " Indicador: " & vIndicador)
-            clsLnLog_error_wms.Agregar_Error(vMsgError & " Indicador: " & vIndicador)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError & " Indicador: " & vIndicador)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1052,8 +1157,16 @@ Public Class frmPicking
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1102,8 +1215,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -1117,7 +1238,7 @@ Public Class frmPicking
             For i As Integer = 0 To dgridDetallePicking.Rows.Count - 1
                 If dgridDetallePicking.Rows(i).Cells("Producto").Value IsNot DBNull.Value AndAlso dgridDetallePicking.Rows(i).Cells("Producto").Value IsNot Nothing Then
                     If dgridDetallePicking.Rows(i).Cells("ClienteDias").Value Is DBNull.Value OrElse dgridDetallePicking.Rows(i).Cells("ClienteDias").Value Is Nothing Then
-                        XtraTabControl1.SelectedTabPage = XtratabPagePedido
+                        xtpDatosPicking.SelectedTabPage = XtratabPagePedido
                         'Throw New Exception(String.Format("Ingrese días Cliente en fila {0}", i + 1))
 
                         XtraMessageBox.Show(String.Format("Ingrese días Cliente en fila {0}", i + 1),
@@ -1128,8 +1249,16 @@ Public Class frmPicking
             Next
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1165,8 +1294,17 @@ Public Class frmPicking
             'clsLnTrans_picking_det_parametros.Guardar(lParametros)
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -1199,8 +1337,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -1218,9 +1364,15 @@ Public Class frmPicking
 
                 txtIdUbicacion.Text = BePickingEnc.IdUbicacionPicking
                 txtNombreUbicacion.Text = BePickingEnc.NombreUbicacionPicking
+                Dim BeBodegaUbicacion = clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega(BePickingEnc.IdUbicacionPicking, BePickingEnc.IdBodega)
+                If BeBodegaUbicacion IsNot Nothing Then
+                    Dim BeBodegaArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(BeBodegaUbicacion.IdArea, BeBodegaUbicacion.IdBodega)
+                    If BeBodegaArea IsNot Nothing Then
+                        txtArea.Text = BeBodegaArea.Descripcion
+                    End If
+                End If
 
                 dtmFechaPicking.EditValue = BePickingEnc.Fecha_picking
-
                 dtmHoraIhh.Value = BePickingEnc.Hora_ini
                 dtmHoraFhh.Value = BePickingEnc.Hora_fin
                 lblEstado.Text = BePickingEnc.Estado
@@ -1261,11 +1413,22 @@ Public Class frmPicking
                         rbAlto.Checked = True
                 End Select
 
+                txtObservacion.Text = BePickingEnc.Observacion
+
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -1313,8 +1476,16 @@ Public Class frmPicking
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1645,6 +1816,10 @@ Public Class frmPicking
 
                 Mostrar_Pedidos_Asociados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
+                Cargar_Pedidos_Impresion(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                Lista_Productos_Dañados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
                 If BePickingEnc.ListaPickingDet IsNot Nothing AndAlso BePickingEnc.ListaPickingDet.Count > 0 Then
 
                     dgridPedidos.Rows.Clear()
@@ -1787,6 +1962,7 @@ Public Class frmPicking
                         End If
 
                         'det.ListaDetalleUbicacion = ObjlU
+
                     Next
 
                 End If
@@ -1799,15 +1975,6 @@ Public Class frmPicking
                     End If
                 End If
 
-                clsTransaccion.Commit_Transaction()
-
-                Dim BeConfiguracionUsuarioDet As New clsBeConfiguracion_usuario_det
-
-                BeConfiguracionUsuarioDet = clsLnConfiguracion_usuario_enc.Get_Layout(AP.IdEmpresa,
-                                                                                      AP.UsuarioAp.IdUsuario,
-                                                                                      AP.HostName,
-                                                                                      vNombreArchivoLayOutGrid)
-
                 '#GT01122025: Estoy infiriendo que mampa no trabaja picking consolidados.
                 Dim tmpPedido = lPedidosPicking(0)
                 Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(tmpPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -1819,6 +1986,15 @@ Public Class frmPicking
                         BloquearControles_Por_VerificacionBOF(True)
                     End If
                 End If
+
+                clsTransaccion.Commit_Transaction()
+
+                Dim BeConfiguracionUsuarioDet As New clsBeConfiguracion_usuario_det
+
+                BeConfiguracionUsuarioDet = clsLnConfiguracion_usuario_enc.Get_Layout(AP.IdEmpresa,
+                                                                                      AP.UsuarioAp.IdUsuario,
+                                                                                      AP.HostName,
+                                                                                      vNombreArchivoLayOutGrid)
 
                 If Not BeConfiguracionUsuarioDet Is Nothing Then
                     grdvPickingUbic.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
@@ -1860,8 +2036,16 @@ Public Class frmPicking
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -1872,6 +2056,7 @@ Public Class frmPicking
         mnuGuardar.Enabled = False
         mnuActualizar.Enabled = False
         mnuEliminar.Enabled = False
+        lnkQuitarPedido.Enabled = False
         cmdImprimir.Enabled = False
         mnuProcesar.Enabled = False
         mnuProcesarLinea.Enabled = False
@@ -1934,8 +2119,16 @@ Public Class frmPicking
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -1972,7 +2165,13 @@ Public Class frmPicking
                                                          vLiberarStock) Then
 
                     Dim vMsgError As String = "El usuario" & AP.UsuarioAp.IdUsuario & " anuló el picking " & BePickingEnc.IdPickingEnc
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                          pIdEmpresa:=AP.IdEmpresa,
+                                                          pIdBodega:=AP.IdBodega,
+                                                          pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                          pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                          pIdPickingEnc:=BePickingEnc.IdPickingEnc)
 
                     SplashScreenManager.CloseForm(False)
                     XtraMessageBox.Show("Tarea de picking anulada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2109,6 +2308,10 @@ Public Class frmPicking
 
                 If BeBodegaUbicacion IsNot Nothing AndAlso BeBodegaUbicacion.IdUbicacion > 0 Then
                     txtNombreUbicacion.Text = BeBodegaUbicacion.Descripcion
+                    Dim BeBodegaArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(BeBodegaUbicacion.IdArea, BeBodega.IdBodega)
+                    If BeBodegaArea IsNot Nothing Then
+                        txtArea.Text = BeBodegaArea.Descripcion
+                    End If
                 Else
                     XtraMessageBox.Show(String.Format("No existe Ubicación de Picking con código {0}", txtIdUbicacion.Text.Trim(), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation))
                     txtIdUbicacion.Focus()
@@ -2125,8 +2328,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -2509,8 +2720,17 @@ Public Class frmPicking
             'grdListaPickingD.ResumeLayout()            
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -2723,8 +2943,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -2745,8 +2973,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
     End Sub
@@ -2756,14 +2992,22 @@ Public Class frmPicking
 
         Try
 
-            If BePickingEnc.Estado = "Verificado" Or BePickingEnc.Estado = "Procesado" Or BePickingEnc.Estado = "Despachado" Then
+            Dim vEstado As String = clsLnTrans_picking_enc.Get_Estado_By_IdPickingEnc(BePickingEnc.IdPickingEnc)
+
+            If Not vEstado = "Despachado" Then
 
                 If XtraMessageBox.Show("¿Está seguro de modificar el picking a estado pendiente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
                     BePickingEnc.Estado = "Pendiente"
 
                     Dim vMsgError As String = "El usuario" & AP.UsuarioAp.IdUsuario & " cambió el picking " & BePickingEnc.IdPickingEnc & " a estado " & BePickingEnc.Estado
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                          pIdEmpresa:=AP.IdEmpresa,
+                                                          pIdBodega:=AP.IdBodega,
+                                                          pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                          pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                          pIdPickingEnc:=BePickingEnc.IdPickingEnc)
 
                     If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
 
@@ -2794,7 +3038,7 @@ Public Class frmPicking
 
             Else
 
-                XtraMessageBox.Show("El picking no se puede cambiar a estado pendiente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                XtraMessageBox.Show("El picking fue despachado, no se puede cambiar a estado pendiente.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
             End If
 
@@ -2805,8 +3049,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -2909,8 +3161,17 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
         End Try
 
     End Sub
@@ -2942,8 +3203,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -2984,8 +3253,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3038,7 +3315,14 @@ Public Class frmPicking
             SplashScreenManager.CloseForm(False)
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
         End Try
 
         Try
@@ -3075,6 +3359,7 @@ Public Class frmPicking
                     mnuGuardar.Enabled = True
                     mnuActualizar.Enabled = False
                     mnuEliminar.Enabled = False
+                    lnkQuitarPedido.Enabled = False
                     cmdImprimir.Enabled = False
                     mnuProcesar.Enabled = False
                     mnuProcesarLinea.Enabled = False
@@ -3123,8 +3408,6 @@ Public Class frmPicking
                             End If
                         End If
 
-                        Lista_Productos_Dañados()
-
                     End If
 
             End Select
@@ -3150,7 +3433,7 @@ Public Class frmPicking
 
             Focus()
 
-            XtraTabControl1.SelectedTabPage = XtratabPageDato
+            xtpDatosPicking.SelectedTabPage = XtratabPageDato
 
             txtIdUbicacion.Focus()
 
@@ -3160,7 +3443,7 @@ Public Class frmPicking
             AddHandler grdvPickingUbic.RowCellStyle, AddressOf grdPickingUbic_RowCellStyle
 
             If Llamado_Desde_Pedido Then
-                XtraTabControl1.SelectedTabPage = XtraTabPageUbicacionPicking
+                xtpDatosPicking.SelectedTabPage = XtraTabPageUbicacionPicking
             End If
 
             Set_Formato_Grid_Picking_Ubic()
@@ -3177,38 +3460,115 @@ Public Class frmPicking
 
     End Sub
 
+    '#CKFK20250705 Puse en comentario la funcionalidad anterior, ya que el packing actualmente se hace por pedido
+    'y no por picking
+#Region "Funcionalidad anterior para cambiar estado al packing"
+    'Private Sub mnuPendientePacking_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuPendientePacking.ItemClick
+
+    '    Try
+
+    '        If pListaPedidos.Count = 1 Then
+
+    '            If BePickingEnc.Estado_Preparacion = "Finalizado" Then
+
+    '                If XtraMessageBox.Show("¿Está seguro de modificar el packing a estado pendiente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
+    '                    If clsLnTrans_picking_enc.Set_Estado_Pendiente_Packing(BePickingEnc.IdPickingEnc) > 0 Then
+
+    '                        Cargar_Datos()
+
+    '                        XtraMessageBox.Show("Se actualizó el packing a estado pendiente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+    '                    End If
+
+    '                End If
+
+    '            Else
+    '                XtraMessageBox.Show("El packing no se puede cambiar a estado pendiente, el estado actual es: " & BePickingEnc.Estado_Preparacion, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+    '            End If
+
+    '        Else
+
+    '        End If
+
+    '    Catch ex As Exception
+
+    '        XtraMessageBox.Show(ex.Message,
+    '        Text,
+    '        MessageBoxButtons.OK,
+    '        MessageBoxIcon.Error)
+
+    '        Dim vMsgError As String = ex.Message
+    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+    '    End Try
+
+    'End Sub
+#End Region
+
+    Private ReleaseRowPacking As Integer = -1
     Private Sub mnuPendientePacking_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuPendientePacking.ItemClick
+        mnuPendientePacking.Enabled = False
 
         Try
-
-            If BePickingEnc.Estado_Preparacion = "Finalizado" Then
-
-                If XtraMessageBox.Show("¿Está seguro de modificar el packing a estado pendiente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-
-                    If clsLnTrans_picking_enc.Set_Estado_Pendiente_Packing(BePickingEnc.IdPickingEnc) > 0 Then
-
-                        Cargar_Datos()
-
-                        XtraMessageBox.Show("Se actualizó el packing a estado pendiente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-                    End If
-
-                End If
-
-            Else
-                XtraMessageBox.Show("El packing no se puede cambiar a estado pendiente, el estado actual es: " & BePickingEnc.Estado_Preparacion, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            ' Validación de fila seleccionada
+            If ReleaseRowPacking <= -1 Then
+                XtraMessageBox.Show("Seleccione el pedido que va a poner en estado pendiente de packing", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Exit Sub
             End If
 
+            ' Cargar valores del grid
+            Get_ValoresGrid(ReleaseRowPacking)
+
+            ' Validación de ID de pedido
+            If Val(pIdPedidoEnc.Value) <= 0 Then Exit Sub
+
+            ' Iniciar transacción
+            Dim clsTrans As New clsTransaccion
+            clsTrans.Begin_Transaction()
+
+            Try
+
+                'Validar si el pedido TienePacking
+                If Not clsLnTrans_pe_enc.Tiene_Packing(pIdPedidoEnc.Value, clsTrans.lConnection, clsTrans.lTransaction) Then
+                    XtraMessageBox.Show("El pedido no tiene packing activo.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Exit Sub
+                End If
+
+                ' Validar si el packing no está despachado
+                If clsLnTrans_pe_enc.Packing_Finalizado(pIdPedidoEnc.Value,
+                                                        clsTrans.lConnection,
+                                                        clsTrans.lTransaction) Then
+                    XtraMessageBox.Show("El pedido ya fue despachado, no se puede activar el packing.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Exit Sub
+                End If
+
+                ' Intentar eliminar el pedido del picking
+                Dim actualizado As Boolean = clsLnTrans_packing_enc.Actualizar_Estado_Packing(pIdPedidoEnc.Value,
+                                                                                              False,
+                                                                                              AP.UsuarioAp.IdUsuario,
+                                                                                              clsTrans.lConnection,
+                                                                                              clsTrans.lTransaction)
+
+                If actualizado Then
+
+                    XtraMessageBox.Show("El packing fue actualizado a estado pendiente.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                Else
+                    Throw New ApplicationException("No se pudo actualizar el estado del packing.")
+                End If
+
+            Catch exTrans As Exception
+                clsTrans.RollBack_Transaction()
+                Throw ' Propaga al bloque exterior
+            End Try
+
         Catch ex As Exception
+            XtraMessageBox.Show("Error al intentar cambiar el estado al packing del pedido: " & ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
-            XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
+        Finally
+            mnuPendientePacking.Enabled = True
+            ReleaseRowPacking = -1
         End Try
 
     End Sub
@@ -3227,8 +3587,16 @@ Public Class frmPicking
 
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -3260,8 +3628,17 @@ Public Class frmPicking
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
         Finally
             tmrActualizarDatosPicking.Enabled = True
         End Try
@@ -3295,8 +3672,16 @@ Public Class frmPicking
                               MessageBoxButtons.OK,
                               MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3310,23 +3695,69 @@ Public Class frmPicking
 
         Try
 
+            '#GT02102025: se añade el etado Pendiente
             If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" Then
+
 
                 If XtraMessageBox.Show("¿Modificar picking a estado despachado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
-                    BePickingEnc.Estado = "Despachado"
+
+
+                    '#GT02102025: validación especial para PENDIENTE,, requiere confirmar que no tenga reserva el pedido y por lo tanto que no sea pedido consolidado
+                    If BePickingEnc.Estado = "Pendiente" Then
+
+                        Dim listaPickingDet = BePickingEnc.ListaPickingDet
+                        'Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                        '                                    .GroupBy(Function(x) x.IdPedidoEnc) _
+                        '                                    .Any(Function(g) g.Count() > 1)
+
+                        Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                                                               .Select(Function(x) x.IdPedidoEnc) _
+                                                               .Distinct() _
+                                                               .Count() > 1
+
+
+                        If Not EsPickingConsolidado Then
+
+                            Dim IdPedidoEnc As Integer? = listaPickingDet _
+                                                            .Select(Function(x) x.IdPedidoEnc) _
+                                                            .Distinct() _
+                                                            .SingleOrDefault()
+
+                            Dim stockres As Integer = clsLnTrans_pe_enc.Get_StockRes_By_IdPedido(IdPedidoEnc)
+
+                            If stockres > 0 Then
+                                XtraMessageBox.Show("No se puede cambiar a estado despachado, hay reserva asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Exit Sub
+                            End If
+
+                        Else
+                            XtraMessageBox.Show("No se puede cambiar a estado despachado, el picking pertenece a un pedido consolidado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            Exit Sub
+                        End If
+                    End If
 
                     If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
 
-                        Cargar_Datos()
+                        BePickingEnc.Estado = "Despachado"
 
-                        If Not InvokeListarPicking Is Nothing Then
-                            InvokeListarPicking.Invoke()
+                        If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
+
+                            Cargar_Datos()
+
+                            If Not InvokeListarPicking Is Nothing Then
+                                InvokeListarPicking.Invoke()
+                            End If
+
+                            Close()
+
                         End If
 
-                        Close()
-
                     End If
+
+                Else
+
+                    XtraMessageBox.Show("No se puede cambiar a estado despachado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
                 End If
 
@@ -3343,8 +3774,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3352,19 +3791,33 @@ Public Class frmPicking
 
     Private Sub Process_Linea_Picking()
 
-        Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
-        Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
-        Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
-        Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
-        Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
-        Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
-        Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
-        Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
-        Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
-        Dim pListBeStockRes As New List(Of clsBeStock_res)
-        Dim vContinuar As Boolean = True
-
         Try
+
+            ' Verificar que exista una fila enfocada
+            If grdvPickingUbic Is Nothing OrElse grdvPickingUbic.FocusedRowHandle < 0 Then
+                MessageBox.Show("No hay ninguna fila seleccionada.")
+                Exit Sub
+            End If
+
+            ' Obtener la fila
+            Dim Dr As DataRowView = TryCast(grdvPickingUbic.GetFocusedRow(), DataRowView)
+
+            ' Validar que no sea Nothing
+            If Dr Is Nothing Then
+                MessageBox.Show("La fila seleccionada no es válida.")
+                Exit Sub
+            End If
+
+            Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
+            Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
+            Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
+            Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
+            Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
+            Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
+            Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
+            Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
+            Dim pListBeStockRes As New List(Of clsBeStock_res)
+            Dim vContinuar As Boolean = True
 
             If clsLnTrans_pe_enc.Tiene_Manufactura_Asociada_Sin_Finalizar(vPedido) Then
                 XtraMessageBox.Show("Esta línea pertenece a un pedido con proceso de manufactura sin finalizar, no se puede procesar",
@@ -3413,6 +3866,10 @@ Public Class frmPicking
                                                     MessageBoxButtons.OK,
                                                     MessageBoxIcon.Information)
 
+                                'Set_Stock_Res(pListBeStockRes(0).IdPedido)
+
+                                'Set_Formato_Grid_Picking_Ubic()
+
                                 Cargar_Datos()
 
                             Else
@@ -3437,8 +3894,16 @@ Public Class frmPicking
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -3528,8 +3993,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3588,8 +4061,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3626,6 +4107,15 @@ Public Class frmPicking
 
                     clsTrans.Begin_Transaction()
 
+                    If clsLnTrans_packing_enc.Tiene_Packing_By_IdPicking(lblC.Text, clsTrans.lConnection, clsTrans.lTransaction) Then
+                        If XtraMessageBox.Show("El picking tiene pedidos con packing asociados, ¿continuar con el proceso?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            If XtraMessageBox.Show("Tendremos que eliminar los packing asociados, ¿continuar con el proceso?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                                Return
+                            End If
+                        End If
+
+                    End If
+
                     Dim ListaIdPedidoEncUnicos As New List(Of Integer)
 
                     For Each PickingUbic In pListBePickingUbic
@@ -3641,6 +4131,8 @@ Public Class frmPicking
                     For Each vIdPedidoEnc In ListaIdPedidoEncUnicos
                         clsLnTrans_pe_enc.Actualizar_Estado_Pendiente(vIdPedidoEnc, AP.UsuarioAp.IdUsuario, clsTrans.lConnection, clsTrans.lTransaction)
                     Next
+
+                    clsLnTrans_packing_enc.Eliminar_All_By_IdPIckingEnc(lblC.Text, clsTrans.lConnection, clsTrans.lTransaction)
 
                     clsTrans.Commit_Transaction()
 
@@ -3693,8 +4185,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
     End Sub
@@ -3773,8 +4273,16 @@ Public Class frmPicking
                     End If
 
                 Catch ex As Exception
+                    '#MECR23102025: Se agrego bitacora para logs de picking
                     Dim vMsgError As String = ex.Message
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                          pIdEmpresa:=AP.IdEmpresa,
+                                                          pIdBodega:=AP.IdBodega,
+                                                          pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                          pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                          pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                          pStackTrace:=ex.StackTrace)
                 End Try
 
             Next
@@ -3792,8 +4300,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3895,8 +4411,16 @@ Public Class frmPicking
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3919,6 +4443,8 @@ Public Class frmPicking
                     chkverifica_auto.Checked = bo.pBePedidoEnc.TipoPedido.Verificar
                     chkFotografiaVerificacion.Checked = bo.pBePedidoEnc.TipoPedido.Fotografia_Verificacion
                     chkEmpaquePorTarima.Checked = bo.pBePedidoEnc.TipoPedido.Empaque_Tarima
+
+                    'bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
 
                     If bo.pBePedidoEnc.Detalle IsNot Nothing AndAlso bo.pBePedidoEnc.Detalle.Count > 0 Then
 
@@ -3946,7 +4472,7 @@ Public Class frmPicking
                         For Each BeTransPeDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle
                             Application.DoEvents()
 
-                            XtraTabControl1.SelectedTabPage = XtratabPagePedido
+                            xtpDatosPicking.SelectedTabPage = XtratabPagePedido
 
                             BeTransPeDet.ListaStockRes = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoDet(BeTransPeDet.IdPedidoDet, BeTransPeDet.IdPedidoEnc)
                             SetProducto(BeTransPeDet, bo.pBePedidoEnc)
@@ -3971,13 +4497,21 @@ Public Class frmPicking
 
             SplashScreenManager.CloseForm(False)
             Cursor = Cursors.Default
-            XtraTabControl1.SelectedTabPage = XtratabPagePedido
+            xtpDatosPicking.SelectedTabPage = XtratabPagePedido
         Catch ex As Exception
             Cursor = Cursors.Default
             SplashScreenManager.CloseForm(False)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
             XtraMessageBox.Show(ex.Message,
             Text,
@@ -4090,8 +4624,16 @@ Public Class frmPicking
 
         Catch ex As Exception
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
             XtraMessageBox.Show(ex.Message,
             Text,
@@ -4310,8 +4852,16 @@ Public Class frmPicking
 
         Catch ex As Exception
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
             XtraMessageBox.Show(ex.Message,
             Text,
@@ -4363,8 +4913,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4396,8 +4954,16 @@ Public Class frmPicking
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4433,8 +4999,16 @@ Public Class frmPicking
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error)
 
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4661,8 +5235,17 @@ Public Class frmPicking
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -4677,8 +5260,9 @@ Public Class frmPicking
             Dim IdPickingGen As Integer = 0
 
             For Each Ped In pListaPedidos
-
-                If clsLnTrans_pe_tipo.Get_Single_By_IdPedidoEnc(Ped)?.Escanear_Muelle_Picking Then
+                '#AT20250710 Cambie de escanear_muelle_picking a Mover_Producto_Zona_Muelle
+                'Porque escanear_muelle_picking se utiliza para saber si se debe o no escanear el muelle en la HH
+                If clsLnTrans_pe_tipo.Get_Single_By_IdPedidoEnc(Ped)?.Mover_Producto_Zona_Muelle Then
                     Return True
                 End If
 
@@ -4691,6 +5275,427 @@ Public Class frmPicking
 
     End Function
 
+    Private Sub cmdListaPedidos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdListaPedidos.ItemClick
+
+        Try
+
+            Imprimir_Vista_Pedidos()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Private Sub Cargar_Pedidos_Impresion(ByVal lConnection As SqlConnection,
+                                         ByVal lTransaction As SqlTransaction)
+
+        Dim dt As DataTable
+
+        Try
+
+            dt = clsLnTrans_pe_enc.Get_Pedidos_By_IdPickinEnc(BePickingEnc.IdPickingEnc, lConnection, lTransaction)
+
+            grdImpresionPedidos.DataSource = Nothing
+
+            If dt.Rows.Count > 0 Then
+
+                grdImpresionPedidos.DataSource = dt
+
+            End If
+
+            If grdViewImpresionPedidos.Columns.Count > 0 Then
+                grdViewImpresionPedidos.BestFitColumns(True)
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            Dim vMsgError As String = ex.Message
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
+        End Try
+
+    End Sub
+
+    Private Sub Imprimir_Vista_Pedidos()
+
+        Try
+
+            Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
+            Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
+
+            AddHandler printLink.CreateReportHeaderArea, AddressOf PrintableComponentLink_CreateReportHeaderArea_Pedidos
+
+            Const leftColumnFoot As String = "Páginas: [Page # of Pages #] "
+            Dim leftColumnHead As String = "Usuario: [User Name] - " & AP.UsuarioAp.Nombres
+
+            Const rightColumn As String = "Fecha: [Date Printed] [Time Printed] "
+
+            Dim phf As PageHeaderFooter = TryCast(printLink.PageHeaderFooter, PageHeaderFooter)
+
+            phf.Header.Content.Clear()
+
+            phf.Footer.Content.AddRange(New String() _
+            {leftColumnFoot})
+            phf.Footer.LineAlignment = BrickAlignment.Near
+
+            phf.Header.Content.AddRange(New String() {leftColumnHead, "", rightColumn})
+            phf.Header.LineAlignment = BrickAlignment.Far
+
+            printingSystem1.PageSettings.Landscape = True
+            printLink.Component = grdImpresionPedidos
+            printLink.Landscape = True
+            printLink.CreateDocument(printingSystem1)
+            printingSystem1.PreviewFormEx.ShowDialog()
+            printingSystem1.Dispose()
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            Dim vMsgError As String = ex.Message
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
+        End Try
+
+    End Sub
+
+    Private Sub PrintableComponentLink_CreateReportHeaderArea_Pedidos(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
+
+        Dim reportHeader As String = vbNewLine & "Listado de Pedidos " &
+                                     vbNewLine & "Picking WMS#: " & BePickingEnc.IdPickingEnc &
+                                     vbNewLine & "Observación: " & IIf(BePickingEnc.Observacion <> "", BePickingEnc.Observacion & " ", "")
+
+        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Center)
+        e.Graph.Font = New Font("Tahoma", 12, FontStyle.Bold)
+
+        Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 100)
+        e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
+    End Sub
+
+    Private ReleaseRowPedido As Integer = -1
+    Private Sub lnkQuitarPedido_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles lnkQuitarPedido.ItemClick
+        lnkQuitarPedido.Enabled = False
+
+        Try
+            ' Validación de fila seleccionada
+            If ReleaseRowPedido <= -1 Then
+                XtraMessageBox.Show("Seleccione el pedido que quiere eliminar del picking", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Exit Sub
+            End If
+
+            ' Cargar valores del grid
+            Get_ValoresGrid(ReleaseRowPedido)
+
+            ' Validación de ID de pedido
+            If Val(pIdPedidoEnc.Value) <= 0 Then Exit Sub
+
+            ' Iniciar transacción
+            Dim clsTrans As New clsTransaccion
+            clsTrans.Begin_Transaction()
+
+            Try
+                ' Validar si hay productos pickeados
+                Dim tienePickeados As Boolean = clsLnTrans_pe_enc.Tiene_Productos_Pickeados(pIdPedidoEnc.Value,
+                                                                                         BePickingEnc.IdPickingEnc,
+                                                                                         clsTrans.lConnection,
+                                                                                         clsTrans.lTransaction)
+
+                If tienePickeados Then
+                    XtraMessageBox.Show("El pedido tiene productos pickeados, no se puede eliminar del picking.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    clsTrans.RollBack_Transaction()
+                    Exit Sub
+                End If
+
+                ' Intentar eliminar el pedido del picking
+                Dim eliminado As Boolean = clsLnTrans_pe_enc.Eliminar_Pedido_Picking(pIdPedidoEnc.Value,
+                                                                                     BePickingEnc.IdPickingEnc,
+                                                                                     clsTrans.lConnection,
+                                                                                     clsTrans.lTransaction,
+                                                                                     AP.UsuarioAp.IdUsuario)
+
+                If eliminado Then
+
+                    BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePickingEnc.IdPickingEnc, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    Mostrar_Pedidos_Asociados(clsTrans.lConnection, clsTrans.lTransaction)
+
+                    clsTrans.Commit_Transaction()
+
+                    XtraMessageBox.Show("El pedido fue eliminado correctamente.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                Else
+                    Throw New ApplicationException("No se pudo eliminar el pedido del picking.")
+                End If
+
+            Catch exTrans As Exception
+                clsTrans.RollBack_Transaction()
+                Throw ' Propaga al bloque exterior
+            End Try
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al intentar eliminar el pedido: " & ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+        Finally
+            lnkQuitarPedido.Enabled = True
+            ReleaseRowPedido = -1
+        End Try
+
+    End Sub
+
+
+    Private Sub dgridPedidos_MouseClick(sender As Object, e As MouseEventArgs) Handles dgridPedidos.MouseClick
+
+        Try
+
+            If Not dgridPedidos.CurrentCell Is Nothing Then
+                ReleaseRowPedido = dgridPedidos.CurrentCell.RowIndex
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+           Text,
+           MessageBoxButtons.OK,
+           MessageBoxIcon.Error)
+
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            Dim vMsgError As String = ex.Message
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
+        End Try
+
+    End Sub
+
+    Private Sub Get_ValoresGrid(ByVal IndiceFila As Integer)
+
+        If IsGettingValoresGrid Then Exit Sub
+
+        IsGettingValoresGrid = True
+
+        Try
+
+            dgridPedidos.EndEdit()
+
+            Dim row As DataGridViewRow = dgridPedidos.Rows(IndiceFila)
+            pIdPedidoEnc = row.Cells(dgridPedidos.Columns("IdPedido").Index)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Finally
+            IsGettingValoresGrid = False
+        End Try
+
+    End Sub
+
+
+    Private Sub mnuReemplazo_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuReemplazo.ItemClick
+
+        Try
+
+            Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
+            Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
+            Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
+            Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
+            Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
+            Dim vCantidadSolPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
+            Dim vCantidadSolUmBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Umbas")), 0, Dr.Item("Cant_Ped_Umbas"))
+            Dim vCantidadPickPres As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Pres")), 0, Dr.Item("Cant_Pick_Pres"))
+            Dim vCantidadPickUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Umbas")), 0, Dr.Item("Cant_Pick_Umbas"))
+            Dim vCantidadVeriPres As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Pres")), 0, Dr.Item("Cant_Veri_Pres"))
+            Dim vCantidadVeriUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Umbas")), 0, Dr.Item("Cant_Veri_Umbas"))
+            Dim vCantidadFaltantePickingPres As Double = vCantidadSolPres - vCantidadPickPres
+            Dim vCantdidadFaltantePickingUmbas As Double = vCantidadSolUmBas - vCantidadPickUmbas
+
+            If Dr Is Nothing Then Return
+
+            Dim vContinuar As Boolean = True
+
+            Dim vMensaje As String = "¿Marcar línea de picking para reemplazo: " & vCodigoProducto & " - " & vNombreProducto & "?"
+
+            If XtraMessageBox.Show(vMensaje, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
+                If Not IdStockRes = 0 Then
+
+                    Existen_Diferencias_Memoria_vs_BD(vContinuar)
+
+                    If Not vContinuar Then Return
+
+                    Dim BePickingUbic As New clsBeTrans_picking_ubic
+                    BePickingUbic = pListBePickingUbic.Where(Function(x) x.IdStockRes = IdStockRes).First()
+
+                    Dim result As Tuple(Of Integer, Integer) = clsLnTrans_pe_enc.Get_IdCliente_And_IdPedidoEnc_By_IdPickingUbic(BePickingUbic.IdPickingUbic, BePickingUbic.IdPickingEnc)
+                    Dim idCliente As Integer = result.Item1
+                    Dim idPedidoEnc As Integer = result.Item2
+                    Dim BeTipoPedido As clsBeTrans_pe_tipo = clsLnTrans_pe_enc.Get_TipoPedido_By_IdPickingEnc(BePickingUbic.IdPickingEnc.ToString)
+
+                    Dim frmCant As New frmCantidadreemplazo
+                    frmCant.IdCliente = idCliente
+                    frmCant.BeTipoPedido = BeTipoPedido
+                    frmCant.IdBodega = BePickingUbic.IdBodega
+                    frmCant.Codigo_Producto = vCodigoProducto
+
+                    frmCant.Cantidad_Total = frmCant.Cantidad_Reemplazo
+                    frmCant.IdPresentacion = BePickingUbic.IdPresentacion
+                    frmCant.txtIdProducto.Text = vCodigoProducto
+                    frmCant.txtNombreProducto.Text = vNombreProducto
+                    frmCant.BePickingUbic = BePickingUbic
+                    frmCant.lblIdStock.Text = "IdStock: " & BePickingUbic.IdStock
+                    frmCant.txtCantidadSolicitada.Value = BePickingUbic.Cantidad_Solicitada
+
+                    If (vCantidadVeriPres > 0) OrElse (vCantidadSolUmBas = vCantidadPickUmbas) Then
+                        frmCant.Modo_Reemplazo = frmCantidadreemplazo.eModoReemplazo.verificacion
+                        frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                        frmCant.txtCantidadReemplazo.Value = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                        frmCant.Cantidad_Reemplazo = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                    Else
+                        frmCant.Modo_Reemplazo = frmCantidadreemplazo.eModoReemplazo.picking
+                        frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                        frmCant.txtCantidadReemplazo.Value = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                        frmCant.Cantidad_Reemplazo = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                    End If
+
+                    If frmCant.ShowDialog() = DialogResult.OK Then
+
+                        Cargar_Datos()
+
+                        XtraMessageBox.Show("Se reemplazó la línea de picking.",
+                                            Text,
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information)
+
+                    End If
+
+                End If
+
+            End If
+
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            Dim vMsgError As String = ex.Message
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+
+        End Try
+
+    End Sub
+
+    Private Sub dgridPickingUbic_Click(sender As Object, e As EventArgs) Handles dgridPickingUbic.Click
+
+        Try
+            Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
+
+            If Dr IsNot Nothing Then
+
+                Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
+                Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
+                Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
+                Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
+                Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
+                Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
+                Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
+                Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
+                Dim pListBeStockRes As New List(Of clsBeStock_res)
+                Dim vContinuar As Boolean = True
+                Dim vCantidadPickPres As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Pres")), 0, Dr.Item("Cant_Pick_Pres"))
+                Dim vCantidadPickUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Umbas")), 0, Dr.Item("Cant_Pick_Umbas"))
+                Dim vCantidadVeriPres As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Pres")), 0, Dr.Item("Cant_Veri_Pres"))
+                Dim vCantidadVeriUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Umbas")), 0, Dr.Item("Cant_Veri_Umbas"))
+
+                Existen_Diferencias_Memoria_vs_BD(vContinuar)
+
+                If Not vContinuar Then Return
+
+                If Not IdStockRes = 0 Then
+
+                    pListBeStockRes = clsLnStock_res.Get_Single_By_IdStockRes(IdStockRes)
+
+                    If Not pListBeStockRes Is Nothing Then
+
+                        If pListBeStockRes.Count > 0 Then
+
+                            Dim BePickingUbic As New clsBeTrans_picking_ubic
+                            BePickingUbic = clsLnTrans_picking_ubic.Get_Single_By_IdStockRes_And_IdPickingEnc(IdStockRes,
+                                                                                                                  BePickingEnc.IdPickingEnc,
+                                                                                                                  BePickingEnc.IdBodega)
+
+                            If Not BePickingUbic Is Nothing Then
+
+                                Dim vlPickingUbicByIdStockRes As New List(Of clsBeTrans_picking_ubic) From {
+                                    BePickingUbic}
+
+                                If vCantidadPickPres = 0 OrElse vCantidadPickUmbas = 0 Then
+                                    mnuReemplazo.Caption = "Reemplazo picking"
+                                Else
+                                    mnuReemplazo.Caption = "Reemplazo verificación"
+                                End If
+
+
+                            End If
+
+                        End If
+
+                    End If
+
+                End If
+            End If
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
+
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            Dim vMsgError As String = ex.Message
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+        End Try
+    End Sub
     Private Sub Nuevo_Despacho(BePedidoEnc As clsBeTrans_pe_enc)
 
         Try
@@ -4716,7 +5721,6 @@ Public Class frmPicking
         End Try
 
     End Sub
-
     Public Sub Cierra_Instancia_Previa(ByRef Myform As Form)
 
         Try
@@ -4757,5 +5761,4 @@ Public Class frmPicking
         'chkverifica_auto.Checked = False
         chkverifica_auto.Enabled = estado
     End Sub
-
 End Class

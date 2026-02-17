@@ -1,8 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-
 Partial Public Class clsLnTrans_picking_op
-
 
     Public Shared Function MaxID(ByVal pConnection As SqlConnection, ByVal pTransaction As SqlTransaction) As Integer
 
@@ -31,7 +29,6 @@ Partial Public Class clsLnTrans_picking_op
         End Try
 
     End Function
-
 
     Public Shared Function Get_All_By_IdPickingEnc(ByVal pIdPicking As Integer) As List(Of clsBeTrans_picking_op)
 
@@ -198,9 +195,11 @@ Partial Public Class clsLnTrans_picking_op
             Next
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingEnc:=IdPickingEnc, pStackTrace:=ex.StackTrace)
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
     End Sub

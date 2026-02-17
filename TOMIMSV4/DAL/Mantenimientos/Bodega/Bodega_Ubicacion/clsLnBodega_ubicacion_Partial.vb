@@ -311,16 +311,18 @@ Partial Public Class clsLnBodega_ubicacion
                     If pIdBodega <> 0 Then
 
                         vSQL = "SELECT DISTINCT u.IdUbicacion, 
-                                       dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion  
+                                       dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion, ba.Descripcion as Area  
                                 FROM bodega_ubicacion AS u 
+                                     LEFT JOIN bodega_area ba on u.IdArea=ba.IdArea
                                 WHERE u.IdBodega=@IdBodega AND u." & nombreCampo & " = 1 "
 
                     Else
 
-                        vSQL = String.Format("SELECT DISTINCT u.IdUbicacion, 
-                                                     dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion  
-                                              FROM bodega_ubicacion AS u  
-                                              WHERE u." & nombreCampo & " = 1 ", pIdBodega)
+                        vSQL = String.Format(
+                            "SELECT DISTINCT u.IdUbicacion, dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Descripcion " &
+                            "FROM bodega_ubicacion AS u  " &
+                            "WHERE u." & nombreCampo & " = 1")
+
 
                     End If
 
@@ -1983,7 +1985,8 @@ Partial Public Class clsLnBodega_ubicacion
                         vSQL = "SELECT u.*, dbo.Nombre_Completo_Ubicacion_Barra (@IdUbicacion,@IdBodega) AS NOMBRE_COMPLETO
                                         FROM bodega_ubicacion u inner join bodega_tramo t on u.idtramo = t.idtramo and t.IdBodega = u.IdBodega
                                         WHERE (u.IdUbicacion=@IdUbicacion And u.idbodega = @IdBodega) And u.activo = 1 
-                                        And u.bloqueada = 0  "
+                                        And ( u.bloqueada = 0 
+								        OR (u.sistema = 1 AND bloqueada = 1)) "
                     Else
 
                         vSQL = "SELECT u.*, dbo.Nombre_Completo_Ubicacion_Barra(@IdUbicacion,@IdBodega) AS NOMBRE_COMPLETO
@@ -1995,7 +1998,8 @@ Partial Public Class clsLnBodega_ubicacion
                                         WHERE (u.codigo_barra=@codigo_barra OR u.codigo_barra2=@codigo_barra2) 
                                         And u.idbodega = @IdBodega 
                                         And u.activo = 1 
-                                        And u.bloqueada = 0  "
+                                        And ( u.bloqueada = 0 
+								        OR (u.sistema = 1 AND bloqueada = 1))  "
 
                     End If
 
@@ -3249,7 +3253,7 @@ Partial Public Class clsLnBodega_ubicacion
 
         Try
 
-            Dim vSQL As String = "SELECT IdBodega, Ubicacion
+            Dim vSQL As String = "SELECT IdBodega, Ubicacion, Area
                                   FROM VW_OcupacionBodega
                                   WHERE IDSTOCK =0
                                   AND (IdBodega = @IdBodega)"
@@ -3640,6 +3644,305 @@ Partial Public Class clsLnBodega_ubicacion
                 End If
 
             End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Ubicaciones(ByVal pIdBodega As Integer,
+                                           ByVal Ocupadas As Boolean,
+                                           ByVal Todas As Boolean) As DataTable
+
+        Get_Ubicaciones = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT IdBodega, Ubicacion, Area, Case when Max(IdStock)>0 then 'Ocupada' Else 'Vacia' End 'Estado'
+                                  FROM VW_OcupacionBodega
+                                  WHERE  (IdBodega = @IdBodega)"
+
+            If Not Todas Then
+                If Ocupadas Then
+                    vSQL += " AND IDSTOCK > 0 "
+                Else
+                    vSQL += " AND IDSTOCK = 0 "
+                End If
+            End If
+
+            vSQL += " GROUP BY IdBodega, Ubicacion, Area"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        Get_Ubicaciones = lDT
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Ubicaciones_Detallado(ByVal pIdBodega As Integer) As DataTable
+
+        Get_Ubicaciones_Detallado = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT IdUbicacion, Ubicacion, Código, Nombre, Lote, Fecha, Lic_Plate, Cantidad, UM
+                                  FROM VW_Ocupacion_Bodega_Detallado
+                                  WHERE  (IdBodega = @IdBodega)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        Get_Ubicaciones_Detallado = lDT
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    '#MA20260105 
+    Public Shared Function Get_Ubicaciones_No_Contadas_DT(IdInventario As Integer,
+                                                          IdBodega As Integer,
+                                                          ByRef lConnection As SqlConnection,
+                                                          ByRef lTransaction As SqlTransaction) As DataTable
+
+        Dim DT As New DataTable
+
+        Dim SQL As String = "SELECT DISTINCT
+                             u.IdUbicacion, u.IdBodega,
+                             dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Ubicacion,
+                                a.Descripcion AS Area,
+                                s.Descripcion AS Sector,
+                                t.Descripcion AS Tramo
+                            FROM bodega_ubicacion u
+                            INNER JOIN bodega_tramo t ON u.IdTramo = t.IdTramo AND u.IdBodega = t.IdBodega
+                            INNER JOIN bodega_sector s ON t.IdSector = s.IdSector AND u.IdBodega = s.IdBodega
+                            INNER JOIN bodega_area a ON s.IdArea = a.IdArea AND u.IdBodega = a.IdBodega
+                            WHERE u.IdBodega = @IdBodega
+						    AND
+							Exists(Select * 
+							from trans_inv_tramo tit
+							where IdInventario = @IdInventario AND tit.idtramo = u.IdTramo And u.IdBodega = tit.IdBodega)
+							AND u.IdUbicacion NOT IN (
+							Select Distinct IdUbicacion 
+							from trans_inv_detalle
+							where idinventarioenc = @IdInventario)
+                            ORDER BY Area, Sector, Tramo, Ubicacion"
+
+        Using da As New SqlDataAdapter(SQL, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+
+            da.SelectCommand.Parameters.AddWithValue("@IdInventario", IdInventario)
+            da.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+
+            da.Fill(DT)
+        End Using
+        Return DT
+    End Function
+
+    '#MA20260105
+    Public Shared Function Get_Total_Ubicaciones_Asig(IdInventarioEnc As Integer,
+                                                      IdBodega As Integer,
+                                                      lConnection As SqlConnection,
+                                                      lTransaction As SqlTransaction) As Integer
+
+        Dim cmd As New SqlCommand()
+        Dim Total As Integer = 0
+
+        Try
+            cmd.Connection = lConnection
+            cmd.Transaction = lTransaction
+            cmd.CommandType = CommandType.Text
+
+            cmd.CommandText = "SELECT COUNT(*) 
+                               FROM bodega_ubicacion u
+                               INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
+                               WHERE tt.IdInventario = @IdInventarioEnc
+                               AND u.IdBodega = @IdBodega"
+
+            cmd.Parameters.AddWithValue("@IdInventarioEnc", IdInventarioEnc)
+            cmd.Parameters.AddWithValue("@IdBodega", IdBodega)
+
+            Total = Convert.ToInt32(cmd.ExecuteScalar())
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return Total
+
+    End Function
+
+    '#MA20260105
+    Public Shared Function Get_Ubicaciones_Contadas(IdInventario As Integer,
+                                                    IdBodega As Integer,
+                                                    ByRef lConnection As SqlConnection,
+                                                    ByRef lTransaction As SqlTransaction) As Integer
+        Dim Total As Integer = 0
+
+        Try
+            If lConnection.State <> ConnectionState.Open Then
+                lConnection.Open()
+            End If
+
+            Dim SQL As String = "SELECT COUNT(DISTINCT u.IdUbicacion)
+                                 FROM bodega_ubicacion u
+                                 INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
+                                 WHERE tt.IdInventario = @IdInventario
+                                  AND u.IdBodega = @IdBodega
+                                  AND EXISTS (
+                                        SELECT 1
+                                        FROM trans_inv_detalle d
+                                        WHERE d.IdUbicacion = u.IdUbicacion
+                                          AND d.IdInventarioEnc = @IdInventario
+                                      )"
+
+            Using cmd As New SqlCommand(SQL, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdInventario", IdInventario)
+                cmd.Parameters.AddWithValue("@IdBodega", IdBodega)
+                Total = Convert.ToInt32(cmd.ExecuteScalar())
+            End Using
+
+        Catch
+            Throw
+        End Try
+
+        Return Total
+    End Function
+    '#GT14012025: obtener todas las ubicaciones asociadas a un idubiacion (deberian existir 2 para cealsa) y enviar a portal web
+    Public Shared Function Get_All_By_IdUbicacion(ByVal IdUbicacion As Integer,
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As List(Of clsBeBodega_ubicacion)
+
+        Get_All_By_IdUbicacion = Nothing
+
+        Dim pBeBodega_ubicacion As New clsBeBodega_ubicacion
+
+        Try
+
+            Const sp As String = "SELECT * FROM Bodega_ubicacion " &
+            " Where(IdUbicacion = @IdUbicacion )"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDUBICACION", IdUbicacion))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+
+                Get_All_By_IdUbicacion = New List(Of clsBeBodega_ubicacion)()
+
+                For Each lRow As DataRow In dt.Rows
+
+                    pBeBodega_ubicacion = New clsBeBodega_ubicacion
+                    Cargar(pBeBodega_ubicacion, lRow, lTransaction, lConnection)
+                    Get_All_By_IdUbicacion.Add(pBeBodega_ubicacion)
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    '#GT28012026: listar ubicacines con area para cealsa en form
+    Public Shared Function GetUbicaciones_Con_Area_Picking_By_IdBodega(ByVal pIdBodega As Integer) As DataTable
+
+        GetUbicaciones_Con_Area_Picking_By_IdBodega = Nothing
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeBodega_ubicacion)
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT IdUbicacion, Descripcion, Area FROM VW_Ubicaciones_Picking WHERE IdBodega = @IdBodega"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            GetUbicaciones_Con_Area_Picking_By_IdBodega = lDataTable
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
 
         Catch ex As Exception
             Throw ex

@@ -4,12 +4,15 @@ Imports System.Net
 Imports System.Reflection
 Imports System.Threading
 Imports System.Threading.Tasks
-Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
+
+
+Imports System.Data.SqlClient
+Imports System.Web.Script.Serialization
 Imports TOMWMS.wsBYBNavCUWMS
 Imports TOMWMS.wsBYBNavMovProd
 Imports TOMWMS.wsBYBNavUbicarAlmacen
@@ -2451,9 +2454,55 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion.
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_BeProducto_By_Codigo_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+
+
+        Get_BeProducto_By_Codigo_For_HH = Nothing
+
+        Try
+
+            Return clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
+
+        Catch ex As Exception
+
+            '#MECR19112025: Se agrego bitacora de logs para implosion.
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=IdBodega)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -4995,7 +5044,7 @@ Public Class TOMHHWS
         Try
 
             '#CKFK20231029:Guarda fotos de verificacion
-            clsLnTrans_picking_img.Guardar_Imagen_Verificacion(pIdPedidoDet, Foto)
+            clsLnTrans_Picking_Img.Guardar_Imagen_Verificacion(pIdPedidoDet, Foto)
 
         Catch ex As Exception
 
@@ -5118,7 +5167,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_picking_img.Get_All_Imagen_By_IdPedidoDet(pIdPedidoDet)
+            Return clsLnTrans_Picking_Img.Get_All_Imagen_By_IdPedidoDet(pIdPedidoDet)
 
         Catch ex As Exception
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
@@ -5423,9 +5472,8 @@ Public Class TOMHHWS
     '#MA20250210 migracion de xml a Json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON(ByVal pBarra As String,
-                                                                    ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+                                                                ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
 
-        ' Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
         Dim curContext As HttpContext = HttpContext.Current
 
         Try
@@ -5439,27 +5487,33 @@ Public Class TOMHHWS
             If ubicacion.Sector Is Nothing Then ubicacion.Sector = New clsBeBodega_sector() With {.Descripcion = "", .IdBodega = 0}
 
             If String.IsNullOrEmpty(ubicacion.Descripcion) Then ubicacion.Descripcion = ""
+            ' (Estos if son redundantes: si es 0, asignas 0; los dejo por compatibilidad)
             If ubicacion.Ancho = 0 Then ubicacion.Ancho = 0
             If ubicacion.Largo = 0 Then ubicacion.Largo = 0
             If ubicacion.Alto = 0 Then ubicacion.Alto = 0
 
+            Dim BeUbicacion As String =
+            JsonConvert.SerializeObject(New With {.ubicacion = ubicacion},
+                New JsonSerializerSettings With {
+                    .NullValueHandling = NullValueHandling.Include,
+                    .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    .Formatting = Formatting.None
+                })
 
-            Dim BeUbicacion As String = JsonConvert.SerializeObject(New With {.ubicacion = ubicacion},
-                                                              New JsonSerializerSettings With {
-                                                                  .NullValueHandling = NullValueHandling.Include,
-                                                                  .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                                                                  .Formatting = Formatting.None
-                                                              })
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
             curContext.Response.Write(BeUbicacion)
             curContext.ApplicationInstance.CompleteRequest()
 
+            Return ubicacion 'retorno en éxito
+
         Catch ex As Exception
 
+            '#MECR04112025: Se agrego bitacora de ubicacion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5468,6 +5522,19 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
                 End If
 
             End If
@@ -5477,10 +5544,52 @@ Public Class TOMHHWS
             curContext.Response.ContentType = "application/json"
             curContext.Response.Write(errorJson)
             curContext.ApplicationInstance.CompleteRequest()
+
+    End Function
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega(ByVal pBarra As String, ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+
+        Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+
+        Try
+
+            Return clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
+
+        Catch ex As Exception
+
+            '#MECR04112025: Se agrego bitacora de ubicacion
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
         End Try
 
     End Function
-
     <WebMethod(), SoapHeader("mArch")>
     Public Function Actualizar_Trans_Ubic_HH_Det(ByVal oBeTrans_ubic_hh_det As clsBeTrans_ubic_hh_det,
                                                  ByVal pMovimiento As clsBeTrans_movimientos,
@@ -5634,8 +5743,7 @@ Public Class TOMHHWS
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta(ByVal pMovimientoList As List(Of clsBeTrans_movimientos),
-                                                             ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
+    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta(ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
 
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta = False
 
@@ -5916,12 +6024,6 @@ Public Class TOMHHWS
 
     End Function
 
-    ''' <summary>
-    ''' #EJC20220419: Obtener el IdUbicacionRecepcion por defecto de la bodega.
-    ''' </summary>
-    ''' <param name="pIdBodega"></param>
-    ''' <returns></returns>
-
     '#MA20251410 migracion de xml a json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_IdUbicacion_Recepcion_By_IdBodega_Json(ByVal pIdBodega As Integer)
@@ -5969,43 +6071,38 @@ Public Class TOMHHWS
     '#MA20251010 migracion de xml a json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Get_Productos_By_IdUbicacion(ByVal pIdUbicacion As Integer,
-                                                 ByVal pIdProductoBodega As Integer) As List(Of clsBeVW_stock_res)
-
-        Dim curContext As HttpContext = HttpContext.Current
-        'Get_Productos_By_IdUbicacion = Nothing
-
+                                             ByVal pIdProductoBodega As Integer) As Object
         Try
+            Dim productos As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_Productos_By_IdUbicacion(pIdUbicacion, pIdProductoBodega)
 
-            Dim productos As List(Of clsBeVW_stock_res) = clsLnStock.Get_Productos_By_IdUbicacion(pIdUbicacion, pIdProductoBodega)
+            ' Pasar a JArray para poder “tocar” propiedades
+            Dim arr As JArray = JArray.FromObject(productos)
 
-            Dim BeUbicacionId As String = JsonConvert.SerializeObject(productos)
-            Dim ObjProducto As JArray = JArray.Parse(BeUbicacionId)
-
-            For Each producto As JObject In ObjProducto
+            For Each producto As JObject In arr.OfType(Of JObject)()
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
             Next
 
-            ' Serializar la lista a JSON
-            Dim json As String = JsonConvert.SerializeObject(ObjProducto, New JsonSerializerSettings With {
-            .NullValueHandling = NullValueHandling.Include
-        })
-
-            curContext.Response.Clear()
-            curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(json)
-            curContext.ApplicationInstance.CompleteRequest()
+            ' Devuelve JSON “normal” consistente
+            Return New With {
+            .Error = False,
+            .Resultado = arr
+        }
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdProductoBodega:=pIdProductoBodega, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
 
             If mArch IsNot Nothing Then
+
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
                 Else
@@ -6025,19 +6122,54 @@ Public Class TOMHHWS
             .Mensaje = Mensaje
         })
 
-                curContext.Response.Clear()
-                curContext.Response.StatusCode = 500
-                curContext.Response.ContentType = "application/json"
-                curContext.Response.Write(errorJson)
-                curContext.ApplicationInstance.CompleteRequest()
-
-
-            End If
-
+                Return New With {
+                .Error = True,
+                .Mensaje = ex.Message
+            }
         End Try
-
     End Function
 
+        Get_Productos_By_IdUbicacion = Nothing
+
+        Try
+
+    Return clsLnStock.Get_Productos_By_IdUbicacion(pIdUbicacion, pIdProductoBodega)
+
+    Catch ex As Exception
+
+    '#MECR19112025: Se agrego bitacora de logs para implosion
+    'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdProductoBodega:=pIdProductoBodega, pEsImplosion:=True)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+    If mArch.Tipo = "WM" Then
+    Throw New Exception(Mensaje)
+    Else
+    Dim currrentContext As HttpContext = HttpContext.Current
+    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+    End If
+
+    End Try
+
+    End Function
     '#AT24032023 cambio de anderly
     '#MA17092025 xml a json Marcela Alvarez
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
@@ -7970,64 +8102,6 @@ Public Class TOMHHWS
 
     End Function
 
-    '#AT 20220208 Copia de Inventario_Ciclico_Actualiza_Conteo, porque se hicieron cambios en la funcionalidad
-    '<WebMethod(), SoapHeader("mArch")>
-    'Public Function Inventario_Ciclico_Actualiza_Conteo_Andr(ByVal pitem As clsBeTrans_inv_ciclico,
-    '                                                         ByVal pReconteo As Integer,
-    '                                                         ByRef Resultado As String) As Integer
-
-    '    Inventario_Ciclico_Actualiza_Conteo_Andr = 0
-
-    '    Try
-
-
-    '        Dim Res As String = ""
-
-    '        Dim thread As New Thread(
-    '              Sub()
-    '                  clsLnTrans_inv_ciclico.Actualiza_Conteo_Ciclico_HH(pitem, pReconteo, Res)
-    '              End Sub
-    '            )
-
-    '        thread.Start()
-
-    '        Return 1
-
-    '    Catch ex As Exception
-
-    '        'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-    '        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-    '        Dim Mensaje As String = ex.Message
-    '        WriteErrorToEventLog(Mensaje)
-
-    '        If mArch IsNot Nothing Then
-
-    '            If mArch.Tipo = "WM" Then
-    '                Throw New Exception(Mensaje)
-    '            Else
-    '                Dim currrentContext As HttpContext = HttpContext.Current
-    '                Dim DT As New DataTable("CustomError")
-    '                DT.Columns.Add("Error", GetType(String))
-    '                DT.Rows.Add(Mensaje)
-    '                Dim sw As New StringWriter()
-    '                DT.WriteXml(sw)
-    '                HttpContext.Current.Response.Clear()
-    '                HttpContext.Current.Response.StatusCode = 299
-    '                HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-    '                HttpContext.Current.Response.Output.Write(sw.ToString())
-    '                HttpContext.Current.Response.ContentType = "text/xml"
-    '                HttpContext.Current.Response.End()
-    '            End If
-
-    '        End If
-
-    '    End Try
-
-    'End Function
-
-
     '#AT20241205 Nueva Funcion para manejar el conteo del inventario ciclico
     <WebMethod(), SoapHeader("mArch")>
     Public Function Inventario_Ciclico_Act_Conteo_Andr(ByVal pitem As clsBeTrans_inv_ciclico,
@@ -8081,7 +8155,52 @@ Public Class TOMHHWS
         End Try
 
     End Function
+    '#AT20241205 Nueva Funcion para manejar el conteo del inventario ciclico
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Inventario_Ciclico_Act_Conteo_Andr(ByVal pitem As clsBeTrans_inv_ciclico,
+                                                       ByVal pReconteo As Integer,
+                                                       ByVal esOriginal As Boolean,
+                                                       ByRef Resultado As String) As Integer
 
+        Inventario_Ciclico_Act_Conteo_Andr = 0
+
+        Try
+            Dim Res As String = ""
+            Return clsLnTrans_inv_ciclico.Actualiza_Conteo_Ciclico_HH(pitem, pReconteo, esOriginal, Res)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
     <WebMethod(), SoapHeader("mArch")>
     Public Function Inventario_Ciclico_Actualiza_Reconteo(ByVal idinvreconteo As Integer, pCantidad_Reconteo As Decimal) As Integer
 
@@ -8855,11 +8974,17 @@ Public Class TOMHHWS
                                        ByVal host As String, TipoLista As Integer) As String
 
         Guardar_Picking_Cm = False
+
         Dim vResult As String = "Inicio picking"
+        Dim oBeTrans_picking_ubic As clsBeTrans_picking_ubic = Nothing
 
         Try
+
             If TipoLista = 2 Then
+
                 For Each ObjUbic As clsBeTrans_picking_ubic In pListaPicking
+
+                    oBeTrans_picking_ubic = ObjUbic
 
                     Dim BeStockRes = clsLnStock_res.GetSingle_By_IdStockRes(IdBodega, ObjUbic.IdStockRes)
                     ObjUbic.Cantidad_Recibida = ObjUbic.Cantidad_Solicitada
@@ -8878,6 +9003,9 @@ Public Class TOMHHWS
 
                 vResult = " terminó la actualizacion"
             Else
+
+                oBeTrans_picking_ubic = pListaPicking(0)
+
                 clsLnTrans_picking_ubic.Actualiza_Picking_Consolidado_Cm(pListaPicking(0),
                                                                         pIdOperador,
                                                                         host)
@@ -8889,9 +9017,16 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=IdBodega,
+                                                  pIdPickingEnc:=oBeTrans_picking_ubic.IdPickingEnc,
+                                                  pIdPickingDet:=oBeTrans_picking_ubic.IdPickingDet,
+                                                  pIdPedidoEnc:=oBeTrans_picking_ubic.IdPedidoEnc,
+                                                  pIdPedidoDet:=oBeTrans_picking_ubic.IdPedidoDet,
+                                                  pIdPickingUbic:=oBeTrans_picking_ubic.IdPickingUbic)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9653,7 +9788,17 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_pe_enc.Actualizar_Estado_Verificado(oBeTrans_pe_enc)
+            Set_Estado_Pedido_Verificado = clsLnTrans_pe_enc.Actualizar_Estado_Verificado(oBeTrans_pe_enc)
+
+            'MECR04122025: Se agrego bitacora de logs para verificacion.
+            Dim msgControl As String = "Se actualizo estado verificado el pedido: " + oBeTrans_pe_enc.IdPedidoEnc
+            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            'pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
+            'pIdBodega:=oBeTrans_pe_enc.IdBodega,
+            'pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
+            'pUser_agr:=oBeTrans_pe_enc.User_mod)
+
+            Return Set_Estado_Pedido_Verificado
 
         Catch ex As Exception
 
@@ -11302,12 +11447,12 @@ Public Class TOMHHWS
             End If
 
             Dim json As String = JsonConvert.SerializeObject(New With {
-            .items = listaUbicaciones
-        }, New JsonSerializerSettings With {
-            .NullValueHandling = NullValueHandling.Include,
-            .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            .Formatting = Formatting.None
-        })
+    .items = listaUbicaciones
+}, New JsonSerializerSettings With {
+    .NullValueHandling = NullValueHandling.Include,
+    .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+    .Formatting = Formatting.None
+})
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
@@ -11330,10 +11475,11 @@ Public Class TOMHHWS
                 End If
 
             End If
+
             Dim errorJson As String = JsonConvert.SerializeObject(New With {
-            .Error = True,
-            .Mensaje = ex.Message
-        })
+    .Error = True,
+    .Mensaje = ex.Message
+})
 
             curContext.Response.Clear()
             curContext.Response.StatusCode = 500
@@ -11344,6 +11490,7 @@ Public Class TOMHHWS
 
     End Sub
 
+    End Function
     '#CKFK 20200505 Creé función para actualizar la cantidad en las verificaciones de la aplicación de Android
     '#AT20241206 Agregue el parametro pIdPedidoEnc
     <WebMethod(), SoapHeader("mArch")>
@@ -11367,15 +11514,18 @@ Public Class TOMHHWS
                                                                                 pTipo,
                                                                                 pIdPedidoEnc)
 
+
             Else
                 Throw New Exception("ERROR_20220410_0907: La lista de verificación está vacía.")
             End If
 
         Catch ex As Exception
 
+            '#MECR11122025: Se agrego bitacora de logs para verificacion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -11404,7 +11554,71 @@ Public Class TOMHHWS
         End Try
 
     End Function
+    '#CKFK 20200505 Creé función para actualizar la cantidad en las verificaciones de la aplicación de Android
+    '#AT20241206 Agregue el parametro pIdPedidoEnc
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Actualiza_Cant_Peso_Verificacion(ByVal pBePickingUbicList As List(Of clsBeTrans_picking_ubic),
+                                                     ByVal pIdOperador As Integer,
+                                                     ByRef pCantidad As Double,
+                                                     ByRef pPeso As Double,
+                                                     ByVal pTipo As Integer,
+                                                     ByVal pIdPedidoEnc As Integer,
+                                                     ByRef pEtiqueta As clsBeTrans_verificacion_etiqueta) As Boolean
 
+        Actualiza_Cant_Peso_Verificacion = False
+
+        Try
+
+            If pBePickingUbicList IsNot Nothing Then
+
+                Return clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(pBePickingUbicList,
+                                                                                pIdOperador,
+                                                                                pCantidad,
+                                                                                pPeso,
+                                                                                pTipo,
+                                                                                pIdPedidoEnc,
+                                                                                pEtiqueta)
+
+
+            Else
+                Throw New Exception("ERROR_20220410_0907: La lista de verificación está vacía.")
+            End If
+
+        Catch ex As Exception
+
+            '#MECR11122025: Se agrego bitacora de logs para verificacion
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
     '#CM Función creada para actualizar el Picking consolidado
     '#AT20241014 Agregue el parametro host (dispositivo id hh)
     <WebMethod(), SoapHeader("mArch")>
@@ -11431,9 +11645,15 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdPickingEnc:=pBePickingUbic.IdPickingEnc,
+                                                  pIdPickingDet:=pBePickingUbic.IdPickingDet,
+                                                  pIdPedidoEnc:=pBePickingUbic.IdPedidoEnc,
+                                                  pIdPedidoDet:=pBePickingUbic.IdPedidoDet,
+                                                  pIdPickingUbic:=pBePickingUbic.IdPickingUbic)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -12098,20 +12318,15 @@ Public Class TOMHHWS
 
     '#MA20251410 migracion de xml a json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
-    Public Function Es_Pallet_No_Estandar_JSON(ByVal pStock As clsBeStock) As Boolean
-
-        Dim curContext As HttpContext = HttpContext.Current
-
-        ' Es_Pallet_No_Estandar = False
+    Public Function Es_Pallet_No_Estandar_JSON(ByVal pStock As clsBeStock) As Object
 
         Try
-
             Dim esNoEstandar As Boolean = clsLnStock.Es_Pallet_No_Estandar(pStock)
 
             Dim responseObj As New With {
-            .Error = False,
-            .Resultado = esNoEstandar
-        }
+    .Error = False,
+    .Resultado = esNoEstandar
+}
 
             Dim json As String = JsonConvert.SerializeObject(responseObj, New JsonSerializerSettings With {
             .NullValueHandling = NullValueHandling.Ignore
@@ -12127,15 +12342,24 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(ex.Message)
 
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
-
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                End If
+            If mArch.Tipo = "WM" Then
+                Throw New Exception(Mensaje)
+            Else
+                Dim currrentContext As HttpContext = HttpContext.Current
+                Dim DT As New DataTable("CustomError")
+                DT.Columns.Add("Error", GetType(String))
+                DT.Rows.Add(Mensaje)
+                Dim sw As New StringWriter()
+                DT.WriteXml(sw)
+                HttpContext.Current.Response.Clear()
+                HttpContext.Current.Response.StatusCode = 299
+                HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                HttpContext.Current.Response.Output.Write(sw.ToString())
+                HttpContext.Current.Response.ContentType = "text/xml"
+                HttpContext.Current.Response.End()
+            End If
 
             End If
             Dim errorJson As String = JsonConvert.SerializeObject(New With {
@@ -12151,6 +12375,46 @@ Public Class TOMHHWS
         End Try
 
     End Function
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Es_Pallet_No_Estandar(ByVal pStock As clsBeStock) As Boolean
+
+        Es_Pallet_No_Estandar = False
+
+        Try
+
+            Es_Pallet_No_Estandar = clsLnStock.Es_Pallet_No_Estandar(pStock)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Tiene_Posiciones(ByVal pStock As clsBeStock) As Integer
@@ -14596,6 +14860,50 @@ Public Class TOMHHWS
         End Try
 
     End Function
+    'AT20220516 Obtiene el total de la cantidad de productos verificados en inventario 
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_CantidadInvVer_By_Producto(ByVal pIdUbicacion As Integer,
+                                                   ByVal pIdProducto As Integer,
+                                                   ByVal pIdBodega As Integer,
+                                                   ByVal pIdPresentacion As Integer,
+                                                   ByVal pIdInventarioEnc As Integer) As clsBeTrans_inv_resumen
+
+
+        Get_CantidadInvVer_By_Producto = Nothing
+
+        Try
+            Return clsLnTrans_inv_resumen.Get_CantidadInvVer_By_Producto(pIdUbicacion, pIdProducto, pIdBodega, pIdPresentacion, pIdInventarioEnc)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
 
     'AT20240527 Obtiene inventario por licencia de Trans_inv_stock_prod
     <WebMethod(), SoapHeader("mArch")>
@@ -15347,6 +15655,7 @@ Public Class TOMHHWS
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Guardar_Recepcion_S(ByVal pIdRecpecionEnc As Integer,
+                                        ByVal pIdTipoDocumentoDI As Integer,
                                         ByVal pIdOrdenCompraEnc As Integer,
                                         ByVal BeRecDet As clsBeTrans_re_det,
                                         ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros),
@@ -17781,52 +18090,6 @@ Public Class TOMHHWS
         End Try
 
     End Function
-
-
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_BeProducto_By_Codigo_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
-
-
-        Get_BeProducto_By_Codigo_For_HH = Nothing
-
-        Try
-
-            Return clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
-
-        Catch ex As Exception
-
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
-
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
-                End If
-
-            End If
-
-        End Try
-
-    End Function
-
     '#MA20251204'
     <WebMethod(), SoapHeader("mArch")>
     Public Function Operador_Tiene_Permiso(ByVal pOperador As clsBeOperador, ByVal pOpcion As String) As Boolean
@@ -17876,7 +18139,122 @@ Public Class TOMHHWS
 
     End Function
 
-    '#MA20260116
+    Return Nothing ' ✅ si no hay mArch, igual retornar algo
+    End Try
+    End Function
+    '#MA20251204'
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Operador_Tiene_Permiso(ByVal pOperador As clsBeOperador, ByVal pOpcion As String) As Boolean
+
+        Operador_Tiene_Permiso = False
+
+        Try
+            'Si existe en el WS, RETORNA'
+            Dim BeOperador = clsLnOperador.Existe(pOperador)
+
+            If BeOperador IsNot Nothing Then
+                Operador_Tiene_Permiso = clsLnOperador_bodega.Operador_Tiene_Permiso(BeOperador.IdOperador, pOpcion)
+            Else
+                Operador_Tiene_Permiso = False
+            End If
+
+        Catch ex As Exception
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    ' #MA20251222 Reimprimir
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Obtener_Etiqueta_Verificacion_WS(ByVal pIdPedidoEnc As Integer,
+                                                     ByVal pIdProductoBodega As Integer,
+                                                     ByVal pLote As String,
+                                                     ByVal pFechaVence As Date,
+                                                     ByVal pLicPlate As String) As clsBeTrans_verificacion_etiqueta
+        Try
+
+            Return clsLnTrans_verificacion_etiqueta.Obtener_Etiqueta_Verificacion(pIdPedidoEnc,
+                                                                                  pIdProductoBodega,
+                                                                                  pLote,
+                                                                                  pFechaVence,
+                                                                                  pLicPlate)
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("Obtener_Etiqueta_Verificacion_WS " & ex.Message)
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_TipoEtiqueta_By_Id(ByVal pIdTipoEtiqueta As Integer) As clsBeTipo_etiqueta
+
+        Try
+            'Si existe en el WS, RETORNA'
+            Dim BeOperador = clsLnOperador.Existe(pOperador)
+
+            Return clsLnTipo_etiqueta.GetSingle_By_IdTipoEtiqueta(pIdTipoEtiqueta)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+    '#MA20251204'
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
         Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
@@ -17908,4 +18286,25 @@ Public Class TOMHHWS
         End Try
     End Function
 
+    ' #MA20251222 Reimprimir
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Obtener_Etiqueta_Verificacion_WS(ByVal pIdPedidoEnc As Integer,
+                                                     ByVal pIdProductoBodega As Integer,
+                                                     ByVal pLote As String,
+                                                     ByVal pFechaVence As Date,
+                                                     ByVal pLicPlate As String) As clsBeTrans_verificacion_etiqueta
+        Try
+
+            Return clsLnTrans_verificacion_etiqueta.Obtener_Etiqueta_Verificacion(pIdPedidoEnc,
+                                                                                  pIdProductoBodega,
+                                                                                  pLote,
+                                                                                  pFechaVence,
+                                                                                  pLicPlate)
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("Obtener_Etiqueta_Verificacion_WS " & ex.Message)
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
 End Class

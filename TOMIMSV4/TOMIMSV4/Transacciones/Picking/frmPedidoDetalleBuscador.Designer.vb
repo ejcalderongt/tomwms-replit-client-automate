@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmPedidoDetalleBuscador
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing Then
             If components IsNot Nothing Then
@@ -23,7 +23,7 @@ Partial Class frmPedidoDetalleBuscador
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedidoDetalleBuscador))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -43,17 +43,19 @@ Partial Class frmPedidoDetalleBuscador
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.Dgrid = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.tabUbicacionesNoContadas = New DevExpress.XtraTab.XtraTabPage()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.lblHasta = New System.Windows.Forms.Label()
         Me.lbldesde = New System.Windows.Forms.Label()
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaDel = New System.Windows.Forms.DateTimePicker()
-        Me.tsAnulados = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.tsActivos = New DevExpress.XtraEditors.ToggleSwitch()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tabUbicacionesNoContadas.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
-        CType(Me.tsAnulados.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tsActivos.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -62,7 +64,7 @@ Partial Class frmPedidoDetalleBuscador
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImprimir, Me.cmdImportarExcel, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.chkMostrarSoloMisDocumentos, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 13
+        Me.RibbonControl.MaxItemId = 15
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -264,26 +266,26 @@ Partial Class frmPedidoDetalleBuscador
         Me.dtpFechaDel.Size = New System.Drawing.Size(123, 23)
         Me.dtpFechaDel.TabIndex = 1
         '
-        'tsAnulados
+        'tsActivos
         '
-        Me.tsAnulados.EditValue = True
-        Me.tsAnulados.Location = New System.Drawing.Point(295, 149)
-        Me.tsAnulados.MenuManager = Me.RibbonControl
-        Me.tsAnulados.Name = "tsAnulados"
-        Me.tsAnulados.Properties.Appearance.BackColor = System.Drawing.Color.Gainsboro
-        Me.tsAnulados.Properties.Appearance.Options.UseBackColor = True
-        Me.tsAnulados.Properties.OffText = "Mostrar anulados"
-        Me.tsAnulados.Properties.OnText = "Mostrar activos"
-        Me.tsAnulados.RightToLeft = System.Windows.Forms.RightToLeft.Yes
-        Me.tsAnulados.Size = New System.Drawing.Size(231, 24)
-        Me.tsAnulados.TabIndex = 4
+        Me.tsActivos.EditValue = True
+        Me.tsActivos.Location = New System.Drawing.Point(295, 149)
+        Me.tsActivos.MenuManager = Me.RibbonControl
+        Me.tsActivos.Name = "tsActivos"
+        Me.tsActivos.Properties.Appearance.BackColor = System.Drawing.Color.Gainsboro
+        Me.tsActivos.Properties.Appearance.Options.UseBackColor = True
+        Me.tsActivos.Properties.OffText = "Mostrar anulados"
+        Me.tsActivos.Properties.OnText = "Mostrar activos"
+        Me.tsActivos.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.tsActivos.Size = New System.Drawing.Size(231, 24)
+        Me.tsActivos.TabIndex = 4
         '
         'frmPedidoDetalleBuscador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1024, 629)
-        Me.Controls.Add(Me.tsAnulados)
+        Me.Controls.Add(Me.tsActivos)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Dgrid)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -300,7 +302,7 @@ Partial Class frmPedidoDetalleBuscador
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
-        CType(Me.tsAnulados.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tsActivos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -315,6 +317,7 @@ Partial Class frmPedidoDetalleBuscador
     Friend WithEvents mnuSalir As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents Dgrid As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents tabUbicacionesNoContadas As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents chkActivos As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents lblRegs As DevExpress.XtraBars.BarStaticItem
     Friend WithEvents cmdImprimir As DevExpress.XtraBars.BarButtonItem
@@ -328,5 +331,5 @@ Partial Class frmPedidoDetalleBuscador
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents chkMostrarSoloMisDocumentos As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents tsAnulados As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents tsActivos As DevExpress.XtraEditors.ToggleSwitch
 End Class

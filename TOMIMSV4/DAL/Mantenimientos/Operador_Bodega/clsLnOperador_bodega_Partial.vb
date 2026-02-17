@@ -1014,6 +1014,7 @@ Partial Public Class clsLnOperador_bodega
 
     End Function
 
+
     '#GT19052025: obtener operador_bodega para enviar datos a la nube
     Public Shared Function GetSingle_By_IdOperadorBodega(ByVal pIdOperadorBodega As Integer, ByVal pConnection As SqlConnection,
                                                                                              ByVal pTransaction As SqlTransaction) As clsBeOperador_bodega

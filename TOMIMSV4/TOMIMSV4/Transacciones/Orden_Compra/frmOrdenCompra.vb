@@ -54,7 +54,7 @@ Public Class frmOrdenCompra
     Private pIdPropietario As Integer = 0
 
     '#GT10062024: bandera para saber que hay varios acuerdos activos
-    Private pListaAcuerdos As New List(Of clsBeTrans_acuerdoscomerciales_enc)
+    Private pListaAcuerdos As New List(Of clsBeTrans_Acuerdoscomerciales_enc)
 
     '#GT28052024:uso para servicios asociados a un acuerdo comercial.
     Private ServicioGridLookUpEdit As New RepositoryItemGridLookUpEdit
@@ -212,8 +212,6 @@ Public Class frmOrdenCompra
             txtReferencia.Text = gBeOrdenCompra.Referencia
             txtProcedencia.Text = gBeOrdenCompra.Procedencia
             txtObservacion.Text = gBeOrdenCompra.Observacion
-            txtComentarios.Text = gBeOrdenCompra.Comentarios
-            txtUsuarioERP.Text = gBeOrdenCompra.Usr_Documento
 
             User_agrTextEdit.Text = gBeOrdenCompra.User_Agr
             Fec_agrDateEdit.Text = gBeOrdenCompra.Fec_Agr
@@ -264,19 +262,18 @@ Public Class frmOrdenCompra
                 tabTallaColor.PageVisible = False
             Else
 
-                Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
-                'Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
+                Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
 
-                'If Not String.IsNullOrEmpty(vRutaCDN) Then
-                '    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
-                'Else
-                '    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
-                'End If
+                If Not String.IsNullOrEmpty(vRutaCDN) Then
+                    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
+                Else
+                    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+                End If
 
             End If
 
-                '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
-                If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
+            '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
+            If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
                 Not clsLnTrans_re_enc.OC_Tiene_Recepciones_Activas(gBeOrdenCompra.IdOrdenCompraEnc) Then
                 mnuTareaRecepcion.Enabled = True
                 txtIdRecepcion.Text = "0"
@@ -333,9 +330,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.UsuarioAp.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -344,7 +342,9 @@ Public Class frmOrdenCompra
 
         Try
 
+            'GT Limpia el grid, porque al refrescar, duplica los valores
             DTGridDetalleDocIngresos.Clear()
+            'gBeOrdenCompra.DetalleOC.Clear()
 
             lOCDet = gBeOrdenCompra.DetalleOC
 
@@ -375,41 +375,41 @@ Public Class frmOrdenCompra
 
                 Dim commonData As Object() = {
                     BeTransOCDet.IdPropietarioBodega,
-                    BeTransOCDet.Nombre_Propietario,
-                    BeTransOCDet.No_Linea,
-                    BeTransOCDet.IdProductoBodega,
-                    BeTransOCDet.Codigo_Producto,
-                    BeTransOCDet.Nombre_producto,
-                    BeTransOCDet.Nombre_unidad_medida_basica,
-                    BeTransOCDet.IdUnidadMedidaBasica,
-                    BeTransOCDet.IdPresentacion,
-                    BeTransOCDet.Arancel.IdArancel,
-                    BeTransOCDet.IdMotivoDevolucion,
-                    BeTransOCDet.Cantidad,
-                    BeTransOCDet.Cantidad_recibida,
-                    vCantidadPendiente,
-                    BeTransOCDet.Peso_Bruto,
-                    BeTransOCDet.Peso_Neto,
-                    BeTransOCDet.Costo,
-                    BeTransOCDet.valor_aduana,
-                    BeTransOCDet.valor_fob,
-                    BeTransOCDet.valor_iva,
-                    BeTransOCDet.valor_dai,
-                    BeTransOCDet.valor_seguro,
-                    BeTransOCDet.valor_flete,
-                    BeTransOCDet.Total_linea,
-                    BeTransOCDet.Producto.IdProducto,
-                    BeTransOCDet.IsNew,
-                    BeTransOCDet.IdOrdenCompraEnc,
-                    BeTransOCDet.IdOrdenCompraDet,
-                    False,
-                    BeTransOCDet.Atributo_variante_1,
-                    BeTransOCDet.Producto.Kit,
-                    BeTransOCDet.IdPedidoCompraDet,
-                    BeTransOCDet.IdOrdenCompraDetPadre,
-                    BeTransOCDet.Producto.Control_peso,
-                    BeTransOCDet.Producto.Peso_referencia,
-                    BeTransOCDet.Nombre_Embarcador,
+                BeTransOCDet.Nombre_Propietario,
+                BeTransOCDet.No_Linea,
+                BeTransOCDet.IdProductoBodega,
+                BeTransOCDet.Codigo_Producto,
+                BeTransOCDet.Nombre_producto,
+                BeTransOCDet.Nombre_unidad_medida_basica,
+                BeTransOCDet.IdUnidadMedidaBasica,
+                BeTransOCDet.IdPresentacion,
+                BeTransOCDet.Arancel.IdArancel,
+                BeTransOCDet.IdMotivoDevolucion,
+                BeTransOCDet.Cantidad,
+                BeTransOCDet.Cantidad_recibida,
+                vCantidadPendiente,
+                BeTransOCDet.Peso_Bruto,
+                BeTransOCDet.Peso_Neto,
+                BeTransOCDet.Costo,
+                BeTransOCDet.valor_aduana,
+                BeTransOCDet.valor_fob,
+                BeTransOCDet.valor_iva,
+                BeTransOCDet.valor_dai,
+                BeTransOCDet.valor_seguro,
+                BeTransOCDet.valor_flete,
+                BeTransOCDet.Total_linea,
+                BeTransOCDet.Producto.IdProducto,
+                BeTransOCDet.IsNew,
+                BeTransOCDet.IdOrdenCompraEnc,
+                BeTransOCDet.IdOrdenCompraDet,
+                False,
+                BeTransOCDet.Atributo_variante_1,
+                BeTransOCDet.Producto.Kit,
+                BeTransOCDet.IdPedidoCompraDet,
+                BeTransOCDet.IdOrdenCompraDetPadre,
+                BeTransOCDet.Producto.Control_peso,
+                BeTransOCDet.Producto.Peso_referencia,
+                BeTransOCDet.Nombre_Embarcador,
                     BeTransOCDet.Producto.Clasificacion.Nombre
                 }
 
@@ -1458,9 +1458,15 @@ Public Class frmOrdenCompra
 
 
             If Not EsActualizacion Then
-                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                Dim msgAdvertencia As String = "ADVERTENCIA_202302231656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc
+                clsLnLog_error_wms_oc.Agregar_Error(msgAdvertencia, AP.UsuarioAp.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
             Else
-                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                Dim msgAdvertencia As String = "ADVERTENCIA_202302231656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc
+                clsLnLog_error_wms_oc.Agregar_Error(msgAdvertencia, AP.UsuarioAp.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
             End If
 
 
@@ -1937,8 +1943,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.UsuarioAp.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -1970,8 +1978,10 @@ Public Class frmOrdenCompra
             Return Ret
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
             Throw ex
         End Try
 
@@ -2263,8 +2273,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -2294,8 +2306,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -2325,9 +2339,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -2400,9 +2415,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Function
@@ -2470,7 +2486,10 @@ Public Class frmOrdenCompra
 
                                 If clsLnTrans_oc_enc.Anular_OC(gBeOrdenCompra.IdOrdenCompraEnc, gBeOrdenCompra.ObjPoliza, .BeMotivoAnulacionBodega.IdMotivoAnulacionBodega, AP.IdBodega) Then
 
-                                    clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " anuló el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                                    '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                                    'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " anuló el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                                    Dim msgAdvertencia As String = "ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " anuló el IdOrdenCompraEnc: " & gBeOrdenCompra.IdOrdenCompraEnc
+                                    clsLnLog_error_wms_oc.Agregar_Error(msgAdvertencia, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
 
                                     SplashScreenManager.CloseForm(False)
 
@@ -2718,8 +2737,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -2944,8 +2965,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -2999,8 +3022,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -3079,8 +3104,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -3144,7 +3171,9 @@ Public Class frmOrdenCompra
 
             gvDetalleDocIngreso.OptionsView.ShowFooter = True
             gvDetalleDocIngreso.OptionsView.ShowGroupPanel = False
+
             gvDetalleDocIngreso.OptionsView.ColumnAutoWidth = False
+
             gvDetalleDocIngreso.Columns.Clear()
 
 #Region "Columna - Propietario"
@@ -3195,6 +3224,7 @@ Public Class frmOrdenCompra
             }
 
             ColNoLinea.OptionsColumn.AllowEdit = True
+
             gvDetalleDocIngreso.Columns.Add(ColNoLinea)
 
 
@@ -4683,8 +4713,11 @@ Public Class frmOrdenCompra
 
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
@@ -4724,8 +4757,10 @@ Public Class frmOrdenCompra
                 End If
 
             Catch ex As Exception
-                Dim vMsgError As String = ex.Message
-                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
             End Try
 
         End If
@@ -4823,8 +4858,11 @@ Public Class frmOrdenCompra
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
         End Try
 
     End Sub
@@ -5438,8 +5476,10 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
 
         End Try
 
@@ -5482,8 +5522,10 @@ Public Class frmOrdenCompra
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -5533,6 +5575,7 @@ Public Class frmOrdenCompra
                 Dim drArticulo As DataRow = (TryCast(lista.Properties.GetRowByKeyValue(lista.EditValue), DataRowView)).Row
                 If drArticulo Is Nothing Then Return
 
+                'GT01032022_0834: traemos las propiedades del producto, al igual que en Agregar Producto (F2), para usar peso_referencia
                 vBeProducto = clsLnProducto.Get_Single_By_CodigoProducto(drArticulo("Codigo"))
 
                 drLineaGrid("CodigoProducto") = drArticulo("Codigo")
@@ -5567,6 +5610,17 @@ Public Class frmOrdenCompra
                                                                     gvDetalleDocIngreso.ShowEditor()
                                                                 End Sub))
 
+                'Dim View As ColumnView = DgridDetalleOC.FocusedView
+                'Dim column As GridColumn = View.Columns.FirstOrDefault(Function(x) x.FieldName = "Cantidad")
+                'If Not column Is Nothing Then
+                '    View.FocusedColumn = column
+                '    View.ShowEditor()
+                '    Application.DoEvents()
+                'End If
+
+                'gvDetalleDocIngreso.FocusedColumn = gvDetalleDocIngreso.Columns("Cantidad")
+                'gvDetalleDocIngreso.PostEditor()
+
             End If
 
         Catch ex As Exception
@@ -5580,7 +5634,12 @@ Public Class frmOrdenCompra
 
         Try
 
+            'ProductoGridLookUpEdit.View.Columns.Clear()
             ProductoGridLookUpEdit.DataSource = clsLnProducto.Get_Lista_For_Grid_By_IdPropietario_And_IdBodega(pIdPropietarioBodega, cmbBodega.EditValue)
+            'ProductoGridLookUpEdit.PopupFormWidth = 1000
+            'ProductoGridLookUpEdit.View.BestFitColumns()
+            'ProductoGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+            'ProductoGridLookUpEdit.AcceptEditorTextAsNewValue = DefaultBoolean.True
 
         Catch ex As Exception
             Throw ex
@@ -5698,62 +5757,198 @@ Public Class frmOrdenCompra
 
                 End If
 
+                '#MECR03102025: Se agrego nueva bitacora de logs para OC
                 '#GT31082023: por seguridad, guardamos el scan de poliza
                 Dim pPoliza = "AVISO: se guarda duca de ingreso " & txtScanPoliza.Text
-                clsLnLog_error_wms.Agregar_Error(pPoliza)
+                'clsLnLog_error_wms.Agregar_Error(pPoliza)
+                Dim clsError As New clsBeLog_error_wms_oc
+                clsError.MensajeError = pPoliza
+                clsError.Fecha = Now
+                clsError.IdBodega = AP.IdBodega
+                clsError.IdEmpresa = AP.IdEmpresa
+                clsError.IdUsuarioAgr = AP.UsuarioAp.IdUsuario
+                clsError.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
 
-                encabezado_duca.Numero_Orden = barra_poliza.Substring(0, 10)
+                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                clsLnLog_error_wms_oc.Insertar(clsError, lConnection, lTransaction)
 
-                '#GT31082023: Es nueva cuando no se hace por importación.
-                'Si es nueva se pregunta, sino es nueva, ya se preguntó en el proceso de importación.
-                If gBeOrdenCompra.IsNew Then
 
-                    '#GT31082023: Se valida si exite ingreso con misma póliza, según el numero_orden
-                    pPolizaExiste = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
+                Dim Nuevo_Formato_Duca = Formato_Nuevo_Duca(barra_poliza)
+
+                If Nuevo_Formato_Duca Is Nothing Then
+
+                    '#GT31082023: Es nueva cuando no se hace por importación.
+                    'Si es nueva se pregunta, sino es nueva, ya se preguntó en el proceso de importación.
+                    If gBeOrdenCompra.IsNew Then
+
+                        encabezado_duca.Numero_Orden = barra_poliza.Substring(0, 10)
+
+                        '#GT31082023: Se valida si exite ingreso con misma póliza, según el numero_orden
+                        pPolizaExiste = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
+                        If Not pPolizaExiste Is Nothing Then
+
+                            If XtraMessageBox.Show("¿La póliza ingresada " & pPolizaExiste.numero_orden & " ya existe, asociar el ingreso a póliza existente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                                '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                                Dim pLog = "ADVERTENCIA_31082023_A: El usuario" & AP.UsuarioAp.IdUsuario & " esta asociando la póliza existente " & pPolizaExiste.numero_orden & " a mas de un ingreso."
+                                Dim clsBeLogError As New clsBeLog_error_wms_oc
+                                clsBeLogError.MensajeError = pLog
+                                clsBeLogError.Fecha = Now
+                                clsBeLogError.IdBodega = AP.IdBodega
+                                clsBeLogError.IdEmpresa = AP.IdEmpresa
+                                clsBeLogError.IdUsuarioAgr = AP.UsuarioAp.IdUsuario
+                                clsBeLogError.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
+
+                                'clsLnLog_error_wms.Agregar_Error(pLog)
+                                clsLnLog_error_wms_oc.Insertar(clsBeLogError, lConnection, lTransaction)
+                            Else
+                                txtScanPoliza.Text = String.Empty
+                                encabezado_duca = Nothing
+                                Exit Sub
+                            End If
+
+                        End If
+
+                    End If
+
+                    encabezado_duca.Numero_DUCA = barra_poliza.Substring(10, 20)
+                    '#GT: formatear fecha
+                    Dim Fecha_string = barra_poliza.Substring(30, 8)
+                    Dim comodin As String = "/"
+                    Dim dd = Fecha_string.ToString.Substring(0, 2)
+                    Dim mm = Fecha_string.ToString.Substring(2, 2)
+                    Dim anio = Fecha_string.ToString.Substring(4, 4)
+                    'encabezado_duca.Fecha_Aceptacion = dd & comodin & mm & comodin & anio
+                    encabezado_duca.Fecha_Aceptacion = New Date(anio, mm, dd)
+
+                    encabezado_duca.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
+                    encabezado_duca.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
+                    'GT 29042021 se convierte a mayuscula el regimen.
+                    encabezado_duca.Regimen = barra_poliza.Substring(70, 5).ToUpper()
+                    encabezado_duca.Clase = barra_poliza.Substring(75, 3).Trim()
+                    encabezado_duca.Pais_procedencia = barra_poliza.Substring(78, 2).ToUpper()
+                    encabezado_duca.Modo_transporte = barra_poliza.Substring(80, 1)
+                    encabezado_duca.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
+                    encabezado_duca.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
+                    encabezado_duca.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
+                    encabezado_duca.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
+                    encabezado_duca.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
+                    encabezado_duca.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
+                    encabezado_duca.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
+                    encabezado_duca.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
+                    encabezado_duca.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
+                    encabezado_duca.Codigo_Poliza = barra_poliza.Substring(210, 9)
+
+                Else
+
+                    pPolizaExiste = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(Nuevo_Formato_Duca.Numero_Orden)
                     If Not pPolizaExiste Is Nothing Then
 
                         If XtraMessageBox.Show("¿La póliza ingresada " & pPolizaExiste.numero_orden & " ya existe, asociar el ingreso a póliza existente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                            '#MECR03102025: Se agrego nueva bitacora de logs para OC
                             Dim pLog = "ADVERTENCIA_31082023_A: El usuario" & AP.UsuarioAp.IdUsuario & " esta asociando la póliza existente " & pPolizaExiste.numero_orden & " a mas de un ingreso."
-                            clsLnLog_error_wms.Agregar_Error(pLog)
+                            Dim clsBeLogError As New clsBeLog_error_wms_oc
+                            clsBeLogError.MensajeError = pLog
+                            clsBeLogError.Fecha = Now
+                            clsBeLogError.IdBodega = AP.IdBodega
+                            clsBeLogError.IdEmpresa = AP.IdEmpresa
+                            clsBeLogError.IdUsuarioAgr = AP.UsuarioAp.IdUsuario
+                            clsBeLogError.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
+
+                            'clsLnLog_error_wms.Agregar_Error(pLog)
+                            clsLnLog_error_wms_oc.Insertar(clsBeLogError, lConnection, lTransaction)
                         Else
                             txtScanPoliza.Text = String.Empty
                             encabezado_duca = Nothing
+                            Nuevo_Formato_Duca = Nothing
                             Exit Sub
                         End If
 
                     End If
 
+                    encabezado_duca = Nuevo_Formato_Duca
+
                 End If
 
-                encabezado_duca.Numero_DUCA = barra_poliza.Substring(10, 20)
-                encabezado_duca.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
-                encabezado_duca.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
-                'GT 29042021 se convierte a mayuscula el regimen.
-                encabezado_duca.Regimen = barra_poliza.Substring(70, 5).ToUpper()
-                encabezado_duca.Clase = barra_poliza.Substring(75, 3).Trim()
-                encabezado_duca.Pais_procedencia = barra_poliza.Substring(78, 2).ToUpper()
-                encabezado_duca.Modo_transporte = barra_poliza.Substring(80, 1)
-                encabezado_duca.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
-                encabezado_duca.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
-                encabezado_duca.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
-                encabezado_duca.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
-                encabezado_duca.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
-                encabezado_duca.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
-                encabezado_duca.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
-                encabezado_duca.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
-                encabezado_duca.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
-                encabezado_duca.Codigo_Poliza = barra_poliza.Substring(210, 9)
+                'encabezado_duca.Numero_Orden = barra_poliza.Substring(0, 10)
 
-                Dim Fecha_string = barra_poliza.Substring(30, 8)
+                '#GT31082023: Es nueva cuando no se hace por importación.
+                'Si es nueva se pregunta, sino es nueva, ya se preguntó en el proceso de importación.
+                'If gBeOrdenCompra.IsNew Then
+
+                '    '#GT31082023: Se valida si exite ingreso con misma póliza, según el numero_orden
+                '    pPolizaExiste = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
+                '    If Not pPolizaExiste Is Nothing Then
+
+                '        If XtraMessageBox.Show("¿La póliza ingresada " & pPolizaExiste.numero_orden & " ya existe, asociar el ingreso a póliza existente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                '            Dim pLog = "ADVERTENCIA_31082023_A: El usuario" & AP.UsuarioAp.IdUsuario & " esta asociando la póliza existente " & pPolizaExiste.numero_orden & " a mas de un ingreso."
+                '            clsLnLog_error_wms.Agregar_Error(pLog)
+                '        Else
+                '            txtScanPoliza.Text = String.Empty
+                '            encabezado_duca = Nothing
+                '            Exit Sub
+                '        End If
+
+                '    End If
+
+                'End If
+
+                '/***********************************************************************************************/
+                '#GT14082025: proceso actual de leer una poliza con 219 caracteres
+                'encabezado_duca.Numero_Orden = barra_poliza.Substring(0, 10)
+                'encabezado_duca.Numero_DUCA = barra_poliza.Substring(10, 20)
+                'Dim Fecha_string = barra_poliza.Substring(30, 8)
+                'encabezado_duca.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
+                'encabezado_duca.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
+                'encabezado_duca.Regimen = barra_poliza.Substring(70, 5).ToUpper()
+                'encabezado_duca.Clase = barra_poliza.Substring(75, 3).Trim()
+                'encabezado_duca.Pais_procedencia = barra_poliza.Substring(78, 2).ToUpper()
+                'encabezado_duca.Modo_transporte = barra_poliza.Substring(80, 1)
+                'encabezado_duca.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
+                'encabezado_duca.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
+                'encabezado_duca.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
+                'encabezado_duca.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
+                'encabezado_duca.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
+                'encabezado_duca.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
+                'encabezado_duca.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
+                'encabezado_duca.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
+                'encabezado_duca.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
+                'encabezado_duca.Codigo_Poliza = barra_poliza.Substring(210, 9)
+
+                '/***********************************************************************************************/
+                '#GT12082025: numero de orden maneja 15 caracteres
+                'encabezado_duca.Numero_DUCA = barra_poliza.Substring(15, 20)
+                'Dim Fecha_string = barra_poliza.Substring(35, 8)
+                'encabezado_duca.Clave_aduana_despacho_destino = barra_poliza.Substring(43, 7)
+                'encabezado_duca.NIT_Importador = barra_poliza.Substring(50, 25).Trim()
+                '' GT 29042021 se convierte a mayuscula el regimen.
+                'encabezado_duca.Regimen = barra_poliza.Substring(75, 5).ToUpper()
+                'encabezado_duca.Clase = barra_poliza.Substring(80, 3).Trim()
+                'encabezado_duca.Pais_procedencia = barra_poliza.Substring(83, 2).ToUpper()
+                'encabezado_duca.Modo_transporte = barra_poliza.Substring(85, 1)
+                'encabezado_duca.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(86, 7))
+
+                'encabezado_duca.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(94, 15))
+                'encabezado_duca.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(109, 16))
+                'encabezado_duca.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(125, 15))
+                'encabezado_duca.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(140, 15))
+                'encabezado_duca.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(155, 15))
+                'encabezado_duca.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(170, 15))
+                'encabezado_duca.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(185, 15))
+                'encabezado_duca.Total_General = Convert.ToDouble(barra_poliza.Substring(200, 15))
+                'encabezado_duca.Codigo_Poliza = barra_poliza.Substring(215, 9)
+
                 'concatenación para fecha dd/mm/yyyy
-                Dim comodin As String = "/"
-                Dim dd As String = String.Empty
-                Dim mm As String = String.Empty
-                Dim anio As String = String.Empty
-                dd = Fecha_string.ToString.Substring(0, 2)
-                mm = Fecha_string.ToString.Substring(2, 2)
-                anio = Fecha_string.ToString.Substring(4, 4)
-                encabezado_duca.Fecha_Aceptacion = dd & comodin & mm & comodin & anio
+                'Dim comodin As String = "/"
+                'Dim dd As String = String.Empty
+                'Dim mm As String = String.Empty
+                'Dim anio As String = String.Empty
+                'dd = Fecha_string.ToString.Substring(0, 2)
+                'mm = Fecha_string.ToString.Substring(2, 2)
+                'anio = Fecha_string.ToString.Substring(4, 4)
+                'encabezado_duca.Fecha_Aceptacion = dd & comodin & mm & comodin & anio
+
+
+
 
                 'GT 22012021 Set de los inputs en el formulario desde la clase encabezado_duca
                 txtNumeroOrden.Text = encabezado_duca.Numero_Orden
@@ -5909,12 +6104,90 @@ Public Class frmOrdenCompra
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
     End Sub
+
+
+    Public Function Formato_Nuevo_Duca(barra_poliza As String) As clsBeCEALSA_DUCA_ENC
+
+        Formato_Nuevo_Duca = Nothing
+        Dim EsFecha As Boolean = False
+        Dim EsRegimen As Boolean = False
+
+        Try
+            Dim encabezado_duca = New clsBeCEALSA_DUCA_ENC()
+            encabezado_duca.Numero_Orden = barra_poliza.Substring(0, 15)
+            encabezado_duca.Numero_DUCA = barra_poliza.Substring(15, 20)
+            Dim Fecha_string = barra_poliza.Substring(35, 8)
+            encabezado_duca.Clave_aduana_despacho_destino = barra_poliza.Substring(43, 7)
+            encabezado_duca.NIT_Importador = barra_poliza.Substring(50, 25).Trim()
+            encabezado_duca.Regimen = barra_poliza.Substring(75, 5).ToUpper()
+
+            If EsFechaValida(Fecha_string) Then
+                Dim comodin As String = "/"
+                Dim dd = Fecha_string.ToString.Substring(0, 2)
+                Dim mm = Fecha_string.ToString.Substring(2, 2)
+                Dim anio = Fecha_string.ToString.Substring(4, 4)
+                encabezado_duca.Fecha_Aceptacion = dd & comodin & mm & comodin & anio
+                EsFecha = True
+            End If
+
+            Dim BeRegimen = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen(encabezado_duca.Regimen.Trim)
+            If BeRegimen IsNot Nothing Then
+                cmbRegimen.EditValue = BeRegimen.Codigo_regimen
+                EsRegimen = True
+            End If
+
+            If EsFecha AndAlso EsRegimen Then
+
+                encabezado_duca.Clase = barra_poliza.Substring(80, 3).Trim()
+                encabezado_duca.Pais_procedencia = barra_poliza.Substring(83, 2).ToUpper()
+                encabezado_duca.Modo_transporte = barra_poliza.Substring(85, 1)
+                encabezado_duca.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(86, 7))
+                encabezado_duca.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(94, 15))
+                encabezado_duca.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(109, 16))
+                encabezado_duca.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(125, 15))
+                encabezado_duca.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(140, 15))
+                encabezado_duca.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(155, 15))
+                encabezado_duca.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(170, 15))
+                encabezado_duca.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(185, 15))
+                encabezado_duca.Total_General = Convert.ToDouble(barra_poliza.Substring(200, 15))
+                encabezado_duca.Codigo_Poliza = barra_poliza.Substring(215, 9)
+                Formato_Nuevo_Duca = encabezado_duca
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
+
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+        End Try
+    End Function
+
+    Private Function EsFechaValida(fechaStr As String) As Boolean
+
+        Dim comodin As String = "/"
+        Dim dd = fechaStr.ToString.Substring(0, 2)
+        Dim mm = fechaStr.ToString.Substring(2, 2)
+        Dim anio = fechaStr.ToString.Substring(4, 4)
+        Dim Fecha_Aceptacion = dd & comodin & mm & comodin & anio
+
+        Dim fecha As Date
+        Return Date.TryParseExact(Fecha_Aceptacion, "dd/MM/yyyy", Nothing, Globalization.DateTimeStyles.None, fecha)
+    End Function
+
 
     Private Sub Bloquear_Inputs_Poliza()
         Try
@@ -5977,8 +6250,10 @@ Public Class frmOrdenCompra
           MessageBoxButtons.OK,
           MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
     End Sub
@@ -6299,8 +6574,10 @@ MessageBoxButtons.YesNo,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -6403,8 +6680,11 @@ MessageBoxButtons.YesNo,
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Function
@@ -6422,8 +6702,11 @@ MessageBoxButtons.YesNo,
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -6876,8 +7159,10 @@ MessageBoxButtons.YesNo,
             Get_No_Linea_Grid_Detalle = vNoLineaGrid + 1
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Function
@@ -6919,8 +7204,10 @@ MessageBoxButtons.YesNo,
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -6940,8 +7227,10 @@ MessageBoxButtons.YesNo,
             e.HighPriority = True   'override any other formatting  
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -7043,8 +7332,10 @@ MessageBoxButtons.YesNo,
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -7414,8 +7705,10 @@ MessageBoxButtons.YesNo,
             End Try
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -7442,8 +7735,10 @@ MessageBoxButtons.YesNo,
             'gvDetalleDocIngreso.SaveLayoutToXml(vNombreArchivoLayOutGridgvDetalleDocIngreso)
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -7468,8 +7763,10 @@ MessageBoxButtons.YesNo,
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
         End Try
 
     End Sub
@@ -7553,10 +7850,12 @@ MessageBoxButtons.YesNo,
 
         Catch ex As Exception
 
-            Dim vMsgError As String = ex.Message
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
 
             Try
-                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
             Catch ex1 As Exception
                 Debug.Print(ex1.Message)
             End Try
@@ -7622,7 +7921,11 @@ MessageBoxButtons.YesNo,
                         End If
 
                         If .ShowDialog() = DialogResult.OK Then
-                            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202310091900: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " corrige póliza con el idmotivo: " & MA.BeMotivoCorreccion.IdMotivoCorreccion & " para la OC: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                            Dim msgAdvertencia As String = "ADVERTENCIA_202310091900: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " corrige póliza con el idmotivo: " & MA.BeMotivoCorreccion.IdMotivoCorreccion & " para la OC: " & gBeOrdenCompra.IdOrdenCompraEnc
+                            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                            clsLnLog_error_wms_oc.Agregar_Error(msgAdvertencia, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario)
+
                             txtScanPoliza.Enabled = True
                             txtScanPoliza.ReadOnly = False
                             txtScanPoliza.EditValue = String.Empty
@@ -7707,8 +8010,10 @@ MessageBoxButtons.YesNo,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -7779,6 +8084,7 @@ MessageBoxButtons.YesNo,
         End Try
 
     End Sub
+
     Private Sub cmdDuplicar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdDuplicar.ItemClick
 
         Try
@@ -7864,8 +8170,10 @@ MessageBoxButtons.YesNo,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
 
@@ -8421,55 +8729,81 @@ MessageBoxButtons.YesNo,
     End Sub
 
     Private Sub dgridTallaColor_DoubleClick(sender As Object, e As EventArgs) Handles dgridTallaColor.DoubleClick
+        Dim view As ColumnView = CType(dgridTallaColor.FocusedView, ColumnView)
+        Dim rowHandle As Integer = view.FocusedRowHandle
+        If rowHandle < 0 Then Exit Sub
 
-        'Dim view As ColumnView = CType(dgridTallaColor.FocusedView, ColumnView)
-        'Dim rowHandle As Integer = view.FocusedRowHandle
-        'If rowHandle < 0 Then Exit Sub
+        Dim rutaImagen As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
+        If rutaImagen IsNot Nothing AndAlso File.Exists(rutaImagen.ToString()) Then
+            Dim previewForm As New DevExpress.XtraEditors.XtraForm()
+            previewForm.Text = "Vista previa de imagen"
+            previewForm.StartPosition = FormStartPosition.CenterParent
+            previewForm.Size = New Size(700, 700)
 
-        'Dim rutaImagenObj As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
-        'If rutaImagenObj Is Nothing Then Exit Sub
+            Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
+            pictureEdit.Dock = DockStyle.Fill
+            pictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+            pictureEdit.Image = Image.FromFile(rutaImagen.ToString())
 
-        'Dim rutaImagen As String = rutaImagenObj.ToString()
-        'If Not File.Exists(rutaImagen) Then Exit Sub
+            previewForm.Controls.Add(pictureEdit)
+            previewForm.ShowDialog()
+        End If
+    End Sub
 
-        'Dim img As Image = Image.FromFile(rutaImagen)
+    Private Sub cmdEliminarDocumento_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdEliminarDocumento.ItemClick
+        Try
 
-        'Dim previewForm As New DevExpress.XtraEditors.XtraForm()
-        'previewForm.Text = "Vista previa de imagen"
-        'previewForm.StartPosition = FormStartPosition.CenterScreen
+            If clsLnTrans_re_oc.Tiene_Recepciones(gBeOrdenCompra.IdOrdenCompraEnc) Then
 
-        '' Si quieres que se vea grande, puedes maximizar:
-        'previewForm.WindowState = FormWindowState.Maximized
-        '' O usar un tamaño fijo grande:
-        ''previewForm.ClientSize = New Size(900, 700)
+                SplashScreenManager.CloseForm(False)
+                XtraMessageBox.Show("No se puede eliminar, recepción asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
 
-        'Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
-        'pictureEdit.Dock = DockStyle.Fill
+            Else
 
-        'With pictureEdit.Properties
-        '    ' Queremos que la imagen ocupe el espacio disponible
-        '    .SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+                If gBeOrdenCompra.IdEstadoOC = 1 Then
 
-        '    ' Mejor calidad al redimensionar
-        '    .PictureInterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+                    SplashScreenManager.CloseForm(False)
 
-        '    ' Zoom inicial (prueba 150 o 200, según te guste)
-        '    .ZoomPercent = 200
+                    If XtraMessageBox.Show("¿Eliminar documento de ingreso:" & gBeOrdenCompra.Referencia & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
 
-        '    ' Permitir desplazarse cuando la imagen es más grande que el control
-        '    .AllowScrollViaMouseDrag = True
+                        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                        SplashScreenManager.Default.SetWaitFormDescription("Eliminando...")
 
-        '    ' Menú contextual con opciones de zoom
-        '    .ShowMenu = True
-        '    .ShowZoomSubMenu = True
+                        If clsLnTrans_oc_enc.Eliminar_OC(gBeOrdenCompra, AP.UsuarioAp) Then
 
-        'End With
+                            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+                            Dim vMsgAdvertencia As String = "ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " eliminó la Orden Compra Enc: " & gBeOrdenCompra.IdOrdenCompraEnc
+                            'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231700: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " eliminó la Orden Compra Enc: " & gBeOrdenCompra.IdOrdenCompraEnc)
+                            clsLnLog_error_wms_oc.Agregar_Error(vMsgAdvertencia, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
 
-        'pictureEdit.Image = img
+                            SplashScreenManager.CloseForm(False)
 
-        'previewForm.Controls.Add(pictureEdit)
-        'previewForm.ShowDialog()
+                            XtraMessageBox.Show("Documento de ingreso eliminado correctamente.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
+                            Close()
+
+                        Else
+                            SplashScreenManager.CloseForm(False)
+                            XtraMessageBox.Show("No se pudo eliminar el documento de ingreso.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        End If
+
+                    End If
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+
+            If Not SplashScreenManager.Default Is Nothing Then
+                If SplashScreenManager.Default.IsSplashFormVisible Then
+                    SplashScreenManager.CloseForm(False)
+                End If
+            End If
+
+        End Try
     End Sub
 
     Private Sub tabTallaColor_VisibleChanged(sender As Object, e As EventArgs) Handles tabTallaColor.VisibleChanged
@@ -8493,10 +8827,6 @@ MessageBoxButtons.YesNo,
         End Try
     End Sub
 
-    Private Sub dgridTallaColor_Click(sender As Object, e As EventArgs) Handles dgridTallaColor.Click
-
-    End Sub
-
     Private Sub cmdPreImpresionOC_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdPreImpresionOC.ItemClick
         Try
             With frmImpresionRecepcion_OC
@@ -8507,7 +8837,5 @@ MessageBoxButtons.YesNo,
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
-
 End Class

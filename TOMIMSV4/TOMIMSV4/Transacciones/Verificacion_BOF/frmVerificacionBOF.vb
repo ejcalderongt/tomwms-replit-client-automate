@@ -66,7 +66,7 @@ Public Class frmVerificacionBOF
     Private pMotivo As Integer = 0
     Private pEstado As Integer = 0
 
-    Private BeLogVeficacion As New clsBeLog_verificacion_bof()
+    Private BeLogVeficacion As New clsBeLog_verificacion_bof_tran()
 
     Private Sub frmVerificacionBOF_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -763,7 +763,7 @@ Public Class frmVerificacionBOF
     Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
 
         BuscarSKU_Y_Cargar = False
-        BeLogVeficacion = New clsBeLog_verificacion_bof()
+        BeLogVeficacion = New clsBeLog_verificacion_bof_tran()
 
         Try
 
@@ -1254,7 +1254,7 @@ Public Class frmVerificacionBOF
                 XtraMessageBox.Show("Proceso detenido por motivo: " & cmbMotivo.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 BeLogVeficacion.IdEstado = cmbEstado.EditValue
                 BeLogVeficacion.IdMotivo = cmbMotivo.EditValue
-                clsLnLog_verificacion_bof.Guardar_Log(BeLogVeficacion)
+                clsLnLog_verificacion_bof_tran.Guardar_Log(BeLogVeficacion)
 
                 If InvokeListarPedidos IsNot Nothing Then
                     InvokeListarPedidos.Invoke()

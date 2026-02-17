@@ -1,10 +1,8 @@
 ﻿Imports System.IO
 Imports System.Reflection
-Imports DevExpress.Xpf.Core.Utils
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraSplashScreen
-Imports DocumentFormat.OpenXml.Presentation
 
 Public Class frmCampaña
 

@@ -14,7 +14,7 @@ Public Class clsLnReportesFiscales
             Dim vSQL As String = "select REGIMEN,NOMBRE_BODEGA,AREA,CLIENTE,DUA,NUMERO_ORDEN,REFERENCIA,
                                   CODIGO_POLIZA,PRODUCTO,FECHA,FECHA_INVENTARIO,CLASIFICACION,LICENCIA,
                                   CODIGO_BARRA,UBICACION,CANTIDAD,CIF,DAI,IVA,TOTAL_VALOR,SHIPPER, 
-                                  ingreso,es_devolucion
+                                  ingreso,es_devolucion,posiciones
                                   FROM dbo.VW_Fiscal_historico WHERE 1 = 1 "
 
             If pIdBodega = "Fiscal" Then
@@ -31,7 +31,7 @@ Public Class clsLnReportesFiscales
 
             'GT12072022_1430: se deja order by por codigo para visualizar al producto por cada dia en inventario
             'vSQL += " ORDER BY FECHA_INVENTARIO"
-            vSQL += "ORDER BY codigo_barra, Fecha ASC"
+            vSQL += " ORDER BY codigo_barra, Fecha ASC"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 

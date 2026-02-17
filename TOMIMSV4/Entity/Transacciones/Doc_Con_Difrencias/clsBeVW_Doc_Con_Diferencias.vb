@@ -27,6 +27,8 @@
 
     Public Property FECHA_CREACION() As Date
 
+    Public Property OBSERVACION() As String = ""
+
     Sub New()
         '#EJC: Add your constructor here... 
     End Sub

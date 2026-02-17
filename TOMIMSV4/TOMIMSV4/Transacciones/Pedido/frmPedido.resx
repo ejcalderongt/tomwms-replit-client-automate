@@ -1275,32 +1275,6 @@
         RUcypj0V+zv+n0tkhE5V0cmYGqJCFPosOiEzpx8h//P6D1Wcml8FEabCAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="GroupControl3.CaptionImageOptions.SvgImage" type="DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v24.2" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpEZXZFeHByZXNzLkRhdGEudjI0LjIsIFZlcnNpb249MjQuMi4x
-        Mi4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI4OGQxNzU0ZDcwMGU0OWEFAQAAAB1E
-        ZXZFeHByZXNzLlV0aWxzLlN2Zy5TdmdJbWFnZQEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABDBAAAAu+7
-        vzw/eG1sIHZlcnNpb249JzEuMCcgZW5jb2Rpbmc9J1VURi04Jz8+DQo8c3ZnIHg9IjBweCIgeT0iMHB4
-        IiB2aWV3Qm94PSIwIDAgMzIgMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3Jn
-        LzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNw
-        YWNlPSJwcmVzZXJ2ZSIgaWQ9IkxheWVyXzEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAw
-        IDMyIDMyIj4NCiAgPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5CbGFja3tmaWxsOiM3MjcyNzI7fQoJ
-        LlllbGxvd3tmaWxsOiNGRkIxMTU7fQoJLkJsdWV7ZmlsbDojMTE3N0Q3O30KCS5HcmVlbntmaWxsOiMw
-        MzlDMjM7fQoJLlJlZHtmaWxsOiNEMTFDMUM7fQoJLldoaXRle2ZpbGw6I0ZGRkZGRjt9Cgkuc3Qwe29w
-        YWNpdHk6MC43NTt9Cgkuc3Qxe29wYWNpdHk6MC41O30KCS5zdDJ7b3BhY2l0eTowLjI1O30KPC9zdHls
-        ZT4NCiAgPGcgaWQ9IldpbmRvd3MiPg0KICAgIDxwYXRoIGQ9Ik0xOCwxOC4xVjE2aDJ2MC45QzE5LjMs
-        MTcuMiwxOC42LDE3LjYsMTgsMTguMXogTTE0LjcsMjZIMlYxNkgwdjExYzAsMC41LDAuNSwxLDEsMWgx
-        NS4xICAgQzE1LjUsMjcuMywxNS4xLDI2LjYsMTQuNywyNnogTTI0LDE4YzUuNywwLDgsNiw4LDZzLTIu
-        Myw2LTgsNmMtNS43LDAtOC02LTgtNlMxOC4zLDE4LDI0LDE4IE0yNCwyMGMtMy4zLDAtNS4xLDIuNy01
-        LjgsNCAgIGMwLjcsMS4zLDIuNSw0LDUuOCw0YzMuMywwLDUuMS0yLjcsNS44LTRDMjkuMSwyMi43LDI3
-        LjMsMjAsMjQsMjBMMjQsMjB6IE0yNCwyMmMtMS4xLDAtMiwwLjktMiwyczAuOSwyLDIsMmMxLjEsMCwy
-        LTAuOSwyLTIgICBTMjUuMSwyMiwyNCwyMnogTTI2LDE2LjJWOGgydjguOUMyNy40LDE2LjYsMjYuNywx
-        Ni40LDI2LDE2LjJ6IE0xMCw4SDh2MmgyVjh6IiBjbGFzcz0iQmxhY2siIC8+DQogICAgPHBhdGggZD0i
-        TTAsMTZ2LTVjMC0wLjUsMC41LTEsMS0xaDE4YzAuNSwwLDEsMC41LDEsMXY1SDB6IE0yOCw4VjNjMC0w
-        LjUtMC41LTEtMS0xSDlDOC41LDIsOCwyLjUsOCwzdjVIMjh6IiBjbGFzcz0iQmx1ZSIgLz4NCiAgPC9n
-        Pg0KPC9zdmc+Cw==
-</value>
-  </data>
   <data name="grpScanPoliza.CaptionImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAADJ0RVh0VGl0
@@ -1317,26 +1291,6 @@
         gRPu7QLoX8X9w8/0f6+1SugVOOHe7lexPhecGEKAhNcqgVfghLvbuSA/GZXKC/oQgQ0+gRPubiej/Gx4
         fODJTKk8z7sB3B3Phn2D8ybE3vYCpESr8LzwodkJcMAFJ9yogVqtm7cCmE6gRVgM8IndCcYDp77zjgEM
         VhCf5IXNH2r/A5ogiH4vEDezAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="LabelControl2.Appearance.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAB10RVh0VGl0
-        bGUARGF0YWJhc2U7REI7U291cmNlO1N0b3KssepyAAADLUlEQVQ4T2WTf0zUZRzHH1etMrOs1H6YSZs5
-        VtGS5gTcXHI5yNJGoImUqw2dw4KCrbaE7Mf8AVkTYaBA7NQwddiCVOQSAfWSX1+4m8qFNo474u6M67w7
-        4bjj+71Xe5hr3+qP58/X6/183p99BCCEENMavn7jya7aDUW9xqzGXmNWn/VglmoxZtJXm4lS85b6a0WG
-        ta00rbmpeHVxyebERUKIO6bY24I7LYeynK6ew/gGzzPm6UWbcKCN2dD8CpPedgK27xlVKhgyfc65ktev
-        CSGm6wV3yyR1wklUDRLVgkQnfUTDbrTQENqtASKei4QGGxj//TDndq+S0Ey94J6uA2uZ9JmJRjygTaAG
-        OggNV+Pv/wRPSz62ynSu12bibcnD9GWKhB7UC+69VPYmkb/ap1KnBH4zIWcFN6/k4zZ9wNWyNQxUZTBq
-        yuF0YbKEZukF0898lqy4uioJjvQRDv6JevMC40Nl+C7n4mragrLzFbp3GLDtf42jOUuU/44wo/2bNDx9
-        RpzKSewdzfQ3fIrlYDqd5Um0blvKyeznaMl7aUpwIi9RQo/oBff/8lUqEW8rWuQGqGG0YA+hP4z4bYW4
-        z+ZzpXQN/eWrudG4kWM5SyU0Ry+YeWpbMmFPI9qEE9QQqreZses7GO3eiKN+PT1fLMOyawWu+rXUbYqX
-        0Fy94L4ftixRhs27CQx3Eg64Ub2nuDWwndGO9diPpnOhIJ7zBYuxlizjwLpY2cG/Spz108crcHXtxdlz
-        AntHE1frc1GqVnKxJI4zuc9yPCOGn997BmtxEjUbnpfQ43rBQ8e2JhB21f8zwqSvjfHBb/Eqm3H8+A6d
-        RUl0b09k+FAqVetiJfSEXvBwXXY8IUct2vg1UINEPMcJXP4Qd2sqAzUG2t6PxVwQx1DNy1SmLfqf4IHq
-        t+Pcl6rfxW6uw2e3EnEdwW/ZyshZA79VLqcpeyGnN8ViKniRPa8+7RBCzNYL7kp/Yc7iIsOCfbtSYsx7
-        Uhc4ylfFsC/lKUpXzmevYR47lz82Upgwt/Oj+NnfJc+fkSDvRy+YJi9SbkMWKncsS5LfFELMu/0elaly
-        5TJQMpL9G8s/b7LDaOctAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="LabelControl2.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

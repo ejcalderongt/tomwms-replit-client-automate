@@ -202,6 +202,7 @@ Public Class clsLnTrans_pe_det
 
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
+                cmd.CommandTimeout = 60
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
@@ -614,8 +615,10 @@ Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPedidoDet:=pBeTrans_pe_det.IdPedidoDet)
             Throw ex
         End Try
 
@@ -653,8 +656,10 @@ Public Class clsLnTrans_pe_det
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPedidoDet:=pIdPedidoDet)
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -667,7 +672,7 @@ Public Class clsLnTrans_pe_det
                                                  ByRef pTransaction As SqlTransaction) As clsBeTrans_pe_det
 
         If pConection Is Nothing OrElse pTransaction Is Nothing Then
-            Throw New ArgumentNullException("La conexión y la transacción no pueden ser nulas.")
+            Throw New ArgumentNullException("La conexiÃ³n y la transacciÃ³n no pueden ser nulas.")
         End If
 
         Dim resultado As clsBeTrans_pe_det = Nothing
@@ -693,7 +698,11 @@ Public Class clsLnTrans_pe_det
         Catch ex As SqlException
             Throw New Exception($"Error SQL en {MethodBase.GetCurrentMethod.Name}: {ex.Message}", ex)
         Catch ex As Exception
-            clsLnLog_error_wms.Agregar_Error($"{MethodBase.GetCurrentMethod.Name} - {ex.Message}")
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
+            'clsLnLog_error_wms.Agregar_Error($"{MethodBase.GetCurrentMethod.Name} - {ex.Message}")
+            Dim vMsg As String = $"{MethodBase.GetCurrentMethod.Name}: {ex.Message}"
+            clsLnLog_error_wms_pe.Agregar_Error(vMsg, pStackTrace:=ex.StackTrace, pIdPedidoDet:=pIdPedidoDet)
+
             Throw New Exception($"Error en {MethodBase.GetCurrentMethod.Name}: {ex.Message}", ex)
         End Try
 
@@ -730,8 +739,10 @@ Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPedidoEnc:=pIdPedidoEnc, pIdPedidoDet:=pIdPedidoDet)
             Throw ex
         End Try
 
@@ -763,8 +774,13 @@ Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pStackTrace:=ex.StackTrace,
+                                                pIdPedidoDet:=pBeTrans_pe_det.IdPedidoDet,
+                                                pIdPedidoEnc:=pBeTrans_pe_det?.IdPedidoEnc)
             Throw ex
         End Try
 
@@ -804,11 +820,13 @@ Public Class clsLnTrans_pe_det
 
             Return lMax
 
-        Catch ex1 As SqlException
+        Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using WMS.DALCore.I_nav_ped_traslado_det;
+using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -14,30 +15,46 @@ namespace WMS.StockReservation.Core.Services
 
         public void Execute(ReservationContext context)
         {
+            if (context is null) throw new ArgumentNullException(nameof(context));
+            if (_logger is null) throw new InvalidOperationException("Logger no inicializado.");
+
+            // Normaliza lista para evitar null refs
+            context.CreatedReservations ??= new List<clsBeStock_res>(); // ajusta tipo real
+
             _logger.LogCheckpoint("#MI3_POST_PROCESSING_START");
 
-            // PASO 1: INSERTAR RESERVAS EN stock_res (ANTES de actualizar TrasladoDet)
+            // Request es obligatorio para este step (se usa en pasos 1 y 3)
+            if (context.Request is null)
+                throw new InvalidOperationException("ReservationContext.Request es null en PostProcessingStep.");
+
+            // Connection/Transaction se requieren si vas a insertar/actualizar
+            if (context.Connection is null)
+                throw new InvalidOperationException("ReservationContext.Connection es null en PostProcessingStep.");
+
+            if (context.Transaction is null)
+                throw new InvalidOperationException("ReservationContext.Transaction es null en PostProcessingStep.");
+
+            // =========================
+            // PASO 1: INSERTAR RESERVAS
+            // =========================
             if (context.CreatedReservations.Count > 0)
             {
                 _logger.LogCheckpoint($"#MI3_INSERTING_STOCK_RES - Count: {context.CreatedReservations.Count}");
 
                 var config = new ConfigurationBuilder().Build();
 
-                // Obtener IdPedidoEnc para asignar a IdTransaccion
-                // Prioridad: 1) context.Request.IdPedido, 2) 0
-                int idPedidoEnc = context.Request.IdPedido > 0 
-                    ? context.Request.IdPedido
-                    : (context.Request?.IdPedido ?? 0);
+                // Obtener IdPedidoEnc para IdTransaccion
+                int idPedidoEnc = context.Request.IdPedido > 0 ? context.Request.IdPedido : 0;
 
                 foreach (var reservation in context.CreatedReservations)
                 {
+                    if (reservation is null) continue; // por si la lista trae nulos
+
                     try
                     {
-                        // Calcular MaxID ANTES de cada INSERT
                         int maxId = clsLnStock_res.MaxID(context.Connection, context.Transaction);
                         reservation.IdStockRes = maxId + 1;
 
-                        // Asignar IdTransaccion = IdPedidoEnc
                         reservation.IdTransaccion = idPedidoEnc;
 
                         _logger.LogCheckpoint(
@@ -101,8 +118,18 @@ namespace WMS.StockReservation.Core.Services
                     $"#MI3_TRASLADO_UPDATED - Cantidad: {context.TrasladoDet.Quantity_Reserved_WMS:F6}");
             }
 
-            // PASO 3: Log de resumen
-            var totalReserved = context.Request.Cantidad - context.PendingQuantity;
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
+            if (context.Request == null)
+                throw new InvalidOperationException("ReservationContext.Request es null en el resumen.");
+
+            var pending = context.PendingQuantity; // si es decimal no-nullable
+
+            // Si PendingQuantity es decimal?
+            // var pending = context.PendingQuantity ?? 0m;
+
+            var totalReserved = context.Request.Cantidad - pending;
 
             _logger.LogCheckpoint(
                 $"#MI3_SUMMARY - " +
@@ -115,7 +142,6 @@ namespace WMS.StockReservation.Core.Services
             context.ValidateInvariants("POST_PROCESSING_END");
 #endif
 
-            _logger.LogCheckpoint("#MI3_POST_PROCESSING_END");
         }
     }
 }

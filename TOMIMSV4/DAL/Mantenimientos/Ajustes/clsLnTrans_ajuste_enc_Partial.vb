@@ -1,8 +1,5 @@
-﻿Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Threading.Tasks
-Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_ajuste_enc
     Public Shared Function GetAll(ByVal pFechaDel As Date,
@@ -163,6 +160,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Sub
+
 
     Public Shared Sub Actualizar_Ajuste(ByVal lDet As List(Of clsBeTrans_ajuste_det),
                                         ByVal lMovs As List(Of clsBeTrans_movimientos),
@@ -461,7 +459,7 @@ Partial Public Class clsLnTrans_ajuste_enc
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
                 Dim vSQL As String = "UPDATE trans_ajuste_enc SET referencia=@referencia
-                    WHERE IdAjusteEnc=@IdAjusteEnc "
+                    WHERE IdAjusteEnc=@IdAjusteEnc"
 
                 lConnection.Open()
 
@@ -537,7 +535,7 @@ Partial Public Class clsLnTrans_ajuste_enc
                                   FROM trans_ajuste_det INNER JOIN
                                   trans_ajuste_enc 
                                   ON trans_ajuste_det.idajusteenc = trans_ajuste_enc.idajusteenc 
-                                  WHERE trans_ajuste_det.enviado = 0 and trans_ajuste_enc.auditado = 1 "
+                                  WHERE trans_ajuste_det.enviado = 0 and trans_ajuste_enc.auditado = 1 and ajuste_por_inventario = 0 "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -572,7 +570,7 @@ Partial Public Class clsLnTrans_ajuste_enc
 
             Dim lReturnList As New List(Of clsBeTrans_ajuste_enc)
 
-            Const sp As String = "SELECT trans_ajuste_enc.*
+            Const sp As String = "SELECT DISTINCT trans_ajuste_enc.*
                                   FROM trans_ajuste_det INNER JOIN
                                   trans_ajuste_enc 
                                   ON trans_ajuste_det.idajusteenc = trans_ajuste_enc.idajusteenc
@@ -656,7 +654,7 @@ Partial Public Class clsLnTrans_ajuste_enc
     End Function
 
     '#CKFK20250306 Agregué esta funcionalidad para poder actualizar el campo Enviado_A_ERP de todos los ajustes
-    'cuyos detalles ya están sincronizados
+    'cuyos detalles ya están sincronizados.
     Public Shared Function Actualizar_Estado_Enviado_A_ERP_All(ByVal lAjustes As List(Of Integer),
                                                                ByVal pConnection As SqlConnection,
                                                                ByVal pTransaction As SqlTransaction) As Integer
@@ -685,6 +683,56 @@ Partial Public Class clsLnTrans_ajuste_enc
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
+
+    End Function
+    Public Shared Function ObtenerAjustesInventario(fechaDesde As DateTime, fechaHasta As DateTime) As DataTable
+
+        Dim query As String = "WITH AjustesUnicos AS (
+                            SELECT 
+                                ajuste_por_inventario AS Correlativo, 
+                                CONCAT('Inventario No. ', ajuste_por_inventario) AS NoInventario,
+                                Fecha,
+                                referencia,
+                                ROW_NUMBER() OVER (PARTITION BY ajuste_por_inventario ORDER BY Fecha DESC) AS rn
+                            FROM trans_ajuste_enc 
+                            WHERE Fecha BETWEEN @FechaDesde AND @FechaHasta 
+                              AND ajuste_por_inventario > 0
+                        )
+                        SELECT 
+                            Correlativo, 
+                            NoInventario, 
+                            Fecha, 
+                            referencia
+                        FROM AjustesUnicos
+                        WHERE rn = 1 "
+
+        Dim dtResultado As New DataTable()
+
+        Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            conn.Open()
+            Dim tran As SqlTransaction = conn.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Try
+
+                Using cmd As New SqlCommand(query, conn, tran)
+                    cmd.Parameters.AddWithValue("@FechaDesde", fechaDesde)
+                    cmd.Parameters.AddWithValue("@FechaHasta", fechaHasta)
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dtResultado)
+                    End Using
+                End Using
+
+                tran.Commit()
+
+            Catch ex As Exception
+                tran.Rollback()
+                Throw New ApplicationException("Error al obtener ajustes de inventario: " & ex.Message, ex)
+            End Try
+
+        End Using
+
+        Return dtResultado
 
     End Function
 
@@ -802,5 +850,33 @@ Partial Public Class clsLnTrans_ajuste_enc
             Throw
         End Try
     End Function
+    Public Shared Function Get_All_VW(ByVal pFechaDel As Date,
+                                      ByVal pFechaAl As Date,
+                                      ByVal pIdBodega As Integer) As DataTable
 
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_ajuste_enc)
+            Dim sp As String = "SELECT * FROM VW_Ajustes_List"
+            sp += " WHERE IdBodega = @IdBodega AND cast(fecha AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+                   " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
 End Class

@@ -36,14 +36,17 @@ Public Class clsLnTrans_oc_det_lote
             End With
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, oBeTrans_oc_det_lote.IdOrdenCompraEnc)
+
             Throw ex
         End Try
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_oc_det_lote As clsBeTrans_oc_det_lote, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_oc_det_lote As clsBeTrans_oc_det_lote, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -359,8 +362,10 @@ Public Class clsLnTrans_oc_det_lote
             Return True
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, oBeTrans_oc_det_lote.IdOrdenCompraEnc)
             Throw ex
         End Try
 
@@ -430,7 +435,7 @@ Public Class clsLnTrans_oc_det_lote
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

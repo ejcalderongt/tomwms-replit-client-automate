@@ -28,10 +28,6 @@ Partial Class frmUsu
         Dim TelefonoLabel As System.Windows.Forms.Label
         Dim EmailLabel As System.Windows.Forms.Label
         Dim IdEmpresaLabel As System.Windows.Forms.Label
-        Dim CodigoLabel As System.Windows.Forms.Label
-        Dim ClaveLabel As System.Windows.Forms.Label
-        Dim lblConfirmarClave As System.Windows.Forms.Label
-        Dim Ultimo_loginLabel As System.Windows.Forms.Label
         Dim ActivoLabel As System.Windows.Forms.Label
         Dim Fec_agrLabel As System.Windows.Forms.Label
         Dim User_agrLabel As System.Windows.Forms.Label
@@ -44,10 +40,18 @@ Partial Class frmUsu
         Dim lblCorrelativoInicial As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
         Dim lblSerie As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmUsu))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
+        Dim lblUsuarioSap As System.Windows.Forms.Label
+        Dim lblClaveSap As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmUsu))
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim Label5 As System.Windows.Forms.Label
+        Dim Label6 As System.Windows.Forms.Label
+        Dim CodigoLabel As System.Windows.Forms.Label
+        Dim ClaveLabel As System.Windows.Forms.Label
+        Dim lblConfirmarClave As System.Windows.Forms.Label
+        Dim Ultimo_loginLabel As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -68,14 +72,6 @@ Partial Class frmUsu
         Me.chkActivo = New DevExpress.XtraEditors.CheckEdit()
         Me.TabControl2 = New System.Windows.Forms.TabControl()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
-        Me.lblReptClaAut = New System.Windows.Forms.Label()
-        Me.txtReptClaveAuto = New System.Windows.Forms.TextBox()
-        Me.txtClaveAutoriza = New System.Windows.Forms.TextBox()
-        Me.lblClaveAuto = New System.Windows.Forms.Label()
-        Me.ConfirmarClaveTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.Ultimo_loginDateEdit = New DevExpress.XtraEditors.DateEdit()
-        Me.ClaveTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.CodigoTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.IdUsuarioSpinEdit = New DevExpress.XtraEditors.SpinEdit()
         Me.NombresTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.ApellidosTextEdit = New DevExpress.XtraEditors.TextEdit()
@@ -109,6 +105,22 @@ Partial Class frmUsu
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
+        Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtUsuarioSap = New DevExpress.XtraEditors.TextEdit()
+        Me.txtClaveSap = New DevExpress.XtraEditors.TextEdit()
+        Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
+        Me.TextEdit1 = New DevExpress.XtraEditors.TextEdit()
+        Me.TextEdit2 = New DevExpress.XtraEditors.TextEdit()
+        Me.GroupControl6 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtReptClaveAuto = New System.Windows.Forms.TextBox()
+        Me.CodigoTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.lblReptClaAut = New System.Windows.Forms.Label()
+        Me.ClaveTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.txtClaveAutoriza = New System.Windows.Forms.TextBox()
+        Me.lblClaveAuto = New System.Windows.Forms.Label()
+        Me.ConfirmarClaveTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.Ultimo_loginDateEdit = New DevExpress.XtraEditors.DateEdit()
         IdUsuarioLabel = New System.Windows.Forms.Label()
         NombresLabel = New System.Windows.Forms.Label()
         ApellidosLabel = New System.Windows.Forms.Label()
@@ -117,10 +129,6 @@ Partial Class frmUsu
         TelefonoLabel = New System.Windows.Forms.Label()
         EmailLabel = New System.Windows.Forms.Label()
         IdEmpresaLabel = New System.Windows.Forms.Label()
-        CodigoLabel = New System.Windows.Forms.Label()
-        ClaveLabel = New System.Windows.Forms.Label()
-        lblConfirmarClave = New System.Windows.Forms.Label()
-        Ultimo_loginLabel = New System.Windows.Forms.Label()
         ActivoLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
@@ -135,6 +143,14 @@ Partial Class frmUsu
         lblSerie = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
+        lblUsuarioSap = New System.Windows.Forms.Label()
+        lblClaveSap = New System.Windows.Forms.Label()
+        Label5 = New System.Windows.Forms.Label()
+        Label6 = New System.Windows.Forms.Label()
+        CodigoLabel = New System.Windows.Forms.Label()
+        ClaveLabel = New System.Windows.Forms.Label()
+        lblConfirmarClave = New System.Windows.Forms.Label()
+        Ultimo_loginLabel = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -149,11 +165,6 @@ Partial Class frmUsu
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabControl2.SuspendLayout()
         Me.TabPage3.SuspendLayout()
-        CType(Me.ConfirmarClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.Ultimo_loginDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.CodigoTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.IdUsuarioSpinEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NombresTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApellidosTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -186,6 +197,21 @@ Partial Class frmUsu
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtUsuarioSap.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtClaveSap.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl4.SuspendLayout()
+        CType(Me.TextEdit1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.TextEdit2.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GroupControl6, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl6.SuspendLayout()
+        CType(Me.CodigoTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ConfirmarClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Ultimo_loginDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdUsuarioLabel
@@ -259,42 +285,6 @@ Partial Class frmUsu
         IdEmpresaLabel.Size = New System.Drawing.Size(62, 16)
         IdEmpresaLabel.TabIndex = 2
         IdEmpresaLabel.Text = "Empresa:"
-        '
-        'CodigoLabel
-        '
-        CodigoLabel.AutoSize = True
-        CodigoLabel.Location = New System.Drawing.Point(19, 18)
-        CodigoLabel.Name = "CodigoLabel"
-        CodigoLabel.Size = New System.Drawing.Size(50, 16)
-        CodigoLabel.TabIndex = 0
-        CodigoLabel.Text = "Usuario"
-        '
-        'ClaveLabel
-        '
-        ClaveLabel.AutoSize = True
-        ClaveLabel.Location = New System.Drawing.Point(20, 50)
-        ClaveLabel.Name = "ClaveLabel"
-        ClaveLabel.Size = New System.Drawing.Size(77, 16)
-        ClaveLabel.TabIndex = 2
-        ClaveLabel.Text = "Contraseña:"
-        '
-        'lblConfirmarClave
-        '
-        lblConfirmarClave.AutoSize = True
-        lblConfirmarClave.Location = New System.Drawing.Point(20, 85)
-        lblConfirmarClave.Name = "lblConfirmarClave"
-        lblConfirmarClave.Size = New System.Drawing.Size(120, 16)
-        lblConfirmarClave.TabIndex = 4
-        lblConfirmarClave.Text = "Repetir contraseña:"
-        '
-        'Ultimo_loginLabel
-        '
-        Ultimo_loginLabel.AutoSize = True
-        Ultimo_loginLabel.Location = New System.Drawing.Point(20, 117)
-        Ultimo_loginLabel.Name = "Ultimo_loginLabel"
-        Ultimo_loginLabel.Size = New System.Drawing.Size(94, 16)
-        Ultimo_loginLabel.TabIndex = 6
-        Ultimo_loginLabel.Text = "Último ingreso:"
         '
         'ActivoLabel
         '
@@ -427,6 +417,46 @@ Partial Class frmUsu
         lblSerie.Size = New System.Drawing.Size(42, 16)
         lblSerie.TabIndex = 2
         lblSerie.Text = "Serie:"
+        '
+        'Label3
+        '
+        Label3.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label3.AutoSize = True
+        Label3.ForeColor = System.Drawing.Color.Red
+        Label3.Location = New System.Drawing.Point(449, 202)
+        Label3.Name = "Label3"
+        Label3.Size = New System.Drawing.Size(112, 16)
+        Label3.TabIndex = 32
+        Label3.Text = "*máximo 9 digitos"
+        '
+        'Label4
+        '
+        Label4.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label4.AutoSize = True
+        Label4.ForeColor = System.Drawing.Color.Red
+        Label4.Location = New System.Drawing.Point(449, 142)
+        Label4.Name = "Label4"
+        Label4.Size = New System.Drawing.Size(135, 16)
+        Label4.TabIndex = 33
+        Label4.Text = "*máximo 3 caracteres"
+        '
+        'lblUsuarioSap
+        '
+        lblUsuarioSap.Location = New System.Drawing.Point(0, 0)
+        lblUsuarioSap.Name = "lblUsuarioSap"
+        lblUsuarioSap.Size = New System.Drawing.Size(100, 23)
+        lblUsuarioSap.TabIndex = 0
+        '
+        'lblClaveSap
+        '
+        lblClaveSap.Location = New System.Drawing.Point(0, 0)
+        lblClaveSap.Name = "lblClaveSap"
+        lblClaveSap.Size = New System.Drawing.Size(100, 23)
+        lblClaveSap.TabIndex = 0
         '
         'RibbonControl
         '
@@ -639,18 +669,8 @@ Partial Class frmUsu
         'TabPage3
         '
         Me.TabPage3.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(236, Byte), Integer), CType(CType(239, Byte), Integer))
-        Me.TabPage3.Controls.Add(Me.lblReptClaAut)
-        Me.TabPage3.Controls.Add(Me.txtReptClaveAuto)
-        Me.TabPage3.Controls.Add(Me.txtClaveAutoriza)
-        Me.TabPage3.Controls.Add(Me.lblClaveAuto)
-        Me.TabPage3.Controls.Add(Me.ConfirmarClaveTextEdit)
-        Me.TabPage3.Controls.Add(Ultimo_loginLabel)
-        Me.TabPage3.Controls.Add(Me.Ultimo_loginDateEdit)
-        Me.TabPage3.Controls.Add(lblConfirmarClave)
-        Me.TabPage3.Controls.Add(ClaveLabel)
-        Me.TabPage3.Controls.Add(Me.ClaveTextEdit)
-        Me.TabPage3.Controls.Add(CodigoLabel)
-        Me.TabPage3.Controls.Add(Me.CodigoTextEdit)
+        Me.TabPage3.Controls.Add(Me.GroupControl4)
+        Me.TabPage3.Controls.Add(Me.GroupControl6)
         Me.TabPage3.Location = New System.Drawing.Point(4, 25)
         Me.TabPage3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.TabPage3.Name = "TabPage3"
@@ -658,90 +678,6 @@ Partial Class frmUsu
         Me.TabPage3.Size = New System.Drawing.Size(1159, 346)
         Me.TabPage3.TabIndex = 0
         Me.TabPage3.Text = "Ingreso a TOM IMS"
-        '
-        'lblReptClaAut
-        '
-        Me.lblReptClaAut.AutoSize = True
-        Me.lblReptClaAut.Location = New System.Drawing.Point(20, 188)
-        Me.lblReptClaAut.Name = "lblReptClaAut"
-        Me.lblReptClaAut.Size = New System.Drawing.Size(82, 48)
-        Me.lblReptClaAut.TabIndex = 26
-        Me.lblReptClaAut.Text = "Repetir " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Clave de " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Autorización:"
-        Me.lblReptClaAut.Visible = False
-        '
-        'txtReptClaveAuto
-        '
-        Me.txtReptClaveAuto.Location = New System.Drawing.Point(147, 210)
-        Me.txtReptClaveAuto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtReptClaveAuto.Name = "txtReptClaveAuto"
-        Me.txtReptClaveAuto.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
-        Me.txtReptClaveAuto.Size = New System.Drawing.Size(249, 23)
-        Me.txtReptClaveAuto.TabIndex = 25
-        Me.txtReptClaveAuto.Visible = False
-        '
-        'txtClaveAutoriza
-        '
-        Me.txtClaveAutoriza.Location = New System.Drawing.Point(147, 149)
-        Me.txtClaveAutoriza.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtClaveAutoriza.Name = "txtClaveAutoriza"
-        Me.txtClaveAutoriza.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
-        Me.txtClaveAutoriza.Size = New System.Drawing.Size(249, 23)
-        Me.txtClaveAutoriza.TabIndex = 24
-        Me.txtClaveAutoriza.Visible = False
-        '
-        'lblClaveAuto
-        '
-        Me.lblClaveAuto.AutoSize = True
-        Me.lblClaveAuto.Location = New System.Drawing.Point(19, 153)
-        Me.lblClaveAuto.Name = "lblClaveAuto"
-        Me.lblClaveAuto.Size = New System.Drawing.Size(117, 16)
-        Me.lblClaveAuto.TabIndex = 23
-        Me.lblClaveAuto.Text = "Clave Autorización:"
-        Me.lblClaveAuto.Visible = False
-        '
-        'ConfirmarClaveTextEdit
-        '
-        Me.ConfirmarClaveTextEdit.Location = New System.Drawing.Point(147, 81)
-        Me.ConfirmarClaveTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.ConfirmarClaveTextEdit.MenuManager = Me.RibbonControl
-        Me.ConfirmarClaveTextEdit.Name = "ConfirmarClaveTextEdit"
-        Me.ConfirmarClaveTextEdit.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
-        Me.ConfirmarClaveTextEdit.Size = New System.Drawing.Size(250, 22)
-        Me.ConfirmarClaveTextEdit.TabIndex = 5
-        '
-        'Ultimo_loginDateEdit
-        '
-        Me.Ultimo_loginDateEdit.EditValue = Nothing
-        Me.Ultimo_loginDateEdit.Enabled = False
-        Me.Ultimo_loginDateEdit.Location = New System.Drawing.Point(147, 113)
-        Me.Ultimo_loginDateEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.Ultimo_loginDateEdit.MenuManager = Me.RibbonControl
-        Me.Ultimo_loginDateEdit.Name = "Ultimo_loginDateEdit"
-        Me.Ultimo_loginDateEdit.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.Ultimo_loginDateEdit.Properties.DisplayFormat.FormatString = "dd/MM/yyyy"
-        Me.Ultimo_loginDateEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-        Me.Ultimo_loginDateEdit.Size = New System.Drawing.Size(250, 22)
-        Me.Ultimo_loginDateEdit.TabIndex = 7
-        '
-        'ClaveTextEdit
-        '
-        Me.ClaveTextEdit.Location = New System.Drawing.Point(147, 47)
-        Me.ClaveTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.ClaveTextEdit.MenuManager = Me.RibbonControl
-        Me.ClaveTextEdit.Name = "ClaveTextEdit"
-        Me.ClaveTextEdit.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
-        Me.ClaveTextEdit.Size = New System.Drawing.Size(250, 22)
-        Me.ClaveTextEdit.TabIndex = 3
-        '
-        'CodigoTextEdit
-        '
-        Me.CodigoTextEdit.Location = New System.Drawing.Point(147, 15)
-        Me.CodigoTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.CodigoTextEdit.MenuManager = Me.RibbonControl
-        Me.CodigoTextEdit.Name = "CodigoTextEdit"
-        Me.CodigoTextEdit.Size = New System.Drawing.Size(250, 22)
-        Me.CodigoTextEdit.TabIndex = 1
         '
         'IdUsuarioSpinEdit
         '
@@ -1094,31 +1030,222 @@ Partial Class frmUsu
         Me.DockPanel1_Container.Size = New System.Drawing.Size(951, 89)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'Label3
+        'GroupControl1
         '
-        Label3.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label3.AutoSize = True
-        Label3.ForeColor = System.Drawing.Color.Red
-        Label3.Location = New System.Drawing.Point(449, 202)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(112, 16)
-        Label3.TabIndex = 32
-        Label3.Text = "*máximo 9 digitos"
+        Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
+        Me.GroupControl1.Name = "GroupControl1"
+        Me.GroupControl1.Size = New System.Drawing.Size(200, 100)
+        Me.GroupControl1.TabIndex = 0
         '
-        'Label4
+        'GroupControl3
         '
-        Label4.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label4.AutoSize = True
-        Label4.ForeColor = System.Drawing.Color.Red
-        Label4.Location = New System.Drawing.Point(449, 142)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(135, 16)
-        Label4.TabIndex = 33
-        Label4.Text = "*máximo 3 caracteres"
+        Me.GroupControl3.Location = New System.Drawing.Point(0, 0)
+        Me.GroupControl3.Name = "GroupControl3"
+        Me.GroupControl3.Size = New System.Drawing.Size(200, 100)
+        Me.GroupControl3.TabIndex = 0
+        '
+        'txtUsuarioSap
+        '
+        Me.txtUsuarioSap.Location = New System.Drawing.Point(0, 0)
+        Me.txtUsuarioSap.Name = "txtUsuarioSap"
+        Me.txtUsuarioSap.Size = New System.Drawing.Size(125, 25)
+        Me.txtUsuarioSap.TabIndex = 0
+        '
+        'txtClaveSap
+        '
+        Me.txtClaveSap.Location = New System.Drawing.Point(0, 0)
+        Me.txtClaveSap.Name = "txtClaveSap"
+        Me.txtClaveSap.Size = New System.Drawing.Size(125, 25)
+        Me.txtClaveSap.TabIndex = 0
+        '
+        'GroupControl4
+        '
+        Me.GroupControl4.Controls.Add(Me.TextEdit1)
+        Me.GroupControl4.Controls.Add(Label5)
+        Me.GroupControl4.Controls.Add(Me.TextEdit2)
+        Me.GroupControl4.Controls.Add(Label6)
+        Me.GroupControl4.Location = New System.Drawing.Point(467, 24)
+        Me.GroupControl4.Name = "GroupControl4"
+        Me.GroupControl4.Size = New System.Drawing.Size(345, 305)
+        Me.GroupControl4.TabIndex = 30
+        Me.GroupControl4.Text = "SAP"
+        '
+        'TextEdit1
+        '
+        Me.TextEdit1.Location = New System.Drawing.Point(144, 44)
+        Me.TextEdit1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.TextEdit1.MenuManager = Me.RibbonControl
+        Me.TextEdit1.Name = "TextEdit1"
+        Me.TextEdit1.Size = New System.Drawing.Size(181, 22)
+        Me.TextEdit1.TabIndex = 5
+        '
+        'Label5
+        '
+        Label5.AutoSize = True
+        Label5.Location = New System.Drawing.Point(16, 47)
+        Label5.Name = "Label5"
+        Label5.Size = New System.Drawing.Size(50, 16)
+        Label5.TabIndex = 4
+        Label5.Text = "Usuario"
+        '
+        'TextEdit2
+        '
+        Me.TextEdit2.Location = New System.Drawing.Point(144, 76)
+        Me.TextEdit2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.TextEdit2.MenuManager = Me.RibbonControl
+        Me.TextEdit2.Name = "TextEdit2"
+        Me.TextEdit2.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
+        Me.TextEdit2.Size = New System.Drawing.Size(181, 22)
+        Me.TextEdit2.TabIndex = 7
+        '
+        'Label6
+        '
+        Label6.AutoSize = True
+        Label6.Location = New System.Drawing.Point(17, 79)
+        Label6.Name = "Label6"
+        Label6.Size = New System.Drawing.Size(77, 16)
+        Label6.TabIndex = 6
+        Label6.Text = "Contraseña:"
+        '
+        'GroupControl6
+        '
+        Me.GroupControl6.Controls.Add(Me.txtReptClaveAuto)
+        Me.GroupControl6.Controls.Add(Me.CodigoTextEdit)
+        Me.GroupControl6.Controls.Add(Me.lblReptClaAut)
+        Me.GroupControl6.Controls.Add(CodigoLabel)
+        Me.GroupControl6.Controls.Add(Me.ClaveTextEdit)
+        Me.GroupControl6.Controls.Add(Me.txtClaveAutoriza)
+        Me.GroupControl6.Controls.Add(ClaveLabel)
+        Me.GroupControl6.Controls.Add(Me.lblClaveAuto)
+        Me.GroupControl6.Controls.Add(lblConfirmarClave)
+        Me.GroupControl6.Controls.Add(Me.ConfirmarClaveTextEdit)
+        Me.GroupControl6.Controls.Add(Me.Ultimo_loginDateEdit)
+        Me.GroupControl6.Controls.Add(Ultimo_loginLabel)
+        Me.GroupControl6.Location = New System.Drawing.Point(26, 24)
+        Me.GroupControl6.Name = "GroupControl6"
+        Me.GroupControl6.Size = New System.Drawing.Size(410, 305)
+        Me.GroupControl6.TabIndex = 29
+        Me.GroupControl6.Text = "WMS"
+        '
+        'txtReptClaveAuto
+        '
+        Me.txtReptClaveAuto.Location = New System.Drawing.Point(139, 239)
+        Me.txtReptClaveAuto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtReptClaveAuto.Name = "txtReptClaveAuto"
+        Me.txtReptClaveAuto.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
+        Me.txtReptClaveAuto.Size = New System.Drawing.Size(249, 23)
+        Me.txtReptClaveAuto.TabIndex = 25
+        Me.txtReptClaveAuto.Visible = False
+        '
+        'CodigoTextEdit
+        '
+        Me.CodigoTextEdit.Location = New System.Drawing.Point(139, 44)
+        Me.CodigoTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.CodigoTextEdit.MenuManager = Me.RibbonControl
+        Me.CodigoTextEdit.Name = "CodigoTextEdit"
+        Me.CodigoTextEdit.Size = New System.Drawing.Size(250, 22)
+        Me.CodigoTextEdit.TabIndex = 1
+        '
+        'lblReptClaAut
+        '
+        Me.lblReptClaAut.AutoSize = True
+        Me.lblReptClaAut.Location = New System.Drawing.Point(12, 217)
+        Me.lblReptClaAut.Name = "lblReptClaAut"
+        Me.lblReptClaAut.Size = New System.Drawing.Size(82, 48)
+        Me.lblReptClaAut.TabIndex = 26
+        Me.lblReptClaAut.Text = "Confirmar " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Clave de " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Autorización:"
+        Me.lblReptClaAut.Visible = False
+        '
+        'CodigoLabel
+        '
+        CodigoLabel.AutoSize = True
+        CodigoLabel.Location = New System.Drawing.Point(11, 47)
+        CodigoLabel.Name = "CodigoLabel"
+        CodigoLabel.Size = New System.Drawing.Size(50, 16)
+        CodigoLabel.TabIndex = 0
+        CodigoLabel.Text = "Usuario"
+        '
+        'ClaveTextEdit
+        '
+        Me.ClaveTextEdit.Location = New System.Drawing.Point(139, 76)
+        Me.ClaveTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.ClaveTextEdit.MenuManager = Me.RibbonControl
+        Me.ClaveTextEdit.Name = "ClaveTextEdit"
+        Me.ClaveTextEdit.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
+        Me.ClaveTextEdit.Size = New System.Drawing.Size(250, 22)
+        Me.ClaveTextEdit.TabIndex = 3
+        '
+        'txtClaveAutoriza
+        '
+        Me.txtClaveAutoriza.Location = New System.Drawing.Point(139, 178)
+        Me.txtClaveAutoriza.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtClaveAutoriza.Name = "txtClaveAutoriza"
+        Me.txtClaveAutoriza.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
+        Me.txtClaveAutoriza.Size = New System.Drawing.Size(249, 23)
+        Me.txtClaveAutoriza.TabIndex = 24
+        Me.txtClaveAutoriza.Visible = False
+        '
+        'ClaveLabel
+        '
+        ClaveLabel.AutoSize = True
+        ClaveLabel.Location = New System.Drawing.Point(12, 79)
+        ClaveLabel.Name = "ClaveLabel"
+        ClaveLabel.Size = New System.Drawing.Size(77, 16)
+        ClaveLabel.TabIndex = 2
+        ClaveLabel.Text = "Contraseña:"
+        '
+        'lblClaveAuto
+        '
+        Me.lblClaveAuto.AutoSize = True
+        Me.lblClaveAuto.Location = New System.Drawing.Point(11, 182)
+        Me.lblClaveAuto.Name = "lblClaveAuto"
+        Me.lblClaveAuto.Size = New System.Drawing.Size(117, 16)
+        Me.lblClaveAuto.TabIndex = 23
+        Me.lblClaveAuto.Text = "Clave Autorización:"
+        Me.lblClaveAuto.Visible = False
+        '
+        'lblConfirmarClave
+        '
+        lblConfirmarClave.AutoSize = True
+        lblConfirmarClave.Location = New System.Drawing.Point(12, 114)
+        lblConfirmarClave.Name = "lblConfirmarClave"
+        lblConfirmarClave.Size = New System.Drawing.Size(120, 16)
+        lblConfirmarClave.TabIndex = 4
+        lblConfirmarClave.Text = "Repetir contraseña:"
+        '
+        'ConfirmarClaveTextEdit
+        '
+        Me.ConfirmarClaveTextEdit.Location = New System.Drawing.Point(139, 110)
+        Me.ConfirmarClaveTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.ConfirmarClaveTextEdit.MenuManager = Me.RibbonControl
+        Me.ConfirmarClaveTextEdit.Name = "ConfirmarClaveTextEdit"
+        Me.ConfirmarClaveTextEdit.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
+        Me.ConfirmarClaveTextEdit.Size = New System.Drawing.Size(250, 22)
+        Me.ConfirmarClaveTextEdit.TabIndex = 5
+        '
+        'Ultimo_loginDateEdit
+        '
+        Me.Ultimo_loginDateEdit.EditValue = Nothing
+        Me.Ultimo_loginDateEdit.Enabled = False
+        Me.Ultimo_loginDateEdit.Location = New System.Drawing.Point(139, 142)
+        Me.Ultimo_loginDateEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.Ultimo_loginDateEdit.MenuManager = Me.RibbonControl
+        Me.Ultimo_loginDateEdit.Name = "Ultimo_loginDateEdit"
+        Me.Ultimo_loginDateEdit.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.Ultimo_loginDateEdit.Properties.DisplayFormat.FormatString = "dd/MM/yyyy"
+        Me.Ultimo_loginDateEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+        Me.Ultimo_loginDateEdit.Size = New System.Drawing.Size(250, 22)
+        Me.Ultimo_loginDateEdit.TabIndex = 7
+        '
+        'Ultimo_loginLabel
+        '
+        Ultimo_loginLabel.AutoSize = True
+        Ultimo_loginLabel.Location = New System.Drawing.Point(12, 146)
+        Ultimo_loginLabel.Name = "Ultimo_loginLabel"
+        Ultimo_loginLabel.Size = New System.Drawing.Size(94, 16)
+        Ultimo_loginLabel.TabIndex = 6
+        Ultimo_loginLabel.Text = "Último ingreso:"
         '
         'frmUsu
         '
@@ -1153,12 +1280,6 @@ Partial Class frmUsu
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage3.ResumeLayout(False)
-        Me.TabPage3.PerformLayout()
-        CType(Me.ConfirmarClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.Ultimo_loginDateEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.CodigoTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.IdUsuarioSpinEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NombresTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ApellidosTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1194,6 +1315,23 @@ Partial Class frmUsu
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtUsuarioSap.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtClaveSap.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl4.ResumeLayout(False)
+        Me.GroupControl4.PerformLayout()
+        CType(Me.TextEdit1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.TextEdit2.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl6, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl6.ResumeLayout(False)
+        Me.GroupControl6.PerformLayout()
+        CType(Me.CodigoTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ConfirmarClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Ultimo_loginDateEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1218,11 +1356,7 @@ Partial Class frmUsu
     Private WithEvents Dgrid As System.Windows.Forms.DataGridView
     Friend WithEvents TabControl2 As System.Windows.Forms.TabControl
     Friend WithEvents TabPage3 As System.Windows.Forms.TabPage
-    Friend WithEvents Ultimo_loginDateEdit As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents ClaveTextEdit As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents CodigoTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents chkActivo As DevExpress.XtraEditors.CheckEdit
-    Friend WithEvents ConfirmarClaveTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents picFoto As DevExpress.XtraEditors.PictureEdit
     Friend WithEvents Fec_agrDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_agrTextEdit As DevExpress.XtraEditors.TextEdit
@@ -1238,10 +1372,6 @@ Partial Class frmUsu
     Friend WithEvents lblSistema As Label
     Friend WithEvents chkSistema As CheckBox
     Friend WithEvents cbxEmpresa As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents lblClaveAuto As Label
-    Friend WithEvents txtClaveAutoriza As TextBox
-    Friend WithEvents lblReptClaAut As Label
-    Friend WithEvents txtReptClaveAuto As TextBox
     Friend WithEvents Resoluciones_licencia As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents GroupControl2 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents ToolStripPR As ToolStrip
@@ -1260,4 +1390,20 @@ Partial Class frmUsu
     Friend WithEvents GrdResolucion As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents GridView6 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents chkActivoPR As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents GroupControl3 As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents txtUsuarioSap As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtClaveSap As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents GroupControl4 As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents TextEdit1 As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents TextEdit2 As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents GroupControl6 As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents txtReptClaveAuto As TextBox
+    Friend WithEvents CodigoTextEdit As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents lblReptClaAut As Label
+    Friend WithEvents ClaveTextEdit As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtClaveAutoriza As TextBox
+    Friend WithEvents lblClaveAuto As Label
+    Friend WithEvents ConfirmarClaveTextEdit As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents Ultimo_loginDateEdit As DevExpress.XtraEditors.DateEdit
 End Class

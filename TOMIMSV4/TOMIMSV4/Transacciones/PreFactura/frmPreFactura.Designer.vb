@@ -282,7 +282,7 @@ Partial Class frmPreFactura
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 353
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1370, 158)
+        Me.RibbonControl.Size = New System.Drawing.Size(1554, 158)
         '
         'cmdGuardar
         '
@@ -354,6 +354,7 @@ Partial Class frmPreFactura
         'chkVarianteCobro
         '
         Me.chkVarianteCobro.Caption = "Calcular con variante"
+        Me.chkVarianteCobro.Hint = "Aplica si el cobro es por unidad (mt2, mt3 o posición)"
         Me.chkVarianteCobro.Id = 12
         Me.chkVarianteCobro.Name = "chkVarianteCobro"
         '
@@ -478,7 +479,7 @@ Partial Class frmPreFactura
         Me.GrpTransaccion.Location = New System.Drawing.Point(0, 158)
         Me.GrpTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpTransaccion.Name = "GrpTransaccion"
-        Me.GrpTransaccion.Size = New System.Drawing.Size(1370, 366)
+        Me.GrpTransaccion.Size = New System.Drawing.Size(1554, 372)
         Me.GrpTransaccion.TabIndex = 2
         Me.GrpTransaccion.Text = "Encabezado"
         '
@@ -1039,7 +1040,7 @@ Partial Class frmPreFactura
         Me.dgridServiciosAsociados.MainView = Me.gvDetalleServicios
         Me.dgridServiciosAsociados.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.dgridServiciosAsociados.Name = "dgridServiciosAsociados"
-        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1364, 137)
+        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1548, 324)
         Me.dgridServiciosAsociados.TabIndex = 32
         Me.dgridServiciosAsociados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleServicios})
         '
@@ -1068,7 +1069,7 @@ Partial Class frmPreFactura
         Me.xtratabPrecuenta.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.xtratabPrecuenta.Name = "xtratabPrecuenta"
         Me.xtratabPrecuenta.SelectedTabPage = Me.XtraTabPage1
-        Me.xtratabPrecuenta.Size = New System.Drawing.Size(1366, 162)
+        Me.xtratabPrecuenta.Size = New System.Drawing.Size(1550, 349)
         Me.xtratabPrecuenta.TabIndex = 64
         Me.xtratabPrecuenta.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2})
         '
@@ -1077,7 +1078,7 @@ Partial Class frmPreFactura
         Me.XtraTabPage1.Controls.Add(Me.dgridServiciosAsociados)
         Me.XtraTabPage1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(1364, 137)
+        Me.XtraTabPage1.Size = New System.Drawing.Size(1548, 324)
         Me.XtraTabPage1.Text = "Precuenta"
         '
         'XtraTabPage2
@@ -1085,7 +1086,7 @@ Partial Class frmPreFactura
         Me.XtraTabPage2.Controls.Add(Me.dgriDetallePreCuenta)
         Me.XtraTabPage2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.XtraTabPage2.Name = "XtraTabPage2"
-        Me.XtraTabPage2.Size = New System.Drawing.Size(669, 89)
+        Me.XtraTabPage2.Size = New System.Drawing.Size(1327, 511)
         Me.XtraTabPage2.Text = "Detalle de precuenta"
         '
         'dgriDetallePreCuenta
@@ -1096,7 +1097,7 @@ Partial Class frmPreFactura
         Me.dgriDetallePreCuenta.MainView = Me.gvdetalleprecuenta
         Me.dgriDetallePreCuenta.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.dgriDetallePreCuenta.Name = "dgriDetallePreCuenta"
-        Me.dgriDetallePreCuenta.Size = New System.Drawing.Size(535, 71)
+        Me.dgriDetallePreCuenta.Size = New System.Drawing.Size(1062, 409)
         Me.dgriDetallePreCuenta.TabIndex = 33
         Me.dgriDetallePreCuenta.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvdetalleprecuenta})
         '
@@ -1119,16 +1120,16 @@ Partial Class frmPreFactura
         '
         Me.PanelControl1.Controls.Add(Me.xtratabPrecuenta)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PanelControl1.Location = New System.Drawing.Point(0, 524)
+        Me.PanelControl1.Location = New System.Drawing.Point(0, 530)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1370, 166)
+        Me.PanelControl1.Size = New System.Drawing.Size(1554, 353)
         Me.PanelControl1.TabIndex = 68
         '
         'frmPreFactura
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1370, 690)
+        Me.ClientSize = New System.Drawing.Size(1554, 883)
         Me.Controls.Add(Me.PanelControl1)
         Me.Controls.Add(Me.GrpTransaccion)
         Me.Controls.Add(Me.RibbonControl)

@@ -25,7 +25,7 @@ Public Class clsLnOperador_bodega
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeOperador_bodega As clsBeOperador_bodega, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeOperador_bodega As clsBeOperador_bodega, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -262,7 +262,7 @@ Public Class clsLnOperador_bodega
 
         Try
 
-            Const sp As String = "SELECT * FROM Operador_bodega" & _
+            Const sp As String = "SELECT * FROM Operador_bodega" &
             " Where(IdOperadorBodega = @IdOperadorBodega)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -370,7 +370,7 @@ Public Class clsLnOperador_bodega
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 
@@ -428,6 +428,46 @@ Public Class clsLnOperador_bodega
             clsLnLog_error_wms.Agregar_Error(ex.Message)
             Return False
         End Try
+    End Function
+
+    Public Shared Function Get_Nombre_By_IdOperadorBodega(ByVal pIdOperadorBodega As Integer,
+                                                          ByVal lConnection As SqlConnection,
+                                                          ByVal lTransaction As SqlTransaction) As String
+
+        Get_Nombre_By_IdOperadorBodega = ""
+
+        Try
+
+            Const vSQL As String = "SELECT nombres + ' ' + apellidos Nombre  
+                                    FROM operador o INNER JOIN operador_bodega ob ON o.IdOperador = ob.IdOperador
+                                    WHERE ob.IdOperadorBodega = @IdOperadorBodega "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOperadorBodega", pIdOperadorBodega)
+
+                Dim lDT As New DataTable
+
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+
+                    Get_Nombre_By_IdOperadorBodega = IIf(IsDBNull(lRow("Nombre")), "", lRow("Nombre"))
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+
+            Throw ex
+
+        End Try
+
     End Function
 
 End Class

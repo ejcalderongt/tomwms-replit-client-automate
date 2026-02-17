@@ -6,4 +6,6 @@
     Public Property CantidadEnStock As Double = 0
     Public Property PesoEnStock As Double = 0
     Public Property Cantidad_Nav As Double = 0
+
+    ' # 
 End Class

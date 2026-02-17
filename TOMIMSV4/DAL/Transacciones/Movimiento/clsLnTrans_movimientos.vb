@@ -163,6 +163,12 @@ Public Class clsLnTrans_movimientos
 
             Return rowsAffected
 
+            If rowsAffected = 1 Then
+                Return 1
+            Else
+                Return 0
+            End If
+
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             '#GT21102022: aqui nunca falta el bug, mejor guardar lo que haya sido
@@ -206,8 +212,10 @@ Public Class clsLnTrans_movimientos
             Return rowsAffected
 
         Catch ex As Exception
+            '#MECR25112025: Se agrego bitacora de logs para reabastecimiento
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_reab.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdMovimiento:=pIdMovimiento, pLic_Plate:=pLicPlate)
             Throw ex
         End Try
 
@@ -340,6 +348,8 @@ Public Class clsLnTrans_movimientos
 
             Dim sp As String = " Delete from Trans_movimientos
                                  Where(IdMovimiento = @IdMovimiento)
+                                 AND (IdRecepcion=@IdRecepcion)
+                                 AND (IdRecepcionDet=@IdRecepcionDet)
                                  AND (IdEmpresa = @IdEmpresa)  
                                  AND (IdBodegaOrigen = @IdBodegaOrigen)  
                                  AND (IdTransaccion = @IdTransaccion)"
@@ -347,6 +357,8 @@ Public Class clsLnTrans_movimientos
             Dim cmd As New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
 
             cmd.Parameters.Add(New SqlParameter("@IDMOVIMIENTO", oBeTrans_movimientos.IdMovimiento))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeTrans_movimientos.IdRecepcion))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", oBeTrans_movimientos.IdRecepcionDet))
             cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeTrans_movimientos.IdEmpresa))
             cmd.Parameters.Add(New SqlParameter("@IDBODEGAORIGEN", oBeTrans_movimientos.IdBodegaOrigen))
             cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeTrans_movimientos.IdTransaccion))
@@ -452,6 +464,36 @@ Public Class clsLnTrans_movimientos
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
             If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Eliminar_Recepcion_BOF(ByRef oBeTrans_movimientos As clsBeTrans_movimientos,
+                                                  ByVal pConection As SqlConnection,
+                                                  ByVal pTransaction As SqlTransaction) As Integer
+
+        Try
+
+
+            Dim sp As String = " Delete from Trans_movimientos
+                                 Where (IdRecepcion=@IdRecepcion)
+                                 AND (IdRecepcionDet=@IdRecepcionDet)
+                                 AND (IdTransaccion = @IdTransaccion)
+                                 AND IdTipoTarea=1 "
+
+            Dim cmd As New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeTrans_movimientos.IdRecepcion))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", oBeTrans_movimientos.IdRecepcionDet))
+            cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeTrans_movimientos.IdTransaccion))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
         End Try
 
     End Function

@@ -130,6 +130,7 @@ Public Class clsLnI_nav_transacciones_out
             Ins.Add("peso_neto", "@peso_neto", DataType.Parametro)
             Ins.Add("peso_bruto", "@peso_bruto", DataType.Parametro)
             Ins.Add("fecha_despacho", "@fecha_despacho", DataType.Parametro)
+            '#EJC20210617:Devoluci�n Idealsa con referencia.
             Ins.Add("no_documento_salida_ref_devol", "@no_documento_salida_ref_devol", DataType.Parametro)
             Ins.Add("IdPedidoEncDevol", "@IdPedidoEncDevol", DataType.Parametro)
             Ins.Add("IdDespachoDet", "@IdDespachoDet", DataType.Parametro)

@@ -24,13 +24,15 @@ Public Class clsLnReglas_recepcion
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeReglas_recepcion As clsBeReglas_recepcion, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeReglas_recepcion As clsBeReglas_recepcion, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -356,8 +358,9 @@ Public Class clsLnReglas_recepcion
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23092025: Se agrego bitacora de logs para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -401,8 +404,9 @@ Public Class clsLnReglas_recepcion
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -428,8 +432,10 @@ Public Class clsLnReglas_recepcion
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 

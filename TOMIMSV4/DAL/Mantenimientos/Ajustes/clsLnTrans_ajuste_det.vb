@@ -40,7 +40,7 @@ Public Class clsLnTrans_ajuste_det
 
                 .IdProductoTallaColor_destino = IIf(IsDBNull(dr.Item("IdProductoTallaColor_destino")), 0, dr.Item("IdProductoTallaColor_destino"))
                 .Talla_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
-                .Color_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
+                .Color_destino = IIf(IsDBNull(dr.Item("Color_destino")), "", dr.Item("Color_destino"))
 
             End With
         Catch ex As Exception

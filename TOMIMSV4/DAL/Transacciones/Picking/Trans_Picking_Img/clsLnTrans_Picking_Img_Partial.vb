@@ -30,7 +30,6 @@ Partial Public Class clsLnTrans_Picking_Img
         End Try
 
     End Function
-
     Public Shared Sub Guardar_Imagen_Verificacion(ByVal pIdPedidoDet As Integer,
                                                   ByVal imagen_verificacion As Byte(),
                                                   Optional ByVal pConnection As SqlConnection = Nothing,
@@ -71,8 +70,24 @@ Partial Public Class clsLnTrans_Picking_Img
 
             If Es_Transaccion_Remota Then
                 Insertar(BePickingImg, pConnection, pTransaction)
+
+                '#MECR04122025: Se agrego bitacora de log para verificacion
+                Dim msgControl As String = "Se agrego imagen al pedido: " + BePickingImg.IdPedidoEnc.ToString + " por su verficacion"
+                'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+                'pIdPickingDet:=pIdPedidoDet,
+                'pUser_agr:=BePickingImg.User_agr,
+                'pConection:=pConnection,
+                'pTransaction:=pTransaction)
             Else
                 Insertar(BePickingImg, lConnection, lTransaction)
+
+                '#MECR04122025: Se agrego bitacora de log para verificacion
+                Dim msgControl As String = "Se agrego imagen al pedido: " + BePickingImg.IdPedidoEnc.ToString + " por su verficacion"
+                'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+                'pIdPickingDet:=pIdPedidoDet,
+                'pUser_agr:=BePickingImg.User_agr,
+                'pConection:=lConnection,
+                'pTransaction:=lTransaction)
                 lTransaction.Commit()
             End If
 
@@ -90,7 +105,6 @@ Partial Public Class clsLnTrans_Picking_Img
         End Try
 
     End Sub
-
     Public Shared Function Get_All_Imagen_By_IdPedidoDet(ByVal pIdPedidoDet As Integer) As List(Of clsBeTrans_picking_img)
 
         Dim lReturnList As New List(Of clsBeTrans_picking_img)
@@ -144,7 +158,6 @@ Partial Public Class clsLnTrans_Picking_Img
             Throw ex
         End Try
     End Function
-
     '#GT23052025: obtener imagenes del picking para enviar a la nube.
     Public Shared Function Get_All_Imagen_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As List(Of clsBeTrans_picking_img)
 

@@ -29,7 +29,7 @@ Public Class clsLnI_nav_config_det
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeI_nav_config_det As clsBeI_nav_config_det, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeI_nav_config_det As clsBeI_nav_config_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -271,7 +271,7 @@ Public Class clsLnI_nav_config_det
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_det" & _
+            Const sp As String = "SELECT * FROM I_nav_config_det" &
             " Where(idnavconfigdet = @idnavconfigdet)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -339,29 +339,31 @@ Public Class clsLnI_nav_config_det
 
     End Function
 
-    Public Shared Function GetSingle(ByRef pBeI_nav_config_det As clsBeI_nav_config_det)
+    Public Shared Function GetList(ByRef pBeI_nav_config_det As clsBeI_nav_config_det) As List(Of clsBeI_nav_config_det)
 
+        GetList = Nothing
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_det" & _
-            " Where(idnavconfigdet = @idnavconfigdet)"
+            Const sp As String = "SELECT * FROM I_nav_config_det" &
+            " Where(idnavconfigdet = @idnavconfigdet and idnavent=@idnavent and dia=@dia)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", pBeI_nav_config_det.IDNAVCONFIGDET))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", pBeI_nav_config_det.Idnavconfigdet))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDNAVENT", pBeI_nav_config_det.IdNavEnt))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@DIA", pBeI_nav_config_det.Dia))
 
             Dim dt As New DataTable
             dad.Fill(dt)
 
             If dt.Rows.Count = 1 Then
+                GetList = New List(Of clsBeI_nav_config_det)()
                 Cargar(pBeI_nav_config_det, dt.Rows(0))
+                GetList.Add(pBeI_nav_config_det)
             End If
 
-            Return True
-
-
-        Catch ex1 As SQLException
+        Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -371,7 +373,7 @@ Public Class clsLnI_nav_config_det
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 
@@ -393,14 +395,45 @@ Public Class clsLnI_nav_config_det
             Return lMax
 
 
-        Catch ex1 As SQLException
+        Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
-        End Try
+    End Try
 
     End Function
+
+
+    Public Shared Function GetSingle_By_Dia_And_Entidad(ByVal pConfiguracion_del_dia As clsBeI_nav_config_det) As clsBeI_nav_config_det
+
+        GetSingle_By_Dia_And_Entidad = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM I_nav_config_det" &
+            " Where(IdNavEnt = @IdNavEnt and dia=@Dia and activo=1) "
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdNavEnt", pConfiguracion_del_dia.IdNavEnt))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@Dia", pConfiguracion_del_dia.Dia))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                GetSingle_By_Dia_And_Entidad = New clsBeI_nav_config_det()
+                Cargar(GetSingle_By_Dia_And_Entidad, dt.Rows(0))
+            End If
+
+        Catch ex As Exception
+
+        End Try
+    End Function
+
 
 End Class

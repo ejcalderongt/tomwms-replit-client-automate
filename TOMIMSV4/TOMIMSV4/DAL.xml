@@ -1197,13 +1197,6 @@ Row event argument class
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(System.Int32)">
- <summary>
- Creada por Erik Calderón, se usa para obtener todas las Recepciones para posteriormente buscar su estado y anularlas
- </summary>
- <param name="pIdOrdenCompraEnc"></param>
- <returns>Lista de Recepciones solamente Ids</returns>
-</member>
 <member name="M:TOMWMS.clsLnTrans_re_oc.GetSingle(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>
  #EJC20250902: Creada para la interface de mampa.

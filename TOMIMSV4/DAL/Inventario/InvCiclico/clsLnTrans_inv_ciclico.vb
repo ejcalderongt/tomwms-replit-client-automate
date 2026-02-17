@@ -1,6 +1,5 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
-
 Public Class clsLnTrans_inv_ciclico
 
     Public Shared Sub Cargar(ByRef oBeTrans_inv_ciclico As clsBeTrans_inv_ciclico, ByRef dr As DataRow)
@@ -38,6 +37,8 @@ Public Class clsLnTrans_inv_ciclico
                 .lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), "", dr.Item("lic_plate"))
                 .IdBodega = IIf(IsDBNull(dr.Item("IdBodega")), 0, dr.Item("IdBodega"))
                 .Regularizar = IIf(IsDBNull(dr.Item("Regularizar")), True, dr.Item("Regularizar"))
+                .Nuevo_Stock = IIf(IsDBNull(dr.Item("Nuevo_Stock")), True, dr.Item("Nuevo_Stock"))
+                .Cantidad_Reservada_UMBas = IIf(IsDBNull(dr.Item("Cantidad_Reservada_UMBas")), True, dr.Item("Cantidad_Reservada_UMBas"))
                 .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
                 .IdProductoTallaColor_nuevo = IIf(IsDBNull(dr.Item("IdProductoTallaColor_nuevo")), 0, dr.Item("IdProductoTallaColor_nuevo"))
 
@@ -89,6 +90,9 @@ Public Class clsLnTrans_inv_ciclico
             Ins.Add("IdBodega", "@IdBodega", DataType.Parametro)
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("regularizar", "@regularizar", DataType.Parametro)
+            Ins.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
+            Ins.Add("contado", "@contado", DataType.Parametro)
+            Ins.Add("Cantidad_Reservada_UMBas", "@Cantidad_Reservada_UMBas", DataType.Parametro)
             Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Ins.Add("gondola", "@Gondola", DataType.Parametro)
             Ins.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
@@ -143,6 +147,9 @@ Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_inv_ciclico.IdBodega))
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
             cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", oBeTrans_inv_ciclico.Regularizar))
+            cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", oBeTrans_inv_ciclico.Nuevo_Stock))
+            cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
+            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RESERVADA_UMBAS", oBeTrans_inv_ciclico.Cantidad_Reservada_UMBas))
             cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
             cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_nuevo", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
             cmd.Parameters.Add(New SqlParameter("@GONDOLA", oBeTrans_inv_ciclico.Gondola))
@@ -203,6 +210,9 @@ Public Class clsLnTrans_inv_ciclico
             Upd.Add("IdBodega", "@IdBodega", DataType.Parametro)
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Upd.Add("regularizar", "@regularizar", DataType.Parametro)
+            Upd.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
+            Upd.Add("contado", "@contado", DataType.Parametro)
+            Upd.Add("Cantidad_Reservada_UMBas", "@Cantidad_Reservada_UMBas", DataType.Parametro)
             Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
             Upd.Add("gondola", "@gondola", DataType.Parametro)
@@ -251,6 +261,9 @@ Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_inv_ciclico.IdBodega))
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
             cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", oBeTrans_inv_ciclico.Regularizar))
+            cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", oBeTrans_inv_ciclico.Nuevo_Stock))
+            cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
+            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RESERVADA_UMBAS", oBeTrans_inv_ciclico.Cantidad_Reservada_UMBas))
             cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
             cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_nuevo", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
             cmd.Parameters.Add(New SqlParameter("@GONDOLA", oBeTrans_inv_ciclico.Gondola))
@@ -874,13 +887,27 @@ Public Class clsLnTrans_inv_ciclico
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
-
+            ' Inicializa el generador de UPDATE SQL
             Upd.Init("trans_inv_ciclico")
             Upd.Add("regularizar", "@regularizar", DataType.Parametro)
-            Upd.Where("IdInvCiclico = @IdInvCiclico and idinventarioenc=@idinventarioenc")
+            Upd.Where("IdInvCiclico IN (SELECT idinvciclico
+                                     FROM trans_inv_ciclico
+                                     WHERE idinventarioenc = @idinventarioenc
+                                       AND IdProductoBodega = @IdProductoBodega
+                                       AND IdUbicacion = @IdUbicacion
+                                       AND ISNULL(IdUbicacion_nuevo,0) = ISNULL(@IdUbicacion_nuevo, 0)
+                                       AND ISNULL(lote_stock, '') = ISNULL(@LoteOrigen, '')
+                                       AND ISNULL(lote, '') = ISNULL(@Lote, '')
+                                       AND ISNULL(fecha_vence, '1900-01-01') = ISNULL(@fecha_vence, '1900-01-01')
+                                       AND ISNULL(fecha_vence_stock, '1900-01-01') = ISNULL(@fecha_vence_stock, '1900-01-01')
+                                       AND ISNULL(lic_plate, '') = ISNULL(@Licencia, '')
+                                       AND IdProductoEstado = @IdProductoEstado
+                                       AND IdProductoEst_nuevo = @IdProductoEst_nuevo
+                                       AND ISNULL(IdPresentacion, 0) = ISNULL(@IdPresentacion, 0)
+                                       AND ISNULL(IdUnidadMedida, 0) = ISNULL(@IdUnidadMedida, 0))
+                          AND idinventarioenc = @idinventarioenc")
 
             Dim sp As String = Upd.SQL()
-
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
@@ -888,28 +915,50 @@ Public Class clsLnTrans_inv_ciclico
                 cmd = New SqlCommand(sp, pConection)
                 cmd.Transaction = pTransaction
             Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", oBeTrans_inv_ciclico.Regularizar))
-            cmd.Parameters.Add(New SqlParameter("@IDINVCICLICO", oBeTrans_inv_ciclico.IdInvCiclico))
-            cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_ciclico.Idinventarioenc))
+            ' Asignación de parámetros
+            cmd.Parameters.Add(New SqlParameter("@regularizar", oBeTrans_inv_ciclico.Regularizar))
+            cmd.Parameters.Add(New SqlParameter("@idinventarioenc", oBeTrans_inv_ciclico.Idinventarioenc))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoBodega", oBeTrans_inv_ciclico.IdProductoBodega))
+            cmd.Parameters.Add(New SqlParameter("@IdUbicacion", oBeTrans_inv_ciclico.IdUbicacion))
+            cmd.Parameters.Add(New SqlParameter("@IdUbicacion_nuevo", oBeTrans_inv_ciclico.IdUbicacion_nuevo))
+            cmd.Parameters.Add(New SqlParameter("@LoteOrigen", oBeTrans_inv_ciclico.Lote_stock))
+            cmd.Parameters.Add(New SqlParameter("@Lote", oBeTrans_inv_ciclico.Lote))
+            cmd.Parameters.Add(New SqlParameter("@fecha_vence", oBeTrans_inv_ciclico.Fecha_vence))
+            cmd.Parameters.Add(New SqlParameter("@fecha_vence_stock", oBeTrans_inv_ciclico.Fecha_vence_stock))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoEstado", oBeTrans_inv_ciclico.IdProductoEstado))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoEst_nuevo", oBeTrans_inv_ciclico.IdProductoEst_nuevo))
+            cmd.Parameters.Add(New SqlParameter("@Licencia", oBeTrans_inv_ciclico.lic_plate))
+            cmd.Parameters.Add(New SqlParameter("@IdPresentacion", oBeTrans_inv_ciclico.IdPresentacion))
+            cmd.Parameters.Add(New SqlParameter("@IdUnidadMedida", oBeTrans_inv_ciclico.IdUnidadMedida))
 
+            ' Ejecutar y retornar filas afectadas
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
             cmd.Dispose()
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+            If Not Es_Transaccion_Remota Then
+                lTransaction.Commit()
+            End If
 
             Return rowsAffected
 
         Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+            If lTransaction IsNot Nothing Then
+                lTransaction.Rollback()
+            End If
+            ' Re-lanzar manteniendo el stack trace original
+            Throw
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
+                lConnection.Close()
+            End If
+            If lTransaction IsNot Nothing Then
+                lTransaction.Dispose()
+            End If
         End Try
 
     End Function
@@ -942,6 +991,335 @@ Public Class clsLnTrans_inv_ciclico
             End If
 
             cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", pRegularizar))
+            cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", pIdInventarioEnc))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Actualizar_NuevoStock_By_IdInventarioEnc_And_IdInvCiclico(ByRef oBeTrans_inv_ciclico As clsBeTrans_inv_ciclico,
+                                                                                     ByVal pDiferencia As Double,
+                                                                                     Optional ByVal pConection As SqlConnection = Nothing,
+                                                                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand()
+            Dim selCmd As New SqlCommand()
+            Dim countCmd As New SqlCommand()
+            Dim IdStock As Integer = -1
+            Dim recordCount As Integer
+            Dim rowsAffected As Integer = 0
+
+            If Es_Transaccion_Remota Then
+                cmd.Connection = pConection
+                cmd.Transaction = pTransaction
+                selCmd.Connection = pConection
+                selCmd.Transaction = pTransaction
+                countCmd.Connection = pConection
+                countCmd.Transaction = pTransaction
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd.Connection = lConnection
+                cmd.Transaction = lTransaction
+                selCmd.Connection = lConnection
+                selCmd.Transaction = lTransaction
+                countCmd.Connection = lConnection
+                countCmd.Transaction = lTransaction
+            End If
+
+            ' =====================
+            ' Paso 1: CONTAR registros
+            ' =====================
+            countCmd.CommandText = "
+            SELECT COUNT(distinct IdStock) 
+            FROM trans_inv_ciclico
+            WHERE idinventarioenc = @idinventarioenc
+              AND IdProductoBodega = @IdProductoBodega
+              AND IdUbicacion = @IdUbicacion
+              AND ISNULL(IdUbicacion_nuevo,0) = ISNULL(@IdUbicacion_nuevo, 0)
+              AND ISNULL(lote_stock, '') = ISNULL(@LoteOrigen, '')
+              AND ISNULL(lote, '') = ISNULL(@Lote, '')
+              AND ISNULL(fecha_vence, '1900-01-01') = ISNULL(@fecha_vence, '1900-01-01')
+              AND ISNULL(fecha_vence_stock, '1900-01-01') = ISNULL(@fecha_vence_stock, '1900-01-01')
+              AND ISNULL(lic_plate, '') = ISNULL(@Licencia, '')
+              AND IdProductoEstado = @IdProductoEstado
+              AND IdProductoEst_nuevo = @IdProductoEst_nuevo
+              AND ISNULL(IdPresentacion, 0) = ISNULL(@IdPresentacion, 0)
+              AND ISNULL(IdUnidadMedida, 0) = ISNULL(@IdUnidadMedida, 0)
+        "
+
+            With countCmd.Parameters
+                .AddWithValue("@IDINVENTARIOENC", oBeTrans_inv_ciclico.Idinventarioenc)
+                .AddWithValue("@IdProductoBodega", oBeTrans_inv_ciclico.IdProductoBodega)
+                .AddWithValue("@IdUbicacion", oBeTrans_inv_ciclico.IdUbicacion)
+                .AddWithValue("@IdUbicacion_nuevo", oBeTrans_inv_ciclico.IdUbicacion_nuevo)
+                .AddWithValue("@LoteOrigen", oBeTrans_inv_ciclico.Lote_stock)
+                .AddWithValue("@Lote", oBeTrans_inv_ciclico.Lote)
+                .AddWithValue("@fecha_vence", oBeTrans_inv_ciclico.Fecha_vence)
+                .AddWithValue("@fecha_vence_stock", oBeTrans_inv_ciclico.Fecha_vence_stock)
+                .AddWithValue("@IdProductoEstado", oBeTrans_inv_ciclico.IdProductoEstado)
+                .AddWithValue("@IdProductoEst_nuevo", oBeTrans_inv_ciclico.IdProductoEst_nuevo)
+                .AddWithValue("@Licencia", oBeTrans_inv_ciclico.lic_plate)
+                .AddWithValue("@IdPresentacion", oBeTrans_inv_ciclico.IdPresentacion)
+                .AddWithValue("@IdUnidadMedida", oBeTrans_inv_ciclico.IdUnidadMedida)
+            End With
+
+            recordCount = Convert.ToInt32(countCmd.ExecuteScalar())
+
+            ' =====================
+            ' Paso 2: DETERMINAR registro a actualizar
+            ' =====================
+            If recordCount = 1 Then
+                ' Solo hay un registro, obtener su id
+                selCmd.CommandText = "
+                UPDATE trans_inv_ciclico set nuevo_stock=@nuevo_stock 
+                WHERE IdInvCiclico IN (SELECT idinvciclico
+                                       FROM trans_inv_ciclico
+                                       WHERE idinventarioenc = @idinventarioenc
+                                             AND IdProductoBodega = @IdProductoBodega
+                                             AND IdUbicacion = @IdUbicacion
+                                             AND ISNULL(IdUbicacion_nuevo,0) = ISNULL(@IdUbicacion_nuevo, 0)
+                                             AND ISNULL(lote_stock, '') = ISNULL(@LoteOrigen, '')
+                                             AND ISNULL(lote, '') = ISNULL(@Lote, '')
+                                             AND ISNULL(fecha_vence, '1900-01-01') = ISNULL(@fecha_vence, '1900-01-01')
+                                             AND ISNULL(fecha_vence_stock, '1900-01-01') = ISNULL(@fecha_vence_stock, '1900-01-01')
+                                             AND ISNULL(lic_plate, '') = ISNULL(@Licencia, '')
+                                             AND IdProductoEstado = @IdProductoEstado
+                                             AND IdProductoEst_nuevo = @IdProductoEst_nuevo
+                                             AND ISNULL(IdPresentacion, 0) = ISNULL(@IdPresentacion, 0)
+                                             AND ISNULL(IdUnidadMedida, 0) = ISNULL(@IdUnidadMedida, 0))
+                                             AND idinventarioenc = @idinventarioenc
+            "
+                For Each param As SqlParameter In countCmd.Parameters
+                    selCmd.Parameters.Add(New SqlParameter(param.ParameterName, param.SqlDbType) With {.Value = param.Value})
+                Next
+
+                If oBeTrans_inv_ciclico.Nuevo_Stock = 0 Then
+                    oBeTrans_inv_ciclico.Nuevo_Stock = -1
+                End If
+
+                selCmd.Parameters.AddWithValue("nuevo_stock", oBeTrans_inv_ciclico.Nuevo_Stock)
+
+                rowsAffected = selCmd.ExecuteNonQuery()
+
+            ElseIf recordCount > 1 Then
+
+                ' Múltiples registros: recorrer y decidir
+                selCmd.CommandText = "
+                SELECT IdStock, MAX(cant_stock)cant_stock,SUM(cantidad) cantidad, fecha_vence, lote, lic_plate
+                FROM trans_inv_ciclico
+                WHERE idinventarioenc = @idinventarioenc
+                  AND IdProductoBodega = @IdProductoBodega
+                  AND IdUbicacion = @IdUbicacion
+                  AND ISNULL(IdUbicacion_nuevo,0) = ISNULL(@IdUbicacion_nuevo, 0)
+                  AND ISNULL(lote_stock, '') = ISNULL(@LoteOrigen, '')
+                  AND ISNULL(lote, '') = ISNULL(@Lote, '')
+                  AND ISNULL(fecha_vence, '1900-01-01') = ISNULL(@fecha_vence, '1900-01-01')
+                  AND ISNULL(fecha_vence_stock, '1900-01-01') = ISNULL(@fecha_vence_stock, '1900-01-01')
+                  AND ISNULL(lic_plate, '') = ISNULL(@Licencia, '')
+                  AND IdProductoEstado = @IdProductoEstado
+                  AND IdProductoEst_nuevo = @IdProductoEst_nuevo
+                  AND ISNULL(IdPresentacion, 0) = ISNULL(@IdPresentacion, 0)
+                  AND ISNULL(IdUnidadMedida, 0) = ISNULL(@IdUnidadMedida, 0)
+                GROUP BY IdStock, fecha_vence, lote, lic_plate
+            "
+                For Each param As SqlParameter In countCmd.Parameters
+                    selCmd.Parameters.Add(New SqlParameter(param.ParameterName, param.SqlDbType) With {.Value = param.Value})
+                Next
+
+                Dim reader As SqlDataReader = selCmd.ExecuteReader()
+                Dim i As Integer = 0
+                Dim primerIdStock As Integer = 0
+                Dim nuevoStockPrimero As Double = 0
+
+                While reader.Read()
+
+                    Dim idinvciclico As Integer = -1
+                    Dim stock_actual As Double = Convert.ToDouble(reader("cant_stock"))
+                    Dim stock_contado As Double = Convert.ToDouble(reader("cantidad"))
+
+                    oBeTrans_inv_ciclico.Nuevo_Stock = stock_actual + pDiferencia
+
+                    If oBeTrans_inv_ciclico.Nuevo_Stock = 0 Then
+                        oBeTrans_inv_ciclico.Nuevo_Stock = -1
+                    End If
+
+                    ' Puedes usar lógica personalizada aquí:
+                    If stock_actual >= pDiferencia AndAlso stock_contado <> 0 AndAlso stock_actual <> stock_contado Then
+                        IdStock = Convert.ToInt32(reader("IdStock"))
+                    End If
+
+                    If IdStock = -1 Then
+                        IdStock = idinvciclico
+                    End If
+
+                    If i = 0 Then
+                        primerIdStock = Convert.ToInt32(reader("IdStock"))
+                        nuevoStockPrimero = stock_actual + pDiferencia
+                    End If
+
+                    i += 1
+
+                End While
+
+                reader.Close()
+
+                If IdStock = -1 Then
+                    IdStock = primerIdStock
+                    oBeTrans_inv_ciclico.Nuevo_Stock = nuevoStockPrimero
+                    'Throw New Exception("No se pudo determinar un IdInvCiclico válido para actualizar el nuevo stock.")
+                End If
+
+                ' =====================
+                ' Paso 3: ACTUALIZAR
+                ' =====================
+                cmd.CommandText = "
+                                    UPDATE trans_inv_ciclico
+                                    SET nuevo_stock = @nuevo_stock
+                                    WHERE IdStock = @IdStock AND IdInventarioEnc = @IdInventarioEnc
+                                "
+                cmd.Parameters.AddWithValue("@nuevo_stock", oBeTrans_inv_ciclico.Nuevo_Stock)
+                cmd.Parameters.AddWithValue("@IdStock", IdStock)
+                cmd.Parameters.AddWithValue("@IdInventarioEnc", oBeTrans_inv_ciclico.Idinventarioenc)
+
+                rowsAffected = cmd.ExecuteNonQuery()
+
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    'Public Shared Function Actualizar_NuevoStock_By_IdInventarioEnc_And_IdInvCiclico(ByRef oBeTrans_inv_ciclico As clsBeTrans_inv_ciclico,
+    '                                                                                Optional ByVal pConection As SqlConnection = Nothing,
+    '                                                                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+    '    Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+    '    Dim lTransaction As SqlTransaction = Nothing
+
+    '    Try
+
+    '        Upd.Init("trans_inv_ciclico")
+    '        Upd.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
+    '        Upd.Where("IdInvCiclico IN (SELECT idinvciclico
+    '                                 FROM trans_inv_ciclico
+    '                                 WHERE idinventarioenc = @idinventarioenc
+    '                                   AND IdProductoBodega = @IdProductoBodega
+    '                                   AND IdUbicacion = @IdUbicacion
+    '                                   AND ISNULL(IdUbicacion_nuevo,0) = ISNULL(@IdUbicacion_nuevo, 0)
+    '                                   AND ISNULL(lote_stock, '') = ISNULL(@LoteOrigen, '')
+    '                                   AND ISNULL(lote, '') = ISNULL(@Lote, '')
+    '                                   AND ISNULL(fecha_vence, '1900-01-01') = ISNULL(@fecha_vence, '1900-01-01')
+    '                                   AND ISNULL(fecha_vence_stock, '1900-01-01') = ISNULL(@fecha_vence_stock, '1900-01-01')
+    '                                   AND ISNULL(lic_plate, '') = ISNULL(@Licencia, '')
+    '                                   AND IdProductoEstado = @IdProductoEstado
+    '                                   AND IdProductoEst_nuevo = @IdProductoEst_nuevo
+    '                                   AND ISNULL(IdPresentacion, 0) = ISNULL(@IdPresentacion, 0)
+    '                                   AND ISNULL(IdUnidadMedida, 0) = ISNULL(@IdUnidadMedida, 0))
+    '                      AND idinventarioenc = @idinventarioenc")
+
+    '        Dim sp As String = Upd.SQL()
+
+    '        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+    '        Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+    '        If Es_Transaccion_Remota Then
+    '            cmd = New SqlCommand(sp, pConection)
+    '            cmd.Transaction = pTransaction
+    '        Else
+    '            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+    '            cmd = New SqlCommand(sp, lConnection, lTransaction)
+    '        End If
+
+    '        cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", oBeTrans_inv_ciclico.Nuevo_Stock))
+    '        cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_ciclico.Idinventarioenc))
+    '        cmd.Parameters.Add(New SqlParameter("@IdProductoBodega", oBeTrans_inv_ciclico.IdProductoBodega))
+    '        cmd.Parameters.Add(New SqlParameter("@IdUbicacion", oBeTrans_inv_ciclico.IdUbicacion))
+    '        cmd.Parameters.Add(New SqlParameter("@IdUbicacion_nuevo", oBeTrans_inv_ciclico.IdUbicacion_nuevo))
+    '        cmd.Parameters.Add(New SqlParameter("@LoteOrigen", oBeTrans_inv_ciclico.Lote_stock))
+    '        cmd.Parameters.Add(New SqlParameter("@Lote", oBeTrans_inv_ciclico.Lote))
+    '        cmd.Parameters.Add(New SqlParameter("@fecha_vence", oBeTrans_inv_ciclico.Fecha_vence))
+    '        cmd.Parameters.Add(New SqlParameter("@fecha_vence_stock", oBeTrans_inv_ciclico.Fecha_vence_stock))
+    '        cmd.Parameters.Add(New SqlParameter("@IdProductoEstado", oBeTrans_inv_ciclico.IdProductoEstado))
+    '        cmd.Parameters.Add(New SqlParameter("@IdProductoEst_nuevo", oBeTrans_inv_ciclico.IdProductoEst_nuevo))
+    '        cmd.Parameters.Add(New SqlParameter("@Licencia", oBeTrans_inv_ciclico.lic_plate))
+    '        cmd.Parameters.Add(New SqlParameter("@IdPresentacion", oBeTrans_inv_ciclico.IdPresentacion))
+    '        cmd.Parameters.Add(New SqlParameter("@IdUnidadMedida", oBeTrans_inv_ciclico.IdUnidadMedida))
+
+    '        Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+    '        cmd.Dispose()
+
+    '        If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+    '        Return rowsAffected
+
+    '    Catch ex As Exception
+    '        If lTransaction IsNot Nothing Then lTransaction.Rollback()
+    '        Throw ex
+    '    Finally
+    '        If lConnection.State = ConnectionState.Open Then lConnection.Close()
+    '        If lTransaction IsNot Nothing Then lTransaction.Dispose()
+    '    End Try
+
+    'End Function
+    Public Shared Function Actualizar_NuevoStock_By_IdInventarioEnc(ByVal pIdInventarioEnc As Integer,
+                                                                    ByVal pNuevoStock As Boolean,
+                                                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Upd.Init("trans_inv_ciclico")
+            Upd.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
+            Upd.Where("idinventarioenc=@idinventarioenc")
+
+            Dim sp As String = Upd.SQL()
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", pNuevoStock))
             cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", pIdInventarioEnc))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()

@@ -1,5 +1,6 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 
 Public Class clsLnBodega
     Implements IDisposable
@@ -62,6 +63,7 @@ Public Class clsLnBodega
                 .Ubicar_Tarimas_Completas_Reabasto = IIf(IsDBNull(dr.Item("Ubicar_Tarimas_Completas_Reabasto")), False, dr.Item("Ubicar_Tarimas_Completas_Reabasto"))
                 .IdTipoTransaccionSalida = IIf(IsDBNull(dr.Item("IdTipoTransaccionSalida")), 0, dr.Item("IdTipoTransaccionSalida"))
                 .Permitir_Eliminar_Documento_Salida = IIf(IsDBNull(dr.Item("Permitir_Eliminar_Documento_Salida")), False, dr.Item("Permitir_Eliminar_Documento_Salida"))
+                '#GT03032022_0939:falta este parametro, sino, siempre mostrara falso visualmente, igual que en mostrar area
                 .Mostrar_Area_En_HH = IIf(IsDBNull(dr.Item("mostrar_area_en_hh")), False, dr.Item("mostrar_area_en_hh"))
                 .control_operador_ubicacion = IIf(IsDBNull(dr.Item("control_operador_ubicacion")), False, dr.Item("control_operador_ubicacion"))
                 .confirmar_codigo_en_picking = IIf(IsDBNull(dr.Item("confirmar_codigo_en_picking")), False, dr.Item("confirmar_codigo_en_picking"))
@@ -91,6 +93,7 @@ Public Class clsLnBodega
                 .Permitir_No_Encontrado_Picking = IIf(IsDBNull(dr.Item("permitir_no_encontrado_picking")), False, dr.Item("permitir_no_encontrado_picking"))
                 .Permitir_Reemplazo_Verificacion = IIf(IsDBNull(dr.Item("permitir_reemplazo_verificacion")), False, dr.Item("permitir_reemplazo_verificacion"))
                 .Permitir_Reemplazo_Picking_Misma_Licencia = IIf(IsDBNull(dr.Item("Permitir_Reemplazo_Picking_Misma_Licencia")), False, dr.Item("Permitir_Reemplazo_Picking_Misma_Licencia"))
+                '#GT02032023: dias antiguedad de un ticket para validar retroactivo
                 .Dias_Limite_Retroactivo = IIf(IsDBNull(dr.Item("dias_limite_retroactivo")), 0, dr.Item("dias_limite_retroactivo"))
                 .Horario_Ejecucion_Historico = IIf(IsDBNull(dr.Item("horario_ejecucion_historico")), New TimeSpan, dr.Item("horario_ejecucion_historico"))
                 .Filtrar_Pedidos_Usuario = IIf(IsDBNull(dr.Item("filtrar_pedidos_usuario")), False, dr.Item("filtrar_pedidos_usuario"))
@@ -98,6 +101,7 @@ Public Class clsLnBodega
                 .Homologar_Lote_Vencimiento = IIf(IsDBNull(dr.Item("homologar_lote_vencimiento")), False, dr.Item("homologar_lote_vencimiento"))
                 .Escanear_Licencia_Picking = IIf(IsDBNull(dr.Item("escanear_licencia_picking")), False, dr.Item("escanear_licencia_picking"))
                 .IdTipoEtiquetaLicencia = IIf(IsDBNull(dr.Item("idtipoetiquetalicencia")), 0, dr.Item("idtipoetiquetalicencia"))
+                .IdTipoEtiquetaVerificacion = IIf(IsDBNull(dr.Item("idtipoetiquetaverificacion")), 0, dr.Item("idtipoetiquetaverificacion"))
                 .IdSimbologiaLicencia = IIf(IsDBNull(dr.Item("idsimbologialicencia")), 0, dr.Item("idsimbologialicencia"))
                 .Interface_SAP = IIf(IsDBNull(dr.Item("interface_sap")), 0, dr.Item("interface_sap"))
                 .Restringir_Areas_SAP = IIf(IsDBNull(dr.Item("Restringir_Areas_SAP")), False, dr.Item("Restringir_Areas_SAP"))
@@ -114,7 +118,10 @@ Public Class clsLnBodega
                 .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
                 .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
                 .Control_Gondola = IIf(IsDBNull(dr.Item("control_gondola")), False, dr.Item("control_gondola"))
-                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))
+                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))                
+                .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
+                .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
+
 
             End With
 
@@ -224,6 +231,7 @@ Public Class clsLnBodega
             Ins.Add("homologar_lote_vencimiento", "@homologar_lote_vencimiento", DataType.Parametro)
             Ins.Add("escanear_licencia_picking", "@escanear_licencia_picking", DataType.Parametro)
             Ins.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", DataType.Parametro)
+            Ins.Add("idtipoetiquetaverificacion", "@idtipoetiquetaverificacion", DataType.Parametro)
             Ins.Add("idsimbologialicencia", "@idsimbologialicencia", DataType.Parametro)
             Ins.Add("interface_sap", "@interface_sap", DataType.Parametro)
             Ins.Add("restringir_areas_sap", "@restringir_areas_sap", DataType.Parametro)
@@ -238,7 +246,9 @@ Public Class clsLnBodega
             Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
             Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
             Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
-            Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)
+            Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)                        
+            Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
+            Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -334,6 +344,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@PERMITIR_NO_ENCONTRADO_PICKING", oBeBodega.Permitir_No_Encontrado_Picking))
             cmd.Parameters.Add(New SqlParameter("@PERMITIR_REEMPLAZO_VERIFICACION", oBeBodega.Permitir_Reemplazo_Verificacion))
             cmd.Parameters.Add(New SqlParameter("@PERMITIR_REEMPLAZO_PICKING_MISMA_LICENCIA", oBeBodega.Permitir_Reemplazo_Picking_Misma_Licencia))
+            '#GT02032023: indica cuantos dias de antigüedad se permiten validar para historico 
             cmd.Parameters.Add(New SqlParameter("@DIAS_LIMITE_RETROACTIVO", oBeBodega.Dias_Limite_Retroactivo))
             cmd.Parameters.Add(New SqlParameter("@HORARIO_EJECUCION_HISTORICO", oBeBodega.Horario_Ejecucion_Historico))
             cmd.Parameters.Add(New SqlParameter("@FILTRAR_PEDIDOS_USUARIO", oBeBodega.Filtrar_Pedidos_Usuario))
@@ -341,6 +352,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@HOMOLOGAR_LOTE_VENCIMIENTO", oBeBodega.Homologar_Lote_Vencimiento))
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_LICENCIA_PICKING", oBeBodega.Escanear_Licencia_Picking))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETALICENCIA", oBeBodega.IdTipoEtiquetaLicencia))
+            cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETAVERIFICACION", oBeBodega.IdTipoEtiquetaVerificacion))
             cmd.Parameters.Add(New SqlParameter("@IDSIMBOLOGIALICENCIA", oBeBodega.IdSimbologiaLicencia))
             cmd.Parameters.Add(New SqlParameter("@INTERFACE_SAP", oBeBodega.Interface_SAP))
             cmd.Parameters.Add(New SqlParameter("@RESTRINGIR_AREAS_SAP", oBeBodega.Restringir_Areas_SAP))
@@ -357,6 +369,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeBodega.Centro_Costo_Dir_Erp))
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeBodega.Centro_Costo_Dep_Erp))
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
+            cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -474,6 +488,7 @@ Public Class clsLnBodega
             Upd.Add("homologar_lote_vencimiento", "@homologar_lote_vencimiento", DataType.Parametro)
             Upd.Add("escanear_licencia_picking", "@escanear_licencia_picking", DataType.Parametro)
             Upd.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", DataType.Parametro)
+            Upd.Add("idtipoetiquetaverificacion", "@idtipoetiquetaverificacion", DataType.Parametro)
             Upd.Add("idsimbologialicencia", "@idsimbologialicencia", DataType.Parametro)
             Upd.Add("interface_sap", "@interface_sap", DataType.Parametro)
             Upd.Add("restringir_areas_sap", "@restringir_areas_sap", DataType.Parametro)
@@ -489,7 +504,9 @@ Public Class clsLnBodega
             Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
             Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
             Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
-            Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)
+            Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)            
+            Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
+            Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -593,6 +610,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@HOMOLOGAR_LOTE_VENCIMIENTO", oBeBodega.Homologar_Lote_Vencimiento))
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_LICENCIA_PICKING", oBeBodega.Escanear_Licencia_Picking))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETALICENCIA", oBeBodega.IdTipoEtiquetaLicencia))
+            cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETAVERIFICACION", oBeBodega.IdTipoEtiquetaVerificacion))
             cmd.Parameters.Add(New SqlParameter("@IDSIMBOLOGIALICENCIA", oBeBodega.IdSimbologiaLicencia))
             cmd.Parameters.Add(New SqlParameter("@INTERFACE_SAP", oBeBodega.Interface_SAP))
             cmd.Parameters.Add(New SqlParameter("@RESTRINGIR_AREAS_SAP", oBeBodega.Restringir_Areas_SAP))
@@ -609,6 +627,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeBodega.Centro_Costo_Dir_Erp))
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeBodega.Centro_Costo_Dep_Erp))
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
+            cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -651,6 +671,7 @@ Public Class clsLnBodega
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
+            '#EJC20191205: Trans_Ref03
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
@@ -701,6 +722,7 @@ Public Class clsLnBodega
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
+            '#EJC20191205: Trans_Ref03
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
@@ -750,6 +772,7 @@ Public Class clsLnBodega
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
+            '#EJC20191205: Trans_Ref03
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
@@ -1540,6 +1563,7 @@ Public Class clsLnBodega
 
         GetRutaCDN_By_Idbodega = ""
 
+
         Try
 
             Const sp As String = "SELECT RUTA_CDN FROM Bodega 
@@ -1556,13 +1580,94 @@ Public Class clsLnBodega
                 GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
             End If
 
+            lTransaction.Commit()
+
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
         End Try
 
     End Function
 
+    Public Shared Function GetIdBodegaFiscal() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =1)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaFiscal = pBeBodega.IdBodega
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetIdBodegaGeneral() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =0 )"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaGeneral = pBeBodega.IdBodega
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
 
 End Class

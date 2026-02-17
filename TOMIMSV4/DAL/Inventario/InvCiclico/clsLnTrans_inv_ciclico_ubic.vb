@@ -15,7 +15,7 @@ Public Class clsLnTrans_inv_ciclico_ubic
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_ciclico_ubic As clsBeTrans_inv_ciclico_ubic, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_ciclico_ubic As clsBeTrans_inv_ciclico_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -648,17 +648,17 @@ Public Class clsLnTrans_inv_ciclico_ubic
 
                 End If
 
-                Operador.Idinvoperador = vMaxIdInvOperador
-                Operador.Idinventarioenc = Obj.Idinventarioenc
-                Operador.Idinvencreconteo = 0
-                Operador.Idubic = Obj.Idubicacion
-                Operador.IdBodega = Obj.IdBodega
-                Operador.Idoperador = pIdOperador
+                'Operador.Idinvoperador = vMaxIdInvOperador
+                'Operador.Idinventarioenc = Obj.Idinventarioenc
+                'Operador.Idinvencreconteo = 0
+                'Operador.Idubic = Obj.Idubicacion
+                'Operador.IdBodega = Obj.IdBodega
+                'Operador.Idoperador = pIdOperador
 
-                If Not clsLnTrans_inv_operador.Existe_Ubicacion_By_IdOperador(Operador, lConnection, lTransaction) Then
-                    clsLnTrans_inv_operador.Insertar(Operador, lConnection, lTransaction)
-                    vMaxIdInvOperador += 1
-                End If
+                'If Not clsLnTrans_inv_operador.Existe_Ubicacion_By_IdOperador(Operador, lConnection, lTransaction) Then
+                '    clsLnTrans_inv_operador.Insertar(Operador, lConnection, lTransaction)
+                '    vMaxIdInvOperador += 1
+                'End If
 
             Next
 

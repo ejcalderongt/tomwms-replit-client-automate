@@ -665,4 +665,39 @@ public class clsLnProveedor_bodega
         }
     }
 
+    public static bool ExisteRelacion(
+        int idProveedor,
+        int idBodega,
+        SqlConnection connection,
+        SqlTransaction transaction)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT TOP 1
+                FROM Proveedor_bodega WITH (NOLOCK)
+                WHERE IdProveedor = @IdProveedor
+                  AND IdBodega    = @IdBodega;
+            ";
+
+            using (var cmd = new SqlCommand(sql, connection, transaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add(new SqlParameter("@IdProveedor", SqlDbType.Int) { Value = idProveedor });
+                cmd.Parameters.Add(new SqlParameter("@IdBodega", SqlDbType.Int) { Value = idBodega });
+
+                var result = cmd.ExecuteScalar();
+                return result != null;
+            }
+        }
+        catch (SqlException ex1)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+            throw new Exception(vMsgError);
+        }
+    }
 }

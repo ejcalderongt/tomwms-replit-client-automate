@@ -25,7 +25,7 @@ Public Class clsLnI_nav_config_ent
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeI_nav_config_ent As clsBeI_nav_config_ent, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeI_nav_config_ent As clsBeI_nav_config_ent, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -259,7 +259,7 @@ Public Class clsLnI_nav_config_ent
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_ent" & _
+            Const sp As String = "SELECT * FROM I_nav_config_ent" &
             " Where(idnavconfigent = @idnavconfigent)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -331,7 +331,7 @@ Public Class clsLnI_nav_config_ent
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_ent" & _
+            Const sp As String = "SELECT * FROM I_nav_config_ent" &
             " Where(idnavconfigent = @idnavconfigent)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -359,7 +359,7 @@ Public Class clsLnI_nav_config_ent
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 
@@ -382,6 +382,37 @@ Public Class clsLnI_nav_config_ent
 
 
         Catch ex1 As SQLException
+            Throw ex1
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetSingle_BY_IdNavEnt(ByVal pINavEnt As Integer, ByVal pINavConfigEnc As Integer) As clsBeI_nav_config_ent
+
+        GetSingle_BY_IdNavEnt = New clsBeI_nav_config_ent
+
+        Try
+
+            Const sp As String = "SELECT * FROM I_nav_config_ent Where(idnavent = @idnavent and idnavconfigent=@idnavconfigent) "
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@idnavent", pINavEnt))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@idnavconfigent", pINavConfigEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Cargar(GetSingle_BY_IdNavEnt, dt.Rows(0))
+            End If
+
+        Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)

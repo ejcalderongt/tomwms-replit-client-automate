@@ -42,7 +42,7 @@ public class clsLnLog_error_wms
         }
     }
 
-    public static int Insertar(clsBeLog_error_wms oBeLog_error_wms, SqlConnection pConection, SqlTransaction pTransaction)
+    public static int Insertar(clsBeLog_error_wms oBeLog_error_wms, SqlConnection pConection, SqlTransaction? pTransaction)
     {
         int rowsAffected = 0;
 
@@ -509,7 +509,7 @@ public class clsLnLog_error_wms
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
+    public static int MaxID(SqlConnection pConection, SqlTransaction? pTransaction)
     {
         int lMax = 0;
 

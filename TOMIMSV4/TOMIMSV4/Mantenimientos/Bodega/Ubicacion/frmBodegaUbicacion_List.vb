@@ -90,6 +90,7 @@ Public Class frmBodegaUbicacion_List
         Try
 
             Dim lista As New List(Of clsBeBodega_ubicacion)
+            Dim Lista_con_area As New DataTable
 
             If Modo = pModo.Inventario Then
 
@@ -101,13 +102,16 @@ Public Class frmBodegaUbicacion_List
                     lista = clsLnBodega_ubicacion.Get_All_By_IdBodega(chkActivos.Checked, pIdBodega, "")
                 Else
                     If pUbicacionPicking Then
-                        lista = clsLnBodega_ubicacion.Get_Ubicaciones_Picking_By_IdBodega(pIdBodega)
+                        'lista = clsLnBodega_ubicacion.Get_Ubicaciones_Picking_By_IdBodega(pIdBodega)
+                        Lista_con_area = clsLnBodega_ubicacion.GetUbicaciones_Con_Area_Picking_By_IdBodega(pIdBodega)
                     Else
                         lista = clsLnBodega_ubicacion.Get_All_By_IdBodega(chkActivos.Checked, pIdBodega, "ubicacion_recepcion")
                     End If
                 End If
 
             End If
+
+
 
             If lista.Count > 0 Then
 
@@ -117,6 +121,30 @@ Public Class frmBodegaUbicacion_List
 
                 For Each obj As clsBeBodega_ubicacion In lista
                     DT.Rows.Add(obj.IdUbicacion, obj.Descripcion)
+                Next
+
+                Dgrid.DataSource = DT
+
+                If GridView1.RowCount > 0 Then
+
+                    Try
+                        lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
+                    Catch ex As Exception
+                        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    End Try
+                End If
+
+            End If
+
+            If Lista_con_area.Rows.Count > 0 And Lista_con_area IsNot Nothing Then
+
+                Dim DT As New DataTable("BodegaUbicacion")
+                DT.Columns.Add("Código", GetType(Integer))
+                DT.Columns.Add("Descripción", GetType(String))
+                DT.Columns.Add("Area", GetType(String))
+
+                For Each r As DataRow In Lista_con_area.Rows
+                    DT.Rows.Add(r("IdUbicacion"), r("Descripcion"), r("Area"))
                 Next
 
                 Dgrid.DataSource = DT

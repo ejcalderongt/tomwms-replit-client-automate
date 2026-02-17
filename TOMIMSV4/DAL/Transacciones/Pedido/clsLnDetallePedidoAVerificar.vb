@@ -40,8 +40,10 @@ Public Class clsLnDetallePedidoAVerificar
             End With
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 

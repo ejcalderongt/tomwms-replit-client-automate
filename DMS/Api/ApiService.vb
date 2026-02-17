@@ -9,16 +9,13 @@ Imports TOMWMS
 Public Class ApiService
 
     Private Shared ReadOnly client As HttpClient = New HttpClient()
-    Dim baseUrl As String = ConfigurationManager.AppSettings("ApiBaseUrl")
-    Private EndPointProducto As String = "/api/Productos/sincronizar"
-    Private EndPointIngreso As String = "/api/sync/ingresos/documento-ingreso"
-    Private EndPointPedido As String = "/api/sync/salidas/documento-salida"
+    'Dim urlProducto As String = GetFullUrl("/WMSWEB/api/Productos/sincronizar")
+    'Dim urlIngreso As String = GetFullUrl("/WMSWEB/api/sync/ingresos/documento-ingreso")
+    'Dim urlPedido As String = GetFullUrl("/WMSWEB/api/sync/salidas/documento-salida")
 
 
     Public Async Function EnviarJsonProductoAsync(pJsonOC As String, lblprg As RichTextBox) As Task(Of String)
         Dim respuesta As String = ""
-        Dim baseUrlCompleta As String = baseUrl & EndPointProducto
-
         Try
             clsHelper.LogMensaje(lblprg, "Enviando producto a la nube...", clsHelper.TipoMensaje.Info)
 
@@ -26,7 +23,7 @@ Public Class ApiService
                 Dim content As New StringContent(pJsonOC, Encoding.UTF8, "application/json")
 
                 Try
-                    Dim response = Await cliente.PostAsync(baseUrlCompleta, content)
+                    Dim response = Await cliente.PostAsync(urlProducto, content)
                     Dim responseBody = Await response.Content.ReadAsStringAsync()
 
                     If response.IsSuccessStatusCode Then
@@ -58,209 +55,70 @@ Public Class ApiService
 
         Return respuesta
 
-
     End Function
-
-    'Public Async Function EnviarProductoAsync(fragmentos As List(Of String), lblprg As RichTextBox) As Task(Of String)
-
-    '    Try
-
-    '        Dim Respuesta As String = ""
-    '        baseUrl = baseUrl & EndPointProducto
-
-    '        clsHelper.LogMensaje(lblprg, "Enviando productos a la nube...", clsHelper.TipoMensaje.Info)
-
-    '        Dim lote As Integer = 0
-
-    '        Using cliente As New HttpClient()
-
-    '            Dim fragmentosAEnviar As IEnumerable(Of String) = fragmentos
-
-    '            If fragmentos.Count = 1 Then
-    '                fragmentosAEnviar = {fragmentos.First()}
-    '            End If
-
-    '            For Each fragmento As String In fragmentosAEnviar
-    '                lote += 1
-
-    '                Dim content As New StringContent(fragmento, Encoding.UTF8, "application/json")
-
-    '                Try
-    '                    Dim response = Await cliente.PostAsync(baseUrl, content)
-    '                    Dim responseBody = Await response.Content.ReadAsStringAsync()
-
-    '                    If Not response.IsSuccessStatusCode Then
-    '                        Respuesta &= $"Error {CInt(response.StatusCode)}: {responseBody} - {response.ReasonPhrase}" & vbNewLine
-    '                        clsHelper.LogMensaje(lblprg, "Envio incorrecto de lote: " & lote, clsHelper.TipoMensaje.Error_)
-    '                    Else
-    '                        clsHelper.LogMensaje(lblprg, "Envio correcto de lote: " & lote, clsHelper.TipoMensaje.Exito)
-    '                    End If
-
-    '                Catch ex As Exception
-    '                    Respuesta &= $"Excepción en lote {lote}: {ex.Message}" & vbNewLine
-    '                    clsHelper.LogMensaje(lblprg, "Error inesperado en lote: " & lote, clsHelper.TipoMensaje.Error_)
-    '                End Try
-
-    '            Next
-
-    '        End Using
-
-    '        If String.IsNullOrWhiteSpace(Respuesta) Then
-    '            Respuesta = "Proceso finalizado correctamente. " & Now
-    '        End If
-
-    '        Return Respuesta
-
-    '    Catch ex As HttpRequestException
-    '        ' Manejo específico para errores HTTP
-    '        Throw New Exception($"EnviarProducto - HttpRequestException: {ex.Message}")
-    '    Catch ex As TaskCanceledException
-    '        Throw New Exception("EnviarProducto - Timeout al llamar a la API.")
-    '    Catch ex As Exception
-    '        Throw New Exception($"EnviarProducto - Excepción general: {ex.Message}")
-    '    End Try
-
-
-    'End Function
-
-    'Public Async Function EnviarIngresoAsync(fragmentos As List(Of String), lblprg As RichTextBox) As Task(Of String)
-
-    '    Try
-
-    '        Dim respuesta As String = ""
-    '        baseUrl = baseUrl & EndPointIngreso
-
-    '        clsHelper.LogMensaje(lblprg, "Enviando ingresos a la nube...", clsHelper.TipoMensaje.Info)
-
-    '        Dim lote As Integer = 0
-
-    '        Using cliente As New HttpClient()
-
-    '            Dim fragmentosAEnviar As IEnumerable(Of String) = fragmentos
-
-    '            If fragmentos.Count = 1 Then
-    '                fragmentosAEnviar = {fragmentos.First()}
-    '            End If
-
-    '            For Each fragmento As String In fragmentosAEnviar
-    '                lote += 1
-
-    '                Dim content As New StringContent(fragmento, Encoding.UTF8, "application/json")
-
-    '                Try
-    '                    Dim response = Await cliente.PostAsync(baseUrl, content)
-    '                    Dim responseBody = Await response.Content.ReadAsStringAsync()
-
-    '                    If Not response.IsSuccessStatusCode Then
-    '                        respuesta &= $"Error {CInt(response.StatusCode)}: {responseBody} - {response.ReasonPhrase}" & vbNewLine
-    '                        clsHelper.LogMensaje(lblprg, "Envio incorrecto de lote: " & lote, clsHelper.TipoMensaje.Error_)
-    '                    Else
-    '                        clsHelper.LogMensaje(lblprg, "Envio correcto de lote: " & lote, clsHelper.TipoMensaje.Exito)
-    '                    End If
-
-    '                Catch ex As Exception
-    '                    respuesta &= $"Excepción en lote {lote}: {ex.Message}" & vbNewLine
-    '                    clsHelper.LogMensaje(lblprg, "Error inesperado al enviar lote: " & lote, clsHelper.TipoMensaje.Error_)
-    '                End Try
-
-    '            Next
-
-    '        End Using
-
-    '        If String.IsNullOrWhiteSpace(respuesta) Then
-    '            respuesta = "Proceso finalizado correctamente. " & Now
-    '        End If
-
-
-    '        Return respuesta
-
-    '    Catch ex As HttpRequestException
-    '        ' Manejo específico para errores HTTP
-    '        Throw New Exception($"EnviarIngresoAsync - HttpRequestException: {ex.Message}")
-    '    Catch ex As TaskCanceledException
-    '        Throw New Exception("EnviarIngresoAsync - Timeout al llamar a la API.")
-    '    Catch ex As Exception
-    '        Throw New Exception($"EnviarIngresoAsync - Excepción general: {ex.Message}")
-    '    End Try
-
-    'End Function
-
-
-    Public Async Function EnviarPedidosAsync(fragmentos As List(Of String), lblprg As RichTextBox) As Task(Of String)
-
-        Try
-
-            Dim Respuesta As String = ""
-            baseUrl = baseUrl & EndPointPedido
-
-            clsHelper.LogMensaje(lblprg, "Enviando pedidos a la nube...", clsHelper.TipoMensaje.Info)
-
-            Dim lote As Integer = 0
-
-            Using cliente As New HttpClient()
-
-                Dim fragmentosAEnviar As IEnumerable(Of String) = fragmentos
-
-                If fragmentos.Count = 1 Then
-                    fragmentosAEnviar = {fragmentos.First()}
-                End If
-
-                For Each fragmento As String In fragmentosAEnviar
-                    lote += 1
-
-                    Dim content As New StringContent(fragmento, Encoding.UTF8, "application/json")
-
-                    Try
-                        Dim response = Await cliente.PostAsync(baseUrl, content)
-                        Dim responseBody = Await response.Content.ReadAsStringAsync()
-
-                        If Not response.IsSuccessStatusCode Then
-                            Respuesta &= $"Error {CInt(response.StatusCode)}: {responseBody} - {response.ReasonPhrase}" & vbNewLine
-                            clsHelper.LogMensaje(lblprg, "Envio incorrecto de lote: " & lote, clsHelper.TipoMensaje.Error_)
-                        Else
-                            clsHelper.LogMensaje(lblprg, "Envio correcto de lote: " & lote, clsHelper.TipoMensaje.Exito)
-                        End If
-
-                    Catch ex As Exception
-                        Respuesta &= $"Excepción en lote {lote}: {ex.Message}" & vbNewLine
-                        clsHelper.LogMensaje(lblprg, "Error inesperado al enviar lote: " & lote, clsHelper.TipoMensaje.Error_)
-                    End Try
-
-                Next
-
-            End Using
-
-            If String.IsNullOrWhiteSpace(Respuesta) Then
-                Respuesta = "Proceso finalizado correctamente. " & Now
-            End If
-
-
-            Return Respuesta
-
-        Catch ex As HttpRequestException
-            ' Manejo específico para errores HTTP
-            Throw New Exception($"EnviarProducto - HttpRequestException: {ex.Message}")
-        Catch ex As TaskCanceledException
-            Throw New Exception("EnviarProducto - Timeout al llamar a la API.")
-        Catch ex As Exception
-            Throw New Exception($"EnviarProducto - Excepción general: {ex.Message}")
-        End Try
-
-    End Function
-
 
     Public Async Function EnviarJsonOCAsync(pJsonOC As String, lblprg As RichTextBox) As Task(Of String)
         Dim respuesta As String = ""
-        Dim baseUrlCompleta As String = baseUrl & EndPointIngreso
-
         Try
+
+            If Not Uri.IsWellFormedUriString(urlIngreso, UriKind.Absolute) Then
+                Throw New Exception("URL malformada: " & urlIngreso)
+            End If
+
             clsHelper.LogMensaje(lblprg, "Enviando ingreso a la nube...", clsHelper.TipoMensaje.Info)
 
             Using cliente As New HttpClient()
                 Dim content As New StringContent(pJsonOC, Encoding.UTF8, "application/json")
 
                 Try
-                    Dim response = Await cliente.PostAsync(baseUrlCompleta, content)
+                    Dim response = Await cliente.PostAsync(urlIngreso, content)
+                    Dim responseBody = Await response.Content.ReadAsStringAsync()
+
+                    If response.IsSuccessStatusCode Then
+                        clsHelper.LogMensaje(lblprg, "Envío correcto.", clsHelper.TipoMensaje.Exito)
+                        respuesta = "Ok"
+                    Else
+                        respuesta = $"Error HTTP {(CInt(response.StatusCode))}: {responseBody} ({response.ReasonPhrase})"
+                        clsHelper.LogMensaje(lblprg, respuesta, clsHelper.TipoMensaje.Error_)
+                    End If
+
+                Catch ex As Exception
+                    respuesta = $"Excepción en envío: {ex.Message}"
+                    clsHelper.LogMensaje(lblprg, respuesta, clsHelper.TipoMensaje.Error_)
+                End Try
+            End Using
+
+        Catch ex As TaskCanceledException
+            respuesta = "Timeout al llamar a la API (TaskCanceledException)"
+            clsHelper.LogMensaje(lblprg, respuesta, clsHelper.TipoMensaje.Error_)
+
+        Catch ex As HttpRequestException
+            respuesta = $"Error de red o DNS: {ex.Message}"
+            clsHelper.LogMensaje(lblprg, respuesta, clsHelper.TipoMensaje.Error_)
+
+        Catch ex As Exception
+            respuesta = $"Excepción general: {ex.Message}"
+            clsHelper.LogMensaje(lblprg, respuesta, clsHelper.TipoMensaje.Error_)
+        End Try
+
+    End Function
+
+
+    Public Async Function EnviarJsonPEAsync(pJsonOC As String, lblprg As RichTextBox) As Task(Of String)
+        Dim respuesta As String = ""
+        Try
+
+            If Not Uri.IsWellFormedUriString(urlPedido, UriKind.Absolute) Then
+                Throw New Exception("URL malformada: " & urlPedido)
+            End If
+
+            clsHelper.LogMensaje(lblprg, "Enviando pedido a la nube...", clsHelper.TipoMensaje.Info)
+
+            Using cliente As New HttpClient()
+                Dim content As New StringContent(pJsonOC, Encoding.UTF8, "application/json")
+
+                Try
+                    Dim response = Await cliente.PostAsync(urlPedido, content)
                     Dim responseBody = Await response.Content.ReadAsStringAsync()
 
                     If response.IsSuccessStatusCode Then
@@ -293,52 +151,6 @@ Public Class ApiService
         Return respuesta
     End Function
 
-
-    'Public Async Function EnviarJsonOCAsync(pJsonOC As String, lblprg As RichTextBox) As Task(Of String)
-    '    Dim respuesta As String = ""
-    '    Try
-
-    '        baseUrl = baseUrl & EndPointIngreso
-
-    '        clsHelper.LogMensaje(lblprg, "Enviando ingreso a la nube...", clsHelper.TipoMensaje.Info)
-
-    '        Using cliente As New HttpClient()
-
-    '            Dim content As New StringContent(pJsonOC, Encoding.UTF8, "application/json")
-
-    '            Try
-    '                Dim response = Await cliente.PostAsync(baseUrl, content)
-    '                Dim responseBody = Await response.Content.ReadAsStringAsync()
-
-    '                If Not response.IsSuccessStatusCode Then
-    '                    respuesta &= $"Error {CInt(response.StatusCode)}: {responseBody} - {response.ReasonPhrase}" & vbNewLine
-    '                    clsHelper.LogMensaje(lblprg, "Envío incorrecto.", clsHelper.TipoMensaje.Error_)
-    '                Else
-    '                    clsHelper.LogMensaje(lblprg, "Envío correcto.", clsHelper.TipoMensaje.Exito)
-    '                End If
-
-    '            Catch ex As Exception
-    '                respuesta &= $"Excepción en envío: {ex.Message}" & vbNewLine
-    '                clsHelper.LogMensaje(lblprg, "Error inesperado al enviar.", clsHelper.TipoMensaje.Error_)
-    '            End Try
-    '        End Using
-
-    '        If String.IsNullOrWhiteSpace(respuesta) Then
-    '            respuesta = "Ok"
-    '        End If
-
-    '        Return respuesta
-
-    '    Catch ex As HttpRequestException
-    '        ' Manejo específico para errores HTTP
-    '        Throw New Exception($"EnviarIngresoAsync - HttpRequestException: {ex.Message}")
-    '    Catch ex As TaskCanceledException
-    '        Throw New Exception("EnviarIngresoAsync - Timeout al llamar a la API.")
-    '    Catch ex As Exception
-    '        Throw New Exception($"EnviarIngresoAsync - Excepción general: {ex.Message}")
-    '    End Try
-
-    'End Function
 
 
 End Class

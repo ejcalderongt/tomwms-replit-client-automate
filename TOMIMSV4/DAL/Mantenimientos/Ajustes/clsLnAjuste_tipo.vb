@@ -269,6 +269,7 @@ Public Class clsLnAjuste_tipo
 
         Try
 
+            'Dim vSQL As String = "SELECT idtipoajuste as IdTipoAjuste, nombre as Nombre,modifica_cantidad from ajuste_tipo where activo=1"
             Dim vSQL As String = "  SELECT
                                     3 as IdTipoAjuste,
                                     'Ajuste x Cantidad (+/-)' as Nombre

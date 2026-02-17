@@ -172,7 +172,7 @@ public class clsLnTrans_oc_enc
         bool createdLocalTx = false;
 
         try
-        {         
+        {
             Upd.Init("trans_oc_enc");
             Upd.Add("idordencompraenc", "@idordencompraenc", "F");
             Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
@@ -218,13 +218,13 @@ public class clsLnTrans_oc_enc
             Upd.Where("IdOrdenCompraEnc = @IdOrdenCompraEnc");
 
             string sp = Upd.SQL();
-            
+
             if (cn.State != ConnectionState.Open)
             {
                 cn.Open();
                 weOpenedConnection = true;
             }
-            
+
             if (tx == null)
             {
                 tx = cn.BeginTransaction(IsolationLevel.ReadUncommitted);
@@ -667,7 +667,7 @@ public class clsLnTrans_oc_enc
                 query += " AND IdBodega=@IdBodega";
 
             if (pIdPropietario != 0)
-                query += " AND IdPropietario=@IdPropietario";            
+                query += " AND IdPropietario=@IdPropietario";
 
             using (var conn = new SqlConnection(config.GetConnectionString("CST")))
             {
@@ -743,7 +743,7 @@ public class clsLnTrans_oc_enc
                                                              SqlTransaction pTransaction,
                                                              bool Llenar_Lotes = false)
     {
-        
+
         clsBeTrans_oc_enc? resultado = null;
 
         try
@@ -791,11 +791,11 @@ public class clsLnTrans_oc_enc
             string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex.Message);
             throw new Exception(vMsgError, ex);
         }
-    }   
+    }
 
     public static clsBeTrans_oc_enc? GetSingle(int pIdOrdenCompra,
-                                          SqlConnection lConnection,
-                                          SqlTransaction lTransaction)
+                                               SqlConnection lConnection,
+                                               SqlTransaction lTransaction)
     {
         try
         {
@@ -966,7 +966,7 @@ public class clsLnTrans_oc_enc
             }
         }
         catch (Exception)
-        {     
+        {
             throw;
         }
     }
@@ -1002,7 +1002,7 @@ public class clsLnTrans_oc_enc
             return result;
         }
         catch (Exception)
-        {            
+        {
             throw;
         }
     }
@@ -1031,7 +1031,7 @@ public class clsLnTrans_oc_enc
             return result;
         }
         catch (Exception)
-        {            
+        {
             throw;
         }
     }
@@ -1244,4 +1244,62 @@ public class clsLnTrans_oc_enc
 
         return result;
     }
+
+    public static clsBeTrans_oc_enc? Get_Single_By_IdOrdenCompraEnc(IConfiguration config, int pIdOrdenCompra)
+    {
+        if (config == null) throw new ArgumentNullException(nameof(config));
+
+        var connStr = config.GetConnectionString("CST");
+        if (string.IsNullOrWhiteSpace(connStr))
+            throw new Exception("No se encontró la cadena de conexión 'CST' en ConnectionStrings.");
+
+        const string sql = @"
+        SELECT enc.*
+        FROM Trans_oc_enc AS enc
+        WHERE enc.IdOrdenCompraEnc = @IdOrdenCompraEnc;
+    ";
+
+        using var cn = new SqlConnection(connStr);
+        cn.Open();
+
+        using var tx = cn.BeginTransaction(IsolationLevel.ReadCommitted);
+
+        try
+        {
+            clsBeTrans_oc_enc? resultado = null;
+
+            using (var cmd = new SqlCommand(sql, cn, tx))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add("@IdOrdenCompraEnc", SqlDbType.Int).Value = pIdOrdenCompra;
+
+                using var da = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    var beOcEnc = new clsBeTrans_oc_enc();
+                    Cargar(ref beOcEnc, dt.Rows[0]);
+                    beOcEnc.DetalleOC = clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc(beOcEnc.IdOrdenCompraEnc, cn, tx);
+                    beOcEnc.DetalleLotes = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(beOcEnc.IdOrdenCompraEnc, cn, tx);
+                    resultado = beOcEnc;
+                }
+            }
+
+            tx.Commit();
+            return resultado;
+        }
+        catch (Exception ex)
+        {
+            try { tx.Rollback(); } catch { /* opcional: log */ }
+
+            throw new Exception(
+                $"Get_Single_By_IdOrdenCompraEnc falló. IdOrdenCompraEnc={pIdOrdenCompra}. {ex.Message}",
+                ex
+            );
+        }
+    }
+
+
 }

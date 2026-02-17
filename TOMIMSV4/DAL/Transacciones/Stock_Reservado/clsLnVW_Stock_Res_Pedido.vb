@@ -144,32 +144,63 @@ Public Class clsLnVW_Stock_Res_Pedido
 
             Dim lTable As New DataTable("Result")
 
+            '#EJC20250724: Agregué bodega destino (SAP) y Cliente
             '#EJC20211221: Ordenar por fecha descendente para ver las reservas mas recientes.
             'GT06012022: Se agrega opcional IdTran para mostrar stock reservado en tareas de ubicacion dirigida
             'GT25012022: Se agrega dbo.Nombre_Completo_Ubicacion en lugar de la descripcion
-            Dim vSQL As String = "SELECT IdStockRes, IdStock, IdTransaccion, 
-                                  codigo as Código,nombre as Producto,unidadmedida as UMBas, 
-                                  presentacion as Presentación,
-                                  NomEstado as EstadoProducto,Lote,fecha_vence as FechaVence,
-                                  case when factor > 0 then
-                                    cantidad / factor
-                                  else
-                                    0           
-                                  end
-					              as  cantidad_presentacion_reservada,
-                                  factor as Factor,
-                                  referencia as Ref_Pedido,
-                                  IdPedido,
-					              cantidad as cantidad_umbas_reservada,
-                                  cantidadfisica as CantidadFisica,
-                                  peso as Peso,propietario as Propietario,
-                                  dbo.Nombre_Area(IdArea, IdBodega) as Area,
-                                  dbo.Nombre_Completo_Ubicacion(IdUbicacion,IdBodega) as UbicaciónActual,
-                                  dbo.Nombre_Completo_Ubicacion(ubicacion_ant, IdBodega) as UbicaciónAnterior,
-                                  Lic_Plate as Licencia,Serial,Indicador,fecha_ingreso as FechaIngreso,Uds_lic_plate,fecha_manufactura FechaManofactura,
-                                  estado as EstadoRes,Host,IdPicking, IdProductoBodega,fec_agr,
-                                  Columna,Nivel,Tramo, Estructura, Color, Talla
-		                          From VW_Stock_Res_Pedido  WHERE IdBodega = @IdBodega  "
+            Dim vSQL As String = "
+                                SELECT 
+                                    sr.IdStockRes, 
+                                    sr.IdStock, 
+                                    sr.IdTransaccion, 
+                                    sr.codigo AS Código,
+                                    sr.nombre AS Producto,
+                                    sr.unidadmedida AS UMBas, 
+                                    sr.presentacion AS Presentación,
+                                    sr.NomEstado AS EstadoProducto,
+                                    sr.Lote,
+                                    sr.fecha_vence AS FechaVence,
+                                    CASE 
+                                        WHEN sr.factor > 0 THEN sr.cantidad / sr.factor 
+                                        ELSE 0 
+                                    END AS cantidad_presentacion_reservada,
+                                    sr.factor AS Factor,
+                                    sr.referencia AS Ref_Pedido,
+                                    sr.IdPedido,
+                                    sr.cantidad AS cantidad_umbas_reservada,
+                                    sr.cantidadfisica AS CantidadFisica,
+                                    sr.peso AS Peso,
+                                    sr.propietario AS Propietario,
+                                    dbo.Nombre_Area(sr.IdArea, sr.IdBodega) AS Area,
+                                    dbo.Nombre_Completo_Ubicacion(sr.IdUbicacion, sr.IdBodega) AS UbicaciónActual,
+                                    dbo.Nombre_Completo_Ubicacion(sr.ubicacion_ant, sr.IdBodega) AS UbicaciónAnterior,
+                                    sr.Lic_Plate AS Licencia,
+                                    sr.Serial,
+                                    sr.Indicador,
+                                    sr.fecha_ingreso AS FechaIngreso,
+                                    sr.Uds_lic_plate,
+                                    sr.fecha_manufactura AS FechaManofactura,
+                                    sr.estado AS EstadoRes,
+                                    sr.Host,
+                                    sr.IdPicking, 
+                                    sr.IdProductoBodega,
+                                    sr.fec_agr,
+                                    sr.Columna,
+                                    sr.Nivel,
+                                    sr.Tramo,
+                                    sr.Estructura,
+                                    sr.Color,
+                                    sr.Talla,
+                                    pe.bodega_destino AS Bodega_Destino,
+                                    cli.nombre_comercial AS Cliente
+                                FROM VW_Stock_Res_Pedido sr                                
+                                LEFT JOIN trans_pe_enc pe 
+                                    ON sr.Indicador = 'PED' AND sr.IdTransaccion = pe.IdPedidoEnc
+                                LEFT JOIN cliente cli 
+                                    ON pe.IdCliente = cli.IdCliente
+                                WHERE sr.IdBodega = @IdBodega
+                                "
+
 
 
             If IdTran > 0 Then

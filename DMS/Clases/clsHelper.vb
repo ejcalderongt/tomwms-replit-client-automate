@@ -27,27 +27,34 @@ Public Class clsHelper
         Dim color As Color
         Select Case tipo
             Case TipoMensaje.Info
-                color = Color.Black
+                color = color.Black
             Case TipoMensaje.Exito
-                color = Color.Green
+                color = color.Green
             Case TipoMensaje.Advertencia
-                color = Color.Blue
+                color = color.Blue
             Case TipoMensaje.Error_
-                color = Color.Red
+                color = color.Red
             Case Else
-                color = Color.Black
+                color = color.Black
         End Select
 
-        ' Escribir el mensaje con el color definido
-        logBox.SelectionStart = logBox.TextLength
-        logBox.SelectionColor = color
-        logBox.AppendText(Environment.NewLine & mensaje & Environment.NewLine)
-        logBox.SelectionColor = logBox.ForeColor ' Restaurar color por defecto
+        ' Acción que escribe el texto en el RichTextBox
+        Dim escribir As Action = Sub()
+                                     logBox.SelectionStart = logBox.TextLength
+                                     logBox.SelectionColor = color
+                                     logBox.AppendText(Environment.NewLine & mensaje & Environment.NewLine)
+                                     logBox.SelectionColor = logBox.ForeColor ' Restaurar color por defecto
+                                     logBox.Refresh()
+                                     logBox.SelectionStart = logBox.TextLength
+                                     logBox.ScrollToCaret()
+                                 End Sub
 
-        ' Refrescar y hacer scroll
-        logBox.Refresh()
-        logBox.SelectionStart = logBox.TextLength
-        logBox.ScrollToCaret()
+        ' Ejecutar en el hilo de la UI si es necesario
+        If logBox.InvokeRequired Then
+            logBox.Invoke(escribir)
+        Else
+            escribir()
+        End If
     End Sub
 
     Public Shared Function FragmentarPorTamanoEnBytes(Of T)(lista As List(Of T), tamañoMaximoBytes As Integer) As List(Of String)
@@ -108,11 +115,11 @@ Public Class clsHelper
         Return MapeoTablas.Values.Distinct().ToList()
     End Function
 
-    Public Shared Sub Registrar_Log(ByVal pRespuesta As String, ByVal pTablaSincronizada As String, Optional ByVal pTiempo As Integer = 0)
-        Dim BeLogSincronizacion As New clsBeLog_sincronizacion_nube()
+    Public Shared Sub Registrar_Log_Nube(ByVal IdPropietario As Integer, ByVal pRegistrosEnviados As Integer, ByVal pRespuesta As String, ByVal pTablaSincronizada As String, Optional ByVal pTiempo As Integer = 0)
+        Dim BeLogSincronizacion As New clsBeDMS_Log_sincronizacion_nube()
         Try
-            BeLogSincronizacion = New clsBeLog_sincronizacion_nube()
-            BeLogSincronizacion.IdLog = clsLnLog_sincronizacion_nube.MaxID() + 1
+            BeLogSincronizacion = New clsBeDMS_Log_sincronizacion_nube()
+            BeLogSincronizacion.IdLog = clsLnDMS_Log_sincronizacion_nube.MaxID() + 1
             BeLogSincronizacion.Fecha_sincronizacion = Now
             BeLogSincronizacion.User_agr = AP.UsuarioAp.IdUsuario
             BeLogSincronizacion.Fec_agr = Now
@@ -131,7 +138,7 @@ Public Class clsHelper
                 BeLogSincronizacion.Mensaje_error = pRespuesta
             End If
 
-            clsLnLog_sincronizacion_nube.Insertar(BeLogSincronizacion)
+            clsLnDMS_Log_sincronizacion_nube.Insertar(BeLogSincronizacion)
 
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))

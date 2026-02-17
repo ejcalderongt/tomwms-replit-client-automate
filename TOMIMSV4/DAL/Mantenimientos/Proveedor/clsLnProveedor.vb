@@ -34,7 +34,7 @@ Public Class clsLnProveedor
                 .Es_Proveedor_Servicio = IIf(IsDBNull(dr.Item("Es_Proveedor_Servicio")), False, dr.Item("Es_Proveedor_Servicio"))
                 .IdBodegaAreaSAP = IIf(IsDBNull(dr.Item("IdBodegaAreaSAP")), 0, dr.Item("IdBodegaAreaSAP"))
                 If dr.Table.Columns.Contains("idPais") Then .IdPais = IIf(IsDBNull(dr.Item("idPais")), 0, dr.Item("idPais"))
-                .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), "", dr.Item("Codigo_Empresa_ERP"))
+                If dr.Table.Columns.Contains("Codigo_Empresa_ERP") Then .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), "", dr.Item("Codigo_Empresa_ERP"))
 
             End With
 
@@ -47,7 +47,6 @@ Public Class clsLnProveedor
         End Try
 
     End Sub
-
     Public Shared Function Insertar(ByRef oBeProveedor As clsBeProveedor, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -146,7 +145,6 @@ Public Class clsLnProveedor
         End Try
 
     End Function
-
     Public Shared Function Actualizar(ByRef oBeProveedor As clsBeProveedor, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -247,7 +245,6 @@ Public Class clsLnProveedor
         End Try
 
     End Function
-
     Public Shared Function Eliminar(ByRef oBeProveedor As clsBeProveedor, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -292,7 +289,6 @@ Public Class clsLnProveedor
         End Try
 
     End Function
-
     Public Shared Function GetAll() As List(Of clsBeProveedor)
 
         Try
@@ -325,7 +321,6 @@ Public Class clsLnProveedor
         End Try
 
     End Function
-
     Public Shared Function Get_Single_By_IdProveedor(ByVal IdProveedor As Integer) As clsBeProveedor
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -363,31 +358,4 @@ Public Class clsLnProveedor
 
     End Function
 
-    Public Shared Function Get_Codigo_By_IdProveedorBodega(ByVal IdProveedorBodega As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As String
-
-        Get_Codigo_By_IdProveedorBodega = String.Empty
-
-        Try
-
-            Const sp As String = "SELECT Codigo FROM Proveedor p JOIN proveedor_bodega pb ON p.IdProveedor = pb.IdProveedor
-                                  WHERE(pb.IdAsignacion= @IdProveedorBodega)"
-
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdProveedorBodega", IdProveedorBodega))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count = 1 Then
-                Get_Codigo_By_IdProveedorBodega = IIf(IsDBNull(dt.Rows(0).Item("Codigo")), "", dt.Rows(0).Item("Codigo"))
-            End If
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
 End Class

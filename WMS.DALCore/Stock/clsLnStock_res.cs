@@ -1,5 +1,3 @@
-using System.Data;
-using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.CompilerServices;
@@ -74,8 +72,7 @@ public class clsLnStock_res
 
         try
         {
-            Ins.Init("stock_res");
-            Ins.Add("idstockres", "@idstockres", "F");
+            Ins.Init("stock_res");            
             Ins.Add("idtransaccion", "@idtransaccion", "F");
             Ins.Add("indicador", "@indicador", "F");
             Ins.Add("idpedidodet", "@idpedidodet", "F");
@@ -126,8 +123,7 @@ public class clsLnStock_res
                 lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
                 cmd = new SqlCommand(sp, lConnection, lTransaction);
             }
-
-            cmd.Parameters.Add(new SqlParameter("@IdStockRes", oBeStock_res.IdStockRes));
+            
             cmd.Parameters.Add(new SqlParameter("@IdTransaccion", oBeStock_res.IdTransaccion));
             cmd.Parameters.Add(new SqlParameter("@Indicador", oBeStock_res.Indicador));
             cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", oBeStock_res.IdPedidoDet));
@@ -197,8 +193,7 @@ public class clsLnStock_res
 
         try
         {
-            Ins.Init("stock_res");
-            Ins.Add("idstockres", "@idstockres", "F");
+            Ins.Init("stock_res");            
             Ins.Add("idtransaccion", "@idtransaccion", "F");
             Ins.Add("indicador", "@indicador", "F");
             Ins.Add("idpedidodet", "@idpedidodet", "F");
@@ -240,8 +235,7 @@ public class clsLnStock_res
 
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
             cmd = new SqlCommand(sp, lConnection, lTransaction);
-
-            cmd.Parameters.Add(new SqlParameter("@IdStockRes", oBeStock_res.IdStockRes));
+            
             cmd.Parameters.Add(new SqlParameter("@IdTransaccion", oBeStock_res.IdTransaccion));
             cmd.Parameters.Add(new SqlParameter("@Indicador", oBeStock_res.Indicador));
             cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", oBeStock_res.IdPedidoDet));

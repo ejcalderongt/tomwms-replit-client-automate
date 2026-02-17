@@ -40,14 +40,21 @@ Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=oBeTrans_ubic_hh_enc.IdBodega,
+                                                  pIdTareaUbicacionEnc:=oBeTrans_ubic_hh_enc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=oBeTrans_ubic_hh_enc.IdMotivoUbicacion)
+
             Throw ex
         End Try
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_ubic_hh_enc As clsBeTrans_ubic_hh_enc, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_ubic_hh_enc As clsBeTrans_ubic_hh_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -314,8 +321,10 @@ Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -348,8 +357,14 @@ Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=oBeTrans_ubic_hh_enc.IdBodega,
+                                                  pIdTareaUbicacionEnc:=oBeTrans_ubic_hh_enc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=oBeTrans_ubic_hh_enc.IdMotivoUbicacion)
             Throw ex
         End Try
 
@@ -385,8 +400,14 @@ Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=pBeTrans_ubic_hh_enc.IdBodega,
+                                                  pIdTareaUbicacionEnc:=pBeTrans_ubic_hh_enc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=pBeTrans_ubic_hh_enc.IdMotivoUbicacion)
             Throw ex
         End Try
 
@@ -417,8 +438,11 @@ Public Class clsLnTrans_ubic_hh_enc
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 

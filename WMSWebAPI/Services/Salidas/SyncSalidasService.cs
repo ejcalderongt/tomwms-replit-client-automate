@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.DALCore;
+using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
+using WMS.EntityCore.Trans_re;
+using WMS.EntityCore.Transacciones;
+using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -354,7 +358,6 @@ namespace WMSWebAPI.Services.Salidas
 
             return Datos_Validos;
         }
-
         public void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx)
         {
 
@@ -377,12 +380,39 @@ namespace WMSWebAPI.Services.Salidas
                 throw;
             }
 
+
+            
+            var Tipo_Cliente_list = dto.Clientes == null
+                                    ? new List<clsBeCliente_tipo>()
+                                    : dto.Clientes
+                                    .Select(r => _mapper.Map<clsBeCliente_tipo>(r.TipoCliente))
+                                    .ToList();
+
+
+            try 
+            {
+
+                if (Tipo_Cliente_list != null && Tipo_Cliente_list.Count > 0)
+                {
+                    var Tipo_clientes = _mapper.Map<List<clsBeCliente_tipo>>(Tipo_Cliente_list);
+                    clsLnCliente_tipo.InsertarOActualizar(Tipo_clientes, conn, tx);
+                }
+
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception("Error al procesar Tipo Cliente → " + ex.Message, ex);
+            }
+
+            
+
+
             try
             {
-                if (dto.Cliente != null && dto.Cliente.Any())
+                if (dto.Clientes != null && dto.Clientes.Any())
                 {
-                    var clientes = _mapper.Map<List<clsBeCliente>>(dto.Cliente);
-                    clsLnCliente.InsertarOActualizar(clientes, conn, tx);
+                    var clientes = _mapper.Map<List<clsBeCliente_3pl>>(dto.Clientes);
+                    clsLnCliente.InsertarOActualizar_3pl(clientes, conn, tx);
                 }
 
             }
@@ -461,8 +491,7 @@ namespace WMSWebAPI.Services.Salidas
             try
             {
                 if (dto.Detalle != null && dto.Detalle.Any())
-                {
-                    //var detalle = _mapper.Map<List<clsBeTrans_pe_det>>(dto.Detalle);
+                {                    
                     var detalle = _mapper.Map<List<clsBeTrans_pe_det_3pl>>(dto.Detalle);
                     clsLnTrans_pe_det.InsertOrUpdate_3pl(detalle, conn, tx);
                 }
@@ -504,8 +533,7 @@ namespace WMSWebAPI.Services.Salidas
                 {
                     if (dto.Picking.Detalle != null && dto.Picking.Detalle.Any())
                     {
-                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);
-                        //clsLnTrans_picking_det.InsertOrUpdate(pickingDet, conn, tx);
+                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);                        
                         clsLnTrans_picking_det.InsertOrUpdate_3pl(pickingDet, conn, tx);
                     }
                 }
@@ -519,7 +547,6 @@ namespace WMSWebAPI.Services.Salidas
                     if (dto.Picking.PickingUbic != null && dto.Picking.PickingUbic.Any())
                     {
                         var pickingUbic = _mapper.Map<List<clsBeTrans_picking_ubic_3pl>>(dto.Picking.PickingUbic);
-                        //clsLnTrans_picking_ubic.InsertOrUpdate(pickingUbic, conn, tx);
                         clsLnTrans_picking_ubic.InsertOrUpdate_3pl(pickingUbic, conn, tx);
                     }
                     { }
@@ -581,7 +608,13 @@ namespace WMSWebAPI.Services.Salidas
                     throw new Exception("Error al procesar Prioridad de Picking → " + ex.Message, ex);
                 }
             }
-
         }
+
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null)
+        {            
+            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration, noPedido);
+            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
+        }
+        
     }
 }

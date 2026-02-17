@@ -702,8 +702,6 @@ Partial Public Class clsLnProducto_bodega
                     ObjPB.Producto = ObjP
                     Return ObjPB
 
-                Else
-                    Return Nothing
                 End If
 
             End Using
@@ -1230,78 +1228,42 @@ Partial Public Class clsLnProducto_bodega
 
     End Function
 
-    Public Shared Function Existe_Codigo_By_IdBodega(ByVal pCodigo As String, ByVal pIdBodega As Integer) As Boolean
-        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+    Public Shared Function Get_All_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As List(Of clsBeProducto_bodega)
+
+        Dim lReturnList As New List(Of clsBeProducto_bodega)
 
         Try
-            cn.Open()
 
-            Dim sql As String =
-            "SELECT TOP 1 1 " &
-            "FROM producto_bodega pb " &
-            "INNER JOIN producto p ON pb.IdProducto = p.IdProducto " &
-            "WHERE p.codigo = @Codigo AND pb.IdBodega = @IdBodega;"
+            Dim vSQL As String = "
+                                SELECT DISTINCT pb.*
+                FROM producto_bodega pb
+                INNER JOIN trans_pe_det pd ON pb.IdProductoBodega = pd.IdProductoBodega
+                WHERE pd.IdPedidoEnc = @IdPedidoEnc"
 
-            Using cmd As New SqlCommand(sql, cn)
-                cmd.CommandType = CommandType.Text
-                cmd.CommandTimeout = 60
-                cmd.Parameters.Add("@Codigo", SqlDbType.VarChar).Value = pCodigo
-                cmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = pIdBodega
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
 
-                Dim result As Object = cmd.ExecuteScalar()
-                Return (result IsNot Nothing AndAlso result IsNot DBNull.Value)
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                    For Each lRow As DataRow In lDataTable.Rows
+                        Dim Obj As New clsBeProducto_bodega
+                        Cargar(Obj, lRow)
+                        lReturnList.Add(Obj)
+                    Next
+                End If
             End Using
 
-        Catch ex As Exception
-            Throw
-        Finally
-            If cn.State = ConnectionState.Open Then cn.Close()
-        End Try
-    End Function
-
-    Public Shared Function InsertarFromInterface(ByRef oBeProducto_bodega As clsBeProducto_bodega) As Integer
-        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-        Try
-            cn.Open()
-
-            Ins.Init("producto_bodega")
-            Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
-            Ins.Add("idproducto", "@idproducto", DataType.Parametro)
-            Ins.Add("idbodega", "@idbodega", DataType.Parametro)
-            Ins.Add("activo", "@activo", DataType.Parametro)
-            Ins.Add("sistema", "@sistema", DataType.Parametro)
-            Ins.Add("user_agr", "@user_agr", DataType.Parametro)
-            Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
-            Ins.Add("user_mod", "@user_mod", DataType.Parametro)
-            Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
-
-            Dim sp As String = Ins.SQL()
-
-            Using cmd As New SqlCommand(sp, cn)
-                cmd.CommandType = CommandType.Text
-                cmd.CommandTimeout = 60
-
-                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeProducto_bodega.IdProductoBodega))
-                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeProducto_bodega.IdProducto))
-                cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeProducto_bodega.IdBodega))
-                cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeProducto_bodega.Activo))
-                cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBeProducto_bodega.Sistema))
-                cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeProducto_bodega.User_agr))
-                cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeProducto_bodega.Fec_agr))
-                cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeProducto_bodega.User_mod))
-                cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeProducto_bodega.Fec_mod))
-
-                Return cmd.ExecuteNonQuery()
-            End Using
+            Return lReturnList
 
         Catch ex As Exception
-            Throw
-        Finally
-            If cn.State = ConnectionState.Open Then cn.Close()
+            Throw ex
         End Try
-    End Function
 
+    End Function
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

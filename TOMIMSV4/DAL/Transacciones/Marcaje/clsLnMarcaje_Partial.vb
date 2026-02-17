@@ -102,7 +102,7 @@ Partial Public Class clsLnMarcaje
                     End If
                 Else
 
-                    Dim vMsgError As String = String.Format("Error_08012025_Marcaje: MISS_CONFIG_DAY No se encontró horarios asociados al Operador: " & pIdOperador & " Bodega: " & pIdBodega & "para el día:" & Now.DayOfWeek.ToString())
+                    Dim vMsgError As String = String.Format("Error_08012025_Marcaje B: MISS_CONFIG_DAY No se encontró horarios asociados al Operador: " & pIdOperador & " Bodega: " & pIdBodega & "para el día:" & Now.DayOfWeek.ToString())
                     clsLnLog_error_wms.Agregar_Error(vMsgError)
                     Throw New Exception("#20200403_MISS_CONFIG_DAY: No se encontró horarios asociados al Operador: " & pIdOperador & " Bodega: " & pIdBodega &
                                    " para el día:" & Now.DayOfWeek.ToString())
@@ -111,7 +111,7 @@ Partial Public Class clsLnMarcaje
 
             Else
 
-                Dim vMsgError As String = String.Format("Error_08012025_Marcaje: MISS_CONFIG_DAY No se encontró horarios asociados al Operador: " & pIdOperador & " Bodega: " & pIdBodega & ". Configure: Turno/Jornada/Horario en BOF y asocie con bodega.")
+                Dim vMsgError As String = String.Format("Error_08012025_Marcaje C: MISS_CONFIG_DAY No se encontró horarios asociados al Operador: " & pIdOperador & " Bodega: " & pIdBodega & ". Configure: Turno/Jornada/Horario en BOF y asocie con bodega.")
                 clsLnLog_error_wms.Agregar_Error(vMsgError)
 
                 Throw New Exception("#20200403_MISS_CONFIG: No se encontraron horarios asociados al operador: " & pIdOperador & " bodega: " & pIdBodega &
@@ -122,7 +122,7 @@ Partial Public Class clsLnMarcaje
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Dim vMsgError As String = String.Format("Error_08012025_Marcaje: {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            Dim vMsgError As String = String.Format("Error_08012025_Marcaje A: {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         Finally

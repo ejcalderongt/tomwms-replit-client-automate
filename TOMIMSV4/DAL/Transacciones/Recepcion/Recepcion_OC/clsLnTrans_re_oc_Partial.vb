@@ -108,69 +108,6 @@ Partial Public Class clsLnTrans_re_oc
 
     End Function
 
-    ''' <summary>
-    ''' Creada por Erik Calderón, se usa para obtener todas las Recepciones para posteriormente buscar su estado y anularlas
-    ''' </summary>
-    ''' <param name="pIdOrdenCompraEnc"></param>
-    ''' <returns>Lista de Recepciones solamente Ids</returns>
-
-    Public Shared Function Get_IdRecepcionEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer) As List(Of Integer)
-
-        Dim lReturnList As New List(Of Integer)
-
-        Try
-
-            Dim vSQL As String = "SELECT IdRecepcionEnc FROM trans_re_oc WHERE IdOrdenCompraEnc=" & pIdOrdenCompraEnc
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-
-                        Dim lDT As New DataTable()
-                        lDTA.Fill(lDT)
-
-                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
-
-                            For Each lRow As DataRow In lDT.Rows
-
-                                Dim lIdRecepcion As Integer = lRow("IdRecepcionEnc")
-
-                                lReturnList.Add(lIdRecepcion)
-
-                            Next
-
-                        End If
-
-                        lDT.Dispose()
-                        lDTA.Dispose()
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-                lConnection.Dispose()
-
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-
     Public Shared Function Get_IdOrdenCompraEnc_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of Integer)
 
         Dim lReturnList As New List(Of Integer)
@@ -426,8 +363,9 @@ Partial Public Class clsLnTrans_re_oc
             End If
 
         Catch ex As Exception
+            '#MECR25092025: se agrego bitacora de logs en recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -617,8 +555,9 @@ Partial Public Class clsLnTrans_re_oc
             Existe_Documento_By_IdOrdenCompraEnc = dt.Rows.Count > 0
 
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de logs en recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
             Throw ex
         End Try
 
@@ -768,6 +707,111 @@ Partial Public Class clsLnTrans_re_oc
         End Try
 
     End Function
+    Public Shared Function Get_IdRecepcionEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer) As List(Of Integer)
+
+        Dim lReturnList As New List(Of Integer)
+
+        Try
+
+            Dim vSQL As String = "SELECT IdRecepcionEnc FROM trans_re_oc WHERE IdOrdenCompraEnc=" & pIdOrdenCompraEnc
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+
+                        Dim lDT As New DataTable()
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            For Each lRow As DataRow In lDT.Rows
+
+                                Dim lIdRecepcion As Integer = lRow("IdRecepcionEnc")
+
+                                lReturnList.Add(lIdRecepcion)
+
+                            Next
+
+                        End If
+
+                        lDT.Dispose()
+                        lDTA.Dispose()
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+                lConnection.Dispose()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Tiene_Recepciones(ByVal pIdOrdenCompraEnc As Integer) As Boolean
+
+        Tiene_Recepciones = False
+
+        Try
+
+            Dim vSQL As String = "SELECT trans_re_oc.IdOrdenCompraEnc, trans_re_enc.IdRecepcionEnc 
+                        FROM trans_re_oc INNER JOIN 
+                        trans_re_enc ON trans_re_oc.IdRecepcionEnc = trans_re_enc.IdRecepcionEnc 
+                        WHERE trans_re_oc.IdOrdenCompraEnc = @IdOrdenCompraEnc AND ANULADA=0 "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+
+                        Dim lDT As New DataTable()
+                        lDTA.Fill(lDT)
+
+                        Tiene_Recepciones = lDT.Rows.Count > 0
+
+                        lDT.Dispose()
+
+                        lDTA.Dispose()
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+                lConnection.Dispose()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 
     ''' <summary>
     ''' #EJC20250902: Creada para la interface de mampa.
@@ -810,6 +854,49 @@ Partial Public Class clsLnTrans_re_oc
                 End If
 
             End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdRecepcionEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer,
+                                                                  ByVal pConnection As SqlConnection,
+                                                                  ByVal pTransaction As SqlTransaction) As List(Of Integer)
+
+        Dim lReturnList As New List(Of Integer)
+
+        Try
+
+            Dim vSQL As String = "SELECT IdRecepcionEnc FROM trans_re_oc WHERE IdOrdenCompraEnc=" & pIdOrdenCompraEnc
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    For Each lRow As DataRow In lDT.Rows
+
+                        Dim lIdRecepcion As Integer = lRow("IdRecepcionEnc")
+
+                        lReturnList.Add(lIdRecepcion)
+
+                    Next
+
+                End If
+
+                lDT.Dispose()
+                lDTA.Dispose()
+
+            End Using
+
+            Return lReturnList
 
         Catch ex As Exception
             Throw ex

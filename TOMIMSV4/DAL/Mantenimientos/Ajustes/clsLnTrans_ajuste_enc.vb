@@ -107,6 +107,8 @@ Public Class clsLnTrans_ajuste_enc
 
             Return rowsAffected
 
+            oBeTrans_ajuste_enc.Idajusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
+
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
@@ -397,6 +399,79 @@ Public Class clsLnTrans_ajuste_enc
             Throw New Exception(vMsgError, ex)
         End Try
     End Function
+    Public Shared Function ObtenerPivotAjustes(IdInventarioEnc As Integer) As DataTable
 
+        Dim query As String = "SELECT  
+                                    t.IdInventario, 
+                                    t.codigo_producto,
+                                    t.nombre_producto, 
+                                    SUM(t.cantidad_originalWMS) AS cantidad_originalWMS, 
+                                    SUM(t.cantidad_nuevaWMS) AS cantidad_nuevaWMS,
+                                    SUM(t.cantidad_originalSAP) AS cantidad_originalSAP,
+                                    SUM(t.cantidad_nuevaSAP) AS cantidad_nuevaSAP,
+                                    SUM(t.cantidad_originalWMS) - SUM(t.cantidad_originalSAP) AS diferencia_original,
+                                    SUM(t.cantidad_nuevaWMS) - SUM(t.cantidad_nuevaSAP) AS diferencia_nueva
+                                FROM (
+                                    SELECT 
+                                        enc.ajuste_por_inventario AS IdInventario,
+                                        det.codigo_producto,
+                                        det.nombre_producto,
+                                        det.cantidad_original AS cantidad_originalWMS,
+                                        det.cantidad_nueva AS cantidad_nuevaWMS,
+                                        0 AS cantidad_originalSAP,
+                                        0 AS cantidad_nuevaSAP
+                                    FROM trans_ajuste_enc enc
+                                    INNER JOIN trans_ajuste_det det ON enc.idajusteenc = det.idajusteenc
+                                    WHERE enc.ajuste_por_inventario = @IdInventarioEnc
+                                      AND enc.referencia NOT LIKE '%SAP%'
+                                      --AND det.idtipoajuste IN (3,5)
+
+                                    UNION
+
+                                    SELECT 
+                                        enc.ajuste_por_inventario AS IdInventario,
+                                        det.codigo_producto,
+                                        det.nombre_producto,
+                                        0 AS cantidad_originalWMS,
+                                        0 AS cantidad_nuevaWMS,
+                                        det.cantidad_original AS cantidad_originalSAP,
+                                        det.cantidad_nueva AS cantidad_nuevaSAP
+                                    FROM trans_ajuste_enc enc
+                                    INNER JOIN trans_ajuste_det det ON enc.idajusteenc = det.idajusteenc
+                                    WHERE enc.ajuste_por_inventario = @IdInventarioEnc
+                                      AND enc.referencia LIKE '%SAP%'
+                                      AND det.idtipoajuste IN (3,5)
+                                ) t
+                                GROUP BY 
+                                    t.IdInventario, 
+                                    t.codigo_producto,
+                                    t.nombre_producto"
+
+        Dim dt As New DataTable()
+
+        Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            conn.Open()
+            Dim tran As SqlTransaction = conn.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Try
+
+                Using cmd As New SqlCommand(query, conn, tran)
+                    cmd.Parameters.AddWithValue("@IdInventarioEnc", IdInventarioEnc)
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
+                End Using
+
+                tran.Commit()
+
+            Catch ex As Exception
+                tran.Rollback()
+                Throw New ApplicationException("Error al obtener datos de ajustes para pivot: " & ex.Message, ex)
+            End Try
+        End Using
+
+        Return dt
+    End Function
 
 End Class

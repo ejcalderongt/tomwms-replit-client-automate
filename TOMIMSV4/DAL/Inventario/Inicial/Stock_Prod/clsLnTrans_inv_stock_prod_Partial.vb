@@ -721,5 +721,20 @@ Partial Public Class clsLnTrans_inv_stock_prod
         End Try
 
     End Function
+    '#MA20250108
+    Public Shared Function SiguienteId(ByVal idInventario As Integer) As Integer
+        Dim sql As String = "SELECT ISNULL(MAX(idinvstockprod),0)+1 
+                             FROM trans_inv_stock_prod 
+                             WHERE idinventario = @idinventario"
+
+        Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.Parameters.AddWithValue("@idinventario", idInventario)
+                cn.Open()
+                Return CInt(cmd.ExecuteScalar())
+            End Using
+        End Using
+    End Function
+
 
 End Class

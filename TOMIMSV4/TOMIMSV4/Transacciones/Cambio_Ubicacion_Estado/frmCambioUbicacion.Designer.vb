@@ -228,6 +228,7 @@ Partial Class frmCambioUbicacion
         Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.chkAdvanceMode = New DevExpress.XtraBars.BarToggleSwitchItem()
         IdPropietarioLabel = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label24 = New System.Windows.Forms.Label()
@@ -678,10 +679,10 @@ Partial Class frmCambioUbicacion
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.mnuAsignacion, Me.mnuImprimir1, Me.mnuLiberarStockNoProcesado, Me.lblRegs, Me.mnuImportarListaCambioUbic, Me.mnuPendiente, Me.cmdDescargarPlantilla, Me.cmdEliminarDocumento})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.mnuAsignacion, Me.mnuImprimir1, Me.mnuLiberarStockNoProcesado, Me.lblRegs, Me.mnuImportarListaCambioUbic, Me.mnuPendiente, Me.cmdDescargarPlantilla, Me.cmdEliminarDocumento, Me.chkAdvanceMode})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 13
+        Me.RibbonControl.MaxItemId = 14
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -786,6 +787,7 @@ Partial Class frmCambioUbicacion
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuPendiente)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImportarListaCambioUbic)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdDescargarPlantilla)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAdvanceMode)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar1
@@ -1999,6 +2001,12 @@ Partial Class frmCambioUbicacion
         Me.User_modTextEdit.Size = New System.Drawing.Size(261, 22)
         Me.User_modTextEdit.TabIndex = 10
         '
+        'chkAdvanceMode
+        '
+        Me.chkAdvanceMode.Caption = "Advance Mode"
+        Me.chkAdvanceMode.Id = 13
+        Me.chkAdvanceMode.Name = "chkAdvanceMode"
+        '
         'frmCambioUbicacion
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -2236,4 +2244,5 @@ Partial Class frmCambioUbicacion
     Friend WithEvents txtTalla As DevExpress.XtraEditors.TextEdit
     Friend WithEvents lblColor As DevExpress.XtraEditors.LabelControl
     Friend WithEvents lblTalla As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents chkAdvanceMode As DevExpress.XtraBars.BarToggleSwitchItem
 End Class

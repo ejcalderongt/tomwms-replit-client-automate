@@ -837,7 +837,7 @@ Public Class clsLnTrans_inv_operador
         Try
 
             Const sp As String = " DELETE FROM Trans_inv_operador  
-                                   WHERE(Idinventarioenc=@Idinventarioenc AND idubic IN
+                                   WHERE(Idinventarioenc=@Idinventarioenc  AND idoperador = @IdOperador AND idubic IN
                                     (SELECT DISTINCT IdUbicacion FROM trans_inv_ciclico 
                                     WHERE idinventarioenc = @Idinventarioenc AND IdProductoBodega=@IdProductoBodega AND idoperador = @IdOperador AND IdUbicacion = @IdUbicacion) 
                                     AND IdUbic NOT IN

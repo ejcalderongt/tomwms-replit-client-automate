@@ -22,6 +22,7 @@ Public Class clsBeI_nav_producto
     Public Property BatchControl As Boolean = False
     Public Property Product_Class_Code() As String = ""
     Public Property Product_Class_Name() As String = ""
+    Public Property ExpirationControl As Boolean = False
     Sub New()
     End Sub
     Sub New(ByRef No As String, ByVal Description As String, ByVal Description_2 As String, ByVal Inventory As Double, ByVal Base_Unit_Of_Measure As String, ByVal Unit_Cost As Double, ByVal Inventory_Posting_Group As String, ByVal Gen_Prod_Posting_Group As String, ByVal Search_Description As String, ByVal Item_Category_Code As String, ByVal Product_Group_Code As String, ByVal Sales_Unit As String, ByVal Item_Tracking_Code As String)

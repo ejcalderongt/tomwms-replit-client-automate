@@ -88,11 +88,11 @@ Public Class clsBeMensaje_regla
     Sub New(ByRef IdMensajeRegla As Integer, ByVal Nombre As String, ByVal fec_agr As Date, ByVal user_agr As String, ByVal fec_mod As Date, ByVal user_mod As String, ByVal activo As Boolean)
         mIdMensajeRegla = IdMensajeRegla
         mNombre = Nombre
-        mFec_agr = Fec_agr
-        mUser_agr = User_agr
-        mFec_mod = Fec_mod
-        mUser_mod = User_mod
-        mActivo = Activo
+        mFec_agr = fec_agr
+        mUser_agr = user_agr
+        mFec_mod = fec_mod
+        mUser_mod = user_mod
+        mActivo = activo
     End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone

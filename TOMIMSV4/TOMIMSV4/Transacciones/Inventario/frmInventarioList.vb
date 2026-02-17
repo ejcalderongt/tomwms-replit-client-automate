@@ -32,7 +32,7 @@ Public Class frmInventarioList
             Dim gBeTransInvEnc As New clsBeTrans_inv_enc
             Dim listaInvDet As New List(Of clsBeTrans_inv_detalle)
 
-            lista = clsLnTrans_inv_enc.Get_All_By_Rango_Fechas(dtpFechaInicio.Value.Date, dtpFechaFin.Value.Date, AP.IdBodega)
+            lista = clsLnTrans_inv_enc.Get_All_By_Rango_Fechas(dtpFechaInicio.Value.Date, dtpFechaFin.Value.Date, AP.IdBodega, chkActivo.Checked)
 
             For Each objP As clsBeTrans_inv_enc In lista
 

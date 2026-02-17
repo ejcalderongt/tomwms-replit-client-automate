@@ -14,19 +14,26 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\DMS\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
+    <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <InstallUrl>\\192.168.0.98\DMS\</InstallUrl>
+    <UpdateUrl>\\192.168.0.98\DMS\</UpdateUrl>
+    <ProductName>DMS</ProductName>
+    <PublisherName>DTSolutions</PublisherName>
+    <SuiteName>DMS</SuiteName>
+    <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>20</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -36,7 +43,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\TOMIMSV4\TOMIMSV4\</OutputPath>
+    <OutputPath>bin\x86\Debug\</OutputPath>
     <DocumentationFile>DMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
@@ -98,11 +105,11 @@
   <ItemGroup>
     <Compile Include="Clases\BaseDatos.vb" />
     <Compile Include="Clases\clsBD.vb" />
-    <Compile Include="Clases\clsTabla.vb" />
     <Compile Include="Clases\clsHelper.vb" />
     <Compile Include="Clases\IMS.vb" />
     <Compile Include="Clases\m_Global.vb" />
-    <Compile Include="Api\ApiService.vb" />
+    <Compile Include="Dal\Mantenimientos\Propietarios\clsLnPropietarioDMS.vb" />
+    <Compile Include="Dal\Transacciones\Salidas\clsLnTrans_pe_encDMS.vb" />
     <Compile Include="Formas\frmEjecucion.Designer.vb">
       <DependentUpon>frmEjecucion.vb</DependentUpon>
     </Compile>
@@ -111,7 +118,30 @@
     </Compile>
     <Compile Include="Dal\Mantenimientos\Producto\clsLnProductoDMS.vb" />
     <Compile Include="Dal\Transacciones\Ingresos\clsLnTrans_oc_encDMS.vb" />
-    <Compile Include="Dal\Transacciones\Salidas\clsLnTrans_pe_encDMS.vb" />
+    <Compile Include="Formas\frmLogEventos.Designer.vb">
+      <DependentUpon>frmLogEventos.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmLogEventos.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\Configuracion_Interface\frmConfiguracionHorarios.Designer.vb">
+      <DependentUpon>frmConfiguracionHorarios.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\Configuracion_Interface\frmConfiguracionHorarios.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\Configuracion_Interface\frmConfiguracionList.Designer.vb">
+      <DependentUpon>frmConfiguracionList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\Configuracion_Interface\frmConfiguracionList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\frmRegistraFechaExpotacion.Designer.vb">
+      <DependentUpon>frmRegistraFechaExpotacion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\frmRegistraFechaExpotacion.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -148,9 +178,22 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="App.config" />
+    <Content Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PublishFile Include="PerceptronUbicacion">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppGlobal\AppGlobal.vbproj">
       <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>

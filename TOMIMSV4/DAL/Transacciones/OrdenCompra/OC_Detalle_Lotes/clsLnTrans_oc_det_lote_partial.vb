@@ -22,8 +22,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             Return lMax
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -66,8 +69,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             Return lReturnList
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, IdOrdenCompraEnc)
+
             Throw ex
         End Try
 
@@ -476,8 +482,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             Guarda_Trans_re_det_lote = vResult
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, pOcDetLote.User_agr, ex.StackTrace, pOcDetLote.IdOrdenCompraEnc, pOcDetLote.IdOrdenCompraDet)
+
             Throw ex
         End Try
 
@@ -656,8 +665,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             fractionalPart = number - wholePart
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -818,8 +830,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pOCEncabezado)
+
             Throw ex
         End Try
 
@@ -862,8 +877,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pOCEncabezado)
+
             Throw ex
         End Try
 
@@ -909,8 +927,11 @@ Partial Public Class clsLnTrans_oc_det_lote
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw ex
         End Try
 
@@ -1158,6 +1179,31 @@ Partial Public Class clsLnTrans_oc_det_lote
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
             If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Single_By_Licencia(ByVal pLicencia As String, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
+
+        Get_Single_By_Licencia = Nothing
+
+
+        Try
+
+            Const sp As String = "SELECT * FROM Trans_oc_det_lote 
+                                  Where(lic_plate = @lic_plate) "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@LIC_PLATE", pLicencia))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Get_Single_By_Licencia = dt.Rows.Count > 0
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function

@@ -30,6 +30,9 @@ Partial Class frmInventario
         Dim ArcScaleRange2 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
         Dim ArcScaleRange3 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
         Dim PieSeriesView2 As DevExpress.XtraCharts.PieSeriesView = New DevExpress.XtraCharts.PieSeriesView()
+        Dim ArcScaleRange4 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim ArcScaleRange5 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim ArcScaleRange6 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
         Dim PushTransition1 As DevExpress.Utils.Animation.PushTransition = New DevExpress.Utils.Animation.PushTransition()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -283,14 +286,26 @@ Partial Class frmInventario
         Me.grdUbicaciones = New DevExpress.XtraGrid.GridControl()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.grp = New DevExpress.XtraEditors.GroupControl()
+        Me.xtpRegularizacion = New DevExpress.XtraTab.XtraTabPage()
+        Me.grdRegularizar = New DevExpress.XtraGrid.GridControl()
+        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.tabUbicacionesNoContadas = New DevExpress.XtraTab.XtraTabPage()
+        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
+        Me.gaugeUbicaciones = New DevExpress.XtraGauges.Win.GaugeControl()
+        Me.lblGaugeUbicaciones = New DevExpress.XtraEditors.LabelControl()
+        Me.circularGauge10 = New DevExpress.XtraGauges.Win.Gauges.Circular.CircularGauge()
+        Me.ArcScaleBackgroundLayerComponent2 = New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleBackgroundLayerComponent()
+        Me.ArcScaleComponent2 = New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleComponent()
+        Me.ArcScaleNeedleComponent2 = New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleNeedleComponent()
+        Me.ArcScaleSpindleCapComponent2 = New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleSpindleCapComponent()
+        Me.dgridUbicacionesNoContadas = New DevExpress.XtraGrid.GridControl()
+        Me.GridViewUbicacionesNoContadas = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.DetalleBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.bwKPI = New System.ComponentModel.BackgroundWorker()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.WorkspaceManager1 = New DevExpress.Utils.WorkspaceManager(Me.components)
-        Me.xtpRegularizacion = New DevExpress.XtraTab.XtraTabPage()
-        Me.grdRegularizar = New DevExpress.XtraGrid.GridControl()
-        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
@@ -453,10 +468,24 @@ Partial Class frmInventario
         CType(Me.grdUbicaciones, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView6, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grp, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.xtpRegularizacion.SuspendLayout()
         CType(Me.grdRegularizar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tabUbicacionesNoContadas.SuspendLayout()
+        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer3.Panel1.SuspendLayout()
+        Me.SplitContainer3.Panel2.SuspendLayout()
+        Me.SplitContainer3.SuspendLayout()
+        Me.gaugeUbicaciones.SuspendLayout()
+        CType(Me.circularGauge10, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ArcScaleBackgroundLayerComponent2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ArcScaleComponent2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ArcScaleNeedleComponent2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ArcScaleSpindleCapComponent2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgridUbicacionesNoContadas, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridViewUbicacionesNoContadas, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Fec_agrLabel
@@ -501,7 +530,7 @@ Partial Class frmInventario
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.cmdActualizarInvInicial, Me.BarCheckItem1, Me.cmbSector, Me.rgrp, Me.cmdCompracionStock, Me.cmdConvertir, Me.cmdReconteo, Me.lblRegs, Me.lblReg, Me.lblRe, Me.cmdImprimir, Me.cmdImprimirGrid, Me.cmdImprimirdetalle, Me.cmdImprimirporoperador, Me.lblRegsRec, Me.cmdImprimirReconteo, Me.cmdActualizarInventario, Me.mnuImprimirInicial, Me.cmdImprimirConteo, Me.cmdImprimirVerifi, Me.cmdImprimirComparacion, Me.mnuExportarExcel, Me.cmdAplicarAjustesFecha, Me.BarButtonItem1, Me.BarButtonItem2, Me.chkComparativoConUbicacion, Me.mnuImportarTeoricoERP, Me.mnuImprimirComparacionERP})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.RibbonControl.MaxItemId = 50
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 353
@@ -798,8 +827,8 @@ Partial Class frmInventario
         'RibbonStatusBar1
         '
         Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegsRec)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 484)
-        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 485)
+        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar1.Size = New System.Drawing.Size(1657, 27)
@@ -894,7 +923,7 @@ Partial Class frmInventario
         '
         Me.tabDetalle.Controls.Add(Me.SplitContainer1)
         Me.tabDetalle.Controls.Add(Me.grpFiltros)
-        Me.tabDetalle.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabDetalle.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabDetalle.Name = "tabDetalle"
         Me.tabDetalle.Size = New System.Drawing.Size(1661, 513)
         Me.tabDetalle.Text = "Detalle de Inventario Inicial"
@@ -903,7 +932,7 @@ Partial Class frmInventario
         '
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer1.Location = New System.Drawing.Point(0, 47)
-        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(4)
+        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
@@ -914,7 +943,7 @@ Partial Class frmInventario
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.grpComparacion)
         Me.SplitContainer1.Size = New System.Drawing.Size(1661, 466)
-        Me.SplitContainer1.SplitterDistance = 779
+        Me.SplitContainer1.SplitterDistance = 778
         Me.SplitContainer1.SplitterWidth = 5
         Me.SplitContainer1.TabIndex = 1
         '
@@ -922,7 +951,7 @@ Partial Class frmInventario
         '
         Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer2.Margin = New System.Windows.Forms.Padding(4)
+        Me.SplitContainer2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.SplitContainer2.Name = "SplitContainer2"
         Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
@@ -933,8 +962,8 @@ Partial Class frmInventario
         'SplitContainer2.Panel2
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.grpVerificac)
-        Me.SplitContainer2.Size = New System.Drawing.Size(779, 466)
-        Me.SplitContainer2.SplitterDistance = 187
+        Me.SplitContainer2.Size = New System.Drawing.Size(778, 466)
+        Me.SplitContainer2.SplitterDistance = 186
         Me.SplitContainer2.SplitterWidth = 5
         Me.SplitContainer2.TabIndex = 0
         '
@@ -944,10 +973,10 @@ Partial Class frmInventario
         Me.grpConteo.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpConteo.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.grpConteo.Location = New System.Drawing.Point(0, 0)
-        Me.grpConteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpConteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpConteo.Name = "grpConteo"
-        Me.grpConteo.Padding = New System.Windows.Forms.Padding(4)
-        Me.grpConteo.Size = New System.Drawing.Size(779, 187)
+        Me.grpConteo.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grpConteo.Size = New System.Drawing.Size(778, 186)
         Me.grpConteo.TabIndex = 0
         Me.grpConteo.TabStop = False
         Me.grpConteo.Text = "Conteo"
@@ -955,13 +984,13 @@ Partial Class frmInventario
         'grdConteo
         '
         Me.grdConteo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdConteo.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdConteo.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdConteo.Location = New System.Drawing.Point(4, 18)
         Me.grdConteo.MainView = Me.gviewConteo
-        Me.grdConteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdConteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdConteo.MenuManager = Me.RibbonControl
         Me.grdConteo.Name = "grdConteo"
-        Me.grdConteo.Size = New System.Drawing.Size(771, 165)
+        Me.grdConteo.Size = New System.Drawing.Size(770, 164)
         Me.grdConteo.TabIndex = 0
         Me.grdConteo.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewConteo, Me.GridView4})
         '
@@ -993,10 +1022,10 @@ Partial Class frmInventario
         Me.grpVerificac.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpVerificac.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.grpVerificac.Location = New System.Drawing.Point(0, 0)
-        Me.grpVerificac.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpVerificac.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpVerificac.Name = "grpVerificac"
-        Me.grpVerificac.Padding = New System.Windows.Forms.Padding(4)
-        Me.grpVerificac.Size = New System.Drawing.Size(779, 274)
+        Me.grpVerificac.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grpVerificac.Size = New System.Drawing.Size(778, 275)
         Me.grpVerificac.TabIndex = 0
         Me.grpVerificac.TabStop = False
         Me.grpVerificac.Text = "Verificación"
@@ -1004,13 +1033,13 @@ Partial Class frmInventario
         'grdVerifica
         '
         Me.grdVerifica.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdVerifica.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdVerifica.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdVerifica.Location = New System.Drawing.Point(4, 18)
         Me.grdVerifica.MainView = Me.gviewVerifica
-        Me.grdVerifica.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdVerifica.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdVerifica.MenuManager = Me.RibbonControl
         Me.grdVerifica.Name = "grdVerifica"
-        Me.grdVerifica.Size = New System.Drawing.Size(771, 252)
+        Me.grdVerifica.Size = New System.Drawing.Size(770, 253)
         Me.grdVerifica.TabIndex = 0
         Me.grdVerifica.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewVerifica})
         '
@@ -1033,10 +1062,10 @@ Partial Class frmInventario
         Me.grpComparacion.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpComparacion.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.grpComparacion.Location = New System.Drawing.Point(0, 0)
-        Me.grpComparacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpComparacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpComparacion.Name = "grpComparacion"
-        Me.grpComparacion.Padding = New System.Windows.Forms.Padding(4)
-        Me.grpComparacion.Size = New System.Drawing.Size(877, 466)
+        Me.grpComparacion.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grpComparacion.Size = New System.Drawing.Size(878, 466)
         Me.grpComparacion.TabIndex = 0
         Me.grpComparacion.TabStop = False
         Me.grpComparacion.Text = "Comparación"
@@ -1044,13 +1073,13 @@ Partial Class frmInventario
         'dgridComparativoInvInicial
         '
         Me.dgridComparativoInvInicial.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridComparativoInvInicial.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridComparativoInvInicial.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridComparativoInvInicial.Location = New System.Drawing.Point(4, 18)
         Me.dgridComparativoInvInicial.MainView = Me.gviewComparativo
-        Me.dgridComparativoInvInicial.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridComparativoInvInicial.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridComparativoInvInicial.MenuManager = Me.RibbonControl
         Me.dgridComparativoInvInicial.Name = "dgridComparativoInvInicial"
-        Me.dgridComparativoInvInicial.Size = New System.Drawing.Size(869, 444)
+        Me.dgridComparativoInvInicial.Size = New System.Drawing.Size(870, 444)
         Me.dgridComparativoInvInicial.TabIndex = 0
         Me.dgridComparativoInvInicial.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewComparativo})
         '
@@ -1084,7 +1113,7 @@ Partial Class frmInventario
         Me.grpFiltros.Controls.Add(Me.txtProductoNombre)
         Me.grpFiltros.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpFiltros.Location = New System.Drawing.Point(0, 0)
-        Me.grpFiltros.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpFiltros.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpFiltros.Name = "grpFiltros"
         Me.grpFiltros.ShowCaption = False
         Me.grpFiltros.Size = New System.Drawing.Size(1661, 47)
@@ -1105,7 +1134,7 @@ Partial Class frmInventario
         'txtIdUbicacionInvInicial
         '
         Me.txtIdUbicacionInvInicial.Location = New System.Drawing.Point(64, 11)
-        Me.txtIdUbicacionInvInicial.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdUbicacionInvInicial.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdUbicacionInvInicial.MenuManager = Me.RibbonControl
         Me.txtIdUbicacionInvInicial.Name = "txtIdUbicacionInvInicial"
         Me.txtIdUbicacionInvInicial.Size = New System.Drawing.Size(137, 20)
@@ -1114,7 +1143,7 @@ Partial Class frmInventario
         'chkUbicCompleta
         '
         Me.chkUbicCompleta.Location = New System.Drawing.Point(1513, 34)
-        Me.chkUbicCompleta.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkUbicCompleta.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkUbicCompleta.MenuManager = Me.RibbonControl
         Me.chkUbicCompleta.Name = "chkUbicCompleta"
         Me.chkUbicCompleta.Properties.Caption = "Ubic_Completa"
@@ -1125,7 +1154,7 @@ Partial Class frmInventario
         'btnLimpiar
         '
         Me.btnLimpiar.Location = New System.Drawing.Point(1214, 6)
-        Me.btnLimpiar.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnLimpiar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnLimpiar.Name = "btnLimpiar"
         Me.btnLimpiar.Size = New System.Drawing.Size(94, 28)
         Me.btnLimpiar.TabIndex = 9
@@ -1134,7 +1163,7 @@ Partial Class frmInventario
         'txtPropietarioId
         '
         Me.txtPropietarioId.Location = New System.Drawing.Point(616, 12)
-        Me.txtPropietarioId.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtPropietarioId.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtPropietarioId.Name = "txtPropietarioId"
         Me.txtPropietarioId.Size = New System.Drawing.Size(80, 21)
         Me.txtPropietarioId.TabIndex = 7
@@ -1142,7 +1171,7 @@ Partial Class frmInventario
         'txtProductoId
         '
         Me.txtProductoId.Location = New System.Drawing.Point(265, 11)
-        Me.txtProductoId.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtProductoId.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtProductoId.Name = "txtProductoId"
         Me.txtProductoId.Size = New System.Drawing.Size(80, 21)
         Me.txtProductoId.TabIndex = 4
@@ -1150,7 +1179,7 @@ Partial Class frmInventario
         'txtTramoId
         '
         Me.txtTramoId.Location = New System.Drawing.Point(936, 11)
-        Me.txtTramoId.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtTramoId.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtTramoId.Name = "txtTramoId"
         Me.txtTramoId.Size = New System.Drawing.Size(80, 21)
         Me.txtTramoId.TabIndex = 1
@@ -1191,7 +1220,7 @@ Partial Class frmInventario
         'txtPropietarioNombre
         '
         Me.txtPropietarioNombre.Location = New System.Drawing.Point(704, 12)
-        Me.txtPropietarioNombre.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtPropietarioNombre.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtPropietarioNombre.Name = "txtPropietarioNombre"
         Me.txtPropietarioNombre.Size = New System.Drawing.Size(183, 21)
         Me.txtPropietarioNombre.TabIndex = 8
@@ -1199,7 +1228,7 @@ Partial Class frmInventario
         'txtTramoNombre
         '
         Me.txtTramoNombre.Location = New System.Drawing.Point(1023, 11)
-        Me.txtTramoNombre.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtTramoNombre.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtTramoNombre.Name = "txtTramoNombre"
         Me.txtTramoNombre.Size = New System.Drawing.Size(183, 21)
         Me.txtTramoNombre.TabIndex = 2
@@ -1207,7 +1236,7 @@ Partial Class frmInventario
         'txtProductoNombre
         '
         Me.txtProductoNombre.Location = New System.Drawing.Point(353, 11)
-        Me.txtProductoNombre.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtProductoNombre.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtProductoNombre.Name = "txtProductoNombre"
         Me.txtProductoNombre.Size = New System.Drawing.Size(183, 21)
         Me.txtProductoNombre.TabIndex = 5
@@ -1215,7 +1244,7 @@ Partial Class frmInventario
         'Datos
         '
         Me.Datos.Controls.Add(Me.grpInven)
-        Me.Datos.Margin = New System.Windows.Forms.Padding(4)
+        Me.Datos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Datos.Name = "Datos"
         Me.Datos.Size = New System.Drawing.Size(1661, 513)
         Me.Datos.Text = "Datos de Inventario"
@@ -1268,7 +1297,7 @@ Partial Class frmInventario
         Me.grpInven.Controls.Add(Me.lblCodigo)
         Me.grpInven.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpInven.Location = New System.Drawing.Point(0, 0)
-        Me.grpInven.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpInven.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpInven.Name = "grpInven"
         Me.grpInven.Size = New System.Drawing.Size(1661, 513)
         Me.grpInven.TabIndex = 0
@@ -1276,7 +1305,7 @@ Partial Class frmInventario
         'chkCapturarNoAsignado
         '
         Me.chkCapturarNoAsignado.Location = New System.Drawing.Point(716, 217)
-        Me.chkCapturarNoAsignado.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkCapturarNoAsignado.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkCapturarNoAsignado.MenuManager = Me.RibbonControl
         Me.chkCapturarNoAsignado.Name = "chkCapturarNoAsignado"
         Me.chkCapturarNoAsignado.Properties.Caption = ""
@@ -1296,7 +1325,7 @@ Partial Class frmInventario
         'cmbCentroCosto
         '
         Me.cmbCentroCosto.Location = New System.Drawing.Point(716, 44)
-        Me.cmbCentroCosto.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbCentroCosto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbCentroCosto.MenuManager = Me.RibbonControl
         Me.cmbCentroCosto.Name = "cmbCentroCosto"
         Me.cmbCentroCosto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1317,7 +1346,7 @@ Partial Class frmInventario
         'chkMultiPropietario
         '
         Me.chkMultiPropietario.Location = New System.Drawing.Point(716, 167)
-        Me.chkMultiPropietario.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkMultiPropietario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkMultiPropietario.MenuManager = Me.RibbonControl
         Me.chkMultiPropietario.Name = "chkMultiPropietario"
         Me.chkMultiPropietario.Properties.Caption = ""
@@ -1337,7 +1366,7 @@ Partial Class frmInventario
         'chkCaptNtExist
         '
         Me.chkCaptNtExist.Location = New System.Drawing.Point(716, 264)
-        Me.chkCaptNtExist.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkCaptNtExist.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkCaptNtExist.MenuManager = Me.RibbonControl
         Me.chkCaptNtExist.Name = "chkCaptNtExist"
         Me.chkCaptNtExist.Properties.Caption = ""
@@ -1357,7 +1386,7 @@ Partial Class frmInventario
         'cmbCliente
         '
         Me.cmbCliente.Location = New System.Drawing.Point(716, 67)
-        Me.cmbCliente.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbCliente.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbCliente.MenuManager = Me.RibbonControl
         Me.cmbCliente.Name = "cmbCliente"
         Me.cmbCliente.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1378,7 +1407,7 @@ Partial Class frmInventario
         'cmbProductoFamilia
         '
         Me.cmbProductoFamilia.Location = New System.Drawing.Point(716, 91)
-        Me.cmbProductoFamilia.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbProductoFamilia.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbProductoFamilia.MenuManager = Me.RibbonControl
         Me.cmbProductoFamilia.Name = "cmbProductoFamilia"
         Me.cmbProductoFamilia.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1410,7 +1439,7 @@ Partial Class frmInventario
         'chkMostrarCantidad
         '
         Me.chkMostrarCantidad.Location = New System.Drawing.Point(716, 193)
-        Me.chkMostrarCantidad.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkMostrarCantidad.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkMostrarCantidad.MenuManager = Me.RibbonControl
         Me.chkMostrarCantidad.Name = "chkMostrarCantidad"
         Me.chkMostrarCantidad.Properties.Caption = ""
@@ -1421,7 +1450,7 @@ Partial Class frmInventario
         'chkCambiaUbicacion
         '
         Me.chkCambiaUbicacion.Location = New System.Drawing.Point(716, 240)
-        Me.chkCambiaUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkCambiaUbicacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkCambiaUbicacion.MenuManager = Me.RibbonControl
         Me.chkCambiaUbicacion.Name = "chkCambiaUbicacion"
         Me.chkCambiaUbicacion.Properties.Caption = ""
@@ -1453,7 +1482,7 @@ Partial Class frmInventario
         '
         Me.dtpUltimoInv.EditValue = New Date(2017, 12, 4, 13, 30, 51, 367)
         Me.dtpUltimoInv.Location = New System.Drawing.Point(202, 240)
-        Me.dtpUltimoInv.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpUltimoInv.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dtpUltimoInv.MenuManager = Me.RibbonControl
         Me.dtpUltimoInv.Name = "dtpUltimoInv"
         Me.dtpUltimoInv.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1477,7 +1506,7 @@ Partial Class frmInventario
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.prg.Location = New System.Drawing.Point(2, 485)
-        Me.prg.Margin = New System.Windows.Forms.Padding(4)
+        Me.prg.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.prg.Name = "prg"
         Me.prg.Size = New System.Drawing.Size(1657, 26)
         Me.prg.TabIndex = 35
@@ -1497,7 +1526,7 @@ Partial Class frmInventario
         'chkSistema
         '
         Me.chkSistema.Location = New System.Drawing.Point(202, 288)
-        Me.chkSistema.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkSistema.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkSistema.MenuManager = Me.RibbonControl
         Me.chkSistema.Name = "chkSistema"
         Me.chkSistema.Properties.Caption = ""
@@ -1509,7 +1538,7 @@ Partial Class frmInventario
         '
         Me.dtpHoraFin.EditValue = New Date(2017, 12, 4, 13, 30, 51, 367)
         Me.dtpHoraFin.Location = New System.Drawing.Point(202, 217)
-        Me.dtpHoraFin.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpHoraFin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dtpHoraFin.MenuManager = Me.RibbonControl
         Me.dtpHoraFin.Name = "dtpHoraFin"
         Me.dtpHoraFin.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1526,7 +1555,7 @@ Partial Class frmInventario
         '
         Me.dtpHoraInicio.EditValue = New Date(2017, 12, 4, 13, 30, 51, 367)
         Me.dtpHoraInicio.Location = New System.Drawing.Point(202, 193)
-        Me.dtpHoraInicio.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpHoraInicio.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dtpHoraInicio.MenuManager = Me.RibbonControl
         Me.dtpHoraInicio.Name = "dtpHoraInicio"
         Me.dtpHoraInicio.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1543,7 +1572,7 @@ Partial Class frmInventario
         '
         Me.chkActivo.EditValue = True
         Me.chkActivo.Location = New System.Drawing.Point(202, 264)
-        Me.chkActivo.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkActivo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkActivo.MenuManager = Me.RibbonControl
         Me.chkActivo.Name = "chkActivo"
         Me.chkActivo.Properties.Caption = ""
@@ -1553,7 +1582,7 @@ Partial Class frmInventario
         'cmbTipoConteo
         '
         Me.cmbTipoConteo.Location = New System.Drawing.Point(716, 117)
-        Me.cmbTipoConteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbTipoConteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbTipoConteo.MenuManager = Me.RibbonControl
         Me.cmbTipoConteo.Name = "cmbTipoConteo"
         Me.cmbTipoConteo.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1565,7 +1594,7 @@ Partial Class frmInventario
         'cmbTipoInventario
         '
         Me.cmbTipoInventario.Location = New System.Drawing.Point(202, 143)
-        Me.cmbTipoInventario.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbTipoInventario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbTipoInventario.MenuManager = Me.RibbonControl
         Me.cmbTipoInventario.Name = "cmbTipoInventario"
         Me.cmbTipoInventario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1606,7 +1635,7 @@ Partial Class frmInventario
         'chkDobleVerifica
         '
         Me.chkDobleVerifica.Location = New System.Drawing.Point(716, 143)
-        Me.chkDobleVerifica.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkDobleVerifica.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkDobleVerifica.MenuManager = Me.RibbonControl
         Me.chkDobleVerifica.Name = "chkDobleVerifica"
         Me.chkDobleVerifica.Properties.Caption = ""
@@ -1658,7 +1687,7 @@ Partial Class frmInventario
         '
         Me.Fecha.EditValue = New Date(2017, 12, 4, 13, 30, 51, 367)
         Me.Fecha.Location = New System.Drawing.Point(202, 167)
-        Me.Fecha.Margin = New System.Windows.Forms.Padding(4)
+        Me.Fecha.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Fecha.MenuManager = Me.RibbonControl
         Me.Fecha.Name = "Fecha"
         Me.Fecha.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1669,7 +1698,7 @@ Partial Class frmInventario
         'cmbPropietario
         '
         Me.cmbPropietario.Location = New System.Drawing.Point(202, 117)
-        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbPropietario.MenuManager = Me.RibbonControl
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1680,7 +1709,7 @@ Partial Class frmInventario
         'cmbBodega
         '
         Me.cmbBodega.Location = New System.Drawing.Point(202, 91)
-        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbBodega.MenuManager = Me.RibbonControl
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1753,19 +1782,19 @@ Partial Class frmInventario
         '
         Me.xtraTabInv.Dock = System.Windows.Forms.DockStyle.Fill
         Me.xtraTabInv.Location = New System.Drawing.Point(0, 158)
-        Me.xtraTabInv.Margin = New System.Windows.Forms.Padding(4)
+        Me.xtraTabInv.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.xtraTabInv.Name = "xtraTabInv"
         Me.xtraTabInv.SelectedTabPage = Me.Datos
         Me.xtraTabInv.Size = New System.Drawing.Size(1663, 538)
         Me.xtraTabInv.TabIndex = 0
-        Me.xtraTabInv.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.Datos, Me.tabAsignacionProductos, Me.Tramos, Me.tabAsignacionOperadores, Me.tabDetalle, Me.tabConteo, Me.tabDiferenciasInventario, Me.tabConteoOperador, Me.tabReconteo, Me.tabInvTeorico, Me.tabComparativoERPWMS, Me.tbne, Me.tabInvCongelado, Me.TabInventarioCostos, Me.tabKPI, Me.tabAsignacionUbicaciones, Me.xtpRegularizacion})
+        Me.xtraTabInv.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.Datos, Me.tabAsignacionProductos, Me.Tramos, Me.tabAsignacionOperadores, Me.tabDetalle, Me.tabConteo, Me.tabDiferenciasInventario, Me.tabConteoOperador, Me.tabReconteo, Me.tabInvTeorico, Me.tabComparativoERPWMS, Me.tbne, Me.tabInvCongelado, Me.TabInventarioCostos, Me.tabKPI, Me.tabAsignacionUbicaciones, Me.xtpRegularizacion, Me.tabUbicacionesNoContadas})
         '
         'tabAsignacionProductos
         '
         Me.tabAsignacionProductos.Controls.Add(Me.GroupControl2)
         Me.tabAsignacionProductos.Controls.Add(Me.dgridAsignacionProductos)
         Me.tabAsignacionProductos.Controls.Add(Me.grpProductos)
-        Me.tabAsignacionProductos.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabAsignacionProductos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabAsignacionProductos.Name = "tabAsignacionProductos"
         Me.tabAsignacionProductos.Size = New System.Drawing.Size(1661, 513)
         Me.tabAsignacionProductos.Text = "Asignación de Productos"
@@ -1854,7 +1883,7 @@ Partial Class frmInventario
         '
         Me.dgridAsignacionProductos.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridAsignacionProductos.Location = New System.Drawing.Point(0, 93)
-        Me.dgridAsignacionProductos.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridAsignacionProductos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridAsignacionProductos.MinWidth = 17
         Me.dgridAsignacionProductos.Name = "dgridAsignacionProductos"
         Me.dgridAsignacionProductos.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
@@ -1881,7 +1910,7 @@ Partial Class frmInventario
         Me.grpProductos.Controls.Add(Me.cmdAgregarProducto)
         Me.grpProductos.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpProductos.Location = New System.Drawing.Point(0, 0)
-        Me.grpProductos.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpProductos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpProductos.Name = "grpProductos"
         Me.grpProductos.ShowCaption = False
         Me.grpProductos.Size = New System.Drawing.Size(1661, 93)
@@ -1891,7 +1920,7 @@ Partial Class frmInventario
         '
         Me.cmdQuitaOpProd.ImageOptions.Image = CType(resources.GetObject("cmdQuitaOpProd.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdQuitaOpProd.Location = New System.Drawing.Point(773, 12)
-        Me.cmdQuitaOpProd.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdQuitaOpProd.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdQuitaOpProd.Name = "cmdQuitaOpProd"
         Me.cmdQuitaOpProd.Size = New System.Drawing.Size(126, 36)
         Me.cmdQuitaOpProd.TabIndex = 8
@@ -1901,7 +1930,7 @@ Partial Class frmInventario
         '
         Me.cmdAsignaOpProd.ImageOptions.Image = CType(resources.GetObject("cmdAsignaOpProd.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdAsignaOpProd.Location = New System.Drawing.Point(638, 12)
-        Me.cmdAsignaOpProd.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdAsignaOpProd.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdAsignaOpProd.Name = "cmdAsignaOpProd"
         Me.cmdAsignaOpProd.Size = New System.Drawing.Size(126, 36)
         Me.cmdAsignaOpProd.TabIndex = 7
@@ -1910,7 +1939,7 @@ Partial Class frmInventario
         'twTodos
         '
         Me.twTodos.Location = New System.Drawing.Point(375, 47)
-        Me.twTodos.Margin = New System.Windows.Forms.Padding(4)
+        Me.twTodos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.twTodos.MenuManager = Me.RibbonControl
         Me.twTodos.Name = "twTodos"
         Me.twTodos.Properties.OffText = "Ningún producto"
@@ -1921,7 +1950,7 @@ Partial Class frmInventario
         'cmbOperadorProd
         '
         Me.cmbOperadorProd.Location = New System.Drawing.Point(375, 21)
-        Me.cmbOperadorProd.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbOperadorProd.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbOperadorProd.MenuManager = Me.RibbonControl
         Me.cmbOperadorProd.Name = "cmbOperadorProd"
         Me.cmbOperadorProd.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1943,7 +1972,7 @@ Partial Class frmInventario
         '
         Me.cmdEliminarOpProd.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarOpProd.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdEliminarOpProd.Location = New System.Drawing.Point(1035, 12)
-        Me.cmdEliminarOpProd.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdEliminarOpProd.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdEliminarOpProd.Name = "cmdEliminarOpProd"
         Me.cmdEliminarOpProd.Size = New System.Drawing.Size(120, 36)
         Me.cmdEliminarOpProd.TabIndex = 5
@@ -1953,7 +1982,7 @@ Partial Class frmInventario
         '
         Me.cmdAsignarOp.ImageOptions.SvgImage = CType(resources.GetObject("cmdAsignarOp.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdAsignarOp.Location = New System.Drawing.Point(908, 12)
-        Me.cmdAsignarOp.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdAsignarOp.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdAsignarOp.Name = "cmdAsignarOp"
         Me.cmdAsignarOp.Size = New System.Drawing.Size(120, 36)
         Me.cmdAsignarOp.TabIndex = 4
@@ -1963,7 +1992,7 @@ Partial Class frmInventario
         '
         Me.cmdQuitarProducto.ImageOptions.Image = CType(resources.GetObject("cmdQuitarProducto.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdQuitarProducto.Location = New System.Drawing.Point(147, 15)
-        Me.cmdQuitarProducto.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdQuitarProducto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdQuitarProducto.Name = "cmdQuitarProducto"
         Me.cmdQuitarProducto.Size = New System.Drawing.Size(128, 46)
         Me.cmdQuitarProducto.TabIndex = 3
@@ -1973,7 +2002,7 @@ Partial Class frmInventario
         '
         Me.cmdAgregarProducto.ImageOptions.Image = CType(resources.GetObject("cmdAgregarProducto.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdAgregarProducto.Location = New System.Drawing.Point(11, 15)
-        Me.cmdAgregarProducto.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdAgregarProducto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdAgregarProducto.Name = "cmdAgregarProducto"
         Me.cmdAgregarProducto.Size = New System.Drawing.Size(128, 46)
         Me.cmdAgregarProducto.TabIndex = 2
@@ -1982,9 +2011,9 @@ Partial Class frmInventario
         'Tramos
         '
         Me.Tramos.Controls.Add(Me.grpTramos)
-        Me.Tramos.Margin = New System.Windows.Forms.Padding(4)
+        Me.Tramos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Tramos.Name = "Tramos"
-        Me.Tramos.Size = New System.Drawing.Size(1661, 513)
+        Me.Tramos.Size = New System.Drawing.Size(1661, 514)
         Me.Tramos.Text = "Asignación Tramos"
         '
         'grpTramos
@@ -1994,17 +2023,17 @@ Partial Class frmInventario
         Me.grpTramos.Controls.Add(Me.dgridAsignacionTramos)
         Me.grpTramos.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpTramos.Location = New System.Drawing.Point(0, 0)
-        Me.grpTramos.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpTramos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpTramos.Name = "grpTramos"
         Me.grpTramos.ShowCaption = False
-        Me.grpTramos.Size = New System.Drawing.Size(1661, 513)
+        Me.grpTramos.Size = New System.Drawing.Size(1661, 514)
         Me.grpTramos.TabIndex = 0
         '
         'chkSeleccionarTodos
         '
         Me.chkSeleccionarTodos.AutoSize = True
         Me.chkSeleccionarTodos.Location = New System.Drawing.Point(772, 24)
-        Me.chkSeleccionarTodos.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkSeleccionarTodos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkSeleccionarTodos.Name = "chkSeleccionarTodos"
         Me.chkSeleccionarTodos.Size = New System.Drawing.Size(112, 17)
         Me.chkSeleccionarTodos.TabIndex = 2
@@ -2015,7 +2044,7 @@ Partial Class frmInventario
         '
         Me.chkTramosAsig.AutoSize = True
         Me.chkTramosAsig.Location = New System.Drawing.Point(650, 24)
-        Me.chkTramosAsig.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkTramosAsig.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkTramosAsig.Name = "chkTramosAsig"
         Me.chkTramosAsig.Size = New System.Drawing.Size(75, 17)
         Me.chkTramosAsig.TabIndex = 1
@@ -2025,13 +2054,13 @@ Partial Class frmInventario
         'dgridAsignacionTramos
         '
         Me.dgridAsignacionTramos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridAsignacionTramos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridAsignacionTramos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridAsignacionTramos.Location = New System.Drawing.Point(2, 2)
         Me.dgridAsignacionTramos.MainView = Me.GridViewTramos
-        Me.dgridAsignacionTramos.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridAsignacionTramos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridAsignacionTramos.Name = "dgridAsignacionTramos"
         Me.dgridAsignacionTramos.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit2})
-        Me.dgridAsignacionTramos.Size = New System.Drawing.Size(1657, 509)
+        Me.dgridAsignacionTramos.Size = New System.Drawing.Size(1657, 510)
         Me.dgridAsignacionTramos.TabIndex = 0
         Me.dgridAsignacionTramos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewTramos, Me.GridView5})
         '
@@ -2105,7 +2134,7 @@ Partial Class frmInventario
         '
         Me.tabAsignacionOperadores.Controls.Add(Me.dgridAsignacionOperadores)
         Me.tabAsignacionOperadores.Controls.Add(Me.grpOperadores)
-        Me.tabAsignacionOperadores.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabAsignacionOperadores.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabAsignacionOperadores.Name = "tabAsignacionOperadores"
         Me.tabAsignacionOperadores.Size = New System.Drawing.Size(1661, 513)
         Me.tabAsignacionOperadores.Text = "Asignación de Ubicaciones"
@@ -2114,7 +2143,7 @@ Partial Class frmInventario
         '
         Me.dgridAsignacionOperadores.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridAsignacionOperadores.Location = New System.Drawing.Point(0, 70)
-        Me.dgridAsignacionOperadores.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridAsignacionOperadores.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridAsignacionOperadores.MinWidth = 17
         Me.dgridAsignacionOperadores.Name = "dgridAsignacionOperadores"
         Me.dgridAsignacionOperadores.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
@@ -2138,7 +2167,7 @@ Partial Class frmInventario
         Me.grpOperadores.Controls.Add(Me.lblOperador)
         Me.grpOperadores.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpOperadores.Location = New System.Drawing.Point(0, 0)
-        Me.grpOperadores.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpOperadores.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpOperadores.Name = "grpOperadores"
         Me.grpOperadores.ShowCaption = False
         Me.grpOperadores.Size = New System.Drawing.Size(1661, 70)
@@ -2148,7 +2177,7 @@ Partial Class frmInventario
         '
         Me.cmdQuitar.ImageOptions.Image = CType(resources.GetObject("cmdQuitar.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdQuitar.Location = New System.Drawing.Point(162, 7)
-        Me.cmdQuitar.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdQuitar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdQuitar.Name = "cmdQuitar"
         Me.cmdQuitar.Size = New System.Drawing.Size(130, 42)
         Me.cmdQuitar.TabIndex = 1
@@ -2158,7 +2187,7 @@ Partial Class frmInventario
         '
         Me.cmdQuitarOperador.ImageOptions.Image = CType(resources.GetObject("cmdQuitarOperador.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdQuitarOperador.Location = New System.Drawing.Point(765, 11)
-        Me.cmdQuitarOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdQuitarOperador.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdQuitarOperador.Name = "cmdQuitarOperador"
         Me.cmdQuitarOperador.Size = New System.Drawing.Size(97, 39)
         Me.cmdQuitarOperador.TabIndex = 3
@@ -2168,7 +2197,7 @@ Partial Class frmInventario
         '
         Me.cmdAgregar.ImageOptions.Image = CType(resources.GetObject("cmdAgregar.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdAgregar.Location = New System.Drawing.Point(23, 8)
-        Me.cmdAgregar.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdAgregar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdAgregar.Name = "cmdAgregar"
         Me.cmdAgregar.Size = New System.Drawing.Size(130, 42)
         Me.cmdAgregar.TabIndex = 0
@@ -2178,7 +2207,7 @@ Partial Class frmInventario
         '
         Me.cmdAsignarOperador.ImageOptions.Image = CType(resources.GetObject("cmdAsignarOperador.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdAsignarOperador.Location = New System.Drawing.Point(660, 11)
-        Me.cmdAsignarOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdAsignarOperador.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdAsignarOperador.Name = "cmdAsignarOperador"
         Me.cmdAsignarOperador.Size = New System.Drawing.Size(97, 39)
         Me.cmdAsignarOperador.TabIndex = 2
@@ -2187,7 +2216,7 @@ Partial Class frmInventario
         'cmbOperador
         '
         Me.cmbOperador.Location = New System.Drawing.Point(411, 20)
-        Me.cmbOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbOperador.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbOperador.MenuManager = Me.RibbonControl
         Me.cmbOperador.Name = "cmbOperador"
         Me.cmbOperador.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -2209,7 +2238,7 @@ Partial Class frmInventario
         '
         Me.tabConteo.Controls.Add(Me.dgridInventarioCiclico)
         Me.tabConteo.Controls.Add(Me.grpConteoCi)
-        Me.tabConteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabConteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabConteo.Name = "tabConteo"
         Me.tabConteo.Size = New System.Drawing.Size(1661, 513)
         Me.tabConteo.Text = "Detalle de Inventario Ciclico"
@@ -2217,10 +2246,10 @@ Partial Class frmInventario
         'dgridInventarioCiclico
         '
         Me.dgridInventarioCiclico.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridInventarioCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInventarioCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridInventarioCiclico.Location = New System.Drawing.Point(0, 138)
         Me.dgridInventarioCiclico.MainView = Me.gdviewTeorico
-        Me.dgridInventarioCiclico.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInventarioCiclico.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridInventarioCiclico.MenuManager = Me.RibbonControl
         Me.dgridInventarioCiclico.Name = "dgridInventarioCiclico"
         Me.dgridInventarioCiclico.Size = New System.Drawing.Size(1661, 375)
@@ -2260,7 +2289,7 @@ Partial Class frmInventario
         Me.grpConteoCi.Controls.Add(Me.linklblFamilia)
         Me.grpConteoCi.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpConteoCi.Location = New System.Drawing.Point(0, 0)
-        Me.grpConteoCi.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpConteoCi.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpConteoCi.Name = "grpConteoCi"
         Me.grpConteoCi.Size = New System.Drawing.Size(1661, 138)
         Me.grpConteoCi.TabIndex = 0
@@ -2270,7 +2299,7 @@ Partial Class frmInventario
         '
         Me.prgPanInvConteo.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.prgPanInvConteo.Location = New System.Drawing.Point(2, 54)
-        Me.prgPanInvConteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.prgPanInvConteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.prgPanInvConteo.Name = "prgPanInvConteo"
         Me.prgPanInvConteo.Size = New System.Drawing.Size(1657, 82)
         Me.prgPanInvConteo.TabIndex = 18
@@ -2290,7 +2319,7 @@ Partial Class frmInventario
         'txtNombreUbicacion
         '
         Me.txtNombreUbicacion.Location = New System.Drawing.Point(1087, 28)
-        Me.txtNombreUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNombreUbicacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtNombreUbicacion.MenuManager = Me.RibbonControl
         Me.txtNombreUbicacion.Name = "txtNombreUbicacion"
         Me.txtNombreUbicacion.Size = New System.Drawing.Size(245, 20)
@@ -2299,7 +2328,7 @@ Partial Class frmInventario
         'txtIdUbicacion
         '
         Me.txtIdUbicacion.Location = New System.Drawing.Point(996, 28)
-        Me.txtIdUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdUbicacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdUbicacion.MenuManager = Me.RibbonControl
         Me.txtIdUbicacion.Name = "txtIdUbicacion"
         Me.txtIdUbicacion.Size = New System.Drawing.Size(82, 20)
@@ -2308,7 +2337,7 @@ Partial Class frmInventario
         'txtNombreProducto
         '
         Me.txtNombreProducto.Location = New System.Drawing.Point(646, 58)
-        Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtNombreProducto.MenuManager = Me.RibbonControl
         Me.txtNombreProducto.Name = "txtNombreProducto"
         Me.txtNombreProducto.Size = New System.Drawing.Size(245, 20)
@@ -2328,7 +2357,7 @@ Partial Class frmInventario
         'txtIdProducto
         '
         Me.txtIdProducto.Location = New System.Drawing.Point(556, 58)
-        Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdProducto.MenuManager = Me.RibbonControl
         Me.txtIdProducto.Name = "txtIdProducto"
         Me.txtIdProducto.Size = New System.Drawing.Size(82, 20)
@@ -2337,7 +2366,7 @@ Partial Class frmInventario
         'txtNombreOperador
         '
         Me.txtNombreOperador.Location = New System.Drawing.Point(646, 28)
-        Me.txtNombreOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNombreOperador.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtNombreOperador.MenuManager = Me.RibbonControl
         Me.txtNombreOperador.Name = "txtNombreOperador"
         Me.txtNombreOperador.Size = New System.Drawing.Size(245, 20)
@@ -2346,7 +2375,7 @@ Partial Class frmInventario
         'txtIdOperador
         '
         Me.txtIdOperador.Location = New System.Drawing.Point(556, 28)
-        Me.txtIdOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdOperador.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdOperador.MenuManager = Me.RibbonControl
         Me.txtIdOperador.Name = "txtIdOperador"
         Me.txtIdOperador.Size = New System.Drawing.Size(82, 20)
@@ -2366,7 +2395,7 @@ Partial Class frmInventario
         'txtNombreTramo
         '
         Me.txtNombreTramo.Location = New System.Drawing.Point(1087, 58)
-        Me.txtNombreTramo.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNombreTramo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtNombreTramo.MenuManager = Me.RibbonControl
         Me.txtNombreTramo.Name = "txtNombreTramo"
         Me.txtNombreTramo.Size = New System.Drawing.Size(245, 20)
@@ -2375,7 +2404,7 @@ Partial Class frmInventario
         'txtIdTramo
         '
         Me.txtIdTramo.Location = New System.Drawing.Point(996, 58)
-        Me.txtIdTramo.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdTramo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdTramo.MenuManager = Me.RibbonControl
         Me.txtIdTramo.Name = "txtIdTramo"
         Me.txtIdTramo.Size = New System.Drawing.Size(82, 20)
@@ -2384,7 +2413,7 @@ Partial Class frmInventario
         'txtClasificacionNombre
         '
         Me.txtClasificacionNombre.Location = New System.Drawing.Point(199, 58)
-        Me.txtClasificacionNombre.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtClasificacionNombre.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtClasificacionNombre.MenuManager = Me.RibbonControl
         Me.txtClasificacionNombre.Name = "txtClasificacionNombre"
         Me.txtClasificacionNombre.Size = New System.Drawing.Size(245, 20)
@@ -2393,7 +2422,7 @@ Partial Class frmInventario
         'txtIdClasificacion
         '
         Me.txtIdClasificacion.Location = New System.Drawing.Point(110, 58)
-        Me.txtIdClasificacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdClasificacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdClasificacion.MenuManager = Me.RibbonControl
         Me.txtIdClasificacion.Name = "txtIdClasificacion"
         Me.txtIdClasificacion.Size = New System.Drawing.Size(82, 20)
@@ -2402,7 +2431,7 @@ Partial Class frmInventario
         'txtFamiliaNombre
         '
         Me.txtFamiliaNombre.Location = New System.Drawing.Point(199, 28)
-        Me.txtFamiliaNombre.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtFamiliaNombre.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtFamiliaNombre.MenuManager = Me.RibbonControl
         Me.txtFamiliaNombre.Name = "txtFamiliaNombre"
         Me.txtFamiliaNombre.Size = New System.Drawing.Size(245, 20)
@@ -2411,7 +2440,7 @@ Partial Class frmInventario
         'txtIdFamilia
         '
         Me.txtIdFamilia.Location = New System.Drawing.Point(110, 28)
-        Me.txtIdFamilia.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdFamilia.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtIdFamilia.MenuManager = Me.RibbonControl
         Me.txtIdFamilia.Name = "txtIdFamilia"
         Me.txtIdFamilia.Size = New System.Drawing.Size(82, 20)
@@ -2455,19 +2484,19 @@ Partial Class frmInventario
         Me.tabDiferenciasInventario.Controls.Add(Me.dgridDiferenciasCiclico)
         Me.tabDiferenciasInventario.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabDiferenciasInventario.Name = "tabDiferenciasInventario"
-        Me.tabDiferenciasInventario.Size = New System.Drawing.Size(1661, 513)
+        Me.tabDiferenciasInventario.Size = New System.Drawing.Size(1661, 514)
         Me.tabDiferenciasInventario.Text = "Diferencias Inventario"
         '
         'dgridDiferenciasCiclico
         '
         Me.dgridDiferenciasCiclico.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridDiferenciasCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridDiferenciasCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridDiferenciasCiclico.Location = New System.Drawing.Point(0, 0)
         Me.dgridDiferenciasCiclico.MainView = Me.gvDiferenciasCiclico
-        Me.dgridDiferenciasCiclico.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridDiferenciasCiclico.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridDiferenciasCiclico.MenuManager = Me.RibbonControl
         Me.dgridDiferenciasCiclico.Name = "dgridDiferenciasCiclico"
-        Me.dgridDiferenciasCiclico.Size = New System.Drawing.Size(1661, 513)
+        Me.dgridDiferenciasCiclico.Size = New System.Drawing.Size(1661, 514)
         Me.dgridDiferenciasCiclico.TabIndex = 2
         Me.dgridDiferenciasCiclico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDiferenciasCiclico})
         '
@@ -2486,19 +2515,19 @@ Partial Class frmInventario
         Me.tabConteoOperador.Controls.Add(Me.dgridConteoOperador)
         Me.tabConteoOperador.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabConteoOperador.Name = "tabConteoOperador"
-        Me.tabConteoOperador.Size = New System.Drawing.Size(1661, 513)
+        Me.tabConteoOperador.Size = New System.Drawing.Size(1661, 514)
         Me.tabConteoOperador.Text = "Conteo por Operador"
         '
         'dgridConteoOperador
         '
         Me.dgridConteoOperador.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridConteoOperador.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridConteoOperador.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridConteoOperador.Location = New System.Drawing.Point(0, 0)
         Me.dgridConteoOperador.MainView = Me.gvConteoOperador
-        Me.dgridConteoOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridConteoOperador.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridConteoOperador.MenuManager = Me.RibbonControl
         Me.dgridConteoOperador.Name = "dgridConteoOperador"
-        Me.dgridConteoOperador.Size = New System.Drawing.Size(1661, 513)
+        Me.dgridConteoOperador.Size = New System.Drawing.Size(1661, 514)
         Me.dgridConteoOperador.TabIndex = 1
         Me.dgridConteoOperador.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvConteoOperador})
         '
@@ -2516,9 +2545,9 @@ Partial Class frmInventario
         'tabReconteo
         '
         Me.tabReconteo.Controls.Add(Me.grpReconteo)
-        Me.tabReconteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabReconteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabReconteo.Name = "tabReconteo"
-        Me.tabReconteo.Size = New System.Drawing.Size(1661, 513)
+        Me.tabReconteo.Size = New System.Drawing.Size(1661, 514)
         Me.tabReconteo.Text = "Detalle Reconteo"
         '
         'grpReconteo
@@ -2527,23 +2556,23 @@ Partial Class frmInventario
         Me.grpReconteo.Controls.Add(Me.RibbonStatusBar1)
         Me.grpReconteo.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpReconteo.Location = New System.Drawing.Point(0, 0)
-        Me.grpReconteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpReconteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpReconteo.Name = "grpReconteo"
         Me.grpReconteo.ShowCaption = False
-        Me.grpReconteo.Size = New System.Drawing.Size(1661, 513)
+        Me.grpReconteo.Size = New System.Drawing.Size(1661, 514)
         Me.grpReconteo.TabIndex = 0
         '
         'grdReconteo
         '
         Me.grdReconteo.DataSource = Me.EncabezadoBindingSource
         Me.grdReconteo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdReconteo.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdReconteo.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdReconteo.Location = New System.Drawing.Point(2, 2)
         Me.grdReconteo.MainView = Me.GridView8
-        Me.grdReconteo.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdReconteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdReconteo.MenuManager = Me.RibbonControl
         Me.grdReconteo.Name = "grdReconteo"
-        Me.grdReconteo.Size = New System.Drawing.Size(1657, 482)
+        Me.grdReconteo.Size = New System.Drawing.Size(1657, 483)
         Me.grdReconteo.TabIndex = 0
         Me.grdReconteo.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView8})
         '
@@ -2630,21 +2659,21 @@ Partial Class frmInventario
         'tabInvTeorico
         '
         Me.tabInvTeorico.Controls.Add(Me.dgridInvTeorico)
-        Me.tabInvTeorico.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabInvTeorico.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabInvTeorico.Name = "tabInvTeorico"
-        Me.tabInvTeorico.Size = New System.Drawing.Size(1661, 513)
+        Me.tabInvTeorico.Size = New System.Drawing.Size(1661, 514)
         Me.tabInvTeorico.Text = "Comparativo Teórico WMS Vrs Físico"
         '
         'dgridInvTeorico
         '
         Me.dgridInvTeorico.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridInvTeorico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInvTeorico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridInvTeorico.Location = New System.Drawing.Point(0, 0)
         Me.dgridInvTeorico.MainView = Me.gvInvTeoricoWMS
-        Me.dgridInvTeorico.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInvTeorico.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridInvTeorico.MenuManager = Me.RibbonControl
         Me.dgridInvTeorico.Name = "dgridInvTeorico"
-        Me.dgridInvTeorico.Size = New System.Drawing.Size(1661, 513)
+        Me.dgridInvTeorico.Size = New System.Drawing.Size(1661, 514)
         Me.dgridInvTeorico.TabIndex = 0
         Me.dgridInvTeorico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvInvTeoricoWMS})
         '
@@ -2665,7 +2694,7 @@ Partial Class frmInventario
         Me.tabComparativoERPWMS.Controls.Add(Me.chkConUbicacion)
         Me.tabComparativoERPWMS.Controls.Add(Me.dgridcomparativoerpwms)
         Me.tabComparativoERPWMS.Name = "tabComparativoERPWMS"
-        Me.tabComparativoERPWMS.Size = New System.Drawing.Size(1661, 513)
+        Me.tabComparativoERPWMS.Size = New System.Drawing.Size(1661, 514)
         Me.tabComparativoERPWMS.Text = "Comparativo ERP vrs WMS"
         '
         'chkLoteVence
@@ -2693,13 +2722,13 @@ Partial Class frmInventario
         'dgridcomparativoerpwms
         '
         Me.dgridcomparativoerpwms.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridcomparativoerpwms.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridcomparativoerpwms.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridcomparativoerpwms.Location = New System.Drawing.Point(0, 0)
         Me.dgridcomparativoerpwms.MainView = Me.gvInvTeoricoERP
-        Me.dgridcomparativoerpwms.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridcomparativoerpwms.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridcomparativoerpwms.MenuManager = Me.RibbonControl
         Me.dgridcomparativoerpwms.Name = "dgridcomparativoerpwms"
-        Me.dgridcomparativoerpwms.Size = New System.Drawing.Size(1661, 513)
+        Me.dgridcomparativoerpwms.Size = New System.Drawing.Size(1661, 514)
         Me.dgridcomparativoerpwms.TabIndex = 1
         Me.dgridcomparativoerpwms.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvInvTeoricoERP})
         '
@@ -2720,9 +2749,9 @@ Partial Class frmInventario
         'tbne
         '
         Me.tbne.Controls.Add(Me.PanelControl3)
-        Me.tbne.Margin = New System.Windows.Forms.Padding(4)
+        Me.tbne.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tbne.Name = "tbne"
-        Me.tbne.Size = New System.Drawing.Size(1661, 513)
+        Me.tbne.Size = New System.Drawing.Size(1661, 514)
         Me.tbne.Text = "Detalle de no existentes"
         '
         'PanelControl3
@@ -2730,21 +2759,21 @@ Partial Class frmInventario
         Me.PanelControl3.Controls.Add(Me.grdNE)
         Me.PanelControl3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl3.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl3.Margin = New System.Windows.Forms.Padding(4)
+        Me.PanelControl3.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.PanelControl3.Name = "PanelControl3"
-        Me.PanelControl3.Size = New System.Drawing.Size(1661, 513)
+        Me.PanelControl3.Size = New System.Drawing.Size(1661, 514)
         Me.PanelControl3.TabIndex = 0
         '
         'grdNE
         '
         Me.grdNE.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdNE.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdNE.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdNE.Location = New System.Drawing.Point(2, 2)
         Me.grdNE.MainView = Me.GridView10
-        Me.grdNE.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdNE.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdNE.MenuManager = Me.RibbonControl
         Me.grdNE.Name = "grdNE"
-        Me.grdNE.Size = New System.Drawing.Size(1657, 509)
+        Me.grdNE.Size = New System.Drawing.Size(1657, 510)
         Me.grdNE.TabIndex = 0
         Me.grdNE.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView10})
         '
@@ -2763,9 +2792,9 @@ Partial Class frmInventario
         'tabInvCongelado
         '
         Me.tabInvCongelado.Controls.Add(Me.PanelControl1)
-        Me.tabInvCongelado.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabInvCongelado.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabInvCongelado.Name = "tabInvCongelado"
-        Me.tabInvCongelado.Size = New System.Drawing.Size(1661, 513)
+        Me.tabInvCongelado.Size = New System.Drawing.Size(1661, 514)
         Me.tabInvCongelado.Text = "Inv. Congelado"
         '
         'PanelControl1
@@ -2773,21 +2802,21 @@ Partial Class frmInventario
         Me.PanelControl1.Controls.Add(Me.dgridCongelado)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl1.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1661, 513)
+        Me.PanelControl1.Size = New System.Drawing.Size(1661, 514)
         Me.PanelControl1.TabIndex = 0
         '
         'dgridCongelado
         '
         Me.dgridCongelado.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridCongelado.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridCongelado.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridCongelado.Location = New System.Drawing.Point(2, 2)
         Me.dgridCongelado.MainView = Me.GridView9
-        Me.dgridCongelado.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridCongelado.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridCongelado.MenuManager = Me.RibbonControl
         Me.dgridCongelado.Name = "dgridCongelado"
-        Me.dgridCongelado.Size = New System.Drawing.Size(1657, 509)
+        Me.dgridCongelado.Size = New System.Drawing.Size(1657, 510)
         Me.dgridCongelado.TabIndex = 0
         Me.dgridCongelado.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9})
         '
@@ -2806,9 +2835,9 @@ Partial Class frmInventario
         'TabInventarioCostos
         '
         Me.TabInventarioCostos.Controls.Add(Me.PanelControl2)
-        Me.TabInventarioCostos.Margin = New System.Windows.Forms.Padding(4)
+        Me.TabInventarioCostos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.TabInventarioCostos.Name = "TabInventarioCostos"
-        Me.TabInventarioCostos.Size = New System.Drawing.Size(1661, 513)
+        Me.TabInventarioCostos.Size = New System.Drawing.Size(1661, 514)
         Me.TabInventarioCostos.Text = "Comparativo por valorización"
         '
         'PanelControl2
@@ -2816,21 +2845,21 @@ Partial Class frmInventario
         Me.PanelControl2.Controls.Add(Me.grdCostos)
         Me.PanelControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl2.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl2.Margin = New System.Windows.Forms.Padding(4)
+        Me.PanelControl2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.PanelControl2.Name = "PanelControl2"
-        Me.PanelControl2.Size = New System.Drawing.Size(1661, 513)
+        Me.PanelControl2.Size = New System.Drawing.Size(1661, 514)
         Me.PanelControl2.TabIndex = 0
         '
         'grdCostos
         '
         Me.grdCostos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdCostos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdCostos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdCostos.Location = New System.Drawing.Point(2, 2)
         Me.grdCostos.MainView = Me.GridView7
-        Me.grdCostos.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdCostos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdCostos.MenuManager = Me.RibbonControl
         Me.grdCostos.Name = "grdCostos"
-        Me.grdCostos.Size = New System.Drawing.Size(1657, 509)
+        Me.grdCostos.Size = New System.Drawing.Size(1657, 510)
         Me.grdCostos.TabIndex = 0
         Me.grdCostos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView7})
         '
@@ -2850,16 +2879,16 @@ Partial Class frmInventario
         Me.tabKPI.Controls.Add(Me.chartcEstratoTipo)
         Me.tabKPI.Controls.Add(Me.GroupBox1)
         Me.tabKPI.Controls.Add(Me.charcUniverso)
-        Me.tabKPI.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabKPI.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabKPI.Name = "tabKPI"
-        Me.tabKPI.Size = New System.Drawing.Size(1661, 513)
+        Me.tabKPI.Size = New System.Drawing.Size(1661, 514)
         Me.tabKPI.Text = "KPI"
         '
         'chartcEstratoTipo
         '
         Me.chartcEstratoTipo.Legend.Name = "Default Legend"
         Me.chartcEstratoTipo.Location = New System.Drawing.Point(1259, 4)
-        Me.chartcEstratoTipo.Margin = New System.Windows.Forms.Padding(4)
+        Me.chartcEstratoTipo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chartcEstratoTipo.Name = "chartcEstratoTipo"
         Me.chartcEstratoTipo.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
         Me.chartcEstratoTipo.SeriesTemplate.View = PieSeriesView1
@@ -2872,9 +2901,9 @@ Partial Class frmInventario
         Me.GroupBox1.Controls.Add(Me.gcRegistros)
         Me.GroupBox1.Controls.Add(Me.lblRegistrosContados)
         Me.GroupBox1.Location = New System.Drawing.Point(579, 0)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4)
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Size = New System.Drawing.Size(656, 514)
         Me.GroupBox1.TabIndex = 2
         Me.GroupBox1.TabStop = False
@@ -2889,7 +2918,7 @@ Partial Class frmInventario
         Me.lblRegsCont.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder
         Me.lblRegsCont.Dock = System.Windows.Forms.DockStyle.Top
         Me.lblRegsCont.Location = New System.Drawing.Point(4, 531)
-        Me.lblRegsCont.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblRegsCont.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.lblRegsCont.Name = "lblRegsCont"
         Me.lblRegsCont.Size = New System.Drawing.Size(648, 356)
         Me.lblRegsCont.TabIndex = 2
@@ -2901,7 +2930,7 @@ Partial Class frmInventario
         Me.gcRegistros.Dock = System.Windows.Forms.DockStyle.Top
         Me.gcRegistros.Gauges.AddRange(New DevExpress.XtraGauges.Base.IGauge() {Me.circularGauge1})
         Me.gcRegistros.Location = New System.Drawing.Point(4, 277)
-        Me.gcRegistros.Margin = New System.Windows.Forms.Padding(4)
+        Me.gcRegistros.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.gcRegistros.Name = "gcRegistros"
         Me.gcRegistros.Size = New System.Drawing.Size(648, 254)
         Me.gcRegistros.TabIndex = 1
@@ -2995,7 +3024,7 @@ Partial Class frmInventario
         Me.lblRegistrosContados.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
         Me.lblRegistrosContados.Dock = System.Windows.Forms.DockStyle.Top
         Me.lblRegistrosContados.Location = New System.Drawing.Point(4, 18)
-        Me.lblRegistrosContados.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblRegistrosContados.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.lblRegistrosContados.Name = "lblRegistrosContados"
         Me.lblRegistrosContados.Size = New System.Drawing.Size(648, 259)
         Me.lblRegistrosContados.TabIndex = 0
@@ -3006,21 +3035,21 @@ Partial Class frmInventario
         Me.charcUniverso.Dock = System.Windows.Forms.DockStyle.Left
         Me.charcUniverso.Legend.Name = "Default Legend"
         Me.charcUniverso.Location = New System.Drawing.Point(0, 0)
-        Me.charcUniverso.Margin = New System.Windows.Forms.Padding(4)
+        Me.charcUniverso.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.charcUniverso.Name = "charcUniverso"
         Me.charcUniverso.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
         Me.charcUniverso.SeriesTemplate.View = PieSeriesView2
-        Me.charcUniverso.Size = New System.Drawing.Size(537, 513)
+        Me.charcUniverso.Size = New System.Drawing.Size(537, 514)
         Me.charcUniverso.TabIndex = 0
         '
         'tabAsignacionUbicaciones
         '
         Me.tabAsignacionUbicaciones.Controls.Add(Me.grpUbicaciones)
         Me.tabAsignacionUbicaciones.Controls.Add(Me.grp)
-        Me.tabAsignacionUbicaciones.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabAsignacionUbicaciones.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabAsignacionUbicaciones.Name = "tabAsignacionUbicaciones"
         Me.tabAsignacionUbicaciones.PageVisible = False
-        Me.tabAsignacionUbicaciones.Size = New System.Drawing.Size(1661, 513)
+        Me.tabAsignacionUbicaciones.Size = New System.Drawing.Size(1661, 514)
         Me.tabAsignacionUbicaciones.Text = "Asignación de Ubicaciones"
         '
         'grpUbicaciones
@@ -3029,10 +3058,10 @@ Partial Class frmInventario
         Me.grpUbicaciones.Controls.Add(Me.grdUbicaciones)
         Me.grpUbicaciones.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpUbicaciones.Location = New System.Drawing.Point(0, 76)
-        Me.grpUbicaciones.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpUbicaciones.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpUbicaciones.Name = "grpUbicaciones"
         Me.grpUbicaciones.ShowCaption = False
-        Me.grpUbicaciones.Size = New System.Drawing.Size(1661, 437)
+        Me.grpUbicaciones.Size = New System.Drawing.Size(1661, 438)
         Me.grpUbicaciones.TabIndex = 1
         '
         'GroupControl1
@@ -3042,9 +3071,9 @@ Partial Class frmInventario
         Me.GroupControl1.Controls.Add(Me.txtFiltroUbic)
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl1.Location = New System.Drawing.Point(2, 2)
-        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1657, 433)
+        Me.GroupControl1.Size = New System.Drawing.Size(1657, 434)
         Me.GroupControl1.TabIndex = 0
         Me.GroupControl1.Text = "Bodega -> Area -> Sector -> Tramo -> Ubicación"
         '
@@ -3052,7 +3081,7 @@ Partial Class frmInventario
         '
         Me.dgridAsignacionUbicaciones.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridAsignacionUbicaciones.Location = New System.Drawing.Point(2, 49)
-        Me.dgridAsignacionUbicaciones.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridAsignacionUbicaciones.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgridAsignacionUbicaciones.MinWidth = 17
         Me.dgridAsignacionUbicaciones.Name = "dgridAsignacionUbicaciones"
         Me.dgridAsignacionUbicaciones.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
@@ -3063,7 +3092,7 @@ Partial Class frmInventario
         Me.dgridAsignacionUbicaciones.OptionsView.ShowAutoFilterRow = True
         Me.dgridAsignacionUbicaciones.OptionsView.ShowFilterPanelMode = DevExpress.XtraTreeList.ShowFilterPanelMode.ShowAlways
         Me.dgridAsignacionUbicaciones.RowHeight = 24
-        Me.dgridAsignacionUbicaciones.Size = New System.Drawing.Size(1653, 382)
+        Me.dgridAsignacionUbicaciones.Size = New System.Drawing.Size(1653, 383)
         Me.dgridAsignacionUbicaciones.TabIndex = 2
         Me.dgridAsignacionUbicaciones.TreeLevelWidth = 15
         '
@@ -3072,7 +3101,7 @@ Partial Class frmInventario
         Me.btnFiltLimpia.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFiltLimpia.ImageOptions.Image = CType(resources.GetObject("btnFiltLimpia.ImageOptions.Image"), System.Drawing.Image)
         Me.btnFiltLimpia.Location = New System.Drawing.Point(1618, 28)
-        Me.btnFiltLimpia.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnFiltLimpia.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnFiltLimpia.Name = "btnFiltLimpia"
         Me.btnFiltLimpia.Size = New System.Drawing.Size(31, 24)
         Me.btnFiltLimpia.TabIndex = 1
@@ -3083,7 +3112,7 @@ Partial Class frmInventario
         Me.txtFiltroUbic.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.[True]
         Me.txtFiltroUbic.Dock = System.Windows.Forms.DockStyle.Top
         Me.txtFiltroUbic.Location = New System.Drawing.Point(2, 23)
-        Me.txtFiltroUbic.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtFiltroUbic.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtFiltroUbic.MenuManager = Me.RibbonControl
         Me.txtFiltroUbic.Name = "txtFiltroUbic"
         Me.txtFiltroUbic.Properties.Appearance.BackColor = System.Drawing.Color.AliceBlue
@@ -3101,10 +3130,10 @@ Partial Class frmInventario
         '
         'grdUbicaciones
         '
-        Me.grdUbicaciones.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdUbicaciones.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdUbicaciones.Location = New System.Drawing.Point(830, 39)
         Me.grdUbicaciones.MainView = Me.GridView6
-        Me.grdUbicaciones.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdUbicaciones.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdUbicaciones.MenuManager = Me.RibbonControl
         Me.grdUbicaciones.Name = "grdUbicaciones"
         Me.grdUbicaciones.Size = New System.Drawing.Size(339, 305)
@@ -3124,11 +3153,190 @@ Partial Class frmInventario
         '
         Me.grp.Dock = System.Windows.Forms.DockStyle.Top
         Me.grp.Location = New System.Drawing.Point(0, 0)
-        Me.grp.Margin = New System.Windows.Forms.Padding(4)
+        Me.grp.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grp.Name = "grp"
         Me.grp.ShowCaption = False
         Me.grp.Size = New System.Drawing.Size(1661, 76)
         Me.grp.TabIndex = 0
+        '
+        'xtpRegularizacion
+        '
+        Me.xtpRegularizacion.Controls.Add(Me.grdRegularizar)
+        Me.xtpRegularizacion.Name = "xtpRegularizacion"
+        Me.xtpRegularizacion.Size = New System.Drawing.Size(1661, 514)
+        Me.xtpRegularizacion.Text = "Regularización"
+        '
+        'grdRegularizar
+        '
+        Me.grdRegularizar.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grdRegularizar.Location = New System.Drawing.Point(0, 0)
+        Me.grdRegularizar.MainView = Me.GridView1
+        Me.grdRegularizar.MenuManager = Me.RibbonControl
+        Me.grdRegularizar.Name = "grdRegularizar"
+        Me.grdRegularizar.Size = New System.Drawing.Size(1661, 514)
+        Me.grdRegularizar.TabIndex = 0
+        Me.grdRegularizar.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
+        '
+        'GridView1
+        '
+        Me.GridView1.GridControl = Me.grdRegularizar
+        Me.GridView1.Name = "GridView1"
+        '
+        'tabUbicacionesNoContadas
+        '
+        Me.tabUbicacionesNoContadas.Controls.Add(Me.SplitContainer3)
+        Me.tabUbicacionesNoContadas.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.tabUbicacionesNoContadas.Name = "tabUbicacionesNoContadas"
+        Me.tabUbicacionesNoContadas.Size = New System.Drawing.Size(1661, 514)
+        Me.tabUbicacionesNoContadas.Text = "XtraTabPage1"
+        '
+        'SplitContainer3
+        '
+        Me.SplitContainer3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer3.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer3.Name = "SplitContainer3"
+        '
+        'SplitContainer3.Panel1
+        '
+        Me.SplitContainer3.Panel1.Controls.Add(Me.gaugeUbicaciones)
+        '
+        'SplitContainer3.Panel2
+        '
+        Me.SplitContainer3.Panel2.Controls.Add(Me.dgridUbicacionesNoContadas)
+        Me.SplitContainer3.Panel2.Padding = New System.Windows.Forms.Padding(10, 10, 10, 10)
+        Me.SplitContainer3.Size = New System.Drawing.Size(1661, 514)
+        Me.SplitContainer3.SplitterDistance = 685
+        Me.SplitContainer3.TabIndex = 4
+        '
+        'gaugeUbicaciones
+        '
+        Me.gaugeUbicaciones.AutoLayout = False
+        Me.gaugeUbicaciones.Controls.Add(Me.lblGaugeUbicaciones)
+        Me.gaugeUbicaciones.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.gaugeUbicaciones.Gauges.AddRange(New DevExpress.XtraGauges.Base.IGauge() {Me.circularGauge10})
+        Me.gaugeUbicaciones.Location = New System.Drawing.Point(0, 0)
+        Me.gaugeUbicaciones.Name = "gaugeUbicaciones"
+        Me.gaugeUbicaciones.Size = New System.Drawing.Size(685, 514)
+        Me.gaugeUbicaciones.TabIndex = 0
+        '
+        'lblGaugeUbicaciones
+        '
+        Me.lblGaugeUbicaciones.Appearance.Font = New System.Drawing.Font("Segoe UI Light", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblGaugeUbicaciones.Appearance.Options.UseFont = True
+        Me.lblGaugeUbicaciones.Appearance.Options.UseTextOptions = True
+        Me.lblGaugeUbicaciones.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.lblGaugeUbicaciones.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center
+        Me.lblGaugeUbicaciones.AppearanceDisabled.Options.UseTextOptions = True
+        Me.lblGaugeUbicaciones.AppearanceDisabled.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.lblGaugeUbicaciones.AppearanceHovered.Options.UseTextOptions = True
+        Me.lblGaugeUbicaciones.AppearanceHovered.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.lblGaugeUbicaciones.AppearancePressed.Options.UseTextOptions = True
+        Me.lblGaugeUbicaciones.AppearancePressed.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.lblGaugeUbicaciones.Location = New System.Drawing.Point(10, 21)
+        Me.lblGaugeUbicaciones.Name = "lblGaugeUbicaciones"
+        Me.lblGaugeUbicaciones.Size = New System.Drawing.Size(87, 21)
+        Me.lblGaugeUbicaciones.TabIndex = 2
+        Me.lblGaugeUbicaciones.Text = "Calculando..."
+        '
+        'circularGauge10
+        '
+        Me.circularGauge10.AutoSize = DevExpress.Utils.DefaultBoolean.[True]
+        Me.circularGauge10.BackgroundLayers.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleBackgroundLayerComponent() {Me.ArcScaleBackgroundLayerComponent2})
+        Me.circularGauge10.Bounds = New System.Drawing.Rectangle(5, 68, 652, 305)
+        Me.circularGauge10.Name = "circularGauge10"
+        Me.circularGauge10.Needles.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleNeedleComponent() {Me.ArcScaleNeedleComponent2})
+        Me.circularGauge10.Scales.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleComponent() {Me.ArcScaleComponent2})
+        Me.circularGauge10.SpindleCaps.AddRange(New DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleSpindleCapComponent() {Me.ArcScaleSpindleCapComponent2})
+        '
+        'ArcScaleBackgroundLayerComponent2
+        '
+        Me.ArcScaleBackgroundLayerComponent2.ArcScale = Me.ArcScaleComponent2
+        Me.ArcScaleBackgroundLayerComponent2.Name = "bg1"
+        Me.ArcScaleBackgroundLayerComponent2.ScaleCenterPos = New DevExpress.XtraGauges.Core.Base.PointF2D(0.5!, 0.56!)
+        Me.ArcScaleBackgroundLayerComponent2.ShapeType = DevExpress.XtraGauges.Core.Model.BackgroundLayerShapeType.CircularThreeFourth_Style16
+        Me.ArcScaleBackgroundLayerComponent2.Size = New System.Drawing.SizeF(250.0!, 224.0!)
+        Me.ArcScaleBackgroundLayerComponent2.ZOrder = 1000
+        '
+        'ArcScaleComponent2
+        '
+        Me.ArcScaleComponent2.AppearanceMajorTickmark.BorderBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:White")
+        Me.ArcScaleComponent2.AppearanceMajorTickmark.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:White")
+        Me.ArcScaleComponent2.AppearanceMinorTickmark.BorderBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:White")
+        Me.ArcScaleComponent2.AppearanceMinorTickmark.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:White")
+        Me.ArcScaleComponent2.AppearanceTickmarkText.DXFont = New DevExpress.Drawing.DXFont("Tahoma", 9.0!)
+        Me.ArcScaleComponent2.AppearanceTickmarkText.TextBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#484E5A")
+        Me.ArcScaleComponent2.Center = New DevExpress.XtraGauges.Core.Base.PointF2D(125.0!, 140.0!)
+        Me.ArcScaleComponent2.EndAngle = 45.0!
+        Me.ArcScaleComponent2.MajorTickCount = 6
+        Me.ArcScaleComponent2.MajorTickmark.AllowTickOverlap = True
+        Me.ArcScaleComponent2.MajorTickmark.FormatString = "{0:F0}"
+        Me.ArcScaleComponent2.MajorTickmark.ShapeOffset = -13.0!
+        Me.ArcScaleComponent2.MajorTickmark.ShapeType = DevExpress.XtraGauges.Core.Model.TickmarkShapeType.Circular_Style16_1
+        Me.ArcScaleComponent2.MajorTickmark.TextOrientation = DevExpress.XtraGauges.Core.Model.LabelOrientation.LeftToRight
+        Me.ArcScaleComponent2.MaxValue = 100.0!
+        Me.ArcScaleComponent2.MinorTickCount = 4
+        Me.ArcScaleComponent2.MinorTickmark.ShapeOffset = -9.0!
+        Me.ArcScaleComponent2.MinorTickmark.ShapeType = DevExpress.XtraGauges.Core.Model.TickmarkShapeType.Circular_Style16_2
+        Me.ArcScaleComponent2.Name = "scale1"
+        ArcScaleRange4.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#9EC968")
+        ArcScaleRange4.EndThickness = 14.0!
+        ArcScaleRange4.EndValue = 33.0!
+        ArcScaleRange4.Name = "Range0"
+        ArcScaleRange4.ShapeOffset = 0!
+        ArcScaleRange4.StartThickness = 14.0!
+        ArcScaleRange5.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#FED96D")
+        ArcScaleRange5.EndThickness = 14.0!
+        ArcScaleRange5.EndValue = 66.0!
+        ArcScaleRange5.Name = "Range1"
+        ArcScaleRange5.ShapeOffset = 0!
+        ArcScaleRange5.StartThickness = 14.0!
+        ArcScaleRange5.StartValue = 33.0!
+        ArcScaleRange6.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#EF8C75")
+        ArcScaleRange6.EndThickness = 14.0!
+        ArcScaleRange6.EndValue = 100.0!
+        ArcScaleRange6.Name = "Range2"
+        ArcScaleRange6.ShapeOffset = 0!
+        ArcScaleRange6.StartThickness = 14.0!
+        ArcScaleRange6.StartValue = 66.0!
+        Me.ArcScaleComponent2.Ranges.AddRange(New DevExpress.XtraGauges.Core.Model.IRange() {ArcScaleRange4, ArcScaleRange5, ArcScaleRange6})
+        Me.ArcScaleComponent2.StartAngle = -225.0!
+        '
+        'ArcScaleNeedleComponent2
+        '
+        Me.ArcScaleNeedleComponent2.ArcScale = Me.ArcScaleComponent2
+        Me.ArcScaleNeedleComponent2.EndOffset = 5.0!
+        Me.ArcScaleNeedleComponent2.Name = "needle1"
+        Me.ArcScaleNeedleComponent2.ShapeType = DevExpress.XtraGauges.Core.Model.NeedleShapeType.CircularFull_Style16
+        Me.ArcScaleNeedleComponent2.ZOrder = -50
+        '
+        'ArcScaleSpindleCapComponent2
+        '
+        Me.ArcScaleSpindleCapComponent2.ArcScale = Me.ArcScaleComponent2
+        Me.ArcScaleSpindleCapComponent2.Name = "cap1"
+        Me.ArcScaleSpindleCapComponent2.ShapeType = DevExpress.XtraGauges.Core.Model.SpindleCapShapeType.CircularFull_Style16
+        Me.ArcScaleSpindleCapComponent2.Size = New System.Drawing.SizeF(25.0!, 25.0!)
+        Me.ArcScaleSpindleCapComponent2.ZOrder = -100
+        '
+        'dgridUbicacionesNoContadas
+        '
+        Me.dgridUbicacionesNoContadas.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridUbicacionesNoContadas.Location = New System.Drawing.Point(10, 10)
+        Me.dgridUbicacionesNoContadas.MainView = Me.GridViewUbicacionesNoContadas
+        Me.dgridUbicacionesNoContadas.MenuManager = Me.RibbonControl
+        Me.dgridUbicacionesNoContadas.Name = "dgridUbicacionesNoContadas"
+        Me.dgridUbicacionesNoContadas.Size = New System.Drawing.Size(952, 494)
+        Me.dgridUbicacionesNoContadas.TabIndex = 2
+        Me.dgridUbicacionesNoContadas.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewUbicacionesNoContadas, Me.GridView2})
+        '
+        'GridViewUbicacionesNoContadas
+        '
+        Me.GridViewUbicacionesNoContadas.GridControl = Me.dgridUbicacionesNoContadas
+        Me.GridViewUbicacionesNoContadas.Name = "GridViewUbicacionesNoContadas"
+        '
+        'GridView2
+        '
+        Me.GridView2.GridControl = Me.dgridUbicacionesNoContadas
+        Me.GridView2.Name = "GridView2"
         '
         'ContextMenuStrip1
         '
@@ -3152,29 +3360,6 @@ Partial Class frmInventario
         '
         Me.WorkspaceManager1.TargetControl = Me
         Me.WorkspaceManager1.TransitionType = PushTransition1
-        '
-        'xtpRegularizacion
-        '
-        Me.xtpRegularizacion.Controls.Add(Me.grdRegularizar)
-        Me.xtpRegularizacion.Name = "xtpRegularizacion"
-        Me.xtpRegularizacion.Size = New System.Drawing.Size(1661, 513)
-        Me.xtpRegularizacion.Text = "Regularización"
-        '
-        'grdRegularizar
-        '
-        Me.grdRegularizar.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdRegularizar.Location = New System.Drawing.Point(0, 0)
-        Me.grdRegularizar.MainView = Me.GridView1
-        Me.grdRegularizar.MenuManager = Me.RibbonControl
-        Me.grdRegularizar.Name = "grdRegularizar"
-        Me.grdRegularizar.Size = New System.Drawing.Size(1661, 513)
-        Me.grdRegularizar.TabIndex = 0
-        Me.grdRegularizar.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
-        '
-        'GridView1
-        '
-        Me.GridView1.GridControl = Me.grdRegularizar
-        Me.GridView1.Name = "GridView1"
         '
         'frmInventario
         '
@@ -3357,10 +3542,25 @@ Partial Class frmInventario
         CType(Me.grdUbicaciones, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView6, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grp, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.xtpRegularizacion.ResumeLayout(False)
         CType(Me.grdRegularizar, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tabUbicacionesNoContadas.ResumeLayout(False)
+        Me.SplitContainer3.Panel1.ResumeLayout(False)
+        Me.SplitContainer3.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer3.ResumeLayout(False)
+        Me.gaugeUbicaciones.ResumeLayout(False)
+        Me.gaugeUbicaciones.PerformLayout()
+        CType(Me.circularGauge10, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ArcScaleBackgroundLayerComponent2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ArcScaleComponent2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ArcScaleNeedleComponent2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ArcScaleSpindleCapComponent2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgridUbicacionesNoContadas, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridViewUbicacionesNoContadas, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3629,4 +3829,16 @@ Partial Class frmInventario
     Friend WithEvents xtpRegularizacion As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents grdRegularizar As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents tabUbicacionesNoContadas As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents SplitContainer3 As SplitContainer
+    Friend WithEvents gaugeUbicaciones As DevExpress.XtraGauges.Win.GaugeControl
+    Friend WithEvents circularGauge10 As DevExpress.XtraGauges.Win.Gauges.Circular.CircularGauge
+    Private WithEvents ArcScaleBackgroundLayerComponent2 As DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleBackgroundLayerComponent
+    Private WithEvents ArcScaleComponent2 As DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleComponent
+    Private WithEvents ArcScaleNeedleComponent2 As DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleNeedleComponent
+    Private WithEvents ArcScaleSpindleCapComponent2 As DevExpress.XtraGauges.Win.Gauges.Circular.ArcScaleSpindleCapComponent
+    Friend WithEvents dgridUbicacionesNoContadas As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridViewUbicacionesNoContadas As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents GridView2 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents lblGaugeUbicaciones As DevExpress.XtraEditors.LabelControl
 End Class

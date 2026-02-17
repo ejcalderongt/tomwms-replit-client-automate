@@ -1047,22 +1047,6 @@ Public Class frmReglaVence
 
     End Sub
 
-    Private Sub GridControl_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs)
-        e.Handled = OnKeyDown(e.KeyCode, e.Modifiers)
-    End Sub
-
-    Private Sub GridControl_EditorKeyDown(ByVal sender As Object, ByVal e As KeyEventArgs)
-        e.Handled = OnKeyDown(e.KeyCode, e.Modifiers)
-    End Sub
-
-    Private Function OnKeyDown(ByVal keyCode As Keys, ByVal modifiers As Keys) As Boolean
-        If modifiers = Keys.None And (keyCode = Keys.Enter OrElse keyCode = Keys.Tab) Then
-            Return CheckAddNewRow()
-        End If
-
-        Return False
-    End Function
-
     Private Function CheckAddNewRow() As Boolean
         If gvReglaVencimiento.FocusedColumn.VisibleIndex = gvReglaVencimiento.VisibleColumns.Count - 1 Then
             If gvReglaVencimiento.IsNewItemRow(gvReglaVencimiento.FocusedRowHandle) Then

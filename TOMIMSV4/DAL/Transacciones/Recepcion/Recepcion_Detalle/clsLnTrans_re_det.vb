@@ -237,6 +237,7 @@ Public Class clsLnTrans_re_det
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", oBeTrans_re_det.IdRecepcionDet))
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeTrans_re_det.IdRecepcionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_re_det.IdProductoBodega))
+            'cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeTrans_re_det.Presentacion.IdPresentacion = 0, DBNull.Value, oBeTrans_re_det.Presentacion.IdPresentacion)))
             cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeTrans_re_det.IdPresentacion = 0, DBNull.Value, oBeTrans_re_det.IdPresentacion)))
             cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", IIf(oBeTrans_re_det.UnidadMedida.IdUnidadMedida = 0, DBNull.Value, oBeTrans_re_det.UnidadMedida.IdUnidadMedida)))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", IIf(oBeTrans_re_det.ProductoEstado.IdEstado = 0, DBNull.Value, oBeTrans_re_det.ProductoEstado.IdEstado)))

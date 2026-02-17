@@ -32,7 +32,7 @@ Partial Public Class clsLnProducto_estado
             Return dt
 
         Catch ex As Exception
-            Throw ex
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
     End Function
@@ -98,7 +98,7 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw ex
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
     End Function
@@ -164,7 +164,7 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw ex
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
     End Function
@@ -207,7 +207,6 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw ex
         End Try
 
     End Function
@@ -2117,5 +2116,104 @@ Partial Public Class clsLnProducto_estado
 
     End Function
 
+    Public Shared Function Existe_By_IdEstado(ByVal pIdEstado As Integer,
+                                              ByVal lConnection As SqlConnection,
+                                              ByVal lTransaction As SqlTransaction) As Boolean
+
+        Existe_By_IdEstado = False
+
+        Try
+
+            Dim lProductosEstado As New List(Of clsBeProducto_estado)
+            Dim vBeProductoEstado As New clsBeProducto_estado
+
+            Dim DT As New DataTable
+
+
+            Dim sp As String = "SELECT * FROM producto_estado 
+                                WHERE activo = 1                                 
+                                AND IdEstado = @IdEstado "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.AddWithValue("@IdEstado", pIdEstado)
+            dad.Fill(DT)
+
+            Existe_By_IdEstado = DT.Rows.Count > 0
+
+            DT.Dispose()
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_Stock_Con_Estado_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, lConnection As SqlConnection, lTRansaction As SqlTransaction) As List(Of clsBeProducto_Estado_Cmb)
+
+        Dim lReturnList As New List(Of clsBeProducto_Estado_Cmb)
+
+        Try
+            Dim vSQL As String = "
+            SELECT DISTINCT * 
+            FROM VW_StockEstadosProducto 
+            WHERE IdProductoBodega IN (
+                SELECT IdProductoBodega 
+                FROM trans_pe_det 
+                WHERE IdPedidoEnc = @IdPedidoEnc
+            )"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTRansaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                For Each lRow As DataRow In lDataTable.Rows
+
+                    Dim Obj As New clsBeProducto_Estado_Cmb
+                    Obj.IdEstado = Convert.ToInt32(lRow("IdProductoEstado"))
+
+                    If Not IsDBNull(lRow("IdPropietario")) Then
+                        Obj.IdPropietario = Convert.ToInt32(lRow("IdPropietario"))
+                    End If
+
+                    If Not IsDBNull(lRow("nombre")) Then
+                        Obj.Nombre = lRow("nombre").ToString()
+                    End If
+
+                    If Not IsDBNull(lRow("IdUbicacionDefecto")) Then
+                        Obj.IdUbicacionDefecto = Convert.ToInt32(lRow("IdUbicacionDefecto"))
+                    End If
+
+                    If Not IsDBNull(lRow("Utilizable")) Then
+                        Obj.Utilizable = Convert.ToBoolean(lRow("Utilizable"))
+                    End If
+
+                    If Not IsDBNull(lRow("activo")) Then
+                        Obj.Activo = Convert.ToBoolean(lRow("activo"))
+                    End If
+
+                    If Not IsDBNull(lRow("Dañado")) Then
+                        Obj.Dañado = Convert.ToBoolean(lRow("Dañado"))
+                    End If
+
+                    Obj.IdProductoBodega = lRow("IdProductoBodega")
+
+                    lReturnList.Add(Obj)
+
+                Next
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw New Exception($"{MethodBase.GetCurrentMethod().Name}: {ex.Message}")
+        End Try
+
+    End Function
 
 End Class

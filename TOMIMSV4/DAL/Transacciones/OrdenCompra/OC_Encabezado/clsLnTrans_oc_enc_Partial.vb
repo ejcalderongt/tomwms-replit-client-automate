@@ -1,7 +1,9 @@
-﻿Imports System.Reflection
+﻿Imports System
 Imports System.Data.SqlClient
-Imports DevExpress.DataAccess.Native
+Imports System.Reflection
 Imports DevExpress.DataAccess
+Imports DevExpress.DataAccess.Native
+Imports DevExpress.XtraEditors.Drawing
 
 Partial Public Class clsLnTrans_oc_enc
     '#20190125: This is a intentional comment
@@ -379,7 +381,7 @@ Partial Public Class clsLnTrans_oc_enc
                     BeTransOCEnc.ObjPoliza = clsLnTrans_oc_pol.GetSingle(BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
                     BeTransOCEnc.ListaImg = clsLnTrans_oc_imagen.Get_Imagenes_By_IdOrdenCompraEnc(BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
 
-                    Return BeTransOCEnc
+                    Get_BeTransOcEnc_By_IdOrdenCompraEnc = BeTransOCEnc
 
                 End If
 
@@ -524,6 +526,7 @@ Partial Public Class clsLnTrans_oc_enc
 
                             If lRow("IdProveedorBodega") IsNot DBNull.Value AndAlso lRow("IdProveedorBodega") IsNot Nothing Then
                                 Obj.ProveedorBodega.IdAsignacion = CType(lRow("IdProveedorBodega"), Integer)
+                                'clsLnProveedor_bodega.Obtener(Obj.ProveedorBodega, lConnection, lTransaction)
                                 Obj.ProveedorBodega.Proveedor.TiemposProveedor = clsLnProveedor_tiempos.Get_All_Tiempos_By_IdProveedor(Obj.ProveedorBodega.IdProveedor,
                                                                                                                                        lConnection,
                                                                                                                                        lTransaction)
@@ -1189,7 +1192,11 @@ Partial Public Class clsLnTrans_oc_enc
 
             Guarda_Trans_OC_Enc(BeTransOcEnc, lConnection, lTransaction)
             Guarda_Trans_oc_pol(BeTransOcEnc.IdOrdenCompraEnc, pObjP, lConnection, lTransaction)
-            Valida_Talla_Color(pListObjTD, lConnection, lTransaction)
+            '#GT27012025: validar control talla/color
+            Dim Bebodega = clsLnBodega.GetSingle_By_Idbodega(BeTransOcEnc.IdBodega, lConnection, lTransaction)
+            If Bebodega.Control_Talla_Color Then
+                Valida_Talla_Color(pListObjTD, lConnection, lTransaction)
+            End If
             Guarda_Trans_oc_det(BeTransOcEnc.IdOrdenCompraEnc, pListObjTD, lConnection, lTransaction)
             Guarda_Trans_oc_imagen(BeTransOcEnc.IdOrdenCompraEnc, pListObjI, lConnection, lTransaction)
             Guarda_Trans_oc_servicio(BeTransOcEnc.IdOrdenCompraEnc, pListObjServ, lConnection, lTransaction)
@@ -1293,8 +1300,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1309,8 +1319,12 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1329,8 +1343,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1392,8 +1409,11 @@ Partial Public Class clsLnTrans_oc_enc
             Guarda_Trans_OC_Enc = True
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, pObjE.IdBodega, pObjE.User_Agr, ex.StackTrace, pObjE.IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1410,8 +1430,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, BeTransOCEnc.IdBodega, BeTransOCEnc.User_Agr, ex.StackTrace, BeTransOCEnc.IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1437,8 +1460,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1465,6 +1491,20 @@ Partial Public Class clsLnTrans_oc_enc
                         Obj.IdOrdenCompraDet = lMax
                         Obj.IdOrdenCompraEnc = IdOrdenCompraEnc
                         clsLnTrans_oc_det.Insertar(Obj, lConnection, lTransaction)
+
+                        '#MECR06102025: Se agrego bitacora de logs para OC
+                        Dim objError As New clsBeLog_error_wms_oc
+                        objError.MensajeError = "Se registró el detalle " + lMax.ToString() + " del producto: " + Obj.Codigo_Producto
+                        objError.Fecha = Now
+                        objError.Cantidad = Obj.Cantidad
+                        objError.Codigo_producto = Obj.Codigo_Producto
+                        objError.IdOrdenCompraEnc = IdOrdenCompraEnc
+                        objError.IdOrdenCompraDet = lMax
+                        objError.IdUsuarioAgr = Obj.User_agr
+                        objError.UmBas = Obj.IdUnidadMedidaBasica
+
+                        clsLnLog_error_wms_oc.Insertar(objError, lConnection, lTransaction)
+
                     Else
 
                         '#EJC20190625: Validación de concurrencia en transaccion.
@@ -1489,6 +1529,18 @@ Partial Public Class clsLnTrans_oc_enc
 
                         clsLnTrans_oc_det.Actualizar(Obj, lConnection, lTransaction)
 
+                        '#MECR06102025: Se agrego bitacora de logs para OC
+                        Dim objError As New clsBeLog_error_wms_oc
+                        objError.MensajeError = "Se atualizó el detalle " + lMax.ToString() + " del producto " + Obj.Codigo_Producto
+                        objError.Fecha = Now
+                        objError.Cantidad = Obj.Cantidad
+                        objError.Codigo_producto = Obj.Codigo_Producto
+                        objError.IdOrdenCompraEnc = IdOrdenCompraEnc
+                        objError.IdOrdenCompraDet = lMax
+                        objError.IdUsuarioAgr = Obj.User_agr
+                        objError.UmBas = Obj.IdUnidadMedidaBasica
+
+                        clsLnLog_error_wms_oc.Insertar(objError, lConnection, lTransaction)
                     End If
 
                 Next
@@ -1496,8 +1548,10 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, IdOrdenCompraEnc)
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1532,8 +1586,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1582,8 +1639,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1600,8 +1660,11 @@ Partial Public Class clsLnTrans_oc_enc
             Genera_Correlativo_OC = Right("000000" & MaxID, 7)
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1859,8 +1922,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, pBeTrans_oc_enc.IdBodega, pBeTrans_oc_enc.User_Agr, ex.StackTrace, pBeTrans_oc_enc.IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -1900,8 +1966,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2017,8 +2086,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pRecOrdenCompra.IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2061,8 +2133,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2106,8 +2181,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2149,8 +2227,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2189,8 +2270,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2241,8 +2325,11 @@ Partial Public Class clsLnTrans_oc_enc
             Actualizar_Estado_Documento_Ingreso_By_No_Documento_Devolucion = vResult
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2276,8 +2363,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, oBeTrans_oc_enc.IdBodega, oBeTrans_oc_enc.User_Agr, ex.StackTrace, oBeTrans_oc_enc.IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2320,8 +2410,11 @@ Partial Public Class clsLnTrans_oc_enc
             Return lExists
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2364,8 +2457,11 @@ Partial Public Class clsLnTrans_oc_enc
             Return lExists
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2890,8 +2986,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, pIdBodega, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2928,8 +3027,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -2974,8 +3076,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -3051,8 +3156,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -3152,8 +3260,11 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -3298,8 +3409,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, pBeTransOcEnc.IdOrdenCompraEnc, pBeTransOcEnc.User_Agr, ex.StackTrace, pBeTransOcEnc.IdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -3450,8 +3564,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -3501,8 +3618,11 @@ Partial Public Class clsLnTrans_oc_enc
             End Using
 
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR03102025: Se agrego nueva bitacora de logs para OC
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, 0, pIdBodega, 0, ex.StackTrace, pIdOrdenCompraEnc)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
@@ -3642,7 +3762,11 @@ Partial Public Class clsLnTrans_oc_enc
 
 
     '#GT07052025: listar todas las oc's para proceso de importacion hacia portal web
-    Public Shared Function GetAll_By_CDC(ByVal pUltimaSincronizacion As Date, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As List(Of clsBeTrans_oc_enc)
+
+    Public Shared Function GetAll_By_CDC(ByVal pUltimaSincronizacion As Date, ByVal plistaPropietariosBodega As List(Of clsBePropietario_bodega),
+                                                                              ByVal listaIngresosPendientes As List(Of Integer),
+                                                                              Optional ByVal pConection As SqlConnection = Nothing,
+                                                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As List(Of clsBeTrans_oc_enc)
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -3653,6 +3777,21 @@ Partial Public Class clsLnTrans_oc_enc
         Try
 
             Dim vSQL As String = "SELECT * FROM trans_oc_enc WHERE (idEstadoOC=4 and Activo=1) and fec_agr >=@pUltimaSincronizacion "
+            'Dim vSQL As String = "SELECT * FROM trans_oc_enc WHERE IdOrdenCompraEnc=12526 "
+
+            If plistaPropietariosBodega IsNot Nothing AndAlso plistaPropietariosBodega.Count > 0 Then
+                Dim propietarioIds As String = String.Join(",", plistaPropietariosBodega.Select(Function(p) p.IdPropietarioBodega.ToString()))
+                vSQL &= " AND idPropietarioBodega IN (" & propietarioIds & ")"
+            End If
+
+            'If plistaPropietariosBodega > 0 Then
+            '    vSQL &= " AND idPropietarioBodega = @pPropietario "
+            'End If
+
+            If listaIngresosPendientes IsNot Nothing AndAlso listaIngresosPendientes.Count > 0 Then
+                Dim IdOrdenCompraIds As String = String.Join(",", listaIngresosPendientes)
+                vSQL &= " AND IdOrdenCompraEnc NOT IN (" & IdOrdenCompraIds & ")"
+            End If
 
             Es_Transaccion_Remota = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
@@ -3662,10 +3801,16 @@ Partial Public Class clsLnTrans_oc_enc
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 lDTA = New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.Transaction = lTransaction
             End If
 
             lDTA.SelectCommand.CommandType = CommandType.Text
             lDTA.SelectCommand.Parameters.AddWithValue("@pUltimaSincronizacion", pUltimaSincronizacion)
+
+            'If plistaPropietariosBodega > 0 Then
+            '    lDTA.SelectCommand.Parameters.AddWithValue("@pPropietario", plistaPropietariosBodega)
+            'End If
+
             Dim lDT As New DataTable()
             lDTA.Fill(lDT)
 
@@ -3674,6 +3819,7 @@ Partial Public Class clsLnTrans_oc_enc
                 For Each row As DataRow In lDT.Rows
                     Dim BeOcEnc As New clsBeTrans_oc_enc()
                     Cargar(BeOcEnc, row)
+                    BeOcEnc.PropietarioBodega = clsLnPropietario_bodega.Get_Single_With_Propietario(BeOcEnc.IdPropietarioBodega, pConection, pTransaction)
                     GetAll_By_CDC.Add(BeOcEnc)
                 Next
 
@@ -3692,6 +3838,197 @@ Partial Public Class clsLnTrans_oc_enc
                 If lTransaction IsNot Nothing Then lTransaction.Dispose()
                 If lConnection IsNot Nothing Then lConnection.Dispose()
             End If
+        End Try
+
+    End Function
+
+
+
+    'Public Shared Function GetAll_By_CDC(ByVal pUltimaSincronizacion As Date, ByVal ListPropietariosBodega As List(Of Integer),
+    '                                                                          ByVal listaIngresosPendientes As List(Of Integer),
+    '                                                                          Optional ByVal pConection As SqlConnection = Nothing,
+    '                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As List(Of clsBeTrans_oc_enc)
+
+    '    Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+    '    Dim lTransaction As SqlTransaction = Nothing
+    '    Dim lDTA As New SqlDataAdapter
+    '    Dim Es_Transaccion_Remota As Boolean
+    '    GetAll_By_CDC = Nothing
+
+    '    Try
+
+    '        Dim vSQL As String = "SELECT * FROM trans_oc_enc WHERE (idEstadoOC=4 and Activo=1) and fec_agr >=@pUltimaSincronizacion "
+
+    '        If ListPropietariosBodega IsNot Nothing AndAlso ListPropietariosBodega.Count > 0 Then
+    '            Dim propietarioIds As String = String.Join(",", ListPropietariosBodega.Select(Function(p) p.IdPropietarioBodega.ToString()))
+    '            vSQL &= " AND idPropietarioBodega IN (" & propietarioIds & ")"
+    '        End If
+
+    '        If listaIngresosPendientes IsNot Nothing AndAlso listaIngresosPendientes.Count > 0 Then
+    '            Dim IdOrdenCompraIds As String = String.Join(",", listaIngresosPendientes)
+    '            vSQL &= " AND IdOrdenCompraEnc NOT IN (" & IdOrdenCompraIds & ")"
+    '        End If
+
+
+    '        Es_Transaccion_Remota = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+    '        If Es_Transaccion_Remota Then
+    '            lDTA = New SqlDataAdapter(vSQL, pConection)
+    '            lDTA.SelectCommand.Transaction = pTransaction
+    '        Else
+    '            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+    '            lDTA = New SqlDataAdapter(vSQL, lConnection)
+    '        End If
+
+    '        lDTA.SelectCommand.CommandType = CommandType.Text
+    '        lDTA.SelectCommand.Parameters.AddWithValue("@pUltimaSincronizacion", pUltimaSincronizacion)
+    '        Dim lDT As New DataTable()
+    '        lDTA.Fill(lDT)
+
+    '        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+    '            GetAll_By_CDC = New List(Of clsBeTrans_oc_enc)()
+    '            For Each row As DataRow In lDT.Rows
+    '                Dim BeOcEnc As New clsBeTrans_oc_enc()
+    '                Cargar(BeOcEnc, row)
+    '                GetAll_By_CDC.Add(BeOcEnc)
+    '            Next
+
+    '        End If
+
+    '        If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+    '    Catch ex As Exception
+    '        If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then
+    '            lTransaction.Rollback()
+    '        End If
+    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+    '    Finally
+    '        If Not Es_Transaccion_Remota Then
+    '            If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+    '            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+    '            If lConnection IsNot Nothing Then lConnection.Dispose()
+    '        End If
+    '    End Try
+
+    'End Function
+
+    Public Shared Function Eliminar_OC(ByVal pOrdenCompraEnc As clsBeTrans_oc_enc,
+                                       ByVal pUsuario As clsBeUsuario) As Boolean
+
+
+        Eliminar_OC = False
+
+        Dim lListRecepciones As New List(Of Integer)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Try
+                lListRecepciones = clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(pOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction).ToList()
+                If Not lListRecepciones Is Nothing Then
+                    If lListRecepciones.Count > 0 Then
+                        Throw New Exception("No se puede eliminar un documento con recepciones asociadas")
+                    End If
+                End If
+            Catch ex As Exception
+                Throw New Exception(ex.Message)
+            End Try
+
+            'Eliminamos la póliza asociada
+            If pOrdenCompraEnc.ObjPoliza IsNot Nothing Then
+                clsLnTrans_oc_pol.Eliminar_Poliza_By_IdOrdenCompra(pOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+            End If
+
+            ' Eliminamos la orden de compra correspondiente
+            Eliminar_Encabezado_Detalle(pOrdenCompraEnc.IdOrdenCompraEnc,
+                                        lConnection,
+                                        lTransaction)
+
+            If pOrdenCompraEnc.Referencia <> "" Then
+
+                'Eliminamos el detalle en la temporal
+                clsLnI_nav_ped_compra_det.Eliminar_By_NoEnc(pOrdenCompraEnc.Referencia,
+                                                            lConnection,
+                                                            lTransaction)
+
+                'Eliminamos el encabezado en la temporal
+                clsLnI_nav_ped_compra_enc.Delete_By_NoEnc(pOrdenCompraEnc.Referencia,
+                                                          lConnection,
+                                                          lTransaction)
+
+            End If
+
+            lTransaction.Commit()
+
+            '#MECR06102025: Se agrego bitacora de logs para OC
+            Dim BeLogErrorWMS As New clsBeLog_error_wms_oc
+            BeLogErrorWMS.IdEmpresa = pUsuario.IdEmpresa
+            BeLogErrorWMS.IdBodega = pOrdenCompraEnc.IdBodega
+            BeLogErrorWMS.Fecha = Now
+            BeLogErrorWMS.MensajeError = "OC_DEL: Se eliminó el documento de ingreso: " & pOrdenCompraEnc.IdOrdenCompraEnc.ToString() & " con referencia: " & pOrdenCompraEnc.Referencia
+            BeLogErrorWMS.IdUsuarioAgr = pUsuario.IdUsuario
+            BeLogErrorWMS.IdOrdenCompraEnc = pOrdenCompraEnc.IdOrdenCompraEnc
+
+            clsLnLog_error_wms_oc.Insertar(BeLogErrorWMS, lConnection, lTransaction)
+
+            Eliminar_OC = True
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+            Throw New Exception(ex.Message)
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Eliminar_Encabezado_Detalle(ByVal pIdOrdenCompraEnc As Integer,
+                                                       Optional ByVal pConection As SqlConnection = Nothing,
+                                                       Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = "DELETE FROM trans_oc_imagen Where(IdOrdenCompraEnc = @IdOrdenCompraEnc); 
+                                  DELETE FROM trans_oc_servicios Where(IdOrdenCompraEnc = @IdOrdenCompraEnc); 
+                                  DELETE FROM trans_oc_det_lote Where(IdOrdenCompraEnc = @IdOrdenCompraEnc); 
+                                  DELETE FROM trans_oc_det Where(IdOrdenCompraEnc = @IdOrdenCompraEnc); 
+                                  DELETE FROM Trans_oc_enc Where(IdOrdenCompraEnc = @IdOrdenCompraEnc);"
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+
+            '#EJC20191205: Trans_Ref03
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection, pTransaction)
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", pIdOrdenCompraEnc))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception("No se puedo eliminar la orden de compra " & ex.Message)
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
@@ -3744,5 +4081,4 @@ Partial Public Class clsLnTrans_oc_enc
         End Try
 
     End Function
-
 End Class

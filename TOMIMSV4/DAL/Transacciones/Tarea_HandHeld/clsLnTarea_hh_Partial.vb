@@ -1313,7 +1313,7 @@ Partial Public Class clsLnTarea_hh
                                   WHERE ((estado = 'Nuevo' OR estado = 'Pendiente') 
                                   AND (activo = 1) 
                                   AND IdBodega = @IdBodega 
-                                  AND IdOperadorBodega = @IdOperadorBodega) "
+                                  AND IdOperadorBodega = @IdOperadorBodega )"
 
             Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)

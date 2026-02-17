@@ -213,7 +213,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         sum(trans_inv_ciclico.peso_reconteo) as peso_reconteo,
                         trans_inv_ciclico.idoperador,
                         trans_inv_ciclico.lic_plate,    
-                        '19000101' as fec_agr, 
+                        trans_inv_ciclico.fec_agr, 
                         bodega_ubicacion.IdTramo, 
                         producto_estado.nombre AS estado_nombre,
                         producto.nombre AS producto_nombre, 
@@ -241,7 +241,9 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(t.Codigo, '') as Codigo_Talla,
                         ISNULL(t.Nombre, '') as Nombre_Talla,
                         producto.IdProducto,
-                        trans_inv_ciclico.gondola
+                        trans_inv_ciclico.gondola,
+                        trans_inv_ciclico.fec_mod,
+                        trans_inv_ciclico.contado
                         FROM unidad_medida RIGHT OUTER JOIN
                         trans_inv_ciclico INNER JOIN
                         bodega_ubicacion ON trans_inv_ciclico.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
@@ -298,7 +300,10 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         t.Codigo,
                         t.Nombre,
                         producto.IdProducto,
-                        trans_inv_ciclico.gondola
+                        trans_inv_ciclico.gondola,
+                        trans_inv_ciclico.fec_mod, 
+                        trans_inv_ciclico.fec_agr,
+                        trans_inv_ciclico.contado
 
             UNION
 
@@ -321,7 +326,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         SUM(trans_inv_reconteo.peso) AS peso_reconteo,
                         trans_inv_reconteo.IdOperador, 
                         trans_inv_reconteo.lic_plate,
-                        '1900101' as fec_agr, 
+                        trans_inv_reconteo.fec_agr, 
                         bodega_ubicacion.IdTramo, 
                         producto_estado.nombre AS estado_nombre, 
                         producto.nombre AS producto_nombre, 
@@ -349,7 +354,9 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         '' as Codigo_Talla,
                         '' as Nombre_Talla,
                         0 as IdProducto,
-                        '' as gondola
+                        '' as gondola,
+                        '19000101' fec_mod,
+                        0 as contado
                         FROM  trans_inv_enc_reconteo INNER JOIN
                         trans_inv_reconteo INNER JOIN
                         bodega_ubicacion ON trans_inv_reconteo.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
@@ -367,7 +374,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         bodega_ubicacion.descripcion, producto_presentacion.nombre, unidad_medida.Nombre, producto.control_peso, producto.control_lote, 
                         producto.control_vencimiento, trans_inv_enc_reconteo.reconteo, producto.codigo, bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x, 
                         bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos,bodega_ubicacion.IdUbicacion,
-                        producto_presentacion.factor,
+                        producto_presentacion.factor,trans_inv_reconteo.fec_agr,
                         trans_inv_reconteo.lic_plate,bodega_ubicacion.IdBodega
 
              UNION
@@ -390,7 +397,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         sum(trans_inv_ciclico.peso_reconteo) as peso_reconteo,
                         trans_inv_ciclico.idoperador,  
                         trans_inv_ciclico.lic_plate,
-                        '19000101' as fec_agr,  
+                        trans_inv_ciclico.fec_agr,  
                         1 AS idtramo,  
                         producto_estado.nombre AS estado_nombre,  
                         producto.nombre AS producto_nombre,  
@@ -418,7 +425,9 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(t.Codigo, '') as Codigo_Talla,
                         ISNULL(t.Nombre, '') as Nombre_Talla,
                         producto.IdProducto,
-                        trans_inv_ciclico.gondola
+                        trans_inv_ciclico.gondola,
+                        trans_inv_ciclico.fec_mod,
+                        trans_inv_ciclico.contado
                         FROM  trans_inv_ciclico INNER JOIN
                         producto_estado ON trans_inv_ciclico.IdProductoEstado = producto_estado.IdEstado INNER JOIN
                         producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
@@ -459,14 +468,19 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         t.Codigo,
                         t.Nombre,
                         producto.IdProducto,
-                        trans_inv_ciclico.gondola
+                        trans_inv_ciclico.gondola,
+                        trans_inv_ciclico.fec_mod, 
+                        trans_inv_ciclico.fec_agr,
+                        trans_inv_ciclico.contado
 						) AS T  "
 
-
+            '#CKFK20250705 Agregué comparación por fecha
             If pPendiente Then
-                sp += " WHERE T.cantidad = 0 "
+                'sp += "(T.cantidad = 0 AND CONVERT(varchar(19), T.fec_agr, 120) = CONVERT(varchar(19), T.fec_mod, 120))"
+                sp += " WHERE (T.contado = 0) "
             Else
-                sp += " WHERE T.cantidad > 0 "
+                'sp += " WHERE (T.cantidad > 0 or CONVERT(varchar(19), T.fec_agr, 120) <> CONVERT(varchar(19), T.fec_mod, 120)) "
+                sp += " WHERE (T.contado = 1) "
             End If
 
             sp += " Order by T.IdTramo, T.Columna, T.Nivel, T.Posicion"

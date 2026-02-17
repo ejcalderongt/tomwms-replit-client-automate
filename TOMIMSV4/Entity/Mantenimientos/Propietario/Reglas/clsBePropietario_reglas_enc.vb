@@ -22,11 +22,11 @@ Public Class clsBePropietario_reglas_enc
         Me.IdReglaRecepcion = IdReglaRecepcion
         Me.IdPropietario = IdPropietario
         Me.IdMensajeRegla = IdMensajeRegla
-        Me.User_agr = User_agr
-        Me.Fec_agr = Fec_agr
-        Me.User_mod = User_mod
-        Me.Fec_mod = Fec_mod
-        Me.Activo = Activo
+        Me.User_agr = user_agr
+        Me.Fec_agr = fec_agr
+        Me.User_mod = user_mod
+        Me.Fec_mod = fec_mod
+        Me.Activo = activo
     End Sub
     Public Function Clone() As Object Implements System.ICloneable.Clone
         Return MyBase.MemberwiseClone()

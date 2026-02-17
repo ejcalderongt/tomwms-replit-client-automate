@@ -22,7 +22,6 @@ Partial Class frmEjecucion
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmEjecucion))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdProductos = New DevExpress.XtraBars.BarButtonItem()
-        Me.cmdPropietarios = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem2 = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdIngresos = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdSalidas = New DevExpress.XtraBars.BarButtonItem()
@@ -54,13 +53,6 @@ Partial Class frmEjecucion
         Me.cmdProductos.Id = 1
         Me.cmdProductos.ImageOptions.SvgImage = CType(resources.GetObject("cmdProductos.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdProductos.Name = "cmdProductos"
-        '
-        'cmdPropietarios
-        '
-        Me.cmdPropietarios.Caption = "Propietarios"
-        Me.cmdPropietarios.Id = 2
-        Me.cmdPropietarios.ImageOptions.SvgImage = CType(resources.GetObject("cmdPropietarios.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdPropietarios.Name = "cmdPropietarios"
         '
         'BarButtonItem2
         '
@@ -97,7 +89,6 @@ Partial Class frmEjecucion
         'RibbonPageGroup1
         '
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdProductos)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdPropietarios)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         Me.RibbonPageGroup1.Text = "Catálogos"
         '
@@ -165,7 +156,6 @@ Partial Class frmEjecucion
     Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
     Friend WithEvents cmdProductos As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents cmdPropietarios As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents BarButtonItem2 As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents cmdIngresos As DevExpress.XtraBars.BarButtonItem
