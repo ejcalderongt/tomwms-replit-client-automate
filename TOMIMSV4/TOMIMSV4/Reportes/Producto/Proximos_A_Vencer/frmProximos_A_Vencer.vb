@@ -37,7 +37,8 @@ Public Class frmProximos_A_Vencer
             DT = clsLnStock.Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(0,
                                                                                              IdBodega,
                                                                                              IdPropietarioBodega,
-                                                                                             rango)
+                                                                                             rango,
+                                                                                             True)
 
 
             If DT.Rows.Count = 0 Then

@@ -149,7 +149,8 @@ Public Class frmReglaVencimiento
                 DT = clsLnStock.Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(0,
                                                                                               regla.IdBodega,
                                                                                               pIPropietarioBodega,
-                                                                                              pDiasRegla)
+                                                                                              pDiasRegla,
+                                                                                              True)
 
                 Dim colTiempoVencimiento As New DataColumn("TiempoVencimientoDias", GetType(Int32))
                 Dim colNombreRegla As New DataColumn("NombreRegla", GetType(String))
