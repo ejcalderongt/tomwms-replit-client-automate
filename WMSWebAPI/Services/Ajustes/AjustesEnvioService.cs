@@ -243,7 +243,7 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
                                                   SqlTransaction tran)
     {
         return new clsBeAjustesMI3
-        {
+        { 
             IdAjusteEnc = ajDet.IdAjusteEnc,
             IdAjusteDet = ajDet.IdAjusteDet,
             Codigo_Bodega = codigoBodegaWms,
