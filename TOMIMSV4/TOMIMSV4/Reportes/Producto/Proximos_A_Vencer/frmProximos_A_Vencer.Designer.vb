@@ -50,40 +50,42 @@ Partial Class frmProximos_A_Vencer
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
+        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
+        Me.tabDatos = New DevExpress.XtraTab.XtraTabPage()
         Me.Dgrid = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.PanelControl3 = New DevExpress.XtraEditors.PanelControl()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.TrackBarControl1 = New DevExpress.XtraEditors.TrackBarControl()
+        Me.tabGrafico = New DevExpress.XtraTab.XtraTabPage()
+        Me.ChartControl1 = New DevExpress.XtraCharts.ChartControl()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.lblEstatus = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.cmbPropietarioBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.PanelControl3 = New DevExpress.XtraEditors.PanelControl()
-        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
-        Me.tabDatos = New DevExpress.XtraTab.XtraTabPage()
-        Me.tabGrafico = New DevExpress.XtraTab.XtraTabPage()
-        Me.ChartControl1 = New DevExpress.XtraCharts.ChartControl()
+        Me.chkIncluirVencidos = New DevExpress.XtraEditors.CheckEdit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl1.SuspendLayout()
+        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.XtraTabControl1.SuspendLayout()
+        Me.tabDatos.SuspendLayout()
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.PanelControl3.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.TrackBarControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBarControl1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tabGrafico.SuspendLayout()
+        CType(Me.ChartControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl2.SuspendLayout()
         CType(Me.cmbPropietarioBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelControl3.SuspendLayout()
-        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.XtraTabControl1.SuspendLayout()
-        Me.tabDatos.SuspendLayout()
-        Me.tabGrafico.SuspendLayout()
-        CType(Me.ChartControl1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkIncluirVencidos.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -152,6 +154,24 @@ Partial Class frmProximos_A_Vencer
         Me.PanelControl1.Size = New System.Drawing.Size(1452, 487)
         Me.PanelControl1.TabIndex = 2
         '
+        'XtraTabControl1
+        '
+        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.XtraTabControl1.Location = New System.Drawing.Point(213, 2)
+        Me.XtraTabControl1.Name = "XtraTabControl1"
+        Me.XtraTabControl1.SelectedTabPage = Me.tabDatos
+        Me.XtraTabControl1.Size = New System.Drawing.Size(1237, 483)
+        Me.XtraTabControl1.TabIndex = 13
+        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDatos, Me.tabGrafico})
+        '
+        'tabDatos
+        '
+        Me.tabDatos.Controls.Add(Me.Dgrid)
+        Me.tabDatos.Controls.Add(Me.PanelControl3)
+        Me.tabDatos.Name = "tabDatos"
+        Me.tabDatos.Size = New System.Drawing.Size(1235, 453)
+        Me.tabDatos.Text = "Análisis de datos"
+        '
         'Dgrid
         '
         Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
@@ -159,11 +179,11 @@ Partial Class frmProximos_A_Vencer
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         GridLevelNode1.RelationName = "Level1"
         Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
-        Me.Dgrid.Location = New System.Drawing.Point(0, 106)
+        Me.Dgrid.Location = New System.Drawing.Point(0, 127)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Dgrid.Name = "Dgrid"
-        Me.Dgrid.Size = New System.Drawing.Size(1029, 272)
+        Me.Dgrid.Size = New System.Drawing.Size(1235, 326)
         Me.Dgrid.TabIndex = 14
         Me.Dgrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -176,6 +196,16 @@ Partial Class frmProximos_A_Vencer
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
         Me.GridView1.OptionsView.ShowFooter = True
         '
+        'PanelControl3
+        '
+        Me.PanelControl3.Controls.Add(Me.GroupBox1)
+        Me.PanelControl3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.PanelControl3.Location = New System.Drawing.Point(0, 0)
+        Me.PanelControl3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.PanelControl3.Name = "PanelControl3"
+        Me.PanelControl3.Size = New System.Drawing.Size(1235, 127)
+        Me.PanelControl3.TabIndex = 13
+        '
         'GroupBox1
         '
         Me.GroupBox1.Controls.Add(Me.TrackBarControl1)
@@ -184,7 +214,7 @@ Partial Class frmProximos_A_Vencer
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupBox1.Size = New System.Drawing.Size(1025, 123)
+        Me.GroupBox1.Size = New System.Drawing.Size(1231, 123)
         Me.GroupBox1.TabIndex = 5
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Filtro por días"
@@ -258,11 +288,28 @@ Partial Class frmProximos_A_Vencer
         Me.TrackBarControl1.Properties.SmallChange = 5
         Me.TrackBarControl1.Properties.TickFrequency = 5
         Me.TrackBarControl1.Properties.TickStyle = System.Windows.Forms.TickStyle.TopLeft
-        Me.TrackBarControl1.Size = New System.Drawing.Size(1019, 87)
+        Me.TrackBarControl1.Size = New System.Drawing.Size(1225, 87)
         Me.TrackBarControl1.TabIndex = 1
+        '
+        'tabGrafico
+        '
+        Me.tabGrafico.Controls.Add(Me.ChartControl1)
+        Me.tabGrafico.Name = "tabGrafico"
+        Me.tabGrafico.Size = New System.Drawing.Size(1235, 453)
+        Me.tabGrafico.Text = "Gráfico"
+        '
+        'ChartControl1
+        '
+        Me.ChartControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ChartControl1.Location = New System.Drawing.Point(0, 0)
+        Me.ChartControl1.Name = "ChartControl1"
+        Me.ChartControl1.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
+        Me.ChartControl1.Size = New System.Drawing.Size(1235, 453)
+        Me.ChartControl1.TabIndex = 0
         '
         'PanelControl2
         '
+        Me.PanelControl2.Controls.Add(Me.chkIncluirVencidos)
         Me.PanelControl2.Controls.Add(Me.lblEstatus)
         Me.PanelControl2.Controls.Add(Me.Label2)
         Me.PanelControl2.Controls.Add(Me.cmbPropietarioBodega)
@@ -328,50 +375,14 @@ Partial Class frmProximos_A_Vencer
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Bodega:"
         '
-        'PanelControl3
+        'chkIncluirVencidos
         '
-        Me.PanelControl3.Controls.Add(Me.GroupBox1)
-        Me.PanelControl3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.PanelControl3.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.PanelControl3.Name = "PanelControl3"
-        Me.PanelControl3.Size = New System.Drawing.Size(1029, 127)
-        Me.PanelControl3.TabIndex = 13
-        '
-        'XtraTabControl1
-        '
-        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.XtraTabControl1.Location = New System.Drawing.Point(213, 2)
-        Me.XtraTabControl1.Name = "XtraTabControl1"
-        Me.XtraTabControl1.SelectedTabPage = Me.tabDatos
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1237, 483)
-        Me.XtraTabControl1.TabIndex = 13
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDatos, Me.tabGrafico})
-        '
-        'tabDatos
-        '
-        Me.tabDatos.Controls.Add(Me.Dgrid)
-        Me.tabDatos.Controls.Add(Me.PanelControl3)
-        Me.tabDatos.Name = "tabDatos"
-        Me.tabDatos.Size = New System.Drawing.Size(1235, 453)
-        Me.tabDatos.Text = "Análisis de datos"
-        '
-        'tabGrafico
-        '
-        Me.tabGrafico.Controls.Add(Me.ChartControl1)
-        Me.tabGrafico.Name = "tabGrafico"
-        Me.tabGrafico.Size = New System.Drawing.Size(1235, 453)
-        Me.tabGrafico.Text = "Gráfico"
-        '
-        'ChartControl1
-        '
-        Me.ChartControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ChartControl1.Legend.LegendID = -1
-        Me.ChartControl1.Location = New System.Drawing.Point(0, 0)
-        Me.ChartControl1.Name = "ChartControl1"
-        Me.ChartControl1.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
-        Me.ChartControl1.Size = New System.Drawing.Size(1235, 454)
-        Me.ChartControl1.TabIndex = 0
+        Me.chkIncluirVencidos.Location = New System.Drawing.Point(20, 229)
+        Me.chkIncluirVencidos.MenuManager = Me.RibbonControl
+        Me.chkIncluirVencidos.Name = "chkIncluirVencidos"
+        Me.chkIncluirVencidos.Properties.Caption = "Incluir vencidos"
+        Me.chkIncluirVencidos.Size = New System.Drawing.Size(170, 24)
+        Me.chkIncluirVencidos.TabIndex = 14
         '
         'frmProximos_A_Vencer
         '
@@ -389,24 +400,25 @@ Partial Class frmProximos_A_Vencer
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl1.ResumeLayout(False)
+        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.XtraTabControl1.ResumeLayout(False)
+        Me.tabDatos.ResumeLayout(False)
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.PanelControl3.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         CType(Me.TrackBarControl1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBarControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tabGrafico.ResumeLayout(False)
+        CType(Me.ChartControl1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl2.ResumeLayout(False)
         Me.PanelControl2.PerformLayout()
         CType(Me.cmbPropietarioBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PanelControl3.ResumeLayout(False)
-        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.XtraTabControl1.ResumeLayout(False)
-        Me.tabDatos.ResumeLayout(False)
-        Me.tabGrafico.ResumeLayout(False)
-        CType(Me.ChartControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkIncluirVencidos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -435,4 +447,5 @@ Partial Class frmProximos_A_Vencer
     Friend WithEvents tabDatos As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents tabGrafico As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents ChartControl1 As DevExpress.XtraCharts.ChartControl
+    Friend WithEvents chkIncluirVencidos As DevExpress.XtraEditors.CheckEdit
 End Class

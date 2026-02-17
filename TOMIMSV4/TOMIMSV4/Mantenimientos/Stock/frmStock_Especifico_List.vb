@@ -34,6 +34,8 @@ Public Class frmStock_Especifico_List
     Private lPresentacion As New List(Of clsBeProducto_Presentacion)
     Public BuscarPoliza As Boolean = False
     Public IdProductoEstadoDefault As Integer = 0
+    Public Property IdPresentacion As Integer = 0
+    Public Property IdStockExcluir As Integer = 0
 
     '#GT27082025: bandera para mostrar talla-color
     Public Mostrar_Talla_Color As Boolean = False
@@ -724,34 +726,6 @@ Public Class frmStock_Especifico_List
 
     End Sub
 
-    Private Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
-
-        Try
-
-            If String.IsNullOrEmpty(txtIdProducto.Text.Trim()) = False AndAlso txtIdProducto.Text > "0" Then
-
-                ProductoEspecifico = clsLnProducto.Get_Single_By_Codigo(txtIdProducto.Text)
-
-                If ProductoEspecifico IsNot Nothing AndAlso ProductoEspecifico.IdProducto > 0 Then
-                    txtNombreProducto.Text = Trim(String.Format("{0}", ProductoEspecifico.Nombre))
-                    ForceUpdateList = True
-                    Listar_Stock_DesdeHilo()
-                Else
-                    XtraMessageBox.Show(String.Format("No existe producto con código {0}", txtIdProducto.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    txtIdProducto.Focus()
-                    txtIdProducto.SelectAll()
-                    ProductoEspecifico = Nothing
-                End If
-
-            End If
-
-        Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
-    End Sub
-
     Private Sub txtIdProducto_TextChanged(sender As Object, e As EventArgs) Handles txtIdProducto.TextChanged
         txtNombreProducto.Text = ""
         ProductoEspecifico = Nothing
@@ -1365,6 +1339,34 @@ Public Class frmStock_Especifico_List
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Sub
+
+    Public Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
+
+        Try
+
+            If String.IsNullOrEmpty(txtIdProducto.Text.Trim()) = False AndAlso txtIdProducto.Text > "0" Then
+
+                ProductoEspecifico = clsLnProducto.Get_Single_By_Codigo(txtIdProducto.Text)
+
+                If ProductoEspecifico IsNot Nothing AndAlso ProductoEspecifico.IdProducto > 0 Then
+                    txtNombreProducto.Text = Trim(String.Format("{0}", ProductoEspecifico.Nombre))
+                    ForceUpdateList = True
+                    Listar_Stock_DesdeHilo()
+                Else
+                    XtraMessageBox.Show(String.Format("No existe producto con código {0}", txtIdProducto.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    txtIdProducto.Focus()
+                    txtIdProducto.SelectAll()
+                    ProductoEspecifico = Nothing
+                End If
+
+            End If
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
