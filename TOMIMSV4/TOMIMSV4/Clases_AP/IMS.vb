@@ -3123,7 +3123,7 @@ Public Class IMS
 
     End Function
 
-    Public Overloads Shared Function Listar_Productos(ByRef Cmb As DevExpress.XtraEditors.GridLookUpEdit, IdBodega As Integer) As Boolean
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As GridLookUpEdit, IdBodega As Integer) As Boolean
 
         Listar_Productos = False
 

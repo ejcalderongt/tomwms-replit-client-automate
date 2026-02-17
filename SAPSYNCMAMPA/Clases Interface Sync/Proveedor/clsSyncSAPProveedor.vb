@@ -68,10 +68,12 @@ Public Class clsSyncSAPProveedor
     End Function
 
     Public Shared Async Function Importar_Proveedores_Desde_SAP_A_TablaIntermediaAsync(lbl As RichTextBox,
-                                                                                       prg As ProgressBar,
-                                                                                       cnnLog As SqlConnection) As Task(Of Boolean)
+                                                                                   prg As ProgressBar,
+                                                                                   cnnLog As SqlConnection) As Task(Of (Exitoso As Boolean, Mensaje As String, RegistrosProcesados As Integer, RegistrosConError As Integer))
         Dim cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim tran As SqlTransaction = Nothing
+        Dim registrosProcesados As Integer = 0
+        Dim registrosConError As Integer = 0
 
         Try
             clsPublic.Actualizar_Progreso(lbl, "Consultando proveedores nuevos en SAP...")
@@ -81,7 +83,7 @@ Public Class clsSyncSAPProveedor
 
             If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
                 clsPublic.Actualizar_Progreso(lbl, "No se pudo obtener sesión.")
-                Return False
+                Return (False, "Error de autenticación en SAP", 0, 0)
             Else
                 clsPublic.Actualizar_Progreso(lbl, "Conexión correcta.")
             End If
@@ -105,8 +107,10 @@ Public Class clsSyncSAPProveedor
                     clsLnI_nav_proveedor.Insertar(prov, cnn, tran)
                     VContadorBitacoraIntermedia += 1
                     prg.Value += 1
+                    registrosProcesados += 1
                     Application.DoEvents()
                 Catch ex As Exception
+                    registrosConError += 1
                     clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, prov.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
                     clsPublic.Actualizar_Progreso(lbl, $"Error al insertar {prov.No}: {ex.Message}")
                 End Try
@@ -115,11 +119,14 @@ Public Class clsSyncSAPProveedor
             tran.Commit()
             clsPublic.Actualizar_Progreso(lbl, "Importación a tabla intermedia finalizada.")
 
+            Return (True, "Importación completada exitosamente", registrosProcesados, registrosConError)
+
         Catch ex As Exception
             If tran IsNot Nothing Then tran.Rollback()
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
             clsPublic.Actualizar_Progreso(lbl, $"Error general en importación: {ex.Message}")
-            Throw
+
+            Return (False, ex.Message, registrosProcesados, registrosConError)
         Finally
             If cnn.State = ConnectionState.Open Then cnn.Close()
         End Try
