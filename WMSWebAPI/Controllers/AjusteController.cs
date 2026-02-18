@@ -1,33 +1,31 @@
-﻿using WMS.EntityCore.Dtos.Ajustes.WMS.Core.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using WMS.EntityCore.Dtos.Ajustes.WMS.Core.Entities;
 
 namespace WMSWebAPI.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-
     [ApiController]
     [Route("api/sync/ajustes")]
+    [Produces("application/json")]
     public sealed class SyncAjustesController : ControllerBase
     {
         private readonly IAjustesEnvioService _service;
         private readonly ILogger<SyncAjustesController> _logger;
-        private readonly IConfiguration _configuration;
 
         public SyncAjustesController(
             IAjustesEnvioService service,
-            ILogger<SyncAjustesController> logger,
-            IConfiguration configuration)
+            ILogger<SyncAjustesController> logger)
         {
-            _service = service;
-            _logger = logger;
-            _configuration = configuration;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet("mi3/pendientes-envio")]
-        [Produces("application/json")]
         [ProducesResponseType(typeof(List<AjusteSimpleReturnDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAjustesPendientesEnvio([FromQuery] string? noDocumento = null,
-                                                                   [FromQuery] string fields = "full",
-                                                                   CancellationToken ct = default)
+        public async Task<IActionResult> GetAjustesPendientesEnvio(
+            [FromQuery] string? noDocumento = null,
+            [FromQuery] string fields = "full",
+            CancellationToken ct = default)
         {
             try
             {
@@ -35,9 +33,11 @@ namespace WMSWebAPI.Controllers
                 var data = resp.Ajustes ?? new List<clsBeAjustesMI3>();
 
                 if (!string.IsNullOrWhiteSpace(noDocumento))
+                {
                     data = data.Where(x => x.NoDocumento != null &&
                                            x.NoDocumento.Equals(noDocumento, StringComparison.OrdinalIgnoreCase))
                                .ToList();
+                }
 
                 if (fields.Equals("minimal", StringComparison.OrdinalIgnoreCase))
                 {
@@ -76,6 +76,42 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { ok = false, message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Marca como enviados a ERP los ajustes (Enviado_A_ERP = 1) cuando cumplen las reglas de detalle enviado.
+        /// </summary>
+        [HttpPut("mi3/ajustes/enviados-erp")]
+        [ProducesResponseType(typeof(MarcarAjustesEnviadosErpResponseDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MarcarAjustesEnviadosErpAsync(
+            [FromBody] MarcarAjustesEnviadosErpRequestDto request,
+            CancellationToken ct)
+        {
+            if (request == null)
+                return BadRequest(new { message = "Request es nulo." });
+
+            if (request.IdsAjusteEnc == null || request.IdsAjusteEnc.Count == 0)
+                return BadRequest(new { message = "Debe enviar al menos un IdAjusteEnc." });
+
+            try
+            {
+                var afectados = await _service.MarcarAjustesEnviadosErpAsync(request.IdsAjusteEnc, ct);
+
+                return Ok(new MarcarAjustesEnviadosErpResponseDto
+                {
+                    FilasAfectadas = afectados,
+                    CantidadSolicitada = request.IdsAjusteEnc.Where(x => x > 0).Distinct().Count()
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499, new { message = "Request cancelado." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en MarcarAjustesEnviadosErpAsync");
+                return StatusCode(500, new { message = $"{nameof(MarcarAjustesEnviadosErpAsync)} {ex.Message}" });
+            }
+        }        
     }
 
     public sealed class AjusteSimpleReturnDto
@@ -98,4 +134,16 @@ namespace WMSWebAPI.Controllers
         public string Color { get; set; } = "";
     }
 
+    public sealed class MarcarAjustesEnviadosErpRequestDto
+    {
+        [Required]
+        [MinLength(1, ErrorMessage = "Debe enviar al menos un IdAjusteEnc.")]
+        public List<int> IdsAjusteEnc { get; set; } = new();
+    }
+
+    public sealed class MarcarAjustesEnviadosErpResponseDto
+    {
+        public int FilasAfectadas { get; set; }
+        public int CantidadSolicitada { get; set; }
+    }
 }
