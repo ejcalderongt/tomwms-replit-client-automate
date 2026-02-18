@@ -16,12 +16,10 @@ Public Class clsSyncSapFacturaReserva
     Shared vHanaService As SapServiceLayerClient
 
     Public Shared Async Function Importar_Facturas_Reserva_Desde_SAP_A_TablaIntermedia(ByVal lblprg As RichTextBox,
-                                                                                       prg As System.Windows.Forms.ProgressBar,
+                                                                                       prg As Forms.ProgressBar,
                                                                                        cnnLog As SqlConnection,
                                                                                        Optional ByVal pNoDocumentoSAP As String = "") As Task(Of Boolean)
 
-        Dim lConnection As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim lTransaction As SqlTransaction = Nothing
         Dim vResult As String = ""
         Dim vContador As Integer = 0
         Dim BeBodega As New clsBeBodega
@@ -29,15 +27,10 @@ Public Class clsSyncSapFacturaReserva
 
         Try
 
-            lConnection.Open()  lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                          lConnection,
-                                                          lTransaction)
+            BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface)
 
-            BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
-                                                         lConnection,
-                                                         lTransaction)
+            BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
 
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
@@ -58,8 +51,6 @@ Public Class clsSyncSapFacturaReserva
                                                                       BeBodega.Codigo,
                                                                       vHanaService.SessionCookie,
                                                                       BD.Instancia.HANA_SL,
-                                                                      lConnection,
-                                                                      lTransaction,
                                                                       IdUsuario,
                                                                       lblprg)
 
@@ -72,55 +63,64 @@ Public Class clsSyncSapFacturaReserva
 
             prg.Maximum = lPedidosCompra.Count
 
-            If clsLnI_nav_ped_compra_det.EliminarTodos(lConnection, lTransaction) _
-                AndAlso clsLnI_nav_ped_compra_enc.EliminarTodos(lConnection, lTransaction) Then
+            If clsLnI_nav_ped_compra_det.EliminarTodos() _
+                AndAlso clsLnI_nav_ped_compra_enc.EliminarTodos() Then
 
                 Dim BeProveedorBodega As New clsBeProveedor_bodega
 
                 For Each BeINavPedCompra In lPedidosCompra
 
-                    clsPublic.Actualizar_Progreso(lblprg, vbTab & String.Format("Procesando Pedido Compra: {0} ", BeINavPedCompra.No & " - " & BeINavPedCompra.Vendor_Invoice_No, vbNewLine))
+                    Using lConnection As SqlConnection = New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
 
-                    If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No) Then
+                        lConnection.Open()
 
-                        BeConfigEnc = BeConfigEnc
+                        Using lTransaction As SqlTransaction = lConnection.BeginTransaction()
 
-                        If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
-                            clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
-                        End If
+                            vContador += 1
+                            prg.Value = vContador
+                            clsPublic.Actualizar_Progreso(lblprg, vbTab & String.Format("Procesando Pedido Compra: {0} ", BeINavPedCompra.No & " - " & BeINavPedCompra.Vendor_Invoice_No, vbNewLine))
 
-                    End If
+                            If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No) Then
 
-                    If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
-                                                                            BePedidoCompraEnc,
-                                                                            vResult) Then
+                                BeConfigEnc = BeConfigEnc
 
-                        Await Marcar_PI_Sincronizado_SLAsync(BeINavPedCompra.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
+                                If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                                    clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
+                                End If
 
-                    End If
+                            End If
 
-                    clsPublic.Actualizar_Progreso(lblprg, vResult)
+
+                            If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
+                                                                                    BePedidoCompraEnc,
+                                                                                    vResult) Then
+
+                                Await Marcar_PI_Sincronizado_SLAsync(BeINavPedCompra.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
+
+                            End If
+
+                            clsPublic.Actualizar_Progreso(lblprg, vResult)
+
+                            lTransaction.Commit()
+
+                        End Using
+
+                        lConnection.Close()
+
+                    End Using
+
 
                 Next
 
             End If
 
-            lTransaction.Commit()
 
             Return True
 
         Catch ex As Exception
-
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
-
             clsLnLog_error_wms.Agregar_Error("Error_20250422_Fact_Res:" & ex.Message)
-
-            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar Ordenes de Compra desde SAP a intermedia: {0}{1}", vbNewLine, ex.Message))
-
             Throw ex
-
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
             prg.Value = 0
         End Try
 
@@ -207,7 +207,7 @@ Public Class clsSyncSapFacturaReserva
     End Function
 
     Public Shared Async Function Insertar_Facturas_Reserva_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg As RichTextBox,
-                                                                                                prg As System.Windows.Forms.ProgressBar,
+                                                                                                prg As Forms.ProgressBar,
                                                                                                 Optional ByVal ForzarEjecucion As Boolean = False,
                                                                                                 Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False,
                                                                                                 Optional ByVal pNoDocumentoSAP As String = "") As Task(Of Boolean)
@@ -216,6 +216,7 @@ Public Class clsSyncSapFacturaReserva
         Dim ok As Boolean = False
 
         Try
+
             Using CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient),
               CnnInterface As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
 
@@ -721,8 +722,6 @@ Public Class clsSyncSapFacturaReserva
                                                                 codBodega As String,
                                                                 sessionCookie As String,
                                                                 baseUrl As String,
-                                                                lConnection As SqlConnection,
-                                                                lTransaction As SqlTransaction,
                                                                 IdUsuario As String,
                                                                 lblprg As RichTextBox) As Task(Of List(Of clsBeI_nav_ped_compra_enc))
 
@@ -785,7 +784,6 @@ Public Class clsSyncSapFacturaReserva
                                 End If
                             End If
 
-
                             Dim documentLines As JArray = TryCast(row("DocumentLines"), JArray)
                             If documentLines Is Nothing OrElse documentLines.Count = 0 Then Continue For
 
@@ -793,8 +791,10 @@ Public Class clsSyncSapFacturaReserva
                             Dim dtDetTallaColor As DataTable =
                             FacturaReservaMapper.ConstruirTablaDesdeJsonTallasColores(documentLines, docEntry, campaignNo)
 
+                            Dim CodBodegaUnica As String = FacturaReservaMapper.ObtenerBodegaUnica(documentLines)
+
                             ' Encabezado
-                            Dim encabezado As clsBeI_nav_ped_compra_enc = FacturaReservaMapper.MapearEncabezado(row, codBodega)
+                            Dim encabezado As clsBeI_nav_ped_compra_enc = FacturaReservaMapper.MapearEncabezado(row, CodBodegaUnica)
 
                             ' Detalle
                             encabezado.Lineas_Detalle = FacturaReservaMapper.MapearDetalle(documentLines)
@@ -803,23 +803,22 @@ Public Class clsSyncSapFacturaReserva
                             If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
                                 encabezado.Lineas_Detalle_Talla_Color =
                                 Await FacturaReservaMapper.MapearDetalleTallaColor(dtDetTallaColor,
-                                                                                   lConnection,
-                                                                                   lTransaction,
                                                                                    IdUsuario,
                                                                                    sessionCookie,
-                                                                                   BD.Instancia.HANA_SL).ConfigureAwait(False)
+                                                                                   BD.Instancia.HANA_SL,
+                                                                                   lblprg).ConfigureAwait(False)
                             Else
                                 encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
                             End If
 
                             ' Campaña
-                            Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(campaignNo, lConnection, lTransaction)
+                            Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(campaignNo)
 
                             If BeCampaña Is Nothing Then
                                 Dim rowCampaña As DataRow = Await Get_Campaña_Sap_Hana_By_IdCampaña(encabezado.Campaign_No, sessionCookie, baseUrl).ConfigureAwait(False)
 
                                 If rowCampaña IsNot Nothing Then
-                                    encabezado.Campaña = FacturaReservaMapper.MapearCampaña(rowCampaña, lConnection, lTransaction, IdUsuario)
+                                    encabezado.Campaña = FacturaReservaMapper.MapearCampaña(rowCampaña, IdUsuario)
                                 Else
                                     encabezado.Campaña = Nothing
                                 End If
@@ -963,6 +962,130 @@ Public Class clsSyncSapFacturaReserva
         End Using
     End Function
 
+    Public Shared Async Function Get_Factura_Reserva_SAP_Hana_SL(docNum As Integer?,
+                                                                 codBodega As String,
+                                                                 lconnection As SqlConnection,
+                                                                 ltransaction As SqlTransaction,
+                                                                 sessionCookie As String,
+                                                                 baseUrl As String,
+                                                                 IdUsuario As String,
+                                                                 lblprg As RichTextBox) As Task(Of List(Of clsBeI_nav_ped_compra_enc))
+
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+        ServicePointManager.Expect100Continue = False
+
+        Dim filtro As String = "U_ENVIADO_WMS eq 2 and CancelStatus eq 'csNo'"
+        If docNum.HasValue AndAlso docNum > 0 Then
+            filtro &= $" and DocNum eq {docNum.Value}"
+        End If
+
+        Dim requestUrl As String = $"PurchaseInvoices?$filter={Uri.EscapeDataString(filtro)}"
+        Dim resultados As New List(Of clsBeI_nav_ped_compra_enc)()
+
+        Try
+
+            Using handler As New HttpClientHandler With {.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate, .ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True, .UseCookies = False}
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                        Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+                        Dim payload As String = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+
+                        If Not response.IsSuccessStatusCode Then
+                            clsPublic.Actualizar_Progreso(lblprg, $"Error al obtener facturas. Código: {response.StatusCode}, Detalle: {payload}")
+                            Return resultados ' lista vacía
+                        End If
+
+                        Dim obj As JObject = JObject.Parse(payload)
+                        Dim rows As JArray = TryCast(obj("value"), JArray)
+                        If rows Is Nothing OrElse rows.Count = 0 Then
+                            Return resultados ' lista vacía
+                        End If
+
+                        ' Cache para no pedir el mismo vendedor varias veces
+                        Dim cacheSalesName As New Dictionary(Of Integer, String)(capacity:=16)
+
+                        For Each row As JObject In rows
+                            Dim docEntry As Integer = row.Value(Of Integer?)("DocEntry").GetValueOrDefault(-1)
+                            Dim campaniaStr As String = row.Value(Of String)("U_Campania")
+                            Dim campaignNo As Integer = 0
+                            Integer.TryParse(campaniaStr, campaignNo)
+
+                            ' Enriquecer con nombre de vendedor (si existe)
+                            Dim salesCode? As Integer = row.Value(Of Integer?)("SalesPersonCode")
+                            If salesCode.HasValue Then
+                                Dim nombre As String = Nothing
+                                If Not cacheSalesName.TryGetValue(salesCode.Value, nombre) Then
+                                    nombre = Await GetSalesEmployeeNameAsync(client, sessionCookie, baseUrl, salesCode.Value).ConfigureAwait(False)
+                                    If Not String.IsNullOrWhiteSpace(nombre) Then cacheSalesName(salesCode.Value) = nombre
+                                End If
+                                If Not String.IsNullOrWhiteSpace(nombre) Then
+                                    row("SalesEmployeeName") = nombre
+                                End If
+                            End If
+
+
+                            Dim documentLines As JArray = TryCast(row("DocumentLines"), JArray)
+                            If documentLines Is Nothing OrElse documentLines.Count = 0 Then Continue For
+
+                            ' Tallas/colores auxiliares
+                            Dim dtDetTallaColor As DataTable =
+                            FacturaReservaMapper.ConstruirTablaDesdeJsonTallasColores(documentLines, docEntry, campaignNo)
+
+                            ' Encabezado
+                            Dim encabezado As clsBeI_nav_ped_compra_enc = FacturaReservaMapper.MapearEncabezado(row, codBodega)
+
+                            ' Detalle
+                            encabezado.Lineas_Detalle = FacturaReservaMapper.MapearDetalle(documentLines)
+
+                            ' Tallas/Colores
+                            If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
+                                encabezado.Lineas_Detalle_Talla_Color =
+                                Await FacturaReservaMapper.MapearDetalleTallaColor(dtDetTallaColor,
+                                                                                   IdUsuario,
+                                                                                   lconnection,
+                                                                                   ltransaction,
+                                                                                   sessionCookie,
+                                                                                   BD.Instancia.HANA_SL,
+                                                                                   lblprg).ConfigureAwait(False)
+                            Else
+                                encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
+                            End If
+
+                            ' Campaña
+                            Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(campaignNo, lconnection, ltransaction)
+
+                            If BeCampaña Is Nothing Then
+                                Dim rowCampaña As DataRow = Await Get_Campaña_Sap_Hana_By_IdCampaña(encabezado.Campaign_No, sessionCookie, baseUrl).ConfigureAwait(False)
+
+                                If rowCampaña IsNot Nothing Then
+                                    encabezado.Campaña = FacturaReservaMapper.MapearCampaña(rowCampaña, IdUsuario)
+                                Else
+                                    encabezado.Campaña = Nothing
+                                End If
+                            Else
+                                encabezado.Campaña = BeCampaña
+                            End If
+
+                            resultados.Add(encabezado)
+                        Next
+
+                        clsPublic.Actualizar_Progreso(lblprg, "Facturas obtenidas correctamente.")
+                        Return resultados
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("Error al Procesar_Solicitud_Traslado_SAP la factura de reserva desde SAP Hana SL: " & ex.Message, ex)
+        End Try
+    End Function
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not disposedValue Then
             If disposing Then
@@ -974,13 +1097,6 @@ Public Class clsSyncSapFacturaReserva
             disposedValue = True
         End If
     End Sub
-
-    ' ' TODO: override finalizer only if 'Dispose(disposing As Boolean)' has code to free unmanaged resources
-    ' Protected Overrides Sub Finalize()
-    '     ' Do not change this code. Put cleanup code in 'Dispose(disposing As Boolean)' method
-    '     Dispose(disposing:=False)
-    '     MyBase.Finalize()
-    ' End Sub
 
     Public Sub Dispose() Implements IDisposable.Dispose
         ' Do not change this code. Put cleanup code in 'Dispose(disposing As Boolean)' method

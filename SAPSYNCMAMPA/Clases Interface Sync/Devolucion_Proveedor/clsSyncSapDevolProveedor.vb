@@ -13,6 +13,7 @@ Imports TOMWMS.clsSyncSapTrasladosEnvio
 Public Class clsSyncSapDevolProveedor
 
     Private Shared vHanaService As SapServiceLayerClient
+
     Public Shared Async Function Procesar_Solicitud_Devol_Prov_SAP(ByVal lblprg As RichTextBox,
                                                                    ByVal prg As ProgressBar,
                                                                    Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)

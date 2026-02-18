@@ -90,20 +90,13 @@ Public Class frmUsu
                     DireccionTextEdit.Text = Usuario.Direccion
                     TelefonoTextEdit.Text = Usuario.Telefono
                     EmailTextEdit.Text = Usuario.Email
+                    CodigoTextEdit.Text = clsPublic.Desencriptar(Usuario.Codigo)
+                    ClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
+                    ConfirmarClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
 
-                    Try
-
-                        CodigoTextEdit.Text = clsPublic.Desencriptar(Usuario.Codigo)
-                        ClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
-                        ConfirmarClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
-
-                        If Usuario.Clave_autorizacion <> "" Then
-                            txtClaveAutoriza.Text = clsPublic.Desencriptar(Usuario.Clave_autorizacion)
-                        End If
-
-                    Catch ex As Exception
-                        XtraMessageBox.Show(ex.Message)
-                    End Try
+                    If Usuario.Clave_autorizacion <> "" Then
+                        txtClaveAutoriza.Text = clsPublic.Desencriptar(Usuario.Clave_autorizacion)
+                    End If
 
                     ClaveAnterior = ClaveTextEdit.Text                          'Comprobacion de Cadena
                     Ultimo_loginDateEdit.Text = Usuario.Ultimo_login
@@ -117,10 +110,6 @@ Public Class frmUsu
                     If Usuario.Foto IsNot Nothing Then
                         picFoto.Image = ByteArrayToImage(Usuario.Foto)
                     End If
-
-                    '#GT17072025: SAPB1
-                    txtUsuarioSap.Text = Usuario.Usuario_sap_b1
-                    txtClaveSap.Text = Usuario.Clave_sap_b1
 
                     Listar_Empresas()
 
@@ -165,21 +154,14 @@ Public Class frmUsu
                     TelefonoTextEdit.Enabled = False
                     EmailTextEdit.Text = Usuario.Email
                     EmailTextEdit.Enabled = False
+                    CodigoTextEdit.Text = clsPublic.Desencriptar(Usuario.Codigo)
+                    CodigoTextEdit.Enabled = False
+                    ClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
+                    ConfirmarClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
 
-                    Try
-
-                        CodigoTextEdit.Text = clsPublic.Desencriptar(Usuario.Codigo)
-                        CodigoTextEdit.Enabled = False
-                        ClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
-                        ConfirmarClaveTextEdit.Text = clsPublic.Desencriptar(Usuario.Clave)
-
-                        If Usuario.Clave_autorizacion <> "" Then
-                            txtClaveAutoriza.Text = clsPublic.Desencriptar(Usuario.Clave_autorizacion)
-                        End If
-
-                    Catch ex As Exception
-                        XtraMessageBox.Show(ex.Message)
-                    End Try
+                    If Usuario.Clave_autorizacion <> "" Then
+                        txtClaveAutoriza.Text = clsPublic.Desencriptar(Usuario.Clave_autorizacion)
+                    End If
 
                     ClaveAnterior = ClaveTextEdit.Text                          'Comprobacion de Cadena
                     Ultimo_loginDateEdit.Text = Usuario.Ultimo_login
@@ -257,9 +239,6 @@ Public Class frmUsu
             Usuario.Fec_agr = Now
             Usuario.User_mod = AP.UsuarioAp.IdUsuario
             Usuario.Fec_mod = Now
-            '#GT17072025: aqui asigno los input SAPB1
-            Usuario.Usuario_sap_b1 = txtUsuarioSap.Text
-            Usuario.Clave_sap_b1 = txtClaveSap.Text
 
             If picFoto.Image IsNot Nothing Then
                 Usuario.Foto = ImageToByteArray(picFoto.Image)
@@ -325,17 +304,11 @@ Public Class frmUsu
                 Usuario.Email = EmailTextEdit.Text
                 Usuario.Codigo = clsPublic.Encriptar(CodigoTextEdit.Text)
                 Usuario.Clave = clsPublic.Encriptar(ClaveTextEdit.Text)
-                '#EJC20251004: No encriptar la clave si no está definida.
-                If Not txtClaveAutoriza.Text.Trim = "" Then
-                    Usuario.Clave_autorizacion = clsPublic.Encriptar(txtClaveAutoriza.Text)
-                End If
+                Usuario.Clave_autorizacion = clsPublic.Encriptar(txtClaveAutoriza.Text)
                 Usuario.Activo = chkActivo.Checked
                 Usuario.Sistema = chkSistema.Checked
                 Usuario.User_mod = AP.UsuarioAp.IdUsuario
                 Usuario.Fec_mod = Now
-                '#GT17072025: datos SAPB1 para update
-                Usuario.Usuario_sap_b1 = txtUsuarioSap.Text
-                Usuario.Clave_sap_b1 = txtClaveSap.Text
 
                 If picFoto.Image IsNot Nothing Then
                     Usuario.Foto = ImageToByteArray(picFoto.Image)
@@ -632,8 +605,8 @@ Public Class frmUsu
             If Dgrid.Rows.Count > 0 Then
 
                 For Each oRow As DataGridViewRow In Dgrid.Rows
-                    'EJC20251004: aNtnIq2NjJM =  VACÍO
-                    If oRow.Cells("ColClave").Value = True AndAlso oRow.Cells("ColAsignado").Value = True AndAlso Not Usuario.Clave_autorizacion = "aNtnIq2NjJM=" Then
+
+                    If oRow.Cells("ColClave").Value = True AndAlso oRow.Cells("ColAsignado").Value = True Then
                         If txtClaveAutoriza.Text.Trim = "" Then
                             XtraMessageBox.Show("Ingrese clave de autorización", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             CodigoTextEdit.Focus()
@@ -644,12 +617,12 @@ Public Class frmUsu
                             Exit Function
                         ElseIf txtClaveAutoriza.Text.Trim <> txtReptClaveAuto.Text.Trim Then
                             XtraMessageBox.Show("Las claves de autorización no coinciden", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        txtClaveAutoriza.Focus()
-                        Exit Function
-                    End If
+                            txtClaveAutoriza.Focus()
+                            Exit Function
+                        End If
                     End If
 
-            Next
+                Next
 
             End If
 

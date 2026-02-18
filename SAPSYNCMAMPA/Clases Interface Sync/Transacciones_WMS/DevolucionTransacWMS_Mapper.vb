@@ -118,19 +118,39 @@ Public Class DevolucionTransacWMS_Mapper
                     If BeProducto IsNot Nothing Then
                         d.IdProducto = BeProducto.IdProducto
                     Else
-                        d.IdProducto = clsSyncSAPProducto.Insertar_Producto_From_Sap_Hana(det("U_Modelo").ToString(), lConnection, lTransaction)
+                        Await clsSyncSAPProducto.Insertar_Producto_From_Sap_HanaAsync(det("U_Modelo").ToString(), lConnection, lTransaction,
+                                                                                     SessionCookie, BaseURL, Nothing)
+
+                        BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
+                        If BeProducto IsNot Nothing Then
+                            d.IdProducto = BeProducto.IdProducto
+                        Else
+                            Throw New Exception("No se pudo insertar ni recuperar el producto con código: " & det("U_Modelo").ToString())
+                        End If
                     End If
 
                     Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lConnection, lTransaction)
                     If BeTalla IsNot Nothing Then
                         d.IdTalla = BeTalla.IdTalla
+                    Else
+                        d.IdTalla = Await clsSyncSapTalla.Insertar_Talla_From_Sap_HanaAsync(det("U_Talla").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
+
+                        If d.IdTalla = 0 Then
+                            Throw New Exception("No se pudo insertar ni recuperar la talla con código: " & det("U_Color").ToString())
+                        End If
+
                     End If
 
                     Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lConnection, lTransaction)
                     If BeColor IsNot Nothing Then
                         d.IdColor = BeColor.IdColor
                     Else
-                        d.IdColor = clsSyncSapColor.Insertar_Color_From_Sap_Hana(det("U_Color").ToString(), lConnection, lTransaction)
+                        d.IdColor = Await clsSyncSapColor.Insertar_Color_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
+
+                        If d.IdColor = 0 Then
+                            Throw New Exception("No se pudo insertar ni recuperar el color con código: " & det("U_Color").ToString())
+                        End If
+
                     End If
 
                     d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"

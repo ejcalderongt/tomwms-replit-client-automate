@@ -29,7 +29,7 @@ Public Class frmRptStockParametro
 
             Const rightColumn As String = "Fecha: [Date Printed] [Time Printed] "
 
-            Dim phf As DevExpress.XtraPrinting.PageHeaderFooter =
+            Dim phf As DevExpress.XtraPrinting.PageHeaderFooter = _
             TryCast(printLink.PageHeaderFooter, DevExpress.XtraPrinting.PageHeaderFooter)
 
             phf.Header.Content.Clear()
@@ -62,7 +62,7 @@ Public Class frmRptStockParametro
 
     End Sub
 
-    Private Sub Cargar_Datos()
+    Private Sub Cargar_Datos
 
         Try
 

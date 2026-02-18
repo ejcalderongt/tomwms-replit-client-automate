@@ -207,6 +207,7 @@ Public Class clsDataContractDI
         AJVENCEPI = 33
         CESTI = 34
         CUBII = 35
+        TALLACOLOR = 36
 
     End Enum
 
@@ -350,6 +351,8 @@ Public Class clsDataContractDI
         Ajuste_Negativo = 5
         <EnumMember>
         Ajuste_Estado = 6
+        <EnumMember>
+        Ajuste_TallaColor = 7
 
     End Enum
 

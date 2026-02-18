@@ -908,11 +908,13 @@ Public Class frmRegularizarInventario
                                                                                                                           clsTrans.lTransaction)
             Dim vIdProducto As Integer = 0
 
+            '#AT20260212 Regularizacion Inv Talla Color
             Dim ajustesCantidad = ListCiclico.Where(Function(x) x.Cant_stock <> x.Cantidad And
                                                                 x.Fecha_vence = x.Fecha_vence_stock AndAlso
                                                                 (x.Lote = x.Lote_stock) AndAlso
-                                                                (x.IdProductoEstado = x.IdProductoEst_nuevo OrElse
-                                                                x.IdProductoEst_nuevo = 0) AndAlso x.Regularizar = True).ToList()
+                                                                (x.IdProductoEstado = x.IdProductoEst_nuevo OrElse x.IdProductoEst_nuevo = 0) AndAlso
+                                                                (x.IdProductoTallaColor = x.IdProductoTallaColor_nuevo OrElse x.IdProductoTallaColor_nuevo = 0) AndAlso
+                                                                x.Regularizar = True).ToList()
 
             Dim ListaExcluyente = ListCiclico.ToList
 
@@ -925,6 +927,8 @@ Public Class frmRegularizarInventario
             Dim ajustesEstado = ListaExcluyente.Where(Function(x) x.IdProductoEstado <> x.IdProductoEst_nuevo AndAlso
                                                                   x.IdProductoEst_nuevo <> 0).ToList()
 
+            Dim ajusteTallaColor = ListaExcluyente.Where(Function(x) x.IdProductoTallaColor <> x.IdProductoTallaColor_nuevo).ToList()
+
             ' Procesar ajustes por tipo
             If ajustesVencimiento.Any() Then
                 ProcesarAjustePorTipo(ajustesVencimiento, clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento, clsTrans, vIdPropietarioBodega, "Vencimiento")
@@ -936,6 +940,10 @@ Public Class frmRegularizarInventario
 
             If ajustesEstado.Any() Then
                 ProcesarAjustePorTipo(ajustesEstado, clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado, clsTrans, vIdPropietarioBodega, "Estado")
+            End If
+
+            If ajusteTallaColor.Any() Then
+                ProcesarAjustePorTipo(ajusteTallaColor, clsDataContractDI.tTipoAjusteWMS.Ajuste_TallaColor, clsTrans, vIdPropietarioBodega, "TallaColor")
             End If
 
             If ajustesCantidad.Any() Then
@@ -962,6 +970,7 @@ Public Class frmRegularizarInventario
                                                           lBeTransAjusteDet,
                                                           lOperaciones,
                                                           AP.Bodega.codigo_bodega_erp,
+                                                          AP.Bodega.Control_Talla_Color,
                                                           clsTrans.lConnection,
                                                           clsTrans.lTransaction)
 
@@ -1272,6 +1281,8 @@ Public Class frmRegularizarInventario
                     pBeAjusteDet.Codigo_ajuste = clsDataContractDI.tTipoTarea.AJVENCEPI
                 ElseIf clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo = tipoAjuste Then
                     pBeAjusteDet.Codigo_ajuste = clsDataContractDI.tTipoTarea.AJCANTPI
+                ElseIf clsDataContractDI.tTipoAjusteWMS.Ajuste_TallaColor = tipoAjuste Then
+                    pBeAjusteDet.Codigo_ajuste = clsDataContractDI.tTipoTarea.AJCANTPI
                 End If
 
                 pBeAjusteDet.Peso_original = BeTransInvCiclico.Peso
@@ -1354,6 +1365,20 @@ Public Class frmRegularizarInventario
 
                 End If
 
+                '#AT20260213 Ajuste talla y color deber ir positivo
+                If BeTransInvCiclico.IdProductoTallaColor <> BeTransInvCiclico.IdProductoTallaColor_nuevo Then
+
+                    Dim pBeAjusteDetEstado As New clsBeTrans_ajuste_det
+
+                    clsPublic.CopyObject(pBeAjusteDet, pBeAjusteDetEstado)
+
+                    pBeAjusteDetEstado.IdAjusteDet = clsLnTrans_ajuste_det.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                    pBeAjusteDetEstado.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo
+
+                    clsLnTrans_ajuste_det.Insertar(pBeAjusteDetEstado, clsTrans.lConnection, clsTrans.lTransaction)
+
+                End If
+
                 If tipoAjuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
 
                     Dim pBeAjusteDetNegativo As New clsBeTrans_ajuste_det
@@ -1420,7 +1445,8 @@ Public Class frmRegularizarInventario
                     pBeMovs.Cantidad = Math.Round((BeTransInvCiclico.Cant_stock - BeTransInvCiclico.Cantidad), 6)
                 ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote OrElse
                     pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento OrElse
-                    pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
+                    pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado OrElse
+                    pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_TallaColor Then
                     pBeMovs.Cantidad = BeTransInvCiclico.Cantidad
 
                     If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
@@ -1486,6 +1512,8 @@ Public Class frmRegularizarInventario
                         pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJVENCENI
                     ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
                         pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI
+                    ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
+                        pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.TALLACOLOR
                     End If
 
                     pBeMovsInverso.Cantidad_hist = BeTransInvCiclico.Cant_stock
@@ -1521,6 +1549,20 @@ Public Class frmRegularizarInventario
 
                     pBeMovsEstado.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
                     pBeMovsEstado.IdTipoTarea = clsDataContractDI.tTipoTarea.CESTI
+
+                    clsLnTrans_movimientos.Insertar(pBeMovsEstado, clsTrans.lConnection, clsTrans.lTransaction)
+
+                End If
+
+                '#AT20260213 Talla Color
+                If BeTransInvCiclico.IdProductoTallaColor <> BeTransInvCiclico.IdProductoTallaColor_nuevo Then
+
+                    Dim pBeMovsEstado As New clsBeTrans_movimientos
+
+                    clsPublic.CopyObject(pBeMovs, pBeMovsEstado)
+
+                    pBeMovsEstado.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                    pBeMovsEstado.IdTipoTarea = clsDataContractDI.tTipoTarea.TALLACOLOR
 
                     clsLnTrans_movimientos.Insertar(pBeMovsEstado, clsTrans.lConnection, clsTrans.lTransaction)
 
@@ -1600,7 +1642,7 @@ Public Class frmRegularizarInventario
                     End If
 
                     '#AT20260128 Actualizar talla color en stock
-                    If BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0 Then
+                    If BeTransInvCiclico.IdProductoTallaColor <> BeTransInvCiclico.IdProductoTallaColor_nuevo Then
                         pBeStock.IdProductoTallaColor = BeTransInvCiclico.IdProductoTallaColor_nuevo
                     Else
                         pBeStock.IdProductoTallaColor = BeTransInvCiclico.IdProductoTallaColor
@@ -1637,6 +1679,7 @@ Public Class frmRegularizarInventario
                     pBeStock.User_mod = BeTransInvCiclico.User_agr
                     pBeStock.Pallet_No_Estandar = False
                     pBeStock.Lic_plate = BeTransInvCiclico.lic_plate
+                    pBeStock.IdProductoTallaColor = BeTransInvCiclico.IdProductoTallaColor_nuevo
 
                     clsLnStock.Insertar(pBeStock, clsTrans.lConnection, clsTrans.lTransaction)
 

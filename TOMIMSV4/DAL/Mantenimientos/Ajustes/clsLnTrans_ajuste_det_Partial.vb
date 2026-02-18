@@ -420,6 +420,7 @@ Partial Public Class clsLnTrans_ajuste_det
     End Function
 
     Public Shared Function Get_All_Ajustes_By_IdInventarioEnc_For_SAP(ByVal pIdInventarioEnc As Integer,
+                                                                      ByVal pTallaColor As Boolean,
                                                                       ByVal lConnection As SqlConnection,
                                                                       ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_ajuste_det)
 
@@ -429,7 +430,92 @@ Partial Public Class clsLnTrans_ajuste_det
 
             Dim lReturnList As New List(Of clsBeTrans_ajuste_det)
 
-            Dim vSQL As String = "SELECT 0 IdAjustedet, 0 IdAjusteEnc, 
+            Dim vSQL As String
+
+            If pTallaColor Then
+                vSQL = "SELECT 0 IdAjustedet, 0 IdAjusteEnc, 
+                                        MAX(IdStock) IdStock, 
+                                        0 IdPropietarioBodega, 
+                                        t.IdProductoBodega,
+                                        MAX(IdProductoEstado) IdProductoEstado,
+                                        IdPresentacion, IdUnidadMedida,
+                                        MAX(IdUbicacion) IdUbicacion, 
+                                        MAX(LoteOrigen) lote_original, 
+                                        MAX(LoteOrigen) lote_nuevo, 
+                                        MAX(fecha_vence_stock) fecha_vence_original, 
+                                        MAX(fecha_vence_stock) fecha_vence_nueva, 
+                                        MAX(peso_stock) peso_original, 
+                                        SUM(peso_conteo) peso_nuevo, 
+                                        SUM(cantidad_stock) cantidad_original, 
+                                        SUM(cantidad_conteo) cantidad_nueva, 
+                                        p.codigo codigo_producto, 
+                                        p.nombre nombre_producto, 
+                                        0 idtipoajuste,
+                                        0 idmotivoajuste, 
+                                        '' observacion, 
+                                        '' codigo_ajuste,
+                                        0 enviado,
+                                        0 IdBodegaERP,
+                                        MAX(Licencia)  lic_plate, 
+                                        '' referencia_ajuste_erp, 
+                                        0 estado_ajuste_erp,
+                                        IdProductoTallaColor IdProductoTallaColor_origen,
+	                                    IdProductoTallaColor_nuevo IdProductoTallaColor_destino,
+	                                    Talla_origen,
+	                                    Color_origen,
+	                                    Talla_destino, 
+	                                    Color_destino 
+                                  FROM (SELECT  trans_inv_ciclico.idinventarioenc, 
+                                                trans_inv_ciclico.IdStock,
+                                                trans_inv_ciclico.IdProductoBodega, 
+		                                        MAX(case when trans_inv_ciclico.nuevo_stock <>0 then case when trans_inv_ciclico.nuevo_stock = -1 then 0 else trans_inv_ciclico.nuevo_stock end else trans_inv_ciclico.cant_stock end) cantidad_stock,
+                                                --MAX(trans_inv_ciclico.cant_stock) AS cantidad_stock, 
+                                                SUM(trans_inv_ciclico.cantidad) AS cantidad_conteo, 
+                                                SUM(trans_inv_ciclico.cant_reconteo) AS cantidad_reconteo, 
+                                                MAX(trans_inv_ciclico.peso_stock) AS peso_stock, 
+                                                SUM(trans_inv_ciclico.peso) AS peso_conteo, 
+                                                SUM(trans_inv_ciclico.peso_reconteo) AS peso_reconteo, 
+                                                trans_inv_ciclico.lote_stock as LoteOrigen, 
+                                                trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate AS Licencia, 
+                                                dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega) as UbicacionOrigen,
+                                                trans_inv_ciclico.IdUbicacion, MAX(trans_inv_ciclico.fec_mod) Fec_Mod,
+                                                trans_inv_ciclico.IdPresentacion, trans_inv_ciclico.IdProductoEstado, 
+                                                trans_inv_ciclico.fecha_vence_stock, 
+                                                trans_inv_ciclico.IdUnidadMedida, trans_inv_ciclico.IdBodega,
+                                                trans_inv_ciclico.regularizar, MAX(trans_inv_ciclico.nuevo_stock) nuevo_stock,
+                                                trans_inv_ciclico.IdProductoTallaColor,
+		                                        trans_inv_ciclico.IdProductoTallaColor_nuevo,
+		                                        ISNULL(t.codigo,'') AS Talla_origen, 
+		                                        ISNULL(c.codigo,'') AS Color_origen,
+		                                        ISNULL(tn.codigo,'') AS Talla_destino, 
+		                                        ISNULL(cn.codigo,'') AS Color_destino 
+                                        FROM    trans_inv_ciclico INNER JOIN
+                                                trans_inv_enc ON trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc AND trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc LEFT JOIN
+		                                        producto_talla_color ptc ON ptc.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor LEFT JOIN
+		                                        talla t ON t.IdTalla = ptc.IdTalla LEFT JOIN
+		                                        color c ON c.IdColor = ptc.IdColor LEFT JOIN 
+		                                        producto_talla_color ptcn ON trans_inv_ciclico.IdProductoTallaColor_nuevo = ptcn.IdProductoTallaColor LEFT JOIN 
+		                                        talla tn ON tn.IdTalla = ptcn.IdTalla LEFT JOIN 
+		                                        color cn ON cn.IdColor = ptcn.IdColor 
+                                        WHERE  (trans_inv_ciclico.idinventarioenc = @idinventario) AND 
+                                               (trans_inv_ciclico.Cantidad >= trans_inv_ciclico.cantidad_reservada_umbas )
+                                        GROUP BY dbo.trans_inv_ciclico.idinventarioenc,dbo.trans_inv_ciclico.IdStock, trans_inv_ciclico.IdProductoBodega,  
+                                                    trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate, 
+                                                    trans_inv_ciclico.IdProductoEstado, trans_inv_ciclico.IdUbicacion, 
+                                                    trans_inv_ciclico.lote_stock,trans_inv_ciclico.IdStock,
+                                                    trans_inv_ciclico.IdBodega,trans_inv_ciclico.IdUnidadMedida,
+			                                        trans_inv_ciclico.IdPresentacion, trans_inv_ciclico.IdProductoEstado, 
+			                                        trans_inv_ciclico.fecha_vence_stock,trans_inv_ciclico.IdBodega, 
+			                                        trans_inv_ciclico.regularizar, trans_inv_ciclico.IdProductoTallaColor, trans_inv_ciclico.IdProductoTallaColor_nuevo,
+			                                        t.codigo, t.Codigo, tn.Codigo, c.Codigo, cn.Codigo) t INNER JOIN 
+                                        producto_bodega pb ON t.IdProductoBodega = pb.IdProductoBodega INNER JOIN
+                                        producto p ON p.IdProducto = pb.IdProducto
+                                  WHERE idinventarioenc = @idinventario And regularizar = 1 
+                                GROUP BY t.IdProductoBodega, idPresentacion, IdUnidadMedida, p.codigo, p.nombre, IdProductoTallaColor, IdProductoTallaColor_nuevo, Talla_origen, 
+                                Color_origen,Talla_destino, Color_destino 
+                                HAVING SUM(cantidad_stock-cantidad_conteo) <> 0 OR IdProductoTallaColor <> IdProductoTallaColor_nuevo"
+            Else
+                vSQL = "SELECT 0 IdAjustedet, 0 IdAjusteEnc, 
                                         MAX(IdStock) IdStock, 
                                         0 IdPropietarioBodega, 
                                         t.IdProductoBodega,
@@ -490,6 +576,7 @@ Partial Public Class clsLnTrans_ajuste_det
                                   WHERE idinventarioenc = @idinventario And regularizar = 1 
                                 GROUP BY t.IdProductoBodega, idPresentacion, IdUnidadMedida, p.codigo, p.nombre
                                 HAVING SUM(cantidad_stock-cantidad_conteo) <>0"
+            End If
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

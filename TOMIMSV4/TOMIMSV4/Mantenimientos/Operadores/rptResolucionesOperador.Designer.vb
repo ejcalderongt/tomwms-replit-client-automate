@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Public Class rptResolucionesOperador
     Inherits DevExpress.XtraReports.UI.XtraReport
 
     'XtraReport overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Public Class rptResolucionesOperador
     'NOTE: The following procedure is required by the Designer
     'It can be modified using the Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim SelectQuery1 As DevExpress.DataAccess.Sql.SelectQuery = New DevExpress.DataAccess.Sql.SelectQuery()
@@ -403,7 +403,7 @@ Partial Public Class rptResolucionesOperador
         Me.Title.Font = New DevExpress.Drawing.DXFont("Arial", 14.25!)
         Me.Title.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.Title.Name = "Title"
-        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
+        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         '
         'GroupCaption1
         '
@@ -414,7 +414,7 @@ Partial Public Class rptResolucionesOperador
         Me.GroupCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GroupCaption1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(228, Byte), Integer), CType(CType(228, Byte), Integer), CType(CType(228, Byte), Integer))
         Me.GroupCaption1.Name = "GroupCaption1"
-        Me.GroupCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.GroupCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
         Me.GroupCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GroupData1
@@ -426,7 +426,7 @@ Partial Public Class rptResolucionesOperador
         Me.GroupData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GroupData1.ForeColor = System.Drawing.Color.White
         Me.GroupData1.Name = "GroupData1"
-        Me.GroupData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.GroupData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
         Me.GroupData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailCaption1
@@ -438,7 +438,7 @@ Partial Public Class rptResolucionesOperador
         Me.DetailCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.DetailCaption1.ForeColor = System.Drawing.Color.White
         Me.DetailCaption1.Name = "DetailCaption1"
-        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
+        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         Me.DetailCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData1
@@ -449,7 +449,7 @@ Partial Public Class rptResolucionesOperador
         Me.DetailData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData1.ForeColor = System.Drawing.Color.Black
         Me.DetailData1.Name = "DetailData1"
-        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
+        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         Me.DetailData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GroupFooterBackground3
@@ -461,7 +461,7 @@ Partial Public Class rptResolucionesOperador
         Me.GroupFooterBackground3.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GroupFooterBackground3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(228, Byte), Integer), CType(CType(228, Byte), Integer), CType(CType(228, Byte), Integer))
         Me.GroupFooterBackground3.Name = "GroupFooterBackground3"
-        Me.GroupFooterBackground3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.GroupFooterBackground3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
         Me.GroupFooterBackground3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData3_Odd
@@ -473,7 +473,7 @@ Partial Public Class rptResolucionesOperador
         Me.DetailData3_Odd.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData3_Odd.ForeColor = System.Drawing.Color.Black
         Me.DetailData3_Odd.Name = "DetailData3_Odd"
-        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
+        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         Me.DetailData3_Odd.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'PageInfo
@@ -481,7 +481,7 @@ Partial Public Class rptResolucionesOperador
         Me.PageInfo.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.PageInfo.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.PageInfo.Name = "PageInfo"
-        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
+        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         '
         'rptResolucionesOperador
         '

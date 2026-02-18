@@ -196,7 +196,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                       Optional pPedidoCliente As String = "") As Boolean
         Procesar_Solicitudes_Traslado_SAP = False
 
-        Dim Resultado As String = ""
         Dim BeBodega As New clsBeBodega
         Dim lPedidosTrasladoSAP As New List(Of clsBeI_nav_ped_traslado_enc)
 
@@ -237,10 +236,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                             End If
 
                             Dim BePedidoEncResult As New clsBeTrans_pe_enc
-                            BePedidoEncResult = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
-                                                                                                                       lblprg,
-                                                                                                                       Nothing,
-                                                                                                                       Nothing)
+                            BePedidoEncResult = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
+                                                                                                                          lblprg)
 
                             If Not BePedidoEncResult Is Nothing Then
 
@@ -250,7 +247,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                             End If
 
-                            clsPublic.Actualizar_Progreso(lblprg, Resultado)
+                            'clsPublic.Actualizar_Progreso(lblprg, Resultado.te)
 
                         Next
 

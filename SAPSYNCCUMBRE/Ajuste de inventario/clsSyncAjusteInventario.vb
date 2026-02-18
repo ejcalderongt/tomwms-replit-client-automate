@@ -431,7 +431,6 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
         Dim TransLog As SqlTransaction = Nothing
         Dim Resultado As String = ""
         Dim lAjustesInventario As New List(Of clsBeAjustesMI3)
-        Dim BeLogError = New clsBeLog_error_wms
 
         Try
 
@@ -440,9 +439,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
             clsPublic.Actualizar_Progreso(lblprg, "Consultando ajustes pendientes de envío.")
 
             Dim lAjustesPendEnvioInv As New List(Of clsBeAjustesMI3)
-            lAjustesPendEnvioInv = clsLnI_nav_transacciones_out.Get_Ajustes_Auditados_Pendientes_Envio_MI3_By_Inventario(Resultado, lblprg, CnnLog, TransLog)
-
-            Application.DoEvents()
+            lAjustesPendEnvioInv = clsLnI_nav_transacciones_out.Get_Ajustes_Auditados_Pendientes_Envio_MI3_By_Inventario(Resultado, CnnLog, TransLog)
 
             If Not lAjustesPendEnvioInv Is Nothing AndAlso lAjustesPendEnvioInv.Count > 0 Then
 
@@ -457,8 +454,6 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                 ' Agrupar ajustes por IdAjusteEnc
                 Dim ajustesAgrupados = lAjustesPendEnvioInv.GroupBy(Function(a) a.IdAjusteEnc)
-
-                prg.Visible = True
 
                 prg.Maximum = lAjustesPendEnvioInv.Count
 
@@ -476,35 +471,32 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         .Cantidad = ajuste.Cantidad
                     }
 
-                        If ajuste.TipoAjusteWMS = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo Then
+                        If ajuste.TipoAjusteWMS = "Ajuste Positivo" Then
                             ajustesPositivos.Add(entry)
                             clsPublic.Actualizar_Progreso(lblprg, "Agregando producto a ajuste positivo: " & ajuste.Codigo_Producto)
-                            clsLnLog_error_wms.Agregar_Error("Ajuste positivo: " & ajuste.IdAjusteEnc & " Tipo: " & ajuste.TipoAjusteWMS & " Producto: " & ajuste.Codigo_Producto & " Cantidad ajuste: " & ajuste.Cantidad)
-                        ElseIf ajuste.TipoAjusteWMS = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
+                        ElseIf ajuste.TipoAjusteWMS = "Ajuste Negativo" Then
                             ajustesNegativos.Add(entry)
                             clsPublic.Actualizar_Progreso(lblprg, "Agregando producto a ajuste negativo: " & ajuste.Codigo_Producto)
-                            clsLnLog_error_wms.Agregar_Error("Ajuste negativo: " & ajuste.IdAjusteEnc & " Tipo: " & ajuste.TipoAjusteWMS & " Producto: " & ajuste.Codigo_Producto & " Cantidad ajuste: " & ajuste.Cantidad)
                         End If
                     Next
 
                     ' Enviar un solo documento para todos los productos positivos en el grupo actual
                     If ajustesPositivos.Count > 0 Then
                         Dim entradaBody = New With {
-                .Bodega = grupo.First().Codigo_Bodega,
-                .RemarkCode = grupo.First().Codigo_Centro_Costo,
-                .NombreUsuario = "TOMWMS",
-                .Entries = ajustesPositivos
-            }
+                        .Bodega = grupo.First().Codigo_Bodega,
+                        .RemarkCode = grupo.First().Codigo_Centro_Costo,
+                        .NombreUsuario = "TOMWMS",
+                        .Entries = ajustesPositivos
+                    }
                         Dim entradaJson = JsonConvert.SerializeObject(entradaBody)
                         Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste positivo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
                         clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
-                        clsLnLog_error_wms.Agregar_Error("Ajuste positivo enviado a SAP: " & entradaJson.Substring(1, Math.Min(entradaJson.Length - 1, 3500)))
 
                         ' Marcar ajustes positivos como enviados
                         If entradaResponse.ToString.Contains("""status"":1") Then
-                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo)
+                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Positivo")
                                 ajuste.Observacion = "Enviado"
                             Next
                         End If
@@ -513,29 +505,25 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                     ' Enviar un solo documento para todos los productos negativos en el grupo actual
                     If ajustesNegativos.Count > 0 Then
                         Dim salidaBody = New With {
-                .Bodega = grupo.First().Codigo_Bodega,
-                .RemarkCode = grupo.First().Codigo_Centro_Costo,
-                .NombreUsuario = "TOMWMS",
-                .Entries = ajustesNegativos
-            }
+                        .Bodega = grupo.First().Codigo_Bodega,
+                        .RemarkCode = grupo.First().Codigo_Centro_Costo,
+                        .NombreUsuario = "TOMWMS",
+                        .Entries = ajustesNegativos
+                    }
                         Dim salidaJson = JsonConvert.SerializeObject(salidaBody)
                         Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste negativo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
                         clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
-                        clsLnLog_error_wms.Agregar_Error("Ajuste negativo enviado a SAP: " & salidaJson.Substring(1, Math.Min(salidaJson.Length - 1, 3500)))
-
 
                         ' Marcar ajustes negativos como enviados
                         Dim SalidaToParse = salidaResponse
                         If salidaResponse.ToString.Contains("""status"":1") Then
-                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo)
+                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Negativo")
                                 ajuste.Observacion = "Enviado"
                             Next
                         End If
                     End If
-
-
                 Next
 
                 Dim vIdStock As Integer = 0
@@ -547,10 +535,10 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                             vIdStock = clsLnTrans_ajuste_det.Get_IdStock_By_IdAjusteDet(ajuste.IdAjusteDet, CnnLog, TransLog)
                             vIdnventarioEnc = clsLnTrans_ajuste_det.Get_IdInventarioEnc_By_IdAjusteDet(ajuste.IdAjusteDet, CnnLog, TransLog)
                             clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP_By_Inventario(vIdStock,
-                                                                                            vIdnventarioEnc,
-                                                                                            True,
-                                                                                            CnnLog,
-                                                                                            TransLog)
+                                                                                                vIdnventarioEnc,
+                                                                                                True,
+                                                                                                CnnLog,
+                                                                                                TransLog)
                         End If
                     Next
                 Next
@@ -617,7 +605,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                             BeLogError = New clsBeLog_error_wms
 
-                            BeLogError.IdError = clsLnLog_error_wms.MaxID() + 1
+                            BeLogError.IdError = clsLnLog_error_wms.MaxID(CnnLog, TransLog)
                             BeLogError.IdEmpresa = 0
                             BeLogError.IdBodega = lAjustesPendEnvio(0).Codigo_Bodega
                             BeLogError.Fecha = Now
@@ -709,8 +697,6 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                 clsPublic.Actualizar_Progreso(lblprg, "No hay ajustes pendientes de envío.")
             End If
 
-            TransLog.Commit()
-
         Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al enviar ajustes a SAP: {0}{1}", vbNewLine, ex.Message))
             If Not TransLog Is Nothing Then TransLog.Rollback()
@@ -724,7 +710,6 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
             Throw New Exception(String.Format(" (M) {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 
         Finally
-            prg.Visible = False
             If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
         End Try
 

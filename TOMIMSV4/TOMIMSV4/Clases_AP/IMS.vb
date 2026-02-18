@@ -3123,7 +3123,7 @@ Public Class IMS
 
     End Function
 
-    Public Overloads Shared Function Listar_Productos(ByRef Cmb As DevExpress.XtraEditors.GridLookUpEdit, IdBodega As Integer) As Boolean
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As GridLookUpEdit, IdBodega As Integer) As Boolean
 
         Listar_Productos = False
 
@@ -3178,6 +3178,32 @@ Public Class IMS
             End If
 
             Listar_Productos = True
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
+
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As LookUpEdit, IdBodega As Integer) As Boolean
+
+        Listar_Productos = False
+
+        Dim DT As New DataTable
+
+        Try
+
+            DT = clsLnProducto.Get_All_By_Bodega_DT(IdBodega)
+
+            If DT.Rows.Count > 0 Then
+                Cmb.Properties.DisplayMember = "Nombre"
+                Cmb.Properties.ValueMember = "IdProducto"
+                Cmb.Properties.DataSource = DT
+                Cmb.ItemIndex = 0
+            End If
+
+            Listar_Productos = DT.Rows.Count > 0
 
         Catch ex As Exception
             Throw New Exception(ex.Message)

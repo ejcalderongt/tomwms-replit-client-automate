@@ -90,135 +90,6 @@ Public Class frmMenu
 
     End Sub
 
-    '#GT25072025: mejoras que la ia me ha vendido.
-    'Private Horario_StockJornada As TimeSpan
-    'Private Horario_DMS As New clsBeI_nav_config_det()
-
-    'Private Sub RefrescarHorarios()
-
-    '    Horario_DMS = New clsBeI_nav_config_det()
-
-    '    Horario_StockJornada = AP.Bodega.Horario_Ejecucion_Historico
-    '    '#GT25072025: traer la configuración del día y no toda la semana
-    '    Dim diaHoy As Integer = CInt(DateTime.Now.DayOfWeek)
-    '    If diaHoy = 0 Then diaHoy = 7 ' ajusta domingo si tu tabla usa 7
-    '    Horario_DMS.Dia = diaHoy
-    '    Horario_DMS.IdNavEnt = 1 'actualmente hay solo una entidad en la tabla DMS.Exe
-    '    Horario_DMS = clsLnI_nav_config_det.GetSingle_By_Dia_And_Entidad(Horario_DMS)
-    'End Sub
-
-    ' Control de última carga
-    'Private UltimaLecturaHorarios As DateTime = DateTime.MinValue
-    'Private ejecutandoProcesoDMS As Boolean = False
-    'Private minutoUltimaEjecucionDMS As Integer = -1
-
-    'Private Sub TimerElapsed(ByVal sender As Object, ByVal e As Timers.ElapsedEventArgs)
-    '    Try
-
-    '        ' Refrescar horarios desde BD cada 60 segundos
-    '        If (DateTime.Now - UltimaLecturaHorarios).TotalSeconds >= 60 Then
-    '            RefrescarHorarios()
-    '        End If
-
-    '        Dim ahora As TimeSpan = DateTime.Now.TimeOfDay
-
-    '        '#GT25072025: valida ejecución de stock_jornada
-    '        If Math.Abs((ahora - Horario_StockJornada).TotalSeconds) < 1 Then
-    '            Dim hora_terminal = Now.TimeOfDay.ToString()
-    '            stock_jornada_subproceso(hora_terminal)
-    '        End If
-
-    '        '#GT25072025: valida la ejecución de DMS
-    '        If Horario_DMS Is Nothing Then Exit Sub
-
-    '        Dim diaHoy As Integer = CInt(DateTime.Now.DayOfWeek)
-    '        If diaHoy = 0 Then diaHoy = 7 ' Ajustar domingo si es necesario
-
-    '        If diaHoy = Horario_DMS.Dia Then
-
-    '            If ahora >= Horario_DMS.HoraInicio.TimeOfDay AndAlso ahora <= Horario_DMS.HoraFin.TimeOfDay Then
-
-    '                Dim minutosDesdeInicio As Integer = CInt((ahora - Horario_DMS.HoraInicio.TimeOfDay).TotalMinutes)
-
-
-    '                '#GT29072025: bandera para saber si ejecutara el proceso o no
-    '                Debug.WriteLine($"Frecuencia: {minutosDesdeInicio}")
-
-    '                Dim cumpleFrecuencia As Boolean = (minutosDesdeInicio Mod Horario_DMS.Frecuencia = 0)
-
-    '                If cumpleFrecuencia AndAlso Not ejecutandoProcesoDMS AndAlso minutosDesdeInicio <> minutoUltimaEjecucionDMS Then
-    '                    ejecutandoProcesoDMS = True
-    '                    DMS_subproceso(ahora.ToString())
-    '                    minutoUltimaEjecucionDMS = minutosDesdeInicio
-    '                    ejecutandoProcesoDMS = False
-    '                End If
-
-
-
-    '                Me.Invoke(Sub()
-    '                              barFrecuenciaStatus.Caption = $"Estado frecuencia: {If(cumpleFrecuencia, "✔ Cumple", "✘ No cumple")}"
-    '                              barFrecuenciaStatus.ItemAppearance.Normal.ForeColor = If(cumpleFrecuencia, Color.Green, Color.Red)
-    '                          End Sub)
-
-
-    '            End If
-
-
-    '        End If
-
-
-    '    Catch ex As Exception
-    '        clsLnLog_error_wms.Agregar_Error(ex.Message)
-    '    End Try
-    'End Sub
-
-    'Private Sub DMS_subproceso(horario As String)
-
-    '    Dim BeLicItem As New clsBeLicencia_item()
-    '    Dim vNombreHost As String = ""
-
-    '    Try
-
-    '        If clsLnLicencia_item.Existe_Servidor_De_Licencias(BeLicItem) Then
-
-    '            vNombreHost = Net.Dns.GetHostName().ToString()
-    '            Dim vMac As String = clsLnLicencia_item.Get_Mac_Host(AP.HostName)
-
-    '            If AP.HostName.Contains("adm-hv-srvtest") Then
-    '                'If clsLnLicencia_item.Es_Server(vNombreHost, BeLicItem, vMac) Then
-
-    '                Dim vStopwatch As Stopwatch = Stopwatch.StartNew()
-    '                vStopwatch.Start()
-
-    '                If SplashScreenManager.Default IsNot Nothing Then
-    '                    SplashScreenManager.Default.SetWaitFormDescription("Generando Exportación a portal web...")
-    '                End If
-
-    '                Task_DMS()
-
-    '                Dim vTiempoSegundos As Double = vStopwatch.Elapsed.TotalSeconds
-    '                Console.WriteLine("Fin de proceso - " & Now & " Tiempo transcurrido en segundos: " & vTiempoSegundos)
-
-    '                Dim vMsgError As String = ("ADVERTENCIA_20230308: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " y host: " & vNombreHost & " ejecutó DMS en: " & horario)
-    '                clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-    '            Else
-
-    '                Dim vMsgError As String = ("ADVERTENCIA_20230308_1: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " y host: " & vNombreHost & " intentó ejecutar DMS en: " & horario)
-    '                clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-    '            End If
-
-    '        End If
-
-    '    Catch ex As Exception
-    '        Dim vMsgError As String = ex.Message
-    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
-    '    End Try
-
-    'End Sub
-
-
     Sub TimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
 
         Try
@@ -840,10 +711,7 @@ Public Class frmMenu
 
         With frmProductoList
             .Modo = frmProductoList.pModo.Lista
-            If Not e Is Nothing Then
-                .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-            End If
-            .MdiParent = Me
+            .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
             .mnuNuevo.Enabled = .OpcionesMenu.Modificar
             .mnuActualizar.Enabled = .OpcionesMenu.Leer
             .Show()
@@ -2718,7 +2586,7 @@ Public Class frmMenu
 
         With frmStockPorLote
             .Modo = frmStockPorLote.pModo.Lista
-            .MdiParent = Me : If Not e Is Nothing Then .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+            .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
             .Show()
             .Focus()
         End With
@@ -2780,10 +2648,6 @@ Public Class frmMenu
 
     End Sub
 
-    Private Sub mnuPacking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuPacking.ItemClick
-        If Not permiteMenu(e.Link) Then Return
-
-    End Sub
 
     Private Sub cmdUbicacionPicking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdUbicacionPicking.ItemClick
 
@@ -4818,12 +4682,6 @@ Public Class frmMenu
 
         If Not permiteMenu(e.Link) Then Return
 
-        'With frmImplosion
-        '    .Modo = frmListaStockControlCalidad.pModo.Lista
-        '    .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-        '    .Show()
-        '    .Focus()
-        'End With
 
         With frmListaStockControlCalidad
             .Modo = frmListaStockControlCalidad.pModo.Lista
@@ -4840,15 +4698,8 @@ Public Class frmMenu
 
         If Not permiteMenu(e.Link) Then Return
 
-        'With frmImplosion
-        '    .Modo = frmListaStockControlCalidad.pModo.Lista
-        '    .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-        '    .Show()
-        '    .Focus()
-        'End With
-
         With frmListaStockControlCalidad
-            .Modo = frmListaStockControlCalidad.pModo.Lista
+            .Modo = frmCienteTipo_List.pModo.Lista
             .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
             .Show()
             .Focus()

@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmOrdenCompra_List
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing Then
             If components IsNot Nothing Then
@@ -27,7 +27,7 @@ Partial Class frmOrdenCompra_List
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmOrdenCompra_List))
@@ -44,7 +44,6 @@ Partial Class frmOrdenCompra_List
         Me.mnuMI3Sync = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuNuevoIngresoConsolidados = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuExportarExcel = New DevExpress.XtraBars.BarButtonItem()
-        Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -57,7 +56,6 @@ Partial Class frmOrdenCompra_List
         Me.lbldesde = New System.Windows.Forms.Label()
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaDel = New System.Windows.Forms.DateTimePicker()
-        Me.mnuEliminarDocumentoIngreso = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -77,10 +75,10 @@ Partial Class frmOrdenCompra_List
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImportarExcel, Me.cmdImprimir, Me.mnuMI3Sync, Me.mnuNuevoIngresoConsolidados, Me.mnuExportarExcel, Me.mnuEliminarLayoutGrid, Me.mnuEliminarDocumentoIngreso})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImportarExcel, Me.cmdImprimir, Me.mnuMI3Sync, Me.mnuNuevoIngresoConsolidados, Me.mnuExportarExcel, Me.mnuEliminarLayoutGrid})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 15
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonControl.MaxItemId = 14
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -161,13 +159,6 @@ Partial Class frmOrdenCompra_List
         Me.mnuExportarExcel.ImageOptions.SvgImage = CType(resources.GetObject("mnuExportarExcel.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuExportarExcel.Name = "mnuExportarExcel"
         '
-        'mnuEliminarLayoutGrid
-        '
-        Me.mnuEliminarLayoutGrid.Caption = "Eliminar diseño de grid"
-        Me.mnuEliminarLayoutGrid.Id = 13
-        Me.mnuEliminarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuEliminarLayoutGrid.Name = "mnuEliminarLayoutGrid"
-        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup2})
@@ -184,7 +175,6 @@ Partial Class frmOrdenCompra_List
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuMI3Sync)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuSalir)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarLayoutGrid)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarDocumentoIngreso)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonPageGroup2
@@ -291,16 +281,11 @@ Partial Class frmOrdenCompra_List
         Me.dtpFechaDel.TabIndex = 1
         '
         'mnuEliminarLayoutGrid
-        'BarButtonItem1
         '
         Me.mnuEliminarLayoutGrid.Caption = "Eliminar diseño de grid"
         Me.mnuEliminarLayoutGrid.Id = 13
         Me.mnuEliminarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuEliminarLayoutGrid.Name = "mnuEliminarLayoutGrid"
-        Me.mnuEliminarDocumentoIngreso.Caption = "Eliminar documento"
-        Me.mnuEliminarDocumentoIngreso.Id = 14
-        Me.mnuEliminarDocumentoIngreso.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuEliminarDocumentoIngreso.Name = "BarButtonItem1"
         '
         'frmOrdenCompra_List
         '
@@ -318,17 +303,17 @@ Partial Class frmOrdenCompra_List
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Listado de documentos de ingreso"
-        CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.RepositoryItemPictureEdit1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBox1.ResumeLayout(False)
+        CType(Me.ImageCollection1,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.Dgrid,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.GridView1,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.RepositoryItemPictureEdit1,System.ComponentModel.ISupportInitialize).EndInit
+        Me.GroupBox1.ResumeLayout(false)
         Me.GroupBox1.PerformLayout
-        Me.ResumeLayout(False)
+        Me.ResumeLayout(false)
         Me.PerformLayout
 
-    End Sub
+End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage
@@ -355,5 +340,4 @@ Partial Class frmOrdenCompra_List
     Friend WithEvents mnuNuevoIngresoConsolidados As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuExportarExcel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents mnuEliminarDocumentoIngreso As DevExpress.XtraBars.BarButtonItem
 End Class

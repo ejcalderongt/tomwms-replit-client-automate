@@ -170,10 +170,10 @@
     <Setting Name="TOMWMS_LA_CUMBRE_PRDConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;ConnectionString&gt;Data Source=PROGRA14\SQL2022;Initial Catalog=TOMWMS_LA_CUMBRE_PRD;Persist Security Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True&lt;/ConnectionString&gt;
+  &lt;ConnectionString&gt;Data Source=10.238.26.70;Initial Catalog=TOMWMS_MAMPA_QA;Persist Security Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True&lt;/ConnectionString&gt;
   &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Data Source=PROGRA14\SQL2022;Initial Catalog=TOMWMS_LA_CUMBRE_PRD;Persist Security Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True</Value>
+      <Value Profile="(Default)">Data Source=10.238.26.70;Initial Catalog=TOMWMS_MAMPA_QA;Persist Security Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

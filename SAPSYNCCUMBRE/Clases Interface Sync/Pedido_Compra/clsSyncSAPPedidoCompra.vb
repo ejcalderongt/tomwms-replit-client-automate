@@ -615,77 +615,77 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
                                 Select Case TipoPedidoCompra
 
-                                    Case tTipoDocumentoIngreso.Ingreso, tTipoDocumentoIngreso.Devolucion
+                                    Case tTipoDocumentoIngreso.Ingreso, tTipoDocumentoIngreso.Devolucion 'Es un pedido de compra de proveedor.
 
                                         If Not Enviado_A_Erp Then
 
-                                        lTransaccionesIngresoSingle = lTransaccionesIngreso.FindAll(Function(x) x.No_pedido = DocumentoIngreso.No_pedido)
+                                            lTransaccionesIngresoSingle = lTransaccionesIngreso.FindAll(Function(x) x.No_pedido = DocumentoIngreso.No_pedido)
 
-                                        If Enviar_Entrada_Mercancia_OC_SAP(BeConfigEnc,
-                                                                           DocumentoIngreso.No_pedido,
-                                                                           lTransaccionesIngresoSingle,
-                                                                           BeTransOCEnc,
-                                                                           vCodigoBodegaDestino,
-                                                                           BeReOC.IdRecepcionEnc,
-                                                                           lblprg,
-                                                                           prg) Then
+                                            If Enviar_Entrada_Mercancia_OC_SAP(BeConfigEnc,
+                                                                               DocumentoIngreso.No_pedido,
+                                                                               lTransaccionesIngresoSingle,
+                                                                               BeTransOCEnc,
+                                                                               vCodigoBodegaDestino,
+                                                                               BeReOC.IdRecepcionEnc,
+                                                                               lblprg,
+                                                                               prg) Then
 
+                                                Try
+
+                                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Documento registrado correctamente: {0}", BeTransOCEnc.No_Documento))
+
+                                                    BeReOC.No_docto = "ENV-WMS" & FormatoFechas.tFecha(Now)
+                                                    clsLnTrans_re_oc.Actualizar_No_Docto(BeReOC, clsTrans.lConnection, clsTrans.lTransaction)
+                                                    clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(DocumentoIngreso.Idordencompra, True)
+                                                    clsLnLog_error_wms.Agregar_Error(String.Format("#IF_SAP_ENV_PED_COMP: Se registró correctamente EL INGRESO/DEVOLUCIÓN: {0}", BeTransOCEnc.No_Documento))
+
+                                                Catch ex As Exception
+
+                                                    If ex.Message = "There is nothing to post." Then 'Pedido sin nada que registrar
+                                                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Nada que registrar para pedido: {0} en NAV.", DocumentoIngreso.No_pedido))
+                                                    Else
+                                                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al registrar pedido de Ingreso WMS {0} en SAP: {1}", DocumentoIngreso.No_pedido, ex.Message))
+                                                        clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al registrar pedido {0} en SAP: {1}", DocumentoIngreso.No_pedido, ex.Message),
+                                                                                                  DocumentoIngreso.No_pedido,
+                                                                                                  BeNavEjecucionEnc.IdEjecucionEnc,
+                                                                                                  BeConfigDet.Idnavconfigdet)
+                                                    End If
+
+                                                End Try
+
+                                            End If 'Fin enviar
+
+                                        Else
+                                            '#EJC20201119: aun no se que sucederá aquí....
                                             Try
 
-                                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Documento registrado correctamente: {0}", BeTransOCEnc.No_Documento))
+                                                clsLnTrans_oc_enc.Actualizar_Estado_OC_By_Interface(DocumentoIngreso.Idordencompra,
+                                                                                                    tEstadoOC.BACK_ORDER,
+                                                                                                    clsTrans.lConnection,
+                                                                                                    clsTrans.lTransaction)
 
-                                                BeReOC.No_docto = "ENV-WMS" & FormatoFechas.tFecha(Now)
-                                                clsLnTrans_re_oc.Actualizar_No_Docto(BeReOC, clsTrans.lConnection, clsTrans.lTransaction)
+                                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Se registró el pedido:{0} correctamente en el ERP.", DocumentoIngreso.No_pedido))
                                                 clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(DocumentoIngreso.Idordencompra, True)
-                                                clsLnLog_error_wms.Agregar_Error(String.Format("#IF_SAP_ENV_PED_COMP: Se registró correctamente EL INGRESO/DEVOLUCIÓN: {0}", BeTransOCEnc.No_Documento))
+                                                clsLnLog_error_wms.Agregar_Error(String.Format("#IF_SAP_ENV_PED_COMP: Se registró correctamente el documento: {0}", BeTransOCEnc.No_Documento))
 
                                             Catch ex As Exception
 
                                                 If ex.Message = "There is nothing to post." Then 'Pedido sin nada que registrar
                                                     clsPublic.Actualizar_Progreso(lblprg, String.Format("Nada que registrar para pedido: {0} en NAV.", DocumentoIngreso.No_pedido))
                                                 Else
+
                                                     clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al registrar pedido de Ingreso WMS {0} en SAP: {1}", DocumentoIngreso.No_pedido, ex.Message))
+
                                                     clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al registrar pedido {0} en SAP: {1}", DocumentoIngreso.No_pedido, ex.Message),
                                                                                               DocumentoIngreso.No_pedido,
                                                                                               BeNavEjecucionEnc.IdEjecucionEnc,
                                                                                               BeConfigDet.Idnavconfigdet)
+
                                                 End If
 
                                             End Try
 
-                                        End If 'Fin enviar
-
-                                    Else
-                                        '#EJC20201119: aun no se que sucederá aquí....
-                                        Try
-
-                                            clsLnTrans_oc_enc.Actualizar_Estado_OC_By_Interface(DocumentoIngreso.Idordencompra,
-                                                                                                tEstadoOC.BACK_ORDER,
-                                                                                                clsTrans.lConnection,
-                                                                                                clsTrans.lTransaction)
-
-                                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Se registró el pedido:{0} correctamente en el ERP.", DocumentoIngreso.No_pedido))
-                                            clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(DocumentoIngreso.Idordencompra, True)
-                                            clsLnLog_error_wms.Agregar_Error(String.Format("#IF_SAP_ENV_PED_COMP: Se registró correctamente el documento: {0}", BeTransOCEnc.No_Documento))
-
-                                        Catch ex As Exception
-
-                                            If ex.Message = "There is nothing to post." Then 'Pedido sin nada que registrar
-                                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Nada que registrar para pedido: {0} en NAV.", DocumentoIngreso.No_pedido))
-                                            Else
-
-                                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al registrar pedido de Ingreso WMS {0} en SAP: {1}", DocumentoIngreso.No_pedido, ex.Message))
-
-                                                clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al registrar pedido {0} en SAP: {1}", DocumentoIngreso.No_pedido, ex.Message),
-                                                                                          DocumentoIngreso.No_pedido,
-                                                                                          BeNavEjecucionEnc.IdEjecucionEnc,
-                                                                                          BeConfigDet.Idnavconfigdet)
-
-                                            End If
-
-                                        End Try
-
-                                    End If
+                                        End If
 
                                     Case tTipoDocumentoIngreso.Transferencia_de_Ingreso 'Es un pedido de transferencia desde una bodega X hacia la bodega de WMS.
 
@@ -864,74 +864,70 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
                 End If
 
-                If EnvioEntradaBuenEstado Then
+                Dim oOrderPurchase As Documents
+                oOrderPurchase = CType(oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders), Documents)
 
-                    Dim oOrderPurchase As Documents
-                    oOrderPurchase = CType(oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders), Documents)
+                Dim vMensajeError As String = "#ERROR_SAP_20231030: Error al actualizar la Orden de Compra:" & sErrMsg
+                Dim vMensajeResultado As String = ""
 
-                    Dim vMensajeError As String = "#ERROR_SAP_20231030: Error al actualizar la Orden de Compra:" & sErrMsg
-                    Dim vMensajeResultado As String = ""
+                If oOrderPurchase.GetByKey(_Docentry) Then
 
-                    If oOrderPurchase.GetByKey(_Docentry) Then
+                    Select Case BeTransOCEnc.TipoIngreso.IdTipoIngresoOC
 
-                        Select Case BeTransOCEnc.TipoIngreso.IdTipoIngresoOC
+                        Case tTipoDocumentoIngreso.Devolucion
 
-                            Case tTipoDocumentoIngreso.Devolucion
+                            vMensajeError = "#ERROR_SAP_20231030: Error al actualizar la Orden de Compra:" & sErrMsg
 
-                                vMensajeError = "#ERROR_SAP_20231030: Error al actualizar la Orden de Compra:" & sErrMsg
+                    End Select
 
-                        End Select
+                    BeTransReEnc = clsLnTrans_re_enc.GetSingle(IdRecepcionEnc)
+                    Dim vTieneDiferencia As Boolean = False
 
-                        BeTransReEnc = clsLnTrans_re_enc.GetSingle(IdRecepcionEnc)
-                        Dim vTieneDiferencia As Boolean = False
+                    If Not BeTransReEnc Is Nothing Then
 
-                        If Not BeTransReEnc Is Nothing Then
+                        vTieneDiferencia = Detalle_Tiene_Diferencia_Vrs_OC(BeTransOCEnc,
+                                                                           BeTransOCEnc.DetalleOC,
+                                                                           BeTransReEnc,
+                                                                           BeTransReEnc.Detalle)
 
-                            vTieneDiferencia = Detalle_Tiene_Diferencia_Vrs_OC(BeTransOCEnc,
-                                                                               BeTransOCEnc.DetalleOC,
-                                                                               BeTransReEnc,
-                                                                               BeTransReEnc.Detalle)
+                    End If
 
+                    If vTieneDiferencia AndAlso Not BeTransOCEnc.IdEstadoOC = tEstadoOC.BACK_ORDER Then
+
+                        Dim errCode As Integer
+                        Dim errMsg As String = ""
+
+                        ' Actualiza el documento en la base de datos
+                        errCode = oOrderPurchase.Close()
+
+                        If errCode <> 0 Then
+                            oCompany.GetLastError(errCode, errMsg)
+                            clsPublic.Actualizar_Progreso(lblprg, "El documento en SAP no se pudo marcar como cerrado aparentemente.")
+                            clsPublic.Actualizar_Progreso(lblprg, "Mensaje de SAP vía DIAPI: " & errMsg)
+                            clsLnLog_error_wms.Agregar_Error("El documento en SAP no se pudo marcar como cerrado aparentemente." &
+                                                             " Mensaje de SAP vía DIAPI: " & errMsg)
+                        Else
+                            Console.WriteLine("Se cerró el documento de compra en SAP.")
+                            clsPublic.Actualizar_Progreso(lblprg, "Se cerró el documento de compra")
+                            clsLnLog_error_wms.Agregar_Error("LOG20241027: Se cerró el documento de compra en SAP.")
                         End If
 
-                        If vTieneDiferencia AndAlso Not BeTransOCEnc.IdEstadoOC = tEstadoOC.BACK_ORDER Then
+                    Else
 
-                            Dim errCode As Integer
-                            Dim errMsg As String = ""
-
-                            ' Actualiza el documento en la base de datos
-                            errCode = oOrderPurchase.Close()
-
-                            If errCode <> 0 Then
-                                oCompany.GetLastError(errCode, errMsg)
-                                clsPublic.Actualizar_Progreso(lblprg, "El documento en SAP no se pudo marcar como cerrado aparentemente.")
-                                clsPublic.Actualizar_Progreso(lblprg, "Mensaje de SAP vía DIAPI: " & errMsg)
-                                clsLnLog_error_wms.Agregar_Error("El documento en SAP no se pudo marcar como cerrado aparentemente." &
-                                                                 " Mensaje de SAP vía DIAPI: " & errMsg)
-                            Else
-                                Console.WriteLine("Se cerró el documento de compra en SAP.")
-                                clsPublic.Actualizar_Progreso(lblprg, "Se cerró el documento de compra")
-                                clsLnLog_error_wms.Agregar_Error("LOG20241027: Se cerró el documento de compra en SAP.")
-                            End If
-
+                        If oOrderPurchase.Update() <> 0 Then
+                            sErrMsg = oCompany.GetLastErrorDescription()
+                            clsPublic.Actualizar_Progreso(lblprg, vMensajeError)
+                            clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(BeTransOCEnc.IdOrdenCompraEnc, False)
+                            clsLnLog_error_wms.Agregar_Error("LOG20241027A: Error al actualizar documento en sap: " & vMensajeError)
                         Else
-
-                            If oOrderPurchase.Update() <> 0 Then
-                                sErrMsg = oCompany.GetLastErrorDescription()
-                                clsPublic.Actualizar_Progreso(lblprg, vMensajeError)
-                                clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(BeTransOCEnc.IdOrdenCompraEnc, False)
-                                clsLnLog_error_wms.Agregar_Error("LOG20241027A: Error al actualizar documento en sap: " & vMensajeError)
-                            Else
-                                clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(BeTransOCEnc.IdOrdenCompraEnc, True)
-                                If BeTransOCEnc.TipoIngreso.IdTipoIngresoOC = tTipoDocumentoIngreso.Ingreso Then
-                                    vMensajeResultado = "Pedido de compra actualizado a estado: " & IIf(oOrderPurchase.DocumentStatus = BoStatus.bost_Close, "Cerrado", "Abierto")
-                                ElseIf BeTransOCEnc.TipoIngreso.IdTipoIngresoOC = tTipoDocumentoIngreso.Devolucion Then
-                                    vMensajeResultado = "Solicitud de Devolución actualizada a estado: " & IIf(oOrderPurchase.DocumentStatus = BoStatus.bost_Close, "Cerrado", "Abierto")
-                                End If
-                                clsPublic.Actualizar_Progreso(lblprg, vMensajeResultado)
-                                clsLnLog_error_wms.Agregar_Error("#IF_SAP_ENV_ENTRADA_OC: Se actualizó el documento en sap: " & vMensajeResultado)
+                            clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(BeTransOCEnc.IdOrdenCompraEnc, True)
+                            If BeTransOCEnc.TipoIngreso.IdTipoIngresoOC = tTipoDocumentoIngreso.Ingreso Then
+                                vMensajeResultado = "Pedido de compra actualizado a estado: " & IIf(oOrderPurchase.DocumentStatus = BoStatus.bost_Close, "Cerrado", "Abierto")
+                            ElseIf BeTransOCEnc.TipoIngreso.IdTipoIngresoOC = tTipoDocumentoIngreso.Devolucion Then
+                                vMensajeResultado = "Solicitud de Devolución actualizada a estado: " & IIf(oOrderPurchase.DocumentStatus = BoStatus.bost_Close, "Cerrado", "Abierto")
                             End If
-
+                            clsPublic.Actualizar_Progreso(lblprg, vMensajeResultado)
+                            clsLnLog_error_wms.Agregar_Error("#IF_SAP_ENV_ENTRADA_OC: Se actualizó el documento en sap: " & vMensajeResultado)
                         End If
 
                     End If

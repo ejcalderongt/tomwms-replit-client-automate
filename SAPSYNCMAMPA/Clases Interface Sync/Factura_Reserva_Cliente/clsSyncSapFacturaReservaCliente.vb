@@ -232,14 +232,6 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         Return True
                     End If
 
-                    'Dim origenEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(factura.Transfer_to_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
-                    'Dim destinoEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(factura.Transfer_to_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
-                    'Dim debeProcesar As Boolean = Not destinoEsWMS OrElse Not origenEsWMS OrElse (origenEsWMS AndAlso destinoEsWMS)
-
-                    'If debeProcesar Then
-
-                    'End If
-
                 End If
 
             Next
