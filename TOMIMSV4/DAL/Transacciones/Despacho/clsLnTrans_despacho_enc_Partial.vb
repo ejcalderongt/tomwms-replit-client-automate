@@ -1343,6 +1343,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                 For Each BePickingUbic As clsBeTrans_picking_ubic In lPickingUbicVerificados
 
+                                    BeMovimiento.IdMovimiento = vIdMovimiento
                                     BeMovimiento.IdEmpresa = BeDespachoEnc.IdEmpresa
                                     BeMovimiento.IdBodegaOrigen = BeDespachoEnc.IdBodega
                                     BeMovimiento.IdTransaccion = BeDespachoEnc.IdDespachoEnc
@@ -3179,9 +3180,6 @@ Partial Public Class clsLnTrans_despacho_enc
         ' Si no hay dígitos iniciales, se retorna 0 (o puedes lanzar una excepción según tu lógica)
         Return 0
     End Function
-
-
-
 
     Private Shared Sub Guarda_Trans_Despacho_Det(ByRef ObjEnc As clsBeTrans_despacho_enc,
                                                  ByRef lConnection As SqlConnection,
