@@ -3555,7 +3555,8 @@ Public Class frmPrincipal02
             ccOcupacion.EndInit()
 
             ' 6) Actualizar el gauge con % COMBINADO (GENERAL + FISCAL)
-            Dim ocupadasTotal As Decimal = Convert.ToDecimal(dtAll.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'"))
+            Dim result As Object = dtAll.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'")
+            Dim ocupadasTotal As Decimal = If(IsDBNull(result), 0D, Convert.ToDecimal(result))
             Dim totalUbic As Decimal = Convert.ToDecimal(dtAll.Compute("SUM(Cantidad)", Nothing))
             Dim perc As Single = If(totalUbic <= 0D, 0F, CSng((ocupadasTotal * 100D) / totalUbic))
 
