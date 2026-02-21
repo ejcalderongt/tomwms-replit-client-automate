@@ -152,14 +152,14 @@ Public Class clsSyncSapDevolucionProveedor : Inherits clsInterfaceBase
                         End If
                     End If
 
-                    Dim BePedidoEncResult = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP, lblprg, Nothing, Nothing)
+                    Dim BePedidoEncResult = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP, lblprg)
 
                     If BePedidoEncResult IsNot Nothing Then
                         BePedidoEncResult.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEncResult.IdPedidoEnc)
                         Marcar_Solicitud_Devolucion_Sincronizado_SAP(PedidoClienteSAP.No, Estado_Enviado_SAP.Enviado, lblprg, empresa)
                     End If
 
-                    clsPublic.Actualizar_Progreso(lblprg, Resultado)
+                    'clsPublic.Actualizar_Progreso(lblprg, Resultado)
                 Next
             Next
 

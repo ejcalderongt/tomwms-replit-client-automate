@@ -262,13 +262,7 @@ Public Class frmOrdenCompra
                 tabTallaColor.PageVisible = False
             Else
 
-                Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
-
-                If Not String.IsNullOrEmpty(vRutaCDN) Then
-                    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
-                Else
-                    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
-                End If
+                Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
 
             End If
 
@@ -342,9 +336,7 @@ Public Class frmOrdenCompra
 
         Try
 
-            'GT Limpia el grid, porque al refrescar, duplica los valores
             DTGridDetalleDocIngresos.Clear()
-            'gBeOrdenCompra.DetalleOC.Clear()
 
             lOCDet = gBeOrdenCompra.DetalleOC
 
@@ -357,19 +349,11 @@ Public Class frmOrdenCompra
                 Dim vColor As String = ""
                 Dim vSKU As String = ""
 
-                Dim BeProductoTallaColor As New clsBeProducto_talla_color
-                BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOCDet.IdProductoTallaColor)
+                If (BeTransOCDet.IdProductoTallaColor <> 0) Then
 
-                If Not BeProductoTallaColor Is Nothing Then
-
-                    '#GT13082025: se deben asignar los Ids, no los códigos en el grid
-                    Dim objTalla = clsLnTalla.GetSingle_By_IdTalla(BeProductoTallaColor.IdTalla)
-                    vTalla = If(objTalla IsNot Nothing, objTalla.IdTalla, "")
-
-                    Dim objColor = clsLnColor.GetSingle_By_IdColor(BeProductoTallaColor.IdColor)
-                    vColor = If(objColor IsNot Nothing, objColor.IdColor, "")
-
-                    vSKU = BeProductoTallaColor.CodigoSKU
+                    vTalla = BeTransOCDet.Talla.IdTalla
+                    vColor = BeTransOCDet.Color.IdColor
+                    vSKU = BeTransOCDet.Codigo_Producto
 
                 End If
 
@@ -3273,8 +3257,6 @@ Public Class frmOrdenCompra
             RemoveHandler ProductoGridLookUpEdit.ProcessNewValue, AddressOf ProductoGridLookUpEdit_ProcessNewValue
             AddHandler ProductoGridLookUpEdit.ProcessNewValue, AddressOf ProductoGridLookUpEdit_ProcessNewValue
 
-
-
             ProductoGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
 
             Dim ColIdProductoBodega As New GridColumn With {
@@ -4068,11 +4050,6 @@ Public Class frmOrdenCompra
 
             Dim lista As SpinEdit = TryCast(sender, SpinEdit)
             If lista.EditValue Is Nothing Then Return
-
-            '#GT08092022_1645: campo de referencia, no se requiere calculo
-            'Calcula_Iva()
-            'GT 21062021 se recalcula total porque IVA afecta el total
-            'Recalcula_Valor_Total()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -6524,24 +6501,6 @@ MessageBoxButtons.YesNo,
 
                         End If
 
-                        '#GT27052024: llenar acuerdo en funcion del propietario.
-                        'If Not BeConfigBodega Is Nothing Then
-                        '    If Not BeConfigBodega.IdAcuerdoEnc = 0 Then
-                        '        Llena_Acuerdo_Comercial_Por_Defecto(BeConfigBodega.IdAcuerdoEnc)
-                        '    Else
-                        '        Llena_Acuerdos_Comerciales()
-                        '    End If
-                        'End If
-
-                        '#GT28052024: llenar el combo con el acuerdo comercial asociados al propietario
-                        'Llena_Acuerdos_Comerciales()
-                        '#GT28052024: el propietario viene en la OC, no es necesario volver a llenarlo en el grid
-                        'Llena_PropietariosLookUp_Grid()
-
-                        '#GT28052024: llenar grid con servicios del acuerdo comercial segun propietario de combo
-                        'Llena_Servicios_By_Propietario()
-
-
                     End If
 
                     If AP.Bodega.Control_Tarifa_Servicios Then
@@ -6549,16 +6508,7 @@ MessageBoxButtons.YesNo,
                         Select Case Modo
 
                             Case ModoTrans.Nuevo
-
-                                '#GT10062024: valida si hay varios acuerdos activos
-                                If Not Llena_Servicios_By_Acuerdo_For_Combo() Then
-
-                                    '#GT28052024: llenar grid con servicios del acuerdo único activo
-                                    'Llena_Servicios_By_Propietario()
-                                    'XtraMessageBox.Show("Aviso_12062024_2: La configuración de " & AP.Bodega.Nombre & " requiere que el propietario tenga acuerdo comercial activo.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-
-                                End If
-
+                                Llena_Servicios_By_Acuerdo_For_Combo()
                         End Select
 
                     End If
@@ -6574,9 +6524,7 @@ MessageBoxButtons.YesNo,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03102025: Se agrego nueva bitacora de logs para OC
             Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
@@ -7969,9 +7917,6 @@ MessageBoxButtons.YesNo,
 
                 IMS.Listar_TipoIngresoOC(cmbTipoIngreso, BeBodega.Es_Bodega_Fiscal)
 
-                '#EJC20210922: En teoría esto no debería ser necesario porque al listar y hacer el set, se ejecuta, éste método.
-                'Set_Tipo_Documento()
-
             End If
 
         Catch ex As Exception
@@ -8827,7 +8772,15 @@ MessageBoxButtons.YesNo,
         End Try
     End Sub
 
-    Private Sub dgridTallaColor_Click(sender As Object, e As EventArgs) Handles dgridTallaColor.Click
-
+    Private Sub cmdPreImpresionOC_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdPreImpresionOC.ItemClick
+        Try
+            With frmImpresionRecepcion_OC
+                .pTransOC_Enc = gBeOrdenCompra
+                .Show()
+                .Focus()
+            End With
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
     End Sub
 End Class

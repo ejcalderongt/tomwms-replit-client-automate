@@ -12,7 +12,6 @@ using WMS.EntityCore.Log;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
-using WMS.EntityCore.Road;
 using WMSWebAPI.Be;
 
 
@@ -510,7 +509,8 @@ namespace WMS.DALCore
                                 lblprg,
                                 lConectionInterface,
                                 lTransInterface,
-                                ref refBePedidoDet))
+                                ref refBePedidoDet,
+                                pEsManufactura: clienteTiempo?.Es_Manufactura ?? false))
                         {
                             PDet.Status = 1;
                             PDet.Process_Result = "Ok";
@@ -617,7 +617,8 @@ namespace WMS.DALCore
                                                         object? plblprg,
                                                         SqlConnection lConectionInterface,
                                                         SqlTransaction lTransactionInterface,
-                                                        ref clsBeTrans_pe_det? BePedidoDet)
+                                                        ref clsBeTrans_pe_det? BePedidoDet,
+                                                        bool pEsManufactura = false)
         {
             bool result = false;
 
@@ -845,9 +846,10 @@ namespace WMS.DALCore
                 pBeStockRes.Atributo_Variante_1 = pBePedidoDet.Atributo_variante_1;
                 pBeStockRes.Control_Ultimo_Lote = pBeCliente.Control_ultimo_lote;
 
-                clsBeProducto_presentacion? BePresentacion2 = new clsBeProducto_presentacion();                
+                clsBeProducto_presentacion? BePresentacion2 = null;
 
                 // FIX: Buscar presentación por Variant_Code aunque IdPresentacion venga en 0
+                // El JSON típicamente incluye Variant_Code (ej: "C24") pero no el IdPresentacion numérico
                 if (!string.IsNullOrEmpty(pBePedidoDet.Atributo_variante_1))
                 {
                     BePresentacion2 = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(
@@ -867,6 +869,7 @@ namespace WMS.DALCore
                 }
                 else if (pBePedidoDet.IdPresentacion != 0)
                 {
+                    // Si viene IdPresentacion explícito, usarlo
                     pBeStockRes.IdPresentacion = pBePedidoDet.IdPresentacion;
                 }
                 else
@@ -907,7 +910,8 @@ namespace WMS.DALCore
                                                                             pBeConfigEnc,
                                                                             pIdPropietarioBodega,
                                                                             lConectionInterface,
-                                                                            lTransactionInterface))
+                                                                            lTransactionInterface,
+                                                                            pEsManufactura: pEsManufactura))
                     {
                         result = true;
 

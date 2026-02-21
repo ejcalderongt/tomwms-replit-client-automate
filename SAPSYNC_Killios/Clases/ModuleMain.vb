@@ -184,19 +184,6 @@ Module ModuleMain
 
                         Configuration.ConfigurationManager.AppSettings("CST") = BD.Instancia.CadenaConexionSQLClient
 
-                        '#EJC20250717: Agregué variables para usuario SAP desde WMS
-                        If Val(IdUsuario) <> 0 Then
-                            Dim BeUsuario As clsBeUsuario = clsLnUsuario.GetSingle(Val(IdUsuario))
-                            If Not BeUsuario Is Nothing Then
-                                UsuarioSapFromUsuarioWMS = BeUsuario.Usuario_sap_b1
-                                ClaveSapFromUsuarioWMS = BeUsuario.Clave_sap_b1
-                                If Not UsuarioSapFromUsuarioWMS = "" AndAlso Not ClaveSapFromUsuarioWMS = "" Then
-                                    BD.Instancia.SAP_USR = UsuarioSapFromUsuarioWMS
-                                    BD.Instancia.SAP_USR_PW = ClaveSapFromUsuarioWMS
-                                End If
-                            End If
-                        End If
-
                         Init_App = True
 
                     End If

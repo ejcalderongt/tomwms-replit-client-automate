@@ -69,7 +69,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
     Public Shared Function GetAll(ByRef lConnection As SqlConnection,
                                   ByRef lTrans As SqlTransaction,
                                   ByRef lblprg As RichTextBox,
-                                  ByRef prg As System.Windows.Forms.ProgressBar,
+                                  ByRef prg As ProgressBar,
                                   Optional ByVal TransferenciasInternas As Boolean = False) As List(Of clsBeI_nav_ped_compra_enc)
 
         Try

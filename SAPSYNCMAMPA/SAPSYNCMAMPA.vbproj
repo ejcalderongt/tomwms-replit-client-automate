@@ -34,7 +34,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
@@ -154,10 +154,6 @@
     <Reference Include="RestSharp, Version=112.1.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.112.1.0\lib\net48\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Sap.Data.Hana.v4.5, Version=1.0.120.0, Culture=neutral, PublicKeyToken=0326b8ea63db4bc4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Program Files\SAP\hdbclient\Sap.Data.Hana.v4.5.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
@@ -223,11 +219,13 @@
     <Compile Include="Clases Interface Sync\Ajustes\clsSyncSapAjustes.vb" />
     <Compile Include="Clases Interface Sync\Campaña\clsSyncSAPCampaña.vb" />
     <Compile Include="Clases Interface Sync\Centros_Costo\clsSyncSapCentrosCosto.vb" />
+    <Compile Include="Clases Interface Sync\Color\clsSyncSapColor.vb" />
     <Compile Include="Clases Interface Sync\Devolucion_Proveedor\clsSyncSapDevolProveedor.vb" />
     <Compile Include="Clases Interface Sync\Factura_Deudor_Cliente\clsSyncSapFacturaDeudor.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\FacturaReservaMapper.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva_Cliente\clsSyncSapFacturaReservaCliente.vb" />
     <Compile Include="Clases Interface Sync\Producto\Codigos_Barra\clsSyncSAPCodigosBarra_SL.vb" />
+    <Compile Include="Clases Interface Sync\Talla\clsSyncSapTalla.vb" />
     <Compile Include="Clases Interface Sync\Transacciones_WMS\DevolucionTransacWMS_Mapper.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Envio\clsSyncSapTrasladosEnvio.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Recepcion\clsSyncSapSolTrasladoRec.vb" />
@@ -237,29 +235,18 @@
     <Compile Include="Dtos\BusinessPartnerDto.vb" />
     <Compile Include="Dtos\LoginResponseDto.vb" />
     <Compile Include="Clases\SapServiceLayerClient.vb" />
-    <Compile Include="Clases Interface Sync\Talla\clsSyncSapTalla.vb" />
     <Compile Include="Clases Interface Sync\Bodega\clsSyncSAPBodega.vb" />
-    <Compile Include="Clases Interface Sync\Color\clsSyncSapColor.vb" />
-    <Compile Include="Clases Interface Sync\Devolucion Mercancia Cliente\clsSyncSAPDevolucionMeracnciaCliente.vb" />
-    <Compile Include="Clases Interface Sync\Devolucion_Mercancia\clsSyncSAPDevolucionMercancia.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\clsSyncSapFacturaReserva.vb" />
     <Compile Include="Clases Interface Sync\Lotes\clsSyncLotes.vb" />
-    <Compile Include="Clases Interface Sync\Entrada_Mercancia\clsSyncSAPEntradaMercancia.vb" />
     <Compile Include="Clases Interface Sync\Pedido_Cliente\clsSyncSAPSPedidoCliente.vb" />
-    <Compile Include="Clases Interface Sync\Pedido_Traslado\clsSyncSAPPedidoTraslado.vb" />
     <Compile Include="Clases Interface Sync\Producto\CategoriasProductos\clsSyncSAPCategoriasProducto.vb" />
     <Compile Include="Clases Interface Sync\Producto\clsSyncSAPProducto.vb" />
     <Compile Include="Clases Interface Sync\Producto\Codigos_Barra\clsSyncSapCodigosBarra.vb" />
     <Compile Include="Clases Interface Sync\Producto\GruposProductos\clsSyncSAPGruposProducto.vb" />
-    <Compile Include="Clases Interface Sync\Producto\Presentaciones\clsSyncSAPPresentaciones.vb" />
     <Compile Include="Clases Interface Sync\Proveedor\clsSyncSAPCliente.vb" />
     <Compile Include="Clases Interface Sync\Proveedor\clsSyncSAPProveedor.vb" />
-    <Compile Include="Clases Interface Sync\Solicitud_Devolucion_Proveedor\clsSyncSapDevolucionProveedor.vb" />
-    <Compile Include="Clases Interface Sync\Solicitud_Traslado\clsSyncSAPSSolicitudTraslado.vb" />
     <Compile Include="Clases Interface Sync\Tabla_Conversion\clsSyncSAPTablaConversion.vb" />
-    <Compile Include="Clases Interface Sync\Transferencia_Stock\clsSyncSAPTrasladoStock.vb" />
     <Compile Include="Clases\BaseDatos.vb" />
-    <Compile Include="Clases\HanaHelper.vb" />
     <Compile Include="Clases\IMS.vb" />
     <Compile Include="Clases\ModuleMain.vb" />
     <Compile Include="Dtos\FacturaReservaDto.vb" />
@@ -277,7 +264,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Clases Interface Sync\clsInterfaceBase.vb" />
-    <Compile Include="Clases Interface Sync\Pedido_Compra\clsSyncSAPPedidoCompra.vb" />
     <Compile Include="Formas\Mantenimientos\frmNavEnt.Designer.vb">
       <DependentUpon>frmNavEnt.vb</DependentUpon>
     </Compile>
@@ -404,7 +390,6 @@
     <Content Include="Conn.ini" />
     <Content Include="remote_32x32-32.ico" />
     <None Include="app.config" />
-    <Content Include="ConnBeco.ini" />
     <None Include="Formas\Reportes\DSEjecuciones.xsc">
       <DependentUpon>DSEjecuciones.xsd</DependentUpon>
     </None>
@@ -438,7 +423,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="Clases Interface Sync\Talla\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -467,18 +451,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="SAPbobsCOM">
-      <Guid>{FC8030BE-F5D2-4B8E-8F92-44228FE30100}</Guid>
-      <VersionMajor>10</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <PublishFile Include="Newtonsoft.Json">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Sap.Data.Hana.v4.5">
       <Visible>False</Visible>
       <Group>
       </Group>
@@ -511,7 +494,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

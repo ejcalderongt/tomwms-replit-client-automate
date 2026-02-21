@@ -3437,6 +3437,8 @@ Public Class frmPedido
 
                 Get_ValoresGrid(e.RowIndex)
 
+                pBeStock.IdBodega = AP.IdBodega
+
                 If Not IsNothing(pBeProducto) Then
                     If Not IsNothing(pBeProducto.UnidadMedida) Then
                         If Not IsNothing(pBeStock) Then
@@ -3804,10 +3806,15 @@ Public Class frmPedido
                         '#GT26082025: si hay cambio de talla y un color seleccionado recargar lo disponible
                         If vTalla > 0 OrElse vColor > 0 Then
 
-                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                            Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                                          vColor,
+                                                                                                                          vProducto)
 
                             If pProductoTallaColor IsNot Nothing Then
                                 pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                                dgrid.Rows(e.RowIndex).Cells("colIdProductoTallaColor").Value = pBeStock.IdProductoTallaColor
                             End If
 
                             If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 And pBeStock.IdProductoTallaColor > 0 Then
@@ -3850,16 +3857,20 @@ Public Class frmPedido
 
                         End If
 
-
                     Case "colColor"
 
                         '#GT26082025: si hay cambio de color y una talla selecccionada recargar lo disponible.
                         If vTalla > 0 OrElse vColor > 0 Then
 
-                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                            Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                                          vColor,
+                                                                                                                          vProducto)
 
                             If pProductoTallaColor IsNot Nothing Then
                                 pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                                dgrid.Rows(e.RowIndex).Cells("colIdProductoTallaColor").Value = pBeStock.IdProductoTallaColor
                             End If
 
                             If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 AndAlso pBeStock.IdProductoTallaColor > 0 Then
@@ -4562,7 +4573,12 @@ Public Class frmPedido
 
             '#GT26082025: si hay un valor en talla color, asignar el idproductotallacolor
             If vTalla > 0 AndAlso vColor > 0 Then
-                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+
+                Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                              vColor,
+                                                                                                              vProducto)
                 If pProductoTallaColor IsNot Nothing Then
                     pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
                 End If
@@ -8210,15 +8226,11 @@ Public Class frmPedido
                             mnuDespachado.Visibility = BarItemVisibility.Always
                         End If
 
-                        'Mantener paralelización (ours) sin duplicar llamadas
-                        SplashScreenManager.Default.SetWaitFormDescription("Picking. ")
-                        Dim taskPick As Task = Task.Run(Sub() Cargar_Picking())
+                        Cargar_Picking(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Reserva. ")
-                        Dim taskRes As Task = Task.Run(Sub() Carga_Stock_Reservado())
+                        Carga_Stock_Reservado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Stock liberado. ")
-                        Dim taskLib As Task = Task.Run(Sub() Cargar_Stock_Liberado())
+                        Cargar_Stock_Liberado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
                         SplashScreenManager.Default.SetWaitFormDescription("Hoja de verificación. ")
 
@@ -8230,6 +8242,7 @@ Public Class frmPedido
                             tabHojaVerificacion.PageVisible = False
                         End If
 
+
                         SplashScreenManager.Default.SetWaitFormDescription("Poliza. ")
 
                         '#EJC20210215: validar antes que no sea nothing
@@ -8240,8 +8253,6 @@ Public Class frmPedido
                             End If
                         End If
 
-                        'Esperar tareas para no dejar UI inconsistente
-                        Task.WaitAll(taskPick, taskRes, taskLib)
 
                         '#GT11042023: set de la hora inicio y fin 
                         dtpHoraInicioPreparacion.Value = pBePedidoEnc.Hora_ini

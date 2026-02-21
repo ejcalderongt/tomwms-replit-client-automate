@@ -28,9 +28,9 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
         Try
 
             If Conectar_A_SAP(oCompany, False, lErrCode, sErrMsg) Then
-                Actualizar_Progreso(lblprg, "Conexión a SAP exitosa.")
+                clsPublic.Actualizar_Progreso(lblprg, "Conexión a SAP exitosa.")
             Else
-                Actualizar_Progreso(lblprg, "No se pudo conectar a SAPBO: " & sErrMsg)
+                clsPublic.Actualizar_Progreso(lblprg, "No se pudo conectar a SAPBO: " & sErrMsg)
                 Exit Function
             End If
 
@@ -38,8 +38,8 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             Application.DoEvents()
 
-            Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
-            Actualizar_Progreso(lblprg, String.Format("Bodegas encontradas en WS: {0} ", fichaBodegas.Count))
+            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Bodegas encontradas en WS: {0} ", fichaBodegas.Count))
 
             prg.Maximum = fichaBodegas.Count
 
@@ -61,7 +61,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
                 Try
 
-                    Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0} ", bodega.Bodega_code, vbNewLine))
+                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0} ", bodega.Bodega_code, vbNewLine))
                     clsLnI_nav_bodega.Insertar(bodega, Cnn, lTrans)
 
                     VContadorBitacoraIntermedia += 1
@@ -79,7 +79,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                BeNavEjecucionEnc.IdEjecucionEnc,
                                                                BeConfigDet.Idnavconfigdet, cnnLog)
 
-                    Actualizar_Progreso(lblprg, String.Format("Error: {0} ", ex.Message, vbNewLine))
+                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Error: {0} ", ex.Message, vbNewLine))
 
                 End Try
 
@@ -87,7 +87,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             lTrans.Commit()
 
-            Actualizar_Progreso(lblprg, "Fin de proceso: " & Now)
+            clsPublic.Actualizar_Progreso(lblprg, "Fin de proceso: " & Now)
 
             Importar_Bodegas_Desde_SAP_A_TablaIntermedia = True
 
@@ -101,7 +101,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                        BeNavEjecucionEnc.IdEjecucionEnc,
                                                        BeConfigDet.Idnavconfigdet, cnnLog)
 
-            Actualizar_Progreso(lblprg, String.Format("Error: {0} ", ex.Message, vbNewLine))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error: {0} ", ex.Message, vbNewLine))
 
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 
@@ -167,12 +167,12 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
         Try
 
-            Actualizar_Progreso(lblprg, "Force_Ejecución: " & ForzarEjecucion)
+            clsPublic.Actualizar_Progreso(lblprg, "Force_Ejecución: " & ForzarEjecucion)
 
             If Not ForzarEjecucion Then
 
                 If Not Ejecutar_Interfaz("Bodega") Then
-                    Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento. ")
+                    clsPublic.Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento. ")
                     Exit Function
                 End If
 
@@ -200,7 +200,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             BeNavEjecRes = BeNavEjecucionRes
 
-            Actualizar_Progreso(lblprg, vbNewLine)
+            clsPublic.Actualizar_Progreso(lblprg, vbNewLine)
 
             If Not Pregunta_Si_LLena_Intermedia Then
 
@@ -222,11 +222,11 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             Dim lBodegas As New List(Of clsBeI_nav_bodega)
 
-            Actualizar_Progreso(lblprg, "Consultando bodegas en tabla intermedia ")
+            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en tabla intermedia ")
 
             lBodegas = clsLnI_nav_bodega.GetAll(CnnInterface, lTrans)
 
-            Actualizar_Progreso(lblprg, String.Format("Bodegas en tabla intermedia: {0}", lBodegas.Count))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Bodegas en tabla intermedia: {0}", lBodegas.Count))
 
             If lBodegas.Count > 0 Then
 
@@ -242,7 +242,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
                 prg.Value = 0
 
-                Actualizar_Progreso(lblprg, "Trasladando bodegas como clientes en TOMWMS.")
+                clsPublic.Actualizar_Progreso(lblprg, "Trasladando bodegas como clientes en TOMWMS.")
 
                 For Each navBodega As clsBeI_nav_bodega In lBodegas
 
@@ -250,7 +250,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                     BeClienteExistente = New clsBeCliente
                     BeClienteExistente = clsLnCliente.Existe(navBodega.Bodega_code, CnnInterface, lTrans)
 
-                    Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0}", navBodega.Bodega_code))
+                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0}", navBodega.Bodega_code))
 
                     vContador += 1
 
@@ -291,7 +291,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                      BeNavEjecucionEnc.IdEjecucionEnc,
                                                                      BeConfigDet.Idnavconfigdet, CnnLog)
 
-                            Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
 
                         End Try
 
@@ -332,7 +332,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
                             clsLnCliente_bodega.Insertar_From_Interface(BeClienteBodega, CnnInterface, lTrans)
 
-                            Actualizar_Progreso(lblprg, "Fin de inserción para: " & BeCliente.Codigo)
+                            clsPublic.Actualizar_Progreso(lblprg, "Fin de inserción para: " & BeCliente.Codigo)
 
                         Catch ex As Exception
 
@@ -341,7 +341,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                        BeNavEjecucionEnc.IdEjecucionEnc,
                                                                        BeConfigDet.Idnavconfigdet, CnnLog)
 
-                            Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
 
                         End Try
 
@@ -355,10 +355,10 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             lTrans.Commit()
 
-            Actualizar_Progreso(lblprg, "Fin de proceso.")
-            Actualizar_Progreso(lblprg, String.Format("Bodegas procesadas correctamente: {0}", VContadorBitacoraTOMWMS))
+            clsPublic.Actualizar_Progreso(lblprg, "Fin de proceso.")
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Bodegas procesadas correctamente: {0}", VContadorBitacoraTOMWMS))
             Dim difSegundos As Double = DateDiff(DateInterval.Second, BeNavEjecucionEnc.Fecha, Now)
-            Actualizar_Progreso(lblprg, String.Format("Tiempo transcurrido: {0} segundo(s)", difSegundos))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Tiempo transcurrido: {0} segundo(s)", difSegundos))
 
             BeNavEjecucionRes.Registros_ti = VContadorBitacoraIntermedia
             BeNavEjecucionRes.Registros_WMS = VContadorBitacoraTOMWMS
@@ -381,14 +381,14 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                             "clsLnI_nav_ejecucion_res.Actualizar",
                                             BeNavEjecucionEnc.IdEjecucionEnc,
                                             BeConfigDet.Idnavconfigdet, CnnLog)
-                Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
+                clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
                 Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             End Try
 
         Catch ex As Exception
             If Not lTrans Is Nothing Then lTrans.Rollback()
             prg.Value = 0
-            Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
             '#EJC20171107_REF02_0237AM: Insertar en log, excepción general
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
                             MethodBase.GetCurrentMethod.Name(),
@@ -417,12 +417,12 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
         Try
 
-            Actualizar_Progreso(lblprg, "Force_Ejecución: " & ForzarEjecucion)
+            clsPublic.Actualizar_Progreso(lblprg, "Force_Ejecución: " & ForzarEjecucion)
 
             If Not ForzarEjecucion Then
 
                 If Not Ejecutar_Interfaz("Bodega") Then
-                    Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento. ")
+                    clsPublic.Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento. ")
                     Exit Function
                 End If
 
@@ -450,7 +450,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             BeNavEjecRes = BeNavEjecucionRes
 
-            Actualizar_Progreso(lblprg, vbNewLine)
+            clsPublic.Actualizar_Progreso(lblprg, vbNewLine)
 
             If Not Pregunta_Si_LLena_Intermedia Then
 
@@ -472,11 +472,11 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             Dim lBodegas As New List(Of clsBeI_nav_bodega)
 
-            Actualizar_Progreso(lblprg, "Consultando bodegas en tabla intermedia ")
+            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en tabla intermedia ")
 
             lBodegas = clsLnI_nav_bodega.GetAll(CnnInterface, lTrans)
 
-            Actualizar_Progreso(lblprg, String.Format("Bodegas en tabla intermedia: {0}", lBodegas.Count))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Bodegas en tabla intermedia: {0}", lBodegas.Count))
 
             If lBodegas.Count > 0 Then
 
@@ -492,7 +492,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
                 prg.Value = 0
 
-                Actualizar_Progreso(lblprg, "Trasladando bodegas de SAP a clientes de TOMWMS.")
+                clsPublic.Actualizar_Progreso(lblprg, "Trasladando bodegas de SAP a clientes de TOMWMS.")
 
                 For Each navBodega As clsBeI_nav_bodega In lBodegas
 
@@ -500,7 +500,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                     BeClienteExistente = New clsBeCliente
                     BeClienteExistente = clsLnCliente.Existe(navBodega.Bodega_code, CnnInterface, lTrans)
 
-                    Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0}", navBodega.Bodega_code))
+                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0}", navBodega.Bodega_code))
 
                     vContador += 1
 
@@ -541,7 +541,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                      BeNavEjecucionEnc.IdEjecucionEnc,
                                                                      BeConfigDet.Idnavconfigdet, CnnLog)
 
-                            Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
 
                         End Try
 
@@ -582,7 +582,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
                             clsLnCliente_bodega.Insertar_From_Interface(BeClienteBodega, CnnInterface, lTrans)
 
-                            Actualizar_Progreso(lblprg, "Fin de inserción para: " & BeCliente.Codigo)
+                            clsPublic.Actualizar_Progreso(lblprg, "Fin de inserción para: " & BeCliente.Codigo)
 
                         Catch ex As Exception
 
@@ -591,7 +591,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                        BeNavEjecucionEnc.IdEjecucionEnc,
                                                                        BeConfigDet.Idnavconfigdet, CnnLog)
 
-                            Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar bodega: {0}{1}{2}", BeCliente.Codigo, vbNewLine, ex.Message))
 
                         End Try
 
@@ -605,10 +605,10 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             lTrans.Commit()
 
-            Actualizar_Progreso(lblprg, "Fin de proceso.")
-            Actualizar_Progreso(lblprg, String.Format("Clientes procesados correctamente: {0}", VContadorBitacoraTOMWMS))
+            clsPublic.Actualizar_Progreso(lblprg, "Fin de proceso.")
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Clientes procesados correctamente: {0}", VContadorBitacoraTOMWMS))
             Dim difSegundos As Double = DateDiff(DateInterval.Second, BeNavEjecucionEnc.Fecha, Now)
-            Actualizar_Progreso(lblprg, String.Format("Tiempo transcurrido: {0} segundo(s)", difSegundos))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Tiempo transcurrido: {0} segundo(s)", difSegundos))
 
             BeNavEjecucionRes.Registros_ti = VContadorBitacoraIntermedia
             BeNavEjecucionRes.Registros_WMS = VContadorBitacoraTOMWMS
@@ -631,7 +631,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                             "clsLnI_nav_ejecucion_res.Actualizar",
                                             BeNavEjecucionEnc.IdEjecucionEnc,
                                             BeConfigDet.Idnavconfigdet, CnnLog)
-                Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
+                clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
                 Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             End Try
 
@@ -639,7 +639,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             If Not lTrans Is Nothing Then lTrans.Rollback()
             prg.Value = 0
-            Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar Bodega-Cliente a tabla de TOMWMS: {0}", ex.Message))
             '#EJC20171107_REF02_0237AM: Insertar en log, excepción general
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
                             MethodBase.GetCurrentMethod.Name(),
@@ -654,13 +654,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
         End Try
 
     End Function
-
-    Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String)
-        lblPrg.AppendText(mensaje & vbNewLine)
-        lblPrg.Refresh()
-        lblPrg.SelectionStart = lblPrg.TextLength
-        lblPrg.ScrollToCaret()
-    End Sub
 
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not disposedValue Then

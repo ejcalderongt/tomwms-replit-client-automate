@@ -32,8 +32,6 @@ Public Class frmDespacho_List
                 GridView1.Columns("activo").Visible = False
                 GridView1.Columns("IdBodega").Visible = False
                 GridView1.Columns("fecha").Caption = "Fecha"
-                GridView1.Columns("fecha").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-                GridView1.Columns("fecha").DisplayFormat.FormatString = "G"
             End If
 
             If GridView1.RowCount > 0 Then

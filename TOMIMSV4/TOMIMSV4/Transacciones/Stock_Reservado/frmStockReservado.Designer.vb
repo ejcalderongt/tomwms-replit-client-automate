@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmStockReservado
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmStockReservado
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmStockReservado))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -60,8 +60,6 @@ Partial Class frmStockReservado
         Me.lblEstadoRes = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.txtIdTransaccion = New System.Windows.Forms.Label()
-        Me.lblIdTransaccion = New System.Windows.Forms.Label()
         Me.txtRef = New DevExpress.XtraEditors.TextEdit()
         Me.Label23 = New System.Windows.Forms.Label()
         Me.lblDespacho = New System.Windows.Forms.Label()
@@ -86,7 +84,6 @@ Partial Class frmStockReservado
         CType(Me.txtFechaIng.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtFechaVence.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtFechaVence.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtFechaVence.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantFisica.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtHost.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -106,14 +103,12 @@ Partial Class frmStockReservado
         '
         'RibbonControl
         '
-        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdEliminar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
-        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1088, 193)
@@ -537,24 +532,6 @@ Partial Class frmStockReservado
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Sistema"
         '
-        'txtIdTransaccion
-        '
-        Me.txtIdTransaccion.AutoSize = True
-        Me.txtIdTransaccion.Location = New System.Drawing.Point(143, 179)
-        Me.txtIdTransaccion.Name = "txtIdTransaccion"
-        Me.txtIdTransaccion.Size = New System.Drawing.Size(19, 13)
-        Me.txtIdTransaccion.TabIndex = 15
-        Me.txtIdTransaccion.Text = "---"
-        '
-        'lblIdTransaccion
-        '
-        Me.lblIdTransaccion.AutoSize = True
-        Me.lblIdTransaccion.Location = New System.Drawing.Point(23, 179)
-        Me.lblIdTransaccion.Name = "lblIdTransaccion"
-        Me.lblIdTransaccion.Size = New System.Drawing.Size(78, 13)
-        Me.lblIdTransaccion.TabIndex = 14
-        Me.lblIdTransaccion.Text = "IdTransacción:"
-        '
         'txtRef
         '
         Me.txtRef.Location = New System.Drawing.Point(170, 33)
@@ -743,7 +720,7 @@ Partial Class frmStockReservado
         Me.ResumeLayout(False)
         Me.PerformLayout
 
-    End Sub
+End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage

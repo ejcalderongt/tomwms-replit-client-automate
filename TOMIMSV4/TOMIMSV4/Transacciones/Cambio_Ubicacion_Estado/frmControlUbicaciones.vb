@@ -31,14 +31,8 @@ Public Class frmControlUbicaciones
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -57,14 +51,8 @@ Public Class frmControlUbicaciones
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 

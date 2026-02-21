@@ -10,6 +10,83 @@ public class clsLnCliente
     private static clsInsert Ins = new clsInsert();
     private static clsUpdate Upd = new clsUpdate();
 
+    public static void Bind(SqlCommand cmd, clsBeCliente oBeCliente)
+    {
+        cmd.Parameters.Add(new SqlParameter("@IdCliente", oBeCliente.IdCliente != 0 ? oBeCliente.IdCliente : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdEmpresa", oBeCliente.IdEmpresa != 0 ? oBeCliente.IdEmpresa : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPropietario", oBeCliente.IdPropietario != 0 ? oBeCliente.IdPropietario : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdTipoCliente", oBeCliente.IdTipoCliente != 0 ? oBeCliente.IdTipoCliente : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionManufactura", oBeCliente.IdUbicacionManufactura != 0 ? oBeCliente.IdUbicacionManufactura : DBNull.Value));
+
+        cmd.Parameters.Add(new SqlParameter("@codigo", !string.IsNullOrWhiteSpace(oBeCliente.Codigo) ? oBeCliente.Codigo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nombre_comercial", !string.IsNullOrWhiteSpace(oBeCliente.Nombre_comercial) ? oBeCliente.Nombre_comercial : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nombre_contacto", !string.IsNullOrWhiteSpace(oBeCliente.Nombre_contacto) ? oBeCliente.Nombre_contacto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@telefono", !string.IsNullOrWhiteSpace(oBeCliente.Telefono) ? oBeCliente.Telefono : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nit", !string.IsNullOrWhiteSpace(oBeCliente.Nit) ? oBeCliente.Nit : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@direccion", !string.IsNullOrWhiteSpace(oBeCliente.Direccion) ? oBeCliente.Direccion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@correo_electronico", !string.IsNullOrWhiteSpace(oBeCliente.Correo_electronico) ? oBeCliente.Correo_electronico : DBNull.Value));
+
+        cmd.Parameters.Add(new SqlParameter("@activo", oBeCliente.Activo));
+        cmd.Parameters.Add(new SqlParameter("@realiza_manufactura", oBeCliente.Realiza_manufactura));
+
+        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(oBeCliente.User_agr) ? oBeCliente.User_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeCliente.Fec_agr != DateTime.MinValue ? oBeCliente.Fec_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(oBeCliente.User_mod) ? oBeCliente.User_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeCliente.Fec_mod != DateTime.MinValue ? oBeCliente.Fec_mod : DBNull.Value));
+
+        cmd.Parameters.Add(new SqlParameter("@despachar_lotes_completos", oBeCliente.Despachar_lotes_completos));
+        cmd.Parameters.Add(new SqlParameter("@sistema", oBeCliente.Sistema));
+        cmd.Parameters.Add(new SqlParameter("@es_bodega_recepcion", oBeCliente.Es_bodega_recepcion));
+        cmd.Parameters.Add(new SqlParameter("@es_bodega_traslado", oBeCliente.Es_bodega_traslado));
+
+        cmd.Parameters.Add(new SqlParameter("@idubicacionvirtual", oBeCliente.Idubicacionvirtual != 0 ? oBeCliente.Idubicacionvirtual : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@referencia", !string.IsNullOrWhiteSpace(oBeCliente.Referencia) ? oBeCliente.Referencia : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@control_ultimo_lote", oBeCliente.Control_ultimo_lote));
+        cmd.Parameters.Add(new SqlParameter("@control_calidad", oBeCliente.Control_calidad));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionAbastecerCon", oBeCliente.IdUbicacionAbastecerCon != 0 ? oBeCliente.IdUbicacionAbastecerCon : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdBodegaAreaSAP", oBeCliente.IdBodegaAreaSAP != 0 ? oBeCliente.IdBodegaAreaSAP : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@es_proveedor", oBeCliente.Es_proveedor));
+    }
+
+
+    public static void Bind_3pl(SqlCommand cmd, clsBeCliente_3pl oBeCliente)
+    {
+        cmd.Parameters.Add(new SqlParameter("@IdCliente", oBeCliente.IdCliente != 0 ? oBeCliente.IdCliente : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdEmpresa", oBeCliente.IdEmpresa != 0 ? oBeCliente.IdEmpresa : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPropietario", oBeCliente.IdPropietario != 0 ? oBeCliente.IdPropietario : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdTipoCliente", oBeCliente.IdTipoCliente != 0 ? oBeCliente.IdTipoCliente : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionManufactura", oBeCliente.IdUbicacionManufactura != 0 ? oBeCliente.IdUbicacionManufactura : DBNull.Value));
+
+        cmd.Parameters.Add(new SqlParameter("@codigo", !string.IsNullOrWhiteSpace(oBeCliente.Codigo) ? oBeCliente.Codigo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nombre_comercial", !string.IsNullOrWhiteSpace(oBeCliente.Nombre_comercial) ? oBeCliente.Nombre_comercial : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nombre_contacto", !string.IsNullOrWhiteSpace(oBeCliente.Nombre_contacto) ? oBeCliente.Nombre_contacto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@telefono", !string.IsNullOrWhiteSpace(oBeCliente.Telefono) ? oBeCliente.Telefono : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nit", !string.IsNullOrWhiteSpace(oBeCliente.Nit) ? oBeCliente.Nit : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@direccion", !string.IsNullOrWhiteSpace(oBeCliente.Direccion) ? oBeCliente.Direccion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@correo_electronico", !string.IsNullOrWhiteSpace(oBeCliente.Correo_electronico) ? oBeCliente.Correo_electronico : DBNull.Value));
+
+        cmd.Parameters.Add(new SqlParameter("@activo", oBeCliente.Activo));
+        cmd.Parameters.Add(new SqlParameter("@realiza_manufactura", oBeCliente.Realiza_manufactura));
+
+        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(oBeCliente.User_agr) ? oBeCliente.User_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeCliente.Fec_agr != DateTime.MinValue ? oBeCliente.Fec_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(oBeCliente.User_mod) ? oBeCliente.User_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeCliente.Fec_mod != DateTime.MinValue ? oBeCliente.Fec_mod : DBNull.Value));
+
+        cmd.Parameters.Add(new SqlParameter("@despachar_lotes_completos", oBeCliente.Despachar_lotes_completos));
+        cmd.Parameters.Add(new SqlParameter("@sistema", oBeCliente.Sistema));
+        cmd.Parameters.Add(new SqlParameter("@es_bodega_recepcion", oBeCliente.Es_bodega_recepcion));
+        cmd.Parameters.Add(new SqlParameter("@es_bodega_traslado", oBeCliente.Es_bodega_traslado));
+
+        cmd.Parameters.Add(new SqlParameter("@idubicacionvirtual", oBeCliente.Idubicacionvirtual != 0 ? oBeCliente.Idubicacionvirtual : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@referencia", !string.IsNullOrWhiteSpace(oBeCliente.Referencia) ? oBeCliente.Referencia : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@control_ultimo_lote", oBeCliente.Control_ultimo_lote));
+        cmd.Parameters.Add(new SqlParameter("@control_calidad", oBeCliente.Control_calidad));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionAbastecerCon", oBeCliente.IdUbicacionAbastecerCon != 0 ? oBeCliente.IdUbicacionAbastecerCon : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdBodegaAreaSAP", oBeCliente.IdBodegaAreaSAP != 0 ? oBeCliente.IdBodegaAreaSAP : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@es_proveedor", oBeCliente.Es_proveedor));
+    }
+
     public static void Cargar(ref clsBeCliente oBeCliente, DataRow dr)
     {
         int GetInt(string col) { return dr[col] is DBNull ? 0 : Convert.ToInt32(dr[col]); }
@@ -113,6 +190,72 @@ public class clsLnCliente
                 cmd.CommandType = CommandType.Text;
 
                 Bind(cmd, oBeCliente);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
+    }
+
+    public static int Insertar_3pl(clsBeCliente_3pl oBeCliente, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        if (oBeCliente == null)
+            throw new ArgumentNullException(nameof(oBeCliente));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+
+        int rowsAffected = 0;
+
+        try
+        {
+            Ins.Init("cliente");
+            Ins.Add("idcliente", "@idcliente", "F");
+            Ins.Add("idempresa", "@idempresa", "F");
+            Ins.Add("idpropietario", "@idpropietario", "F");
+            Ins.Add("idtipocliente", "@idtipocliente", "F");
+            Ins.Add("idubicacionmanufactura", "@idubicacionmanufactura", "F");
+            Ins.Add("codigo", "@codigo", "F");
+            Ins.Add("nombre_comercial", "@nombre_comercial", "F");
+            Ins.Add("nombre_contacto", "@nombre_contacto", "F");
+            Ins.Add("telefono", "@telefono", "F");
+            Ins.Add("nit", "@nit", "F");
+            Ins.Add("direccion", "@direccion", "F");
+            Ins.Add("correo_electronico", "@correo_electronico", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("realiza_manufactura", "@realiza_manufactura", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("despachar_lotes_completos", "@despachar_lotes_completos", "F");
+            Ins.Add("sistema", "@sistema", "F");
+            Ins.Add("es_bodega_recepcion", "@es_bodega_recepcion", "F");
+            Ins.Add("es_bodega_traslado", "@es_bodega_traslado", "F");
+            Ins.Add("idubicacionvirtual", "@idubicacionvirtual", "F");
+            Ins.Add("referencia", "@referencia", "F");
+            Ins.Add("control_ultimo_lote", "@control_ultimo_lote", "F");
+            Ins.Add("control_calidad", "@control_calidad", "F");
+            Ins.Add("idubicacionabastecercon", "@idubicacionabastecercon", "F");
+            Ins.Add("idbodegaareasap", "@idbodegaareasap", "F");
+            Ins.Add("es_proveedor", "@es_proveedor", "F");
+
+            string sp = Ins.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                Bind_3pl(cmd, oBeCliente);
 
                 rowsAffected = cmd.ExecuteNonQuery();
             }
@@ -256,6 +399,73 @@ public class clsLnCliente
                 cmd.CommandType = CommandType.Text;
 
                 Bind(cmd, oBeCliente);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
+    }
+
+    public static int Actualizar_3pl(clsBeCliente_3pl oBeCliente, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        if (oBeCliente == null)
+            throw new ArgumentNullException(nameof(oBeCliente));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+
+        int rowsAffected = 0;
+
+        try
+        {
+            Upd.Init("cliente");
+            Upd.Add("idcliente", "@idcliente", "F");
+            Upd.Add("idempresa", "@idempresa", "F");
+            Upd.Add("idpropietario", "@idpropietario", "F");
+            Upd.Add("idtipocliente", "@idtipocliente", "F");
+            Upd.Add("idubicacionmanufactura", "@idubicacionmanufactura", "F");
+            Upd.Add("codigo", "@codigo", "F");
+            Upd.Add("nombre_comercial", "@nombre_comercial", "F");
+            Upd.Add("nombre_contacto", "@nombre_contacto", "F");
+            Upd.Add("telefono", "@telefono", "F");
+            Upd.Add("nit", "@nit", "F");
+            Upd.Add("direccion", "@direccion", "F");
+            Upd.Add("correo_electronico", "@correo_electronico", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("realiza_manufactura", "@realiza_manufactura", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("despachar_lotes_completos", "@despachar_lotes_completos", "F");
+            Upd.Add("sistema", "@sistema", "F");
+            Upd.Add("es_bodega_recepcion", "@es_bodega_recepcion", "F");
+            Upd.Add("es_bodega_traslado", "@es_bodega_traslado", "F");
+            Upd.Add("idubicacionvirtual", "@idubicacionvirtual", "F");
+            Upd.Add("referencia", "@referencia", "F");
+            Upd.Add("control_ultimo_lote", "@control_ultimo_lote", "F");
+            Upd.Add("control_calidad", "@control_calidad", "F");
+            Upd.Add("idubicacionabastecercon", "@idubicacionabastecercon", "F");
+            Upd.Add("idbodegaareasap", "@idbodegaareasap", "F");
+            Upd.Add("es_proveedor", "@es_proveedor", "F");
+            Upd.Where("IdCliente = @IdCliente");
+
+            string sp = Upd.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                Bind_3pl(cmd, oBeCliente);
 
                 rowsAffected = cmd.ExecuteNonQuery();
             }
@@ -559,43 +769,41 @@ public class clsLnCliente
             throw new Exception(errorMessage, ex);
         }
     }
-    public static void Bind(SqlCommand cmd, clsBeCliente oBeCliente)
+ 
+
+    public static void InsertarOActualizar_3pl(List<clsBeCliente_3pl> entities, SqlConnection conn, SqlTransaction tx)
     {
-        cmd.Parameters.Add(new SqlParameter("@IdCliente", oBeCliente.IdCliente != 0 ? oBeCliente.IdCliente : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdEmpresa", oBeCliente.IdEmpresa != 0 ? oBeCliente.IdEmpresa : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdPropietario", oBeCliente.IdPropietario != 0 ? oBeCliente.IdPropietario : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdTipoCliente", oBeCliente.IdTipoCliente != 0 ? oBeCliente.IdTipoCliente : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdUbicacionManufactura", oBeCliente.IdUbicacionManufactura != 0 ? oBeCliente.IdUbicacionManufactura : DBNull.Value));
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
 
-        cmd.Parameters.Add(new SqlParameter("@codigo", !string.IsNullOrWhiteSpace(oBeCliente.Codigo) ? oBeCliente.Codigo : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@nombre_comercial", !string.IsNullOrWhiteSpace(oBeCliente.Nombre_comercial) ? oBeCliente.Nombre_comercial : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@nombre_contacto", !string.IsNullOrWhiteSpace(oBeCliente.Nombre_contacto) ? oBeCliente.Nombre_contacto : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@telefono", !string.IsNullOrWhiteSpace(oBeCliente.Telefono) ? oBeCliente.Telefono : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@nit", !string.IsNullOrWhiteSpace(oBeCliente.Nit) ? oBeCliente.Nit : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@direccion", !string.IsNullOrWhiteSpace(oBeCliente.Direccion) ? oBeCliente.Direccion : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@correo_electronico", !string.IsNullOrWhiteSpace(oBeCliente.Correo_electronico) ? oBeCliente.Correo_electronico : DBNull.Value));
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
 
-        cmd.Parameters.Add(new SqlParameter("@activo", oBeCliente.Activo));
-        cmd.Parameters.Add(new SqlParameter("@realiza_manufactura", oBeCliente.Realiza_manufactura));
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
 
-        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(oBeCliente.User_agr) ? oBeCliente.User_agr : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeCliente.Fec_agr != DateTime.MinValue ? oBeCliente.Fec_agr : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(oBeCliente.User_mod) ? oBeCliente.User_mod : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeCliente.Fec_mod != DateTime.MinValue ? oBeCliente.Fec_mod : DBNull.Value));
+        try
+        {
+            foreach (var entity in entities)
+            {
+                if (entity == null)
+                    continue;
 
-        cmd.Parameters.Add(new SqlParameter("@despachar_lotes_completos", oBeCliente.Despachar_lotes_completos));
-        cmd.Parameters.Add(new SqlParameter("@sistema", oBeCliente.Sistema));
-        cmd.Parameters.Add(new SqlParameter("@es_bodega_recepcion", oBeCliente.Es_bodega_recepcion));
-        cmd.Parameters.Add(new SqlParameter("@es_bodega_traslado", oBeCliente.Es_bodega_traslado));
+                bool existe = Existe(entity.IdCliente, conn, tx);
 
-        cmd.Parameters.Add(new SqlParameter("@idubicacionvirtual", oBeCliente.Idubicacionvirtual != 0 ? oBeCliente.Idubicacionvirtual : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@referencia", !string.IsNullOrWhiteSpace(oBeCliente.Referencia) ? oBeCliente.Referencia : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@control_ultimo_lote", oBeCliente.Control_ultimo_lote));
-        cmd.Parameters.Add(new SqlParameter("@control_calidad", oBeCliente.Control_calidad));
-        cmd.Parameters.Add(new SqlParameter("@IdUbicacionAbastecerCon", oBeCliente.IdUbicacionAbastecerCon != 0 ? oBeCliente.IdUbicacionAbastecerCon : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdBodegaAreaSAP", oBeCliente.IdBodegaAreaSAP != 0 ? oBeCliente.IdBodegaAreaSAP : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@es_proveedor", oBeCliente.Es_proveedor));
+                if (existe)
+                    Actualizar_3pl(entity, conn, tx);
+                else
+                    Insertar_3pl(entity, conn, tx);
+            }
+        }
+        catch (SqlException ex)
+        {
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
     }
+
     public static void InsertarOActualizar(List<clsBeCliente> entities, SqlConnection conn, SqlTransaction tx)
     {
         if (entities == null)

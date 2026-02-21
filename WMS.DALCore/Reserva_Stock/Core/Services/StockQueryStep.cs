@@ -73,7 +73,8 @@ namespace WMS.StockReservation.Core.Services
                 pExcluirUbicacionPicking: false,
                 Conmutar_Umbas_A_Presentacion: false,
                 pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion);
+                pEs_Devolucion: context.EsDevolucion,
+                pEsManufactura: context.EsManufactura);
 
             // Re-asignar (por si lStock modifica las referencias)
             context.Request = tempRequest;
@@ -112,7 +113,8 @@ namespace WMS.StockReservation.Core.Services
                 pExcluirUbicacionPicking: true,
                 Conmutar_Umbas_A_Presentacion: false,
                 pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion);
+                pEs_Devolucion: context.EsDevolucion,
+                pEsManufactura: context.EsManufactura);
 
             context.Request = tempRequest;
             context.Product = tempProduct;
@@ -131,6 +133,14 @@ namespace WMS.StockReservation.Core.Services
                 context.StockListNonPickingZones = context.StockListNonPickingZones
                     .Where(s => s != null && s.Cantidad > 0 && !s.UbicacionPicking)
                     .ToList();
+            }
+
+            // =========================
+            // Validar fecha_manufactura (post-query)
+            // =========================
+            if (context.EsManufactura)
+            {
+                FilterInvalidManufacturingDates(context);
             }
 
             // =========================
@@ -158,14 +168,22 @@ namespace WMS.StockReservation.Core.Services
 
         private void DetectStockFailures(ReservationContext context, int pickingCount, int nonPickingCount)
         {
-            // context aquí nunca debería ser null porque se valida en Execute, pero por seguridad:
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             if (pickingCount == 0 && nonPickingCount == 0)
             {
+                if (context.EsManufactura)
+                {
+                    context.AddFailure(
+                        Interfaces.ReservationFailureCode.MANUFACTURING_DATE_INVALID,
+                        $"No hay stock disponible con fecha de manufactura válida para el producto (ID: {context.ProductId}).",
+                        context.PendingQuantity);
+                    _logger.LogInfo("#FAILURE_DETECTED: MANUFACTURING_DATE_INVALID");
+                    return;
+                }
+
                 if (context.HasSpecificLot)
                 {
-                    // Evitar null-forgiving: si HasSpecificLot es true pero SpecificLotNo viene null -> fallo controlado
                     var lotNo = context.SpecificLotNo;
                     if (string.IsNullOrWhiteSpace(lotNo))
                     {
@@ -206,6 +224,37 @@ namespace WMS.StockReservation.Core.Services
                     "Stock disponible solo en zona de picking.",
                     context.PendingQuantity);
                 _logger.LogInfo("#FAILURE_WARNING: NO_NON_PICKING_STOCK");
+            }
+        }
+
+        private void FilterInvalidManufacturingDates(ReservationContext context)
+        {
+            var invalidDate = new DateTime(1900, 1, 1);
+            int removedPicking = 0;
+            int removedNonPicking = 0;
+
+            if (context.StockListPickingZone != null && context.StockListPickingZone.Count > 0)
+            {
+                int before = context.StockListPickingZone.Count;
+                context.StockListPickingZone = context.StockListPickingZone
+                    .Where(s => s.Fecha_Manufactura > invalidDate)
+                    .ToList();
+                removedPicking = before - context.StockListPickingZone.Count;
+            }
+
+            if (context.StockListNonPickingZones != null && context.StockListNonPickingZones.Count > 0)
+            {
+                int before = context.StockListNonPickingZones.Count;
+                context.StockListNonPickingZones = context.StockListNonPickingZones
+                    .Where(s => s.Fecha_Manufactura > invalidDate)
+                    .ToList();
+                removedNonPicking = before - context.StockListNonPickingZones.Count;
+            }
+
+            if (removedPicking > 0 || removedNonPicking > 0)
+            {
+                _logger.LogInfo($"#MANUFACTURA_FILTER | Excluidos por fecha_manufactura inválida: " +
+                               $"Picking={removedPicking}, NonPicking={removedNonPicking}");
             }
         }
     }

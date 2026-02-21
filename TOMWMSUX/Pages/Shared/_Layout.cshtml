@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,28 +16,7 @@
 
     <!-- jQuery y DevExtreme scripts -->
     <script src="~/js/devextreme/jquery.js"></script>
-
-    @* Uncomment to use Globalize for localization *@
-    @* Docs: https://docs.devexpress.com/AspNetCore/400577#globalize *@
-    @*<script src="~/js/devextreme/cldr.js"></script>*@
-    @*<script src="~/js/devextreme/cldr/event.js"></script>*@
-    @*<script src="~/js/devextreme/cldr/supplemental.js"></script>*@
-    @*<script src="~/js/devextreme/cldr/unresolved.js"></script>*@
-    @*<script src="~/js/devextreme/globalize.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/message.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/number.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/currency.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/date.js"></script>*@
-
-    @* Uncomment to enable client-side export *@
-    @*<script src="~/js/devextreme/jszip.js"></script>*@
-
     <script src="~/js/devextreme/dx.all.js"></script>
-
-    @* Uncomment to provide geo-data for the VectorMap control *@
-    @* Docs: https://js.devexpress.com/DevExtreme/Guide/Widgets/VectorMap/Providing_Data/#Data_for_Areas *@
-    @*<script src="~/js/devextreme/vectormap-data/world.js"></script>*@
-
     <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
 </head>
@@ -86,7 +64,6 @@
                     <div class="content">
                         @RenderBody()
                     </div>
-                        <div>
                     <div class="content-footer">
                         <div id="footer">
                             Copyright (c) 2000-2024 Developer Express Inc.
@@ -95,7 +72,6 @@
                         </div>
                     </div>
                 </div>
-                    </div>
             </text>)
                 .Template(new TemplateName("navigation-menu"))
                 )
@@ -107,7 +83,6 @@
         @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
         {
             <div class="menu-container dx-swatch-additional">
-
                 @functions {
             string GetUrl(string pageName) => Url.Page(pageName);
             string GetCurrentUrl() => Url.Page(ViewContext.RouteData.Values["page"].ToString());
@@ -132,9 +107,6 @@
             </div>
         }
     }
-    <script>
-
-        var TOMWMSUX = (function() {
 
     <script>
         var TOMWMSUX = (function () {
@@ -185,7 +157,6 @@
                 });
 
                 updateDrawer();
-
                 $('.layout-body').removeClass('layout-body-hidden');
             }
 
@@ -247,5 +218,4 @@
     }
     <input type="hidden" id="idPropietarioHidden" value="@idPropietario" />
 </body>
-
 </html>

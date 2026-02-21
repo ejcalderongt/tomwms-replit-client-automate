@@ -292,4 +292,40 @@ public class clsLnProducto_familia
             throw;
         }
     }
+
+    public static clsBeProducto_familia? GetSingle(int pIdFamilia,
+                                                  SqlConnection lConnection,
+                                                  SqlTransaction lTransaction)
+    {
+        try
+        {
+            clsBeProducto_familia? obj = null;
+
+            const string vSQL = "SELECT * FROM producto_familia WHERE IdFamilia=@IdFamilia";
+
+            using (var da = new SqlDataAdapter(vSQL, lConnection))
+            {
+                da.SelectCommand.CommandType = CommandType.Text;
+                da.SelectCommand.Transaction = lTransaction;
+                da.SelectCommand.Parameters.AddWithValue("@IdFamilia", pIdFamilia);
+
+                var dt = new DataTable();
+                da.Fill(dt);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    var row = dt.Rows[0];
+                    obj = new clsBeProducto_familia();
+                    Cargar(ref obj, row);
+                    return obj;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            throw;
+        }
+    }
 }

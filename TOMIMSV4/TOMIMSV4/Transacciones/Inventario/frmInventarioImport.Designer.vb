@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmInventarioImport
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmInventarioImport
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmInventarioImport))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -105,7 +105,7 @@ Partial Class frmInventarioImport
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuAplicar, Me.mnuValidar, Me.cmdPegar, Me.BarStaticItem1, Me.cmdAdd, Me.cmdDel, Me.BarButtonItem1, Me.mnuImportarExcel, Me.lblRegs, Me.ckInsertaStock, Me.BarStaticItem2, Me.btgInsInv, Me.lblTipoImportacion})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.RibbonControl.MaxItemId = 18
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 644
@@ -113,7 +113,7 @@ Partial Class frmInventarioImport
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1557, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1558, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuAplicar
@@ -260,10 +260,10 @@ Partial Class frmInventarioImport
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 699)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1557, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1558, 30)
         '
         'grpVerificaInv
         '
@@ -274,9 +274,9 @@ Partial Class frmInventarioImport
         Me.grpVerificaInv.Controls.Add(Me.grdData)
         Me.grpVerificaInv.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpVerificaInv.Location = New System.Drawing.Point(0, 193)
-        Me.grpVerificaInv.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
+        Me.grpVerificaInv.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.grpVerificaInv.Name = "grpVerificaInv"
-        Me.grpVerificaInv.Size = New System.Drawing.Size(1557, 506)
+        Me.grpVerificaInv.Size = New System.Drawing.Size(1558, 506)
         Me.grpVerificaInv.TabIndex = 0
         '
         'lblPrg
@@ -284,20 +284,20 @@ Partial Class frmInventarioImport
         Me.lblPrg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblPrg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblPrg.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblPrg.Location = New System.Drawing.Point(2, 87)
+        Me.lblPrg.Location = New System.Drawing.Point(2, 91)
         Me.lblPrg.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblPrg.Name = "lblPrg"
-        Me.lblPrg.Size = New System.Drawing.Size(1553, 62)
+        Me.lblPrg.Size = New System.Drawing.Size(1554, 62)
         Me.lblPrg.TabIndex = 2
         Me.lblPrg.Text = "..."
         '
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prg.Location = New System.Drawing.Point(2, 149)
-        Me.prg.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
+        Me.prg.Location = New System.Drawing.Point(2, 153)
+        Me.prg.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1553, 55)
+        Me.prg.Size = New System.Drawing.Size(1554, 55)
         Me.prg.TabIndex = 3
         Me.prg.Visible = False
         '
@@ -305,12 +305,12 @@ Partial Class frmInventarioImport
         '
         Me.cmbPropietario.Dock = System.Windows.Forms.DockStyle.Top
         Me.cmbPropietario.Location = New System.Drawing.Point(2, 67)
-        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.cmbPropietario.MenuManager = Me.RibbonControl
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietario.Properties.NullText = ""
-        Me.cmbPropietario.Size = New System.Drawing.Size(1553, 22)
+        Me.cmbPropietario.Size = New System.Drawing.Size(1554, 22)
         Me.cmbPropietario.TabIndex = 1
         '
         'lblPropietario
@@ -320,7 +320,7 @@ Partial Class frmInventarioImport
         Me.lblPropietario.Location = New System.Drawing.Point(2, 28)
         Me.lblPropietario.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblPropietario.Name = "lblPropietario"
-        Me.lblPropietario.Size = New System.Drawing.Size(1553, 39)
+        Me.lblPropietario.Size = New System.Drawing.Size(1554, 39)
         Me.lblPropietario.TabIndex = 0
         Me.lblPropietario.Text = "Propietario:"
         '
@@ -331,10 +331,10 @@ Partial Class frmInventarioImport
         Me.grdData.AllowUserToResizeRows = False
         Me.grdData.BackgroundColor = System.Drawing.Color.White
         Me.grdData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colEstado, Me.colId, Me.colCodigo, Me.colPresentacion, Me.colCantidad, Me.colPeso, Me.colUnidadMedida, Me.colIdProducto, Me.colIdPresentacion, Me.ColIdUnidadMedida, Me.ColLote, Me.colFechaVence, Me.ColUbicacion, Me.colIdPropietarioBodega, Me.colnombre_propietario, Me.ColLp, Me.ColCodVariante, Me.colCosto, Me.colPrecio, Me.colParametro_a, Me.colParametro_b, Me.ColCodigo_Area, Me.colError})
+        Me.grdData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colEstado, Me.colId, Me.colCodigo, Me.colPresentacion, Me.colCantidad, Me.colPeso, Me.colUnidadMedida, Me.colIdProducto, Me.colIdPresentacion, Me.ColIdUnidadMedida, Me.ColLote, Me.colFechaVence, Me.ColUbicacion, Me.colIdPropietarioBodega, Me.colnombre_propietario, Me.ColLp, Me.ColCodVariante, Me.colCosto, Me.colPrecio, Me.colParametro_a, Me.colParametro_b, Me.ColCodigo_Area, Me.ColColor, Me.ColTalla, Me.colError, Me.ColIdProductoTallaColor})
         Me.grdData.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.grdData.Location = New System.Drawing.Point(2, 204)
-        Me.grdData.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
+        Me.grdData.Location = New System.Drawing.Point(2, 208)
+        Me.grdData.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.grdData.MultiSelect = False
         Me.grdData.Name = "grdData"
         Me.grdData.RowHeadersVisible = False
@@ -344,7 +344,7 @@ Partial Class frmInventarioImport
         Me.grdData.ShowCellToolTips = False
         Me.grdData.ShowEditingIcon = False
         Me.grdData.ShowRowErrors = False
-        Me.grdData.Size = New System.Drawing.Size(1553, 300)
+        Me.grdData.Size = New System.Drawing.Size(1554, 296)
         Me.grdData.TabIndex = 4
         '
         'colEstado
@@ -576,11 +576,11 @@ Partial Class frmInventarioImport
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1557, 729)
+        Me.ClientSize = New System.Drawing.Size(1558, 729)
         Me.Controls.Add(Me.grpVerificaInv)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmInventarioImport"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -597,7 +597,7 @@ Partial Class frmInventarioImport
         Me.ResumeLayout(False)
         Me.PerformLayout
 
-    End Sub
+End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents mnuAplicar As DevExpress.XtraBars.BarButtonItem

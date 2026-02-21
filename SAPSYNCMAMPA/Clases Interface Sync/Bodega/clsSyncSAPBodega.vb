@@ -2,16 +2,13 @@
 Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
-Imports System.Reflection
-Imports DevExpress.Drawing.Internal.Images
 Imports Newtonsoft.Json.Linq
-Imports Sap.Data.Hana
 Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
-    Implements IDisposable
 
     Private Shared fichaBodegas As List(Of clsBeI_nav_bodega)
     Shared VContadorBitacoraTOMWMS As Integer = 0
     Shared VContadorBitacoraIntermedia As Integer = 0
+
     Private Shared Async Function Importar_Bodegas_Desde_SAP_A_TablaIntermedia(ByVal lblprg As RichTextBox,
                                                                                prg As ProgressBar,
                                                                                cnnLog As SqlConnection) As Task(Of Boolean)
@@ -41,16 +38,11 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             Application.DoEvents()
 
-            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
-            clsPublic.Actualizar_Progreso(lblprg, String.Format("Bodegas encontradas en WS: {0} ", fichaBodegas.Count))
-
             prg.Maximum = fichaBodegas.Count
 
             Dim vContador As Integer = 0
 
             Cnn.Open() : lTrans = Cnn.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-            clsLnI_nav_bodega.EliminarTodos(Cnn, lTrans)
 
             BeNavEjecucionRes.Registros_ws = fichaBodegas.Count()
 
@@ -100,7 +92,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
             If Not lTrans Is Nothing Then lTrans.Rollback()
 
-            '#EJC20171107_REF03_0237AM: Insertar en log, excepción general
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
                                                        "",
                                                        BeNavEjecucionEnc.IdEjecucionEnc,
@@ -114,45 +105,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
         Finally
             If Cnn.State = ConnectionState.Open Then Cnn.Close()
             prg.Value = 0
-            Desconectar_SAP(oCompany)
-        End Try
-
-    End Function
-
-    Private Shared Function Get_Bodegas_SAP() As List(Of clsBeI_nav_bodega)
-
-        Get_Bodegas_SAP = Nothing
-
-        Dim lBodegasWMS As New List(Of clsBeI_nav_bodega)
-        Dim BeBodega As New clsBeI_nav_bodega
-
-        Try
-
-            Dim query As String = "SELECT ""WhsCode"", ""WhsName"", ""TransferAc"" FROM ""OWHS"" 
-                                   WHERE ""Inactive"" = 'N'"
-
-            Using conn As HanaConnection = HanaHelper.OpenDB()
-                Dim dt As DataTable = HanaHelper.OpenDT(query, conn)
-
-                For Each row As DataRow In dt.Rows
-                    BeBodega = New clsBeI_nav_bodega
-                    BeBodega.Bodega_code = If(IsDBNull(row("WhsCode")), "0", row("WhsCode").ToString())
-                    BeBodega.Bodega_name = If(IsDBNull(row("WhsName")), "", row("WhsName").ToString())
-                    lBodegasWMS.Add(BeBodega)
-                Next
-
-            End Using
-
-            End If
-
-            Return lBodegasWMS
-
-        Catch ex As Exception
-            Throw ex
-        Finally
-            If oCompany.Connect Then
-                oCompany.Disconnect()
-            End If
         End Try
 
     End Function
@@ -163,10 +115,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                                         Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False) As Task(Of Boolean)
 
         Dim ok As Boolean = False
-
-        Dim CnnInterface As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim lTrans As SqlTransaction = Nothing
 
         Try
             clsPublic.Actualizar_Progreso(lblprg, $"Force_Ejecución: {ForzarEjecucion}")
@@ -187,7 +135,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                 BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
                 BeNavEjecucionEnc.IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface
                 BeNavEjecucionEnc.Fecha = Now
-
                 clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, CnnLog)
 
                 ' 3) Crear resultado de ejecución
@@ -198,10 +145,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                 BeNavEjecucionRes.Registros_ti = 0
                 BeNavEjecucionRes.Registros_WMS = 0
                 BeNavEjecucionRes.Exitosa = False
-
                 clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes, CnnLog)
-
-                BeNavEjecRes = BeNavEjecucionRes
 
                 clsPublic.Actualizar_Progreso(lblprg, vbNewLine)
 
@@ -216,166 +160,121 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                         If Not ejecutarImportacion Then
                             clsPublic.Actualizar_Progreso(lblprg, "Se omitió el llenado de tabla intermedia por selección del usuario.")
                         End If
+                    End If
 
-                    Else
+                    If ejecutarImportacion Then
+                        Dim importo As Boolean = Await Importar_Bodegas_Desde_SAP_A_TablaIntermedia(lblprg, prg, CnnLog).ConfigureAwait(False)
+                        If Not importo Then
+                            Try : lTrans.Rollback() : Catch : End Try
+                            prg.Value = 0
+                            clsPublic.Actualizar_Progreso(lblprg, "No se importaron bodegas a la tabla intermedia.")
+                            Return False
+                        End If
+                    End If
 
-                        If MessageBox.Show("¿Llenar tabla intermedia desde SAP?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    ' 4.2) Cargar bodegas intermedias
+                    clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en tabla intermedia")
+                    Dim lBodegas As List(Of clsBeI_nav_bodega) = clsLnI_nav_bodega.GetAll(CnnInterface, lTrans)
+                    clsPublic.Actualizar_Progreso(lblprg, $"Bodegas en tabla intermedia: {lBodegas.Count}")
 
-                            If Not Importar_Bodegas_Desde_SAP_A_TablaIntermedia(lblprg, prg, CnnLog) Then
-                                Exit Function
+                    If lBodegas IsNot Nothing AndAlso lBodegas.Count > 0 Then
+                        BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, CnnInterface, lTrans)
+
+                        prg.Minimum = 0
+                        prg.Maximum = lBodegas.Count
+                        prg.Value = 0
+
+                        clsPublic.Actualizar_Progreso(lblprg, "Trasladando bodegas como clientes en TOMWMS.")
+
+                        Dim vContador As Integer = 0
+
+                        For Each navBodega As clsBeI_nav_bodega In lBodegas
+                            vContador += 1
+                            prg.Value = vContador
+                            clsPublic.Actualizar_Progreso(lblprg, $"Procesando Bodega: {navBodega.Bodega_code}")
+
+                            Dim beClienteExistente As clsBeCliente = clsLnCliente.Existe(navBodega.Bodega_code, CnnInterface, lTrans)
+
+                            If beClienteExistente IsNot Nothing Then
+                                ' Update
+                                Try
+                                    Dim beCliente As New clsBeCliente With {
+                                    .IdCliente = beClienteExistente.IdCliente,
+                                    .IdPropietario = BeConfigEnc.IdPropietario,
+                                    .Codigo = navBodega.Bodega_code,
+                                    .Nombre_comercial = navBodega.Bodega_name,
+                                    .Sistema = True,
+                                    .Activo = True,
+                                    .IdEmpresa = BeConfigEnc.Idempresa,
+                                    .Nit = navBodega.Bodega_code,
+                                    .IdTipoCliente = 1,
+                                    .Es_bodega_recepcion = beClienteExistente.Es_bodega_recepcion,
+                                    .Es_Bodega_Traslado = beClienteExistente.Es_Bodega_Traslado
+                                }
+
+                                    clsLnCliente.ActualizarFromInterface(beCliente, CnnInterface, lTrans)
+                                    VContadorBitacoraTOMWMS += 1
+
+                                Catch ex As Exception
+                                    clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
+                                                                           navBodega.Bodega_code,
+                                                                           BeNavEjecucionEnc.IdEjecucionEnc,
+                                                                           BeConfigDet.Idnavconfigdet,
+                                                                           CnnLog)
+                                    clsPublic.Actualizar_Progreso(lblprg, $"Error al actualizar bodega: {navBodega.Bodega_code}{vbNewLine}{ex.Message}")
+                                End Try
+
+                            Else
+                                ' Insert
+                                Dim beCliente As New clsBeCliente With {
+                                .IdEmpresa = BeConfigEnc.Idempresa,
+                                .IdPropietario = BeConfigEnc.IdPropietario,
+                                .Codigo = navBodega.Bodega_code,
+                                .Nombre_comercial = navBodega.Bodega_name,
+                                .IdCliente = clsLnCliente.MaxID(CnnInterface, lTrans) + 1,
+                                .Nit = navBodega.Bodega_code,
+                                .IdTipoCliente = 1,
+                                .Activo = True,
+                                .User_agr = BeConfigEnc.IdUsuario,
+                                .Fec_agr = Now,
+                                .User_mod = BeConfigEnc.IdUsuario,
+                                .Fec_mod = Now,
+                                .Sistema = True
+                            }
+
+                                Try
+                                    clsLnCliente.Insertar(beCliente, CnnInterface, lTrans)
+                                    VContadorBitacoraTOMWMS += 1
+
+                                    Dim beClienteBodega As New clsBeCliente_bodega With {
+                                    .IdClienteBodega = clsLnCliente_bodega.MaxID(CnnInterface, lTrans) + 1,
+                                    .IdCliente = beCliente.IdCliente,
+                                    .IdBodega = BeConfigEnc.Idbodega,
+                                    .Activo = True,
+                                    .User_agr = BeConfigEnc.IdUsuario,
+                                    .User_mod = BeConfigEnc.IdUsuario,
+                                    .Fec_agr = Now,
+                                    .Fec_mod = Now
+                                }
+
+                                    clsLnCliente_bodega.Insertar_From_Interface(beClienteBodega, CnnInterface, lTrans)
+                                    clsPublic.Actualizar_Progreso(lblprg, $"Fin de inserción para: {beCliente.Codigo}")
+
+                                Catch ex As Exception
+                                    clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
+                                                                           navBodega.Bodega_code,
+                                                                           BeNavEjecucionEnc.IdEjecucionEnc,
+                                                                           BeConfigDet.Idnavconfigdet,
+                                                                           CnnLog)
+                                    clsPublic.Actualizar_Progreso(lblprg, $"Error al insertar bodega: {navBodega.Bodega_code}{vbNewLine}{ex.Message}")
+                                End Try
                             End If
+                        Next
+                    End If
 
-                            If ejecutarImportacion Then
-                                Dim importo As Boolean = Await Importar_Bodegas_Desde_SAP_A_TablaIntermedia(lblprg, prg, CnnLog).ConfigureAwait(False)
-                                If Not importo Then
-                                    Try : lTrans.Rollback() : Catch : End Try
-                                    prg.Value = 0
-                                    clsPublic.Actualizar_Progreso(lblprg, "No se importaron bodegas a la tabla intermedia.")
-                                    Return False
-                                End If
-
-                            End If
-
-                            ' 4.2) Cargar bodegas intermedias
-                            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en tabla intermedia")
-                            Dim lBodegas As List(Of clsBeI_nav_bodega) = clsLnI_nav_bodega.GetAll(CnnInterface, lTrans)
-                            clsPublic.Actualizar_Progreso(lblprg, $"Bodegas en tabla intermedia: {lBodegas.Count}")
-
-                            If lBodegas IsNot Nothing AndAlso lBodegas.Count > 0 Then
-                                BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, CnnInterface, lTrans)
-
-                                prg.Minimum = 0
-                                prg.Maximum = lBodegas.Count
-
-                                Dim vContador As Integer = 0
-
-                                prg.Value = 0
-
-                                clsPublic.Actualizar_Progreso(lblprg, "Trasladando bodegas como clientes en TOMWMS.")
-
-                                Dim vContador As Integer = 0
-
-                                For Each navBodega As clsBeI_nav_bodega In lBodegas
-
-                                    BeCliente = New clsBeCliente
-                                    beClienteExistente = New clsBeCliente
-                                    beClienteExistente = clsLnCliente.Existe(navBodega.Bodega_code, CnnInterface, lTrans)
-
-                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0}", navBodega.Bodega_code))
-
-                                    vContador += 1
-
-                                    prg.Value = vContador
-                                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando Bodega: {navBodega.Bodega_code}")
-
-                                    Dim beClienteExistente As clsBeCliente = clsLnCliente.Existe(navBodega.Bodega_code, CnnInterface, lTrans)
-
-                                    If beClienteExistente IsNot Nothing Then
-                                        ' Update
-                                        Try
-                                            Dim beCliente As New clsBeCliente With {
-                                            .IdCliente = beClienteExistente.IdCliente,
-                                            .IdPropietario = BeConfigEnc.IdPropietario,
-                                            .Codigo = navBodega.Bodega_code,
-                                            .Nombre_comercial = navBodega.Bodega_name,
-                                            .Sistema = True,
-                                            .Activo = True,
-                                            .IdEmpresa = BeConfigEnc.Idempresa,
-                                            .Nit = navBodega.Bodega_code,
-                                            .IdTipoCliente = 1,
-                                            .Es_bodega_recepcion = beClienteExistente.Es_bodega_recepcion,
-                                            .Es_Bodega_Traslado = beClienteExistente.Es_Bodega_Traslado
-                                        }
-
-                                            clsLnCliente.ActualizarFromInterface(beCliente, CnnInterface, lTrans)
-                                            VContadorBitacoraTOMWMS += 1
-
-                                        Catch ex As Exception
-
-                                            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   navBodega.Bodega_code,
-                                                                                   BeNavEjecucionEnc.IdEjecucionEnc,
-                                                                                   BeConfigDet.Idnavconfigdet,
-                                                                                   CnnLog)
-                                            clsPublic.Actualizar_Progreso(lblprg, $"Error al actualizar bodega: {navBodega.Bodega_code}{vbNewLine}{ex.Message}")
-                                        End Try
-
-                                    Else
-                                        ' Insert
-                                        Dim beCliente As New clsBeCliente With {
-                                        .IdEmpresa = BeConfigEnc.Idempresa,
-                                        .IdPropietario = BeConfigEnc.IdPropietario,
-                                        .Codigo = navBodega.Bodega_code,
-                                        .Nombre_comercial = navBodega.Bodega_name,
-                                        .IdCliente = clsLnCliente.MaxID(CnnInterface, lTrans) + 1,
-                                        .Nit = navBodega.Bodega_code,
-                                        .IdTipoCliente = 1,
-                                        .Activo = True,
-                                        .User_agr = BeConfigEnc.IdUsuario,
-                                        .Fec_agr = Now,
-                                        .User_mod = BeConfigEnc.IdUsuario,
-                                        .Fec_mod = Now,
-                                        .Sistema = True
-                                    }
-
-
-                                        beCliente.IdEmpresa = BeConfigEnc.Idempresa
-                                        beCliente.IdPropietario = BeConfigEnc.IdPropietario
-                                        beCliente.Codigo = navBodega.Bodega_code
-                                        beCliente.Nombre_comercial = navBodega.Bodega_name
-                                        beCliente.IdCliente = clsLnCliente.MaxID(CnnInterface, lTrans) + 1
-                                        beCliente.Nit = navBodega.Bodega_code
-                                        beCliente.IdTipoCliente = 1
-                                        beCliente.Activo = True
-                                        beCliente.User_agr = BeConfigEnc.IdUsuario
-                                        beCliente.Fec_agr = Now
-                                        beCliente.User_mod = BeConfigEnc.IdUsuario
-                                        beCliente.Fec_mod = Now
-                                        beCliente.Sistema = True
-
-                                        Try
-                                            clsLnCliente.Insertar(beCliente, CnnInterface, lTrans)
-                                            VContadorBitacoraTOMWMS += 1
-
-                                            Dim beClienteBodega As New clsBeCliente_bodega With {
-                                            .IdClienteBodega = clsLnCliente_bodega.MaxID(CnnInterface, lTrans) + 1,
-                                            .IdCliente = beCliente.IdCliente,
-                                            .IdBodega = BeConfigEnc.Idbodega,
-                                            .Activo = True,
-                                            .User_agr = BeConfigEnc.IdUsuario,
-                                            .User_mod = BeConfigEnc.IdUsuario,
-                                            .Fec_agr = Now,
-                                            .Fec_mod = Now
-                                        }
-
-                                            clsLnCliente_bodega.Insertar_From_Interface(beClienteBodega, CnnInterface, lTrans)
-                                            clsPublic.Actualizar_Progreso(lblprg, $"Fin de inserción para: {beCliente.Codigo}")
-
-                                            clsLnCliente_bodega.Insertar_From_Interface(beClienteBodega, CnnInterface, lTrans)
-
-                                            clsPublic.Actualizar_Progreso(lblprg, "Fin de inserción para: " & beCliente.Codigo)
-
-                                        Catch ex As Exception
-
-                                            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   navBodega.Bodega_code,
-                                                                                   BeNavEjecucionEnc.IdEjecucionEnc,
-                                                                                   BeConfigDet.Idnavconfigdet,
-                                                                                   CnnLog)
-                                            clsPublic.Actualizar_Progreso(lblprg, $"Error al insertar bodega: {navBodega.Bodega_code}{vbNewLine}{ex.Message}")
-                                        End Try
-
-                                        Application.DoEvents()
-
-                                    End If
-
-                                Next
-
-                            End If
-
-                            ' 4.3) Commit
-                            lTrans.Commit()
-                            ok = True
+                    ' 4.3) Commit
+                    lTrans.Commit()
+                    ok = True
                 End Using
 
                 ' 5) Mensajes finales y actualización de resultados
@@ -388,11 +287,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                 BeNavEjecucionRes.Registros_WMS = VContadorBitacoraTOMWMS
                 BeNavEjecucionRes.Exitosa = (VContadorBitacoraIntermedia = VContadorBitacoraTOMWMS)
 
-                '#EJC20171107_REF01_0237AM: Agregué esto en el finally 
-                'para garantizar que siempre se actualicen los contadores en la bitácora
-                'incluso cuando hay errores antes de la finalización del procedimiento.
-                'anteriormente estaba al fin del procedimiento, pero si había una excepción
-                'los contadores quedaban sin ser actualizados.
                 Try
                     clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, CnnLog)
                 Catch ex As Exception
@@ -406,8 +300,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                 End Try
             End Using
 
-        Catch ex As Exception
-            If Not lTrans Is Nothing Then lTrans.Rollback()
             prg.Value = 0
             Return ok
 

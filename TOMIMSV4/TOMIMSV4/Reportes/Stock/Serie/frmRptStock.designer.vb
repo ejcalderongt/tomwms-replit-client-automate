@@ -84,7 +84,6 @@ Partial Class frmRptStock
         '
         'GridView2
         '
-        Me.GridView2.DetailHeight = 431
         Me.GridView2.GridControl = Me.grdSeries
         Me.GridView2.Name = "GridView2"
         Me.GridView2.OptionsBehavior.Editable = False
@@ -94,12 +93,10 @@ Partial Class frmRptStock
         '
         Me.grdSeries.DataSource = Me.StockBindingSource
         Me.grdSeries.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdSeries.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         GridLevelNode1.RelationName = "Stock_stock_se"
         Me.grdSeries.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.grdSeries.Location = New System.Drawing.Point(204, 158)
         Me.grdSeries.MainView = Me.GridView1
-        Me.grdSeries.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdSeries.Name = "grdSeries"
         Me.grdSeries.Size = New System.Drawing.Size(882, 372)
         Me.grdSeries.TabIndex = 10
@@ -136,146 +133,114 @@ Partial Class frmRptStock
         'colPropietario
         '
         Me.colPropietario.FieldName = "Propietario"
-        Me.colPropietario.MinWidth = 23
         Me.colPropietario.Name = "colPropietario"
         Me.colPropietario.Visible = True
         Me.colPropietario.VisibleIndex = 1
-        Me.colPropietario.Width = 87
         '
         'colProducto
         '
         Me.colProducto.FieldName = "Producto"
-        Me.colProducto.MinWidth = 23
         Me.colProducto.Name = "colProducto"
         Me.colProducto.Visible = True
         Me.colProducto.VisibleIndex = 2
-        Me.colProducto.Width = 87
         '
         'colEstado
         '
         Me.colEstado.FieldName = "Estado"
-        Me.colEstado.MinWidth = 23
         Me.colEstado.Name = "colEstado"
         Me.colEstado.Visible = True
         Me.colEstado.VisibleIndex = 3
-        Me.colEstado.Width = 87
         '
         'colLote
         '
         Me.colLote.FieldName = "Lote"
-        Me.colLote.MinWidth = 23
         Me.colLote.Name = "colLote"
         Me.colLote.Visible = True
         Me.colLote.VisibleIndex = 4
-        Me.colLote.Width = 87
         '
         'colSerial
         '
         Me.colSerial.FieldName = "Serial"
-        Me.colSerial.MinWidth = 23
         Me.colSerial.Name = "colSerial"
         Me.colSerial.Visible = True
         Me.colSerial.VisibleIndex = 5
-        Me.colSerial.Width = 87
         '
         'colCantidad
         '
         Me.colCantidad.FieldName = "Cantidad"
-        Me.colCantidad.MinWidth = 23
         Me.colCantidad.Name = "colCantidad"
         Me.colCantidad.Visible = True
         Me.colCantidad.VisibleIndex = 6
-        Me.colCantidad.Width = 87
         '
         'colCódigo_Barra
         '
         Me.colCódigo_Barra.FieldName = "Código_Barra"
-        Me.colCódigo_Barra.MinWidth = 23
         Me.colCódigo_Barra.Name = "colCódigo_Barra"
         Me.colCódigo_Barra.Visible = True
         Me.colCódigo_Barra.VisibleIndex = 7
-        Me.colCódigo_Barra.Width = 87
         '
         'colUM_Bas
         '
         Me.colUM_Bas.FieldName = "UM_Bas"
-        Me.colUM_Bas.MinWidth = 23
         Me.colUM_Bas.Name = "colUM_Bas"
         Me.colUM_Bas.Visible = True
         Me.colUM_Bas.VisibleIndex = 8
-        Me.colUM_Bas.Width = 87
         '
         'colFecha_Ingreso
         '
         Me.colFecha_Ingreso.FieldName = "Fecha_Ingreso"
-        Me.colFecha_Ingreso.MinWidth = 23
         Me.colFecha_Ingreso.Name = "colFecha_Ingreso"
         Me.colFecha_Ingreso.Visible = True
         Me.colFecha_Ingreso.VisibleIndex = 9
-        Me.colFecha_Ingreso.Width = 87
         '
         'colFecha_Vence
         '
         Me.colFecha_Vence.FieldName = "Fecha_Vence"
-        Me.colFecha_Vence.MinWidth = 23
         Me.colFecha_Vence.Name = "colFecha_Vence"
         Me.colFecha_Vence.Visible = True
         Me.colFecha_Vence.VisibleIndex = 10
-        Me.colFecha_Vence.Width = 87
         '
         'colRecepción
         '
         Me.colRecepción.FieldName = "Recepción"
-        Me.colRecepción.MinWidth = 23
         Me.colRecepción.Name = "colRecepción"
         Me.colRecepción.Visible = True
         Me.colRecepción.VisibleIndex = 11
-        Me.colRecepción.Width = 87
         '
         'colStockId
         '
         Me.colStockId.FieldName = "Stock Id"
-        Me.colStockId.MinWidth = 23
         Me.colStockId.Name = "colStockId"
         Me.colStockId.Visible = True
         Me.colStockId.VisibleIndex = 0
-        Me.colStockId.Width = 87
         '
         'colCódigo
         '
         Me.colCódigo.FieldName = "Código"
-        Me.colCódigo.MinWidth = 23
         Me.colCódigo.Name = "colCódigo"
         Me.colCódigo.Visible = True
         Me.colCódigo.VisibleIndex = 12
-        Me.colCódigo.Width = 87
         '
         'colPresentación
         '
         Me.colPresentación.FieldName = "Presentación"
-        Me.colPresentación.MinWidth = 23
         Me.colPresentación.Name = "colPresentación"
         Me.colPresentación.Visible = True
         Me.colPresentación.VisibleIndex = 13
-        Me.colPresentación.Width = 87
         '
         'colCant_Presentación
         '
         Me.colCant_Presentación.FieldName = "Cant_Presentación"
-        Me.colCant_Presentación.MinWidth = 23
         Me.colCant_Presentación.Name = "colCant_Presentación"
         Me.colCant_Presentación.Visible = True
         Me.colCant_Presentación.VisibleIndex = 14
-        Me.colCant_Presentación.Width = 87
         '
         'colUbicación
         '
         Me.colUbicación.FieldName = "Ubicación"
-        Me.colUbicación.MinWidth = 23
         Me.colUbicación.Name = "colUbicación"
         Me.colUbicación.Visible = True
         Me.colUbicación.VisibleIndex = 15
-        Me.colUbicación.Width = 87
         '
         'codigo_poliza
         '
@@ -303,7 +268,6 @@ Partial Class frmRptStock
         Me.RibbonControl1.ExpandCollapseItem.Id = 0
         Me.RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl1.ExpandCollapseItem, Me.btnActualizar, Me.btnImprimir, Me.btnSalir, Me.lblRegs, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl1.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl1.MaxItemId = 10
         Me.RibbonControl1.Name = "RibbonControl1"
         Me.RibbonControl1.OptionsMenuMinWidth = 283
@@ -463,7 +427,6 @@ Partial Class frmRptStock
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.RibbonStatusBar1)
         Me.Controls.Add(Me.RibbonControl1)
-        Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "frmRptStock"
         Me.Ribbon = Me.RibbonControl1
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

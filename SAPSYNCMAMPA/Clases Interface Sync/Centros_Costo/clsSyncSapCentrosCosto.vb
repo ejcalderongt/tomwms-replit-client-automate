@@ -13,10 +13,6 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
         Dim centros_costo As New List(Of clsBeCentro_costo)
 
-        Dim lReturnList As New List(Of clsBeSAPCentroCostoCumbre)
-        Dim query_sap As String = ""
-        Dim sCookie As String = Nothing
-
         Try
             Dim requestUrl As String = "ProfitCenters?$filter=Active eq 'tYES' and (InWhichDimension eq 1 or InWhichDimension eq 2 or InWhichDimension eq 3)"
 
@@ -65,10 +61,6 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
                 End Using
             End Using
 
-            Else
-            Throw New Exception(sErrMsg)
-            End If
-
         Catch ex As Exception
             Throw New Exception("Error en Get_Centros_Costo_SAP: " & ex.Message, ex)
         End Try
@@ -99,18 +91,11 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
             fichaCentrosCosto = Await Get_Centros_Costo_SAP(vHanaService.SessionCookie, SapServiceLayerClient.baseUrl)
 
-            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
+            clsPublic.Actualizar_Progreso(lblprg, "Consultando centros de costo en SAP.")
 
             Application.DoEvents()
 
             prg.Maximum = fichaCentrosCosto.Count
-
-            lConnection.Open()  lTransacion = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, lConnection, lTransacion)
-
-            prg.Maximum = lCentrosCostoSAP.Count
-            prg.Visible = True
 
             Dim vContador As Integer = 0
 
@@ -128,63 +113,23 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
                 vCodigoCentroCosto = centro.Codigo
 
                 Try
-                    '#EJC20240409
-                    BeCentroCosto = New clsBeCentro_costo()
-                    BeCentroCosto.IdCentroCosto = clsLnCentro_costo.MaxID(lConnection, lTransacion) + 1
-                    BeCentroCosto.IdEmpresa = BeConfigEnc.Idempresa
-                    BeCentroCosto.Codigo = BeSAPCentroCosto.U_Codigo_Remark
-                    BeCentroCosto.Nombre = BeSAPCentroCosto.U_Remak
-                    BeCentroCosto.Referencia = BeSAPCentroCosto.U_CecosDimen
-                    BeCentroCosto.User_agr = BeConfigEnc.IdUsuario
-                    BeCentroCosto.Fec_agr = Now
-                    BeCentroCosto.Fec_mod = Now
-                    BeCentroCosto.User_mod = BeConfigEnc.IdUsuario
-                    BeCentroCosto.Activo = True
 
-                    If clsLnCentro_costo.Insertar(BeCentroCosto, lConnection, lTransacion) > 0 Then
+                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0} ", centro.Nombre, vbNewLine))
 
-                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0} ", centro.Nombre, vbNewLine))
+                    Dim beCentroCostoExistente As clsBeCentro_costo = clsLnCentro_costo.Existe_By_Codigo(centro.Codigo, Cnn, lTrans)
 
-                        Dim beCentroCostoExistente As clsBeCentro_costo = clsLnCentro_costo.Existe_By_Codigo(centro.Codigo, Cnn, lTrans)
-
-                        If beCentroCostoExistente IsNot Nothing Then
-                            clsLnCentro_costo.Actualizar(centro, Cnn, lTrans)
-                        Else
-                            centro.IdCentroCosto = clsLnCentro_costo.MaxID(Cnn, lTrans) + 1
-                            clsLnCentro_costo.Insertar(centro, Cnn, lTrans)
-                        End If
-
-                        prg.Value = vContador
-
-                        vContador += 1
-
-                        clsLnLog_error_wms.Agregar_Error(ex.Message)
-                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Error: No se pudo insertar el centro de costo: {0} {1}", BeSAPCentroCosto.U_Codigo_Remark, vbNewLine))
-                        Application.DoEvents()
-
-                                End Try
-
-                Else
-
-                Try
-
-                    BeCentroCostoExistente.Codigo = BeSAPCentroCosto.U_Codigo_Remark
-                    BeCentroCostoExistente.Nombre = BeSAPCentroCosto.U_Remak
-                    BeCentroCostoExistente.Referencia = BeSAPCentroCosto.U_CecosDimen
-                    BeCentroCostoExistente.User_mod = BeConfigEnc.IdUsuario
-                    BeCentroCostoExistente.Fec_mod = Now
-                    BeCentroCostoExistente.Activo = True
-
-                    If clsLnCentro_costo.Actualizar(BeCentroCostoExistente, lConnection, lTransacion) > 0 Then
-
-                        If Marcar_Centro_Costo_Sincronizado_SAP_Usuario_Compuesto(BeSAPCentroCosto.Code, BeSAPCentroCosto.LineId) Then
-
-                            VContadorBitacoraTOMWMS += 1
-                            clsPublic.Actualizar_Progreso(lblprg, "Centro de costo actualizado: " & BeSAPCentroCosto.U_Codigo_Remark & " - " & BeSAPCentroCosto.U_Remak)
-
-                        End If
-
+                    If beCentroCostoExistente IsNot Nothing Then
+                        clsLnCentro_costo.Actualizar(centro, Cnn, lTrans)
+                    Else
+                        centro.IdCentroCosto = clsLnCentro_costo.MaxID(Cnn, lTrans) + 1
+                        clsLnCentro_costo.Insertar(centro, Cnn, lTrans)
                     End If
+
+                    prg.Value = vContador
+
+                    vContador += 1
+
+                    Application.DoEvents()
 
                 Catch ex As Exception
 
@@ -207,26 +152,6 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
             clsPublic.Actualizar_Progreso(lblprg, "Fin de proceso: " & Now)
 
         Catch ex As Exception
-            If Not lTransacion Is Nothing Then lTransacion.Rollback()
-            prg.Value = 0
-            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar producto a tabla de TOMWMS: {0}", ex.Message))
-            Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
-            prg.Value = 0
-            prg.Visible = False
-            Desconectar_SAP(oCompany)
-        End Try
-
-    End Function
-
-    Public Function Marcar_Centro_Costo_Sincronizado_SAP_Usuario_Compuesto(ByVal code As String, ByVal lineId As Integer) As Boolean
-
-        Dim resultado As Boolean = False
-
-        Try
-
 
             If Not lTrans Is Nothing Then lTrans.Rollback()
 
@@ -248,8 +173,5 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
         Return ok
 
     End Function
-
-
-
 
 End Class

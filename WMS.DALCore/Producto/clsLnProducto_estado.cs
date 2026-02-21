@@ -1,9 +1,7 @@
 using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
+
 public class clsLnProducto_estado
 {
     private static readonly clsInsert Ins = new clsInsert();
@@ -390,9 +388,9 @@ public class clsLnProducto_estado
     }
 
     public static List<clsBeProducto_estado> Existe_IdEstado_By_IdPropietario(int pIdPropietario,
-                                                                         int pIdEstado,
-                                                                         SqlConnection lConnection,
-                                                                         SqlTransaction lTransaction)
+                                                                              int pIdEstado,
+                                                                              SqlConnection lConnection,
+                                                                              SqlTransaction lTransaction)
     {
         try
         {
@@ -428,6 +426,114 @@ public class clsLnProducto_estado
         catch (Exception ex)
         {
             throw new Exception(ex.Message);
+        }
+    }
+
+    public static async Task<Dictionary<int, clsBeProducto_estado>> GetByIdsAsync(IConfiguration configuration, List<int> idsEstado)
+    {
+        var result = new Dictionary<int, clsBeProducto_estado>();
+
+        if (idsEstado == null || idsEstado.Count == 0)
+            return result;
+
+        idsEstado = idsEstado.Where(id => id > 0).Distinct().ToList();
+        if (idsEstado.Count == 0)
+            return result;
+
+        const string sql = "SELECT * FROM Producto_estado WHERE IdEstado IN ({0})";
+
+        using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        await conn.OpenAsync();
+
+        SqlTransaction? tran = null;
+
+        try
+        {
+            tran = (SqlTransaction?)await conn.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+            var paramNames = idsEstado.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, conn, tran);
+
+            for (int i = 0; i < idsEstado.Count; i++)
+            {
+                cmd.Parameters.AddWithValue(paramNames[i], idsEstado[i]);
+            }
+
+            using var adapter = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            adapter.Fill(dt);
+
+            if (tran != null)   
+                await tran.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_estado();
+                Cargar(ref be, dr);
+                result[be.IdEstado] = be;
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            tran?.Rollback();
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+        finally
+        {
+            if (conn.State == ConnectionState.Open)
+                await conn.CloseAsync();
+        }
+    }
+    public static Task<Dictionary<int, clsBeProducto_estado>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsEstado)
+    {
+        var result = new Dictionary<int, clsBeProducto_estado>();
+
+        if (idsEstado == null || idsEstado.Count == 0)
+            return Task.FromResult(result);
+
+        idsEstado = idsEstado.Where(id => id > 0).Distinct().ToList();
+        if (idsEstado.Count == 0)
+            return Task.FromResult(result);
+
+        const string sql = "SELECT * FROM Producto_estado WHERE IdEstado IN ({0})";
+
+        try
+        {
+            var paramNames = idsEstado.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, connection, transaction);
+
+            for (int i = 0; i < idsEstado.Count; i++)
+            {
+                cmd.Parameters.AddWithValue(paramNames[i], idsEstado[i]);
+            }
+
+            using var adapter = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            adapter.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_estado();
+                Cargar(ref be, dr);
+                result[be.IdEstado] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
 }

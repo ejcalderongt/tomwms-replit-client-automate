@@ -1,6 +1,5 @@
 ﻿Imports System.IO
 Imports System.Reflection
-Imports DevExpress.Data
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
@@ -31,36 +30,19 @@ Public Class frmrptUbicacionesVacias
 
             dgAuditoriaPicking.DataSource = Nothing
 
-            If chkDetallado.Checked Then
-                DT = clsLnBodega_ubicacion.Get_Ubicaciones_Detallado(AP.IdBodega)
-            Else
-                DT = clsLnBodega_ubicacion.Get_Ubicaciones(AP.IdBodega, chkUbicaciones.Checked, chkTodas.Checked)
-            End If
+            DT = clsLnBodega_ubicacion.Get_Ubicaciones_Vacias(AP.IdBodega)
 
             If Not DT Is Nothing Then
 
                 If DT.Rows.Count > 0 Then
 
-                    GridView1.Columns.Clear()
-
                     dgAuditoriaPicking.DataSource = DT
 
                     lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
 
-                    Set_LayOut_Grid()
-
                     GridView1.OptionsView.ShowFooter = True
 
                     Set_LayOut_Grid()
-                    GridView1.Columns("Ubicacion").SummaryItem.SummaryType = SummaryItemType.Count
-                    GridView1.Columns("Ubicacion").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Ubicacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Ubicacion").DisplayFormat.FormatString = "{0:n6}"
-
-                    Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Ubicacion", .SummaryType = SummaryItemType.Count,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Ubicacion")}
-                    GridView1.GroupSummary.Add(item)
 
                     If Not ExisteLayout Then
                         GridView1.BestFitColumns()
@@ -383,31 +365,6 @@ Public Class frmrptUbicacionesVacias
         End Try
 
 
-    End Sub
-
-    Private Sub chkUbicaciones_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkUbicaciones.CheckedChanged
-        Cargar_Datos()
-    End Sub
-
-    Private Sub chkTodas_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkTodas.CheckedChanged
-
-        If chkTodas.Checked Then
-            chkUbicaciones.Checked = False
-            chkDetallado.Checked = False
-        End If
-
-        Cargar_Datos()
-
-    End Sub
-
-    Private Sub chkDetallado_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkDetallado.CheckedChanged
-
-        If chkDetallado.Checked Then
-            chkUbicaciones.Checked = False
-            chkTodas.Checked = False
-        End If
-
-        Cargar_Datos()
     End Sub
 
 End Class

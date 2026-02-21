@@ -1029,23 +1029,6 @@
   <metadata name="DSReconteo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>309, 17</value>
   </metadata>
-  <metadata name="MenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>1084, 73</value>
-  </metadata>
-  <data name="btnAgregar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        dAAAAHQBMYXlgQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGzSURBVDhPfVPN
-        K0RRFH8L/hUfC+7LiFj5D5SyEAsrRXKfaXzExoIwhszCx0JKlMJQpt7YKRom0bBRau4l35PxmJlYjMXR
-        uZ7nvftmnPrV7Zz7+91z7/ldRZGiSrspJzQRUCm7IJS9EcoMXKtaYqqi+7pM3m+Fp+O0WNXYLKHsi1AG
-        BYC1GdzrIhOa2MtDKAAecYiYJ4uiqjEIhl9h+zgDuycZaAnc5xFgQHrYtCD/3Pmv7cGVJAyvJcW62ssh
-        cpaFGh93C1D2VUl5qYJK9sL6QdpBCOykoGn8TiYLVFLuV8zXtpJDq0kYWPnpwOPloJsdtAcfoHPhURaJ
-        K4Syd3sS32BON2AnloHwSRbaZu6ha/EJDi8/IHb1CXTp2S5goIAht5YPeLpv2UFGvDquUNd/LU4NHWVg
-        K5oWwEmMbrxAbR8XdUkgrqDDfhP+7RS0TrvHthlNQ/2Ai4yYUNCev2PEjVW97pFNhFLQ7HdNIke8rER4
-        Ae2JyXndEI8oC6A3GsduHTnsXLIyj8jEQlAp0xtG9ossAQxMmKb67zPl8Ke6yPZAe6LDiMbOzREj4kRj
-        k9adbfENF1AtHA8EiwcAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="btnFiltLimpia.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACl0RVh0VGl0
@@ -1082,8 +1065,5 @@ a continuación deje un espacio e ingrese &lt;b&gt;&lt;href=PA&gt;PA&lt;/href&gt
   </metadata>
   <metadata name="WorkspaceManager1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>762, 73</value>
-  </metadata>
-  <metadata name="ContextMenuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>927, 73</value>
   </metadata>
 </root>

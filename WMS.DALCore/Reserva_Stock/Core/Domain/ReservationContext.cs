@@ -87,6 +87,13 @@ namespace WMS.StockReservation.Core.Domain
         /// </summary>
         public bool HasSpecificLot => !string.IsNullOrWhiteSpace(SpecificLotNo);
 
+        // ===== MANUFACTURA (validación por fecha de manufactura) =====
+        /// <summary>
+        /// Indica si la validación de días debe usar fecha_manufactura en lugar de fecha_vence.
+        /// Se determina por cliente_tiempos.es_manufactura.
+        /// </summary>
+        public bool EsManufactura { get; set; } = false;
+
         // ===== CACHES (evitar consultas repetidas) =====
         public List<clsBeBodega_ubicacion> CachedLocations { get; set; } = new List<clsBeBodega_ubicacion>();
         public List<clsBeProducto_presentacion> CachedPresentations { get; set; } = new List<clsBeProducto_presentacion>();

@@ -297,6 +297,8 @@ Partial Class frmPedido
         Me.GrpProducto = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl2 = New DevExpress.XtraEditors.XtraScrollableControl()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.txtEsExportacion = New System.Windows.Forms.TextBox()
+        Me.Label46 = New System.Windows.Forms.Label()
         Me.cmbPiloto = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbEmpresaTransporte = New DevExpress.XtraEditors.LookUpEdit()
         Me.gcVerificacionBOF = New DevExpress.XtraEditors.GroupControl()
@@ -561,8 +563,6 @@ Partial Class frmPedido
         Me.DetalleBindingSource1 = New System.Windows.Forms.BindingSource(Me.components)
         Me.AutoHideContainer1 = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.WorkspaceManager1 = New DevExpress.Utils.WorkspaceManager(Me.components)
-        Me.txtEsExportacion = New System.Windows.Forms.TextBox()
-        Me.Label46 = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -2415,6 +2415,29 @@ Partial Class frmPedido
         Me.GroupBox3.TabIndex = 85
         Me.GroupBox3.TabStop = False
         '
+        'txtEsExportacion
+        '
+        Me.txtEsExportacion.BackColor = System.Drawing.Color.LightPink
+        Me.txtEsExportacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtEsExportacion.Location = New System.Drawing.Point(905, 181)
+        Me.txtEsExportacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.txtEsExportacion.Name = "txtEsExportacion"
+        Me.txtEsExportacion.ReadOnly = True
+        Me.txtEsExportacion.Size = New System.Drawing.Size(102, 23)
+        Me.txtEsExportacion.TabIndex = 111
+        Me.txtEsExportacion.Text = "No"
+        Me.txtEsExportacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label46
+        '
+        Me.Label46.AutoSize = True
+        Me.Label46.Location = New System.Drawing.Point(906, 160)
+        Me.Label46.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.Label46.Name = "Label46"
+        Me.Label46.Size = New System.Drawing.Size(95, 16)
+        Me.Label46.TabIndex = 110
+        Me.Label46.Text = "Es exportación:"
+        '
         'cmbPiloto
         '
         Me.cmbPiloto.Location = New System.Drawing.Point(676, 409)
@@ -2958,13 +2981,13 @@ Partial Class frmPedido
         '
         Me.txtObservacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtObservacion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtObservacion.Location = New System.Drawing.Point(2, 41)
+        Me.txtObservacion.Location = New System.Drawing.Point(2, 28)
         Me.txtObservacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtObservacion.MaxLength = 1000
         Me.txtObservacion.Multiline = True
         Me.txtObservacion.Name = "txtObservacion"
         Me.txtObservacion.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtObservacion.Size = New System.Drawing.Size(480, 167)
+        Me.txtObservacion.Size = New System.Drawing.Size(480, 180)
         Me.txtObservacion.TabIndex = 56
         '
         'grpScanPoliza
@@ -3003,7 +3026,7 @@ Partial Class frmPedido
         Me.LabelControl2.Location = New System.Drawing.Point(550, 96)
         Me.LabelControl2.Margin = New System.Windows.Forms.Padding(6, 10, 6, 10)
         Me.LabelControl2.Name = "LabelControl2"
-        Me.LabelControl2.Size = New System.Drawing.Size(0, 15)
+        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
         Me.LabelControl2.TabIndex = 2
         '
         'LabelControl4
@@ -5362,29 +5385,6 @@ Partial Class frmPedido
         '
         Me.WorkspaceManager1.TargetControl = Me
         Me.WorkspaceManager1.TransitionType = PushTransition1
-        '
-        'txtEsExportacion
-        '
-        Me.txtEsExportacion.BackColor = System.Drawing.Color.LightPink
-        Me.txtEsExportacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtEsExportacion.Location = New System.Drawing.Point(905, 181)
-        Me.txtEsExportacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtEsExportacion.Name = "txtEsExportacion"
-        Me.txtEsExportacion.ReadOnly = True
-        Me.txtEsExportacion.Size = New System.Drawing.Size(102, 23)
-        Me.txtEsExportacion.TabIndex = 111
-        Me.txtEsExportacion.Text = "No"
-        Me.txtEsExportacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label46
-        '
-        Me.Label46.AutoSize = True
-        Me.Label46.Location = New System.Drawing.Point(906, 160)
-        Me.Label46.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.Label46.Name = "Label46"
-        Me.Label46.Size = New System.Drawing.Size(95, 16)
-        Me.Label46.TabIndex = 110
-        Me.Label46.Text = "Es exportación:"
         '
         'frmPedido
         '

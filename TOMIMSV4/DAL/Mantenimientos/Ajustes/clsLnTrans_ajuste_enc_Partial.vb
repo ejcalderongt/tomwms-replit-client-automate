@@ -1,10 +1,5 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Threading.Tasks
-Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_ajuste_enc
     Public Shared Function GetAll(ByVal pFechaDel As Date,
