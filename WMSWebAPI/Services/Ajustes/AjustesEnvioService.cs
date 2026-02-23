@@ -14,6 +14,7 @@ using WMSWebAPI.Ln;
 public interface IAjustesEnvioService
 {
     Task<AjustesPendientesEnvioResponse> GetAjustesPendientesEnvioAsync(CancellationToken ct = default);
+    Task<int> MarcarAjustesEnviadosErpAsync(List<int> idsAjusteEnc, CancellationToken ct);
 }
 
 public sealed class AjustesEnvioService : IAjustesEnvioService
@@ -276,5 +277,53 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
     {
         var digits = new string(doc.Where(char.IsDigit).ToArray());
         return int.TryParse(digits, out var n) ? n : 0;
+    }
+
+    public async Task<int> MarcarAjustesEnviadosErpAsync(List<int> idsAjusteEnc, CancellationToken ct)
+    {
+        if (idsAjusteEnc == null) throw new ArgumentNullException(nameof(idsAjusteEnc));
+
+        // Normaliza: quita duplicados, IDs inválidos
+        var ids = idsAjusteEnc
+            .Where(x => x > 0)
+            .Distinct()
+            .ToList();
+
+        if (ids.Count == 0) return 0;
+
+        var cs = _configuration.GetConnectionString("CST");
+        if (string.IsNullOrWhiteSpace(cs))
+            throw new InvalidOperationException("No existe ConnectionString 'CST'.");
+
+        await using var conn = new SqlConnection(cs);
+        await conn.OpenAsync(ct);
+
+        // Puedes ajustar el IsolationLevel según tu estándar (muchos flujos tuyos usan ReadUncommitted)
+        await using var tran = (SqlTransaction)await conn.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
+
+        try
+        {
+            // Tu LN tal como la compartiste:
+            var result = await clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP_AllAsync(ids, conn, tran);
+
+            await tran.CommitAsync(ct);
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            try { await tran.RollbackAsync(CancellationToken.None); } catch { /* noop */ }
+            throw;
+        }
+        catch (Exception ex)
+        {
+            try { await tran.RollbackAsync(CancellationToken.None); } catch { /* noop */ }
+
+            _logger.LogError(ex,
+                "Error marcando ajustes enviados a ERP. ids={Ids}",
+                string.Join(",", ids));
+
+            // similar a tu patrón VB: MethodName + msg
+            throw new Exception($"{nameof(MarcarAjustesEnviadosErpAsync)} {ex.Message}", ex);
+        }
     }
 }

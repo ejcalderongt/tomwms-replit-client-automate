@@ -1563,8 +1563,8 @@ Public Class clsLnBodega
     End Function
 
     Public Shared Function GetRutaCDN_By_Idbodega(ByVal pIdBodega As Integer,
-                                              ByVal lConnection As SqlConnection,
-                                              ByVal lTransaction As SqlTransaction) As String
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As String
 
         GetRutaCDN_By_Idbodega = ""
 
@@ -1572,7 +1572,7 @@ Public Class clsLnBodega
         Try
 
             Const sp As String = "SELECT RUTA_CDN FROM Bodega 
-                              Where(IdBodega = @IdBodega)"
+                                  Where(IdBodega = @IdBodega)"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -1585,16 +1585,10 @@ Public Class clsLnBodega
                 GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
             End If
 
-            lTransaction.Commit()
-
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            lTransaction.Dispose()
-            lConnection.Dispose()
         End Try
 
     End Function

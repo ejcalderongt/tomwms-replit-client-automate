@@ -2963,7 +2963,7 @@ Partial Public Class clsLnStock
         Try
 
             Dim oStock As clsBeStock
-
+            Dim vManejaTallaColor As Boolean = False
             Dim ListStock As New List(Of clsBeStock)
 
             Dim SQL As String = "SELECT stock.*  
@@ -3026,6 +3026,11 @@ Partial Public Class clsLnStock
 
             End If
 
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pIdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                SQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
+            End If
 
             Using lDTA As New SqlDataAdapter(SQL, pConnection)
 
@@ -3062,6 +3067,10 @@ Partial Public Class clsLnStock
 
                 If pIdUbicacion <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lDataTable As New DataTable
@@ -3149,7 +3158,7 @@ Partial Public Class clsLnStock
         Try
 
             Dim oStock As clsBeStock
-
+            Dim vManejaTallaColor As Boolean = False
             Dim ListStock As New List(Of clsBeStock)
 
             Dim vSQL As String = "SELECT stock.*  
@@ -3172,6 +3181,12 @@ Partial Public Class clsLnStock
                 vSQL += " AND stock.IdUbicacion = @IdUbicacionAbastecerCon "
             End If
 
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                vSQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
+            End If
+
             Using lDTA As New SqlDataAdapter(vSQL, pConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
@@ -3191,6 +3206,10 @@ Partial Public Class clsLnStock
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
                 If pProducto.IdUbicacion <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pProducto.IdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lDataTable As New DataTable
@@ -3672,6 +3691,10 @@ Partial Public Class clsLnStock
 
         Try
 
+            Dim vManejaTallaColor As Boolean = False
+
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
             Dim vSQL As String = " select sum(stock_res.cantidad) as cantidad
 					               from stock_res inner join
 					               producto_bodega on stock_res.idproductobodega = producto_bodega.idproductobodega
@@ -3707,6 +3730,10 @@ Partial Public Class clsLnStock
             If pIdUbicacion <> 0 Then
                 '#EJC20190311_0948PM: Buscar stock por ubicación específica.
                 vSQL += " and stock_res.idubicacion =@IdUbicacion"
+            End If
+
+            If vManejaTallaColor Then
+                vSQL += " and stock_res.IdProductoTallaColor = @IdProductoTallaColor  "
             End If
 
             '#EJC202309120602: ANALIZAR ESTO CON CAROLINA
@@ -3747,6 +3774,10 @@ Partial Public Class clsLnStock
 
                 If pProducto.IdBodega <> 0 Then
                     lCommand.Parameters.AddWithValue("@IdBodega", pProducto.IdBodega)
+                End If
+
+                If vManejaTallaColor Then
+                    lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
@@ -4612,12 +4643,14 @@ Partial Public Class clsLnStock
 
         Try
 
-            Dim vSQL As String = " select sum(stock.peso) as peso " &
-            " from stock inner join  " &
-            " producto_bodega on stock.idproductobodega = producto_bodega.idproductobodega  " &
-            " where producto_bodega.idproductobodega=@idproducto " &
-            " and (stock.idpresentacion is null or stock.idpresentacion=@idpresentacion) " &
-            " and stock.idunidadmedida =@idunidadmedida "
+            Dim vManejaTallaColor As Boolean = False
+
+            Dim vSQL As String = " select sum(stock.peso) as peso  
+                                   from stock inner join  
+                                   producto_bodega on stock.idproductobodega = producto_bodega.idproductobodega  
+                                   where producto_bodega.idproductobodega=@idproducto  
+                                   and (stock.idpresentacion is null or stock.idpresentacion=@idpresentacion)   
+                                   and stock.idunidadmedida =@idunidadmedida "
 
             If ConEstado Then
                 vSQL += " and stock.idproductoestado=@idproductoestado "
@@ -4629,6 +4662,12 @@ Partial Public Class clsLnStock
 
             If pIdUbicacion <> 0 Then
                 vSQL += " and stock.IdUbicacion=@IdUbicacion "
+            End If
+
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                vSQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
             End If
 
             Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
@@ -4658,6 +4697,10 @@ Partial Public Class clsLnStock
 
                 If pIdUbicacion <> 0 Then
                     lCommand.Parameters.AddWithValue("IdUbicacion", pIdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
