@@ -6086,7 +6086,7 @@ Partial Public Class clsLnStock
             '#EJC20180420: Mejora en consulta por ordenamiento lógico para picking.
             Dim vSQL As String = "SELECT producto.codigo,
 		                            producto.nombre as producto,
-		                            producto_presentacion.nombre as presentacion,
+		                            IIF(producto_presentacion.nombre = '' or producto_presentacion.nombre is null, '-', producto_presentacion.nombre)  as presentacion,
 		                            unidad_medida.nombre as UMBas,
 		                            stock.cantidad as Cant,
                                     stock.IdUbicacion,
@@ -6125,11 +6125,11 @@ Partial Public Class clsLnStock
 		                            bodega_tramo.es_rack,
 		                            bodega_ubicacion.IdTramo, IdStock,                                  
                                     dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as NombUbic,
-                                    ptc.IdProductoTallaColor, 
-                                    t.Codigo as Codigo_Talla, 
-                                    t.Nombre Nombre_Talla, 
-                                    c.Codigo Codigo_Color, 
-                                    c.Nombre Nombre_Color
+                                    IIF(ptc.IdProductoTallaColor = '' or ptc.IdProductoTallaColor is null, '-', ptc.IdProductoTallaColor) as IdProductoTallaColor, 
+                                    IIF(t.Codigo = '' or t.Codigo is null, '-', t.Codigo)  as Codigo_Talla,
+                                    IIF(t.Nombre = '' or t.Nombre is null, '-', t.Nombre) as Nombre_Talla,
+                                    IIF(c.Codigo = '' or c.Codigo is null, '-', c.Codigo) as Codigo_Color,
+                                    IIF(c.Nombre = '' or c.Nombre is null, '-', c.Nombre) as  Nombre_Color
 					FROM stock INNER JOIN
 		            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 		            producto on producto.IdProducto = producto_bodega.IdProducto AND

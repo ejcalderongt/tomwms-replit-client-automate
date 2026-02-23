@@ -121,6 +121,7 @@ Public Class clsLnBodega
                 .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))                
                 .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
                 .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
+                .Reemplazo_Opcional = IIf(IsDBNull(dr.Item("reemplazo_opcional")), False, dr.Item("reemplazo_opcional"))
 
 
             End With
@@ -249,6 +250,7 @@ Public Class clsLnBodega
             Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)                        
             Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
+            Ins.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -371,6 +373,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
+            cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -507,6 +510,7 @@ Public Class clsLnBodega
             Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)            
             Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
+            Upd.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -629,6 +633,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
+            cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.reemplazo_opcional))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
