@@ -3437,6 +3437,8 @@ Public Class frmPedido
 
                 Get_ValoresGrid(e.RowIndex)
 
+                pBeStock.IdBodega = AP.IdBodega
+
                 If Not IsNothing(pBeProducto) Then
                     If Not IsNothing(pBeProducto.UnidadMedida) Then
                         If Not IsNothing(pBeStock) Then
@@ -3804,10 +3806,15 @@ Public Class frmPedido
                         '#GT26082025: si hay cambio de talla y un color seleccionado recargar lo disponible
                         If vTalla > 0 OrElse vColor > 0 Then
 
-                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                            Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                                          vColor,
+                                                                                                                          vProducto)
 
                             If pProductoTallaColor IsNot Nothing Then
                                 pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                                dgrid.Rows(e.RowIndex).Cells("colIdProductoTallaColor").Value = pBeStock.IdProductoTallaColor
                             End If
 
                             If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 And pBeStock.IdProductoTallaColor > 0 Then
@@ -3850,16 +3857,20 @@ Public Class frmPedido
 
                         End If
 
-
                     Case "colColor"
 
                         '#GT26082025: si hay cambio de color y una talla selecccionada recargar lo disponible.
                         If vTalla > 0 OrElse vColor > 0 Then
 
-                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                            Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                                          vColor,
+                                                                                                                          vProducto)
 
                             If pProductoTallaColor IsNot Nothing Then
                                 pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                                dgrid.Rows(e.RowIndex).Cells("colIdProductoTallaColor").Value = pBeStock.IdProductoTallaColor
                             End If
 
                             If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 AndAlso pBeStock.IdProductoTallaColor > 0 Then
@@ -4562,7 +4573,12 @@ Public Class frmPedido
 
             '#GT26082025: si hay un valor en talla color, asignar el idproductotallacolor
             If vTalla > 0 AndAlso vColor > 0 Then
-                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+
+                Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                              vColor,
+                                                                                                              vProducto)
                 If pProductoTallaColor IsNot Nothing Then
                     pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
                 End If

@@ -3574,5 +3574,36 @@ Partial Public Class clsLnBodega
         Return dt
     End Function
 
+    Public Shared Function Get_Maneja_Talla_Color_By_IdBodega(ByVal pIdBodega As Integer,
+                                                              ByRef lConnection As SqlConnection,
+                                                              ByRef lTransaction As SqlTransaction) As Boolean
+
+        Get_Maneja_Talla_Color_By_IdBodega = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT control_talla_color FROM bodega WHERE IdBodega=@IdBodega"
+
+            Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    Get_Maneja_Talla_Color_By_IdBodega = CBool(lReturnValue)
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

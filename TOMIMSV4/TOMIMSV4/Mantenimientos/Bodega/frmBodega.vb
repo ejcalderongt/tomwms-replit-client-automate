@@ -1182,6 +1182,8 @@ Public Class frmBodega
             '#CKFK20230209 Parámetros nuevos para el picking
             chkPermitirReemplazoPicking.Checked = pBeBodega.Permitir_Reemplazo_Picking
             chkPermitirReemplazoVerificacion.Checked = pBeBodega.Permitir_Reemplazo_Verificacion
+            '#MA20260223 MEJORAS PARA LA CUMBRE
+            chkreemplazoOpcional.Checked = pBeBodega.reemplazo_opcional
             chkPermitirNoEncontradoPicking.Checked = pBeBodega.Permitir_No_Encontrado_Picking
 
             '#EJC20220223
@@ -1505,6 +1507,7 @@ Public Class frmBodega
             pBeBodega.Ordenar_Por_Nombre_Completo = chkOrdenarNombreCompleto.Checked
             pBeBodega.Permitir_Reemplazo_Picking = chkPermitirReemplazoPicking.Checked
             pBeBodega.Permitir_Reemplazo_Verificacion = chkPermitirReemplazoVerificacion.Checked
+            pBeBodega.reemplazo_opcional = chkreemplazoOpcional.Checked
             pBeBodega.Permitir_No_Encontrado_Picking = chkPermitirNoEncontradoPicking.Checked
             pBeBodega.Permitir_Reemplazo_Picking_Misma_Licencia = chkPermitirReemplazoPickingMismaLIcencia.Checked
             pBeBodega.Filtrar_Pedidos_Usuario = chkFiltrarPedidosUsuario.Checked
@@ -1760,6 +1763,7 @@ Public Class frmBodega
                 pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
                 pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
                 pBeBodega.Control_Gondola = chkControlGondola.Checked
+                pBeBodega.Reemplazo_Opcional = chkreemplazoOpcional.Checked
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If
