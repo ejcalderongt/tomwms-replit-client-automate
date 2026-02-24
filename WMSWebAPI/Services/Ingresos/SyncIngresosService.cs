@@ -221,7 +221,7 @@ namespace WMSWebAPI.Services.Ingresos
                 throw new Exception($"Error al obtener el detalle de la orden de compra: {ex.Message}", ex);
             }
         }
-        public int Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
+        public int  Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
         {
             try
             {

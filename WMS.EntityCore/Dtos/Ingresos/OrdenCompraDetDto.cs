@@ -58,6 +58,8 @@ namespace WMSWebAPI.Dtos.Ingresos
         public clsBeArancel Arancel { get; set; } = new clsBeArancel();
         public clsBeTalla Talla { get; set; } = new clsBeTalla();
         public clsBeColor Color { get; set; } = new clsBeColor();
+        public int LayersPallet { get; set; } = 0;
+        public int BoxesLayer { get; set; } = 0;
         public List<OrdenCompraDetDto> lProductosHijosKit { get; set; } = new List<OrdenCompraDetDto>();
     }
 }
