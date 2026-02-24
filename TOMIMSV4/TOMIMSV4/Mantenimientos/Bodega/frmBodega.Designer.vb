@@ -183,6 +183,7 @@ Partial Class frmBodega
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim ButtonImageOptions2 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
         Dim Code128Generator2 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
+        Dim Label93 As System.Windows.Forms.Label
         Me.lblControlGondola = New System.Windows.Forms.Label()
         Me.Label80 = New System.Windows.Forms.Label()
         Me.Label81 = New System.Windows.Forms.Label()
@@ -432,6 +433,8 @@ Partial Class frmBodega
         Me.chkinferir_origen_en_cambio_ubic = New DevExpress.XtraEditors.CheckEdit()
         Me.chkValidarDisponibilidadEnUbicacionDestino = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.chkImprimir_Verificacion = New DevExpress.XtraEditors.CheckEdit()
+        Me.Label100 = New System.Windows.Forms.Label()
         Me.chkAdvertirMpqUmbas = New DevExpress.XtraEditors.CheckEdit()
         Me.Label87 = New System.Windows.Forms.Label()
         Me.chkAgrupar_sin_lic_veri_no_cons = New DevExpress.XtraEditors.CheckEdit()
@@ -479,6 +482,8 @@ Partial Class frmBodega
         Me.chkCapturaEstibaIngreso = New DevExpress.XtraEditors.CheckEdit()
         Me.chkPermitirRepeticionesEnIngreso = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbEtiquetaVerificacion = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label99 = New System.Windows.Forms.Label()
         Me.Bcc = New DevExpress.XtraEditors.BarCodeControl()
         Me.cmbSymbology = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbEtiqueta = New DevExpress.XtraEditors.LookUpEdit()
@@ -534,10 +539,7 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.chkImprimir_Verificacion = New DevExpress.XtraEditors.CheckEdit()
-        Me.Label100 = New System.Windows.Forms.Label()
-        Me.cmbEtiquetaVerificacion = New DevExpress.XtraEditors.LookUpEdit()
-        Me.Label99 = New System.Windows.Forms.Label()
+        Me.chkreemplazoOpcional = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -663,6 +665,7 @@ Partial Class frmBodega
         Label90 = New System.Windows.Forms.Label()
         Label91 = New System.Windows.Forms.Label()
         Label92 = New System.Windows.Forms.Label()
+        Label93 = New System.Windows.Forms.Label()
         CType(Me.User_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_modTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -888,6 +891,7 @@ Partial Class frmBodega
         CType(Me.chkinferir_origen_en_cambio_ubic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox4.SuspendLayout()
+        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkAgrupar_sin_lic_veri_no_cons.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkVerificacion_Consolidada.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -933,6 +937,7 @@ Partial Class frmBodega
         CType(Me.chkPermitirRepeticionesEnIngreso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbSymbology.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEtiqueta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtHorarioEjecucionHistorico.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -967,8 +972,7 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -5102,6 +5106,8 @@ Partial Class frmBodega
         '
         'GroupBox4
         '
+        Me.GroupBox4.Controls.Add(Me.chkreemplazoOpcional)
+        Me.GroupBox4.Controls.Add(Label93)
         Me.GroupBox4.Controls.Add(Me.chkImprimir_Verificacion)
         Me.GroupBox4.Controls.Add(Me.Label100)
         Me.GroupBox4.Controls.Add(Me.chkAdvertirMpqUmbas)
@@ -5136,6 +5142,25 @@ Partial Class frmBodega
         Me.GroupBox4.TabIndex = 123
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Salidas"
+        '
+        'chkImprimir_Verificacion
+        '
+        Me.chkImprimir_Verificacion.Location = New System.Drawing.Point(688, 149)
+        Me.chkImprimir_Verificacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkImprimir_Verificacion.Name = "chkImprimir_Verificacion"
+        Me.chkImprimir_Verificacion.Properties.Caption = ""
+        Me.chkImprimir_Verificacion.Size = New System.Drawing.Size(23, 24)
+        Me.chkImprimir_Verificacion.TabIndex = 127
+        '
+        'Label100
+        '
+        Me.Label100.AutoSize = True
+        Me.Label100.Location = New System.Drawing.Point(383, 149)
+        Me.Label100.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label100.Name = "Label100"
+        Me.Label100.Size = New System.Drawing.Size(124, 16)
+        Me.Label100.TabIndex = 126
+        Me.Label100.Text = "Imprimir verificacion"
         '
         'chkAdvertirMpqUmbas
         '
@@ -5713,6 +5738,26 @@ Partial Class frmBodega
         Me.GroupControl2.TabIndex = 0
         Me.GroupControl2.Text = "Ubicaciones por defecto"
         '
+        'cmbEtiquetaVerificacion
+        '
+        Me.cmbEtiquetaVerificacion.Location = New System.Drawing.Point(258, 670)
+        Me.cmbEtiquetaVerificacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbEtiquetaVerificacion.Name = "cmbEtiquetaVerificacion"
+        Me.cmbEtiquetaVerificacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEtiquetaVerificacion.Properties.NullText = ""
+        Me.cmbEtiquetaVerificacion.Size = New System.Drawing.Size(124, 22)
+        Me.cmbEtiquetaVerificacion.TabIndex = 49
+        '
+        'Label99
+        '
+        Me.Label99.AutoSize = True
+        Me.Label99.Location = New System.Drawing.Point(21, 670)
+        Me.Label99.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label99.Name = "Label99"
+        Me.Label99.Size = New System.Drawing.Size(123, 16)
+        Me.Label99.TabIndex = 48
+        Me.Label99.Text = "Etiqueta Verificación"
+        '
         'Bcc
         '
         Me.Bcc.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -6274,44 +6319,26 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'chkImprimir_Verificacion
+        'Label93
         '
-        Me.chkImprimir_Verificacion.Location = New System.Drawing.Point(688, 149)
-        Me.chkImprimir_Verificacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.chkImprimir_Verificacion.Name = "chkImprimir_Verificacion"
-        Me.chkImprimir_Verificacion.Properties.Caption = ""
-        Me.chkImprimir_Verificacion.Size = New System.Drawing.Size(23, 24)
-        Me.chkImprimir_Verificacion.TabIndex = 127
+        Label93.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label93.AutoSize = True
+        Label93.Location = New System.Drawing.Point(10, 263)
+        Label93.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label93.Name = "Label93"
+        Label93.Size = New System.Drawing.Size(123, 16)
+        Label93.TabIndex = 128
+        Label93.Text = "Reemplazo Opcional"
         '
-        'Label100
+        'chkreemplazoOpcional
         '
-        Me.Label100.AutoSize = True
-        Me.Label100.Location = New System.Drawing.Point(383, 149)
-        Me.Label100.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label100.Name = "Label100"
-        Me.Label100.Size = New System.Drawing.Size(124, 16)
-        Me.Label100.TabIndex = 126
-        Me.Label100.Text = "Imprimir verificacion"
-        '
-        'cmbEtiquetaVerificacion
-        '
-        Me.cmbEtiquetaVerificacion.Location = New System.Drawing.Point(258, 670)
-        Me.cmbEtiquetaVerificacion.Margin = New System.Windows.Forms.Padding(4)
-        Me.cmbEtiquetaVerificacion.Name = "cmbEtiquetaVerificacion"
-        Me.cmbEtiquetaVerificacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbEtiquetaVerificacion.Properties.NullText = ""
-        Me.cmbEtiquetaVerificacion.Size = New System.Drawing.Size(124, 22)
-        Me.cmbEtiquetaVerificacion.TabIndex = 49
-        '
-        'Label99
-        '
-        Me.Label99.AutoSize = True
-        Me.Label99.Location = New System.Drawing.Point(21, 670)
-        Me.Label99.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label99.Name = "Label99"
-        Me.Label99.Size = New System.Drawing.Size(123, 16)
-        Me.Label99.TabIndex = 48
-        Me.Label99.Text = "Etiqueta Verificación"
+        Me.chkreemplazoOpcional.Location = New System.Drawing.Point(336, 259)
+        Me.chkreemplazoOpcional.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkreemplazoOpcional.Name = "chkreemplazoOpcional"
+        Me.chkreemplazoOpcional.Properties.Caption = ""
+        Me.chkreemplazoOpcional.Size = New System.Drawing.Size(28, 24)
+        Me.chkreemplazoOpcional.TabIndex = 129
         '
         'frmBodega
         '
@@ -6579,6 +6606,7 @@ Partial Class frmBodega
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
+        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkAgrupar_sin_lic_veri_no_cons.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkVerificacion_Consolidada.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6628,6 +6656,7 @@ Partial Class frmBodega
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
         Me.GroupControl2.PerformLayout()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbSymbology.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEtiqueta.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtHorarioEjecucionHistorico.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6663,8 +6692,7 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -7024,4 +7052,5 @@ Partial Class frmBodega
     Friend WithEvents Label100 As Label
     Friend WithEvents cmbEtiquetaVerificacion As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents Label99 As Label
+    Friend WithEvents chkreemplazoOpcional As DevExpress.XtraEditors.CheckEdit
 End Class
