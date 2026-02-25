@@ -382,7 +382,12 @@ Public Class clsLnProducto_talla_color
 			If ExisteBySKU(oBeProducto_talla_color.CodigoSKU, pConection, pTransaction) Then
 				Actualizar(oBeProducto_talla_color, pConection, pTransaction)
 			Else
-				oBeProducto_talla_color.IdProductoTallaColor = MaxID(pConection, pTransaction) + 1
+				If pConection Is Nothing OrElse pTransaction Is Nothing Then
+					oBeProducto_talla_color.IdProductoTallaColor = MaxID() + 1
+				Else
+					oBeProducto_talla_color.IdProductoTallaColor = MaxID(pConection, pTransaction) + 1
+				End If
+
 				Insertar(oBeProducto_talla_color, pConection, pTransaction)
 			End If
 		Catch ex As Exception

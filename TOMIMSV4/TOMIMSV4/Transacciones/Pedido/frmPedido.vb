@@ -8274,8 +8274,11 @@ Public Class frmPedido
                         End If
 
                         SplashScreenManager.Default.SetWaitFormDescription("Existencias. ")
-                        Dim taskEx As Task = Task.Run(Sub() Cargar_Existencias_Pedido())
-                        taskEx.Wait()
+                        Cargar_Existencias_Pedido()
+
+                        '#CKFK20260225 Puse este task en comentario
+                        'Dim taskEx As Task = Task.Run(Sub() Cargar_Existencias_Pedido())
+                        'taskEx.Wait()
 
                 End Select
 

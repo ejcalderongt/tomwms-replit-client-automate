@@ -2039,6 +2039,7 @@ Public Class frmCargaExcel
                     Else
                         If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
                             errorCampos = True
+                            errorCargaInv = True
                             clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El código del producto " & pDT(i)(0) & "en la fila " & i + 1 & " no existe en la bd.")
                             Continue For
                         End If
@@ -2214,9 +2215,7 @@ Public Class frmCargaExcel
                                                Color,
                                                IdProductoTallaColor)
 
-                End If
-
-                If errorCampos Then
+                Else
                     errorCargaInv = True
                 End If
 

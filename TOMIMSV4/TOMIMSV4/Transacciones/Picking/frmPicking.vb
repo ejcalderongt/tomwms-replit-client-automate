@@ -3375,6 +3375,7 @@ Public Class frmPicking
                     mnuProcesarLinea.Enabled = False
                     mnuVerificarPickeados.Enabled = False
                     txtReferencia.Text = pReferencia
+                    mnuReemplazo.Enabled = False
 
                     If Not PickingAuto Then
                         BePickingEnc = New clsBeTrans_picking_enc With {.IsNew = True}
