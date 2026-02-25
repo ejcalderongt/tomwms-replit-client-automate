@@ -9111,6 +9111,9 @@ Partial Public Class clsLnTrans_re_enc
                     BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
                     BeTransReDet.IdOrdenCompraDet = BeOCDet.IdOrdenCompraDet
                     BeTransReDet.IdJornadaSistema = 0
+                    BeTransReDet.Talla.IdTalla = BeOCDet.Talla.IdTalla
+                    BeTransReDet.Color.IdColor = BeOCDet.Color.IdColor
+                    BeTransReDet.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
                     lBeRecDet.Add(BeTransReDet)
 
                     BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
@@ -9142,6 +9145,9 @@ Partial Public Class clsLnTrans_re_enc
                     BeStockRec.Atributo_Variante_1 = BeTransReDet.Atributo_Variante_1
                     BeStockRec.IdBodega = BeRecepcionEnc.IdBodega
                     BeStockRec.Pallet_No_Estandar = False
+                    BeStockRec.Talla = BeOCDet.Talla.Codigo
+                    BeStockRec.Color = BeOCDet.Color.Codigo
+                    BeStockRec.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
                     lBeStockRec.Add(BeStockRec)
 
                 Next

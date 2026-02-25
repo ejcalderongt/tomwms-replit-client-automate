@@ -25,7 +25,8 @@ Partial Public Class clsLnTrans_oc_det
 	                                     det.nombre_propietario, det.IdOrdenCompraDetPadre, det.IdEmbarcador, det.IdProductoTallaColor,
                                          ta.Codigo AS codigo_talla,
                                          co.Codigo AS codigo_color,
-                                         ta.IdTalla, co.IdColor 
+                                         ta.IdTalla, co.IdColor,
+                                         det.camas_tarima, det.cajas_cama
                                   FROM trans_oc_enc as enc  inner join trans_oc_det AS det ON enc.IdOrdenCompraEnc = det.IdOrdenCompraEnc INNER JOIN 
                                        producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega INNER JOIN 
                                        producto AS p ON pb.IdProducto = p.IdProducto  

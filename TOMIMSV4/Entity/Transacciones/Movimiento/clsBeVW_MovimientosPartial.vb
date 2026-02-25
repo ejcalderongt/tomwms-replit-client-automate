@@ -23,5 +23,7 @@
     Public Property contenedor_salida As String = ""
     Public Property NombreArea As String = ""
     Public Property Operador As String = ""
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
 
 End Class

@@ -4463,7 +4463,8 @@ Partial Public Class clsLnStock_res
                                   IdPropietarioBodega, IdProductoBodega, IdProductoEstado, IdPresentacion, IdUnidadMedida, 
                                   IdUbicacion, ubicacion_ant, IdRecepcion, lote, lic_plate, serial, cantidad, peso, estado, 
                                   fecha_ingreso, fecha_vence, uds_lic_plate, no_bulto, IdPicking, IdPedido, 
-                                  IdDespacho, user_agr, fec_agr, user_mod, fec_mod, host, añada, fecha_manufactura, pallet_no_estandar
+                                  IdDespacho, user_agr, fec_agr, user_mod, fec_mod, host, añada, fecha_manufactura, pallet_no_estandar,
+                                  talla, color, IdProductoTallaColor
                                   FROM stock_res
                                   WHERE (IdPedidoDet = @IdPedidoDet) AND (IdPropietarioBodega = @IdPropietarioBodega) 
                                   AND (IdPicking = @IdPickingEnc) AND (IdPedido = @IdPedidoEnc) 
