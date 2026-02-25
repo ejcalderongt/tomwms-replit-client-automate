@@ -179,11 +179,11 @@ Partial Class frmBodega
         Dim Label90 As System.Windows.Forms.Label
         Dim Label91 As System.Windows.Forms.Label
         Dim Label92 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim ButtonImageOptions2 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
-        Dim Code128Generator2 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Dim Label93 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim ButtonImageOptions1 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
+        Dim Code128Generator1 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Me.lblControlGondola = New System.Windows.Forms.Label()
         Me.Label80 = New System.Windows.Forms.Label()
         Me.Label81 = New System.Windows.Forms.Label()
@@ -433,6 +433,9 @@ Partial Class frmBodega
         Me.chkinferir_origen_en_cambio_ubic = New DevExpress.XtraEditors.CheckEdit()
         Me.chkValidarDisponibilidadEnUbicacionDestino = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.cmbEstadoDefectoRack = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label94 = New System.Windows.Forms.Label()
+        Me.chkreemplazoOpcional = New DevExpress.XtraEditors.CheckEdit()
         Me.chkImprimir_Verificacion = New DevExpress.XtraEditors.CheckEdit()
         Me.Label100 = New System.Windows.Forms.Label()
         Me.chkAdvertirMpqUmbas = New DevExpress.XtraEditors.CheckEdit()
@@ -539,7 +542,6 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.chkreemplazoOpcional = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -891,6 +893,8 @@ Partial Class frmBodega
         CType(Me.chkinferir_origen_en_cambio_ubic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox4.SuspendLayout()
+        CType(Me.cmbEstadoDefectoRack.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkAgrupar_sin_lic_veri_no_cons.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -972,7 +976,6 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -2343,6 +2346,18 @@ Partial Class frmBodega
         Label92.TabIndex = 60
         Label92.Text = "Password:"
         '
+        'Label93
+        '
+        Label93.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label93.AutoSize = True
+        Label93.Location = New System.Drawing.Point(10, 263)
+        Label93.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label93.Name = "Label93"
+        Label93.Size = New System.Drawing.Size(123, 16)
+        Label93.TabIndex = 128
+        Label93.Text = "Reemplazo Opcional"
+        '
         'lblControlGondola
         '
         Me.lblControlGondola.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -3289,8 +3304,8 @@ Partial Class frmBodega
         '
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        GridLevelNode2.RelationName = "Level1"
-        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.Dgrid.Location = New System.Drawing.Point(0, 180)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -3474,7 +3489,7 @@ Partial Class frmBodega
         Me.gpSmtp.Controls.Add(Label88)
         Me.gpSmtp.Controls.Add(Label89)
         Me.gpSmtp.Controls.Add(Label90)
-        Me.gpSmtp.CustomHeaderButtons.AddRange(New DevExpress.XtraEditors.ButtonPanel.IBaseButton() {New DevExpress.XtraEditors.ButtonsPanelControl.GroupBoxButton("Limpiar", True, ButtonImageOptions2, DevExpress.XtraBars.Docking2010.ButtonStyle.PushButton, "", -1, True, Nothing, True, False, True, Nothing, -1)})
+        Me.gpSmtp.CustomHeaderButtons.AddRange(New DevExpress.XtraEditors.ButtonPanel.IBaseButton() {New DevExpress.XtraEditors.ButtonsPanelControl.GroupBoxButton("Limpiar", True, ButtonImageOptions1, DevExpress.XtraBars.Docking2010.ButtonStyle.PushButton, "", -1, True, Nothing, True, False, True, Nothing, -1)})
         Me.gpSmtp.CustomHeaderButtonsLocation = DevExpress.Utils.GroupElementLocation.AfterText
         Me.gpSmtp.Location = New System.Drawing.Point(687, 320)
         Me.gpSmtp.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
@@ -5143,6 +5158,34 @@ Partial Class frmBodega
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Salidas"
         '
+        'cmbEstadoDefectoRack
+        '
+        Me.cmbEstadoDefectoRack.Location = New System.Drawing.Point(283, 249)
+        Me.cmbEstadoDefectoRack.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbEstadoDefectoRack.Name = "cmbEstadoDefectoRack"
+        Me.cmbEstadoDefectoRack.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEstadoDefectoRack.Properties.NullText = ""
+        Me.cmbEstadoDefectoRack.Size = New System.Drawing.Size(124, 22)
+        Me.cmbEstadoDefectoRack.TabIndex = 132
+        '
+        'Label94
+        '
+        Me.Label94.AutoSize = True
+        Me.Label94.Location = New System.Drawing.Point(10, 252)
+        Me.Label94.Name = "Label94"
+        Me.Label94.Size = New System.Drawing.Size(119, 16)
+        Me.Label94.TabIndex = 130
+        Me.Label94.Text = "Estado defecto rack"
+        '
+        'chkreemplazoOpcional
+        '
+        Me.chkreemplazoOpcional.Location = New System.Drawing.Point(336, 259)
+        Me.chkreemplazoOpcional.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkreemplazoOpcional.Name = "chkreemplazoOpcional"
+        Me.chkreemplazoOpcional.Properties.Caption = ""
+        Me.chkreemplazoOpcional.Size = New System.Drawing.Size(28, 24)
+        Me.chkreemplazoOpcional.TabIndex = 129
+        '
         'chkImprimir_Verificacion
         '
         Me.chkImprimir_Verificacion.Location = New System.Drawing.Point(688, 149)
@@ -5588,7 +5631,9 @@ Partial Class frmBodega
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.cmbEstadoDefectoRack)
         Me.GroupBox1.Controls.Add(Me.Label81)
+        Me.GroupBox1.Controls.Add(Me.Label94)
         Me.GroupBox1.Controls.Add(Me.chkPermitirCambioUbicacionRecepcion)
         Me.GroupBox1.Controls.Add(Me.chkBloquearLpHH)
         Me.GroupBox1.Controls.Add(Label51)
@@ -5766,7 +5811,7 @@ Partial Class frmBodega
         Me.Bcc.Name = "Bcc"
         Me.Bcc.Padding = New System.Windows.Forms.Padding(12, 2, 12, 0)
         Me.Bcc.Size = New System.Drawing.Size(195, 53)
-        Me.Bcc.Symbology = Code128Generator2
+        Me.Bcc.Symbology = Code128Generator1
         Me.Bcc.TabIndex = 45
         '
         'cmbSymbology
@@ -6319,27 +6364,6 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'Label93
-        '
-        Label93.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label93.AutoSize = True
-        Label93.Location = New System.Drawing.Point(10, 263)
-        Label93.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label93.Name = "Label93"
-        Label93.Size = New System.Drawing.Size(123, 16)
-        Label93.TabIndex = 128
-        Label93.Text = "Reemplazo Opcional"
-        '
-        'chkreemplazoOpcional
-        '
-        Me.chkreemplazoOpcional.Location = New System.Drawing.Point(336, 259)
-        Me.chkreemplazoOpcional.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.chkreemplazoOpcional.Name = "chkreemplazoOpcional"
-        Me.chkreemplazoOpcional.Properties.Caption = ""
-        Me.chkreemplazoOpcional.Size = New System.Drawing.Size(28, 24)
-        Me.chkreemplazoOpcional.TabIndex = 129
-        '
         'frmBodega
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -6606,6 +6630,8 @@ Partial Class frmBodega
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
+        CType(Me.cmbEstadoDefectoRack.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkAgrupar_sin_lic_veri_no_cons.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6692,7 +6718,6 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -7053,4 +7078,6 @@ Partial Class frmBodega
     Friend WithEvents cmbEtiquetaVerificacion As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents Label99 As Label
     Friend WithEvents chkreemplazoOpcional As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents Label94 As Label
+    Friend WithEvents cmbEstadoDefectoRack As DevExpress.XtraEditors.LookUpEdit
 End Class

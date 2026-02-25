@@ -122,8 +122,7 @@ Public Class clsLnBodega
                 .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
                 .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
                 .Reemplazo_Opcional = IIf(IsDBNull(dr.Item("reemplazo_opcional")), False, dr.Item("reemplazo_opcional"))
-
-
+                .Estado_Defecto_Rack = IIf(IsDBNull(dr.Item("estado_defecto_rack")), 0, dr.Item("estado_defecto_rack"))
             End With
 
         Catch ex1 As SqlException
@@ -251,6 +250,7 @@ Public Class clsLnBodega
             Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Ins.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
+            Ins.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -374,6 +374,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
             cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
+            cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -511,6 +512,7 @@ Public Class clsLnBodega
             Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Upd.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
+            Upd.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -633,7 +635,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
-            cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.reemplazo_opcional))
+            cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
+            cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

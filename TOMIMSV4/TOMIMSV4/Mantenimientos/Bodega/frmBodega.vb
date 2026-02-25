@@ -92,6 +92,13 @@ Public Class frmBodega
         CargaSimbolosCodigoBarra()
         CargaComboEtiquetas()
         Buscar_Registro()
+        '#MA20260225 Estado defecto rack
+        CargarComboEstadosRack()
+        If pBeBodega.Estado_Defecto_Rack > 0 Then
+            cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
+        Else
+            cmbEstadoDefectoRack.EditValue = 0
+        End If
 
         txtCodigo.Focus()
 
@@ -1292,6 +1299,11 @@ Public Class frmBodega
             cmbCentroCostoERP.EditValue = pBeBodega.Centro_Costo_Erp
             cmbCentroCostoDirERP.EditValue = pBeBodega.Centro_Costo_Dir_Erp
             cmbCentroCostoDepERP.EditValue = pBeBodega.Centro_Costo_Dep_Erp
+            If pBeBodega.Estado_Defecto_Rack > 0 Then
+                cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
+            Else
+                cmbEstadoDefectoRack.EditValue = 0
+            End If
 
         Catch ex As Exception
 
@@ -1534,7 +1546,15 @@ Public Class frmBodega
 
             pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
             pBeBodega.Control_Gondola = chkControlGondola.Checked
-
+            If cmbEstadoDefectoRack IsNot Nothing AndAlso cmbEstadoDefectoRack.EditValue IsNot Nothing Then
+                If IsNumeric(cmbEstadoDefectoRack.EditValue) Then
+                    pBeBodega.Estado_Defecto_Rack = Integer.Parse(cmbEstadoDefectoRack.EditValue.ToString())
+                Else
+                    pBeBodega.Estado_Defecto_Rack = 0
+                End If
+            Else
+                pBeBodega.Estado_Defecto_Rack = 0
+            End If
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1764,6 +1784,16 @@ Public Class frmBodega
                 pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
                 pBeBodega.Control_Gondola = chkControlGondola.Checked
                 pBeBodega.Reemplazo_Opcional = chkreemplazoOpcional.Checked
+                If cmbEstadoDefectoRack IsNot Nothing AndAlso cmbEstadoDefectoRack.EditValue IsNot Nothing Then
+                    If IsNumeric(cmbEstadoDefectoRack.EditValue) Then
+                        pBeBodega.Estado_Defecto_Rack = Integer.Parse(cmbEstadoDefectoRack.EditValue.ToString())
+                    Else
+                        pBeBodega.Estado_Defecto_Rack = 0
+                    End If
+                Else
+                    pBeBodega.Estado_Defecto_Rack = 0
+                End If
+
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If
@@ -5393,4 +5423,34 @@ Public Class frmBodega
 
     End Sub
 
+    '#MA20260225 Estado defecto rack
+    Private Sub CargarComboEstadosRack()
+        Try
+            Dim dt As New DataTable()
+            dt.Columns.Add("ID", GetType(Integer))
+            dt.Columns.Add("Nombre", GetType(String))
+
+            dt.Rows.Add(0, "Seleccionar")
+
+            Dim listaEstados As List(Of clsBeProducto_estado) = clsLnProducto_estado.GetAll()
+
+            For Each est In listaEstados
+                If est IsNot Nothing Then
+                    dt.Rows.Add(est.IdEstado, est.Nombre)
+                End If
+            Next
+
+            With cmbEstadoDefectoRack.Properties
+                .DataSource = dt
+                .DisplayMember = "Nombre"
+                .ValueMember = "ID"
+                .PopulateColumns()
+            End With
+
+            cmbEstadoDefectoRack.EditValue = 0
+
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
 End Class
