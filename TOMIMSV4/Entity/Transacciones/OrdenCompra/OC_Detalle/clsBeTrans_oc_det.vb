@@ -59,6 +59,10 @@ Public Class clsBeTrans_oc_det
     Public Property Nombre_Clasificacion As String = ""
     Public Property IdProductoTallaColor As Integer = 0
 
+    Public Property Camas_Tarima As Integer = 0
+
+    Public Property Cajas_Cama As Integer = 0
+
     Sub New()
     End Sub
 

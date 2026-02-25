@@ -67,7 +67,8 @@ namespace WMSWebAPI.Be
         public string Barcode { get; set; } = "";
         public string Size { get; set; } = "";
         public string Color { get; set; } = "";
-
+        public  int LayersPallet { get; set; } = 0;
+        public int BoxesLayer { get; set; } = 0;    
         public clsBeI_nav_ped_compra_det() { }
 
         public object Clone()

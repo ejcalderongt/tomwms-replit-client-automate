@@ -1889,8 +1889,6 @@ Partial Public Class clsLnTrans_re_det
 
                     For Each BeRecDet As clsBeTrans_re_det In pListRecDet
 
-
-
                         If BeRecDet.IsNew Then
                             Insertar(BeRecDet,
                                      lConnection,

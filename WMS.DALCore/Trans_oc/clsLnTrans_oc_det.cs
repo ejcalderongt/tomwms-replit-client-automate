@@ -126,6 +126,8 @@ public class clsLnTrans_oc_det
             Ins.Add("nombre_propietario", "@nombre_propietario", "F");
             Ins.Add("idordencompradetpadre", "@idordencompradetpadre", "F");
             Ins.Add("idembarcador", "@idembarcador", "F");
+            Ins.Add("camas_tarima", "@camas_tarima", "F");
+            Ins.Add("cajas_cama", "@cajas_cama", "F");
 
             string sp = Ins.SQL();
 
@@ -200,6 +202,8 @@ public class clsLnTrans_oc_det
             Upd.Add("nombre_propietario", "@nombre_propietario", "F");
             Upd.Add("idordencompradetpadre", "@idordencompradetpadre", "F");
             Upd.Add("idembarcador", "@idembarcador", "F");
+            Upd.Add("camas_tarima", "@camas_tarima", "F");
+            Upd.Add("cajas_cama", "@cajas_cama", "F");
             Upd.Where("IdOrdenCompraEnc = @IdOrdenCompraEnc AND IdOrdenCompraDet = @IdOrdenCompraDet");
 
             string sp = Upd.SQL();
@@ -471,7 +475,7 @@ public class clsLnTrans_oc_det
             throw new Exception(vMsgError, ex1);
         }       
     }
-    public static void BindParameters(SqlCommand cmd, dynamic oBeTrans_oc_det)
+    public static void BindParameters(SqlCommand cmd, clsBeTrans_oc_det oBeTrans_oc_det)
     {
         void AddParam(string name, object value) => cmd.Parameters.Add(new SqlParameter(name, value ?? DBNull.Value));
         object NullIfZero(object value) => (value is int intValue && intValue == 0) ? DBNull.Value : value;
@@ -514,6 +518,8 @@ public class clsLnTrans_oc_det
         AddParam("@nombre_propietario", oBeTrans_oc_det.Nombre_propietario);
         AddParam("@IdOrdenCompraDetPadre", NullIfZero(oBeTrans_oc_det.IdOrdenCompraDetPadre));
         AddParam("@IdEmbarcador", NullIfZero(oBeTrans_oc_det.IdEmbarcador));
+        AddParam("@camas_tarima", NullIfZero(oBeTrans_oc_det.Camas_Tarima));
+        AddParam("@cajas_cama", NullIfZero(oBeTrans_oc_det.Cajas_Cama));
     }
     public static void InsertarOActualizar(List<clsBeTrans_oc_det> entities, SqlConnection conn, SqlTransaction tx)
     {
@@ -740,6 +746,8 @@ public class clsLnTrans_oc_det
             Upd.Add("user_mod", "@user_mod", "F");
             Upd.Add("fec_mod", "@fec_mod", "F");
             Upd.Add("activo", "@activo", "F");
+            Upd.Add("camas_tarima", "@camas_tarima", "F");
+            Upd.Add("cajas_cama", "@cajas_cama", "F");
 
             if (oBeTrans_oc_det.Atributo_variante_1 != null)
             {
@@ -786,6 +794,9 @@ public class clsLnTrans_oc_det
             cmd.Parameters.Add(new SqlParameter("@USER_MOD", oBeTrans_oc_det.User_mod));
             cmd.Parameters.Add(new SqlParameter("@FEC_MOD", oBeTrans_oc_det.Fec_mod));
             cmd.Parameters.Add(new SqlParameter("@ACTIVO", oBeTrans_oc_det.Activo));
+            cmd.Parameters.Add(new SqlParameter("@camas_tarima", oBeTrans_oc_det.Camas_Tarima));
+            cmd.Parameters.Add(new SqlParameter("@cajas_cama", oBeTrans_oc_det.Cajas_Cama));
+
 
             if (oBeTrans_oc_det.Atributo_variante_1 != null)
             {

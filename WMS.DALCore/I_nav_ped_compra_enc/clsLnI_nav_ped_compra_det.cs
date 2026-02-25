@@ -35,6 +35,8 @@ public class clsLnI_nav_ped_compra_det
             oBeI_nav_ped_compra_det.Planed_Receipt_Date = GetDate("Planed_Receipt_Date");
             oBeI_nav_ped_compra_det.Variant_Code = GetString("Variant_Code");
             oBeI_nav_ped_compra_det.Fec_agr = GetDate("fec_agr");
+            oBeI_nav_ped_compra_det.LayersPallet= GetInt("LayersPallet");
+            oBeI_nav_ped_compra_det.BoxesLayer = GetInt("BoxesLayer");
         }
         catch (Exception ex)
         {
@@ -70,6 +72,8 @@ public class clsLnI_nav_ped_compra_det
             Ins.Add("planed_receipt_date", "@planed_receipt_date", "F");
             Ins.Add("variant_code", "@variant_code", "F");
             Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("LayersPallet", "@LayersPallet", "F");
+            Ins.Add("BoxesLayer", "@BoxesLayer", "F");
 
             string sp = Ins.SQL();
 
@@ -102,6 +106,8 @@ public class clsLnI_nav_ped_compra_det
             cmd.Parameters.Add(new SqlParameter("@Planed_Receipt_Date", oBeI_nav_ped_compra_det.Planed_Receipt_Date));
             cmd.Parameters.Add(new SqlParameter("@Variant_Code", oBeI_nav_ped_compra_det.Variant_Code));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@LayersPallet", oBeI_nav_ped_compra_det.LayersPallet));
+            cmd.Parameters.Add(new SqlParameter("@BoxesLayer", oBeI_nav_ped_compra_det.BoxesLayer));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -158,6 +164,8 @@ public class clsLnI_nav_ped_compra_det
             Ins.Add("planed_receipt_date", "@planed_receipt_date", "F");
             Ins.Add("variant_code", "@variant_code", "F");
             Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("LayersPallet", "@LayersPallet", "F");
+            Ins.Add("BoxesLayer", "@BoxesLayer", "F");
 
             string sp = Ins.SQL();
 
@@ -181,6 +189,8 @@ public class clsLnI_nav_ped_compra_det
             cmd.Parameters.Add(new SqlParameter("@Planed_Receipt_Date", oBeI_nav_ped_compra_det.Planed_Receipt_Date));
             cmd.Parameters.Add(new SqlParameter("@Variant_Code", oBeI_nav_ped_compra_det.Variant_Code));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@LayersPallet", oBeI_nav_ped_compra_det.LayersPallet));
+            cmd.Parameters.Add(new SqlParameter("@BoxesLayer", oBeI_nav_ped_compra_det.BoxesLayer));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -234,6 +244,8 @@ public class clsLnI_nav_ped_compra_det
             Upd.Add("planed_receipt_date", "@planed_receipt_date", "F");
             Upd.Add("variant_code", "@variant_code", "F");
             Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("LayersPallet", "@LayersPallet", "F");
+            Upd.Add("BoxesLayer", "@BoxesLayer", "F");
             Upd.Where("NoEnc = @NoEnc " +
                 " AND No = @No" +
                 " AND Line_No = @Line_No");
@@ -269,6 +281,8 @@ public class clsLnI_nav_ped_compra_det
             cmd.Parameters.Add(new SqlParameter("@Planed_Receipt_Date", oBeI_nav_ped_compra_det.Planed_Receipt_Date));
             cmd.Parameters.Add(new SqlParameter("@Variant_Code", oBeI_nav_ped_compra_det.Variant_Code));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@LayersPallet", oBeI_nav_ped_compra_det.LayersPallet));
+            cmd.Parameters.Add(new SqlParameter("@BoxesLayer", oBeI_nav_ped_compra_det.BoxesLayer));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -415,19 +429,7 @@ public class clsLnI_nav_ped_compra_det
 
             dad.SelectCommand.Parameters.Add(new SqlParameter("@NoEnc", pBeI_nav_ped_compra_det.NoEnc));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@No", pBeI_nav_ped_compra_det.No));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Line_No", pBeI_nav_ped_compra_det.Line_No));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Type", pBeI_nav_ped_compra_det.Type));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Description", pBeI_nav_ped_compra_det.Description));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Description2", pBeI_nav_ped_compra_det.Description2));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Location_Code", pBeI_nav_ped_compra_det.Location_Code));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Quantity", pBeI_nav_ped_compra_det.Quantity));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Unit_Of_Measure_Code", pBeI_nav_ped_compra_det.Unit_Of_Measure_Code));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Direct_Unit_Cost", pBeI_nav_ped_compra_det.Direct_Unit_Cost));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Line_Amount", pBeI_nav_ped_compra_det.Line_Amount));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Quantity_Received", pBeI_nav_ped_compra_det.Quantity_Received));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Planed_Receipt_Date", pBeI_nav_ped_compra_det.Planed_Receipt_Date));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Variant_Code", pBeI_nav_ped_compra_det.Variant_Code));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@fec_agr", pBeI_nav_ped_compra_det.Fec_agr));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@Line_No", pBeI_nav_ped_compra_det.Line_No));            
 
             DataTable dt = new DataTable();
             dad.Fill(dt);

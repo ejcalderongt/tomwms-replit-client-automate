@@ -231,7 +231,6 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                         lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido)
 
                         Dim vvEmpresa As pEmpresa = [Enum].Parse(GetType(pEmpresa), vCodEmpresaPed)
-                        Dim vNoPedidoSap As Integer = 0
 
                         Dim vNoPedidoSap As String = If(PT.No_pedido.StartsWith("K") OrElse PT.No_pedido.StartsWith("G"), PT.No_pedido.Substring(1), PT.No_pedido)
 
@@ -901,8 +900,6 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             If conn IsNot Nothing Then sapPool.ReleaseConnection(conn)
         End Try
     End Function
-
-    End Function
     Public Shared Function Enviar_Transferencia_Stock_SAP(ByVal _DocEntry As Integer,
                                                            ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
                                                            ByRef lblprg As RichTextBox,
@@ -1239,5 +1236,4 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Return Decimal.TryParse(value, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture, result)
     End Function
 
-    End Class
 End Class
