@@ -363,5 +363,6 @@ Public Class clsBeBodegaBase
     Public Property Control_Gondola As Boolean = False
     Public Property Packing_Consolidado_Guia As Boolean = False
     Public Property Reemplazo_Opcional As Boolean = False
+    Public Property Estado_Defecto_Rack As Integer = 0
 
 End Class
