@@ -1472,8 +1472,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                               lConnection,
                                                                               lTransaction)
 
-                                            NuevoBePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                                            '#EJC20260226: Se utilizará identity.
+                                            'NuevoBePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                                             NuevoBePickingUbic.Cantidad_Solicitada = BePickingUbic.Cantidad_Solicitada - BePickingUbic.Cantidad_Verificada
                                             NuevoBePickingUbic.Cantidad_Recibida = BePickingUbic.Cantidad_Recibida - BePickingUbic.Cantidad_Verificada
                                             NuevoBePickingUbic.Cantidad_Verificada = 0
