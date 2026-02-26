@@ -64,6 +64,7 @@ Public Class clsLnTrans_oc_det
                 .IdEmbarcador = IIf(IsDBNull(dr.Item("IdEmbarcador")), 0, dr.Item("IdEmbarcador"))
 
                 .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+
             End With
 
         Catch ex As Exception

@@ -2249,7 +2249,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                 BeNuevoStockResPickeado.Cantidad = vCantidadARestarStock
                 BeNuevoStockPickeado.Peso = pBeTrans_picking_ubic.Peso_recibido
-                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
+                'BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
                 BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                 BeNuevoStockResPickeado.Estado = "PICKEADO"
                 clsLnStock_res.Insertar(BeNuevoStockResPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
@@ -3418,22 +3418,22 @@ Partial Public Class clsLnTrans_picking_ubic
 
                             If Not Es_Transaccion_Remota Then
                                 FilasAfectadas = clsLnStock.Actualizar_IdUbicacion_By_IdStock(vIdUbicacionPickingByBodega,
-                                                                                      oBeTrans_picking_ubic.IdUbicacion,
-                                                                                      oBeTrans_picking_ubic.IdBodega,
-                                                                                      oBeTrans_picking_ubic.IdStock,
-                                                                                      lConnection,
-                                                                                      lTransaction)
+                                                                                              oBeTrans_picking_ubic.IdUbicacion,
+                                                                                              oBeTrans_picking_ubic.IdBodega,
+                                                                                              oBeTrans_picking_ubic.IdStock,
+                                                                                              lConnection,
+                                                                                              lTransaction)
 
                                 BeStockResActual.Estado = "PICKEADO"
                                 FilasAfectadas = clsLnStock_res.Actualizar_Estado_Pickeado(BeStockResActual, lConnection, lTransaction)
 
                             Else
                                 FilasAfectadas = clsLnStock.Actualizar_IdUbicacion_By_IdStock(vIdUbicacionPickingByBodega,
-                                                                                      oBeTrans_picking_ubic.IdUbicacion,
-                                                                                      oBeTrans_picking_ubic.IdBodega,
-                                                                                      oBeTrans_picking_ubic.IdStock,
-                                                                                      pConnection,
-                                                                                      pTransaction)
+                                                                                              oBeTrans_picking_ubic.IdUbicacion,
+                                                                                              oBeTrans_picking_ubic.IdBodega,
+                                                                                              oBeTrans_picking_ubic.IdStock,
+                                                                                              pConnection,
+                                                                                              pTransaction)
 
                                 BeStockResActual.Estado = "PICKEADO"
                                 FilasAfectadas = clsLnStock_res.Actualizar_Estado_Pickeado(BeStockResActual, pConnection, pTransaction)
