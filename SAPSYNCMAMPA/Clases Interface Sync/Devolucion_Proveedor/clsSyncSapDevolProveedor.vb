@@ -42,10 +42,10 @@ Public Class clsSyncSapDevolProveedor
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,
-                                  pNoDocumento,
-                                  BeConfigEnc,
-                                  lblprg,
-                                  clsTrans)
+                                      pNoDocumento,
+                                      BeConfigEnc,
+                                      lblprg,
+                                      clsTrans)
 
             clsTrans.Commit_Transaction()
 

@@ -5,6 +5,7 @@ Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
+Imports DevExpress.Data.Filtering.Helpers.SubExprHelper.ThreadHoppingFiltering
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
@@ -71,14 +72,157 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
     End Function
 
-    Private Shared Function Get_Factura_Reserva_Cliente_SAP_SL(pCodigoBodegaInterface As String,
-                                                               lConnection As SqlConnection,
-                                                               lTransaction As SqlTransaction,
-                                                               lblprg As RichTextBox,
-                                                               Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
+    'Private Shared Function Get_Factura_Reserva_Cliente_SAP_SL(pCodigoBodegaInterface As String,
+    '                                                           lConnection As SqlConnection,
+    '                                                           lTransaction As SqlTransaction,
+    '                                                           lblprg As RichTextBox,
+    '                                                           Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
+
+    '    Dim lFacturasReserva_Cliente As New List(Of clsBeI_nav_ped_traslado_enc)
+    '    Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
+
+    '    If BePropietario Is Nothing Then
+    '        Throw New Exception($"#Error: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
+    '    End If
+
+    '    Try
+    '        vHanaService = New SapServiceLayerClient()
+    '        Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+    '        If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+    '            clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+    '            Return lFacturasReserva_Cliente
+    '        Else
+    '            clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
+    '            Debug.WriteLine(vHanaService.SessionCookie)
+    '        End If
+
+    '        clsPublic.Actualizar_Progreso(lblprg, "Obteniendo facturas de Reserva_Cliente...")
+
+    '        ' Filtro a nivel de encabezado (no se puede filtrar por WarehouseCode aquí)
+    '        Dim filtroFacturaReserva_Cliente As String = "ReserveInvoice eq 'tYES'"
+    '        'Dim filtroEstado As String = "DocumentStatus eq 'bost_Close'"
+    '        Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
+    '        Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
+    '        Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum}"
+
+    '        Dim url As String = $"{BD.Instancia.HANA_SL}Invoices?$filter={Uri.EscapeDataString(filtroFinal)}"
+
+    '        Using handler As New HttpClientHandler()
+    '            handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
+    '            handler.UseCookies = False
+
+    '            Using client As New HttpClient(handler)
+    '                client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
+    '                client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+    '                Dim response = client.GetAsync(url).GetAwaiter().GetResult()
+
+    '                If Not response.IsSuccessStatusCode Then
+    '                    Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+    '                    Throw New Exception($"Error al obtener facturas de Reserva_Cliente desde SL: {response.StatusCode}, {errorDetail}")
+    '                End If
+
+    '                Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+    '                Dim parsed = JObject.Parse(json)
+
+    '                For Each factura_Reserva_Cliente In parsed("value")
+
+    '                    ' Filtrar por bodega en líneas del documento
+    '                    Dim contieneBodega As Boolean = False
+    '                    For Each linea In factura_Reserva_Cliente("DocumentLines")
+    '                        If linea("WarehouseCode")?.ToString() = pCodigoBodegaInterface Then
+    '                            contieneBodega = True
+    '                            Exit For
+    '                        End If
+    '                    Next
+
+    '                    If Not contieneBodega Then Continue For
+
+    '                    ' Mapeo del documento
+    '                    Dim beFacturaReserva_Cliente As New clsBeI_nav_ped_traslado_enc With {
+    '                    .No = factura_Reserva_Cliente("DocEntry").Value(Of Integer),
+    '                    .Posting_Date = factura_Reserva_Cliente("DocDate").Value(Of Date),
+    '                    .Receipt_Date = factura_Reserva_Cliente("DocDate").Value(Of Date),
+    '                    .Shipment_Date = factura_Reserva_Cliente("DocDate").Value(Of Date),
+    '                    .Status = 1,
+    '                    .Transfer_from_Code = pCodigoBodegaInterface,
+    '                    .Transfer_from_Contact = factura_Reserva_Cliente("JournalMemo")?.ToString(),
+    '                    .Transfer_to_Contact = factura_Reserva_Cliente("CardName")?.ToString(),
+    '                    .Transfer_to_CodeField = factura_Reserva_Cliente("CardCode")?.ToString(),
+    '                    .Transfer_to_Code = factura_Reserva_Cliente("CardCode")?.ToString(),
+    '                    .Product_Owner_Code = BePropietario.Codigo,
+    '                    .Receipt_Document_Reference = factura_Reserva_Cliente("DocNum").ToString(),
+    '                    .Company_Code = "",
+    '                    .Comments = factura_Reserva_Cliente("Comments")?.ToString(),
+    '                    .Document_Type = tTipoDocumentoSalida.Pedido_De_Cliente,
+    '                    .Transportation_Guide = factura_Reserva_Cliente("U_Guia")?.ToString(),
+    '                    .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
+    '                }
+
+    '                    ' Crear cache una sola vez por petición
+    '                    Dim cache As New OitmCache(client, BD.Instancia.HANA_SL)
+
+    '                    Dim lineas = factura_Reserva_Cliente("DocumentLines").ToList
+
+    '                    ' Mapeo de líneas
+    '                    For Each linea In lineas
+    '                        If linea("WarehouseCode")?.ToString() <> pCodigoBodegaInterface Then Continue For
+
+    '                        Dim itemCode As String = linea("ItemCode")?.ToString()
+
+    '                        ' Si no hay ItemCode, normalmente es servicio/texto -> excluir del WMS
+    '                        If String.IsNullOrWhiteSpace(itemCode) Then Continue For
+
+    '                        ' Obtener U_Grupo desde OITM (con cache)
+    '                        Dim grupo As String = cache.GetUGrupoAsync(itemCode).GetAwaiter().GetResult()
+
+    '                        ' Excluir grupo 19
+    '                        If Not String.IsNullOrEmpty(grupo) AndAlso grupo = "19" Then Continue For
+
+    '                        Dim beDet As New clsBeI_nav_ped_traslado_det With {
+    '                                                                .NoEnc = beFacturaReserva_Cliente.No,
+    '                                                                .No = clsLnTrans_pe_det.MaxID() + 1,
+    '                                                                .Item_No = linea("ItemCode")?.ToString(),
+    '                                                                .Line_No = linea("LineNum").Value(Of Integer),
+    '                                                                .Shipment_Date = Date.Now,
+    '                                                                .Quantity = linea("Quantity").Value(Of Decimal),
+    '                                                                .Description = linea("ItemDescription")?.ToString(),
+    '                                                                .Unit_of_Measure_Code = linea("MeasureUnit")?.ToString(),
+    '                                                                .Status = 1,
+    '                                                                .Transfer_to_CodeField = linea("WarehouseCode")?.ToString(),
+    '                                                                .Price = linea("Price").Value(Of Double),
+    '                                                                .Color = linea("U_Color")?.ToString(),
+    '                                                                .Size = linea("U_Talla")?.ToString(),
+    '                                                                .Variant_Code = Nothing
+    '                                                            }
+
+    '                        beFacturaReserva_Cliente.Lineas_Detalle.Add(beDet)
+    '                    Next
+
+    '                Next
+
+    '            End Using
+
+    '        End Using
+
+    '        Return lFacturasReserva_Cliente
+
+    '    Catch ex As Exception
+    '        Throw New Exception("(SL) Get_Factura_Reserva_Cliente_SAP_SL: " & ex.Message, ex)
+    '    End Try
+    'End Function
+
+    Private Shared Async Function Get_Factura_Reserva_Cliente_SAP_SLAsync(pCodigoBodegaInterface As String,
+                                                                          lConnection As SqlConnection,
+                                                                          lTransaction As SqlTransaction,
+                                                                          lblprg As RichTextBox,
+                                                                          Optional pNoDocumentoSAP As String = "") As Task(Of List(Of clsBeI_nav_ped_traslado_enc))
 
         Dim lFacturasReserva_Cliente As New List(Of clsBeI_nav_ped_traslado_enc)
-        Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
+
+        Dim BePropietario As clsBePropietarios =
+        clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#Error: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
@@ -86,7 +230,9 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
         Try
             vHanaService = New SapServiceLayerClient()
-            Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+            ' Login async (NO bloquear con GetResult)
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync().ConfigureAwait(False)
 
             If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
                 clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
@@ -98,47 +244,63 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
             clsPublic.Actualizar_Progreso(lblprg, "Obteniendo facturas de Reserva_Cliente...")
 
-            ' Filtro a nivel de encabezado (no se puede filtrar por WarehouseCode aquí)
+            ' Filtro encabezado
             Dim filtroFacturaReserva_Cliente As String = "ReserveInvoice eq 'tYES'"
-            Dim filtroEstado As String = "DocumentStatus eq 'bost_Open'"
+            'Dim filtroEstado As String = "DocumentStatus eq 'bost_Close'"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
-            Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEstado} and {filtroEnviado}{filtroDocNum}"
+            Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum}"
 
             Dim url As String = $"{BD.Instancia.HANA_SL}Invoices?$filter={Uri.EscapeDataString(filtroFinal)}"
 
             Using handler As New HttpClientHandler()
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
+                handler.ServerCertificateCustomValidationCallback =
+                Function(sender, cert, chain, sslPolicyErrors) True
                 handler.UseCookies = False
 
                 Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.Remove("Cookie")
                     client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
+                    client.DefaultRequestHeaders.Accept.Clear()
                     client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
+                    Dim response As HttpResponseMessage =
+                    Await client.GetAsync(url).ConfigureAwait(False)
 
                     If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener facturas de Reserva_Cliente desde SL: {response.StatusCode}, {errorDetail}")
+                        Dim errorDetail As String =
+                        Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                        Throw New Exception(
+                        $"Error al obtener facturas de Reserva_Cliente desde SL: {response.StatusCode}, {errorDetail}"
+                    )
                     End If
 
-                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                    Dim parsed = JObject.Parse(json)
+                    Dim json As String = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                    Dim parsed As JObject = JObject.Parse(json)
 
-                    For Each factura_Reserva_Cliente In parsed("value")
+                    Dim valueArr = TryCast(parsed("value"), JArray)
+                    If valueArr Is Nothing OrElse valueArr.Count = 0 Then
+                        Return lFacturasReserva_Cliente
+                    End If
 
-                        ' Filtrar por bodega en líneas del documento
-                        Dim contieneBodega As Boolean = False
-                        For Each linea In factura_Reserva_Cliente("DocumentLines")
-                            If linea("WarehouseCode")?.ToString() = pCodigoBodegaInterface Then
-                                contieneBodega = True
-                                Exit For
-                            End If
-                        Next
+                    ' Cache OITM: crear UNA vez para todas las facturas
+                    Dim cache As New OitmCache(client, BD.Instancia.HANA_SL)
 
+                    ' Si necesitas IDs únicos sin recalcular MaxID en cada línea
+                    Dim nextDetId As Integer = clsLnTrans_pe_det.MaxID() + 1
+
+                    For Each factura_Reserva_Cliente As JObject In valueArr
+
+                        Dim docLines = TryCast(factura_Reserva_Cliente("DocumentLines"), JArray)
+                        If docLines Is Nothing OrElse docLines.Count = 0 Then Continue For
+
+                        ' Filtrar por bodega
+                        Dim contieneBodega As Boolean = docLines.Any(
+                        Function(l) l?("WarehouseCode")?.ToString() = pCodigoBodegaInterface
+                    )
                         If Not contieneBodega Then Continue For
 
-                        ' Mapeo del documento
+                        ' Mapeo encabezado
                         Dim beFacturaReserva_Cliente As New clsBeI_nav_ped_traslado_enc With {
                         .No = factura_Reserva_Cliente("DocEntry").Value(Of Integer),
                         .Posting_Date = factura_Reserva_Cliente("DocDate").Value(Of Date),
@@ -159,14 +321,25 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
                     }
 
-                        ' Mapeo de líneas
-                        For Each linea In factura_Reserva_Cliente("DocumentLines")
-                            If linea("WarehouseCode")?.ToString() <> pCodigoBodegaInterface Then Continue For
+                        ' Mapeo líneas (filtra: bodega + NO servicio via U_Grupo (OITM))
+                        For Each linea As JObject In docLines
+                            If linea?("WarehouseCode")?.ToString() <> pCodigoBodegaInterface Then Continue For
+
+                            Dim itemCode As String = linea?("ItemCode")?.ToString()
+
+                            ' Sin ItemCode => normalmente servicio/texto => excluir de WMS
+                            If String.IsNullOrWhiteSpace(itemCode) Then Continue For
+
+                            ' Obtener U_Grupo desde OITM (async)
+                            Dim grupo As String = Await cache.GetUGrupoAsync(itemCode).ConfigureAwait(False)
+
+                            ' Excluir grupo 19
+                            If Not String.IsNullOrEmpty(grupo) AndAlso grupo = "19" Then Continue For
 
                             Dim beDet As New clsBeI_nav_ped_traslado_det With {
                             .NoEnc = beFacturaReserva_Cliente.No,
-                            .No = clsLnTrans_pe_det.MaxID() + 1,
-                            .Item_No = linea("ItemCode")?.ToString(),
+                            .No = nextDetId,
+                            .Item_No = itemCode,
                             .Line_No = linea("LineNum").Value(Of Integer),
                             .Shipment_Date = Date.Now,
                             .Quantity = linea("Quantity").Value(Of Decimal),
@@ -180,20 +353,23 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                             .Variant_Code = Nothing
                         }
 
+                            nextDetId += 1
                             beFacturaReserva_Cliente.Lineas_Detalle.Add(beDet)
                         Next
 
                         If beFacturaReserva_Cliente.Lineas_Detalle.Any() Then
                             lFacturasReserva_Cliente.Add(beFacturaReserva_Cliente)
                         End If
+
                     Next
+
                 End Using
             End Using
 
             Return lFacturasReserva_Cliente
 
         Catch ex As Exception
-            Throw New Exception("(SL) Get_Factura_Reserva_Cliente_SAP_SL: " & ex.Message, ex)
+            Throw New Exception("(SL) Get_Factura_Reserva_Cliente_SAP_SLAsync: " & ex.Message, ex)
         End Try
     End Function
 
@@ -207,7 +383,8 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Factura_Reserva_Cliente_SAP_SL(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
+            'Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Factura_Reserva_Cliente_SAP_SL()
+            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Await Get_Factura_Reserva_Cliente_SAP_SLAsync(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
             Dim pBePedidoEnc As New clsBeTrans_pe_enc
             Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
             Dim PedidoClienteExistente As New clsBeTrans_pe_enc

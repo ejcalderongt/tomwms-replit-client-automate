@@ -1755,6 +1755,13 @@ Partial Public Class clsLnTrans_pe_enc
 
             pPedido.No_documento = Right("PE000000" & pPedido.IdPedidoEnc, 7)
 
+            If pPedido.Bodega_Destino IsNot Nothing AndAlso
+                pPedido.Bodega_Destino.Length > 0 AndAlso
+                pPedido.Bodega_Destino.Contains("-") Then
+                Dim pBodDestino As String() = pPedido.Bodega_Destino.Split("-")
+                pPedido.Bodega_Destino = pBodDestino.GetValue(0)
+            End If
+
             ResultadoInsert = Insertar(pPedido, lConnection, lTransaction)
 
             lTransaction.Commit()
@@ -1781,6 +1788,14 @@ Partial Public Class clsLnTrans_pe_enc
 
             pPedido.IdPedidoEnc = MaxID(lConnection, lTransaction)
             pPedido.No_documento = Right("PE000000" & pPedido.IdPedidoEnc, 7)
+
+            If pPedido.Bodega_Destino IsNot Nothing AndAlso
+                pPedido.Bodega_Destino.Length > 0 AndAlso
+                pPedido.Bodega_Destino.Contains("-") Then
+                Dim pBodDestino As String() = pPedido.Bodega_Destino.Split("-")
+                pPedido.Bodega_Destino = pBodDestino.GetValue(0)
+            End If
+
             ResultadoInsert = Insertar(pPedido, lConnection, lTransaction)
             Inserta_Encabezado = ResultadoInsert > 0
 
@@ -1804,6 +1819,14 @@ Partial Public Class clsLnTrans_pe_enc
             If pBeTransPeEnc.IsNew Then
                 pBeTransPeEnc.IdPedidoEnc = MaxID(lConnection, lTransaction)
                 If pBeTransPeEnc.No_documento.ToString = "" Then pBeTransPeEnc.No_documento = Right("PE000000" & pBeTransPeEnc.IdPedidoEnc, 8)
+
+                If pBeTransPeEnc.Bodega_Destino IsNot Nothing AndAlso
+                   pBeTransPeEnc.Bodega_Destino.Length > 0 AndAlso
+                   pBeTransPeEnc.Bodega_Destino.Contains("-") Then
+                    Dim pBodDestino As String() = pBeTransPeEnc.Bodega_Destino.Split("-")
+                    pBeTransPeEnc.Bodega_Destino = pBodDestino.GetValue(0)
+                End If
+
                 Insertar(pBeTransPeEnc, lConnection, lTransaction)
             Else
                 Actualizar(pBeTransPeEnc, lConnection, lTransaction)

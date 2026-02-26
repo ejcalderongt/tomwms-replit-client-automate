@@ -62,7 +62,6 @@ Public Class frmOrdenCompra
     Private txtCantidadGrid As New RepositoryItemSpinEdit
     Private txtFechaServicioGrid As New RepositoryItemDateEdit
 
-
     Public Enum ModoTrans
         Nuevo = 1
         Editar = 2

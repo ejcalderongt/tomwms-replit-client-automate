@@ -90,12 +90,13 @@ Public Class clsSyncSapFacturaReserva
 
                             End If
 
-
                             If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
                                                                                     BePedidoCompraEnc,
                                                                                     vResult) Then
 
-                                Await Marcar_PI_Sincronizado_SLAsync(BeINavPedCompra.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
+                                Await Marcar_PI_Sincronizado_SLAsync(BeINavPedCompra.No,
+                                                                     vHanaService.SessionCookie,
+                                                                     BD.Instancia.HANA_SL)
 
                             End If
 

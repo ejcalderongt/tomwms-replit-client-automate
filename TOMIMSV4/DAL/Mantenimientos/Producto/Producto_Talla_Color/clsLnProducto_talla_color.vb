@@ -382,7 +382,12 @@ Public Class clsLnProducto_talla_color
 			If ExisteBySKU(oBeProducto_talla_color.CodigoSKU, pConection, pTransaction) Then
 				Actualizar(oBeProducto_talla_color, pConection, pTransaction)
 			Else
-				oBeProducto_talla_color.IdProductoTallaColor = MaxID(pConection, pTransaction) + 1
+				If pConection Is Nothing OrElse pTransaction Is Nothing Then
+					oBeProducto_talla_color.IdProductoTallaColor = MaxID() + 1
+				Else
+					oBeProducto_talla_color.IdProductoTallaColor = MaxID(pConection, pTransaction) + 1
+				End If
+
 				Insertar(oBeProducto_talla_color, pConection, pTransaction)
 			End If
 		Catch ex As Exception
@@ -1004,7 +1009,11 @@ Public Class clsLnProducto_talla_color
 	End Function
 
 	'#GT26082025: obtener producto_talla_color segun la talla y el color seleccionado en un pedido manual
-	Public Shared Function Get_ProductoTallaColor_By_Talla_and_Color(ByVal Idtalla As Integer, ByVal IdColor As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeProducto_talla_color
+	Public Shared Function Get_ProductoTallaColor_By_Talla_and_Color(ByVal Idtalla As Integer,
+																	 ByVal IdColor As Integer,
+																	 ByVal IdProducto As Integer,
+																	 Optional ByVal pConection As SqlConnection = Nothing,
+																	 Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeProducto_talla_color
 
 		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim cmd As New SqlCommand()
@@ -1012,7 +1021,9 @@ Public Class clsLnProducto_talla_color
 		Get_ProductoTallaColor_By_Talla_and_Color = Nothing
 		Try
 
-			Dim sql As String = "SELECT * FROM producto_talla_color WHERE (IdTalla=@IdTalla and IdColor=@IdColor)"
+			Dim sql As String = "SELECT * 
+                                 FROM producto_talla_color
+                                 WHERE IdTalla=@IdTalla and IdColor=@IdColor and IdProducto = @IdProducto "
 
 			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
@@ -1026,6 +1037,7 @@ Public Class clsLnProducto_talla_color
 
 			cmd.Parameters.Add(New SqlParameter("@IdTalla", Idtalla))
 			cmd.Parameters.Add(New SqlParameter("@IdColor", IdColor))
+			cmd.Parameters.Add(New SqlParameter("@IdProducto", IdProducto))
 
 			Dim lDataTable As New DataTable
 
@@ -1035,7 +1047,6 @@ Public Class clsLnProducto_talla_color
 			End Using
 
 			If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
 
 			If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 				Dim vBeProducto_talla_color = New clsBeProducto_talla_color()

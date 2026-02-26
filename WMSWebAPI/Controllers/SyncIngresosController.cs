@@ -135,8 +135,8 @@ namespace WMSWebAPI.Controllers
                 return Ok(new
                 {
                     Exito = true,
-                    Mensaje = "Documento procesado correctamente.",                    
-                    IdOrdenCompraEnc = IdOrdenCompraEnc
+                    Mensaje = "Documento procesado correctamente.",
+                    IdOrdenCompraEnc
                 });
             }
             catch (Exception ex)

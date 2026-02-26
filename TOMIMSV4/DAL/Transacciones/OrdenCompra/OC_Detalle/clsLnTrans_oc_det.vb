@@ -64,6 +64,9 @@ Public Class clsLnTrans_oc_det
                 .IdEmbarcador = IIf(IsDBNull(dr.Item("IdEmbarcador")), 0, dr.Item("IdEmbarcador"))
 
                 .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Camas_Tarima = IIf(IsDBNull(dr.Item("Camas_Tarima")), 0, dr.Item("Camas_Tarima"))
+                .Cajas_Cama = IIf(IsDBNull(dr.Item("Cajas_Cama")), 0, dr.Item("Cajas_Cama"))
+
 
             End With
 
@@ -140,6 +143,9 @@ Public Class clsLnTrans_oc_det
             If Not oBeTrans_oc_det.IdEmbarcador = 0 Then Ins.Add("IdEmbarcador", "@IdEmbarcador", DataType.Parametro)
             If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
+            If Not oBeTrans_oc_det.Camas_Tarima = 0 Then Ins.Add("Camas_Tarima", "@Camas_Tarima", DataType.Parametro)
+            If Not oBeTrans_oc_det.Cajas_Cama = 0 Then Ins.Add("Cajas_Cama", "@Cajas_Cama", DataType.Parametro)
+
             Dim sp As String = Ins.SQL()
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -206,6 +212,8 @@ Public Class clsLnTrans_oc_det
             If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETPADRE", oBeTrans_oc_det.IdOrdenCompraDetPadre))
             If Not oBeTrans_oc_det.IdEmbarcador = 0 Then cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
             If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det.IdProductoTallaColor))
+            If Not oBeTrans_oc_det.Camas_Tarima = 0 Then cmd.Parameters.Add(New SqlParameter("@CAMAS_TARIMA", oBeTrans_oc_det.Camas_Tarima))
+            If Not oBeTrans_oc_det.Cajas_Cama = 0 Then cmd.Parameters.Add(New SqlParameter("@CAJAS_CAMA", oBeTrans_oc_det.Cajas_Cama))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -284,7 +292,10 @@ Public Class clsLnTrans_oc_det
             If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then Upd.Add("IdOrdenCompraDetPadre", "@IdOrdenCompraDetPadre", DataType.Parametro)
 
             '#EJC20220224: Shipper o embarcador, agregado por CEALSA.
-            If Not oBeTrans_oc_det.IdEmbarcador = 0 Then Ins.Add("IdEmbarcador", "@IdEmbarcador", DataType.Parametro)
+            If Not oBeTrans_oc_det.IdEmbarcador = 0 Then Upd.Add("IdEmbarcador", "@IdEmbarcador", DataType.Parametro)
+
+            If Not oBeTrans_oc_det.Camas_Tarima = 0 Then Upd.Add("Camas_Tarima", "@Camas_Tarima", DataType.Parametro)
+            If Not oBeTrans_oc_det.Cajas_Cama = 0 Then Upd.Add("Cajas_Cama", "@Cajas_Cama", DataType.Parametro)
 
             Upd.Where("IdOrdenCompraEnc = @IdOrdenCompraEnc " &
                 "AND IdOrdenCompraDet = @IdOrdenCompraDet")
@@ -350,6 +361,8 @@ Public Class clsLnTrans_oc_det
             If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETPADRE", oBeTrans_oc_det.IdOrdenCompraDetPadre))
             If Not oBeTrans_oc_det.IdEmbarcador = 0 Then cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
             If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det.IdProductoTallaColor))
+            If Not oBeTrans_oc_det.Camas_Tarima = 0 Then cmd.Parameters.Add(New SqlParameter("@CAMAS_TARIMA", oBeTrans_oc_det.Camas_Tarima))
+            If Not oBeTrans_oc_det.Cajas_Cama = 0 Then cmd.Parameters.Add(New SqlParameter("@CAJAS_CAMA", oBeTrans_oc_det.Cajas_Cama))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
