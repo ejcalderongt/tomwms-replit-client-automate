@@ -2008,7 +2008,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
             End If
 
             pBePedidoDet = New clsBeTrans_pe_det()
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConnectionInterface, lTransInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0
             pBePedidoDet.IdCliente = pIdClienteDetalle
             pBePedidoDet.No_linea = PDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = PDet.Variant_Code
@@ -2252,7 +2252,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
         Try
 
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0
             pBePedidoDet.No_linea = pBeTrasladoDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = pBeTrasladoDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = pIdPedidoEnc

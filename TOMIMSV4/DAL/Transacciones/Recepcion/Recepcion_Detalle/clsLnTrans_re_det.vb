@@ -2,7 +2,6 @@ Imports System.Data.SqlClient
 
 Public Class clsLnTrans_re_det
 
-    '#EJC20180113: Agregué atributo_variante_1 en clase de clsLnTrans_re_det
     Public Shared Sub Cargar(ByRef oBeTrans_re_det As clsBeTrans_re_det, ByRef dr As DataRow)
 
         Try
@@ -57,17 +56,18 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Sub
-
-    Public Shared Function Insertar(ByRef oBeTrans_re_det As clsBeTrans_re_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_re_det As clsBeTrans_re_det,
+                                Optional ByVal pConection As SqlConnection = Nothing,
+                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
-        Dim cmd As New SqlCommand
+        Dim cmd As SqlCommand = Nothing
+
+        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
-
             Ins.Init("trans_re_det")
-            Ins.Add("idrecepciondet", "@idrecepciondet", DataType.Parametro)
             Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
             Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
@@ -106,49 +106,45 @@ Public Class clsLnTrans_re_det
             Ins.Add("Host", "@Host", DataType.Parametro)
             Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
-
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            cmd.CommandType = CommandType.Text
+            Dim sp As String = Ins.SQL() & "; SELECT CAST(SCOPE_IDENTITY() AS INT);"
 
             If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
+                cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
             Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", oBeTrans_re_det.IdRecepcionDet))
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeTrans_re_det.IdRecepcionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_re_det.IdProductoBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeTrans_re_det.IdPresentacion = 0, DBNull.Value, oBeTrans_re_det.IdPresentacion)))
-            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", IIf(oBeTrans_re_det.UnidadMedida.IdUnidadMedida = 0, DBNull.Value, oBeTrans_re_det.UnidadMedida.IdUnidadMedida)))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", IIf(oBeTrans_re_det.ProductoEstado.IdEstado = 0, DBNull.Value, oBeTrans_re_det.ProductoEstado.IdEstado)))
-            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA", IIf(oBeTrans_re_det.IdOperadorBodega = 0, DBNull.Value, oBeTrans_re_det.IdOperadorBodega)))
-            cmd.Parameters.Add(New SqlParameter("@IDMOTIVODEVOLUCION", IIf(oBeTrans_re_det.MotivoDevolucion.IdMotivoDevolucion = 0, DBNull.Value, oBeTrans_re_det.MotivoDevolucion.IdMotivoDevolucion)))
+            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", If(oBeTrans_re_det.IdPresentacion = 0, DBNull.Value, oBeTrans_re_det.IdPresentacion)))
+            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", If(oBeTrans_re_det.UnidadMedida.IdUnidadMedida = 0, DBNull.Value, oBeTrans_re_det.UnidadMedida.IdUnidadMedida)))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", If(oBeTrans_re_det.ProductoEstado.IdEstado = 0, DBNull.Value, oBeTrans_re_det.ProductoEstado.IdEstado)))
+            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA", If(oBeTrans_re_det.IdOperadorBodega = 0, DBNull.Value, oBeTrans_re_det.IdOperadorBodega)))
+            cmd.Parameters.Add(New SqlParameter("@IDMOTIVODEVOLUCION", If(oBeTrans_re_det.MotivoDevolucion.IdMotivoDevolucion = 0, DBNull.Value, oBeTrans_re_det.MotivoDevolucion.IdMotivoDevolucion)))
             cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeTrans_re_det.No_Linea))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RECIBIDA", oBeTrans_re_det.cantidad_recibida))
-            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", IIf(oBeTrans_re_det.Nombre_producto Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_producto)))
-            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRESENTACION", IIf(oBeTrans_re_det.Nombre_presentacion Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_presentacion)))
-            cmd.Parameters.Add(New SqlParameter("@NOMBRE_UNIDAD_MEDIDA", IIf(oBeTrans_re_det.Nombre_unidad_medida Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_unidad_medida)))
-            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO_ESTADO", IIf(oBeTrans_re_det.Nombre_producto_estado Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_producto_estado)))
-            cmd.Parameters.Add(New SqlParameter("@LOTE", IIf(oBeTrans_re_det.Lote Is Nothing, DBNull.Value, oBeTrans_re_det.Lote)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeTrans_re_det.Fecha_vence = Nothing, DBNull.Value, oBeTrans_re_det.Fecha_vence)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_INGRESO", IIf(oBeTrans_re_det.Fecha_ingreso = Nothing, DBNull.Value, oBeTrans_re_det.Fecha_ingreso)))
-            cmd.Parameters.Add(New SqlParameter("@PESO", IIf(oBeTrans_re_det.Peso = Nothing, DBNull.Value, oBeTrans_re_det.Peso)))
-            cmd.Parameters.Add(New SqlParameter("@PESO_ESTADISTICO", IIf(oBeTrans_re_det.Peso_Estadistico = Nothing, DBNull.Value, oBeTrans_re_det.Peso_Estadistico)))
-            cmd.Parameters.Add(New SqlParameter("@PESO_MINIMO", IIf(oBeTrans_re_det.Peso_Minimo = Nothing, DBNull.Value, oBeTrans_re_det.Peso_Minimo)))
-            cmd.Parameters.Add(New SqlParameter("@PESO_MAXIMO", IIf(oBeTrans_re_det.Peso_Maximo = Nothing, DBNull.Value, oBeTrans_re_det.Peso_Maximo)))
-            cmd.Parameters.Add(New SqlParameter("@PESO_UNITARIO", IIf(oBeTrans_re_det.peso_unitario = Nothing, DBNull.Value, oBeTrans_re_det.peso_unitario)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", If(oBeTrans_re_det.Nombre_producto Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_producto)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRESENTACION", If(oBeTrans_re_det.Nombre_presentacion Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_presentacion)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_UNIDAD_MEDIDA", If(oBeTrans_re_det.Nombre_unidad_medida Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_unidad_medida)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO_ESTADO", If(oBeTrans_re_det.Nombre_producto_estado Is Nothing, DBNull.Value, oBeTrans_re_det.Nombre_producto_estado)))
+            cmd.Parameters.Add(New SqlParameter("@LOTE", If(oBeTrans_re_det.Lote Is Nothing, DBNull.Value, oBeTrans_re_det.Lote)))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", If(oBeTrans_re_det.Fecha_vence = Nothing, DBNull.Value, oBeTrans_re_det.Fecha_vence)))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_INGRESO", If(oBeTrans_re_det.Fecha_ingreso = Nothing, DBNull.Value, oBeTrans_re_det.Fecha_ingreso)))
+            cmd.Parameters.Add(New SqlParameter("@PESO", If(oBeTrans_re_det.Peso = Nothing, DBNull.Value, oBeTrans_re_det.Peso)))
+            cmd.Parameters.Add(New SqlParameter("@PESO_ESTADISTICO", If(oBeTrans_re_det.Peso_Estadistico = Nothing, DBNull.Value, oBeTrans_re_det.Peso_Estadistico)))
+            cmd.Parameters.Add(New SqlParameter("@PESO_MINIMO", If(oBeTrans_re_det.Peso_Minimo = Nothing, DBNull.Value, oBeTrans_re_det.Peso_Minimo)))
+            cmd.Parameters.Add(New SqlParameter("@PESO_MAXIMO", If(oBeTrans_re_det.Peso_Maximo = Nothing, DBNull.Value, oBeTrans_re_det.Peso_Maximo)))
+            cmd.Parameters.Add(New SqlParameter("@PESO_UNITARIO", If(oBeTrans_re_det.peso_unitario = Nothing, DBNull.Value, oBeTrans_re_det.peso_unitario)))
             cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeTrans_re_det.User_agr))
             cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeTrans_re_det.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@OBSERVACION", IIf(oBeTrans_re_det.Observacion Is Nothing, DBNull.Value, oBeTrans_re_det.Observacion)))
-            cmd.Parameters.Add(New SqlParameter("@añada", IIf(oBeTrans_re_det.Aniada = Nothing, DBNull.Value, oBeTrans_re_det.Aniada)))
-            cmd.Parameters.Add(New SqlParameter("@COSTO", IIf(oBeTrans_re_det.Costo = Nothing, DBNull.Value, oBeTrans_re_det.Costo)))
-            cmd.Parameters.Add(New SqlParameter("@COSTO_OC", IIf(oBeTrans_re_det.Costo_Oc = Nothing, DBNull.Value, oBeTrans_re_det.Costo_Oc)))
-            cmd.Parameters.Add(New SqlParameter("@COSTO_ESTADISTICO", IIf(oBeTrans_re_det.Costo_Estadistico = Nothing, DBNull.Value, oBeTrans_re_det.Costo_Estadistico)))
-            cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", IIf(oBeTrans_re_det.Atributo_Variante_1 = String.Empty, DBNull.Value, oBeTrans_re_det.Atributo_Variante_1)))
+            cmd.Parameters.Add(New SqlParameter("@OBSERVACION", If(oBeTrans_re_det.Observacion Is Nothing, DBNull.Value, oBeTrans_re_det.Observacion)))
+            cmd.Parameters.Add(New SqlParameter("@AÑADA", If(oBeTrans_re_det.Aniada = Nothing, DBNull.Value, oBeTrans_re_det.Aniada)))
+            cmd.Parameters.Add(New SqlParameter("@COSTO", If(oBeTrans_re_det.Costo = Nothing, DBNull.Value, oBeTrans_re_det.Costo)))
+            cmd.Parameters.Add(New SqlParameter("@COSTO_OC", If(oBeTrans_re_det.Costo_Oc = Nothing, DBNull.Value, oBeTrans_re_det.Costo_Oc)))
+            cmd.Parameters.Add(New SqlParameter("@COSTO_ESTADISTICO", If(oBeTrans_re_det.Costo_Estadistico = Nothing, DBNull.Value, oBeTrans_re_det.Costo_Estadistico)))
+            cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", If(oBeTrans_re_det.Atributo_Variante_1 = String.Empty, DBNull.Value, oBeTrans_re_det.Atributo_Variante_1)))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_PRODUCTO", oBeTrans_re_det.Codigo_Producto))
             cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_re_det.Lic_plate))
             cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeTrans_re_det.Pallet_No_Estandar))
@@ -158,24 +154,28 @@ Public Class clsLnTrans_re_det
             cmd.Parameters.Add(New SqlParameter("@HOST", oBeTrans_re_det.Host))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_re_det.IdProductoTallaColor))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeTrans_re_det.IdRecepcionDet = newId
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return newId
 
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+        Catch
+            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then
+                Try : lTransaction.Rollback() : Catch : End Try
+            End If
+            Throw
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
-            cmd.Dispose()
+            If cmd IsNot Nothing Then cmd.Dispose()
+            If Not Es_Transaccion_Remota Then
+                If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then lConnection.Dispose()
+            End If
         End Try
 
     End Function
-
     Public Shared Function Actualizar(ByRef oBeTrans_re_det As clsBeTrans_re_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -185,7 +185,6 @@ Public Class clsLnTrans_re_det
         Try
 
             Upd.Init("trans_re_det")
-            Upd.Add("idrecepciondet", "@idrecepciondet", DataType.Parametro)
             Upd.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
             Upd.Add("IDPRODUCTOBODEGA", "@IDPRODUCTOBODEGA", DataType.Parametro)
             Upd.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
@@ -289,7 +288,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
     Public Shared Function Eliminar(ByRef oBeTrans_re_det As clsBeTrans_re_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -335,7 +333,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
     Public Shared Function Obtener(ByRef oBeTrans_re_det As clsBeTrans_re_det) As Boolean
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -379,8 +376,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
-    '#CKFK 20181114_0147PM creó esta función transaccional
     Public Shared Function Obtener(ByRef oBeTrans_re_det As clsBeTrans_re_det,
                                    ByRef pConnection As SqlConnection,
                                    ByRef pTransaction As SqlTransaction) As Boolean
@@ -413,7 +408,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
     Public Shared Function Existe(ByRef oBeTrans_re_det As clsBeTrans_re_det,
                                   ByVal pConection As SqlConnection,
                                   ByVal pTransaction As SqlTransaction) As Boolean
@@ -454,7 +448,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
     Public Shared Function ExisteLP(ByVal IdRecepcionEnc As Integer, ByVal LicPlate As String, ByVal IdRecepcionDet As Integer) As Boolean
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -497,7 +490,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
     Public Shared Function Actualizar_IdOrdenCompraEnc_And_IdOrdenCompraDet(ByRef oBeTrans_re_det As clsBeTrans_re_det,
                                                                             Optional ByVal pConection As SqlConnection = Nothing,
                                                                             Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
@@ -549,9 +541,6 @@ Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
-
-
     Public Shared Function Licencia_Procesada_Stock_Jornada(ByVal pLicencia As String,
                                                             ByVal pIdRecepcionEnc As Integer,
                                                             ByVal pIdRecepcionDet As Integer,

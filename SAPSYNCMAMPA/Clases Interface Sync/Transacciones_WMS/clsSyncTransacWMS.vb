@@ -195,7 +195,7 @@ Public Class clsSyncTransacWMS
 
                 Dim beDet As New clsBeI_nav_ped_traslado_det With {
                 .NoEnc = beFacturaDeudor.No,
-                .No = (clsLnTrans_pe_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
+                .No = (clsLnI_nav_ped_traslado_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
                 .Item_No = detalle.ItemNo,
                 .Line_No = detalle.LineNo,
                 .Shipment_Date = Date.Now,
@@ -1429,7 +1429,7 @@ Public Class clsSyncTransacWMS
 
                 Dim beDet As New clsBeI_nav_ped_traslado_det With {
                 .NoEnc = beFacturaDeudor.No,
-                .No = (clsLnTrans_pe_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
+                .No = (clsLnI_nav_ped_traslado_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
                 .Item_No = detalle.ItemNo,
                 .Line_No = detalle.LineNo,
                 .Shipment_Date = Date.Now,

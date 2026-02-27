@@ -1484,7 +1484,7 @@ Public Class frmRecepcion
                         If lBeTransRecDet.Count > 0 Then
                             BeTransReDet.IdRecepcionDet = lBeTransRecDet.Max(Function(b) b.IdRecepcionDet) + 1
                         Else
-                            BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeTransReDet.IdRecepcionEnc) + 1
+                            BeTransReDet.IdRecepcionDet = 0
                         End If
                     End If
 
@@ -10681,7 +10681,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         If lBeTransRecDet.Count > 0 Then
                             BeTransReDet.IdRecepcionDet = lBeTransRecDet.Max(Function(b) b.IdRecepcionDet) + 1
                         Else
-                            BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeTransReDet.IdRecepcionEnc) + 1
+                            BeTransReDet.IdRecepcionDet = 0
                         End If
                     End If
 
@@ -11913,12 +11913,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     pBeTransReDet.Nombre_producto = pBeProducto.Nombre
                     pBeTransReDet.Atributo_Variante_1 = vatributo_variante_1
                     pBeTransReDet.IdRecepcionEnc = gBeRecepcionEnc.IdRecepcionEnc
-
-                    If gIdMaxIdRecepcionDet = 0 Then
-                        pBeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(pBeTransReDet.IdRecepcionEnc, lConnection, lTransaction) + 1
-                    Else
-                        pBeTransReDet.IdRecepcionDet = gIdMaxIdRecepcionDet + 1
-                    End If
+                    pBeTransReDet.IdRecepcionDet = 0
 
                     If pListBeStockRec Is Nothing Then
                         Throw New Exception("Algo hicimos mal.")

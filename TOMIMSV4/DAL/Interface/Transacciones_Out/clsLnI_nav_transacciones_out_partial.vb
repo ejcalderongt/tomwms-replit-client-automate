@@ -21,7 +21,6 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             If pListObjDetR IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection, lTransaction) + 1
                 Dim BeTransaccionesOut As New clsBeI_nav_transacciones_out()
                 Dim BeTransOcDet As New clsBeTrans_oc_det
                 Dim BeTipoDocumentoIngreso As New clsBeTrans_oc_ti()
@@ -43,7 +42,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                         BeTransReDet.IdPropietarioBodega = pIdPropietarioBodega
                     End If
 
-                    BeTransaccionesOut.Idtransaccion = lMaxS
+                    BeTransaccionesOut.Idtransaccion = 0
                     BeTransaccionesOut.Idempresa = pIdEmpresa
                     BeTransaccionesOut.Idbodega = pIdBodega
                     BeTransaccionesOut.Idpropietario = clsLnPropietarios.Get_IdPropietario(pIdBodega,
@@ -198,8 +197,6 @@ Partial Public Class clsLnI_nav_transacciones_out
                              lConnection,
                              lTransaction)
 
-                    lMaxS += 1
-
                     '#EJC20190604: Tabla de homologación de lotes numéricos.
                     Dim BeLoteNum As New clsBeTrans_re_det_lote_num
                     BeLoteNum.IdLoteNum = clsLnTrans_re_det_lote_num.MaxID(lConnection, lTransaction) + 1
@@ -246,7 +243,6 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             If BeTransReDet IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection, lTransaction) + 1
                 Dim BeInavTransaccionesOUT As New clsBeI_nav_transacciones_out()
                 Dim BeTransOcDet As New clsBeTrans_oc_det
                 Dim BeTipoDocumentoIngreso As New clsBeTrans_oc_ti()
@@ -263,7 +259,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 CadenaResultado += "IdOrdenCompraDet " & BeTransOcDet.IdOrdenCompraDet
 
-                BeInavTransaccionesOUT.Idtransaccion = lMaxS
+                BeInavTransaccionesOUT.Idtransaccion = 0
                 BeInavTransaccionesOUT.Idempresa = pIdEmpresa
                 BeInavTransaccionesOUT.Idbodega = pIdBodega
 
@@ -456,9 +452,6 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             If pBeDespachoEnc IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection,
-                                             lTransaction) + 1
-
                 Dim BePresentacionPedido As New clsBeProducto_Presentacion()
                 Dim BeTipoDocumento As New clsBeTrans_pe_tipo()
                 Dim BeConfigEnc As New clsBeI_nav_config_enc
@@ -546,7 +539,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                         With BeI_nav_transacciones_out
 
-                            .Idtransaccion = lMaxS
+                            .Idtransaccion = 0
                             .Idempresa = pIdEmpresa
                             .Idbodega = pIdBodega
                             .Idpropietario = BePedidoEnc.PropietarioBodega.Propietario.IdPropietario
@@ -650,8 +643,6 @@ Partial Public Class clsLnI_nav_transacciones_out
                             Throw New Exception("Algo muy raro ha sucedido, se ha intentado enviar al ERP un despacho con cantidad 0, la razón mas probable por la que esto puede suceder (especulo) es porque el factor de la presentación es 0 o el producto sufrió una condición de no verificación (que sería muy extraño puesto que se está despachando, lamentablmente debo detener el envío para poder corregirlo, notificar por favor a Erik.)")
                         End If
 
-                        lMaxS += 1
-
                     Next BeDespachoDet
 
                 Next BePedidoEnc
@@ -678,9 +669,6 @@ Partial Public Class clsLnI_nav_transacciones_out
             Dim vEnviado As Boolean = False
 
             If pBeDespachoEnc IsNot Nothing Then
-
-                Dim lMaxS As Integer = MaxID(lConnection,
-                                             lTransaction) + 1
 
                 Dim BePresentacionPedido As New clsBeProducto_Presentacion()
                 Dim BeTipoDocumento As New clsBeTrans_pe_tipo()
@@ -722,7 +710,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                                     With ObjM
 
-                                        .Idtransaccion = lMaxS
+                                        .Idtransaccion = 0
                                         .Idempresa = pIdEmpresa
                                         .Idbodega = pIdBodega
                                         .Idpropietario = BePedidoEnc.PropietarioBodega.Propietario.IdPropietario
@@ -815,8 +803,6 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         Throw New Exception("Algo muy raro ha sucedido, se ha intentado enviar al ERP un despacho con cantidad 0, la razón mas probable por la que esto puede suceder (especulo) es porque el factor de la presentación es 0 o el producto sufrió una condición de no verificación (que sería muy extraño puesto que se está despachando, lamentablmente debo detener el envío para poder corregirlo, notificar por favor a Erik.)")
                                     End If
 
-                                    lMaxS += 1
-
                                 Next BePickingUbic
 
                             End If
@@ -836,37 +822,6 @@ Partial Public Class clsLnI_nav_transacciones_out
         End Try
 
     End Sub
-
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(idtransaccion),0) FROM I_nav_transacciones_out"
-
-            Using lCommand As New SqlCommand(sp, pConnection)
-
-                lCommand.CommandType = CommandType.Text
-                lCommand.Transaction = pTransaction
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Get_Lotes_Ingreso_Pendientes_Envio() As List(Of clsBeI_nav_transacciones_out)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1111,13 +1066,11 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             If pListObjDetAj IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection, lTransaction) + 1
-
                 For Each BeTransAjusteDet As clsBeTrans_ajuste_det In pListObjDetAj
 
                     Dim BeI_nav_transacciones_out As New clsBeI_nav_transacciones_out()
 
-                    BeI_nav_transacciones_out.Idtransaccion = lMaxS
+                    BeI_nav_transacciones_out.Idtransaccion = 0
                     BeI_nav_transacciones_out.Idempresa = pIdEmpresa
                     BeI_nav_transacciones_out.Idbodega = pIdBodega
                     BeI_nav_transacciones_out.Idpropietario = clsLnPropietarios.Get_IdPropietario(pIdBodega,
@@ -1163,8 +1116,6 @@ Partial Public Class clsLnI_nav_transacciones_out
                     BeI_nav_transacciones_out.User_mod = pIdUsuario
 
                     Insertar(BeI_nav_transacciones_out, lConnection, lTransaction)
-
-                    lMaxS += 1
 
                 Next
 

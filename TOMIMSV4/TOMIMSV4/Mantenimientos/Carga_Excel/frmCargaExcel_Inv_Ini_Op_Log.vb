@@ -2249,9 +2249,7 @@ Public Class frmCargaExcel_Inv_Ini_Op_Log
             Dim lLicenciasProcesadas As New List(Of String)
             Dim vLicencia As String = ""
             Dim vIdPropietario As Integer = 0
-            Dim vIdMaxRecepcionDet As Integer = clsLnTrans_re_det.MaxID(BeTransReDet.IdRecepcionEnc,
-                                                                                        lConnection,
-                                                                                        lTransaction) + 1
+            Dim vIdMaxRecepcionDet As Integer = 0
 
             '#GT19072023: requiero validar si genera LP o no para el proceso de guardar detalle en recepción
             Dim objInterface As New clsBeI_nav_config_enc

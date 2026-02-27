@@ -123,7 +123,7 @@ Public Class clsSyncPedidoRoad
                     BeProductoRoad = clsLnP_PRODUCTO.Get_Producto_By_Codigo(D.PRODUCTO)
                     BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
                     BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                    BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+                    BePedidoDetWMS.No = 0
                     BePedidoDetWMS.Item_No = D.PRODUCTO
                     BePedidoDetWMS.Description = BeProductoRoad.DESCCORTA
                     BePedidoDetWMS.Line_No = NoLinea
@@ -171,13 +171,8 @@ Public Class clsSyncPedidoRoad
 
         Try
 
-            '#EJC2023020201147
-            'BeNavConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-            '                                                 lConnectionInterface,
-            '                                                 lTransInterface)
-
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConnectionInterface, lTransInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
             pBePedidoDet.No_linea = PDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = PDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = pIdPedidoEnc
