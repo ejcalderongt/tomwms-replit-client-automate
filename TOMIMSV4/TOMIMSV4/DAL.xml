@@ -1101,14 +1101,6 @@ Row event argument class
  <param name="pIdBodega"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnTrans_picking_ubic.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
- <summary>
- Creado por Erik Calderón
- </summary>
- <param name="pConnection"></param>
- <param name="pTransaction"></param>
- <returns></returns>
-</member>
 <member name="M:TOMWMS.clsLnTrans_picking_ubic.Get_Single_By_IdStock(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC20220330: Obtener el registro de picking por IdStock y Bodega asociado para actualizar el IdUbicacionVirtual
