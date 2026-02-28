@@ -526,7 +526,7 @@ Public Class clsSyncSapTrasladosEnvio
                         For Each linea In traslado("StockTransferLines")
                             Dim beDet As New clsBeI_nav_ped_traslado_det With {
                             .NoEnc = bePedido.No,
-                            .No = clsLnTrans_pe_det.MaxID() + 1,
+                            .No = clsLnI_nav_ped_traslado_det.MaxID() + 1,
                             .Item_No = linea("ItemCode")?.ToString(),
                             .Line_No = linea("LineNum").Value(Of Integer),
                             .Shipment_Date = Date.Now,

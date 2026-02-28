@@ -2,7 +2,6 @@ Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnTrans_pe_det
-
     Public Shared Sub Cargar(ByRef oBeTrans_pe_det As clsBeTrans_pe_det, ByRef dr As DataRow)
 
         Try
@@ -68,7 +67,6 @@ Public Class clsLnTrans_pe_det
         End Try
 
     End Sub
-
     Public Shared Sub Cargar(ByRef oBeTrans_pe_det As clsBeTrans_pe_det,
                              ByRef dr As DataRow,
                              ByRef lConnection As SqlConnection,
@@ -137,7 +135,6 @@ Public Class clsLnTrans_pe_det
         End Try
 
     End Sub
-
     Public Shared Function Insertar(ByRef oBeTrans_pe_det As clsBeTrans_pe_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -146,7 +143,6 @@ Public Class clsLnTrans_pe_det
         Try
 
             Ins.Init("trans_pe_det")
-            Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
             Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
             Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Ins.Add("idestado", "@idestado", DataType.Parametro)
@@ -179,7 +175,6 @@ Public Class clsLnTrans_pe_det
             Ins.Add("idstockespecifico", "@idstockespecifico", DataType.Parametro)
             Ins.Add("EsPadre", "@EsPadre", DataType.Parametro)
             Ins.Add("IdPedidoDetPadre", "@IdPedidoDetPadre", DataType.Parametro)
-            '#EJC20210708:Cealsa fiscal Ins.
             Ins.Add("Peso_Bruto", "@Peso_Bruto", DataType.Parametro)
             Ins.Add("Peso_Neto", "@Peso_Neto", DataType.Parametro)
             Ins.Add("Costo", "@Costo", DataType.Parametro)
@@ -195,7 +190,7 @@ Public Class clsLnTrans_pe_det
             Ins.Add("Color", "@Color", DataType.Parametro)
             Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            Dim sp As String = Ins.SQL() & "; SELECT CAST(SCOPE_IDENTITY() AS INT);"
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -208,7 +203,6 @@ Public Class clsLnTrans_pe_det
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_pe_det.IdPedidoDet))
             cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeTrans_pe_det.IdPedidoEnc))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_pe_det.IdProductoBodega))
             cmd.Parameters.Add(New SqlParameter("@IDESTADO", oBeTrans_pe_det.IdEstado))
@@ -241,8 +235,6 @@ Public Class clsLnTrans_pe_det
             cmd.Parameters.Add(New SqlParameter("@IDSTOCKESPECIFICO", oBeTrans_pe_det.IdStockEspecifico))
             cmd.Parameters.Add(New SqlParameter("@ESPADRE", oBeTrans_pe_det.EsPadre))
             cmd.Parameters.Add(New SqlParameter("@IDPEDIDODETPADRE", oBeTrans_pe_det.IdPedidoDetPadre))
-
-            '#EJC20210708:Cealsa fiscal Ins params.
             cmd.Parameters.Add(New SqlParameter("@PESO_BRUTO", oBeTrans_pe_det.Peso_Bruto))
             cmd.Parameters.Add(New SqlParameter("@PESO_NETO", oBeTrans_pe_det.Peso_Neto))
             cmd.Parameters.Add(New SqlParameter("@COSTO", oBeTrans_pe_det.Costo))
@@ -258,13 +250,14 @@ Public Class clsLnTrans_pe_det
             cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_pe_det.Color))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_pe_det.IdProductoTallaColor))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeTrans_pe_det.IdPedidoDet = newId
 
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return 1
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -279,7 +272,6 @@ Public Class clsLnTrans_pe_det
         End Try
 
     End Function
-
     Public Shared Function Actualizar(ByRef oBeTrans_pe_det As clsBeTrans_pe_det,
                                       Optional ByVal pConection As SqlConnection = Nothing,
                                       Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
@@ -290,7 +282,6 @@ Public Class clsLnTrans_pe_det
         Try
 
             Upd.Init("trans_pe_det")
-            Upd.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
             Upd.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
             Upd.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Upd.Add("idestado", "@idestado", DataType.Parametro)
@@ -323,8 +314,6 @@ Public Class clsLnTrans_pe_det
             Upd.Add("idstockespecifico", "@idstockespecifico", DataType.Parametro)
             Upd.Add("EsPadre", "@EsPadre", DataType.Parametro)
             Upd.Add("IdPedidoDetPadre", "@IdPedidoDetPadre", DataType.Parametro)
-
-            '#EJC20210708:Cealsa fiscal Upd.
             Upd.Add("Peso_Bruto", "@Peso_Bruto", DataType.Parametro)
             Upd.Add("Peso_Neto", "@Peso_Neto", DataType.Parametro)
             Upd.Add("Costo", "@Costo", DataType.Parametro)
@@ -386,8 +375,6 @@ Public Class clsLnTrans_pe_det
             cmd.Parameters.Add(New SqlParameter("@IDSTOCKESPECIFICO", oBeTrans_pe_det.IdStockEspecifico))
             cmd.Parameters.Add(New SqlParameter("@EsPadre", oBeTrans_pe_det.EsPadre))
             cmd.Parameters.Add(New SqlParameter("@IdPedidoDetPadre", oBeTrans_pe_det.IdPedidoDetPadre))
-
-            '#EJC20210708:Cealsa fiscal Upd params.
             cmd.Parameters.Add(New SqlParameter("@PESO_BRUTO", oBeTrans_pe_det.Peso_Bruto))
             cmd.Parameters.Add(New SqlParameter("@PESO_NETO", oBeTrans_pe_det.Peso_Neto))
             cmd.Parameters.Add(New SqlParameter("@COSTO", oBeTrans_pe_det.Costo))
@@ -424,173 +411,6 @@ Public Class clsLnTrans_pe_det
         End Try
 
     End Function
-
-    Public Shared Function ActualizarRemoto(ByRef oBeTrans_pe_det As clsBeTrans_pe_det,
-                                            ByRef pConection As SqlConnection,
-                                            ByRef pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Upd.Init("trans_pe_det")
-            Upd.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
-            Upd.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
-            Upd.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
-            Upd.Add("idestado", "@idestado", DataType.Parametro)
-            Upd.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
-            Upd.Add("idunidadmedidabasica", "@idunidadmedidabasica", DataType.Parametro)
-            Upd.Add("cantidad", "@cantidad", DataType.Parametro)
-            Upd.Add("peso", "@peso", DataType.Parametro)
-            Upd.Add("precio", "@precio", DataType.Parametro)
-            Upd.Add("no_recepcion", "@no_recepcion", DataType.Parametro)
-            Upd.Add("ndias", "@ndias", DataType.Parametro)
-            Upd.Add("cant_despachada", "@cant_despachada", DataType.Parametro)
-            Upd.Add("peso_despachado", "@peso_despachado", DataType.Parametro)
-            Upd.Add("codigo_producto", "@codigo_producto", DataType.Parametro)
-            Upd.Add("nombre_producto", "@nombre_producto", DataType.Parametro)
-            Upd.Add("nom_presentacion", "@nom_presentacion", DataType.Parametro)
-            Upd.Add("nom_unid_med", "@nom_unid_med", DataType.Parametro)
-            Upd.Add("nom_estado", "@nom_estado", DataType.Parametro)
-            Upd.Add("user_agr", "@user_agr", DataType.Parametro)
-            Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
-            Upd.Add("fecha_especifica", "@fecha_especifica", DataType.Parametro)
-            Upd.Add("roaddes", "@roaddes", DataType.Parametro)
-            Upd.Add("roaddesmon", "@roaddesmon", DataType.Parametro)
-            Upd.Add("roadtotal", "@roadtotal", DataType.Parametro)
-            Upd.Add("roadpreciodoc", "@roadpreciodoc", DataType.Parametro)
-            Upd.Add("roadval1", "@roadval1", DataType.Parametro)
-            Upd.Add("roadval2", "@roadval2", DataType.Parametro)
-            Upd.Add("roadcantproc", "@roadcantproc", DataType.Parametro)
-            Upd.Add("no_linea", "@no_linea", DataType.Parametro)
-            Upd.Add("atributo_variante_1", "@atributo_variante_1", DataType.Parametro)
-            Upd.Add("idstockespecifico", "@idstockespecifico", DataType.Parametro)
-            Upd.Add("EsPadre", "@EsPadre", DataType.Parametro)
-            Upd.Add("IdPedidoDetPadre", "@IdPedidoDetPadre", DataType.Parametro)
-
-            '#EJC20210708:Cealsa fiscal Upd.
-            Upd.Add("Peso_Bruto", "@Peso_Bruto", DataType.Parametro)
-            Upd.Add("Peso_Neto", "@Peso_Neto", DataType.Parametro)
-            Upd.Add("Costo", "@Costo", DataType.Parametro)
-            Upd.Add("valor_aduana", "@valor_aduana", DataType.Parametro)
-            Upd.Add("valor_fob", "@valor_fob", DataType.Parametro)
-            Upd.Add("valor_iva", "@valor_iva", DataType.Parametro)
-            Upd.Add("valor_dai", "@valor_dai", DataType.Parametro)
-            Upd.Add("valor_seguro", "@valor_seguro", DataType.Parametro)
-            Upd.Add("valor_flete", "@valor_flete", DataType.Parametro)
-            Upd.Add("Total_linea", "@Total_linea", DataType.Parametro)
-            Upd.Add("IdCliente", "@IdCliente", DataType.Parametro)
-            Upd.Add("Talla", "@Talla", DataType.Parametro)
-            Upd.Add("Color", "@Color", DataType.Parametro)
-            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
-            Upd.Where("IdPedidoDet = @IdPedidoDet")
-
-            Dim sp As String = Upd.SQL()
-            Dim cmd As SqlCommand = Nothing
-
-            cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
-
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_pe_det.IdPedidoDet))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeTrans_pe_det.IdPedidoEnc))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_pe_det.IdProductoBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDESTADO", oBeTrans_pe_det.IdEstado))
-            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeTrans_pe_det.IdPresentacion = 0, DBNull.Value, oBeTrans_pe_det.IdPresentacion)))
-            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDABASICA", oBeTrans_pe_det.IdUnidadMedidaBasica))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_pe_det.Cantidad))
-            cmd.Parameters.Add(New SqlParameter("@PESO", oBeTrans_pe_det.Peso))
-            cmd.Parameters.Add(New SqlParameter("@PRECIO", oBeTrans_pe_det.Precio))
-            cmd.Parameters.Add(New SqlParameter("@NO_RECEPCION", oBeTrans_pe_det.No_recepcion))
-            cmd.Parameters.Add(New SqlParameter("@NDIAS", oBeTrans_pe_det.Ndias))
-            cmd.Parameters.Add(New SqlParameter("@CANT_DESPACHADA", oBeTrans_pe_det.Cant_despachada))
-            cmd.Parameters.Add(New SqlParameter("@PESO_DESPACHADO", oBeTrans_pe_det.Peso_despachado))
-            cmd.Parameters.Add(New SqlParameter("@CODIGO_PRODUCTO", oBeTrans_pe_det.Codigo_Producto))
-            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", clsPublic.Quitar_Caracteres_No_Permitidos(oBeTrans_pe_det.Nombre_producto)))
-            cmd.Parameters.Add(New SqlParameter("@NOM_PRESENTACION", oBeTrans_pe_det.Nom_presentacion))
-            cmd.Parameters.Add(New SqlParameter("@NOM_UNID_MED", oBeTrans_pe_det.Nom_unid_med))
-            cmd.Parameters.Add(New SqlParameter("@NOM_ESTADO", oBeTrans_pe_det.Nom_estado))
-            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeTrans_pe_det.User_agr))
-            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeTrans_pe_det.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_ESPECIFICA", oBeTrans_pe_det.Fecha_especifica))
-            cmd.Parameters.Add(New SqlParameter("@ROADDES", oBeTrans_pe_det.RoadDes))
-            cmd.Parameters.Add(New SqlParameter("@ROADDESMON", oBeTrans_pe_det.RoadDesMon))
-            cmd.Parameters.Add(New SqlParameter("@ROADTOTAL", oBeTrans_pe_det.RoadTotal))
-            cmd.Parameters.Add(New SqlParameter("@ROADPRECIODOC", oBeTrans_pe_det.RoadPrecioDoc))
-            cmd.Parameters.Add(New SqlParameter("@ROADVAL1", oBeTrans_pe_det.RoadVAL1))
-            cmd.Parameters.Add(New SqlParameter("@ROADVAL2", oBeTrans_pe_det.RoadVAL2))
-            cmd.Parameters.Add(New SqlParameter("@ROADCANTPROC", oBeTrans_pe_det.RoadCantProc))
-            cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeTrans_pe_det.No_linea))
-            cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", oBeTrans_pe_det.Atributo_Variante_1))
-            cmd.Parameters.Add(New SqlParameter("@IDSTOCKESPECIFICO", oBeTrans_pe_det.IdStockEspecifico))
-            cmd.Parameters.Add(New SqlParameter("@EsPadre", oBeTrans_pe_det.EsPadre))
-            cmd.Parameters.Add(New SqlParameter("@IdPedidoDetPadre", oBeTrans_pe_det.IdPedidoDetPadre))
-
-            '#EJC20210708:Cealsa fiscal Upd params.
-            cmd.Parameters.Add(New SqlParameter("@PESO_BRUTO", oBeTrans_pe_det.Peso_Bruto))
-            cmd.Parameters.Add(New SqlParameter("@PESO_NETO", oBeTrans_pe_det.Peso_Neto))
-            cmd.Parameters.Add(New SqlParameter("@COSTO", oBeTrans_pe_det.Costo))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_ADUANA", oBeTrans_pe_det.valor_aduana))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_FOB", oBeTrans_pe_det.valor_fob))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_IVA", oBeTrans_pe_det.valor_iva))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_DAI", oBeTrans_pe_det.valor_dai))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_SEGURO", oBeTrans_pe_det.valor_seguro))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_FLETE", oBeTrans_pe_det.valor_flete))
-            cmd.Parameters.Add(New SqlParameter("@TOTAL_LINEA", oBeTrans_pe_det.Total_linea))
-            cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeTrans_pe_det.IdCliente))
-            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_pe_det.Talla))
-            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_pe_det.Color))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_pe_det.IdProductoTallaColor))
-
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            cmd.Dispose()
-
-            Return rowsAffected
-
-        Catch ex1 As SqlException
-            Throw ex1
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Eliminar(ByRef oBeTrans_pe_det As clsBeTrans_pe_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
-
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-
-        Try
-
-            Const sp As String = " Delete from Trans_pe_det" &
-             "  Where(IdPedidoDet = @IdPedidoDet)"
-
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
-
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_pe_det.IdPedidoDet))
-
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            cmd.Dispose()
-
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-            Return rowsAffected
-
-        Catch ex1 As SqlException
-            Throw ex1
-        Catch ex As Exception
-            Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-        End Try
-    End Function
-
     Public Shared Function GetSingle(ByRef pBeTrans_pe_det As clsBeTrans_pe_det)
 
         Try
@@ -617,13 +437,11 @@ Public Class clsLnTrans_pe_det
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPedidoDet:=pBeTrans_pe_det.IdPedidoDet)
             Throw ex
         End Try
 
     End Function
-
     Public Shared Function Get_Single_By_IdPedidoDet(ByVal pIdPedidoDet As Integer) As clsBeTrans_pe_det
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -658,7 +476,6 @@ Public Class clsLnTrans_pe_det
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPedidoDet:=pIdPedidoDet)
             Throw ex
         Finally
@@ -666,7 +483,6 @@ Public Class clsLnTrans_pe_det
         End Try
 
     End Function
-
     Public Shared Function Get_Single_By_IdPedidoDet(ByVal pIdPedidoDet As Integer,
                                                  ByRef pConection As SqlConnection,
                                                  ByRef pTransaction As SqlTransaction) As clsBeTrans_pe_det
@@ -698,8 +514,7 @@ Public Class clsLnTrans_pe_det
         Catch ex As SqlException
             Throw New Exception($"Error SQL en {MethodBase.GetCurrentMethod.Name}: {ex.Message}", ex)
         Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
-            'clsLnLog_error_wms.Agregar_Error($"{MethodBase.GetCurrentMethod.Name} - {ex.Message}")
+            '#MECR15102025: Se agrego bitacora de logs para pedidos            
             Dim vMsg As String = $"{MethodBase.GetCurrentMethod.Name}: {ex.Message}"
             clsLnLog_error_wms_pe.Agregar_Error(vMsg, pStackTrace:=ex.StackTrace, pIdPedidoDet:=pIdPedidoDet)
 
@@ -708,8 +523,6 @@ Public Class clsLnTrans_pe_det
 
         Return resultado
     End Function
-
-
     Public Shared Function Get_Single_By_IdPedidoEnc_And_IdPedidoDet(ByVal pIdPedidoEnc As Integer,
                                                                      ByVal pIdPedidoDet As Integer,
                                                                      ByVal lConnection As SqlConnection,
@@ -741,13 +554,11 @@ Public Class clsLnTrans_pe_det
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPedidoEnc:=pIdPedidoEnc, pIdPedidoDet:=pIdPedidoDet)
             Throw ex
         End Try
 
     End Function
-
     Public Shared Function GetSingle(ByRef pBeTrans_pe_det As clsBeTrans_pe_det,
                                      ByRef lConnection As SqlConnection,
                                      ByRef lTransaction As SqlTransaction) As Boolean
@@ -776,57 +587,10 @@ Public Class clsLnTrans_pe_det
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
                                                 pStackTrace:=ex.StackTrace,
                                                 pIdPedidoDet:=pBeTrans_pe_det.IdPedidoDet,
                                                 pIdPedidoEnc:=pBeTrans_pe_det?.IdPedidoEnc)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID() As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(IdPedidoDet),0) FROM Trans_pe_det"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            lMax = CInt(lReturnValue)
-                        End If
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-            Return lMax
-
-        Catch ex1 As SQLException
-            Throw ex1
-        Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 

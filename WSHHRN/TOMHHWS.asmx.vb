@@ -3712,8 +3712,7 @@ Public Class TOMHHWS
             Return clsLnTrans_re_det.MaxID(pIdRecepcionEnc)
         Catch ex As Exception
 
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            '#MECR01102025: Se agrego bitacora de logs para recepciones.            
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
 

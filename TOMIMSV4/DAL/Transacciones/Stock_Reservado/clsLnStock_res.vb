@@ -207,7 +207,6 @@ Public Class clsLnStock_res
         Try
 
             Upd.Init("stock_res")
-            Upd.Add("idstockres", "@idstockres", DataType.Parametro)
             Upd.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
             Upd.Add("indicador", "@indicador", DataType.Parametro)
             Upd.Add("idpedidodet", "@idpedidodet", DataType.Parametro)

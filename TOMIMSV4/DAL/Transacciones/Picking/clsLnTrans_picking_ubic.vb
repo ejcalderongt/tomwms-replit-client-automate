@@ -335,8 +335,7 @@ Public Class clsLnTrans_picking_ubic
         Try
 
             Upd.Init("trans_picking_ubic")
-            Upd.Add("idpickingenc", "@idpickingenc", DataType.Parametro) '#EJC20200125: Agregado el 24/01/2020
-            Upd.Add("idpickingubic", "@idpickingubic", DataType.Parametro)
+            Upd.Add("idpickingenc", "@idpickingenc", DataType.Parametro) '#EJC20200125: Agregado el 24/01/2020            
             Upd.Add("idpickingdet", "@idpickingdet", DataType.Parametro)
             Upd.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
             Upd.Add("idubicacion", "@idubicacion", DataType.Parametro)

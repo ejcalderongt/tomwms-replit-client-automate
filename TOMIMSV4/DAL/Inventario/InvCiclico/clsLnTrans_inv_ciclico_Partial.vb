@@ -1907,7 +1907,7 @@ Partial Public Class clsLnTrans_inv_ciclico
 
             Dim vCantInv As Double = 0
 
-            IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+            IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
             BeTransInvEnc.IdStock = IdStock
 
@@ -1987,7 +1987,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                 lIdStocksAEliminar.Add(BeStock.IdStock)
                             End If
 
-                            pBeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                            pBeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             pBeStock.Cantidad = Math.Abs(vCantInv)
                             pBeStock.ProductoEstado.IdEstado = pBeStock.IdProductoEstado
                             pBeStock.IdProductoEstado = pBeStock.IdProductoEstado
