@@ -7,28 +7,28 @@ Partial Public Class clsLnStock
     Private Shared lpBeProductoOutput As New List(Of clsBeProducto)
     Private Shared lBeBodega As New List(Of clsBeBodega)
 
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
+    'Public Shared Function MaxID(ByVal pConnection As SqlConnection,
+    '                             ByVal pTransaction As SqlTransaction) As Integer
 
-        Try
+    '    Try
 
-            Dim lMax As Integer = 0
-            Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
+    '        Dim lMax As Integer = 0
+    '        Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
 
-            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-            End Using
+    '        Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
+    '            Dim lReturnValue As Object = lCommand.ExecuteScalar()
+    '            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+    '                lMax = CInt(lReturnValue)
+    '            End If
+    '        End Using
 
-            Return lMax
+    '        Return lMax
 
-        Catch ex As Exception
-            Throw ex
-        End Try
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
 
-    End Function
+    'End Function
 
     ''' <summary>
     ''' Busca las existencias para un IdPropietarioBodega
@@ -5100,8 +5100,7 @@ Partial Public Class clsLnStock
                         If BeTransAjusteDet.Cantidad_nueva + BeTransAjusteDet.CantReservada > 0 Then
 
                             clsPublic.CopyObject(BeStockOriginal, BeStockNuevo)
-                            BeStockNuevo.IdStock = MaxID(pConection, pTransaction) + 1
-
+                            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             BeStockNuevo.Cantidad = BeTransAjusteDet.Cantidad_nueva + BeTransAjusteDet.CantReservada
                             BeStockNuevo.Peso = BeTransAjusteDet.Peso_nuevo
                             BeStockNuevo.Fecha_vence = BeTransAjusteDet.Fecha_vence_nueva
@@ -10668,7 +10667,7 @@ Partial Public Class clsLnStock
 
             Actualizar_Stock_Por_Productos_Pickeados = 0
 
-            Dim lMaxS As Integer = MaxID(lConnection, lTransaction)
+            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.            
             Dim objStockOrigen As New clsBeStock()
             Dim vCantidadDisponible As Double = 0
             Dim BePres As New clsBeProducto_Presentacion
@@ -11078,7 +11077,7 @@ Partial Public Class clsLnStock
 
                             ObjStockDestino.Cantidad = vCantidadDisponible
 
-                            lMaxS = MaxID(lConnection, lTransaction) + 1
+                            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             ObjStockDestino.IdStock = lMaxS
 
@@ -11291,7 +11290,7 @@ Partial Public Class clsLnStock
 
                             ObjStockDestino.Cantidad = vCantidadDisponible
 
-                            lMaxS = MaxID(lConnection, lTransaction) + 1
+                            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             ObjStockDestino.IdStock = lMaxS
 
@@ -11791,7 +11790,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
                 '#
                 objStockDestino.IdBodega = pIdBodegaDestino
@@ -11914,7 +11913,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
                 '#
                 objStockDestino.IdBodega = pIdBodegaDestino
@@ -12012,7 +12011,7 @@ Por favor reportar este problema a DevOps."
 
             If pListBeTransReDet IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection, lTransaction)
+                Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 Dim BeStock As New clsBeStock
                 Dim BeStockRec As New clsBeStock_rec
                 Dim BeVWStockRec As New clsBeVW_stock_res
@@ -12180,7 +12179,7 @@ Por favor reportar este problema a DevOps."
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            IdStock = MaxID(lConnection, lTransaction)
+            IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
             BeTransInvEnc.Regularizado = True
@@ -15437,7 +15436,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
 
 
@@ -16401,7 +16400,7 @@ Por favor reportar este problema a DevOps."
         Guardar_Stock_Ajuste_Positivo = False
 
         Try
-            pObjStock.IdStock = MaxID(lConnection, lTransaction) + 1
+            pObjStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             Insertar(pObjStock, lConnection, lTransaction)
             Guardar_Stock_Ajuste_Positivo = True
 

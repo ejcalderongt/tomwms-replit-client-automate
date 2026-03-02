@@ -287,7 +287,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                     Dim cache As New OitmCache(client, BD.Instancia.HANA_SL)
 
                     ' Si necesitas IDs únicos sin recalcular MaxID en cada línea
-                    Dim nextDetId As Integer = clsLnTrans_pe_det.MaxID() + 1
+                    Dim nextDetId As Integer = 0
 
                     For Each factura_Reserva_Cliente As JObject In valueArr
 

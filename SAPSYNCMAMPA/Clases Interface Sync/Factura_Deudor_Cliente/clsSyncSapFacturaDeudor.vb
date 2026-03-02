@@ -137,7 +137,7 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
                     Dim cache As New OitmCache(client, BD.Instancia.HANA_SL)
 
                     ' Si necesitas IDs únicos sin recalcular MaxID en cada línea
-                    Dim nextDetId As Integer = clsLnTrans_pe_det.MaxID() + 1
+                    Dim nextDetId As Integer = 0
 
                     For Each factura_deudor As JObject In valueArr
 
@@ -189,7 +189,7 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
                             Dim beDet As New clsBeI_nav_ped_traslado_det With {
                             .NoEnc = beFacturaDeudor.No,
-                            .No = clsLnTrans_pe_det.MaxID() + 1,
+                            .No = clsLnI_nav_ped_traslado_det.MaxID() + 1,
                             .Item_No = linea("ItemCode")?.ToString(),
                             .Line_No = linea("LineNum").Value(Of Integer),
                             .Shipment_Date = Date.Now,

@@ -1,7 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_pe_det
@@ -1078,33 +1075,6 @@ Partial Public Class clsLnTrans_pe_det
 
     End Function
 
-    Public Shared Function MaxID(ByRef lConnection As SqlConnection,
-                                 ByRef ltransaction As SqlTransaction) As Integer
-
-        Dim lMax As Integer = 0
-
-        Try
-
-            Dim vSQL As String = "SELECT ISNULL(Max(IdPedidoDet),0) FROM trans_pe_det"
-
-            Using lCommand As New SqlCommand(vSQL, lConnection, ltransaction) With {.CommandType = CommandType.Text}
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Eliminar_Detalle_By_IdPedidoDet(ByVal pIdPedidoEnc As Integer,
                                                            ByVal pIdPedidoDet As Integer,
                                                            Optional ByVal pConection As SqlConnection = Nothing,
@@ -1245,13 +1215,11 @@ Partial Public Class clsLnTrans_pe_det
             '#EJC202211091834: Parámetro?
             If BeConfigEnc Is Nothing Then
                 Throw New Exception("ERROR_202211091833: No se pudo obtener la configuración de la interface.")
-            Else
-                'MsgBox("Parámetro conservar zona picking: " & BeConfigEnc.Conservar_Zona_Picking_Clavaud)
             End If
 
             If pBePedidoDet.IsNew Then
 
-                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                pBePedidoDet.IdPedidoDet = 0
                 pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
 
@@ -1259,7 +1227,7 @@ Partial Public Class clsLnTrans_pe_det
                 '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.
                 'Ver ref -> '#EJC20171024_1245PM_REF en forma de pedido
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                    pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                     pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
                 Else
@@ -1554,7 +1522,7 @@ Partial Public Class clsLnTrans_pe_det
 
                     If pBePedidoDet.IsNew Then
 
-                        pBePedidoDet.IdPedidoDet = MaxID(lConnection, ltransaction) + 1
+                        pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                         pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                         If Not pBePedidoDet.EsPadre Then pBePedidoDet.IdPedidoDetPadre = pIdPedidoDetPadre
                         ResultadoInsert = Insertar(pBePedidoDet, lConnection, ltransaction)
@@ -1564,7 +1532,7 @@ Partial Public Class clsLnTrans_pe_det
                         '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.
                         'Ver ref -> '#EJC20171024_1245PM_REF en forma de pedido
                         If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, ltransaction) Then
-                            pBePedidoDet.IdPedidoDet = MaxID(lConnection, ltransaction) + 1
+                            pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                             pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                             ResultadoInsert = Insertar(pBePedidoDet, lConnection, ltransaction)
                         Else
@@ -1728,10 +1696,10 @@ Partial Public Class clsLnTrans_pe_det
                                 If Not lStockReservo Is Nothing Then
 
                                     If Actualiza_Picking_Existente(lStockReservo,
-                                       pBePedidoDet,
-                                       pIdPickingEnc,
-                                       lConnection,
-                                       ltransaction) Then
+                                                                   pBePedidoDet,
+                                                                   pIdPickingEnc,
+                                                                   lConnection,
+                                                                   ltransaction) Then
 
                                         Reservar_Stock_Por_Linea = True
 
@@ -1754,7 +1722,7 @@ Partial Public Class clsLnTrans_pe_det
                     '#EJC20201018:FIX Encontrado en CLC MP:
                     'La linea ya se había insertado y se volvía a insertar... un recuerdo encontrado después de la partida de Tzirin.
                     If pBePedidoDet.IsNew Then
-                        Dim vIdPedidoDet As Integer = MaxID(lConnection, ltransaction) + 1
+                        Dim vIdPedidoDet As Integer = 0 'EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                         pBePedidoDet.IdPedidoDet = vIdPedidoDet
                         If pBePedidoDet.EsPadre Then pIdPedidoDetPadre = pBePedidoDet.IdPedidoDet
                         ResultadoInsert = Insertar(pBePedidoDet, lConnection, ltransaction)
@@ -1798,14 +1766,14 @@ Partial Public Class clsLnTrans_pe_det
             lconection.Open() : ltransaction = lconection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             If pBePedidoDet.IsNew Then
-                pBePedidoDet.IdPedidoDet = MaxID(lconection, ltransaction) + 1
+                pBePedidoDet.IdPedidoDet = 0  'EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                 pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lconection, ltransaction)
             Else
                 '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.
                 'Ver ref -> '#EJC20171024_1245PM_REF en forma de pedido
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lconection, ltransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lconection, ltransaction) + 1
+                    pBePedidoDet.IdPedidoDet = 0 'EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                     pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lconection, ltransaction)
                 Else
@@ -2050,12 +2018,12 @@ Partial Public Class clsLnTrans_pe_det
             Dim ResultadoInsert As Integer = 0
 
             If pBePedidoDet.IsNew Then
-                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
             Else
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                    pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                     pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
                 Else
@@ -2205,7 +2173,7 @@ Partial Public Class clsLnTrans_pe_det
 
             If pBePedidoDet.IsNew Then
 
-                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
 
                 '#CKFK20221117 Agregué esto para actualizar el pedido con la cantidad solicitada y la unidad de medida correctos
@@ -2222,7 +2190,7 @@ Partial Public Class clsLnTrans_pe_det
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
             Else
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                    pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                     pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
                 Else
@@ -2371,12 +2339,12 @@ Partial Public Class clsLnTrans_pe_det
             Dim lStockReservadoLotes As New List(Of clsBeStock_res)
 
             If pBePedidoDet.IsNew Then
-                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
             Else
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                    pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                     pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
                 Else
@@ -3658,14 +3626,14 @@ Partial Public Class clsLnTrans_pe_det
             Dim ResultadoInsert As Integer = 0
 
             If pBePedidoDet.IsNew Then
-                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
-                pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
+                pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|}                
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
+                pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
             Else
                 '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.
                 'Ver ref -> '#EJC20171024_1245PM_REF en forma de pedido
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
+                    pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                     pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
                 Else
@@ -3904,10 +3872,8 @@ Partial Public Class clsLnTrans_pe_det
         Try
 
             Dim ResultadoInsert As Integer = 0
-
             Dim lStockReservo As New List(Of clsBeStock_res)
             Dim vCantidadDisponible As Double = 0
-
             Dim vIdPropietarioBodega As Integer = 0
             vIdPropietarioBodega = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(pIdPropietario,
                                                                                                                  pIdBodega,
@@ -3981,19 +3947,17 @@ Partial Public Class clsLnTrans_pe_det
 
             If pBePedidoDet.IsNew Then
 
-                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
-                pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
+                pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
-
-
+                pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
 
             Else
                 '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.
                 'Ver ref -> '#EJC20171024_1245PM_REF en forma de pedido
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
-                    pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
+                    pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|                    
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
+                    pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 Else
 
                     pBePedidoDet.ListaStockRes = clsLnStock_res.Get_All_By_IdPedidoDet(pBePedidoDet.IdPedidoDet,
