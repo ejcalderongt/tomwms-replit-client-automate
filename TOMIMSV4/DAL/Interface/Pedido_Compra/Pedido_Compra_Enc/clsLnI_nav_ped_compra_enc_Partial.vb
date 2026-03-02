@@ -3600,7 +3600,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                         If Not navPedidoCompraEnc.Internal_Transfer_Document_No = "" AndAlso IsNumeric(navPedidoCompraEnc.Internal_Transfer_Document_No) Then
 
                             '#CKFK20251013 Si la orden de compra viene de un traslado interno en NAV, se copian las ubicaciones de picking a los lotes de la orden de compra
-                            DetallePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_IdDespachoEnc(navPedidoCompraEnc.Internal_Transfer_Document_No, lConnection, lTransInterface)
+                            DetallePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_NoDocExterno(Val(navPedidoCompraEnc.Internal_Transfer_Document_No), lConnection, lTransInterface)
 
                         End If
 
