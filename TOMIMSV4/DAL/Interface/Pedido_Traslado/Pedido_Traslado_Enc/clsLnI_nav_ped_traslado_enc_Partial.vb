@@ -1003,8 +1003,6 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         Dim refBePedidoDetAnt As New clsBeTrans_pe_det
                         Dim vMostrar As Boolean = BeINavPedTrasladoEnc.Lineas_Detalle.Count > 0
 
-                        clsLnTrans_pe_det.IdPedidoDetMaxId = clsLnTrans_pe_det.MaxID() + 1
-
                         For Each PDet In BeINavPedTrasladoEnc.Lineas_Detalle
 
                             vCodigoProducto = PDet.Item_No
@@ -1551,7 +1549,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Try
 
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
             pBePedidoDet.No_linea = pBeTrasladoDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = pBeTrasladoDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = BePedidoEnc.IdPedidoEnc
@@ -3013,7 +3011,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                          lTransactionInterface)
 
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
             pBePedidoDet.No_linea = pBeTrasladoDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = pBeTrasladoDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = BePedidoEnc.IdPedidoEnc

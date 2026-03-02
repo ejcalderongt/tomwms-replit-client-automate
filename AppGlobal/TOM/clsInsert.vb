@@ -94,5 +94,30 @@ Public Class clsInsert
         End Try
     End Function
 
+    Public Function SQLIdentity(ByVal identityField As String) As String
+        If String.IsNullOrEmpty(clTable) OrElse clFList.Count = 0 Then Return String.Empty
+        If String.IsNullOrWhiteSpace(identityField) Then Throw New Exception("identityField es requerido.")
+
+        Try
+            Dim fields As New StringBuilder()
+            Dim values As New StringBuilder()
+
+            For i As Integer = 0 To clFList.Count - 1
+                fields.Append(clFList(i))
+                values.Append(clVList(i))
+
+                If i < clFList.Count - 1 Then
+                    fields.Append(", ")
+                    values.Append(", ")
+                End If
+            Next
+
+            Return $"INSERT INTO {clTable} ({fields}) OUTPUT INSERTED.{identityField} VALUES ({values})"
+
+        Catch ex As Exception
+            Dim errorMsg As String = $"Error en {MethodBase.GetCurrentMethod().Name}: {ex.Message}"
+            Throw New Exception(errorMsg)
+        End Try
+    End Function
 
 End Class

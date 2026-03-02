@@ -2369,7 +2369,7 @@ Partial Public Class clsLnTrans_movimientos
             BeStockNuevo = BeStockOrigen.Clone()
             BeStockNuevo.IdBodega = BeStockOrigen.IdBodega
             BeStockNuevo.Fec_agr = Now
-            BeStockNuevo.IdStock = clsLnStock.MaxID(pConnection, pTransaction) + 1
+            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             stock_params = BeStockOrigen.Parametros
 
             'Original 56, IdStock1: 23 IdStock2: 33
@@ -2573,7 +2573,7 @@ Partial Public Class clsLnTrans_movimientos
             BeStockNuevo = BeStockOrigen.Clone()
             BeStockNuevo.IdBodega = BeStockOrigen.IdBodega
             BeStockNuevo.Fec_agr = Now
-            BeStockNuevo.IdStock = clsLnStock.MaxID(pConnection, pTransaction) + 1
+            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             stock_params = BeStockOrigen.Parametros
 
             Cant_Original = BeStockOrigen.Cantidad
@@ -2778,7 +2778,7 @@ Partial Public Class clsLnTrans_movimientos
             BeStockNuevo = BeStockOrigen.Clone()
             BeStockNuevo.IdBodega = BeStockOrigen.IdBodega
             BeStockNuevo.Fec_agr = Now
-            BeStockNuevo.IdStock = clsLnStock.MaxID(pConection, pTransaction) + 1
+            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             stock_params = BeStockOrigen.Parametros
 
             Cant_Original = BeStockOrigen.Cantidad
@@ -2904,7 +2904,7 @@ Partial Public Class clsLnTrans_movimientos
 
             BeStockNuevo = BeStockOrigen.Clone()
             BeStockNuevo.IdBodega = BeStockOrigen.IdBodega
-            BeStockNuevo.IdStock = clsLnStock.MaxID(pConection, pTransaction) + 1
+            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             stock_params = BeStockOrigen.Parametros
 
             Cant_Original = BeStockOrigen.Cantidad

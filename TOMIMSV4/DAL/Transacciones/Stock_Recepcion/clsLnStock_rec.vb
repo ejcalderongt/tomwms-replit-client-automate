@@ -57,17 +57,20 @@ Public Class clsLnStock_rec
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeStock_rec As clsBeStock_rec, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeStock_rec As clsBeStock_rec,
+                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
-        Dim cmd As New SqlCommand()
+        Dim cmd As SqlCommand = Nothing
+
+        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
 
             Ins.Init("stock_rec")
             Ins.Add("idbodega", "@idbodega", DataType.Parametro)
-            Ins.Add("idstockrec", "@idstockrec", DataType.Parametro)
             Ins.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
             Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Ins.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
@@ -106,35 +109,37 @@ Public Class clsLnStock_rec
             Ins.Add("Talla", "@Talla", DataType.Parametro)
             Ins.Add("Color", "@Color", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
-
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            cmd.CommandType = CommandType.Text
+            Dim sp As String = Ins.SQLIdentity("IdStockRec")
 
             If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
+                cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
             Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             End If
 
             Bind(cmd, oBeStock_rec)
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeStock_rec.IdStockRec = newId
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return newId
 
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+        Catch
+            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then
+                Try : lTransaction.Rollback() : Catch : End Try
+            End If
+            Throw
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
-            cmd.Dispose()
+            If cmd IsNot Nothing Then cmd.Dispose()
+            If Not Es_Transaccion_Remota Then
+                If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then lConnection.Dispose()
+            End If
         End Try
 
     End Function
@@ -149,7 +154,6 @@ Public Class clsLnStock_rec
 
             Upd.Init("stock_rec")
             Upd.Add("idbodega", "@idbodega", DataType.Parametro)
-            Upd.Add("idstockrec", "@idstockrec", DataType.Parametro)
             Upd.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
             Upd.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Upd.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
@@ -166,14 +170,11 @@ Public Class clsLnStock_rec
             Upd.Add("lic_plate", "@lic_plate", DataType.Parametro)
             Upd.Add("serial", "@serial", DataType.Parametro)
             Upd.Add("cantidad", "@cantidad", DataType.Parametro)
-            'Upd.Add("fecha_ingreso", "@fecha_ingreso", DataType.Parametro)
             Upd.Add("fecha_vence", "@fecha_vence", DataType.Parametro)
             Upd.Add("uds_lic_plate", "@uds_lic_plate", DataType.Parametro)
             Upd.Add("no_bulto", "@no_bulto", DataType.Parametro)
             Upd.Add("fecha_manufactura", "@fecha_manufactura", DataType.Parametro)
             Upd.Add("añada", "@añada", DataType.Parametro)
-            'Upd.Add("user_agr", "@user_agr", DataType.Parametro)
-            'Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
             Upd.Add("user_mod", "@user_mod", DataType.Parametro)
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Upd.Add("activo", "@activo", DataType.Parametro)

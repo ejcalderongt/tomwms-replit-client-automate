@@ -55,7 +55,6 @@ Public Class clsBeTrans_oc_det
     '#EJC20220224: Cealsa, guardar el shipper o embarcador 
     Public Property IdEmbarcador As Integer = 0
     Public Property Nombre_Embarcador As String = ""
-
     Public Property Nombre_Clasificacion As String = ""
     Public Property IdProductoTallaColor As Integer = 0
 
@@ -91,7 +90,7 @@ Public Class clsBeTrans_oc_det
         Me.Activo = activo
     End Sub
 
-    Public Function Clone() As Object Implements System.ICloneable.Clone
+    Public Function Clone() As Object Implements ICloneable.Clone
         Return MyBase.MemberwiseClone()
     End Function
 

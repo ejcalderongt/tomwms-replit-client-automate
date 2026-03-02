@@ -1654,7 +1654,7 @@ Public Class frmRegularizarInventario
 
                     pBeStock = New clsBeStock()
                     pBeStock.IdBodega = BeTransInvCiclico.IdBodega
-                    pBeStock.IdStock = clsLnStock.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                    pBeStock.IdStock = 0
                     pBeStock.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
                     pBeStock.Cantidad = BeTransInvCiclico.Cantidad
                     pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion

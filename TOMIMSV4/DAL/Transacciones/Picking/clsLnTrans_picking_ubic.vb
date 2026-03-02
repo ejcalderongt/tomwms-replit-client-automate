@@ -153,17 +153,26 @@ Public Class clsLnTrans_picking_ubic
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic,
+                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
-        Dim CantidadStockDestino As Double = 0
+
+        Dim esRemota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
 
+            Dim cantidadStockDestino As Double = oBeTrans_picking_ubic.Cantidad_Solicitada
+
+            Dim permitirDecimales As Boolean =
+            clsLnBodega.Get_Permitir_Decimales(oBeTrans_picking_ubic.IdBodega, pConection, pTransaction)
+
+            clsPublic.Abs(cantidadStockDestino - Fix(cantidadStockDestino), permitirDecimales)
+
             Ins.Init("trans_picking_ubic")
             Ins.Add("idpickingenc", "@idpickingenc", DataType.Parametro)
-            Ins.Add("idpickingubic", "@idpickingubic", DataType.Parametro)
             Ins.Add("idpickingdet", "@idpickingdet", DataType.Parametro)
             Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
             Ins.Add("idubicacion", "@idubicacion", DataType.Parametro)
@@ -216,103 +225,106 @@ Public Class clsLnTrans_picking_ubic
             Ins.Add("IdOperadorBodega_Asignado", "@IdOperadorBodega_Asignado", DataType.Parametro)
             Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim sp As String = Ins.SQLIdentity("idpickingubic")
 
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection)
-                cmd.Transaction = pTransaction
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            Dim cn As SqlConnection = If(esRemota, pConection, lConnection)
+            If Not esRemota Then
+                cn.Open()
+                lTransaction = cn.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", oBeTrans_picking_ubic.IdPickingEnc))
-            cmd.Parameters.Add(New SqlParameter("@IDPICKINGUBIC", oBeTrans_picking_ubic.IdPickingUbic))
-            cmd.Parameters.Add(New SqlParameter("@IDPICKINGDET", oBeTrans_picking_ubic.IdPickingDet))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_picking_ubic.IdPedidoDet))
-            cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeTrans_picking_ubic.IdUbicacion))
-            cmd.Parameters.Add(New SqlParameter("@IDSTOCK", oBeTrans_picking_ubic.IdStock))
-            cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeTrans_picking_ubic.IdPropietarioBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_picking_ubic.IdProductoBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeTrans_picking_ubic.IdProductoEstado))
-            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeTrans_picking_ubic.IdPresentacion))
-            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeTrans_picking_ubic.IdUnidadMedida))
-            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONANTERIOR", oBeTrans_picking_ubic.IdUbicacionAnterior))
-            cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeTrans_picking_ubic.IdRecepcion))
-            cmd.Parameters.Add(New SqlParameter("@LOTE", IIf(oBeTrans_picking_ubic.Lote Is Nothing, DBNull.Value, oBeTrans_picking_ubic.Lote)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeTrans_picking_ubic.Fecha_Vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_Vence)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_MINIMA", IIf(oBeTrans_picking_ubic.Fecha_minima = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_minima)))
-            cmd.Parameters.Add(New SqlParameter("@SERIAL", IIf(oBeTrans_picking_ubic.Serial = Nothing, DBNull.Value, oBeTrans_picking_ubic.Serial)))
-            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_picking_ubic.Lic_plate))
-            cmd.Parameters.Add(New SqlParameter("@ACEPTO", oBeTrans_picking_ubic.Acepto))
-            cmd.Parameters.Add(New SqlParameter("@PESO_SOLICITADO", oBeTrans_picking_ubic.Peso_solicitado))
-            cmd.Parameters.Add(New SqlParameter("@PESO_RECIBIDO", oBeTrans_picking_ubic.Peso_recibido))
-            cmd.Parameters.Add(New SqlParameter("@PESO_VERIFICADO", oBeTrans_picking_ubic.Peso_verificado))
-            cmd.Parameters.Add(New SqlParameter("@PESO_DESPACHADO", oBeTrans_picking_ubic.Peso_despachado))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_SOLICITADA", oBeTrans_picking_ubic.Cantidad_Solicitada))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RECIBIDA", oBeTrans_picking_ubic.Cantidad_Recibida))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_VERIFICADA", oBeTrans_picking_ubic.Cantidad_Verificada))
-            cmd.Parameters.Add(New SqlParameter("@ENCONTRADO", oBeTrans_picking_ubic.Encontrado))
-            cmd.Parameters.Add(New SqlParameter("@DAÑADO_VERIFICACION", oBeTrans_picking_ubic.Dañado_verificacion))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_REAL_VENCE", IIf(oBeTrans_picking_ubic.Fecha_real_vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_real_vence)))
-            cmd.Parameters.Add(New SqlParameter("@NO_PACKING", IIf(oBeTrans_picking_ubic.No_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.No_packing)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_PICKING", IIf(oBeTrans_picking_ubic.Fecha_picking = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_picking)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_VERIFICADO", IIf(oBeTrans_picking_ubic.Fecha_verificado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_verificado)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_PACKING", IIf(oBeTrans_picking_ubic.Fecha_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_packing)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_DESPACHADO", IIf(oBeTrans_picking_ubic.Fecha_despachado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_despachado)))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_DESPACHADA", oBeTrans_picking_ubic.Cantidad_despachada))
-            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeTrans_picking_ubic.User_agr))
-            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeTrans_picking_ubic.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeTrans_picking_ubic.User_mod))
-            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_picking_ubic.Fec_mod))
-            cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeTrans_picking_ubic.Activo))
-            cmd.Parameters.Add(New SqlParameter("@DAÑADO_PICKING", oBeTrans_picking_ubic.Dañado_picking))
-            cmd.Parameters.Add(New SqlParameter("@IDSTOCKRES", oBeTrans_picking_ubic.IdStockRes))
-            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE_REEMPLAZO", oBeTrans_picking_ubic.Lic_plate_Reemplazo))
-            cmd.Parameters.Add(New SqlParameter("@IDUBICACION_REEMPLAZO", oBeTrans_picking_ubic.IdUbicacion_reemplazo))
-            cmd.Parameters.Add(New SqlParameter("@IDSTOCK_REEMPLAZO", oBeTrans_picking_ubic.IdStock_reemplazo))
-            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_picking_ubic.IdBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA", oBeTrans_picking_ubic.IdOperadorBodega_Pickeo))
-            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_PICKEO", oBeTrans_picking_ubic.IdOperadorBodega_Pickeo))
-            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_VERIFICO", oBeTrans_picking_ubic.IdOperadorBodega_Verifico))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeTrans_picking_ubic.IdPedidoEnc))
-            cmd.Parameters.Add(New SqlParameter("@NO_ENCONTRADO", oBeTrans_picking_ubic.No_encontrado))
-            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONTEMPORAL", oBeTrans_picking_ubic.IdUbicacionTemporal))
-            cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_ASIGNADO", oBeTrans_picking_ubic.IdOperadorBodega_Asignado))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_picking_ubic.IdProductoTallaColor))
+            Dim tx As SqlTransaction = If(esRemota, pTransaction, lTransaction)
 
-            CantidadStockDestino = oBeTrans_picking_ubic.Cantidad_Solicitada
+            Using cmd As New SqlCommand(sp, cn, tx)
+                cmd.CommandType = CommandType.Text
 
-            Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(oBeTrans_picking_ubic.IdBodega, pConection, pTransaction)
-            clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+                cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", oBeTrans_picking_ubic.IdPickingEnc))
+                cmd.Parameters.Add(New SqlParameter("@IDPICKINGDET", oBeTrans_picking_ubic.IdPickingDet))
+                cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_picking_ubic.IdPedidoDet))
+                cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeTrans_picking_ubic.IdUbicacion))
+                cmd.Parameters.Add(New SqlParameter("@IDSTOCK", oBeTrans_picking_ubic.IdStock))
+                cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeTrans_picking_ubic.IdPropietarioBodega))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_picking_ubic.IdProductoBodega))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeTrans_picking_ubic.IdProductoEstado))
+                cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeTrans_picking_ubic.IdPresentacion))
+                cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeTrans_picking_ubic.IdUnidadMedida))
+                cmd.Parameters.Add(New SqlParameter("@IDUBICACIONANTERIOR", oBeTrans_picking_ubic.IdUbicacionAnterior))
+                cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeTrans_picking_ubic.IdRecepcion))
 
-            'If Math.Abs(CantidadStockDestino - Fix(CantidadStockDestino)) Then
-            '    Throw New Exception("Error_202303101448M3: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
-            'End If
+                cmd.Parameters.Add(New SqlParameter("@LOTE", If(oBeTrans_picking_ubic.Lote Is Nothing, DBNull.Value, oBeTrans_picking_ubic.Lote)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", If(oBeTrans_picking_ubic.Fecha_Vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_Vence)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_MINIMA", If(oBeTrans_picking_ubic.Fecha_minima = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_minima)))
+                cmd.Parameters.Add(New SqlParameter("@SERIAL", If(oBeTrans_picking_ubic.Serial = Nothing, DBNull.Value, oBeTrans_picking_ubic.Serial)))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+                cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_picking_ubic.Lic_plate))
+                cmd.Parameters.Add(New SqlParameter("@ACEPTO", oBeTrans_picking_ubic.Acepto))
+                cmd.Parameters.Add(New SqlParameter("@PESO_SOLICITADO", oBeTrans_picking_ubic.Peso_solicitado))
+                cmd.Parameters.Add(New SqlParameter("@PESO_RECIBIDO", oBeTrans_picking_ubic.Peso_recibido))
+                cmd.Parameters.Add(New SqlParameter("@PESO_VERIFICADO", oBeTrans_picking_ubic.Peso_verificado))
+                cmd.Parameters.Add(New SqlParameter("@PESO_DESPACHADO", oBeTrans_picking_ubic.Peso_despachado))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_SOLICITADA", oBeTrans_picking_ubic.Cantidad_Solicitada))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RECIBIDA", oBeTrans_picking_ubic.Cantidad_Recibida))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_VERIFICADA", oBeTrans_picking_ubic.Cantidad_Verificada))
+                cmd.Parameters.Add(New SqlParameter("@ENCONTRADO", oBeTrans_picking_ubic.Encontrado))
+                cmd.Parameters.Add(New SqlParameter("@DAÑADO_VERIFICACION", oBeTrans_picking_ubic.Dañado_verificacion))
 
-            cmd.Dispose()
+                cmd.Parameters.Add(New SqlParameter("@FECHA_REAL_VENCE", If(oBeTrans_picking_ubic.Fecha_real_vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_real_vence)))
+                cmd.Parameters.Add(New SqlParameter("@NO_PACKING", If(oBeTrans_picking_ubic.No_packing Is Nothing, DBNull.Value, oBeTrans_picking_ubic.No_packing)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_PICKING", If(oBeTrans_picking_ubic.Fecha_picking = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_picking)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_VERIFICADO", If(oBeTrans_picking_ubic.Fecha_verificado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_verificado)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_PACKING", If(oBeTrans_picking_ubic.Fecha_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_packing)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_DESPACHADO", If(oBeTrans_picking_ubic.Fecha_despachado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_despachado)))
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_DESPACHADA", oBeTrans_picking_ubic.Cantidad_despachada))
+                cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeTrans_picking_ubic.User_agr))
+                cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeTrans_picking_ubic.Fec_agr))
+                cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeTrans_picking_ubic.User_mod))
+                cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_picking_ubic.Fec_mod))
+                cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeTrans_picking_ubic.Activo))
+                cmd.Parameters.Add(New SqlParameter("@DAÑADO_PICKING", oBeTrans_picking_ubic.Dañado_picking))
 
-            Return rowsAffected
+                cmd.Parameters.Add(New SqlParameter("@IDSTOCKRES", oBeTrans_picking_ubic.IdStockRes))
+                cmd.Parameters.Add(New SqlParameter("@LIC_PLATE_REEMPLAZO", oBeTrans_picking_ubic.Lic_plate_Reemplazo))
+                cmd.Parameters.Add(New SqlParameter("@IDUBICACION_REEMPLAZO", oBeTrans_picking_ubic.IdUbicacion_reemplazo))
+                cmd.Parameters.Add(New SqlParameter("@IDSTOCK_REEMPLAZO", oBeTrans_picking_ubic.IdStock_reemplazo))
+                cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_picking_ubic.IdBodega))
 
-        Catch ex1 As SqlException
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex1
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+                cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_PICKEO", oBeTrans_picking_ubic.IdOperadorBodega_Pickeo))
+                cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_VERIFICO", oBeTrans_picking_ubic.IdOperadorBodega_Verifico))
+
+                cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeTrans_picking_ubic.IdPedidoEnc))
+                cmd.Parameters.Add(New SqlParameter("@NO_ENCONTRADO", oBeTrans_picking_ubic.No_encontrado))
+                cmd.Parameters.Add(New SqlParameter("@IDUBICACIONTEMPORAL", oBeTrans_picking_ubic.IdUbicacionTemporal))
+                cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_ASIGNADO", oBeTrans_picking_ubic.IdOperadorBodega_Asignado))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_picking_ubic.IdProductoTallaColor))
+
+                Dim newIdObj As Object = cmd.ExecuteScalar()
+                If newIdObj Is Nothing OrElse newIdObj Is DBNull.Value Then
+                    Throw New Exception("No se pudo recuperar el IDENTITY insertado (idpickingubic).")
+                End If
+
+                oBeTrans_picking_ubic.IdPickingUbic = Convert.ToInt32(newIdObj)
+            End Using
+
+            If Not esRemota Then lTransaction.Commit()
+
+            Return oBeTrans_picking_ubic.IdPickingUbic
+
+        Catch
+            If Not esRemota AndAlso lTransaction IsNot Nothing Then
+                Try : lTransaction.Rollback() : Catch : End Try
+            End If
+            Throw
+
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
+            If Not esRemota Then
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then
+                    If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                    lConnection.Dispose()
+                End If
+            End If
         End Try
-
     End Function
 
     Public Shared Function Actualizar(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
@@ -323,8 +335,7 @@ Public Class clsLnTrans_picking_ubic
         Try
 
             Upd.Init("trans_picking_ubic")
-            Upd.Add("idpickingenc", "@idpickingenc", DataType.Parametro) '#EJC20200125: Agregado el 24/01/2020
-            Upd.Add("idpickingubic", "@idpickingubic", DataType.Parametro)
+            Upd.Add("idpickingenc", "@idpickingenc", DataType.Parametro) '#EJC20200125: Agregado el 24/01/2020            
             Upd.Add("idpickingdet", "@idpickingdet", DataType.Parametro)
             Upd.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
             Upd.Add("idubicacion", "@idubicacion", DataType.Parametro)

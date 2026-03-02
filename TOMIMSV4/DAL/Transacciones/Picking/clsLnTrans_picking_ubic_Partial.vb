@@ -1867,41 +1867,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
-    ''' <summary>
-    ''' Creado por Erik Calderón
-    ''' </summary>
-    ''' <param name="pConnection"></param>
-    ''' <param name="pTransaction"></param>
-    ''' <returns></returns>
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection, ByVal pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(IdPickingUbic),0) FROM trans_picking_ubic "
-
-            Using lCommand As New SqlCommand(vSQL, pConnection)
-
-                lCommand.CommandType = CommandType.Text
-                lCommand.Transaction = pTransaction
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Actualizar_Picking(ByVal oBeTrans_picking_ubic As clsBeTrans_picking_ubic,
                                               ByVal BeStockRes As clsBeStock_res,
                                               ByVal oBeTrans_picking_det As clsBeTrans_picking_det,
@@ -1960,7 +1925,6 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
-
     Public Shared Function Actualizar_Picking(ByVal pBeTrans_picking_ubic As clsBeTrans_picking_ubic,
                                               ByVal pBeStockRes As clsBeStock_res,
                                               ByVal pIdBodega As Integer,
@@ -2027,8 +1991,8 @@ Partial Public Class clsLnTrans_picking_ubic
                         If vIdUbicacionPickingByBodega = 0 Then
                             Throw New Exception("Error_20250427: No se encontró la ubicación asociada al muelle")
                         End If
-                Else
-                    Throw New Exception("Error_20250710: La configuración del pedido indica que se debe mover el producto al muelle, pero el muelle no fue definido en el picking")
+                    Else
+                        Throw New Exception("Error_20250710: La configuración del pedido indica que se debe mover el producto al muelle, pero el muelle no fue definido en el picking")
                     End If
 
                 End If
@@ -2170,7 +2134,7 @@ Partial Public Class clsLnTrans_picking_ubic
                     BeNuevoStockPickeado.Peso = pBeTrans_picking_ubic.Peso_recibido
                     BeNuevoStockPickeado.IdUbicacion_anterior = BeStockActual.IdUbicacion
                     BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-                    BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
+                    BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                     BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
                     BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
                     clsLnStock.Insertar(BeNuevoStockPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
@@ -2218,7 +2182,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 BeNuevoStockPickeado.Peso = pBeTrans_picking_ubic.Peso_recibido
                 BeNuevoStockPickeado.IdUbicacion_anterior = BeStockActual.IdUbicacion
                 BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-                BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
+                BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
                 BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
                 clsLnStock.Insertar(BeNuevoStockPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
@@ -2249,14 +2213,12 @@ Partial Public Class clsLnTrans_picking_ubic
                 clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                 BeNuevoStockResPickeado.Cantidad = vCantidadARestarStock
                 BeNuevoStockPickeado.Peso = pBeTrans_picking_ubic.Peso_recibido
-                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
                 BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                 BeNuevoStockResPickeado.Estado = "PICKEADO"
                 clsLnStock_res.Insertar(BeNuevoStockResPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                 clsPublic.CopyObject(pBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
                 BeNuevoTransPickingUbic.Cantidad_Solicitada = pCantidad
                 BeNuevoTransPickingUbic.Cantidad_Recibida = pCantidad
                 BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(pBeTrans_picking_ubic.Cantidad_Verificada > 0, pCantidad, 0)
@@ -2346,348 +2308,6 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
-
-
-    '    Public Shared Function Actualizar_Picking(ByVal pBeTrans_picking_ubic As clsBeTrans_picking_ubic,
-    '                                              ByVal pBeStockRes As clsBeStock_res,
-    '                                              ByVal pIdBodega As Integer,
-    '                                              ByVal pCantidad As Double,
-    '                                              ByVal pHost As String,
-    '                                              Optional ByVal pConnection As SqlConnection = Nothing,
-    '                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As String
-
-    '        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-    '        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-    '        Dim lTransaction As SqlTransaction = Nothing
-    '        Dim resultado As String = ""
-    '        Dim FilasAfectadas As Integer = 0
-    '        Dim bePickingUbicExistente As New clsBeTrans_picking_ubic
-    '        Dim BeOnTablePickingUbic As New clsBeTrans_picking_ubic
-    '        Dim BeTransPeDet As New clsBeTrans_pe_det
-    '        Dim Factor As Integer = 1
-    '        Dim BeTransPickingDet As New clsBeTrans_picking_det
-    '        Dim BeTransPickingUbicStock As New clsBeTrans_picking_ubic_stock
-    '        Dim BeTransPickingUbicStockExistente As New clsBeTrans_picking_ubic_stock
-    '        Dim BeStockActual As New clsBeStock
-    '        Dim Verificacion_Auto As Boolean = False
-
-    '        Try
-
-    '            If Not Es_Transaccion_Remota Then lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-    '            resultado += "Inicia la actualizacion"
-
-    '            bePickingUbicExistente.IdPickingUbic = pBeTrans_picking_ubic.IdPickingUbic
-
-    '            BeOnTablePickingUbic = Get_PickingUbic_By_IdPickingUbic(bePickingUbicExistente.IdPickingUbic,
-    '                                                                    If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                    If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            BeTransPickingUbicStockExistente = clsLnTrans_picking_ubic_stock.Get_Single_By_IdPickingUbic_And_IdStock(pBeTrans_picking_ubic.IdPickingEnc,
-    '                                                                                                                     pBeTrans_picking_ubic.IdPickingUbic,
-    '                                                                                                                     pBeTrans_picking_ubic.IdStock,
-    '                                                                                                                     If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                                                     If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            FilasAfectadas = Actualizar_Cantidad_Recibida(pBeTrans_picking_ubic,
-    '                                                          If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                          If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            Dim vIdUbicacionPickingByBodega As Integer = 0
-
-    '            vIdUbicacionPickingByBodega = clsLnBodega.Get_IdUbicacion_Picking_By_IdBodega(pBeTrans_picking_ubic.IdBodega, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '            Verificacion_Auto = clsLnTrans_picking_enc.Get_Verificacion_Auto_By_IdPickingEnc(pBeTrans_picking_ubic.IdPickingEnc, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            Dim vCantidadARestarStockUmBas As Double = 0
-    '            Dim vCantidadARestarStockPres As Double = 0
-
-    '            vCantidadARestarStockUmBas = pBeTrans_picking_ubic.Cantidad_Solicitada
-
-    '            If pBeTrans_picking_ubic.IdPresentacion > 0 Then
-
-    '                Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pBeTrans_picking_ubic.IdProductoBodega,
-    '                                                                                   pBeTrans_picking_ubic.IdPresentacion,
-    '                                                                                   If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                   If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                vCantidadARestarStockPres = vCantidadARestarStockUmBas
-    '                vCantidadARestarStockUmBas = vCantidadARestarStockUmBas * Factor
-
-    '            End If
-
-    '#Region "Inserta PickingUbicStock"
-
-    '            BeTransPickingUbicStockExistente = New clsBeTrans_picking_ubic_stock
-    '            BeTransPickingUbicStock.IdPickingUbicStock = clsLnTrans_picking_ubic_stock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
-    '            BeTransPickingUbicStock.IdBodega = BeOnTablePickingUbic.IdBodega
-    '            BeTransPickingUbicStock.IdPickingUbic = BeOnTablePickingUbic.IdPickingUbic
-    '            BeTransPickingUbicStock.IdPickingDet = BeOnTablePickingUbic.IdPickingDet
-    '            BeTransPickingUbicStock.IdPickingDet = BeOnTablePickingUbic.IdPickingDet
-    '            BeTransPickingUbicStock.IdUbicacion = BeOnTablePickingUbic.IdUbicacion
-    '            BeTransPickingUbicStock.IdUbicacion = pBeTrans_picking_ubic.IdUbicacion
-    '            BeTransPickingUbicStock.IdStock = BeOnTablePickingUbic.IdStock
-    '            BeTransPickingUbicStock.IdStockRes = BeOnTablePickingUbic.IdStockRes
-    '            BeTransPickingUbicStock.IdPropietarioBodega = BeOnTablePickingUbic.IdPropietarioBodega
-    '            BeTransPickingUbicStock.IdPropietarioBodega = BeOnTablePickingUbic.IdPropietarioBodega
-    '            BeTransPickingUbicStock.IdProductoBodega = BeOnTablePickingUbic.IdProductoBodega
-    '            BeTransPickingUbicStock.IdProductoEstado = pBeTrans_picking_ubic.IdProductoEstado
-    '            BeTransPickingUbicStock.IdPresentacion = pBeTrans_picking_ubic.IdPresentacion
-    '            BeTransPickingUbicStock.IdUnidadMedida = pBeTrans_picking_ubic.IdUnidadMedida
-    '            BeTransPickingUbicStock.IdUbicacionAnterior = pBeTrans_picking_ubic.IdUbicacionAnterior
-    '            BeTransPickingUbicStock.IdRecepcion = BeOnTablePickingUbic.IdRecepcion
-    '            BeTransPickingUbicStock.IdPedidoEnc = BeOnTablePickingUbic.IdPedidoEnc
-    '            BeTransPickingUbicStock.IdPedidoDet = BeOnTablePickingUbic.IdPedidoDet
-    '            BeTransPickingUbicStock.Idpickingenc = BeOnTablePickingUbic.IdPickingEnc
-    '            BeTransPickingUbicStock.IdOperadorBodega = pBeTrans_picking_ubic.IdOperadorBodega_Pickeo
-    '            BeTransPickingUbicStock.IdOperadorBodega_Pickeo = pBeTrans_picking_ubic.IdOperadorBodega_Pickeo
-    '            BeTransPickingUbicStock.IdOperadorBodega_Verifico = pBeTrans_picking_ubic.IdOperadorBodega_Verifico
-    '            BeTransPickingUbicStock.Lote = pBeTrans_picking_ubic.Lote
-    '            BeTransPickingUbicStock.Lote = pBeTrans_picking_ubic.Lote
-    '            BeTransPickingUbicStock.Fecha_vence = pBeTrans_picking_ubic.Fecha_Vence
-    '            BeTransPickingUbicStock.Fecha_minima = pBeTrans_picking_ubic.Fecha_minima
-    '            BeTransPickingUbicStock.Serial = pBeTrans_picking_ubic.Serial
-    '            BeTransPickingUbicStock.Licencia = pBeTrans_picking_ubic.Lic_plate
-    '            BeTransPickingUbicStock.Cantidad_recibida = pCantidad
-    '            BeTransPickingUbicStock.Cantidad_verificada = pBeTrans_picking_ubic.Cantidad_Verificada
-    '            BeTransPickingUbicStock.Fecha_picking = pBeTrans_picking_ubic.Fecha_picking
-    '            BeTransPickingUbicStock.Fecha_verificado = pBeTrans_picking_ubic.Fecha_verificado
-    '            BeTransPickingUbicStock.Fecha_verificado = pBeTrans_picking_ubic.Fecha_verificado
-    '            BeTransPickingUbicStock.Fecha_despachado = pBeTrans_picking_ubic.Fecha_despachado
-    '            BeTransPickingUbicStock.Cantidad_despachada = pBeTrans_picking_ubic.Cantidad_despachada
-    '            BeTransPickingUbicStock.User_agr = BeOnTablePickingUbic.User_agr
-    '            BeTransPickingUbicStock.Fec_agr = BeOnTablePickingUbic.Fec_agr
-    '            BeTransPickingUbicStock.User_mod = BeOnTablePickingUbic.User_mod
-    '            BeTransPickingUbicStock.Fec_mod = BeOnTablePickingUbic.Fec_mod
-    '            BeTransPickingUbicStock.Activo = BeOnTablePickingUbic.Activo
-    '            BeTransPickingUbicStock.IdUbicacionTemporal = BeOnTablePickingUbic.IdUbicacionTemporal
-    '            BeTransPickingUbicStock.IdOperadorBodega_Asignado = BeOnTablePickingUbic.IdOperadorBodega_Asignado
-    '            BeTransPickingUbicStock.Host = pHost
-    '            clsLnTrans_picking_ubic_stock.Insertar(BeTransPickingUbicStock,
-    '                                                   If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                   If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '#End Region
-
-    '            BeStockActual = clsLnStock.Get_Single_By_IdStock(BeOnTablePickingUbic.IdStock,
-    '                                                             If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                             If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            If BeStockActual Is Nothing Then
-    '                Throw New Exception("Error_20250419B: No se pudo obtener el BeStockOriginal")
-    '            End If
-
-    '            Dim BeStockResActual As clsBeStock_res = clsLnStock_res.GetSingle_By_IdStockRes(BeOnTablePickingUbic.IdBodega,
-    '                                                                                            BeOnTablePickingUbic.IdStockRes,
-    '                                                                                            If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                            If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            If BeStockResActual Is Nothing Then
-    '                Throw New Exception("Error_20250419A: No se pudo obtener el BeStockResActual")
-    '            End If
-
-    '            '#EJC20241005: Mover a ubicación de pickinig lo pickeado valga la rebusnancia.
-    '            If BeOnTablePickingUbic.Cantidad_Solicitada = pBeTrans_picking_ubic.Cantidad_Recibida Then
-
-    '                If BeStockActual.Cantidad = vCantidadARestarStockUmBas Then
-
-    '                    FilasAfectadas = clsLnStock.Actualizar_IdUbicacion_By_IdStock(vIdUbicacionPickingByBodega,
-    '                                                                                  pBeTrans_picking_ubic.IdUbicacion,
-    '                                                                                  pBeTrans_picking_ubic.IdBodega,
-    '                                                                                  pBeTrans_picking_ubic.IdStock,
-    '                                                                                  If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                  If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                Else
-
-    '                    'Hacer una copia del stock actual e insertarlo con la cantidad pickeada en la ubicación de picking.
-    '                    Dim BeNuevoStockPickeado As New clsBeStock
-    '                    clsPublic.CopyObject(BeStockActual, BeNuevoStockPickeado)
-    '                    BeNuevoStockPickeado.Cantidad = vCantidadARestarStockUmBas
-    '                    BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-    '                    BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
-    '                    BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
-    '                    BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
-    '                    clsLnStock.Insertar(BeNuevoStockPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                    BeStockActual.Cantidad = BeStockActual.Cantidad - vCantidadARestarStockUmBas
-    '                    If BeStockActual.Cantidad = 0 Then
-    '                        clsLnStock.Eliminar_By_IdStock(BeStockActual.IdStock,
-    '                                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '                    Else
-    '                        clsLnStock.Actualizar_Cantidad(BeStockActual,
-    '                                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '                    End If
-
-    '                    BeStockResActual = clsLnStock_res.GetSingle_By_IdStockRes(pBeTrans_picking_ubic.IdBodega,
-    '                                                                                  pBeTrans_picking_ubic.IdStockRes,
-    '                                                                                  If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                  If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                    'Actualizar la reserva con el IdStock que contiene únicamente lo pickeado.lTransaction)
-    '                    BeStockResActual.IdStock = BeNuevoStockPickeado.IdStock
-    '                    clsLnStock_res.Actualizar_IdStock(BeStockResActual,
-    '                                                          If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                          If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                    'Actualizar el picking con el nuevo idstock.
-    '                    pBeTrans_picking_ubic.IdStock = BeStockResActual.IdStock
-    '                    Actualizar_IdStock(pBeTrans_picking_ubic,
-    '                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                End If
-
-    '            Else
-
-    '                '#EJC20250409: Split the stock!
-
-    '#Region "Insertar nuevo stock"
-
-    '                'Hacer una copia del stock actual e insertarlo con la cantidad pickeada en la ubicación de picking.
-    '                Dim BeNuevoStockPickeado As New clsBeStock
-    '                clsPublic.CopyObject(BeStockActual, BeNuevoStockPickeado)
-    '                BeNuevoStockPickeado.Cantidad = vCantidadARestarStockUmBas
-    '                BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-    '                BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction)) + 1
-    '                BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
-    '                BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
-    '                clsLnStock.Insertar(BeNuevoStockPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '#End Region
-
-    '#Region "Actualizar cantidad en stock Actual"
-
-    '                BeStockActual.Cantidad = BeStockActual.Cantidad - vCantidadARestarStockUmBas
-    '                If BeStockActual.Cantidad = 0 Then
-    '                    clsLnStock.Eliminar_By_IdStock(BeStockActual.IdStock,
-    '                                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '                Else
-    '                    clsLnStock.Actualizar_Cantidad(BeStockActual,
-    '                                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '                End If
-    '#End Region
-
-    '                Dim BeNuevoStockResPickeado As New clsBeStock_res
-    '                clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
-    '                BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-    '                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction) + 1
-    '                BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
-    '                BeNuevoStockResPickeado.Estado = "PICKEADO"
-    '                clsLnStock_res.Insertar(BeNuevoStockResPickeado,
-    '                                            If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                            If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
-    '                clsPublic.CopyObject(pBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-    '                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
-    '                BeNuevoTransPickingUbic.Cantidad_Solicitada = pCantidad
-    '                BeNuevoTransPickingUbic.Cantidad_Recibida = pCantidad
-    '                BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(pBeTrans_picking_ubic.Cantidad_Verificada > 0, pCantidad, 0)
-    '                BeNuevoTransPickingUbic.IdStock = BeNuevoStockPickeado.IdStock
-    '                BeNuevoTransPickingUbic.IdStockRes = BeNuevoStockResPickeado.IdStockRes
-    '                Insertar(BeNuevoTransPickingUbic,
-    '                         If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                         If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                BeStockResActual.Cantidad = BeStockResActual.Cantidad - vCantidadARestarStockUmBas
-
-    '                If BeStockResActual.Cantidad = 0 Then
-    '                    clsLnStock_res.Eliminar_Stock_Reservado_By_IdStockRes(BeStockResActual.IdStockRes,
-    '                                                                              If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                              If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '                Else
-    '                    clsLnStock_res.Actualizar_Cantidad_By_IdStock(BeStockResActual,
-    '                                                                  If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                  If(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '                End If
-
-    '                pBeTrans_picking_ubic.Cantidad_Recibida = 0
-    '                pBeTrans_picking_ubic.Cantidad_Verificada = 0
-    '                pBeTrans_picking_ubic.Encontrado = False
-    '                pBeTrans_picking_ubic.Cantidad_Solicitada = pBeTrans_picking_ubic.Cantidad_Solicitada - pCantidad
-    '                Actualizar_Cantidad_Recibida(pBeTrans_picking_ubic,
-    '                                             If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                             If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '                pBeStockRes.Fec_mod = Now
-    '                pBeStockRes.Estado = "UNCOMMITED"
-
-    '            End If
-
-    '            resultado += String.Format(", actualizó {0} filas en trans_picking_ubic ", FilasAfectadas.ToString)
-
-    '            FilasAfectadas = clsLnStock_res.Actualizar_Estado_Pickeado(pBeStockRes,
-    '                                                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
-
-    '            BeTransPeDet = clsLnTrans_pe_det.Get_Single_By_IdPedidoEnc_And_IdPedidoDet(pBeTrans_picking_ubic.IdPedidoEnc,
-    '                                                                                       pBeTrans_picking_ubic.IdPedidoDet,
-    '                                                                                       If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                       If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            BeTransPickingDet = clsLnTrans_picking_det.Get_Single_By_IdPickingEnc_And_IdPickingDet(pBeTrans_picking_ubic.IdPickingEnc,
-    '                                                                                                   pBeTrans_picking_ubic.IdPickingDet,
-    '                                                                                                   If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                                                   If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            If BeTransPeDet.IdPresentacion <> pBeTrans_picking_ubic.IdPresentacion Then
-    '                If BeTransPeDet.IdPresentacion = 0 AndAlso pBeTrans_picking_ubic.IdPresentacion <> 0 Then
-    '                    If Factor <> 0 Then
-    '                        Dim CantPedido As Double = pCantidad * Factor
-    '                        BeTransPickingDet.Cantidad_recibida += CantPedido
-    '                        pCantidad = pCantidad * Factor
-    '                    End If
-    '                End If
-
-    '            Else
-    '                Dim vCantPickeada As Double = 0
-    '                vCantPickeada = Math.Round(BeTransPickingDet.Cantidad_recibida + pCantidad, 6)
-    '                BeTransPickingDet.Cantidad_recibida = vCantPickeada
-    '                pCantidad = pCantidad * Factor
-    '            End If
-
-    '            FilasAfectadas = clsLnTrans_picking_det.Actualizar(BeTransPickingDet,
-    '                                                               If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                               If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            clsLnTrans_movimientos.Insertar_Movimiento_Picking(pBeTrans_picking_ubic,
-    '                                                               vIdUbicacionPickingByBodega,
-    '                                                               pCantidad,
-    '                                                               If(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                               If(Es_Transaccion_Remota, pTransaction, lTransaction))
-
-    '            If Verificacion_Auto Then
-    '                clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(pBeTrans_picking_ubic,
-    '                                                                        pCantidad,
-    '                                                                        pBeTrans_picking_ubic.Peso_recibido,
-    '                                                                        IIf(Es_Transaccion_Remota, pConnection, lConnection),
-    '                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
-    '            End If
-
-
-    '            resultado += String.Format(", actualizó {0} filas en trans_picking_det ", FilasAfectadas.ToString)
-
-    '            resultado += ", terminó la actualizacion"
-
-    '            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-    '            Return resultado
-
-    '        Catch ex As Exception
-    '            If Not Es_Transaccion_Remota Then If Not lTransaction Is Nothing Then lTransaction.Rollback()
-    '            Throw ex
-    '        Finally
-    '            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-    '            If lConnection IsNot Nothing Then lConnection.Dispose()
-    '        End Try
-
-    '    End Function
 
     Public Shared Function Actualizar_Picking_Desde_Consolidado1(ByVal oBeTrans_picking_ubic As clsBeTrans_picking_ubic,
                                                                  ByVal BeStockResActual As clsBeStock_res,
@@ -2915,14 +2535,7 @@ Partial Public Class clsLnTrans_picking_ubic
                         BeNuevoStockPickeado.Cantidad = vCantidadARestarStockUmBas
                         BeNuevoStockPickeado.IdUbicacion_anterior = BeStockActual.IdUbicacion
                         BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-
-                        If Not Es_Transaccion_Remota Then
-                            BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-                        Else
-                            BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(pConnection, pTransaction) + 1
-                        End If
-
-                        BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
+                        BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                         BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
 
                         If Not Es_Transaccion_Remota Then
@@ -2973,14 +2586,12 @@ Partial Public Class clsLnTrans_picking_ubic
                                 Dim BeNuevoStockResPickeado As New clsBeStock_res
                                 clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                                 BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction) + 1
                                 BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                                 BeNuevoStockResPickeado.Estado = "PICKEADO"
                                 clsLnStock_res.Insertar(BeNuevoStockResPickeado, lConnection, lTransaction)
 
                                 Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                 clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
                                 BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3027,14 +2638,12 @@ Partial Public Class clsLnTrans_picking_ubic
                                 Dim BeNuevoStockResPickeado As New clsBeStock_res
                                 clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                                 BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(pConnection, pTransaction) + 1
                                 BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                                 BeNuevoStockResPickeado.Estado = "PICKEADO"
                                 clsLnStock_res.Insertar(BeNuevoStockResPickeado, pConnection, pTransaction)
 
                                 Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                 clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(pConnection, pTransaction) + 1
                                 BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3071,13 +2680,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 clsPublic.CopyObject(BeStockActual, BeNuevoStockPickeado)
                 BeNuevoStockPickeado.Cantidad = vCantidadARestarStockUmBas
                 BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-
-                If Not Es_Transaccion_Remota Then
-                    BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-                Else
-                    BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(pConnection, pTransaction) + 1
-                End If
-
+                BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
                 BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
 
@@ -3135,14 +2738,12 @@ Partial Public Class clsLnTrans_picking_ubic
                         Dim BeNuevoStockResPickeado As New clsBeStock_res
                         clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                         BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                        BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction) + 1
                         BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                         BeNuevoStockResPickeado.Estado = "PICKEADO"
                         clsLnStock_res.Insertar(BeNuevoStockResPickeado, lConnection, lTransaction)
 
                         Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                         clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                        BeNuevoTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
                         BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                         BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                         BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3190,14 +2791,12 @@ Partial Public Class clsLnTrans_picking_ubic
                         Dim BeNuevoStockResPickeado As New clsBeStock_res
                         clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                         BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                        BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(pConnection, pTransaction) + 1
                         BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                         BeNuevoStockResPickeado.Estado = "PICKEADO"
                         clsLnStock_res.Insertar(BeNuevoStockResPickeado, pConnection, pTransaction)
 
                         Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                         clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                        BeNuevoTransPickingUbic.IdPickingUbic = MaxID(pConnection, pTransaction) + 1
                         BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                         BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                         BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3418,22 +3017,22 @@ Partial Public Class clsLnTrans_picking_ubic
 
                             If Not Es_Transaccion_Remota Then
                                 FilasAfectadas = clsLnStock.Actualizar_IdUbicacion_By_IdStock(vIdUbicacionPickingByBodega,
-                                                                                      oBeTrans_picking_ubic.IdUbicacion,
-                                                                                      oBeTrans_picking_ubic.IdBodega,
-                                                                                      oBeTrans_picking_ubic.IdStock,
-                                                                                      lConnection,
-                                                                                      lTransaction)
+                                                                                              oBeTrans_picking_ubic.IdUbicacion,
+                                                                                              oBeTrans_picking_ubic.IdBodega,
+                                                                                              oBeTrans_picking_ubic.IdStock,
+                                                                                              lConnection,
+                                                                                              lTransaction)
 
                                 BeStockResActual.Estado = "PICKEADO"
                                 FilasAfectadas = clsLnStock_res.Actualizar_Estado_Pickeado(BeStockResActual, lConnection, lTransaction)
 
                             Else
                                 FilasAfectadas = clsLnStock.Actualizar_IdUbicacion_By_IdStock(vIdUbicacionPickingByBodega,
-                                                                                      oBeTrans_picking_ubic.IdUbicacion,
-                                                                                      oBeTrans_picking_ubic.IdBodega,
-                                                                                      oBeTrans_picking_ubic.IdStock,
-                                                                                      pConnection,
-                                                                                      pTransaction)
+                                                                                              oBeTrans_picking_ubic.IdUbicacion,
+                                                                                              oBeTrans_picking_ubic.IdBodega,
+                                                                                              oBeTrans_picking_ubic.IdStock,
+                                                                                              pConnection,
+                                                                                              pTransaction)
 
                                 BeStockResActual.Estado = "PICKEADO"
                                 FilasAfectadas = clsLnStock_res.Actualizar_Estado_Pickeado(BeStockResActual, pConnection, pTransaction)
@@ -3453,13 +3052,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             BeNuevoStockPickeado.Cantidad = vCantidadARestarStockUmBas
                             BeNuevoStockPickeado.IdUbicacion_anterior = BeStockActual.IdUbicacion
                             BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-
-                            If Not Es_Transaccion_Remota Then
-                                BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-                            Else
-                                BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(pConnection, pTransaction) + 1
-                            End If
-
+                            BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
                             BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
 
@@ -3511,14 +3104,12 @@ Partial Public Class clsLnTrans_picking_ubic
                                     Dim BeNuevoStockResPickeado As New clsBeStock_res
                                     clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                                     BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                                    BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction) + 1
                                     BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                                     BeNuevoStockResPickeado.Estado = "PICKEADO"
                                     clsLnStock_res.Insertar(BeNuevoStockResPickeado, lConnection, lTransaction)
 
                                     Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                     clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                                    BeNuevoTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
                                     BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                     BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                     BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3565,14 +3156,12 @@ Partial Public Class clsLnTrans_picking_ubic
                                     Dim BeNuevoStockResPickeado As New clsBeStock_res
                                     clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                                     BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                                    BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(pConnection, pTransaction) + 1
                                     BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                                     BeNuevoStockResPickeado.Estado = "PICKEADO"
                                     clsLnStock_res.Insertar(BeNuevoStockResPickeado, pConnection, pTransaction)
 
                                     Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                     clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                                    BeNuevoTransPickingUbic.IdPickingUbic = MaxID(pConnection, pTransaction) + 1
                                     BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                     BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                     BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3605,13 +3194,7 @@ Partial Public Class clsLnTrans_picking_ubic
                         clsPublic.CopyObject(BeStockActual, BeNuevoStockPickeado)
                         BeNuevoStockPickeado.Cantidad = vCantidadARestarStockUmBas
                         BeNuevoStockPickeado.IdUbicacion = vIdUbicacionPickingByBodega
-
-                        If Not Es_Transaccion_Remota Then
-                            BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
-                        Else
-                            BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(pConnection, pTransaction) + 1
-                        End If
-
+                        BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                         BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockActual.IdProductoEstado
                         BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockActual.IdPresentacion
 
@@ -3663,14 +3246,12 @@ Partial Public Class clsLnTrans_picking_ubic
                                 Dim BeNuevoStockResPickeado As New clsBeStock_res
                                 clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                                 BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction) + 1
                                 BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                                 BeNuevoStockResPickeado.Estado = "PICKEADO"
                                 clsLnStock_res.Insertar(BeNuevoStockResPickeado, lConnection, lTransaction)
 
                                 Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                 clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
                                 BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3718,14 +3299,12 @@ Partial Public Class clsLnTrans_picking_ubic
                                 Dim BeNuevoStockResPickeado As New clsBeStock_res
                                 clsPublic.CopyObject(BeStockResActual, BeNuevoStockResPickeado)
                                 BeNuevoStockResPickeado.Cantidad = vCantidadARestarStockUmBas
-                                BeNuevoStockResPickeado.IdStockRes = clsLnStock_res.MaxID(pConnection, pTransaction) + 1
                                 BeNuevoStockResPickeado.IdStock = BeNuevoStockPickeado.IdStock
                                 BeNuevoStockResPickeado.Estado = "PICKEADO"
                                 clsLnStock_res.Insertar(BeNuevoStockResPickeado, pConnection, pTransaction)
 
                                 Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                 clsPublic.CopyObject(oBeTrans_picking_ubic, BeNuevoTransPickingUbic)
-                                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(pConnection, pTransaction) + 1
                                 BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(oBeTrans_picking_ubic.Cantidad_Verificada > 0, IIf(oBeTrans_picking_ubic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -3807,9 +3386,9 @@ Partial Public Class clsLnTrans_picking_ubic
 
             If oBeTrans_picking_ubic.Cantidad_Verificada <> 0 Then
 
-            resultado += "Inicia la actualizacion"
+                resultado += "Inicia la actualizacion"
 
-            FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
+                FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
                                         IIf(Es_Transaccion_Remota, pConection, lConnection),
                                         IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
@@ -3818,29 +3397,29 @@ Partial Public Class clsLnTrans_picking_ubic
                                            oBeTrans_picking_ubic.IdOperadorBodega_Verifico, oBeTrans_picking_ubic.IdPedidoEnc,
                                            oBeTrans_picking_ubic.IdPedidoDet, oBeTrans_picking_ubic.IdPickingUbic)
 
-            FilasAfectadas = clsLnStock_res.Actualizar(BeStockRes,
+                FilasAfectadas = clsLnStock_res.Actualizar(BeStockRes,
                                                        IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
-            resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
+                resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
 
-            Dim BeStock As New clsBeStock
+                Dim BeStock As New clsBeStock
                 BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock,
                                                            IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                            IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
-            FilasAfectadas = clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(oBeTrans_picking_ubic,
+                FilasAfectadas = clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(oBeTrans_picking_ubic,
                                                                                      BeStock.IdUbicacion,
                                                                                      pCantidad,
                                                                                      pPeso,
                                                                                      IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                                                      IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
-            resultado += String.Format(", actualizó {0} filas en trans_movimientos ", FilasAfectadas.ToString)
+                resultado += String.Format(", actualizó {0} filas en trans_movimientos ", FilasAfectadas.ToString)
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            resultado += ", terminó la actualizacion"
+                resultado += ", terminó la actualizacion"
 
             End If
 
@@ -3954,7 +3533,7 @@ Partial Public Class clsLnTrans_picking_ubic
                     Dim CantidadPendiente As Double = PickingUbic.Cantidad_Recibida
                     Dim PesoPendiente As Double = PickingUbic.Peso_recibido
 
-                For Each vBePickingUbic As clsBeTrans_picking_ubic In lPickingUbicConsolidado.FindAll(Function(x) x.IdPickingUbic = PickingUbic.IdPickingUbic)
+                    For Each vBePickingUbic As clsBeTrans_picking_ubic In lPickingUbicConsolidado.FindAll(Function(x) x.IdPickingUbic = PickingUbic.IdPickingUbic)
 
                         Dim CantPendiente As Double = Math.Round(Math.Max(0, vBePickingUbic.Cantidad_Solicitada - vBePickingUbic.Cantidad_Recibida), 6)
                         Dim PesoPend As Double = Math.Round(Math.Max(0, vBePickingUbic.Peso_solicitado - vBePickingUbic.Peso_recibido), 6)
@@ -4085,11 +3664,11 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                          If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                          If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
-                            'Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
-                            '                                                                                  IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
-                            '                                                                                  IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
-                            '                                                                                  If(Es_Transaccion_Remota, pConnection, lConnection),
-                            '                                                                                  If(Es_Transaccion_Remota, pTransaction, ltransaction))
+                                'Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
+                                '                                                                                  IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
+                                '                                                                                  IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
+                                '                                                                                  If(Es_Transaccion_Remota, pConnection, lConnection),
+                                '                                                                                  If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 ' Insertar picking_ubic_stock
                                 Dim BePickingUbicStock As New clsBeTrans_picking_ubic_stock
@@ -4124,7 +3703,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeNuevoStockPickeado.Cantidad = IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor
                                 BeNuevoStockPickeado.Peso = IIf(UsarPeso = 0, PesoPend, UsarPeso)
                                 BeNuevoStockPickeado.IdUbicacion = IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega)
-                                BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction)) + 1
+                                BeNuevoStockPickeado.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                 BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockOriginal.IdProductoEstado
                                 BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockOriginal.IdPresentacion
                                 BeNuevoStockPickeado.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
@@ -4145,7 +3724,6 @@ Partial Public Class clsLnTrans_picking_ubic
                                 ' Crear nueva reserva
                                 Dim BeStockResNuevo As New clsBeStock_res
                                 clsPublic.CopyObject(BeStockResActual, BeStockResNuevo)
-                                BeStockResNuevo.IdStockRes = clsLnStock_res.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction)) + 1
                                 BeStockResNuevo.IdStock = BeNuevoStockPickeado.IdStock
                                 BeStockResNuevo.Cantidad = IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad)
                                 BeStockResNuevo.Peso = IIf(UsarPeso = 0, PesoPend, UsarPeso)
@@ -4179,12 +3757,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
                                 End If
 
-                            'Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
-                            '                                                                                  IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
-                            '                                                                                  IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
-                            '                                                                                  IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                            '                                                                                  IIf(Es_Transaccion_Remota, pTransaction, ltransaction))
-
                                 ' Insertar picking_ubic_stock
                                 Dim BePickingUbicStock As New clsBeTrans_picking_ubic_stock
                                 clsPublic.CopyObject(vBePickingUbic, BePickingUbicStock)
@@ -4206,7 +3778,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
                                 Dim BeNuevoTransPickingUbic As New clsBeTrans_picking_ubic
                                 clsPublic.CopyObject(vBePickingUbic, BeNuevoTransPickingUbic)
-                                BeNuevoTransPickingUbic.IdPickingUbic = MaxID(lConnection, ltransaction) + 1
                                 BeNuevoTransPickingUbic.Cantidad_Solicitada = IIf(vBePickingUbic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Recibida = IIf(vBePickingUbic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 BeNuevoTransPickingUbic.Cantidad_Verificada = IIf(vBePickingUbic.Cantidad_Verificada > 0, IIf(vBePickingUbic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas), 0)
@@ -4309,11 +3880,6 @@ Partial Public Class clsLnTrans_picking_ubic
             Else
                 Throw New Exception("No se pudo procesar el picking, la lista de ubicaciones es inconsistente.")
             End If
-            '#EJC20250701: Finalizar la tarea de picking generada para la hh (Erik, arregla esto. att erik del pasado).
-            'clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
-            '                                       lConnection,
-            '                                       ltransaction)
-
 
             If Not Es_Transaccion_Remota Then ltransaction.Commit()
 
@@ -4766,8 +4332,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 If BeTransPickingUbic.IsNew Then
 
-                    BeTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
-
                     CantidadStockDestino = BeTransPickingUbic.Cantidad_Solicitada
 
                     Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeTransPickingUbic.IdBodega, lConnection, lTransaction)
@@ -4858,13 +4422,12 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 If BeTransPickingUbic.IsNew Then
 
-                    BeTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
 
                     CantidadStockDestino = BeTransPickingUbic.Cantidad_Solicitada
 
                     '#EJC202309291619:Si existe concurrencia, volver a calcular el IdPIckingUbic.
                     If Existe_IdPickingUbic(BeTransPickingUbic.IdPickingUbic, lConnection, lTransaction) Then
-                        BeTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
+                        BeTransPickingUbic.IdPickingUbic = 0 'EJC20260329: Si el IdPickingUbic ya existe, se asigna 0 para que se genere un nuevo Id al insertar.
                     End If
 
                     Try
@@ -4878,8 +4441,6 @@ Partial Public Class clsLnTrans_picking_ubic
                         If ex.Message.Contains("PRIMARY KEY constraint") Then
                             '#EJC202309291619:Si existe concurrencia, volver a calcular el IdPIckingUbic.
                             If Existe_IdPickingUbic(BeTransPickingUbic.IdPickingUbic, lConnection, lTransaction) Then
-
-                                BeTransPickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1
 
                                 Insertar(BeTransPickingUbic,
                                          lConnection,
@@ -4951,7 +4512,6 @@ Partial Public Class clsLnTrans_picking_ubic
             Dim BePickingUbic As New clsBeTrans_picking_ubic()
 
             With BePickingUbic
-                .IdPickingUbic = MaxID(lConnection, lTransaction) + 1
                 .IdPedidoDet = pStockRes.IdPedidoDet
                 .IdStockRes = pStockRes.IdStockRes
                 .IdPickingDet = pIdPickingDet

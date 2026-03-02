@@ -1169,7 +1169,7 @@ Partial Public Class clsLnStock_res
                                                 BeStockDestino.Cantidad = vCantidadDecimalUMBasStock
                                                 BeStockDestino.Fec_agr = Now
                                                 BeStockDestino.IdPresentacion = 0
-                                                BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                 BeStockRes.IdStock = BeStockDestino.IdStock
                                                 BeStockDestino.No_bulto = 1989
                                                 clsLnStock.Insertar(BeStockDestino, lConnection, ltransaction)
@@ -1256,7 +1256,7 @@ Partial Public Class clsLnStock_res
                                                     BeStockDestino.Cantidad = vCantidadDecimalUMBasStock
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
                                                     clsLnStock.Insertar(BeStockDestino, lConnection, ltransaction)
@@ -1631,9 +1631,6 @@ Partial Public Class clsLnStock_res
             Dim vCantidadReservada As Double = 0
             Dim vPesoReservado As Double = 0
 
-            '#EJC20220303:Antes de manejo de peso Cealsa
-            'vCantidadReservada = Get_Cantidad_Reservada_By_IdStock(pBeStockEspecifico.IdStock, lConnection, ltransaction)
-
             Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock(pBeStockEspecifico.IdStock, False, vCantidadReservada, vPesoReservado, lConnection, ltransaction)
 
             If vCantidadReservada <> 0 Then
@@ -1956,15 +1953,7 @@ Partial Public Class clsLnStock_res
                     .IdPickingUbic = IdPickingUbic
                 }
 
-                '#CKFK 20201129 Quité el bePickingUbicExistenteDañado que es el picking ubic dañado porque eso se marca en otro lado,
-                'aquí solo voy a reservar el nuevo stock
-                'Dim bePickingUbicExistenteDañado As New clsBeTrans_picking_ubic With {
-                '    .IdPickingUbic = IdPickingUbic
-                '}
-
-                clsLnTrans_picking_ubic.GetSingle(bePickingUbicExistente, lConnection, lTransaction) '#CKFK 20180331 11:25 PM Agregué la función con transaccionalidad anteriormente estaba esta clsLnTrans_picking_ubic.GetSingle(bePickingUbic
-
-                'bePickingUbicExistenteDañado = bePickingUbicExistente.Clone()
+                clsLnTrans_picking_ubic.GetSingle(bePickingUbicExistente, lConnection, lTransaction) '#CKFK 20180331 11:25 PM Agregué la función con transaccionalidad anteriormente estaba esta clsLnTrans_picking_ubic.GetSingle(bePickingUbic                
 
                 bePickingUbicExistente.Cantidad_Solicitada -= CantSol
 
@@ -1973,25 +1962,6 @@ Partial Public Class clsLnStock_res
                 End If
 
                 If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
-
-                    'bePickingUbicExistenteDañado.Cantidad_Solicitada = CantSol
-
-                    'bePickingUbicExistenteDañado.Acepto = 0
-                    'bePickingUbicExistenteDañado.Encontrado = 0
-
-                    'If Not EsPicking Then
-                    '    bePickingUbicExistenteDañado.Cantidad_Recibida = CantSol
-                    'End If
-
-                    'If EsPicking Then
-                    '    bePickingUbicExistenteDañado.Dañado_picking = True
-                    'Else
-                    '    bePickingUbicExistenteDañado.Dañado_verificacion = True
-                    'End If
-
-                    'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
-                    'clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -2007,8 +1977,8 @@ Partial Public Class clsLnStock_res
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
                     End If
 
-                    bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente)
 
                 ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
@@ -2050,11 +2020,8 @@ Partial Public Class clsLnStock_res
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
                     End If
 
-                    '#CKFK 20201129 Puse esto en comentario ya siempre se debe agregar el nuevo stock asignado, 
-                    'clsLnTrans_picking_ubic.Actualizar(bePickingUbicExistente, lConnection, lTransaction)
-
-                    bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente)
 
                 End If
@@ -2363,8 +2330,8 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Acepto = 0
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
 
-                    bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente,
                                                      lConnection,
                                                      lTransaction)
@@ -2628,8 +2595,8 @@ Partial Public Class clsLnStock_res
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
                     End If
 
-                    bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente,
                                                      lConnection,
                                                      lTransaction)
@@ -2648,8 +2615,8 @@ Partial Public Class clsLnStock_res
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
                     End If
 
-                    bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente,
                                                      lConnection,
                                                      lTransaction)
@@ -2861,8 +2828,8 @@ Partial Public Class clsLnStock_res
                         bePickingUbicExistenteDañado.Dañado_verificacion = True
                     End If
 
-                    bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, ltransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, ltransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
                 ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
@@ -3616,19 +3583,19 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
-                    'bePickingUbicExistente.No_packing = 3
 
                 End If
 
                 bePickingUbicExistente.Acepto = 0
                 bePickingUbicExistente.Cantidad_Solicitada = CantSol
 
-                bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente, lConnection, lTransaction)
 
             ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
-                '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
 
+                '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                 '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true
 
                 bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -4830,16 +4797,12 @@ Partial Public Class clsLnStock_res
                                  lConnection,
                                  ltransaction) Then
 
-                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                     CantidadStockDestino = BeStockRes.Cantidad
 
                     Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                     clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
-                    'If Math.Abs(CantidadStockDestino - Fix(CantidadStockDestino)) Then
-                    '    Throw New Exception("Error_202303101448M1: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
-                    'End If
 
                     Insertar(BeStockRes,
                              lConnection,
@@ -5717,36 +5680,6 @@ Partial Public Class clsLnStock_res
         End Try
 
     End Function
-
-    Public Shared Function MaxID(ByRef pConnection As SqlConnection, ByRef pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(IdStockRes),0) FROM Stock_res"
-
-            Using lCommand As New SqlCommand(sp, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-
-                    lMax = CInt(lReturnValue)
-
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
     Public Shared Function Get_All_By_IdPickingEnc(ByVal pIdPickingEnc As Integer) As List(Of clsBeStock_res)
 
         Dim lReturnList As New List(Of clsBeStock_res)
@@ -6072,7 +6005,6 @@ Partial Public Class clsLnStock_res
 
                         Using BeStockRes As New clsBeStock_res()
 
-                            BeStockRes.IdStockRes = MaxID(lConnection, lTransaction) + 1
                             BeStockRes.IdTransaccion = IdTareaUbicacionEnc
                             BeStockRes.Indicador = "UBI"
                             BeStockRes.IdPedidoDet = 0
@@ -6186,7 +6118,6 @@ Partial Public Class clsLnStock_res
 
         Try
 
-            Dim lMaxR As Integer = MaxID(lConnection, lTransaction)
             Dim vIndicePres As Integer = 0
 
             If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
@@ -6198,8 +6129,6 @@ Partial Public Class clsLnStock_res
 
                         Using objStockRes As New clsBeStock_res()
 
-                            lMaxR += 1
-                            objStockRes.IdStockRes = lMaxR
                             objStockRes.IdTransaccion = IdTareaUbicacionEnc
                             objStockRes.Indicador = "UBI"
                             objStockRes.IdPedidoDet = 0
@@ -6295,12 +6224,6 @@ Partial Public Class clsLnStock_res
 
                         Using BeStockRes As New clsBeStock_res()
 
-                            BeStockRes.IdStockRes = MaxID(lConnection, lTransaction) + 1
-
-                            '#CKFK 20201129 Devuelve el IdStockRes en el objeto List(of clsBeStock)
-                            '#AT 20220115 Comente esto porque estaba cambiando el IdStock  al guardar en stock_res no encontrado (Preguntar)
-                            'Obj.IdStock = lMaxR
-
                             BeStockRes.IdTransaccion = IdTransNoEncontrado
                             BeStockRes.Indicador = "NOENC"
                             BeStockRes.IdPedidoDet = 0
@@ -6342,10 +6265,6 @@ Partial Public Class clsLnStock_res
 
                             Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, lTransaction)
                             clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
-
-                            'If Math.Abs(CantidadStockDestino - Fix(CantidadStockDestino)) Then
-                            '    Throw New Exception("Error_202303101448O: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
-                            'End If
 
                             Insertar(BeStockRes,
                                      lConnection,
@@ -10708,7 +10627,7 @@ Partial Public Class clsLnStock_res
                                                 BeStockDestino.Fec_agr = Now
                                                 BeStockDestino.IdPresentacion = 0
                                                 BeStockDestino.Presentacion.IdPresentacion = 0
-                                                BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                 BeStockRes.IdStock = BeStockDestino.IdStock
                                                 BeStockDestino.No_bulto = 1989
 
@@ -10775,7 +10694,6 @@ Partial Public Class clsLnStock_res
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                                                 CantidadStockDestino = BeStockRes.Cantidad
 
@@ -10862,8 +10780,6 @@ Partial Public Class clsLnStock_res
                                                     If Math.Abs(CantidadStockDestino - Fix(CantidadStockDestino)) Then
                                                         Throw New Exception("Error_202303101448B: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
                                                     End If
-
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                                                     Insertar(BeStockRes,
                                                              lConnection,
@@ -10980,7 +10896,7 @@ Partial Public Class clsLnStock_res
                                             Throw New Exception("Error_202303101448C: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
                                         End If
 
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                         Insertar(BeStockRes,
                                                  lConnection,
@@ -11196,7 +11112,6 @@ Partial Public Class clsLnStock_res
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -11470,7 +11385,7 @@ Partial Public Class clsLnStock_res
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -11537,7 +11452,7 @@ Partial Public Class clsLnStock_res
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -11628,7 +11543,6 @@ Partial Public Class clsLnStock_res
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                                                         If BeStockRes.Cantidad = 0 Then
                                                             Throw New Exception("Error_202302061305A: La cantidad a reservar no puede ser 0")
@@ -11746,7 +11660,7 @@ Partial Public Class clsLnStock_res
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             If BeStockRes.Cantidad = 0 Then
                                                 Throw New Exception("Error_202302061305A: La cantidad a reservar no puede ser 0")
@@ -11989,7 +11903,7 @@ Partial Public Class clsLnStock_res
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             If BeStockRes.Cantidad = 0 Then
                                                 Throw New Exception("Error_202302061305B: La cantidad a reservar no puede ser 0")
@@ -12255,7 +12169,7 @@ Partial Public Class clsLnStock_res
                                             BeStockDestino.Fec_agr = Now
                                             BeStockDestino.IdPresentacion = 0
                                             BeStockDestino.Presentacion.IdPresentacion = 0
-                                            BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                            BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                             BeStockRes.IdStock = BeStockDestino.IdStock
                                             BeStockDestino.No_bulto = 1989
 
@@ -12328,7 +12242,6 @@ Partial Public Class clsLnStock_res
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                                             CantidadStockDestino = BeStockRes.Cantidad
 
@@ -12412,7 +12325,7 @@ Partial Public Class clsLnStock_res
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                 CantidadStockDestino = BeStockRes.Cantidad
 
@@ -12525,7 +12438,6 @@ Partial Public Class clsLnStock_res
                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                     BeStockRes.Host = MaquinaQueSolicita
-                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
 
                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -12763,7 +12675,7 @@ Partial Public Class clsLnStock_res
                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                     BeStockRes.Host = MaquinaQueSolicita
-                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -13292,7 +13204,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -13318,7 +13230,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = BeStockPushPicking.Fecha_vence.AddDays(1)
                                         clsLnStock.Insertar(BeStockPushPicking, lConnection, lTransaction)
@@ -13521,7 +13433,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -13547,7 +13459,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = BeStockPushPicking.Fecha_vence.AddDays(1)
                                         BeStockPushAlmacenaje.Cantidad = Math.Round(200 * BeProductoPresentacionDefecto.Factor, 6)
@@ -13751,7 +13663,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -13777,7 +13689,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = BeStockPushPicking.Fecha_vence.AddDays(1)
                                         BeStockPushPicking.Cantidad = Math.Round(25 * BeProductoPresentacionDefecto.Factor, 6)
@@ -13980,7 +13892,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -14006,7 +13918,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = BeStockPushPicking.Fecha_vence.AddDays(1)
                                         BeStockPushPicking.Cantidad = Math.Round(25 * BeProductoPresentacionDefecto.Factor, 6)
@@ -14014,7 +13926,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushAlmacenaje2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushAlmacenaje2)
-                                        BeStockPushAlmacenaje2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje2.IdUbicacion = BeUbicacionNoPicking.IdUbicacion
                                         BeStockPushAlmacenaje2.Fecha_vence = BeStockPushPicking.Fecha_vence.AddDays(2)
                                         BeStockPushAlmacenaje2.Cantidad = Math.Round(50 * BeProductoPresentacionDefecto.Factor, 6)
@@ -14217,7 +14129,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -14243,7 +14155,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking1 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking1)
-                                        BeStockPushPicking1.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking1.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking1.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking1.Fecha_vence = New Date(2026, 1, 1)
                                         BeStockPushPicking1.Cantidad = Math.Round(75 * BeProductoPresentacionDefecto.Factor, 6)
@@ -14256,7 +14168,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking1, BeStockPushPicking2)
-                                        BeStockPushPicking2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking2.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking2.Fecha_vence = New Date(2026, 1, 3)
                                         BeStockPushPicking2.Cantidad = Math.Round(50 * BeProductoPresentacionDefecto.Factor, 6)
@@ -14459,7 +14371,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -14485,7 +14397,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = New Date(2026, 1, 3)
                                         BeStockPushPicking.Cantidad = Math.Round(1 * BeProductoPresentacionDefecto.Factor, 6)
@@ -14685,7 +14597,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -14904,7 +14816,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -15123,7 +15035,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -15149,7 +15061,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = New Date(2026, 1, 2)
@@ -15352,7 +15264,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -15378,7 +15290,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = New Date(2026, 1, 2)
@@ -15581,7 +15493,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -15607,7 +15519,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.IdUbicacion_anterior = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = New Date(2026, 12, 30)
@@ -15621,7 +15533,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushALM2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushALM2)
-                                        BeStockPushALM2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushALM2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushALM2.IdUbicacion = BeUbicacionNoPicking.IdUbicacion
                                         BeStockPushALM2.IdUbicacion_anterior = BeUbicacionNoPicking.IdUbicacion
                                         BeStockPushALM2.Fecha_vence = New Date(2026, 12, 10)
@@ -15824,7 +15736,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -15850,7 +15762,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.IdUbicacion_anterior = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = New Date(2026, 12, 30)
@@ -15864,7 +15776,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushAlmacenaje1 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushAlmacenaje1)
-                                        BeStockPushAlmacenaje1.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje1.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje1.IdUbicacion = BeUbicacionNoPicking.IdUbicacion
                                         BeStockPushAlmacenaje1.IdUbicacion_anterior = BeUbicacionNoPicking.IdUbicacion
                                         BeStockPushAlmacenaje1.Fecha_vence = New Date(2026, 12, 10)
@@ -16067,7 +15979,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -16093,7 +16005,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Fecha_vence = New Date(2026, 12, 30)
                                         BeStockPushPicking.Cantidad = 10
@@ -16101,7 +16013,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushAlmacenaje1 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushAlmacenaje1)
-                                        BeStockPushAlmacenaje1.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje1.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                                         BeStockPushAlmacenaje1.IdUbicacion = BeStockPushAlmacenaje1.IdUbicacion + 1
 
@@ -16313,7 +16225,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -16339,7 +16251,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.IdUbicacion_anterior = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.Presentacion.IdPresentacion = 0
@@ -16354,7 +16266,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking1 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking1)
-                                        BeStockPushPicking1.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking1.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking1.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking1.Fecha_vence = New Date(2026, 12, 10)
                                         BeStockPushPicking1.Cantidad = Math.Round(1 * BeProductoPresentacionDefecto.Factor, 6)
@@ -16562,7 +16474,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -16588,7 +16500,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushALM2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushALM2)
-                                        BeStockPushALM2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushALM2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushALM2.Presentacion.IdPresentacion = 0
                                         BeStockPushALM2.Fecha_vence = New Date(2026, 7, 3)
                                         BeStockPushALM2.Cantidad = 2
@@ -16596,7 +16508,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushALM3 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushALM3)
-                                        BeStockPushALM3.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushALM3.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushALM3.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushALM3.Fecha_vence = New Date(2026, 7, 3)
                                         BeStockPushALM3.Cantidad = Math.Round(25 * BeProductoPresentacionDefecto.Factor, 6)
@@ -16604,7 +16516,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.Presentacion.IdPresentacion = 0
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.IdUbicacion_anterior = BeUbicacionPicking.IdUbicacion
@@ -16614,14 +16526,14 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking, BeStockPushPicking2)
-                                        BeStockPushPicking2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking2.Fecha_vence = New Date(2026, 7, 4)
                                         BeStockPushPicking2.Cantidad = 4
                                         clsLnStock.Insertar(BeStockPushPicking2, lConnection, lTransaction)
 
                                         Dim BeStockPushPicking3 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking, BeStockPushPicking3)
-                                        BeStockPushPicking3.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking3.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking3.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking3.Fecha_vence = New Date(2026, 7, 4)
                                         BeStockPushPicking3.Cantidad = Math.Round(10 * BeProductoPresentacionDefecto.Factor, 6)
@@ -16629,7 +16541,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking4 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking3, BeStockPushPicking4)
-                                        BeStockPushPicking4.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking4.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking4.Fecha_vence = New Date(2026, 7, 6)
                                         BeStockPushPicking4.Cantidad = Math.Round(5 * BeProductoPresentacionDefecto.Factor, 6)
                                         clsLnStock.Insertar(BeStockPushPicking4, lConnection, lTransaction)
@@ -16835,7 +16747,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario E - 01/07/26  - ALM - UDS
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -16862,7 +16774,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario F - 03/07/26 - ALM - UDS
                                         Dim BeStockPushALM2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushALM2)
-                                        BeStockPushALM2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushALM2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushALM2.Presentacion.IdPresentacion = 0
                                         BeStockPushALM2.Fecha_vence = New Date(2026, 7, 3)
                                         BeStockPushALM2.Cantidad = 2
@@ -16871,7 +16783,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario G - 04/07/26 - PRES - ALM
                                         Dim BeStockPushALM3 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushALM3)
-                                        BeStockPushALM3.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushALM3.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushALM3.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushALM3.Fecha_vence = New Date(2026, 7, 4)
                                         BeStockPushALM3.Cantidad = Math.Round(25 * BeProductoPresentacionDefecto.Factor, 6)
@@ -16880,7 +16792,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario A - 02/07/26 - UDS - PICK
                                         Dim BeStockPushPicking As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking)
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.Presentacion.IdPresentacion = 0
                                         BeStockPushPicking.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking.IdUbicacion_anterior = BeUbicacionPicking.IdUbicacion
@@ -16891,7 +16803,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario B - 04/07/26 - UDS - PICK
                                         Dim BeStockPushPicking2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking, BeStockPushPicking2)
-                                        BeStockPushPicking2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking2.Fecha_vence = New Date(2026, 7, 4)
                                         BeStockPushPicking2.Cantidad = 4
                                         BeStockPushPicking2.IdUbicacion = BeUbicacionPicking.IdUbicacion
@@ -16901,7 +16813,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario C - 03/07/26 - PRES - PICK
                                         Dim BeStockPushPicking3 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking, BeStockPushPicking3)
-                                        BeStockPushPicking3.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking3.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking3.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking3.Fecha_vence = New Date(2026, 7, 3)
                                         BeStockPushPicking3.Cantidad = Math.Round(10 * BeProductoPresentacionDefecto.Factor, 6)
@@ -16912,7 +16824,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario D - 03/07/26 - PRES - PICK
                                         Dim BeStockPushPicking4 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking3, BeStockPushPicking4)
-                                        BeStockPushPicking4.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking4.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking4.Fecha_vence = New Date(2026, 7, 6)
                                         BeStockPushPicking4.Cantidad = Math.Round(5 * BeProductoPresentacionDefecto.Factor, 6)
                                         BeStockPushPicking4.IdUbicacion = BeUbicacionPicking.IdUbicacion
@@ -17114,7 +17026,7 @@ Partial Public Class clsLnStock_res
 
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -17140,7 +17052,7 @@ Partial Public Class clsLnStock_res
 
                                         Dim BeStockPushPicking1 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking1)
-                                        BeStockPushPicking1.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking1.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking1.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking1.IdUbicacion = BeUbicacionPicking.IdUbicacion
                                         BeStockPushPicking1.IdUbicacion_anterior = BeStockPushPicking1.IdUbicacion
@@ -17554,7 +17466,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario A - 24/04/25  - ALM - CJS
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -17581,7 +17493,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario B - 24/04/25  - ALM - CJS
                                         Dim BeStockPushPicking3 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking3)
-                                        BeStockPushPicking3.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking3.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking3.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking3.Fecha_vence = New Date(2026, 7, 3)
                                         BeStockPushPicking3.Cantidad = Math.Round(10 * BeProductoPresentacionDefecto.Factor, 6)
@@ -17592,7 +17504,7 @@ Partial Public Class clsLnStock_res
                                         '#EJC20231022: Inventario B - 24/04/25  - ALM - PICK
                                         Dim BeStockPushPicking4 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking3, BeStockPushPicking4)
-                                        BeStockPushPicking4.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking4.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking4.Fecha_vence = New Date(2026, 7, 6)
                                         BeStockPushPicking4.Cantidad = Math.Round(10 * BeProductoPresentacionDefecto.Factor, 6)
                                         BeStockPushPicking4.IdUbicacion = BeUbicacionPicking.IdUbicacion
@@ -17603,7 +17515,6 @@ Partial Public Class clsLnStock_res
                                         Dim BeStockReservaALM As New clsBeStock_res
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockReservaALM)
                                         BeStockReservaALM.IdBodega = IdBodega
-                                        BeStockReservaALM.IdStockRes = MaxID(lConnection, lTransaction) + 1
                                         clsLnStock_res.Insertar(BeStockReservaALM, lConnection, lTransaction)
 
                                     Else
@@ -17797,7 +17708,7 @@ Partial Public Class clsLnStock_res
                                         '#CKFK20231117: Inventario A - 14/12/2024  - ALM - 34 CJS
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = IdBodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.IdProductoBodega = vIdProductoBodega
                                         BeStockPushAlmacenaje.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushAlmacenaje.IdProductoEstado = BeProductoEstado.IdEstado
@@ -17833,7 +17744,7 @@ Partial Public Class clsLnStock_res
                                         BeStockPushALM1.IdUbicacion = BeUbicAlm1.IdUbicacion
                                         BeStockPushALM1.IdUbicacion_anterior = BeUbicAlm1.IdUbicacion
 
-                                        BeStockPushALM1.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushALM1.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushALM1.Cantidad = Math.Round(1 * BeProductoPresentacionDefecto.Factor, 6)
                                         BeStockPushALM1.Lic_plate = FormatoFechas.tFechaHora(Now)
                                         clsLnStock.Insertar(BeStockPushALM1, lConnection, lTransaction)
@@ -17841,7 +17752,7 @@ Partial Public Class clsLnStock_res
                                         '#CKFK20231117: Inventario C - 08/02/25  - PICK - 36 CJS
                                         Dim BeStockPushPicking3 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushPicking3)
-                                        BeStockPushPicking3.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking3.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking3.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushPicking3.Fecha_vence = New Date(2025, 2, 8)
                                         BeStockPushPicking3.Cantidad = Math.Round(36 * BeProductoPresentacionDefecto.Factor, 6)
@@ -17853,7 +17764,7 @@ Partial Public Class clsLnStock_res
                                         '#CKFK20231117: Inventario D - 08/02/25  - ALM - 72 CJS
                                         Dim BeStockPushAlm4 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushAlm4)
-                                        BeStockPushAlm4.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlm4.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlm4.Fecha_vence = New Date(2025, 2, 8)
                                         BeStockPushAlm4.Cantidad = Math.Round(72 * BeProductoPresentacionDefecto.Factor, 6)
 
@@ -18057,7 +17968,7 @@ Partial Public Class clsLnStock_res
                                         '#CKFK20231117: Inventario A - 07/03/2025  - ALM - 10 CJS
                                         BeStockPushPicking = New clsBeStock()
                                         BeStockPushPicking.IdBodega = IdBodega
-                                        BeStockPushPicking.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushPicking.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushPicking.IdProductoBodega = vIdProductoBodega
                                         BeStockPushPicking.IdPropietarioBodega = vIdPropietarioBodega
                                         BeStockPushPicking.IdProductoEstado = BeProductoEstado.IdEstado
@@ -18084,7 +17995,7 @@ Partial Public Class clsLnStock_res
                                         '#CKFK20231117: Inventario B - 24/04/25  - ALM - 136 CJS
                                         Dim BeStockPushAlmacenaje As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushPicking, BeStockPushAlmacenaje)
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje.Presentacion.IdPresentacion = BeProductoPresentacionDefecto.IdPresentacion
                                         BeStockPushAlmacenaje.Fecha_vence = New Date(2025, 4, 24)
                                         BeStockPushAlmacenaje.Cantidad = Math.Round(136 * BeProductoPresentacionDefecto.Factor, 6)
@@ -18095,7 +18006,7 @@ Partial Public Class clsLnStock_res
                                         '#CKFK20231117: Inventario C - 08/02/25  - ALM - 59 CJS
                                         Dim BeStockPushAlmacenaje2 As New clsBeStock
                                         clsPublic.CopyObject(BeStockPushAlmacenaje, BeStockPushAlmacenaje2)
-                                        BeStockPushAlmacenaje2.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje2.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                         BeStockPushAlmacenaje2.Fecha_vence = New Date(2025, 4, 24)
                                         BeStockPushAlmacenaje2.Cantidad = Math.Round(59 * BeProductoPresentacionDefecto.Factor, 6)
                                         BeStockPushAlmacenaje2.IdUbicacion = 2884
@@ -19293,9 +19204,9 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                                             End If
                                         Else
-                                        lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                            lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        End If
                                     End If
-                                End If
                                 End If
                             ElseIf vFechaMinimaVenceZonaPicking > vFechaDefecto Then
 
@@ -19320,16 +19231,16 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                             Return False
-                                    End If
+                                                        End If
 
-                                End If
+                                                    End If
                                                 Else
                                                     lBeStockExistente = lBeStockExistenteZonasNoPicking
-                            End If
+                                                End If
                                             End If
                                         End If
 
-                        End If
+                                    End If
                                 End If
 
                             Else
@@ -19674,7 +19585,7 @@ INICIAR_EN_1:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -19728,7 +19639,7 @@ INICIAR_EN_1:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                     BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                     BeStockRes.Talla = pStockResSolicitud.Talla
                                                     BeStockRes.Color = pStockResSolicitud.Color
@@ -19822,7 +19733,7 @@ INICIAR_EN_1:
                                                         vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                                                         clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -19931,7 +19842,7 @@ INICIAR_EN_1:
                                                 Throw New Exception("Error_202303101448C: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
                                             End If
 
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                             BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                             BeStockRes.Talla = pStockResSolicitud.Talla
                                             BeStockRes.Color = pStockResSolicitud.Color
@@ -20121,7 +20032,7 @@ INICIAR_EN_1:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                             BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                             BeStockRes.Talla = pStockResSolicitud.Talla
                                             BeStockRes.Color = pStockResSolicitud.Color
@@ -20385,7 +20296,7 @@ INICIAR_EN_2:
                                                         BeStockDestino.Fec_agr = Now
                                                         BeStockDestino.IdPresentacion = 0
                                                         BeStockDestino.Presentacion.IdPresentacion = 0
-                                                        BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                        BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                         BeStockRes.IdStock = BeStockDestino.IdStock
                                                         BeStockDestino.No_bulto = 1989
 
@@ -20442,7 +20353,7 @@ INICIAR_EN_2:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -20530,7 +20441,7 @@ INICIAR_EN_2:
                                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                             BeStockRes.Host = MaquinaQueSolicita
-                                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                             BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                             BeStockRes.Talla = pStockResSolicitud.Talla
                                                             BeStockRes.Color = pStockResSolicitud.Color
@@ -20654,7 +20565,7 @@ INICIAR_EN_2:
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                 BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                 BeStockRes.Talla = pStockResSolicitud.Talla
                                                 BeStockRes.Color = pStockResSolicitud.Color
@@ -20883,7 +20794,7 @@ INICIAR_EN_2:
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                 BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                 BeStockRes.Talla = pStockResSolicitud.Talla
                                                 BeStockRes.Color = pStockResSolicitud.Color
@@ -21213,14 +21124,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 
                                                 If vCantidadDecimalSolicitadaPedidoEnPres = 0 OrElse vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
 
-                                            If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
+                                                    If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
 
-                                                vCantidadAReservarPorIdStock = vCantidadPendiente
-                                                vCantidadPendiente -= vCantidadPendiente
-                                                vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
-                                                vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                                        vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                        vCantidadPendiente -= vCantidadPendiente
+                                                        vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                                        vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
 
-                                                BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
+                                                        BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
 
                                                     Else
 
@@ -21234,9 +21145,9 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                     End If
 
 
-                                            Else
+                                                Else
 
-                                                BeStockOriginal = clsLnStock.Get_Single_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
+                                                    BeStockOriginal = clsLnStock.Get_Single_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
 
                                                     Dim cantidadBase As Decimal
 
@@ -21252,125 +21163,125 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                     End If
 
                                                     BeStockDestino.Cantidad = cantidadBase * BePresentacionDefecto.Factor
-                                                BeStockDestino.Fec_agr = Now
-                                                BeStockDestino.IdPresentacion = 0
-                                                BeStockDestino.Presentacion.IdPresentacion = 0
-                                                BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
-                                                BeStockRes.IdStock = BeStockDestino.IdStock
-                                                BeStockDestino.No_bulto = 1989
+                                                    BeStockDestino.Fec_agr = Now
+                                                    BeStockDestino.IdPresentacion = 0
+                                                    BeStockDestino.Presentacion.IdPresentacion = 0
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
+                                                    BeStockDestino.No_bulto = 1989
 
-                                                CantidadStockDestino = BeStockDestino.Cantidad
+                                                    CantidadStockDestino = BeStockDestino.Cantidad
 
-                                                vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
-                                                clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+                                                    vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                                    clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
-                                                clsLnStock.Insertar(BeStockDestino,
+                                                    clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
 
-                                                If vCantidadPendiente > BeStockDestino.Cantidad Then
-                                                    vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
-                                                Else
-                                                    vCantidadAReservarPorIdStock = vCantidadPendiente
-                                                End If
+                                                    If vCantidadPendiente > BeStockDestino.Cantidad Then
+                                                        vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
+                                                    Else
+                                                        vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                    End If
 
-                                                '#EJC20220510: Quitar al stock en cajas, las unidades.
-                                                vStockOrigen.Cantidad = BeStockOriginal.Cantidad - (1 * BePresentacionDefecto.Factor)
+                                                    '#EJC20220510: Quitar al stock en cajas, las unidades.
+                                                    vStockOrigen.Cantidad = BeStockOriginal.Cantidad - (1 * BePresentacionDefecto.Factor)
 
-                                                If vStockOrigen.Cantidad > 0 Then
-                                                    clsLnStock.Actualizar_Cantidad(vStockOrigen, lConnection, ltransaction)
-                                                Else
-                                                    clsLnStock.Eliminar_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
-                                                End If
+                                                    If vStockOrigen.Cantidad > 0 Then
+                                                        clsLnStock.Actualizar_Cantidad(vStockOrigen, lConnection, ltransaction)
+                                                    Else
+                                                        clsLnStock.Eliminar_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
+                                                    End If
 
-                                                vCantidadPendiente -= vCantidadAReservarPorIdStock
-                                                vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                                    vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                                    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
 
                                                     If vBusquedaEnUmBas Then
                                                         vCantidadPendienteEnPres = Math.Round(vCantidadPendiente / BePresentacionDefecto.Factor, 6)
                                                     Else
-                                                vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                                        vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
                                                     End If
 
-                                                BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
-                                                BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
-                                                BeStockRes.IdPresentacion = IIf(pStockResSolicitud.IdPresentacion = 0, 0, vStockOrigen.Presentacion.IdPresentacion)
-                                                BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
-                                                BeStockRes.Lote = vStockOrigen.Lote
-                                                BeStockRes.Lic_plate = vStockOrigen.Lic_plate
-                                                BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
-                                                BeStockRes.Peso = vStockOrigen.Peso
-                                                BeStockRes.Estado = "UNCOMMITED"
-                                                BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
-                                                BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
-                                                BeStockRes.Uds_lic_plate = 20220525 'Marcar el stock reservado para indicar que se tomó a partir de una caja explosionada.
-                                                BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
-                                                BeStockRes.No_bulto = vStockOrigen.No_bulto
-                                                BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
-                                                BeStockRes.IdPicking = 0
-                                                BeStockRes.IdPedido = pStockResSolicitud.IdPedido
-                                                BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
-                                                BeStockRes.IdDespacho = 0
-                                                BeStockRes.añada = vStockOrigen.Añada
-                                                BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
-                                                BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
-                                                BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
-                                                BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
-                                                BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
-                                                BeStockRes.Talla = pStockResSolicitud.Talla
-                                                BeStockRes.Color = pStockResSolicitud.Color
+                                                    BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
+                                                    BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
+                                                    BeStockRes.IdPresentacion = IIf(pStockResSolicitud.IdPresentacion = 0, 0, vStockOrigen.Presentacion.IdPresentacion)
+                                                    BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
+                                                    BeStockRes.Lote = vStockOrigen.Lote
+                                                    BeStockRes.Lic_plate = vStockOrigen.Lic_plate
+                                                    BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
+                                                    BeStockRes.Peso = vStockOrigen.Peso
+                                                    BeStockRes.Estado = "UNCOMMITED"
+                                                    BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
+                                                    BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                                    BeStockRes.Uds_lic_plate = 20220525 'Marcar el stock reservado para indicar que se tomó a partir de una caja explosionada.
+                                                    BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
+                                                    BeStockRes.No_bulto = vStockOrigen.No_bulto
+                                                    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                                    BeStockRes.IdPicking = 0
+                                                    BeStockRes.IdPedido = pStockResSolicitud.IdPedido
+                                                    BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
+                                                    BeStockRes.IdDespacho = 0
+                                                    BeStockRes.añada = vStockOrigen.Añada
+                                                    BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
+                                                    BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
+                                                    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                                    BeStockRes.Host = MaquinaQueSolicita
 
-                                                CantidadStockDestino = BeStockRes.Cantidad
+                                                    BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
+                                                    BeStockRes.Talla = pStockResSolicitud.Talla
+                                                    BeStockRes.Color = pStockResSolicitud.Color
 
-                                                vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
-                                                clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+                                                    CantidadStockDestino = BeStockRes.Cantidad
 
-                                                Insertar(BeStockRes,
+                                                    vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                                    clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                                    Insertar(BeStockRes,
                                                              lConnection,
                                                              ltransaction)
 
-                                                vNombreCasoReservaInternoWMS = "CASO_#9_EJC202310090957"
-                                                vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
+                                                    vNombreCasoReservaInternoWMS = "CASO_#9_EJC202310090957"
+                                                    vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
                                                                             " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
                                                                             " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
                                                                             " FechaReservada: " & BeStockRes.Fecha_vence.Date &
                                                                             " Lote: " & BeStockRes.Lote &
                                                                             " Ubicación: " & BeStockRes.IdUbicacion
 
-                                                clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+                                                    clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
 
-                                                If Not pBeTrasladoDet Is Nothing Then
+                                                    If Not pBeTrasladoDet Is Nothing Then
 
-                                                    If BeStockRes.IdPresentacion = 0 Then
-                                                        pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
-                                                    Else
-                                                        If BePedidoDet.IdPresentacion = 0 Then
+                                                        If BeStockRes.IdPresentacion = 0 Then
                                                             pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
                                                         Else
-                                                            pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                                            If BePedidoDet.IdPresentacion = 0 Then
+                                                                pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                                            Else
+                                                                pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                                            End If
                                                         End If
-                                                    End If
 
-                                                    clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
+                                                        clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
                                                                                                                      BeProducto,
                                                                                                                      lConnection,
                                                                                                                      ltransaction)
-                                                End If
+                                                    End If
 
 
-                                                Restar_Stock_Reservado(lBeStockZonaPicking,
+                                                    Restar_Stock_Reservado(lBeStockZonaPicking,
                                                                        pBeConfigEnc,
                                                                        lConnection,
                                                                        ltransaction)
 
-                                                lBeStockAReservar.Add(BeStockRes)
+                                                    lBeStockAReservar.Add(BeStockRes)
 
-                                                lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+                                                    lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
 
                                                     If lBeStockExistente.Count > 0 Then
                                                         '#EJC20231019_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
-                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                                                  DiasVencimiento,
                                                                                                                  pBeConfigEnc,
                                                                                                                  lConnection,
@@ -21383,22 +21294,22 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                                                                                  BePresentacionDefecto)
                                                     End If
 
-                                                If vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
+                                                    If vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
 
-                                                    'Reservar el remanente en cajas completas.
-                                                    vCantidadAReservarPorIdStock = Math.Round(vCantidadEnteraSolicitadaPedidoEnPres * BePresentacionDefecto.Factor, 6)
-                                                    vCantidadPendiente -= vCantidadAReservarPorIdStock
-                                                    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                                        'Reservar el remanente en cajas completas.
+                                                        vCantidadAReservarPorIdStock = Math.Round(vCantidadEnteraSolicitadaPedidoEnPres * BePresentacionDefecto.Factor, 6)
+                                                        vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                                        vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
 
-                                                    BeStockRes = New clsBeStock_res
-                                                    BeStockRes.IdTransaccion = pStockResSolicitud.IdTransaccion
-                                                    BeStockRes.Indicador = IIf(pStockResSolicitud.Indicador = "", "PED", pStockResSolicitud.Indicador)
-                                                    BeStockRes.IdBodega = vStockOrigen.IdBodega
-                                                    BeStockRes.IdStock = vStockOrigen.IdStock
-                                                    BeStockRes.IdPropietarioBodega = vStockOrigen.IdPropietarioBodega
-                                                    BeStockRes.IdProductoBodega = vStockOrigen.IdProductoBodega
-                                                    BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
-                                                    BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
+                                                        BeStockRes = New clsBeStock_res
+                                                        BeStockRes.IdTransaccion = pStockResSolicitud.IdTransaccion
+                                                        BeStockRes.Indicador = IIf(pStockResSolicitud.Indicador = "", "PED", pStockResSolicitud.Indicador)
+                                                        BeStockRes.IdBodega = vStockOrigen.IdBodega
+                                                        BeStockRes.IdStock = vStockOrigen.IdStock
+                                                        BeStockRes.IdPropietarioBodega = vStockOrigen.IdPropietarioBodega
+                                                        BeStockRes.IdProductoBodega = vStockOrigen.IdProductoBodega
+                                                        BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
+                                                        BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
 
                                                         If vBusquedaEnUmBas AndAlso (vCantidadAReservarPorIdStock <= BePresentacionDefecto.Factor) Then
                                                             BeStockRes.IdPresentacion = 0
@@ -21408,7 +21319,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                                 clsLnStock.Actualizar_Presentacion(vStockOrigen, lConnection, ltransaction)
                                                             End If
                                                         Else
-                                                    BeStockRes.IdPresentacion = BePresentacionDefecto.IdPresentacion
+                                                            BeStockRes.IdPresentacion = BePresentacionDefecto.IdPresentacion
                                                         End If
 
 #Region "Explosión por múltiplo"
@@ -21481,79 +21392,79 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 
 #End Region
 
-                                                    BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
-                                                    BeStockRes.Lote = vStockOrigen.Lote
-                                                    BeStockRes.Lic_plate = vStockOrigen.Lic_plate
-                                                    BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
-                                                    BeStockRes.Peso = vStockOrigen.Peso
-                                                    BeStockRes.Estado = "UNCOMMITED"
-                                                    BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
-                                                    BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
-                                                    BeStockRes.Uds_lic_plate = 20220526 'Marcar el stock reservado para indicar que se tomó a partir de cajas de una solicitud en unidades.
-                                                    BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
-                                                    BeStockRes.No_bulto = vStockOrigen.No_bulto
-                                                    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
-                                                    BeStockRes.IdPicking = 0
-                                                    BeStockRes.IdPedido = pStockResSolicitud.IdPedido
-                                                    BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
-                                                    BeStockRes.IdDespacho = 0
-                                                    BeStockRes.añada = vStockOrigen.Añada
-                                                    BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
-                                                    BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
-                                                    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
-                                                    BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
-                                                    BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
-                                                    BeStockRes.Talla = pStockResSolicitud.Talla
-                                                    BeStockRes.Color = pStockResSolicitud.Color
+                                                        BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
+                                                        BeStockRes.Lote = vStockOrigen.Lote
+                                                        BeStockRes.Lic_plate = vStockOrigen.Lic_plate
+                                                        BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
+                                                        BeStockRes.Peso = vStockOrigen.Peso
+                                                        BeStockRes.Estado = "UNCOMMITED"
+                                                        BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
+                                                        BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                                        BeStockRes.Uds_lic_plate = 20220526 'Marcar el stock reservado para indicar que se tomó a partir de cajas de una solicitud en unidades.
+                                                        BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
+                                                        BeStockRes.No_bulto = vStockOrigen.No_bulto
+                                                        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                                        BeStockRes.IdPicking = 0
+                                                        BeStockRes.IdPedido = pStockResSolicitud.IdPedido
+                                                        BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
+                                                        BeStockRes.IdDespacho = 0
+                                                        BeStockRes.añada = vStockOrigen.Añada
+                                                        BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
+                                                        BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
+                                                        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                                        BeStockRes.Host = MaquinaQueSolicita
 
-                                                    CantidadStockDestino = BeStockRes.Cantidad
+                                                        BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
+                                                        BeStockRes.Talla = pStockResSolicitud.Talla
+                                                        BeStockRes.Color = pStockResSolicitud.Color
 
-                                                    vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
-                                                    clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+                                                        CantidadStockDestino = BeStockRes.Cantidad
 
-                                                    Insertar(BeStockRes,
+                                                        vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                                        clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                                        Insertar(BeStockRes,
                                                              lConnection,
                                                              ltransaction)
 
-                                                    vNombreCasoReservaInternoWMS = "CASO_#10_EJC202310090957"
-                                                    vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
+                                                        vNombreCasoReservaInternoWMS = "CASO_#10_EJC202310090957"
+                                                        vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
                                                                             " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
                                                                             " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
                                                                             " FechaReservada: " & BeStockRes.Fecha_vence.Date &
                                                                             " Lote: " & BeStockRes.Lote &
                                                                             " Ubicación: " & BeStockRes.IdUbicacion
 
-                                                    clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+                                                        clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
 
-                                                    If Not pBeTrasladoDet Is Nothing Then
+                                                        If Not pBeTrasladoDet Is Nothing Then
 
-                                                        If BeStockRes.IdPresentacion = 0 Then
-                                                            pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
-                                                        Else
-                                                            If BePedidoDet.IdPresentacion = 0 Then
+                                                            If BeStockRes.IdPresentacion = 0 Then
                                                                 pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
                                                             Else
-                                                                pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                                                If BePedidoDet.IdPresentacion = 0 Then
+                                                                    pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                                                Else
+                                                                    pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                                                End If
                                                             End If
-                                                        End If
 
-                                                        clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
+                                                            clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
                                                                                                                      BeProducto,
                                                                                                                      lConnection,
                                                                                                                      ltransaction)
-                                                    End If
+                                                        End If
 
-                                                    Restar_Stock_Reservado(lBeStockZonaPicking,
+                                                        Restar_Stock_Reservado(lBeStockZonaPicking,
                                                                            pBeConfigEnc,
                                                                            lConnection,
                                                                            ltransaction)
 
-                                                    lBeStockAReservar.Add(BeStockRes)
+                                                        lBeStockAReservar.Add(BeStockRes)
 
-                                                    lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+                                                        lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
 
-                                                    FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                                                      DiasVencimiento,
                                                                                                                      pBeConfigEnc,
                                                                                                                      lConnection,
@@ -21565,15 +21476,15 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                                                                                      lBeStockExistente,
                                                                                                                      BePresentacionDefecto)
 
+                                                    End If
+
+                                                    vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                                    If vCantidadCompletada Then
+                                                        Exit For
+                                                    End If
+
                                                 End If
-
-                                                vCantidadCompletada = (vCantidadPendiente = 0)
-
-                                                If vCantidadCompletada Then
-                                                    Exit For
-                                                End If
-
-                                            End If
 
                                             Else
 
@@ -21632,7 +21543,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                             '    BeStockDestino.Fec_agr = Now
                                             '    BeStockDestino.IdPresentacion = 0
                                             '    BeStockDestino.Presentacion.IdPresentacion = 0
-                                            '    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                            '    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                             '    BeStockRes.IdStock = BeStockDestino.IdStock
                                             '    BeStockDestino.No_bulto = 1989
 
@@ -21688,7 +21599,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                             '    BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             '    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             '    BeStockRes.Host = MaquinaQueSolicita
-                                            '    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+                                            '    
 
                                             '    CantidadStockDestino = BeStockRes.Cantidad
 
@@ -21787,7 +21698,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                             '        BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             '        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             '        BeStockRes.Host = MaquinaQueSolicita
-                                            '        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+                                            '        
 
                                             '        CantidadStockDestino = BeStockRes.Cantidad
 
@@ -21908,7 +21819,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -22122,7 +22033,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -22352,7 +22263,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -22408,7 +22319,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                     BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                     BeStockRes.Talla = pStockResSolicitud.Talla
                                                     BeStockRes.Color = pStockResSolicitud.Color
@@ -22514,7 +22425,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                         CantidadStockDestino = BeStockRes.Cantidad
                                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                         BeStockRes.Talla = pStockResSolicitud.Talla
@@ -22627,7 +22538,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                             BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                             BeStockRes.Talla = pStockResSolicitud.Talla
                                             BeStockRes.Color = pStockResSolicitud.Color
@@ -22847,7 +22758,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                             BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                             BeStockRes.Talla = pStockResSolicitud.Talla
                                             BeStockRes.Color = pStockResSolicitud.Color
@@ -23234,7 +23145,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -23289,7 +23200,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                     BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                     BeStockRes.Talla = pStockResSolicitud.Talla
                                                     BeStockRes.Color = pStockResSolicitud.Color
@@ -23389,7 +23300,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -23546,7 +23457,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                     BeStockRes.Host = MaquinaQueSolicita
-                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                     BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                     BeStockRes.Talla = pStockResSolicitud.Talla
                                     BeStockRes.Color = pStockResSolicitud.Color
@@ -23866,7 +23777,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                     BeStockRes.Host = MaquinaQueSolicita
-                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                     BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                     BeStockRes.Talla = pStockResSolicitud.Talla
                                     BeStockRes.Color = pStockResSolicitud.Color
@@ -24278,14 +24189,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                                                 If vCantidadDecimalSolicitadaPedidoEnPres = 0 OrElse vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
 
-                                                If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
+                                                    If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
 
-                                                    vCantidadAReservarPorIdStock = vCantidadPendiente
-                                                    vCantidadPendiente -= vCantidadPendiente
-                                                    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
-                                                    vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                                        vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                        vCantidadPendiente -= vCantidadPendiente
+                                                        vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                                        vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
 
-                                                    BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
+                                                        BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
 
                                                     Else
 
@@ -24320,7 +24231,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -24380,7 +24291,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                     BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                     BeStockRes.Talla = pStockResSolicitud.Talla
                                                     BeStockRes.Color = pStockResSolicitud.Color
@@ -24573,7 +24484,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -24732,7 +24643,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -24993,8 +24904,8 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente
                                                     End If
                                                 Else
-                                                vCantidadAReservarPorIdStock = vCantidadPendiente
-                                            End If
+                                                    vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                End If
 
                                             End If
                                             vCantidadPendiente -= vCantidadAReservarPorIdStock
@@ -25045,7 +24956,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         CantidadStockDestino = BeStockRes.Cantidad
                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                         BeStockRes.Talla = pStockResSolicitud.Talla
@@ -25214,7 +25125,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                             BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                             BeStockRes.Talla = pStockResSolicitud.Talla
                                             BeStockRes.Color = pStockResSolicitud.Color
@@ -25317,7 +25228,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -25539,7 +25450,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         BeStockRes.IdProductoTallaColor = pStockResSolicitud.IdProductoTallaColor
                                         BeStockRes.Talla = pStockResSolicitud.Talla
                                         BeStockRes.Color = pStockResSolicitud.Color
@@ -27991,7 +27902,7 @@ INICIAR_EN_1:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -28045,7 +27956,7 @@ INICIAR_EN_1:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -28136,7 +28047,7 @@ INICIAR_EN_1:
                                                         vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                                                         clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                         Insertar(BeStockRes,
                                                                  lConnection,
@@ -28242,7 +28153,7 @@ INICIAR_EN_1:
                                                 Throw New Exception("Error_202303101448C: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
                                             End If
 
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             Insertar(BeStockRes,
                                                      lConnection,
@@ -28429,7 +28340,7 @@ INICIAR_EN_1:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             CantidadStockDestino = BeStockRes.Cantidad
 
@@ -28666,7 +28577,7 @@ INICIAR_EN_2:
                                                         BeStockDestino.Fec_agr = Now
                                                         BeStockDestino.IdPresentacion = 0
                                                         BeStockDestino.Presentacion.IdPresentacion = 0
-                                                        BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                        BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                         BeStockRes.IdStock = BeStockDestino.IdStock
                                                         BeStockDestino.No_bulto = 1989
 
@@ -28723,7 +28634,7 @@ INICIAR_EN_2:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -28809,7 +28720,7 @@ INICIAR_EN_2:
                                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                             BeStockRes.Host = MaquinaQueSolicita
-                                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                             If BeStockRes.Cantidad = 0 Then
                                                                 Throw New Exception("Error_202302061305A: La cantidad a reservar no puede ser 0")
@@ -28917,7 +28828,7 @@ INICIAR_EN_2:
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                 If BeStockRes.Cantidad = 0 Then
                                                     Throw New Exception("Error_202302061305A: La cantidad a reservar no puede ser 0")
@@ -29129,7 +29040,7 @@ INICIAR_EN_2:
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                 If BeStockRes.Cantidad = 0 Then
                                                     Throw New Exception("Error_202302061305B: La cantidad a reservar no puede ser 0")
@@ -29421,7 +29332,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                 BeStockDestino.Fec_agr = Now
                                                 BeStockDestino.IdPresentacion = 0
                                                 BeStockDestino.Presentacion.IdPresentacion = 0
-                                                BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                 BeStockRes.IdStock = BeStockDestino.IdStock
                                                 BeStockDestino.No_bulto = 1989
 
@@ -29477,7 +29388,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                 BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                 BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                 BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                 CantidadStockDestino = BeStockRes.Cantidad
 
@@ -29576,7 +29487,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -29695,7 +29606,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -29906,7 +29817,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -30131,7 +30042,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -30187,7 +30098,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -30290,7 +30201,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                                         CantidadStockDestino = BeStockRes.Cantidad
 
                                                         vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
@@ -30400,7 +30311,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             CantidadStockDestino = BeStockRes.Cantidad
 
@@ -30617,7 +30528,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             CantidadStockDestino = BeStockRes.Cantidad
 
@@ -30984,7 +30895,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -31039,7 +30950,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -31136,7 +31047,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -31290,7 +31201,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                     BeStockRes.Host = MaquinaQueSolicita
-                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -31603,7 +31514,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                     BeStockRes.Host = MaquinaQueSolicita
-                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -31990,7 +31901,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
-                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                                                     BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
@@ -32045,7 +31956,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                                     BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                     BeStockRes.Host = MaquinaQueSolicita
-                                                    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                     CantidadStockDestino = BeStockRes.Cantidad
 
@@ -32148,7 +32059,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                                         BeStockRes.Host = MaquinaQueSolicita
-                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -32304,7 +32215,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                         '#EJC20231031: Viene de un proceso recursivo (probablemente) tratando de reservar en presentación.
                                         If Not vSolicitudEsEnUMBas Then
@@ -32550,7 +32461,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
                                         CantidadStockDestino = BeStockRes.Cantidad
 
                                         vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
@@ -32705,7 +32616,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                             BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                             BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                             BeStockRes.Host = MaquinaQueSolicita
-                                            BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                             CantidadStockDestino = BeStockRes.Cantidad
 
@@ -32805,7 +32716,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                         CantidadStockDestino = BeStockRes.Cantidad
 
@@ -33024,7 +32935,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                         BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
                                         BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
                                         BeStockRes.Host = MaquinaQueSolicita
-                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
 
                                         CantidadStockDestino = BeStockRes.Cantidad
 
