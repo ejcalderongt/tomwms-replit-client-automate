@@ -3937,14 +3937,14 @@ Partial Public Class clsLnTrans_picking_ubic
 
                     If BeStock IsNot Nothing Then
 
-                    clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
+                        clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                             BeStock.IdUbicacion,
                                                                             PickingUbic.Cantidad_Recibida,
                                                                             PickingUbic.Peso_recibido,
                                                                             If(Es_Transaccion_Remota, pConection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
-                End If
+                    End If
 
                 End If
 
