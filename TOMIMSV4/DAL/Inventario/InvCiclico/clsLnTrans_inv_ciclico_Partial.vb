@@ -4491,6 +4491,10 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
 
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_nuevo", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
+
+
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()

@@ -8241,7 +8241,7 @@ Public Class frmPedido
                         End If
 
                         'Esperar tareas para no dejar UI inconsistente
-                        Task.WaitAll(taskPick, taskRes, taskLib)
+                        'Task.WaitAll(taskPick, taskRes, taskLib)
 
                         '#GT11042023: set de la hora inicio y fin 
                         dtpHoraInicioPreparacion.Value = pBePedidoEnc.Hora_ini

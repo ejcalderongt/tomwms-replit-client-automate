@@ -376,6 +376,8 @@ Public Class frmPropietario
             User_modTextEdit.Text = pBePropietario.User_mod
             Fec_modDateEdit.Text = pBePropietario.Fec_mod
 
+            chkActivarUX.Checked = pBePropietario.ControlUx
+
             cmbEmpresa.Enabled = False
             mnuGuardar.Enabled = False
             mnuActualizar.Enabled = True
@@ -780,6 +782,7 @@ Public Class frmPropietario
             pBePropietario.IdPropietario = BePropietario.IdPropietario
 
             BePropietario.Es_Consolidador = chkEsConsolidador.Checked
+            BePropietario.ControlUx = chkActivarUX.Checked
 
 
             Guardar = IIf(clsLnPropietarios.Guardar_Nuevo_Propietario(BePropietario, AP.IdBodega) > 0, True, False)
@@ -890,6 +893,8 @@ Public Class frmPropietario
                         Throw New Exception("Las claves de acceso para TOMWMSUX no coinciden.")
                     End If
                 End If
+
+                pBePropietario.ControlUx = chkActivarUX.Checked
 
                 Return clsLnPropietarios.ActualizarDatos(pBePropietario, gBePropietarioBodegaList, pListDestinatarios)
 
