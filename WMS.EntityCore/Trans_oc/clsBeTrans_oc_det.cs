@@ -173,8 +173,9 @@ namespace WMS.EntityCore.Trans_oc
         public int IdProductoTallaColor { get; set; } = 0;
         public string Nombre_Embarcador { get; set; } = "";
         public string Nombre_Clasificacion { get; set; } = "";
+        public int Camas_Tarima { get; set; } = 0;
+        public int Cajas_Cama { get; set; } = 0;
         public clsBeTrans_oc_det() { }
-
         public object Clone()
         {
             return MemberwiseClone();

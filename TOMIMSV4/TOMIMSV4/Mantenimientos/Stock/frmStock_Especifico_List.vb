@@ -23,9 +23,7 @@ Public Class frmStock_Especifico_List
     Private TieneTiempos As Boolean = False
 
     Public threadListar_Stock As New Thread(AddressOf Listar_Stock_With_DT) With {.IsBackground = True}
-
     ReadOnly CallBindProductos_To_Grid As New MethodInvoker(AddressOf BindProductos_To_Grid)
-
     Public Property ForceUpdateList As Boolean = True
 
     Public Property Termino_Carga_De_Datos As Boolean = False
@@ -33,13 +31,11 @@ Public Class frmStock_Especifico_List
     Dim DTStock As New DataTable
     Dim DTStockForMemory As New DataTable
     Public Property ProductoEspecifico As New clsBeProducto
-
     Private lPresentacion As New List(Of clsBeProducto_Presentacion)
-
     Public BuscarPoliza As Boolean = False
-
     Public IdProductoEstadoDefault As Integer = 0
     Public Property IdPresentacion As Integer = 0
+    Public Property IdStockExcluir As Integer = 0
 
     '#GT27082025: bandera para mostrar talla-color
     Public Mostrar_Talla_Color As Boolean = False
@@ -305,8 +301,7 @@ Public Class frmStock_Especifico_List
                                         If Not Presentacion Is Nothing Then
                                             lPresentacion.Add(Presentacion)
                                         End If
-                                    Else
-                                        Presentacion = lPresentacion(vIdxPresentacion)
+
                                     End If
 
                                     If Not Presentacion Is Nothing Then
@@ -444,7 +439,6 @@ Public Class frmStock_Especifico_List
 
                     pObjStock = clsLnStock.Get_Single_By_IdStock(Dr.Item("IdStock"))
                     pObjStock.CantidadUmBas = Dr.Item("Disponible_UMBas")
-                    pObjStock.CantidadPresentacion = Dr.Item("Cantidad_Presentacion")
 
                     If Dr.Item("Aplica") = "No" AndAlso TieneTiempos Then
                         If XtraMessageBox.Show("No aplica a los tiempos del cliente. ¿Desea agregar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
@@ -728,34 +722,6 @@ Public Class frmStock_Especifico_List
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
-        End Try
-
-    End Sub
-
-    Public Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
-
-        Try
-
-            If String.IsNullOrEmpty(txtIdProducto.Text.Trim()) = False AndAlso txtIdProducto.Text > "0" Then
-
-                ProductoEspecifico = clsLnProducto.Get_Single_By_Codigo(txtIdProducto.Text)
-
-                If ProductoEspecifico IsNot Nothing AndAlso ProductoEspecifico.IdProducto > 0 Then
-                    txtNombreProducto.Text = Trim(String.Format("{0}", ProductoEspecifico.Nombre))
-                    ForceUpdateList = True
-                    Listar_Stock_DesdeHilo()
-                Else
-                    XtraMessageBox.Show(String.Format("No existe producto con código {0}", txtIdProducto.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    txtIdProducto.Focus()
-                    txtIdProducto.SelectAll()
-                    ProductoEspecifico = Nothing
-                End If
-
-            End If
-
-        Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1377,7 +1343,32 @@ Public Class frmStock_Especifico_List
 
     End Sub
 
-    Private Sub grdStock_Click(sender As Object, e As EventArgs) Handles grdStock.Click
+    Public Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
+
+        Try
+
+            If String.IsNullOrEmpty(txtIdProducto.Text.Trim()) = False AndAlso txtIdProducto.Text > "0" Then
+
+                ProductoEspecifico = clsLnProducto.Get_Single_By_Codigo(txtIdProducto.Text)
+
+                If ProductoEspecifico IsNot Nothing AndAlso ProductoEspecifico.IdProducto > 0 Then
+                    txtNombreProducto.Text = Trim(String.Format("{0}", ProductoEspecifico.Nombre))
+                    ForceUpdateList = True
+                    Listar_Stock_DesdeHilo()
+                Else
+                    XtraMessageBox.Show(String.Format("No existe producto con código {0}", txtIdProducto.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    txtIdProducto.Focus()
+                    txtIdProducto.SelectAll()
+                    ProductoEspecifico = Nothing
+                End If
+
+            End If
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
 
     End Sub
+
 End Class

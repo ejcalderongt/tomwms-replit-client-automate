@@ -35,7 +35,7 @@ Public Class frmAjustePositivo
 
             BeBodega = AP.Bodega
             '#GT26112024: datos del encabezado
-            lbIdStock.Text = clsLnStock.MaxID() + 1
+            lbIdStock.Text = 0
             pUbicacion = New clsBeBodega_ubicacion
             pUbicacion = clsLnBodega_ubicacion.GetSingle(AP.Bodega.Ubic_recepcion, AP.IdBodega)
             txtUbicacion.Text = pUbicacion.NombreCompleto

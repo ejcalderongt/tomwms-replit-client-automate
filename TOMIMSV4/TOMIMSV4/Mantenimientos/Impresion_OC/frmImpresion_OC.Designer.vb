@@ -44,6 +44,8 @@ Partial Class frmImpresionRecepcion_OC
         Me.XtraScrollableControl = New DevExpress.XtraEditors.XtraScrollableControl()
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtCajaPorCama = New System.Windows.Forms.NumericUpDown()
+        Me.txtCamaPorTarima = New System.Windows.Forms.NumericUpDown()
         Me.txtPresentacion = New DevExpress.XtraEditors.TextEdit()
         Me.txtFactor = New DevExpress.XtraEditors.TextEdit()
         Me.txtVencimiento = New DevExpress.XtraEditors.TextEdit()
@@ -57,8 +59,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtCantidadLicencias = New System.Windows.Forms.NumericUpDown()
         Me.txtCantidadBarras = New System.Windows.Forms.NumericUpDown()
         Me.DxErrorProvider1 = New DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(Me.components)
-        Me.txtCamaPorTarima = New System.Windows.Forms.NumericUpDown()
-        Me.txtCajaPorCama = New System.Windows.Forms.NumericUpDown()
+        Me.lblEtiquetas = New DevExpress.XtraEditors.LabelControl()
         Label5 = New System.Windows.Forms.Label()
         Label6 = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
@@ -79,6 +80,8 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl4.SuspendLayout()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
+        CType(Me.txtCajaPorCama, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtCamaPorTarima, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtFactor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtVencimiento.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -90,8 +93,6 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.txtCantidadLicencias, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidadBarras, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DxErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtCamaPorTarima, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtCajaPorCama, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label5
@@ -310,6 +311,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'GroupControl4
         '
+        Me.GroupControl4.Controls.Add(Me.lblEtiquetas)
         Me.GroupControl4.Controls.Add(Me.GroupControl1)
         Me.GroupControl4.Controls.Add(lblVencimiento)
         Me.GroupControl4.Controls.Add(Me.txtVencimiento)
@@ -352,6 +354,32 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl1.Size = New System.Drawing.Size(436, 186)
         Me.GroupControl1.TabIndex = 42
         Me.GroupControl1.Text = "Atributos de producto"
+        '
+        'txtCajaPorCama
+        '
+        Me.txtCajaPorCama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtCajaPorCama.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtCajaPorCama.Location = New System.Drawing.Point(153, 145)
+        Me.txtCajaPorCama.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtCajaPorCama.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
+        Me.txtCajaPorCama.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
+        Me.txtCajaPorCama.Name = "txtCajaPorCama"
+        Me.txtCajaPorCama.Size = New System.Drawing.Size(82, 28)
+        Me.txtCajaPorCama.TabIndex = 45
+        Me.txtCajaPorCama.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'txtCamaPorTarima
+        '
+        Me.txtCamaPorTarima.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtCamaPorTarima.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtCamaPorTarima.Location = New System.Drawing.Point(153, 112)
+        Me.txtCamaPorTarima.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtCamaPorTarima.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
+        Me.txtCamaPorTarima.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
+        Me.txtCamaPorTarima.Name = "txtCamaPorTarima"
+        Me.txtCamaPorTarima.Size = New System.Drawing.Size(82, 28)
+        Me.txtCamaPorTarima.TabIndex = 44
+        Me.txtCamaPorTarima.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'txtPresentacion
         '
@@ -515,31 +543,15 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.DxErrorProvider1.ContainerControl = Me
         '
-        'txtCamaPorTarima
+        'lblEtiquetas
         '
-        Me.txtCamaPorTarima.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCamaPorTarima.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCamaPorTarima.Location = New System.Drawing.Point(153, 112)
-        Me.txtCamaPorTarima.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtCamaPorTarima.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtCamaPorTarima.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
-        Me.txtCamaPorTarima.Name = "txtCamaPorTarima"
-        Me.txtCamaPorTarima.Size = New System.Drawing.Size(82, 28)
-        Me.txtCamaPorTarima.TabIndex = 44
-        Me.txtCamaPorTarima.Value = New Decimal(New Integer() {1, 0, 0, 0})
-        '
-        'txtCajaPorCama
-        '
-        Me.txtCajaPorCama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCajaPorCama.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCajaPorCama.Location = New System.Drawing.Point(153, 145)
-        Me.txtCajaPorCama.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtCajaPorCama.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtCajaPorCama.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
-        Me.txtCajaPorCama.Name = "txtCajaPorCama"
-        Me.txtCajaPorCama.Size = New System.Drawing.Size(82, 28)
-        Me.txtCajaPorCama.TabIndex = 45
-        Me.txtCajaPorCama.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.lblEtiquetas.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
+        Me.lblEtiquetas.Appearance.Options.UseFont = True
+        Me.lblEtiquetas.Location = New System.Drawing.Point(651, 318)
+        Me.lblEtiquetas.Name = "lblEtiquetas"
+        Me.lblEtiquetas.Size = New System.Drawing.Size(170, 21)
+        Me.lblEtiquetas.TabIndex = 43
+        Me.lblEtiquetas.Text = "Etiquetas a imprimir: 0"
         '
         'frmImpresionRecepcion_OC
         '
@@ -565,6 +577,8 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
         Me.GroupControl1.PerformLayout()
+        CType(Me.txtCajaPorCama, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtCamaPorTarima, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtFactor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtVencimiento.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -576,8 +590,6 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.txtCantidadLicencias, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidadBarras, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DxErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtCamaPorTarima, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtCajaPorCama, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -608,4 +620,5 @@ Partial Class frmImpresionRecepcion_OC
     Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents txtCajaPorCama As NumericUpDown
     Friend WithEvents txtCamaPorTarima As NumericUpDown
+    Friend WithEvents lblEtiquetas As DevExpress.XtraEditors.LabelControl
 End Class

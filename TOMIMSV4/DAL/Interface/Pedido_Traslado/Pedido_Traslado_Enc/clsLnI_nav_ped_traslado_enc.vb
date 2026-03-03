@@ -706,4 +706,110 @@ Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
+    Public Shared Function Importar_Pedido_Cliente_A_Tabla_Intermedia_If(ByRef BePedidoCliente As clsBeI_nav_ped_traslado_enc,
+                                                                         ByRef lblprg As Object,
+                                                                         Optional ByRef lConnection As SqlConnection = Nothing,
+                                                                         Optional ByRef lTransaction As SqlTransaction = Nothing) As clsBeTrans_pe_enc
+
+        Importar_Pedido_Cliente_A_Tabla_Intermedia_If = Nothing
+
+        Dim Es_Transaccion_Remota As Boolean = Not (lConnection Is Nothing AndAlso lTransaction Is Nothing)
+
+        Dim LocalConnection As SqlConnection = Nothing
+        Dim LocalTransaction As SqlTransaction = Nothing
+        Dim vIdBodegaOrigen As Integer = 0
+        Dim vIdPropietario As Integer = 0
+        Dim vIdPropitarioBodegaOrigen As Integer = 0
+        Dim vIdxConfig As Integer = -1
+        Dim vIndicadorDeExcepcion As Integer = 0
+        Dim logString As String = ""
+
+        Try
+            If Not Es_Transaccion_Remota Then
+                LocalConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                LocalConnection.Open()
+                LocalTransaction = LocalConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lConnection = LocalConnection
+                lTransaction = LocalTransaction
+            End If
+
+            Dim BeBodegaArea As clsBeBodega_area = clsLnBodega_area.Get_Single_By_Codigo_Bodega(BePedidoCliente.Transfer_from_Code, lConnection, lTransaction)
+
+            vIdBodegaOrigen = clsLnBodega.Get_IdBodega_By_Codigo(BePedidoCliente.Transfer_from_Code, lConnection, lTransaction)
+            vIndicadorDeExcepcion = 1
+
+            If vIdBodegaOrigen = 0 Then
+                If BeBodegaArea IsNot Nothing Then
+                    vIdBodegaOrigen = BeBodegaArea.IdBodega
+                Else
+                    Throw New Exception(String.Format("El código de la bodega origen: {0} no es válido", BePedidoCliente.Transfer_from_Code))
+                End If
+            End If
+
+            vIdPropietario = clsLnPropietarios.Get_IdPropietario_By_Codigo(BePedidoCliente.Product_Owner_Code, lConnection, lTransaction)
+
+            If vIdPropietario = 0 Then
+                Throw New Exception(String.Format("El código de propietario: ({0}) no es válido", BePedidoCliente.Product_Owner_Code))
+            End If
+
+            vIndicadorDeExcepcion = 2
+
+            vIdPropitarioBodegaOrigen = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(vIdPropietario, vIdBodegaOrigen, lConnection, lTransaction)
+
+            If vIdPropitarioBodegaOrigen = 0 Then
+                Throw New Exception(String.Format("El código de propietario: ({0}) de la bodega origen: ({1}) no es válido", BePedidoCliente.Product_Owner_Code, BePedidoCliente.Transfer_from_Code))
+            End If
+
+            vIndicadorDeExcepcion = 3
+
+            If Importar_Traslado_A_Tabla_Intermedia(BePedidoCliente, lblprg, lConnection, lTransaction) Then
+
+                vIndicadorDeExcepcion = 4
+
+                vIdxConfig = lBeConfigInMemory.FindIndex(Function(x) x.Idbodega = vIdBodegaOrigen AndAlso x.IdPropietario = vIdPropietario)
+
+                Dim BeConfigEnc As clsBeI_nav_config_enc = clsLnI_nav_config_enc.GetSingle_By_IdBodega_And_IdPropietario(vIdBodegaOrigen, vIdPropietario, lConnection, lTransaction)
+
+                If BeConfigEnc Is Nothing Then
+                    Dim vMsgEx As String = "ERROR_202310311436: No existe la configuración asociada a la bodega: " & vIdBodegaOrigen & " en la tabla i_nav_config_enc configure los parámetros por defecto para la interfaz"
+                    clsPublic.Actualizar_Progreso(lblprg, vMsgEx)
+                    Throw New Exception(vMsgEx)
+                Else
+                    vIndicadorDeExcepcion = 5
+
+                    Dim BePedidoEnc As clsBeTrans_pe_enc = Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS(BePedidoCliente,
+                                                                                                   vIdBodegaOrigen,
+                                                                                                   vIdPropitarioBodegaOrigen,
+                                                                                                   BeConfigEnc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction,
+                                                                                                   lblprg)
+
+                End If
+
+            End If
+
+            If Not Es_Transaccion_Remota Then
+                LocalTransaction.Commit()
+            End If
+
+        Catch ex As Exception
+
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message, False)
+
+            If Not Es_Transaccion_Remota AndAlso LocalTransaction IsNot Nothing Then
+                LocalTransaction.Rollback()
+            ElseIf Es_Transaccion_Remota Then
+                Throw ex
+            End If
+            Throw ex
+
+        Finally
+            If Not Es_Transaccion_Remota AndAlso LocalConnection IsNot Nothing AndAlso LocalConnection.State = ConnectionState.Open Then
+                LocalConnection.Close()
+            End If
+        End Try
+
+    End Function
+
 End Class

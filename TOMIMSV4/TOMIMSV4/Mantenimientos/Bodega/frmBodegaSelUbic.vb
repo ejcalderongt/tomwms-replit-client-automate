@@ -1133,12 +1133,7 @@ Public Class frmBodegaSelUbic
                 pObjUbicHHDet.IdUbicacionOrigen = pBeTransUbicHHDet.IdUbicacionOrigen
                 pObjUbicHHDet.IdUbicacionDestino = Ubic.IdUbicacionDestino
                 'pObjUbicHHDet.Cantidad = Ubic.Ubicar
-                If pStockRes.IdPresentacion <> 0 Then
-                    pObjUbicHHDet.Cantidad = pStockRes.CantidadPresentacion
-                Else
-                    pObjUbicHHDet.Cantidad = pStockRes.CantidadUmBas
-                End If
-
+                pObjUbicHHDet.Cantidad = pStockRes.CantidadUmBas
                 pObjUbicHHDet.UbicacionDestino = New clsBeBodega_ubicacion()
                 pObjUbicHHDet.UbicacionDestino.Descripcion = Ubic.Descripcion
 

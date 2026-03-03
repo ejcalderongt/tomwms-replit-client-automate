@@ -18,7 +18,7 @@ Module ModuleMain
             Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(False)
 
-            'Args = New String() {"7-2-0-1-43538-2"}
+            'Args = New String() {"20-2-0-1-1-0-LA_CUMBRE_LOCAL_QA"}
 
             'No vienen parámetros
             If Args.Length = 0 Then
@@ -34,13 +34,13 @@ Module ModuleMain
 
                 arAgs = Args(0).Split("-")
 
-                InterfaceAEjecutar = If(arAgs.Length > 0, Trim(arAgs(0)), "")
-                IdConfiguracion = If(arAgs.Length > 1, arAgs(1), "")
-                IndiceInstanciaDefecto = If(arAgs.Length > 2, arAgs(2), "")
-                IdUsuario = If(arAgs.Length > 3, arAgs(3), "")
-                NoDocEntrySAP = If(arAgs.Length > 4, arAgs(4), "")
-                EstadoEnviadoSAP = If(arAgs.Length > 5, arAgs(5), "")
-                gNombreInstancia = If(arAgs.Length > 6, arAgs(6), "")
+                InterfaceAEjecutar = Trim(arAgs(0))
+                IdConfiguracion = arAgs(1)
+                IndiceInstanciaDefecto = arAgs(2)
+                IdUsuario = arAgs(3)
+                NoDocEntrySAP = arAgs(4)
+                EstadoEnviadoSAP = arAgs(5)
+                gNombreInstancia = arAgs(6)
 
                 Init_App()
 

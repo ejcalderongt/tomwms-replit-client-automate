@@ -506,7 +506,6 @@ Public Class frmPropietario
             End If
 
             If gviewMovimientos.Columns.Count > 0 Then
-                'lblRegs.Caption = String.Format("Registros: {0}", gviewMovimientos.RowCount)
                 gviewMovimientos.BestFitColumns()
             End If
 
@@ -534,8 +533,6 @@ Public Class frmPropietario
             If DT.Rows.Count > 0 Then
 
                 dgridStock.DataSource = DT
-
-                'lblRegs.Caption = String.Format("Registros: {0}", grdvStock.RowCount)
 
                 grdvStock.OptionsView.ShowFooter = True
 
@@ -650,8 +647,6 @@ Public Class frmPropietario
 
                 End If
 
-                'lblRegs.Caption = String.Format("Registros: {0}", gvEstados.RowCount)
-
             End If
 
         Catch ex As Exception
@@ -718,8 +713,6 @@ Public Class frmPropietario
         End Try
 
     End Sub
-
-
     Private Sub Listar_Unidades_De_Medida_By_Propietario()
 
         Try
@@ -780,10 +773,8 @@ Public Class frmPropietario
             End If
 
             pBePropietario.IdPropietario = BePropietario.IdPropietario
-
             BePropietario.Es_Consolidador = chkEsConsolidador.Checked
             BePropietario.ControlUx = chkActivarUX.Checked
-
 
             Guardar = IIf(clsLnPropietarios.Guardar_Nuevo_Propietario(BePropietario, AP.IdBodega) > 0, True, False)
 
@@ -984,9 +975,6 @@ Public Class frmPropietario
     Private Sub Cargar_Destinatarios()
 
         Try
-            'If pGuardo = False Then
-
-            'End If
 
             Limpiar()
 
@@ -1322,17 +1310,17 @@ Public Class frmPropietario
 
                     Dim i As Integer = ViewMensaje.FocusedRowHandle
                     Dim Edit As New frmPropietarioReglaRecepcion(frmPropietarioReglaRecepcion.TipoTrans.Editar)
-                Edit.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
-                Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
-                Edit.pIdPropietario = pBePropietario.IdPropietario
-                Edit.ShowDialog()
-                pListObjRE = clsLnPropietario_reglas_enc.Get_All_By_IdPropietario(pBePropietario.IdPropietario).ToList
-                Listar_Reglas()
-                pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
-                GetDatos()
-                ViewMensaje.FocusedRowHandle = i
+                    Edit.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
+                    Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
+                    Edit.pIdPropietario = pBePropietario.IdPropietario
+                    Edit.ShowDialog()
+                    pListObjRE = clsLnPropietario_reglas_enc.Get_All_By_IdPropietario(pBePropietario.IdPropietario).ToList
+                    Listar_Reglas()
+                    pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
+                    GetDatos()
+                    ViewMensaje.FocusedRowHandle = i
 
-            End If
+                End If
 
             End If
 

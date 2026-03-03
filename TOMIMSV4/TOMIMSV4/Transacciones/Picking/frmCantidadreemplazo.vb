@@ -54,6 +54,7 @@ Public Class frmCantidadreemplazo
             frmSelStock.WindowState = FormWindowState.Maximized
             frmSelStock.IdProductoEstadoDefault = BeTipoPedido.IdProductoEstado
             frmSelStock.IdPresentacion = IdPresentacion
+            frmSelStock.IdStockExcluir = lblIdStock.Text.Replace("IdStock: ", "")
 
             If (Codigo_Producto <> "") Then
                 frmSelStock.GridView1.ClearColumnsFilter()

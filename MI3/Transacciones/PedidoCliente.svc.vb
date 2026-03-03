@@ -29,10 +29,10 @@ Public Class PedidoCliente
 
                 Dim BePedidoEnc As New clsBeTrans_pe_enc
                 Dim cantLineas As Integer = 0
-                Dim vResult As New RichTextBox
-                BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(BeINavPedCompraEnc, vResult, Nothing, Nothing)
+
+                BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(BeINavPedCompraEnc, Resultado)
                 cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc)
-                Resultado = vResult.Text
+
                 Insert = cantLineas
 
             End If

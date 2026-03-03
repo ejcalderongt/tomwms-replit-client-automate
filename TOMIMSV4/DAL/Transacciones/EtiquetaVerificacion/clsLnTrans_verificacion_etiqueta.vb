@@ -1,6 +1,5 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System
 
 Public Class clsLnTrans_verificacion_etiqueta
 

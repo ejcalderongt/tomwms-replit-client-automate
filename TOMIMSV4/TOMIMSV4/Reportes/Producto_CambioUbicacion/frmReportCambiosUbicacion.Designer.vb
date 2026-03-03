@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmReportCambiosUbicacion
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmReportCambiosUbicacion
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmReportCambiosUbicacion))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -75,14 +75,12 @@ Partial Class frmReportCambiosUbicacion
         '
         'RibbonControl
         '
-        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.cmdImprimir, Me.cmdSalir, Me.lblRegs, Me.cmdExToExcel})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 6
         Me.RibbonControl.Name = "RibbonControl"
-        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1483, 193)
@@ -160,11 +158,9 @@ Partial Class frmReportCambiosUbicacion
         '
         'GridView1
         '
-        Me.GridView1.DetailHeight = 284
         Me.GridView1.GridControl = Me.grdCambiosUbic
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True
-        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView1.OptionsFind.AlwaysVisible = True
         Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
@@ -338,7 +334,6 @@ Partial Class frmReportCambiosUbicacion
         'tabDetalle
         '
         Me.tabDetalle.Controls.Add(Me.grdCambiosUbic)
-        Me.tabDetalle.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabDetalle.Name = "tabDetalle"
         Me.tabDetalle.Size = New System.Drawing.Size(1219, 478)
         Me.tabDetalle.Text = "Detalle"
@@ -346,7 +341,6 @@ Partial Class frmReportCambiosUbicacion
         'tabResumen
         '
         Me.tabResumen.Controls.Add(Me.dgridResumen)
-        Me.tabResumen.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabResumen.Name = "tabResumen"
         Me.tabResumen.Size = New System.Drawing.Size(1219, 478)
         Me.tabResumen.Text = "Resumen"
@@ -366,11 +360,9 @@ Partial Class frmReportCambiosUbicacion
         '
         'GridView2
         '
-        Me.GridView2.DetailHeight = 284
         Me.GridView2.GridControl = Me.dgridResumen
         Me.GridView2.Name = "GridView2"
         Me.GridView2.OptionsBehavior.ReadOnly = True
-        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView2.OptionsFind.AlwaysVisible = True
         Me.GridView2.OptionsView.ColumnAutoWidth = False
         Me.GridView2.OptionsView.ShowAutoFilterRow = True
@@ -378,7 +370,6 @@ Partial Class frmReportCambiosUbicacion
         'tabGrafo
         '
         Me.tabGrafo.Controls.Add(Me.ChartControl1)
-        Me.tabGrafo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabGrafo.Name = "tabGrafo"
         Me.tabGrafo.Size = New System.Drawing.Size(1219, 478)
         Me.tabGrafo.Text = "Gráfico"
@@ -387,7 +378,6 @@ Partial Class frmReportCambiosUbicacion
         '
         Me.ChartControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ChartControl1.Location = New System.Drawing.Point(0, 0)
-        Me.ChartControl1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ChartControl1.Name = "ChartControl1"
         Me.ChartControl1.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
         Me.ChartControl1.Size = New System.Drawing.Size(1219, 478)

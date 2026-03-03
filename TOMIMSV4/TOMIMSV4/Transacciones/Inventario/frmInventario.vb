@@ -2513,7 +2513,6 @@ Public Class frmInventario
                     .Atributo_Variante_1 = st.Codigo_variante
                     .IdProductoTallaColor = st.IdProductoTallaColor
 
-
                 End With
 
                 If st.IdPresentacion <> 0 Then

@@ -19,10 +19,10 @@ Module m_Global
     Public vRutaServicio As String = CurDir() & "/WMS_PrintService.exe"
     Public vRutaInterfaceCEALSA As String = CurDir() & "/CEALSASync.exe"
 
-    Public Property gVersionApp As String = "7.9.8"
+    Public Property gVersionApp As String = "8.0.2"
 
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2026, 1, 23)
+    Public Property gFechaVersion As Date = New Date(2026, 2, 27)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
 
     Public gIndiceInstancia As Integer = -1
@@ -665,7 +665,7 @@ Public Module SqlDashboardHelper
     End Function
 
     Public Sub Incrementar_Licencia_BOF(ByVal IdBodega As Integer,
-                                             ByVal IdUsuario As Integer)
+                                        ByVal IdUsuario As Integer)
 
         Dim BeUsuario As New clsBeUsuario()
         Dim lResolucionesLP As New clsBeResolucion_lp_usuario()
@@ -743,6 +743,44 @@ Public Module SqlDashboardHelper
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Function Incrementar_Licencia_BOF_Info(ByVal IdBodega As Integer,
+                                                  ByVal IdUsuario As Integer,
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As String
+
+        Dim BeUsuario As New clsBeUsuario()
+        Dim lResolucionesLP As New clsBeResolucion_lp_usuario()
+
+        Dim vLicenciaStr As String = ""
+
+        Try
+            clsLnUsuario.GetSingle(BeUsuario, lConnection, lTransaction)
+
+            If BeUsuario Is Nothing Then
+                Throw New Exception("No esta definido un operador con resolución de licencia.")
+            End If
+
+            lResolucionesLP = clsLnResolucion_lp_usuario.Get_Resolucion_By_IdOperador_And_IdBodega(IdBodega, IdUsuario)
+
+            If lResolucionesLP Is Nothing Then
+                Throw New Exception("No esta definida la resolución de licencia para recepción en BOF")
+            End If
+
+            ' Genera la licencia basada en el correlativo actual
+            vLicenciaStr = clsLnResolucion_lp_usuario.Get_Nuevo_Correlativo_LP_BOF(lResolucionesLP)
+
+            ' Incrementa para dejar listo el siguiente correlativo
+            lResolucionesLP.Correlativo_actual += 1
+            clsLnResolucion_lp_usuario.Actualizar_Correlativo_Actual(lResolucionesLP, lConnection, lTransaction)
+
+            Return vLicenciaStr
+
+        Catch ex As Exception
+            Throw
         End Try
 
     End Function

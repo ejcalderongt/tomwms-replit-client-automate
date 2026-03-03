@@ -368,7 +368,6 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
-    <None Include="My Project\PublishProfiles\MI3.pubxml" />
     <None Include="My Project\PublishProfiles\PROGRAN_Local.pubxml" />
     <None Include="My Project\PublishProfiles\wsAmazon.pubxml" />
     <None Include="My Project\Settings.settings">

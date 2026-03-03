@@ -88,12 +88,11 @@ public class clsLnBodega_sector  {
 	}
 }
 
-    public static bool Existe(int IdSector, int IdArea, int IdBodega, SqlConnection conn, SqlTransaction tx)
+    public static bool Existe(int IdSector, int IdBodega, SqlConnection conn, SqlTransaction tx)
     {
-        using var cmd = new SqlCommand("SELECT COUNT(1) FROM bodega_sector WHERE (IdSector = @IdSector and IdArea=@IdArea and IdBodega=@IdBodega) ", conn, tx);
+        using var cmd = new SqlCommand("SELECT COUNT(1) FROM bodega_sector WHERE (IdSector = @IdSector and IdBodega=@IdBodega) ", conn, tx);
 
         cmd.Parameters.AddWithValue("@IdSector", IdSector);
-        cmd.Parameters.AddWithValue("@IdArea", IdArea);
         cmd.Parameters.AddWithValue("@IdBodega", IdBodega);
 
         var count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -106,7 +105,7 @@ public class clsLnBodega_sector  {
         {
             if (entity.IdSector != 0)
             {
-                bool existe = Existe(entity.IdSector,entity.IdArea, entity.IdBodega ,conn, tx);
+                bool existe = Existe(entity.IdSector, entity.IdBodega ,conn, tx);
 
                 if (existe)
                     Actualizar(entity, conn, tx);

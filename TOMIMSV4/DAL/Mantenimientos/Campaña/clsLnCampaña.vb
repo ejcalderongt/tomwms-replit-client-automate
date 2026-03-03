@@ -639,4 +639,29 @@ Public Class clsLnCampaña
 
     End Function
 
+    Public Shared Function Existe_By_Codigo(ByVal pCodigo As String) As Boolean
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Const sql As String = "SELECT 1 FROM Campaña WHERE Codigo = @Codigo;"
+
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+                cmd.Parameters.Add("@Codigo", SqlDbType.VarChar).Value = pCodigo
+
+                ' Más liviano que llenar DataTable
+                Dim result As Object = cmd.ExecuteScalar()
+                Return (result IsNot Nothing AndAlso result IsNot DBNull.Value)
+            End Using
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
 End Class

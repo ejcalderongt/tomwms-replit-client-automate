@@ -13,6 +13,7 @@ Imports TOMWMS.clsSyncSapTrasladosEnvio
 Public Class clsSyncSapDevolProveedor
 
     Private Shared vHanaService As SapServiceLayerClient
+
     Public Shared Async Function Procesar_Solicitud_Devol_Prov_SAP(ByVal lblprg As RichTextBox,
                                                                    ByVal prg As ProgressBar,
                                                                    Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
@@ -41,10 +42,10 @@ Public Class clsSyncSapDevolProveedor
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,
-                                  pNoDocumento,
-                                  BeConfigEnc,
-                                  lblprg,
-                                  clsTrans)
+                                      pNoDocumento,
+                                      BeConfigEnc,
+                                      lblprg,
+                                      clsTrans)
 
             clsTrans.Commit_Transaction()
 
@@ -161,7 +162,7 @@ Public Class clsSyncSapDevolProveedor
 
                             Dim beDet As New clsBeI_nav_ped_traslado_det With {
                             .NoEnc = beDevolucion.No,
-                            .No = clsLnTrans_pe_det.MaxID() + 1,
+                            .No = clsLnI_nav_ped_traslado_det.MaxID() + 1,
                             .Item_No = linea("ItemCode")?.ToString(),
                             .Line_No = linea("LineNum").Value(Of Integer),
                             .Shipment_Date = Date.Now,

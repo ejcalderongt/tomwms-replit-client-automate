@@ -1,16 +1,18 @@
 ﻿Imports System.ComponentModel
-Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
 Imports System.Reflection
 Imports System.Threading
 Imports System.Threading.Tasks
-Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
+
+
+Imports System.Data.SqlClient
+Imports System.Web.Script.Serialization
 Imports TOMWMS.wsBYBNavCUWMS
 Imports TOMWMS.wsBYBNavMovProd
 Imports TOMWMS.wsBYBNavUbicarAlmacen
@@ -38,8 +40,8 @@ Public Class clsArchHeader : Inherits SoapHeader
 
 End Class
 
-<WebService(Namespace:="http://tempuri.org/")>
-<WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)>
+<System.Web.Services.WebService(Namespace:="http://tempuri.org/")>
+<System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)>
 <ToolboxItem(False)>
 Public Class TOMHHWS
     Inherits System.Web.Services.WebService
@@ -3710,8 +3712,7 @@ Public Class TOMHHWS
             Return clsLnTrans_re_det.MaxID(pIdRecepcionEnc)
         Catch ex As Exception
 
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            '#MECR01102025: Se agrego bitacora de logs para recepciones.            
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
 
@@ -5132,7 +5133,7 @@ Public Class TOMHHWS
         Try
 
             '#CKFK20231029:Guarda fotos de verificacion
-            clsLnTrans_picking_img.Guardar_Imagen_Verificacion(pIdPedidoDet, Foto)
+            clsLnTrans_Picking_Img.Guardar_Imagen_Verificacion(pIdPedidoDet, Foto)
 
         Catch ex As Exception
 
@@ -5261,7 +5262,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_picking_img.Get_All_Imagen_By_IdPedidoDet(pIdPedidoDet)
+            Return clsLnTrans_Picking_Img.Get_All_Imagen_By_IdPedidoDet(pIdPedidoDet)
 
         Catch ex As Exception
             '#MECR04122025: Se agrego bitacora de logs para verificacion
@@ -6210,7 +6211,6 @@ Public Class TOMHHWS
         End Try
 
     End Sub
-
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_IdUbicacion_Recepcion_By_IdBodega(ByVal pIdBodega As Integer) As Integer
 
@@ -10073,11 +10073,11 @@ Public Class TOMHHWS
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
             Dim msgControl As String = "Se actualizo estado verificado el pedido: " & oBeTrans_pe_enc.IdPedidoEnc
-            clsLnLog_verificacion_bof_error.Agregar_Error(msgControl,
-            pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
-            pIdBodega:=oBeTrans_pe_enc.IdBodega,
-            pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
-            pUser_agr:=oBeTrans_pe_enc.User_mod)
+            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            'pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
+            'pIdBodega:=oBeTrans_pe_enc.IdBodega,
+            'pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
+            'pUser_agr:=oBeTrans_pe_enc.User_mod)
 
             Return Set_Estado_Pedido_Verificado
 
@@ -11955,11 +11955,7 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            '#MECR11122025: Se agrego bitacora de logs para verificacion
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -15457,6 +15453,7 @@ New JsonSerializerSettings With {
 
     End Function
 
+
     'AT20241009 Actualizar ubicaciones reservadas pallet mixto
     <WebMethod(), SoapHeader("mArch")>
     Public Function Actualizar_Ubicaciones_Reservadas_Pallet_Mixto(ByVal pLista As List(Of clsBeVW_stock_res),
@@ -15930,6 +15927,7 @@ New JsonSerializerSettings With {
 
     End Function
 
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Exist_Codigo_By_CodigoBarra(ByVal pCodigoBarra As String,
                                                 ByVal pIdProductoBodega As Integer) As Boolean
@@ -16194,6 +16192,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
+
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH(ByVal pIdOrdenCompraEnc As Integer) As List(Of clsBeTrans_oc_det_lote)
@@ -16989,6 +16988,7 @@ New JsonSerializerSettings With {
 
     'End Sub
 
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Vencimiento_By_IdBodega_And_Lote(ByVal pIdBodega As Integer, ByVal pNoLote As String) As String
 
@@ -17546,6 +17546,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
+
     Private Sub Adicionar_Producto_A_Detalle_Despacho(ByRef BeDespachoEnc As clsBeTrans_despacho_enc,
                                                       ByVal BeTransPickingUbic As clsBeTrans_picking_ubic,
                                                       ByVal FechaPedido As Date,
@@ -17875,6 +17876,7 @@ New JsonSerializerSettings With {
 
     End Sub
 
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido(ByVal pCodigoBarra As String,
                                                                            ByVal pIdBodega As Integer,
@@ -17928,6 +17930,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
+
 
     '#GT21042025: retorna el tipo documento del pedido, para identificar si apica lectura muelle en picking
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
@@ -18414,6 +18417,7 @@ New JsonSerializerSettings With {
 
     End Sub
 
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Guardar_Recepcion_Caja_Master(ByVal pIdRecpecionEnc As Integer,
                                                   ByVal pIdOrdenCompra As Integer,
@@ -18533,6 +18537,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Sub
+
 
     '<WebMethod(), SoapHeader("mArch")>
     'Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega(ByVal pBarra As String, ByVal pIdBodega As Integer) As clsBeBodega_ubicacion

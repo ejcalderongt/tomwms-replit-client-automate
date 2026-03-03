@@ -121,8 +121,8 @@ Public Class clsLnBodega
                 .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))                
                 .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
                 .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
-
-
+                .Reemplazo_Opcional = IIf(IsDBNull(dr.Item("reemplazo_opcional")), False, dr.Item("reemplazo_opcional"))
+                .Estado_Defecto_Rack = IIf(IsDBNull(dr.Item("estado_defecto_rack")), 0, dr.Item("estado_defecto_rack"))
             End With
 
         Catch ex1 As SqlException
@@ -249,6 +249,8 @@ Public Class clsLnBodega
             Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)                        
             Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
+            Ins.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
+            Ins.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -371,6 +373,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
+            cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
+            cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -507,6 +511,8 @@ Public Class clsLnBodega
             Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)            
             Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
+            Upd.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
+            Upd.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -629,6 +635,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
+            cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
+            cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -1558,8 +1566,8 @@ Public Class clsLnBodega
     End Function
 
     Public Shared Function GetRutaCDN_By_Idbodega(ByVal pIdBodega As Integer,
-                                              ByVal lConnection As SqlConnection,
-                                              ByVal lTransaction As SqlTransaction) As String
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As String
 
         GetRutaCDN_By_Idbodega = ""
 
@@ -1567,7 +1575,7 @@ Public Class clsLnBodega
         Try
 
             Const sp As String = "SELECT RUTA_CDN FROM Bodega 
-                              Where(IdBodega = @IdBodega)"
+                                  Where(IdBodega = @IdBodega)"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -1580,16 +1588,10 @@ Public Class clsLnBodega
                 GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
             End If
 
-            lTransaction.Commit()
-
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            lTransaction.Dispose()
-            lConnection.Dispose()
         End Try
 
     End Function

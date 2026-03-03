@@ -945,7 +945,7 @@ public class clsLnBodega_ubicacion
                 cmd = new SqlCommand(sp, lConnection, lTransaction);
             }
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            var lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
@@ -1013,4 +1013,143 @@ public class clsLnBodega_ubicacion
             throw;
         }
     }
+
+    public static async Task<Dictionary<int, clsBeBodega_ubicacion>> GetByIdsAsync(IConfiguration configuration, List<int> idsUbicacion)
+    {
+        var result = new Dictionary<int, clsBeBodega_ubicacion>();
+
+        if (idsUbicacion == null || idsUbicacion.Count == 0)
+            return result;
+
+        idsUbicacion = idsUbicacion.Where(id => id > 0).Distinct().ToList();
+        if (idsUbicacion.Count == 0)
+            return result;
+
+        SqlConnection? lConnection = null;
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+            await lConnection.OpenAsync();
+            lTransaction = (SqlTransaction?)await lConnection.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+            var paramNames = idsUbicacion.Select((_, i) => $"@p{i}").ToList();
+            string sql = $@"
+            SELECT * 
+            FROM Bodega_ubicacion 
+            WHERE IdUbicacion IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsUbicacion.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsUbicacion[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            if (lTransaction != null)
+                await lTransaction.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeBodega_ubicacion();
+                Cargar(ref be, dr);
+                result[be.IdUbicacion] = be;
+            }
+
+            return result;
+        }
+        catch (SqlException ex1)
+        {
+            lTransaction?.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (lConnection?.State == ConnectionState.Open)
+                await lConnection.CloseAsync();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
+        }
+    }
+
+    public static Task<Dictionary<int, clsBeBodega_ubicacion>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsUbicacion)
+    {
+        var result = new Dictionary<int, clsBeBodega_ubicacion>();
+
+        if (idsUbicacion == null || idsUbicacion.Count == 0)
+            return Task.FromResult(result);
+
+        idsUbicacion = idsUbicacion.Where(id => id > 0).Distinct().ToList();
+        if (idsUbicacion.Count == 0)
+            return Task.FromResult(result);
+
+        try
+        {
+            var paramNames = idsUbicacion.Select((_, i) => $"@p{i}").ToList();
+            string sql = $@"
+            SELECT * 
+            FROM Bodega_ubicacion 
+            WHERE IdUbicacion IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsUbicacion.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsUbicacion[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeBodega_ubicacion();
+                Cargar(ref be, dr);
+                result[be.IdUbicacion] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch (SqlException ex1)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+            throw new Exception(vMsgError);
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
 }

@@ -195,7 +195,7 @@ Public Class clsSyncTransacWMS
 
                 Dim beDet As New clsBeI_nav_ped_traslado_det With {
                 .NoEnc = beFacturaDeudor.No,
-                .No = (clsLnTrans_pe_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
+                .No = (clsLnI_nav_ped_traslado_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
                 .Item_No = detalle.ItemNo,
                 .Line_No = detalle.LineNo,
                 .Shipment_Date = Date.Now,
@@ -1077,7 +1077,8 @@ Public Class clsSyncTransacWMS
                     For Each detalle In ajuste.LineasDetalle
 
                         Dim BeProducto As clsBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(detalle.ItemNo, beAjustes.IdBodega, lConnection, lTransaction)
-                        Dim vIdProductoBodega As Integer = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(BeProducto.IdProducto, beAjustes.IdBodega, lConnection, lTransaction)
+                        Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo_And_IdBodega(detalle.ItemNo, beAjustes.IdBodega, lConnection, lTransaction)
+                        'Dim vIdProductoBodega As Integer = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(BeProducto.IdProducto, beAjustes.IdBodega, lConnection, lTransaction)
                         Dim vIdProductoEstado As Integer = clsLnProducto_estado.Get_Buen_Estado_Producto_By_IdPropietario(BePropietario.IdPropietario, lConnection, lTransaction)
                         Dim BeUnidadMedida As New clsBeUnidad_medida
                         Dim BePresentacion As New clsBeProducto_Presentacion
@@ -1103,7 +1104,7 @@ Public Class clsSyncTransacWMS
                             Dim BeProductoTallaColor As New clsBeProducto_talla_color With {
                                 .IdProductoTallaColor = clsLnProducto_talla_color.MaxID(lConnection, lTransaction) + 1,
                                 .IdProducto = BeProducto.IdProducto,
-                                .IdTalla = clsLnTalla.GetSingleCodigo(detalle.Size).IdTalla,
+                                .IdTalla = clsLnTalla.Get_Single_By_Codigo(detalle.Size).IdTalla,
                                 .IdColor = clsLnColor.GetSingle_By_CodigoColor(detalle.Color).IdColor,
                                 .CodigoSKU = BeProducto.Codigo & detalle.Color & detalle.Size,
                                 .IdCampaña = 0,
@@ -1428,7 +1429,7 @@ Public Class clsSyncTransacWMS
 
                 Dim beDet As New clsBeI_nav_ped_traslado_det With {
                 .NoEnc = beFacturaDeudor.No,
-                .No = (clsLnTrans_pe_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
+                .No = (clsLnI_nav_ped_traslado_det.MaxID() + 1).ToString(), ' Asegurar que sea string según la propiedad
                 .Item_No = detalle.ItemNo,
                 .Line_No = detalle.LineNo,
                 .Shipment_Date = Date.Now,

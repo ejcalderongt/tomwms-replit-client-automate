@@ -2,7 +2,7 @@ Public Class clsBeTrans_ajuste_enc
 
     Implements ICloneable
     Public Property Idajusteenc() As Integer = 0
-    Public Property Fecha() As DateTime = Date.Now
+    Public Property Fecha() As Date = Date.Now
     Public Property Idusuario() As Integer = 0
     Public Property Referencia() As String = ""
     Public Property Fec_agr() As Date = Date.Now

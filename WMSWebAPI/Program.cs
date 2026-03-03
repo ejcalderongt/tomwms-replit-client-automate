@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Serilog;
 using System.Text;
 using WMSWebAPI.Mapping_Profile;
 using WMSWebAPI.Services;
+using WMSWebAPI.Services.Cambio_Estado;
+using WMSWebAPI.Services.Centro_Costo;
 using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
 using WMSWebAPI.Services.KPI;
@@ -19,6 +21,7 @@ using WMSWebAPI.Services.Producto.Umbas;
 using WMSWebAPI.Services.Proveedor;
 using WMSWebAPI.Services.Reset_Password;
 using WMSWebAPI.Services.Salidas;
+
 using ISyncIngresosService = WMSWebAPI.Services.Ingresos.ISyncIngresosService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,6 +63,10 @@ builder.Services.AddScoped<IUmbasMi3SyncService, UmbasMi3SyncService>();
 builder.Services.AddScoped<IPresentacionMi3SyncService, PresentacionMi3SyncService>();
 builder.Services.AddScoped<ISyncProveedorService, SyncProveedorService>();
 builder.Services.AddScoped<IKpiReportService, KpiReportService>();
+builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
+builder.Services.AddScoped<ICambioEstadoService, CambioEstadoService>();
+builder.Services.AddScoped<IAjustesEnvioService, AjustesEnvioService>();
+builder.Services.AddScoped<IAjustesEnvioService, AjustesEnvioService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";
@@ -91,32 +98,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // OJO: el nombre del doc es "v1"
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "WMSWebAPI", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header usando el esquema Bearer. Ej: \"Authorization: Bearer {token}\"",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });    
 });
+
 
 // CORS
 builder.Services.AddCors(options =>
@@ -192,7 +186,5 @@ app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

@@ -1064,7 +1064,7 @@ Public Class frmPreIngreso
                         If lBeTransRecDet.Count > 0 Then
                             BeTransReDet.IdRecepcionDet = lBeTransRecDet.Max(Function(b) b.IdRecepcionDet) + 1
                         Else
-                            BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeTransReDet.IdRecepcionEnc) + 1
+                            BeTransReDet.IdRecepcionDet = 0
                         End If
                     End If
 

@@ -1,106 +1,17 @@
 ﻿Imports System.Data.SqlClient
-Imports Sap.Data.Hana
+Imports System.Net
+Imports System.Net.Http
+Imports System.Net.Http.Headers
+Imports System.Reflection
+Imports DevExpress.Drawing.Printing.Internal.DXPageSizeInfo
+Imports DevExpress.Skins
+Imports Newtonsoft.Json.Linq
 
 Public Class clsSyncSapColor
     Implements IDisposable
 
     Private disposedValue As Boolean
-
-    Public Shared Function Get_Colores_From_Sap_Hana(BeConfig As clsBeI_nav_config_enc,
-                                                     lblprg As RichTextBox,
-                                                     prg As ProgressBar) As Boolean
-        Get_Colores_From_Sap_Hana = False
-        Dim clsTrans As New clsTransaccion()
-        Dim i As Integer = 0
-
-        clsPublic.Actualizar_Progreso(lblprg, "Iniciando importación de Colores.")
-
-        Try
-            Using conn As HanaConnection = HanaHelper.OpenDB()
-                Dim query As String = ConstruirQueryColor()
-                Dim dt As DataTable = HanaHelper.OpenDT(query, conn)
-
-                If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                    clsPublic.Actualizar_Progreso(lblprg, "No se encontraron colores.")
-                    Return False
-                End If
-
-                clsTrans.Begin_Transaction()
-                prg.Maximum = dt.Rows.Count
-                prg.Visible = True
-
-                For Each row As DataRow In dt.Rows
-                    Try
-                        Dim BeColor = MapearColorDesdeRow(row, BeConfig, clsTrans.lConnection, clsTrans.lTransaction)
-                        If Not clsLnColor.Existe_By_Codigo(BeColor.Codigo, clsTrans.lConnection, clsTrans.lTransaction) Then
-                            clsLnColor.Insertar(BeColor, clsTrans.lConnection, clsTrans.lTransaction)
-                        End If
-
-                        clsPublic.Actualizar_Progreso(lblprg, $"Procesando Color: {BeColor.Codigo} - {BeColor.Nombre}")
-                        prg.Value = i : i += 1
-                    Catch exRow As Exception
-                        clsPublic.Actualizar_Progreso(lblprg, $"Error en color: {exRow.Message}")
-                    End Try
-                Next
-
-                clsTrans.Commit_Transaction()
-                clsPublic.Actualizar_Progreso(lblprg, $"Fin de importación de Colores: {Now}")
-                Get_Colores_From_Sap_Hana = True
-            End Using
-        Catch ex As Exception
-            clsTrans.RollBack_Transaction()
-            clsPublic.Actualizar_Progreso(lblprg, $"Error general: {ex.Message}")
-            Throw
-        Finally
-            prg.Visible = False
-        End Try
-    End Function
-    Public Shared Function Insertar_Color_From_Sap_Hana(codigo As String,
-                                                        lConnection As SqlConnection,
-                                                        lTransaction As SqlTransaction) As Integer
-        Insertar_Color_From_Sap_Hana = 0
-        Try
-            BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, lConnection, lTransaction)
-            Dim query As String = ConstruirQueryColor(codigo)
-            Using conn As HanaConnection = HanaHelper.OpenDB()
-                Dim dt As DataTable = HanaHelper.OpenDT(query, conn)
-                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                    Dim row As DataRow = dt.Rows(0)
-                    Dim BeColor = MapearColorDesdeRow(row, BeConfigEnc, lConnection, lTransaction)
-                    If Not clsLnColor.Existe_By_Codigo(BeColor.Codigo, lConnection, lTransaction) Then
-                        clsLnColor.Insertar(BeColor, lConnection, lTransaction)
-                        Insertar_Color_From_Sap_Hana = BeColor.IdColor
-                    End If
-                End If
-            End Using
-        Catch ex As Exception
-            Throw ex
-        End Try
-    End Function
-    Private Shared Function MapearColorDesdeRow(row As DataRow,
-                                                config As clsBeI_nav_config_enc,
-                                                conn As SqlConnection,
-                                                tran As SqlTransaction) As clsBeColor
-        Return New clsBeColor With {
-            .IdColor = clsLnColor.MaxID(conn, tran) + 1,
-            .Codigo = row("CODE").ToString(),
-            .Nombre = row("NAME").ToString(),
-            .IdPropietario = config.IdPropietario,
-            .Fec_agr = Now,
-            .Fec_mod = Now,
-            .User_agr = config.User_agr,
-            .User_mod = config.User_mod,
-            .Activo = True
-        }
-    End Function
-
-    Private Shared Function ConstruirQueryColor(Optional codigo As String = "") As String
-        Dim baseQuery As String = "SELECT * FROM ""@COLOR"""
-        If Not String.IsNullOrWhiteSpace(codigo) Then
-            baseQuery &= $" WHERE ""Code"" = '" & codigo & "'"
-        End If
-        Return baseQuery
-    End Function
+    Private Shared vHanaService As SapServiceLayerClient
 
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not disposedValue Then
@@ -126,4 +37,256 @@ Public Class clsSyncSapColor
         Dispose(disposing:=True)
         GC.SuppressFinalize(Me)
     End Sub
+
+    Public Shared Async Function Insertar_Color_From_Sap_HanaAsync(ByVal codigo As String,
+                                                                   SessionCookie As String,
+                                                                   baseUrl As String,
+                                                                   Optional lbl As RichTextBox = Nothing) As Task(Of Integer)
+
+        Dim Color As clsBeColor
+
+        Try
+
+            Using lConnection As New SqlConnection((BD.Instancia.CadenaConexionSQLClient))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Color = Await Get_Color_SAP_SL(SessionCookie, baseUrl, lbl, codigo, lConnection, lTransaction)
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            If Color IsNot Nothing Then
+                Return Color.IdColor
+            Else
+                Return 0
+            End If
+
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Async Function Insertar_Color_From_Sap_HanaAsync(ByVal codigo As String,
+                                                                   SessionCookie As String,
+                                                                   baseUrl As String,
+                                                                   lConnection As SqlConnection,
+                                                                   lTransaction As SqlTransaction,
+                                                                   Optional lbl As RichTextBox = Nothing) As Task(Of Integer)
+
+        Dim Color As clsBeColor
+
+        Try
+
+            Color = Await Get_Color_SAP_SL(SessionCookie, baseUrl, lbl, codigo, lConnection, lTransaction)
+
+            If Color IsNot Nothing Then
+                Return Color.IdColor
+            Else
+                Return 0
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Async Function Get_Color_SAP_SL(sessionCookie As String,
+                                                    baseUrl As String,
+                                                    lbl As RichTextBox,
+                                                    codigo As String,
+                                                    lConnection As SqlConnection,
+                                                    lTransaction As SqlTransaction) As Task(Of clsBeColor)
+
+        Dim BeColor As New clsBeColor
+
+        Try
+
+            Dim filtro As New Text.StringBuilder()
+            filtro.Append("Code eq '{0}' ")
+
+            Dim filterEncoded = Uri.EscapeDataString(filtro.ToString())
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+                    client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                    Dim requestUrl As String =
+                        $"{baseUrl}U_COLOR?$filter={filterEncoded}"
+
+                    Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
+                        request.Headers.ConnectionClose = True
+
+                        Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If Not response.IsSuccessStatusCode Then
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al obtener el color desde Service Layer. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+
+                        Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                        Dim obj = JObject.Parse(jsonResponse)
+                        Dim rows = obj("value")
+
+                        For Each row In rows
+                            BeColor = New clsBeColor With {
+                                                        .IdColor = clsLnColor.MaxID(lConnection, lTransaction) + 1,
+                                                        .Codigo = row("Code").ToString(),
+                                                        .Nombre = row("Name").ToString(),
+                                                        .IdPropietario = BeConfigEnc.IdPropietario,
+                                                        .Fec_agr = Now,
+                                                        .Fec_mod = Now,
+                                                        .User_agr = BeConfigEnc.User_agr,
+                                                        .User_mod = BeConfigEnc.User_mod,
+                                                        .Activo = True
+                                                         }
+                            If Not clsLnColor.Existe_By_Codigo(BeColor.Codigo, lConnection, lTransaction) Then
+                                clsLnColor.Insertar(BeColor, lConnection, lTransaction)
+                                Exit For ' Si solo se espera un registro, salir después de insertar el primero encontrado
+                            End If
+
+                            clsPublic.Actualizar_Progreso(lbl, $"Procesando Color: {BeColor.Codigo} - {BeColor.Nombre}")
+                        Next
+
+                    End Using
+                End Using
+
+            End Using
+
+            Return BeColor
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Productos_SAP_SL: " & ex.Message, ex)
+        End Try
+    End Function
+
+    Public Shared Async Function Get_Colores_SAP_SL(vBeConfigEnc As clsBeI_nav_config_enc,
+                                                   lbl As RichTextBox) As Task(Of Boolean)
+
+        Dim BeColor As New clsBeColor
+
+        Try
+
+            vHanaService = New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lbl, "No se pudo obtener sesión.")
+                Return False
+            Else
+                clsPublic.Actualizar_Progreso(lbl, "Conexión correcta.")
+            End If
+
+            clsPublic.Actualizar_Progreso(lbl, "Consultando colores en SAP (U_COLOR).")
+
+            Dim baseUrl As String = BD.Instancia.HANA_SL
+            Dim pageSize As Integer = 100
+            Dim skip As Integer = 0
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                    Using lConnection As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+
+                        lConnection.Open()
+
+                        Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                            Dim hayMas As Boolean = True
+
+                            While hayMas
+
+                                Dim requestUrl As String = $"{baseUrl}U_COLOR?$top={pageSize}&$skip={skip}"
+
+                                Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
+
+                                    request.Headers.ConnectionClose = True
+
+                                    Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+
+                                    If Not response.IsSuccessStatusCode Then
+                                        Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                        Throw New Exception($"Error al obtener los colores desde Service Layer. Código: {response.StatusCode}, Detalle: {errContent}")
+                                    End If
+
+                                    Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                    Dim obj = JObject.Parse(jsonResponse)
+                                    Dim rows = obj("value")
+
+                                    If rows Is Nothing OrElse Not rows.HasValues Then
+                                        ' Ya no hay más páginas
+                                        hayMas = False
+                                        Exit While
+                                    End If
+
+                                    Dim filasPagina As Integer = rows.Count()
+
+                                    For Each row In rows
+                                        BeColor = New clsBeColor With {
+                                                            .IdColor = clsLnColor.MaxID(lConnection, lTransaction) + 1,
+                                                            .Codigo = row("Code").ToString(),
+                                                            .Nombre = row("Name").ToString(),
+                                                            .IdPropietario = vBeConfigEnc.IdPropietario,
+                                                            .Fec_agr = Now,
+                                                            .Fec_mod = Now,
+                                                            .User_agr = vBeConfigEnc.User_agr,
+                                                            .User_mod = vBeConfigEnc.User_mod,
+                                                            .Activo = True
+                                                             }
+                                        If Not clsLnColor.Existe_By_Codigo(BeColor.Codigo, lConnection, lTransaction) Then
+                                            clsLnColor.Insertar(BeColor, lConnection, lTransaction)
+                                            clsPublic.Actualizar_Progreso(lbl, $"Procesando Colores: {BeColor.Codigo} - {BeColor.Nombre}")
+                                        End If
+
+                                    Next
+                                    ' Avanzar al siguiente bloque
+                                    skip += filasPagina
+
+                                End Using
+
+                            End While
+
+                            lTransaction.Commit()
+
+                        End Using
+
+                        lConnection.Close()
+
+                    End Using
+
+                End Using
+
+            End Using
+
+            clsPublic.Actualizar_Progreso(lbl, "Fin de procesamiento de colores -> " & Now)
+
+            Return True
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Productos_SAP_SL: " & ex.Message, ex)
+        End Try
+    End Function
+
 End Class

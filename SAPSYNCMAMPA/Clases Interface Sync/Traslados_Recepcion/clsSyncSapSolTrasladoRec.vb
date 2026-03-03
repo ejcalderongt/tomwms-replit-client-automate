@@ -86,7 +86,6 @@ Public Class clsSyncSapSolTrasladoRec
                 Return False
             End If
 
-
             If clsLnI_nav_ped_compra_det.EliminarTodos(clsTrans.lConnection, clsTrans.lTransaction) _
                 AndAlso clsLnI_nav_ped_compra_enc.EliminarTodos(clsTrans.lConnection, clsTrans.lTransaction) Then
 
@@ -105,8 +104,6 @@ Public Class clsSyncSapSolTrasladoRec
                         End If
 
                     End If
-
-
 
                     Dim BePedidoCompraEnc As New clsBeTrans_oc_enc
                     Dim vResult As String = ""
@@ -214,6 +211,7 @@ Public Class clsSyncSapSolTrasladoRec
                         Else
                             BeTrasladoRecEnc.Posting_Date = datePart
                         End If
+
                         BeTrasladoRecEnc.Order_Date = BeTrasladoRecEnc.Posting_Date
                         BeTrasladoRecEnc.Document_Date = BeTrasladoRecEnc.Posting_Date
                         BeTrasladoRecEnc.Expected_Receipt_Date = BeTrasladoRecEnc.Posting_Date
@@ -232,7 +230,7 @@ Public Class clsSyncSapSolTrasladoRec
                         End If
                         BeTrasladoRecEnc.Campaign_No = enc("U_Campania").ToString()
                         BeTrasladoRecEnc.IsImport = enc("U_Estado").ToString() = "3"
-                        BeTrasladoRecEnc.Internal_Transfer_Document_No = enc("U_DOCUMENTO_WMS").ToString()
+                        BeTrasladoRecEnc.Internal_Transfer_Document_No = enc("DocNum").ToString()
                         BeTrasladoRecEnc.Document_Type = tTipoDocumentoIngreso.Transferencia_de_Ingreso
 
                         ' Mapeo de líneas
@@ -254,7 +252,7 @@ Public Class clsSyncSapSolTrasladoRec
                             .Location_Code = linea("ToWarehouse")?.ToString(),
                             .Size = linea("U_Talla")?.ToString(),
                             .Color = linea("U_Color")?.ToString()
-                        }
+                             }
 
                             BeTrasladoRecEnc.Lineas_Detalle.Add(beDet)
                         Next

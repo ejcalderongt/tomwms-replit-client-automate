@@ -127,7 +127,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                         BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
                         BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                        BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+                        BePedidoDetWMS.No = clsLnI_nav_ped_traslado_det.MaxID() + 1
                         BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
                         BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
                         BePedidoDetWMS.Shipment_Date = Date.Now
@@ -206,10 +206,8 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                         End If
 
-                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
-                                                                                                                                            lblprg,
-                                                                                                                                            Nothing,
-                                                                                                                                            Nothing)
+                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
+                                                                                                                                               lblprg)
 
                         If Not BePedidoEncResult Is Nothing Then
 

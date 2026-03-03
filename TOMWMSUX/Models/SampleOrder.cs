@@ -1,7 +1,5 @@
-namespace TOMWMSUX.Models
-{
-    public class SampleOrder
-    {
+namespace TOMWMSUX.Models {
+    public class SampleOrder {
         public int OrderID { get; set; }
         public DateTime OrderDate { get; set; }
         public string CustomerID { get; set; }

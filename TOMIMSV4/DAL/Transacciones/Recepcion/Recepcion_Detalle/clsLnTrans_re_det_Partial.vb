@@ -1,7 +1,5 @@
-﻿Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.Utils.Drawing.Helpers
 
 Partial Public Class clsLnTrans_re_det
 
@@ -250,8 +248,6 @@ Partial Public Class clsLnTrans_re_det
 
                     lTransOcDet = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(pIdOrdenCompraEnc, lConnection, lTransaction)
 
-                    vMaxIdRecDet = MaxID(pIdRecepcionEnc, lConnection, lTransaction) + 1
-
                     For Each DetOC As clsBeTrans_oc_det In lTransOcDet
 
                         vIdBodega = clsLnTrans_oc_enc.Get_IdBodega_By_IdOrdenCompraEnc(pIdOrdenCompraEnc, lConnection, lTransaction)
@@ -260,7 +256,7 @@ Partial Public Class clsLnTrans_re_det
                         BeOperador = clsLnOperador.Get_IdOperadorBodega_Defecto(vIdBodega, lConnection, lTransaction)
 
                         BeRec = New clsBeTrans_re_det()
-                        BeRec.IdRecepcionDet = vMaxIdRecDet
+                        BeRec.IdRecepcionDet = 0 'now is identity, ejc20260226
                         BeRec.IdRecepcionEnc = pIdRecepcionEnc
                         BeRec.IdPropietarioBodega = DetOC.IdPropietarioBodega
                         BeRec.IdProductoBodega = DetOC.IdProductoBodega
@@ -1211,84 +1207,12 @@ Partial Public Class clsLnTrans_re_det
                                                  pIdRecEnc:=pIdRecepcionEnc,
                                                  pIdRecDet:=pIdRecepcionDet)
 
-            'Throw New Exception(String.Format("{0} {1} {2}", MethodBase.GetCurrentMethod().Name, ex.Message, Resultado))
             Throw New Exception(String.Format("{0} {1}", ex.Message, Resultado))
         Finally
             If Not Es_Transaccion_Remota Then If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
     End Function
-
-    Public Shared Function MaxID(ByVal pIdRecepcionEnc As Integer) As Integer
-
-        MaxID = 0
-
-        Try
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Dim vSQL As String = String.Format("SELECT ISNULL(Max(IdRecepcionDet),0) FROM trans_re_det WHERE IdRecepcionEnc={0}", pIdRecepcionEnc)
-
-                    Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            MaxID = CInt(lReturnValue)
-                        End If
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID(ByVal pIdRecepcionEnc As Integer,
-                                 ByRef lConnection As SqlConnection,
-                                 ByRef lTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim sp As String = String.Format("SELECT ISNULL(Max(IdRecepcionDet),0) 
-                                              FROM trans_re_det 
-                                              WHERE IdRecepcionEnc={0}", pIdRecepcionEnc)
-
-            Using lCommand As New SqlCommand(sp, lConnection, lTransaction)
-
-                lCommand.CommandType = CommandType.Text
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Existe_Producto_En_Recepcion_By_IdProductoBodega(ByVal pIdProductoBodega As Integer,
                                                                             ByRef lConnection As SqlConnection,
                                                                             ByRef lTransaction As SqlTransaction) As Boolean
@@ -1843,7 +1767,7 @@ Partial Public Class clsLnTrans_re_det
             For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
 
                 If BeTransReDet.IsNew Then
-                    BeTransReDet.IdRecepcionDet = MaxID(BeTransReDet.IdRecepcionEnc, lConnection, lTransaction) + 1
+                    BeTransReDet.IdRecepcionDet = 0 'now is identity EJC20260226
                     BeTransReDet.Fecha_ingreso = Now
                     BeTransReDet.Fec_agr = Now
                     Insertar(BeTransReDet, lConnection, lTransaction)
@@ -1888,8 +1812,6 @@ Partial Public Class clsLnTrans_re_det
                                                                   lTransaction)
 
                     For Each BeRecDet As clsBeTrans_re_det In pListRecDet
-
-
 
                         If BeRecDet.IsNew Then
                             Insertar(BeRecDet,
@@ -1977,7 +1899,7 @@ Partial Public Class clsLnTrans_re_det
         Try
 
             If pBeTransReDet.IsNew Then
-                pBeTransReDet.IdRecepcionDet = MaxID(pBeTransReDet.IdRecepcionEnc, lConnection, lTransaction) + 1
+                pBeTransReDet.IdRecepcionDet = 0 'now is identity EJC20260226
                 Guarda_Trans_re_det = Insertar(pBeTransReDet, lConnection, lTransaction)
             Else
                 Guarda_Trans_re_det = Actualizar(pBeTransReDet, lConnection, lTransaction)
@@ -2643,7 +2565,7 @@ Partial Public Class clsLnTrans_re_det
             For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
 
                 If BeTransReDet.IsNew Then
-                    MaxIdRecepcionDet = MaxID(BeTransReDet.IdRecepcionEnc, lConnection, lTransaction) + 1
+                    MaxIdRecepcionDet = 0 'now is identity EJC20260226
                     pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
                     BeTransReDet.IdRecepcionDet = MaxIdRecepcionDet
                     BeTransReDet.Fecha_ingreso = Now
@@ -2720,7 +2642,7 @@ Partial Public Class clsLnTrans_re_det
 
             If BeTransReDet.IsNew Then
 
-                MaxIdRecepcionDet = MaxID(BeTransReDet.IdRecepcionEnc, lConnection, lTransaction) + 1
+                MaxIdRecepcionDet = 0 'now is identity EJC20260226
 
                 pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
 
@@ -3341,6 +3263,76 @@ Partial Public Class clsLnTrans_re_det
 
         Catch ex As Exception
 
+        End Try
+
+    End Function
+
+    Public Shared Function MaxID(ByVal pIdRecepcionEnc As Integer) As Integer
+
+        MaxID = 0
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Dim vSQL As String = String.Format("SELECT ISNULL(Max(IdRecepcionDet),0) FROM trans_re_det WHERE IdRecepcionEnc={0}", pIdRecepcionEnc)
+
+                    Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            MaxID = CInt(lReturnValue)
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function MaxID(ByVal pIdRecepcionEnc As Integer,
+                                 ByRef lConnection As SqlConnection,
+                                 ByRef lTransaction As SqlTransaction) As Integer
+
+        Try
+
+            Dim lMax As Integer = 0
+
+            Dim sp As String = String.Format("SELECT ISNULL(Max(IdRecepcionDet),0) 
+                                              FROM trans_re_det 
+                                              WHERE IdRecepcionEnc={0}", pIdRecepcionEnc)
+
+            Using lCommand As New SqlCommand(sp, lConnection, lTransaction)
+
+                lCommand.CommandType = CommandType.Text
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    lMax = CInt(lReturnValue)
+                End If
+
+            End Using
+
+            Return lMax
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function

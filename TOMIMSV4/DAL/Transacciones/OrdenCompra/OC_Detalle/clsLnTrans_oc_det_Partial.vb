@@ -22,10 +22,20 @@ Partial Public Class clsLnTrans_oc_det
 	                                     det.codigo_producto,	   
 	                                     det.valor_aduana, det.valor_fob, det.valor_iva, 
 	                                     det.valor_dai, det.valor_seguro, det.valor_flete, det.peso_neto, det.peso_bruto, det.IdPropietarioBodega, 
-	                                     det.nombre_propietario, det.IdOrdenCompraDetPadre, det.IdEmbarcador, det.IdProductoTallaColor
+	                                     det.nombre_propietario, det.IdOrdenCompraDetPadre, det.IdEmbarcador, det.IdProductoTallaColor,
+                                         ta.Codigo AS codigo_talla,
+                                         co.Codigo AS codigo_color,
+                                         ta.IdTalla, co.IdColor,
+                                         det.camas_tarima, det.cajas_cama
                                   FROM trans_oc_enc as enc  inner join trans_oc_det AS det ON enc.IdOrdenCompraEnc = det.IdOrdenCompraEnc INNER JOIN 
                                        producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega INNER JOIN 
                                        producto AS p ON pb.IdProducto = p.IdProducto  
+                                    LEFT JOIN producto_talla_color AS ptc
+                                        ON ptc.IdProductoTallaColor = det.IdProductoTallaColor
+                                    LEFT JOIN talla AS ta
+                                        ON ta.IdTalla = ptc.IdTalla
+                                    LEFT JOIN color AS co
+                                        ON co.IdColor = ptc.IdColor
                                   WHERE det.IdOrdenCompraEnc = @IdOrdenCompraEnc "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
@@ -48,9 +58,6 @@ Partial Public Class clsLnTrans_oc_det
 
                         BeTransOcDet.Producto.IdProducto = CType(lRow("IdProducto"), Integer)
                         clsLnProducto.Obtener_SO(BeTransOcDet.Producto, lConnection, lTransaction)
-                        '#CKFK20241031 Aquí se envía el código del producto del objeto del producto
-                        '#AT20250610 Espero que no ocurra nada malo...
-                        'BeTransOcDet.Codigo_Producto = BeTransOcDet.Producto.Codigo
 
                         If (BeTransOcDet.Producto.IdClasificacion <> 0) Then
                             BeTransOcDet.Producto.Clasificacion = clsLnProducto_clasificacion.GetSingle(BeTransOcDet.Producto.IdClasificacion,
@@ -98,17 +105,15 @@ Partial Public Class clsLnTrans_oc_det
                         End If
 
                         If BeTransOcDet.IdProductoTallaColor <> 0 Then
-                            Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
-                                                                                           lConnection,
-                                                                                           lTransaction)
-                            If Not BeProductoTallaColor Is Nothing Then
-                                BeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla,
-                                                                          lConnection,
-                                                                          lTransaction)
 
-                                BeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor,
-                                                                          lConnection,
-                                                                          lTransaction)
+                            If lRow("IdTalla") IsNot DBNull.Value AndAlso lRow("IdTalla") IsNot Nothing Then
+                                BeTransOcDet.Talla.IdTalla = CType(lRow("IdTalla"), Integer)
+                                BeTransOcDet.Talla.Codigo = lRow("codigo_talla")
+                            End If
+
+                            If lRow("IdColor") IsNot DBNull.Value AndAlso lRow("IdColor") IsNot Nothing Then
+                                BeTransOcDet.Color.IdColor = CType(lRow("IdColor"), Integer)
+                                BeTransOcDet.Color.Codigo = lRow("codigo_color")
                             End If
                         End If
 

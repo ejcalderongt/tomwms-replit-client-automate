@@ -985,4 +985,113 @@ WHERE IdPresentacion IN ({string.Join(",", paramNames)})";
         }
     }
 
+    public static async Task<Dictionary<int, clsBeProducto_presentacion>> GetByIdsAsync(IConfiguration configuration, List<int> idsPresentacion)
+    {
+        var result = new Dictionary<int, clsBeProducto_presentacion>();
+
+        if (idsPresentacion == null || idsPresentacion.Count == 0)
+            return result;
+
+        idsPresentacion = idsPresentacion.Where(id => id > 0).Distinct().ToList();
+        if (idsPresentacion.Count == 0)
+            return result;
+
+        const string sql = "SELECT * FROM Producto_presentacion WHERE IdPresentacion IN ({0})";
+
+        using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        await conn.OpenAsync();
+
+        using var tran = (SqlTransaction) await conn.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+        try
+        {
+            var paramNames = idsPresentacion.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, conn, tran)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsPresentacion.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsPresentacion[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            await tran.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_presentacion();
+                Cargar(ref be, dr);
+                result[be.IdPresentacion] = be;
+            }
+
+            return result;
+        }
+        catch
+        {
+            await tran.RollbackAsync();
+            throw;
+        }
+    }
+    public static Task<Dictionary<int, clsBeProducto_presentacion>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsPresentacion)
+    {
+        var result = new Dictionary<int, clsBeProducto_presentacion>();
+
+        if (idsPresentacion == null || idsPresentacion.Count == 0)
+            return Task.FromResult(result);
+
+        idsPresentacion = idsPresentacion.Where(id => id > 0).Distinct().ToList();
+        if (idsPresentacion.Count == 0)
+            return Task.FromResult(result);
+
+        const string sql = "SELECT * FROM Producto_presentacion WHERE IdPresentacion IN ({0})";
+
+        try
+        {
+            var paramNames = idsPresentacion.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsPresentacion.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsPresentacion[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_presentacion();
+                Cargar(ref be, dr);
+                result[be.IdPresentacion] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch
+        {
+            throw;
+        }
+    }
 }

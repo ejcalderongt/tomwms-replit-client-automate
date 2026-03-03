@@ -1,10 +1,6 @@
-using System.Data;
-using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Pedido;
-using WMS.StockReservation.Core.Domain;
-using WMS.StockReservation.Infrastructure;
 using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Compatibility
@@ -34,7 +30,8 @@ namespace WMS.StockReservation.Compatibility
             ref clsBeTrans_pe_det pBePedidoDet,
             int No_Linea = 0,
             bool pTarea_Reabasto = false,
-            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null
+            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null,
+            bool pEsManufactura = false
         )
         {
             pListStockResOUT ??= new List<clsBeStock_res>();
@@ -72,7 +69,8 @@ namespace WMS.StockReservation.Compatibility
                     EsDevolucion: false,
                     LineNumber: No_Linea,
                     MachineName: machineName,
-                    DiasVencimiento: DiasVencimiento
+                    DiasVencimiento: DiasVencimiento,
+                    EsManufactura: pEsManufactura
                 );
 
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
@@ -124,7 +122,8 @@ namespace WMS.StockReservation.Compatibility
             int No_Linea,
             bool pTarea_Reabasto,
             clsBeI_nav_ped_traslado_det pBeTrasladoDet,
-            clsBeTrans_pe_det pBePedidoDet
+            clsBeTrans_pe_det pBePedidoDet,
+            bool pEsManufactura = false
         )
         {
             pListStockResOUT ??= new List<clsBeStock_res>();
@@ -158,7 +157,8 @@ namespace WMS.StockReservation.Compatibility
                     EsDevolucion: false,
                     LineNumber: No_Linea,
                     MachineName: machineName,
-                    DiasVencimiento: DiasVencimiento
+                    DiasVencimiento: DiasVencimiento,
+                    EsManufactura: pEsManufactura
                 );
 
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
@@ -199,7 +199,8 @@ namespace WMS.StockReservation.Compatibility
             bool EsDevolucion = false,
             int LineNumber = 0,
             string MachineName = "",
-            double DiasVencimiento = 0
+            double DiasVencimiento = 0,
+            bool EsManufactura = false
         )
         {
             return Reserva_Stock_Internal(
@@ -214,7 +215,8 @@ namespace WMS.StockReservation.Compatibility
                 EsDevolucion: EsDevolucion,
                 LineNumber: LineNumber,
                 MachineName: MachineName,
-                DiasVencimiento: DiasVencimiento
+                DiasVencimiento: DiasVencimiento,
+                EsManufactura: EsManufactura
             );
         }
 
@@ -233,7 +235,8 @@ namespace WMS.StockReservation.Compatibility
             bool EsDevolucion,
             int LineNumber,
             string MachineName,
-            double DiasVencimiento = 0
+            double DiasVencimiento = 0,
+            bool EsManufactura = false
         )
         {
             if (oBeStockResRequest == null)
@@ -284,13 +287,6 @@ namespace WMS.StockReservation.Compatibility
                 if (oBeConfigEnc == null) throw new ArgumentNullException(nameof(oBeConfigEnc));
                 if (cnnSql == null) throw new ArgumentNullException(nameof(cnnSql));
 
-                if (oBePedidoDet is null)
-                    throw new Exception("PedidoDet es null: no se puede construir el contexto de reserva.");
-
-                if (oBeI_nav_ped_traslado_det is null)
-                    throw new Exception("TrasladoDet es null: no se puede construir el contexto de reserva.");
-
-                // Construir contexto de reserva
                 var context = new ReservationContext
                 {
                     Request = oBeStockResRequest,
@@ -305,7 +301,8 @@ namespace WMS.StockReservation.Compatibility
                     LineNumber = LineNumber,
                     MachineName = machineName,
                     DiasVencimiento = DiasVencimiento < 0 ? 0 : DiasVencimiento,
-                    SpecificLotNo = oBeI_nav_ped_traslado_det?.Lote_No
+                    SpecificLotNo = oBeI_nav_ped_traslado_det?.Lote_No,
+                    EsManufactura = EsManufactura
                 };
 
                 var result = pipeline.Execute(context)

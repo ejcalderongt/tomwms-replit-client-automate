@@ -3375,6 +3375,7 @@ Public Class frmPicking
                     mnuProcesarLinea.Enabled = False
                     mnuVerificarPickeados.Enabled = False
                     txtReferencia.Text = pReferencia
+                    mnuReemplazo.Enabled = False
 
                     If Not PickingAuto Then
                         BePickingEnc = New clsBeTrans_picking_enc With {.IsNew = True}
@@ -5621,61 +5622,63 @@ Public Class frmPicking
 
     Private Sub dgridPickingUbic_Click(sender As Object, e As EventArgs) Handles dgridPickingUbic.Click
 
-        Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
-        Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
-        Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
-        Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
-        Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
-        Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
-        Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
-        Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
-        Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
-        Dim pListBeStockRes As New List(Of clsBeStock_res)
-        Dim vContinuar As Boolean = True
-        Dim vCantidadPickPres As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Pres")), 0, Dr.Item("Cant_Pick_Pres"))
-        Dim vCantidadPickUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Umbas")), 0, Dr.Item("Cant_Pick_Umbas"))
-        Dim vCantidadVeriPres As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Pres")), 0, Dr.Item("Cant_Veri_Pres"))
-        Dim vCantidadVeriUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Umbas")), 0, Dr.Item("Cant_Veri_Umbas"))
-
         Try
+            Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
 
-            Existen_Diferencias_Memoria_vs_BD(vContinuar)
+            If Dr IsNot Nothing Then
 
-            If Not vContinuar Then Return
+                Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
+                Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
+                Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
+                Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
+                Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
+                Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
+                Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
+                Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
+                Dim pListBeStockRes As New List(Of clsBeStock_res)
+                Dim vContinuar As Boolean = True
+                Dim vCantidadPickPres As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Pres")), 0, Dr.Item("Cant_Pick_Pres"))
+                Dim vCantidadPickUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Umbas")), 0, Dr.Item("Cant_Pick_Umbas"))
+                Dim vCantidadVeriPres As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Pres")), 0, Dr.Item("Cant_Veri_Pres"))
+                Dim vCantidadVeriUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Umbas")), 0, Dr.Item("Cant_Veri_Umbas"))
 
-            If Not IdStockRes = 0 Then
+                Existen_Diferencias_Memoria_vs_BD(vContinuar)
 
-                pListBeStockRes = clsLnStock_res.Get_Single_By_IdStockRes(IdStockRes)
+                If Not vContinuar Then Return
 
-                If Not pListBeStockRes Is Nothing Then
+                If Not IdStockRes = 0 Then
 
-                    If pListBeStockRes.Count > 0 Then
+                    pListBeStockRes = clsLnStock_res.Get_Single_By_IdStockRes(IdStockRes)
 
-                        Dim BePickingUbic As New clsBeTrans_picking_ubic
-                        BePickingUbic = clsLnTrans_picking_ubic.Get_Single_By_IdStockRes_And_IdPickingEnc(IdStockRes,
-                                                                                                              BePickingEnc.IdPickingEnc,
-                                                                                                              BePickingEnc.IdBodega)
+                    If Not pListBeStockRes Is Nothing Then
 
-                        If Not BePickingUbic Is Nothing Then
+                        If pListBeStockRes.Count > 0 Then
 
-                            Dim vlPickingUbicByIdStockRes As New List(Of clsBeTrans_picking_ubic) From {
-                                BePickingUbic}
+                            Dim BePickingUbic As New clsBeTrans_picking_ubic
+                            BePickingUbic = clsLnTrans_picking_ubic.Get_Single_By_IdStockRes_And_IdPickingEnc(IdStockRes,
+                                                                                                                  BePickingEnc.IdPickingEnc,
+                                                                                                                  BePickingEnc.IdBodega)
 
-                            If vCantidadPickPres = 0 OrElse vCantidadPickUmbas = 0 Then
-                                mnuReemplazo.Caption = "Reemplazo picking"
-                            Else
-                                mnuReemplazo.Caption = "Reemplazo verificación"
+                            If Not BePickingUbic Is Nothing Then
+
+                                Dim vlPickingUbicByIdStockRes As New List(Of clsBeTrans_picking_ubic) From {
+                                    BePickingUbic}
+
+                                If vCantidadPickPres = 0 OrElse vCantidadPickUmbas = 0 Then
+                                    mnuReemplazo.Caption = "Reemplazo picking"
+                                Else
+                                    mnuReemplazo.Caption = "Reemplazo verificación"
+                                End If
+
+
                             End If
-
 
                         End If
 
                     End If
 
                 End If
-
             End If
-
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
                                 Text,

@@ -1,6 +1,9 @@
 ﻿Imports System.IO
+Imports System.Net
+Imports System.Net.Mail
 Imports System.Reflection
-Imports DevExpress.DashboardCommon
+Imports System.Text
+Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -32,6 +35,7 @@ Public Class frmListaStockControlCalidad
     Dim IdOperador As Integer
     Public Property Modo As pModo
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
+    Private dtDestinatarios As DataTable
     Enum pModo
         Lista = 1
         Seleccion = 2
@@ -482,18 +486,6 @@ Public Class frmListaStockControlCalidad
 
         Try
 
-            'If cmbBodega.Text = "" Then
-            '    XtraMessageBox.Show("Falta definir la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
-            'End If
-
-            'If cmbPropietarioBodega.ItemIndex < 0 Then
-            '    XtraMessageBox.Show("Falta definir el propietario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
-            'End If
-
-            'If txtIdMotivoUbicacion.Text = "" Then
-            '    XtraMessageBox.Show("Falta motivo de ubicacion", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
-            'End If
-
             If listaStockSeleccionado.Count = 0 Then
                 XtraMessageBox.Show("Transaccion no tiene detalle.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
             End If
@@ -538,20 +530,25 @@ Public Class frmListaStockControlCalidad
             pTrans_ubic_hh_enc.IsNew = 1
 
             clsLnTrans_ubic_hh_enc.Guardar_Transaccion(pTrans_ubic_hh_enc,
-                                                      pListUbicHHDet,
-                                                      pListjOperador,
-                                                      pListMovimiento,
-                                                      0,
-                                                      IdPropietario_,
-                                                      pListStockMov,
-                                                      pListTransUbicTarimaDisponibles,
-                                                      pListTransUbicTarimaUsadas,
-                                                      pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
-                                                      AP.HostName
-                                                      )
+                                                       pListUbicHHDet,
+                                                       pListjOperador,
+                                                       pListMovimiento,
+                                                       0,
+                                                       IdPropietario_,
+                                                       pListStockMov,
+                                                       pListTransUbicTarimaDisponibles,
+                                                       pListTransUbicTarimaUsadas,
+                                                       pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
+                                                       AP.HostName)
+
+            NotificarCambioEstadoAsync(dtDestinatarios, pListUbicHHDet, pListStockMov, pTrans_ubic_hh_enc)
+
+            pListUbicHHDet = New List(Of clsBeTrans_ubic_hh_det)
+            pListStockMov = New List(Of clsBeStock)
+            pListMovimiento = New List(Of clsBeTrans_movimientos)
+            pListjOperador = New List(Of clsBeTrans_ubic_hh_op)
 
             Guardar = True
-
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -661,7 +658,6 @@ Public Class frmListaStockControlCalidad
         Try
 
             pListStockMov.Clear()
-            pListMovimiento.Clear()
 
             '#GT27120223: llenar la lista con las filas seleccionadas del grid, para luego cargar Estados
             '#GT27122023: mostrar estados de un único propietario.
@@ -822,8 +818,8 @@ Public Class frmListaStockControlCalidad
                                 If BePresentacion.Factor = 0 Then
                                     Throw New Exception("ERR20220202_1458: El factor de la presentación es 0. esto crearía un movimiento no válido para el sistema, valide el factor de la presentación. Identificador de presentación: " & mov.IdPresentacion)
                                 Else
-                                    mov.Cantidad = Math.Round(mov.Cantidad / BePresentacion.Factor, 6)
-                                    mov.Cantidad_hist = Math.Round(mov.Cantidad_hist / BePresentacion.Factor, 6)
+                                    mov.Cantidad = Math.Round(mov.Cantidad * BePresentacion.Factor, 6)
+                                    mov.Cantidad_hist = Math.Round(mov.Cantidad_hist * BePresentacion.Factor, 6)
                                 End If
                             Else
                                 Throw New Exception("ERR20220202_1458: No se encontró el objeto de presentación para el identificador: " & mov.IdPresentacion)
@@ -931,8 +927,23 @@ Public Class frmListaStockControlCalidad
     End Sub
 
     Private Sub cmbPropietarioBodega_EditValueChanged(sender As Object, e As EventArgs) Handles cmbPropietarioBodega.EditValueChanged
+
         Try
+
+            Dim pIdPropietario As Integer = clsLnPropietarios.Get_IdPropietario(cmbBodega.EditValue, cmbPropietarioBodega.EditValue)
+            dtDestinatarios = clsLnPropietario_destinatario.GetDestinatariosDT(pIdPropietario)
+
+            With cmbContacto.Properties
+                .DataSource = dtDestinatarios
+                .ValueMember = "IdDestinatarioPropietario"
+                .DisplayMember = "Display"
+                .SelectAllItemVisible = True
+                .DropDownRows = 14
+                .SeparatorChar = ";"c
+            End With
+
             Cargar_Datos()
+
         Catch ex As Exception
 
         End Try
@@ -1072,6 +1083,370 @@ Public Class frmListaStockControlCalidad
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
+        End Try
+
+    End Sub
+
+    Public Shared Function BuildHtmlCorreoCambioEstado(ByVal enc As clsBeTrans_ubic_hh_enc, ByVal dtDetalle As DataTable) As String
+
+        Dim totalLineas = dtDetalle.Rows.Count
+        Dim totalCantidad As Double = 0
+        If dtDetalle.Columns.Contains("Cantidad") Then
+            totalCantidad = dtDetalle.AsEnumerable().Sum(Function(r) Convert.ToDouble(r("Cantidad")))
+        End If
+
+        Dim sb As New StringBuilder()
+        sb.AppendLine("<html><body style='font-family:Segoe UI;font-size:13px;'>")
+        sb.AppendLine("<h2>Cambio de Estado Masivo</h2>")
+
+        Dim nombreBodega As String = clsLnBodega.Get_Nombre_Bodega_By_IdBodega(enc.IdBodega)
+
+        sb.AppendLine("<table border='0' cellpadding='3'>")
+        sb.AppendLine($"<tr><td><b>Tarea:</b></td><td>{enc.IdTareaUbicacionEnc}</td></tr>")
+        sb.AppendLine($"<tr><td><b>Bodega:</b></td><td>{nombreBodega}</td></tr>")
+        sb.AppendLine($"<tr><td><b>Fecha:</b></td><td>{Now:yyyy-MM-dd HH:mm}</td></tr>")
+        sb.AppendLine($"<tr><td><b>Estado Final:</b></td><td>{enc.Estado}</td></tr>")
+        sb.AppendLine($"<tr><td><b>Registros:</b></td><td>{totalLineas}</td></tr>")
+        sb.AppendLine($"<tr><td><b>Cantidad Total:</b></td><td>{totalCantidad:N2}</td></tr>")
+        sb.AppendLine("</table><br/>")
+
+        sb.AppendLine(DataTableToHtmlGrid(dtDetalle))
+
+        sb.AppendLine("<br/><span style='font-size:11px;color:gray;'>Correo generado automáticamente por TOMWMS.</span>")
+        sb.AppendLine("</body></html>")
+
+        Return sb.ToString()
+    End Function
+
+    Public Shared Function DataTableToHtmlGrid(ByVal dt As DataTable) As String
+
+        Dim sb As New StringBuilder()
+
+        sb.AppendLine("<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;font-family:Segoe UI;font-size:12px;width:100%;'>")
+
+        'Header
+        sb.AppendLine("<tr style='background-color:#f2f2f2;'>")
+        For Each col As DataColumn In dt.Columns
+            sb.AppendLine("<th>" & WebUtility.HtmlEncode(col.ColumnName) & "</th>")
+        Next
+
+        sb.AppendLine("</tr>")
+
+        'Rows
+        For Each r As DataRow In dt.Rows
+            sb.AppendLine("<tr>")
+            For Each col As DataColumn In dt.Columns
+
+                Dim v As String = ""
+
+                If Not r.IsNull(col) Then
+
+                    If col.DataType Is GetType(Date) Then
+                        Dim d As Date = r(col)
+                        v = d.ToString("dd-MM-yyyy")
+
+                    ElseIf col.DataType Is GetType(Decimal) OrElse col.DataType Is GetType(Double) OrElse
+                       col.DataType Is GetType(Single) OrElse col.DataType Is GetType(Integer) OrElse
+                       col.DataType Is GetType(Long) Then
+
+                        Dim num As Decimal = Convert.ToDecimal(r(col))
+                        v = num.ToString("N2")
+
+                    Else
+                        v = r(col).ToString()
+                    End If
+
+                End If
+
+                sb.AppendLine("<td>" & WebUtility.HtmlEncode(v) & "</td>")
+
+            Next
+            sb.AppendLine("</tr>")
+        Next
+
+        sb.AppendLine("</table>")
+
+        Return sb.ToString()
+
+    End Function
+    Public Shared Function BuildDtCorreoCambioEstado(
+    ByVal pListObjDet As List(Of clsBeTrans_ubic_hh_det),
+    ByVal pListObjStock As List(Of clsBeStock)) As DataTable
+
+        Dim dt As New DataTable("DetalleCambioEstado")
+
+        dt.Columns.Add("IdStock", GetType(Integer))
+        dt.Columns.Add("Codigo", GetType(String))
+        dt.Columns.Add("Descripcion", GetType(String))
+        dt.Columns.Add("Lote", GetType(String))
+        dt.Columns.Add("UbicacionOrigen", GetType(String))
+        dt.Columns.Add("UbicacionDestino", GetType(String))
+        dt.Columns.Add("Cantidad", GetType(Double))
+        dt.Columns.Add("UMBAS", GetType(String))
+        dt.Columns.Add("Presentacion", GetType(String))
+        dt.Columns.Add("EstadoOrigen", GetType(String))
+        dt.Columns.Add("EstadoDestino", GetType(String))
+        dt.Columns.Add("FechaIngreso", GetType(Date))
+        dt.Columns.Add("FechaProduccion", GetType(Date))
+        dt.Columns.Add("FechaVence", GetType(Date))
+
+        If pListObjDet Is Nothing OrElse pListObjDet.Count = 0 Then Return dt
+
+        '1) Índice rápido por IdStock
+        Dim stockById As New Dictionary(Of Integer, clsBeStock)()
+
+        If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
+            For Each st In pListObjStock
+                If st Is Nothing Then Continue For
+
+                If st.IdStockOrigen <> 0 AndAlso Not stockById.ContainsKey(st.IdStockOrigen) Then
+                    stockById(st.IdStockOrigen) = st
+                End If
+
+                If Not stockById.ContainsKey(st.IdStock) Then
+                    stockById(st.IdStock) = st
+                End If
+            Next
+        End If
+
+        '2) Resolver nombres de estados (una vez por IdEstado)
+        Dim idsEstados As List(Of Integer) =
+        pListObjDet.
+            Where(Function(x) x IsNot Nothing AndAlso x.Activo).
+            SelectMany(Function(x) New Integer() {x.IdEstadoOrigen, x.IdEstadoDestino}).
+            Where(Function(id) id > 0).
+            Distinct().
+            ToList()
+
+        Dim mapaEstados As Dictionary(Of Integer, String) = GetMapaEstadosPorIds_UsandoLN(idsEstados)
+        If mapaEstados Is Nothing Then mapaEstados = New Dictionary(Of Integer, String)()
+
+        '3) Llenar DT
+        For Each d In pListObjDet.Where(Function(x) x IsNot Nothing AndAlso x.Activo)
+
+            Dim row = dt.NewRow()
+
+            row("IdStock") = d.IdStock
+            row("Cantidad") = d.Cantidad
+
+            row("UbicacionOrigen") = If(d.IdUbicacionOrigen = 0, "", d.IdUbicacionOrigen.ToString())
+            row("UbicacionDestino") = d.IdUbicacionDestino.ToString()
+
+            row("EstadoOrigen") = If(mapaEstados.ContainsKey(d.IdEstadoOrigen), mapaEstados(d.IdEstadoOrigen), "")
+            row("EstadoDestino") = If(mapaEstados.ContainsKey(d.IdEstadoDestino), mapaEstados(d.IdEstadoDestino), "")
+
+            'Enriquecer con stock/producto
+            Dim st As clsBeStock = Nothing
+
+            If stockById.TryGetValue(d.IdStock, st) AndAlso st IsNot Nothing Then
+
+                'Producto
+                Dim beProd As clsBeProducto = clsLnProducto.Get_Single_BeProducto_By_IdProductoBodega(st.IdProductoBodega)
+                row("Codigo") = If(beProd Is Nothing, "", beProd.Codigo)
+                row("Descripcion") = If(beProd Is Nothing, "", beProd.Nombre)
+
+                'Lote
+                row("Lote") = If(String.IsNullOrWhiteSpace(st.Lote), "", st.Lote)
+
+                Dim BeUnidadMedida As New clsBeUnidad_medida
+                BeUnidadMedida = clsLnUnidad_medida.GetSingle(st.IdUnidadMedida)
+
+                row("UMBAS") = If(beProd Is Nothing, "", BeUnidadMedida.Nombre)
+
+                If st.IdPresentacion > 0 Then
+
+                    Dim BePresentacion As New clsBeProducto_Presentacion
+                    BePresentacion = clsLnProducto_presentacion.GetSingle(st.IdPresentacion)
+                    st.Presentacion = BePresentacion
+
+                End If
+
+                If st.Presentacion IsNot Nothing Then
+                    row("Presentacion") = st.Presentacion.Nombre
+                Else
+                    row("Presentacion") = ""
+                End If
+
+                'Fechas (si vienen en stock)
+                If st.Fecha_Manufactura <> Date.MinValue Then
+                    row("FechaProduccion") = st.Fecha_Manufactura
+                End If
+
+                If st.Fecha_vence <> Date.MinValue Then
+                    row("FechaVence") = st.Fecha_vence
+                End If
+
+                row("FechaIngreso") = st.Fecha_Ingreso
+
+            Else
+                row("Codigo") = ""
+                row("Descripcion") = ""
+                row("Lote") = ""
+                row("UMBAS") = ""
+                row("Presentacion") = ""
+            End If
+
+            dt.Rows.Add(row)
+        Next
+
+        Return dt
+
+    End Function
+
+    Private Function GetCorreosSeleccionados(ByVal dtContactos As DataTable) As List(Of String)
+
+        '1) Obtener IDs seleccionados del CheckedComboBoxEdit
+        Dim ids As List(Of Integer) =
+        cmbContacto.Properties.Items.GetCheckedValues().
+            Cast(Of Integer)().
+            Distinct().
+            ToList()
+
+        If ids.Count = 0 Then Return New List(Of String)
+
+        '2) Validar DataTable
+        If dtContactos Is Nothing OrElse dtContactos.Rows Is Nothing OrElse dtContactos.Rows.Count = 0 Then
+            Return New List(Of String)
+        End If
+
+        '3) Validar columnas necesarias
+        If (Not dtContactos.Columns.Contains("IdDestinatarioPropietario")) OrElse
+       (Not dtContactos.Columns.Contains("correo_electronico")) Then
+            Return New List(Of String)
+        End If
+
+        Dim setIds As New HashSet(Of Integer)(ids)
+
+        '4) Filtrar + validar correos + deduplicar
+        Dim correos As List(Of String) =
+    dtContactos.AsEnumerable() _
+        .Where(Function(r) Not r.IsNull("IdDestinatarioPropietario") AndAlso setIds.Contains(Convert.ToInt32(r("IdDestinatarioPropietario")))) _
+        .Select(Function(r) If(r.IsNull("correo_electronico"), "", r("correo_electronico").ToString().Trim())) _
+        .Where(Function(c) EsCorreoValido(c)) _
+        .Distinct(StringComparer.OrdinalIgnoreCase) _
+        .ToList()
+
+        Return correos
+
+    End Function
+
+    Private Shared Function EsCorreoValido(ByVal correo As String) As Boolean
+        If String.IsNullOrWhiteSpace(correo) Then Return False
+        correo = correo.Trim()
+
+        Try
+            Dim tcorreo_ = New MailAddress(correo)
+            Return True
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Public Sub EnviarCorreoCambioEstado(toList As List(Of String), subject As String, htmlBody As String)
+
+        If toList Is Nothing OrElse toList.Count = 0 Then Exit Sub
+
+        Dim fromEmail As String = "soportesw@dts.com.gt"
+        Dim fromPass As String = "Dts2021#"
+
+        Dim smtpHost As String = "smtp.office365.com"
+        Dim smtpPort As Integer = 587
+        Dim useSsl As Boolean = True
+
+        Using msg As New MailMessage()
+            msg.From = New MailAddress(fromEmail, "TOMWMS")
+            For Each t In toList.Distinct(StringComparer.OrdinalIgnoreCase)
+                msg.To.Add(t)
+            Next
+
+            msg.Subject = subject
+            msg.Body = htmlBody
+            msg.IsBodyHtml = True
+
+            Using smtp As New SmtpClient(smtpHost, smtpPort)
+                smtp.EnableSsl = useSsl
+                smtp.Credentials = New NetworkCredential(fromEmail, fromPass)
+                smtp.Send(msg)
+            End Using
+        End Using
+
+    End Sub
+
+    Private Shared Function GetMapaEstadosPorIds_UsandoLN(ByVal ids As List(Of Integer)) As Dictionary(Of Integer, String)
+
+        Dim mapa As New Dictionary(Of Integer, String)()
+
+        If ids Is Nothing OrElse ids.Count = 0 Then Return mapa
+
+        For Each id In ids.Distinct().Where(Function(x) x > 0)
+
+            Try
+                Dim be As clsBeProducto_estado = clsLnProducto_estado.GetSingle(id)
+
+                If be IsNot Nothing Then
+                    'AJUSTA esta línea a tu propiedad real del nombre:
+                    ' be.Nombre / be.Descripcion / be.Estado / be.NombreEstado ...
+                    Dim nombreEstado As String = be.Nombre
+
+                    If String.IsNullOrWhiteSpace(nombreEstado) Then
+                        nombreEstado = id.ToString()
+                    End If
+
+                    If Not mapa.ContainsKey(id) Then mapa.Add(id, nombreEstado)
+                Else
+                    If Not mapa.ContainsKey(id) Then mapa.Add(id, id.ToString())
+                End If
+
+            Catch
+                'Si algo falla, no rompemos el correo; solo dejamos el id
+                If Not mapa.ContainsKey(id) Then mapa.Add(id, id.ToString())
+            End Try
+
+        Next
+
+        Return mapa
+
+    End Function
+
+    Public Async Sub NotificarCambioEstadoAsync(dtDestinatarios As DataTable, pListUbicHHDet As List(Of clsBeTrans_ubic_hh_det), pListStockMov As List(Of clsBeStock), pTrans_ubic_hh_enc As clsBeTrans_ubic_hh_enc)
+
+        '1) Obtener correos en el hilo UI (porque lee el control cmbContacto)
+        Dim correos As List(Of String) = GetCorreosSeleccionados(dtDestinatarios)
+
+        If correos Is Nothing OrElse correos.Count = 0 Then Exit Sub
+
+        '2) Copias para el hilo secundario (evita “Collection was modified…”)
+        Dim detCopy = If(pListUbicHHDet, New List(Of clsBeTrans_ubic_hh_det)()).ToList()
+        Dim stockCopy = If(pListStockMov, New List(Of clsBeStock)()).ToList()
+        Dim asunto As String = pTrans_ubic_hh_enc.Asunto
+
+        Try
+            '3) Trabajo pesado fuera del UI
+            Await Task.Run(Sub()
+
+                               Dim dtDetalle = BuildDtCorreoCambioEstado(detCopy, stockCopy)
+
+                               If dtDetalle Is Nothing OrElse dtDetalle.Rows.Count = 0 Then Exit Sub
+
+                               Dim htmlBody As String = BuildHtmlCorreoCambioEstado(pTrans_ubic_hh_enc, dtDetalle)
+
+                               EnviarCorreoCambioEstado(correos, asunto, htmlBody)
+
+                           End Sub)
+
+            '4) UI feedback (opcional)
+            Me.BeginInvoke(Sub()
+                               'Ejemplo: XtraMessageBox.Show("Notificación enviada.", "OK", MessageBoxButtons.OK)
+                           End Sub)
+
+        Catch ex As Exception
+            '5) Manejo de errores sin colgar UI
+            Me.BeginInvoke(Sub()
+                               XtraMessageBox.Show("Error al enviar correo: " & ex.Message,
+                                                   "Notificación",
+                                                   MessageBoxButtons.OK,
+                                                   MessageBoxIcon.Error)
+                           End Sub)
         End Try
 
     End Sub

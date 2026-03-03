@@ -100,7 +100,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.Services.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Web.Services.dll</HintPath>
     </Reference>
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
@@ -250,14 +250,11 @@
     </None>
     <None Include="My Project\PublishProfiles\NuevoWS.pubxml" />
     <None Include="My Project\PublishProfiles\PrograNLocal.pubxml" />
-    <None Include="My Project\PublishProfiles\QAS.pubxml" />
-    <None Include="My Project\PublishProfiles\WCFTOM4.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_INV.pubxml" />
     <None Include="My Project\PublishProfiles\wsAmazon.pubxml" />
     <None Include="My Project\PublishProfiles\WSByBLocalPRD.pubxml" />
     <None Include="My Project\PublishProfiles\WSByBLocal_QA.pubxml" />
     <None Include="My Project\PublishProfiles\wsCarlos.pubxml" />
-    <None Include="My Project\PublishProfiles\wsCarolina.pubxml" />
     <None Include="My Project\PublishProfiles\wsJPCasa.pubxml" />
     <None Include="My Project\PublishProfiles\wsJPtrabajo.pubxml" />
     <None Include="My Project\PublishProfiles\WSWMSHH.pubxml" />

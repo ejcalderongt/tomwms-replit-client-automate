@@ -590,7 +590,7 @@ Partial Public Class clsLnStock_rec
                         If BeStockRec.IsNew Then
 
                             BeStockRec.IdBodega = IdBodega
-                            BeStockRec.IdStockRec = MaxID(lConnection, lTransaction) + 1
+                            BeStockRec.IdStockRec = 0
                             BeStockRec.IdRecepcionEnc = IdRecepcionEnc
                             BeStockRec.Fecha_Ingreso = Now
                             BeStockRec.Fec_agr = Now

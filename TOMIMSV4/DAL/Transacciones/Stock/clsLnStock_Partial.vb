@@ -7,28 +7,28 @@ Partial Public Class clsLnStock
     Private Shared lpBeProductoOutput As New List(Of clsBeProducto)
     Private Shared lBeBodega As New List(Of clsBeBodega)
 
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
+    'Public Shared Function MaxID(ByVal pConnection As SqlConnection,
+    '                             ByVal pTransaction As SqlTransaction) As Integer
 
-        Try
+    '    Try
 
-            Dim lMax As Integer = 0
-            Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
+    '        Dim lMax As Integer = 0
+    '        Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
 
-            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-            End Using
+    '        Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
+    '            Dim lReturnValue As Object = lCommand.ExecuteScalar()
+    '            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+    '                lMax = CInt(lReturnValue)
+    '            End If
+    '        End Using
 
-            Return lMax
+    '        Return lMax
 
-        Catch ex As Exception
-            Throw ex
-        End Try
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
 
-    End Function
+    'End Function
 
     ''' <summary>
     ''' Busca las existencias para un IdPropietarioBodega
@@ -2963,7 +2963,7 @@ Partial Public Class clsLnStock
         Try
 
             Dim oStock As clsBeStock
-
+            Dim vManejaTallaColor As Boolean = False
             Dim ListStock As New List(Of clsBeStock)
 
             Dim SQL As String = "SELECT stock.*  
@@ -3026,6 +3026,11 @@ Partial Public Class clsLnStock
 
             End If
 
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pIdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                SQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
+            End If
 
             Using lDTA As New SqlDataAdapter(SQL, pConnection)
 
@@ -3062,6 +3067,10 @@ Partial Public Class clsLnStock
 
                 If pIdUbicacion <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lDataTable As New DataTable
@@ -3149,7 +3158,7 @@ Partial Public Class clsLnStock
         Try
 
             Dim oStock As clsBeStock
-
+            Dim vManejaTallaColor As Boolean = False
             Dim ListStock As New List(Of clsBeStock)
 
             Dim vSQL As String = "SELECT stock.*  
@@ -3172,6 +3181,12 @@ Partial Public Class clsLnStock
                 vSQL += " AND stock.IdUbicacion = @IdUbicacionAbastecerCon "
             End If
 
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                vSQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
+            End If
+
             Using lDTA As New SqlDataAdapter(vSQL, pConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
@@ -3191,6 +3206,10 @@ Partial Public Class clsLnStock
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
                 If pProducto.IdUbicacion <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pProducto.IdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lDataTable As New DataTable
@@ -3672,6 +3691,10 @@ Partial Public Class clsLnStock
 
         Try
 
+            Dim vManejaTallaColor As Boolean = False
+
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
             Dim vSQL As String = " select sum(stock_res.cantidad) as cantidad
 					               from stock_res inner join
 					               producto_bodega on stock_res.idproductobodega = producto_bodega.idproductobodega
@@ -3707,6 +3730,10 @@ Partial Public Class clsLnStock
             If pIdUbicacion <> 0 Then
                 '#EJC20190311_0948PM: Buscar stock por ubicación específica.
                 vSQL += " and stock_res.idubicacion =@IdUbicacion"
+            End If
+
+            If vManejaTallaColor Then
+                vSQL += " and stock_res.IdProductoTallaColor = @IdProductoTallaColor  "
             End If
 
             '#EJC202309120602: ANALIZAR ESTO CON CAROLINA
@@ -3747,6 +3774,10 @@ Partial Public Class clsLnStock
 
                 If pProducto.IdBodega <> 0 Then
                     lCommand.Parameters.AddWithValue("@IdBodega", pProducto.IdBodega)
+                End If
+
+                If vManejaTallaColor Then
+                    lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
@@ -4612,12 +4643,14 @@ Partial Public Class clsLnStock
 
         Try
 
-            Dim vSQL As String = " select sum(stock.peso) as peso " &
-            " from stock inner join  " &
-            " producto_bodega on stock.idproductobodega = producto_bodega.idproductobodega  " &
-            " where producto_bodega.idproductobodega=@idproducto " &
-            " and (stock.idpresentacion is null or stock.idpresentacion=@idpresentacion) " &
-            " and stock.idunidadmedida =@idunidadmedida "
+            Dim vManejaTallaColor As Boolean = False
+
+            Dim vSQL As String = " select sum(stock.peso) as peso  
+                                   from stock inner join  
+                                   producto_bodega on stock.idproductobodega = producto_bodega.idproductobodega  
+                                   where producto_bodega.idproductobodega=@idproducto  
+                                   and (stock.idpresentacion is null or stock.idpresentacion=@idpresentacion)   
+                                   and stock.idunidadmedida =@idunidadmedida "
 
             If ConEstado Then
                 vSQL += " and stock.idproductoestado=@idproductoestado "
@@ -4629,6 +4662,12 @@ Partial Public Class clsLnStock
 
             If pIdUbicacion <> 0 Then
                 vSQL += " and stock.IdUbicacion=@IdUbicacion "
+            End If
+
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                vSQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
             End If
 
             Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
@@ -4658,6 +4697,10 @@ Partial Public Class clsLnStock
 
                 If pIdUbicacion <> 0 Then
                     lCommand.Parameters.AddWithValue("IdUbicacion", pIdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
@@ -5057,8 +5100,7 @@ Partial Public Class clsLnStock
                         If BeTransAjusteDet.Cantidad_nueva + BeTransAjusteDet.CantReservada > 0 Then
 
                             clsPublic.CopyObject(BeStockOriginal, BeStockNuevo)
-                            BeStockNuevo.IdStock = MaxID(pConection, pTransaction) + 1
-
+                            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             BeStockNuevo.Cantidad = BeTransAjusteDet.Cantidad_nueva + BeTransAjusteDet.CantReservada
                             BeStockNuevo.Peso = BeTransAjusteDet.Peso_nuevo
                             BeStockNuevo.Fecha_vence = BeTransAjusteDet.Fecha_vence_nueva
@@ -6086,7 +6128,7 @@ Partial Public Class clsLnStock
             '#EJC20180420: Mejora en consulta por ordenamiento lógico para picking.
             Dim vSQL As String = "SELECT producto.codigo,
 		                            producto.nombre as producto,
-		                            producto_presentacion.nombre as presentacion,
+		                            IIF(producto_presentacion.nombre = '' or producto_presentacion.nombre is null, '-', producto_presentacion.nombre)  as presentacion,
 		                            unidad_medida.nombre as UMBas,
 		                            stock.cantidad as Cant,
                                     stock.IdUbicacion,
@@ -6125,11 +6167,11 @@ Partial Public Class clsLnStock
 		                            bodega_tramo.es_rack,
 		                            bodega_ubicacion.IdTramo, IdStock,                                  
                                     dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as NombUbic,
-                                    ptc.IdProductoTallaColor, 
-                                    t.Codigo as Codigo_Talla, 
-                                    t.Nombre Nombre_Talla, 
-                                    c.Codigo Codigo_Color, 
-                                    c.Nombre Nombre_Color
+                                    IIF(ptc.IdProductoTallaColor = '' or ptc.IdProductoTallaColor is null, '-', ptc.IdProductoTallaColor) as IdProductoTallaColor, 
+                                    IIF(t.Codigo = '' or t.Codigo is null, '-', t.Codigo)  as Codigo_Talla,
+                                    IIF(t.Nombre = '' or t.Nombre is null, '-', t.Nombre) as Nombre_Talla,
+                                    IIF(c.Codigo = '' or c.Codigo is null, '-', c.Codigo) as Codigo_Color,
+                                    IIF(c.Nombre = '' or c.Nombre is null, '-', c.Nombre) as  Nombre_Color
 					FROM stock INNER JOIN
 		            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 		            producto on producto.IdProducto = producto_bodega.IdProducto AND
@@ -10625,7 +10667,7 @@ Partial Public Class clsLnStock
 
             Actualizar_Stock_Por_Productos_Pickeados = 0
 
-            Dim lMaxS As Integer = MaxID(lConnection, lTransaction)
+            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.            
             Dim objStockOrigen As New clsBeStock()
             Dim vCantidadDisponible As Double = 0
             Dim BePres As New clsBeProducto_Presentacion
@@ -10990,17 +11032,9 @@ Partial Public Class clsLnStock
                     '#EJC20171018_0829: Validar que aún no se ha realizado el cambio en la HH.
                     vTransUbicHHDet = pListObjDet.Find(Function(x) x.IdStock = ObjStockDestino.IdStock AndAlso x.IdUbicacionDestino = ObjStockDestino.IdUbicacion)
 
-                    'file.WriteLine("IdUbicación: " & ObjStockDestino.IdUbicacion)
-                    'file.WriteLine("ObjStockDestino.IdStock: " & ObjStockDestino.IdStock)
-                    'file.WriteLine("vTransUbicHHDet.Realizado: " & vTransUbicHHDet.Realizado)
-
                     If Not vTransUbicHHDet Is Nothing Then
 
                         If Not (vTransUbicHHDet.Realizado) Then
-
-                            '#EJC20171023_0852AM: Se comentarió función por que el GetSingle, no devolvía los parámetros ni el objeto de presentación.
-                            '#EJC20171022_0852AM: Se renombró función a GetSingle, antes se llamaba a GetSingleStock de la clase de cambio de ubicación, se ordenó la función a donde corresponde.
-                            'objStockOrigen = GetSingle(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
 
                             '#EJC20171023_0852AM_REF: Obtener el stock con parámetros para actualizar el IdStock
                             objStockOrigen = Get_Single_Stock_By_IdStock(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
@@ -11020,9 +11054,6 @@ Partial Public Class clsLnStock
                             If BePres.IdPresentacion <> 0 Then
 
                                 BePres.IdPresentacion = ObjStockDestino.IdPresentacion
-
-                                '#EJC20171023_0852AM: Desactivado por este cambio -> '#EJC20171023_0852AM_REF
-                                'clsLnProducto_presentacion.GetSingle(BePres, lConnection, lTransaction)
 
                                 'Llevar la cantidad de la presentación a UMBas antes de insertar #EJC20170910
                                 If BePres.EsPallet Then
@@ -11046,7 +11077,7 @@ Partial Public Class clsLnStock
 
                             ObjStockDestino.Cantidad = vCantidadDisponible
 
-                            lMaxS = MaxID(lConnection, lTransaction) + 1
+                            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             ObjStockDestino.IdStock = lMaxS
 
@@ -11126,17 +11157,12 @@ Partial Public Class clsLnStock
 
                             Else
 
-                                '#EJC20171018_1035AM_REF: Llenar el objeto estado con el IdProductoEstado porque ese es el objeto que se utiliza para insertar el stock
-                                'ObjStockDestino.Estado.IdEstado = ObjStockDestino.IdProductoEstado
-
                                 'Se cambio porque en cambio de estado desde BOF IdEstado tenía el estado origen, ver -> '#EJC20171018_1035AM_REF
                                 ObjStockDestino.ProductoEstado.IdEstado = vTransUbicHHDet.IdEstadoDestino
                                 ObjStockDestino.IdProductoEstado = vTransUbicHHDet.IdEstadoDestino
 
                                 'Insertar nuevo stock (ubicación/estado)
                                 Insertar(ObjStockDestino, lConnection, lTransaction)
-
-                                'file.WriteLine("New Stock Inserted As Id: " & ObjStockDestino.IdStock)
 
                                 If ParametrosAActualizar.Count > 0 Then
                                     '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
@@ -11145,12 +11171,6 @@ Partial Public Class clsLnStock
 
                                 objStockOrigen.Cantidad -= ObjStockDestino.Cantidad
                                 objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-
-                                'file.WriteLine("Origen Stock Id is At: " & objStockOrigen.IdStock)
-                                'file.WriteLine("Origen_Quantity : " & objStockOrigen.Cantidad)
-
-                                'file.WriteLine("Destino Stock Id is At: " & ObjStockDestino.IdStock)
-                                'file.WriteLine("Destino_Quantity: " & ObjStockDestino.Cantidad)
 
                                 '#EJC20171018_0707PM: Eliminar IdStock con cantidad =0
                                 If objStockOrigen.Cantidad = 0 Then
@@ -11167,11 +11187,7 @@ Partial Public Class clsLnStock
                                     objStockHist.Fec_mod = Now
                                     objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                                    '#EJC20180625:1036AM => Fin_Stock_Hist
-                                    'file.WriteLine("Stock History inserted: " & objStockOrigen.IdStock)
-
-                                    'Insertar en stock_histórico?
-                                    '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
+                                    '#EJC20180625:1036AM => Fin_Stock_Hist                                    
 
                                     clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
                                     Eliminar(objStockOrigen, lConnection, lTransaction)
@@ -11179,7 +11195,6 @@ Partial Public Class clsLnStock
                                 Else
                                     '#EJC20171014_1140PM
                                     Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-                                    'file.WriteLine("Quantity updated for IdStock: " & objStockOrigen.IdStock & " new value is: " & objStockOrigen.Cantidad)
                                 End If
 
                             End If
@@ -11210,234 +11225,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Sub
-
-    'Public Shared Sub Actualizar_Stock_Por_Cambio_de_Ubicacion(ByRef pListObjStock As List(Of clsBeStock),
-    '                                                           ByVal pListObjDet As List(Of clsBeTrans_ubic_hh_det),
-    '                                                           ByVal EsReabasto As Boolean,
-    '                                                           ByRef lConnection As SqlConnection,
-    '                                                           ByRef lTransaction As SqlTransaction)
-
-    '    Try
-
-    '        Dim lMaxS As Integer
-    '        Dim objStockOrigen As New clsBeStock()
-    '        Dim objStockHist As New clsBeStock_hist()
-    '        Dim vCantidadDisponible As Double = 0
-    '        Dim BePres As New clsBeProducto_Presentacion
-    '        Dim vTransUbicHHDet As New clsBeTrans_ubic_hh_det
-    '        Dim ParametrosAActualizar As New List(Of clsBeStock_parametro)
-    '        Dim ParametroAActualizar As New clsBeStock_parametro
-    '        Dim vCantidadInicial As Double = 0
-
-    '        If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
-
-    '            For Each ObjStockDestino As clsBeStock In pListObjStock
-
-    '                '#EJC20171018_0829: Validar que aún no se ha realizado el cambio en la HH.
-    '                vTransUbicHHDet = pListObjDet.Find(Function(x) x.IdStock = ObjStockDestino.IdStock AndAlso x.IdUbicacionDestino = ObjStockDestino.IdUbicacion)
-
-    '                'file.WriteLine("IdUbicación: " & ObjStockDestino.IdUbicacion)
-    '                'file.WriteLine("ObjStockDestino.IdStock: " & ObjStockDestino.IdStock)
-    '                'file.WriteLine("vTransUbicHHDet.Realizado: " & vTransUbicHHDet.Realizado)
-
-    '                If Not vTransUbicHHDet Is Nothing Then
-
-    '                    If Not (vTransUbicHHDet.Realizado) Then
-
-    '                        '#EJC20171023_0852AM: Se comentarió función por que el GetSingle, no devolvía los parámetros ni el objeto de presentación.
-    '                        '#EJC20171022_0852AM: Se renombró función a GetSingle, antes se llamaba a GetSingleStock de la clase de cambio de ubicación, se ordenó la función a donde corresponde.
-    '                        'objStockOrigen = GetSingle(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
-
-    '                        '#EJC20171023_0852AM_REF: Obtener el stock con parámetros para actualizar el IdStock
-    '                        objStockOrigen = Get_Single_Stock_By_IdStock(IIf(ObjStockDestino.IdStockOrigen = 0, ObjStockDestino.IdStock, ObjStockDestino.IdStockOrigen), lConnection, lTransaction)
-
-    '                        '#EJC20180625: Mantener copia del stock original
-    '                        clsPublic.CopyObject(objStockOrigen, objStockHist)
-
-    '                        '#EJC20171024_0629PM:Colocar el IdPresentacion en el objeto de presentación porque ese es el que se uitlizar para el insert, si no se tiene idpresentación Null en stock cuando se hace cambio de ubicación/estado.
-    '                        ObjStockDestino.Presentacion.IdPresentacion = ObjStockDestino.IdPresentacion
-
-    '                        BePres.IdPresentacion = ObjStockDestino.IdPresentacion
-
-    '                        '#EJC20171024_0531PM: La presentación del stock origen y el destino deberían ser la misma (de momento no se me ocurre otro escenario)                            
-    '                        BePres = objStockOrigen.Presentacion
-
-    '                        '#EJC20170913
-    '                        If BePres.IdPresentacion <> 0 Then
-
-    '                            BePres.IdPresentacion = ObjStockDestino.IdPresentacion
-
-    '                            '#EJC20171023_0852AM: Desactivado por este cambio -> '#EJC20171023_0852AM_REF
-    '                            'clsLnProducto_presentacion.GetSingle(BePres, lConnection, lTransaction)
-
-    '                            'Llevar la cantidad de la presentación a UMBas antes de insertar #EJC20170910
-    '                            If BePres.EsPallet Then
-    '                                vCantidadDisponible = Math.Round((ObjStockDestino.Cantidad * BePres.Factor * BePres.CamasPorTarima * BePres.CajasPorCama), 6)
-    '                            Else
-    '                                If EsReabasto Then
-    '                                    vCantidadDisponible = ObjStockDestino.Cantidad
-    '                                Else
-    '                                    '#EJC20240602 Si lo necesitan modificar avisen!
-    '                                    vCantidadDisponible = Math.Round((ObjStockDestino.Cantidad / BePres.Factor), 6)
-    '                                End If
-
-
-    '                            End If
-
-    '                        Else
-    '                            vCantidadDisponible = ObjStockDestino.Cantidad
-    '                        End If
-
-    '                        vCantidadInicial = ObjStockDestino.Cantidad
-
-    '                        ObjStockDestino.Cantidad = vCantidadDisponible
-
-    '                        lMaxS = MaxID(lConnection, lTransaction) + 1
-
-    '                        ObjStockDestino.IdStock = lMaxS
-
-    '                        '#EJC20171023_0217PM: Validar si tiene parámetros el stock
-    '                        If Not objStockOrigen.Parametros Is Nothing Then
-
-    '                            '#EJC20171023_0158PM: Actualizar el IdStock en parámetros.
-    '                            For Each StockParam In objStockOrigen.Parametros
-    '                                ParametroAActualizar = New clsBeStock_parametro
-    '                                ParametroAActualizar = StockParam
-    '                                ParametrosAActualizar.Add(StockParam)
-    '                            Next
-
-    '                        End If
-
-    '                        If BePres.IdPresentacion <> 0 Then
-
-    '                            'Se cambio porque en cambio de estado desde BOF IdEstado tenía el estado origen, ver -> '#EJC20171018_1035AM_REF
-    '                            ObjStockDestino.ProductoEstado.IdEstado = vTransUbicHHDet.IdEstadoDestino
-    '                            ObjStockDestino.IdProductoEstado = vTransUbicHHDet.IdEstadoDestino
-
-    '                            If BePres.EsPallet Then
-    '                                '#EJC20170918                                    
-    '                                ActualizaIdUbicacionPallet(objStockOrigen, ObjStockDestino.IdUbicacion, lConnection, lTransaction)
-    '                            Else
-
-    '                                Insertar(ObjStockDestino, lConnection, lTransaction)
-
-    '                                '#EJC20171024_0610PM: Se quitó la multiplicación por cantidad porque canto objStockOrigen.Cantidad como ObjStockDestino.Cantidad  están en unidad de medida básica.
-    '                                objStockOrigen.Cantidad -= ObjStockDestino.Cantidad
-    '                                objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-
-    '                                '#EJC20171024_0613PM: Si la cantidad es 0 eliminar el id stock cuando tiene presentación
-    '                                If objStockOrigen.Cantidad = 0 Then
-
-    '                                    '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
-    '                                    clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
-    '                                    Eliminar(objStockOrigen, lConnection, lTransaction)
-
-    '                                    '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
-    '                                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-    '                                    objStockHist.IdNuevoStock = ObjStockDestino.IdStock
-    '                                    objStockHist.IdPedidoEnc = objStockOrigen.IdPedidoEnc
-    '                                    objStockHist.IdPickingEnc = objStockOrigen.IdPickingEnc
-    '                                    objStockHist.IdUbicacion_anterior = objStockOrigen.IdUbicacion
-    '                                    objStockHist.IdUbicacion = ObjStockDestino.IdUbicacion
-    '                                    objStockHist.IdDespachoEnc = 0
-    '                                    objStockHist.Fec_agr = Now
-    '                                    objStockHist.Fec_mod = Now
-    '                                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-    '                                    '#EJC20180625:1036AM => Fin_Stock_Hist
-
-    '                                Else
-    '                                    '#EJC20171014_1140PM
-    '                                    Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-    '                                End If
-
-    '                            End If
-
-    '                        Else
-
-    '                            '#EJC20171018_1035AM_REF: Llenar el objeto estado con el IdProductoEstado porque ese es el objeto que se utiliza para insertar el stock
-    '                            'ObjStockDestino.Estado.IdEstado = ObjStockDestino.IdProductoEstado
-
-    '                            'Se cambio porque en cambio de estado desde BOF IdEstado tenía el estado origen, ver -> '#EJC20171018_1035AM_REF
-    '                            ObjStockDestino.ProductoEstado.IdEstado = vTransUbicHHDet.IdEstadoDestino
-    '                            ObjStockDestino.IdProductoEstado = vTransUbicHHDet.IdEstadoDestino
-
-    '                            'Insertar nuevo stock (ubicación/estado)
-    '                            Insertar(ObjStockDestino, lConnection, lTransaction)
-
-    '                            'file.WriteLine("New Stock Inserted As Id: " & ObjStockDestino.IdStock)
-
-    '                            If ParametrosAActualizar.Count > 0 Then
-    '                                '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
-    '                                clsLnStock_parametro.Insertar_Stock_Parametro_Cambio_Ubicacion(ParametrosAActualizar, lMaxS, lConnection, lTransaction)
-    '                            End If
-
-    '                            objStockOrigen.Cantidad -= ObjStockDestino.Cantidad
-    '                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-
-    '                            'file.WriteLine("Origen Stock Id is At: " & objStockOrigen.IdStock)
-    '                            'file.WriteLine("Origen_Quantity : " & objStockOrigen.Cantidad)
-
-    '                            'file.WriteLine("Destino Stock Id is At: " & ObjStockDestino.IdStock)
-    '                            'file.WriteLine("Destino_Quantity: " & ObjStockDestino.Cantidad)
-
-    '                            '#EJC20171018_0707PM: Eliminar IdStock con cantidad =0
-    '                            If objStockOrigen.Cantidad = 0 Then
-
-    '                                '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                    
-    '                                objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-    '                                objStockHist.IdNuevoStock = ObjStockDestino.IdStock
-    '                                objStockHist.IdPedidoEnc = objStockOrigen.IdPedidoEnc
-    '                                objStockHist.IdPickingEnc = objStockOrigen.IdPickingEnc
-    '                                objStockHist.IdUbicacion_anterior = objStockOrigen.IdUbicacion
-    '                                objStockHist.IdUbicacion = ObjStockDestino.IdUbicacion
-    '                                objStockHist.IdDespachoEnc = 0
-    '                                objStockHist.Fec_agr = Now
-    '                                objStockHist.Fec_mod = Now
-    '                                clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-    '                                '#EJC20180625:1036AM => Fin_Stock_Hist
-    '                                'file.WriteLine("Stock History inserted: " & objStockOrigen.IdStock)
-
-    '                                'Insertar en stock_histórico?
-    '                                '#EJC20171023_0216PM: Insertar siempre una copia de los parámetros con el nuevo IdStock
-
-    '                                clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
-    '                                Eliminar(objStockOrigen, lConnection, lTransaction)
-
-    '                            Else
-    '                                '#EJC20171014_1140PM
-    '                                Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-    '                                'file.WriteLine("Quantity updated for IdStock: " & objStockOrigen.IdStock & " new value is: " & objStockOrigen.Cantidad)
-    '                            End If
-
-    '                        End If
-
-    '                        vTransUbicHHDet.Realizado = True
-
-    '                        '#EJC20170913
-    '                        clsLnTrans_ubic_hh_det.Actualizar(vTransUbicHHDet, lConnection, lTransaction)
-
-    '                    Else
-    '                        Throw New Exception("La tarea está realizada, nothing to do")
-    '                    End If
-
-    '                Else
-    '                    Throw New Exception("Reporte éste error a desarrollo, no se pudo obtener el IdStock antes de actualizar el stock " & ObjStockDestino.IdStock)
-    '                End If
-
-    '            Next
-
-    '        Else
-    '            Throw New Exception("Lista vacía para actualización de stock, se desconoce si esta es una condición válida, Erik C. 20181211 ")
-    '        End If
-
-    '    Catch ex As Exception
-    '        Throw ex
-    '    Finally
-    '        'If Not file Is Nothing Then file.Close()
-    '    End Try
-
-    'End Sub
-
 
     Public Shared Sub Actualizar_Stock_Por_Cambio_de_Ubicacion_Traslado(ByRef pListObjStock As List(Of clsBeStock),
                                                                         ByVal pListObjDet As List(Of clsBeTrans_ubic_hh_det),
@@ -11503,7 +11290,7 @@ Partial Public Class clsLnStock
 
                             ObjStockDestino.Cantidad = vCantidadDisponible
 
-                            lMaxS = MaxID(lConnection, lTransaction) + 1
+                            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             ObjStockDestino.IdStock = lMaxS
 
@@ -12003,7 +11790,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
                 '#
                 objStockDestino.IdBodega = pIdBodegaDestino
@@ -12126,7 +11913,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
                 '#
                 objStockDestino.IdBodega = pIdBodegaDestino
@@ -12224,7 +12011,7 @@ Por favor reportar este problema a DevOps."
 
             If pListBeTransReDet IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection, lTransaction)
+                Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 Dim BeStock As New clsBeStock
                 Dim BeStockRec As New clsBeStock_rec
                 Dim BeVWStockRec As New clsBeVW_stock_res
@@ -12392,7 +12179,7 @@ Por favor reportar este problema a DevOps."
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            IdStock = MaxID(lConnection, lTransaction)
+            IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
             BeTransInvEnc.Regularizado = True
@@ -15649,7 +15436,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
 
 
@@ -16613,7 +16400,7 @@ Por favor reportar este problema a DevOps."
         Guardar_Stock_Ajuste_Positivo = False
 
         Try
-            pObjStock.IdStock = MaxID(lConnection, lTransaction) + 1
+            pObjStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             Insertar(pObjStock, lConnection, lTransaction)
             Guardar_Stock_Ajuste_Positivo = True
 

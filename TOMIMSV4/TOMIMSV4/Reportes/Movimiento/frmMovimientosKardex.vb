@@ -43,6 +43,8 @@ Public Class frmMovimientosKardex
         DT.Columns.Add("Clasificacion", GetType(String))
         DT.Columns.Add("Area_Origen", GetType(String))
         DT.Columns.Add("Operador", GetType(String))
+        DT.Columns.Add("Talla", GetType(String))
+        DT.Columns.Add("Color", GetType(String))
 
     End Sub
 
@@ -177,7 +179,9 @@ Public Class frmMovimientosKardex
                                 BeVW_Movimientos.IdProducto,
                                 BeVW_Movimientos.Clasificacion,
                                 BeVW_Movimientos.Area_Origen,
-                                BeVW_Movimientos.Operador)
+                                BeVW_Movimientos.Operador,
+                                BeVW_Movimientos.Talla,
+                                BeVW_Movimientos.Color)
 
                 Next
 
