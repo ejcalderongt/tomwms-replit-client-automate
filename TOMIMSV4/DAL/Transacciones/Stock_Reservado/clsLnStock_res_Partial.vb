@@ -4803,7 +4803,6 @@ Partial Public Class clsLnStock_res
                     Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                     clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
-
                     Insertar(BeStockRes,
                              lConnection,
                              ltransaction)
