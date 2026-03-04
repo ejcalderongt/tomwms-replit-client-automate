@@ -3634,8 +3634,8 @@ Partial Public Class clsLnTrans_pe_det
                 'Ver ref -> '#EJC20171024_1245PM_REF en forma de pedido
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
                     pBePedidoDet.IdPedidoDet = 0 '#EJC20260226: Se asigna 0 para que se inserte como nuevo registro, ya que el IdPedidoDet es autogenerado.|
-                    pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
+                    pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 Else
                     pBePedidoDet.ListaStockRes = clsLnStock_res.Get_All_By_IdPedidoDet(pBePedidoDet.IdPedidoDet,
                                                                                        pBePedidoDet.IdPedidoEnc,

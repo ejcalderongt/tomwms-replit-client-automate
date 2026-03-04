@@ -166,7 +166,7 @@ Public Class clsLnStock_res
                 cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
             End If
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            'Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
             oBeStock_res.IdStockRes = newId
@@ -175,7 +175,7 @@ Public Class clsLnStock_res
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return 1
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
