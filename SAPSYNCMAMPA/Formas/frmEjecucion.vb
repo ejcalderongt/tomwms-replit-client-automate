@@ -1205,7 +1205,46 @@ Public Class frmEjecucion
     End Sub
 
     Private Sub mnuProductosI_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuProductosI.ItemClick
-        Ejecuta_Interface_Productos(True)
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pProducto As String = ""
+
+        Try
+
+            args.Caption = "Ingrese código del producto"
+            args.Prompt = "Código"
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pProducto = tmpResult.ToString
+
+                Ejecuta_Interface_Productos(True, pProducto)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
     End Sub
 
     Public Async Sub Ejecuta_Interface_Centros_Costo(Optional ByVal Preguntar As Boolean = True)
@@ -1463,7 +1502,8 @@ Public Class frmEjecucion
         End Try
     End Sub
 
-    Public Async Sub Ejecuta_Interface_Productos(Optional ByVal Preguntar As Boolean = True)
+    Public Async Sub Ejecuta_Interface_Productos(Optional ByVal Preguntar As Boolean = True,
+                                                 Optional codigo As String = "")
 
         Try
 
@@ -1481,7 +1521,7 @@ Public Class frmEjecucion
 
             If Ejecutar Then
                 lblprg.Clear()
-                Await clsSyncSAPProducto.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg)
+                Await clsSyncSAPProducto.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, False, False, codigo)
             End If
 
         Catch ex As Exception

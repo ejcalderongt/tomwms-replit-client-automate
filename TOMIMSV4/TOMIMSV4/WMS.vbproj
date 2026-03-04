@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>69</ApplicationRevision>
+    <ApplicationRevision>73</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -4573,6 +4573,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

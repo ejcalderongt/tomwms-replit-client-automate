@@ -18,7 +18,8 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
     Private Shared Async Function Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(ByVal lblprg As RichTextBox,
                                                                                      ByVal prg As ProgressBar,
-                                                                                     ByVal cnnLog As SqlConnection) As Task(Of Boolean)
+                                                                                     ByVal cnnLog As SqlConnection,
+                                                                                      Optional codigo As String = "") As Task(Of Boolean)
 
         Dim Cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim lTrans As SqlTransaction = Nothing
@@ -37,7 +38,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             clsPublic.Actualizar_Progreso(lblprg, "Sesión iniciada correctamente.")
 
             Dim lfichaProductos As New List(Of clsBeI_nav_producto)
-            lfichaProductos = Await Get_Productos_SAP_SL(vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, lblprg)
+            lfichaProductos = Await Get_Productos_SAP_SL(vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, lblprg, codigo)
 
             clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
 
@@ -163,7 +164,8 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     Public Shared Async Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(ByVal lblprg As RichTextBox,
                                                                                           ByVal prg As ProgressBar,
                                                                                           Optional ByVal ForzarEjecucion As Boolean = False,
-                                                                                          Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False) As Task(Of Boolean)
+                                                                                          Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False,
+                                                                                          Optional codigo As String = "") As Task(Of Boolean)
 
         Dim CnnInterface As SqlConnection = Nothing
         Dim CnnLog As SqlConnection = Nothing
@@ -182,7 +184,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             lTrans = CnnInterface.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             ' Confirmar y llenar tabla intermedia
-            If Not Await Confirmar_Y_Llenar_Intermedia(Pregunta_Si_LLena_Intermedia, lblprg, prg, CnnLog) Then
+            If Not Await Confirmar_Y_Llenar_Intermedia(Pregunta_Si_LLena_Intermedia, lblprg, prg, CnnLog, codigo) Then
                 Return False
             End If
 
@@ -331,14 +333,15 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     Private Shared Async Function Confirmar_Y_Llenar_Intermedia(preguntar As Boolean,
                                                                 lblprg As RichTextBox,
                                                                 prg As ProgressBar,
-                                                                cnnLog As SqlConnection) As Task(Of Boolean)
+                                                                cnnLog As SqlConnection,
+                                                                Optional codigo As String = "") As Task(Of Boolean)
         If Not preguntar Then
-            Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog)
+            Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog, codigo)
         End If
 
         Dim respuesta = MessageBox.Show("¿Llenar tabla intermedia desde SAP?", "Parametro", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
         If respuesta = DialogResult.Yes Then
-            Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog)
+            Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog, codigo)
         End If
 
         Return True
