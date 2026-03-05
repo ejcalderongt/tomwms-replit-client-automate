@@ -2956,6 +2956,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
+
     Public Shared Function ObtenerIdBodegaDestino(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                   ByRef BeConfigEnc As clsBeI_nav_config_enc,
                                                   ByRef gBeOrdenCompraEnc As clsBeTrans_oc_enc,
@@ -2966,6 +2967,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             Dim IdBodegaDestino As Integer = 0
 
             If Not navPedidoCompraEnc.Is_Internal_Transfer Then
+
                 IdBodegaDestino = clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(navPedidoCompraEnc.Location_Code, lConnection, lTransInterface)
 
                 If IdBodegaDestino = 0 Then
@@ -2980,6 +2982,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                         End If
                     End If
                 End If
+
             Else
                 IdBodegaDestino = clsLnBodega.Get_IdBodega_By_Codigo(navPedidoCompraEnc.Location_Code, lConnection, lTransInterface)
 
@@ -3005,6 +3008,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
+
     Public Shared Function ObtenerConfiguracionDeBodega(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                         ByRef BeConfigEnc As clsBeI_nav_config_enc,
                                                         ByRef gBeOrdenCompraEnc As clsBeTrans_oc_enc,
@@ -3600,7 +3604,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                         If Not navPedidoCompraEnc.Internal_Transfer_Document_No = "" AndAlso IsNumeric(navPedidoCompraEnc.Internal_Transfer_Document_No) Then
 
                             '#CKFK20251013 Si la orden de compra viene de un traslado interno en NAV, se copian las ubicaciones de picking a los lotes de la orden de compra
-                            DetallePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_IdDespachoEnc(navPedidoCompraEnc.Internal_Transfer_Document_No, lConnection, lTransInterface)
+                            DetallePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_NoDocExterno(Val(navPedidoCompraEnc.Internal_Transfer_Document_No), lConnection, lTransInterface)
 
                         End If
 

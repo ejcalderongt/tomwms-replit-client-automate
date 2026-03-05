@@ -693,8 +693,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                     bePickingUbicExistenteDañado.Dañado_verificacion = True
                 End If
 
-                bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
                 'clsLnStock_res.Eliminar_Stock_Reservado_By_IdStockRes(IdStockRes, lConnection, lTransaction)
@@ -722,8 +722,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                         bePickingUbicExistenteDañado.Dañado_verificacion = True
                     End If
 
-                    bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
                 ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
@@ -751,7 +751,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 '#CKFK 20180220 11:03 PM 
                 'Si la cantidad del picking_ubic es mayor a la cantidad dañada se crea un nuevo picking_ubic 
                 'con esa cantidad y con el dañado picking en true
-                bePickingUbicNuevo.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbicNuevo.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 bePickingUbicNuevo.IsNew = True
 
                 bePickingUbicNuevo.Encontrado = True
@@ -766,9 +767,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 '#EJC20181211: 1201: Copiar el Id antes de asignar el nuevo MaxId para actualizar el stockres.
                 Dim vIdStockResOriginal As Integer = bePickingUbicNuevo.IdStockRes
 
-                '#CKFK 20180501 Agregué el IdStockRes porque estaba guardando el anterior
-                bePickingUbicExistente.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction)
-                clsLnTrans_picking_ubic.Insertar(bePickingUbicNuevo)
+                '#CKFK 20180501 Agregué el IdStockRes porque estaba guardando el anterior                
+                clsLnTrans_picking_ubic.Insertar(bePickingUbicNuevo, lConnection, lTransaction)
 
             Else
                 Throw New Exception(String.Format("La cantidad disponible: {0} es menor a la cantidad dañada:{1} ", beStockRes.Cantidad, CantDañada))
@@ -1035,11 +1035,9 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                     bePickingUbicExistenteDañado.Dañado_verificacion = True
                 End If
 
-                bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
-
-                'clsLnStock_res.Eliminar_Stock_Reservado_By_IdStockRes(IdStockRes, lConnection, lTransaction)
 
             ElseIf beStockRes.Cantidad > IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaPresentacion, CantDañada) Then
 
@@ -1064,9 +1062,9 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                         bePickingUbicExistenteDañado.Dañado_verificacion = True
                     End If
 
-                    bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
-                    clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
+                    '#EJC20260226: Se utilizará identity.
+                    'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
+                    clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado, lConnection, lTransaction)
 
                 ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
                     bePickingUbicExistente.Cantidad_Solicitada = CantDañada
@@ -1095,7 +1093,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 '#CKFK 20180220 11:03 PM 
                 'Si la cantidad del picking_ubic es mayor a la cantidad dañada se crea un nuevo picking_ubic 
                 'con esa cantidad y con el dañado picking en true
-                bePickingUbicNuevo.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbicNuevo.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 bePickingUbicNuevo.IsNew = True
 
                 If EsPicking Then
@@ -1104,12 +1103,10 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                     bePickingUbicNuevo.Dañado_verificacion = False
                 End If
 
-
                 '#EJC20181211: 1201: Copiar el Id antes de asignar el nuevo MaxId para actualizar el stockres.
                 Dim vIdStockResOriginal As Integer = bePickingUbicNuevo.IdStockRes
 
-                '#CKFK 20180501 Agregué el IdStockRes porque estaba guardando el anterior
-                bePickingUbicExistente.IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction)
+                '#EJC20260226: Se utilizará identity.                                
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicNuevo, lConnection, lTransaction)
 
             Else
@@ -1195,9 +1192,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 beUbicHHDet.IdStock = IdStock
                 beUbicHHDet.Producto = New clsBeProducto
                 beUbicHHDet.Stock = New clsBeStock
-
                 beUbicHHDet.IdTareaUbicacionDet = 0
-
                 beUbicHHDet.ProductoEstado = New clsBeProducto_estado
                 beUbicHHDet.ProductoPresentacion = New clsBeProducto_Presentacion
                 beUbicHHDet.UnidadMedida = New clsBeUnidad_medida
@@ -1372,7 +1367,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
             ElseIf beStockRes.Cantidad > IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada) Then '#CKFK 20180219 Cambié la condición porque es cuando la cantidad dañada es menor que se modifica la cantidad en el Stock
 
-                bePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(pConnection, pTransaction) + 1 '#CKFK 20180329 12:34 PM Corregí el IdPickingUbic, estaba tomando el Max de la tabla y debía adicionarle 1.
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(pConnection, pTransaction) + 1 '#CKFK 20180329 12:34 PM Corregí el IdPickingUbic, estaba tomando el Max de la tabla y debía adicionarle 1.
                 bePickingUbic.IsNew = True
                 '#AT 20220110 Se cambio del valor a true 
                 bePickingUbic.Dañado_picking = True
@@ -1673,7 +1669,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
             ElseIf beStockRes.Cantidad > IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada) Then '#CKFK 20180219 Cambié la condición porque es cuando la cantidad dañada es menor que se modifica la cantidad en el Stock
 
-                bePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(pConnection, pTransaction) + 1 '#CKFK 20180329 12:34 PM Corregí el IdPickingUbic, estaba tomando el Max de la tabla y debía adicionarle 1.
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(pConnection, pTransaction) + 1 '#CKFK 20180329 12:34 PM Corregí el IdPickingUbic, estaba tomando el Max de la tabla y debía adicionarle 1.
                 bePickingUbic.IsNew = True
                 '#AT 20220110 Se cambio del valor a true 
                 bePickingUbic.Dañado_picking = True
@@ -1950,7 +1947,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
             ElseIf beStockRes.Cantidad > IIf(beStockRes.IdPresentacion <> 0, CantidadDañadaUMBas, CantDañada) Then '#CKFK 20180219 Cambié la condición porque es cuando la cantidad dañada es menor que se modifica la cantidad en el Stock
 
-                bePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(pConnection, pTransaction) + 1 '#CKFK 20180329 12:34 PM Corregí el IdPickingUbic, estaba tomando el Max de la tabla y debía adicionarle 1.
+                '#EJC20260226: Se utilizará identity.
+                'bePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(pConnection, pTransaction) + 1 '#CKFK 20180329 12:34 PM Corregí el IdPickingUbic, estaba tomando el Max de la tabla y debía adicionarle 1.
                 bePickingUbic.IsNew = True
                 bePickingUbic.Dañado_picking = False
                 bePickingUbic.Cantidad_Solicitada = CantDañada

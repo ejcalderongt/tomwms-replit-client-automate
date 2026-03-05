@@ -1472,8 +1472,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                               lConnection,
                                                                               lTransaction)
 
-                                            NuevoBePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
-
+                                            '#EJC20260226: Se utilizará identity.
+                                            'NuevoBePickingUbic.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                                             NuevoBePickingUbic.Cantidad_Solicitada = BePickingUbic.Cantidad_Solicitada - BePickingUbic.Cantidad_Verificada
                                             NuevoBePickingUbic.Cantidad_Recibida = BePickingUbic.Cantidad_Recibida - BePickingUbic.Cantidad_Verificada
                                             NuevoBePickingUbic.Cantidad_Verificada = 0
@@ -2298,7 +2298,6 @@ Partial Public Class clsLnTrans_despacho_enc
         Dim vPedidoCompletado As Boolean = True
         Dim vCantidadDespachadaAcum As Double = 0
         Dim BeTransReDet As New clsBeTrans_re_det
-        Dim vIdMaxRecepcionDet As Integer = 0
         Dim vIdPropietario As Integer = 0
         Dim BeProductoEstado As New clsBeProducto_estado
         Dim lLicenciasProcesadas As New List(Of String)
@@ -2324,8 +2323,6 @@ Partial Public Class clsLnTrans_despacho_enc
                         Dim lPickingUbicVerificados = BePedidoDet.ListaPickingUbic.Where(Function(x) (x.Cantidad_Verificada > 0 OrElse x.Peso_verificado > 0) AndAlso (x.Cantidad_despachada < x.Cantidad_Verificada)).ToList()
                         'Se verificó para despacho en esa línea del pedido
                         If Not lPickingUbicVerificados Is Nothing Then
-
-                            vIdMaxRecepcionDet = clsLnTrans_re_det.MaxID(BeRecepcionEnc.IdRecepcionEnc, lConnection, lTransaction) + 1
 
                             For Each BePickingUbic In lPickingUbicVerificados
 
@@ -2399,7 +2396,7 @@ Partial Public Class clsLnTrans_despacho_enc
                                             BeTransReDet = New clsBeTrans_re_det()
                                             BeTransReDet.IsNew = True
                                             BeTransReDet.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
-                                            BeTransReDet.IdRecepcionDet = vIdMaxRecepcionDet
+                                            BeTransReDet.IdRecepcionDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
                                             BeTransReDet.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega
                                             BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
                                             BeTransReDet.IdOrdenCompraDet = BeTransOCDet.IdOrdenCompraDet 'no lo se aun.
@@ -2449,8 +2446,6 @@ Partial Public Class clsLnTrans_despacho_enc
                                             BeTransReDet.Color.Codigo = BePickingUbic.Codigo_Color
 
                                             clsLnTrans_re_det.Insertar(BeTransReDet, lConnection, lTransaction)
-
-                                            vIdMaxRecepcionDet += 1
 
                                             clsLnStock.Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino(BePickingUbic,
                                                                                                              IdUbicacionRecBodDest,

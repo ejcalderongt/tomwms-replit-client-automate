@@ -180,6 +180,8 @@ Public Class frmLicGen
 
             s = DecodeString(ss)
 
+            Dim d As String = EncodeString(ss)
+            Debug.Write(d)
         Catch ex As Exception
             XtraMessageBox.Show("LLave de solicitud incompleta.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return
         End Try

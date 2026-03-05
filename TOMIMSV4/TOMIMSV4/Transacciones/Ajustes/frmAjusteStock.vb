@@ -716,8 +716,6 @@ Public Class frmAjusteStock
 
             clsTransaccion.Begin_Transaction()
 
-            IdStockRes = clsLnStock_res.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
-
             pStock.IdStock = idstock
             clsLnStock.GetSingle(pStock, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -807,11 +805,8 @@ Public Class frmAjusteStock
 
         Try
 
-            IdStockRes = clsLnStock_res.MaxID(lConnection, lTransaction) + 1
-
             st.IdStock = idstock
             st = clsLnStock.GetSingle(st.IdStock, lConnection, lTransaction)
-
             rs.IdStockRes = IdStockRes
             rs.IdTransaccion = pBeTransAjustEnc.Idajusteenc
             rs.Indicador = "ajuste_stock" '#EJC20180613 ajuste_stock aplicado.
