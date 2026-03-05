@@ -4,7 +4,6 @@
 
     $("#usernameBox").dxTextBox({
         placeholder: "Usuario",
-        name: "Username",
         showClearButton: true,
         width: "100%",
         onValueChanged: function (e) {
@@ -14,7 +13,6 @@
 
     $("#passwordBox").dxTextBox({
         placeholder: "Contraseña",
-        name: "Password",
         mode: "password",
         showClearButton: true,
         width: "100%",

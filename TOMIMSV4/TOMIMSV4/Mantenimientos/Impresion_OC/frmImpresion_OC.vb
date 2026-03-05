@@ -266,20 +266,23 @@ Public Class frmImpresionRecepcion_OC
                 If fila Is Nothing Then
                     Throw New Exception("Error_20220208_1204: el producto no es valido.")
                 Else
-
                     pTransOC_Det.IdProductoBodega = fila.IdProductoBodega
                     pTransOC_Det.Codigo_Producto = fila.Codigo_Producto
                     pTransOC_Det.Nombre_producto = fila.Nombre_producto
                     pTransOC_Det.IdOrdenCompraDet = fila.IdOrdenCompraDet
                     pTransOC_Det.Nombre_unidad_medida_basica = fila.Nombre_unidad_medida_basica
                     pTransOC_Det.Cantidad = fila.Cantidad
+                    pTransOC_Det.No_Linea = fila.No_Linea
                     pIdPresentacion = fila.IdPresentacion
+                    pTransOC_Det = clsLnTrans_oc_det.Get_Single_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pTransOC_Enc.IdOrdenCompraEnc, pTransOC_Det.IdOrdenCompraDet, pTransOC_Det.IdProductoBodega, pTransOC_Det.No_Linea)
                 End If
 
                 If pTransOC_Det.IdOrdenCompraDet > 0 Then
                     Cargar_Presentacion(pIdPresentacion)
                     Cargar_oc_lotes(pTransOC_Enc.IdOrdenCompraEnc, pTransOC_Det.IdOrdenCompraDet)
                 End If
+
+                MostrarCantidadEtiquetas()
 
             End If
 
@@ -290,18 +293,38 @@ Public Class frmImpresionRecepcion_OC
     End Sub
 
     Dim pBeProductoPresentacion As New clsBeProducto_Presentacion
+
     Private Sub Cargar_Presentacion(pIdPresentacion As Integer)
         Try
             pBeProductoPresentacion = clsLnProducto_presentacion.Get_Single_By_IdPresentacion(pIdPresentacion)
+            If pBeProductoPresentacion Is Nothing Then Exit Try
 
-            If pBeProductoPresentacion IsNot Nothing Then
+            Dim usaDetalle As Boolean =
+            (pTransOC_Det IsNot Nothing) AndAlso
+            (pTransOC_Det.Camas_Tarima > 0 OrElse pTransOC_Det.Cajas_Cama > 0)
 
-                txtPresentacion.Text = pBeProductoPresentacion.Nombre
-                txtCamaPorTarima.Value = pBeProductoPresentacion.CamasPorTarima
-                txtCajaPorCama.Value = pBeProductoPresentacion.CajasPorCama
-                txtFactor.EditValue = pBeProductoPresentacion.Factor
+            If usaDetalle Then
+                ' Prioriza configuración del detalle y la “asocia” al objeto presentación
+                pBeProductoPresentacion.CamasPorTarima = pTransOC_Det.Camas_Tarima
+                pBeProductoPresentacion.CajasPorCama = pTransOC_Det.Cajas_Cama
 
+                txtCamaPorTarima.ReadOnly = False
+                txtCajaPorCama.ReadOnly = False
+            Else
+                txtCamaPorTarima.ReadOnly = True
+                txtCajaPorCama.ReadOnly = True
             End If
+
+            ' UI
+            txtPresentacion.Text = pBeProductoPresentacion.Nombre
+            txtCamaPorTarima.Value = pBeProductoPresentacion.CamasPorTarima
+            txtCajaPorCama.Value = pBeProductoPresentacion.CajasPorCama
+            txtFactor.EditValue = pBeProductoPresentacion.Factor
+
+            ' >>> NUEVO: calcula cuántas etiquetas se necesitan según cantidad del detalle
+            RecalcularCantidadEtiquetas()
+
+            MostrarCantidadEtiquetas()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -390,107 +413,114 @@ Public Class frmImpresionRecepcion_OC
     End Sub
 
     Private Sub Imprimir_Licencia(ByVal pReDet As clsBeTrans_oc_det,
-                              ByVal PrinterName As String,
-                              ByVal pImpresiones As Integer)
+                             ByVal PrinterName As String,
+                             ByVal pImpresiones As Integer)
 
         Dim clsTransaccion As New clsTransaccion
         pBeBarra_Pallet = New clsBeI_nav_barras_pallet()
 
         Try
+            If String.IsNullOrWhiteSpace(PrinterName) Then
+                DxErrorProvider1.SetError(cmbPrinterLicencia, "seleccione impresora")
+                Exit Sub
+            End If
+
+            If pImpresiones <= 0 Then Exit Sub
+
             clsTransaccion.Begin_Transaction()
 
-            '#GT15022024: valores a cargar en la etiqueta ZPL
-            Dim ZPLString As String = ""
             Dim vEmpresa As String = AP.Empresa.Nombre
-            Dim vCodigoBarra As String = txtLicencia.EditValue
             Dim vCodigoProducto As String = pReDet.Codigo_Producto
-            Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, IIf(pReDet.Nombre_producto.Length < 45, pReDet.Nombre_producto.Length, 44))
+            Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, If(pReDet.Nombre_producto.Length < 45, pReDet.Nombre_producto.Length, 44))
             Dim vLote As String = cmbLote.EditValue
-            Dim vFechaVence As String = txtVencimiento.EditValue
-            pCajasPorCama = txtCajaPorCama.Value
-            pCamasPorTarima = txtCamaPorTarima.Value
-            pPresentacion = txtPresentacion.EditValue
-            Dim pCantidad = pCamasPorTarima * pCajasPorCama
+            Dim vFechaVence As String = If(txtVencimiento.EditValue Is Nothing, New Date(1900, 1, 1), txtVencimiento.EditValue)
 
+            pCajasPorCama = Convert.ToInt32(txtCajaPorCama.Value)
+            pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
+            pPresentacion = CStr(txtPresentacion.EditValue)
+
+            Dim pCantidadPresentacion As Integer = pCamasPorTarima * pCajasPorCama
             Dim pTipoEtiqueta As Integer = AP.Bodega.IdTipoEtiquetaLicencia
             Dim pTipoSimbologia As Integer = AP.Bodega.IdSimbologiaLicencia
             Dim pClasificacion As Integer = 2
 
-            Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, pClasificacion,
-                                                                            clsTransaccion.lConnection, clsTransaccion.lTransaction)
+            Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta,
+                                                                                pTipoSimbologia,
+                                                                                pClasificacion,
+                                                                                clsTransaccion.lConnection,
+                                                                                clsTransaccion.lTransaction)
 
-            If PrinterName <> "" Then
-
-                If Tipo_Etiqueta IsNot Nothing Then
-
-                    Dim tmpZPLString = Tipo_Etiqueta.codigo_zpl
-
-                    If tmpZPLString <> "" Then
-                        ZPLString = String.Format(tmpZPLString, AP.Bodega.Codigo + " - " + AP.Bodega.Nombre,
-                                              vEmpresa,
-                                              vCodigoProducto + " - " + vNombreProducto.Trim,
-                                              vCodigoBarra,
-                                              AP.UsuarioAp.Nombres + " " + AP.UsuarioAp.Apellidos + " / " + Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                                              vLote,
-                                              vFechaVence,
-                                              pPresentacion,
-                                              pCantidad)
-                    End If
-
-                    If ZPLString <> "" Then
-                        Dim vColaImpresiones = pImpresiones
-                        If vColaImpresiones = 1 Then
-                            RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-                        ElseIf vColaImpresiones > 1 Then
-                            For i = 1 To vColaImpresiones
-                                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-                            Next
-                        End If
-                    Else
-                        Throw New Exception("GT21012026: No está definido el formato de etiqueta")
-                    End If
-
-                Else
-                    Throw New Exception("GT14022024: No se cargaron las propiedades de la etiqueta.")
-                End If
-
-                Dim obj As New clsBeI_nav_barras_pallet With {
-                        .IdPallet = 0,                           'se calcula al insertar
-                        .Codigo = pReDet.Codigo_Producto,
-                        .Nombre = pReDet.Nombre_producto,
-                        .Camas_Por_Tarima = pCamasPorTarima,
-                        .Cajas_Por_Cama = pCajasPorCama,
-                        .Cantidad_Presentacion = pCantidad,        ' float NULL
-                        .UM_Producto = pReDet.Nombre_unidad_medida_basica,
-                        .Lote = cmbLote.Text,                ' nvarchar(100) NOT NULL
-                        .Fecha_Agregado = Now,               ' datetime NULL
-                        .Fecha_Ingreso = New Date(1990, 1, 1),                ' date NULL
-                        .Fecha_Vence = vFechaVence,                  ' date NULL
-                        .Fecha_Produccion = New Date(1990, 1, 1),             ' date NULL
-                        .Activo = 1,                       ' bit NULL
-                        .Recibido = 1,                     ' int NULL
-                        .IdRecepcion = Nothing,                  ' int NULL
-                        .Bodega_Origen = BeBodega_Origen.Codigo,
-                        .Bodega_Destino = BeBodega_Origen.Codigo,
-                        .Codigo_barra = vCodigoBarra,    'lic_plate      
-                        .Cantidad_UMP = Nothing,
-                        .Lote_Numerico = Nothing
-                    }
-
-                clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(obj, clsTransaccion.lConnection,
-                                                                                      clsTransaccion.lTransaction)
-
-                Incrementar_Licencia_BOF(AP.IdBodega,
-                                     AP.UsuarioAp.IdUsuario,
-                                     clsTransaccion.lConnection,
-                                     clsTransaccion.lTransaction)
-
-                clsTransaccion.Commit_Transaction()
-
-            Else
-                DxErrorProvider1.SetError(cmbPrinterLicencia, "seleccione impresora")
-                clsTransaccion.RollBack_Transaction()
+            If Tipo_Etiqueta Is Nothing OrElse String.IsNullOrWhiteSpace(Tipo_Etiqueta.codigo_zpl) Then
+                Throw New Exception("GT21012026: No está definido el formato de etiqueta")
             End If
+
+            Dim tmpZPLString As String = Tipo_Etiqueta.codigo_zpl
+
+            ' Licencia actual (la que ya tenés visible)
+            Dim licenciaActual As String = CStr(txtLicencia.EditValue)
+
+            For i As Integer = 1 To pImpresiones
+
+                ' 1) imprime con la licencia actual
+                Dim ZPLString As String = String.Format(tmpZPLString,
+                                                    AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
+                                                    vEmpresa,
+                                                    vCodigoProducto & " - " & vNombreProducto.Trim,
+                                                    licenciaActual,
+                                                    AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                                    vLote,
+                                                    vFechaVence,
+                                                    pPresentacion,
+                                                    pCantidadPresentacion)
+
+                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
+
+                ' 2) guarda pallet pre-impresión con esa licencia
+                Dim obj As New clsBeI_nav_barras_pallet With {
+                .IdPallet = 0,
+                .Codigo = pReDet.Codigo_Producto,
+                .Nombre = pReDet.Nombre_producto,
+                .Camas_Por_Tarima = pCamasPorTarima,
+                .Cajas_Por_Cama = pCajasPorCama,
+                .Cantidad_Presentacion = pCantidadPresentacion,
+                .UM_Producto = pReDet.Nombre_unidad_medida_basica,
+                .Lote = cmbLote.Text,
+                .Fecha_Agregado = Now,
+                .Fecha_Ingreso = New Date(1900, 1, 1),
+                .Fecha_Vence = vFechaVence,
+                .Fecha_Produccion = New Date(1900, 1, 1),
+                .Activo = 1,
+                .Recibido = 1,
+                .IdRecepcion = Nothing,
+                .Bodega_Origen = BeBodega_Origen.Codigo,
+                .Bodega_Destino = BeBodega_Origen.Codigo,
+                .Codigo_barra = licenciaActual,
+                .Cantidad_UMP = Nothing,
+                .Lote_Numerico = Nothing
+            }
+
+                clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(obj,
+                                                                     clsTransaccion.lConnection,
+                                                                     clsTransaccion.lTransaction)
+
+                ' 3) incrementa correlativo para la siguiente etiqueta
+                '    (esto devuelve la licencia generada según correlativo actual antes de incrementar)
+                Dim licenciaGenerada As String = Incrementar_Licencia_BOF_Info(AP.IdBodega,
+                                                                               AP.UsuarioAp.IdUsuario,
+                                                                               clsTransaccion.lConnection,
+                                                                               clsTransaccion.lTransaction)
+
+                ' 4) deja preparada la próxima licencia para el siguiente ciclo:
+                '    si Incrementar devuelve la "actual", entonces la próxima la generás con tu función existente.
+                '    (si tu Get_Nuevo_Correlativo ya devuelve la siguiente, entonces simplemente asignala)
+                licenciaActual = Genera_Licencia_BOF(AP.Bodega.IdBodega, AP.UsuarioAp.IdUsuario)
+
+                ' opcional: actualizar UI en caliente (para ver la última generada)
+                txtLicencia.EditValue = licenciaActual
+
+            Next
+
+            clsTransaccion.Commit_Transaction()
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
@@ -502,5 +532,46 @@ Public Class frmImpresionRecepcion_OC
 
     End Sub
 
+    Private Function CalcularEtiquetas(cantidad As Decimal, camas As Integer, cajas As Integer) As Integer
+        Dim capacidad As Integer = camas * cajas
+        If capacidad <= 0 OrElse cantidad <= 0D Then Return 0
+
+        ' Ceil(cantidad / capacidad)
+        Dim etiquetas As Integer = CInt(Math.Ceiling(cantidad / CDec(capacidad)))
+        Return Math.Max(0, etiquetas)
+    End Function
+
+    Private Sub RecalcularCantidadEtiquetas()
+        Dim camas As Integer = Convert.ToInt32(txtCamaPorTarima.Value)
+        Dim cajas As Integer = Convert.ToInt32(txtCajaPorCama.Value)
+
+        Dim cantidad As Decimal = 0D
+        If pTransOC_Det IsNot Nothing Then cantidad = CDec(pTransOC_Det.Cantidad)
+
+        Dim etiquetas As Integer = CalcularEtiquetas(cantidad, camas, cajas)
+
+        If etiquetas > 0 Then
+            txtCantidadLicencias.Value = etiquetas
+        Else
+            txtCantidadLicencias.Value = 0
+        End If
+    End Sub
+
+    Private Sub MostrarCantidadEtiquetas()
+        Dim camas As Integer = Convert.ToInt32(txtCamaPorTarima.Value)
+        Dim cajas As Integer = Convert.ToInt32(txtCajaPorCama.Value)
+        Dim capacidad As Integer = camas * cajas
+
+        Dim cantidad As Decimal = 0D
+        If pTransOC_Det IsNot Nothing Then cantidad = CDec(pTransOC_Det.Cantidad)
+
+        Dim etiquetas As Integer = 0
+        If capacidad > 0 AndAlso cantidad > 0D Then
+            etiquetas = CInt(Math.Ceiling(cantidad / CDec(capacidad)))
+        End If
+
+        lblEtiquetas.Text = $"Etiquetas a imprimir: {etiquetas}"
+        txtCantidadLicencias.Value = etiquetas
+    End Sub
 
 End Class

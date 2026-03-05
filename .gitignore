@@ -4,8 +4,6 @@
 .vs/
 *.user
 *.suo
-*.user
-*.userosscache
 *.sln.docstates
 *.cache
 *.dbmdl

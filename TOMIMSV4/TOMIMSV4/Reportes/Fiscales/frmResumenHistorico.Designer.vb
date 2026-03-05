@@ -30,8 +30,6 @@ Partial Class frmResumenHistorico
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpFechas = New DevExpress.XtraEditors.GroupControl()
-        Me.dtpfechaHasta = New System.Windows.Forms.DateTimePicker()
-        Me.dtpFechaDesde = New System.Windows.Forms.DateTimePicker()
         Me.lblPropietarios = New System.Windows.Forms.Label()
         Me.lcmbPropietario = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
@@ -57,17 +55,15 @@ Partial Class frmResumenHistorico
         '
         'RibbonControl
         '
-        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.cmdImprimir, Me.cmdSalir, Me.cmdImpExcel, Me.lblRegs})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonControl.MaxItemId = 6
         Me.RibbonControl.Name = "RibbonControl"
-        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1279, 158)
+        Me.RibbonControl.Size = New System.Drawing.Size(1492, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdActualizar
@@ -121,11 +117,11 @@ Partial Class frmResumenHistorico
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 632)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 777)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1279, 24)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1492, 30)
         '
         'grpFechas
         '
@@ -140,115 +136,106 @@ Partial Class frmResumenHistorico
         Me.grpFechas.Controls.Add(Me.lblAl)
         Me.grpFechas.Controls.Add(Me.lblDel)
         Me.grpFechas.Dock = System.Windows.Forms.DockStyle.Left
-        Me.grpFechas.Location = New System.Drawing.Point(0, 158)
+        Me.grpFechas.Location = New System.Drawing.Point(0, 193)
+        Me.grpFechas.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grpFechas.Name = "grpFechas"
-        Me.grpFechas.Size = New System.Drawing.Size(421, 474)
+        Me.grpFechas.Size = New System.Drawing.Size(491, 584)
         Me.grpFechas.TabIndex = 8
         Me.grpFechas.Text = "Filtros"
-        '
-        'dtpfechaHasta
-        '
-        Me.dtpfechaHasta.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.dtpfechaHasta.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpfechaHasta.Location = New System.Drawing.Point(45, 123)
-        Me.dtpfechaHasta.Name = "dtpfechaHasta"
-        Me.dtpfechaHasta.Size = New System.Drawing.Size(210, 22)
-        Me.dtpfechaHasta.TabIndex = 3
-        '
-        'dtpFechaDesde
-        '
-        Me.dtpFechaDesde.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.dtpFechaDesde.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaDesde.Location = New System.Drawing.Point(45, 90)
-        Me.dtpFechaDesde.Name = "dtpFechaDesde"
-        Me.dtpFechaDesde.Size = New System.Drawing.Size(210, 22)
-        Me.dtpFechaDesde.TabIndex = 2
         '
         'lblPropietarios
         '
         Me.lblPropietarios.AutoSize = True
-        Me.lblPropietarios.Location = New System.Drawing.Point(12, 175)
+        Me.lblPropietarios.Location = New System.Drawing.Point(14, 215)
+        Me.lblPropietarios.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblPropietarios.Name = "lblPropietarios"
-        Me.lblPropietarios.Size = New System.Drawing.Size(44, 13)
+        Me.lblPropietarios.Size = New System.Drawing.Size(51, 16)
         Me.lblPropietarios.TabIndex = 37
         Me.lblPropietarios.Text = "Cliente:"
         '
         'lcmbPropietario
         '
-        Me.lcmbPropietario.Location = New System.Drawing.Point(10, 203)
-        Me.lcmbPropietario.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lcmbPropietario.Location = New System.Drawing.Point(12, 250)
+        Me.lcmbPropietario.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lcmbPropietario.Name = "lcmbPropietario"
         Me.lcmbPropietario.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.lcmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.lcmbPropietario.Size = New System.Drawing.Size(243, 20)
-        Me.lcmbPropietario.TabIndex = 4
+        Me.lcmbPropietario.Size = New System.Drawing.Size(284, 22)
+        Me.lcmbPropietario.TabIndex = 36
         '
         'cmbBodega
         '
-        Me.cmbBodega.Location = New System.Drawing.Point(10, 318)
+        Me.cmbBodega.Location = New System.Drawing.Point(12, 391)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Properties.NullText = ""
-        Me.cmbBodega.Size = New System.Drawing.Size(243, 20)
+        Me.cmbBodega.Size = New System.Drawing.Size(284, 22)
         Me.cmbBodega.TabIndex = 35
         Me.cmbBodega.Visible = False
         '
         'chkActivo
         '
         Me.chkActivo.EditValue = True
-        Me.chkActivo.Location = New System.Drawing.Point(15, 258)
+        Me.chkActivo.Location = New System.Drawing.Point(18, 318)
+        Me.chkActivo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkActivo.Name = "chkActivo"
         Me.chkActivo.Properties.Caption = "Global"
-        Me.chkActivo.Size = New System.Drawing.Size(75, 20)
+        Me.chkActivo.Size = New System.Drawing.Size(88, 24)
         Me.chkActivo.TabIndex = 31
         '
         'cmbRegimen
         '
-        Me.cmbRegimen.Location = New System.Drawing.Point(15, 51)
+        Me.cmbRegimen.Location = New System.Drawing.Point(18, 63)
+        Me.cmbRegimen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbRegimen.MenuManager = Me.RibbonControl
         Me.cmbRegimen.Name = "cmbRegimen"
         Me.cmbRegimen.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbRegimen.Properties.NullText = ""
-        Me.cmbRegimen.Size = New System.Drawing.Size(238, 20)
-        Me.cmbRegimen.TabIndex = 1
+        Me.cmbRegimen.Size = New System.Drawing.Size(278, 22)
+        Me.cmbRegimen.TabIndex = 9
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(15, 31)
+        Me.Label1.Location = New System.Drawing.Point(18, 38)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(52, 13)
+        Me.Label1.Size = New System.Drawing.Size(62, 16)
         Me.Label1.TabIndex = 9
         Me.Label1.Text = "Regimen:"
         '
         'lblAl
         '
         Me.lblAl.AutoSize = True
-        Me.lblAl.Location = New System.Drawing.Point(13, 128)
+        Me.lblAl.Location = New System.Drawing.Point(15, 158)
+        Me.lblAl.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblAl.Name = "lblAl"
-        Me.lblAl.Size = New System.Drawing.Size(20, 13)
+        Me.lblAl.Size = New System.Drawing.Size(23, 16)
         Me.lblAl.TabIndex = 3
         Me.lblAl.Text = "Al:"
         '
         'lblDel
         '
         Me.lblDel.AutoSize = True
-        Me.lblDel.Location = New System.Drawing.Point(12, 97)
+        Me.lblDel.Location = New System.Drawing.Point(14, 119)
+        Me.lblDel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblDel.Name = "lblDel"
-        Me.lblDel.Size = New System.Drawing.Size(26, 13)
+        Me.lblDel.Size = New System.Drawing.Size(30, 16)
         Me.lblDel.TabIndex = 3
         Me.lblDel.Text = "Del:"
         '
         'grdExistenciasConLp
         '
         Me.grdExistenciasConLp.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdExistenciasConLp.Location = New System.Drawing.Point(421, 158)
+        Me.grdExistenciasConLp.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grdExistenciasConLp.Location = New System.Drawing.Point(491, 193)
         Me.grdExistenciasConLp.MainView = Me.GridView1
         Me.grdExistenciasConLp.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdExistenciasConLp.MenuManager = Me.RibbonControl
         Me.grdExistenciasConLp.Name = "grdExistenciasConLp"
-        Me.grdExistenciasConLp.Size = New System.Drawing.Size(858, 474)
+        Me.grdExistenciasConLp.Size = New System.Drawing.Size(1001, 584)
         Me.grdExistenciasConLp.TabIndex = 15
         Me.grdExistenciasConLp.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -284,14 +271,14 @@ Partial Class frmResumenHistorico
         '
         'frmResumenHistorico
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1279, 656)
+        Me.ClientSize = New System.Drawing.Size(1492, 807)
         Me.Controls.Add(Me.grdExistenciasConLp)
         Me.Controls.Add(Me.grpFechas)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.Name = "frmResumenHistorico"
         Me.Ribbon = Me.RibbonControl
         Me.StatusBar = Me.RibbonStatusBar

@@ -2008,7 +2008,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
             End If
 
             pBePedidoDet = New clsBeTrans_pe_det()
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConnectionInterface, lTransInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0
             pBePedidoDet.IdCliente = pIdClienteDetalle
             pBePedidoDet.No_linea = PDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = PDet.Variant_Code
@@ -2240,8 +2240,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                                                          ByRef pListStockResOUT As List(Of clsBeStock_res),
                                                          ByRef lConectionInterface As SqlConnection,
                                                          ByRef CnnLog As SqlConnection,
-                                                         ByRef lTransactionInterface As SqlTransaction,
-                                                         Optional ByVal pNoDocumentoExterno As Integer = 0) As Boolean
+                                                         ByRef lTransactionInterface As SqlTransaction) As Boolean
 
         Inserta_Linea_Detalle_Pedido = False
 
@@ -2253,7 +2252,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
         Try
 
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0
             pBePedidoDet.No_linea = pBeTrasladoDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = pBeTrasladoDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = pIdPedidoEnc
@@ -2426,8 +2425,6 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                 Else
                     pBeStockRes.IdUbicacionAbastecerCon = 0
                 End If
-            ElseIf pNoDocumentoExterno > 0 Then
-                pBeStockRes.IdUbicacionAbastecerCon = pNoDocumentoExterno
             Else
                 pBeStockRes.IdUbicacionAbastecerCon = 0
             End If
@@ -2663,9 +2660,6 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                 If vIndiceListaCliente > -1 Then
                     ' Si lo encuentra, clona el objeto para evitar modificaciones por referencia
                     BeClienteDetalle = lClientes(vIndiceListaCliente).Clone()
-                    BeClienteDetalle.IdUbicacionAbastecerCon = clsLnCliente.Get_IdUbicacionAbastecerCon_By_IdCliente(BeClienteDetalle.IdCliente,
-                                                                                                                     lConnectionInterface,
-                                                                                                                     lTransInterface)
                 Else
                     ' Si no está en la lista, busca en la base de datos
                     BeClienteDetalle = clsLnCliente.Get_Single_By_Codigo(PDet.Transfer_to_CodeField,
@@ -3034,7 +3028,6 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
 
                             vDiasVencimientoCliente = 0
 
-                            BeClienteDetalle = New clsBeCliente
                             BeClienteDetalle = Get_Cliente_Detalle(PDet,
                                                                    NAVEnvioAlm,
                                                                    BeProducto,
@@ -3168,8 +3161,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                                                                             lBeStockResPedido,
                                                                             lConnectionInterface,
                                                                             CnnLog,
-                                                                            lTransInterface,
-                                                                            pBePedidoEnc.No_Documento_Externo) Then
+                                                                            lTransInterface) Then
 
                                             '#EJC2312260941:
                                             'clsPublic.Actualizar_Progreso(lblprg, "No fue posible completar la reserva.")

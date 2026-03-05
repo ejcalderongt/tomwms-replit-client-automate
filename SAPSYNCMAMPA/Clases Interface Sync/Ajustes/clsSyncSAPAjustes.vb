@@ -65,7 +65,8 @@ Public Class clsSyncSapAjustes
                                          Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt),
                                          Key .CentroCostoErp = a.Centro_Costo_Erp,
                                          Key .CentroCostoDirErp = a.Centro_Costo_Dir_Erp,
-                                         Key .CentroCostoDepErp = a.Centro_Costo_Dep_Erp
+                                         Key .CentroCostoDepErp = a.Centro_Costo_Dep_Erp,
+                                         Key .Motivo_Ajuste = a.Motivo_Ajuste
                                      })
 
                 For Each g In grupos
@@ -82,12 +83,13 @@ Public Class clsSyncSapAjustes
                     centroCostoErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoErp),
                     centroCostoDirErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoDirErp),
                     centroCostoDepErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoDepErp),
+                    motivo_ajuste:=g.Key.Motivo_Ajuste,
                     detalles:=g.ToList()
                 )
 
                     '#CKFK20251028 Agregamos los campos UDFs necesarios
                     payload.U_ENVIADO_WMS = 1
-                    payload.U_MOTIVO_WMS = "1"
+                    payload.U_MOTIVO_WMS = g.Key.Motivo_Ajuste
                     payload.U_OPERADOR_WMS = g.Key.Usr_Agr
                     payload.U_DOCUMENTO_WMS = g.Key.IdAjusteWMS
                     payload.U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
@@ -176,6 +178,7 @@ Public Class clsSyncSapAjustes
                                                     ByVal centroCostoErp As String,
                                                     ByVal centroCostoDirErp As String,
                                                     ByVal centroCostoDepErp As String,
+                                                    ByVal motivo_ajuste As String,
                                                     ByVal detalles As List(Of clsBeAjustesMI3)) As InventoryPayload
 
         Dim payload As New InventoryPayload With {
@@ -183,6 +186,7 @@ Public Class clsSyncSapAjustes
         .Comments = comments,
         .JournalMemo = journalMemo,
         .Series = series,
+        .U_MOTIVO_WMS = motivo_ajuste,
         .DocumentLines = New List(Of InventoryDocumentLine)
     }
 

@@ -315,15 +315,37 @@ Public Class frmEjecucion
         Enviar_Pedidos_Compra(True)
     End Sub
 
+    Private Sub cmdEntidad_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
+
+        Try
+
+            With frmNavEnt_List
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
     Private Sub frmEjecucion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Try
 
-            Me.Text = "MI3_SYNC ->TOMWMS (" & gVersionApp & " " & FormatoFechas.tFecha(gFechaVersion) & ")"
+            CheckForIllegalCrossThreadCalls = False
 
-            If Not UsuarioSapFromUsuarioWMS = "" Then
-                clsPublic.Actualizar_Progreso(lblprg, "Usuario SAP: " & UsuarioSapFromUsuarioWMS)
-            End If
+            Me.Text = "MI3_SYNC ->TOM, WMS (" & gVersionApp & " " & FormatoFechas.tFecha(gFechaVersion) & ")"
 
             If Interface_A_Ejecutar <> -1 Then
 
@@ -332,6 +354,7 @@ Public Class frmEjecucion
                 mnuProductosI.Visibility = BarItemVisibility.Never
                 mnuImprimir.Visibility = BarItemVisibility.Never
                 mnuReporteEjecuciones.Visibility = BarItemVisibility.Never
+                'mnuEnviarDatos.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
 
             End If
 
@@ -373,6 +396,9 @@ Public Class frmEjecucion
                 Case pInterfaceAEjecutar.Enviar_Pedidos_Compra
                     mnuEnviarPedidosCompra.Visibility = BarItemVisibility.Always
                     Enviar_Pedidos_Compra(False)
+                Case pInterfaceAEjecutar.Enviar_Pedidos_Transferencia
+                    mnuEnviarPedidosTransferencia.Visibility = BarItemVisibility.Always
+                    Enviar_Traslado_Stock(False)
                 Case pInterfaceAEjecutar.Enviar_Traslados_SAP
                     mnuEnviarTrasladosProrrateo.Visibility = BarItemVisibility.Always
                 Case pInterfaceAEjecutar.Enviar_Devolucion_Proveedor_SAP
@@ -464,6 +490,26 @@ Public Class frmEjecucion
 
     End Sub
 
+    Private Sub mnuEnviarAjustes_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
+
+        Try
+
+            Ejecuta_Interface_Envio_Ajustes(True)
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
     Private Sub cmdRptTransac_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdRptTransac.ItemClick
 
         Try
@@ -547,6 +593,7 @@ Public Class frmEjecucion
         End Try
 
     End Sub
+
 
     Public Sub Ejecuta_interface_Devolucion_Mercancia_Cliente(Optional ByVal Preguntar As Boolean = True)
 
@@ -927,10 +974,10 @@ Public Class frmEjecucion
     End Sub
 
     Private Sub mnuEnviarTraslados_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEnviarTrasladosProrrateo.ItemClick
-        Enviar_Traslado_Prorrateo(True)
+        Enviar_Traslado_Stock(True)
     End Sub
 
-    Private Sub Enviar_Traslado_Prorrateo(Optional ByVal Preguntar As Boolean = True)
+    Private Sub Enviar_Traslado_Stock(Optional ByVal Preguntar As Boolean = True)
 
         Dim MostrarMensaje As Boolean = False
         procesoEnEjecucion = True

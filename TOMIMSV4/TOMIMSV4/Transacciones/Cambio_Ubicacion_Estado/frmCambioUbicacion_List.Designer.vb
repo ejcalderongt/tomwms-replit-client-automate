@@ -92,12 +92,12 @@ Partial Class frmCambioUbicacion_List
         Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.Dgrid.Location = New System.Drawing.Point(0, 265)
+        Me.Dgrid.Location = New System.Drawing.Point(0, 261)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Dgrid.MenuManager = Me.RibbonControl
         Me.Dgrid.Name = "Dgrid"
-        Me.Dgrid.Size = New System.Drawing.Size(973, 351)
+        Me.Dgrid.Size = New System.Drawing.Size(973, 355)
         Me.Dgrid.TabIndex = 1
         Me.Dgrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -193,7 +193,7 @@ Partial Class frmCambioUbicacion_List
         '
         Me.cmdEliminarDocumento.Caption = "Eliminar documento"
         Me.cmdEliminarDocumento.Id = 12
-        Me.cmdEliminarDocumento.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarDocumento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdEliminarDocumento.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdEliminarDocumento.Name = "cmdEliminarDocumento"
         '
         'RibbonPage2
@@ -254,7 +254,7 @@ Partial Class frmCambioUbicacion_List
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupBox1.Size = New System.Drawing.Size(973, 72)
+        Me.GroupBox1.Size = New System.Drawing.Size(973, 68)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Tag = ""

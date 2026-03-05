@@ -1,5 +1,4 @@
 ﻿Imports System.Data.SqlClient
-Imports SAPbobsCOM
 Imports System.Reflection
 Imports System.Net.Http
 Imports System.Text
@@ -8,7 +7,6 @@ Imports Newtonsoft.Json
 Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
     Implements IDisposable
 
-    Private oCompany As Company
     Dim lRetCode, lErrCode As Long
     Dim sErrMsg As String = ""
 
@@ -212,130 +210,6 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
     'End Sub    
 
-    Public Sub Sync_Ajustes1(ByVal lblprg As RichTextBox,
-                            ByRef prg As System.Windows.Forms.ProgressBar)
-
-        Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim TransLog As SqlTransaction = Nothing
-        Dim Resultado As String = ""
-
-        Try
-
-            CnnLog.Open() : TransLog = CnnLog.BeginTransaction(IsolationLevel.ReadUncommitted)
-            clsPublic.Actualizar_Progreso(lblprg, "Consultando ajustes pendientes de envío.")
-
-            Dim lAjustesPendEnvio As New List(Of clsBeAjustesMI3)
-            lAjustesPendEnvio = clsLnI_nav_transacciones_out.Get_Ajustes_Auditados_Pendientes_Envio_MI3(Resultado, CnnLog, TransLog)
-
-            If Not lAjustesPendEnvio Is Nothing AndAlso lAjustesPendEnvio.Count > 0 Then
-
-                Dim BeConfigEnc As clsBeI_nav_config_enc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, CnnLog, TransLog)
-                Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega, CnnLog, TransLog)
-
-                Dim vCuentaIngresos As String = BeBodega.Cuenta_Ingreso_Mercancias
-                Dim vCuentaEgresos As String = BeBodega.Cuenta_Egreso_Mercancias
-
-                URLServicioEntrada = BD.Instancia.URL_ENTRADA_AJUSTE_POST
-                URLServicioSalida = BD.Instancia.URL_SALIDA_AJUSTE_POST
-
-                ' Agrupar por tipo de ajuste (Positivo/Negativo)
-                Dim ajustesPositivos = New List(Of Object)()
-                Dim ajustesNegativos = New List(Of Object)()
-
-                prg.Maximum = lAjustesPendEnvio.Count
-
-                For Each ajuste In lAjustesPendEnvio
-
-                    Dim entry = New With {
-                    .ItemCode = ajuste.Codigo_Producto,
-                    .Cantidad = ajuste.Cantidad
-                }
-
-                    If ajuste.TipoAjusteWMS = "Ajuste Positivo" Then
-                        ajustesPositivos.Add(entry)
-                        clsPublic.Actualizar_Progreso(lblprg, "Agregando producto a ajuste positivo: " & ajuste.Codigo_Producto)
-                    ElseIf ajuste.TipoAjusteWMS = "Ajuste Negativo" Then
-                        ajustesNegativos.Add(entry)
-                        clsPublic.Actualizar_Progreso(lblprg, "Agregando producto a ajuste negativo: " & ajuste.Codigo_Producto)
-                    End If
-
-                Next
-
-                ' Enviar un solo documento para todos los productos positivos
-                If ajustesPositivos.Count > 0 Then
-                    Dim entradaBody = New With {
-                    .Bodega = lAjustesPendEnvio.First().Codigo_Bodega,
-                    .RemarkCode = lAjustesPendEnvio.First().Codigo_Centro_Costo,
-                    .NombreUsuario = "TOMWMS",
-                    .Entries = ajustesPositivos
-                }
-                    Dim entradaJson = JsonConvert.SerializeObject(entradaBody)
-                    Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
-
-                    clsPublic.Actualizar_Progreso(lblprg, "Ajuste positivo enviado a SAP.")
-                    clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
-
-                    ' Marcar ajustes positivos como enviados
-                    If entradaResponse.ToString.Contains("éxito") Then
-                        For Each ajuste In lAjustesPendEnvio.Where(Function(x) x.TipoAjusteWMS = "Ajuste Positivo")
-                            ajuste.Observacion = "Enviado"
-                        Next
-                    End If
-                End If
-
-                ' Enviar un solo documento para todos los productos negativos
-                If ajustesNegativos.Count > 0 Then
-                    Dim salidaBody = New With {
-                    .Bodega = lAjustesPendEnvio.First().Codigo_Bodega,
-                    .RemarkCode = lAjustesPendEnvio.First().Codigo_Centro_Costo,
-                    .NombreUsuario = "TOMWMS",
-                    .Entries = ajustesNegativos
-                }
-                    Dim salidaJson = JsonConvert.SerializeObject(salidaBody)
-                    Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
-
-                    clsPublic.Actualizar_Progreso(lblprg, "Ajuste negativo enviado a SAP.")
-                    clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
-
-                    ' Marcar ajustes negativos como enviados
-                    If salidaResponse.ToString.Contains("éxito") Then
-                        For Each ajuste In lAjustesPendEnvio.Where(Function(x) x.TipoAjusteWMS = "Ajuste Negativo")
-                            ajuste.Observacion = "Enviado"
-                        Next
-                    End If
-                End If
-
-                ' Actualizar ajustes como enviados en la base de datos
-                For Each ajuste In lAjustesPendEnvio
-                    If ajuste.Observacion.Contains("Enviado") Then
-                        clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP(ajuste.IdAjusteDet, True, CnnLog, TransLog)
-                    End If
-                Next
-
-                clsPublic.Actualizar_Progreso(lblprg, "Fin de sincronización de ajustes.")
-                TransLog.Commit()
-
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, "No hay ajustes pendientes de envío.")
-            End If
-
-        Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al enviar ajustes a SAP: {0}{1}", vbNewLine, ex.Message))
-            If Not TransLog Is Nothing Then TransLog.Rollback()
-
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                   "Sync_Ajustes",
-                                                   BeNavEjecucionEnc.IdEjecucionEnc,
-                                                   BeConfigDet.Idnavconfigdet, CnnLog)
-
-            Throw New Exception(String.Format(" (M) {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-
-        Finally
-            If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
-        End Try
-
-    End Sub
-
 
     Public Async Function EnviarEntradaAsync(entrada As clsBeEntidadAjusteSAPCumbre) As Task(Of String)
 
@@ -432,7 +306,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
         Try
 
-            CnnLog.Open()  TransLog = CnnLog.BeginTransaction(IsolationLevel.ReadUncommitted)
+            CnnLog.Open() : TransLog = CnnLog.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             clsPublic.Actualizar_Progreso(lblprg, "Consultando ajustes pendientes de envío.")
 
@@ -635,17 +509,17 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                     End If
                 Next
 
-    ' Actualizar ajustes como enviados en la base de datos
-    For Each grupo In ajustesAgrupados
-    For Each ajuste In grupo
-    If ajuste.Observacion.Contains("Enviado") Then
+                ' Actualizar ajustes como enviados en la base de datos
+                For Each grupo In ajustesAgrupados
+                    For Each ajuste In grupo
+                        If ajuste.Observacion.Contains("Enviado") Then
                             clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP(ajuste.IdAjusteDet,
                                                                                   True,
                                                                                   CnnLog,
                                                                                   TransLog)
                         End If
-    Next
-    Next
+                    Next
+                Next
 
                 clsPublic.Actualizar_Progreso(lblprg, "Fin de sincronización de ajustes.")
 
@@ -655,7 +529,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                 clsPublic.Actualizar_Progreso(lblprg, "No hay ajustes pendientes de envío.")
             End If
 
-    Catch ex As Exception
+        Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al enviar ajustes a SAP: {0}{1}", vbNewLine, ex.Message))
             If Not TransLog Is Nothing Then TransLog.Rollback()
 
@@ -667,8 +541,8 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
             Throw New Exception(String.Format(" (M) {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 
-    Finally
-    If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
+        Finally
+            If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
         End Try
 
     End Sub

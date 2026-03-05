@@ -3502,37 +3502,37 @@ Public Class frmPrincipal02
                 .ArgumentDataMember = "Area"                  ' eje X: Área
                 .ValueDataMembers.Clear()
                 .ValueDataMembers.AddRange(New String() {"Cantidad"})
-                .ValueScaleType = DevExpress.XtraCharts.ScaleType.Numerical
+                .ValueScaleType = ScaleType.Numerical
 
                 ' Vista apilada lado a lado (dos pilas: GENERAL y FISCAL)
-                .View = New DevExpress.XtraCharts.SideBySideStackedBarSeriesView()
+                .View = New SideBySideStackedBarSeriesView()
 
-                Dim lbl As New DevExpress.XtraCharts.StackedBarSeriesLabel()
+                Dim lbl As New StackedBarSeriesLabel()
                 lbl.TextPattern = "{V:n0}"
-                lbl.Position = DevExpress.XtraCharts.BarSeriesLabelPosition.Center
+                lbl.Position = BarSeriesLabelPosition.Center
 
                 .Label = lbl
-                .LabelsVisibility = DevExpress.Utils.DefaultBoolean.False
+                .LabelsVisibility = DefaultBoolean.False
             End With
 
             ' Leyenda y ayudas
-            ccOcupacion.Legend.Visibility = DevExpress.Utils.DefaultBoolean.True
-            ccOcupacion.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True
+            ccOcupacion.Legend.Visibility = DefaultBoolean.True
+            ccOcupacion.ToolTipEnabled = DefaultBoolean.True
             ccOcupacion.SeriesTemplate.ToolTipPointPattern = "Área: {A}" & vbCrLf &
                                                              "Serie: {S}" & vbCrLf &
                                                              "Valor: {V:n0}"
-            ccOcupacion.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.True
+            ccOcupacion.CrosshairEnabled = DefaultBoolean.True
             ccOcupacion.SeriesTemplate.CrosshairLabelPattern = "{S}: {V:n0}"
 
             ' Ejes y navegación
-            Dim diagram = TryCast(ccOcupacion.Diagram, DevExpress.XtraCharts.XYDiagram)
+            Dim diagram = TryCast(ccOcupacion.Diagram, XYDiagram)
             If diagram IsNot Nothing Then
                 diagram.AxisY.Title.Text = "Ubicaciones (cantidad)"
-                diagram.AxisY.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
+                diagram.AxisY.Title.Visibility = DefaultBoolean.True
                 diagram.AxisY.Label.TextPattern = "{V:n0}"
 
                 diagram.AxisX.Title.Text = "Área"
-                diagram.AxisX.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
+                diagram.AxisX.Title.Visibility = DefaultBoolean.True
                 diagram.AxisX.Label.Angle = -45
                 diagram.AxisX.Label.ResolveOverlappingOptions.AllowRotate = True
                 diagram.AxisX.QualitativeScaleOptions.AutoGrid = False
@@ -3545,7 +3545,7 @@ Public Class frmPrincipal02
             ' Crear series y agrupar pilas por Tipo (GENERAL vs FISCAL)
             ccOcupacion.RefreshData()
             For Each s As DevExpress.XtraCharts.Series In ccOcupacion.Series
-                Dim v = TryCast(s.View, DevExpress.XtraCharts.SideBySideStackedBarSeriesView)
+                Dim v = TryCast(s.View, SideBySideStackedBarSeriesView)
                 If v IsNot Nothing Then
                     v.StackedGroup = If(s.Name.StartsWith("GENERAL", StringComparison.OrdinalIgnoreCase), "GENERAL", "FISCAL")
                     v.BarWidth = 0.8
@@ -3555,7 +3555,8 @@ Public Class frmPrincipal02
             ccOcupacion.EndInit()
 
             ' 6) Actualizar el gauge con % COMBINADO (GENERAL + FISCAL)
-            Dim ocupadasTotal As Decimal = Convert.ToDecimal(dtAll.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'"))
+            Dim result As Object = dtAll.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'")
+            Dim ocupadasTotal As Decimal = If(IsDBNull(result), 0D, Convert.ToDecimal(result))
             Dim totalUbic As Decimal = Convert.ToDecimal(dtAll.Compute("SUM(Cantidad)", Nothing))
             Dim perc As Single = If(totalUbic <= 0D, 0F, CSng((ocupadasTotal * 100D) / totalUbic))
 
@@ -3592,7 +3593,7 @@ Public Class frmPrincipal02
     ' Drill-down opcional (click en un área → gauge con % de esa área sobre ambas bodegas)
     Private Sub ccOcupacion_ObjectSelected_AreaGauge(ByVal sender As Object, ByVal e As DevExpress.XtraCharts.HotTrackEventArgs)
         Try
-            Dim p = TryCast(e.HitInfo.SeriesPoint, DevExpress.XtraCharts.SeriesPoint)
+            Dim p = TryCast(e.HitInfo.SeriesPoint, SeriesPoint)
             If p Is Nothing Then Exit Sub
             Dim area As String = p.Argument
             If String.IsNullOrWhiteSpace(area) Then Exit Sub

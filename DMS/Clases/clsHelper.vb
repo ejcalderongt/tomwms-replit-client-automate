@@ -19,8 +19,6 @@ Public Class clsHelper
     ''' <param name="tipo">Tipo de mensaje (Info, Error, etc.).</param>
     ''' <param name="incluirHora">Si se desea mostrar la hora actual.</param>
     Public Shared Sub LogMensaje(logBox As RichTextBox, mensaje As String, Optional tipo As TipoMensaje = TipoMensaje.Info, Optional incluirHora As Boolean = True)
-        If logBox Is Nothing Then Exit Sub
-
         If incluirHora Then
             mensaje = $"{Now:HH:mm:ss} - {mensaje}"
         End If
@@ -29,15 +27,15 @@ Public Class clsHelper
         Dim color As Color
         Select Case tipo
             Case TipoMensaje.Info
-                color = Color.Black
+                color = color.Black
             Case TipoMensaje.Exito
-                color = Color.Green
+                color = color.Green
             Case TipoMensaje.Advertencia
-                color = Color.Blue
+                color = color.Blue
             Case TipoMensaje.Error_
-                color = Color.Red
+                color = color.Red
             Case Else
-                color = Color.Black
+                color = color.Black
         End Select
 
         ' Acción que escribe el texto en el RichTextBox
@@ -127,8 +125,6 @@ Public Class clsHelper
             BeLogSincronizacion.Fec_agr = Now
             BeLogSincronizacion.Estado = "Ok"
             BeLogSincronizacion.Entidad = pTablaSincronizada
-            BeLogSincronizacion.IdPropietario = IdPropietario
-            BeLogSincronizacion.Registros_enviados = pRegistrosEnviados
 
             If pTiempo > 0 Then
                 BeLogSincronizacion.Tiempo_de_envio = pTiempo
@@ -148,14 +144,6 @@ Public Class clsHelper
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
     End Sub
-
-    ' Una nueva clase auxiliar para gestionar cada fila
-    Public Class DuplaSinFecha
-        Public Property Tabla As String
-        Public Property IdPropietario As Integer
-        Public Property Nombre As String
-        Public Property FechaSincronizacion As Date?
-    End Class
 
 End Class
 

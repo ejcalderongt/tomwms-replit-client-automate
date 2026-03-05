@@ -772,7 +772,7 @@ Partial Public Class clsLnTrans_re_oc
             Dim vSQL As String = "SELECT trans_re_oc.IdOrdenCompraEnc, trans_re_enc.IdRecepcionEnc 
                         FROM trans_re_oc INNER JOIN 
                         trans_re_enc ON trans_re_oc.IdRecepcionEnc = trans_re_enc.IdRecepcionEnc 
-                        WHERE trans_re_oc.IdOrdenCompraEnc = @IdOrdenCompraEnc AND ANULADA=0 "
+                        WHERE trans_re_oc.IdOrdenCompraEnc = @IdOrdenCompraEnc AND trans_re_enc.Estado <> 'Anulado' "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 

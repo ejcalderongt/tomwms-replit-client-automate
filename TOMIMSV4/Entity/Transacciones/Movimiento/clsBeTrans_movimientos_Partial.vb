@@ -47,4 +47,5 @@
         ' GC.SuppressFinalize(Me)
     End Sub
 #End Region
+
 End Class

@@ -172,10 +172,6 @@ Public Class frmInventarioProductos
             gvProductos.BestFitColumns(True)
 
             '#EJC20180806: Ocultar algunas columnas y mostrarlas en el columnchoser del grid para el enduser
-            '#GT23102025: ocultar nombre propietario si no es multipropietario
-            If IdPropietario > 0 Then
-                gvProductos.Columns("Propietario").Visible = False
-            End If
 
             gvProductos.Columns("IndiceRotacion").Visible = False
             gvProductos.Columns("IndiceRotacion").OptionsColumn.ShowInCustomizationForm = True

@@ -3712,8 +3712,7 @@ Public Class TOMHHWS
             Return clsLnTrans_re_det.MaxID(pIdRecepcionEnc)
         Catch ex As Exception
 
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            '#MECR01102025: Se agrego bitacora de logs para recepciones.            
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
 
@@ -5586,26 +5585,67 @@ Public Class TOMHHWS
                                                                 ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
 
         Dim curContext As HttpContext = HttpContext.Current
+        Dim infoDestinoObj As Object = Nothing
+        Dim infoUbicacionDestino As DataTable = Nothing
 
         Try
+            'No se encontró ninguna ubicación con el código de barra especificado.
+            ' Obtener la ubicación
             Dim ubicacion As clsBeBodega_ubicacion =
             clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
 
             If ubicacion Is Nothing Then
-                Throw New Exception("No se encontró ninguna ubicación con el código de barra especificado.")
+                Dim BeUbicacionNotFound As String =
+                JsonConvert.SerializeObject(
+                    New With {
+                        .ubicacion = Nothing,
+                        .infoDestino = Nothing,
+                        .Mensaje = "Ubicación destino incorrecta"
+                    },
+                    New JsonSerializerSettings With {
+                        .NullValueHandling = NullValueHandling.Include,
+                        .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                        .Formatting = Formatting.None
+                    })
+
+                curContext.Response.Clear()
+                curContext.Response.ContentType = "application/json"
+                curContext.Response.Write(BeUbicacionNotFound)
+                curContext.ApplicationInstance.CompleteRequest()
+                Return Nothing
             End If
+
+            infoUbicacionDestino = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(ubicacion.IdUbicacion, pIdBodega)
 
             If ubicacion.Tramo Is Nothing Then ubicacion.Tramo = New clsBeBodega_tramo() With {.Descripcion = ""}
             If ubicacion.Sector Is Nothing Then ubicacion.Sector = New clsBeBodega_sector() With {.Descripcion = "", .IdBodega = 0}
 
             If String.IsNullOrEmpty(ubicacion.Descripcion) Then ubicacion.Descripcion = ""
-            ' (Estos if son redundantes: si es 0, asignas 0; los dejo por compatibilidad)
             If ubicacion.Ancho = 0 Then ubicacion.Ancho = 0
             If ubicacion.Largo = 0 Then ubicacion.Largo = 0
             If ubicacion.Alto = 0 Then ubicacion.Alto = 0
 
+            If infoUbicacionDestino IsNot Nothing AndAlso infoUbicacionDestino.Rows.Count > 0 Then
+                Dim row As DataRow = infoUbicacionDestino.Rows(0)
+                infoDestinoObj = New With {
+                .es_rack = If(IsDBNull(row("es_rack")), False, Convert.ToBoolean(row("es_rack"))),
+                .LicenciaDestino = If(IsDBNull(row("LicenciaDestino")), "", row("LicenciaDestino").ToString()),
+                .IdProductoEstado = If(IsDBNull(row("IdProductoEstado")), 0, Convert.ToInt32(row("IdProductoEstado")))
+            }
+            Else
+                infoDestinoObj = New With {
+                .es_rack = False,
+                .LicenciaDestino = "",
+                .IdProductoEstado = 0
+            }
+            End If
+
             Dim BeUbicacion As String =
-            JsonConvert.SerializeObject(New With {.ubicacion = ubicacion},
+            JsonConvert.SerializeObject(
+                New With {
+                    .ubicacion = ubicacion,
+                    .infoDestino = infoDestinoObj
+                },
                 New JsonSerializerSettings With {
                     .NullValueHandling = NullValueHandling.Include,
                     .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -5620,50 +5660,40 @@ Public Class TOMHHWS
             Return ubicacion 'retorno en éxito
 
         Catch ex As Exception
-
-            '#MECR04112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
+            WriteErrorToEventLog(ex.Message)
 
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
+            ' Manejo legacy XML
+            If mArch IsNot Nothing AndAlso mArch.Tipo <> "WM" Then
+                Dim DT As New DataTable("CustomError")
+                DT.Columns.Add("Error", GetType(String))
+                DT.Rows.Add(ex.Message)
 
-            If mArch IsNot Nothing Then
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje, ex) ' aquí no hace falta Return
-                Else
-                    ' LEGACY XML ERROR
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
+                Dim sw As New StringWriter()
+                DT.WriteXml(sw)
 
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
+                curContext.Response.Clear()
+                curContext.Response.StatusCode = 299
+                curContext.Response.SubStatusCode = CInt(HttpStatusCode.InternalServerError)
+                curContext.Response.Output.Write(sw.ToString())
+                curContext.Response.ContentType = "text/xml"
+                curContext.ApplicationInstance.CompleteRequest()
 
-                    curContext.Response.Clear()
-                    curContext.Response.StatusCode = 299
-                    curContext.Response.SubStatusCode = CInt(HttpStatusCode.InternalServerError)
-                    curContext.Response.Output.Write(sw.ToString())
-                    curContext.Response.ContentType = "text/xml"
-                    curContext.ApplicationInstance.CompleteRequest()
-
-                    Return Nothing ' retorno en rama XML
-                End If
+                Return Nothing
             End If
 
             ' JSON ERROR
-            Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = Mensaje})
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
             curContext.Response.Clear()
             curContext.Response.StatusCode = 500
             curContext.Response.ContentType = "application/json"
             curContext.Response.Write(errorJson)
             curContext.ApplicationInstance.CompleteRequest()
 
-            Return Nothing 'retorno en rama JSON
-
+            Return Nothing
         End Try
     End Function
-
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Actualizar_Trans_Ubic_HH_Det(ByVal oBeTrans_ubic_hh_det As clsBeTrans_ubic_hh_det,
@@ -11956,11 +11986,7 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            '#MECR11122025: Se agrego bitacora de logs para verificacion
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)

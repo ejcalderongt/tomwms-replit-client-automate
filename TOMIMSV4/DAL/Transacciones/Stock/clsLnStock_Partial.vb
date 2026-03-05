@@ -7,28 +7,28 @@ Partial Public Class clsLnStock
     Private Shared lpBeProductoOutput As New List(Of clsBeProducto)
     Private Shared lBeBodega As New List(Of clsBeBodega)
 
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
+    'Public Shared Function MaxID(ByVal pConnection As SqlConnection,
+    '                             ByVal pTransaction As SqlTransaction) As Integer
 
-        Try
+    '    Try
 
-            Dim lMax As Integer = 0
-            Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
+    '        Dim lMax As Integer = 0
+    '        Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
 
-            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue)
-                End If
-            End Using
+    '        Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
+    '            Dim lReturnValue As Object = lCommand.ExecuteScalar()
+    '            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+    '                lMax = CInt(lReturnValue)
+    '            End If
+    '        End Using
 
-            Return lMax
+    '        Return lMax
 
-        Catch ex As Exception
-            Throw ex
-        End Try
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
 
-    End Function
+    'End Function
 
     ''' <summary>
     ''' Busca las existencias para un IdPropietarioBodega
@@ -2963,7 +2963,7 @@ Partial Public Class clsLnStock
         Try
 
             Dim oStock As clsBeStock
-
+            Dim vManejaTallaColor As Boolean = False
             Dim ListStock As New List(Of clsBeStock)
 
             Dim SQL As String = "SELECT stock.*  
@@ -3026,6 +3026,11 @@ Partial Public Class clsLnStock
 
             End If
 
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pIdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                SQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
+            End If
 
             Using lDTA As New SqlDataAdapter(SQL, pConnection)
 
@@ -3062,6 +3067,10 @@ Partial Public Class clsLnStock
 
                 If pIdUbicacion <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lDataTable As New DataTable
@@ -3149,7 +3158,7 @@ Partial Public Class clsLnStock
         Try
 
             Dim oStock As clsBeStock
-
+            Dim vManejaTallaColor As Boolean = False
             Dim ListStock As New List(Of clsBeStock)
 
             Dim vSQL As String = "SELECT stock.*  
@@ -3172,6 +3181,12 @@ Partial Public Class clsLnStock
                 vSQL += " AND stock.IdUbicacion = @IdUbicacionAbastecerCon "
             End If
 
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                vSQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
+            End If
+
             Using lDTA As New SqlDataAdapter(vSQL, pConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
@@ -3191,6 +3206,10 @@ Partial Public Class clsLnStock
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
                 If pProducto.IdUbicacion <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pProducto.IdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lDataTable As New DataTable
@@ -3672,6 +3691,10 @@ Partial Public Class clsLnStock
 
         Try
 
+            Dim vManejaTallaColor As Boolean = False
+
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
             Dim vSQL As String = " select sum(stock_res.cantidad) as cantidad
 					               from stock_res inner join
 					               producto_bodega on stock_res.idproductobodega = producto_bodega.idproductobodega
@@ -3707,6 +3730,10 @@ Partial Public Class clsLnStock
             If pIdUbicacion <> 0 Then
                 '#EJC20190311_0948PM: Buscar stock por ubicación específica.
                 vSQL += " and stock_res.idubicacion =@IdUbicacion"
+            End If
+
+            If vManejaTallaColor Then
+                vSQL += " and stock_res.IdProductoTallaColor = @IdProductoTallaColor  "
             End If
 
             '#EJC202309120602: ANALIZAR ESTO CON CAROLINA
@@ -3747,6 +3774,10 @@ Partial Public Class clsLnStock
 
                 If pProducto.IdBodega <> 0 Then
                     lCommand.Parameters.AddWithValue("@IdBodega", pProducto.IdBodega)
+                End If
+
+                If vManejaTallaColor Then
+                    lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
@@ -4612,12 +4643,14 @@ Partial Public Class clsLnStock
 
         Try
 
-            Dim vSQL As String = " select sum(stock.peso) as peso " &
-            " from stock inner join  " &
-            " producto_bodega on stock.idproductobodega = producto_bodega.idproductobodega  " &
-            " where producto_bodega.idproductobodega=@idproducto " &
-            " and (stock.idpresentacion is null or stock.idpresentacion=@idpresentacion) " &
-            " and stock.idunidadmedida =@idunidadmedida "
+            Dim vManejaTallaColor As Boolean = False
+
+            Dim vSQL As String = " select sum(stock.peso) as peso  
+                                   from stock inner join  
+                                   producto_bodega on stock.idproductobodega = producto_bodega.idproductobodega  
+                                   where producto_bodega.idproductobodega=@idproducto  
+                                   and (stock.idpresentacion is null or stock.idpresentacion=@idpresentacion)   
+                                   and stock.idunidadmedida =@idunidadmedida "
 
             If ConEstado Then
                 vSQL += " and stock.idproductoestado=@idproductoestado "
@@ -4629,6 +4662,12 @@ Partial Public Class clsLnStock
 
             If pIdUbicacion <> 0 Then
                 vSQL += " and stock.IdUbicacion=@IdUbicacion "
+            End If
+
+            vManejaTallaColor = clsLnBodega.Get_Maneja_Talla_Color_By_IdBodega(pProducto.IdBodega, pConnection, pTransaction)
+
+            If vManejaTallaColor Then
+                vSQL += " and stock.IdProductoTallaColor = @IdProductoTallaColor  "
             End If
 
             Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
@@ -4658,6 +4697,10 @@ Partial Public Class clsLnStock
 
                 If pIdUbicacion <> 0 Then
                     lCommand.Parameters.AddWithValue("IdUbicacion", pIdUbicacion)
+                End If
+
+                If vManejaTallaColor Then
+                    lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pProducto.IdProductoTallaColor)
                 End If
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
@@ -5057,8 +5100,7 @@ Partial Public Class clsLnStock
                         If BeTransAjusteDet.Cantidad_nueva + BeTransAjusteDet.CantReservada > 0 Then
 
                             clsPublic.CopyObject(BeStockOriginal, BeStockNuevo)
-                            BeStockNuevo.IdStock = MaxID(pConection, pTransaction) + 1
-
+                            BeStockNuevo.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             BeStockNuevo.Cantidad = BeTransAjusteDet.Cantidad_nueva + BeTransAjusteDet.CantReservada
                             BeStockNuevo.Peso = BeTransAjusteDet.Peso_nuevo
                             BeStockNuevo.Fecha_vence = BeTransAjusteDet.Fecha_vence_nueva
@@ -6086,7 +6128,7 @@ Partial Public Class clsLnStock
             '#EJC20180420: Mejora en consulta por ordenamiento lógico para picking.
             Dim vSQL As String = "SELECT producto.codigo,
 		                            producto.nombre as producto,
-		                            producto_presentacion.nombre as presentacion,
+		                            IIF(producto_presentacion.nombre = '' or producto_presentacion.nombre is null, '-', producto_presentacion.nombre)  as presentacion,
 		                            unidad_medida.nombre as UMBas,
 		                            stock.cantidad as Cant,
                                     stock.IdUbicacion,
@@ -6125,11 +6167,11 @@ Partial Public Class clsLnStock
 		                            bodega_tramo.es_rack,
 		                            bodega_ubicacion.IdTramo, IdStock,                                  
                                     dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as NombUbic,
-                                    ptc.IdProductoTallaColor, 
-                                    t.Codigo as Codigo_Talla, 
-                                    t.Nombre Nombre_Talla, 
-                                    c.Codigo Codigo_Color, 
-                                    c.Nombre Nombre_Color
+                                    IIF(ptc.IdProductoTallaColor = '' or ptc.IdProductoTallaColor is null, '-', ptc.IdProductoTallaColor) as IdProductoTallaColor, 
+                                    IIF(t.Codigo = '' or t.Codigo is null, '-', t.Codigo)  as Codigo_Talla,
+                                    IIF(t.Nombre = '' or t.Nombre is null, '-', t.Nombre) as Nombre_Talla,
+                                    IIF(c.Codigo = '' or c.Codigo is null, '-', c.Codigo) as Codigo_Color,
+                                    IIF(c.Nombre = '' or c.Nombre is null, '-', c.Nombre) as  Nombre_Color
 					FROM stock INNER JOIN
 		            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 		            producto on producto.IdProducto = producto_bodega.IdProducto AND
@@ -10625,7 +10667,7 @@ Partial Public Class clsLnStock
 
             Actualizar_Stock_Por_Productos_Pickeados = 0
 
-            Dim lMaxS As Integer = MaxID(lConnection, lTransaction)
+            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.            
             Dim objStockOrigen As New clsBeStock()
             Dim vCantidadDisponible As Double = 0
             Dim BePres As New clsBeProducto_Presentacion
@@ -11035,7 +11077,7 @@ Partial Public Class clsLnStock
 
                             ObjStockDestino.Cantidad = vCantidadDisponible
 
-                            lMaxS = MaxID(lConnection, lTransaction) + 1
+                            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             ObjStockDestino.IdStock = lMaxS
 
@@ -11248,7 +11290,7 @@ Partial Public Class clsLnStock
 
                             ObjStockDestino.Cantidad = vCantidadDisponible
 
-                            lMaxS = MaxID(lConnection, lTransaction) + 1
+                            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             ObjStockDestino.IdStock = lMaxS
 
@@ -11748,7 +11790,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
                 '#
                 objStockDestino.IdBodega = pIdBodegaDestino
@@ -11871,7 +11913,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
                 '#
                 objStockDestino.IdBodega = pIdBodegaDestino
@@ -11969,7 +12011,7 @@ Por favor reportar este problema a DevOps."
 
             If pListBeTransReDet IsNot Nothing Then
 
-                Dim lMaxS As Integer = MaxID(lConnection, lTransaction)
+                Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 Dim BeStock As New clsBeStock
                 Dim BeStockRec As New clsBeStock_rec
                 Dim BeVWStockRec As New clsBeVW_stock_res
@@ -12137,7 +12179,7 @@ Por favor reportar este problema a DevOps."
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            IdStock = MaxID(lConnection, lTransaction)
+            IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
             BeTransInvEnc.Regularizado = True
@@ -15394,7 +15436,7 @@ Por favor reportar este problema a DevOps."
                     objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                 End If
 
-                objStockDestino.IdStock = MaxID(lConnection, lTransaction) + 1
+                objStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                 objStockDestino.Peso = pBePickingUbic.Peso_verificado
 
 
@@ -16358,7 +16400,7 @@ Por favor reportar este problema a DevOps."
         Guardar_Stock_Ajuste_Positivo = False
 
         Try
-            pObjStock.IdStock = MaxID(lConnection, lTransaction) + 1
+            pObjStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
             Insertar(pObjStock, lConnection, lTransaction)
             Guardar_Stock_Ajuste_Positivo = True
 

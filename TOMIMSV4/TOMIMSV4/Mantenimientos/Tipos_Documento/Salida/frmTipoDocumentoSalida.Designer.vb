@@ -83,7 +83,6 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.chkGeneraGuiaRemision = New DevExpress.XtraEditors.ToggleSwitch()
         NombreLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -140,7 +139,6 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'NombreLabel
@@ -392,7 +390,6 @@ Partial Class frmTipoDocumentoSalida
         '
         'grpGenerales
         '
-        Me.grpGenerales.Controls.Add(Me.chkGeneraGuiaRemision)
         Me.grpGenerales.Controls.Add(Me.chkEmpaqueTarima)
         Me.grpGenerales.Controls.Add(Me.GroupBox3)
         Me.grpGenerales.Controls.Add(Me.GroupBox2)
@@ -435,9 +432,9 @@ Partial Class frmTipoDocumentoSalida
         Me.GroupBox3.Controls.Add(Me.cmbPropietario)
         Me.GroupBox3.Controls.Add(Me.lblEstado)
         Me.GroupBox3.Controls.Add(Me.cmbEstado)
-        Me.GroupBox3.Location = New System.Drawing.Point(563, 363)
+        Me.GroupBox3.Location = New System.Drawing.Point(563, 353)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(327, 97)
+        Me.GroupBox3.Size = New System.Drawing.Size(327, 107)
         Me.GroupBox3.TabIndex = 31
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Estado default producto"
@@ -494,9 +491,9 @@ Partial Class frmTipoDocumentoSalida
         '
         Me.GroupBox2.Controls.Add(Me.chkFotografiaVerificacion)
         Me.GroupBox2.Controls.Add(Me.chkVerificar)
-        Me.GroupBox2.Location = New System.Drawing.Point(307, 363)
+        Me.GroupBox2.Location = New System.Drawing.Point(307, 353)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(250, 97)
+        Me.GroupBox2.Size = New System.Drawing.Size(250, 107)
         Me.GroupBox2.TabIndex = 30
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Verificacion"
@@ -527,9 +524,9 @@ Partial Class frmTipoDocumentoSalida
         '
         Me.GroupBox1.Controls.Add(Me.chkMoverAMuelle)
         Me.GroupBox1.Controls.Add(Me.chkEscanearMuellePicking)
-        Me.GroupBox1.Location = New System.Drawing.Point(22, 363)
+        Me.GroupBox1.Location = New System.Drawing.Point(22, 353)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(279, 97)
+        Me.GroupBox1.Size = New System.Drawing.Size(279, 107)
         Me.GroupBox1.TabIndex = 29
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Picking"
@@ -836,17 +833,6 @@ Partial Class frmTipoDocumentoSalida
         Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 90)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'chkGeneraGuiaRemision
-        '
-        Me.chkGeneraGuiaRemision.Location = New System.Drawing.Point(392, 334)
-        Me.chkGeneraGuiaRemision.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.chkGeneraGuiaRemision.MenuManager = Me.RibbonControl
-        Me.chkGeneraGuiaRemision.Name = "chkGeneraGuiaRemision"
-        Me.chkGeneraGuiaRemision.Properties.OffText = "No genera guía remisión"
-        Me.chkGeneraGuiaRemision.Properties.OnText = "Genera guía remisión"
-        Me.chkGeneraGuiaRemision.Size = New System.Drawing.Size(284, 24)
-        Me.chkGeneraGuiaRemision.TabIndex = 33
-        '
         'frmTipoDocumentoSalida
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -916,7 +902,6 @@ Partial Class frmTipoDocumentoSalida
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -977,5 +962,4 @@ Partial Class frmTipoDocumentoSalida
     Friend WithEvents chkRecibirProductoAutoBodegaDestino As DevExpress.XtraEditors.ToggleSwitch
     Friend WithEvents chkEmpaqueTarima As DevExpress.XtraEditors.ToggleSwitch
     Friend WithEvents chkTransferirUbicacion As DevExpress.XtraEditors.ToggleSwitch
-    Friend WithEvents chkGeneraGuiaRemision As DevExpress.XtraEditors.ToggleSwitch
 End Class

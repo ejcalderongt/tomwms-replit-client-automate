@@ -1,5 +1,4 @@
 ﻿Imports System.Reflection
-Imports System.Runtime.InteropServices
 Imports DevExpress.XtraEditors
 
 Module ModuleMain
@@ -174,7 +173,7 @@ Module ModuleMain
                     Application.Exit()
                 Else
 
-                    If IndiceInstanciaDefecto = -1 Then IndiceInstanciaDefecto = 0
+                    If IndiceInstanciaDefecto = -1 Then IndiceInstanciaDefecto =0
 
                     BD.Instancia = lInstancias(IndiceInstanciaDefecto)
 
@@ -222,7 +221,7 @@ Module ModuleMain
 
         '#EJC20171031_1259AM_REF: Cambiar timeOut de archivo de configuración para verificación de conexión a BD de forma temporal.
         Dim vTimeOutConfig As Double
-        Dim CadenaConexion As String = ""
+        Dim CadenaConexion As String =""
 
         If IndiceInstanciaDefecto = -1 Then
             vTimeOutConfig = ListaInstancias(0).TimeOutConBD
@@ -246,7 +245,7 @@ Module ModuleMain
         Catch ex1 As SqlClient.SqlException
             Throw ex1
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", "Error al intenar conectarse a la base de datos: {2} ", ex.Message, CadenaConexion))
+            Throw New Exception(String.Format("{0} {1}", "Error al intenar conectarse a la base de datos: {2} ", ex.Message,CadenaConexion))
         Finally
             Try
                 lConnection.Dispose()

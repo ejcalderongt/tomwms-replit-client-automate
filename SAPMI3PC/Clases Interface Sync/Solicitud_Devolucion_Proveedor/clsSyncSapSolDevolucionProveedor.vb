@@ -112,7 +112,7 @@ Public Class clsSyncSapSolDevolucionProveedor : Inherits clsInterfaceBase : Impl
 
                         BeSolicitudDevolDet = New clsBeI_nav_ped_traslado_det()
                         BeSolicitudDevolDet.NoEnc = BeSolicitudDevolWMS.No
-                        BeSolicitudDevolDet.No = clsLnTrans_pe_det.MaxID() + 1
+                        BeSolicitudDevolDet.No = clsLnI_nav_ped_traslado_det.MaxID() + 1
                         BeSolicitudDevolDet.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
                         BeSolicitudDevolDet.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
                         BeSolicitudDevolDet.Shipment_Date = Date.Now
@@ -198,10 +198,8 @@ Public Class clsSyncSapSolDevolucionProveedor : Inherits clsInterfaceBase : Impl
 
                         End If
 
-                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
-                                                                                                                                            lblprg,
-                                                                                                                                            Nothing,
-                                                                                                                                            Nothing)
+                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
+                                                                                                                                               lblprg)
 
                         If Not BePedidoEncResult Is Nothing Then
 

@@ -1,9 +1,7 @@
 ﻿Imports System.IO
 Imports System.Reflection
-Imports DevExpress.CodeParser
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
-Imports DevExpress.XtraSplashScreen
 
 Public Class frmReporteInventarios
 
@@ -25,7 +23,6 @@ Public Class frmReporteInventarios
 
         '#MECR28092025: Se agrego columna de talla y color
         Dt = New DataTable("Stock")
-
         Dt.Columns.Add(("Código"), GetType(String))
         Dt.Columns.Add(("Producto"), GetType(String))
         Dt.Columns.Add(("Existencias UMBas"), GetType(Double))
@@ -48,41 +45,17 @@ Public Class frmReporteInventarios
     End Sub
 
     Private Sub frmReporteInventarios_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Set_DataTable()
 
+        AP.Listar_Bodegas_By_Usuario(cmbBodega)
 
-        Try
-
-            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-            SplashScreenManager.Default.SetWaitFormDescription("Cargando Stock...")
-
-
-            Set_DataTable()
-
-            AP.Listar_Bodegas_By_Usuario(cmbBodega)
-            cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
-
-            IMS.Listar_Propietarios_By_IdBodega(cmbPropietarios, cmbBodega.EditValue)
-
-            SplashScreenManager.CloseForm(False)
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-          Text,
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Exclamation)
-        Finally
-            SplashScreenManager.CloseForm(False)
-        End Try
+        IMS.Listar_Propietarios_By_IdBodega(cmbPropietarios, cmbBodega.EditValue)
 
     End Sub
 
     Private Sub Cargar_Datos()
 
         Try
-
-            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-            SplashScreenManager.Default.SetWaitFormDescription("Cargando Stock...")
 
             Dt.Clear()
 
@@ -105,16 +78,13 @@ Public Class frmReporteInventarios
 
             End If
 
-            SplashScreenManager.CloseForm(False)
-
         Catch ex As Exception
 
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
           Text,
           MessageBoxButtons.OK,
           MessageBoxIcon.Exclamation)
-        Finally
-            SplashScreenManager.CloseForm(False)
+
         End Try
 
     End Sub
@@ -184,9 +154,8 @@ Public Class frmReporteInventarios
     End Sub
 
     Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
-        cmdActualizar.Enabled = False
+
         Cargar_Datos()
-        cmdActualizar.Enabled = True
 
     End Sub
 

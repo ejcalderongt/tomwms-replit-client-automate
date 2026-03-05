@@ -1922,7 +1922,8 @@ Partial Public Class clsLnTrans_re_enc
                                             pBeStockRec.Fec_mod = Now
                                             clsPublic.CopyObject(pBeStockRec, BeStock)
 
-                                            Dim lMaxS As Integer = clsLnStock.MaxID(lConnection, lTransaction)
+                                            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
+
                                             lMaxS += 1
 
                                             BeStock.IdStock = lMaxS
@@ -2303,7 +2304,7 @@ Partial Public Class clsLnTrans_re_enc
 
                 Dim pBeINavBarraPallet As New clsBeI_nav_barras_pallet
 
-                Dim lMaxS As Integer = clsLnStock.MaxID(lConnection, lTransaction)
+                Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                 If Not pListStockRec Is Nothing Then
 
@@ -2617,7 +2618,7 @@ Partial Public Class clsLnTrans_re_enc
 
                             clsPublic.CopyObject(pBeStockRec, Obj)
 
-                            Dim lMaxS As Integer = clsLnStock.MaxID(lConnection, lTransaction)
+                            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             lMaxS += 1
 
                             Obj.IdStock = lMaxS
@@ -3078,12 +3079,12 @@ Partial Public Class clsLnTrans_re_enc
 
 
                                                 '#EJC2022102513356: Corrección por concurrencia.
-                                                BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                                BeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                                                 '#EJC20191218: IdBodega2Stock
                                                 vResultadoInsertStock = clsLnStock.Insertar(BeStock,
-                                                                                    lConnection,
-                                                                                    lTransaction)
+                                                                                            lConnection,
+                                                                                            lTransaction)
 
                                                 If vResultadoInsertStock > 0 Then
 
@@ -3634,8 +3635,7 @@ Partial Public Class clsLnTrans_re_enc
                                                                 lConnection,
                                                                 lTransaction) Then
 
-                            Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                                    lTransaction)
+                            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
 
@@ -3643,7 +3643,6 @@ Partial Public Class clsLnTrans_re_enc
 
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones
                                     Dim msjAdvertencia1 As String = "ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario
-                                    'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia1, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
                                     clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia1,
                                                                          pIdEmpresa:=pIdEmpresa,
                                                                          pIdBodega:=pIdBodega,
@@ -3779,7 +3778,7 @@ Partial Public Class clsLnTrans_re_enc
         Try
 
             '#EJC20200715: GetMaxIdStock before insert
-            lMaxS = clsLnStock.MaxID(lConnection, lTransaction)
+            lMaxS = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
             Dim BeEmpresa As New clsBeEmpresa
             BeEmpresa.IdEmpresa = pIdEmpresa
@@ -3818,13 +3817,6 @@ Partial Public Class clsLnTrans_re_enc
                 BeStockRec.Fecha_regularizacion = Now
 
                 vIdPropietarioBodega = BeStockRec.IdPropietarioBodega
-
-                '#GT20012023: genera el historico cuando finaliza la recepción y no esta habilitado Stock disponible.
-                'If BeEmpresa.Generar_Stock_Jornada Then
-                '    Recepcion_Historico_By_Proces(False, pIdEmpresa, pIdBodega, pIdUsuario, BeStock.IdStock,
-                '                                                                            lConnection,
-                '                                                                            lTransaction)
-                'End If
 
             Next
 
@@ -4007,8 +3999,7 @@ Partial Public Class clsLnTrans_re_enc
                         Throw New Exception("La cantidad de unidades por LP es 0")
                     End If
 
-                    Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                            lTransaction)
+                    Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                     If pBeStockRec.Activo = False Then 'Bandera para saber si el pallet ya fue recibido (en su totalidad).
 
@@ -4156,8 +4147,7 @@ Partial Public Class clsLnTrans_re_enc
                         Throw New Exception("La cantidad de unidades por LP es 0")
                     End If
 
-                    Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                            lTransaction)
+                    Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                     If Not pBeStockRec.Activo Then 'Bandera para saber si el pallet ya fue recibido (en su totalidad).
 
@@ -5237,12 +5227,6 @@ Partial Public Class clsLnTrans_re_enc
             '#GT02052022_0840: guardar fecha_llegada del Excel en el stock y demas tablas
             clsLnStock_rec.Guarda_Stock_Rec_By_Excel(pRecEnc.IdRecepcionEnc, pIdBodega, pListStockRec, lConnection, lTransaction)
 
-            ' Producto_pallet
-            'clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc, pListProductoPallet, lConnection, lTransaction)
-
-            ' Stock Serializado Rec
-            'clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer, pListStockRec, lConnection, lTransaction)
-
             'Tarea de recepción para la HH.
             clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH, lConnection, lTransaction)
 
@@ -5251,18 +5235,12 @@ Partial Public Class clsLnTrans_re_enc
             If pRecEnc.Habilitar_Stock Then
 
                 Dim pBeINavBarraPallet As New clsBeI_nav_barras_pallet
-                Dim lMaxS As Integer = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                 For Each pBeStockRec As clsBeStock_rec In pListStockRec
 
                     BeStock = New clsBeStock
                     pBeStockRec.IdBodega = pIdBodega
-
-                    '#EJC20200207: Para evitar fechas malas de la HH
-                    '#GT01052022_2219: se guarda la fecha_llegada del excel
-                    'pBeStockRec.Fecha_Ingreso = Now
-                    'pBeStockRec.Fec_agr = Now
-                    'pBeStockRec.Fec_mod = Now
                     clsPublic.CopyObject(pBeStockRec, BeStock)
                     BeStock.IdStock = lMaxS
 
@@ -6019,7 +5997,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                         If vResultadoInsertMovimientos > 0 Then
 
-                                            BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                            BeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                                             If vGenera_LP AndAlso String.IsNullOrEmpty(BeStock.Lic_plate) Then
                                                 Throw New Exception("ERROR_02122024_2000_HH_GuardarRecepcion_S: No se puede registrar el stock sin licencia.")
@@ -6522,7 +6500,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                         If vResultadoInsertMovimientos > 0 Then
 
-                                            BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                            BeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                                             If vGenera_LP AndAlso String.IsNullOrEmpty(BeStock.Lic_plate) Then
                                                 Throw New Exception("ERROR_02122024_2000_HH_GuardarRecepcion_S: No se puede registrar el stock sin licencia.")
@@ -6977,8 +6955,7 @@ Partial Public Class clsLnTrans_re_enc
                                                                 lConnection,
                                                                 lTransaction) Then
 
-                            Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                                lTransaction)
+                            Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                             If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
 
@@ -7303,6 +7280,12 @@ Partial Public Class clsLnTrans_re_enc
 
                                 If pListStockRec.Count > 0 Then
 
+                                    Dim vIdRecepcionDet As Integer = IdRecepcionDet
+
+                                    pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).
+                                                  ToList().
+                                                  ForEach(Sub(x) x.IdRecepcionDet = vIdRecepcionDet)
+
                                     vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                          pIdBodega,
                                                                                          pListStockRec,
@@ -7395,7 +7378,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                                     CadenaResultado += "Insertar_Movimientos_Recepcion: " & vResultadoInsertMovimientos
 
-                                                    BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                                    BeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                                                     vResultadoInsertStock = clsLnStock.Insertar(BeStock,
                                                                                                 lConnection,
@@ -8427,7 +8410,7 @@ Partial Public Class clsLnTrans_re_enc
                             i += 1
                             BeTransReDet = New clsBeTrans_re_det()
                             BeTransReDet.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
-                            BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeRecepcionEnc.IdRecepcionEnc, lConnection, lTransaction) + i
+                            BeTransReDet.IdRecepcionDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
                             BeTransReDet.IdProductoBodega = PickingUbic.IdProductoBodega
                             BeTransReDet.IdPresentacion = PickingUbic.IdPresentacion
                             BeTransReDet.IdUnidadMedida = PickingUbic.IdUnidadMedida
@@ -8590,8 +8573,7 @@ Partial Public Class clsLnTrans_re_enc
                                                             lConnection,
                                                             lTransaction) Then
 
-                        Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                                lTransaction)
+                        Dim lMaxS As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
                         If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
 
@@ -9083,7 +9065,7 @@ Partial Public Class clsLnTrans_re_enc
                     i += 1
                     BeTransReDet = New clsBeTrans_re_det()
                     BeTransReDet.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
-                    BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeRecepcionEnc.IdRecepcionEnc, lConnection, lTransaction) + i
+                    BeTransReDet.IdRecepcionDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
                     BeTransReDet.IdProductoBodega = BeOCDet.IdProductoBodega
                     BeTransReDet.IdPresentacion = BeOCDet.IdPresentacion
                     BeTransReDet.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
@@ -9111,6 +9093,9 @@ Partial Public Class clsLnTrans_re_enc
                     BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
                     BeTransReDet.IdOrdenCompraDet = BeOCDet.IdOrdenCompraDet
                     BeTransReDet.IdJornadaSistema = 0
+                    BeTransReDet.Talla.IdTalla = BeOCDet.Talla.IdTalla
+                    BeTransReDet.Color.IdColor = BeOCDet.Color.IdColor
+                    BeTransReDet.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
                     lBeRecDet.Add(BeTransReDet)
 
                     BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
@@ -9142,6 +9127,9 @@ Partial Public Class clsLnTrans_re_enc
                     BeStockRec.Atributo_Variante_1 = BeTransReDet.Atributo_Variante_1
                     BeStockRec.IdBodega = BeRecepcionEnc.IdBodega
                     BeStockRec.Pallet_No_Estandar = False
+                    BeStockRec.Talla = BeOCDet.Talla.Codigo
+                    BeStockRec.Color = BeOCDet.Color.Codigo
+                    BeStockRec.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
                     lBeStockRec.Add(BeStockRec)
 
                 Next

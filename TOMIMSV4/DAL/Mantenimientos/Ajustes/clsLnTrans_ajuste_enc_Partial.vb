@@ -1,10 +1,5 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Threading.Tasks
-Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_ajuste_enc
     Public Shared Function GetAll(ByVal pFechaDel As Date,
@@ -751,7 +746,7 @@ Partial Public Class clsLnTrans_ajuste_enc
             Dim BeStock As clsBeStock
             Dim BeMov As clsBeTrans_movimientos
             Dim IdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
-            Dim IdStock As Integer = clsLnStock.MaxID(lConnection, lTransaction) + 1
+            Dim IdStock As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
 
             For Each item As clsBeTrans_ajuste_det In pAjusteEnc.Lineas_Detalle
 

@@ -14,8 +14,8 @@ Module m_Global
     Public Property pConfigInterface As NombreInterface = NombreInterface.Becofarma
     Public Property NoDocEntrySAP As Integer = 0
     Public Property EstadoEnviadoSAP As clsDataContractDI.Estado_Enviado_SAP? = 0
-    Public Property gVersionApp As String = "7.4.5"
-    Public Property gFechaVersion As Date = New Date(2025, 7, 1)
+    Public Property gVersionApp As String = "6.8.4"
+    Public Property gFechaVersion As Date = New Date(2024, 4, 10)
     Public Property gNombreInstancia As String = ""
 
     Public Enum NombreInterface

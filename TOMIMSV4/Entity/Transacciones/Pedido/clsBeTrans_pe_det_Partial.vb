@@ -7,10 +7,6 @@
     Public Property UnidadMedida As clsBeUnidad_medida = New clsBeUnidad_medida()
     Public Property ListaStockRes As New List(Of clsBeStock_res)
     Public Property ListaPickingUbic As New List(Of clsBeTrans_picking_ubic)
-    'Public Property Bodega() As String
-    'Public Property Cliente() As String
-    'Public Property Propietario() As String
-    'Public Property FechaPedido As DateTime
     Public Property Codigo_Producto() As String
     Public Property NombreProducto() As String
     Public Property ProductoPresentacion() As String

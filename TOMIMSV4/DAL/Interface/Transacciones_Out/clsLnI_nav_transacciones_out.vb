@@ -76,15 +76,16 @@ Public Class clsLnI_nav_transacciones_out
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeI_nav_transacciones_out As clsBeI_nav_transacciones_out, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeI_nav_transacciones_out As clsBeI_nav_transacciones_out,
+                                Optional ByVal pConection As SqlConnection = Nothing,
+                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
+        Dim esRemota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
-
             Ins.Init("i_nav_transacciones_out")
-            Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
             Ins.Add("idempresa", "@idempresa", DataType.Parametro)
             Ins.Add("idbodega", "@idbodega", DataType.Parametro)
             Ins.Add("idpropietario", "@idpropietario", DataType.Parametro)
@@ -130,7 +131,6 @@ Public Class clsLnI_nav_transacciones_out
             Ins.Add("peso_neto", "@peso_neto", DataType.Parametro)
             Ins.Add("peso_bruto", "@peso_bruto", DataType.Parametro)
             Ins.Add("fecha_despacho", "@fecha_despacho", DataType.Parametro)
-            '#EJC20210617:Devoluci�n Idealsa con referencia.
             Ins.Add("no_documento_salida_ref_devol", "@no_documento_salida_ref_devol", DataType.Parametro)
             Ins.Add("IdPedidoEncDevol", "@IdPedidoEncDevol", DataType.Parametro)
             Ins.Add("IdDespachoDet", "@IdDespachoDet", DataType.Parametro)
@@ -142,90 +142,99 @@ Public Class clsLnI_nav_transacciones_out
             Ins.Add("Talla", "@Talla", DataType.Parametro)
             Ins.Add("Color", "@Color", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim sp As String = Ins.SQLIdentity("idtransaccion")
 
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection)
-                cmd.Transaction = pTransaction
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            Dim cn As SqlConnection = If(esRemota, pConection, lConnection)
+            If Not esRemota Then
+                cn.Open()
+                lTransaction = cn.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeI_nav_transacciones_out.Idtransaccion))
-            cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeI_nav_transacciones_out.Idempresa))
-            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeI_nav_transacciones_out.Idbodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIO", oBeI_nav_transacciones_out.Idpropietario))
-            cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeI_nav_transacciones_out.Idpropietariobodega))
-            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRA", oBeI_nav_transacciones_out.Idordencompra))
-            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeI_nav_transacciones_out.Idrecepcionenc))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeI_nav_transacciones_out.Idpedidoenc))
-            cmd.Parameters.Add(New SqlParameter("@IDDESPACHOENC", oBeI_nav_transacciones_out.Iddespachoenc))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeI_nav_transacciones_out.Idproductobodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeI_nav_transacciones_out.Idproducto))
-            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeI_nav_transacciones_out.Idunidadmedida))
-            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeI_nav_transacciones_out.Idpresentacion))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeI_nav_transacciones_out.Idproductoestado))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeI_nav_transacciones_out.Cantidad))
-            cmd.Parameters.Add(New SqlParameter("@PESO", oBeI_nav_transacciones_out.Peso))
-            cmd.Parameters.Add(New SqlParameter("@LOTE", oBeI_nav_transacciones_out.Lote))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeI_nav_transacciones_out.Fecha_vence = Nothing, DBNull.Value, oBeI_nav_transacciones_out.Fecha_vence)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_RECEPCION", oBeI_nav_transacciones_out.Fecha_recepcion))
-            cmd.Parameters.Add(New SqlParameter("@NO_PEDIDO", oBeI_nav_transacciones_out.No_pedido))
-            cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeI_nav_transacciones_out.No_linea))
-            cmd.Parameters.Add(New SqlParameter("@CODIGO_PRODUCTO", oBeI_nav_transacciones_out.Codigo_producto))
-            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", oBeI_nav_transacciones_out.Nombre_producto))
-            cmd.Parameters.Add(New SqlParameter("@CODIGO_VARIANTE", oBeI_nav_transacciones_out.Codigo_variante))
-            cmd.Parameters.Add(New SqlParameter("@UNIDAD_MEDIDA", oBeI_nav_transacciones_out.Unidad_medida))
-            cmd.Parameters.Add(New SqlParameter("@TIPO_TRANSACCION", oBeI_nav_transacciones_out.Tipo_transaccion))
-            cmd.Parameters.Add(New SqlParameter("@ENVIADO", oBeI_nav_transacciones_out.Enviado))
-            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeI_nav_transacciones_out.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeI_nav_transacciones_out.User_agr))
-            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeI_nav_transacciones_out.Fec_mod))
-            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeI_nav_transacciones_out.User_mod))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_ESPERADA", oBeI_nav_transacciones_out.Cantidad_Esperada))
-            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeI_nav_transacciones_out.Lic_Plate))
-            cmd.Parameters.Add(New SqlParameter("@UDS_LIC_PLATE", oBeI_nav_transacciones_out.Uds_Lic_Plate))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_PRESENTACION", oBeI_nav_transacciones_out.Cantidad_Presentacion))
-            cmd.Parameters.Add(New SqlParameter("@IDTIPODOCUMENTO", oBeI_nav_transacciones_out.IdTipoDocumento))
-            cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_transacciones_out.codigo_barra))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_ADUANA", oBeI_nav_transacciones_out.valor_aduana))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_FOB", oBeI_nav_transacciones_out.valor_fob))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_IVA", oBeI_nav_transacciones_out.valor_iva))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_DAI", oBeI_nav_transacciones_out.valor_dai))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_SEGURO", oBeI_nav_transacciones_out.valor_seguro))
-            cmd.Parameters.Add(New SqlParameter("@VALOR_FLETE", oBeI_nav_transacciones_out.valor_flete))
-            cmd.Parameters.Add(New SqlParameter("@PESO_NETO", oBeI_nav_transacciones_out.peso_neto))
-            cmd.Parameters.Add(New SqlParameter("@PESO_BRUTO", oBeI_nav_transacciones_out.peso_bruto))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_DESPACHO", IIf(oBeI_nav_transacciones_out.fecha_despacho = Nothing, DBNull.Value, oBeI_nav_transacciones_out.fecha_despacho)))
-            cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO_SALIDA_REF_DEVOL", IIf(oBeI_nav_transacciones_out.fecha_despacho = Nothing, DBNull.Value, oBeI_nav_transacciones_out.no_documento_salida_ref_devol)))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENCDEVOL", IIf(oBeI_nav_transacciones_out.no_documento_salida_ref_devol = Nothing, DBNull.Value, oBeI_nav_transacciones_out.IdPedidoEncDevol)))
-            cmd.Parameters.Add(New SqlParameter("@IDDESPACHODET", IIf(oBeI_nav_transacciones_out.IdDespachoDet = Nothing, DBNull.Value, oBeI_nav_transacciones_out.IdDespachoDet)))
-            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", IIf(oBeI_nav_transacciones_out.IdRecepcionDet = Nothing, DBNull.Value, oBeI_nav_transacciones_out.IdRecepcionDet)))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_ENVIADA", oBeI_nav_transacciones_out.Cantidad_Enviada))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD_PENDIENTE", oBeI_nav_transacciones_out.Cantidad_Pendiente))
-            cmd.Parameters.Add(New SqlParameter("@AUDITAR", oBeI_nav_transacciones_out.Auditar))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeI_nav_transacciones_out.IdProductoTallaColor))
-            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeI_nav_transacciones_out.Talla))
-            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeI_nav_transacciones_out.Color))
+            Dim tx As SqlTransaction = If(esRemota, pTransaction, lTransaction)
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            Using cmd As New SqlCommand(sp, cn, tx)
+                cmd.CommandType = CommandType.Text
 
-            cmd.Dispose()
+                cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeI_nav_transacciones_out.Idempresa))
+                cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeI_nav_transacciones_out.Idbodega))
+                cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIO", oBeI_nav_transacciones_out.Idpropietario))
+                cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeI_nav_transacciones_out.Idpropietariobodega))
+                cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRA", oBeI_nav_transacciones_out.Idordencompra))
+                cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeI_nav_transacciones_out.Idrecepcionenc))
+                cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeI_nav_transacciones_out.Idpedidoenc))
+                cmd.Parameters.Add(New SqlParameter("@IDDESPACHOENC", oBeI_nav_transacciones_out.Iddespachoenc))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeI_nav_transacciones_out.Idproductobodega))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeI_nav_transacciones_out.Idproducto))
+                cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeI_nav_transacciones_out.Idunidadmedida))
+                cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeI_nav_transacciones_out.Idpresentacion))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeI_nav_transacciones_out.Idproductoestado))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeI_nav_transacciones_out.Cantidad))
+                cmd.Parameters.Add(New SqlParameter("@PESO", oBeI_nav_transacciones_out.Peso))
+                cmd.Parameters.Add(New SqlParameter("@LOTE", oBeI_nav_transacciones_out.Lote))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", If(oBeI_nav_transacciones_out.Fecha_vence = Nothing, DBNull.Value, oBeI_nav_transacciones_out.Fecha_vence)))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_RECEPCION", oBeI_nav_transacciones_out.Fecha_recepcion))
+                cmd.Parameters.Add(New SqlParameter("@NO_PEDIDO", oBeI_nav_transacciones_out.No_pedido))
+                cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeI_nav_transacciones_out.No_linea))
+                cmd.Parameters.Add(New SqlParameter("@CODIGO_PRODUCTO", oBeI_nav_transacciones_out.Codigo_producto))
+                cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", oBeI_nav_transacciones_out.Nombre_producto))
+                cmd.Parameters.Add(New SqlParameter("@CODIGO_VARIANTE", oBeI_nav_transacciones_out.Codigo_variante))
+                cmd.Parameters.Add(New SqlParameter("@UNIDAD_MEDIDA", oBeI_nav_transacciones_out.Unidad_medida))
+                cmd.Parameters.Add(New SqlParameter("@TIPO_TRANSACCION", oBeI_nav_transacciones_out.Tipo_transaccion))
+                cmd.Parameters.Add(New SqlParameter("@ENVIADO", oBeI_nav_transacciones_out.Enviado))
+                cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeI_nav_transacciones_out.Fec_agr))
+                cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeI_nav_transacciones_out.User_agr))
+                cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeI_nav_transacciones_out.Fec_mod))
+                cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeI_nav_transacciones_out.User_mod))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_ESPERADA", oBeI_nav_transacciones_out.Cantidad_Esperada))
+                cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeI_nav_transacciones_out.Lic_Plate))
+                cmd.Parameters.Add(New SqlParameter("@UDS_LIC_PLATE", oBeI_nav_transacciones_out.Uds_Lic_Plate))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_PRESENTACION", oBeI_nav_transacciones_out.Cantidad_Presentacion))
+                cmd.Parameters.Add(New SqlParameter("@IDTIPODOCUMENTO", oBeI_nav_transacciones_out.IdTipoDocumento))
+                cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_transacciones_out.codigo_barra))
+                cmd.Parameters.Add(New SqlParameter("@VALOR_ADUANA", oBeI_nav_transacciones_out.valor_aduana))
+                cmd.Parameters.Add(New SqlParameter("@VALOR_FOB", oBeI_nav_transacciones_out.valor_fob))
+                cmd.Parameters.Add(New SqlParameter("@VALOR_IVA", oBeI_nav_transacciones_out.valor_iva))
+                cmd.Parameters.Add(New SqlParameter("@VALOR_DAI", oBeI_nav_transacciones_out.valor_dai))
+                cmd.Parameters.Add(New SqlParameter("@VALOR_SEGURO", oBeI_nav_transacciones_out.valor_seguro))
+                cmd.Parameters.Add(New SqlParameter("@VALOR_FLETE", oBeI_nav_transacciones_out.valor_flete))
+                cmd.Parameters.Add(New SqlParameter("@PESO_NETO", oBeI_nav_transacciones_out.peso_neto))
+                cmd.Parameters.Add(New SqlParameter("@PESO_BRUTO", oBeI_nav_transacciones_out.peso_bruto))
+                cmd.Parameters.Add(New SqlParameter("@FECHA_DESPACHO", If(oBeI_nav_transacciones_out.fecha_despacho = Nothing, DBNull.Value, oBeI_nav_transacciones_out.fecha_despacho)))
+                cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO_SALIDA_REF_DEVOL", If(oBeI_nav_transacciones_out.fecha_despacho = Nothing, DBNull.Value, oBeI_nav_transacciones_out.no_documento_salida_ref_devol)))
+                cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENCDEVOL", If(oBeI_nav_transacciones_out.no_documento_salida_ref_devol = Nothing, DBNull.Value, oBeI_nav_transacciones_out.IdPedidoEncDevol)))
+                cmd.Parameters.Add(New SqlParameter("@IDDESPACHODET", If(oBeI_nav_transacciones_out.IdDespachoDet = Nothing, DBNull.Value, oBeI_nav_transacciones_out.IdDespachoDet)))
+                cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", If(oBeI_nav_transacciones_out.IdRecepcionDet = Nothing, DBNull.Value, oBeI_nav_transacciones_out.IdRecepcionDet)))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_ENVIADA", oBeI_nav_transacciones_out.Cantidad_Enviada))
+                cmd.Parameters.Add(New SqlParameter("@CANTIDAD_PENDIENTE", oBeI_nav_transacciones_out.Cantidad_Pendiente))
+                cmd.Parameters.Add(New SqlParameter("@AUDITAR", oBeI_nav_transacciones_out.Auditar))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeI_nav_transacciones_out.IdProductoTallaColor))
+                cmd.Parameters.Add(New SqlParameter("@TALLA", oBeI_nav_transacciones_out.Talla))
+                cmd.Parameters.Add(New SqlParameter("@COLOR", oBeI_nav_transacciones_out.Color))
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Dim newIdObj As Object = cmd.ExecuteScalar()
+                If newIdObj Is Nothing OrElse newIdObj Is DBNull.Value Then Throw New Exception("")
 
-            Return rowsAffected
+                oBeI_nav_transacciones_out.Idtransaccion = Convert.ToInt32(newIdObj)
 
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+                If Not esRemota Then lTransaction.Commit()
+
+                Return oBeI_nav_transacciones_out.Idtransaccion
+            End Using
+
+        Catch
+            If Not esRemota AndAlso lTransaction IsNot Nothing Then
+                Try : lTransaction.Rollback() : Catch : End Try
+            End If
+            Throw
+
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If Not esRemota Then
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then
+                    If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                    lConnection.Dispose()
+                End If
+            End If
         End Try
 
     End Function
@@ -534,46 +543,6 @@ Public Class clsLnI_nav_transacciones_out
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If Not lTransaction Is Nothing Then lTransaction.Dispose()
             lConnection.Dispose()
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID() As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(idtransaccion),0) FROM I_nav_transacciones_out"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            lMax = CInt(lReturnValue)
-                        End If
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
         End Try
 
     End Function

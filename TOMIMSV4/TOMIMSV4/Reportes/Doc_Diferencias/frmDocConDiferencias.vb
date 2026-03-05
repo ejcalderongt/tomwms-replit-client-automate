@@ -43,7 +43,7 @@ Public Class frmDocConDiferencias
         DT.Columns.Add("UMBas", GetType(String))
         DT.Columns.Add("Estado", GetType(String))
         DT.Columns.Add("Fecha_Creación", GetType(Date))
-        DT.Columns.Add("Observacion", GetType(String))
+
     End Sub
 
     Private Sub Generar_Reporte()
@@ -168,7 +168,7 @@ Public Class frmDocConDiferencias
                                 Obj.IDPRODUCTOBODEGA,
                                 Obj.UMBAS,
                                 Obj.ESTADO,
-                                Obj.FECHA_CREACION, Obj.Observacion)
+                                Obj.FECHA_CREACION)
 
                     Application.DoEvents()
 
