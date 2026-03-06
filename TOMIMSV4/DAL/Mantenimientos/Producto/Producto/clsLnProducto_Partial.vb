@@ -10821,6 +10821,8 @@ Partial Public Class clsLnProducto
         End Try
 
     End Function
+
+    '#GT23022026: mensajes try por cada propiedad, para identificar donde esta el error.
     Public Shared Function Get_All_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, lConnection As SqlConnection, ltransaction As SqlTransaction) As List(Of clsBeProducto)
 
         Get_All_By_IdPedidoEnc = Nothing
@@ -10830,10 +10832,10 @@ Partial Public Class clsLnProducto
             Dim lReturnList As New List(Of clsBeProducto)
 
             Dim vSQL As String = "SELECT * FROM VW_Producto 
-                                          WHERE IdProducto IN (SELECT producto_bodega.IdProducto
-					                      FROM trans_pe_det INNER JOIN
-					                      producto_bodega ON trans_pe_det.IdProductoBodega = producto_bodega.IdProductoBodega
-                                          WHERE trans_pe_det.IdPedidoEnc = @IdPedidoEnc) "
+                                      WHERE IdProducto IN (SELECT producto_bodega.IdProducto
+				                      FROM trans_pe_det INNER JOIN
+				                      producto_bodega ON trans_pe_det.IdProductoBodega = producto_bodega.IdProductoBodega
+                                      WHERE trans_pe_det.IdPedidoEnc = @IdPedidoEnc) "
 
             vSQL += " ORDER BY Código"
 
@@ -10850,100 +10852,149 @@ Partial Public Class clsLnProducto
 
                 If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                    Parallel.ForEach(lDataTable.AsEnumerable, Sub(ByVal lrow)
+                    For Each lrow As DataRow In lDataTable.Rows
 
-                                                                  If lReturnList Is Nothing Then
-                                                                      lReturnList = New List(Of clsBeProducto)
-                                                                      Debug.Print("Aquí era nothing, no debería entrar aquí")
-                                                                  End If
+                        If lReturnList Is Nothing Then
+                            lReturnList = New List(Of clsBeProducto)
+                            Debug.Print("Aquí era nothing, no debería entrar aquí")
+                        End If
 
-                                                                  SyncLock lReturnList
+                        Obj = New clsBeProducto
 
-                                                                      Obj = New clsBeProducto
+                        Try
+                            Obj.IdProducto = CType(lrow("IdProducto"), Integer)
+                        Catch ex As Exception
+                            Throw New Exception("Error convirtiendo campo: IdProducto", ex)
+                        End Try
 
-                                                                      SyncLock Obj
+                        If lrow("IdPropietario") IsNot DBNull.Value AndAlso lrow("IdPropietario") IsNot Nothing Then
+                            Try
+                                Obj.IdPropietario = CType(lrow("IdPropietario"), Integer)
+                                Obj.Propietario = New clsBePropietarios()
+                                Obj.Propietario.IdPropietario = CType(lrow("IdPropietario"), Integer)
+                                Obj.Propietario.Nombre_comercial = CType(lrow("Propietario"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo(s): IdPropietario/Propietario", ex)
+                            End Try
+                        End If
 
-                                                                          Obj.IdProducto = CType(lrow("IdProducto"), Integer)
+                        If lrow("IdClasificacion") IsNot DBNull.Value AndAlso lrow("IdClasificacion") IsNot Nothing Then
+                            Try
+                                Obj.IdClasificacion = CType(lrow("IdClasificacion"), Integer)
+                                Obj.Clasificacion = New clsBeProducto_clasificacion()
+                                Obj.Clasificacion.IdClasificacion = CType(lrow("IdClasificacion"), Integer)
+                                Obj.Clasificacion.Nombre = CType(lrow("Clasificación"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo(s): IdClasificacion/Clasificación", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("IdPropietario") IsNot DBNull.Value AndAlso lrow("IdPropietario") IsNot Nothing Then
-                                                                              Obj.IdPropietario = CType(lrow("IdPropietario"), Integer)
-                                                                              Obj.Propietario = New clsBePropietarios()
-                                                                              Obj.Propietario.IdPropietario = CType(lrow("IdPropietario"), Integer)
-                                                                              Obj.Propietario.Nombre_comercial = CType(lrow("Propietario"), String)
-                                                                          End If
+                        If lrow("IdFamilia") IsNot DBNull.Value AndAlso lrow("IdFamilia") IsNot Nothing Then
+                            Try
+                                Obj.IdFamilia = CType(lrow("IdFamilia"), Integer)
+                                Obj.Familia = New clsBeProducto_familia()
+                                Obj.Familia.IdFamilia = CType(lrow("IdFamilia"), Integer)
+                                Obj.Familia.Nombre = CType(lrow("Familia"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo(s): IdFamilia/Familia", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("IdClasificacion") IsNot DBNull.Value AndAlso lrow("IdClasificacion") IsNot Nothing Then
-                                                                              Obj.IdClasificacion = CType(lrow("IdClasificacion"), Integer)
-                                                                              Obj.Clasificacion = New clsBeProducto_clasificacion()
-                                                                              Obj.Clasificacion.IdClasificacion = CType(lrow("IdClasificacion"), Integer)
-                                                                              Obj.Clasificacion.Nombre = CType(lrow("Clasificación"), String)
-                                                                          End If
+                        If lrow("IdMarca") IsNot DBNull.Value AndAlso lrow("IdMarca") IsNot Nothing Then
+                            Try
+                                Obj.IdMarca = CType(lrow("IdMarca"), Integer)
+                                Obj.Marca = New clsBeProducto_marca()
+                                Obj.Marca.IdMarca = CType(lrow("IdMarca"), Integer)
+                                Obj.Marca.Nombre = CType(lrow("Marca"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo(s): IdMarca/Marca", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("IdFamilia") IsNot DBNull.Value AndAlso lrow("IdFamilia") IsNot Nothing Then
-                                                                              Obj.IdFamilia = CType(lrow("IdFamilia"), Integer)
-                                                                              Obj.Familia = New clsBeProducto_familia()
-                                                                              Obj.Familia.IdFamilia = CType(lrow("IdFamilia"), Integer)
-                                                                              Obj.Familia.Nombre = CType(lrow("Familia"), String)
-                                                                          End If
+                        If lrow("IdTipoProducto") IsNot DBNull.Value AndAlso lrow("IdTipoProducto") IsNot Nothing Then
+                            Try
+                                Obj.IdTipoProducto = CType(lrow("IdTipoProducto"), String)
+                                Obj.TipoProducto = New clsBeProducto_tipo()
+                                Obj.TipoProducto.IdTipoProducto = CType(lrow("IdTipoProducto"), String)
+                                Obj.TipoProducto.NombreTipoProducto = CType(lrow("Tipo Producto"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo(s): IdTipoProducto/Tipo Producto", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("IdMarca") IsNot DBNull.Value AndAlso lrow("IdMarca") IsNot Nothing Then
-                                                                              Obj.IdMarca = CType(lrow("IdMarca"), Integer)
-                                                                              Obj.Marca = New clsBeProducto_marca()
-                                                                              Obj.Marca.IdMarca = CType(lrow("IdMarca"), Integer)
-                                                                              Obj.Marca.Nombre = CType(lrow("Marca"), String)
-                                                                          End If
+                        If lrow("IdUnidadMedidaBasica") IsNot DBNull.Value AndAlso lrow("IdUnidadMedidaBasica") IsNot Nothing Then
+                            Try
+                                Obj.IdUnidadMedidaBasica = CType(lrow("IdUnidadMedidaBasica"), String)
+                                Obj.UnidadMedida = New clsBeUnidad_medida
+                                Obj.UnidadMedida.IdUnidadMedida = CType(lrow("IdUnidadMedidaBasica"), String)
+                                Obj.UnidadMedida.Nombre = CType(lrow("Unidad Medida"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo(s): IdUnidadMedidaBasica/Unidad Medida", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("IdTipoProducto") IsNot DBNull.Value AndAlso lrow("IdTipoProducto") IsNot Nothing Then
-                                                                              Obj.IdTipoProducto = CType(lrow("IdTipoProducto"), String)
-                                                                              Obj.TipoProducto = New clsBeProducto_tipo()
-                                                                              Obj.TipoProducto.IdTipoProducto = CType(lrow("IdTipoProducto"), String)
-                                                                              Obj.TipoProducto.NombreTipoProducto = CType(lrow("Tipo Producto"), String)
-                                                                          End If
+                        If lrow("Código") IsNot DBNull.Value AndAlso lrow("Código") IsNot Nothing Then
+                            Try
+                                Obj.Codigo = CType(lrow("Código"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Código", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("IdUnidadMedidaBasica") IsNot DBNull.Value AndAlso lrow("IdUnidadMedidaBasica") IsNot Nothing Then
-                                                                              Obj.IdUnidadMedidaBasica = CType(lrow("IdUnidadMedidaBasica"), String)
-                                                                              Obj.UnidadMedida = New clsBeUnidad_medida
-                                                                              Obj.UnidadMedida.IdUnidadMedida = CType(lrow("IdUnidadMedidaBasica"), String)
-                                                                              Obj.UnidadMedida.Nombre = CType(lrow("Unidad Medida"), String)
-                                                                          End If
+                        If lrow("Código de Barra") IsNot DBNull.Value AndAlso lrow("Código de Barra") IsNot Nothing Then
+                            Try
+                                Obj.Codigo_barra = CType(lrow("Código de Barra"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Código de Barra", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("Código") IsNot DBNull.Value AndAlso lrow("Código") IsNot Nothing Then
-                                                                              Obj.Codigo = CType(lrow("Código"), String)
-                                                                          End If
+                        If lrow("Producto") IsNot DBNull.Value AndAlso lrow("Producto") IsNot Nothing Then
+                            Try
+                                Obj.Nombre = CType(lrow("Producto"), String)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Producto", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("Código de Barra") IsNot DBNull.Value AndAlso lrow("Código de Barra") IsNot Nothing Then
-                                                                              Obj.Codigo_barra = CType(lrow("Código de Barra"), String)
-                                                                          End If
+                        If lrow("Existencia Mínima") IsNot DBNull.Value AndAlso lrow("Existencia Mínima") IsNot Nothing Then
+                            Try
+                                Obj.Existencia_min = CType(lrow("Existencia Mínima"), Double)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Existencia Mínima", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("Producto") IsNot DBNull.Value AndAlso lrow("Producto") IsNot Nothing Then
-                                                                              Obj.Nombre = CType(lrow("Producto"), String)
-                                                                          End If
+                        If lrow("Existencia Máxima") IsNot DBNull.Value AndAlso lrow("Existencia Máxima") IsNot Nothing Then
+                            Try
+                                Obj.Existencia_max = CType(lrow("Existencia Máxima"), Double)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Existencia Máxima", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("Existencia Mínima") IsNot DBNull.Value AndAlso lrow("Existencia Mínima") IsNot Nothing Then
-                                                                              Obj.Existencia_min = CType(lrow("Existencia Mínima"), Double)
-                                                                          End If
+                        If lrow("Costo") IsNot DBNull.Value AndAlso lrow("Costo") IsNot Nothing Then
+                            Try
+                                Obj.Costo = CType(lrow("Costo"), Double)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Costo", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("Existencia Máxima") IsNot DBNull.Value AndAlso lrow("Existencia Máxima") IsNot Nothing Then
-                                                                              Obj.Existencia_max = CType(lrow("Existencia Máxima"), Double)
-                                                                          End If
+                        If lrow("Precio") IsNot DBNull.Value AndAlso lrow("Precio") IsNot Nothing Then
+                            Try
+                                Obj.Precio = CType(lrow("Precio"), Double)
+                            Catch ex As Exception
+                                Throw New Exception("Error convirtiendo campo: Precio", ex)
+                            End Try
+                        End If
 
-                                                                          If lrow("Costo") IsNot DBNull.Value AndAlso lrow("Costo") IsNot Nothing Then
-                                                                              Obj.Costo = CType(lrow("Costo"), Double)
-                                                                          End If
+                        If Not lReturnList.Exists(Function(x) x.IdProducto = Obj.IdProducto) Then
+                            lReturnList.Add(Obj)
+                        End If
 
-                                                                          If lrow("Precio") IsNot DBNull.Value AndAlso lrow("Precio") IsNot Nothing Then
-                                                                              Obj.Precio = CType(lrow("Precio"), Double)
-                                                                          End If
+                    Next
 
-                                                                          If Not lReturnList.Exists(Function(x) x.IdProducto = Obj.IdProducto) Then
-                                                                              lReturnList.Add(Obj)
-                                                                          End If
-
-                                                                      End SyncLock
-
-                                                                  End SyncLock
-
-                                                              End Sub)
                 End If
 
                 Get_All_By_IdPedidoEnc = lReturnList
