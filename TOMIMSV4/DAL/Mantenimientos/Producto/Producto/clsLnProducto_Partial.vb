@@ -11007,4 +11007,69 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    '#CKFK20260305: Listar todos los productos
+    Public Shared Function Get_All_Lista_Productos_Todos(ByVal pIdPropietario As Integer, ByVal pIdPropietarioBodega As Integer, ByVal pIdBodega As Integer, ByVal pActivo As Boolean) As DataTable
+
+        Get_All_Lista_Productos_Todos = Nothing
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT 
+                                              pb.IdProductoBodega,
+                                              wp.Código, 
+                                              wp.[Código de Barra],
+                                              wp.Producto as Nombre,
+                                              wp.genera_lp_old,
+                                              wp.Control_Vencimiento,
+                                              wp.Control_Lote,
+                                              wp.IdPropietario                                  
+                                           FROM VW_Producto wp INNER JOIN 
+                                               producto_bodega pb ON wp.IdProducto = pb.IdProducto AND pb.IdBodega = @IdBodega INNER JOIN 
+                                               propietario_bodega ppb ON ppb.IdPropietario = wp.IdPropietario AND ppb.IdBodega = @IdBodega
+                                           WHERE 1>0 "
+
+                    If pActivo Then
+                        vSQL += " AND wp.Activo=1"
+                    Else
+                        vSQL += " AND wp.Activo=0"
+                    End If
+
+                    If pIdPropietario <> 0 Then
+                        vSQL += String.Format(" AND wp.IdPropietario={0}", pIdPropietario)
+                    End If
+
+                    vSQL += " ORDER BY Código"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.SelectCommand.CommandTimeout = 300
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+                        Get_All_Lista_Productos_Todos = lDataTable
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
