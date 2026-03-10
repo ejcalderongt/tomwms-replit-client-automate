@@ -22,7 +22,7 @@
     Public Property ID_EMPRESA_QUICKTAG As Integer = 0
     Public Property ID_STANDALONE As Integer = 0
     Public Property IMPRESORA_DEFAULT As String = ""
-    Public Property HANA_SL As String = "https//10.138.26.78:50000"
+    Public Property HANA_SL As String = "" '"https//10.138.26.78:50000"
     Public Property HANA_SL_USR As String = "DevAccess"
     Public Property HANA_SL_PWD As String = "d3V_205!W4"
 

@@ -21,19 +21,18 @@ namespace WMS.StockReservation.Infrastructure.Legacy
         /// Firma EXACTA del método original VB.NET con todos los ByRef convertidos a ref.
         /// Nota: pBeTrasladoDet puede modificarse dentro de la función (sus propiedades).
         /// </summary>
-        public static bool Reserva_Stock_From_MI3(
-            ref clsBeStock_res pStockResSolicitud,
-            double DiasVencimiento,
-            string MaquinaQueSolicita,
-            clsBeI_nav_config_enc pBeConfigEnc,
-            ref double pCantidadDisponibleStock,
-            int pIdPropietarioBodega,
-            ref List<clsBeStock_res> pListStockResOUT,
-            ref SqlConnection lConnection,
-            ref SqlTransaction ltransaction,
-            int No_Linea = 0,
-            bool pTarea_Reabasto = false,
-            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null)
+        public static bool Reserva_Stock_From_MI3(ref clsBeStock_res pStockResSolicitud,
+                                                  double DiasVencimiento,
+                                                  string MaquinaQueSolicita,
+                                                  clsBeI_nav_config_enc pBeConfigEnc,
+                                                  ref double pCantidadDisponibleStock,
+                                                  int pIdPropietarioBodega,
+                                                  ref List<clsBeStock_res> pListStockResOUT,
+                                                  ref SqlConnection lConnection,
+                                                  ref SqlTransaction ltransaction,
+                                                  int No_Linea = 0,
+                                                  bool pTarea_Reabasto = false,
+                                                  clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null)
         {
             try
             {
@@ -48,18 +47,17 @@ namespace WMS.StockReservation.Infrastructure.Legacy
                 int idProducto = pStockResSolicitud.IdProductoBodega;
 
                 // Llamar al facade refactorizado
-                var resultList = StockReservationFacade.Reserva_Stock_From_MI3(
-                    oBeStockResRequest: pStockResSolicitud,
-                    IdProducto: idProducto,
-                    oBeConfigEnc: pBeConfigEnc,
-                    cnnSql: lConnection,
-                    trSql: ltransaction,
-                    oBePedidoDet: null,
-                    oBeI_nav_ped_traslado_det: pBeTrasladoDet,
-                    Tarea_Reabasto: pTarea_Reabasto,
-                    EsDevolucion: false,
-                    LineNumber: No_Linea,
-                    MachineName: MaquinaQueSolicita);
+                var resultList = StockReservationFacade.Reserva_Stock_From_MI3(oBeStockResRequest: pStockResSolicitud,
+                                                                                IdProducto: idProducto,
+                                                                                oBeConfigEnc: pBeConfigEnc,
+                                                                                cnnSql: lConnection,
+                                                                                trSql: ltransaction,
+                                                                                oBePedidoDet: null,
+                                                                                oBeI_nav_ped_traslado_det: pBeTrasladoDet,
+                                                                                Tarea_Reabasto: pTarea_Reabasto,
+                                                                                EsDevolucion: false,
+                                                                                LineNumber: No_Linea,
+                                                                                MachineName: MaquinaQueSolicita);
 
                 // Asignar resultado
                 pListStockResOUT = resultList ?? new List<clsBeStock_res>();

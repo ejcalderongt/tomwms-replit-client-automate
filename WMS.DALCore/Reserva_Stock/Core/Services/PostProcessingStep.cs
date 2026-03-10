@@ -60,11 +60,10 @@ namespace WMS.StockReservation.Core.Services
                         _logger.LogCheckpoint(
                             $"#MI3_STOCK_RES_MAXID - MaxID: {maxId}, NewIdStockRes: {reservation.IdStockRes}, IdTransaccion: {idPedidoEnc}");
 
-                        int rowsAffected = clsLnStock_res.Insertar(
-                            config,
-                            reservation,
-                            context.Connection,
-                            context.Transaction);
+                        int rowsAffected = clsLnStock_res.Insertar(config,
+                                                                   reservation,
+                                                                   context.Connection,
+                                                                   context.Transaction);
 
                         _logger.LogCheckpoint(
                             $"#MI3_STOCK_RES_INSERTED - " +
