@@ -5264,7 +5264,6 @@ Public Class frmMenu
 
             Cierra_Instancia_Previa(frmPedido_List)
 
-
             With frmPedido_List
                 .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
                 .Modo = frmPedido_List.pModo.verificacion

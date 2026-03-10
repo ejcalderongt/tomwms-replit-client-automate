@@ -767,6 +767,7 @@ Public Class clsSyncSapFacturaReserva
                         Dim cacheSalesName As New Dictionary(Of Integer, String)(capacity:=16)
 
                         For Each row As JObject In rows
+
                             Dim docEntry As Integer = row.Value(Of Integer?)("DocEntry").GetValueOrDefault(-1)
                             Dim campaniaStr As String = row.Value(Of String)("U_Campania")
                             Dim campaignNo As Integer = 0
