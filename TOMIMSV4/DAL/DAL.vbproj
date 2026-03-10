@@ -721,6 +721,8 @@
     <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsLnTrans_re_tr_Partial.vb" />
     <Compile Include="Transacciones\Recepcion_Detalle_Lote_Num\clsLnTrans_re_det_lote_num_partial.vb" />
     <Compile Include="Transacciones\Recepcion_Detalle_Lote_Num\clsLnTrans_re_det_lote_num.vb" />
+    <Compile Include="Transacciones\RFID\clsLnI_nav_barras_rfid_det.vb" />
+    <Compile Include="Transacciones\RFID\clsLnI_nav_barras_rfid_enc.vb" />
     <Compile Include="Transacciones\Servicios\clsLn_servicio.vb" />
     <Compile Include="Transacciones\Servicios\clsLnTrans_servicio_det_parcial.vb" />
     <Compile Include="Transacciones\Servicios\clsLnTrans_servicio_det.vb" />
