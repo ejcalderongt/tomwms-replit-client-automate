@@ -63,140 +63,132 @@ Public Class clsLnStock_res
     End Sub
 
     '#CKFK 20180329 12:43 PM Modifiqué el ByVal de la conexión y la transacción por ByRef
-    Public Shared Function Insertar(ByRef oBeStock_res As clsBeStock_res,
-                                    Optional ByRef pConection As SqlConnection = Nothing,
-                                    Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeStock_res As clsBeStock_res, Optional ByRef pConection As SqlConnection = Nothing, Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
-        Dim esRemota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
         Try
 
             Ins.Init("stock_res")
-            Ins.Add("idtransaccion", "@idtransaccion", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("indicador", "@indicador", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idpedidodet", "@idpedidodet", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idbodega", "@idbodega", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idstock", "@idstock", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idpropietariobodega", "@idpropietariobodega", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idproductobodega", "@idproductobodega", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idubicacion", "@idubicacion", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idproductoestado", "@idproductoestado", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idpresentacion", "@idpresentacion", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idunidadmedida", "@idunidadmedida", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("lote", "@lote", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("lic_plate", "@lic_plate", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("serial", "@serial", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("cantidad", "@cantidad", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("peso", "@peso", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("estado", "@estado", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("fecha_ingreso", "@fecha_ingreso", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("fecha_vence", "@fecha_vence", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("uds_lic_plate", "@uds_lic_plate", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("ubicacion_ant", "@ubicacion_ant", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("no_bulto", "@no_bulto", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idrecepcion", "@idrecepcion", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idpicking", "@idpicking", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("idpedido", "@idpedido", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("iddespacho", "@iddespacho", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("user_agr", "@user_agr", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("fec_agr", "@fec_agr", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("user_mod", "@user_mod", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("fec_mod", "@fec_mod", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("host", "@host", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("añada", "@añada", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("fecha_manufactura", "@fecha_manufactura", WMSTipoDato.Tipo.Parametro)
-            Ins.Add("Pallet_no_estandar", "@Pallet_no_estandar", WMSTipoDato.Tipo.Parametro)
-
+            'Ins.Add("idstockres", "@idstockres", DataType.Parametro)
+            Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
+            Ins.Add("indicador", "@indicador", DataType.Parametro)
+            Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
+            Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+            Ins.Add("idstock", "@idstock", DataType.Parametro)
+            Ins.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
+            Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+            Ins.Add("idubicacion", "@idubicacion", DataType.Parametro)
+            Ins.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
+            Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+            Ins.Add("idunidadmedida", "@idunidadmedida", DataType.Parametro)
+            Ins.Add("lote", "@lote", DataType.Parametro)
+            Ins.Add("lic_plate", "@lic_plate", DataType.Parametro)
+            Ins.Add("serial", "@serial", DataType.Parametro)
+            Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+            Ins.Add("peso", "@peso", DataType.Parametro)
+            Ins.Add("estado", "@estado", DataType.Parametro)
+            Ins.Add("fecha_ingreso", "@fecha_ingreso", DataType.Parametro)
+            Ins.Add("fecha_vence", "@fecha_vence", DataType.Parametro)
+            Ins.Add("uds_lic_plate", "@uds_lic_plate", DataType.Parametro)
+            Ins.Add("ubicacion_ant", "@ubicacion_ant", DataType.Parametro)
+            Ins.Add("no_bulto", "@no_bulto", DataType.Parametro)
+            Ins.Add("idrecepcion", "@idrecepcion", DataType.Parametro)
+            Ins.Add("idpicking", "@idpicking", DataType.Parametro)
+            Ins.Add("idpedido", "@idpedido", DataType.Parametro)
+            Ins.Add("iddespacho", "@iddespacho", DataType.Parametro)
+            Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+            Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+            Ins.Add("user_mod", "@user_mod", DataType.Parametro)
+            Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
+            Ins.Add("host", "@host", DataType.Parametro)
+            Ins.Add("añada", "@añada", DataType.Parametro)
+            Ins.Add("fecha_manufactura", "@fecha_manufactura", DataType.Parametro)
+            Ins.Add("Pallet_no_estandar", "@Pallet_no_estandar", DataType.Parametro)
+            '#GT29082025: sin talla color, no insertar valor 0 para mantener consistencia
             If oBeStock_res.IdProductoTallaColor > 0 Then
-                Ins.Add("Talla", "@Talla", WMSTipoDato.Tipo.Parametro)
-                Ins.Add("Color", "@Color", WMSTipoDato.Tipo.Parametro)
-                Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", WMSTipoDato.Tipo.Parametro)
+                Ins.Add("Talla", "@Talla", DataType.Parametro)
+                Ins.Add("Color", "@Color", DataType.Parametro)
+                Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             End If
 
-            Dim sp As String = Ins.SQLIdentity("idstockres")
+            Dim sp As String = Ins.SQLIdentity("IdStockRes")
+            Dim cmd As SqlCommand
 
-            Dim cn As SqlConnection = If(esRemota, pConection, lConnection)
-            If Not esRemota Then
-                cn.Open()
-                lTransaction = cn.BeginTransaction(IsolationLevel.ReadCommitted)
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            Dim tx As SqlTransaction = If(esRemota, pTransaction, lTransaction)
-
-            Using cmd As New SqlCommand(sp, cn, tx)
-                cmd.CommandType = CommandType.Text
-
-                cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeStock_res.IdTransaccion))
-                cmd.Parameters.Add(New SqlParameter("@INDICADOR", oBeStock_res.Indicador))
-                cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeStock_res.IdPedidoDet))
-                cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeStock_res.IdBodega))
-                cmd.Parameters.Add(New SqlParameter("@IDSTOCK", oBeStock_res.IdStock))
-                cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeStock_res.IdPropietarioBodega))
-                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeStock_res.IdProductoBodega))
-                cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeStock_res.IdUbicacion))
-                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeStock_res.IdProductoEstado))
-                cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeStock_res.IdPresentacion))
-                cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeStock_res.IdUnidadMedida))
-                cmd.Parameters.Add(New SqlParameter("@LOTE", oBeStock_res.Lote))
-                cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeStock_res.Lic_plate))
-                cmd.Parameters.Add(New SqlParameter("@SERIAL", oBeStock_res.Serial))
-                cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeStock_res.Cantidad))
-                cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock_res.Peso))
-                cmd.Parameters.Add(New SqlParameter("@ESTADO", oBeStock_res.Estado))
-                cmd.Parameters.Add(New SqlParameter("@FECHA_INGRESO", oBeStock_res.Fecha_ingreso))
-                cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", oBeStock_res.Fecha_vence))
-                cmd.Parameters.Add(New SqlParameter("@UDS_LIC_PLATE", oBeStock_res.Uds_lic_plate))
-                cmd.Parameters.Add(New SqlParameter("@UBICACION_ANT", oBeStock_res.Ubicacion_ant))
-                cmd.Parameters.Add(New SqlParameter("@NO_BULTO", oBeStock_res.No_bulto))
-                cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeStock_res.IdRecepcion))
-                cmd.Parameters.Add(New SqlParameter("@IDPICKING", oBeStock_res.IdPicking))
-                cmd.Parameters.Add(New SqlParameter("@IDPEDIDO", oBeStock_res.IdPedido))
-                cmd.Parameters.Add(New SqlParameter("@IDDESPACHO", oBeStock_res.IdDespacho))
-                cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeStock_res.User_agr))
-                cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeStock_res.Fec_agr))
-                cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeStock_res.User_mod))
-                cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeStock_res.Fec_mod))
-                cmd.Parameters.Add(New SqlParameter("@HOST", oBeStock_res.Host))
-                cmd.Parameters.Add(New SqlParameter("@AÑADA", oBeStock_res.añada))
-                cmd.Parameters.Add(New SqlParameter("@FECHA_MANUFACTURA", oBeStock_res.Fecha_manufactura))
-                cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_res.Pallet_no_estandar))
-
-                If oBeStock_res.IdProductoTallaColor > 0 Then
-                    cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_res.Talla))
-                    cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_res.Color))
-                    cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
-                End If
-
-                Dim newIdObj As Object = cmd.ExecuteScalar()
-                If newIdObj Is Nothing OrElse newIdObj Is DBNull.Value Then
-                    Throw New Exception("No se pudo recuperar el IDENTITY insertado (idstockres).")
-                End If
-
-                oBeStock_res.IdStockRes = Convert.ToInt32(newIdObj)
-            End Using
-
-            If Not esRemota Then lTransaction.Commit()
-
-            Return oBeStock_res.IdStockRes
-
-        Catch
-            If Not esRemota AndAlso lTransaction IsNot Nothing Then
-                Try : lTransaction.Rollback() : Catch : End Try
+            cmd.Parameters.Add(New SqlParameter("@IDSTOCKRES", oBeStock_res.IdStockRes))
+            cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeStock_res.IdTransaccion))
+            cmd.Parameters.Add(New SqlParameter("@INDICADOR", oBeStock_res.Indicador))
+            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeStock_res.IdPedidoDet))
+            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeStock_res.IdBodega))
+            cmd.Parameters.Add(New SqlParameter("@IDSTOCK", oBeStock_res.IdStock))
+            cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeStock_res.IdPropietarioBodega))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeStock_res.IdProductoBodega))
+            cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeStock_res.IdUbicacion))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeStock_res.IdProductoEstado))
+            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeStock_res.IdPresentacion))
+            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeStock_res.IdUnidadMedida))
+            cmd.Parameters.Add(New SqlParameter("@LOTE", oBeStock_res.Lote))
+            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeStock_res.Lic_plate))
+            cmd.Parameters.Add(New SqlParameter("@SERIAL", oBeStock_res.Serial))
+            cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeStock_res.Cantidad))
+            cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock_res.Peso))
+            cmd.Parameters.Add(New SqlParameter("@ESTADO", oBeStock_res.Estado))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_INGRESO", oBeStock_res.Fecha_ingreso))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", oBeStock_res.Fecha_vence))
+            cmd.Parameters.Add(New SqlParameter("@UDS_LIC_PLATE", oBeStock_res.Uds_lic_plate))
+            cmd.Parameters.Add(New SqlParameter("@UBICACION_ANT", oBeStock_res.Ubicacion_ant))
+            cmd.Parameters.Add(New SqlParameter("@NO_BULTO", oBeStock_res.No_bulto))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeStock_res.IdRecepcion))
+            cmd.Parameters.Add(New SqlParameter("@IDPICKING", oBeStock_res.IdPicking))
+            cmd.Parameters.Add(New SqlParameter("@IDPEDIDO", oBeStock_res.IdPedido))
+            cmd.Parameters.Add(New SqlParameter("@IDDESPACHO", oBeStock_res.IdDespacho))
+            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeStock_res.User_agr))
+            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeStock_res.Fec_agr))
+            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeStock_res.User_mod))
+            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeStock_res.Fec_mod))
+            cmd.Parameters.Add(New SqlParameter("@HOST", oBeStock_res.Host))
+            cmd.Parameters.Add(New SqlParameter("@AÑADA", oBeStock_res.añada))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_MANUFACTURA", oBeStock_res.Fecha_manufactura))
+            cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_res.Pallet_no_estandar))
+            If oBeStock_res.IdProductoTallaColor > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_res.Talla))
+                cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_res.Color))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
             End If
-            Throw
 
+            'Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeStock_res.IdStockRes = newId
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return 1
+
+        Catch ex1 As SqlException
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex1
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
         Finally
-            If Not esRemota Then
-                If lTransaction IsNot Nothing Then lTransaction.Dispose()
-                If lConnection IsNot Nothing Then
-                    If lConnection.State = ConnectionState.Open Then lConnection.Close()
-                    lConnection.Dispose()
-                End If
-            End If
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
+
     End Function
 
     Public Shared Function Actualizar(ByRef oBeStock_res As clsBeStock_res, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer

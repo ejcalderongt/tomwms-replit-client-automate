@@ -220,62 +220,6 @@ Public Class clsLnTrans_oc_encDMS
         End Try
     End Sub
 
-
-    'Public Shared Sub Guadar_Envio_Rechazado(ByVal pOrdenCompra As clsBeTrans_oc_enc, ByVal pMensaje As String,
-    '                                                                             Optional ByRef lConnection As SqlConnection = Nothing,
-    '                                                                             Optional ByRef lTransaction As SqlTransaction = Nothing)
-
-    '    Dim localConnection As Boolean = False
-    '    Dim localTransaction As Boolean = False
-    '    Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
-
-    '    Try
-
-    '        ' Crear conexión si no se recibió
-    '        If lConnection Is Nothing Then
-    '            lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-    '            lConnection.Open()
-    '            localConnection = True
-    '        End If
-
-    '        ' Crear transacción si no se recibió
-    '        If lTransaction Is Nothing Then
-    '            lTransaction = lConnection.BeginTransaction()
-    '            localTransaction = True
-    '        End If
-
-
-    '        BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
-    '        BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
-    '        BeLogSyncError.IdOrdenCompraEnc = pOrdenCompra.IdOrdenCompraEnc
-    '        BeLogSyncError.IdPropietario = pOrdenCompra.PropietarioBodega.IdPropietario
-    '        BeLogSyncError.IdPedidoEnc = 0
-    '        BeLogSyncError.Estado = "Error"
-    '        BeLogSyncError.Mensaje_error = pMensaje
-    '        BeLogSyncError.Fec_agr = Now
-    '        BeLogSyncError.IdProducto = 0
-    '        clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
-
-    '        If localTransaction Then
-    '            lTransaction.Commit()
-    '        End If
-
-    '    Catch ex As Exception
-    '        ' Rollback si la transacción es local
-    '        If localTransaction AndAlso lTransaction IsNot Nothing Then
-    '            lTransaction.Rollback()
-    '        End If
-
-    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
-
-    '    Finally
-    '        ' Cierre solo si es local
-    '        If localConnection AndAlso lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
-    '            lConnection.Close()
-    '        End If
-    '    End Try
-    'End Sub
-
     Public Shared Sub Actualizar_Envio_Rechazado(ByVal pOrdenCompraEnc As clsBeTrans_oc_enc)
         Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
         Dim clsTransaccion As New clsTransaccion()
@@ -886,10 +830,14 @@ Public Class clsLnTrans_oc_encDMS
                                                                                                        clsTransaccion.lConnection,
                                                                                                        clsTransaccion.lTransaction)
 
-                        '#GT14012025: añadir bodega_area, bodega_sector y bodega_ubicacion
-                        'esto para insertar stock con ubicaciones añadidas on premise, no existentes en portal.
-                        pListBodega_Ubicacion = clsLnBodega_ubicacion.Get_All_By_IdUbicacion(pStock.IdUbicacion, clsTransaccion.lConnection,
-                                                                                                                clsTransaccion.lTransaction)
+
+                        If pStock IsNot Nothing Then
+                            '#GT14012025: añadir bodega_area, bodega_sector y bodega_ubicacion
+                            'esto para insertar stock con ubicaciones añadidas on premise, no existentes en portal.
+                            pListBodega_Ubicacion = clsLnBodega_ubicacion.Get_All_By_IdUbicacion(pStock.IdUbicacion, clsTransaccion.lConnection,
+                                                                                                                    clsTransaccion.lTransaction)
+                        End If
+
 
                         If pListBodega_Ubicacion IsNot Nothing Then
 
@@ -1302,7 +1250,11 @@ Public Class clsLnTrans_oc_encDMS
             Crear_Json = JsonConvert.SerializeObject(listPayload)
 
         Catch ex As Exception
+
             clsTransaccion.RollBack_Transaction()
+
+            Guardar_Envio_Rechazado_Aislado(pOCEnc, ex.Message)
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
             clsTransaccion.Close_Conection()
@@ -1403,5 +1355,61 @@ Public Class clsLnTrans_oc_encDMS
         End Try
 
     End Function
+
+
+    Public Shared Sub Guardar_Envio_Rechazado_Aislado(ByVal pOrdenCompra As clsBeTrans_oc_enc,
+                                                     ByVal pMensaje As String)
+
+        Dim cn As SqlConnection = Nothing
+        Dim tr As SqlTransaction = Nothing
+
+        Try
+            cn = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            cn.Open()
+
+            tr = cn.BeginTransaction()
+
+            Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
+            BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(cn, tr) + 1
+            BeLogSyncError.IdOrdenCompraEnc = pOrdenCompra.IdOrdenCompraEnc
+            BeLogSyncError.IdPropietario = pOrdenCompra.PropietarioBodega.IdPropietario
+            BeLogSyncError.IdPedidoEnc = 0
+            BeLogSyncError.Estado = "Error"
+            BeLogSyncError.Mensaje_error = pMensaje
+            BeLogSyncError.Fec_agr = Now
+            BeLogSyncError.IdProducto = 0
+
+            clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, cn, tr)
+
+            tr.Commit()
+
+        Catch
+            ' Silencioso: NO lanzar excepción para no afectar el Catch que invoca.
+            ' Intentar rollback si se puede (sin relanzar).
+            Try
+                If tr IsNot Nothing Then tr.Rollback()
+            Catch
+                ' Ignorar
+            End Try
+
+        Finally
+            Try
+                If tr IsNot Nothing Then tr.Dispose()
+            Catch
+                ' Ignorar
+            End Try
+
+            Try
+                If cn IsNot Nothing Then
+                    If cn.State = ConnectionState.Open Then cn.Close()
+                    cn.Dispose()
+                End If
+            Catch
+                ' Ignorar
+            End Try
+        End Try
+
+    End Sub
+
 
 End Class

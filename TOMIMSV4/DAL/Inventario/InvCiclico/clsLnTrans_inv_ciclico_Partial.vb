@@ -4563,6 +4563,10 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_ciclico.IdProductoTallaColor))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR_NUEVO", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
 
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_nuevo", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
+
+
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()

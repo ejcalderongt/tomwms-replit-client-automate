@@ -230,7 +230,7 @@ Public Class clsSyncSapSolTrasladoRec
                         End If
                         BeTrasladoRecEnc.Campaign_No = enc("U_Campania").ToString()
                         BeTrasladoRecEnc.IsImport = enc("U_Estado").ToString() = "3"
-                        BeTrasladoRecEnc.Internal_Transfer_Document_No = enc("U_DOCUMENTO_WMS").ToString()
+                        BeTrasladoRecEnc.Internal_Transfer_Document_No = enc("DocNum").ToString()
                         BeTrasladoRecEnc.Document_Type = tTipoDocumentoIngreso.Transferencia_de_Ingreso
 
                         ' Mapeo de líneas

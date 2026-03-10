@@ -22,7 +22,7 @@
         public string Process_Result { get; set; } = string.Empty;
         public double Price { get; set; } = 0;
         public string Lote_No { get; set; } = string.Empty;
-        public DateTime Expiration_Date { get; set; } = new DateTime(1900, 1, 1);
+        public DateTime? Expiration_Date { get; set; } = new DateTime(1900, 1, 1);
         public string Source_ID { get; set; } = string.Empty;
         public int IdPedidoDet { get; set; } = 0;
         public decimal Quantity_In_UMBas { get; set; } = 0.0m;

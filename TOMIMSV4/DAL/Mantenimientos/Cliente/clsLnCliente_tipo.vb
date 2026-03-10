@@ -324,37 +324,39 @@ Public Class clsLnCliente_tipo
 
     End Function
 
-    Public Shared Function GetSingle(ByRef pBeCliente_tipo As clsBeCliente_tipo)
-
+    '#GT11022026: mejora en return del método
+    Public Shared Function GetSingle(ByRef pBeCliente_tipo As clsBeCliente_tipo) As Boolean
         Try
+            Const sp As String =
+            "SELECT * FROM Cliente_tipo Where(IdTipoCliente = @IdTipoCliente)"
 
-            Const sp As String = "SELECT * FROM Cliente_tipo" & _
-            " Where(IdTipoCliente = @IdTipoCliente)"
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST")),
+              cmd As New SqlCommand(sp, lConnection),
+              dad As New SqlDataAdapter(cmd)
 
-            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDTIPOCLIENTE", pBeCliente_tipo.IDTIPOCLIENTE))
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.Add(New SqlParameter("@IdTipoCliente", pBeCliente_tipo.IdTipoCliente))
 
-            Dim dt As New DataTable
-            dad.Fill(dt)
+                Dim dt As New DataTable()
+                dad.Fill(dt)
 
-            If dt.Rows.Count = 1 Then
-                Cargar(pBeCliente_tipo, dt.Rows(0))
-            End If
+                If dt.Rows.Count = 1 Then
+                    Cargar(pBeCliente_tipo, dt.Rows(0))
+                    Return True
+                End If
 
-            Return True
+                Return False
+            End Using
 
-
-        Catch ex1 As SQLException
-            Throw ex1
+        Catch ex1 As SqlException
+            Throw
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
+            Throw
         End Try
-
     End Function
+
 
     Public Shared Function MaxID() as Integer
 

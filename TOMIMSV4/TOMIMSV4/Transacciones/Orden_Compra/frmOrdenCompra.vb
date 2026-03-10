@@ -8782,4 +8782,16 @@ MessageBoxButtons.YesNo,
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
+
+    Private Sub cmdPreImpresionRFID_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdPreImpresionRFID.ItemClick
+        Try
+            With frmImpresion_OC_RFID
+                '.pTransOC_Enc = gBeOrdenCompra
+                .Show()
+                .Focus()
+            End With
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
 End Class

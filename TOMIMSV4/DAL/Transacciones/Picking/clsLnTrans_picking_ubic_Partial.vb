@@ -3937,14 +3937,14 @@ Partial Public Class clsLnTrans_picking_ubic
 
                     If BeStock IsNot Nothing Then
 
-                    clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
+                        clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                             BeStock.IdUbicacion,
                                                                             PickingUbic.Cantidad_Recibida,
                                                                             PickingUbic.Peso_recibido,
                                                                             If(Es_Transaccion_Remota, pConection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
-                End If
+                    End If
 
                 End If
 
@@ -8104,24 +8104,24 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
-    Public Shared Function Get_All_PickingUbic_Despachado_By_IdDespachoEnc(ByVal pIdDespachoEnc As Integer,
-                                                                           ByVal lConnection As SqlConnection,
-                                                                           ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
+    Public Shared Function Get_All_PickingUbic_Despachado_By_NoDocExterno(ByVal pNoDocExterno As Integer,
+                                                                          ByVal lConnection As SqlConnection,
+                                                                          ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
 
-        Get_All_PickingUbic_Despachado_By_IdDespachoEnc = Nothing
+        Get_All_PickingUbic_Despachado_By_NoDocExterno = Nothing
 
         Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
 
         Try
 
             Dim vSQL As String = "SELECT * FROM VW_PickingUbic_Desp_By_IdDespachoEnc
-                                  WHERE IdDespachoEnc = @IdDespachoEnc "
+                                  WHERE no_documento_externo = @NoDocExterno "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.Add(New SqlParameter("@IdDespachoEnc", pIdDespachoEnc))
+                lDTA.SelectCommand.Parameters.Add(New SqlParameter("@NoDocExterno", pNoDocExterno))
 
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)

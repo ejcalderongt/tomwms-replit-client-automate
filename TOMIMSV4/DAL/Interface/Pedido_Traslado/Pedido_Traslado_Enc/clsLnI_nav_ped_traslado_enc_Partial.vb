@@ -1,6 +1,8 @@
 Imports System.Configuration
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.XtraPrinting.Native.Properties
 Partial Public Class clsLnI_nav_ped_traslado_enc
 
     Private Shared lProductoBodegaInMemory As New List(Of clsBeProducto_bodega)

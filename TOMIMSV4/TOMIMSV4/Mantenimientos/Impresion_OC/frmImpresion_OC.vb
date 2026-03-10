@@ -438,14 +438,17 @@ Public Class frmImpresionRecepcion_OC
             pCajasPorCama = Convert.ToInt32(txtCajaPorCama.Value)
             pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
             pPresentacion = CStr(txtPresentacion.EditValue)
-            Dim pCantidadPresentacion As Integer = pCamasPorTarima * pCajasPorCama
 
+            Dim pCantidadPresentacion As Integer = pCamasPorTarima * pCajasPorCama
             Dim pTipoEtiqueta As Integer = AP.Bodega.IdTipoEtiquetaLicencia
             Dim pTipoSimbologia As Integer = AP.Bodega.IdSimbologiaLicencia
             Dim pClasificacion As Integer = 2
 
-            Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, pClasificacion,
-                                                                           clsTransaccion.lConnection, clsTransaccion.lTransaction)
+            Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta,
+                                                                                pTipoSimbologia,
+                                                                                pClasificacion,
+                                                                                clsTransaccion.lConnection,
+                                                                                clsTransaccion.lTransaction)
 
             If Tipo_Etiqueta Is Nothing OrElse String.IsNullOrWhiteSpace(Tipo_Etiqueta.codigo_zpl) Then
                 Throw New Exception("GT21012026: No está definido el formato de etiqueta")
