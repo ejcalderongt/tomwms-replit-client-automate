@@ -853,9 +853,6 @@ Public Class frmPrincipal02
             If AP.Bodega.Mostrar_Area_En_HH Then
                 Task.Run(Sub()
                              If IsHandleCreated Then
-                                 'Dim idGeneral As Integer = clsLnBodega.GetIdBodegaGeneral()
-                                 'Dim idFiscal As Integer = clsLnBodega.GetIdBodegaFiscal()
-
                                  Me.BeginInvoke(Call_Set_Indicador_Ocupacion_Area_Tipo, AP.IdBodega)
                              End If
                          End Sub)
@@ -864,10 +861,6 @@ Public Class frmPrincipal02
                              If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
                          End Sub)
             End If
-
-            'Task.Run(Sub()
-            '             If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
-            '         End Sub)
 
             EstoyOcupaoChico = False
 
