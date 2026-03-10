@@ -2759,7 +2759,7 @@ Partial Public Class clsLnCliente
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)
 
-                Dim Obj As clsBeCliente
+                Dim BeCliente As clsBeCliente
 
                 If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
@@ -2767,9 +2767,17 @@ Partial Public Class clsLnCliente
 
                     For Each lRow As DataRow In lDataTable.Rows
 
-                        Obj = New clsBeCliente
-                        Cargar(Obj, lRow)
-                        GetClientes_Activos_By_IdCPropietario.Add(Obj)
+                        BeCliente = New clsBeCliente
+                        Cargar(BeCliente, lRow)
+
+                        Dim BeClienteTipo = New clsBeCliente_tipo
+                        BeClienteTipo.IdTipoCliente = BeCliente.IdTipoCliente
+
+                        If clsLnCliente_tipo.GetSingle(BeClienteTipo) Then
+                            BeCliente.ClienteTipo = BeClienteTipo
+                        End If
+
+                        GetClientes_Activos_By_IdCPropietario.Add(BeCliente)
 
                     Next
 

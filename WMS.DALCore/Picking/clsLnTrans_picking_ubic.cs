@@ -1,8 +1,5 @@
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Picking;
 using Microsoft.Extensions.Configuration;
 using WMSWebAPI.Be;
@@ -81,15 +78,11 @@ public class clsLnTrans_picking_ubic
             throw;
         }
     }
-
     public static int Insertar(clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
     {
-        int rowsAffected = 0;
-
         try
         {
             Ins.Init("trans_picking_ubic");
-            Ins.Add("idpickingubic", "@idpickingubic", "F");
             Ins.Add("idpickingenc", "@idpickingenc", "F");
             Ins.Add("idpickingdet", "@idpickingdet", "F");
             Ins.Add("idubicacion", "@idubicacion", "F");
@@ -142,22 +135,21 @@ public class clsLnTrans_picking_ubic
             Ins.Add("idubicaciontemporal", "@idubicaciontemporal", "F");
             Ins.Add("idoperadorbodega_asignado", "@idoperadorbodega_asignado", "F");
 
-            string sp = Ins.SQL();
+            string sp = Ins.SQLIdentity("idpickingubic");
 
             using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
                 Bind(cmd, oBeTrans_picking_ubic);
-                rowsAffected = cmd.ExecuteNonQuery();
+                int newId = Convert.ToInt32(cmd.ExecuteScalar());
+                oBeTrans_picking_ubic.IdPickingUbic = newId;
+                return newId;
             }
         }
         catch (SqlException)
         {
             throw;
         }
-
-        return rowsAffected;
     }
-
     public static int Insertar_3pl(clsBeTrans_picking_ubic_3pl oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -325,7 +317,6 @@ public class clsLnTrans_picking_ubic
         }
         return rowsAffected;
     }
-
     public static int Actualizar(clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -402,7 +393,6 @@ public class clsLnTrans_picking_ubic
 
         return rowsAffected;
     }
-
     public static int Actualizar_3pl(clsBeTrans_picking_ubic_3pl oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -534,7 +524,6 @@ public class clsLnTrans_picking_ubic
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public DataTable Listar(IConfiguration config)
     {
 
@@ -574,7 +563,6 @@ public class clsLnTrans_picking_ubic
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public static bool GetSingle(IConfiguration config, ref clsBeTrans_picking_ubic pBeTrans_picking_ubic)
     {
 
@@ -629,7 +617,6 @@ public class clsLnTrans_picking_ubic
         return false;
 
     }
-
     public static List<clsBeTrans_picking_ubic> GetAll(IConfiguration config)
     {
 
@@ -688,7 +675,6 @@ public class clsLnTrans_picking_ubic
             throw new Exception(vMsgError);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
 
@@ -764,60 +750,58 @@ public class clsLnTrans_picking_ubic
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_picking_ubic o)
     {
-        cmd.Parameters.Add(new SqlParameter("@IdPickingUbic", o.IdPickingUbic != 0 ? o.IdPickingUbic : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdPickingEnc", o.IdPickingEnc != 0 ? o.IdPickingEnc : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdPickingDet", o.IdPickingDet != 0 ? o.IdPickingDet : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdUbicacion", o.IdUbicacion != 0 ? o.IdUbicacion : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdStock", o.IdStock != 0 ? o.IdStock : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdPropietarioBodega", o.IdPropietarioBodega != 0 ? o.IdPropietarioBodega : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", o.IdProductoBodega != 0 ? o.IdProductoBodega : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdProductoEstado", o.IdProductoEstado != 0 ? o.IdProductoEstado : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdPresentacion", o.IdPresentacion != 0 ? o.IdPresentacion : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdUnidadMedida", o.IdUnidadMedida != 0 ? o.IdUnidadMedida : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdUbicacionAnterior", o.IdUbicacionAnterior != 0 ? o.IdUbicacionAnterior : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdRecepcion", o.IdRecepcion != 0 ? o.IdRecepcion : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@lote", !string.IsNullOrWhiteSpace(o.Lote) ? o.Lote : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_vence", o.Fecha_vence != DateTime.MinValue ? o.Fecha_vence : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_minima", o.Fecha_minima != DateTime.MinValue ? o.Fecha_minima : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@serial", !string.IsNullOrWhiteSpace(o.Serial) ? o.Serial : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@lic_plate", !string.IsNullOrWhiteSpace(o.Lic_plate) ? o.Lic_plate : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPickingEnc", o.IdPickingEnc != 0 ? (object)o.IdPickingEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPickingDet", o.IdPickingDet != 0 ? (object)o.IdPickingDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacion", o.IdUbicacion != 0 ? (object)o.IdUbicacion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdStock", o.IdStock != 0 ? (object)o.IdStock : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPropietarioBodega", o.IdPropietarioBodega != 0 ? (object)o.IdPropietarioBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", o.IdProductoBodega != 0 ? (object)o.IdProductoBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoEstado", o.IdProductoEstado != 0 ? (object)o.IdProductoEstado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPresentacion", o.IdPresentacion != 0 ? (object)o.IdPresentacion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUnidadMedida", o.IdUnidadMedida != 0 ? (object)o.IdUnidadMedida : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionAnterior", o.IdUbicacionAnterior != 0 ? (object)o.IdUbicacionAnterior : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdRecepcion", o.IdRecepcion != 0 ? (object)o.IdRecepcion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@lote", !string.IsNullOrWhiteSpace(o.Lote) ? (object)o.Lote : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_vence", o.Fecha_vence != DateTime.MinValue ? (object)o.Fecha_vence : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_minima", o.Fecha_minima != DateTime.MinValue ? (object)o.Fecha_minima : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@serial", !string.IsNullOrWhiteSpace(o.Serial) ? (object)o.Serial : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@lic_plate", !string.IsNullOrWhiteSpace(o.Lic_plate) ? (object)o.Lic_plate : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@acepto", o.Acepto));
-        cmd.Parameters.Add(new SqlParameter("@peso_solicitado", o.Peso_solicitado != 0 ? o.Peso_solicitado : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@peso_recibido", o.Peso_recibido != 0 ? o.Peso_recibido : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@peso_verificado", o.Peso_verificado != 0 ? o.Peso_verificado : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@peso_despachado", o.Peso_despachado != 0 ? o.Peso_despachado : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@cantidad_solicitada", o.Cantidad_solicitada != 0 ? o.Cantidad_solicitada : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", o.Cantidad_recibida != 0 ? o.Cantidad_recibida : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@cantidad_verificada", o.Cantidad_verificada != 0 ? o.Cantidad_verificada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_solicitado", o.Peso_solicitado != 0 ? (object)o.Peso_solicitado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_recibido", o.Peso_recibido != 0 ? (object)o.Peso_recibido : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_verificado", o.Peso_verificado != 0 ? (object)o.Peso_verificado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_despachado", o.Peso_despachado != 0 ? (object)o.Peso_despachado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_solicitada", o.Cantidad_solicitada != 0 ? (object)o.Cantidad_solicitada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", o.Cantidad_recibida != 0 ? (object)o.Cantidad_recibida : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_verificada", o.Cantidad_verificada != 0 ? (object)o.Cantidad_verificada : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@encontrado", o.Encontrado));
         cmd.Parameters.Add(new SqlParameter("@dañado_verificacion", o.Dañado_verificacion));
-        cmd.Parameters.Add(new SqlParameter("@fecha_real_vence", o.Fecha_real_vence != DateTime.MinValue ? o.Fecha_real_vence : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@no_packing", !string.IsNullOrWhiteSpace(o.No_packing) ? o.No_packing : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_picking", o.Fecha_picking != DateTime.MinValue ? o.Fecha_picking : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_verificado", o.Fecha_verificado != DateTime.MinValue ? o.Fecha_verificado : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_packing", o.Fecha_packing != DateTime.MinValue ? o.Fecha_packing : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_despachado", o.Fecha_despachado != DateTime.MinValue ? o.Fecha_despachado : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@cantidad_despachada", o.Cantidad_despachada != 0 ? o.Cantidad_despachada : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(o.User_agr) ? o.User_agr : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr != DateTime.MinValue ? o.Fec_agr : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(o.User_mod) ? o.User_mod : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fec_mod", o.Fec_mod != DateTime.MinValue ? o.Fec_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_real_vence", o.Fecha_real_vence != DateTime.MinValue ? (object)o.Fecha_real_vence : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@no_packing", !string.IsNullOrWhiteSpace(o.No_packing) ? (object)o.No_packing : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_picking", o.Fecha_picking != DateTime.MinValue ? (object)o.Fecha_picking : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_verificado", o.Fecha_verificado != DateTime.MinValue ? (object)o.Fecha_verificado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_packing", o.Fecha_packing != DateTime.MinValue ? (object)o.Fecha_packing : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_despachado", o.Fecha_despachado != DateTime.MinValue ? (object)o.Fecha_despachado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_despachada", o.Cantidad_despachada != 0 ? (object)o.Cantidad_despachada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(o.User_agr) ? (object)o.User_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr != DateTime.MinValue ? (object)o.Fec_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(o.User_mod) ? (object)o.User_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", o.Fec_mod != DateTime.MinValue ? (object)o.Fec_mod : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@activo", o.Activo));
-        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? o.IdPedidoDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? (object)o.IdPedidoDet : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@dañado_picking", o.Dañado_picking));
-        cmd.Parameters.Add(new SqlParameter("@IdStockRes", o.IdStockRes != 0 ? o.IdStockRes : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@lic_plate_reemplazo", !string.IsNullOrWhiteSpace(o.Lic_plate_reemplazo) ? o.Lic_plate_reemplazo : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdUbicacion_reemplazo", o.IdUbicacion_reemplazo != 0 ? o.IdUbicacion_reemplazo : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdStock_reemplazo", o.IdStock_reemplazo != 0 ? o.IdStock_reemplazo : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdBodega", o.IdBodega != 0 ? o.IdBodega : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Pickeo", o.IdOperadorBodega_Pickeo != 0 ? o.IdOperadorBodega_Pickeo : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Verifico", o.IdOperadorBodega_Verifico != 0 ? o.IdOperadorBodega_Verifico : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", o.IdPedidoEnc != 0 ? o.IdPedidoEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdStockRes", o.IdStockRes != 0 ? (object)o.IdStockRes : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@lic_plate_reemplazo", !string.IsNullOrWhiteSpace(o.Lic_plate_reemplazo) ? (object)o.Lic_plate_reemplazo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacion_reemplazo", o.IdUbicacion_reemplazo != 0 ? (object)o.IdUbicacion_reemplazo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdStock_reemplazo", o.IdStock_reemplazo != 0 ? (object)o.IdStock_reemplazo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdBodega", o.IdBodega != 0 ? (object)o.IdBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Pickeo", o.IdOperadorBodega_Pickeo != 0 ? (object)o.IdOperadorBodega_Pickeo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Verifico", o.IdOperadorBodega_Verifico != 0 ? (object)o.IdOperadorBodega_Verifico : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", o.IdPedidoEnc != 0 ? (object)o.IdPedidoEnc : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@no_encontrado", o.No_encontrado));
-        cmd.Parameters.Add(new SqlParameter("@IdUbicacionTemporal", o.IdUbicacionTemporal != 0 ? o.IdUbicacionTemporal : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Asignado", o.IdOperadorBodega_Asignado != 0 ? o.IdOperadorBodega_Asignado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionTemporal", o.IdUbicacionTemporal != 0 ? (object)o.IdUbicacionTemporal : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Asignado", o.IdOperadorBodega_Asignado != 0 ? (object)o.IdOperadorBodega_Asignado : DBNull.Value));
     }
-
     public static void Bind_3pl(SqlCommand cmd, clsBeTrans_picking_ubic_3pl o)
     {
         cmd.Parameters.Add(new SqlParameter("@IdPickingUbic", o.IdPickingUbic != 0 ? o.IdPickingUbic : DBNull.Value));
@@ -897,7 +881,6 @@ public class clsLnTrans_picking_ubic
             throw;
         }
     }
-
     public static int InsertOrUpdate_3pl(List<clsBeTrans_picking_ubic_3pl> entities, SqlConnection conn, SqlTransaction tx)
     {
         int total = 0;
@@ -936,7 +919,6 @@ public class clsLnTrans_picking_ubic
 
         return count > 0;
     }
-
     public static List<clsBeTrans_picking_ubic>? Get_All_PickingUbic_Despachado_By_IdDespachoEnc(int pIdDespachoEnc,
                                                                                                  SqlConnection lConnection,
                                                                                                  SqlTransaction lTransaction)

@@ -135,6 +135,7 @@ Public Class clsLnTrans_pe_det
         End Try
 
     End Sub
+
     Public Shared Function Insertar(ByRef oBeTrans_pe_det As clsBeTrans_pe_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))

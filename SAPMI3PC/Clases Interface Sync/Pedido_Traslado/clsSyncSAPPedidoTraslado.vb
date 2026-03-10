@@ -286,7 +286,7 @@ Public Class clsSyncSAPPedidoTraslado : Inherits clsInterfaceBase
 
                         BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
                         BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                        BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+                        BePedidoDetWMS.No = clsLnI_nav_ped_traslado_det.MaxID() + 1
                         BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
                         BePedidoDetWMS.Line_No = n
                         BePedidoDetWMS.Shipment_Date = Date.Now

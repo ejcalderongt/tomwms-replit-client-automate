@@ -229,7 +229,7 @@ Public Class clsSyncSapDevolProveedor
 
                         Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
-                        Dim trasladoSincronizado As Boolean = Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                        Dim trasladoSincronizado As Boolean = Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL, 1).GetAwaiter().GetResult()
 
                         If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
                             Return True
@@ -248,15 +248,16 @@ Public Class clsSyncSapDevolProveedor
 
     End Function
 
-    Private Shared Async Function Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(docEntry As String,
-                                                                               sessionCookie As String,
-                                                                               baseUrl As String) As Task(Of Boolean)
+    Public Shared Async Function Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(docEntry As String,
+                                                                                  sessionCookie As String,
+                                                                                  baseUrl As String,
+                                                                                  enviado As Integer) As Task(Of Boolean)
 
         Try
             If String.IsNullOrWhiteSpace(docEntry) Then Return False
 
             Dim requestUrl As String = $"GoodsReturnRequest({docEntry})"
-            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim payload As String = $"{{""U_ENVIADO_WMS"": ""{enviado}""}}"
             Dim httpPatch As New HttpMethod("PATCH")
 
             Using handler As New HttpClientHandler()
