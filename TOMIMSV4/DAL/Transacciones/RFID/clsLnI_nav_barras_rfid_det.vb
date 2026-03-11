@@ -320,4 +320,92 @@ Public Class clsLnI_nav_barras_rfid_det
 
 	End Function
 
+	Public Shared Function Get_All_By_IdRFIDEnc(ByVal pIdRFIDEnc As Integer) As List(Of clsBeI_nav_barras_rfid_det)
+
+		Dim lReturnList As New List(Of clsBeI_nav_barras_rfid_det)
+
+		Try
+
+			Const sp As String = "SELECT * FROM I_nav_barras_rfid_det where IdRFIDEnc=@IdRFIDEnc "
+
+			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+				lConnection.Open()
+
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+					Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						lDTA.SelectCommand.Parameters.AddWithValue("@IdRFIDEnc", pIdRFIDEnc)
+
+						Dim lDataTable As New DataTable
+						lDTA.Fill(lDataTable)
+
+						Dim vBeI_nav_barras_rfid_det As New clsBeI_nav_barras_rfid_det
+
+						For Each dr As DataRow In lDataTable.Rows
+							vBeI_nav_barras_rfid_det = New clsBeI_nav_barras_rfid_det()
+							Cargar(vBeI_nav_barras_rfid_det, dr)
+							lReturnList.Add(vBeI_nav_barras_rfid_det)
+						Next
+
+					End Using
+
+					lTransaction.Commit()
+
+				End Using
+
+				lConnection.Close()
+
+			End Using
+
+			Return lReturnList
+
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
+
+	End Function
+
+	Public Shared Function Get_All_By_IdRFIDEnc(ByVal pIdRFIDEnc As Integer,
+											ByVal lConnection As SqlConnection,
+											ByVal lTransaction As SqlTransaction) As List(Of clsBeI_nav_barras_rfid_det)
+
+		Get_All_By_IdRFIDEnc = Nothing
+
+		Try
+
+			Const sp As String = "SELECT * FROM I_nav_barras_rfid_det where IdRFIDEnc=@IdRFIDEnc "
+
+			Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+				lDTA.SelectCommand.CommandType = CommandType.Text
+				lDTA.SelectCommand.Transaction = lTransaction
+				lDTA.SelectCommand.Parameters.AddWithValue("@IdRFIDEnc", pIdRFIDEnc)
+
+				Dim lDataTable As New DataTable
+				lDTA.Fill(lDataTable)
+
+				Dim lReturnList As New List(Of clsBeI_nav_barras_rfid_det)
+				Dim vBeI_nav_barras_rfid_det As New clsBeI_nav_barras_rfid_det
+
+				For Each dr As DataRow In lDataTable.Rows
+					vBeI_nav_barras_rfid_det = New clsBeI_nav_barras_rfid_det()
+					Cargar(vBeI_nav_barras_rfid_det, dr)
+					lReturnList.Add(vBeI_nav_barras_rfid_det)
+				Next
+
+				Get_All_By_IdRFIDEnc = lReturnList
+
+			End Using
+
+		Catch ex As Exception
+			Throw ex
+		End Try
+
+	End Function
+
+
 End Class

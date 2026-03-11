@@ -13,6 +13,8 @@ Public Class clsBeI_nav_barras_rfid_enc
 	Public Property IdCliente() As Integer = 0
 	Public Property IdPedidoEnc() As Integer = 0
 
+	Public Property Detalle() As New List(Of clsBeI_nav_barras_rfid_det)
+
 	Sub New()
 		'#EJC: Add your constructor here... 
 	End Sub
