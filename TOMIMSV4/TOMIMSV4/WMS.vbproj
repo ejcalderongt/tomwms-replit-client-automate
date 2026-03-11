@@ -1527,6 +1527,30 @@
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
     </Compile>
@@ -3735,6 +3759,18 @@
     <EmbeddedResource Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.resx">
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID.resx">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID_List.resx">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID.resx">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>

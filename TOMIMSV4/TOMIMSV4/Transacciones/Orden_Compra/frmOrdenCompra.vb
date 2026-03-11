@@ -8786,7 +8786,7 @@ MessageBoxButtons.YesNo,
     Private Sub cmdPreImpresionRFID_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdPreImpresionRFID.ItemClick
         Try
             With frmImpresion_OC_RFID
-                '.pTransOC_Enc = gBeOrdenCompra
+                .pTransOC_Enc = gBeOrdenCompra
                 .Show()
                 .Focus()
             End With

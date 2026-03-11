@@ -29,6 +29,7 @@ Public Class clsLnI_nav_barras_pallet
                 .Bodega_Destino = IIf(IsDBNull(dr.Item("Bodega_Destino")), "", dr.Item("Bodega_Destino"))
                 .Codigo_barra = IIf(IsDBNull(dr.Item("codigo_barra")), "", dr.Item("codigo_barra"))
                 .Cantidad_UMP = IIf(IsDBNull(dr.Item("cantidad_ump")), "0", dr.Item("cantidad_ump"))
+                .Impreso = IIf(IsDBNull(dr.Item("Impreso")), False, dr.Item("Impreso"))
 
             End With
 
@@ -68,6 +69,7 @@ Public Class clsLnI_nav_barras_pallet
             Ins.Add("bodega_origen", "@bodega_origen", DataType.Parametro)
             Ins.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Ins.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
+            Ins.Add("impreso", "@impreso", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -102,6 +104,7 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@BODEGA_ORIGEN", oBeI_nav_barras_pallet.Bodega_Origen))
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeI_nav_barras_pallet.Bodega_Destino))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -150,6 +153,8 @@ Public Class clsLnI_nav_barras_pallet
             Upd.Add("bodega_origen", "@bodega_origen", DataType.Parametro)
             Upd.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Upd.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
+            Upd.Add("impreso", "@impreso", DataType.Parametro)
+
             Upd.Where("IdPallet = @IdPallet")
 
             Dim sp As String = Upd.SQL()
@@ -185,6 +190,7 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@BODEGA_ORIGEN", oBeI_nav_barras_pallet.Bodega_Origen))
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeI_nav_barras_pallet.Bodega_Destino))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -967,6 +973,96 @@ Public Class clsLnI_nav_barras_pallet
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    '#GT05032026: listar barras_pallet si tienen oc-recepcion
+    Public Shared Function Get_All_Activos_By_IdRecepcion(ByVal IdRecepcionEnc As Integer) As List(Of clsBeI_nav_barras_pallet)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Dim lReturnList As New List(Of clsBeI_nav_barras_pallet)
+
+            Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE IdRecepcion=@IdRecepcionEnc "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdRecepcionEnc", IdRecepcionEnc))
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+            For Each dr As DataRow In dt.Rows
+                vBeI_nav_barras_pallet = New clsBeI_nav_barras_pallet
+                Cargar(vBeI_nav_barras_pallet, dr)
+                lReturnList.Add(vBeI_nav_barras_pallet)
+            Next
+
+            lTransaction.Commit()
+
+            Return lReturnList
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
+    '#GT06032026: listar barras_pallet con impreso=1
+    Public Shared Function Get_All_By_EstadoImpresion(ByVal Impreso As Boolean) As List(Of clsBeI_nav_barras_pallet)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Get_All_By_EstadoImpresion = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@Impreso", Impreso))
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+            If dt.Rows.Count > 0 Then
+
+                Get_All_By_EstadoImpresion = New List(Of clsBeI_nav_barras_pallet)
+
+                For Each dr As DataRow In dt.Rows
+                    vBeI_nav_barras_pallet = New clsBeI_nav_barras_pallet
+                    Cargar(vBeI_nav_barras_pallet, dr)
+                    Get_All_By_EstadoImpresion.Add(vBeI_nav_barras_pallet)
+                Next
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
 
     End Function
