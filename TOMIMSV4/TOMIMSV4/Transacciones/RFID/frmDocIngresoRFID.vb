@@ -44,7 +44,42 @@ Public Class frmDocIngresoRFID
 
 
     Private Sub Cargar_Datos()
+
+        Dim BeProveedor As New clsBeProveedor
+
         Try
+
+            If gBeRFIDEnc IsNot Nothing Then
+
+                If gBeRFIDEnc.IdProveedor > 0 Then
+                    BeProveedor = clsLnProveedor.GetSingle(gBeRFIDEnc.IdProveedor)
+                End If
+
+                txtIdRFIDEnc.Text = gBeRFIDEnc.IdRFIDEnc
+                txtIdOrdenCompraEnc.Text = gBeRFIDEnc.IdPedidoEnc
+
+                If BeProveedor IsNot Nothing Then
+                    txtProveedor.Text = BeProveedor.Nombre
+                Else
+                    txtProveedor.Text = gBeRFIDEnc.IdProveedor
+                End If
+
+                txtEstado.Text = gBeRFIDEnc.Estado
+                txtTipo.Text = gBeRFIDEnc.Tipo
+                txtFechaAgr.Text = gBeRFIDEnc.Fec_agr
+
+                If gBeRFIDEnc.Detalle.Count > 0 Then
+                    grdDetalle.DataSource = gBeRFIDEnc.Detalle
+
+                    If GridView1.Columns.Count > 0 Then
+                        GridView1.OptionsView.ColumnAutoWidth = False
+                        GridView1.BestFitColumns()
+                        lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
+                    End If
+
+                End If
+
+            End If
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
