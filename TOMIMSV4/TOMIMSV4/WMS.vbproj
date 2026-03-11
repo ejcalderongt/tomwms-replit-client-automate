@@ -229,6 +229,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SAPBOSyncMampa, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\SAPBOSyncMampa.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -1391,11 +1395,6 @@
     <Compile Include="Reportes\Ubicacion_Picking\DsListaUbicacion.vb">
       <DependentUpon>DsListaUbicacion.xsd</DependentUpon>
       <SubType>code</SubType>
-    </Compile>
-    <Compile Include="Reportes\Ubicacion_Picking\DsListaUbicacion1.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DsListaUbicacion.xsd</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Ubicacion_Picking\fmrUbicaciones_Picking.Designer.vb">
       <DependentUpon>fmrUbicaciones_Picking.vb</DependentUpon>
@@ -4620,6 +4619,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
