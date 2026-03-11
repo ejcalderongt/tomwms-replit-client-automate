@@ -5046,7 +5046,7 @@ Public Class frmPedido
                     pBePedidoDet.IsNew = False
 
                 Else
-                    Throw New Exception("No hay existencias suficientes para el código de producto: " & vCodigoProducto)
+                    Throw New Exception("No hay existencias suficientes para el código de producto: " & vCodigoProducto & " o las condiciones del inventario no son de libre manipulación")
                 End If
 
             End If

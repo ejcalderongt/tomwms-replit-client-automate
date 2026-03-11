@@ -1301,5 +1301,64 @@ public class clsLnTrans_oc_enc
         }
     }
 
+    public static int? Get_IdOrdenCompraEnc_By_IdDespachoEnc_And_CodigoBodegaOrigen(
+    IConfiguration configuration,
+    int idDespachoEnc,
+    string? codigoBodegaOrigen)
+    {
+        if (string.IsNullOrWhiteSpace(codigoBodegaOrigen))
+            return null;
 
+        SqlConnection lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection.Open();
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            const string vSQL = @"
+            SELECT TOP 1 oce.IdOrdenCompraEnc
+            FROM trans_oc_enc oce
+            INNER JOIN proveedor_bodega pb
+                ON pb.IdAsignacion = oce.IdProveedorBodega
+            INNER JOIN proveedor p
+                ON p.IdProveedor = pb.IdProveedor
+            WHERE oce.IdDespachoEnc = @IdDespachoEnc
+              AND p.Codigo = @CodigoBodegaOrigen
+            ORDER BY oce.IdOrdenCompraEnc DESC";
+
+            using var cmd = new SqlCommand(vSQL, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            cmd.Parameters.Add("@IdDespachoEnc", SqlDbType.Int).Value = idDespachoEnc;
+            cmd.Parameters.Add("@CodigoBodegaOrigen", SqlDbType.VarChar, 50).Value = codigoBodegaOrigen.Trim();
+
+            object? result = cmd.ExecuteScalar();
+
+            lTransaction.Commit();
+
+            if (result == null || result == DBNull.Value)
+                return null;
+
+            return Convert.ToInt32(result);
+        }
+        catch
+        {
+            if (lTransaction != null)
+                lTransaction.Rollback();
+
+            throw;
+        }
+        finally
+        {
+            if (lConnection.State == ConnectionState.Open)
+                lConnection.Close();
+
+            lTransaction?.Dispose();
+            lConnection.Dispose();
+        }
+    }
 }
