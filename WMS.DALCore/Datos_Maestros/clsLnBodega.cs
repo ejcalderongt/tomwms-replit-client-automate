@@ -1492,4 +1492,46 @@ public class clsLnBodega
         }
     }
 
+    public static List<clsBeBodega> GetByIds(IConfiguration configuration, List<int> ids)
+    {
+        var result = new List<clsBeBodega>();
+
+        if (ids == null || ids.Count == 0)
+            return result;
+
+        var idsFiltrados = ids.Where(x => x > 0).Distinct().ToList();
+        if (idsFiltrados.Count == 0)
+            return result;
+
+        using var lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+        lConnection.Open();
+
+        using var cmd = lConnection.CreateCommand();
+
+        var paramNames = new List<string>();
+        for (int i = 0; i < idsFiltrados.Count; i++)
+        {
+            var paramName = $"@id{i}";
+            paramNames.Add(paramName);
+            cmd.Parameters.Add(paramName, SqlDbType.Int).Value = idsFiltrados[i];
+        }
+
+        cmd.CommandText = $@"
+        SELECT IdBodega, Codigo
+        FROM Bodega
+        WHERE IdBodega IN ({string.Join(",", paramNames)})
+        ORDER BY IdBodega";
+
+        using var dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+            result.Add(new clsBeBodega
+            {
+                IdBodega = dr["IdBodega"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdBodega"]),
+                Codigo = dr["Codigo"] == DBNull.Value ? null : dr["Codigo"].ToString()
+            });
+        }
+
+        return result;
+    }
 }

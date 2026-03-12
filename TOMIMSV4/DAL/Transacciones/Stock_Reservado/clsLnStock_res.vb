@@ -71,7 +71,7 @@ Public Class clsLnStock_res
         Try
 
             Ins.Init("stock_res")
-            Ins.Add("idstockres", "@idstockres", DataType.Parametro)
+            'Ins.Add("idstockres", "@idstockres", DataType.Parametro)
             Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
             Ins.Add("indicador", "@indicador", DataType.Parametro)
             Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
@@ -113,9 +113,7 @@ Public Class clsLnStock_res
                 Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             End If
 
-
-
-            Dim sp As String = Ins.SQL()
+            Dim sp As String = Ins.SQLIdentity("IdStockRes")
             Dim cmd As SqlCommand
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -168,13 +166,16 @@ Public Class clsLnStock_res
                 cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
             End If
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            'Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeStock_res.IdStockRes = newId
 
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return 1
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()

@@ -63,18 +63,17 @@ namespace WMS.StockReservation.Core.Services
             // =========================
             // Consultar stock Picking
             // =========================
-            context.StockListPickingZone = clsLnStock.lStock(
-                ref tempRequest,
-                ref tempProduct,
-                diasVencimiento,
-                context.Configuration,
-                context.Connection,
-                context.Transaction,
-                pExcluirUbicacionPicking: false,
-                Conmutar_Umbas_A_Presentacion: false,
-                pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion,
-                pEsManufactura: context.EsManufactura);
+            context.StockListPickingZone = clsLnStock.lStock(ref tempRequest,
+                                                            ref tempProduct,
+                                                            diasVencimiento,
+                                                            context.Configuration,
+                                                            context.Connection,
+                                                            context.Transaction,
+                                                            pExcluirUbicacionPicking: false,
+                                                            Conmutar_Umbas_A_Presentacion: false,
+                                                            pTarea_Reabasto: context.TareaReabasto,
+                                                            pEs_Devolucion: context.EsDevolucion,
+                                                            pEsManufactura: context.EsManufactura);
 
             // Re-asignar (por si lStock modifica las referencias)
             context.Request = tempRequest;
@@ -83,11 +82,10 @@ namespace WMS.StockReservation.Core.Services
             // Restar stock ya reservado de la zona Picking
             if (context.StockListPickingZone != null && context.StockListPickingZone.Count > 0)
             {
-                clsLnStock_res.Restar_Stock_Reservado(
-                    context.StockListPickingZone,
-                    context.Configuration,
-                    context.Connection,
-                    context.Transaction);
+                clsLnStock_res.Restar_Stock_Reservado(context.StockListPickingZone,
+                                                        context.Configuration,
+                                                        context.Connection,
+                                                        context.Transaction);
 
                 // IMPORTANTE: Filtrar SOLO ubicaciones de picking
                 // La consulta con pExcluirUbicacionPicking=false trae TODO el stock,

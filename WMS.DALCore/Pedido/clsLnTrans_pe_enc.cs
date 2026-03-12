@@ -1082,4 +1082,54 @@ public class clsLnTrans_pe_enc
             throw;
         }
     }
+
+    public static Dictionary<int, string> Get_Codigos_Cliente_By_IdsPedidoEnc(
+    IConfiguration configuration,
+    List<int> idsPedidoEnc)
+    {
+        var result = new Dictionary<int, string>();
+
+        if (idsPedidoEnc == null || idsPedidoEnc.Count == 0)
+            return result;
+
+        var ids = idsPedidoEnc.Where(x => x > 0)
+                              .Distinct()
+                              .ToList();
+
+        if (ids.Count == 0)
+            return result;
+
+        using var lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+        lConnection.Open();
+
+        using var cmd = lConnection.CreateCommand();
+        cmd.CommandType = CommandType.Text;
+
+        var paramNames = new List<string>();
+        for (int i = 0; i < ids.Count; i++)
+        {
+            var paramName = $"@id{i}";
+            paramNames.Add(paramName);
+            cmd.Parameters.Add(paramName, SqlDbType.Int).Value = ids[i];
+        }
+
+        cmd.CommandText = $@"
+        SELECT pe.IdPedidoEnc, c.Codigo
+        FROM trans_pe_enc pe
+        INNER JOIN cliente c
+            ON c.IdCliente = pe.IdCliente
+        WHERE pe.IdPedidoEnc IN ({string.Join(",", paramNames)})";
+
+        using var dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+            var idPedidoEnc = dr["IdPedidoEnc"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPedidoEnc"]);
+            var codigo = dr["Codigo"] == DBNull.Value ? "" : dr["Codigo"].ToString() ?? "";
+
+            if (idPedidoEnc > 0 && !result.ContainsKey(idPedidoEnc))
+                result.Add(idPedidoEnc, codigo);
+        }
+
+        return result;
+    }
 }

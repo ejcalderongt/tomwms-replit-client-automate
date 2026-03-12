@@ -62,7 +62,7 @@ Public Class frmVerificacionBOF
     Private vRutaCDN As String = ""
     Private _listaRutasPng As List(Of String)
 
-    Private Sku_en_proceso As Boolean = False
+    'Private Sku_en_proceso As Boolean = False
     Private pMotivo As Integer = 0
     Private pEstado As Integer = 0
 
@@ -77,7 +77,7 @@ Public Class frmVerificacionBOF
 
         Try
 
-            Sku_en_proceso = False
+            'Sku_en_proceso = False
 
             clsTransaccion.Begin_Transaction()
 
@@ -604,157 +604,263 @@ Public Class frmVerificacionBOF
         Select Case estado
             Case "OK"
 
-                ' No hay SKU en proceso y el objeto indica que no se ha leído ningún SKU (IdPickingUbic = 0)
-                If Not Sku_en_proceso Then
-
-                    If pBeTransPickingUbicTemp Is Nothing OrElse pBeTransPickingUbicTemp.IdPickingUbic = 0 Then
-                        ' ESTADO 1: Sin SKU asignado
-                        ' No hay nada que confirmar con OK
-                        XtraMessageBox.Show(
-                            "Debe leer un SKU antes de leer la barra 'OK'.",
-                            "Estado inválido",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        )
-
-                        LimpiarControlesGrupo()
-                        txtScanner.SelectAll()
-                        txtScanner.Focus()
-                        Exit Sub
-
-                    Else
-
-                        If ProcesarLinea() Then
-                            txtScanner.Text = ""
-                            Sku_en_proceso = False
-                        End If
-
-                    End If
-
-                    LimpiarControlesGrupo()
-                    txtScanner.SelectAll()
-                    txtScanner.Focus()
-                    Exit Sub
-
-                Else
-
-                    XtraMessageBox.Show(
-                       "La cantidad del SKU aún no está completa. No puede confirmar con 'OK' todavía.",
-                       "Estado inválido",
-                       MessageBoxButtons.OK,
-                       MessageBoxIcon.Information
-                   )
-
-                    txtScanner.Text = ""
-                    txtScanner.SelectAll()
-                    txtScanner.Focus()
-                    Exit Sub
-
-
-
+                If plistPickingUbic.Count > 0 Then
+                    Guardar_Verificacion()
                 End If
 
+                ' No hay SKU en proceso y el objeto indica que no se ha leído ningún SKU (IdPickingUbic = 0)
+                'If Not Sku_en_proceso Then
+
+                '    If pBeTransPickingUbicTemp Is Nothing OrElse pBeTransPickingUbicTemp.IdPickingUbic = 0 Then
+                '        ' ESTADO 1: Sin SKU asignado
+                '        ' No hay nada que confirmar con OK
+                '        XtraMessageBox.Show(
+                '            "Debe leer un SKU antes de leer la barra 'OK'.",
+                '            "Estado inválido",
+                '            MessageBoxButtons.OK,
+                '            MessageBoxIcon.Information
+                '        )
+
+                '        LimpiarControlesGrupo()
+                '        txtScanner.SelectAll()
+                '        txtScanner.Focus()
+                '        Exit Sub
+
+                '    Else
+
+                '        If ProcesarLinea() Then
+                '            txtScanner.Text = ""
+                '            Sku_en_proceso = False
+                '        End If
+
+                '    End If
+
+                '    LimpiarControlesGrupo()
+                '    txtScanner.SelectAll()
+                '    txtScanner.Focus()
+                '    Exit Sub
+
+                'Else
+
+                '    XtraMessageBox.Show(
+                '       "La cantidad del SKU aún no está completa. No puede confirmar con 'OK' todavía.",
+                '       "Estado inválido",
+                '       MessageBoxButtons.OK,
+                '       MessageBoxIcon.Information
+                '   )
+
+                '    txtScanner.Text = ""
+                '    txtScanner.SelectAll()
+                '    txtScanner.Focus()
+                '    Exit Sub
+
+                'End If
+
             Case Else
+                If BuscarSKU_Y_Cargar(estado) Then
 
-                If Not Sku_en_proceso AndAlso (pBeTransPickingUbicTemp Is Nothing _
-                               OrElse pBeTransPickingUbicTemp.IdPickingUbic = 0) Then
+                    ProcesarLinea()
 
+                    'Sku_en_proceso = True
+                    txtScanner.Text = ""
+                Else
+                    'Sku_en_proceso = False
+                    txtScanner.Text = ""
+                End If
+
+                If (pBeTransPickingUbicTemp Is Nothing OrElse pBeTransPickingUbicTemp.IdPickingUbic = 0) Then
 
                     '#GT: Procesar lectura del SKU (permitido si es el mismo SKU o no hay ninguno en cola) ===
-                    If BuscarSKU_Y_Cargar(estado) Then
-                        Sku_en_proceso = True
-                        txtScanner.Text = ""
-                    Else
-                        Sku_en_proceso = False
-                        txtScanner.Text = ""
-                    End If
+                    'If BuscarSKU_Y_Cargar(estado) Then
+                    '    'Sku_en_proceso = True
+                    '    txtScanner.Text = ""
+                    'Else
+                    '    'Sku_en_proceso = False
+                    '    txtScanner.Text = ""
+                    'End If
 
-                Else
+                    ' Else
                     ' Ya existe un SKU en contexto (cantidad completa), aquí se espera un OK,
                     ' pero se está leyendo nuevamente un SKU (mismo u otro).
 
-                    Dim skuLeido As String = estado
+                    'Dim skuLeido As String = estado
 
+                    'If Sku_en_proceso AndAlso
+                    '    pBeTransPickingUbicTemp IsNot Nothing AndAlso
+                    '    pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
 
-                    If Sku_en_proceso AndAlso
-                        pBeTransPickingUbicTemp IsNot Nothing AndAlso
-                        pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
+                    '    Dim skuActual As String = Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU)
 
-                        Dim skuActual As String = Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU)
+                    '    If String.Equals(skuLeido, skuActual, StringComparison.InvariantCultureIgnoreCase) Then
+                    '        ' Mismo SKU: continuar verificando este SKU
+                    '        If BuscarSKU_Y_Cargar(skuLeido) Then
+                    '            ' Sigue pendiente
+                    '            Sku_en_proceso = True
+                    '            txtScanner.Text = ""
+                    '        Else
+                    '            ' Con esta lectura se completó la cantidad:
+                    '            ' ahora se espera OK / Motivo
+                    '            Sku_en_proceso = False
+                    '            txtScanner.Text = ""
+                    '        End If
 
-                        If String.Equals(skuLeido, skuActual, StringComparison.InvariantCultureIgnoreCase) Then
-                            ' Mismo SKU: continuar verificando este SKU
-                            If BuscarSKU_Y_Cargar(skuLeido) Then
-                                ' Sigue pendiente
-                                Sku_en_proceso = True
-                                txtScanner.Text = ""
-                            Else
-                                ' Con esta lectura se completó la cantidad:
-                                ' ahora se espera OK / Motivo
-                                Sku_en_proceso = False
-                                txtScanner.Text = ""
-                            End If
+                    '        txtScanner.Text = ""
+                    '        txtScanner.SelectAll()
+                    '        txtScanner.Focus()
+                    '        Exit Sub
 
-                            txtScanner.Text = ""
-                            txtScanner.SelectAll()
-                            txtScanner.Focus()
-                            Exit Sub
+                    '    Else
+                    '        ' SKU distinto mientras hay uno en proceso
+                    '        XtraMessageBox.Show(
+                    '            "Hay un SKU en proceso y no se puede leer otro hasta completar la cantidad requerida." & Environment.NewLine &
+                    '            "SKU en proceso: (" & skuActual & ")",
+                    '            "Estado inválido",
+                    '            MessageBoxButtons.OK,
+                    '            MessageBoxIcon.Information
+                    '        )
 
-                        Else
-                            ' SKU distinto mientras hay uno en proceso
-                            XtraMessageBox.Show(
-                                "Hay un SKU en proceso y no se puede leer otro hasta completar la cantidad requerida." & Environment.NewLine &
-                                "SKU en proceso: (" & skuActual & ")",
-                                "Estado inválido",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information
-                            )
+                    '        txtScanner.Text = ""
+                    '        txtScanner.SelectAll()
+                    '        txtScanner.Focus()
+                    '        Exit Sub
+                    '    End If
 
-                            txtScanner.Text = ""
-                            txtScanner.SelectAll()
-                            txtScanner.Focus()
-                            Exit Sub
-                        End If
+                    '    ' ESCENARIO 2: cantidad completa, esperando OK / Motivo
+                    'ElseIf Not Sku_en_proceso AndAlso
+                    '       pBeTransPickingUbicTemp IsNot Nothing AndAlso
+                    '       pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
 
-                        ' ESCENARIO 2: cantidad completa, esperando OK / Motivo
-                    ElseIf Not Sku_en_proceso AndAlso
-                           pBeTransPickingUbicTemp IsNot Nothing AndAlso
-                           pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
+                    '    Dim skuActual As String = Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU)
 
-                        Dim skuActual As String = Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU)
+                    '    ' ¿Volvieron a leer el mismo SKU que ya está completo?
+                    '    If String.Equals(skuLeido, skuActual, StringComparison.InvariantCultureIgnoreCase) Then
 
-                        ' ¿Volvieron a leer el mismo SKU que ya está completo?
-                        If String.Equals(skuLeido, skuActual, StringComparison.InvariantCultureIgnoreCase) Then
+                    '        XtraMessageBox.Show(
+                    '            "La cantidad de este SKU ya está completa." & Environment.NewLine &
+                    '            "Debe confirmar con 'OK' o registrar un motivo para continuar.",
+                    '            "Estado inválido",
+                    '            MessageBoxButtons.OK,
+                    '            MessageBoxIcon.Information
+                    '        )
 
-                            XtraMessageBox.Show(
-                                "La cantidad de este SKU ya está completa." & Environment.NewLine &
-                                "Debe confirmar con 'OK' o registrar un motivo para continuar.",
-                                "Estado inválido",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information
-                            )
+                    '    Else
+                    '        ' Están intentando leer otro SKU cuando aún hay uno pendiente de OK/motivo
+                    '        XtraMessageBox.Show(
+                    '            "Hay un SKU en cola que requiere un 'OK' o un Motivo para continuar." & Environment.NewLine &
+                    '            "SKU en cola: (" & skuActual & ")",
+                    '            "Estado inválido",
+                    '            MessageBoxButtons.OK,
+                    '            MessageBoxIcon.Information
+                    '        )
 
-                        Else
-                            ' Están intentando leer otro SKU cuando aún hay uno pendiente de OK/motivo
-                            XtraMessageBox.Show(
-                                "Hay un SKU en cola que requiere un 'OK' o un Motivo para continuar." & Environment.NewLine &
-                                "SKU en cola: (" & skuActual & ")",
-                                "Estado inválido",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information
-                            )
+                    '    End If
 
-                        End If
+                    '    txtScanner.Text = ""
+                    '    txtScanner.SelectAll()
+                    '    txtScanner.Focus()
+                    '    Exit Sub
 
-                        txtScanner.Text = ""
-                        txtScanner.SelectAll()
-                        txtScanner.Focus()
-                        Exit Sub
-
-                    End If
-
+                    'End If
 
                 End If
+                'If Not Sku_en_proceso AndAlso (pBeTransPickingUbicTemp Is Nothing _
+                '               OrElse pBeTransPickingUbicTemp.IdPickingUbic = 0) Then
+
+
+                '    '#GT: Procesar lectura del SKU (permitido si es el mismo SKU o no hay ninguno en cola) ===
+                '    If BuscarSKU_Y_Cargar(estado) Then
+                '        Sku_en_proceso = True
+                '        txtScanner.Text = ""
+                '    Else
+                '        Sku_en_proceso = False
+                '        txtScanner.Text = ""
+                '    End If
+
+                'Else
+                '    ' Ya existe un SKU en contexto (cantidad completa), aquí se espera un OK,
+                '    ' pero se está leyendo nuevamente un SKU (mismo u otro).
+
+                '    Dim skuLeido As String = estado
+
+                '    If Sku_en_proceso AndAlso
+                '        pBeTransPickingUbicTemp IsNot Nothing AndAlso
+                '        pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
+
+                '        Dim skuActual As String = Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU)
+
+                '        If String.Equals(skuLeido, skuActual, StringComparison.InvariantCultureIgnoreCase) Then
+                '            ' Mismo SKU: continuar verificando este SKU
+                '            If BuscarSKU_Y_Cargar(skuLeido) Then
+                '                ' Sigue pendiente
+                '                Sku_en_proceso = True
+                '                txtScanner.Text = ""
+                '            Else
+                '                ' Con esta lectura se completó la cantidad:
+                '                ' ahora se espera OK / Motivo
+                '                Sku_en_proceso = False
+                '                txtScanner.Text = ""
+                '            End If
+
+                '            txtScanner.Text = ""
+                '            txtScanner.SelectAll()
+                '            txtScanner.Focus()
+                '            Exit Sub
+
+                '        Else
+                '            ' SKU distinto mientras hay uno en proceso
+                '            XtraMessageBox.Show(
+                '                "Hay un SKU en proceso y no se puede leer otro hasta completar la cantidad requerida." & Environment.NewLine &
+                '                "SKU en proceso: (" & skuActual & ")",
+                '                "Estado inválido",
+                '                MessageBoxButtons.OK,
+                '                MessageBoxIcon.Information
+                '            )
+
+                '            txtScanner.Text = ""
+                '            txtScanner.SelectAll()
+                '            txtScanner.Focus()
+                '            Exit Sub
+                '        End If
+
+                '        ' ESCENARIO 2: cantidad completa, esperando OK / Motivo
+                '    ElseIf Not Sku_en_proceso AndAlso
+                '           pBeTransPickingUbicTemp IsNot Nothing AndAlso
+                '           pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
+
+                '        Dim skuActual As String = Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU)
+
+                '        ' ¿Volvieron a leer el mismo SKU que ya está completo?
+                '        If String.Equals(skuLeido, skuActual, StringComparison.InvariantCultureIgnoreCase) Then
+
+                '            XtraMessageBox.Show(
+                '                "La cantidad de este SKU ya está completa." & Environment.NewLine &
+                '                "Debe confirmar con 'OK' o registrar un motivo para continuar.",
+                '                "Estado inválido",
+                '                MessageBoxButtons.OK,
+                '                MessageBoxIcon.Information
+                '            )
+
+                '        Else
+                '            ' Están intentando leer otro SKU cuando aún hay uno pendiente de OK/motivo
+                '            XtraMessageBox.Show(
+                '                "Hay un SKU en cola que requiere un 'OK' o un Motivo para continuar." & Environment.NewLine &
+                '                "SKU en cola: (" & skuActual & ")",
+                '                "Estado inválido",
+                '                MessageBoxButtons.OK,
+                '                MessageBoxIcon.Information
+                '            )
+
+                '        End If
+
+                '        txtScanner.Text = ""
+                '        txtScanner.SelectAll()
+                '        txtScanner.Focus()
+                '        Exit Sub
+
+                '    End If
+
+
+                'End If
 
         End Select
 
@@ -921,7 +1027,7 @@ Public Class frmVerificacionBOF
 
                 ' True  -> después de esta lectura TODAVÍA hay lecturas pendientes (nuevaVerificada < Pickeada)
                 ' False -> después de esta lectura la línea quedó completa (nuevaVerificada >= Pickeada)
-                BuscarSKU_Y_Cargar = siguePendiente
+                BuscarSKU_Y_Cargar = Not siguePendiente
 
             End If
 
@@ -1268,10 +1374,13 @@ Public Class frmVerificacionBOF
 
                     ' Validar líneas no verificadas (cantidad_verificada = 0), agrupadas por pedido
                     Dim pendientesPorPedido = plistPickingUbic _
-                                            .Where(Function(x) x.Cantidad_Verificada = 0) _
+                                             .Where(Function(x) x.Cantidad_Verificada < x.Cantidad_Recibida AndAlso
+                                                                x.Cantidad_Recibida > 0 AndAlso
+                                                                x.Dañado_picking = False AndAlso
+                                                                x.Dañado_verificacion = False AndAlso
+                                                                x.No_encontrado = False) _
                                             .GroupBy(Function(x) x.IdPedidoEnc) _
                                             .ToList()
-
 
                     If pendientesPorPedido IsNot Nothing AndAlso pendientesPorPedido.Count > 0 Then
 
@@ -1301,15 +1410,13 @@ Public Class frmVerificacionBOF
 
                     End If
 
-
-
                     If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
                                                                           AP.UsuarioAp.IdUsuario,
                                                                           pBeListaPedidos) Then
 
                         XtraMessageBox.Show("No se fiscalizó el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Else
-                        XtraMessageBox.Show("Pedido fiscalizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        XtraMessageBox.Show("Pedido fiscalizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
                         If InvokeListarPedidos IsNot Nothing Then
                             InvokeListarPedidos.Invoke()

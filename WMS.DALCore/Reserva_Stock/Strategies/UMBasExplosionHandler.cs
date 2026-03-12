@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using WMS.StockReservation.Core.Domain;
-using WMS.StockReservation.Core.Interfaces;
-using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 

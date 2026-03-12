@@ -4803,7 +4803,6 @@ Partial Public Class clsLnStock_res
                     Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                     clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
-
                     Insertar(BeStockRes,
                              lConnection,
                              ltransaction)
@@ -26222,16 +26221,19 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     vMensajeNoExplosionEnZonasNoPicking = String.Format("{0} Código:{1} UMBas={2} Pres={3} Cant={4} (Verifique si tiene existencia en Pres. en WMS) - Config_IF: Despachar_existencia_parcial = No ", clsDalEx.ErrorS0004,
                                                                                                                                                              BeProducto.Codigo,
                                                                                                                                                              BeProducto.UnidadMedida.Nombre,
-                                                                                                                                                             pStockResSolicitud.IdPresentacion,
-                                                                                                                                                             pStockResSolicitud.Cantidad)
-                                    '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
-                                    pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
-                                    pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
-                                    clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                                          lConnection,
-                                                                                          ltransaction)
+                                                                                                                                                             pStockResSolicitud.IdPresentacion, pStockResSolicitud.Cantidad)
 
-                                    Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
+                                    If Not pBeTrasladoDet Is Nothing Then
+
+                                        '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
+                                        pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
+                                        pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
+                                        clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                                              lConnection,
+                                                                                              ltransaction)
+
+                                        Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
+                                    End If
                                 End If
 
                             End If

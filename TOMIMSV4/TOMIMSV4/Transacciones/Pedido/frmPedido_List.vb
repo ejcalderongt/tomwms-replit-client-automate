@@ -53,6 +53,8 @@ Public Class frmPedido_List
 
         If e.KeyCode = Keys.Escape Then Close()
 
+        If e.KeyCode = Keys.F5 Then Listar_Pedidos()
+
     End Sub
 
     Private Sub frmPedido_List_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -1111,7 +1113,7 @@ Public Class frmPedido_List
 
     End Sub
 
-    Private Sub mnuEliminarPedido_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedido.ItemClick
+    Private Async Sub mnuEliminarPedido_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedido.ItemClick
 
         Try
 
@@ -1181,6 +1183,29 @@ Public Class frmPedido_List
                                                         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                                                         SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
+                                                        '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
+                                                        If AP.Bodega.Interface_SAP AndAlso Not clsBD.Instancia.HANA_SL = "" Then
+
+                                                            Dim vHanaService = New SapServiceLayerClient()
+                                                            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+                                                            Select Case pBePedidoEnc.IdTipoPedido
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
+                                                                    Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                        loginResponse.SessionId, SapServiceLayerClient.baseUrl, 2)
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
+                                                                    Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                        loginResponse.SessionId,
+                                                                                                                                        SapServiceLayerClient.baseUrl, 2)
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
+                                                                    Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                                    loginResponse.SessionId,
+                                                                                                                                                    SapServiceLayerClient.baseUrl, 2)
+
+                                                            End Select
+
+                                                        End If
+
                                                         '#EJC202211221049: Validar que la instancia no sea nothing para eliminar desde WS
                                                         If Not wsTOMHHInstance Is Nothing Then
 
@@ -1190,6 +1215,7 @@ Public Class frmPedido_List
                                                             'Si no existe picking no debo borrar
                                                             Dim vResultBorraPicking As Boolean = wsTOMHHInstance.Borrar_Picking(ArchHeader,
                                                                                                                                 pBePedidoEnc.Referencia)
+
 
                                                             If Not vResultBorraPicking Then
                                                                 SplashScreenManager.CloseForm(False)
@@ -1338,6 +1364,7 @@ Public Class frmPedido_List
                 End If
 
             End If
+
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

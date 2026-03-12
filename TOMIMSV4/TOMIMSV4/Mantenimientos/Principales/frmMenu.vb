@@ -5264,7 +5264,6 @@ Public Class frmMenu
 
             Cierra_Instancia_Previa(frmPedido_List)
 
-
             With frmPedido_List
                 .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
                 .Modo = frmPedido_List.pModo.verificacion
@@ -5309,4 +5308,79 @@ Public Class frmMenu
 
     End Sub
 
+    Private Sub mnuImpresionBarraPallet_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuImpresionBarraPallet.ItemClick
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmImpresion_OC_RFID)
+
+            With frmImpresion_OC_RFID
+                .pTransOC_Enc = Nothing
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Private Sub mnuListaIngresoTag_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuListaIngresoTag.ItemClick
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmDocIngresoRFID_List)
+
+            With frmDocIngresoRFID_List
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Private Sub mnuListaSalidaTag_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuListaSalidaTag.ItemClick
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmDocSalidaRFID_List)
+
+            With frmDocSalidaRFID_List
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
 End Class
