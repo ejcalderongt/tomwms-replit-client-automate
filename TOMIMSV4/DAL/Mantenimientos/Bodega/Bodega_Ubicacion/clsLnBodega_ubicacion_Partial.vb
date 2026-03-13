@@ -3950,4 +3950,65 @@ Partial Public Class clsLnBodega_ubicacion
 
     End Function
 
+    '#MA20260304 para obtener rack, estado y licenciadestino
+    Public Shared Function Get_Info_Ubicacion_Destino(ByVal pIdUbicacion As Integer,
+                                                  ByVal pIdBodega As Integer) As DataTable
+
+        Get_Info_Ubicacion_Destino = Nothing
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT  t.es_rack,
+                                        stock.LicenciaDestino,
+                                        stock.IdProductoEstado
+                                    FROM bodega_ubicacion u
+                                    INNER JOIN bodega_tramo t 
+                                        ON u.idtramo = t.idtramo
+                                    OUTER APPLY (
+                                        SELECT TOP 1 
+                                            s.lic_plate AS LicenciaDestino,
+                                            s.IdProductoEstado
+                                        FROM vw_stock_res s
+                                        WHERE s.IdUbicacion = u.IdUbicacion
+                                        AND s.IdBodega = u.IdBodega
+                                        ORDER BY s.IdStock DESC
+                                    ) stock
+                                    WHERE u.IdUbicacion = @IdUbicacion
+                                    AND u.IdBodega = @IdBodega"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        lTransaction.Commit()
+
+                        Get_Info_Ubicacion_Destino = lDT
+
+                    End Using
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
