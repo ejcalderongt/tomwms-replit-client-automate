@@ -861,6 +861,67 @@
                 lConnection.Dispose();
             }
         }
+        public static List<clsBeI_nav_transacciones_out> Get_All_Salidas_Pendientes_De_Procesar(
+        IConfiguration configuration,
+        string? noPedido = null,
+        int? idTipoDocumento = null)
+        {
+            SqlConnection lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+            SqlTransaction? lTransaction = null;
 
+            try
+            {
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+                var lReturnList = new List<clsBeI_nav_transacciones_out>();
+
+                string vSQL = "SELECT * FROM I_nav_transacciones_out " +
+                              "WHERE tipo_transaccion = 'SALIDA' AND Enviado = 0 " +
+                              (string.IsNullOrWhiteSpace(noPedido) ? "" : "AND no_pedido = @no_pedido ") +
+                              (idTipoDocumento.HasValue ? "AND IdTipoDocumento = @IdTipoDocumento " : "") +
+                              "ORDER BY fec_agr";
+
+                using var cmd = new SqlCommand(vSQL, lConnection, lTransaction)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                if (!string.IsNullOrWhiteSpace(noPedido))
+                    cmd.Parameters.Add("@no_pedido", SqlDbType.VarChar, 50).Value = noPedido.Trim();
+
+                if (idTipoDocumento.HasValue)
+                    cmd.Parameters.Add("@IdTipoDocumento", SqlDbType.Int).Value = idTipoDocumento.Value;
+
+                using var dad = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                dad.Fill(dt);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    var item = new clsBeI_nav_transacciones_out();
+                    Cargar(ref item, dr);
+                    lReturnList.Add(item);
+                }
+
+                lTransaction.Commit();
+                return lReturnList;
+            }
+            catch
+            {
+                if (lTransaction != null)
+                    lTransaction.Rollback();
+
+                throw;
+            }
+            finally
+            {
+                if (lConnection.State == ConnectionState.Open)
+                    lConnection.Close();
+
+                lTransaction?.Dispose();
+                lConnection.Dispose();
+            }
+        }
     }
 }

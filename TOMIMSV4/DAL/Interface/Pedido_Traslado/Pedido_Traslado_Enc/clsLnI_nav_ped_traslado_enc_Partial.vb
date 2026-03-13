@@ -1032,7 +1032,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                             If BeProducto Is Nothing Then
                                 Dim vMsgEx1 As String = "El código de producto: " & PDet.Item_No & " no existe o no está asociado con el código de bodega: " & IdBodegaOrigen
                                 clsPublic.Actualizar_Progreso(lblprg, vMsgEx1)
-                                'Throw New Exception(vMsgEx1)
+                                Throw New Exception(vMsgEx1)
                             End If
 
                             '#EJC20241014:Actualizar la referencia para que reserve según la empresa.

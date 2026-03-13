@@ -145,4 +145,50 @@ Partial Public Class clsLnI_nav_barras_pallet
 
     End Function
 
+    '#GT06032026: actualizar si la barra ya fue impresa en rfid.
+    Public Shared Function Actualiza_Estado_Barras_Pallet_By_Impresion(ByRef oBeI_nav_barras_pallet As clsBeI_nav_barras_pallet, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Upd.Init("i_nav_barras_pallet")
+            Upd.Add("Impreso", "@Impreso", DataType.Parametro)
+            Upd.Where(" IdPallet=@IdPallet and codigo_barra = @codigo_barra ")
+
+            Dim sp As String = Upd.SQL()
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IDPALLET", oBeI_nav_barras_pallet.IdPallet))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
 End Class

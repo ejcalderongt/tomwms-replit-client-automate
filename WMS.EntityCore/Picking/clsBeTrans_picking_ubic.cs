@@ -225,8 +225,7 @@ namespace WMS.EntityCore.Picking
         public string ProductoUnidadMedida { get; set; } = "";
         public string ProductoEstado { get; set; } = "";
         public clsBeBodega_ubicacion Ubicacion { get; set; } = new clsBeBodega_ubicacion();        
-        public double CantidadDañada { get; set; } = 0;
-        public string Lic_plate_Reemplazo { get; set; } = "";
+        public double CantidadDañada { get; set; } = 0;        
         public double Tarima { get; set; } = 0;
         public string NombreArea { get; set; } = "";
         public string NombreClasificacion { get; set; } = "";        

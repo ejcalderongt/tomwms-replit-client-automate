@@ -7,10 +7,10 @@ Imports Newtonsoft.Json.Linq
 
 Public Class SapServiceLayerClient
 
-    Public Shared ReadOnly baseUrl As String = BD.Instancia.HANA_SL
-    Private ReadOnly companyDb As String = BD.Instancia.SAP_COMPANY_DB
-    Private ReadOnly user As String = BD.Instancia.HANA_SL_USR
-    Private ReadOnly password As String = BD.Instancia.HANA_SL_PWD
+    Public Shared Property baseUrl As String = BD.Instancia.HANA_SL
+    Private Property companyDb As String = BD.Instancia.SAP_COMPANY_DB
+    Private Property user As String = BD.Instancia.HANA_SL_USR
+    Private Property password As String = BD.Instancia.HANA_SL_PWD
     Public Property SessionCookie As String
     Shared Property SessionId As String = ""
     Private Shared Property RouteId As String = ""
@@ -61,6 +61,16 @@ Public Class SapServiceLayerClient
     Public Async Function LoginAsync() As Task(Of LoginResponseDto)
 
         Try
+
+            If baseUrl = "" Then
+                If Init_App() Then
+                    baseUrl = BD.Instancia.HANA_SL
+                    companyDb = BD.Instancia.SAP_COMPANY_DB
+                    user = BD.Instancia.HANA_SL_USR
+                    password = BD.Instancia.HANA_SL_PWD
+                End If
+            End If
+
             Dim loginUrl As String = $"{baseUrl}Login"
             Dim loginData As New With {
                                         Key .CompanyDB = companyDb,

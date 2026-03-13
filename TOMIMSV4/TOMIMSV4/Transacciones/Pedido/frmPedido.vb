@@ -5046,7 +5046,7 @@ Public Class frmPedido
                     pBePedidoDet.IsNew = False
 
                 Else
-                    Throw New Exception("No hay existencias suficientes para el código de producto: " & vCodigoProducto)
+                    Throw New Exception("No hay existencias suficientes para el código de producto: " & vCodigoProducto & " o las condiciones del inventario no son de libre manipulación")
                 End If
 
             End If
@@ -12193,14 +12193,15 @@ Public Class frmPedido
 
             With frmDespacho
                 .Modo = frmDespacho.TipoTrans.Nuevo
-                .WindowState = FormWindowState.Maximized
-                .Activate()
-                .Show()
-                .Agregar_Pedido(pBePedidoEnc)
+                .Despacho_Cargado_Desde_Pedido = True
                 .InvokeGetDespachoEnPedido = AddressOf Cargar_Despacho
                 .InvokeActualizarStockReservadoEnPedido = AddressOf Carga_Stock_Reservado
                 .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
                 .InvokeCargarPedido = AddressOf Cargar_Datos
+                .WindowState = FormWindowState.Maximized
+                .Activate()
+                .Show()
+                .Agregar_Pedido(pBePedidoEnc)
                 .Focus()
             End With
 

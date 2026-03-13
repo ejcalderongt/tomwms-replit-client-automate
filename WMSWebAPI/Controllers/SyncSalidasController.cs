@@ -200,35 +200,84 @@ namespace WMSWebAPI.Controllers
             }
         }
         [HttpGet("mi3/pendientes-procesar")]
-        public IActionResult GetSalidasPendientesDeProcesar([FromServices] IConfiguration _configuration,
-        [FromQuery] string? noPedido = null,
-        [FromQuery] string fields = "full")
+        public IActionResult GetSalidasPendientesDeProcesar(
+    [FromServices] IConfiguration _configuration,
+    [FromQuery] string? noPedido = null,
+    [FromQuery] int? idTipoDocumento = null)
         {
             try
             {
-
                 // 1) Traer pendientes
-                var data = _salidaService.Get_Salidas_Pendientes_De_Procesar(noPedido);
+                var data = _salidaService.Get_Salidas_Pendientes_De_Procesar(noPedido, idTipoDocumento);
 
-                // 2) Filtro opcional por No_pedido (igual que ingresos)
+                // 2) Filtro opcional por NoPedido
                 if (!string.IsNullOrWhiteSpace(noPedido))
+                {
                     data = data.Where(x => x.No_pedido != null &&
                                            x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))
                                .ToList();
+                }
 
-                // 3) Minimal
-                if (fields.Equals("minimal", StringComparison.OrdinalIgnoreCase))
+                // 3) Filtro opcional por IdTipoDocumento
+                if (idTipoDocumento.HasValue)
                 {
-                    var umIds = data.Select(x => x.Idunidadmedida).Where(id => id > 0).Distinct().ToList();
-                    var presIds = data.Select(x => x.Idpresentacion).Where(id => id > 0).Distinct().ToList();
+                    data = data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)
+                               .ToList();
+                }
 
-                    var ums = clsLnUnidad_medida.GetByIds(_configuration, umIds);
-                    var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
+                // 4) Minimal por defecto
+                var umIds = data.Select(x => x.Idunidadmedida)
+                                .Where(id => id > 0)
+                                .Distinct()
+                                .ToList();
 
-                    var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo);
-                    var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
+                var presIds = data.Select(x => x.Idpresentacion)
+                                  .Where(id => id > 0)
+                                  .Distinct()
+                                  .ToList();
 
-                    var result = data.Select(x => new SalidaSimpleReturnDto
+                var bodegaIds = data.Select(x => x.Idbodega)
+                                    .Where(id => id > 0)
+                                    .Distinct()
+                                    .ToList();
+
+                var pedidoIds = data.Select(x => x.Idpedidoenc)
+                                    .Where(id => id > 0)
+                                    .Distinct()
+                                    .ToList();
+
+                var ums = clsLnUnidad_medida.GetByIds(_configuration, umIds);
+                var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
+                var bodegas = clsLnBodega.GetByIds(_configuration, bodegaIds);
+                var codigoClienteByPedidoId = clsLnTrans_pe_enc.Get_Codigos_Cliente_By_IdsPedidoEnc(_configuration, pedidoIds);
+
+                var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo ?? "");
+                var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
+                var bodegaCodigoById = bodegas.ToDictionary(b => b.IdBodega, b => b.Codigo ?? "");
+
+                var result = data.Select(x =>
+                {
+                    var esTraslado = x.IdTipoDocumento == 6;
+
+                    var codigoBodegaOrigen = bodegaCodigoById.TryGetValue(x.Idbodega, out var codBodOrigen)
+                        ? codBodOrigen
+                        : "";
+
+                    var codigoDestino = codigoClienteByPedidoId.TryGetValue(x.Idpedidoenc, out var codDestino)
+                        ? codDestino
+                        : "";
+
+                    var idDocIngresoBodDestino =
+                        esTraslado &&
+                        x.Iddespachoenc > 0 &&
+                        !string.IsNullOrWhiteSpace(codigoBodegaOrigen)
+                            ? clsLnTrans_oc_enc.Get_IdOrdenCompraEnc_By_IdDespachoEnc_And_CodigoBodegaOrigen(
+                                _configuration,
+                                x.Iddespachoenc,
+                                codigoBodegaOrigen)
+                            : null;
+
+                    return new SalidaSimpleReturnDto
                     {
                         Idtransaccion = x.Idtransaccion,
                         No_pedido = x.No_pedido,
@@ -239,21 +288,27 @@ namespace WMSWebAPI.Controllers
                         Cantidad = x.Cantidad,
                         Lote = x.Lote,
                         Vence = x.Fecha_vence,
-                        Linea = int.TryParse(x.No_linea, out var ln) ? ln : 0,                        
+                        Linea = int.TryParse(x.No_linea, out var ln) ? ln : 0,
                         Licencia = x.Lic_Plate,
-                        Fecha = x.Fec_agr
-                    }).ToList();
+                        Fecha = x.Fec_agr,
+                        Codigo_Bodega_Origen = codigoBodegaOrigen,
+                        Codigo_Bodega_Destino = esTraslado ? codigoDestino : "",
+                        Codigo_Cliente = esTraslado ? "" : codigoDestino,
+                        IdDocIngresoBodDestino = idDocIngresoBodDestino,
+                        IdDocSalidaBodOrigen = x.Idpedidoenc
+                    };
+                }).ToList();
 
-                    return Ok(result);
-                }
+                return Ok(result);
 
-                // 4) Full
-                return Ok(data);
+                // Opción para retornar full:
+                // return Ok(data);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { ok = false, message = ex.Message });
             }
         }
+
     }
 }
