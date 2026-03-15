@@ -1894,7 +1894,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -2248,7 +2248,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -2482,7 +2482,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -11921,20 +11921,29 @@ Public Class frmPedido
             End If
         End If
 
-        ' 3.2 – ¿Mi producto aparece en OTRA línea?
-        Dim productoEnOtraLinea = dgrid.Rows.Cast(Of DataGridViewRow)().
-            Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
-            Any(Function(r)
-                    Dim l2 As Integer = 0 : Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
-                    Dim p2 As String = GetProductoKey(r)
-                    Return p2 = pKey AndAlso l2 <> linea
-                End Function)
+        ' 3.2 – ¿Mi producto aparece en OTRA línea que no es válida?
+        Dim lineasValidas = dgrid.Rows.Cast(Of DataGridViewRow)().
+                Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
+                Where(Function(r) GetProductoKey(r) = pKey).
+                Select(Function(r)
+                           Dim l2 As Integer = 0
+                           Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
+                           Return l2
+                       End Function).
+                Where(Function(l) l > 0).
+                Distinct().
+                OrderBy(Function(l) l).
+                ToList()
 
-        If productoEnOtraLinea Then
+        Dim lineaValidaParaProducto As Boolean = lineasValidas.Contains(linea)
+
+        If Not lineaValidaParaProducto Then
+            Dim mensaje As String = "El número de línea no es válido para este producto." & Environment.NewLine &
+                    "Líneas permitidas: " & String.Join(", ", lineasValidas)
             ok = False
-            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), "Este producto ya está en otra línea.", row.ErrorText & " Este producto ya está en otra línea.")
+            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), mensaje, row.ErrorText & " " & mensaje)
             If dgrid.Columns.Contains("colCodProducto") Then
-                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea distinto."
+                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea no válido."
             End If
         End If
 
