@@ -12202,14 +12202,15 @@ Public Class frmPedido
 
             With frmDespacho
                 .Modo = frmDespacho.TipoTrans.Nuevo
-                .WindowState = FormWindowState.Maximized
-                .Activate()
-                .Show()
-                .Agregar_Pedido(pBePedidoEnc)
+                .Despacho_Cargado_Desde_Pedido = True
                 .InvokeGetDespachoEnPedido = AddressOf Cargar_Despacho
                 .InvokeActualizarStockReservadoEnPedido = AddressOf Carga_Stock_Reservado
                 .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
                 .InvokeCargarPedido = AddressOf Cargar_Datos
+                .WindowState = FormWindowState.Maximized
+                .Activate()
+                .Show()
+                .Agregar_Pedido(pBePedidoEnc)
                 .Focus()
             End With
 
