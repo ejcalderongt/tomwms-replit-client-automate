@@ -1525,10 +1525,13 @@ public class clsLnBodega
         using var dr = cmd.ExecuteReader();
         while (dr.Read())
         {
+            int ordIdBodega = dr.GetOrdinal("IdBodega");
+            int ordCodigo = dr.GetOrdinal("Codigo");
+
             result.Add(new clsBeBodega
             {
-                IdBodega = dr["IdBodega"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdBodega"]),
-                Codigo = dr["Codigo"] == DBNull.Value ? null : dr["Codigo"].ToString()
+                IdBodega = dr.IsDBNull(ordIdBodega) ? 0 : dr.GetInt32(ordIdBodega),
+                Codigo = dr.IsDBNull(ordCodigo) ? null : dr.GetString(ordCodigo),
             });
         }
 

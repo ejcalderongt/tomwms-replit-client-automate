@@ -31,7 +31,7 @@ namespace WMSWebAPI.Be
 
         [Column("Location_Code")]
         [DisplayName("Location_Code")]
-        public string Location_Code { get; set; } = "";
+        public string? Location_Code { get; set; } = "";
 
         [Column("Quantity")]
         [DisplayName("Quantity")]

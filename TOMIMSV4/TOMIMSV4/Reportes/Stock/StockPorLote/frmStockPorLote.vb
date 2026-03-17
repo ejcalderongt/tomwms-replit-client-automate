@@ -384,7 +384,7 @@ Public Class frmStockPorLote
                 Dim Factor As Double = 0
                 Dim IdProducto As Integer = 0
                 Dim Vence As Date = New Date(1900, 1, 1)
-
+                Dim NomPres As String = ""
                 'SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
 
                 Dim pd As PrintDialog = New PrintDialog()
@@ -399,6 +399,7 @@ Public Class frmStockPorLote
                 Factor = IIf(IsDBNull(Dr.Item("Factor")), 0, Dr.Item("Factor"))
                 IdProducto = IIf(IsDBNull(Dr.Item("IdProducto")), 0, Dr.Item("IdProducto"))
                 Vence = IIf(IsDBNull(Dr.Item("Fecha_Vence")), New Date(1900, 1, 1), Dr.Item("Fecha_Vence"))
+                NomPres = IIf(IsDBNull(Dr.Item("Presentacion")), 0, Dr.Item("Presentacion"))
 
                 Dim ObjTransReDet As New clsBeTrans_re_det
                 ObjTransReDet.Codigo_Producto = Codigo_Producto
@@ -410,6 +411,7 @@ Public Class frmStockPorLote
                 ObjTransReDet.Presentacion.Factor = Factor
                 ObjTransReDet.IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(IdProducto, cmbBodega.EditValue)
                 ObjTransReDet.Fecha_vence = Vence
+                ObjTransReDet.Nombre_presentacion = NomPres
 
                 If ObjTransReDet IsNot Nothing Then
                     Dim Impresion As New frmImpresionRecepcion
