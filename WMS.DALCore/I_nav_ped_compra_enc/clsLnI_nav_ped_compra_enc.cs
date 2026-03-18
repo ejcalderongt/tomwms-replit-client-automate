@@ -680,12 +680,10 @@ public class clsLnI_nav_ped_compra_enc
                 foreach (var Det in oBeI_nav_ped_compra_enc.Lineas_Detalle)
                 {
                     if (Det == null) continue;
-                    
-                    string locationToUse = Det.Location_Code;
-                    if (string.IsNullOrWhiteSpace(locationToUse?.Trim()))
-                    {
-                        locationToUse = oBeI_nav_ped_compra_enc.Location_Code.Trim();
-                    }
+
+                    string? locationToUse = string.IsNullOrWhiteSpace(Det.Location_Code)
+                                            ? oBeI_nav_ped_compra_enc.Location_Code?.Trim()
+                                            : Det.Location_Code.Trim();
 
                     try
                     {
