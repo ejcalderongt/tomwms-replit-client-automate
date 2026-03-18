@@ -832,7 +832,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
                                 prod.Inventory = 0D
                                 prod.Unit_Cost = 0D
-                                prod.BatchControl = (SafeGetString(row, "ManageBatchNumbers") = "tYES")
+                                prod.BatchControl = False
 
                                 prod.Item_Category_Name = String.Empty
                                 prod.Producto_Group_Name = String.Empty
