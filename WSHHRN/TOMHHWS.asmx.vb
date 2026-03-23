@@ -13039,11 +13039,11 @@ Public Class TOMHHWS
             Dim esvalida As Boolean = clsLnTrans_ubicsug.Ubicacion_Es_Valida(pIdProducto, pIdUbicacion, pIdBodega)
 
             Dim json As String = JsonConvert.SerializeObject(New With {
-    .UbicacionValida = esvalida
-},
-New JsonSerializerSettings With {
-    .NullValueHandling = NullValueHandling.Include
-})
+                                            .UbicacionValida = esvalida
+                                        },
+                                        New JsonSerializerSettings With {
+                                            .NullValueHandling = NullValueHandling.Include
+                                        })
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
@@ -18897,6 +18897,29 @@ New JsonSerializerSettings With {
                     HttpContext.Current.Response.End()
                 End If
             End If
+        End Try
+    End Function
+
+    <WebMethod()>
+    <ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False)>
+    Public Function EsPalletNoEstandarJSON(ByVal pStock As clsBeStock) As Object
+        Try
+            Dim esNoEstandar As Boolean = clsLnStock.Es_Pallet_No_Estandar(pStock)
+
+            Return New With {
+                .Error = False,
+                .Resultado = esNoEstandar
+            }
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(ex.ToString())
+
+            Return New With {
+                .Error = True,
+                .Mensaje = ex.Message
+            }
         End Try
     End Function
 

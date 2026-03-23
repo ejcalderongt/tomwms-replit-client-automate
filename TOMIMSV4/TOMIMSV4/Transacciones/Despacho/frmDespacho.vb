@@ -1433,6 +1433,8 @@ Public Class frmDespacho
             BeDespachoDet.Activo = True
             BeDespachoDet.IsNew = True
             BeDespachoDet.FechaPedido = BePedidoEnc.Fecha_Pedido
+            BeDespachoDet.Lote = BeTransPickingUbic.Lote
+            BeDespachoDet.Lic_plate = BeTransPickingUbic.Lic_plate
 
             If BeTransPickingUbic.IdProductoTallaColor > 0 Then
                 BeDespachoDet.Talla = BeTransPickingUbic.Codigo_Talla
