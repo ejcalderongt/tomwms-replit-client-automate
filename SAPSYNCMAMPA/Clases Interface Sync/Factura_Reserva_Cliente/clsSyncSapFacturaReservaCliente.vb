@@ -246,10 +246,10 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
             ' Filtro encabezado
             Dim filtroFacturaReserva_Cliente As String = "ReserveInvoice eq 'tYES'"
-            'Dim filtroEstado As String = "DocumentStatus eq 'bost_Close'"
+            Dim filtroGuia As String = "U_GUIA ne null and U_GUIA ne ''"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
-            Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum}"
+            Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum} and {filtroGuia}"
 
             Dim url As String = $"{BD.Instancia.HANA_SL}Invoices?$filter={Uri.EscapeDataString(filtroFinal)}"
 

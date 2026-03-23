@@ -2189,7 +2189,11 @@ Public Class frmCargaExcel
                             End If
 
                         End If
+                    Else
+                        errorCampos = True
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "La talla y el color deben ser válidos. Fila " & i + 1)
                     End If
+
                 End If
 
                 If Not errorCampos Then

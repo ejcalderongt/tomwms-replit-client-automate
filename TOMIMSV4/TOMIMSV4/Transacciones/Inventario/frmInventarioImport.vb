@@ -146,6 +146,8 @@ Public Class frmInventarioImport
         Dim vPrecio As Double
         Dim vParametro_a As String = ""
         Dim vParametro_b As String = ""
+        Dim vColor As String = ""
+        Dim vTalla As String = ""
 
         Dim correlativo_a As Integer
         Dim correlativo_b As Integer
@@ -256,6 +258,8 @@ Public Class frmInventarioImport
                     vPrecio = IIf(IsDBNull(grdData.Rows(ii).Cells("ColPrecio").Value), 0, grdData.Rows(ii).Cells("ColPrecio").Value)
                     vParametro_a = IIf(IsDBNull(grdData.Rows(ii).Cells("ColParametro_a").Value), "", grdData.Rows(ii).Cells("ColParametro_a").Value)
                     vParametro_b = IIf(IsDBNull(grdData.Rows(ii).Cells("ColParametro_b").Value), "", grdData.Rows(ii).Cells("ColParametro_b").Value)
+                    vTalla = IIf(IsDBNull(grdData.Rows(ii).Cells("ColTalla").Value), "", grdData.Rows(ii).Cells("ColTalla").Value)
+                    vColor = IIf(IsDBNull(grdData.Rows(ii).Cells("ColColor").Value), "", grdData.Rows(ii).Cells("ColColor").Value)
 
                     If BeProducto.Control_lote Then
                         vLote = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLote").Value), "", grdData.Rows(ii).Cells("ColLote").Value)
@@ -447,7 +451,6 @@ Public Class frmInventarioImport
 
                         End If
 
-
                         If vParametro_b <> "" Then
 
                             If Not BeProducto.ParametroB Is Nothing Then
@@ -498,9 +501,35 @@ Public Class frmInventarioImport
                             clsLnProducto.Actualizar(BeProducto, lConnection, lTransaction)
                         End If
 
+                        If AP.Bodega.Control_Talla_Color Then
+
+                            If vColor = "" Then
+                                Marcar_Error(ii, "ColColor", "Debe ingresar el color del producto")
+                            End If
+
+                            If vTalla = "" Then
+                                Marcar_Error(ii, "ColTalla", "Debe ingresar la talla del producto")
+                            End If
+
+                            If vColor <> "" Then
+                                Dim BeColor As clsBeColor = clsLnColor.Get_Single_By_Codigo(vColor, lConnection, lTransaction)
+                                If BeColor Is Nothing Then
+                                    Marcar_Error(ii, "ColColor", "El valor en la columna color no existe")
+                                End If
+                            End If
+
+                            If vTalla <> "" Then
+                                Dim BeTalla As clsBeTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, lConnection, lTransaction)
+                                If BeTalla Is Nothing Then
+                                    Marcar_Error(ii, "ColTalla", "El valor en la columna talla no existe")
+                                End If
+                            End If
+
+                        End If
+
                     End If
 
-                Else
+                    Else
                     MsgBox("El código de producto: " & cod & " No existe.", MsgBoxStyle.Exclamation, Text)
                     Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
                 End If
