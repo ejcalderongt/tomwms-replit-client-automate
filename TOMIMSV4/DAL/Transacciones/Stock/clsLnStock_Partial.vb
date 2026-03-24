@@ -9152,7 +9152,10 @@ Partial Public Class clsLnStock
 									Ubicacion_Indice_X, 
 									Ubicacion_Nombre, 
 									Ubicacion_Tramo, 
-									Nombre_Completo 
+									Nombre_Completo,
+                                    IdProductoTallaColor, 
+                                    Talla, 
+                                    Color
 									FROM VW_Stock_CambioUbic 
 									WHERE ISNULL(CantidadSF,0) - ISNULL(CantidadReservada,0) > 0 
 										   AND fecha_vence = @FechaVence "
@@ -9225,7 +9228,10 @@ Partial Public Class clsLnStock
 								Ubicacion_Indice_X, 
 								Ubicacion_Nombre, 
 								Ubicacion_Tramo, 
-								Nombre_Completo "
+								Nombre_Completo,
+                                IdProductoTallaColor, 
+                                Talla, 
+                                Color "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
