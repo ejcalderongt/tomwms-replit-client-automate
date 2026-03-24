@@ -10,7 +10,6 @@ Imports System.Web.Services.Protocols
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
-
 Imports System.Data.SqlClient
 Imports System.Web.Script.Serialization
 Imports TOMWMS.wsBYBNavCUWMS
@@ -1840,48 +1839,112 @@ Public Class TOMHHWS
     End Function
 
     '#MA20251014 Migracion de xml a json
-    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Function Get_Estados_By_IdPropietario_JSON(ByVal pIdPropietario As Integer) As List(Of clsBeProducto_estado)
-        Dim responseObj As New Dictionary(Of String, Object)
+    '<WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    'Public Function Get_Estados_By_IdPropietario_JSON(ByVal pIdPropietario As Integer) As List(Of clsBeProducto_estado)
+    '    Dim responseObj As New Dictionary(Of String, Object)
 
-        'Get_Estados_By_IdPropietario = Nothing
+    '    'Get_Estados_By_IdPropietario = Nothing
+
+    '    Try
+
+    '        Dim resultado As List(Of clsBeProducto_estado) = clsLnProducto_estado.Get_Estados_By_IdPropietario_For_HH(pIdPropietario)
+
+    '        ConvertirListasVaciasANothing(resultado)
+
+    '        responseObj("data") = resultado
+
+    '        Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+    '        Dim jsonResult As String = serializer.Serialize(responseObj)
+    '        Dim statusCode As Integer = If(responseObj.ContainsKey("error"), 500, 200)
+
+    '        With HttpContext.Current.Response
+    '            .Clear()
+    '            .StatusCode = statusCode
+    '            .ContentType = "application/json"
+    '            .Output.Write(jsonResult)
+    '            .End()
+    '        End With
+
+    '        Return Nothing
+
+    '    Catch ex As Exception
+
+    '        'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+    '        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+    '        Dim Mensaje As String = ex.Message
+    '        WriteErrorToEventLog(Mensaje)
+
+    '        If mArch IsNot Nothing Then
+
+    '            If mArch.Tipo = "WM" Then
+    '                Throw New Exception(Mensaje)
+
+    '            End If
+
+    '        End If
+    '    End Try
+
+
+    'End Function
+
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Estados_By_IdPropietario_JSON(ByVal pIdPropietario As Integer)
+
+        Dim responseObj As New Dictionary(Of String, Object)
+        Dim curContext As HttpContext = HttpContext.Current
 
         Try
-
             Dim resultado As List(Of clsBeProducto_estado) = clsLnProducto_estado.Get_Estados_By_IdPropietario_For_HH(pIdPropietario)
+
+            ConvertirListasVaciasANothing(resultado)
+
             responseObj("data") = resultado
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonResult As String = serializer.Serialize(responseObj)
+
+            With curContext.Response
+                .Clear()
+                .StatusCode = 200
+                .ContentType = "application/json"
+                .Write(jsonResult)
+            End With
+
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
 
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-
-                End If
-
+            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+                Throw New Exception(Mensaje)
             End If
-        End Try
-        Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
-        Dim jsonResult As String = serializer.Serialize(responseObj)
-        Dim statusCode As Integer = If(responseObj.ContainsKey("error"), 500, 200)
 
-        With HttpContext.Current.Response
-            .Clear()
-            .StatusCode = statusCode
-            .ContentType = "application/json"
-            .Output.Write(jsonResult)
-            .End()
-        End With
-        Return Nothing
-    End Function
+            Dim errorObj As New Dictionary(Of String, Object)
+            errorObj("error") = True
+            errorObj("mensaje") = ex.Message
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim errorJson As String = serializer.Serialize(errorObj)
+
+            With curContext.Response
+                .Clear()
+                .StatusCode = 500
+                .ContentType = "application/json"
+                .Write(errorJson)
+            End With
+
+            curContext.ApplicationInstance.CompleteRequest()
+
+        End Try
+
+    End Sub
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Estados_By_IdPropietario(ByVal pIdPropietario As Integer) As List(Of clsBeProducto_estado)
@@ -2416,14 +2479,16 @@ Public Class TOMHHWS
 
             Dim producto As clsBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
 
-            If producto.UnidadMedida IsNot Nothing Then
-            End If
+            'If producto.UnidadMedida IsNot Nothing Then
+            'End If
 
-            If producto.Stock IsNot Nothing AndAlso producto.Stock.BePresentacionProductoEnStock IsNot Nothing Then
-                If producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
-                    producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
-                End If
-            End If
+            'If producto.Stock IsNot Nothing AndAlso producto.Stock.BePresentacionProductoEnStock IsNot Nothing Then
+            '    If producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
+            '        producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
+            '    End If
+            'End If
+
+            ConvertirListasVaciasANothing(producto)
 
             ' Serializamos el producto a JSON incluyendo nulls
             Dim json As String = JsonConvert.SerializeObject(producto, New JsonSerializerSettings With {
@@ -6336,31 +6401,28 @@ Public Class TOMHHWS
         ' Get_Productos_By_IdUbicacion_Existencias = Nothing
 
         Try
-            Dim productos As List(Of clsBeVW_stock_res) = clsLnStock.Get_Productos_By_IdUbicacion_Existencia(
-    pIdUbicacion,
-    pIdProductoBodega,
-    pFechaVence,
-    pLote,
-    pIdPresentacion,
-    pLicencia
-)
+            Dim productos As List(Of clsBeVW_stock_res) = clsLnStock.Get_Productos_By_IdUbicacion_Existencia(pIdUbicacion,
+                                                                                                             pIdProductoBodega,
+                                                                                                             pFechaVence,
+                                                                                                             pLote,
+                                                                                                             pIdPresentacion,
+                                                                                                             pLicencia)
 
             For Each prod In productos
-                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock IsNot Nothing Then
+                'If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock IsNot Nothing Then
 
-                    If prod.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
-                        prod.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
-                    End If
-                End If
+                '    If prod.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
+                '        prod.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
+                '    End If
+                'End If
 
-                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking IsNot Nothing Then
-                    prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking = Nothing
-                End If
+                'If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking IsNot Nothing Then
+                '    prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking = Nothing
+                'End If
+                ConvertirListasVaciasANothing(prod)
             Next
 
-            Dim json As String = JsonConvert.SerializeObject(productos, New JsonSerializerSettings With {
-    .NullValueHandling = NullValueHandling.Include
-})
+            Dim json As String = JsonConvert.SerializeObject(productos, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Include})
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
@@ -18922,5 +18984,80 @@ Public Class TOMHHWS
             }
         End Try
     End Function
+
+    Public Sub ConvertirListasVaciasANothing(obj As Object)
+        If obj Is Nothing Then Return
+
+        Dim tipo As System.Type = obj.GetType()
+
+        ' No procesar tipos simples
+        If tipo.IsPrimitive OrElse
+           tipo Is GetType(String) OrElse
+           tipo Is GetType(DateTime) OrElse
+           tipo Is GetType(Decimal) OrElse
+           tipo.IsEnum Then
+            Return
+        End If
+
+        ' Si es una lista/enumerable, recorrer sus items
+        If GetType(IEnumerable).IsAssignableFrom(tipo) AndAlso tipo IsNot GetType(String) Then
+            Dim enumerable = DirectCast(obj, IEnumerable)
+            For Each item In enumerable
+                ConvertirListasVaciasANothing(item)
+            Next
+            Return
+        End If
+
+        ' Recorrer propiedades públicas de lectura/escritura
+        For Each prop As PropertyInfo In tipo.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
+
+            If Not prop.CanRead OrElse Not prop.CanWrite Then Continue For
+            If prop.GetIndexParameters().Length > 0 Then Continue For
+
+            Dim valor As Object = prop.GetValue(obj, Nothing)
+            If valor Is Nothing Then Continue For
+
+            Dim tipoProp As System.Type = prop.PropertyType
+
+            ' Saltar tipos simples
+            If tipoProp.IsPrimitive OrElse
+               tipoProp Is GetType(String) OrElse
+               tipoProp Is GetType(DateTime) OrElse
+               tipoProp Is GetType(Decimal) OrElse
+               tipoProp.IsEnum Then
+                Continue For
+            End If
+
+            ' Si la propiedad es IList o IEnumerable, validar si está vacía
+            If GetType(IList).IsAssignableFrom(tipoProp) Then
+                Dim lista = DirectCast(valor, IList)
+
+                If lista.Count = 0 Then
+                    prop.SetValue(obj, Nothing, Nothing)
+                Else
+                    For Each item In lista
+                        ConvertirListasVaciasANothing(item)
+                    Next
+                End If
+
+            ElseIf GetType(IEnumerable).IsAssignableFrom(tipoProp) AndAlso tipoProp IsNot GetType(String) Then
+                Dim enumerable = DirectCast(valor, IEnumerable)
+                Dim tieneElementos As Boolean = False
+
+                For Each item In enumerable
+                    tieneElementos = True
+                    ConvertirListasVaciasANothing(item)
+                Next
+
+                If Not tieneElementos Then
+                    prop.SetValue(obj, Nothing, Nothing)
+                End If
+
+            Else
+                ' Es un objeto complejo, seguir recursivamente
+                ConvertirListasVaciasANothing(valor)
+            End If
+        Next
+    End Sub
 
 End Class
