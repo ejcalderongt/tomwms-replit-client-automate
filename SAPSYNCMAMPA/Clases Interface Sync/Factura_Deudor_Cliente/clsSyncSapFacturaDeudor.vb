@@ -97,7 +97,7 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
             ' Filtro a nivel de encabezado (no se puede filtrar por WarehouseCode aquí)
             Dim filtroFacturaDeudor As String = "ReserveInvoice eq 'tNO'"
-            Dim filtroGuia As String = "U_GUIA ne null and U_GUIA ne ''"
+            Dim filtroGuia As String = "U_Guia ne null and U_Guia ne ''"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
             Dim filtroFinal As String = $"{filtroFacturaDeudor} and {filtroEnviado}{filtroDocNum} and {filtroGuia}"

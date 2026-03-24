@@ -591,7 +591,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             .Cantidad_Pendiente = BePickingUbic.Cantidad_Solicitada - BeDespachoDet.CantidadDespachada
                             .Cantidad_Enviada = 0
                             .Peso = BeDespachoDet.PesoDespachado
-                            .Lote = BeDespachoDet.Lote
+                            .Lote = BePickingUbic.Lote
                             .Fecha_vence = BePickingUbic.Fecha_Vence
                             .Fecha_recepcion = "01/01/1900"
                             .fecha_despacho = Now

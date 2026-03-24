@@ -5950,7 +5950,6 @@ Public Class TOMHHWS
         Try
 
             For Each BeVWStockRes As clsBeVW_stock_res In pStockResList
-                clsLnLog_error_wms.Agregar_Error(BeVWStockRes.Movimiento.IdEmpresa, BeVWStockRes.Movimiento.IdBodegaOrigen, "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: " & BeVWStockRes.Movimiento.IdOperadorBodega & " y TipoTarea " & BeVWStockRes.Movimiento.IdTipoTarea)
                 Aplica_Cambio_Estado_Ubic_HH_LicCompleta = clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic(BeVWStockRes.Movimiento, BeVWStockRes, 0, 0)
             Next
 

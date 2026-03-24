@@ -246,7 +246,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
             ' Filtro encabezado
             Dim filtroFacturaReserva_Cliente As String = "ReserveInvoice eq 'tYES'"
-            Dim filtroGuia As String = "U_GUIA ne null and U_GUIA ne ''"
+            Dim filtroGuia As String = "U_Guia ne null and U_Guia ne ''"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
             Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum} and {filtroGuia}"
@@ -401,7 +401,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                 '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
                 If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
 
-                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
                     Dim trasladoSincronizado As Boolean = Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(factura.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
 
