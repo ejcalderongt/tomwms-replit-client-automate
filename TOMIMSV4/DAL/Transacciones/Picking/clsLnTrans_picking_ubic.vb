@@ -1221,4 +1221,138 @@ Public Class clsLnTrans_picking_ubic
 
     End Function
 
+    Public Shared Function Corregir_Diferencias_Despacho_Packing(ByVal IdPedidoEnc As Integer) As Integer
+
+        Corregir_Diferencias_Despacho_Packing = 0
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Const sp As String = "UPDATE trans_picking_ubic 
+                                 SET cantidad_verificada = cantidad_recibida 
+                                 WHERE IdPedidoEnc = @IdPedidoEnc 
+                                 And ISNULL(cantidad_verificada,0) = 0 
+                                 And ISNULL(dañado_verificacion,0) = 0 
+                                 And ISNULL(encontrado,0) = 1 
+                                 And IdStock In (Select IdStock FROM stock_res WHERE estado = 'VERIFICADO') "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@IdPedidoEnc", IdPedidoEnc))
+
+            Corregir_Diferencias_Despacho_Packing = cmd.ExecuteNonQuery()
+
+            lTransaction.Commit()
+
+        Catch ex1 As SqlException
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw ex1
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Diferencias_Despacho_Packing(ByVal IdPedidoEnc As Integer) As DataTable
+
+        Get_Diferencias_Despacho_Packing = Nothing
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT " &
+                             "    p.cantidad_verificada, " &
+                             "    p.cantidad_recibida, " &
+                             "    p.cantidad_solicitada, " &
+                             "    p.IdPickingUbic, " &
+                             "    p.IdPickingEnc, " &
+                             "    p.IdStock, " &
+                             "    p.IdStockRes, " &
+                             "    p.IdProductoBodega, " &
+                             "    p.lote, " &
+                             "    p.lic_plate, " &
+                             "    ISNULL(pr.codigo,'') AS codigo, " &
+                             "    ISNULL(pr.nombre,'') AS producto, " &
+                             "    ISNULL(pk.cantidad_empacada, 0) AS cantidad_empacada " &
+                             "FROM trans_picking_ubic p " &
+                             "INNER JOIN stock_res sr " &
+                             "    ON sr.IdStock = p.IdStock " &
+                             "LEFT JOIN producto_bodega pb " &
+                             "    ON pb.IdProductoBodega = p.IdProductoBodega " &
+                             "LEFT JOIN producto pr " &
+                             "    ON pr.IdProducto = pb.IdProducto " &
+                             "INNER JOIN ( " &
+                             "    SELECT " &
+                             "        tpe.IdPedidoEnc, " &
+                             "        tpe.idpickingenc, " &
+                             "        tpe.idproductobodega, " &
+                             "        ISNULL(tpe.lote,'') AS lote, " &
+                             "        ISNULL(tpe.lic_plate,'') AS lic_plate, " &
+                             "        SUM(ISNULL(tpe.cantidad_bultos_packing,0)) AS cantidad_empacada " &
+                             "    FROM trans_packing_enc tpe " &
+                             "    GROUP BY " &
+                             "        tpe.IdPedidoEnc, " &
+                             "        tpe.idpickingenc, " &
+                             "        tpe.idproductobodega, " &
+                             "        ISNULL(tpe.lote,''), " &
+                             "        ISNULL(tpe.lic_plate,'') " &
+                             ") pk " &
+                             "    ON pk.IdPedidoEnc = p.IdPedidoEnc " &
+                             "   AND pk.idpickingenc = p.IdPickingEnc " &
+                             "   AND pk.idproductobodega = p.IdProductoBodega " &
+                             "   AND pk.lote = ISNULL(p.lote,'') " &
+                             "   AND pk.lic_plate = ISNULL(p.lic_plate,'') " &
+                             "WHERE p.IdPedidoEnc = @IdPedidoEnc " &
+                             "  AND ISNULL(p.cantidad_recibida,0) > 0 " &
+                             "  AND ISNULL(p.cantidad_verificada,0) = 0 " &
+                             "  AND ISNULL(p.dañado_verificacion,0) = 0 " &
+                             "  AND ISNULL(pk.cantidad_empacada,0) > 0 " &
+                             "  AND p.IdStock IN ( " &
+                             "      SELECT IdStock " &
+                             "      FROM stock_res " &
+                             "      WHERE estado = 'VERIFICADO' " &
+                             "        AND stock_res.IdPedido = @IdPedidoEnc " &
+                             "  ) " &
+                             "ORDER BY p.IdPickingEnc, pr.codigo, p.lote, p.lic_plate "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPedidoEnc", IdPedidoEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Get_Diferencias_Despacho_Packing = dt
+
+            lTransaction.Commit()
+
+        Catch ex1 As SqlException
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw ex1
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
 End Class

@@ -769,9 +769,9 @@ Public Class frmAjusteStock
             pStock_Reservado.Fecha_manufactura = pStock.Fecha_Manufactura
             pStock_Reservado.Atributo_Variante_1 = pStock.Atributo_Variante_1
             pStock_Reservado.IdBodega = pStock.IdBodega
-            'pStock_Reservado.Talla = pStock.Talla
-            'pStock_Reservado.Color = pStock.Color
-            'pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
+            pStock_Reservado.Talla = pStock.Talla
+            pStock_Reservado.Color = pStock.Color
+            pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
 
             clsLnStock_res.Insertar(pStock_Reservado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -2323,9 +2323,14 @@ Public Class frmAjusteStock
 
             Crear_Movimientos()
 
-            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
-                                                 lBeTransAjusteDet,
-                                                 lBeTransMovimientos)
+            If chkBorrador.Checked Then
+                clsLnTrans_ajuste_enc.Guardar_Borrador_Ajuste(pBeTransAjustEnc,
+                                                              lBeTransAjusteDet)
+            Else
+                clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
+                                                     lBeTransAjusteDet,
+                                                     lBeTransMovimientos)
+            End If
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
                 If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, True) > 0 Then
