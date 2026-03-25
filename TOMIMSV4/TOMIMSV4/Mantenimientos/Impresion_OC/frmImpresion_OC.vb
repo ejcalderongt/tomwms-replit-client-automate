@@ -1,8 +1,6 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Reflection
-Imports DevExpress.DashboardWin.Commands
 Imports DevExpress.XtraEditors
-Imports TOMWMS.wsTOMHH
 
 Public Class frmImpresionRecepcion_OC
 
@@ -42,15 +40,6 @@ Public Class frmImpresionRecepcion_OC
             txtPresentacion.Enabled = False
             txtFactor.Enabled = False
 
-
-            pCajasPorCama = Convert.ToInt16(txtCajaPorCama.Value)
-            pCamasPorTarima = Convert.ToInt16(txtCamaPorTarima.Value)
-            Dim pCantidad = pCamasPorTarima * pCajasPorCama
-
-            If pCantidad > 0 Then
-                txtCantidadLicencias.Value = 1
-            End If
-
             cmbPrinterLicencia.EditValue = frmRecepcion.pImpresoraLicSeleccionada
             cmbPrinterBarra.EditValue = frmRecepcion.pImpresoraProdSeleccionada
 
@@ -72,15 +61,15 @@ Public Class frmImpresionRecepcion_OC
                     .ValueMember = "IdProductoBodega"
                     .DisplayMember = "Nombre_producto"
                     .Columns.Clear()
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("No_Linea", "No. Línea", 60))
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdProductoBodega", "IdProductoBodega") With {.Visible = False})
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdOrdenCompraDet", "IdOrdenCompraDet") With {.Visible = False})
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdPresentacion", "IdPresentacion") With {.Visible = False})
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Codigo_Producto", "Codigo_Producto") With {.Visible = True})
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre_unidad_medida_basica", "Nombre_unidad_medida_basica") With {.Visible = False})
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdUnidadMedidaBasica", "IdUnidadMedidaBasica") With {.Visible = False})
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre_producto", "Producto", 220))
-                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Cantidad", "Cantidad", 80))
+                    .Columns.Add(New Controls.LookUpColumnInfo("No_Linea", "No. Línea", 60))
+                    .Columns.Add(New Controls.LookUpColumnInfo("IdProductoBodega", "IdProductoBodega") With {.Visible = False})
+                    .Columns.Add(New Controls.LookUpColumnInfo("IdOrdenCompraDet", "IdOrdenCompraDet") With {.Visible = False})
+                    .Columns.Add(New Controls.LookUpColumnInfo("IdPresentacion", "IdPresentacion") With {.Visible = False})
+                    .Columns.Add(New Controls.LookUpColumnInfo("Codigo_Producto", "Codigo_Producto") With {.Visible = True})
+                    .Columns.Add(New Controls.LookUpColumnInfo("Nombre_unidad_medida_basica", "Nombre_unidad_medida_basica") With {.Visible = False})
+                    .Columns.Add(New Controls.LookUpColumnInfo("IdUnidadMedidaBasica", "IdUnidadMedidaBasica") With {.Visible = False})
+                    .Columns.Add(New Controls.LookUpColumnInfo("Nombre_producto", "Producto", 220))
+                    .Columns.Add(New Controls.LookUpColumnInfo("Cantidad", "Cantidad", 80))
                     .NullText = ""
                     .ShowHeader = True
                     .PopupWidth = 450
@@ -122,75 +111,85 @@ Public Class frmImpresionRecepcion_OC
     End Sub
 
     Private Sub Imprimir_Producto(ByVal pReDet As clsBeTrans_oc_det,
-                                           ByVal PrinterName As String,
-                                           ByVal pImpresiones As Integer)
+                                  ByVal PrinterName As String,
+                                  ByVal pImpresiones As Integer)
 
         Try
+            If String.IsNullOrWhiteSpace(PrinterName) Then
+                DxErrorProvider1.SetError(cmbPrinterBarra, "Seleccione impresora")
+                Exit Sub
+            End If
 
-            '#GT15022024: valores a cargar en la etiqueta ZPL
-            Dim ZPLString As String = ""
+            ' Copias solicitadas (cada impresión imprime 2 etiquetas iguales por ser 2-up)
+            Dim vCopias As Integer
+            Try
+                vCopias = Convert.ToInt32(txtCopias.Value)
+            Catch
+                vCopias = pImpresiones
+            End Try
+            If vCopias <= 0 Then vCopias = 1
+
+            ' Datos dinámicos
             Dim vEmpresa As String = AP.Empresa.Nombre
-            Dim vCodigoBarra As String = txtLicencia.EditValue
-            Dim vCodigoProducto As String = pReDet.Codigo_Producto
-            Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, IIf(pReDet.Nombre_producto.Length < 45, pReDet.Nombre_producto.Length, 44)) '"PRAZOLEN 20MG CAJA X 15 CAPSULAS MUY LARGO PARA"
-            Dim vLote As String = cmbLote.EditValue
-            Dim vFechaVence As String = txtVencimiento.EditValue
+            Dim vLicencia As String = Convert.ToString(txtLicencia.EditValue)
 
-            '#GT14022024: validamos producto y tipo etiqueta (zpl, simbologia)
+            Dim vCodigoProducto As String = pReDet.Codigo_Producto
+            Dim vNombreProducto As String =
+            If(String.IsNullOrEmpty(pReDet.Nombre_producto),
+               "",
+               pReDet.Nombre_producto.Substring(0, Math.Min(pReDet.Nombre_producto.Length, 44))).Trim()
+
+            Dim vLote As String = Convert.ToString(cmbLote.Text)
+
+            ' Vence solo fecha
+            Dim vVenceStr As String = ""
+            If txtVencimiento.EditValue IsNot Nothing AndAlso
+           Not String.IsNullOrWhiteSpace(Convert.ToString(txtVencimiento.EditValue)) Then
+
+                Dim d As Date
+                If Date.TryParse(Convert.ToString(txtVencimiento.EditValue), d) Then
+                    vVenceStr = d.ToString("dd/MM/yy")
+                End If
+            End If
+
+            ' Obtener ZPL desde BD (como original)
             Dim pBeProducto = clsLnProducto.Get_Single_By_IdProductoBodega(pReDet.IdProductoBodega)
             Dim pTipoEtiqueta = pBeProducto.IdTipoEtiqueta
             Dim pTipoSimbologia = pBeProducto.IdSimbologia
             Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, 1)
 
-            '#GT15022024: validamos cuantas impresiones deben realizarse, considera 3 x fila (son 3 columnas)
-            'Dim vColaImpresiones As Double = Math.Truncate(pImpresiones / 3)
-            'im vColaFraccion As Double = pImpresiones - (vColaImpresiones * 3)
-
-            If PrinterName <> "" Then
-
-                If Tipo_Etiqueta IsNot Nothing Then
-
-                    Dim tmpZPLString = Tipo_Etiqueta.codigo_zpl
-
-                    If tmpZPLString <> "" Then
-                        ZPLString = String.Format(tmpZPLString,
-                                                  BeBodega_Origen.Nombre,
-                                                  vEmpresa,
-                                                  vNombreProducto.Trim + " " + vCodigoProducto,
-                                                  vCodigoProducto,
-                                                  vFechaVence)
-                    End If
-
-                    If ZPLString <> "" Then
-                        Dim vColaImpresiones = pImpresiones
-                        If vColaImpresiones > 0 Then
-                            If vColaImpresiones = 1 Then
-                                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-                            Else
-                                For i = 1 To vColaImpresiones
-                                    RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-                                Next
-                            End If
-                        End If
-
-                    Else
-                        XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "No está definido el formato de etiqueta"),
-                                            Text,
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Error)
-                    End If
-                Else
-                    Throw New Exception("GT14022024: No se cargaron las propiedades de la etiqueta.")
-                End If
-
-            Else
-                DxErrorProvider1.SetError(cmbPrinterBarra, "Seleccione impresora")
+            If Tipo_Etiqueta Is Nothing Then
+                Throw New Exception("No se cargaron las propiedades de la etiqueta.")
             End If
+
+            Dim tmpZPLString As String = Convert.ToString(Tipo_Etiqueta.codigo_zpl)
+            If String.IsNullOrWhiteSpace(tmpZPLString) Then
+                XtraMessageBox.Show($"{MethodBase.GetCurrentMethod.Name()} No está definido el formato de etiqueta",
+                                Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
+
+            ' QR (placeholder {3}) - lo dejamos como código producto (ajústalo si quieres licencia)
+            Dim vQR As String = vCodigoProducto
+
+            ' Rellenar placeholders (pasa también {1} y {4} aunque no se usen, para evitar errores)
+            Dim ZPLString As String = String.Format(tmpZPLString,
+                                                   vNombreProducto, ' {0}
+                                                   vEmpresa,       ' {1} (puede no usarse)
+                                                   vCodigoProducto,      ' {2}
+                                                   vQR,            ' {3}
+                                                   "",             ' {4} (no se usa)
+                                                   vLote,          ' {5}
+                                                   vVenceStr)      ' {6}
+
+            ' Imprimir N veces
+            For i As Integer = 1 To vCopias
+                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
+            Next
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
 
     End Sub
 
@@ -282,6 +281,11 @@ Public Class frmImpresionRecepcion_OC
                     Cargar_oc_lotes(pTransOC_Enc.IdOrdenCompraEnc, pTransOC_Det.IdOrdenCompraDet)
                 End If
 
+                Dim pBeProducto As clsBeProducto = clsLnProducto.Get_Single_By_IdProductoBodega(pTransOC_Det.IdProductoBodega)
+                Dim BeUmBas As clsBeUnidad_medida = clsLnUnidad_medida.Get_Unidad_Medida_By_IdUnidadMedida(pBeProducto.IdUnidadMedidaBasica)
+
+                lblUmbasCant.Text = BeUmBas.Nombre
+
                 MostrarCantidadEtiquetas()
 
             End If
@@ -295,8 +299,11 @@ Public Class frmImpresionRecepcion_OC
     Dim pBeProductoPresentacion As New clsBeProducto_Presentacion
 
     Private Sub Cargar_Presentacion(pIdPresentacion As Integer)
+
         Try
+
             pBeProductoPresentacion = clsLnProducto_presentacion.Get_Single_By_IdPresentacion(pIdPresentacion)
+
             If pBeProductoPresentacion Is Nothing Then Exit Try
 
             Dim usaDetalle As Boolean =
@@ -325,6 +332,8 @@ Public Class frmImpresionRecepcion_OC
             RecalcularCantidadEtiquetas()
 
             MostrarCantidadEtiquetas()
+
+            lblProductoPres.Text = pBeProductoPresentacion.Nombre
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -413,8 +422,8 @@ Public Class frmImpresionRecepcion_OC
     End Sub
 
     Private Sub Imprimir_Licencia(ByVal pReDet As clsBeTrans_oc_det,
-                             ByVal PrinterName As String,
-                             ByVal pImpresiones As Integer)
+                                  ByVal PrinterName As String,
+                                  ByVal pImpresiones As Integer)
 
         Dim clsTransaccion As New clsTransaccion
         pBeBarra_Pallet = New clsBeI_nav_barras_pallet()
@@ -425,15 +434,20 @@ Public Class frmImpresionRecepcion_OC
                 Exit Sub
             End If
 
+            ' Cantidad de licencias a generar
             If pImpresiones <= 0 Then Exit Sub
+
+            ' Cantidad de copias por licencia (NumericUpDown)
+            Dim copiasPorLicencia As Integer = Convert.ToInt32(txtCopias.Value)
+            If copiasPorLicencia <= 0 Then Exit Sub
 
             clsTransaccion.Begin_Transaction()
 
             Dim vEmpresa As String = AP.Empresa.Nombre
             Dim vCodigoProducto As String = pReDet.Codigo_Producto
             Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, If(pReDet.Nombre_producto.Length < 45, pReDet.Nombre_producto.Length, 44))
-            Dim vLote As String = cmbLote.EditValue
-            Dim vFechaVence As String = If(txtVencimiento.EditValue Is Nothing, New Date(1900, 1, 1), txtVencimiento.EditValue)
+            Dim vLote As String = cmbLote.Text
+            Dim vFechaVence As Date = If(txtVencimiento.EditValue Is Nothing, New Date(1900, 1, 1), CDate(txtVencimiento.EditValue))
 
             pCajasPorCama = Convert.ToInt32(txtCajaPorCama.Value)
             pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
@@ -459,9 +473,9 @@ Public Class frmImpresionRecepcion_OC
             ' Licencia actual (la que ya tenés visible)
             Dim licenciaActual As String = CStr(txtLicencia.EditValue)
 
+            ' ====== LOOP: licencias (pImpresiones) ======
             For i As Integer = 1 To pImpresiones
 
-                ' 1) imprime con la licencia actual
                 Dim ZPLString As String = String.Format(tmpZPLString,
                                                     AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
                                                     vEmpresa,
@@ -469,13 +483,16 @@ Public Class frmImpresionRecepcion_OC
                                                     licenciaActual,
                                                     AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                                     vLote,
-                                                    vFechaVence,
+                                                    vFechaVence.ToString("dd/MM/yy"),
                                                     pPresentacion,
                                                     pCantidadPresentacion)
 
-                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
+                ' ====== LOOP: copias por licencia (txtcopias) ======
+                For c As Integer = 1 To copiasPorLicencia
+                    RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
+                Next
 
-                ' 2) guarda pallet pre-impresión con esa licencia
+                ' Guarda pallet pre-impresión (solo 1 vez por licencia, NO por copia)
                 Dim obj As New clsBeI_nav_barras_pallet With {
                 .IdPallet = 0,
                 .Codigo = pReDet.Codigo_Producto,
@@ -500,22 +517,16 @@ Public Class frmImpresionRecepcion_OC
             }
 
                 clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(obj,
-                                                                     clsTransaccion.lConnection,
-                                                                     clsTransaccion.lTransaction)
+                                                                 clsTransaccion.lConnection,
+                                                                 clsTransaccion.lTransaction)
 
-                ' 3) incrementa correlativo para la siguiente etiqueta
-                '    (esto devuelve la licencia generada según correlativo actual antes de incrementar)
+                ' Incrementa correlativo y prepara la siguiente licencia
                 Dim licenciaGenerada As String = Incrementar_Licencia_BOF_Info(AP.IdBodega,
-                                                                               AP.UsuarioAp.IdUsuario,
-                                                                               clsTransaccion.lConnection,
-                                                                               clsTransaccion.lTransaction)
+                                                                           AP.UsuarioAp.IdUsuario,
+                                                                           clsTransaccion.lConnection,
+                                                                           clsTransaccion.lTransaction)
 
-                ' 4) deja preparada la próxima licencia para el siguiente ciclo:
-                '    si Incrementar devuelve la "actual", entonces la próxima la generás con tu función existente.
-                '    (si tu Get_Nuevo_Correlativo ya devuelve la siguiente, entonces simplemente asignala)
                 licenciaActual = Genera_Licencia_BOF(AP.Bodega.IdBodega, AP.UsuarioAp.IdUsuario)
-
-                ' opcional: actualizar UI en caliente (para ver la última generada)
                 txtLicencia.EditValue = licenciaActual
 
             Next
@@ -525,7 +536,6 @@ Public Class frmImpresionRecepcion_OC
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-
         Finally
             clsTransaccion.Close_Conection()
         End Try
@@ -558,6 +568,7 @@ Public Class frmImpresionRecepcion_OC
     End Sub
 
     Private Sub MostrarCantidadEtiquetas()
+
         Dim camas As Integer = Convert.ToInt32(txtCamaPorTarima.Value)
         Dim cajas As Integer = Convert.ToInt32(txtCajaPorCama.Value)
         Dim capacidad As Integer = camas * cajas
@@ -572,6 +583,10 @@ Public Class frmImpresionRecepcion_OC
 
         lblEtiquetas.Text = $"Etiquetas a imprimir: {etiquetas}"
         txtCantidadLicencias.Value = etiquetas
+        txtCantidadBarras.Value = txtCamaPorTarima.Value * txtCajaPorCama.Value
+
+        txtCantUmBas.Value = pBeProductoPresentacion.Factor * cantidad
+
     End Sub
 
 End Class

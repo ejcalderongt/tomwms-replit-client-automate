@@ -14,6 +14,11 @@
         public int Linea { get; set; }
         public string? Licencia { get; set; }
         public DateTime? Fecha { get; set; }
+        public string? Codigo_Bodega_Origen { get; set; }
+        public string? Codigo_Bodega_Destino { get; set; }
+        public string? Codigo_Cliente { get; set; }
+        public int? IdDocIngresoBodDestino { get; set; }
+        public int? IdDocSalidaBodOrigen { get; set; }
     }
 
 }

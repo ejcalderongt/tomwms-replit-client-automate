@@ -797,7 +797,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                     If PedidoClienteExistente IsNot Nothing AndAlso PedidoClienteExistenteByCompany IsNot Nothing Then
                         clsPublic.Actualizar_Progreso(lblprg, "El documento ya existe para : " & PedidoClienteExistente.Codigo_Empresa_ERP & " IdPedidoWMS: " & PedidoClienteExistente.IdPedidoEnc)
-                        Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS = pBePedidoEnc
+                        '#CKFK20260324 Puse el pedido en nothing porque no se puedo importar
+                        Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS = Nothing 'pBePedidoEnc
                         Exit Function
                     Else
                         If Not (PedidoClienteExistente Is Nothing AndAlso PedidoClienteExistenteByCompany Is Nothing) Then
@@ -871,7 +872,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.Referencia = BeINavPedTrasladoEnc.No
                         pBePedidoEnc.IdBodega = IdBodegaOrigen
                         pBePedidoEnc.Cliente = New clsBeCliente
-                        pBePedidoEnc.Cliente.IdCliente = BeCliente.IdCliente
+                        '#CKFK20260324: Se asigna el cliente que se obtuvo por el código de cliente
+                        pBePedidoEnc.Cliente = BeCliente
                         pBePedidoEnc.IdCliente = BeCliente.IdCliente
                         pBePedidoEnc.Control_Ultimo_Lote = BeCliente.Control_Ultimo_Lote
                         pBePedidoEnc.IdMuelle = 1
@@ -3195,6 +3197,11 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             pBeStockRes.IdUnidadMedida = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(pBePedidoDet.Producto.Codigo,
                                                                                       lConectionInterface,
                                                                                       lTransactionInterface)
+            '#CKFK20260322 Agregué esta validación porque queda mal guardado el stock res
+            If pBeStockRes.IdUnidadMedida <> pBePedidoDet.IdUnidadMedidaBasica Then
+                pBeStockRes.IdUnidadMedida = pBePedidoDet.IdUnidadMedidaBasica
+            End If
+
             pBeStockRes.Atributo_Variante_1 = pBePedidoDet.Atributo_Variante_1
 
             '#EJC20190314: Asignar control ultimo lote a objeto de reserva.

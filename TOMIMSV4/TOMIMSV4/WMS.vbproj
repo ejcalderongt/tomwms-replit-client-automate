@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>76</ApplicationRevision>
+    <ApplicationRevision>84</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -229,6 +229,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SAPBOSyncMampa, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\SAPBOSyncMampa.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -1564,6 +1568,30 @@
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3793,6 +3821,18 @@
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID.resx">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID_List.resx">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID.resx">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -4636,6 +4676,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5595,16 +5636,16 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>6.1.1</Version>
+      <Version>6.1.4</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>9.0.8</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>9.0.8</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.6.3</Version>
@@ -5613,7 +5654,7 @@
       <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.6.1</Version>
+      <Version>4.6.2</Version>
     </PackageReference>
     <PackageReference Include="Zebra.Printer.SDK">
       <Version>2.15.2634</Version>
@@ -5623,10 +5664,6 @@
     <ProjectReference Include="..\..\AppGlobal\AppGlobal.vbproj">
       <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
       <Name>AppGlobal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SAPSYNCMAMPA\SAPSYNCMAMPA.vbproj">
-      <Project>{69ea4ff6-c886-49c1-b9d1-f011bc18d0d2}</Project>
-      <Name>SAPSYNCMAMPA</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>

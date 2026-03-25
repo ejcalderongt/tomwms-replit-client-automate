@@ -46,6 +46,8 @@ Public Class clsBeI_nav_barras_pallet
 
     Public Property Codigo_barra() As String = ""
 
+    Public Property Impreso() As Boolean = False
+
     Sub New()
     End Sub
 

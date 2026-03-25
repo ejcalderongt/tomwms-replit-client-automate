@@ -1669,22 +1669,32 @@ Partial Public Class clsLnTrans_picking_ubic
                                                               ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
 
         Dim lReturnList As New List(Of clsBeTrans_picking_ubic)
+        Dim BeBodega As New clsBeBodega
 
         Try
+
+            '#CKFK20260324 Agregué esta consulta para obtener la configuración de la bodega y dependiendo de esto controlar por talla color o por lote y fecha de vencimiento
+            BeBodega = clsLnBodega.GetSingle_By_Idbodega(pPickingUbic.IdBodega, lConnection, lTransaction)
 
             Dim vSQL As String = "SELECT * FROM VW_PickingUbic_By_IdPickingDet
                                   WHERE dañado_picking = 0 
 							      AND (cantidad_solicitada <> cantidad_recibida OR cantidad_solicitada <> cantidad_verificada)
                                   AND IdPickingEnc=@IdPickingEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
-                                  lic_plate=@lic_plate AND 
-                                  ISNULL(IdPresentacion,0) = @IdPresentacion AND
-                                  (Lote = @Lote OR Lote IS NULL)  AND 
-                                  ISNULL(CONVERT(DATE, fecha_vence),CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) AND 
+                                  lic_plate =@lic_plate AND 
+                                  ISNULL(IdPresentacion, 0) = @IdPresentacion AND
                                   IdUbicacion = @IdUbicacion AND
                                   IdProductoEstado = @IdProductoEstado AND 
                                   IdProductoBodega = @IdProductoBodega AND 
                                   no_encontrado = 0 AND dañado_verificacion = 0 "
+
+            '#CKFK20260322 Agregué la condición para controlar por talla color dependiendo de la configuración de la bodega
+            If BeBodega.Control_Talla_Color Then
+                vSQL += " AND IdProductoTallaColor = @IdProductoTallaColor "
+            Else
+                vSQL + = " AND (Lote = @Lote OR Lote IS NULL)   
+                           AND ISNULL(CONVERT(DATE, fecha_vence), CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) "
+            End If
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -1694,12 +1704,17 @@ Partial Public Class clsLnTrans_picking_ubic
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pPickingUbic.IdPickingEnc)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pPickingUbic.IdPresentacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pPickingUbic.IdUnidadMedida)
-                lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPickingUbic.Lote)
-                lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPickingUbic.Fecha_Vence)
                 lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pPickingUbic.Lic_plate)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pPickingUbic.IdUbicacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pPickingUbic.IdProductoEstado)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pPickingUbic.IdProductoBodega)
+
+                If BeBodega.Control_Talla_Color Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pPickingUbic.IdProductoTallaColor)
+                Else
+                    lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPickingUbic.Lote)
+                    lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPickingUbic.Fecha_Vence)
+                End If
 
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)

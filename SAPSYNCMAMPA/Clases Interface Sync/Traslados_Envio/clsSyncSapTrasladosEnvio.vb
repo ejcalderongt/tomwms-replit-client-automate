@@ -120,7 +120,8 @@ Public Class clsSyncSapTrasladosEnvio
 
                 If Await Validar_Cliente_WMS(solicitud.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
 
-                    Dim origenEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_to_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
+                    '#CKFK20260324 Pues en la bodega Origen el Transfer_From_Code
+                    Dim origenEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_from_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
                     Dim destinoEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_to_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
                     Dim debeProcesar As Boolean = Not destinoEsWMS OrElse Not origenEsWMS OrElse (origenEsWMS AndAlso destinoEsWMS)
 
@@ -493,6 +494,14 @@ Public Class clsSyncSapTrasladosEnvio
                     For Each traslado In parsed("value")
 
                         Dim U_Transito = traslado("U_Transito").Value(Of String)
+                        Dim Bodega_Destino = traslado("ToWarehouse").Value(Of String)
+
+                        If Bodega_Destino IsNot Nothing AndAlso
+                            Bodega_Destino.Length > 0 AndAlso
+                            Bodega_Destino.Contains("-") Then
+                            Dim pBodDestino As String() = Bodega_Destino.Split("-")
+                            Bodega_Destino = pBodDestino.GetValue(0)
+                        End If
 
                         Dim bePedido As New clsBeI_nav_ped_traslado_enc With {
                         .No = traslado("DocEntry").Value(Of Integer),
@@ -503,7 +512,7 @@ Public Class clsSyncSapTrasladosEnvio
                         .Transfer_from_Code = traslado("FromWarehouse")?.ToString(),
                         .Transfer_from_Contact = traslado("JournalMemo")?.ToString(),
                         .Transfer_to_Contact = traslado("CardName")?.ToString(),
-                        .Transfer_to_CodeField = traslado("ToWarehouse")?.ToString(), 'Transfer_to_CodeField
+                        .Transfer_to_CodeField = Bodega_Destino,  'Transfer_to_CodeField
                         .Transfer_to_Code = IIf(U_Transito IsNot Nothing, U_Transito, traslado("ToWarehouse")?.ToString()), 'Cliente = Bodega_Virtual - U_Transito
                         .Product_Owner_Code = BePropietario.Codigo,
                         .Receipt_Document_Reference = traslado("DocNum").ToString(),
@@ -1228,6 +1237,7 @@ Public Class clsSyncSapTrasladosEnvio
                         vTraslado_Creado = True
 
                     Else
+                        vTraslado_Creado = False
                         clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
                         clsPublic.Actualizar_Progreso(lblprg, body)
 
@@ -1238,7 +1248,7 @@ Public Class clsSyncSapTrasladosEnvio
             End If
 
             ' 4) Marcar enviados (si aplica)
-            If vTraslado_Creado OrElse BeDespacho.No_Documento_Externo = "" Then
+            If vTraslado_Creado AndAlso BeDespacho.No_Documento_Externo = "" Then
 
                 If Not BePedidoEnc.Bodega_Destino = "" AndAlso BePedidoEnc.Bodega_Destino <> BePedidoEnc.Cliente.Codigo Then
 

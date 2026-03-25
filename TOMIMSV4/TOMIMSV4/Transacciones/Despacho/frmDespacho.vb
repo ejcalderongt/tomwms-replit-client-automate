@@ -48,6 +48,10 @@ Public Class frmDespacho
     Public Property listaPresentaciones As New List(Of clsBeProducto_Presentacion)
     Public Property InvokeCargarPedido As Action(Of SqlConnection, SqlTransaction)
     Public Property InvokeCargarObjetoPedido As Action
+
+
+    Public Despacho_Cargado_Desde_Pedido As Boolean
+
     Public Enum TipoTrans
         Nuevo = 1
         Editar = 2
@@ -1386,6 +1390,8 @@ Public Class frmDespacho
             BeDespachoDet.Activo = True
             BeDespachoDet.IsNew = True
             BeDespachoDet.FechaPedido = BePedidoEnc.Fecha_Pedido
+            BeDespachoDet.Lote = BeTransPickingUbic.Lote
+            BeDespachoDet.Lic_plate = BeTransPickingUbic.Lic_plate
 
             If BeTransPickingUbic.IdProductoTallaColor > 0 Then
                 BeDespachoDet.Talla = BeTransPickingUbic.Codigo_Talla
@@ -1672,6 +1678,7 @@ Public Class frmDespacho
     End Sub
 
     Dim Pedido_Cargado_Desde_Picking As Boolean
+
     Public Sub Agregar_Pedido(ByVal pBePedidoEnc As clsBeTrans_pe_enc)
 
         Dim clsTransaccion As New clsTransaccion
@@ -1682,7 +1689,11 @@ Public Class frmDespacho
 
                 BePedidoEnc = pBePedidoEnc
 
+                '#GT11032026: no se puede setear un propietario sin cargar primero la lista en el combo.
+                'Agregar_pedido se ejecuta antes que show/load por esa razón no quitar esta carga.
+                IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, BePedidoEnc.IdBodega)
                 cmbPropietario.EditValue = pBePedidoEnc.IdPropietarioBodega
+                cmbPropietario.Enabled = False
 
                 SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                 SplashScreenManager.Default.SetWaitFormCaption("Pedido")
@@ -2510,6 +2521,7 @@ Public Class frmDespacho
     Private Sub cmbPropietario_EditValueChanged(sender As Object, e As EventArgs) Handles cmbPropietario.EditValueChanged
         Try
 
+
             If cmbPropietario.ItemIndex > -1 Then
                 If cmbBodega.Text <> "" Then
                     cmbPropietario.Tag = IMS.Get_IdPropietario_By_IdBodega(cmbBodega.EditValue, cmbPropietario.EditValue)
@@ -2533,8 +2545,12 @@ Public Class frmDespacho
         Try
 
             If cmbBodega.ItemIndex > -1 Then
-                cmbPropietario.Properties.DataSource = Nothing
-                IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue)
+                '#GT11032026: si el despacho se dispara desde pedido, no recargar propietarios porque borra el seteado.
+                If Not Despacho_Cargado_Desde_Pedido Then
+                    cmbPropietario.Properties.DataSource = Nothing
+                    IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue)
+                End If
+
             End If
 
         Catch ex As Exception

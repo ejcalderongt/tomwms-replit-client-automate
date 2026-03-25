@@ -1,26 +1,22 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Management
+Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
-Imports System.Text.RegularExpressions
-Imports System.Threading
-Imports System.Threading.Tasks
-Imports DevExpress.Utils
 Imports DevExpress.XtraEditors
-
-'Zebra SDK v2.x (Zebra.Printer.SDK 2.15.x)
-Imports Zebra.Sdk.Comm
-Imports Zebra.Sdk.Printer.Discovery
+Imports DevExpress.XtraGrid.Views.Grid
 
 Public Class frmImpresion_OC_RFID
 
     Private listBarrasPallet As New List(Of clsBeI_nav_barras_pallet)
     Private BeEmpresa As New clsBeEmpresa
+    Public pTransOC_Enc As New clsBeTrans_oc_enc
 
     Private Sub frmImpresionRFID_OC_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         BeEmpresa = New clsBeEmpresa
         Try
 
+            selectedKeys.Clear()
             BeEmpresa = AP.Empresa
             Cargar_Impresora_Zebra()
             cargar_barras_pallet()
@@ -96,10 +92,21 @@ Public Class frmImpresion_OC_RFID
 
 
     Private Sub cargar_barras_pallet()
+
+        listBarrasPallet = New List(Of clsBeI_nav_barras_pallet)
+        Dim pIdRecepcionEnc As Integer = 0
+
         Try
 
-            listBarrasPallet = New List(Of clsBeI_nav_barras_pallet)
-            listBarrasPallet = clsLnI_nav_barras_pallet.GetAll()
+            If pTransOC_Enc IsNot Nothing Then
+                pIdRecepcionEnc = clsLnTrans_re_enc.Get_Recepcion_Activa_By_IdOrdenCompraEnc(pTransOC_Enc.IdOrdenCompraEnc)
+
+                If pIdRecepcionEnc > 0 Then
+                    listBarrasPallet = clsLnI_nav_barras_pallet.Get_All_Activos_By_IdRecepcion(pIdRecepcionEnc)
+                End If
+            Else
+                listBarrasPallet = clsLnI_nav_barras_pallet.Get_All_By_EstadoImpresion(chkEstadoImpreso.Checked)
+            End If
 
             If listBarrasPallet IsNot Nothing AndAlso listBarrasPallet.Count > 0 Then
 
@@ -131,12 +138,16 @@ Public Class frmImpresion_OC_RFID
                 If GridView1.Columns.ColumnByFieldName("Cantidad_UMP") IsNot Nothing Then GridView1.Columns("Cantidad_UMP").Visible = False
                 If GridView1.Columns.ColumnByFieldName("Lote_Numerico") IsNot Nothing Then GridView1.Columns("Lote_Numerico").Visible = False
                 If GridView1.Columns.ColumnByFieldName("fecha_procesado_erp") IsNot Nothing Then GridView1.Columns("fecha_procesado_erp").Visible = False
+                If GridView1.Columns.ColumnByFieldName("Impreso") IsNot Nothing Then GridView1.Columns("Impreso").Visible = True
 
                 GridView1.OptionsView.ColumnAutoWidth = False
                 GridView1.OptionsView.ShowFooter = True
-
+                GridView1.OptionsBehavior.Editable = False
+                GridView1.OptionsBehavior.ReadOnly = True
+            Else
+                grdListaBarraPallets.DataSource = Nothing
+                GridView1.RefreshData()
             End If
-
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -177,20 +188,9 @@ Public Class frmImpresion_OC_RFID
     End Sub
 
 
-
     Private Sub cmdImpresion_Click(sender As Object, e As EventArgs) Handles cmdImpresion.Click
         Try
             cmdImpresion.Enabled = False
-
-            ' === Valores fijos (misma impresión física) ===
-            'Dim licencia As String = "TEA4406620022563"
-            'Dim empresa As String = "TEXCONSA"
-            'Dim bodega As String = "CENTRAL"
-            'Dim vigencia As String = "01-01-2028"
-            'Dim presentacion As String = "PAR"
-            'Dim cantidad As String = "2"
-            'Dim fecha As String = "23-02-2026"
-            'Dim producto As String = "COBERTOR"
 
             ' Impresora USB (cola instalada en Windows)
             Dim ps As New PrinterSettings()
@@ -201,114 +201,42 @@ Public Class frmImpresion_OC_RFID
                 XtraMessageBox.Show("Impresora no encontrada: " & printerName, "Impresión RFID", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Exit Sub
             End If
+
             If Not st.ok Then
                 XtraMessageBox.Show("Impresora no lista: " & printerName & vbCrLf & st.message, "Impresión RFID", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Exit Sub
             End If
 
+            If CInt(txtCantidadImpresiones.Value) <= 0 Then
+                XtraMessageBox.Show("El número de copias debe ser como minimo 1.",
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
+                Exit Sub
+            End If
 
-            Dim maxToProcess As Integer = CInt(txtCantidadImpresiones.Value)
+            Dim selectedRowHandles As Integer() = Nothing
 
-            '#iteración real para impresión
-            For i As Integer = 0 To listBarrasPallet.Count - 1
-                Dim barraPallet = listBarrasPallet(i)
-
-                Dim BeProducto = clsLnProducto.Get_BeProducto_By_Codigo(barraPallet.Codigo)
-                Dim Bepresentacion = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(BeProducto.IdProducto)
-                Dim BeBodega = clsLnBodega.GetSingle_By_Idbodega(barraPallet.Bodega_Origen)
-
-                '074061710038175183
-                'Dim epc96Hex As String = BuildEpc96_FromCodigoBarra(barraPallet.Codigo_barra)
-
-                Dim epc96Hex As String = EncodeSsccToEpc96_WithPrefix7406171(barraPallet.Codigo_barra, filterValue:=0)
-                Dim FechaActual As String = Date.Now.ToString("dd-MM-yyyy")
-                Dim FechaVence As String = Convert.ToDateTime(barraPallet.Fecha_Vence).ToString("dd-MM-yyyy")
-
-                Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex, barraPallet.Codigo_barra, BeEmpresa.Nombre, BeBodega.Nombre, FechaVence, Bepresentacion.Nombre, barraPallet.Cantidad_Presentacion, FechaActual)
-
-                For j As Integer = 0 To maxToProcess - 1
-                    RawPrinterHelper.SendStringToPrinter(printerName, zpl)
-                Next
-
-                ' Marcar como impreso y refrescar UI
-                _codigosImpresos.Add(barraPallet.Codigo_barra)
-
-                Dim rowHandle As Integer = GridView1.GetRowHandle(i)
-                If rowHandle >= 0 Then
-                    GridView1.RefreshRow(rowHandle)
-                Else
-                    GridView1.RefreshData()
+            If SeleccionMultiple Then
+                selectedRowHandles = GridView1.GetSelectedRows()
+                If selectedRowHandles.Length = 0 Then
+                    XtraMessageBox.Show("Seleccione al menos un registro",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error)
+                    Exit Sub
                 End If
-            Next
+            End If
 
-            ' Tiraje 3 etiquetas: EPC 96-bit completo, incluye 199004 y consecutivo al final
-            'For i As Integer = 1 To 3
-            '    Dim epc96Hex As String = BuildEpc96_199004_Consecutivo16(i) ' 24 hex (96 bits)
-            '    Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex, licencia, empresa, bodega, vigencia, presentacion, cantidad, fecha)
-            '    RawPrinterHelper.SendStringToPrinter(printerName, zpl)
-            'Next
+            If listBarrasPallet.Count <= 0 Then
+                XtraMessageBox.Show("No hay barras que imprimir.",
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+                Exit Sub
+            End If
 
-
-            ' === NUEVO: DEMO con Lis_Licencias (NO ALTERA LOS CICLOS EXISTENTES) ===
-            'For Each lic In Lis_Licencias
-
-            '    Dim data As String = If(lic, "").Trim()
-
-            '    If data.Length <> 12 Then
-            '        Throw New Exception("Lis_Licencias debe contener valores de 12 caracteres para EPC literal. Valor: " & data)
-            '    End If
-
-            '    ' EPC literal 12 chars => 12 bytes => 96 bits => 24 hex
-            '    Dim epcBytes As Byte() = Encoding.ASCII.GetBytes(data)
-            '    Dim epc96Hex As String = BitConverter.ToString(epcBytes).Replace("-", "").ToUpperInvariant()
-
-            '    ' ZPL FÍSICO en 300 dpi (layout basado en tu plantilla 203, escalado ~1.48)
-            '    ' Mapeo:
-            '    ' {0}=bodega, {1}=empresa, {2}=producto, {3}=data (DataMatrix), {4}=fecha,
-            '    ' {5}=data (L:), {6}=vigencia, {7}=presentacion, {8}=cantidad
-            '    Dim zplFisico300 As String =
-            '                            "^MMT^PW1200^LL0600^LS0" &
-            '                            "^FT665,31^A0I,30,21^FH^FD{4}^FS" &
-            '                            "^FO3,59^GB1200,7,7^FS" &
-            '                            "^FT444,90^A0I,44,36^FH^FD{0}^FS" &
-            '                            "^FT532,90^A0I,44,36^FH^FDBod:^FS" &
-            '                            "^FT930,90^A0I,44,36^FH^FD{1}^FS" &
-            '                            "^FT1034,90^A0I,44,36^FH^FDEmp:^FS" &
-            '                            "^FT1034,177^BXI,18,200^FH^FD{3}^FS" &
-            '                            "^FT1034,452^A0I,44,36^FH^FD{2}^FS" &
-            '                            "^FT429,318^A0I,74,65^FH^FDV:{6}^FS" &
-            '                            "^FT429,392^A0I,74,58^FH^FDL:{5}^FS" &
-            '                            "^FT429,244^A0I,74,58^FH^FDPRES:{7}^FS" &
-            '                            "^FT429,177^A0I,74,58^FH^FDCANT:{8}^FS" &
-            '                            "^FO3,503^GB1200,21,21^FS" &
-            '                            "^FT1034,543^A0I,37,36^FH^FDTOMWMS Licencia.^FS" &
-            '                            "^PQ1,0,1,Y"
-
-            '    Dim zplFisicoFinal As String = String.Format(
-            '                                zplFisico300,
-            '                                bodega,       ' {0}
-            '                                empresa,      ' {1}
-            '                                producto,     ' {2}
-            '                                data,         ' {3}
-            '                                fecha,        ' {4}
-            '                                data,         ' {5}
-            '                                vigencia,     ' {6}
-            '                                presentacion, ' {7}
-            '                                cantidad      ' {8}
-            '                    )
-
-            '    ' Unificar RFID + físico en un solo job (300 dpi)
-            '    Dim zplFinal As String =
-            '                        "^XA" &
-            '                        "^CI27" &
-            '                        "^RS4" &
-            '                        "^RFW,H^FD" & epc96Hex & "^FS" &
-            '                        zplFisicoFinal &
-            '                        "^XZ"
-
-            '    RawPrinterHelper.SendStringToPrinter(printerName, zplFinal)
-            'Next
-
+            Imprimir_Seleccion(printerName, selectedRowHandles)
 
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Impresión RFID", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -319,8 +247,90 @@ Public Class frmImpresion_OC_RFID
     End Sub
 
 
-    ' Conversión estándar: EPC96 = primeros 12 bytes de SHA1(codigo_barra como NVARCHAR/UTF-16LE)
-    ' Equivalente a SQL Server: SUBSTRING(HASHBYTES('SHA1', @data), 1, 12) donde @data es NVARCHAR
+    Private Sub Imprimir_Seleccion(printerName As String, selectedRowHandles() As Integer)
+
+        Dim listaBarrasImpresion As New List(Of clsBeI_nav_barras_pallet)
+
+        Try
+            Dim maxToProcess As Integer = CInt(txtCantidadImpresiones.Value)
+
+            If selectedRowHandles IsNot Nothing AndAlso selectedRowHandles.Length > 0 Then
+
+                For i As Integer = 0 To selectedRowHandles.Length - 1
+
+                    Dim rowHandle = selectedRowHandles(i)
+                    If rowHandle < 0 Then Continue For
+
+                    Dim rawIdPallet = GridView1.GetRowCellValue(rowHandle, "IdPallet")
+                    Dim rawCodigoBarra = GridView1.GetRowCellValue(rowHandle, "Codigo_barra")
+
+                    Dim pIdPallet = If(IsDBNull(rawIdPallet), 0, CInt(rawIdPallet))
+                    Dim pCodigoBarra = If(IsDBNull(rawCodigoBarra), "", rawCodigoBarra.ToString())
+
+                    Dim beBarra = listBarrasPallet.Find(Function(x) x.IdPallet = pIdPallet AndAlso x.Codigo_barra = pCodigoBarra)
+
+                    If beBarra IsNot Nothing Then
+                        listaBarrasImpresion.Add(beBarra)
+                    End If
+                Next
+
+            Else
+                '#GT06032026: la lista original de barras_pallet
+                listaBarrasImpresion.AddRange(listBarrasPallet)
+
+            End If
+
+            For i As Integer = 0 To listaBarrasImpresion.Count - 1
+
+                Dim barraPallet = listaBarrasImpresion(i)
+                If barraPallet Is Nothing Then Continue For
+
+                Dim beProducto = clsLnProducto.Get_BeProducto_By_Codigo(barraPallet.Codigo)
+                If beProducto Is Nothing Then Continue For
+
+                Dim bePresentacion = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(beProducto.IdProducto)
+                If bePresentacion Is Nothing Then bePresentacion.Nombre = "ND"
+
+                Dim beBodega = clsLnBodega.GetSingle_By_Idbodega(barraPallet.Bodega_Origen)
+                If beBodega Is Nothing Then Continue For
+
+                Dim epc96Hex As String = EncodeSsccToEpc96_WithPrefix7406171(barraPallet.Codigo_barra, filterValue:=0)
+                Dim fechaActual As String = Date.Now.ToString("dd-MM-yyyy")
+                Dim fechaVence As String = barraPallet.Fecha_Vence.ToString("dd-MM-yyyy")
+
+                Dim zpl As String = BuildZpl_RfidEncode_And_Print(
+                epc96Hex,
+                barraPallet.Codigo_barra,
+                BeEmpresa.Nombre,
+                beBodega.Nombre,
+                fechaVence,
+                bePresentacion.Nombre,
+                barraPallet.Cantidad_Presentacion,
+                fechaActual
+            )
+
+                For j As Integer = 1 To maxToProcess
+                    RawPrinterHelper.SendStringToPrinter(printerName, zpl)
+                Next
+
+                _codigosImpresos.Add(barraPallet.Codigo_barra)
+
+                barraPallet.Impreso = True
+                clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet_By_Impresion(barraPallet)
+
+            Next
+
+            GridView1.RefreshData()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                             Text,
+                             MessageBoxButtons.OK,
+                             MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+
     Private Function BuildEpc96_FromCodigoBarra(codigo_barra As String) As String
         Try
             If String.IsNullOrWhiteSpace(codigo_barra) Then
@@ -438,55 +448,6 @@ Public Class frmImpresion_OC_RFID
         Return sb.ToString()
     End Function
 
-
-    '#VERSION PARA 203 DPI
-    'Private Function BuildZpl_RfidEncode_And_Print(epc96Hex As String,
-    '                                              licencia As String,
-    '                                              empresa As String,
-    '                                              bodega As String,
-    '                                              vigencia As String,
-    '                                              presentacion As String,
-    '                                              cantidad As String,
-    '                                              fecha As String) As String
-
-    '    Dim sb As New StringBuilder()
-
-    '    sb.AppendLine("^XA")
-    '    sb.AppendLine("^CI27")
-    '    sb.AppendLine("^PW812")
-    '    sb.AppendLine("^LL406")
-    '    sb.AppendLine("^LH0,0")
-    '    sb.AppendLine("^PR6")
-
-    '    ' === RFID: escribir EPC completo (96 bits) ===
-    '    ' ^RS4 => longitud EPC 96 bits
-    '    ' ^RFW,H => Write RFID (hex data)
-    '    ' Nota: NO se lee EPC; solo se escribe el valor completo que enviamos.
-    '    sb.AppendLine("^RS4")
-    '    sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
-
-    '    ' === Impresión física (igual a la referencia) ===
-    '    sb.AppendLine("^FO20,15^A0N,30,30^FDTOMWMS Licencia.^FS")
-    '    sb.AppendLine("^FO20,50^GB772,3,3^FS")
-    '    sb.AppendLine("^FO20,70^A0N,42,42^FD" & licencia & "^FS")
-    '    sb.AppendLine("^FO35,125^BXN,8,200^FD" & licencia & "^FS")
-
-    '    sb.AppendLine("^FO420,95^A0N,42,42^FDL:" & licencia & "^FS")
-    '    sb.AppendLine("^FO420,145^A0N,42,42^FDV:" & vigencia & "^FS")
-    '    sb.AppendLine("^FO420,205^A0N,42,42^FDPRES:" & presentacion & "^FS")
-    '    sb.AppendLine("^FO420,250^A0N,42,42^FDCANT:" & cantidad & "^FS")
-
-    '    sb.AppendLine("^FO30,325^A0N,28,28^FDEmp:    " & empresa & "^FS")
-    '    sb.AppendLine("^FO430,325^A0N,28,28^FDBod:  " & bodega & "^FS")
-    '    sb.AppendLine("^FO20,355^GB772,3,3^FS")
-    '    sb.AppendLine("^FO330,368^A0N,22,22^FD" & fecha & "^FS")
-
-    '    ' 1 etiqueta por job (el loop manda 3 jobs)
-    '    sb.AppendLine("^PQ1,0,1,N")
-    '    sb.AppendLine("^XZ")
-
-    '    Return sb.ToString()
-    'End Function
 
     Private Function BuildZpl_Tiraje3(licencia As String,
                                       empresa As String,
@@ -706,4 +667,78 @@ Public Class frmImpresion_OC_RFID
     End Class
 
 
+    Dim SeleccionMultiple As Boolean
+
+    Private Sub chkSeleccionMultiple_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkSeleccionMultiple.CheckedChanged
+
+        Try
+
+            If chkSeleccionMultiple.Checked Then
+                SeleccionMultiple = True
+                GridView1.OptionsSelection.MultiSelect = True
+                GridView1.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CheckBoxRowSelect
+
+            Else
+                SeleccionMultiple = False
+                chkSeleccionMultiple.Checked = False
+                GridView1.OptionsSelection.MultiSelect = False
+                GridView1.OptionsSelection.MultiSelectMode = GridMultiSelectMode.RowSelect
+            End If
+
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                             Text,
+                             MessageBoxButtons.OK,
+                             MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private selectedKeys As New HashSet(Of Object)()
+    Private Sub SaveSelectedRows()
+
+        Dim selectedRowHandles As Integer() = GridView1.GetSelectedRows()
+
+        For Each handle As Integer In selectedRowHandles
+            If handle >= 0 Then
+                Dim key As Object = GridView1.GetRowCellValue(handle, "IdPallet")
+                If key IsNot Nothing Then
+                    selectedKeys.Add(key)
+                End If
+            End If
+        Next
+    End Sub
+
+    Private Sub RestoreSelectedRows()
+        GridView1.ClearSelection()
+
+        For i As Integer = 0 To GridView1.RowCount - 1
+            Dim key As Object = GridView1.GetRowCellValue(i, "IdPallet")
+            If key IsNot Nothing AndAlso selectedKeys.Contains(key) Then
+                GridView1.SelectRow(i)
+            End If
+        Next
+    End Sub
+
+    Private Sub GridView1_ColumnFilterChanged(sender As Object, e As EventArgs) Handles GridView1.ColumnFilterChanged
+        SaveSelectedRows()
+        RestoreSelectedRows()
+    End Sub
+
+    Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
+        Try
+            cargar_barras_pallet()
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                         Text,
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Error)
+        End Try
+    End Sub
 End Class

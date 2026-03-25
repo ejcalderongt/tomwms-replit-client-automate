@@ -19,7 +19,7 @@ namespace WMS.EntityCore.Datos_Maestros
 
         [Column("codigo")]
         [DisplayName("codigo")]
-        public string Codigo { get; set; } = "";
+        public string? Codigo { get; set; } = "";
 
         [Column("codigo_barra")]
         [DisplayName("codigo_barra")]
