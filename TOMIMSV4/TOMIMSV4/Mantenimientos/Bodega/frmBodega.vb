@@ -1296,6 +1296,10 @@ Public Class frmBodega
             cmbCentroCostoDepERP.EditValue = pBeBodega.Centro_Costo_Dep_Erp
             chkImprimir_Verificacion.Checked = pBeBodega.impresion_verificacion
 
+            chkCambioUbicacionRestrictivo.Checked = pBeBodega.cambio_ubicacion_restrictivo
+            chkPermitirCambioUbicIndiceMenor.Checked = pBeBodega.permitir_cambio_ubic_indice_menor
+            chkRequerirMismoProductoPosiciones.Checked = pBeBodega.requerir_mismo_producto_posiciones
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -1539,6 +1543,13 @@ Public Class frmBodega
             pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
             pBeBodega.Control_Gondola = chkControlGondola.Checked
 
+            '#Nuevos parámetros cambio ubicación
+            pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
+            pBeBodega.permitir_cambio_ubic_indice_menor = chkPermitirCambioUbicIndiceMenor.Checked
+            pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
+
+            Guardar = clsLnBodega.Insertar(pBeBodega) > 0
+
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1770,6 +1781,11 @@ Public Class frmBodega
                 pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
                 pBeBodega.Control_Gondola = chkControlGondola.Checked
                 pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
+                '#Nuevos parámetros cambio ubicación
+                pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
+                pBeBodega.permitir_cambio_ubic_indice_menor = chkPermitirCambioUbicIndiceMenor.Checked
+                pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
+
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If

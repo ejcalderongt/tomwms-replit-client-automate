@@ -2057,13 +2057,13 @@ Partial Class frmCliente
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("6a95e6d6-496f-4511-ba55-2e8a6590f626")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 694)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 106)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1699, 106)
+        Me.DockPanel1.Size = New System.Drawing.Size(1699, 132)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -2080,7 +2080,7 @@ Partial Class frmCliente
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1691, 68)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1691, 94)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtrtabClientes
@@ -2136,7 +2136,7 @@ Partial Class frmCliente
         Me.ToolStripPR.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNewPR, Me.cmdDesactivarPresentacion})
         Me.ToolStripPR.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripPR.Name = "ToolStripPR"
-        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 27)
+        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 31)
         Me.ToolStripPR.TabIndex = 3
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -2145,7 +2145,7 @@ Partial Class frmCliente
         Me.cmdNewPR.Image = CType(resources.GetObject("cmdNewPR.Image"), System.Drawing.Image)
         Me.cmdNewPR.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewPR.Name = "cmdNewPR"
-        Me.cmdNewPR.Size = New System.Drawing.Size(76, 24)
+        Me.cmdNewPR.Size = New System.Drawing.Size(76, 28)
         Me.cmdNewPR.Text = "Nuevo"
         '
         'cmdDesactivarPresentacion
@@ -2153,7 +2153,7 @@ Partial Class frmCliente
         Me.cmdDesactivarPresentacion.Image = CType(resources.GetObject("cmdDesactivarPresentacion.Image"), System.Drawing.Image)
         Me.cmdDesactivarPresentacion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarPresentacion.Name = "cmdDesactivarPresentacion"
-        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(87, 24)
+        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(87, 28)
         Me.cmdDesactivarPresentacion.Text = "Eliminar"
         '
         'tabLotes
@@ -2189,7 +2189,7 @@ Partial Class frmCliente
         Me.grpMantLotes.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpMantLotes.Location = New System.Drawing.Point(0, 0)
         Me.grpMantLotes.Name = "grpMantLotes"
-        Me.grpMantLotes.Size = New System.Drawing.Size(697, 603)
+        Me.grpMantLotes.Size = New System.Drawing.Size(572, 603)
         Me.grpMantLotes.TabIndex = 87
         '
         'txtIdClienteLote
@@ -2213,7 +2213,7 @@ Partial Class frmCliente
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNuevoLote, Me.mnuGuardarLote, Me.mnuEliminarLote})
         Me.ToolStrip1.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(693, 27)
+        Me.ToolStrip1.Size = New System.Drawing.Size(568, 27)
         Me.ToolStrip1.TabIndex = 98
         Me.ToolStrip1.Text = "ToolStrip2"
         '
@@ -2365,10 +2365,10 @@ Partial Class frmCliente
         '
         Me.grpLotesPermitidos.Controls.Add(Me.dgridLotesPermitidos)
         Me.grpLotesPermitidos.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpLotesPermitidos.Location = New System.Drawing.Point(697, 0)
+        Me.grpLotesPermitidos.Location = New System.Drawing.Point(871, 0)
         Me.grpLotesPermitidos.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.grpLotesPermitidos.Name = "grpLotesPermitidos"
-        Me.grpLotesPermitidos.Size = New System.Drawing.Size(500, 603)
+        Me.grpLotesPermitidos.Size = New System.Drawing.Size(625, 754)
         Me.grpLotesPermitidos.TabIndex = 86
         Me.grpLotesPermitidos.Text = "Lotes Permitidos"
         '
@@ -2382,7 +2382,7 @@ Partial Class frmCliente
         Me.dgridLotesPermitidos.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.dgridLotesPermitidos.MenuManager = Me.RibbonControl
         Me.dgridLotesPermitidos.Name = "dgridLotesPermitidos"
-        Me.dgridLotesPermitidos.Size = New System.Drawing.Size(496, 573)
+        Me.dgridLotesPermitidos.Size = New System.Drawing.Size(621, 724)
         Me.dgridLotesPermitidos.TabIndex = 0
         Me.dgridLotesPermitidos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView4})
         '
@@ -2401,10 +2401,10 @@ Partial Class frmCliente
         '
         Me.grpLotesBloqueados.Controls.Add(Me.DgridLotesBloqueados)
         Me.grpLotesBloqueados.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpLotesBloqueados.Location = New System.Drawing.Point(1197, 0)
+        Me.grpLotesBloqueados.Location = New System.Drawing.Point(1621, 0)
         Me.grpLotesBloqueados.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.grpLotesBloqueados.Name = "grpLotesBloqueados"
-        Me.grpLotesBloqueados.Size = New System.Drawing.Size(500, 603)
+        Me.grpLotesBloqueados.Size = New System.Drawing.Size(500, 754)
         Me.grpLotesBloqueados.TabIndex = 85
         Me.grpLotesBloqueados.Text = "Lotes Bloqueados"
         '
@@ -2418,7 +2418,7 @@ Partial Class frmCliente
         Me.DgridLotesBloqueados.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.DgridLotesBloqueados.MenuManager = Me.RibbonControl
         Me.DgridLotesBloqueados.Name = "DgridLotesBloqueados"
-        Me.DgridLotesBloqueados.Size = New System.Drawing.Size(496, 573)
+        Me.DgridLotesBloqueados.Size = New System.Drawing.Size(496, 724)
         Me.DgridLotesBloqueados.TabIndex = 0
         Me.DgridLotesBloqueados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView3})
         '

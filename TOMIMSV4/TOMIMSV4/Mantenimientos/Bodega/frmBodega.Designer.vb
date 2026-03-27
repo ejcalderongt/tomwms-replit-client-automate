@@ -538,6 +538,12 @@ Partial Class frmBodega
         Me.Label100 = New System.Windows.Forms.Label()
         Me.cmbEtiquetaVerificacion = New DevExpress.XtraEditors.LookUpEdit()
         Me.Label99 = New System.Windows.Forms.Label()
+        Me.chkCambioUbicacionRestrictivo = New DevExpress.XtraEditors.CheckEdit()
+        Me.chkPermitirCambioUbicIndiceMenor = New DevExpress.XtraEditors.CheckEdit()
+        Me.chkRequerirMismoProductoPosiciones = New DevExpress.XtraEditors.CheckEdit()
+        Me.lblCambioUbicacionRestrictivo = New System.Windows.Forms.Label()
+        Me.lblPermitirCambioUbicIndiceMenor = New System.Windows.Forms.Label()
+        Me.lblRequerirMismoProductoPosiciones = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -4931,6 +4937,7 @@ Partial Class frmBodega
         Me.GroupControl3.Size = New System.Drawing.Size(1172, 711)
         Me.GroupControl3.TabIndex = 61
         Me.GroupControl3.Text = "Parámetros"
+
         '
         'GroupBox5
         '
@@ -4977,6 +4984,50 @@ Partial Class frmBodega
         Me.chkControlGondola.TabIndex = 124
         Me.chkControlGondola.ToolTip = "Restringir áeras de SAP"
         '
+        'lblCambioUbicacionRestrictivo
+        '
+        Me.lblCambioUbicacionRestrictivo.AutoSize = True
+        Me.lblCambioUbicacionRestrictivo.Location = New System.Drawing.Point(383, 175)
+        Me.lblCambioUbicacionRestrictivo.Name = "lblCambioUbicacionRestrictivo"
+        Me.lblCambioUbicacionRestrictivo.Text = "Cambio ubicación restrictivo"
+        '
+        'chkCambioUbicacionRestrictivo
+        '
+        Me.chkCambioUbicacionRestrictivo.Location = New System.Drawing.Point(688, 175)
+        Me.chkCambioUbicacionRestrictivo.Name = "chkCambioUbicacionRestrictivo"
+        Me.chkCambioUbicacionRestrictivo.Properties.Caption = ""
+        Me.chkCambioUbicacionRestrictivo.Size = New System.Drawing.Size(28, 24)
+        Me.chkCambioUbicacionRestrictivo.TabIndex = 128
+        '
+        'lblPermitirCambioUbicIndiceMenor
+        '
+        Me.lblPermitirCambioUbicIndiceMenor.AutoSize = True
+        Me.lblPermitirCambioUbicIndiceMenor.Location = New System.Drawing.Point(383, 201)
+        Me.lblPermitirCambioUbicIndiceMenor.Name = "lblPermitirCambioUbicIndiceMenor"
+        Me.lblPermitirCambioUbicIndiceMenor.Text = "Permitir cambio ubic índice menor"
+        '
+        'chkPermitirCambioUbicIndiceMenor
+        '
+        Me.chkPermitirCambioUbicIndiceMenor.Location = New System.Drawing.Point(688, 201)
+        Me.chkPermitirCambioUbicIndiceMenor.Name = "chkPermitirCambioUbicIndiceMenor"
+        Me.chkPermitirCambioUbicIndiceMenor.Properties.Caption = ""
+        Me.chkPermitirCambioUbicIndiceMenor.Size = New System.Drawing.Size(28, 24)
+        Me.chkPermitirCambioUbicIndiceMenor.TabIndex = 129
+        '
+        'lblRequerirMismoProductoPosiciones
+        '
+        Me.lblRequerirMismoProductoPosiciones.AutoSize = True
+        Me.lblRequerirMismoProductoPosiciones.Location = New System.Drawing.Point(383, 227)
+        Me.lblRequerirMismoProductoPosiciones.Name = "lblRequerirMismoProductoPosiciones"
+        Me.lblRequerirMismoProductoPosiciones.Text = "Requerir mismo producto en posiciones"
+        '
+        'chkRequerirMismoProductoPosiciones
+        '
+        Me.chkRequerirMismoProductoPosiciones.Location = New System.Drawing.Point(688, 227)
+        Me.chkRequerirMismoProductoPosiciones.Name = "chkRequerirMismoProductoPosiciones"
+        Me.chkRequerirMismoProductoPosiciones.Properties.Caption = ""
+        Me.chkRequerirMismoProductoPosiciones.Size = New System.Drawing.Size(28, 24)
+        Me.chkRequerirMismoProductoPosiciones.TabIndex = 130
         'Label82
         '
         Me.Label82.AutoSize = True
@@ -5136,6 +5187,12 @@ Partial Class frmBodega
         Me.GroupBox4.TabIndex = 123
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Salidas"
+        Me.GroupBox4.Controls.Add(Me.lblCambioUbicacionRestrictivo)
+        Me.GroupBox4.Controls.Add(Me.chkCambioUbicacionRestrictivo)
+        Me.GroupBox4.Controls.Add(Me.lblPermitirCambioUbicIndiceMenor)
+        Me.GroupBox4.Controls.Add(Me.chkPermitirCambioUbicIndiceMenor)
+        Me.GroupBox4.Controls.Add(Me.lblRequerirMismoProductoPosiciones)
+        Me.GroupBox4.Controls.Add(Me.chkRequerirMismoProductoPosiciones)
         '
         'chkAdvertirMpqUmbas
         '
@@ -6665,6 +6722,10 @@ Partial Class frmBodega
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkCambioUbicacionRestrictivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkPermitirCambioUbicIndiceMenor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkRequerirMismoProductoPosiciones.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -7024,4 +7085,11 @@ Partial Class frmBodega
     Friend WithEvents Label100 As Label
     Friend WithEvents cmbEtiquetaVerificacion As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents Label99 As Label
+    Friend WithEvents chkCambioUbicacionRestrictivo As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents chkPermitirCambioUbicIndiceMenor As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents chkRequerirMismoProductoPosiciones As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents lblCambioUbicacionRestrictivo As System.Windows.Forms.Label
+    Friend WithEvents lblPermitirCambioUbicIndiceMenor As System.Windows.Forms.Label
+    Friend WithEvents lblRequerirMismoProductoPosiciones As System.Windows.Forms.Label
+
 End Class
