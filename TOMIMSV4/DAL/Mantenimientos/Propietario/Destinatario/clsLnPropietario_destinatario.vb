@@ -1,4 +1,4 @@
-Imports System.Configuration
+﻿Imports System.Configuration
 Imports System.Data.SqlClient
 
 Public Class clsLnPropietario_destinatario
@@ -233,5 +233,44 @@ Public Class clsLnPropietario_destinatario
         End Try
 
     End Function
+
+    Public Shared Function GetDestinatariosDT(Optional pIdPropietario As Integer? = Nothing) As DataTable
+
+        Dim dt As New DataTable()
+
+        Try
+
+            Using cn As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+
+                Dim sql As String = "SELECT
+                                    d.IdDestinatarioPropietario,
+                                    d.nombre,
+                                    d.apellido,
+                                    d.correo_electronico,
+                                    (RTRIM(LTRIM(d.nombre)) + ' ' + RTRIM(LTRIM(d.apellido)) 
+                                        + ' <' + d.correo_electronico + '>') AS Display
+                                FROM dbo.propietario_destinatario d
+                                WHERE d.activo = 1
+                                  AND d.correo_electronico IS NOT NULL
+                                  AND ( @IdPropietario IS NULL OR d.IdPropietario = @IdPropietario )
+                                ORDER BY d.nombre, d.apellido;"
+
+                Using da As New SqlDataAdapter(sql, cn)
+                    da.SelectCommand.Parameters.Add("@IdPropietario", SqlDbType.Int).Value =
+                    If(pIdPropietario.HasValue, CType(pIdPropietario.Value, Object), DBNull.Value)
+
+                    da.Fill(dt)
+                End Using
+
+            End Using
+
+            Return dt
+
+        Catch ex As Exception
+            Throw New Exception("Error al obtener destinatarios → " & ex.Message, ex)
+        End Try
+
+    End Function
+
 
 End Class

@@ -91,12 +91,16 @@ Public Class frmBodega
         ImplementarBarra()
         CargaSimbolosCodigoBarra()
         CargaComboEtiquetas()
-
         Buscar_Registro()
+        '#MA20260225 Estado defecto rack
+        CargarComboEstadosRack()
+        If pBeBodega.Estado_Defecto_Rack > 0 Then
+            cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
+        Else
+            cmbEstadoDefectoRack.EditValue = 0
+        End If
 
         txtCodigo.Focus()
-
-        Check_Parametro_Interface()
 
     End Sub
 
@@ -1185,6 +1189,8 @@ Public Class frmBodega
             '#CKFK20230209 Parámetros nuevos para el picking
             chkPermitirReemplazoPicking.Checked = pBeBodega.Permitir_Reemplazo_Picking
             chkPermitirReemplazoVerificacion.Checked = pBeBodega.Permitir_Reemplazo_Verificacion
+            '#MA20260223 MEJORAS PARA LA CUMBRE
+            chkreemplazoOpcional.Checked = pBeBodega.reemplazo_opcional
             chkPermitirNoEncontradoPicking.Checked = pBeBodega.Permitir_No_Encontrado_Picking
 
             '#EJC20220223
@@ -1259,7 +1265,6 @@ Public Class frmBodega
 
             '#CKFK20240403: Indicar los tipos de etiqueta y simbología para la licencia
             cmbEtiqueta.EditValue = pBeBodega.IdTipoEtiquetaLicencia
-            cmbEtiquetaVerificacion.EditValue = pBeBodega.IdTipoEtiquetaVerificacion
             cmbSymbology.EditValue = pBeBodega.IdSimbologiaLicencia
 
             cmbTamañoEtiquetaUbicacionDefecto.EditValue = pBeBodega.IdTamañoEtiquetaUbicacionDefecto
@@ -1294,7 +1299,11 @@ Public Class frmBodega
             cmbCentroCostoERP.EditValue = pBeBodega.Centro_Costo_Erp
             cmbCentroCostoDirERP.EditValue = pBeBodega.Centro_Costo_Dir_Erp
             cmbCentroCostoDepERP.EditValue = pBeBodega.Centro_Costo_Dep_Erp
-            chkImprimir_Verificacion.Checked = pBeBodega.impresion_verificacion
+            If pBeBodega.Estado_Defecto_Rack > 0 Then
+                cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
+            Else
+                cmbEstadoDefectoRack.EditValue = 0
+            End If
 
             chkCambioUbicacionRestrictivo.Checked = pBeBodega.cambio_ubicacion_restrictivo
             chkPermitirCambioUbicIndiceMenor.Checked = pBeBodega.permitir_cambio_ubic_indice_menor
@@ -1514,6 +1523,7 @@ Public Class frmBodega
             pBeBodega.Ordenar_Por_Nombre_Completo = chkOrdenarNombreCompleto.Checked
             pBeBodega.Permitir_Reemplazo_Picking = chkPermitirReemplazoPicking.Checked
             pBeBodega.Permitir_Reemplazo_Verificacion = chkPermitirReemplazoVerificacion.Checked
+            pBeBodega.reemplazo_opcional = chkreemplazoOpcional.Checked
             pBeBodega.Permitir_No_Encontrado_Picking = chkPermitirNoEncontradoPicking.Checked
             pBeBodega.Permitir_Reemplazo_Picking_Misma_Licencia = chkPermitirReemplazoPickingMismaLIcencia.Checked
             pBeBodega.Filtrar_Pedidos_Usuario = chkFiltrarPedidosUsuario.Checked
@@ -1521,7 +1531,6 @@ Public Class frmBodega
             pBeBodega.Homologar_Lote_Vencimiento = chkHomologarLoteConFechaVence.Checked
             pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
             pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
-            pBeBodega.IdTipoEtiquetaVerificacion = cmbEtiquetaVerificacion.EditValue
             pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
             pBeBodega.Interface_SAP = chkInterface_SAP.Checked
             pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
@@ -1534,14 +1543,22 @@ Public Class frmBodega
 
             pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
             pBeBodega.Advertir_Mpq_Umbas = chkAdvertirMpqUmbas.Checked
-            pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
 
-            pBeBodega.Centro_Costo_Erp = cmbCentroCostoERP.EditValue
-            pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
-            pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
+            pBeBodega.Centro_Costo_Erp = If(cmbCentroCostoERP.EditValue = Nothing, "", cmbCentroCostoERP.EditValue)
+            pBeBodega.Centro_Costo_Dir_Erp = If(cmbCentroCostoDirERP.EditValue = Nothing, "", cmbCentroCostoDirERP.EditValue)
+            pBeBodega.Centro_Costo_Dep_Erp = If(cmbCentroCostoDepERP.EditValue = Nothing, "", cmbCentroCostoDepERP.EditValue)
 
             pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
             pBeBodega.Control_Gondola = chkControlGondola.Checked
+            If cmbEstadoDefectoRack IsNot Nothing AndAlso cmbEstadoDefectoRack.EditValue IsNot Nothing Then
+                If IsNumeric(cmbEstadoDefectoRack.EditValue) Then
+                    pBeBodega.Estado_Defecto_Rack = Integer.Parse(cmbEstadoDefectoRack.EditValue.ToString())
+                Else
+                    pBeBodega.Estado_Defecto_Rack = 0
+                End If
+            Else
+                pBeBodega.Estado_Defecto_Rack = 0
+            End If
 
             '#Nuevos parámetros cambio ubicación
             pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
@@ -1587,7 +1604,6 @@ Public Class frmBodega
             Usuario.Email = EmailTextEdit.Text
             Usuario.Codigo = clsPublic.Encriptar("Admin")
             Usuario.Clave = clsPublic.Encriptar("Admin")
-            'Usuario.Ultimo_login = Ultimo_loginDateEdit.Text
             Usuario.Activo = chkActivo.Checked
 
             Usuario.User_agr = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
@@ -1762,7 +1778,6 @@ Public Class frmBodega
                 pBeBodega.Homologar_Lote_Vencimiento = chkHomologarLoteConFechaVence.Checked
                 pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
                 pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
-                pBeBodega.IdTipoEtiquetaVerificacion = cmbEtiquetaVerificacion.EditValue
                 pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
                 pBeBodega.Interface_SAP = chkInterface_SAP.Checked
                 pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
@@ -1780,6 +1795,17 @@ Public Class frmBodega
                 pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
                 pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
                 pBeBodega.Control_Gondola = chkControlGondola.Checked
+                pBeBodega.Reemplazo_Opcional = chkreemplazoOpcional.Checked
+                If cmbEstadoDefectoRack IsNot Nothing AndAlso cmbEstadoDefectoRack.EditValue IsNot Nothing Then
+                    If IsNumeric(cmbEstadoDefectoRack.EditValue) Then
+                        pBeBodega.Estado_Defecto_Rack = Integer.Parse(cmbEstadoDefectoRack.EditValue.ToString())
+                    Else
+                        pBeBodega.Estado_Defecto_Rack = 0
+                    End If
+                Else
+                    pBeBodega.Estado_Defecto_Rack = 0
+                End If
+
                 pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
                 '#Nuevos parámetros cambio ubicación
                 pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
@@ -3828,7 +3854,7 @@ Public Class frmBodega
                 pListObjBodegaAreas(pIndex).Fec_mod = Now
                 pListObjBodegaAreas(pIndex).Grupo = txtGrupoArea.Text.Trim()
                 pListObjBodegaAreas(pIndex).Activo = chkActivoAreaBodega.Checked
-                pListObjBodegaAreas(pIndex).IdUbicacionRef = Val(txtUbicacionRecepcionArea.Text)
+                pListObjBodegaAreas(pIndex).IdUbicacionRef = txtUbicacionRecepcionArea.Text
 
             Else
 
@@ -5229,12 +5255,6 @@ Public Class frmBodega
             cmbTamañoEtiquetaUbicacionDefecto.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
             cmbTamañoEtiquetaUbicacionDefecto.ItemIndex = -1
 
-            cmbEtiquetaVerificacion.Properties.DisplayMember = "Nombre"
-            cmbEtiquetaVerificacion.Properties.ValueMember = "IdTipoEtiqueta"
-            cmbEtiquetaVerificacion.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
-            cmbEtiquetaVerificacion.ItemIndex = -1
-
-
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -5421,4 +5441,34 @@ Public Class frmBodega
 
     End Sub
 
+    '#MA20260225 Estado defecto rack
+    Private Sub CargarComboEstadosRack()
+        Try
+            Dim dt As New DataTable()
+            dt.Columns.Add("ID", GetType(Integer))
+            dt.Columns.Add("Nombre", GetType(String))
+
+            dt.Rows.Add(0, "Seleccionar")
+
+            Dim listaEstados As List(Of clsBeProducto_estado) = clsLnProducto_estado.GetAll()
+
+            For Each est In listaEstados
+                If est IsNot Nothing Then
+                    dt.Rows.Add(est.IdEstado, est.Nombre)
+                End If
+            Next
+
+            With cmbEstadoDefectoRack.Properties
+                .DataSource = dt
+                .DisplayMember = "Nombre"
+                .ValueMember = "ID"
+                .PopulateColumns()
+            End With
+
+            cmbEstadoDefectoRack.EditValue = 0
+
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
 End Class

@@ -148,7 +148,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
 #Region "Agrupar por ID del pedido y No_Pedido, y recoger los productos"
 
-            Dim DistinctIdPedidoEncByTraslado = lINavTransaccionesOut.GroupBy(Function(x) New With {Key x.Idordencompra, Key x.No_pedido, Key x.No_linea}).
+            Dim DistinctIdPedidoEncByTraslado = lINavTransaccionesOut.GroupBy(Function(x) New With {Key x.Idordencompra, Key x.No_pedido, Key x.No_linea, Key x.Idpresentacion}).
                     Select(Function(g) New With {
                         .Idordencompra = g.Key.Idordencompra,
                         .No_Pedido = g.Key.No_pedido,
@@ -1266,8 +1266,6 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                 '        Exit Function
                 '    End If
                 'End If
-            End If
-            End If
             End If
 
             Dim oTransfer As StockTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oStockTransfer), StockTransfer)

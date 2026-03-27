@@ -68,11 +68,11 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
     End Function
 
-    Private Shared Function Get_Factura_Deudor_SAP_SL(pCodigoBodegaInterface As String,
-                                                      lConnection As SqlConnection,
-                                                      lTransaction As SqlTransaction,
-                                                      lblprg As RichTextBox,
-                                                      Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
+    Private Shared Async Function Get_Factura_Deudor_SAP_SLAsync(pCodigoBodegaInterface As String,
+                                                                 lConnection As SqlConnection,
+                                                                 lTransaction As SqlTransaction,
+                                                                 lblprg As RichTextBox,
+                                                                 Optional pNoDocumentoSAP As String = "") As Task(Of List(Of clsBeI_nav_ped_traslado_enc))
 
         Dim lFacturasDeudor As New List(Of clsBeI_nav_ped_traslado_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
@@ -97,10 +97,10 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
             ' Filtro a nivel de encabezado (no se puede filtrar por WarehouseCode aquí)
             Dim filtroFacturaDeudor As String = "ReserveInvoice eq 'tNO'"
-            Dim filtroEstado As String = "DocumentStatus eq 'bost_Close'"
+            Dim filtroGuia As String = "U_Guia ne null and U_Guia ne ''"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
-            Dim filtroFinal As String = $"{filtroFacturaDeudor} and {filtroEstado} and {filtroEnviado}{filtroDocNum}"
+            Dim filtroFinal As String = $"{filtroFacturaDeudor} and {filtroEnviado}{filtroDocNum} and {filtroGuia}"
 
             Dim url As String = $"{BD.Instancia.HANA_SL}Invoices?$filter={Uri.EscapeDataString(filtroFinal)}"
 
@@ -109,30 +109,45 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
                 handler.UseCookies = False
 
                 Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.Remove("Cookie")
                     client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
+                    client.DefaultRequestHeaders.Accept.Clear()
                     client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
+                    Dim response As HttpResponseMessage =
+                    Await client.GetAsync(url).ConfigureAwait(False)
 
                     If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener facturas de deudor desde SL: {response.StatusCode}, {errorDetail}")
+                        Dim errorDetail As String =
+                        Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                        Throw New Exception(
+                        $"Error al obtener facturas de Deudor_Cliente desde SL: {response.StatusCode}, {errorDetail}"
+                    )
                     End If
 
                     Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
                     Dim parsed = JObject.Parse(json)
 
-                    For Each factura_deudor In parsed("value")
+                    Dim valueArr = TryCast(parsed("value"), JArray)
+                    If valueArr Is Nothing OrElse valueArr.Count = 0 Then
+                        Return lFacturasDeudor
+                    End If
 
-                        ' Filtrar por bodega en líneas del documento
-                        Dim contieneBodega As Boolean = False
-                        For Each linea In factura_deudor("DocumentLines")
-                            If linea("WarehouseCode")?.ToString() = pCodigoBodegaInterface Then
-                                contieneBodega = True
-                                Exit For
-                            End If
-                        Next
+                    ' Cache OITM: crear UNA vez para todas las facturas
+                    Dim cache As New OitmCache(client, BD.Instancia.HANA_SL)
 
+                    ' Si necesitas IDs únicos sin recalcular MaxID en cada línea
+                    Dim nextDetId As Integer = 0
+
+                    For Each factura_deudor As JObject In valueArr
+
+                        Dim docLines = TryCast(factura_deudor("DocumentLines"), JArray)
+                        If docLines Is Nothing OrElse docLines.Count = 0 Then Continue For
+
+                        ' Filtrar por bodega
+                        Dim contieneBodega As Boolean = docLines.Any(
+                        Function(l) l?("WarehouseCode")?.ToString() = pCodigoBodegaInterface
+                    )
                         If Not contieneBodega Then Continue For
 
                         ' Mapeo del documento
@@ -157,12 +172,24 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
                          }
 
                         ' Mapeo de líneas
-                        For Each linea In factura_deudor("DocumentLines")
-                            If linea("WarehouseCode")?.ToString() <> pCodigoBodegaInterface Then Continue For
+                        For Each linea As JObject In docLines
+
+                            If linea?("WarehouseCode")?.ToString() <> pCodigoBodegaInterface Then Continue For
+
+                            Dim itemCode As String = linea?("ItemCode")?.ToString()
+
+                            ' Sin ItemCode => normalmente servicio/texto => excluir de WMS
+                            If String.IsNullOrWhiteSpace(itemCode) Then Continue For
+
+                            ' Obtener U_Grupo desde OITM (async)
+                            Dim grupo As String = Await cache.GetUGrupoAsync(itemCode).ConfigureAwait(False)
+
+                            ' Excluir grupo 19
+                            If Not String.IsNullOrEmpty(grupo) AndAlso grupo = "19" Then Continue For
 
                             Dim beDet As New clsBeI_nav_ped_traslado_det With {
                             .NoEnc = beFacturaDeudor.No,
-                            .No = clsLnTrans_pe_det.MaxID() + 1,
+                            .No = clsLnI_nav_ped_traslado_det.MaxID() + 1,
                             .Item_No = linea("ItemCode")?.ToString(),
                             .Line_No = linea("LineNum").Value(Of Integer),
                             .Shipment_Date = Date.Now,
@@ -183,6 +210,7 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
                         If beFacturaDeudor.Lineas_Detalle.Any() Then
                             lFacturasDeudor.Add(beFacturaDeudor)
                         End If
+
                     Next
 
                 End Using
@@ -206,7 +234,7 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Factura_Deudor_SAP_SL(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
+            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Await Get_Factura_Deudor_SAP_SLAsync(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
             Dim pBePedidoEnc As New clsBeTrans_pe_enc
             Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
             Dim PedidoClienteExistente As New clsBeTrans_pe_enc

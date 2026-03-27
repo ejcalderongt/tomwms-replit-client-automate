@@ -86,8 +86,6 @@ Public Class frmProducto_Estado
                     nudDiasVencimientoClasificacion.Value = gBeProductoEstado.Dias_Vencimiento_Clasificacion
                     nudToleranciaDiasVencimiento.Value = gBeProductoEstado.Tolerancia_Dias_Vencimiento
 
-                    chkReservaRequiereUMBas.EditValue = gBeProductoEstado.Reservar_En_UmBas
-
                     txtIdUbicacion_LostFocus(Nothing, Nothing)
                     Cargar_Estados_Ubicaciones(False)
 
@@ -122,7 +120,6 @@ Public Class frmProducto_Estado
             BeProductoEstado.Codigo_Bodega_ERP = txtCodigoBodegaERP.Text.Trim
             BeProductoEstado.Dias_Vencimiento_Clasificacion = nudDiasVencimientoClasificacion.Value
             BeProductoEstado.Tolerancia_Dias_Vencimiento = nudToleranciaDiasVencimiento.Value
-            BeProductoEstado.Reservar_En_UmBas = chkReservaRequiereUMBas.EditValue
             clsLnProducto_estado.Insert_Producto_Estado_With_Ubic(BeProductoEstado, pListEstadoProductoUbicacion)
 
             Return True
@@ -152,8 +149,6 @@ Public Class frmProducto_Estado
 
                 gBeProductoEstado.Dias_Vencimiento_Clasificacion = nudDiasVencimientoClasificacion.Value
                 gBeProductoEstado.Tolerancia_Dias_Vencimiento = nudToleranciaDiasVencimiento.Value
-
-                gBeProductoEstado.Reservar_En_UmBas = chkReservaRequiereUMBas.EditValue
 
                 If txtIdUbicacion.Text.Trim <> "" Then
                     gBeProductoEstado.IdUbicacionDefecto = txtIdUbicacion.Text

@@ -208,23 +208,6 @@ Public Class clsLnTrans_pe_encDMS
 
             End If
 
-
-            'If listaPropietarioBodega IsNot Nothing AndAlso listaPropietarioBodega.Count > 0 Then
-
-            '    For Each pIdPropietarioBodega In listaPropietarioBodega
-            '        BeLogUltimaSincronizacion = New clsBeDMS_Log_sincronizacion_nube()
-            '        BeLogUltimaSincronizacion = clsLnDMS_Log_sincronizacion_nube.GetLastSync(pTablaSincronizada, pIdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-            '        If BeLogUltimaSincronizacion IsNot Nothing Then
-            '            Dim lista = clsLnTrans_pe_enc.GetAll_By_CDC(BeLogUltimaSincronizacion.Fecha_sincronizacion, pIdPropietarioBodega, listaPedidosPendientes, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-            '            pListPE.AddRange(lista)
-
-            '        End If
-
-            '    Next
-
-            'End If
-
             clsTransaccion.Commit_Transaction()
 
             Return pListPE
@@ -477,7 +460,8 @@ Public Class clsLnTrans_pe_encDMS
                                             .IdUbicacionAbastecerCon = Cliente.IdUbicacionAbastecerCon,
                                             .IdBodegaAreaSAP = Cliente.IdBodegaAreaSAP,
                                             .es_proveedor = Cliente.Es_Proveedor,
-                                            .Codigo_Empresa_ERP = Cliente.Codigo_Empresa_ERP
+                                            .Codigo_Empresa_ERP = Cliente.Codigo_Empresa_ERP,
+                                            .TipoCliente = Cliente.ClienteTipo
                                             })
                 Next
 

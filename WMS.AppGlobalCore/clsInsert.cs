@@ -60,4 +60,26 @@ public partial class clsInsert
             throw new Exception($"{currentMethod} {ex.Message}");
         }
     }
+    public string SQLIdentity(string identityField)
+    {
+        if (string.IsNullOrWhiteSpace(tableName) || fields.Count == 0 || values.Count == 0 || fields.Count != values.Count)
+            return string.Empty;
+
+        if (string.IsNullOrWhiteSpace(identityField))
+            throw new Exception("identityField es requerido.");
+
+        try
+        {
+            var fieldList = string.Join(", ", fields.ToArray());
+            var valueList = string.Join(", ", values.ToArray());
+            return $"INSERT INTO {tableName} ({fieldList}) OUTPUT INSERTED.{identityField} VALUES ({valueList})";
+        }
+        catch (Exception ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethod = sf?.GetMethod();
+            throw new Exception($"{currentMethod} {ex.Message}");
+        }
+    }
 }

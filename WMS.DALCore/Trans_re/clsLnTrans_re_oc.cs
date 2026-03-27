@@ -513,10 +513,9 @@ public class clsLnTrans_re_oc
             {
                 bool existe = Existe(entity.IdRecepcionOc, entity.IdOrdenCompraEnc, conn, tx);
 
-                if (existe)
-                    Actualizar(entity, conn, tx);
-                else
-                    Insertar(entity, conn, tx);
+                if (!existe)
+                    Insertar(entity, conn, tx);                
+                    
             }
         }
         catch (Exception ex)

@@ -1373,13 +1373,13 @@ Partial Class frmOperador
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("e618db3d-6cc7-4035-b9d1-a3d9d50d5805")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 684)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 114)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(969, 114)
+        Me.DockPanel1.Size = New System.Drawing.Size(1338, 142)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -1396,7 +1396,7 @@ Partial Class frmOperador
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(961, 76)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1330, 104)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'TabDatos

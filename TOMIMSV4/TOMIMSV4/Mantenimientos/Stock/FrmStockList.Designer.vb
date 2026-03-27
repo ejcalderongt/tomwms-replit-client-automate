@@ -46,7 +46,6 @@ Partial Class FrmStockList
         Me.lblRegistros = New DevExpress.XtraBars.BarStaticItem()
         Me.lblProgress = New DevExpress.XtraBars.BarStaticItem()
         Me.chkSeleccionMultiple = New DevExpress.XtraBars.BarToggleSwitchItem()
-        Me.mnuTomarSeleccionados = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage2 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -148,13 +147,6 @@ Partial Class FrmStockList
         Me.chkSeleccionMultiple.Caption = "Selección Múltiple"
         Me.chkSeleccionMultiple.Id = 18
         Me.chkSeleccionMultiple.Name = "chkSeleccionMultiple"
-        '
-        'mnuTomarSeleccionados
-        '
-        Me.mnuTomarSeleccionados.Caption = "Aplicar Selección"
-        Me.mnuTomarSeleccionados.Id = 19
-        Me.mnuTomarSeleccionados.ImageOptions.SvgImage = CType(resources.GetObject("mnuTomarSeleccionados.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuTomarSeleccionados.Name = "mnuTomarSeleccionados"
         '
         'RibbonPage2
         '

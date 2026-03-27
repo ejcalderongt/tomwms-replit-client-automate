@@ -1,9 +1,8 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+
 public class clsLnUnidad_medida
 {
 
@@ -744,6 +743,117 @@ WHERE IdUnidadMedida IN ({string.Join(",", paramNames)})";
         finally
         {
             lTransaction?.Dispose();
+        }
+    }
+
+    public static async Task<Dictionary<int, clsBeUnidad_medida>> GetByIdsAsync(IConfiguration configuration, List<int> idsUnidadMedida)
+    {
+        var result = new Dictionary<int, clsBeUnidad_medida>();
+
+        if (idsUnidadMedida == null || idsUnidadMedida.Count == 0)
+            return result;
+
+        idsUnidadMedida = idsUnidadMedida.Where(id => id > 0).Distinct().ToList();
+        if (idsUnidadMedida.Count == 0)
+            return result;
+
+        const string sql = "SELECT * FROM Unidad_medida WHERE IdUnidadMedida IN ({0})";
+
+        using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        await conn.OpenAsync();
+
+        using var tran = (SqlTransaction) await conn.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+        try
+        {
+            var paramNames = idsUnidadMedida.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, conn, tran)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsUnidadMedida.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsUnidadMedida[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            await tran.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeUnidad_medida();
+                Cargar(ref be, dr);
+                result[be.IdUnidadMedida] = be;
+            }
+
+            return result;
+        }
+        catch
+        {
+            await tran.RollbackAsync();
+            throw;
+        }
+    }
+
+    public static Task<Dictionary<int, clsBeUnidad_medida>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsUnidadMedida)
+    {
+        var result = new Dictionary<int, clsBeUnidad_medida>();
+
+        if (idsUnidadMedida == null || idsUnidadMedida.Count == 0)
+            return Task.FromResult(result);
+
+        idsUnidadMedida = idsUnidadMedida.Where(id => id > 0).Distinct().ToList();
+        if (idsUnidadMedida.Count == 0)
+            return Task.FromResult(result);
+
+        const string sql = "SELECT * FROM Unidad_medida WHERE IdUnidadMedida IN ({0})";
+
+        try
+        {
+            var paramNames = idsUnidadMedida.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsUnidadMedida.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsUnidadMedida[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeUnidad_medida();
+                Cargar(ref be, dr);
+                result[be.IdUnidadMedida] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch
+        {
+            throw;
         }
     }
 

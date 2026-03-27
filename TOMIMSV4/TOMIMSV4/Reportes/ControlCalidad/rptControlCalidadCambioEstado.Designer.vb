@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Public Class rptControlCalidadCambioEstado
     Inherits DevExpress.XtraReports.UI.XtraReport
 
     'XtraReport overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Public Class rptControlCalidadCambioEstado
     'NOTE: The following procedure is required by the Designer
     'It can be modified using the Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim XrSummary1 As DevExpress.XtraReports.UI.XRSummary = New DevExpress.XtraReports.UI.XRSummary()
@@ -91,8 +91,6 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.pageInfo1 = New DevExpress.XtraReports.UI.XRPageInfo()
         Me.pageInfo2 = New DevExpress.XtraReports.UI.XRPageInfo()
         Me.ReportHeader = New DevExpress.XtraReports.UI.ReportHeaderBand()
-        Me.XrLabel12 = New DevExpress.XtraReports.UI.XRLabel()
-        Me.XrLabel11 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel24 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel27 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel10 = New DevExpress.XtraReports.UI.XRLabel()
@@ -190,28 +188,8 @@ Partial Public Class rptControlCalidadCambioEstado
         'ReportHeader
         '
         Me.ReportHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel12, Me.XrLabel11, Me.XrLabel24, Me.XrLabel27, Me.XrLabel10, Me.XrLabel9, Me.XrLabel8, Me.XrLabel7, Me.XrLabel6, Me.XrLabel5, Me.XrLabel4, Me.XrLabel3, Me.XrLabel2, Me.XrLabel1, Me.label1})
-        Me.ReportHeader.HeightF = 160.8333!
+        Me.ReportHeader.HeightF = 183.3333!
         Me.ReportHeader.Name = "ReportHeader"
-        '
-        'XrLabel12
-        '
-        Me.XrLabel12.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Bodega")})
-        Me.XrLabel12.LocationFloat = New DevExpress.Utils.PointFloat(431.8732!, 57.19437!)
-        Me.XrLabel12.Multiline = True
-        Me.XrLabel12.Name = "XrLabel12"
-        Me.XrLabel12.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel12.SizeF = New System.Drawing.SizeF(135.0001!, 23.0!)
-        Me.XrLabel12.Text = "XrLabel12"
-        '
-        'XrLabel11
-        '
-        Me.XrLabel11.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Empresa")})
-        Me.XrLabel11.LocationFloat = New DevExpress.Utils.PointFloat(431.8732!, 34.19434!)
-        Me.XrLabel11.Multiline = True
-        Me.XrLabel11.Name = "XrLabel11"
-        Me.XrLabel11.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel11.SizeF = New System.Drawing.SizeF(135.0!, 23.0!)
-        Me.XrLabel11.Text = "XrLabel11"
         '
         'XrLabel24
         '
@@ -364,21 +342,21 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.tableCell3.Name = "tableCell3"
         Me.tableCell3.StyleName = "DetailCaption1"
         Me.tableCell3.Text = "Codigo"
-        Me.tableCell3.Weight = 0.063219388756483849R
+        Me.tableCell3.Weight = 0.10994677633318595R
         '
         'tableCell4
         '
         Me.tableCell4.Name = "tableCell4"
         Me.tableCell4.StyleName = "DetailCaption1"
         Me.tableCell4.Text = "Producto"
-        Me.tableCell4.Weight = 0.10355246576664821R
+        Me.tableCell4.Weight = 0.14203389188022666R
         '
         'tableCell5
         '
         Me.tableCell5.Name = "tableCell5"
         Me.tableCell5.StyleName = "DetailCaption1"
         Me.tableCell5.Text = "Licencia"
-        Me.tableCell5.Weight = 0.088080308351529885R
+        Me.tableCell5.Weight = 0.0028714946612493283R
         '
         'tableCell6
         '
@@ -456,21 +434,21 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.tableCell18.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Codigo]")})
         Me.tableCell18.Name = "tableCell18"
         Me.tableCell18.StyleName = "DetailData1"
-        Me.tableCell18.Weight = 0.062813354669277371R
+        Me.tableCell18.Weight = 0.10953019812839476R
         '
         'tableCell19
         '
         Me.tableCell19.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Producto]")})
         Me.tableCell19.Name = "tableCell19"
         Me.tableCell19.StyleName = "DetailData1"
-        Me.tableCell19.Weight = 0.10352906745148122R
+        Me.tableCell19.Weight = 0.14245045865472888R
         '
         'tableCell20
         '
         Me.tableCell20.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Licencia]")})
         Me.tableCell20.Name = "tableCell20"
         Me.tableCell20.StyleName = "DetailData1"
-        Me.tableCell20.Weight = 0.088509731950755816R
+        Me.tableCell20.Weight = 0.0028714972883907633R
         '
         'tableCell21
         '
@@ -811,7 +789,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.Font = New DevExpress.Drawing.DXFont("Arial", 9.75!)
         Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Empresa, Me.Bodega})
         Me.StyleSheet.AddRange(New DevExpress.XtraReports.UI.XRControlStyle() {Me.Title, Me.DetailCaption1, Me.DetailData1, Me.DetailData3_Odd, Me.GrandTotalCaption1, Me.GrandTotalData1, Me.GrandTotalBackground1, Me.PageInfo})
-        Me.Version = "25.1"
+        Me.Version = "24.2"
         XrWatermark1.Id = "Watermark1"
         Me.Watermarks.AddRange(New DevExpress.XtraPrinting.Drawing.Watermark() {XrWatermark1})
         CType(Me.table1, System.ComponentModel.ISupportInitialize).EndInit()

@@ -12,7 +12,6 @@ Public MustInherit Class clsInterfaceBase
                 .Password = vClaveWS}
 
     Public Property UsarCredencialesPorDefecto As Boolean = False
-
     Public Shared Property BeConfigEnc As New clsBeI_nav_config_enc With {.IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface}
     Public Shared Property BeNavEjecucionEnc As New clsBeI_nav_ejecucion_enc
     Public Shared Property BeNavEjecucionDet As New clsBeI_nav_ejecucion_det_error

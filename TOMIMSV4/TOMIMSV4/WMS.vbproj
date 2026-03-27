@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS</AssemblyName>
+    <AssemblyName>WMS_QAS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\192.168.2.204\WMS\</InstallUrl>
-    <UpdateUrl>\\192.168.2.204\WMS\</UpdateUrl>
-    <ProductName>WMS_PRD</ProductName>
+    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
+    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
+    <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>56</ApplicationRevision>
+    <ApplicationRevision>84</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -227,11 +227,12 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 9.0\Visual Studio Tools for Office\PIA\Office12\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SAPBOSyncMampa, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\SAPBOSyncMampa.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -357,6 +358,12 @@
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Email\frmcorreorpt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC_RFID.Designer.vb">
+      <DependentUpon>frmImpresion_OC_RFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC_RFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.Designer.vb">
@@ -542,6 +549,42 @@
     <Compile Include="Mantenimientos\Motivo_Correccion\frmMotivo_CorrecionList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionContactoBodegaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionDestinatarioReglaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionEventoMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionEventoVariableMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionLayoutMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionPlantillaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Operadores\rptResolucionesOperador.Designer.vb">
       <DependentUpon>rptResolucionesOperador.vb</DependentUpon>
     </Compile>
@@ -558,6 +601,9 @@
       <DependentUpon>frmPrincipal02.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
@@ -1522,6 +1568,30 @@
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3225,6 +3295,9 @@
     <EmbeddedResource Include="Mantenimientos\Email\frmcorreorpt.resx">
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Impresion_OC\frmImpresion_OC_RFID.resx">
+      <DependentUpon>frmImpresion_OC_RFID.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Impresion_OC\frmImpresion_OC.resx">
       <DependentUpon>frmImpresion_OC.vb</DependentUpon>
     </EmbeddedResource>
@@ -3251,6 +3324,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Motivo_Correccion\frmMotivo_CorrecionList.resx">
       <DependentUpon>frmMotivo_CorrecionList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.resx">
+      <DependentUpon>FrmNotificacionContactoBodegaMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.resx">
+      <DependentUpon>FrmNotificacionDestinatarioReglaMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.resx">
+      <DependentUpon>FrmNotificacionEventoMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.resx">
+      <DependentUpon>FrmNotificacionEventoVariableMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.resx">
+      <DependentUpon>FrmNotificacionLayoutMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.resx">
+      <DependentUpon>FrmNotificacionPlantillaMnt.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Operadores\rptResolucionesOperador.resx">
       <DependentUpon>rptResolucionesOperador.vb</DependentUpon>
@@ -3729,6 +3820,18 @@
     <EmbeddedResource Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.resx">
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID.resx">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID_List.resx">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID.resx">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -4573,6 +4676,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5532,13 +5636,16 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>6.1.1</Version>
+      <Version>6.1.4</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>9.0.8</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>9.0.8</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.6.3</Version>
@@ -5547,7 +5654,10 @@
       <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.6.1</Version>
+      <Version>4.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="Zebra.Printer.SDK">
+      <Version>2.15.2634</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

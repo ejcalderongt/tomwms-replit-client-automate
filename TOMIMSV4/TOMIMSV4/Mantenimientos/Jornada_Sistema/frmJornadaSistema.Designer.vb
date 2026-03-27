@@ -46,14 +46,12 @@ Partial Class frmJornadaSistema
         '
         'RibbonControl
         '
-        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.lblUsuario, Me.lblServer, Me.lblBD, Me.lblEmpresa, Me.mnuActualizar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonControl.MaxItemId = 8
         Me.RibbonControl.Name = "RibbonControl"
-        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.Size = New System.Drawing.Size(1444, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar

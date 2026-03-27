@@ -1,14 +1,10 @@
 Imports System.Reflection
 
 Public Class IMS
-
     Public Property UsuarioAp As New clsBeUsuario
-
     Public Property UsuarioInterface As New clsBeUsuario
-
     Public Overridable Property IdEmpresa() As String
     Public Overridable Property IdRol() As String
-
     Public Property HostName As String = ""
     Public Property IdBodega() As String
     Public Property NomBodega() As String

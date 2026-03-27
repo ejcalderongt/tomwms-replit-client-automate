@@ -1894,7 +1894,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -2248,7 +2248,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -2482,7 +2482,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -3437,6 +3437,8 @@ Public Class frmPedido
 
                 Get_ValoresGrid(e.RowIndex)
 
+                pBeStock.IdBodega = AP.IdBodega
+
                 If Not IsNothing(pBeProducto) Then
                     If Not IsNothing(pBeProducto.UnidadMedida) Then
                         If Not IsNothing(pBeStock) Then
@@ -3804,10 +3806,15 @@ Public Class frmPedido
                         '#GT26082025: si hay cambio de talla y un color seleccionado recargar lo disponible
                         If vTalla > 0 OrElse vColor > 0 Then
 
-                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                            Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                                          vColor,
+                                                                                                                          vProducto)
 
                             If pProductoTallaColor IsNot Nothing Then
                                 pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                                dgrid.Rows(e.RowIndex).Cells("colIdProductoTallaColor").Value = pBeStock.IdProductoTallaColor
                             End If
 
                             If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 And pBeStock.IdProductoTallaColor > 0 Then
@@ -3850,16 +3857,20 @@ Public Class frmPedido
 
                         End If
 
-
                     Case "colColor"
 
                         '#GT26082025: si hay cambio de color y una talla selecccionada recargar lo disponible.
                         If vTalla > 0 OrElse vColor > 0 Then
 
-                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                            Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                                          vColor,
+                                                                                                                          vProducto)
 
                             If pProductoTallaColor IsNot Nothing Then
                                 pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                                dgrid.Rows(e.RowIndex).Cells("colIdProductoTallaColor").Value = pBeStock.IdProductoTallaColor
                             End If
 
                             If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 AndAlso pBeStock.IdProductoTallaColor > 0 Then
@@ -4562,7 +4573,12 @@ Public Class frmPedido
 
             '#GT26082025: si hay un valor en talla color, asignar el idproductotallacolor
             If vTalla > 0 AndAlso vColor > 0 Then
-                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+
+                Dim vProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStock.IdProductoBodega)
+
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla,
+                                                                                                              vColor,
+                                                                                                              vProducto)
                 If pProductoTallaColor IsNot Nothing Then
                     pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
                 End If
@@ -5030,7 +5046,7 @@ Public Class frmPedido
                     pBePedidoDet.IsNew = False
 
                 Else
-                    Throw New Exception("No hay existencias suficientes para el código de producto: " & vCodigoProducto)
+                    Throw New Exception("No hay existencias suficientes para el código de producto: " & vCodigoProducto & " o las condiciones del inventario no son de libre manipulación")
                 End If
 
             End If
@@ -8210,15 +8226,11 @@ Public Class frmPedido
                             mnuDespachado.Visibility = BarItemVisibility.Always
                         End If
 
-                        'Mantener paralelización (ours) sin duplicar llamadas
-                        SplashScreenManager.Default.SetWaitFormDescription("Picking. ")
-                        Dim taskPick As Task = Task.Run(Sub() Cargar_Picking())
+                        Cargar_Picking(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Reserva. ")
-                        Dim taskRes As Task = Task.Run(Sub() Carga_Stock_Reservado())
+                        Carga_Stock_Reservado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Stock liberado. ")
-                        Dim taskLib As Task = Task.Run(Sub() Cargar_Stock_Liberado())
+                        Cargar_Stock_Liberado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
                         SplashScreenManager.Default.SetWaitFormDescription("Hoja de verificación. ")
 
@@ -8230,9 +8242,6 @@ Public Class frmPedido
                             tabHojaVerificacion.PageVisible = False
                         End If
 
-
-                        'Esperar tareas para no dejar UI inconsistente
-                        Task.WaitAll(taskPick, taskRes, taskLib)
 
                         SplashScreenManager.Default.SetWaitFormDescription("Poliza. ")
 
@@ -8265,8 +8274,11 @@ Public Class frmPedido
                         End If
 
                         SplashScreenManager.Default.SetWaitFormDescription("Existencias. ")
-                        Dim taskEx As Task = Task.Run(Sub() Cargar_Existencias_Pedido())
-                        taskEx.Wait()
+                        Cargar_Existencias_Pedido()
+
+                        '#CKFK20260225 Puse este task en comentario
+                        'Dim taskEx As Task = Task.Run(Sub() Cargar_Existencias_Pedido())
+                        'taskEx.Wait()
 
                 End Select
 
@@ -11909,20 +11921,29 @@ Public Class frmPedido
             End If
         End If
 
-        ' 3.2 – ¿Mi producto aparece en OTRA línea?
-        Dim productoEnOtraLinea = dgrid.Rows.Cast(Of DataGridViewRow)().
-            Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
-            Any(Function(r)
-                    Dim l2 As Integer = 0 : Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
-                    Dim p2 As String = GetProductoKey(r)
-                    Return p2 = pKey AndAlso l2 <> linea
-                End Function)
+        ' 3.2 – ¿Mi producto aparece en OTRA línea que no es válida?
+        Dim lineasValidas = dgrid.Rows.Cast(Of DataGridViewRow)().
+                Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
+                Where(Function(r) GetProductoKey(r) = pKey).
+                Select(Function(r)
+                           Dim l2 As Integer = 0
+                           Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
+                           Return l2
+                       End Function).
+                Where(Function(l) l > 0).
+                Distinct().
+                OrderBy(Function(l) l).
+                ToList()
 
-        If productoEnOtraLinea Then
+        Dim lineaValidaParaProducto As Boolean = lineasValidas.Contains(linea)
+
+        If Not lineaValidaParaProducto Then
+            Dim mensaje As String = "El número de línea no es válido para este producto." & Environment.NewLine &
+                    "Líneas permitidas: " & String.Join(", ", lineasValidas)
             ok = False
-            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), "Este producto ya está en otra línea.", row.ErrorText & " Este producto ya está en otra línea.")
+            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), mensaje, row.ErrorText & " " & mensaje)
             If dgrid.Columns.Contains("colCodProducto") Then
-                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea distinto."
+                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea no válido."
             End If
         End If
 
@@ -12181,14 +12202,15 @@ Public Class frmPedido
 
             With frmDespacho
                 .Modo = frmDespacho.TipoTrans.Nuevo
-                .WindowState = FormWindowState.Maximized
-                .Activate()
-                .Show()
-                .Agregar_Pedido(pBePedidoEnc)
+                .Despacho_Cargado_Desde_Pedido = True
                 .InvokeGetDespachoEnPedido = AddressOf Cargar_Despacho
                 .InvokeActualizarStockReservadoEnPedido = AddressOf Carga_Stock_Reservado
                 .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
                 .InvokeCargarPedido = AddressOf Cargar_Datos
+                .WindowState = FormWindowState.Maximized
+                .Activate()
+                .Show()
+                .Agregar_Pedido(pBePedidoEnc)
                 .Focus()
             End With
 

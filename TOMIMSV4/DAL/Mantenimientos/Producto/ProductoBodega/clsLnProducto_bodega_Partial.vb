@@ -1297,4 +1297,76 @@ Partial Public Class clsLnProducto_bodega
     End Sub
 #End Region
 
+    Public Shared Function Existe_Codigo_By_IdBodega(ByVal pCodigo As String, ByVal pIdBodega As Integer) As Boolean
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Dim sql As String =
+            "SELECT TOP 1 1 " &
+            "FROM producto_bodega pb " &
+            "INNER JOIN producto p ON pb.IdProducto = p.IdProducto " &
+            "WHERE p.codigo = @Codigo AND pb.IdBodega = @IdBodega;"
+
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+                cmd.Parameters.Add("@Codigo", SqlDbType.VarChar).Value = pCodigo
+                cmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = pIdBodega
+
+                Dim result As Object = cmd.ExecuteScalar()
+                Return (result IsNot Nothing AndAlso result IsNot DBNull.Value)
+            End Using
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
+    Public Shared Function InsertarFromInterface(ByRef oBeProducto_bodega As clsBeProducto_bodega) As Integer
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Ins.Init("producto_bodega")
+            Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+            Ins.Add("idproducto", "@idproducto", DataType.Parametro)
+            Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+            Ins.Add("activo", "@activo", DataType.Parametro)
+            Ins.Add("sistema", "@sistema", DataType.Parametro)
+            Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+            Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+            Ins.Add("user_mod", "@user_mod", DataType.Parametro)
+            Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
+
+            Dim sp As String = Ins.SQL()
+
+            Using cmd As New SqlCommand(sp, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeProducto_bodega.IdProductoBodega))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeProducto_bodega.IdProducto))
+                cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeProducto_bodega.IdBodega))
+                cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeProducto_bodega.Activo))
+                cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBeProducto_bodega.Sistema))
+                cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeProducto_bodega.User_agr))
+                cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeProducto_bodega.Fec_agr))
+                cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeProducto_bodega.User_mod))
+                cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeProducto_bodega.Fec_mod))
+
+                Return cmd.ExecuteNonQuery()
+            End Using
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
 End Class

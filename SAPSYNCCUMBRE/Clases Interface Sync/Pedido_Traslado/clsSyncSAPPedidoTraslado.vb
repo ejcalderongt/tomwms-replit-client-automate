@@ -169,7 +169,7 @@ Public Class clsSyncSAPPedidoTraslado : Inherits clsInterfaceBase
                     clsLnLog_error_wms.Agregar_Error("#IF_SAP_CLI_TRAS: El cliente: " & PC.Transfer_to_Code & " No existía en WMS y fue insertado.")
                 End If
 
-                clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PC, lblprg, Nothing, Nothing)
+                clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PC, lblprg)
 
                 clsPublic.Actualizar_Progreso(lblprg, Resultado)
 

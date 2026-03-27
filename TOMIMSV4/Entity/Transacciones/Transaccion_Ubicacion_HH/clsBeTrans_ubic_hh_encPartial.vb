@@ -8,7 +8,6 @@ Partial Public Class clsBeTrans_ubic_hh_enc
     Public Property Asunto() As String = ""
     Public Property DescripcionMotivo As String = ""
     Public Property IsNew As Boolean
-
     Public Property Nombre_Operador As String = ""
 
 

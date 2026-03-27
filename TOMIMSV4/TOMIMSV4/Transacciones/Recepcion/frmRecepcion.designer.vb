@@ -920,7 +920,6 @@ Partial Class frmRecepcion
         'RibbonPageGroup2
         '
         Me.RibbonPageGroup2.ItemLinks.Add(Me.cmdPrint)
-        Me.RibbonPageGroup2.ItemLinks.Add(Me.cmdPrintLabels)
         Me.RibbonPageGroup2.ItemLinks.Add(Me.BarButtonItem4)
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         '
@@ -2890,7 +2889,6 @@ Partial Class frmRecepcion
         'ToolEliminarFila
         '
         Me.ToolEliminarFila.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToolEliminarFila.Image = Global.TOMWMS.My.Resources.Resources.Delete_16
         Me.ToolEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolEliminarFila.Name = "ToolEliminarFila"
         Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 24)

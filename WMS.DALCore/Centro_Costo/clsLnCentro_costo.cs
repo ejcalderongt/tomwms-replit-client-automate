@@ -557,5 +557,37 @@ namespace WMSWebAPI.Ln
                 }
             }
         }
+        public static string Get_Codigo_By_IdCentroCosto(int IdCentroCosto, SqlConnection lConnection, SqlTransaction lTransaction)
+        {
+            var result = "";
+
+            try
+            {
+                const string sp = @"SELECT codigo FROM Centro_costo
+                                WHERE IdCentroCosto = @IdCentroCosto;";
+
+                using (var da = new SqlDataAdapter(sp, lConnection))
+                {
+                    da.SelectCommand.CommandType = CommandType.Text;
+                    da.SelectCommand.Transaction = lTransaction;
+                    da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", IdCentroCosto);
+
+                    var dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        var dr = dt.Rows[0];
+                        result = dr["codigo"] == DBNull.Value ? "" : Convert.ToString(dr["codigo"]) ?? "";
+                    }
+                }
+
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

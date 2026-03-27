@@ -282,6 +282,7 @@ Partial Class frmCantidadreemplazo
         Me.txtCantidadSolicitada.DecimalPlaces = 2
         Me.txtCantidadSolicitada.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtCantidadSolicitada.Location = New System.Drawing.Point(216, 142)
+        Me.txtCantidadSolicitada.Maximum = New Decimal(New Integer() {999999, 0, 0, 0})
         Me.txtCantidadSolicitada.Name = "txtCantidadSolicitada"
         Me.txtCantidadSolicitada.ReadOnly = True
         Me.txtCantidadSolicitada.Size = New System.Drawing.Size(216, 32)
@@ -390,6 +391,7 @@ Partial Class frmCantidadreemplazo
         Me.txtCantidadReemplazo.DecimalPlaces = 2
         Me.txtCantidadReemplazo.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtCantidadReemplazo.Location = New System.Drawing.Point(216, 180)
+        Me.txtCantidadReemplazo.Maximum = New Decimal(New Integer() {999999, 0, 0, 0})
         Me.txtCantidadReemplazo.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.txtCantidadReemplazo.Name = "txtCantidadReemplazo"
         Me.txtCantidadReemplazo.Size = New System.Drawing.Size(216, 32)

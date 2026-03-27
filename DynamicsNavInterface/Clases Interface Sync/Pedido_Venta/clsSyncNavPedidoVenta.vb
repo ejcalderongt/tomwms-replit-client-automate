@@ -1639,7 +1639,7 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
         Try
 
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0
             pBePedidoDet.No_linea = pBeTrasladoDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = pBeTrasladoDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = pIdPedidoEnc

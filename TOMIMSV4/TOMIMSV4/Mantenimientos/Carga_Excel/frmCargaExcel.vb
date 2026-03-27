@@ -2039,6 +2039,7 @@ Public Class frmCargaExcel
                     Else
                         If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
                             errorCampos = True
+                            errorCargaInv = True
                             clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El código del producto " & pDT(i)(0) & "en la fila " & i + 1 & " no existe en la bd.")
                             Continue For
                         End If
@@ -2082,7 +2083,7 @@ Public Class frmCargaExcel
                     errorCampos = True
                     clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "Falta nombre de la unidad de medida (UM) para el producto. Fila " & i + 1)
                 Else
-                vNomUM = pDT(i)(4)
+                    vNomUM = pDT(i)(4)
                 End If
 
                 'EFREN 17052021 se asigna lote, este puede ir vacio.
@@ -2158,7 +2159,7 @@ Public Class frmCargaExcel
                     Talla = IIf(pDT(i)(15) Is DBNull.Value, "", Convert.ToString(pDT(i)(15)))
                     Color = IIf(pDT(i)(16) Is DBNull.Value, "", Convert.ToString(pDT(i)(16)))
 
-                    Dim BeTalla = clsLnTalla.GetSingleCodigo(Talla)
+                    Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(Talla)
                     Dim BeColor = clsLnColor.GetSingle_By_CodigoColor(Color)
                     Dim BeProducto = clsLnProducto.Get_Single_By_Codigo_And_Codigo_Barra(vCodigoProducto)
 
@@ -2188,7 +2189,11 @@ Public Class frmCargaExcel
                             End If
 
                         End If
+                    Else
+                        errorCampos = True
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "La talla y el color deben ser válidos. Fila " & i + 1)
                     End If
+
                 End If
 
                 If Not errorCampos Then
@@ -2214,9 +2219,7 @@ Public Class frmCargaExcel
                                                Color,
                                                IdProductoTallaColor)
 
-                End If
-
-                If errorCampos Then
+                Else
                     errorCargaInv = True
                 End If
 
@@ -2314,34 +2317,30 @@ Public Class frmCargaExcel
 
                 Debug.WriteLine("Row its at: " & row.RowNumber & " and vIndicadorFila is at: " & vIndicadorFila)
 
-                Try
-                    If row.FirstCellUsed Is Nothing OrElse RowIsEmpty(row) Then
-                        'GT22122021: por alguna razón, se salta filas, por eso si nothing falla, valido con RowIsEmpty
+                If row.FirstCellUsed Is Nothing OrElse RowIsEmpty(row) Then
+                    'GT22122021: por alguna razón, se salta filas, por eso si nothing falla, valido con RowIsEmpty
+                Else
+                    If pFilaVacia Then
+                        registro += 1
+                    End If
+
+                    firstCol = row.FirstCellUsed().Address.ColumnNumber
+                    lastCol = row.LastCellUsed().Address.ColumnNumber
+                    If firstCol = 1 Then
+                        'La fila tiene datos de bodega al iniciar en col1
+                        Valida_Data_Bodega(row, firstCol, lastCol)
+                    ElseIf firstCol = 12 Then
+                        'la fila tiene datos del rack al iniciar en col12
+                        Valida_Data_Rack(row, firstCol, lastCol)
                     Else
-                        If pFilaVacia Then
-                            registro += 1
-                        End If
 
-                        firstCol = row.FirstCellUsed().Address.ColumnNumber
-                        lastCol = row.LastCellUsed().Address.ColumnNumber
-                        If firstCol = 1 Then
-                            'La fila tiene datos de bodega al iniciar en col1
-                            Valida_Data_Bodega(row, firstCol, lastCol)
-                        ElseIf firstCol = 12 Then
-                            'la fila tiene datos del rack al iniciar en col12
-                            Valida_Data_Rack(row, firstCol, lastCol)
-                        Else
+                        errores = True
 
-                            errores = True
-
-                            clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El formato en excel tiene celdas con valores en Fila: " & row.RowNumber & " que no corresponden")
-
-                        End If
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El formato en excel tiene celdas con valores en Fila: " & row.RowNumber & " que no corresponden")
 
                     End If
-                Catch ex As Exception
-                    clsPublic.Actualizar_Progreso(lblPrg, ex.Message)
-                End Try
+
+                End If
 
                 vIndicadorFila += 1
 
@@ -2420,7 +2419,7 @@ Public Class frmCargaExcel
         Finally
             SplashScreenManager.CloseForm(False)
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+            lTransaction.Dispose()
             lConnection.Dispose()
         End Try
 

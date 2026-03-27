@@ -193,11 +193,6 @@ Public Class frmEjecucion
 
     Private Async Sub cmdProductos_ItemClickAsync(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdProductos.ItemClick
         Try
-            'ProcesoEjecutandose = True
-            'HabilitarOpciones(False)
-            'Await EjecutarProductosAsync()
-            'HabilitarOpciones(True)
-            'ProcesoEjecutandose = False
 
             Await EjecutarProductosAsync()
 
@@ -205,7 +200,34 @@ Public Class frmEjecucion
             clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
             MessageBox.Show("Error al llamar a la API: " & ex.Message)
         Finally
-            cmdIngresos.Enabled = True
+            'HabilitarOpciones(True)
+        End Try
+    End Sub
+
+    Private Async Sub cmdIngresos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdIngresos.ItemClick
+        Try
+
+            Await EjecutarIngresosAsync()
+
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            'cmdIngresos.Enabled = True
+        End Try
+    End Sub
+
+    Private Async Sub cmdSalidas_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdSalidas.ItemClick
+        Try
+
+            Await EjecutarSalidasAsync()
+
+        Catch ex As Exception
+
+            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            'cmdIngresos.Enabled = True
         End Try
     End Sub
 
@@ -221,7 +243,7 @@ Public Class frmEjecucion
             clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
             MessageBox.Show("Error al llamar a la API: " & ex.Message)
         Finally
-            cmdIngresos.Enabled = True
+            HabilitarOpciones(True)
         End Try
     End Function
 
@@ -237,7 +259,7 @@ Public Class frmEjecucion
             clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
             MessageBox.Show("Error al llamar a la API: " & ex.Message)
         Finally
-            cmdIngresos.Enabled = True
+            HabilitarOpciones(True)
         End Try
     End Function
 
@@ -253,41 +275,9 @@ Public Class frmEjecucion
             clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
             MessageBox.Show("Error al llamar a la API: " & ex.Message)
         Finally
-            cmdIngresos.Enabled = True
+            HabilitarOpciones(True)
         End Try
     End Function
-
-    Private Async Sub cmdIngresos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdIngresos.ItemClick
-        Try
-
-            Await EjecutarIngresosAsync()
-
-        Catch ex As Exception
-            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Sub
-
-    Private Async Sub cmdSalidas_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdSalidas.ItemClick
-        Try
-
-            'HabilitarOpciones(False)
-            'clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
-            'HabilitarOpciones(True)
-
-            Await EjecutarSalidasAsync()
-
-        Catch ex As Exception
-
-            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
-            MessageBox.Show("Error al llamar a la API: " & ex.Message)
-        Finally
-            cmdIngresos.Enabled = True
-        End Try
-    End Sub
-
 
     Private Sub Set_Parametros_Servidor(ByVal IndiceInstanciaDefecto As Integer, ByVal ListaInstancias As List(Of clsCadenaConexion))
 

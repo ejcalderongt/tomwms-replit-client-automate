@@ -137,7 +137,6 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                     BeI_nav_PedidoCompra.Buy_From_Vendor_No = PT.Transfer_from_Code
                     BeI_nav_PedidoCompra.No = PT.No
                     BeI_nav_PedidoCompra.Status = PT.Status
-                    BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Transferencia_de_Ingreso
 
                     Actualizar_Progreso(lblprg, String.Format("Procesando Pedido Compra: {0} ", BeI_nav_PedidoCompra.No, vbNewLine))
 
@@ -625,7 +624,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                             End If
 
                             gBeOrdenCompra.IdProveedorBodega = BeProveedorBodega.IdAsignacion
-                            gBeOrdenCompra.IdTipoIngresoOC = BeConfigEnc.IdTipoDocumentoTransferenciasIngreso 'P.T. REC NAV
+                            gBeOrdenCompra.IdTipoIngresoOC = 2 'P.T. REC NAV
                             gBeOrdenCompra.No_Documento = navPedidoTransferRec.Vendor_Invoice_No
                             gBeOrdenCompra.User_Mod = BeConfigEnc.IdUsuario
                             gBeOrdenCompra.Fec_Mod = Now
@@ -1516,12 +1515,6 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                 BeI_Nav_PedidoTraslado.Transfer_to_Contact = PC.Transfer_to_Contact
                 BeI_Nav_PedidoTraslado.Transfer_to_CodeField = PC.Transfer_to_Code
 
-                If PC.External_Document_No IsNot Nothing Then
-                    BeI_Nav_PedidoTraslado.External_Document_No = PC.External_Document_No
-                Else
-                    BeI_Nav_PedidoTraslado.External_Document_No = ""
-                End If
-
                 lblprg.AppendText(String.Format("Procesando Pedido Traslado: {0} ", BeI_Nav_PedidoTraslado.No, vbNewLine))
                 lblprg.AppendText(vbNewLine)
                 lblprg.SelectionStart = lblprg.TextLength
@@ -1533,9 +1526,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                         Debug.Print("espera")
                     End If
                     'Insertar Encabezado
-                    If Not clsLnI_nav_ped_traslado_enc.Exist(BeI_Nav_PedidoTraslado.No) Then
-                        clsLnI_nav_ped_traslado_enc.Insertar(BeI_Nav_PedidoTraslado, lConnection, lTransaction)
-                    End If
+                    clsLnI_nav_ped_traslado_enc.Insertar(BeI_Nav_PedidoTraslado, lConnection, lTransaction)
 
                     VContadorBitacoraIntermedia += 1
 
@@ -1715,8 +1706,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                                   ByRef lblprg As RichTextBox,
                                                   ByRef lConnectionInterface As SqlConnection,
                                                   ByRef CnnLog As SqlConnection,
-                                                  ByRef lTransInterface As SqlTransaction,
-                                                  Optional pNoDocumentoExterno As String = "") As Boolean
+                                                  ByRef lTransInterface As SqlTransaction) As Boolean
 
         Inserta_Linea_Detalle_Pedido = False
 
@@ -1749,7 +1739,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
             End If
 
             pBePedidoDet = New clsBeTrans_pe_det
-            pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConnectionInterface, lTransInterface) + 1
+            pBePedidoDet.IdPedidoDet = 0
             pBePedidoDet.No_linea = PDet.Line_No
             pBePedidoDet.Atributo_Variante_1 = PDet.Variant_Code
             pBePedidoDet.IdPedidoEnc = pIdPedidoEnc
@@ -1808,7 +1798,6 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                                                                                                       lTransInterface)
             pBeStockRes.IdUnidadMedida = BeProducto.UnidadMedida.IdUnidadMedida
             pBeStockRes.Atributo_Variante_1 = pBePedidoDet.Atributo_Variante_1
-            pBeStockRes.IdUbicacionAbastecerCon = pNoDocumentoExterno
 
             Dim BePresentacion As New clsBeProducto_Presentacion
 
@@ -1821,10 +1810,8 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
                 If Not BePresentacion Is Nothing Then
                     pBeStockRes.IdPresentacion = BePresentacion.IdPresentacion
-                    pBePedidoDet.IdPresentacion = BePresentacion.IdPresentacion
                 Else
                     pBeStockRes.IdPresentacion = -1 'No se encontró la presentación solicitada
-                    pBePedidoDet.IdPresentacion = -1
                 End If
 
             End If
@@ -2101,7 +2088,6 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                 pBePedidoEnc.RoadIdRutaDespacho = 0
                                 pBePedidoEnc.RoadIdVendedorDespacho = 0
                                 pBePedidoEnc.Enviado_A_ERP = False
-                                pBePedidoEnc.No_Documento_Externo = navPedidoTrasladoEnc.External_Document_No
 
                                 clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc, lConectionInterface, lTransInterface)
 
@@ -2142,8 +2128,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                                                             lblprg,
                                                                             lConectionInterface,
                                                                             CnnLog,
-                                                                            lTransInterface,
-                                                                            pBePedidoEnc.No_Documento_Externo) Then
+                                                                            lTransInterface) Then
 
                                                 vContador_Lineas_Detalle_Pedido_Insertadas += 1
 
@@ -2172,8 +2157,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                                                                 lblprg,
                                                                                 lConectionInterface,
                                                                                 CnnLog,
-                                                                                lTransInterface,
-                                                                                pBePedidoEnc.No_Documento_Externo) Then
+                                                                                lTransInterface) Then
 
                                                     vContador_Lineas_Detalle_Pedido_Insertadas += 1
 
@@ -3260,7 +3244,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                 '#CKFK 20211121 Agregué el campo IdTipoDocumento
                 Dim ListaPedidosTransf = (From i In lTransaccionesSalida
                                           Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc, Key i.Codigo_Bodega_Origen, i.IdTipoDocumento} Into Group
-                                          Select New With {Key Keys.No_pedido, Key Keys.Idpedidoenc, Key Keys.Codigo_Bodega_Origen, Key Keys.IdTipoDocumento})
+                                          Select New With {Key Keys.No_pedido, Key Keys.IdPedidoEnc, Key Keys.Codigo_Bodega_Origen, Key Keys.IdTipoDocumento})
                 Dim Enviado_A_Erp As Boolean = False '#CKFK 20180518 10:20 PM Agregué la validación de si el registro ya fue enviado o no a NAV
 
                 For Each PT In ListaPedidosTransf

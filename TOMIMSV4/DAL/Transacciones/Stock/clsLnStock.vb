@@ -55,17 +55,20 @@ Public Class clsLnStock
         End Try
 
     End Sub
-
-    Public Shared Function Insertar(ByRef oBeStock As clsBeStock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeStock As clsBeStock,
+                                Optional ByVal pConection As SqlConnection = Nothing,
+                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As SqlCommand = Nothing
+
+        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
 
             Ins.Init("stock")
             Ins.Add("idbodega", "@idbodega", DataType.Parametro)
-            Ins.Add("idstock", "@idstock", DataType.Parametro)
             Ins.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
             Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Ins.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
@@ -102,17 +105,14 @@ Public Class clsLnStock
                 Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
             End If
 
-            Dim sp As String = Ins.SQL()
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim sp As String = Ins.SQLIdentity("IdStock")
 
             If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection)
-                cmd.Transaction = pTransaction
+                cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
             Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             End If
 
             If oBeStock.ProductoEstado.IdEstado = 0 Then
@@ -121,28 +121,28 @@ Public Class clsLnStock
 
             Bind(cmd, oBeStock)
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            cmd.Dispose()
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeStock.IdStock = newId
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return newId
 
-        Catch ex1 As SqlException
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex1
         Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then
+                Try : lTransaction.Rollback() : Catch : End Try
+            End If
+            Throw
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If lTransaction IsNot Nothing Then lTransaction.Dispose()
-            If lConnection IsNot Nothing Then lConnection.Dispose()
+            If cmd IsNot Nothing Then cmd.Dispose()
+            If Not Es_Transaccion_Remota Then
+                If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then lConnection.Dispose()
+            End If
         End Try
 
     End Function
-
     Public Shared Function Actualizar(ByRef oBeStock As clsBeStock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -223,7 +223,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Actualizar_Cantidad(ByRef oBeStock As clsBeStock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -278,7 +277,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Eliminar_By_IdProductoBodega(ByRef oBeStock As clsBeStock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -324,7 +322,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Eliminar(ByRef oBeStock As clsBeStock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -370,7 +367,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Eliminar_By_IdStock(ByVal IdStock As Integer,
                                                Optional ByVal pConection As SqlConnection = Nothing,
                                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
@@ -416,7 +412,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer,
                                                                          ByVal IdRecepcionDet As Integer,
                                                                          Optional ByVal pConection As SqlConnection = Nothing,
@@ -465,7 +460,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function EliminarTodos(Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -501,7 +495,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function GetAll() As List(Of clsBeStock)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -545,7 +538,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function GetAll(ByRef lConnection As SqlConnection,
                                 ByRef lTransaction As SqlTransaction) As List(Of clsBeStock)
 
@@ -580,7 +572,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function GetSingle(ByRef pBeStock As clsBeStock) As clsBeStock
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -619,8 +610,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
-    '#GT29112024: con transaccion para ajuste positivo sin stock
     Public Shared Function GetSingle(ByRef pBeStock As clsBeStock, ByRef lConnection As SqlConnection,
                                                                    ByRef lTransaction As SqlTransaction) As clsBeStock
 
@@ -648,41 +637,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
-    Public Shared Function MaxID() As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(IdStock),0) FROM Stock"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            lMax = CInt(lReturnValue)
-                        End If
-                    End Using
-                    lTransaction.Commit()
-                End Using
-                lConnection.Close()
-            End Using
-
-            Return lMax
-
-        Catch ex1 As SQLException
-            Throw ex1
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Actualizar_Pallet_No_Standar(ByVal IdStock As Integer, pPallet_no_Standar As Boolean, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 
@@ -730,8 +684,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
-
     Public Shared Function Get_All_By_NoLote(ByVal pCodigo As String, ByVal pLote As String) As List(Of clsBeStock)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -785,7 +737,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Stock_By_LicensePlate_And_Codigo(ByVal pLicensePlate As String,
                                                                 ByVal pCodigo As String,
                                                                 ByVal IdBodega As Integer) As List(Of clsBeProducto)
@@ -857,7 +808,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Actualizar_Stock_Por_Ajuste(ByRef oBeStock As clsBeStock,
                                                        Optional ByVal pConection As SqlConnection = Nothing,
                                                        Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
@@ -926,7 +876,6 @@ Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Sub Bind(cmd As SqlCommand, oBeStock As clsBeStock)
 
         cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeStock.IdBodega))
@@ -966,7 +915,6 @@ Public Class clsLnStock
         cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", IIf(oBeStock.IdProductoTallaColor = 0, DBNull.Value, oBeStock.IdProductoTallaColor)))
 
     End Sub
-
     Public Shared Function Actualizar_Presentacion(ByRef oBeStock As clsBeStock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))

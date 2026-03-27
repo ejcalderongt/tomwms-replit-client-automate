@@ -1,6 +1,5 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Stock;
 using WMSWebAPI.Be;
@@ -62,17 +61,15 @@ public class clsLnStock_res
             throw new Exception(ex.Message);
         }
     }
-
     public static int Insertar(IConfiguration config, clsBeStock_res oBeStock_res, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
-
-        int rowsAffected = 0;
         SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
+        SqlCommand? cmd = null;
 
         try
         {
-            Ins.Init("stock_res");            
+            Ins.Init("stock_res");
             Ins.Add("idtransaccion", "@idtransaccion", "F");
             Ins.Add("indicador", "@indicador", "F");
             Ins.Add("idpedidodet", "@idpedidodet", "F");
@@ -108,22 +105,21 @@ public class clsLnStock_res
             Ins.Add("idbodega", "@idbodega", "F");
             Ins.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
 
-            string sp = Ins.SQL();
-
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
+            string sp = Ins.SQLIdentity("idstockres");
 
             bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
 
             if (Es_Transaccion_Remota)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
             }
             else
             {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+                cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
             }
-            
+
             cmd.Parameters.Add(new SqlParameter("@IdTransaccion", oBeStock_res.IdTransaccion));
             cmd.Parameters.Add(new SqlParameter("@Indicador", oBeStock_res.Indicador));
             cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", oBeStock_res.IdPedidoDet));
@@ -159,31 +155,28 @@ public class clsLnStock_res
             cmd.Parameters.Add(new SqlParameter("@IdBodega", oBeStock_res.IdBodega));
             cmd.Parameters.Add(new SqlParameter("@pallet_no_estandar", oBeStock_res.Pallet_no_estandar));
 
-            rowsAffected = cmd.ExecuteNonQuery();
+            int newId = Convert.ToInt32(cmd.ExecuteScalar());
+            oBeStock_res.IdStockRes = newId;
 
-            cmd.Dispose();
+            if (!Es_Transaccion_Remota && lTransaction != null)
+                lTransaction.Commit();
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return newId;
         }
         catch (SqlException ex1)
         {
             if (lTransaction is not null)
-                lTransaction.Rollback();            
+                lTransaction.Rollback();
             throw new Exception(ex1.Message);
         }
         finally
         {
+            if (cmd is not null) cmd.Dispose();
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
             if (lConnection is not null) lConnection.Dispose();
             if (lTransaction is not null) lTransaction.Dispose();
         }
-        return rowsAffected;
     }
-
     public static int Insertar(IConfiguration config, clsBeStock_res oBeStock_res)
     {
 
@@ -291,7 +284,6 @@ public class clsLnStock_res
         }
         return rowsAffected;
     }
-
     public static int Actualizar(IConfiguration config, clsBeStock_res oBeStock_res, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -302,8 +294,7 @@ public class clsLnStock_res
         try
         {
 
-            Upd.Init("stock_res");
-            Upd.Add("idstockres", "@idstockres", "F");
+            Upd.Init("stock_res");            
             Upd.Add("idtransaccion", "@idtransaccion", "F");
             Upd.Add("indicador", "@indicador", "F");
             Upd.Add("idpedidodet", "@idpedidodet", "F");
@@ -414,7 +405,6 @@ public class clsLnStock_res
         }
         return rowsAffected;
     }
-
     public int Eliminar(IConfiguration config, clsBeStock_res oBeStock_res, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -546,7 +536,6 @@ public class clsLnStock_res
         return false;
 
     }
-
     public static List<clsBeStock_res> GetAll(IConfiguration config)
     {
 
@@ -599,7 +588,6 @@ public class clsLnStock_res
             throw new Exception(ex1.Message);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
 
@@ -672,7 +660,6 @@ public class clsLnStock_res
             throw new Exception(ex.Message);
         }
     }
-
     public static bool Eliminar_Stock_Reservado_By_IdPedidoDet(int IdPedidoDet,
                                                               SqlConnection lConnection,
                                                               SqlTransaction ltransaction)
@@ -1155,4 +1142,3 @@ public class clsLnStock_res
         }
     } 
 }
-

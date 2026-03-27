@@ -71,7 +71,7 @@ Public Class clsLnStock_res
         Try
 
             Ins.Init("stock_res")
-            Ins.Add("idstockres", "@idstockres", DataType.Parametro)
+            'Ins.Add("idstockres", "@idstockres", DataType.Parametro)
             Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
             Ins.Add("indicador", "@indicador", DataType.Parametro)
             Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
@@ -113,9 +113,7 @@ Public Class clsLnStock_res
                 Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             End If
 
-
-
-            Dim sp As String = Ins.SQL()
+            Dim sp As String = Ins.SQLIdentity("IdStockRes")
             Dim cmd As SqlCommand
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -168,13 +166,16 @@ Public Class clsLnStock_res
                 cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
             End If
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            'Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeStock_res.IdStockRes = newId
 
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return 1
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -198,7 +199,6 @@ Public Class clsLnStock_res
         Try
 
             Upd.Init("stock_res")
-            Upd.Add("idstockres", "@idstockres", DataType.Parametro)
             Upd.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
             Upd.Add("indicador", "@indicador", DataType.Parametro)
             Upd.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
@@ -431,47 +431,6 @@ Public Class clsLnStock_res
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
 
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID() As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(IdStockRes),0) FROM Stock_res"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            lMax = CInt(lReturnValue)
-                        End If
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-            Return lMax
-
-        Catch ex1 As SQLException
-            Throw ex1
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
         End Try
 
     End Function

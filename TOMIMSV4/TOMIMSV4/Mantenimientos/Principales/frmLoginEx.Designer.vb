@@ -202,7 +202,6 @@ Partial Class frmLoginEx
         Me.BarButtonItem5.Caption = "Test"
         Me.BarButtonItem5.Id = 7
         Me.BarButtonItem5.Name = "BarButtonItem5"
-        Me.BarButtonItem5.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
         '
         'RibbonPage1
         '

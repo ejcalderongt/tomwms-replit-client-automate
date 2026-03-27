@@ -12,7 +12,7 @@
         public string Variant_Code { get; set; } = string.Empty;
         public string WhsFrom { get; set; } = string.Empty;
         public string WhsTo { get; set; } = string.Empty;
-        public DateTime Fec_Agr { get; set; } = DateTime.Now;
+        public DateTime? Fec_Agr { get; set; } = DateTime.Now;
 
         public clsBeI_nav_ped_traslado_det_lote()
         {

@@ -1429,7 +1429,6 @@ Partial Class frmPropietario
         Me.cmdEliminar.Name = "cmdEliminar"
         Me.cmdEliminar.Size = New System.Drawing.Size(48, 48)
         Me.cmdEliminar.TabIndex = 1
-        Me.cmdEliminar.ToolTip = "Eliminar mensaje"
         '
         'GroupControl6
         '

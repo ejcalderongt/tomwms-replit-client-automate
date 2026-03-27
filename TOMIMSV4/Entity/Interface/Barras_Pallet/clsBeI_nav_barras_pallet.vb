@@ -28,11 +28,11 @@ Public Class clsBeI_nav_barras_pallet
 
     Public Property Fecha_Agregado() As Date = Date.Now
 
-    Public Property Fecha_Ingreso() As Date = "01/01/1990"
+    Public Property Fecha_Ingreso() As Date = New Date(1900, 1, 1)
 
-    Public Property Fecha_Vence() As Date = "01/01/1990"
+    Public Property Fecha_Vence() As Date = New Date(1900, 1, 1)
 
-    Public Property Fecha_Produccion() As Date = "01/01/1990"
+    Public Property Fecha_Produccion() As Date = New Date(1900, 1, 1)
 
     Public Property Activo() As Boolean = True
 
@@ -45,6 +45,8 @@ Public Class clsBeI_nav_barras_pallet
     Public Property Bodega_Destino() As String = ""
 
     Public Property Codigo_barra() As String = ""
+
+    Public Property Impreso() As Boolean = False
 
     Sub New()
     End Sub

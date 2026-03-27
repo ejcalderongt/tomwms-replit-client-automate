@@ -172,7 +172,10 @@ Partial Public Class clsLnImpresora
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
             Dim lReturnList As New List(Of clsBeQT_Impresora)
-            Const sp As String = "SELECT * FROM Impresora Where IdEmpresa= @IdEmpresa AND IdBodega = @IdBodega AND Activo = 1 "
+            Const sp As String = "SELECT IdImpresora, IdEmpresa, nombre, direccion_Ip, user_agr, fec_agr, user_mod, fec_mod, 
+                                         activo, mac_adress, IdBodega, numero_serie, IdImpresoraMarca, IdLenguaje, 
+                                         IdTipoConexion, ISNULL(puerto,0)puerto, es_movil, isnull(velocidad,0) velocidad
+                                  FROM Impresora Where IdEmpresa= @IdEmpresa AND IdBodega = @IdBodega AND Activo = 1 "
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             Dim dt As New DataTable("ListImpresoras")

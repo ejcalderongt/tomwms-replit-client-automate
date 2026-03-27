@@ -174,10 +174,7 @@ Public Class clsSyncNavPedidoCompra : Inherits clsInterfaceBase
                         'Proveedor
                         BeI_nav_PedidoCompra.Buy_From_Vendor_Name = PC.Buy_from_Vendor_Name
                         BeI_nav_PedidoCompra.Buy_From_Vendor_No = PC.Buy_from_Vendor_No
-                        '#CKFK20251107 Voy a poner esto en comentario porque deberia ser de tipo ingreso
-                        'BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Orden_De_Compra_Interna
-
-                        BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Ingreso
+                        BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Orden_De_Compra_Interna
 
                         lblprg.AppendText(String.Format("Procesando Pedido Compra: {0} ", BeI_nav_PedidoCompra.No, vbNewLine))
                         lblprg.AppendText(vbNewLine)

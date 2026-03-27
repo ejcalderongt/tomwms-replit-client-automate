@@ -58,7 +58,7 @@ namespace WMSWebAPI.Controllers
                                 syncService.ProcesarProducto3PLDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.IdProducto, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
-
+                            
                             transaction.Commit();
                             scope.Complete();
 

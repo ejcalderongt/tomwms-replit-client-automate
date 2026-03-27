@@ -203,7 +203,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                     'Cuando es pedido.
                     If Not vBodegaDestinoEsWMS Then
                         'Generar salida (Tomar en consideración el área de origen)
-                        Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(TrasladoSAP, lblprg, Nothing, Nothing)
+                        Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(TrasladoSAP, lblprg)
                         If Not BePedidoEnc Is Nothing Then
                             If Marcar_Trasladado_Sincronizado_SAP(TrasladoSAP.No, Estado_Enviado_SAP.Enviado) Then
                                 Procesar_Traslados_SAP = True
@@ -250,7 +250,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                     '#CKFK20240222 
                     If BeBodega IsNot Nothing AndAlso BeBodegaDestino IsNot Nothing Then
                         'Es una transferencia interbodegas WMS.
-                        Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(TrasladoSAP, lblprg, Nothing, Nothing)
+                        Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(TrasladoSAP, lblprg)
                         If Not BePedidoEnc Is Nothing Then
                             If Marcar_Trasladado_Sincronizado_SAP(TrasladoSAP.No, Estado_Enviado_SAP.Enviado) Then
                                 Procesar_Traslados_SAP = True

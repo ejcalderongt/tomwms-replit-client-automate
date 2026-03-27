@@ -13,6 +13,7 @@ Imports TOMWMS.clsSyncSapTrasladosEnvio
 Public Class clsSyncSapDevolProveedor
 
     Private Shared vHanaService As SapServiceLayerClient
+
     Public Shared Async Function Procesar_Solicitud_Devol_Prov_SAP(ByVal lblprg As RichTextBox,
                                                                    ByVal prg As ProgressBar,
                                                                    Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
@@ -41,10 +42,10 @@ Public Class clsSyncSapDevolProveedor
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,
-                                  pNoDocumento,
-                                  BeConfigEnc,
-                                  lblprg,
-                                  clsTrans)
+                                      pNoDocumento,
+                                      BeConfigEnc,
+                                      lblprg,
+                                      clsTrans)
 
             clsTrans.Commit_Transaction()
 
@@ -161,7 +162,7 @@ Public Class clsSyncSapDevolProveedor
 
                             Dim beDet As New clsBeI_nav_ped_traslado_det With {
                             .NoEnc = beDevolucion.No,
-                            .No = clsLnTrans_pe_det.MaxID() + 1,
+                            .No = clsLnI_nav_ped_traslado_det.MaxID() + 1,
                             .Item_No = linea("ItemCode")?.ToString(),
                             .Line_No = linea("LineNum").Value(Of Integer),
                             .Shipment_Date = Date.Now,
@@ -228,7 +229,7 @@ Public Class clsSyncSapDevolProveedor
 
                         Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
-                        Dim trasladoSincronizado As Boolean = Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                        Dim trasladoSincronizado As Boolean = Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL, 1).GetAwaiter().GetResult()
 
                         If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
                             Return True
@@ -247,15 +248,16 @@ Public Class clsSyncSapDevolProveedor
 
     End Function
 
-    Private Shared Async Function Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(docEntry As String,
-                                                                               sessionCookie As String,
-                                                                               baseUrl As String) As Task(Of Boolean)
+    Public Shared Async Function Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(docEntry As String,
+                                                                                  sessionCookie As String,
+                                                                                  baseUrl As String,
+                                                                                  enviado As Integer) As Task(Of Boolean)
 
         Try
             If String.IsNullOrWhiteSpace(docEntry) Then Return False
 
             Dim requestUrl As String = $"GoodsReturnRequest({docEntry})"
-            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim payload As String = $"{{""U_ENVIADO_WMS"": ""{enviado}""}}"
             Dim httpPatch As New HttpMethod("PATCH")
 
             Using handler As New HttpClientHandler()

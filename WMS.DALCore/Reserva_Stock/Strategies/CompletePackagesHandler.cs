@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using WMS.StockReservation.Core.Domain;
-using WMS.StockReservation.Core.Interfaces;
-using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 
@@ -99,10 +94,9 @@ namespace WMS.StockReservation.Strategies
             return result;
         }
 
-        private clsBeStock_res CreateReservation(
-            ReservationContext context,
-            clsBeStock stock,
-            double quantity)
+        private clsBeStock_res CreateReservation(ReservationContext context,
+                                                 clsBeStock stock,
+                                                 double quantity)
         {
             var reservation = new clsBeStock_res
             {

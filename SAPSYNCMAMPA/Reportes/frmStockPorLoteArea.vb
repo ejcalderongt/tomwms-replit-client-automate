@@ -49,7 +49,7 @@ Public Class frmStockPorLoteArea
             dtStockWMS = clsLnStock.Get_Reporte_Stock_For_SAP_Sin_Lote(BeConfigEnc.Idbodega)
 
             Dim dtSAPB1 As New DataTable
-            dtSAPB1 = Get_Existencias_From_SAP_AsDataTable(BeConfigEnc.Idbodega, BeConfigEnc.IdUsuario)
+            dtSAPB1 = Nothing 'Get_Existencias_From_SAP_AsDataTable(BeConfigEnc.Idbodega, BeConfigEnc.IdUsuario)
 
             If Not dtSAPB1 Is Nothing Then
 
@@ -438,81 +438,81 @@ Public Class frmStockPorLoteArea
 
     Private dtExistenciasSAP As New DataTable
 
-    Public Function Get_Existencias_From_SAP_AsDataTable(ByVal IdBodega As Integer, ByVal IdUsuarioAgr As Integer) As DataTable
+    'Public Function Get_Existencias_From_SAP_AsDataTable(ByVal IdBodega As Integer, ByVal IdUsuarioAgr As Integer) As DataTable
 
-        Get_Existencias_From_SAP_AsDataTable = Nothing
-        Dim cTrans As New clsTransaccion
-        Dim dtExistenciasSAP As New DataTable
+    '    Get_Existencias_From_SAP_AsDataTable = Nothing
+    '    Dim cTrans As New clsTransaccion
+    '    Dim dtExistenciasSAP As New DataTable
 
-        Try
-            Dim codigoBodega As String = Strings.Right("00" & IdBodega.ToString(), 2)
+    '    Try
+    '        Dim codigoBodega As String = Strings.Right("00" & IdBodega.ToString(), 2)
 
-            Dim query As String = "
-            SELECT 
-                ""Codigo_Producto"" AS ""Codigo"", 
-                ""Total_Almacen"" AS ""Cantidad_Lote"", 
-                ""Lote"", 
-                ""Fecha_Vence"", 
-                ""Codigo_Bodega"" AS ""codigo_area"", 
-                ""UmBas"" 
-            FROM ""VW_STOCK_POR_LOTE"" 
-            WHERE ""Codigo_Bodega"" = '" & codigoBodega & "'"
+    '        Dim query As String = "
+    '        SELECT 
+    '            ""Codigo_Producto"" AS ""Codigo"", 
+    '            ""Total_Almacen"" AS ""Cantidad_Lote"", 
+    '            ""Lote"", 
+    '            ""Fecha_Vence"", 
+    '            ""Codigo_Bodega"" AS ""codigo_area"", 
+    '            ""UmBas"" 
+    '        FROM ""VW_STOCK_POR_LOTE"" 
+    '        WHERE ""Codigo_Bodega"" = '" & codigoBodega & "'"
 
-            dtExistenciasSAP = HanaHelper.OpenDT(query)
+    '        dtExistenciasSAP = HanaHelper.OpenDT(query)
 
-            cTrans.Begin_Transaction()
+    '        cTrans.Begin_Transaction()
 
-            clsLnTrans_inv_teorico_erp.Eliminar_Todos(cTrans.lConnection, cTrans.lTransaction)
+    '        clsLnTrans_inv_teorico_erp.Eliminar_Todos(cTrans.lConnection, cTrans.lTransaction)
 
-            Try
-                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                If Not SplashScreenManager.Default.IsSplashFormVisible Then
-                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                End If
-                SplashScreenManager.Default.SetWaitFormDescription("Obteniendo existencias SAP")
+    '        Try
+    '            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+    '            If Not SplashScreenManager.Default.IsSplashFormVisible Then
+    '                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+    '            End If
+    '            SplashScreenManager.Default.SetWaitFormDescription("Obteniendo existencias SAP")
 
-            Catch ex As Exception
-                ' Ignorar error visual
-            End Try
+    '        Catch ex As Exception
+    '            ' Ignorar error visual
+    '        End Try
 
-            For Each row As DataRow In dtExistenciasSAP.Rows
+    '        For Each row As DataRow In dtExistenciasSAP.Rows
 
-                Dim BeInvTeoricoERP As New clsBeTrans_inv_teorico_erp With {
-                .Idinvteoricoerp = clsLnTrans_inv_teorico_erp.MaxID(cTrans.lConnection, cTrans.lTransaction) + 1,
-                .Codigo = row("Codigo").ToString(),
-                .IdProducto = clsLnProducto.Get_IdProducto_By_Codigo(row("Codigo").ToString(), cTrans.lConnection, cTrans.lTransaction),
-                .IdPresentacion = 0,
-                .Cant = Convert.ToDecimal(row("Cantidad_Lote")),
-                .Peso = 0,
-                .IdUnidadMedida = clsLnUnidad_medida.Get_IdUnidadMedida_By_Codigo(row("UmBas").ToString(), cTrans.lConnection, cTrans.lTransaction),
-                .Lote = row("Lote").ToString(),
-                .Fecha_vence = If(row("Fecha_Vence").ToString() = "19000101", New Date(1900, 1, 1), Convert.ToDateTime(row("Fecha_Vence"))),
-                .Idbodega = IdBodega,
-                .Idubicacion = 0,
-                .Lic_plate = "",
-                .Codigo_area = row("codigo_area").ToString(),
-                .Fecha_agr = Now,
-                .Usuario_agr = IdUsuarioAgr
-            }
+    '            Dim BeInvTeoricoERP As New clsBeTrans_inv_teorico_erp With {
+    '            .Idinvteoricoerp = clsLnTrans_inv_teorico_erp.MaxID(cTrans.lConnection, cTrans.lTransaction) + 1,
+    '            .Codigo = row("Codigo").ToString(),
+    '            .IdProducto = clsLnProducto.Get_IdProducto_By_Codigo(row("Codigo").ToString(), cTrans.lConnection, cTrans.lTransaction),
+    '            .IdPresentacion = 0,
+    '            .Cant = Convert.ToDecimal(row("Cantidad_Lote")),
+    '            .Peso = 0,
+    '            .IdUnidadMedida = clsLnUnidad_medida.Get_IdUnidadMedida_By_Codigo(row("UmBas").ToString(), cTrans.lConnection, cTrans.lTransaction),
+    '            .Lote = row("Lote").ToString(),
+    '            .Fecha_vence = If(row("Fecha_Vence").ToString() = "19000101", New Date(1900, 1, 1), Convert.ToDateTime(row("Fecha_Vence"))),
+    '            .Idbodega = IdBodega,
+    '            .Idubicacion = 0,
+    '            .Lic_plate = "",
+    '            .Codigo_area = row("codigo_area").ToString(),
+    '            .Fecha_agr = Now,
+    '            .Usuario_agr = IdUsuarioAgr
+    '        }
 
-                clsLnTrans_inv_teorico_erp.Insertar(BeInvTeoricoERP, cTrans.lConnection, cTrans.lTransaction)
+    '            clsLnTrans_inv_teorico_erp.Insertar(BeInvTeoricoERP, cTrans.lConnection, cTrans.lTransaction)
 
-                SplashScreenManager.Default.SetWaitFormDescription("Código: " & BeInvTeoricoERP.Codigo)
+    '            SplashScreenManager.Default.SetWaitFormDescription("Código: " & BeInvTeoricoERP.Codigo)
 
-                Application.DoEvents()
-            Next
+    '            Application.DoEvents()
+    '        Next
 
-            cTrans.Commit_Transaction()
-            Get_Existencias_From_SAP_AsDataTable = dtExistenciasSAP
+    '        cTrans.Commit_Transaction()
+    '        Get_Existencias_From_SAP_AsDataTable = dtExistenciasSAP
 
-        Catch ex As Exception
-            cTrans.RollBack_Transaction()
-            Throw
-        Finally
-            cTrans.Close_Conection()
-        End Try
+    '    Catch ex As Exception
+    '        cTrans.RollBack_Transaction()
+    '        Throw
+    '    Finally
+    '        cTrans.Close_Conection()
+    '    End Try
 
-    End Function
+    'End Function
 
     Private Sub chkIncluirIdStock_CheckedChanged(sender As Object, e As ItemClickEventArgs)
         Cargar_Datos()

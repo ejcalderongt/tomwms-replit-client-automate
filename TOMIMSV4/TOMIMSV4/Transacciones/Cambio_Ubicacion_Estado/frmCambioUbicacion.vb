@@ -1,13 +1,10 @@
-﻿Imports DevExpress.Data.Filtering
+﻿Imports System.Data.SqlClient
+Imports System.IO
+Imports System.Reflection
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraSplashScreen
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Reflection
-Imports TOMWMS.clsDataContractDI
-Imports TOMWMS.wsTOMHH
 
 Public Class frmCambioUbicacion
 
@@ -83,21 +80,13 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
 
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            XtraMessageBox.Show(ex.Message,
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03112025: Se agrego bitacora de ubicacion
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
-                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -202,7 +191,8 @@ Public Class frmCambioUbicacion
 
                 Case TipoTrans.Editar
 
-                    Dim Bodega As New clsBeBodega
+                    'Dim Bodega As New clsBeBodega #se traslada a #GT08092025 para uso cuando es nuevo registro.
+                    Bodega = New clsBeBodega
 
                     clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
 
@@ -274,7 +264,7 @@ Public Class frmCambioUbicacion
             Habilita_Item()
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
 
@@ -300,7 +290,7 @@ Public Class frmCambioUbicacion
             ListaOperadores()
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -423,7 +413,7 @@ Public Class frmCambioUbicacion
             Return True
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Function
@@ -441,17 +431,9 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            '#MECR03112025: Se agrego bitacora de ubicacion
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
-                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Function
@@ -597,9 +579,8 @@ Public Class frmCambioUbicacion
                 End If
 
                 If Obj.ProductoPresentacion.IdPresentacion <> 0 Then
-                    '#CKFK20250706 Cambié para que en UMBas se guarde la cantidad por el factor y en la presentacion solo la cantidad
-                    lRow("Cantidad U.M.Bas") = Obj.Cantidad * Obj.ProductoPresentacion.Factor
-                    lRow("Cantidad Presentacion") = Obj.Cantidad
+                    lRow("Cantidad U.M.Bas") = Obj.Cantidad
+                    lRow("Cantidad Presentacion") = Obj.Cantidad / Obj.ProductoPresentacion.Factor
                     lRow.Item("Presentacion") = Obj.ProductoPresentacion.Nombre
                 Else
                     lRow("Cantidad U.M.Bas") = Obj.Cantidad
@@ -658,7 +639,7 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
             clsTransaccion.Close_Conection()
         End Try
@@ -748,7 +729,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -761,7 +742,7 @@ Public Class frmCambioUbicacion
 
             Application.DoEvents()
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -775,7 +756,7 @@ Public Class frmCambioUbicacion
             Application.DoEvents()
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -804,7 +785,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -838,7 +819,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -887,7 +868,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -959,7 +940,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -990,7 +971,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1106,7 +1087,7 @@ Public Class frmCambioUbicacion
             Habilita_Item()
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1115,7 +1096,7 @@ Public Class frmCambioUbicacion
         Try
             cargarTarimasTransaccionAgregar()
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1209,7 +1190,7 @@ Public Class frmCambioUbicacion
                     End If
 
                     Limpiar_Campos_Detalle()
-                    Cargar_Datos_Stock_Reservado(CInt(lbl.Text))
+                    Cargar_Datos_Stock_Reservado(lbl.Text)
 
                 End If
 
@@ -1231,7 +1212,7 @@ Public Class frmCambioUbicacion
 
         'Catch ex As Exception
         '    XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        '    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+        '    Dim vMsgError As String = ex.Message
         '    clsLnLog_error_wms.Agregar_Error(vMsgError)
         'End Try
 
@@ -1255,7 +1236,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1287,7 +1268,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1309,8 +1290,7 @@ Public Class frmCambioUbicacion
                 .pIdPropietarioBodega = cmbPropietarioBodega.EditValue,
                 .Es_Seleccion_Multiple = Es_Seleccion_Multiple,
                 .listaStockSeleccionado = Nothing,
-                .IdBodega = cmbBodega.EditValue,
-                .AdvancedMode = chkAdvanceMode.Checked}
+                .IdBodega = cmbBodega.EditValue}
             End If
 
             Stock.Modo = FrmStock_List.pModo.Seleccion
@@ -1442,7 +1422,7 @@ Public Class frmCambioUbicacion
             Stock.Hide()
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1649,7 +1629,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1688,7 +1668,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1722,7 +1702,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1733,7 +1713,7 @@ Public Class frmCambioUbicacion
                 txtIdMotivoUbicacion_LostFocus(Nothing, Nothing)
             End If
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1805,7 +1785,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1815,7 +1795,7 @@ Public Class frmCambioUbicacion
                 txtCodigo_LostFocus(Nothing, Nothing)
             End If
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1831,7 +1811,7 @@ Public Class frmCambioUbicacion
                 e.Handled = False
             End If
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1845,7 +1825,7 @@ Public Class frmCambioUbicacion
                 txtIdUbicacionDestino_LostFocus(Nothing, Nothing)
             End If
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1861,7 +1841,7 @@ Public Class frmCambioUbicacion
                 e.Handled = False
             End If
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1871,7 +1851,7 @@ Public Class frmCambioUbicacion
                 txtIdEstado_LostFocus(Nothing, Nothing)
             End If
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1898,7 +1878,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1921,7 +1901,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -1950,7 +1930,7 @@ Public Class frmCambioUbicacion
             Next
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1974,7 +1954,7 @@ Public Class frmCambioUbicacion
                 End If
             Next
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
         End Try
     End Sub
@@ -1985,7 +1965,7 @@ Public Class frmCambioUbicacion
             cargarTarimasTransaccionQuitar()
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -2016,7 +1996,7 @@ Public Class frmCambioUbicacion
             cmbPropietarioBodega.Enabled = False
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -2047,7 +2027,6 @@ Public Class frmCambioUbicacion
             lblFactor.Text = String.Empty
 
             chkRealizadoDet.Checked = False
-
             lblItemBandera.Visible = False
 
             txtTalla.Text = String.Empty
@@ -2055,7 +2034,7 @@ Public Class frmCambioUbicacion
             txtLicPlate.Text = String.Empty
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -2090,7 +2069,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -2125,7 +2104,7 @@ Public Class frmCambioUbicacion
             Return True
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Function
@@ -2146,7 +2125,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Function
@@ -2198,7 +2177,7 @@ Public Class frmCambioUbicacion
             AddHandler ritem.CheckedChanged, AddressOf ritem_CheckedChanged
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -2239,7 +2218,7 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -2360,7 +2339,7 @@ Public Class frmCambioUbicacion
                 If (txtIdOrigen.Text.Trim() <> txtIdUbicacionDestino.Text.Trim()) Then
 
                     Dim BeBodegaUbicacion As New clsBeBodega_ubicacion
-                    BeBodegaUbicacion = clsLnBodega_ubicacion.GetSingle(CInt(txtIdUbicacionDestino.Text.Trim()), AP.IdBodega, "", Dañado, 0)
+                    BeBodegaUbicacion = clsLnBodega_ubicacion.GetSingle(txtIdUbicacionDestino.Text.Trim(), AP.IdBodega, "", Dañado, 0)
 
                     If BeBodegaUbicacion IsNot Nothing AndAlso BeBodegaUbicacion.IdUbicacion > 0 Then
 
@@ -2394,16 +2373,13 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
     Private Sub frmCambioUbicacion_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Escape Then
             Close()
-        ElseIf e.Control AndAlso e.KeyCode = Keys.F7 Then
-            chkAdvanceMode.Visibility = BarItemVisibility.Always
-            chkAdvanceMode.Checked = True
         End If
     End Sub
 
@@ -2423,7 +2399,7 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -2523,22 +2499,6 @@ Public Class frmCambioUbicacion
                         RibbonPage1.Text = "Cambio de estado"
                     End If
 
-                    '
-                    '#EJC20220211: Al agregar un operador desde el inicio, genera tareas para el operador que no es.
-                    'If chkOperadorPorlinea.Checked Then
-
-                    '    pBetrans_ubic_hh_op = New clsBeTrans_ubic_hh_op()
-                    '    pBetrans_ubic_hh_op.IdTransUbicHhOp = 0
-                    '    pBetrans_ubic_hh_op.IdTareaUbicacionEnc = 0
-                    '    pBetrans_ubic_hh_op.IdOperadorBodega = cmbOperadores.EditValue
-                    '    pBetrans_ubic_hh_op.User_agr = AP.UsuarioAp.IdUsuario
-                    '    pBetrans_ubic_hh_op.Fec_agr = Now
-                    '    pBetrans_ubic_hh_op.User_mod = AP.UsuarioAp.IdUsuario
-                    '    pBetrans_ubic_hh_op.Fec_mod = Now
-                    '    pListObjOp.Add(pBetrans_ubic_hh_op)
-
-                    'End If
-
                 Case TipoTrans.Editar
 
                     'GT20122021: al editar inhabilita el link
@@ -2619,7 +2579,7 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
             SplashScreenManager.CloseForm(False)
         End Try
@@ -2644,7 +2604,7 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
             SplashScreenManager.CloseForm(False)
         End Try
@@ -2679,7 +2639,7 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -2750,21 +2710,13 @@ Public Class frmCambioUbicacion
 
         Catch ex As Exception
 
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            XtraMessageBox.Show(ex.Message,
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-            '#MECR03112025: Se agrego bitacora de ubicacion
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pStackTrace:=ex.StackTrace,
-                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
-                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
 
@@ -2781,7 +2733,7 @@ Public Class frmCambioUbicacion
             mnuImportarListaCambioUbic.Enabled = True
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -2927,7 +2879,7 @@ Public Class frmCambioUbicacion
 
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -3004,5 +2956,4 @@ Public Class frmCambioUbicacion
         End Try
 
     End Sub
-
 End Class

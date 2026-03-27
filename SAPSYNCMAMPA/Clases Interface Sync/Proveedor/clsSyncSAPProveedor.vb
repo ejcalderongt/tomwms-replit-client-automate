@@ -5,7 +5,6 @@ Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
 Imports Newtonsoft.Json.Linq
-Imports Sap.Data.Hana
 Public Class clsSyncSAPProveedor
     Implements IDisposable
 
@@ -17,6 +16,7 @@ Public Class clsSyncSAPProveedor
     Private Shared VContadorBitacoraTOMWMS As Integer = 0
     Private Shared VContadorBitacoraIntermedia As Integer = 0
 
+    Shared vHanaService As SapServiceLayerClient
     Public Sub Dispose() Implements IDisposable.Dispose
     End Sub
 
@@ -44,19 +44,6 @@ Public Class clsSyncSAPProveedor
         Return query
     End Function
 
-    Public Shared Function ObtenerEntidadesDesdeSAP(Of T)(query As String, mapFunc As Func(Of DataRow, T)) As List(Of T)
-        Dim lista As New List(Of T)
-        Using conn As HanaConnection = HanaHelper.OpenDB()
-            Dim dt As DataTable = HanaHelper.OpenDT(query, conn)
-            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                For Each row As DataRow In dt.Rows
-                    lista.Add(mapFunc(row))
-                Next
-            End If
-        End Using
-        Return lista
-    End Function
-
     Private Shared Function MapearProveedor(row As DataRow) As clsBeI_nav_proveedor
         Return New clsBeI_nav_proveedor With {
             .No = row("CODIGO").ToString(),
@@ -80,38 +67,28 @@ Public Class clsSyncSAPProveedor
         }
     End Function
 
-    Public Shared Function Get_Proveedores_SAP_Hana() As List(Of clsBeI_nav_proveedor)
-        Dim query = ConstruirQuery("S")
-        Return ObtenerEntidadesDesdeSAP(query, AddressOf MapearProveedor)
-    End Function
-
-    Public Shared Function Get_Proveedor_SAP_Hana(codigo As String) As clsBeI_nav_proveedor
-        Dim query = ConstruirQuery("S", codigo)
-        Dim lista = ObtenerEntidadesDesdeSAP(query, AddressOf MapearProveedor)
-        Return If(lista.Count > 0, lista(0), Nothing)
-    End Function
-
-    Public Shared Function Get_Proveedor_Devolucion_SAP(codigo As String) As clsBeI_nav_proveedor
-        Dim query = ConstruirQuery("C", codigo)
-        Dim lista = ObtenerEntidadesDesdeSAP(query, AddressOf MapearProveedor)
-        Return If(lista.Count > 0, lista(0), Nothing)
-    End Function
-
-    Public Shared Function Get_Clientes_SAP_Hana() As List(Of clsBeI_nav_cliente)
-        Dim query = ConstruirQuery("C")
-        Return ObtenerEntidadesDesdeSAP(query, AddressOf MapearCliente)
-    End Function
-
-    Public Shared Function Importar_Proveedores_Desde_SAP_A_TablaIntermedia(lbl As RichTextBox,
-                                                                            ByRef prg As ProgressBar,
-                                                                            ByRef cnnLog As SqlConnection) As Boolean
+    Public Shared Async Function Importar_Proveedores_Desde_SAP_A_TablaIntermediaAsync(lbl As RichTextBox,
+                                                                                   prg As ProgressBar,
+                                                                                   cnnLog As SqlConnection) As Task(Of (Exitoso As Boolean, Mensaje As String, RegistrosProcesados As Integer, RegistrosConError As Integer))
         Dim cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim tran As SqlTransaction = Nothing
-        Importar_Proveedores_Desde_SAP_A_TablaIntermedia = False
+        Dim registrosProcesados As Integer = 0
+        Dim registrosConError As Integer = 0
 
         Try
             clsPublic.Actualizar_Progreso(lbl, "Consultando proveedores nuevos en SAP...")
-            Dim lista = Get_Proveedores_SAP_Hana()
+
+            vHanaService = New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lbl, "No se pudo obtener sesión.")
+                Return (False, "Error de autenticación en SAP", 0, 0)
+            Else
+                clsPublic.Actualizar_Progreso(lbl, "Conexión correcta.")
+            End If
+
+            Dim lista As List(Of clsBeI_nav_proveedor) = Await Get_Proveedores_SAP_SLAsync(vHanaService.SessionCookie, BD.Instancia.HANA_SL, lbl)
             BeNavEjecucionRes.Registros_ws = lista.Count
             clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, cnnLog)
             Application.DoEvents()
@@ -130,8 +107,10 @@ Public Class clsSyncSAPProveedor
                     clsLnI_nav_proveedor.Insertar(prov, cnn, tran)
                     VContadorBitacoraIntermedia += 1
                     prg.Value += 1
+                    registrosProcesados += 1
                     Application.DoEvents()
                 Catch ex As Exception
+                    registrosConError += 1
                     clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, prov.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
                     clsPublic.Actualizar_Progreso(lbl, $"Error al insertar {prov.No}: {ex.Message}")
                 End Try
@@ -139,13 +118,15 @@ Public Class clsSyncSAPProveedor
 
             tran.Commit()
             clsPublic.Actualizar_Progreso(lbl, "Importación a tabla intermedia finalizada.")
-            Importar_Proveedores_Desde_SAP_A_TablaIntermedia = True
+
+            Return (True, "Importación completada exitosamente", registrosProcesados, registrosConError)
 
         Catch ex As Exception
             If tran IsNot Nothing Then tran.Rollback()
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, cnnLog)
             clsPublic.Actualizar_Progreso(lbl, $"Error general en importación: {ex.Message}")
-            Throw
+
+            Return (False, ex.Message, registrosProcesados, registrosConError)
         Finally
             If cnn.State = ConnectionState.Open Then cnn.Close()
         End Try
@@ -157,6 +138,7 @@ Public Class clsSyncSAPProveedor
             Throw New Exception("No se pudo cargar la configuración de interface (BeConfigEnc).")
         End If
     End Sub
+
     Public Shared Sub ProcesarProveedores(proveedores As List(Of clsBeI_nav_proveedor),
                                               cnn As SqlConnection,
                                               tran As SqlTransaction,
@@ -250,11 +232,10 @@ Public Class clsSyncSAPProveedor
         Next
     End Sub
 
-    Public Shared Function Insertar_Proveedores_Desde_TablaIntermedia_A_Tabla_TOMWMS(lbl As RichTextBox,
+    Public Shared Async Function Insertar_Proveedores_Desde_TablaIntermedia_A_Tabla_TOMWMS(lbl As RichTextBox,
                                                                                        prg As ProgressBar,
                                                                                        Optional ForzarEjecucion As Boolean = False,
-                                                                                       Optional Preguntar As Boolean = False) As Boolean
-        Insertar_Proveedores_Desde_TablaIntermedia_A_Tabla_TOMWMS = False
+                                                                                       Optional Preguntar As Boolean = False) As Task(Of Boolean)
 
         Dim cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim cnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
@@ -266,7 +247,7 @@ Public Class clsSyncSAPProveedor
             clsPublic.Actualizar_Progreso(lbl, $"Force_Ejecución: {ForzarEjecucion}")
             If Not ForzarEjecucion AndAlso Not Ejecutar_Interfaz("Proveedor") Then
                 clsPublic.Actualizar_Progreso(lbl, "La configuración de la interfaz indica que no debe ejecutarse ahora.")
-                Exit Function
+                Return False
             End If
 
             cnnLog.Open()
@@ -276,25 +257,30 @@ Public Class clsSyncSAPProveedor
             tran = cnn.BeginTransaction()
             Cargar_Config_Desde_DB(cnn, tran)
 
-            If Not Continuar_Importacion(Preguntar,
-                                         "¿Deseas llenar tabla intermedia de proveedores desde SAP?",
-                                         Function() Importar_Proveedores_Desde_SAP_A_TablaIntermedia(lbl, prg, cnnLog),
-                                         lbl) Then
-                Exit Function
+            If Preguntar Then
+                If MessageBox.Show("¿Deseas llenar tabla intermedia de proveedores desde SAP?", "Confirmar importación", MessageBoxButtons.YesNo) = DialogResult.Yes Then
+                    Await Importar_Proveedores_Desde_SAP_A_TablaIntermediaAsync(lbl, prg, cnnLog)
+                Else
+                    Return False
+                End If
             End If
 
             Dim lista = clsLnI_nav_proveedor.GetAll(cnn, tran)
             If lista.Count = 0 Then
                 clsPublic.Actualizar_Progreso(lbl, "No se encontraron proveedores en tabla intermedia.")
-                Exit Function
+                Return False
             End If
 
             ProcesarProveedores(lista, cnn, tran, cnnLog, lbl, prg, proveedoresActualizados)
-            Marcar_Proveedor_Sincronizado_SAP(proveedoresActualizados)
+
+            For Each codigo In proveedoresActualizados
+                Await Marcar_Proveedor_Sincronizado_SLAsync(codigo, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
+                clsPublic.Actualizar_Progreso(lbl, "Proveedor sincronizado " & codigo)
+            Next
 
             tran.Commit()
             Finalizar_Ejecucion(lbl, cnnLog, "Proveedores procesados correctamente")
-            Insertar_Proveedores_Desde_TablaIntermedia_A_Tabla_TOMWMS = True
+            Return True
 
         Catch ex As Exception
             If tran IsNot Nothing Then tran.Rollback()
@@ -373,27 +359,27 @@ Public Class clsSyncSAPProveedor
         End Try
     End Function
 
-    Public Shared Function Marcar_Proveedor_Sincronizado_SAP(codigos As List(Of String)) As Boolean
-        Try
-            For Each codigo In codigos
-                Dim query As String = $"UPDATE OCRD SET U_ENVIADO_WMS = '1' WHERE ""CardCode"" = '{codigo}'"
-                HanaHelper.Xcute(query)
-            Next
-            Return True
-        Catch ex As Exception
-            Throw New Exception($"Error al marcar proveedor como sincronizado: {ex.Message}")
-        End Try
-    End Function
+    'Public Shared Function Marcar_Proveedor_Sincronizado_SAP(codigos As List(Of String)) As Boolean
+    '    Try
+    '        For Each codigo In codigos
+    '            Dim query As String = $"UPDATE OCRD SET U_ENVIADO_WMS = '1' WHERE ""CardCode"" = '{codigo}'"
+    '            HanaHelper.Xcute(query)
+    '        Next
+    '        Return True
+    '    Catch ex As Exception
+    '        Throw New Exception($"Error al marcar proveedor como sincronizado: {ex.Message}")
+    '    End Try
+    'End Function
 
-    Public Shared Function Marcar_Proveedor_Sincronizado_SAP(codigo As String) As Boolean
-        Try
-            Dim query As String = $"UPDATE OCRD SET U_ENVIADO_WMS = '1' WHERE ""CardCode"" = '{codigo}'"
-            HanaHelper.Xcute(query)
-            Return True
-        Catch ex As Exception
-            Throw New Exception($"Error al marcar proveedor como sincronizado: {ex.Message}")
-        End Try
-    End Function
+    'Public Shared Function Marcar_Proveedor_Sincronizado_SAP(codigo As String) As Boolean
+    '    Try
+    '        Dim query As String = $"UPDATE OCRD SET U_ENVIADO_WMS = '1' WHERE ""CardCode"" = '{codigo}'"
+    '        HanaHelper.Xcute(query)
+    '        Return True
+    '    Catch ex As Exception
+    '        Throw New Exception($"Error al marcar proveedor como sincronizado: {ex.Message}")
+    '    End Try
+    'End Function
 
     Public Shared Function Ejecutar_Interfaz(ByVal NombreEntidad As String) As Boolean
 
@@ -420,36 +406,12 @@ Public Class clsSyncSAPProveedor
 
     End Function
 
-    Public Shared Function Insertar_Proveedor_Single(ByVal NoProveedor As String,
-                                                 ByRef lConnection As SqlConnection,
-                                                 ByRef lTransaction As SqlTransaction,
-                                                 ByRef lConnectionLog As SqlConnection,
-                                                 ByRef lblprg As RichTextBox,
-                                                 ByRef prg As ProgressBar) As clsBeProveedor_bodega
-
-        Insertar_Proveedor_Single = Nothing
-
-        Try
-            Dim navProveedor As clsBeI_nav_proveedor = Get_Proveedor_SAP_Hana(NoProveedor)
-
-            If navProveedor IsNot Nothing Then
-                clsPublic.Actualizar_Progreso(lblprg, $"Procesando Proveedor: {navProveedor.No}")
-                Insertar_Proveedor_Single = Insertar_Proveedor_From_SAP(navProveedor, BeConfigEnc, lConnection, lTransaction, lConnectionLog, lblprg)
-            End If
-
-        Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, $"Error al insertar Proveedor a tabla de TOMWMS: {ex.Message}")
-            Throw New Exception($" (M) {MethodBase.GetCurrentMethod.Name()} {ex.Message}")
-        End Try
-
-    End Function
-
     Public Shared Function Insertar_Proveedor_From_SAP(navProveedor As clsBeI_nav_proveedor,
-                                                    config As clsBeI_nav_config_enc,
-                                                    cnn As SqlConnection,
-                                                    tran As SqlTransaction,
-                                                    cnnLog As SqlConnection,
-                                                    lbl As RichTextBox) As clsBeProveedor_bodega
+                                                       config As clsBeI_nav_config_enc,
+                                                       cnn As SqlConnection,
+                                                       tran As SqlTransaction,
+                                                       cnnLog As SqlConnection,
+                                                       lbl As RichTextBox) As clsBeProveedor_bodega
 
         Dim proveedorBodega As clsBeProveedor_bodega = Nothing
 
@@ -504,7 +466,7 @@ Public Class clsSyncSAPProveedor
             If String.IsNullOrWhiteSpace(codigo) Then Return Nothing
 
             ' Filtro OData para proveedores activos
-            Dim filtro = $"CardType eq 'cCustomer' and CardCode eq '{codigo}' and Valid eq 'tYES'"
+            Dim filtro = $"CardType eq 'cSupplier' and CardCode eq '{codigo}' and Valid eq 'tYES'"
             Dim requestUrl As String = $"BusinessPartners?$filter={Uri.EscapeDataString(filtro)}"
 
             Using handler As New HttpClientHandler()
@@ -567,6 +529,7 @@ Public Class clsSyncSAPProveedor
         End Try
 
     End Function
+
     Public Shared Async Function Marcar_Proveedor_Sincronizado_SLAsync(codigo As String,
                                                                        sessionCookie As String,
                                                                        baseUrl As String) As Task(Of Boolean)
@@ -606,6 +569,104 @@ Public Class clsSyncSAPProveedor
         Catch ex As Exception
             Throw New Exception($"Error al marcar proveedor como sincronizado (SL): {ex.Message}", ex)
         End Try
+    End Function
+
+    Public Shared Async Function Get_Proveedores_SAP_SLAsync(sessionCookie As String, baseUrl As String, lbl As RichTextBox) As Task(Of List(Of clsBeI_nav_proveedor))
+
+        Try
+
+            ' Filtro OData para proveedores activos
+            Dim filtro = $"CardType eq 'cSupplier' and Valid eq 'tYES' and (U_ENVIADO_WMS eq 2 or U_ENVIADO_WMS eq null)"
+
+            Dim pageSize As Integer = 100
+            Dim skip As Integer = 0
+
+            Dim lProveedores As New List(Of clsBeI_nav_proveedor)
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+                    Dim hayMas As Boolean = True
+
+                    While hayMas
+
+                        Dim requestUrl As String = $"BusinessPartners?$filter={Uri.EscapeDataString(filtro)}&$top={pageSize}&$skip={skip}"
+
+                        Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
+                            request.Headers.ConnectionClose = True
+                            request.Headers.Add("Cookie", sessionCookie)
+                            request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                            Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                            If Not response.IsSuccessStatusCode Then
+                                Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                Throw New Exception($"Error al obtener proveedor. Código: {response.StatusCode}, Detalle: {errContent}")
+                            End If
+
+                            Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Dim obj = JObject.Parse(jsonResponse)
+                            Dim rows = obj("value")
+
+                            If rows Is Nothing OrElse Not rows.HasValues Then
+                                ' Ya no hay más páginas
+                                hayMas = False
+                                Exit While
+                            End If
+
+                            Dim filasPagina As Integer = rows.Count()
+
+                            For Each proveedorJson In rows
+
+                                Dim proveedor As New clsBeI_nav_proveedor With {
+                                    .No = proveedorJson.Value(Of String)("CardCode"),
+                                    .Name = proveedorJson.Value(Of String)("CardName"),
+                                    .Adress = proveedorJson.Value(Of String)("Address"),
+                                    .City = proveedorJson.Value(Of String)("City"),
+                                    .Country = proveedorJson.Value(Of String)("Country"),
+                                    .Phone_No = proveedorJson.Value(Of String)("Phone1"),
+                                    .VAT_Registratrion_No = proveedorJson.Value(Of String)("FederalTaxID"),
+                                    .Search_Name = proveedorJson.Value(Of String)("AliasName"),
+                                    .Location_Code = proveedorJson.Value(Of String)("U_LocationCode")
+                                }
+                                ' Obtener contacto (si existe)
+                                Dim contactos = proveedorJson("ContactEmployees")
+                                If contactos IsNot Nothing AndAlso contactos.HasValues Then
+                                    proveedor.Contact = contactos.First.Value(Of String)("FirstName")
+                                Else
+                                    proveedor.Contact = ""
+                                End If
+
+                                If clsLnProveedor.Existe(proveedor.No) Is Nothing Then
+                                    lProveedores.Add(proveedor)
+                                    If lbl IsNot Nothing Then
+                                        clsPublic.Actualizar_Progreso(lbl, $"Proveedor agregado: {proveedor.No}")
+                                    End If
+                                End If
+
+                            Next
+
+                            ' Avanzar al siguiente bloque
+                            skip += filasPagina
+
+                        End Using
+
+                    End While
+
+                End Using
+
+            End Using
+
+            Return lProveedores
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Proveedores_SAP_SLAsync: " & ex.Message, ex)
+        End Try
+
     End Function
 
 End Class

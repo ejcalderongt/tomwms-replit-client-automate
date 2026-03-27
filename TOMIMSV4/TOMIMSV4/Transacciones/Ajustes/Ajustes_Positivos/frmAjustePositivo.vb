@@ -35,7 +35,7 @@ Public Class frmAjustePositivo
 
             BeBodega = AP.Bodega
             '#GT26112024: datos del encabezado
-            lbIdStock.Text = clsLnStock.MaxID() + 1
+            lbIdStock.Text = 0
             pUbicacion = New clsBeBodega_ubicacion
             pUbicacion = clsLnBodega_ubicacion.GetSingle(AP.Bodega.Ubic_recepcion, AP.IdBodega)
             txtUbicacion.Text = pUbicacion.NombreCompleto
@@ -168,7 +168,11 @@ Public Class frmAjustePositivo
     Private Sub Cargar_Productos_Sin_Stock()
         Try
 
-            DT = clsLnProducto.Get_All_Lista_Producto_SinStock(pStockIdPropietario, pStockIdPropietarioBodega, pStockBodegaFiltro, 1)
+            If AP.Bodega.Control_Talla_Color Then
+                DT = clsLnProducto.Get_All_Lista_Productos_Todos(pStockIdPropietario, pStockIdPropietarioBodega, pStockBodegaFiltro, 1)
+            Else
+                DT = clsLnProducto.Get_All_Lista_Producto_SinStock(pStockIdPropietario, pStockIdPropietarioBodega, pStockBodegaFiltro, 1)
+            End If
 
             If DT.Rows.Count > 0 Then
                 With cmbProductos.Properties
@@ -192,6 +196,7 @@ Public Class frmAjustePositivo
 
     Private Sub cmbProductos_EditValueChanged(sender As Object, e As EventArgs) Handles cmbProductos.EditValueChanged
         Try
+
             If cmbProductos.EditValue > 0 Then
                 pIdProductoBodega = cmbProductos.EditValue
                 vProducto = New clsBeProducto

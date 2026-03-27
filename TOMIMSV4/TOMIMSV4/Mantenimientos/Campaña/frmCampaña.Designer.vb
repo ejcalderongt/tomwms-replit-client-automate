@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmCampaña
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmCampaña
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim Label1 As System.Windows.Forms.Label
         Dim lblNombreCampaña As System.Windows.Forms.Label
@@ -65,7 +65,6 @@ Partial Class frmCampaña
         Me.xtpDetalle.SuspendLayout()
         CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView7, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -290,12 +289,6 @@ Partial Class frmCampaña
         Me.XtraTabControl1.Size = New System.Drawing.Size(1113, 458)
         Me.XtraTabControl1.TabIndex = 5
         Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.xtpGeneral, Me.xtpDetalle})
-        Me.txtCodigo.Location = New System.Drawing.Point(162, 194)
-        Me.txtCodigo.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtCodigo.MenuManager = Me.RibbonControl
-        Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(241, 22)
-        Me.txtCodigo.TabIndex = 21
         '
         'xtpGeneral
         '
@@ -336,13 +329,6 @@ Partial Class frmCampaña
         Me.GridView7.OptionsBehavior.Editable = False
         Me.GridView7.OptionsView.ShowAutoFilterRow = True
         Me.GridView7.OptionsView.ShowGroupPanel = False
-        lblCodigo.AutoSize = True
-        lblCodigo.Location = New System.Drawing.Point(29, 197)
-        lblCodigo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblCodigo.Name = "lblCodigo"
-        lblCodigo.Size = New System.Drawing.Size(57, 16)
-        lblCodigo.TabIndex = 22
-        lblCodigo.Text = "Nombre:"
         '
         'frmCampaña
         '
@@ -369,7 +355,6 @@ Partial Class frmCampaña
         Me.xtpDetalle.ResumeLayout(False)
         CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView7, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

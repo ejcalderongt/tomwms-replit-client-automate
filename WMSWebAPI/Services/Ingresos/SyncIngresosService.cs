@@ -221,7 +221,7 @@ namespace WMSWebAPI.Services.Ingresos
                 throw new Exception($"Error al obtener el detalle de la orden de compra: {ex.Message}", ex);
             }
         }
-        public int Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
+        public int  Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
         {
             try
             {
@@ -472,7 +472,7 @@ namespace WMSWebAPI.Services.Ingresos
             var ids = idTransacciones.Where(x => x > 0).Distinct().ToList();
             if (ids.Count == 0) return 0;
 
-            return clsLnI_nav_transacciones_out.Marcar_Como_Enviado(_configuration, ids);
+            return clsLnI_nav_transacciones_out.Marcar_Ingresos_Como_Enviado(_configuration, ids);
         }
         public List<clsBeI_nav_transacciones_out> Get_Ingresos_Pendientes_De_Procesar()
         {

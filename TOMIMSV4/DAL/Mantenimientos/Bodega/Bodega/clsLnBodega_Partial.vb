@@ -3574,5 +3574,69 @@ Partial Public Class clsLnBodega
         Return dt
     End Function
 
+    Public Shared Function Get_Maneja_Talla_Color_By_IdBodega(ByVal pIdBodega As Integer,
+                                                              ByRef lConnection As SqlConnection,
+                                                              ByRef lTransaction As SqlTransaction) As Boolean
+
+        Get_Maneja_Talla_Color_By_IdBodega = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT control_talla_color FROM bodega WHERE IdBodega=@IdBodega"
+
+            Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    Get_Maneja_Talla_Color_By_IdBodega = CBool(lReturnValue)
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetUbicacionesVaciasPorArea(idBodega As Integer, area As String) As DataTable
+        Dim dt As New DataTable()
+
+        Try
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand()
+                    cmd.Connection = cn
+                    cmd.CommandType = CommandType.Text
+                    cmd.CommandText =
+                        "SELECT " &
+                        "    Ubicacion, " &
+                        "    Area  " &
+                        " FROM VW_OcupacionBodega " &
+                        "WHERE IdBodega = @IdBodega " &
+                        "  AND Area = @Area " &
+                        "  AND ISNULL(IdStock, 0) = 0 " &
+                        "ORDER BY Ubicacion"
+
+                    cmd.Parameters.AddWithValue("@IdBodega", idBodega)
+                    cmd.Parameters.AddWithValue("@Area", area)
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
+                End Using
+            End Using
+
+            Return dt
+
+        Catch ex As Exception
+            Throw New Exception("Error al obtener ubicaciones vacías por área: " & ex.Message, ex)
+        End Try
+    End Function
 
 End Class

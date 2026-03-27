@@ -6,6 +6,7 @@ Imports DevExpress.XtraSplashScreen
 Public Class frmLogEventos
 
 
+
     Private Sub CargarEventos()
         Try
 
@@ -14,14 +15,31 @@ Public Class frmLogEventos
 
 
             If lista IsNot Nothing AndAlso lista.Rows.Count > 0 Then
-                Dgrid.DataSource = lista
 
-                ' Ajustar automáticamente el tamaño de las columnas al encabezado
-                If GridView1.Columns.Count > 0 Then
-                    GridView1.BestFitColumns() ' Ajusta ancho según encabezado y contenido
+                ' Reducir Mensaje_error a 120 caracteres (con …)
+                If lista.Columns.Contains("Mensaje_error") Then
+                    For Each r As DataRow In lista.Rows
+                        Dim s As String = If(r("Mensaje_error"), "").ToString()
+                        If s.Length > 120 Then
+                            r("Mensaje_error") = s.Substring(0, 120) & "…"
+                        End If
+                    Next
                 End If
 
-                'lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
+                Dgrid.DataSource = lista
+
+                If GridView1.Columns.Count > 0 Then
+                    GridView1.OptionsView.ColumnAutoWidth = False
+                    GridView1.OptionsView.BestFitMode = DevExpress.XtraGrid.Views.Grid.GridBestFitMode.Full
+                    GridView1.BestFitMaxRowCount = 200
+
+                    GridView1.BeginUpdate()
+                    Try
+                        GridView1.BestFitColumns()
+                    Finally
+                        GridView1.EndUpdate()
+                    End Try
+                End If
             End If
 
 

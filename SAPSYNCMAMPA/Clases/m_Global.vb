@@ -1,6 +1,4 @@
 ﻿Imports System.Reflection
-Imports Sap.Data.Hana
-Imports SAPbobsCOM
 
 Module m_Global
 
@@ -15,12 +13,10 @@ Module m_Global
     Public Property pConfigInterface As NombreInterface = NombreInterface.Becofarma
     Public Property NoDocEntrySAP As Integer = 0
     Public Property EstadoEnviadoSAP As clsDataContractDI.Estado_Enviado_SAP? = 0
-    Public Property gVersionApp As String = "7.8.8"
-    Public Property gFechaVersion As Date = New Date(2025, 12, 8)
+    Public Property gVersionApp As String = "8.1.4"
+    Public Property gFechaVersion As Date = New Date(2026, 3, 24)
     Public Property gNombreInstancia As String = ""
     Public Property gConnectionStringSAPHana As String = ""
-
-    Private Const connectionString As String = "Server=10.238.26.76:30015; UserID=DEVDTS; Password=Solutions2025."
 
     Public Enum NombreInterface
         Becofarma = 0
@@ -120,202 +116,6 @@ Module m_Global
             Existe_Ini = False
         End If
 
-    End Function
-    Public Function Conectar_A_SAP_2017(ByRef oCompany As Company,
-                                       Optional ByVal pThrowException As Boolean = False,
-                                       Optional ByRef pCodigoError As Integer = 0,
-                                       Optional ByRef pMensajeError As String = "") As Boolean
-
-        Conectar_A_SAP_2017 = False
-
-        pCodigoError = 0
-
-        Try
-
-            If oCompany Is Nothing Then
-                oCompany = New Company
-            End If
-
-            If (Not oCompany.Connected) Then
-
-                oCompany = New Company
-                oCompany.SLDServer = BD.Instancia.LICENSESERVER_SAP_BO
-                oCompany.Server = BD.Instancia.SERVER_BD_SAP
-                oCompany.CompanyDB = BD.Instancia.SAP_COMPANY_DB
-                oCompany.UserName = BD.Instancia.SAP_USR.Trim()
-                oCompany.Password = BD.Instancia.SAP_USR_PW.Trim()
-                oCompany.DbUserName = BD.Instancia.SAP_DB_USR.Trim()
-                oCompany.DbPassword = BD.Instancia.SAP_DB_PW.Trim()
-                oCompany.UseTrusted = False
-
-                If BD.Instancia.SAP_DB_VERSION = 2017 Then
-                    oCompany.DbServerType = BoDataServerTypes.dst_MSSQL2017
-                ElseIf BD.Instancia.SAP_DB_VERSION = 2019 Then
-                    oCompany.DbServerType = BoDataServerTypes.dst_MSSQL2019
-                End If
-
-                oCompany.language = BoSuppLangs.ln_Spanish_La
-
-                Dim lRetCode As Integer = oCompany.Connect()
-
-                If lRetCode <> 0 Then
-                    oCompany.GetLastError(pCodigoError, pMensajeError)
-                    If pThrowException Then
-                        Throw New Exception(pMensajeError)
-                    End If
-                Else
-                    Conectar_A_SAP_2017 = True
-                End If
-
-            End If
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-    Public Function Desconectar_SAP(ByRef oCompany As Company) As Boolean
-
-        Desconectar_SAP = False
-
-        Try
-
-            If Not IsNothing(oCompany) Then
-                If oCompany.Connected Then
-                    oCompany.Disconnect()
-                End If
-            End If
-
-        Catch ex As Exception
-            Throw New Exception(String.Format(" (M) {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
-
-    End Function
-    Public Function Conectar_A_SAP_2019(ByRef oCompany As Company,
-                                       Optional ByVal pThrowException As Boolean = False,
-                                       Optional ByRef pCodigoError As Integer = 0,
-                                       Optional ByRef pMensajeError As String = "") As Boolean
-
-        Conectar_A_SAP_2019 = False
-
-        pCodigoError = 0
-
-        Try
-
-            If oCompany Is Nothing Then
-                oCompany = New Company
-            End If
-
-            If (Not oCompany.Connected) Then
-
-                oCompany = New Company
-                oCompany.SLDServer = BD.Instancia.LICENSESERVER_SAP_BO
-                oCompany.LicenseServer = BD.Instancia.SERVER_BD_SAP
-                oCompany.Server = BD.Instancia.SERVER_BD_SAP
-                oCompany.CompanyDB = BD.Instancia.SAP_COMPANY_DB
-                oCompany.UserName = BD.Instancia.SAP_USR.Trim()
-                oCompany.Password = BD.Instancia.SAP_USR_PW.Trim()
-                oCompany.DbUserName = BD.Instancia.SAP_DB_USR.Trim()
-                oCompany.DbPassword = BD.Instancia.SAP_DB_PW.Trim()
-                oCompany.language = BoSuppLangs.ln_Spanish_La
-                oCompany.DbServerType = BoDataServerTypes.dst_MSSQL2019
-                oCompany.UseTrusted = False
-
-                Dim lRetCode As Integer = oCompany.Connect()
-                Dim errMsg As String = oCompany.GetLastErrorDescription()
-                Dim ErrNo As Integer = oCompany.GetLastErrorCode()
-                Dim ErrContext As String = oCompany.GetLastErrorContext()
-
-                If lRetCode <> 0 Then
-                    oCompany.GetLastError(pCodigoError, pMensajeError)
-                    If pThrowException Then
-                        Throw New Exception(pMensajeError)
-                    End If
-                Else
-                    Conectar_A_SAP_2019 = True
-                End If
-
-            End If
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-    Public Function Conectar_A_SAP(ByRef oCompany As Company,
-                                   Optional ByVal pThrowException As Boolean = False,
-                                   Optional ByRef pCodigoError As Integer = 0,
-                                   Optional ByRef pMensajeError As String = "") As Boolean
-
-        Conectar_A_SAP = False
-
-        pCodigoError = 0
-
-        Try
-
-            If oCompany Is Nothing Then
-                oCompany = New Company
-            End If
-
-            If (Not oCompany.Connected) Then
-
-                oCompany = New Company
-                oCompany.SLDServer = BD.Instancia.LICENSESERVER_SAP_BO
-                oCompany.Server = BD.Instancia.SERVER_BD_SAP
-                oCompany.CompanyDB = BD.Instancia.SAP_COMPANY_DB
-                oCompany.UserName = BD.Instancia.SAP_USR.Trim()
-                oCompany.Password = BD.Instancia.SAP_USR_PW.Trim()
-                oCompany.DbUserName = BD.Instancia.SAP_DB_USR.Trim()
-                oCompany.DbPassword = BD.Instancia.SAP_DB_PW.Trim()
-                oCompany.language = BoSuppLangs.ln_Spanish_La
-                oCompany.UseTrusted = False
-
-                If BD.Instancia.SAP_DB_VERSION = 2017 Then
-                    oCompany.DbServerType = BoDataServerTypes.dst_MSSQL2017
-                ElseIf BD.Instancia.SAP_DB_VERSION = 2019 Then
-                    oCompany.LicenseServer = BD.Instancia.SERVER_BD_SAP
-                    oCompany.DbServerType = BoDataServerTypes.dst_MSSQL2019
-                End If
-
-                oCompany.UseTrusted = False
-
-                Dim lRetCode As Integer = oCompany.Connect()
-
-                If lRetCode <> 0 Then
-                    oCompany.GetLastError(pCodigoError, pMensajeError)
-                    If pThrowException Then
-                        Throw New Exception(pMensajeError)
-                    End If
-                Else
-                    Conectar_A_SAP = True
-                End If
-
-            End If
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Private Const connectionString As String = "Server=10.238.26.76:30015; UserID=DEVDTS; Password=Solutions2025."
-
-    ''' <summary>
-    ''' Prueba la conexión con SAP HANA y retorna True si es exitosa.
-    ''' </summary>
-    ''' <returns>Boolean - True si la conexión es exitosa, False si hay un error.</returns>
-    Public Function Conexion_SAP_Hana() As Boolean
-        Try
-            Using conn As New HanaConnection(connectionString)
-                conn.Open()
-                Console.WriteLine("Conexión exitosa a SAP HANA")
-                conn.Close()
-                Return True
-            End Using
-        Catch ex As HanaException
-            Console.WriteLine("Error de conexión: " & ex.Message)
-            Return False
-        End Try
     End Function
 
 End Module

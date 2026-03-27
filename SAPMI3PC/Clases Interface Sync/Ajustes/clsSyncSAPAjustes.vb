@@ -72,7 +72,7 @@ Public Class clsSyncSAPAjustes : Inherits clsInterfaceBase
                     If Not vBodegaDestinoEsWMS Then
                         'Generar salida (Tomar en consideración el área de origen)
                         Dim BePedidoEnc As New clsBeTrans_pe_enc
-                        BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(SolicitudTraslado, lblprg, Nothing, Nothing)
+                        BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(SolicitudTraslado, lblprg)
 
                         If BePedidoEnc Is Nothing Then
                             If Marcar_PI_Sincronizado_SAP(SolicitudTraslado.No) Then
@@ -121,7 +121,7 @@ Public Class clsSyncSAPAjustes : Inherits clsInterfaceBase
                     If BeBodega IsNot Nothing AndAlso BeBodegaDestino IsNot Nothing Then
                         'Es una transferencia interbodegas WMS.
                         Dim BePedidoEnc As New clsBeTrans_pe_enc
-                        BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(SolicitudTraslado, lblprg, Nothing, Nothing)
+                        BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(SolicitudTraslado, lblprg)
 
                         If Not BePedidoEnc Is Nothing Then
                             If Marcar_PI_Sincronizado_SAP(SolicitudTraslado.No) Then
@@ -327,7 +327,7 @@ Public Class clsSyncSAPAjustes : Inherits clsInterfaceBase
 
                     Dim lineNo As Integer = 0
 
-                    vIdMaxDet = clsLnTrans_pe_det.MaxID() + 1
+                    vIdMaxDet = clsLnI_nav_ped_traslado_det.MaxID() + 1
 
                     While Not RsDet.EoF
 

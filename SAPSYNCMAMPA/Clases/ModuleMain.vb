@@ -1,8 +1,7 @@
 ﻿Imports System.Reflection
-Imports System.Runtime.InteropServices
 Imports DevExpress.XtraEditors
 
-Module ModuleMain
+Public Module ModuleMain
 
     Private ReadOnly Instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)
 
@@ -153,7 +152,7 @@ Module ModuleMain
 
     End Sub
 
-    Private Function Init_App() As Boolean
+    Public Function Init_App() As Boolean
 
         Init_App = False
 

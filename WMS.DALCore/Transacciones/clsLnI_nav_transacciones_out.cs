@@ -741,7 +741,7 @@
             }
         }
 
-        public static int Marcar_Como_Enviado(IConfiguration configuration, List<int> ids)
+        public static int Marcar_Ingresos_Como_Enviado(IConfiguration configuration, List<int> ids)
         {
             if (ids == null || ids.Count == 0) return 0;
 
@@ -805,7 +805,69 @@
                 tx?.Dispose();
             }
         }
+        public static int Marcar_Salidas_Como_Enviado(IConfiguration configuration, List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return 0;
 
+            ids = ids.Where(x => x > 0).Distinct().ToList();
+            if (ids.Count == 0) return 0;
+
+            using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+            SqlTransaction? tx = null;
+
+            try
+            {
+                conn.Open();
+                tx = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+
+                var pnames = ids.Select((_, i) => $"@p{i}").ToList();
+
+                string sqlCount = $@"
+            SELECT COUNT(1)
+            FROM I_nav_transacciones_out
+            WHERE Idtransaccion IN ({string.Join(",", pnames)})
+              AND tipo_transaccion = 'SALIDA';";
+
+                using (var cmdCount = new SqlCommand(sqlCount, conn, tx))
+                {
+                    for (int i = 0; i < ids.Count; i++)
+                        cmdCount.Parameters.Add(new SqlParameter(pnames[i], SqlDbType.Int) { Value = ids[i] });
+
+                    int encontrados = Convert.ToInt32(cmdCount.ExecuteScalar());
+
+                    if (encontrados != ids.Count)
+                        throw new Exception("Transacción abortada: uno o más Idtransaccion no existen o no son de tipo SALIDA.");
+                }
+
+                string sqlUpdate = $@"
+            UPDATE I_nav_transacciones_out
+            SET Enviado = 1,
+                fec_mod = GETDATE()
+            WHERE Idtransaccion IN ({string.Join(",", pnames)})
+              AND Enviado = 0;";
+
+                int updated;
+                using (var cmdUp = new SqlCommand(sqlUpdate, conn, tx))
+                {
+                    for (int i = 0; i < ids.Count; i++)
+                        cmdUp.Parameters.Add(new SqlParameter(pnames[i], SqlDbType.Int) { Value = ids[i] });
+
+                    updated = cmdUp.ExecuteNonQuery();
+                }
+
+                tx.Commit();
+                return updated;
+            }
+            catch
+            {
+                tx?.Rollback();
+                throw;
+            }
+            finally
+            {
+                tx?.Dispose();
+            }
+        }
         public static List<clsBeI_nav_transacciones_out> Get_All_Salidas_Pendientes_De_Procesar(IConfiguration configuration,string? noPedido = null)
         {
             SqlConnection lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
@@ -861,6 +923,67 @@
                 lConnection.Dispose();
             }
         }
+        public static List<clsBeI_nav_transacciones_out> Get_All_Salidas_Pendientes_De_Procesar(
+        IConfiguration configuration,
+        string? noPedido = null,
+        int? idTipoDocumento = null)
+        {
+            SqlConnection lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+            SqlTransaction? lTransaction = null;
 
+            try
+            {
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+                var lReturnList = new List<clsBeI_nav_transacciones_out>();
+
+                string vSQL = "SELECT * FROM I_nav_transacciones_out " +
+                              "WHERE tipo_transaccion = 'SALIDA' AND Enviado = 0 " +
+                              (string.IsNullOrWhiteSpace(noPedido) ? "" : "AND no_pedido = @no_pedido ") +
+                              (idTipoDocumento.HasValue ? "AND IdTipoDocumento = @IdTipoDocumento " : "") +
+                              "ORDER BY fec_agr";
+
+                using var cmd = new SqlCommand(vSQL, lConnection, lTransaction)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                if (!string.IsNullOrWhiteSpace(noPedido))
+                    cmd.Parameters.Add("@no_pedido", SqlDbType.VarChar, 50).Value = noPedido.Trim();
+
+                if (idTipoDocumento.HasValue)
+                    cmd.Parameters.Add("@IdTipoDocumento", SqlDbType.Int).Value = idTipoDocumento.Value;
+
+                using var dad = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                dad.Fill(dt);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    var item = new clsBeI_nav_transacciones_out();
+                    Cargar(ref item, dr);
+                    lReturnList.Add(item);
+                }
+
+                lTransaction.Commit();
+                return lReturnList;
+            }
+            catch
+            {
+                if (lTransaction != null)
+                    lTransaction.Rollback();
+
+                throw;
+            }
+            finally
+            {
+                if (lConnection.State == ConnectionState.Open)
+                    lConnection.Close();
+
+                lTransaction?.Dispose();
+                lConnection.Dispose();
+            }
+        }
     }
 }

@@ -76,6 +76,9 @@ Public Class clsLnVW_Movimientos
                 If dr.Table.Columns.Contains("NombreArea") Then .NombreArea = IIf(IsDBNull(dr.Item("NombreArea")), "", dr.Item("NombreArea"))
                 If dr.Table.Columns.Contains("Operador") Then .Operador = IIf(IsDBNull(dr.Item("Operador")), "", dr.Item("Operador"))
 
+                'Talla Color
+                If dr.Table.Columns.Contains("Talla") Then .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                If dr.Table.Columns.Contains("Color") Then .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
 
             End With
 

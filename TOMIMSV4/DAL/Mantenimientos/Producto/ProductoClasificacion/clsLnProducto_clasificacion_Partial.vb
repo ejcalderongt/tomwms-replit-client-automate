@@ -1028,4 +1028,75 @@ Partial Public Class clsLnProducto_clasificacion
     End Sub
 #End Region
 
+    ' Get_Single_By_Codigo sin recibir conexión/tx como parámetro.
+    ' - Abre y cierra su propia conexión.
+    ' - NO usa transacción explícita.
+    ' - Corrige SQL Injection usando parámetro (tu versión concatenaba el código).
+    Public Shared Function Get_Single_By_Codigo(ByVal pCodigo As String) As clsBeProducto_clasificacion
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Dim vSQL As String = "SELECT TOP 1 * FROM producto_clasificacion WHERE Codigo = @Codigo;"
+
+            Using cmd As New SqlCommand(vSQL, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+                cmd.Parameters.Add("@Codigo", SqlDbType.VarChar).Value = pCodigo
+
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable()
+                    dad.Fill(dt)
+
+                    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                        Dim row As DataRow = dt.Rows(0)
+                        Dim be As New clsBeProducto_clasificacion()
+                        Cargar(be, row)
+                        Return be
+                    End If
+                End Using
+            End Using
+
+            Return Nothing
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
+    ' MaxId sin recibir conexión ni transacción como parámetro.
+    ' - Abre y cierra su propia conexión.
+    ' - NO usa transacción explícita (autocommit).
+    ' - Usa la cadena desde Configuration.ConfigurationManager.AppSettings("CST")
+    Public Shared Function MaxId() As Integer
+        Dim lMax As Integer = 0
+        Dim cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            cn.Open()
+
+            Dim vSQL As String = "SELECT ISNULL(MAX(IdClasificacion), 0) + 1 FROM producto_clasificacion;"
+
+            Using cmd As New SqlCommand(vSQL, cn)
+                cmd.CommandType = CommandType.Text
+                cmd.CommandTimeout = 60
+
+                Dim result As Object = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    lMax = CInt(result)
+                End If
+            End Using
+
+            Return lMax
+
+        Catch ex As Exception
+            Throw
+        Finally
+            If cn IsNot Nothing AndAlso cn.State = ConnectionState.Open Then cn.Close()
+        End Try
+    End Function
+
 End Class
