@@ -850,36 +850,6 @@ Partial Public Class clsLnTrans_ajuste_enc
             Throw
         End Try
     End Function
-    Public Shared Function Get_All_VW(ByVal pFechaDel As Date,
-                                      ByVal pFechaAl As Date,
-                                      ByVal pIdBodega As Integer) As DataTable
-
-        Try
-
-            Dim lReturnList As New List(Of clsBeTrans_ajuste_enc)
-            Dim sp As String = "SELECT * FROM VW_Ajustes_List"
-            sp += " WHERE IdBodega = @IdBodega AND cast(fecha AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
-                   " AND " & FormatoFechas.fFecha(pFechaAl)
-
-            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-            cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
-            Dim dad As New SqlDataAdapter(cmd)
-            Dim dt As New DataTable
-
-            dad.Fill(dt)
-
-            Return dt
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Sub Guardar_Borrador_Ajuste(ByVal BeAjusteEnc As clsBeTrans_ajuste_enc,
                                               ByVal lBeTransAjusteDet As List(Of clsBeTrans_ajuste_det))
 
@@ -966,5 +936,35 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Sub
+
+    Public Shared Function Get_All_VW(ByVal pFechaDel As Date,
+                                      ByVal pFechaAl As Date,
+                                      ByVal pIdBodega As Integer) As DataTable
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_ajuste_enc)
+            Dim sp As String = "SELECT * FROM VW_Ajustes_List"
+            sp += " WHERE IdBodega = @IdBodega AND cast(fecha AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+                   " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
 
 End Class

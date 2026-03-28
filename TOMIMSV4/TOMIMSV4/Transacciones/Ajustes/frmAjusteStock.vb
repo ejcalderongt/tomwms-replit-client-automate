@@ -691,7 +691,6 @@ Public Class frmAjusteStock
             End If
 
             Llenar_Motivo(rc, -1)
-            'Llenar_Tipo(rc, -1)
             Llenar_Tipo(rc, pTipoAjuste)
             Llena_Bodegas_ERP_Grid(rc, -1)
 
