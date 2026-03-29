@@ -411,4 +411,68 @@ Public Class clsLnTrans_ajuste_det_borrador
 
     End Function
 
+    Public Shared Function Get_By_IdAjusteEnc(ByVal pIdAjusteEnc As Integer) As List(Of clsBeTrans_ajuste_det_borrador)
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_ajuste_det_borrador)
+            Const sp As String = "SELECT * FROM Trans_ajuste_det_borrador WHERE IdAjusteEnc = @IdAjusteEnc"
+
+            If lConnection.State = ConnectionState.Closed Then lConnection.Open()
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@IdAjusteEnc", pIdAjusteEnc)
+
+            lTransaction = lConnection.BeginTransaction()
+            cmd.Transaction = lTransaction
+
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeTrans_ajuste_det_borrador As New clsBeTrans_ajuste_det_borrador
+
+            For Each dr As DataRow In dt.Rows
+                vBeTrans_ajuste_det_borrador = New clsBeTrans_ajuste_det_borrador
+                Cargar(vBeTrans_ajuste_det_borrador, dr)
+
+                vBeTrans_ajuste_det_borrador.UmBas = clsLnUnidad_medida.Get_Codigo_By_IdUnidadMedida(vBeTrans_ajuste_det_borrador.IdUnidadMedida,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+
+                If vBeTrans_ajuste_det_borrador.IdPresentacion <> 0 Then
+                    vBeTrans_ajuste_det_borrador.Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(vBeTrans_ajuste_det_borrador.IdProductoBodega,
+                                                                                                                 vBeTrans_ajuste_det_borrador.IdPresentacion,
+                                                                                                                 lConnection,
+                                                                                                                 lTransaction)
+
+                    vBeTrans_ajuste_det_borrador.Nombre_Presentacion = clsLnProducto_presentacion.Get_Nombre_Presentacion_By_IdPresentacion(vBeTrans_ajuste_det_borrador.IdPresentacion,
+                                                                                                                                         lConnection,
+                                                                                                                                         lTransaction)
+                Else
+                    vBeTrans_ajuste_det_borrador.Factor = 0
+                    vBeTrans_ajuste_det_borrador.Nombre_Presentacion = ""
+                End If
+
+                lReturnList.Add(vBeTrans_ajuste_det_borrador)
+            Next
+
+            lTransaction.Commit()
+
+            Return lReturnList
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        Finally
+            If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
 End Class

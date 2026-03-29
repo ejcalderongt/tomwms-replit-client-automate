@@ -1848,13 +1848,13 @@ Partial Class frmCliente
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("6a95e6d6-496f-4511-ba55-2e8a6590f626")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 694)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 106)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1699, 132)
+        Me.DockPanel1.Size = New System.Drawing.Size(1699, 106)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -1871,7 +1871,7 @@ Partial Class frmCliente
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1691, 94)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1691, 68)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtrtabClientes
@@ -1927,7 +1927,7 @@ Partial Class frmCliente
         Me.ToolStripPR.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNewPR, Me.cmdDesactivarPresentacion})
         Me.ToolStripPR.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripPR.Name = "ToolStripPR"
-        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 31)
+        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 27)
         Me.ToolStripPR.TabIndex = 3
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -1936,7 +1936,7 @@ Partial Class frmCliente
         Me.cmdNewPR.Image = CType(resources.GetObject("cmdNewPR.Image"), System.Drawing.Image)
         Me.cmdNewPR.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewPR.Name = "cmdNewPR"
-        Me.cmdNewPR.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewPR.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewPR.Text = "Nuevo"
         '
         'cmdDesactivarPresentacion
@@ -1944,285 +1944,8 @@ Partial Class frmCliente
         Me.cmdDesactivarPresentacion.Image = CType(resources.GetObject("cmdDesactivarPresentacion.Image"), System.Drawing.Image)
         Me.cmdDesactivarPresentacion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarPresentacion.Name = "cmdDesactivarPresentacion"
-        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(87, 28)
+        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(87, 24)
         Me.cmdDesactivarPresentacion.Text = "Eliminar"
-        '
-        'tabLotes
-        '
-        Me.tabLotes.Controls.Add(Me.grpMantLotes)
-        Me.tabLotes.Controls.Add(Me.grpLotesPermitidos)
-        Me.tabLotes.Controls.Add(Me.grpLotesBloqueados)
-        Me.tabLotes.Name = "tabLotes"
-        Me.tabLotes.Size = New System.Drawing.Size(1697, 603)
-        Me.tabLotes.Text = "Gestión Lotes"
-        '
-        'grpMantLotes
-        '
-        Me.grpMantLotes.Controls.Add(Me.txtIdClienteLote)
-        Me.grpMantLotes.Controls.Add(lblIdClienteLote)
-        Me.grpMantLotes.Controls.Add(Me.ToolStrip1)
-        Me.grpMantLotes.Controls.Add(Label25)
-        Me.grpMantLotes.Controls.Add(Me.chkLoteActivo)
-        Me.grpMantLotes.Controls.Add(lblchkBloquear)
-        Me.grpMantLotes.Controls.Add(Me.chkBloquear)
-        Me.grpMantLotes.Controls.Add(Me.dtpFechaAgregoLote)
-        Me.grpMantLotes.Controls.Add(Me.txtUsuarioAgregoLote)
-        Me.grpMantLotes.Controls.Add(Label20)
-        Me.grpMantLotes.Controls.Add(Label21)
-        Me.grpMantLotes.Controls.Add(Me.txtUsuarioModificoLote)
-        Me.grpMantLotes.Controls.Add(Label22)
-        Me.grpMantLotes.Controls.Add(Label23)
-        Me.grpMantLotes.Controls.Add(Me.dtpFechaModificoLote)
-        Me.grpMantLotes.Controls.Add(Label19)
-        Me.grpMantLotes.Controls.Add(Me.cmbEstadoProducto)
-        Me.grpMantLotes.Controls.Add(Label18)
-        Me.grpMantLotes.Controls.Add(Me.cmbLote)
-        Me.grpMantLotes.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpMantLotes.Location = New System.Drawing.Point(0, 0)
-        Me.grpMantLotes.Name = "grpMantLotes"
-        Me.grpMantLotes.Size = New System.Drawing.Size(572, 603)
-        Me.grpMantLotes.TabIndex = 87
-        '
-        'txtIdClienteLote
-        '
-        Me.txtIdClienteLote.Location = New System.Drawing.Point(148, 104)
-        Me.txtIdClienteLote.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.txtIdClienteLote.MenuManager = Me.RibbonControl
-        Me.txtIdClienteLote.Name = "txtIdClienteLote"
-        Me.txtIdClienteLote.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
-        Me.txtIdClienteLote.Properties.Appearance.Options.UseBackColor = True
-        Me.txtIdClienteLote.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtIdClienteLote.Properties.MaskSettings.Set("MaskManagerType", GetType(DevExpress.Data.Mask.RegExpMaskManager))
-        Me.txtIdClienteLote.Properties.MaskSettings.Set("allowBlankInput", True)
-        Me.txtIdClienteLote.Properties.MaskSettings.Set("mask", "[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}")
-        Me.txtIdClienteLote.Size = New System.Drawing.Size(261, 22)
-        Me.txtIdClienteLote.TabIndex = 100
-        '
-        'ToolStrip1
-        '
-        Me.ToolStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNuevoLote, Me.mnuGuardarLote, Me.mnuEliminarLote})
-        Me.ToolStrip1.Location = New System.Drawing.Point(2, 28)
-        Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(568, 27)
-        Me.ToolStrip1.TabIndex = 98
-        Me.ToolStrip1.Text = "ToolStrip2"
-        '
-        'mnuNuevoLote
-        '
-        Me.mnuNuevoLote.Image = CType(resources.GetObject("mnuNuevoLote.Image"), System.Drawing.Image)
-        Me.mnuNuevoLote.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.mnuNuevoLote.Name = "mnuNuevoLote"
-        Me.mnuNuevoLote.Size = New System.Drawing.Size(76, 24)
-        Me.mnuNuevoLote.Text = "Nuevo"
-        '
-        'mnuGuardarLote
-        '
-        Me.mnuGuardarLote.Image = CType(resources.GetObject("mnuGuardarLote.Image"), System.Drawing.Image)
-        Me.mnuGuardarLote.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.mnuGuardarLote.Name = "mnuGuardarLote"
-        Me.mnuGuardarLote.Size = New System.Drawing.Size(86, 24)
-        Me.mnuGuardarLote.Text = "Guardar"
-        '
-        'mnuEliminarLote
-        '
-        Me.mnuEliminarLote.Image = CType(resources.GetObject("mnuEliminarLote.Image"), System.Drawing.Image)
-        Me.mnuEliminarLote.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.mnuEliminarLote.Name = "mnuEliminarLote"
-        Me.mnuEliminarLote.Size = New System.Drawing.Size(87, 24)
-        Me.mnuEliminarLote.Text = "Eliminar"
-        '
-        'chkLoteActivo
-        '
-        Me.chkLoteActivo.EditValue = True
-        Me.chkLoteActivo.Location = New System.Drawing.Point(314, 213)
-        Me.chkLoteActivo.MenuManager = Me.RibbonControl
-        Me.chkLoteActivo.Name = "chkLoteActivo"
-        Me.chkLoteActivo.Properties.OffText = ""
-        Me.chkLoteActivo.Properties.OnText = "On"
-        Me.chkLoteActivo.Size = New System.Drawing.Size(95, 24)
-        Me.chkLoteActivo.TabIndex = 96
-        '
-        'chkBloquear
-        '
-        Me.chkBloquear.Location = New System.Drawing.Point(314, 183)
-        Me.chkBloquear.MenuManager = Me.RibbonControl
-        Me.chkBloquear.Name = "chkBloquear"
-        Me.chkBloquear.Properties.OffText = ""
-        Me.chkBloquear.Properties.OnText = "On"
-        Me.chkBloquear.Size = New System.Drawing.Size(95, 24)
-        Me.chkBloquear.TabIndex = 94
-        '
-        'dtpFechaAgregoLote
-        '
-        Me.dtpFechaAgregoLote.EditValue = Nothing
-        Me.dtpFechaAgregoLote.Enabled = False
-        Me.dtpFechaAgregoLote.Location = New System.Drawing.Point(148, 280)
-        Me.dtpFechaAgregoLote.Margin = New System.Windows.Forms.Padding(4)
-        Me.dtpFechaAgregoLote.MenuManager = Me.RibbonControl
-        Me.dtpFechaAgregoLote.Name = "dtpFechaAgregoLote"
-        Me.dtpFechaAgregoLote.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.dtpFechaAgregoLote.Properties.Appearance.Options.UseBackColor = True
-        Me.dtpFechaAgregoLote.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaAgregoLote.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaAgregoLote.Size = New System.Drawing.Size(261, 22)
-        Me.dtpFechaAgregoLote.TabIndex = 91
-        '
-        'txtUsuarioAgregoLote
-        '
-        Me.txtUsuarioAgregoLote.Enabled = False
-        Me.txtUsuarioAgregoLote.Location = New System.Drawing.Point(148, 248)
-        Me.txtUsuarioAgregoLote.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtUsuarioAgregoLote.MenuManager = Me.RibbonControl
-        Me.txtUsuarioAgregoLote.Name = "txtUsuarioAgregoLote"
-        Me.txtUsuarioAgregoLote.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.txtUsuarioAgregoLote.Properties.Appearance.Options.UseBackColor = True
-        Me.txtUsuarioAgregoLote.Size = New System.Drawing.Size(261, 22)
-        Me.txtUsuarioAgregoLote.TabIndex = 87
-        '
-        'txtUsuarioModificoLote
-        '
-        Me.txtUsuarioModificoLote.Enabled = False
-        Me.txtUsuarioModificoLote.Location = New System.Drawing.Point(148, 316)
-        Me.txtUsuarioModificoLote.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtUsuarioModificoLote.MenuManager = Me.RibbonControl
-        Me.txtUsuarioModificoLote.Name = "txtUsuarioModificoLote"
-        Me.txtUsuarioModificoLote.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.txtUsuarioModificoLote.Properties.Appearance.Options.UseBackColor = True
-        Me.txtUsuarioModificoLote.Size = New System.Drawing.Size(261, 22)
-        Me.txtUsuarioModificoLote.TabIndex = 89
-        '
-        'dtpFechaModificoLote
-        '
-        Me.dtpFechaModificoLote.EditValue = Nothing
-        Me.dtpFechaModificoLote.Enabled = False
-        Me.dtpFechaModificoLote.Location = New System.Drawing.Point(148, 348)
-        Me.dtpFechaModificoLote.Margin = New System.Windows.Forms.Padding(4)
-        Me.dtpFechaModificoLote.MenuManager = Me.RibbonControl
-        Me.dtpFechaModificoLote.Name = "dtpFechaModificoLote"
-        Me.dtpFechaModificoLote.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.dtpFechaModificoLote.Properties.Appearance.Options.UseBackColor = True
-        Me.dtpFechaModificoLote.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaModificoLote.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaModificoLote.Size = New System.Drawing.Size(261, 22)
-        Me.dtpFechaModificoLote.TabIndex = 93
-        '
-        'cmbEstadoProducto
-        '
-        Me.cmbEstadoProducto.Enabled = False
-        Me.cmbEstadoProducto.Location = New System.Drawing.Point(148, 156)
-        Me.cmbEstadoProducto.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.cmbEstadoProducto.MenuManager = Me.RibbonControl
-        Me.cmbEstadoProducto.Name = "cmbEstadoProducto"
-        Me.cmbEstadoProducto.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.cmbEstadoProducto.Properties.Appearance.Options.UseBackColor = True
-        Me.cmbEstadoProducto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbEstadoProducto.Properties.NullText = "(Auto) en base a lote"
-        Me.cmbEstadoProducto.Properties.PopupView = Me.GridView6
-        Me.cmbEstadoProducto.Size = New System.Drawing.Size(261, 22)
-        Me.cmbEstadoProducto.TabIndex = 84
-        Me.cmbEstadoProducto.ToolTip = "Config = Activo =1 Bloqueada = 0 Sistema = 0 Despacho = 1 "
-        '
-        'GridView6
-        '
-        Me.GridView6.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
-        Me.GridView6.Name = "GridView6"
-        Me.GridView6.OptionsSelection.EnableAppearanceFocusedCell = False
-        Me.GridView6.OptionsView.ShowAutoFilterRow = True
-        Me.GridView6.OptionsView.ShowGroupPanel = False
-        '
-        'cmbLote
-        '
-        Me.cmbLote.Location = New System.Drawing.Point(148, 130)
-        Me.cmbLote.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.cmbLote.MenuManager = Me.RibbonControl
-        Me.cmbLote.Name = "cmbLote"
-        Me.cmbLote.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbLote.Properties.NullText = "Seleccione Lote"
-        Me.cmbLote.Properties.PopupView = Me.GridView5
-        Me.cmbLote.Size = New System.Drawing.Size(261, 22)
-        Me.cmbLote.TabIndex = 82
-        Me.cmbLote.ToolTip = "Config = Activo =1 Bloqueada = 0 Sistema = 0 Despacho = 1 "
-        '
-        'GridView5
-        '
-        Me.GridView5.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
-        Me.GridView5.Name = "GridView5"
-        Me.GridView5.OptionsSelection.EnableAppearanceFocusedCell = False
-        Me.GridView5.OptionsView.ShowAutoFilterRow = True
-        Me.GridView5.OptionsView.ShowGroupPanel = False
-        '
-        'grpLotesPermitidos
-        '
-        Me.grpLotesPermitidos.Controls.Add(Me.dgridLotesPermitidos)
-        Me.grpLotesPermitidos.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpLotesPermitidos.Location = New System.Drawing.Point(871, 0)
-        Me.grpLotesPermitidos.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.grpLotesPermitidos.Name = "grpLotesPermitidos"
-        Me.grpLotesPermitidos.Size = New System.Drawing.Size(625, 754)
-        Me.grpLotesPermitidos.TabIndex = 86
-        Me.grpLotesPermitidos.Text = "Lotes Permitidos"
-        '
-        'dgridLotesPermitidos
-        '
-        Me.dgridLotesPermitidos.Cursor = System.Windows.Forms.Cursors.Default
-        Me.dgridLotesPermitidos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridLotesPermitidos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.dgridLotesPermitidos.Location = New System.Drawing.Point(2, 28)
-        Me.dgridLotesPermitidos.MainView = Me.GridView4
-        Me.dgridLotesPermitidos.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.dgridLotesPermitidos.MenuManager = Me.RibbonControl
-        Me.dgridLotesPermitidos.Name = "dgridLotesPermitidos"
-        Me.dgridLotesPermitidos.Size = New System.Drawing.Size(621, 724)
-        Me.dgridLotesPermitidos.TabIndex = 0
-        Me.dgridLotesPermitidos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView4})
-        '
-        'GridView4
-        '
-        Me.GridView4.DetailHeight = 674
-        Me.GridView4.GridControl = Me.dgridLotesPermitidos
-        Me.GridView4.Name = "GridView4"
-        Me.GridView4.OptionsBehavior.Editable = False
-        Me.GridView4.OptionsView.ColumnAutoWidth = False
-        Me.GridView4.OptionsView.ShowFilterPanelMode = DevExpress.XtraGrid.Views.Base.ShowFilterPanelMode.Never
-        Me.GridView4.OptionsView.ShowGroupPanel = False
-        Me.GridView4.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.[True]
-        '
-        'grpLotesBloqueados
-        '
-        Me.grpLotesBloqueados.Controls.Add(Me.DgridLotesBloqueados)
-        Me.grpLotesBloqueados.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpLotesBloqueados.Location = New System.Drawing.Point(1621, 0)
-        Me.grpLotesBloqueados.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.grpLotesBloqueados.Name = "grpLotesBloqueados"
-        Me.grpLotesBloqueados.Size = New System.Drawing.Size(500, 754)
-        Me.grpLotesBloqueados.TabIndex = 85
-        Me.grpLotesBloqueados.Text = "Lotes Bloqueados"
-        '
-        'DgridLotesBloqueados
-        '
-        Me.DgridLotesBloqueados.Cursor = System.Windows.Forms.Cursors.Default
-        Me.DgridLotesBloqueados.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.DgridLotesBloqueados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.DgridLotesBloqueados.Location = New System.Drawing.Point(2, 28)
-        Me.DgridLotesBloqueados.MainView = Me.GridView3
-        Me.DgridLotesBloqueados.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.DgridLotesBloqueados.MenuManager = Me.RibbonControl
-        Me.DgridLotesBloqueados.Name = "DgridLotesBloqueados"
-        Me.DgridLotesBloqueados.Size = New System.Drawing.Size(496, 724)
-        Me.DgridLotesBloqueados.TabIndex = 0
-        Me.DgridLotesBloqueados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView3})
-        '
-        'GridView3
-        '
-        Me.GridView3.DetailHeight = 674
-        Me.GridView3.GridControl = Me.DgridLotesBloqueados
-        Me.GridView3.Name = "GridView3"
-        Me.GridView3.OptionsBehavior.Editable = False
-        Me.GridView3.OptionsView.ColumnAutoWidth = False
-        Me.GridView3.OptionsView.ShowFilterPanelMode = DevExpress.XtraGrid.Views.Base.ShowFilterPanelMode.Never
-        Me.GridView3.OptionsView.ShowGroupPanel = False
-        Me.GridView3.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.[True]
         '
         'frmCliente
         '

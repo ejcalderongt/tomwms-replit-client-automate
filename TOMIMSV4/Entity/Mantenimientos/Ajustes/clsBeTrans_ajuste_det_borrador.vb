@@ -50,5 +50,13 @@
     Public Property usuario_creacion As String
     Public Property fecha_modificacion As Nullable(Of DateTime)
     Public Property usuario_modificacion As String
-
+    Public Property Nombre_Presentacion As String
+    Public Property Factor As Double
+    Public Property UmBas As String
+    Public Property IdProductoTallaColor_origen As Integer
+    Public Property Color_origen As String
+    Public Property IdProductoTallaColor_destino As Integer
+    Public Property Talla_destino As String
+    Public Property Color_destino As String
+    Public Property Talla_origen As String
 End Class
