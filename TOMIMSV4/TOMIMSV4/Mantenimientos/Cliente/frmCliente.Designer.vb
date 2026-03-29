@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmCliente
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmCliente
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim IdEmpresaLabel As System.Windows.Forms.Label
@@ -64,6 +64,16 @@ Partial Class frmCliente
         Dim lblReferencia As System.Windows.Forms.Label
         Dim Label9 As System.Windows.Forms.Label
         Dim Label13 As System.Windows.Forms.Label
+        Dim lblIdClienteLote As System.Windows.Forms.Label
+        Dim Label25 As System.Windows.Forms.Label
+        Dim lblchkBloquear As System.Windows.Forms.Label
+        Dim Label20 As System.Windows.Forms.Label
+        Dim Label21 As System.Windows.Forms.Label
+        Dim Label22 As System.Windows.Forms.Label
+        Dim Label23 As System.Windows.Forms.Label
+        Dim Label18 As System.Windows.Forms.Label
+        Dim Label19 As System.Windows.Forms.Label
+        Dim Label24 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCliente))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -85,6 +95,8 @@ Partial Class frmCliente
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.GrpCliente = New DevExpress.XtraEditors.GroupControl()
+        Me.txtIdProductoEstadoDefecto = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView7 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.cmbBodegaAreaSAP = New DevExpress.XtraEditors.GridLookUpEdit()
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.txtIdUbicacionAbastecerCon = New DevExpress.XtraEditors.GridLookUpEdit()
@@ -172,6 +184,29 @@ Partial Class frmCliente
         Me.ToolStripPR = New System.Windows.Forms.ToolStrip()
         Me.cmdNewPR = New System.Windows.Forms.ToolStripButton()
         Me.cmdDesactivarPresentacion = New System.Windows.Forms.ToolStripButton()
+        Me.tabLotes = New DevExpress.XtraTab.XtraTabPage()
+        Me.grpMantLotes = New DevExpress.XtraEditors.GroupControl()
+        Me.txtIdClienteLote = New DevExpress.XtraEditors.TextEdit()
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.mnuNuevoLote = New System.Windows.Forms.ToolStripButton()
+        Me.mnuGuardarLote = New System.Windows.Forms.ToolStripButton()
+        Me.mnuEliminarLote = New System.Windows.Forms.ToolStripButton()
+        Me.chkLoteActivo = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.chkBloquear = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.dtpFechaAgregoLote = New DevExpress.XtraEditors.DateEdit()
+        Me.txtUsuarioAgregoLote = New DevExpress.XtraEditors.TextEdit()
+        Me.txtUsuarioModificoLote = New DevExpress.XtraEditors.TextEdit()
+        Me.dtpFechaModificoLote = New DevExpress.XtraEditors.DateEdit()
+        Me.cmbEstadoProducto = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.cmbLote = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView5 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.grpLotesPermitidos = New DevExpress.XtraEditors.GroupControl()
+        Me.dgridLotesPermitidos = New DevExpress.XtraGrid.GridControl()
+        Me.GridView4 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.grpLotesBloqueados = New DevExpress.XtraEditors.GroupControl()
+        Me.DgridLotesBloqueados = New DevExpress.XtraGrid.GridControl()
+        Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
         IdEmpresaLabel = New System.Windows.Forms.Label()
         CodigoLabel = New System.Windows.Forms.Label()
         Nombre_comercialLabel = New System.Windows.Forms.Label()
@@ -216,9 +251,21 @@ Partial Class frmCliente
         lblReferencia = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label13 = New System.Windows.Forms.Label()
+        lblIdClienteLote = New System.Windows.Forms.Label()
+        Label25 = New System.Windows.Forms.Label()
+        lblchkBloquear = New System.Windows.Forms.Label()
+        Label20 = New System.Windows.Forms.Label()
+        Label21 = New System.Windows.Forms.Label()
+        Label22 = New System.Windows.Forms.Label()
+        Label23 = New System.Windows.Forms.Label()
+        Label18 = New System.Windows.Forms.Label()
+        Label19 = New System.Windows.Forms.Label()
+        Label24 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrpCliente, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpCliente.SuspendLayout()
+        CType(Me.txtIdProductoEstadoDefecto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbBodegaAreaSAP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdUbicacionAbastecerCon.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -297,6 +344,31 @@ Partial Class frmCliente
         Me.clienteBodega.SuspendLayout()
         Me.DireccionesEntrega.SuspendLayout()
         Me.ToolStripPR.SuspendLayout()
+        Me.tabLotes.SuspendLayout()
+        CType(Me.grpMantLotes, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpMantLotes.SuspendLayout()
+        CType(Me.txtIdClienteLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.ToolStrip1.SuspendLayout()
+        CType(Me.chkLoteActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkBloquear.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtpFechaAgregoLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtpFechaAgregoLote.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtUsuarioAgregoLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtUsuarioModificoLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtpFechaModificoLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtpFechaModificoLote.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbEstadoProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView6, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView5, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grpLotesPermitidos, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpLotesPermitidos.SuspendLayout()
+        CType(Me.dgridLotesPermitidos, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView4, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grpLotesBloqueados, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpLotesBloqueados.SuspendLayout()
+        CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdEmpresaLabel
@@ -812,6 +884,121 @@ Partial Class frmCliente
         Label13.TabIndex = 83
         Label13.Text = "Área (Bodega SAP):"
         '
+        'lblIdClienteLote
+        '
+        lblIdClienteLote.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        lblIdClienteLote.AutoSize = True
+        lblIdClienteLote.Location = New System.Drawing.Point(39, 107)
+        lblIdClienteLote.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        lblIdClienteLote.Name = "lblIdClienteLote"
+        lblIdClienteLote.Size = New System.Drawing.Size(74, 16)
+        lblIdClienteLote.TabIndex = 99
+        lblIdClienteLote.Text = "Correlativo:"
+        '
+        'Label25
+        '
+        Label25.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label25.AutoSize = True
+        Label25.Location = New System.Drawing.Point(249, 217)
+        Label25.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label25.Name = "Label25"
+        Label25.Size = New System.Drawing.Size(46, 16)
+        Label25.TabIndex = 97
+        Label25.Text = "Activo:"
+        '
+        'lblchkBloquear
+        '
+        lblchkBloquear.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        lblchkBloquear.AutoSize = True
+        lblchkBloquear.Location = New System.Drawing.Point(249, 187)
+        lblchkBloquear.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        lblchkBloquear.Name = "lblchkBloquear"
+        lblchkBloquear.Size = New System.Drawing.Size(62, 16)
+        lblchkBloquear.TabIndex = 95
+        lblchkBloquear.Text = "Bloquear:"
+        '
+        'Label20
+        '
+        Label20.AutoSize = True
+        Label20.Location = New System.Drawing.Point(39, 283)
+        Label20.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label20.Name = "Label20"
+        Label20.Size = New System.Drawing.Size(91, 16)
+        Label20.TabIndex = 90
+        Label20.Text = "Fecha Agregó:"
+        '
+        'Label21
+        '
+        Label21.AutoSize = True
+        Label21.Location = New System.Drawing.Point(39, 319)
+        Label21.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label21.Name = "Label21"
+        Label21.Size = New System.Drawing.Size(106, 16)
+        Label21.TabIndex = 88
+        Label21.Text = "Usuario Modificó:"
+        '
+        'Label22
+        '
+        Label22.AutoSize = True
+        Label22.Location = New System.Drawing.Point(39, 251)
+        Label22.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label22.Name = "Label22"
+        Label22.Size = New System.Drawing.Size(100, 16)
+        Label22.TabIndex = 86
+        Label22.Text = "Usuario Agregó:"
+        '
+        'Label23
+        '
+        Label23.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label23.AutoSize = True
+        Label23.Location = New System.Drawing.Point(39, 351)
+        Label23.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label23.Name = "Label23"
+        Label23.Size = New System.Drawing.Size(97, 16)
+        Label23.TabIndex = 92
+        Label23.Text = "Fecha Modificó:"
+        '
+        'Label18
+        '
+        Label18.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label18.AutoSize = True
+        Label18.Location = New System.Drawing.Point(39, 133)
+        Label18.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label18.Name = "Label18"
+        Label18.Size = New System.Drawing.Size(36, 16)
+        Label18.TabIndex = 83
+        Label18.Text = "Lote:"
+        '
+        'Label19
+        '
+        Label19.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label19.AutoSize = True
+        Label19.Location = New System.Drawing.Point(39, 159)
+        Label19.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label19.Name = "Label19"
+        Label19.Size = New System.Drawing.Size(50, 16)
+        Label19.TabIndex = 85
+        Label19.Text = "Estado:"
+        '
+        'Label24
+        '
+        Label24.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label24.AutoSize = True
+        Label24.Location = New System.Drawing.Point(38, 507)
+        Label24.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label24.Name = "Label24"
+        Label24.Size = New System.Drawing.Size(212, 16)
+        Label24.TabIndex = 85
+        Label24.Text = "Estado producto de abastecimiento:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -956,6 +1143,8 @@ Partial Class frmCliente
         '
         'GrpCliente
         '
+        Me.GrpCliente.Controls.Add(Label24)
+        Me.GrpCliente.Controls.Add(Me.txtIdProductoEstadoDefecto)
         Me.GrpCliente.Controls.Add(Label13)
         Me.GrpCliente.Controls.Add(Me.cmbBodegaAreaSAP)
         Me.GrpCliente.Controls.Add(Label9)
@@ -994,6 +1183,26 @@ Partial Class frmCliente
         Me.GrpCliente.Name = "GrpCliente"
         Me.GrpCliente.Size = New System.Drawing.Size(1697, 603)
         Me.GrpCliente.TabIndex = 0
+        '
+        'txtIdProductoEstadoDefecto
+        '
+        Me.txtIdProductoEstadoDefecto.Location = New System.Drawing.Point(268, 504)
+        Me.txtIdProductoEstadoDefecto.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.txtIdProductoEstadoDefecto.MenuManager = Me.RibbonControl
+        Me.txtIdProductoEstadoDefecto.Name = "txtIdProductoEstadoDefecto"
+        Me.txtIdProductoEstadoDefecto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.txtIdProductoEstadoDefecto.Properties.PopupView = Me.GridView7
+        Me.txtIdProductoEstadoDefecto.Size = New System.Drawing.Size(376, 22)
+        Me.txtIdProductoEstadoDefecto.TabIndex = 84
+        Me.txtIdProductoEstadoDefecto.ToolTip = "Config = Activo =1 Bloqueada = 0 Sistema = 0 Despacho = 1 "
+        '
+        'GridView7
+        '
+        Me.GridView7.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
+        Me.GridView7.Name = "GridView7"
+        Me.GridView7.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.GridView7.OptionsView.ShowAutoFilterRow = True
+        Me.GridView7.OptionsView.ShowGroupPanel = False
         '
         'cmbBodegaAreaSAP
         '
@@ -1883,7 +2092,7 @@ Partial Class frmCliente
         Me.xtrtabClientes.SelectedTabPage = Me.datosCliente
         Me.xtrtabClientes.Size = New System.Drawing.Size(1699, 633)
         Me.xtrtabClientes.TabIndex = 0
-        Me.xtrtabClientes.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.datosCliente, Me.tiempoaceptacion, Me.clienteBodega, Me.DireccionesEntrega})
+        Me.xtrtabClientes.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.datosCliente, Me.tiempoaceptacion, Me.clienteBodega, Me.DireccionesEntrega, Me.tabLotes})
         '
         'datosCliente
         '
@@ -2245,6 +2454,8 @@ Partial Class frmCliente
         CType(Me.GrpCliente, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpCliente.ResumeLayout(False)
         Me.GrpCliente.PerformLayout()
+        CType(Me.txtIdProductoEstadoDefecto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbBodegaAreaSAP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdUbicacionAbastecerCon.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2329,6 +2540,33 @@ Partial Class frmCliente
         Me.DireccionesEntrega.PerformLayout()
         Me.ToolStripPR.ResumeLayout(False)
         Me.ToolStripPR.PerformLayout()
+        Me.tabLotes.ResumeLayout(False)
+        CType(Me.grpMantLotes, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpMantLotes.ResumeLayout(False)
+        Me.grpMantLotes.PerformLayout()
+        CType(Me.txtIdClienteLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
+        CType(Me.chkLoteActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkBloquear.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dtpFechaAgregoLote.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dtpFechaAgregoLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtUsuarioAgregoLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtUsuarioModificoLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dtpFechaModificoLote.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dtpFechaModificoLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbEstadoProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView6, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView5, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grpLotesPermitidos, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpLotesPermitidos.ResumeLayout(False)
+        CType(Me.dgridLotesPermitidos, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView4, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grpLotesBloqueados, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpLotesBloqueados.ResumeLayout(False)
+        CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2441,4 +2679,29 @@ Partial Class frmCliente
     Friend WithEvents GridView2 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents chkEsProveedor As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents cmdGuardarTodos As Button
+    Friend WithEvents tabLotes As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents grpMantLotes As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents txtIdClienteLote As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents ToolStrip1 As ToolStrip
+    Friend WithEvents mnuNuevoLote As ToolStripButton
+    Friend WithEvents mnuEliminarLote As ToolStripButton
+    Friend WithEvents chkLoteActivo As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents chkBloquear As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents dtpFechaAgregoLote As DevExpress.XtraEditors.DateEdit
+    Friend WithEvents txtUsuarioAgregoLote As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtUsuarioModificoLote As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents dtpFechaModificoLote As DevExpress.XtraEditors.DateEdit
+    Friend WithEvents grpLotesPermitidos As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents dgridLotesPermitidos As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView4 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents grpLotesBloqueados As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents DgridLotesBloqueados As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView3 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents cmbEstadoProducto As DevExpress.XtraEditors.GridLookUpEdit
+    Friend WithEvents GridView6 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents cmbLote As DevExpress.XtraEditors.GridLookUpEdit
+    Friend WithEvents GridView5 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents mnuGuardarLote As ToolStripButton
+    Friend WithEvents txtIdProductoEstadoDefecto As DevExpress.XtraEditors.GridLookUpEdit
+    Friend WithEvents GridView7 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class
