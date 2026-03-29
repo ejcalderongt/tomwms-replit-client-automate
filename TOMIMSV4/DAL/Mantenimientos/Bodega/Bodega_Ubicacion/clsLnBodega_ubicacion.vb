@@ -1140,5 +1140,61 @@ Public Class clsLnBodega_ubicacion
 
     End Function
 
+
+    Public Shared Function Get_Ubicaciones_Misma_Posicion(ByVal pIdBodega As Integer,
+                                                      ByVal pIdTramo As Integer,
+                                                      ByVal pIndiceX As Integer,
+                                                      ByVal pNivel As Integer,
+                                                      ByVal pIdUbicacionExcluir As Integer) As List(Of clsBeBodega_ubicacion)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * 
+                              FROM Bodega_ubicacion
+                              WHERE IdBodega = @IdBodega
+                                AND IdTramo = @IdTramo
+                                AND Indice_x = @IndiceX
+                                AND Nivel = @Nivel
+                                AND IdUbicacion <> @IdUbicacionExcluir
+                                AND Activo = 1"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdTramo", pIdTramo))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IndiceX", pIndiceX))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@Nivel", pNivel))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdUbicacionExcluir", pIdUbicacionExcluir))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Dim lReturn As New List(Of clsBeBodega_ubicacion)
+
+            For Each dr As DataRow In dt.Rows
+                Dim be As New clsBeBodega_ubicacion
+                Cargar(be, dr, lTransaction, lConnection)
+                lReturn.Add(be)
+            Next
+
+            lTransaction.Commit()
+            Return lReturn
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
 End Class
 
