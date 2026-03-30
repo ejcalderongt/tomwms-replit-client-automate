@@ -827,7 +827,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: " & pStockRes.IdUbicacion & " ubicacion anterior " & pStockRes.IdUbicacion_Anterior & "opoerador " & pMovimiento.IdOperadorBodega
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
                                                   pIdEmpresa:=pMovimiento.IdEmpresa,
                                                   pUsrAgr:=pMovimiento.Usuario_agr,

@@ -131,6 +131,7 @@ Partial Class frmAjusteStock
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.chkBorrador = New DevExpress.XtraBars.BarToggleSwitchItem()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -410,10 +411,10 @@ Partial Class frmAjusteStock
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 16
+        Me.RibbonControl.MaxItemId = 17
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -467,6 +468,7 @@ Partial Class frmAjusteStock
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEstadoEnviadoAERP)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuReimpresionEtiquetas)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAuditado)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkBorrador)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -1210,6 +1212,12 @@ Partial Class frmAjusteStock
         Me.GridView1.OptionsBehavior.ReadOnly = True
         Me.GridView1.OptionsFind.AlwaysVisible = True
         '
+        'chkBorrador
+        '
+        Me.chkBorrador.Caption = "Borrador"
+        Me.chkBorrador.Id = 16
+        Me.chkBorrador.Name = "chkBorrador"
+        '
         'frmAjusteStock
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -1367,4 +1375,5 @@ Partial Class frmAjusteStock
     Friend WithEvents colColor As DataGridViewComboBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
     Friend WithEvents lblCentroCosto As Label
+    Friend WithEvents chkBorrador As DevExpress.XtraBars.BarToggleSwitchItem
 End Class

@@ -4560,9 +4560,14 @@ Partial Public Class clsLnTrans_pe_enc
                                     Where(Function(d) d.ListaStockRes IsNot Nothing AndAlso d.ListaStockRes.Any()).
                                     ToList()
 
-            vIdRecepcion = registrosFiltrados.FirstOrDefault.ListaStockRes.FirstOrDefault.IdRecepcion
+            '#CKFK20260324 Agregue esta validación para que no de error de object not reference
+            If registrosFiltrados IsNot Nothing AndAlso registrosFiltrados.Count > 0 Then
 
-            Get_No_Contenedor_Ingreso = clsLnTrans_re_enc.Get_No_Contenedor_By_IdRecepcionEnc(vIdRecepcion, lConnection, lTransaction)
+                vIdRecepcion = registrosFiltrados.FirstOrDefault.ListaStockRes.FirstOrDefault.IdRecepcion
+
+                Get_No_Contenedor_Ingreso = clsLnTrans_re_enc.Get_No_Contenedor_By_IdRecepcionEnc(vIdRecepcion, lConnection, lTransaction)
+
+            End If
 
         Catch ex As Exception
             Throw ex

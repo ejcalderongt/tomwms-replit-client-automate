@@ -14,6 +14,7 @@ Public Class frmAjusteStock
     Private dtm, dtt As New DataTable
     Private BeAjusteDet As New clsBeTrans_ajuste_det
     Private lBeTransAjusteDet As New List(Of clsBeTrans_ajuste_det)
+    Private lBeTransAjusteDetBorrador As New List(Of clsBeTrans_ajuste_det_borrador)
     Private lBeTransMovimientos As New List(Of clsBeTrans_movimientos)
 
     Public Delegate Sub Listar_Ajustes()
@@ -171,8 +172,13 @@ Public Class frmAjusteStock
             txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Dir_Erp))
             txtCentroCostoDepERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Dep_Erp))
 
-            '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
-            lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            If chkBorrador.Checked Then
+                '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
+                lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            Else
+                '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
+                lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            End If
 
             Dim tipoajuste = 0
             If lBeTransAjusteDet IsNot Nothing Then
@@ -233,8 +239,9 @@ Public Class frmAjusteStock
 
             End Try
 
-            For Each vBeAjustDet As clsBeTrans_ajuste_det In lBeTransAjusteDet
+            Dim lDetalleCargar As List(Of clsBeTrans_ajuste_det) = Obtener_Detalle_A_Cargar()
 
+            For Each vBeAjustDet As clsBeTrans_ajuste_det In lDetalleCargar
                 '#CKFK 20210223 Agregué la bodega a la funciónGet_Nombre_Completo_By_IdUbicacion
                 Ubic = clsLnBodega_ubicacion.Get_Nombre_Completo_By_IdUbicacion(vBeAjustDet.IdUbicacion, AP.IdBodega, clsTrans.lConnection, clsTrans.lTransaction)
 
@@ -325,7 +332,6 @@ Public Class frmAjusteStock
                 End If
 
                 Application.DoEvents()
-
             Next
 
             clsTrans.Commit_Transaction()
@@ -691,7 +697,6 @@ Public Class frmAjusteStock
             End If
 
             Llenar_Motivo(rc, -1)
-            'Llenar_Tipo(rc, -1)
             Llenar_Tipo(rc, pTipoAjuste)
             Llena_Bodegas_ERP_Grid(rc, -1)
 
@@ -769,9 +774,9 @@ Public Class frmAjusteStock
             pStock_Reservado.Fecha_manufactura = pStock.Fecha_Manufactura
             pStock_Reservado.Atributo_Variante_1 = pStock.Atributo_Variante_1
             pStock_Reservado.IdBodega = pStock.IdBodega
-            'pStock_Reservado.Talla = pStock.Talla
-            'pStock_Reservado.Color = pStock.Color
-            'pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
+            pStock_Reservado.Talla = pStock.Talla
+            pStock_Reservado.Color = pStock.Color
+            pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
 
             clsLnStock_res.Insertar(pStock_Reservado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -2323,9 +2328,14 @@ Public Class frmAjusteStock
 
             Crear_Movimientos()
 
-            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
-                                                 lBeTransAjusteDet,
-                                                 lBeTransMovimientos)
+            If chkBorrador.Checked Then
+                clsLnTrans_ajuste_enc.Guardar_Borrador_Ajuste(pBeTransAjustEnc,
+                                                              lBeTransAjusteDet)
+            Else
+                clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
+                                                     lBeTransAjusteDet,
+                                                     lBeTransMovimientos)
+            End If
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
                 If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, True) > 0 Then
@@ -4413,4 +4423,73 @@ Public Class frmAjusteStock
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Function Obtener_Detalle_A_Cargar() As List(Of clsBeTrans_ajuste_det)
+
+        If lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0 Then
+            Return lBeTransAjusteDet
+        End If
+
+        Dim lReturn As New List(Of clsBeTrans_ajuste_det)
+
+        If lBeTransAjusteDetBorrador IsNot Nothing Then
+            For Each itemBorrador As clsBeTrans_ajuste_det_borrador In lBeTransAjusteDetBorrador
+                lReturn.Add(Convertir_Borrador_A_Detalle(itemBorrador))
+            Next
+        End If
+
+        Return lReturn
+
+    End Function
+
+    Private Function Convertir_Borrador_A_Detalle(ByVal item As clsBeTrans_ajuste_det_borrador) As clsBeTrans_ajuste_det
+
+        Dim oDet As New clsBeTrans_ajuste_det
+
+        With oDet
+            .IdAjusteDet = item.idajustedet
+            .IdAjusteEnc = item.idajusteenc
+            .IdStock = item.IdStock
+            .IdPropietarioBodega = item.IdPropietarioBodega
+            .IdProductoBodega = item.IdProductoBodega
+            .IdProductoEstado = item.IdProductoEstado
+            .IdPresentacion = item.IdPresentacion
+            .IdUnidadMedida = item.IdUnidadMedida
+            .IdUbicacion = item.IdUbicacion
+            .Lote_original = item.lote_original
+            .Lote_nuevo = item.lote_nuevo
+            .Fecha_vence_original = item.fecha_vence_original
+            .Fecha_vence_nueva = item.fecha_vence_nueva
+            .Peso_original = item.peso_original
+            .Peso_nuevo = item.peso_nuevo
+            .Cantidad_original = item.cantidad_original
+            .Cantidad_nueva = item.cantidad_nueva
+            .Codigo_producto = item.codigo_producto
+            .Nombre_producto = item.nombre_producto
+            .Idtipoajuste = item.idtipoajuste
+            .IdMotivoAjuste = item.idmotivoajuste
+            .Observacion = item.observacion
+            .Codigo_ajuste = item.codigo_ajuste
+            .Enviado = item.enviado
+            .IdBodegaERP = item.IdBodegaERP
+            .lic_plate = item.lic_plate
+            .referencia_ajuste_erp = item.referencia_ajuste_erp
+            .estado_ajuste_erp = item.estado_ajuste_erp
+            .UmBas = item.UmBas
+            .Factor = item.Factor
+            .Nombre_Presentacion = item.Nombre_Presentacion
+
+            .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen
+            .Talla_origen = item.Talla_origen
+            .Color_origen = item.Color_origen
+
+            .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino
+            .Talla_destino = item.Talla_destino
+            .Color_destino = item.Color_destino
+        End With
+
+        Return oDet
+
+    End Function
+
 End Class

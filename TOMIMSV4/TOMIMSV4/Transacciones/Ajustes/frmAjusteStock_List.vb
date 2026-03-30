@@ -18,7 +18,7 @@ Public Class frmAjusteStock_List
     Private Sub Listar_Ajustes()
         Try
 
-            Dgrid.DataSource = clsLnTrans_ajuste_enc.GetAll(dtpFechaDel.Value, dtpFechaAl.Value, AP.IdBodega)
+            Dgrid.DataSource = clsLnTrans_ajuste_enc.Get_All_VW(dtpFechaDel.Value, dtpFechaAl.Value, AP.IdBodega)
             GridView1.BestFitColumns()
 
             lblRegs.Caption = "Registros: " & GridView1.RowCount

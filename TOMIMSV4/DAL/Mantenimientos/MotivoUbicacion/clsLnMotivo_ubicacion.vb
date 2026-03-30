@@ -107,7 +107,6 @@ Public Class clsLnMotivo_ubicacion
 
             cmd.CommandType = CommandType.Text
 
-
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
@@ -124,6 +123,10 @@ Public Class clsLnMotivo_ubicacion
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeMotivo_ubicacion.Activo))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            If Not Es_Transaccion_Remota Then
+                lTransaction.Commit()
+            End If
 
             Return rowsAffected
 
@@ -164,6 +167,10 @@ Public Class clsLnMotivo_ubicacion
             cmd.Parameters.Add(New SqlParameter("@IDMOTIVOUBICACION", oBeMotivo_ubicacion.IdMotivoUbicacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            If Not Es_Transaccion_Remota Then
+                lTransaction.Commit()
+            End If
 
             Return rowsAffected
 
