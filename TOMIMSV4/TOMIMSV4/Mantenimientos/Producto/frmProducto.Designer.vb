@@ -490,6 +490,8 @@ Partial Class frmProducto
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.DetalleBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.NumericChartRangeControlClient1 = New DevExpress.XtraEditors.NumericChartRangeControlClient()
+        Me.cmbEtiquetaPresentacion = New DevExpress.XtraEditors.LookUpEdit()
+        Me.lblEtiquetaPresentacion = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -869,6 +871,7 @@ Partial Class frmProducto
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericChartRangeControlClient1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbEtiquetaPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -4002,6 +4005,8 @@ Partial Class frmProducto
         '
         'GrpPresentacion
         '
+        Me.GrpPresentacion.Controls.Add(Me.cmbEtiquetaPresentacion)
+        Me.GrpPresentacion.Controls.Add(Me.lblEtiquetaPresentacion)
         Me.GrpPresentacion.Controls.Add(Me.lblSistema)
         Me.GrpPresentacion.Controls.Add(Me.chkSistema)
         Me.GrpPresentacion.Controls.Add(Me.chkGeneraLPAuto)
@@ -5723,12 +5728,12 @@ Partial Class frmProducto
         Me.GrdImagen.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         GridLevelNode10.RelationName = "Level1"
         Me.GrdImagen.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode10})
-        Me.GrdImagen.Location = New System.Drawing.Point(2, 59)
+        Me.GrdImagen.Location = New System.Drawing.Point(2, 55)
         Me.GrdImagen.MainView = Me.GridViewImg
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(1116, 512)
+        Me.GrdImagen.Size = New System.Drawing.Size(1116, 516)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -5747,7 +5752,7 @@ Partial Class frmProducto
         Me.ToolStrip.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(1116, 31)
+        Me.ToolStrip.Size = New System.Drawing.Size(1116, 27)
         Me.ToolStrip.TabIndex = 0
         Me.ToolStrip.Text = "ToolStrip4"
         '
@@ -5757,7 +5762,7 @@ Partial Class frmProducto
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(29, 28)
+        Me.cmdAdd.Size = New System.Drawing.Size(29, 24)
         '
         'cmdDelete
         '
@@ -5765,7 +5770,7 @@ Partial Class frmProducto
         Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
         Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDelete.Name = "cmdDelete"
-        Me.cmdDelete.Size = New System.Drawing.Size(29, 28)
+        Me.cmdDelete.Size = New System.Drawing.Size(29, 24)
         '
         'Panel3
         '
@@ -5903,6 +5908,27 @@ Partial Class frmProducto
         '
         Me.DetalleBindingSource.DataMember = "Detalle"
         Me.DetalleBindingSource.DataSource = Me.DsResumenStockBindingSource
+        '
+        'cmbEtiquetaPresentacion
+        '
+        Me.cmbEtiquetaPresentacion.Location = New System.Drawing.Point(1048, 311)
+        Me.cmbEtiquetaPresentacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbEtiquetaPresentacion.MenuManager = Me.RibbonControl
+        Me.cmbEtiquetaPresentacion.Name = "cmbEtiquetaPresentacion"
+        Me.cmbEtiquetaPresentacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEtiquetaPresentacion.Properties.NullText = ""
+        Me.cmbEtiquetaPresentacion.Size = New System.Drawing.Size(190, 22)
+        Me.cmbEtiquetaPresentacion.TabIndex = 38
+        '
+        'lblEtiquetaPresentacion
+        '
+        Me.lblEtiquetaPresentacion.AutoSize = True
+        Me.lblEtiquetaPresentacion.Location = New System.Drawing.Point(941, 317)
+        Me.lblEtiquetaPresentacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblEtiquetaPresentacion.Name = "lblEtiquetaPresentacion"
+        Me.lblEtiquetaPresentacion.Size = New System.Drawing.Size(53, 16)
+        Me.lblEtiquetaPresentacion.TabIndex = 37
+        Me.lblEtiquetaPresentacion.Text = "Etiqueta"
         '
         'frmProducto
         '
@@ -6251,6 +6277,7 @@ Partial Class frmProducto
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericChartRangeControlClient1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbEtiquetaPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -6609,4 +6636,6 @@ Partial Class frmProducto
     Friend WithEvents dgridTallaColor As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView12 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents GridView13 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents cmbEtiquetaPresentacion As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents lblEtiquetaPresentacion As Label
 End Class
