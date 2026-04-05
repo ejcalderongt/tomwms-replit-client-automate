@@ -968,4 +968,207 @@ Public Class clsLnStock
 
     End Function
 
+    ''' <summary>
+    ''' Obtiene un stock específico por producto bodega, ubicación y lote
+    ''' </summary>
+    Public Shared Function Get_Single_By_ProductoBodega_Ubicacion_Lote(
+        idProductoBodega As Integer,
+        idUbicacion As Integer,
+        lote As String,
+        idBodega As Integer) As clsBeStock
+
+        Dim beStock As clsBeStock = Nothing
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim vSQL As String = "
+            SELECT TOP 1
+                IdStock,
+                IdBodega,
+                IdPropietarioBodega,
+                IdProductoBodega,
+                IdProductoEstado,
+                IdPresentacion,
+                IdUnidadMedida,
+                IdUbicacion,
+                IdUbicacion_anterior,
+                IdRecepcionEnc,
+                IdPedido,
+                IdPicking,
+                lote,
+                lic_plate,
+                serial,
+                CantidadSF AS Cantidad,
+                CantidadReservada AS Cantidad_Reservada,
+                factor,
+                peso,
+                fecha_ingreso,
+                fecha_vence,
+                añada,
+                EstadoUtilizable,
+                dañado AS Danado,
+                activo,
+                Pallet_No_Estandar,
+                Codigo AS Codigo_Producto,
+                Nombre AS Nombre_Producto,
+                UnidadMedida AS UMBas,
+                Presentacion AS Nombre_Presentacion,
+                ubicacion_picking,
+                Ubicacion_Nivel,
+                Ubicacion_Nombre,
+                Nombre_Completo,
+                Alto AS AltoUbicacion,
+                Largo AS LargoUbicacion,
+                Ancho AS AnchoUbicacion,
+                Alto_ubicacion,
+                Largo_ubicacion,
+                Ancho_ubicacion,
+                NomEstado,
+                CamasPorTarima,
+                CajasPorCama,
+                IdProductoTallaColor,
+                Nombre_Talla,
+                Nombre_Color,
+                Atributo_variante_1,
+                IdTramo,
+                IdIndiceRotacion
+            FROM vw_stock_res WITH (NOLOCK)
+            WHERE IdProductoBodega = @IdProductoBodega
+                AND IdUbicacion = @IdUbicacion
+                AND Lote = @Lote
+                AND IdBodega = @IdBodega
+                AND activo = 1"
+
+            Using cmd As New SqlCommand(vSQL, lConnection, lTransaction)
+                cmd.Parameters.AddWithValue("@IdProductoBodega", idProductoBodega)
+                cmd.Parameters.AddWithValue("@IdUbicacion", idUbicacion)
+                cmd.Parameters.AddWithValue("@Lote", lote)
+                cmd.Parameters.AddWithValue("@IdBodega", idBodega)
+
+                Using reader As SqlDataReader = cmd.ExecuteReader()
+                    If reader.Read() Then
+                        beStock = New clsBeStock()
+
+                        ' ─── IDs ─────────────────────────────────────────────────
+                        beStock.IdStock = Convert.ToInt32(reader("IdStock"))
+                        beStock.IdBodega = Convert.ToInt32(reader("IdBodega"))
+                        beStock.IdPropietarioBodega = Convert.ToInt32(reader("IdPropietarioBodega"))
+                        beStock.IdProductoBodega = Convert.ToInt32(reader("IdProductoBodega"))
+                        beStock.IdProductoEstado = Convert.ToInt32(reader("IdProductoEstado"))
+
+                        If reader("IdPresentacion") IsNot DBNull.Value Then
+                            beStock.IdPresentacion = Convert.ToInt32(reader("IdPresentacion"))
+                        End If
+
+                        beStock.IdUnidadMedida = Convert.ToInt32(reader("IdUnidadMedida"))
+                        beStock.IdUbicacion = Convert.ToInt32(reader("IdUbicacion"))
+
+                        If reader("IdUbicacion_anterior") IsNot DBNull.Value Then
+                            beStock.IdUbicacion_anterior = Convert.ToInt32(reader("IdUbicacion_anterior"))
+                        End If
+
+                        If reader("IdRecepcionEnc") IsNot DBNull.Value Then
+                            beStock.IdRecepcionEnc = Convert.ToInt32(reader("IdRecepcionEnc"))
+                        End If
+
+                        If reader("IdPedido") IsNot DBNull.Value Then
+                            beStock.IdPedidoEnc = Convert.ToInt32(reader("IdPedido"))
+                        End If
+
+                        If reader("IdPicking") IsNot DBNull.Value Then
+                            beStock.IdPickingEnc = Convert.ToInt32(reader("IdPicking"))
+                        End If
+
+                        ' ─── Texto ──────────────────────────────────────────────
+                        beStock.Lote = reader("lote").ToString()
+                        beStock.Lic_plate = If(reader("lic_plate") IsNot DBNull.Value, reader("lic_plate").ToString(), "")
+                        beStock.Serial = If(reader("serial") IsNot DBNull.Value, reader("serial").ToString(), "")
+                        beStock.Atributo_Variante_1 = If(reader("Atributo_variante_1") IsNot DBNull.Value, reader("Atributo_variante_1").ToString(), "")
+
+                        ' ─── Cantidades ─────────────────────────────────────────
+                        beStock.Cantidad = Convert.ToDouble(reader("Cantidad"))
+                        beStock.Cantidad_Reservada = Convert.ToDouble(reader("Cantidad_Reservada"))
+                        beStock.Peso = Convert.ToDouble(reader("peso"))
+
+                        ' ─── Fechas ────────────────────────────────────────────
+                        If reader("fecha_ingreso") IsNot DBNull.Value Then
+                            beStock.Fecha_Ingreso = Convert.ToDateTime(reader("fecha_ingreso"))
+                        End If
+
+                        If reader("fecha_vence") IsNot DBNull.Value Then
+                            beStock.Fecha_vence = Convert.ToDateTime(reader("fecha_vence"))
+                        End If
+
+                        If reader("añada") IsNot DBNull.Value Then
+                            beStock.Añada = Convert.ToInt32(reader("añada"))
+                        End If
+
+                        ' ─── Flags ─────────────────────────────────────────────
+                        beStock.Activo = Convert.ToBoolean(reader("activo"))
+                        beStock.Pallet_No_Estandar = Convert.ToBoolean(reader("Pallet_No_Estandar"))
+
+                        ' ─── Segunda parte partial ─────────────────────────────
+                        beStock.IsNew = False
+                        beStock.ProductoValidado = True
+                        beStock.UbicacionAnterior = If(reader("Ubicacion_Nombre") IsNot DBNull.Value, reader("Ubicacion_Nombre").ToString(), "")
+                        beStock.UbicacionPicking = Convert.ToBoolean(reader("ubicacion_picking"))
+                        beStock.UbicacionNivel = Convert.ToInt32(reader("Ubicacion_Nivel"))
+                        beStock.Talla = If(reader("Nombre_Talla") IsNot DBNull.Value, reader("Nombre_Talla").ToString(), "")
+                        beStock.Color = If(reader("Nombre_Color") IsNot DBNull.Value, reader("Nombre_Color").ToString(), "")
+
+                        If reader("IdProductoTallaColor") IsNot DBNull.Value Then
+                            beStock.IdProductoTallaColor = Convert.ToInt32(reader("IdProductoTallaColor"))
+                        End If
+
+                        ' ─── Objetos relacionados ──────────────────────────────
+
+                        ' Presentación
+                        beStock.Presentacion = New clsBeProducto_Presentacion()
+                        beStock.Presentacion.IdPresentacion = beStock.IdPresentacion
+                        beStock.Presentacion.Nombre = If(reader("Nombre_Presentacion") IsNot DBNull.Value, reader("Nombre_Presentacion").ToString(), "")
+                        beStock.Presentacion.Factor = Convert.ToDouble(reader("factor"))
+                        beStock.Presentacion.CajasPorCama = Convert.ToDouble(reader("CajasPorCama"))
+                        beStock.Presentacion.CamasPorTarima = Convert.ToDouble(reader("CamasPorTarima"))
+
+                        ' Producto
+                        beStock.Producto = New clsBeProducto()
+                        beStock.Producto.IdProducto = 0  ' No viene directamente, se puede obtener después
+                        beStock.Producto.Codigo = reader("Codigo_Producto").ToString()
+                        beStock.Producto.Nombre = reader("Nombre_Producto").ToString()
+                        beStock.Producto.Alto = Convert.ToDouble(reader("AltoUbicacion"))
+                        beStock.Producto.Largo = Convert.ToDouble(reader("LargoUbicacion"))
+                        beStock.Producto.Ancho = Convert.ToDouble(reader("AnchoUbicacion"))
+
+                        ' Producto Estado
+                        beStock.ProductoEstado = New clsBeProducto_estado()
+                        beStock.ProductoEstado.IdEstado = beStock.IdProductoEstado
+                        beStock.ProductoEstado.Nombre = If(reader("NomEstado") IsNot DBNull.Value, reader("NomEstado").ToString(), "")
+                        beStock.ProductoEstado.Utilizable = Convert.ToBoolean(reader("EstadoUtilizable"))
+                        beStock.ProductoEstado.Dañado = Convert.ToBoolean(reader("Danado"))
+
+                        ' Parámetros
+                        beStock.Parametros = New List(Of clsBeStock_parametro)()
+                    End If
+                End Using
+            End Using
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            clsLnLog_error_wms.Agregar_Error($"Error en Get_Single_By_ProductoBodega_Ubicacion_Lote: {ex.Message}")
+            Throw
+        Finally
+            If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
+                lConnection.Close()
+            End If
+        End Try
+
+        Return beStock
+    End Function
+
 End Class
