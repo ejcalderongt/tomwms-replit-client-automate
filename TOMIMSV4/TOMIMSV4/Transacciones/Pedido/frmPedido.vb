@@ -4714,8 +4714,7 @@ Public Class frmPedido
                         CantidadCell.ErrorText = result
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = result
                         e.Cancel = True
-                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso
-                        Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
+                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso txtReferencia.Text <> "" AndAlso Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
                         dgrid.Rows(CodProductoCell.RowIndex).ErrorText = ""
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = ""
                         dgrid.Rows(PesoCell.RowIndex).ErrorText = ""
