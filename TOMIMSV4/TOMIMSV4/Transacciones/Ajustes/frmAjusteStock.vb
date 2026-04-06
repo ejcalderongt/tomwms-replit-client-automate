@@ -4556,6 +4556,8 @@ Public Class frmAjusteStock
     End Sub
 
     Private Sub chkBorrador_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkBorrador.CheckedChanged
+
+        If IsLoading Then Exit Sub
         Try
             Dim fechaActual As Date = Now
             Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
@@ -4563,10 +4565,10 @@ Public Class frmAjusteStock
             If chkBorrador.Checked Then
                 '=========================================================
                 ' ESCENARIO 1: NORMAL -> BORRADOR
-                ' Si activan borrador, copiar siempre desde la lista normal
-                ' hacia la lista borrador, si hay datos.
+                ' Solo copiar si la lista borrador no existe o está vacía
                 '=========================================================
-                If lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0 Then
+                If (lBeTransAjusteDetBorrador Is Nothing OrElse lBeTransAjusteDetBorrador.Count = 0) AndAlso
+               (lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0) Then
 
                     lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
 
@@ -4579,10 +4581,10 @@ Public Class frmAjusteStock
             Else
                 '=========================================================
                 ' ESCENARIO 2: BORRADOR -> NORMAL
-                ' Si desactivan borrador, copiar siempre desde borrador
-                ' hacia la lista normal, si hay datos.
+                ' Solo copiar si la lista normal no existe o está vacía
                 '=========================================================
-                If lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0 Then
+                If (lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0) AndAlso
+               (lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0) Then
 
                     lBeTransAjusteDet = New List(Of clsBeTrans_ajuste_det)
 
@@ -4615,6 +4617,9 @@ Public Class frmAjusteStock
     End Sub
 
     Private Sub cmbTipoAjuste_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTipoAjuste.EditValueChanged
+
+        If IsLoading Then Exit Sub
+
         Try
 
             'GT22042022_1612: obtener el tipo de ajuste por defecto, si en caso no se usa seleccionMultiple
