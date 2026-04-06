@@ -570,6 +570,9 @@
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
       <DependentUpon>ReleaseNotesReview.vb</DependentUpon>
     </Compile>
