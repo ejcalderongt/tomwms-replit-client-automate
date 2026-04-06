@@ -3800,7 +3800,9 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeNuevoTransPickingUbic.IdStock = BePickingUbicStock.IdStock
                                 BeNuevoTransPickingUbic.IdStockRes = BeStockResNuevo.IdStockRes
                                 BeNuevoTransPickingUbic.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
-                                Insertar(BeNuevoTransPickingUbic, lConnection, ltransaction)
+                                Insertar(BeNuevoTransPickingUbic,
+                                         If(Es_Transaccion_Remota, pConnection, lConnection),
+                                         If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 vBePickingUbic.Cantidad_Solicitada = vBePickingUbic.Cantidad_Solicitada - IIf(vBePickingUbic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 vBePickingUbic.Cantidad_Solicitada = Math.Round(vBePickingUbic.Cantidad_Solicitada, 6)
@@ -6956,9 +6958,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
         Try
 
-
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
 
             If Not pListaPickingUbic Is Nothing Then
 
@@ -8384,5 +8384,88 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+
+    Public Shared Function Get_Op_Verifico_Defecto_By_IdPickingEnc(ByVal IdPickingEnc As Integer,
+                                                                   Optional pConnection As SqlConnection = Nothing,
+                                                                   Optional pTransaction As SqlTransaction = Nothing) As String
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As New SqlCommand
+
+        Get_Op_Verifico_Defecto_By_IdPickingEnc = ""
+
+        Try
+
+            Const sp As String = "select top(1) concat(op.nombres, ' ', op.apellidos) as Operador from trans_picking_ubic pu
+                                  join operador_bodega ob on pu.IdOperadorBodega_Verifico = ob.IdOperadorBodega
+                                  join operador op on ob.IdOperador = op.IdOperador Where(IdPickingEnc = @IdPickingEnc) "
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            End If
+
+            cmd = New SqlCommand(sp, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) _
+                With {.CommandType = CommandType.Text}
+
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", IdPickingEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_Op_Verifico_Defecto_By_IdPickingEnc = IIf(IsDBNull(dt.Rows(0).Item("Operador")), "", dt.Rows(0).Item("Operador"))
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Sub Get_Fechas_Picking(ByRef pFechaInicio As Date,
+                                         ByRef pFechaFin As Date,
+                                         ByVal pIdPedidoEnc As Integer,
+                                         ByVal pConnection As SqlConnection,
+                                         ByVal pTransaction As SqlTransaction)
+
+        Try
+
+            Dim vSQL As String = "SELECT  MIN(fecha_verificado) FechaInicio,MAX(fecha_verificado) FechaFin
+                                  FROM trans_picking_ubic 
+                                  WHERE IdPedidoEnc = @IdPedidoEnc "
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, pConnection)
+                lDataAdapter.SelectCommand.Transaction = pTransaction
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@IdPedidoEnc", pIdPedidoEnc))
+
+                Dim dt As New DataTable
+                lDataAdapter.Fill(dt)
+
+                If dt.Rows.Count = 1 Then
+                    pFechaInicio = IIf(IsDBNull(dt.Rows(0).Item("FechaInicio")), New Date(1900, 1, 1), dt.Rows(0).Item("FechaInicio"))
+                    pFechaFin = IIf(IsDBNull(dt.Rows(0).Item("FechaFin")), New Date(1900, 1, 1), dt.Rows(0).Item("FechaFin"))
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Sub
+
 
 End Class

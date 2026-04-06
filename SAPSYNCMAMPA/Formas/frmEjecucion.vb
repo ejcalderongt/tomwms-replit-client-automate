@@ -1,11 +1,17 @@
-﻿Imports System.Net
+﻿Imports System.Globalization
+Imports System.Net
+Imports System.Net.Http
 Imports System.Net.Security
 Imports System.Reflection
 Imports System.Security.Cryptography.X509Certificates
+Imports System.Text
+Imports System.Web.Routing
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
+Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
+Imports TOMWMS.clsSyncSapTrasladosEnvio
 
 Public Class frmEjecucion
     Public Property Interface_A_Ejecutar As Integer = -1
@@ -1428,9 +1434,7 @@ Public Class frmEjecucion
     End Sub
 
     Private Sub mnuEnviarFactDeudor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFactDeudor.ItemClick
-        '#CKFK20251105: Llamado al método para enviar las facturas de deudor cliente a SAP
-        'Solo se enviarán los campos de usuario
-
+        Enviar_Facturas_Deudor_Cliente(True)
     End Sub
 
     Private Sub mnuEnviarFactReservaCliente_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFactReservaCliente.ItemClick
@@ -1554,6 +1558,37 @@ Public Class frmEjecucion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
+        End Try
+
+    End Sub
+
+    Private Sub Enviar_Facturas_Deudor_Cliente(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar facturas de deudor de cliente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+
+                Dim unused = clsSyncSapFacturaDeudor.Enviar_Factura_Deudor_ClienteAsync(BeConfigEnc.Idbodega,
+                                                                                        lblprg, prg)
+            End If
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        Finally
+            procesoEnEjecucion = False
         End Try
 
     End Sub

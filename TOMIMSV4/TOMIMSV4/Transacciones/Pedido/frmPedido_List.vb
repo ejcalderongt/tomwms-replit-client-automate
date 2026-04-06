@@ -187,14 +187,20 @@ Public Class frmPedido_List
 
             Else
 
-                Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
-                                       dtpFechaDel.Value,
-                                       dtpFechaAl.Value,
-                                       chkAnulados.Checked,
-                                       AP.IdBodega,
-                                       chkDespachados.Checked,
-                                       chkSinExistencias.Checked,
-                                       chkSinExistenciasERP.Checked)
+                If chkTemporales.Checked Then
+                    Dt = clsLnTrans_pe_enc.GetAll_Tmp(AP.IdBodega,
+                                                  dtpFechaDel.Value,
+                                                  dtpFechaAl.Value)
+                Else
+                    Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
+                                              dtpFechaDel.Value,
+                                              dtpFechaAl.Value,
+                                              chkAnulados.Checked,
+                                              AP.IdBodega,
+                                              chkDespachados.Checked,
+                                              chkSinExistencias.Checked,
+                                              chkSinExistenciasERP.Checked)
+                End If
 
             End If
 
@@ -441,10 +447,12 @@ Public Class frmPedido_List
                             ' Asegurar que el pedido actual también esté incluido
                             AddPedido(pedidoActual)
 
-                            Cierra_Instancia_Previa(frmVerificacionBOF)
+                            Dim frmVerif As New frmVerificacionBOF
+
+                            Cierra_Instancia_Previa(frmVerif)
                             clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
-                            With frmVerificacionBOF
+                            With frmVerif
 
                                 .pBeListaPedidos = pBeListPedidos
                                 .InvokeListarPedidos = AddressOf Listar_Pedidos
@@ -1192,15 +1200,16 @@ Public Class frmPedido_List
                                                             Select Case pBePedidoEnc.IdTipoPedido
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
                                                                     Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                        loginResponse.SessionId, SapServiceLayerClient.baseUrl, 2)
+                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
                                                                     Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                        loginResponse.SessionId,
-                                                                                                                                        SapServiceLayerClient.baseUrl, 2)
+                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
                                                                     Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                                    loginResponse.SessionId,
-                                                                                                                                                    SapServiceLayerClient.baseUrl, 2)
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
+                                                                    Await clsSyncSapFacturaReservaCliente.Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                                  vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
 
                                                             End Select
 
@@ -1328,11 +1337,27 @@ Public Class frmPedido_List
 
                                                         Try
 
-                                                            If vInterfaceSAP Then
+                                                            If vInterfaceSAP AndAlso clsBD.Instancia.HANA_SL = "" Then
+
+                                                                Dim vArgumentosAEnviarAInterface As String = ""
+                                                                Dim tipoDocumento As New clsDataContractDI.tTipoDocumentoSalida
+
+                                                                tipoDocumento = pBePedidoEnc.IdTipoPedido
+
+                                                                Select Case tipoDocumento
+                                                                    Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
+                                                                        vArgumentosAEnviarAInterface = "12-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2-" & AP.HostName
+                                                                    Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
+                                                                        vArgumentosAEnviarAInterface = "8-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2-" & AP.HostName
+                                                                    Case clsDataContractDI.tTipoDocumentoSalida.Traslado_Por_Estados_SAP
+                                                                        vArgumentosAEnviarAInterface = "7-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2-" & AP.HostName
+                                                                End Select
+
                                                                 'EJC202403271301: Actualizar el estado enviado a WMS a 2, para que se peuda volver a importar.
-                                                                If Ejecutar_Interface("8-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2" & "-" & clsBD.Instancia.NombreInstancia, Me) Then
+                                                                If Ejecutar_Interface(vArgumentosAEnviarAInterface, Me) Then
                                                                     XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                                                                 End If
+
                                                             End If
 
                                                         Catch ex As Exception
@@ -1604,10 +1629,12 @@ Public Class frmPedido_List
 
         txtGuia.Text = ""
 
-        Cierra_Instancia_Previa(frmVerificacionBOF)
+        Dim frmVerif As New frmVerificacionBOF
+
+        Cierra_Instancia_Previa(frmVerif)
         clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
-        With frmVerificacionBOF
+        With frmVerif
             .pBeListaPedidos = pBeListPedidos
             .InvokeListarPedidos = AddressOf Listar_Pedidos
             .MdiParent = Nothing
@@ -1678,4 +1705,7 @@ Public Class frmPedido_List
         ToastNotificationsManager1.ShowNotification(toast)
     End Sub
 
+    Private Sub chkTemporales_CheckedChanged(sender As Object, e As ItemClickEventArgs) Handles chkTemporales.CheckedChanged
+        Listar_Pedidos()
+    End Sub
 End Class

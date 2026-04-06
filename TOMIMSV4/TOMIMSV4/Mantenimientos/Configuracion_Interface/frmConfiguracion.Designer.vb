@@ -49,15 +49,15 @@ Partial Class frmConfiguracion
         Dim Label28 As System.Windows.Forms.Label
         Dim Label29 As System.Windows.Forms.Label
         Dim Label30 As System.Windows.Forms.Label
+        Dim Label31 As System.Windows.Forms.Label
+        Dim Label32 As System.Windows.Forms.Label
+        Dim Label33 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfiguracion))
         Dim EditorButtonImageOptions1 As DevExpress.XtraEditors.Controls.EditorButtonImageOptions = New DevExpress.XtraEditors.Controls.EditorButtonImageOptions()
         Dim SerializableAppearanceObject1 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject2 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject3 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject4 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim Label31 As System.Windows.Forms.Label
-        Dim Label32 As System.Windows.Forms.Label
-        Dim Label33 As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -72,6 +72,9 @@ Partial Class frmConfiguracion
         Me.XtraTabControl = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
         Me.pnlEncabezado = New DevExpress.XtraEditors.PanelControl()
+        Me.nuCentroCostoDirERP = New System.Windows.Forms.NumericUpDown()
+        Me.nuCentroCostoDepERP = New System.Windows.Forms.NumericUpDown()
+        Me.nuCentroCostoERP = New System.Windows.Forms.NumericUpDown()
         Me.txtCodigoBodegaProrrateo1 = New DevExpress.XtraEditors.TextEdit()
         Me.txtCodigoBodegaProrrateo = New DevExpress.XtraEditors.TextEdit()
         Me.txtCodigoBodegaFacturacion = New DevExpress.XtraEditors.TextEdit()
@@ -162,9 +165,7 @@ Partial Class frmConfiguracion
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.HelpProvider1 = New System.Windows.Forms.HelpProvider()
-        Me.nuCentroCostoERP = New System.Windows.Forms.NumericUpDown()
-        Me.nuCentroCostoDepERP = New System.Windows.Forms.NumericUpDown()
-        Me.nuCentroCostoDirERP = New System.Windows.Forms.NumericUpDown()
+        Me.chkRequerirCentroCostoObligatario = New DevExpress.XtraEditors.CheckEdit()
         User_modLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_modLabel = New System.Windows.Forms.Label()
@@ -207,6 +208,9 @@ Partial Class frmConfiguracion
         Me.XtraTabPage1.SuspendLayout()
         CType(Me.pnlEncabezado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlEncabezado.SuspendLayout()
+        CType(Me.nuCentroCostoDirERP, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nuCentroCostoDepERP, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nuCentroCostoERP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoBodegaProrrateo1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoBodegaProrrateo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoBodegaFacturacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -277,9 +281,7 @@ Partial Class frmConfiguracion
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.nuCentroCostoERP, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nuCentroCostoDepERP, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nuCentroCostoDirERP, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkRequerirCentroCostoObligatario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_modLabel
@@ -593,6 +595,39 @@ Partial Class frmConfiguracion
         Label30.TabIndex = 72
         Label30.Text = "Código bodega prorrateo1:"
         '
+        'Label31
+        '
+        Label31.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label31.AutoSize = True
+        Label31.Location = New System.Drawing.Point(1123, 75)
+        Label31.Name = "Label31"
+        Label31.Size = New System.Drawing.Size(115, 16)
+        Label31.TabIndex = 75
+        Label31.Text = "Filtro centro costo:"
+        '
+        'Label32
+        '
+        Label32.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label32.AutoSize = True
+        Label32.Location = New System.Drawing.Point(1123, 111)
+        Label32.Name = "Label32"
+        Label32.Size = New System.Drawing.Size(151, 16)
+        Label32.TabIndex = 77
+        Label32.Text = "Filtro depto centro costo:"
+        '
+        'Label33
+        '
+        Label33.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label33.AutoSize = True
+        Label33.Location = New System.Drawing.Point(1123, 147)
+        Label33.Name = "Label33"
+        Label33.Size = New System.Drawing.Size(170, 16)
+        Label33.TabIndex = 79
+        Label33.Text = "Filtro dirección centro costo:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -708,6 +743,7 @@ Partial Class frmConfiguracion
         Me.pnlEncabezado.AllowTouchScroll = True
         Me.pnlEncabezado.AutoSize = True
         Me.pnlEncabezado.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.pnlEncabezado.Controls.Add(Me.chkRequerirCentroCostoObligatario)
         Me.pnlEncabezado.Controls.Add(Label33)
         Me.pnlEncabezado.Controls.Add(Me.nuCentroCostoDirERP)
         Me.pnlEncabezado.Controls.Add(Label32)
@@ -788,6 +824,30 @@ Partial Class frmConfiguracion
         Me.pnlEncabezado.Name = "pnlEncabezado"
         Me.pnlEncabezado.Size = New System.Drawing.Size(1507, 589)
         Me.pnlEncabezado.TabIndex = 0
+        '
+        'nuCentroCostoDirERP
+        '
+        Me.nuCentroCostoDirERP.Location = New System.Drawing.Point(1313, 143)
+        Me.nuCentroCostoDirERP.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
+        Me.nuCentroCostoDirERP.Name = "nuCentroCostoDirERP"
+        Me.nuCentroCostoDirERP.Size = New System.Drawing.Size(135, 23)
+        Me.nuCentroCostoDirERP.TabIndex = 78
+        '
+        'nuCentroCostoDepERP
+        '
+        Me.nuCentroCostoDepERP.Location = New System.Drawing.Point(1313, 107)
+        Me.nuCentroCostoDepERP.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
+        Me.nuCentroCostoDepERP.Name = "nuCentroCostoDepERP"
+        Me.nuCentroCostoDepERP.Size = New System.Drawing.Size(135, 23)
+        Me.nuCentroCostoDepERP.TabIndex = 76
+        '
+        'nuCentroCostoERP
+        '
+        Me.nuCentroCostoERP.Location = New System.Drawing.Point(1313, 73)
+        Me.nuCentroCostoERP.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
+        Me.nuCentroCostoERP.Name = "nuCentroCostoERP"
+        Me.nuCentroCostoERP.Size = New System.Drawing.Size(135, 23)
+        Me.nuCentroCostoERP.TabIndex = 74
         '
         'txtCodigoBodegaProrrateo1
         '
@@ -1753,62 +1813,15 @@ Partial Class frmConfiguracion
         Me.DockPanel1_Container.Size = New System.Drawing.Size(1101, 75)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'Label31
+        'chkRequerirCentroCostoObligatario
         '
-        Label31.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label31.AutoSize = True
-        Label31.Location = New System.Drawing.Point(1123, 75)
-        Label31.Name = "Label31"
-        Label31.Size = New System.Drawing.Size(115, 16)
-        Label31.TabIndex = 75
-        Label31.Text = "Filtro centro costo:"
-        '
-        'nuCentroCostoERP
-        '
-        Me.nuCentroCostoERP.Location = New System.Drawing.Point(1313, 73)
-        Me.nuCentroCostoERP.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
-        Me.nuCentroCostoERP.Name = "nuCentroCostoERP"
-        Me.nuCentroCostoERP.Size = New System.Drawing.Size(135, 23)
-        Me.nuCentroCostoERP.TabIndex = 74
-        '
-        'Label32
-        '
-        Label32.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label32.AutoSize = True
-        Label32.Location = New System.Drawing.Point(1123, 111)
-        Label32.Name = "Label32"
-        Label32.Size = New System.Drawing.Size(151, 16)
-        Label32.TabIndex = 77
-        Label32.Text = "Filtro depto centro costo:"
-        '
-        'nuCentroCostoDepERP
-        '
-        Me.nuCentroCostoDepERP.Location = New System.Drawing.Point(1313, 107)
-        Me.nuCentroCostoDepERP.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
-        Me.nuCentroCostoDepERP.Name = "nuCentroCostoDepERP"
-        Me.nuCentroCostoDepERP.Size = New System.Drawing.Size(135, 23)
-        Me.nuCentroCostoDepERP.TabIndex = 76
-        '
-        'Label33
-        '
-        Label33.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label33.AutoSize = True
-        Label33.Location = New System.Drawing.Point(1123, 147)
-        Label33.Name = "Label33"
-        Label33.Size = New System.Drawing.Size(170, 16)
-        Label33.TabIndex = 79
-        Label33.Text = "Filtro dirección centro costo:"
-        '
-        'nuCentroCostoDirERP
-        '
-        Me.nuCentroCostoDirERP.Location = New System.Drawing.Point(1313, 143)
-        Me.nuCentroCostoDirERP.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
-        Me.nuCentroCostoDirERP.Name = "nuCentroCostoDirERP"
-        Me.nuCentroCostoDirERP.Size = New System.Drawing.Size(135, 23)
-        Me.nuCentroCostoDirERP.TabIndex = 78
+        Me.chkRequerirCentroCostoObligatario.Location = New System.Drawing.Point(1122, 516)
+        Me.chkRequerirCentroCostoObligatario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.chkRequerirCentroCostoObligatario.MenuManager = Me.RibbonControl
+        Me.chkRequerirCentroCostoObligatario.Name = "chkRequerirCentroCostoObligatario"
+        Me.chkRequerirCentroCostoObligatario.Properties.Caption = "RequerirCentro Costo obligatorio"
+        Me.chkRequerirCentroCostoObligatario.Size = New System.Drawing.Size(256, 24)
+        Me.chkRequerirCentroCostoObligatario.TabIndex = 80
         '
         'frmConfiguracion
         '
@@ -1837,6 +1850,9 @@ Partial Class frmConfiguracion
         CType(Me.pnlEncabezado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlEncabezado.ResumeLayout(False)
         Me.pnlEncabezado.PerformLayout()
+        CType(Me.nuCentroCostoDirERP, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nuCentroCostoDepERP, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nuCentroCostoERP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoBodegaProrrateo1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoBodegaProrrateo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoBodegaFacturacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1910,9 +1926,7 @@ Partial Class frmConfiguracion
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.nuCentroCostoERP, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nuCentroCostoDepERP, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nuCentroCostoDirERP, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkRequerirCentroCostoObligatario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2025,4 +2039,5 @@ Partial Class frmConfiguracion
     Friend WithEvents nuCentroCostoDirERP As NumericUpDown
     Friend WithEvents nuCentroCostoDepERP As NumericUpDown
     Friend WithEvents nuCentroCostoERP As NumericUpDown
+    Friend WithEvents chkRequerirCentroCostoObligatario As DevExpress.XtraEditors.CheckEdit
 End Class

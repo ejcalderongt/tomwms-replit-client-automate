@@ -102,7 +102,7 @@ Partial Class frmPedido_List
         Me.RibbonControl.AutoSaveLayoutToXml = True
         Me.RibbonControl.AutoSaveLayoutToXmlPath = "frmPedidosListRibbonSettings.xml"
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImportarExcel, Me.BarButtonItem1, Me.cmdImprimir, Me.mnuMI3Sync, Me.BarCheckItem2, Me.chkAnulados, Me.mnuEliminarLayoutGrid, Me.chkDespachados, Me.chkMostrarGridDetalle, Me.mnuGuardarLayoutGrid, Me.mnuEliminarPedido, Me.mnuExportarExcel, Me.chkSinExistencias, Me.chkSinExistenciasERP, Me.chkTemporales})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.lblRegs, Me.cmdImportarExcel, Me.BarButtonItem1, Me.cmdImprimir, Me.mnuMI3Sync, Me.BarCheckItem2, Me.chkAnulados, Me.mnuEliminarLayoutGrid, Me.chkDespachados, Me.chkMostrarGridDetalle, Me.mnuGuardarLayoutGrid, Me.mnuEliminarPedido, Me.mnuExportarExcel, Me.chkSinExistencias, Me.chkSinExistenciasERP, Me.chkTemporales})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 23
@@ -473,7 +473,7 @@ Partial Class frmPedido_List
         Me.dgridDetalle.MenuManager = Me.RibbonControl
         Me.dgridDetalle.Name = "dgridDetalle"
         Me.dgridDetalle.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemPictureEdit2})
-        Me.dgridDetalle.Size = New System.Drawing.Size(1345, 396)
+        Me.dgridDetalle.Size = New System.Drawing.Size(150, 46)
         Me.dgridDetalle.TabIndex = 7
         Me.dgridDetalle.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewDetallePedido})
         Me.dgridDetalle.Visible = False
@@ -517,7 +517,6 @@ Partial Class frmPedido_List
         'ToastNotificationsManager1
         '
         Me.ToastNotificationsManager1.ApplicationId = "TOM_WMS"
-        Me.ToastNotificationsManager1.Notifications.AddRange(New DevExpress.XtraBars.ToastNotifications.IToastNotificationProperties() {})
         '
         'frmPedido_List
         '
