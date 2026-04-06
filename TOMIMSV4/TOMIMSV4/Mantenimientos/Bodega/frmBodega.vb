@@ -1305,6 +1305,8 @@ Public Class frmBodega
                 cmbEstadoDefectoRack.EditValue = 0
             End If
 
+            chkBodegaClienteAjusteByB.Checked = pBeBodega.Bodega_Cliente_Ajuste_ByB
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -1555,6 +1557,9 @@ Public Class frmBodega
             Else
                 pBeBodega.Estado_Defecto_Rack = 0
             End If
+
+            pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
+
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1793,6 +1798,7 @@ Public Class frmBodega
                 Else
                     pBeBodega.Estado_Defecto_Rack = 0
                 End If
+                pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
 
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 

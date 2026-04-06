@@ -42,6 +42,7 @@ Partial Class frmOperador_List
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
         Me.cmdImprimir = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdImportarExcel = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdListaResoluciones = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -50,7 +51,6 @@ Partial Class frmOperador_List
         Me.RibbonPageGroup4 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.Dgrid = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.cmdListaResoluciones = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RepositoryItemButtonEdit2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemImageEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -67,7 +67,7 @@ Partial Class frmOperador_List
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.BarSubItem1, Me.BarEditItem1, Me.RibbonGalleryBarItem1, Me.BarSubItem2, Me.chkActivos, Me.BarListItem1, Me.mnuNuevo, Me.BarEditItem2, Me.mmuActualizar, Me.mnuSalir, Me.lblRegs, Me.cmdImprimir, Me.cmdImportarExcel, Me.cmdListaResoluciones})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.BarSubItem1, Me.BarEditItem1, Me.RibbonGalleryBarItem1, Me.BarSubItem2, Me.chkActivos, Me.BarListItem1, Me.mnuNuevo, Me.BarEditItem2, Me.mmuActualizar, Me.mnuSalir, Me.lblRegs, Me.cmdImprimir, Me.cmdImportarExcel, Me.cmdListaResoluciones})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 17
@@ -176,6 +176,13 @@ Partial Class frmOperador_List
         Me.cmdImportarExcel.Name = "cmdImportarExcel"
         Me.cmdImportarExcel.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
         '
+        'cmdListaResoluciones
+        '
+        Me.cmdListaResoluciones.Caption = "Lista Resoluciones"
+        Me.cmdListaResoluciones.Id = 16
+        Me.cmdListaResoluciones.ImageOptions.SvgImage = CType(resources.GetObject("cmdListaResoluciones.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdListaResoluciones.Name = "cmdListaResoluciones"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup3})
@@ -236,14 +243,8 @@ Partial Class frmOperador_List
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.Editable = False
         Me.GridView1.OptionsFind.AlwaysVisible = True
+        Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
-        '
-        'cmdListaResoluciones
-        '
-        Me.cmdListaResoluciones.Caption = "Lista Resoluciones"
-        Me.cmdListaResoluciones.Id = 16
-        Me.cmdListaResoluciones.ImageOptions.SvgImage = CType(resources.GetObject("cmdListaResoluciones.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdListaResoluciones.Name = "cmdListaResoluciones"
         '
         'frmOperador_List
         '

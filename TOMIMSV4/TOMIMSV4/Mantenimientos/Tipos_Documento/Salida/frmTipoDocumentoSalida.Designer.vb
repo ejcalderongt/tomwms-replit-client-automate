@@ -83,6 +83,9 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
+        Me.chkVerificacionImagenBOF = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.chkGeneraGuiaRemision = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.chkAsignarTodosOperadores = New DevExpress.XtraEditors.ToggleSwitch()
         NombreLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -139,6 +142,9 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
+        CType(Me.chkVerificacionImagenBOF.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkAsignarTodosOperadores.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'NombreLabel
@@ -221,7 +227,7 @@ Partial Class frmTipoDocumentoSalida
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1266, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1239, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
@@ -286,11 +292,11 @@ Partial Class frmTipoDocumentoSalida
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 939)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 854)
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1266, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1239, 30)
         '
         'GroupControl1
         '
@@ -301,7 +307,7 @@ Partial Class frmTipoDocumentoSalida
         Me.GroupControl1.Location = New System.Drawing.Point(0, 193)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1266, 720)
+        Me.GroupControl1.Size = New System.Drawing.Size(1239, 635)
         Me.GroupControl1.TabIndex = 0
         Me.GroupControl1.Text = "Datos tipo documento salida"
         '
@@ -318,7 +324,7 @@ Partial Class frmTipoDocumentoSalida
         Me.GroupControlComportamientoEnTransferenciasGeneralmente.Location = New System.Drawing.Point(2, 500)
         Me.GroupControlComportamientoEnTransferenciasGeneralmente.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControlComportamientoEnTransferenciasGeneralmente.Name = "GroupControlComportamientoEnTransferenciasGeneralmente"
-        Me.GroupControlComportamientoEnTransferenciasGeneralmente.Size = New System.Drawing.Size(897, 218)
+        Me.GroupControlComportamientoEnTransferenciasGeneralmente.Size = New System.Drawing.Size(901, 218)
         Me.GroupControlComportamientoEnTransferenciasGeneralmente.TabIndex = 18
         Me.GroupControlComportamientoEnTransferenciasGeneralmente.Text = "Comportamiento en transferencias (Generalmente)"
         '
@@ -390,6 +396,8 @@ Partial Class frmTipoDocumentoSalida
         '
         'grpGenerales
         '
+        Me.grpGenerales.Controls.Add(Me.chkAsignarTodosOperadores)
+        Me.grpGenerales.Controls.Add(Me.chkGeneraGuiaRemision)
         Me.grpGenerales.Controls.Add(Me.chkEmpaqueTarima)
         Me.grpGenerales.Controls.Add(Me.GroupBox3)
         Me.grpGenerales.Controls.Add(Me.GroupBox2)
@@ -412,7 +420,7 @@ Partial Class frmTipoDocumentoSalida
         Me.grpGenerales.Location = New System.Drawing.Point(2, 28)
         Me.grpGenerales.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpGenerales.Name = "grpGenerales"
-        Me.grpGenerales.Size = New System.Drawing.Size(897, 472)
+        Me.grpGenerales.Size = New System.Drawing.Size(901, 472)
         Me.grpGenerales.TabIndex = 21
         '
         'chkEmpaqueTarima
@@ -432,9 +440,9 @@ Partial Class frmTipoDocumentoSalida
         Me.GroupBox3.Controls.Add(Me.cmbPropietario)
         Me.GroupBox3.Controls.Add(Me.lblEstado)
         Me.GroupBox3.Controls.Add(Me.cmbEstado)
-        Me.GroupBox3.Location = New System.Drawing.Point(563, 353)
+        Me.GroupBox3.Location = New System.Drawing.Point(563, 339)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(327, 107)
+        Me.GroupBox3.Size = New System.Drawing.Size(327, 121)
         Me.GroupBox3.TabIndex = 31
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Estado default producto"
@@ -489,11 +497,12 @@ Partial Class frmTipoDocumentoSalida
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.chkVerificacionImagenBOF)
         Me.GroupBox2.Controls.Add(Me.chkFotografiaVerificacion)
         Me.GroupBox2.Controls.Add(Me.chkVerificar)
-        Me.GroupBox2.Location = New System.Drawing.Point(307, 353)
+        Me.GroupBox2.Location = New System.Drawing.Point(308, 339)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(250, 107)
+        Me.GroupBox2.Size = New System.Drawing.Size(249, 121)
         Me.GroupBox2.TabIndex = 30
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Verificacion"
@@ -524,9 +533,9 @@ Partial Class frmTipoDocumentoSalida
         '
         Me.GroupBox1.Controls.Add(Me.chkMoverAMuelle)
         Me.GroupBox1.Controls.Add(Me.chkEscanearMuellePicking)
-        Me.GroupBox1.Location = New System.Drawing.Point(22, 353)
+        Me.GroupBox1.Location = New System.Drawing.Point(55, 339)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(279, 107)
+        Me.GroupBox1.Size = New System.Drawing.Size(243, 121)
         Me.GroupBox1.TabIndex = 29
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Picking"
@@ -636,7 +645,7 @@ Partial Class frmTipoDocumentoSalida
         Me.txtObservacion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.txtObservacion.MenuManager = Me.RibbonControl
         Me.txtObservacion.Name = "txtObservacion"
-        Me.txtObservacion.Size = New System.Drawing.Size(284, 123)
+        Me.txtObservacion.Size = New System.Drawing.Size(284, 146)
         Me.txtObservacion.TabIndex = 20
         '
         'chkRequiereDocumentoRef
@@ -697,10 +706,10 @@ Partial Class frmTipoDocumentoSalida
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Controls.Add(Me.chkImprimirBarrasPicking)
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Controls.Add(Me.chkReservaStock)
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Dock = System.Windows.Forms.DockStyle.Right
-        Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Location = New System.Drawing.Point(899, 28)
+        Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Location = New System.Drawing.Point(903, 28)
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Name = "GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario"
-        Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Size = New System.Drawing.Size(365, 690)
+        Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Size = New System.Drawing.Size(334, 605)
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.TabIndex = 13
         Me.GroupControlParametrosDeSoftwareNoPersonalizadosPorUsuario.Text = "Parámetros de Software (No personalizados por usuario)"
         '
@@ -797,10 +806,10 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
         Me.hideContainerBottom.Controls.Add(Me.DockPanel1)
         Me.hideContainerBottom.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.hideContainerBottom.Location = New System.Drawing.Point(0, 913)
+        Me.hideContainerBottom.Location = New System.Drawing.Point(0, 828)
         Me.hideContainerBottom.Margin = New System.Windows.Forms.Padding(4)
         Me.hideContainerBottom.Name = "hideContainerBottom"
-        Me.hideContainerBottom.Size = New System.Drawing.Size(1266, 26)
+        Me.hideContainerBottom.Size = New System.Drawing.Size(1239, 26)
         '
         'DockPanel1
         '
@@ -833,11 +842,44 @@ Partial Class frmTipoDocumentoSalida
         Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 90)
         Me.DockPanel1_Container.TabIndex = 0
         '
+        'chkVerificacionImagenBOF
+        '
+        Me.chkVerificacionImagenBOF.Location = New System.Drawing.Point(17, 92)
+        Me.chkVerificacionImagenBOF.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkVerificacionImagenBOF.MenuManager = Me.RibbonControl
+        Me.chkVerificacionImagenBOF.Name = "chkVerificacionImagenBOF"
+        Me.chkVerificacionImagenBOF.Properties.OffText = "No verificar imagen en BOF"
+        Me.chkVerificacionImagenBOF.Properties.OnText = "Verificar con imagen en BOF"
+        Me.chkVerificacionImagenBOF.Size = New System.Drawing.Size(223, 24)
+        Me.chkVerificacionImagenBOF.TabIndex = 13
+        '
+        'chkGeneraGuiaRemision
+        '
+        Me.chkGeneraGuiaRemision.Location = New System.Drawing.Point(85, 273)
+        Me.chkGeneraGuiaRemision.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkGeneraGuiaRemision.MenuManager = Me.RibbonControl
+        Me.chkGeneraGuiaRemision.Name = "chkGeneraGuiaRemision"
+        Me.chkGeneraGuiaRemision.Properties.OffText = "No genera guía remisión"
+        Me.chkGeneraGuiaRemision.Properties.OnText = "Genera guía remisión"
+        Me.chkGeneraGuiaRemision.Size = New System.Drawing.Size(222, 24)
+        Me.chkGeneraGuiaRemision.TabIndex = 33
+        '
+        'chkAsignarTodosOperadores
+        '
+        Me.chkAsignarTodosOperadores.Location = New System.Drawing.Point(85, 305)
+        Me.chkAsignarTodosOperadores.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkAsignarTodosOperadores.MenuManager = Me.RibbonControl
+        Me.chkAsignarTodosOperadores.Name = "chkAsignarTodosOperadores"
+        Me.chkAsignarTodosOperadores.Properties.OffText = "No asignar todos los operadores"
+        Me.chkAsignarTodosOperadores.Properties.OnText = "Asignar todos los operadores"
+        Me.chkAsignarTodosOperadores.Size = New System.Drawing.Size(244, 24)
+        Me.chkAsignarTodosOperadores.TabIndex = 34
+        '
         'frmTipoDocumentoSalida
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1266, 969)
+        Me.ClientSize = New System.Drawing.Size(1239, 884)
         Me.Controls.Add(Me.GroupControl1)
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -902,6 +944,9 @@ Partial Class frmTipoDocumentoSalida
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
+        CType(Me.chkVerificacionImagenBOF.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkAsignarTodosOperadores.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -962,4 +1007,7 @@ Partial Class frmTipoDocumentoSalida
     Friend WithEvents chkRecibirProductoAutoBodegaDestino As DevExpress.XtraEditors.ToggleSwitch
     Friend WithEvents chkEmpaqueTarima As DevExpress.XtraEditors.ToggleSwitch
     Friend WithEvents chkTransferirUbicacion As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents chkVerificacionImagenBOF As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents chkAsignarTodosOperadores As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents chkGeneraGuiaRemision As DevExpress.XtraEditors.ToggleSwitch
 End Class

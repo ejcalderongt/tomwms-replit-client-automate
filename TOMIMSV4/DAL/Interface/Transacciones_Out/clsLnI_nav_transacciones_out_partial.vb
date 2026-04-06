@@ -2498,7 +2498,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2543,7 +2547,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2727,19 +2735,26 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             AjusteDoc = New clsBeTrans_ajuste_det_doc()
 
+                            Dim BeConfig As clsBeI_nav_config_enc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(BeBodega.IdBodega)
+
                             '#CKFK 20180927 0953PM Agregué esta condición porque cuando la serie es nueva el correlativo actual va a ser igual a 999999
-                            If vCorrelativoActual = 0 Then
-                                vCorrelativoActual = Val(vNoDocumento.Substring(4, vNoDocumento.Length - 4))
-                                vCorrelativoActual += 1
-                            ElseIf vCorrelativoActual = 999999 Then
-                                vCorrelativoActual = 1
+                            If BeBodega.Interface_SAP AndAlso BeConfig.Requerir_Centro_Costo_Obligatorio Then
+                                vCorrelativoActual = AjDet.IdAjusteDet
                             Else
-                                vCorrelativoActual += 1
+                                If vCorrelativoActual = 0 Then
+                                    vCorrelativoActual = Val(vNoDocumento.Substring(4, vNoDocumento.Length - 4))
+                                    vCorrelativoActual += 1
+                                ElseIf vCorrelativoActual = 999999 Then
+                                    vCorrelativoActual = 1
+                                Else
+                                    vCorrelativoActual += 1
+                                End If
                             End If
+
 
                             vNoDocumento = vNomenclaturaBase + Right("000000" & vCorrelativoActual, 6)
 
-                            clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
+                            clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste " & vNoDocumento & " de número de documento:" & AjEnc.Idajusteenc)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
                             BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
@@ -2768,7 +2783,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2783,6 +2802,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
                                         BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
                                         BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
+                                        BeAjusteMI3.Usr_Agr = AjDet.User_Agr
 
                                         lAjustesMI3.Add(BeAjusteMI3)
 
@@ -2816,7 +2836,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2831,6 +2855,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
                                         BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
                                         BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
+                                        BeAjusteMI3.Usr_Agr = AjDet.User_Agr
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -3698,7 +3723,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -3740,7 +3769,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -4189,7 +4222,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -4231,7 +4268,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
