@@ -1154,7 +1154,10 @@ Public Class frmAjusteStock
 
                             DgComboTipo.Value = pidtipo
 
-                            dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
+                            If Not chkBorrador.Checked Then
+                                dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
+                            End If
+
                             Valor_Tipo_Ajuste(pIndex)
 
                         End If
@@ -1369,7 +1372,12 @@ Public Class frmAjusteStock
 
                     If IdTipoAjuste <= 0 Then Return
 
-                    lBeTransAjusteDet(sr).Idtipoajuste = IdTipoAjuste
+                    If chkBorrador.Checked Then
+                        lBeTransAjusteDetBorrador(sr).idtipoajuste = IdTipoAjuste
+                    Else
+                        lBeTransAjusteDet(sr).Idtipoajuste = IdTipoAjuste
+                    End If
+
 
                     dgrid.Rows(sr).Cells("ColCantidad").Value = Nothing
 
@@ -2091,7 +2099,11 @@ Public Class frmAjusteStock
                     Get_IdMotivo_By_Nombre(vNombreMotivo)
 
                     If IdMotivoAjuste > 0 Then
-                        lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        If chkBorrador.Checked Then
+                            lBeTransAjusteDetBorrador(sr).idmotivoajuste = IdMotivoAjuste
+                        Else
+                            lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        End If
                     End If
 
                 End If
@@ -4544,80 +4556,38 @@ Public Class frmAjusteStock
     End Sub
 
     Private Sub chkBorrador_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkBorrador.CheckedChanged
-
         Try
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
 
             If chkBorrador.Checked Then
-
-                If (lBeTransAjusteDetBorrador Is Nothing OrElse lBeTransAjusteDetBorrador.Count = 0) AndAlso
-               (lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0) Then
+                '=========================================================
+                ' ESCENARIO 1: NORMAL -> BORRADOR
+                ' Si activan borrador, copiar siempre desde la lista normal
+                ' hacia la lista borrador, si hay datos.
+                '=========================================================
+                If lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0 Then
 
                     lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
 
                     For Each item As clsBeTrans_ajuste_det In lBeTransAjusteDet
+                        lBeTransAjusteDetBorrador.Add(MapearDetalleABorrador(item, fechaActual, usuarioActual))
+                    Next
 
-                        Dim oBorrador As New clsBeTrans_ajuste_det_borrador
+                End If
 
-                        With oBorrador
-                            .idajustedet = item.IdAjusteDet
-                            .idajusteenc = item.IdAjusteEnc
-                            .IdStock = item.IdStock
-                            .IdPropietarioBodega = item.IdPropietarioBodega
-                            .IdProductoBodega = item.IdProductoBodega
-                            .IdProductoEstado = item.IdProductoEstado
-                            .IdPresentacion = item.IdPresentacion
-                            .IdUnidadMedida = item.IdUnidadMedida
-                            .IdUbicacion = item.IdUbicacion
+            Else
+                '=========================================================
+                ' ESCENARIO 2: BORRADOR -> NORMAL
+                ' Si desactivan borrador, copiar siempre desde borrador
+                ' hacia la lista normal, si hay datos.
+                '=========================================================
+                If lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0 Then
 
-                            .lote_original = item.Lote_original
-                            .lote_nuevo = item.Lote_nuevo
-                            .fecha_vence_original = item.Fecha_vence_original
-                            .fecha_vence_nueva = item.Fecha_vence_nueva
-                            .peso_original = item.Peso_original
-                            .peso_nuevo = item.Peso_nuevo
-                            .cantidad_original = item.Cantidad_original
-                            .cantidad_nueva = item.Cantidad_nueva
+                    lBeTransAjusteDet = New List(Of clsBeTrans_ajuste_det)
 
-                            .codigo_producto = item.Codigo_producto
-                            .nombre_producto = item.Nombre_producto
-                            .idtipoajuste = item.Idtipoajuste
-                            .idmotivoajuste = item.IdMotivoAjuste
-                            .observacion = item.Observacion
-                            .codigo_ajuste = item.Codigo_ajuste
-                            .enviado = item.Enviado
-                            .IdBodegaERP = item.IdBodegaERP
-                            .lic_plate = item.lic_plate
-                            .referencia_ajuste_erp = item.referencia_ajuste_erp
-                            .estado_ajuste_erp = item.estado_ajuste_erp
-
-                            .idstockres = item.idstockres
-                            .idstocklink = item.idstocklink
-                            .esnuevolink = item.esnuevolink
-
-                            .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen
-                            .Talla_origen = item.Talla_origen
-                            .Color_origen = item.Color_origen
-                            .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino
-                            .Talla_destino = item.Talla_destino
-                            .Color_destino = item.Color_destino
-
-                            .UmBas = item.UmBas
-                            .Factor = item.Factor
-                            .Nombre_Presentacion = item.Nombre_Presentacion
-                            .CantReservada = item.CantReservada
-                            .Presentacion = item.Presentacion
-
-                            .estado_borrador = "BORRADOR"
-                            .confirmado = False
-                            .procesado = False
-                            .fecha_creacion = Now
-                            .usuario_creacion = AP.UsuarioAp.IdUsuario.ToString()
-                            .fecha_modificacion = Now
-                            .usuario_modificacion = AP.UsuarioAp.IdUsuario.ToString()
-                        End With
-
-                        lBeTransAjusteDetBorrador.Add(oBorrador)
-
+                    For Each item As clsBeTrans_ajuste_det_borrador In lBeTransAjusteDetBorrador
+                        lBeTransAjusteDet.Add(MapearBorradorADetalle(item))
                     Next
 
                 End If
@@ -4625,7 +4595,6 @@ Public Class frmAjusteStock
             End If
 
         Catch ex As Exception
-
             XtraMessageBox.Show(ex.Message,
                             Text,
                             MessageBoxButtons.OK,
@@ -4633,9 +4602,7 @@ Public Class frmAjusteStock
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-
         End Try
-
     End Sub
 
     Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
@@ -5146,5 +5113,159 @@ Public Class frmAjusteStock
             clsLnLog_error_wms.Agregar_Error("btnImportarExcel_Click: " & ex.Message)
         End Try
     End Sub
+
+    Private Sub SincronizarDetalleAjusteSegunModoBorrador()
+        Try
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
+
+            '------------------------------------------------------------
+            ' CASO 1:
+            ' Si está en modo borrador y la lista borrador está vacía,
+            ' pero la lista normal tiene datos, copiar de normal -> borrador
+            '------------------------------------------------------------
+            If chkBorrador.Checked Then
+
+                If (lBeTransAjusteDetBorrador Is Nothing OrElse lBeTransAjusteDetBorrador.Count = 0) AndAlso
+                   (lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0) Then
+
+                    lBeTransAjusteDetBorrador = lBeTransAjusteDet.
+                        Select(Function(item) MapearDetalleABorrador(item, fechaActual, usuarioActual)).
+                        ToList()
+
+                End If
+
+            Else
+                '------------------------------------------------------------
+                ' CASO 2:
+                ' Si ya NO está en modo borrador y la lista normal está vacía,
+                ' pero la lista borrador tiene datos, copiar de borrador -> normal
+                '------------------------------------------------------------
+                If (lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0) AndAlso
+                   (lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0) Then
+
+                    lBeTransAjusteDet = lBeTransAjusteDetBorrador.
+                        Select(Function(item) MapearBorradorADetalle(item)).
+                        ToList()
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+    End Sub
+
+    Private Function MapearDetalleABorrador(item As clsBeTrans_ajuste_det,
+                                            fechaActual As Date,
+                                            usuarioActual As String) As clsBeTrans_ajuste_det_borrador
+
+        Return New clsBeTrans_ajuste_det_borrador With {
+            .idajustedet = item.IdAjusteDet,
+            .idajusteenc = item.IdAjusteEnc,
+            .IdStock = item.IdStock,
+            .IdPropietarioBodega = item.IdPropietarioBodega,
+            .IdProductoBodega = item.IdProductoBodega,
+            .IdProductoEstado = item.IdProductoEstado,
+            .IdPresentacion = item.IdPresentacion,
+            .IdUnidadMedida = item.IdUnidadMedida,
+            .IdUbicacion = item.IdUbicacion,
+        .lote_original = item.Lote_original,
+        .lote_nuevo = item.Lote_nuevo,
+        .fecha_vence_original = item.Fecha_vence_original,
+        .fecha_vence_nueva = item.Fecha_vence_nueva,
+        .peso_original = item.Peso_original,
+        .peso_nuevo = item.Peso_nuevo,
+        .cantidad_original = item.Cantidad_original,
+        .cantidad_nueva = item.Cantidad_nueva,
+        .codigo_producto = item.Codigo_producto,
+        .nombre_producto = item.Nombre_producto,
+        .idtipoajuste = item.Idtipoajuste,
+        .idmotivoajuste = item.IdMotivoAjuste,
+        .observacion = item.Observacion,
+        .codigo_ajuste = item.Codigo_ajuste,
+        .enviado = item.Enviado,
+        .IdBodegaERP = item.IdBodegaERP,
+        .lic_plate = item.lic_plate,
+        .referencia_ajuste_erp = item.referencia_ajuste_erp,
+        .estado_ajuste_erp = item.estado_ajuste_erp,
+        .idstockres = item.idstockres,
+        .idstocklink = item.idstocklink,
+        .esnuevolink = item.esnuevolink,
+        .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen,
+        .Talla_origen = item.Talla_origen,
+        .Color_origen = item.Color_origen,
+        .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino,
+        .Talla_destino = item.Talla_destino,
+        .Color_destino = item.Color_destino,
+        .UmBas = item.UmBas,
+        .Factor = item.Factor,
+        .Nombre_Presentacion = item.Nombre_Presentacion,
+        .CantReservada = item.CantReservada,
+        .Presentacion = item.Presentacion,
+        .estado_borrador = "BORRADOR",
+        .confirmado = False,
+        .procesado = False,
+        .fecha_creacion = fechaActual,
+        .usuario_creacion = usuarioActual,
+        .fecha_modificacion = fechaActual,
+        .usuario_modificacion = usuarioActual
+    }
+    End Function
+
+    Private Function MapearBorradorADetalle(item As clsBeTrans_ajuste_det_borrador) As clsBeTrans_ajuste_det
+
+        Return New clsBeTrans_ajuste_det With {
+            .IdAjusteDet = item.idajustedet,
+            .IdAjusteEnc = item.idajusteenc,
+            .IdStock = item.IdStock,
+            .IdPropietarioBodega = item.IdPropietarioBodega,
+            .IdProductoBodega = item.IdProductoBodega,
+            .IdProductoEstado = item.IdProductoEstado,
+            .IdPresentacion = item.IdPresentacion,
+            .IdUnidadMedida = item.IdUnidadMedida,
+            .IdUbicacion = item.IdUbicacion,
+        .Lote_original = item.lote_original,
+        .Lote_nuevo = item.lote_nuevo,
+        .Fecha_vence_original = item.fecha_vence_original,
+        .Fecha_vence_nueva = item.fecha_vence_nueva,
+        .Peso_original = item.peso_original,
+        .Peso_nuevo = item.peso_nuevo,
+        .Cantidad_original = item.cantidad_original,
+        .Cantidad_nueva = item.cantidad_nueva,
+        .Codigo_producto = item.codigo_producto,
+        .Nombre_producto = item.nombre_producto,
+        .Idtipoajuste = item.idtipoajuste,
+        .IdMotivoAjuste = item.idmotivoajuste,
+        .Observacion = item.observacion,
+        .Codigo_ajuste = item.codigo_ajuste,
+        .Enviado = item.enviado,
+        .IdBodegaERP = item.IdBodegaERP,
+        .lic_plate = item.lic_plate,
+        .referencia_ajuste_erp = item.referencia_ajuste_erp,
+        .estado_ajuste_erp = item.estado_ajuste_erp,
+        .idstockres = item.idstockres,
+        .idstocklink = item.idstocklink,
+        .esnuevolink = item.esnuevolink,
+        .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen,
+        .Talla_origen = item.Talla_origen,
+        .Color_origen = item.Color_origen,
+        .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino,
+        .Talla_destino = item.Talla_destino,
+        .Color_destino = item.Color_destino,
+        .UmBas = item.UmBas,
+        .Factor = item.Factor,
+        .Nombre_Presentacion = item.Nombre_Presentacion,
+        .CantReservada = item.CantReservada,
+        .Presentacion = item.Presentacion
+    }
+    End Function
 
 End Class
