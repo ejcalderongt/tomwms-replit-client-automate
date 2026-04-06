@@ -92,11 +92,8 @@ namespace WMSWebAPI.Be
         public List<clsBeI_nav_ped_compra_det> Lineas_Detalle { get; set; } = new List<clsBeI_nav_ped_compra_det>();
         public List<clsBeI_nav_ped_compra_det_lote> Lineas_Detalle_Lotes { get; set; } = new();
         public List<clsBeProducto_talla_color> Lineas_Detalle_Talla_Color { get; set; } = new();
-
         public clsBeCampaña Campaña { get; set; } = new clsBeCampaña();
-
         public string Series { get; set; } = ""; // Initialize to avoid CS8618
-
         public int Campaign_No { get; set; } = 0;
         public string User_Document { get; set; } = "";
         public string Comments { get; set; } = "";

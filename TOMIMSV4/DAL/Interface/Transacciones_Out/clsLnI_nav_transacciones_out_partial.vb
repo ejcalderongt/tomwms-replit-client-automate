@@ -2412,12 +2412,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -2432,7 +2432,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
                                                                                          lConnection,
@@ -2472,7 +2472,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -2481,7 +2481,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -2524,11 +2524,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2581,11 +2581,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2610,12 +2610,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 
@@ -2683,12 +2683,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -2703,7 +2703,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim BeBodega As New clsBeBodega
                         BeBodega.IdBodega = AjEnc.IdBodega
@@ -2757,7 +2757,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste " & vNoDocumento & " de número de documento:" & AjEnc.Idajusteenc)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -2766,7 +2766,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -2813,11 +2813,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2873,11 +2873,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2902,12 +2902,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 
@@ -3637,12 +3637,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -3657,7 +3657,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
                                                                                          lConnection,
@@ -3697,7 +3697,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -3706,7 +3706,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -3746,11 +3746,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -3800,11 +3800,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -3829,12 +3829,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 
@@ -4136,12 +4136,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio_Agrupados_By_Inventario(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio_Agrupados_By_Inventario(AjEnc.IdAjusteenc,
                                                                                                                      lConnection,
                                                                                                                      lTransaction)
 
@@ -4156,7 +4156,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
                                                                                          lConnection,
@@ -4196,7 +4196,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -4205,7 +4205,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -4245,11 +4245,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -4299,11 +4299,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -4328,12 +4328,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 

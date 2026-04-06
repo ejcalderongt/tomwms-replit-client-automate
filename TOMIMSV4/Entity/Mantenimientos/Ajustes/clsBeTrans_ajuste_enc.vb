@@ -1,7 +1,7 @@
 Public Class clsBeTrans_ajuste_enc
 
     Implements ICloneable
-    Public Property Idajusteenc() As Integer = 0
+    Public Property IdAjusteenc() As Integer = 0
     Public Property Fecha() As Date = Date.Now
     Public Property Idusuario() As Integer = 0
     Public Property Referencia() As String = ""
@@ -29,12 +29,13 @@ Public Class clsBeTrans_ajuste_enc
     Public Property Centro_Costo_Erp As String = ""
     Public Property Centro_Costo_Dir_Erp As String = ""
     Public Property Centro_Costo_Dep_Erp As String = ""
+    Public Property Borrador As Boolean = False
 
     Sub New()
     End Sub
 
     Sub New(ByRef idajusteenc As Integer, ByVal fecha As Date, ByVal idusuario As Integer, ByVal referencia As String, ByVal fec_agr As Date, ByVal user_agr As String, ByVal fec_mod As Date, ByVal user_mod As String, ByVal IdBodega As Integer)
-        Me.Idajusteenc = idajusteenc
+        Me.IdAjusteenc = idajusteenc
         Me.Fecha = fecha
         Me.Idusuario = idusuario
         Me.Referencia = referencia

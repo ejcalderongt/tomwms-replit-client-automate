@@ -260,6 +260,10 @@ Public Class frmProducto
             cmbEtiqueta.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
             cmbEtiqueta.ItemIndex = 0
 
+            cmbEtiquetaPresentacion.Properties.DisplayMember = "Nombre"
+            cmbEtiquetaPresentacion.Properties.ValueMember = "IdTipoEtiqueta"
+            cmbEtiquetaPresentacion.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -4684,7 +4688,7 @@ Public Class frmProducto
                         pBeProductoPresentacionList(pIndex).Ancho = txtAncho.Value
                         pBeProductoPresentacionList(pIndex).Genera_lp_auto = chkGeneraLPAuto.Checked
                         pBeProductoPresentacionList(pIndex).Permitir_paletizar = chkPermitirPaletizar.Checked
-
+                        pBeProductoPresentacionList(pIndex).IdTipoEtiqueta = cmbEtiquetaPresentacion.EditValue
                         'Dimensiones Pallet
                         If ChkEsPallet.Checked OrElse chkPermitirPaletizar.Checked Then
                             pBeProductoPresentacionList(pIndex).CajasPorCama = txtCajasPorCama.Value
@@ -4726,6 +4730,7 @@ Public Class frmProducto
                     pBeProductoPresentacionList(pIndex).Permitir_paletizar = chkPermitirPaletizar.Checked
                     pBeProductoPresentacionList(pIndex).User_mod = AP.UsuarioAp.IdUsuario
                     pBeProductoPresentacionList(pIndex).Fec_mod = Now
+                    pBeProductoPresentacionList(pIndex).IdTipoEtiqueta = cmbEtiquetaPresentacion.EditValue
 
                     'Dimensiones Pallet
                     If ChkEsPallet.Checked OrElse chkPermitirPaletizar.Checked Then
@@ -4808,7 +4813,7 @@ Public Class frmProducto
                 ObjN.MinimoPeso = txtMinimoPeso.Value
                 ObjN.MaximoPeso = txtMaximoPeso.Value
                 ObjN.Codigo = txtCodigo.Text
-
+                ObjN.IdTipoEtiqueta = cmbEtiquetaPresentacion.EditValue
                 ObjN.Activo = True
                 ObjN.Sistema = chkSistema.Checked
                 ObjN.User_agr = AP.UsuarioAp.IdUsuario

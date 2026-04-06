@@ -19,6 +19,9 @@
         public string? Codigo_Cliente { get; set; }
         public int? IdDocIngresoBodDestino { get; set; }
         public int? IdDocSalidaBodOrigen { get; set; }
+        public string? UsuarioDocumento { get; set; }
+        public string? UsuarioDespacho { get; set; }
+
     }
 
 }

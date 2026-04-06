@@ -1,4 +1,5 @@
-﻿Imports System.Reflection
+﻿Imports System.EnterpriseServices
+Imports System.Reflection
 Imports DevExpress.XtraEditors
 
 Public Class frmAjusteStock_List
@@ -18,7 +19,7 @@ Public Class frmAjusteStock_List
     Private Sub Listar_Ajustes()
         Try
 
-            Dgrid.DataSource = clsLnTrans_ajuste_enc.GetAll(dtpFechaDel.Value, dtpFechaAl.Value, AP.IdBodega)
+            Dgrid.DataSource = clsLnTrans_ajuste_enc.Get_All_VW(dtpFechaDel.Value, dtpFechaAl.Value, AP.IdBodega)
             GridView1.BestFitColumns()
 
             lblRegs.Caption = "Registros: " & GridView1.RowCount
@@ -105,21 +106,14 @@ Public Class frmAjusteStock_List
 
     Private Sub Procesar_Registro()
 
-        Dim Drw As New clsBeTrans_ajuste_enc
-
         Try
 
             If (GridView1.RowCount > 0) Then
 
-                Try
-                    Drw = GridView1.GetFocusedRow
-                Catch ex As Exception
-                    MsgBox(ex.Message)
-                End Try
-
+                Dim Dr As DataRowView = GridView1.GetFocusedRow
+                Dim IdAjusteEnc As Integer = Dr.Item("Correlativo")
                 Dim enc = New clsBeTrans_ajuste_enc
-                enc.Idajusteenc = Drw.Idajusteenc
-                clsLnTrans_ajuste_enc.GetSingle(enc)
+                enc = clsLnTrans_ajuste_enc.GetSingle(IdAjusteEnc)
 
                 Dim lSelectionIndex As Integer = GridView1.FocusedRowHandle
 
@@ -179,12 +173,29 @@ Public Class frmAjusteStock_List
             GridView1.Appearance.SelectedRow.Options.UseBackColor = True
             GridView1.Appearance.SelectedRow.Options.UseForeColor = True
 
+            If e.RowHandle >= 0 Then
+
+                Dim vEsBorrador As Boolean = False
+                Dim vValor = GridView1.GetRowCellValue(e.RowHandle, "borrador")
+
+                If vValor IsNot Nothing AndAlso Not IsDBNull(vValor) Then
+                    Boolean.TryParse(vValor.ToString(), vEsBorrador)
+                End If
+
+                If vEsBorrador Then
+                    e.Appearance.BackColor = Color.MistyRose
+                    e.Appearance.ForeColor = Color.Black
+                    e.HighPriority = True
+                End If
+
+            End If
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)

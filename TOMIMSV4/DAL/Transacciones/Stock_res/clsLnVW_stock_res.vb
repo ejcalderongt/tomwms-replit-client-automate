@@ -1255,4 +1255,5 @@ Public Class clsLnVW_stock_res
 
     End Function
 
+
 End Class

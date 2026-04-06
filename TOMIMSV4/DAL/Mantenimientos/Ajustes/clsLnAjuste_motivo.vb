@@ -1,5 +1,6 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.Utils.BindToTypePolicy
 
 Public Class clsLnAjuste_motivo
 
@@ -239,4 +240,75 @@ Public Class clsLnAjuste_motivo
 
     End Function
 
+    ''' <summary>
+    ''' Obtiene el ID del motivo de ajuste por su código o nombre
+    ''' </summary>
+    ''' <param name="motivoTexto">Código o nombre del motivo (ENT, SAL, INV, MER, DEV, CAM, OTR, etc.)</param>
+    ''' <returns>ID del motivo, o 0 si no se encuentra</returns>
+    Public Shared Function Get_IdMotivo_By_Codigo(motivoTexto As String) As Integer
+        If String.IsNullOrWhiteSpace(motivoTexto) Then
+            Return 0
+        End If
+
+        Dim idMotivo As Integer = 0
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+        Try
+            ' Limpiar y normalizar el texto de búsqueda
+            Dim textoBusqueda As String = motivoTexto.Trim().ToUpper()
+
+            ' Mapeo de códigos comunes por si la tabla no tiene los valores exactos
+            Dim codigosConocidos As New Dictionary(Of String, String) From {
+            {"ENT", "ENTRADA"},
+            {"SAL", "SALIDA"},
+            {"INV", "INVENTARIO"},
+            {"MER", "MERMA"},
+            {"DEV", "DEVOLUCION"},
+            {"CAM", "CAMBIO"},
+            {"OTR", "OTRO"}
+        }
+
+            ' Si el código está en el diccionario, buscar también por el nombre completo
+            Dim textoAlternativo As String = Nothing
+            If codigosConocidos.ContainsKey(textoBusqueda) Then
+                textoAlternativo = codigosConocidos(textoBusqueda)
+            End If
+
+            Dim vSQL As String = "
+            SELECT IdMotivoAjuste
+            FROM ajuste_motivo WITH (NOLOCK)
+            WHERE activo = 1
+                AND (
+                    UPPER(nombre) = @MotivoTexto
+                    OR UPPER(nombre) LIKE @MotivoTextoPattern
+                    OR (@MotivoAlternativo IS NOT NULL AND UPPER(nombre) = @MotivoAlternativo)
+                )"
+
+            Using cmd As New SqlCommand(vSQL, lConnection)
+                cmd.Parameters.AddWithValue("@MotivoTexto", textoBusqueda)
+                cmd.Parameters.AddWithValue("@MotivoTextoPattern", $"%{textoBusqueda}%")
+                cmd.Parameters.AddWithValue("@MotivoAlternativo", If(textoAlternativo IsNot Nothing, textoAlternativo, DBNull.Value))
+
+                lConnection.Open()
+                Dim result As Object = cmd.ExecuteScalar()
+
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    idMotivo = Convert.ToInt32(result)
+                Else
+                    ' Si no se encontró, registrar advertencia
+                    clsLnLog_error_wms.Agregar_Error($"Motivo no encontrado: {motivoTexto}")
+                End If
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error($"Error en Get_IdMotivo_By_Codigo: {ex.Message}")
+            Throw
+        Finally
+            If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
+                lConnection.Close()
+            End If
+        End Try
+
+        Return idMotivo
+    End Function
 End Class

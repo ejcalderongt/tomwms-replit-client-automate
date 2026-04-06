@@ -64,6 +64,8 @@ Partial Class frmAjusteStock
         Me.mnuReimpresionEtiquetas = New DevExpress.XtraBars.BarButtonItem()
         Me.chkAuditado = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
+        Me.chkBorrador = New DevExpress.XtraBars.BarToggleSwitchItem()
+        Me.btnImportarExcel = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -424,10 +426,10 @@ Partial Class frmAjusteStock
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 16
+        Me.RibbonControl.MaxItemId = 18
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -468,6 +470,19 @@ Partial Class frmAjusteStock
         Me.mnuGuardar.ImageOptions.SvgImage = CType(resources.GetObject("mnuGuardar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuGuardar.Name = "mnuGuardar"
         '
+        'chkBorrador
+        '
+        Me.chkBorrador.Caption = "Borrador"
+        Me.chkBorrador.Id = 16
+        Me.chkBorrador.Name = "chkBorrador"
+        '
+        'btnImportarExcel
+        '
+        Me.btnImportarExcel.Caption = "Importar"
+        Me.btnImportarExcel.Id = 17
+        Me.btnImportarExcel.ImageOptions.SvgImage = CType(resources.GetObject("btnImportarExcel.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btnImportarExcel.Name = "btnImportarExcel"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -481,6 +496,8 @@ Partial Class frmAjusteStock
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEstadoEnviadoAERP)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuReimpresionEtiquetas)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAuditado)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkBorrador)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.btnImportarExcel)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -1400,5 +1417,7 @@ Partial Class frmAjusteStock
     Friend WithEvents colColor As DataGridViewComboBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
     Friend WithEvents lblCentroCosto As Label
+    Friend WithEvents chkBorrador As DevExpress.XtraBars.BarToggleSwitchItem
+    Friend WithEvents btnImportarExcel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents txtNoAjuste As DevExpress.XtraEditors.TextEdit
 End Class

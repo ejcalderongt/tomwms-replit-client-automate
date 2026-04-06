@@ -43,6 +43,9 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtTiempoActualizacionP = New System.Windows.Forms.NumericUpDown()
         Me.XtraScrollableControl = New DevExpress.XtraEditors.XtraScrollableControl()
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
+        Me.chkLicenciaBulto = New System.Windows.Forms.RadioButton()
+        Me.chkSoloLicencia = New System.Windows.Forms.RadioButton()
+        Me.cmdUnidad = New DevExpress.XtraEditors.SimpleButton()
         Me.lblUmbasCant = New DevExpress.XtraEditors.LabelControl()
         Me.cmdPrinterUmbas = New DevExpress.XtraEditors.LookUpEdit()
         Me.txtCantUmBas = New System.Windows.Forms.NumericUpDown()
@@ -117,7 +120,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         lblLicenciaCnt.AutoSize = True
         lblLicenciaCnt.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblLicenciaCnt.Location = New System.Drawing.Point(39, 316)
+        lblLicenciaCnt.Location = New System.Drawing.Point(39, 348)
         lblLicenciaCnt.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblLicenciaCnt.Name = "lblLicenciaCnt"
         lblLicenciaCnt.Size = New System.Drawing.Size(69, 21)
@@ -161,7 +164,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Label3.AutoSize = True
         Label3.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label3.Location = New System.Drawing.Point(239, 292)
+        Label3.Location = New System.Drawing.Point(239, 324)
         Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label3.Name = "Label3"
         Label3.Size = New System.Drawing.Size(81, 21)
@@ -172,7 +175,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Label4.AutoSize = True
         Label4.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label4.Location = New System.Drawing.Point(328, 292)
+        Label4.Location = New System.Drawing.Point(328, 324)
         Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label4.Name = "Label4"
         Label4.Size = New System.Drawing.Size(92, 21)
@@ -238,7 +241,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Label9.AutoSize = True
         Label9.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label9.Location = New System.Drawing.Point(702, 298)
+        Label9.Location = New System.Drawing.Point(860, 298)
         Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label9.Name = "Label9"
         Label9.Size = New System.Drawing.Size(65, 21)
@@ -319,6 +322,9 @@ Partial Class frmImpresionRecepcion_OC
         '
         'GroupControl4
         '
+        Me.GroupControl4.Controls.Add(Me.chkLicenciaBulto)
+        Me.GroupControl4.Controls.Add(Me.chkSoloLicencia)
+        Me.GroupControl4.Controls.Add(Me.cmdUnidad)
         Me.GroupControl4.Controls.Add(Me.lblUmbasCant)
         Me.GroupControl4.Controls.Add(Me.cmdPrinterUmbas)
         Me.GroupControl4.Controls.Add(Me.txtCantUmBas)
@@ -352,20 +358,55 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl4.TabIndex = 2
         Me.GroupControl4.Text = "Datos para impresión"
         '
+        'chkLicenciaBulto
+        '
+        Me.chkLicenciaBulto.AutoSize = True
+        Me.chkLicenciaBulto.Font = New System.Drawing.Font("Tahoma", 10.2!)
+        Me.chkLicenciaBulto.Location = New System.Drawing.Point(243, 275)
+        Me.chkLicenciaBulto.Name = "chkLicenciaBulto"
+        Me.chkLicenciaBulto.Size = New System.Drawing.Size(211, 25)
+        Me.chkLicenciaBulto.TabIndex = 52
+        Me.chkLicenciaBulto.Text = "Licencias y Presentacion"
+        Me.chkLicenciaBulto.UseVisualStyleBackColor = True
+        '
+        'chkSoloLicencia
+        '
+        Me.chkSoloLicencia.AutoSize = True
+        Me.chkSoloLicencia.Checked = True
+        Me.chkSoloLicencia.Font = New System.Drawing.Font("Tahoma", 10.2!)
+        Me.chkSoloLicencia.Location = New System.Drawing.Point(243, 249)
+        Me.chkSoloLicencia.Name = "chkSoloLicencia"
+        Me.chkSoloLicencia.Size = New System.Drawing.Size(134, 25)
+        Me.chkSoloLicencia.TabIndex = 51
+        Me.chkSoloLicencia.TabStop = True
+        Me.chkSoloLicencia.Text = "Solo Licencias"
+        Me.chkSoloLicencia.UseVisualStyleBackColor = True
+        '
+        'cmdUnidad
+        '
+        Me.cmdUnidad.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdUnidad.Appearance.Options.UseFont = True
+        Me.cmdUnidad.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
+        Me.cmdUnidad.ImageOptions.SvgImage = CType(resources.GetObject("cmdUnidad.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdUnidad.Location = New System.Drawing.Point(580, 458)
+        Me.cmdUnidad.Name = "cmdUnidad"
+        Me.cmdUnidad.Size = New System.Drawing.Size(97, 73)
+        Me.cmdUnidad.TabIndex = 50
+        Me.cmdUnidad.Text = "&Unidad"
+        '
         'lblUmbasCant
         '
         Me.lblUmbasCant.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblUmbasCant.Appearance.Options.UseFont = True
-        Me.lblUmbasCant.Location = New System.Drawing.Point(42, 392)
+        Me.lblUmbasCant.Location = New System.Drawing.Point(42, 424)
         Me.lblUmbasCant.Name = "lblUmbasCant"
         Me.lblUmbasCant.Size = New System.Drawing.Size(130, 21)
         Me.lblUmbasCant.TabIndex = 49
         Me.lblUmbasCant.Text = "Producto UMBAS:"
-        Me.lblUmbasCant.Visible = False
         '
         'cmdPrinterUmbas
         '
-        Me.cmdPrinterUmbas.Location = New System.Drawing.Point(332, 391)
+        Me.cmdPrinterUmbas.Location = New System.Drawing.Point(332, 423)
         Me.cmdPrinterUmbas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmdPrinterUmbas.MenuManager = Me.RibbonControl
         Me.cmdPrinterUmbas.Name = "cmdPrinterUmbas"
@@ -375,13 +416,12 @@ Partial Class frmImpresionRecepcion_OC
         Me.cmdPrinterUmbas.Properties.NullText = ""
         Me.cmdPrinterUmbas.Size = New System.Drawing.Size(345, 28)
         Me.cmdPrinterUmbas.TabIndex = 48
-        Me.cmdPrinterUmbas.Visible = False
         '
         'txtCantUmBas
         '
         Me.txtCantUmBas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCantUmBas.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCantUmBas.Location = New System.Drawing.Point(243, 390)
+        Me.txtCantUmBas.Location = New System.Drawing.Point(243, 422)
         Me.txtCantUmBas.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantUmBas.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCantUmBas.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -389,13 +429,12 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtCantUmBas.Size = New System.Drawing.Size(82, 28)
         Me.txtCantUmBas.TabIndex = 47
         Me.txtCantUmBas.Value = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.txtCantUmBas.Visible = False
         '
         'lblProductoPres
         '
         Me.lblProductoPres.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblProductoPres.Appearance.Options.UseFont = True
-        Me.lblProductoPres.Location = New System.Drawing.Point(42, 354)
+        Me.lblProductoPres.Location = New System.Drawing.Point(42, 386)
         Me.lblProductoPres.Name = "lblProductoPres"
         Me.lblProductoPres.Size = New System.Drawing.Size(108, 21)
         Me.lblProductoPres.TabIndex = 46
@@ -405,7 +444,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCopias.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCopias.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCopias.Location = New System.Drawing.Point(701, 320)
+        Me.txtCopias.Location = New System.Drawing.Point(859, 320)
         Me.txtCopias.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCopias.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCopias.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -418,7 +457,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.lblEtiquetas.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblEtiquetas.Appearance.Options.UseFont = True
-        Me.lblEtiquetas.Location = New System.Drawing.Point(613, 453)
+        Me.lblEtiquetas.Location = New System.Drawing.Point(859, 352)
         Me.lblEtiquetas.Name = "lblEtiquetas"
         Me.lblEtiquetas.Size = New System.Drawing.Size(170, 21)
         Me.lblEtiquetas.TabIndex = 43
@@ -541,9 +580,9 @@ Partial Class frmImpresionRecepcion_OC
         Me.cmdImpresionLicencia.Appearance.Options.UseFont = True
         Me.cmdImpresionLicencia.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
         Me.cmdImpresionLicencia.ImageOptions.SvgImage = CType(resources.GetObject("cmdImpresionLicencia.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdImpresionLicencia.Location = New System.Drawing.Point(425, 453)
+        Me.cmdImpresionLicencia.Location = New System.Drawing.Point(332, 458)
         Me.cmdImpresionLicencia.Name = "cmdImpresionLicencia"
-        Me.cmdImpresionLicencia.Size = New System.Drawing.Size(163, 73)
+        Me.cmdImpresionLicencia.Size = New System.Drawing.Size(102, 73)
         Me.cmdImpresionLicencia.TabIndex = 32
         Me.cmdImpresionLicencia.Text = "&Licencia"
         '
@@ -553,15 +592,15 @@ Partial Class frmImpresionRecepcion_OC
         Me.cmdImpresionBarra.Appearance.Options.UseFont = True
         Me.cmdImpresionBarra.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
         Me.cmdImpresionBarra.ImageOptions.SvgImage = CType(resources.GetObject("cmdImpresionBarra.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdImpresionBarra.Location = New System.Drawing.Point(243, 453)
+        Me.cmdImpresionBarra.Location = New System.Drawing.Point(455, 458)
         Me.cmdImpresionBarra.Name = "cmdImpresionBarra"
-        Me.cmdImpresionBarra.Size = New System.Drawing.Size(163, 73)
+        Me.cmdImpresionBarra.Size = New System.Drawing.Size(97, 73)
         Me.cmdImpresionBarra.TabIndex = 31
-        Me.cmdImpresionBarra.Text = "&Producto"
+        Me.cmdImpresionBarra.Text = "&Fardo"
         '
         'cmbPrinterLicencia
         '
-        Me.cmbPrinterLicencia.Location = New System.Drawing.Point(332, 317)
+        Me.cmbPrinterLicencia.Location = New System.Drawing.Point(332, 349)
         Me.cmbPrinterLicencia.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbPrinterLicencia.MenuManager = Me.RibbonControl
         Me.cmbPrinterLicencia.Name = "cmbPrinterLicencia"
@@ -574,7 +613,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'cmbPrinterBarra
         '
-        Me.cmbPrinterBarra.Location = New System.Drawing.Point(332, 353)
+        Me.cmbPrinterBarra.Location = New System.Drawing.Point(332, 385)
         Me.cmbPrinterBarra.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbPrinterBarra.MenuManager = Me.RibbonControl
         Me.cmbPrinterBarra.Name = "cmbPrinterBarra"
@@ -603,7 +642,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCantidadLicencias.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCantidadLicencias.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCantidadLicencias.Location = New System.Drawing.Point(243, 316)
+        Me.txtCantidadLicencias.Location = New System.Drawing.Point(243, 348)
         Me.txtCantidadLicencias.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantidadLicencias.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCantidadLicencias.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -616,7 +655,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCantidadBarras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCantidadBarras.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCantidadBarras.Location = New System.Drawing.Point(243, 352)
+        Me.txtCantidadBarras.Location = New System.Drawing.Point(243, 384)
         Me.txtCantidadBarras.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantidadBarras.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCantidadBarras.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -705,4 +744,7 @@ Partial Class frmImpresionRecepcion_OC
     Friend WithEvents lblUmbasCant As DevExpress.XtraEditors.LabelControl
     Friend WithEvents cmdPrinterUmbas As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents txtCantUmBas As NumericUpDown
+    Friend WithEvents cmdUnidad As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents chkLicenciaBulto As RadioButton
+    Friend WithEvents chkSoloLicencia As RadioButton
 End Class

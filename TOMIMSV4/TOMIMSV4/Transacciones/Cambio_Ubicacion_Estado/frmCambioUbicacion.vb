@@ -1458,6 +1458,8 @@ Public Class frmCambioUbicacion
 
                     preparaObjDet()
 
+                    Bodega = clsLnBodega.GetSingle_By_Idbodega(AP.IdBodega)
+
                     Dim Ubicacion As New frmBodegaSelUbic() With
                         {.Modo = frmBodegaT.pModo.Seleccion,
                         .pListObjDet = pListObjDet,
@@ -1475,6 +1477,10 @@ Public Class frmCambioUbicacion
                     Ubicacion.pUbicSugReq.Cantidad = cant
 
                     Ubicacion.pListObjDet = pListObjDet
+
+                    Ubicacion.pObjBeB.cambio_ubicacion_restrictivo = Bodega.cambio_ubicacion_restrictivo
+                    Ubicacion.pObjBeB.permitir_cambio_ubic_indice_menor = Bodega.permitir_cambio_ubic_indice_menor
+                    Ubicacion.pObjBeB.requerir_mismo_producto_posiciones = Bodega.requerir_mismo_producto_posiciones
 
                     '#EJC20170913 - Funcionalidad perdida para realizar el cambio de ubicación desde BOF (Sin HH)
                     If pListObjDet IsNot Nothing AndAlso pListObjDet.Count > 0 Then
@@ -1581,6 +1587,15 @@ Public Class frmCambioUbicacion
                     Ubicacion.pListStockMov = pListStockMov
 
                     Ubicacion.EsCambioEstado = (tipoOperacion = 3)
+
+                    XtraMessageBox.Show("cmbBodega = " & cmbBodega.EditValue.ToString() &
+                    vbCrLf & "Bodega.IdBodega = " & Bodega.IdBodega.ToString() &
+                    vbCrLf & "Restrictivo = " & Bodega.cambio_ubicacion_restrictivo.ToString() &
+                    vbCrLf & "Indice menor = " & Bodega.permitir_cambio_ubic_indice_menor.ToString() &
+                    vbCrLf & "Mismo producto = " & Bodega.requerir_mismo_producto_posiciones.ToString(),
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information)
 
                     If Ubicacion.ShowDialog() = DialogResult.Yes Then
 

@@ -1,5 +1,9 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Net
+Imports System.Net.Mail
 Imports System.Reflection
+Imports System.Text
+Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.Xpf.Editors.Helpers
 Imports DevExpress.XtraEditors
@@ -114,52 +118,92 @@ Public Class frmDespacho
 
     Private Function Datos_Correctos() As Boolean
 
-        Datos_Correctos = False
+        Dim msgDiferenciaDespachoPacking As String = String.Empty
 
         Try
-
             If cmbBodega.ItemIndex = -1 Then
                 XtraMessageBox.Show("Seleccione bodega",
-              Text,
-              MessageBoxButtons.OK,
-              MessageBoxIcon.Exclamation)
-            ElseIf cmbPropietario.ItemIndex = -1 Then
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            If cmbPropietario.ItemIndex = -1 Then
                 XtraMessageBox.Show("Seleccione propietario",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation)
-            ElseIf BeDespachoEnc.ListaPedidos.Count = 0 Then
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            If BeDespachoEnc Is Nothing OrElse BeDespachoEnc.ListaPedidos Is Nothing OrElse BeDespachoEnc.ListaPedidos.Count = 0 Then
                 XtraMessageBox.Show("No ha adicionado pedidos al despacho",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation)
-            ElseIf Not Pedidos_Tienen_Cantidad_Verificada() Then
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            If Not Pedidos_Tienen_Cantidad_Verificada() Then
                 XtraMessageBox.Show("No existen productos verificados para realizar el despacho",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation)
-            ElseIf Not Pedidos_Tienen_Packing_Finalizado() Then
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            If Not Pedidos_Tienen_Packing_Finalizado() Then
                 XtraMessageBox.Show("Existen pedidos sin el packing finalizado",
-               Text,
-               MessageBoxButtons.OK,
-               MessageBoxIcon.Exclamation)
-            ElseIf Existe_Diferencia_Despacho_vrs_Packing() Then
-                XtraMessageBox.Show("Existe diferencia entre el packing y el despacho",
-               Text,
-               MessageBoxButtons.OK,
-               MessageBoxIcon.Exclamation)
-            Else
-                Datos_Correctos = True
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking()
+
+            If msgDiferenciaDespachoPacking <> String.Empty Then
+
+                Dim vRespuesta As DialogResult = XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
+                                                                    "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
+                                                                    Text,
+                                                                    MessageBoxButtons.YesNo,
+                                                                    MessageBoxIcon.Question)
+
+                If vRespuesta = DialogResult.Yes Then
+
+                    Dim totalActualizados As Integer = CorregirDiferenciasDespachoPacking()
+
+                    XtraMessageBox.Show(String.Format("Se corrigieron {0} registro(s) con diferencia entre picking y packing.", totalActualizados),
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+
+                    Return Datos_Correctos()
+                Else
+                    Return False
+                End If
+
+            End If
+
+            If Existe_Diferencia_Despacho_vrs_Packing() Then
+                Return False
             End If
 
             grdListaDespacho.CommitEdit(DataGridViewDataErrorContexts.Commit)
             grdListaDespacho.EndEdit()
 
+            Return True
+
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(String.Format("{0} {1}",
+                                          MethodBase.GetCurrentMethod.Name(),
+                                          ex.Message),
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation)
+            Return False
         End Try
 
     End Function
@@ -734,21 +778,21 @@ Public Class frmDespacho
                     For Each BePedidoDet As clsBeTrans_pe_det In vPedidosConPicking
                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                         SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
-                    Get_Stock_Res(BePedidoDet, True)
-                    Application.DoEvents()
-                Next
+                        Get_Stock_Res(BePedidoDet, True)
+                        Application.DoEvents()
+                    Next
 
-                If vPedido.IdPickingEnc <> 0 Then
+                    If vPedido.IdPickingEnc <> 0 Then
 
                         Dim vTienePacking = clsLnTrans_pe_enc.Tiene_Packing(vPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
                         If vTienePacking Then
-                        Llena_Packing(vPedido.IdPickingEnc, vPedido.IdPedidoEnc, BeDespachoEnc.IdDespachoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            Llena_Packing(vPedido.IdPickingEnc, vPedido.IdPedidoEnc, BeDespachoEnc.IdDespachoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        End If
+
                     End If
 
-                End If
-
-                'Get_Stock_Res(vPedido, True)
+                    'Get_Stock_Res(vPedido, True)
 
                 Next
 
@@ -770,93 +814,6 @@ Public Class frmDespacho
             Throw ex
         Finally
             clsTransaccion.Close_Conection()
-        End Try
-
-    End Sub
-
-    Public Sub Get_Detalle_Pedido_Despacho(ByVal pPedido As clsBeTrans_pe_enc)
-
-        Try
-
-            If pPedido.Detalle.Count > 0 Then
-
-                DTStockRes.Rows.Clear()
-
-                If pListObjSP.Count > 0 Then
-
-                    Dim vCantidadReservadaUMBas As Double = 0
-                    Dim vCantidadReservadaPres As Double = 0
-                    Dim vPesoReservado As Double = 0
-                    Dim BePresentacion As New clsBeProducto_Presentacion
-
-                    For Each Obj As clsBeVW_stock_res In pListObjSP
-
-                        If Obj.IdPresentacion = 0 Then
-                            vCantidadReservadaUMBas = Obj.CantidadReservadaUMBas
-                            vCantidadReservadaPres = 0
-                            vPesoReservado = Obj.Peso
-                        Else
-
-                            BePresentacion.IdPresentacion = Obj.IdPresentacion
-                            clsLnProducto_presentacion.GetSingle(BePresentacion)
-
-                            If Not BePresentacion Is Nothing Then
-                                vCantidadReservadaPres = Math.Round(Obj.CantidadReservadaUMBas / BePresentacion.Factor, 6)
-                                vCantidadReservadaUMBas = Obj.CantidadReservadaUMBas
-                                Obj.Cantidad_Pickeada = Math.Round(Obj.Cantidad_Pickeada * BePresentacion.Factor, 6)
-                                Obj.Cantidad_Verificada = Math.Round(Obj.Cantidad_Verificada * BePresentacion.Factor, 6)
-                                Obj.Nombre_Presentacion = BePresentacion.Nombre
-                            Else
-                                Throw New Exception("No se pudo obtener la presentación con identificador: " & Obj.IdPresentacion)
-                            End If
-
-                            'vCantidadReservadaUMBas = Obj.CantidadReservadaUMBas
-                            vPesoReservado = Obj.Peso
-
-                        End If
-
-                        DTStockRes.Rows.Add(Obj.IdPedido,
-                                            Obj.IdPicking,
-                                            Obj.Codigo_Producto,
-                                            Obj.Nombre_Producto,
-                                            Obj.Nombre_Presentacion,
-                                            Obj.NomEstado,
-                                            Obj.UMBas,
-                                            Obj.Propietario,
-                                            Obj.UbicacionActual.NombreCompleto,
-                                            Obj.Lote,
-                                            Obj.Lic_plate,
-                                            Obj.Fecha_Vence,
-                                            Obj.Factor,
-                                            vCantidadReservadaPres,
-                                            vCantidadReservadaUMBas,
-                                            0,
-                                            Obj.Cantidad_Pickeada,
-                                            0,
-                                            Obj.Cantidad_Verificada,
-                                            0,
-                                            Obj.Cantidad_Despachada,
-                                            0,
-                                            Obj.peso_pickeado,
-                                            Obj.peso_verificado,
-                                            Obj.encontrado,
-                                            Obj.acepto,
-                                            Obj.Fecha_ingreso,
-                                            Obj.IdStockRes)
-
-                    Next
-
-                End If
-
-                grdUbicPicking.DataSource = DTStockRes
-
-                Set_Formato_Grid_Stock_Res()
-
-            End If
-
-        Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
@@ -1569,7 +1526,7 @@ Public Class frmDespacho
                 Dim bo As New frmPedidoDetalleBuscador() With {.Modo = frmPedidoDetalleBuscador.ProcesoSolicitante.Despacho,
                                                             .pListaPedidos = pListaPedidos,
                                                             .IdBodega = cmbBodega.EditValue,
-                                                            .idPropietarioBodega = cmbPropietario.EditValue}
+                                                            .IdPropietarioBodega = cmbPropietario.EditValue}
                 Dim Result As DialogResult = bo.ShowDialog()
 
                 If Result = DialogResult.OK Then
@@ -3645,5 +3602,503 @@ Public Class frmDespacho
 
     End Function
 
+    Public Shared Async Sub Generar_Notificacion_Traslado_Directo_Desde_WMS(ByVal pIdPedidoEnc As Integer,
+                                                                            ByVal pUsuario As String)
+
+        Try
+            If pIdPedidoEnc <= 0 Then Exit Sub
+
+            Dim oBePedidoEnc As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(pIdPedidoEnc, False)
+
+            If oBePedidoEnc Is Nothing Then
+                Exit Sub
+            End If
+
+            Dim idTipoPedido As Integer = oBePedidoEnc.IdTipoPedido
+            If idTipoPedido <> 6 Then Exit Sub
+
+            Dim codigoEvento As String = "WMS_PE0006_TRASLADO_DIRECTO"
+
+            Dim oBeEvento As clsBENotificacionEvento = clsLnNotificacionEvento.ObtenerPorCodigo(codigoEvento)
+            If oBeEvento Is Nothing OrElse oBeEvento.IdEvento <= 0 OrElse Not oBeEvento.Activo Then Exit Sub
+
+            Dim oBePlantilla As clsBENotificacionPlantilla = clsLnNotificacionPlantilla.ObtenerPlantillaActivaPorEvento(oBeEvento.IdEvento, "EMAIL")
+            If oBePlantilla Is Nothing OrElse oBePlantilla.IdPlantilla <= 0 OrElse Not oBePlantilla.Activo Then Exit Sub
+
+            Dim oBeLayout As clsBENotificacionLayout = Nothing
+            If oBePlantilla.UsaLayoutComun AndAlso oBePlantilla.IdLayout > 0 Then
+                oBeLayout = clsLnNotificacionLayout.ObtenerPorId(oBePlantilla.IdLayout)
+            End If
+
+            ' Obtener detalles del pedido
+            Dim oListaDetalles As List(Of clsBeTrans_pe_det) = oBePedidoEnc.Detalle
+
+            ' Construir variables para reemplazo
+            Dim dicVariables As Dictionary(Of String, String) = ConstruirVariablesPE0006(oBePedidoEnc, oListaDetalles, pUsuario)
+
+            ' Reemplazar variables en plantilla
+            Dim asuntoFinal As String = ReemplazarVariables(oBePlantilla.AsuntoTemplate, dicVariables)
+            Dim bodyFinal As String = ReemplazarVariables(oBePlantilla.BodyHtmlTemplate, dicVariables)
+
+            ' Aplicar layout si corresponde
+            Dim htmlFinal As String = bodyFinal
+            If oBeLayout IsNot Nothing Then
+                htmlFinal = oBeLayout.HeaderHtml & bodyFinal & oBeLayout.FooterHtml
+            End If
+
+            ' Obtener ID de bodega destino
+            Dim idBodegaDestino As Integer = ObtenerIdBodegaDestino(oBePedidoEnc)
+
+            ' Resolver destinatarios (esto se ejecuta en el hilo actual)
+            Dim dtDestinatarios As DataTable = clsLnNotificacionDestinatarioRegla.ResolverDestinatarios(
+                oBeEvento.IdEvento,
+                "PE0006",
+                oBePedidoEnc.Codigo_Empresa_ERP,
+                oBePedidoEnc.RoadSucursal,
+                oBePedidoEnc.IdBodega,
+                idBodegaDestino
+            )
+
+            If dtDestinatarios Is Nothing OrElse dtDestinatarios.Rows.Count = 0 Then
+                clsLnLog_error_wms.Agregar_Error("No se resolvieron destinatarios para PE0006. IdPedidoEnc=" & pIdPedidoEnc.ToString())
+                Exit Sub
+            End If
+
+            ' Obtener correos por tipo
+            Dim correosTo As List(Of String) = ObtenerListaCorreosPorTipo(dtDestinatarios, "TO")
+            Dim correosCc As List(Of String) = ObtenerListaCorreosPorTipo(dtDestinatarios, "CC")
+            Dim correosBcc As List(Of String) = ObtenerListaCorreosPorTipo(dtDestinatarios, "BCC")
+
+            If correosTo Is Nothing OrElse correosTo.Count = 0 Then
+                clsLnLog_error_wms.Agregar_Error("No se resolvieron destinatarios TO para PE0006. IdPedidoEnc=" & pIdPedidoEnc.ToString())
+                Exit Sub
+            End If
+
+            ' Combinar todos los destinatarios
+            Dim todosLosCorreos As New List(Of String)()
+            todosLosCorreos.AddRange(correosTo)
+            If correosCc IsNot Nothing Then todosLosCorreos.AddRange(correosCc)
+            If correosBcc IsNot Nothing Then todosLosCorreos.AddRange(correosBcc)
+
+            ' Crear copias para el hilo secundario (evita problemas de concurrencia)
+            Dim destinatariosCopy As List(Of String) = todosLosCorreos.ToList()
+            Dim asuntoCopy As String = asuntoFinal
+            Dim htmlCopy As String = htmlFinal
+            Dim correosToCopy As List(Of String) = correosTo.ToList()
+            Dim correosCcCopy As List(Of String) = If(correosCc, New List(Of String)()).ToList()
+            Dim correosBccCopy As List(Of String) = If(correosBcc, New List(Of String)()).ToList()
+            Dim idPedidoCopy As Integer = pIdPedidoEnc
+
+            Try
+                ' Enviar correo de forma asíncrona
+                Await Task.Run(Sub()
+                                   Try
+                                       EnviarCorreoNotificacion(destinatariosCopy, asuntoCopy, htmlCopy, correosToCopy, correosCcCopy, correosBccCopy)
+                                   Catch ex As Exception
+                                       clsLnLog_error_wms.Agregar_Error($"Error al enviar correo para PE0006. IdPedidoEnc={idPedidoCopy}. Error: {ex.Message}")
+                                   End Try
+                               End Sub)
+
+            Catch ex As Exception
+                clsLnLog_error_wms.Agregar_Error($"Error en tarea asíncrona para PE0006. IdPedidoEnc={pIdPedidoEnc}. Error: {ex.Message}")
+            End Try
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("Error generando notificación PE0006. " & ex.Message)
+            Throw ex
+        End Try
+
+    End Sub
+
+    Private Shared Sub EnviarCorreoNotificacion(ByVal destinatarios As List(Of String),
+                                                ByVal asunto As String,
+                                                ByVal htmlBody As String,
+                                                ByVal correosTo As List(Of String),
+                                                ByVal correosCc As List(Of String),
+                                                ByVal correosBcc As List(Of String))
+
+        If destinatarios Is Nothing OrElse destinatarios.Count = 0 Then Exit Sub
+
+        ' Configuración del correo
+        Dim fromEmail As String = "soportesw@dts.com.gt"
+        Dim fromPass As String = "Dts2021#"
+        Dim smtpHost As String = "smtp.office365.com"
+        Dim smtpPort As Integer = 587
+        Dim useSsl As Boolean = True
+
+        Using msg As New MailMessage()
+            msg.From = New MailAddress(fromEmail, "TOMWMS")
+
+            ' Agregar destinatarios TO
+            For Each email In correosTo.Distinct(StringComparer.OrdinalIgnoreCase)
+                If Not String.IsNullOrWhiteSpace(email) Then
+                    msg.To.Add(email)
+                End If
+            Next
+
+            ' Agregar destinatarios CC
+            For Each email In correosCc.Distinct(StringComparer.OrdinalIgnoreCase)
+                If Not String.IsNullOrWhiteSpace(email) Then
+                    msg.CC.Add(email)
+                End If
+            Next
+
+            ' Agregar destinatarios BCC
+            For Each email In correosBcc.Distinct(StringComparer.OrdinalIgnoreCase)
+                If Not String.IsNullOrWhiteSpace(email) Then
+                    msg.Bcc.Add(email)
+                End If
+            Next
+
+            msg.Subject = asunto
+            msg.Body = htmlBody
+            msg.IsBodyHtml = True
+
+            Using smtp As New SmtpClient(smtpHost, smtpPort)
+                smtp.EnableSsl = useSsl
+                smtp.Credentials = New NetworkCredential(fromEmail, fromPass)
+                smtp.Send(msg)
+            End Using
+        End Using
+
+    End Sub
+
+    Private Shared Function ObtenerListaCorreosPorTipo(ByVal dt As DataTable,
+                                                        ByVal pTipoDestinatario As String) As List(Of String)
+
+        Dim lst As New List(Of String)
+
+        If dt Is Nothing OrElse dt.Rows.Count = 0 Then Return lst
+
+        For Each dr As DataRow In dt.Rows
+            Dim tipo As String = If(IsDBNull(dr("TipoDestinatario")), "", dr("TipoDestinatario").ToString().Trim().ToUpper())
+            Dim correo As String = If(IsDBNull(dr("CorreoContacto")), "", dr("CorreoContacto").ToString().Trim())
+
+            If tipo = pTipoDestinatario.Trim().ToUpper() AndAlso Not String.IsNullOrWhiteSpace(correo) Then
+                If Not lst.Contains(correo.ToLower()) Then
+                    lst.Add(correo.ToLower())
+                End If
+            End If
+        Next
+
+        Return lst
+
+    End Function
+
+    ' Mantener la función original para compatibilidad si es necesario
+    Private Shared Function ObtenerCorreosPorTipo(ByVal dt As DataTable,
+                                                  ByVal pTipoDestinatario As String) As String
+
+        Dim lst As List(Of String) = ObtenerListaCorreosPorTipo(dt, pTipoDestinatario)
+        Return String.Join(";", lst.ToArray())
+
+    End Function
+
+    Private Shared Function ConstruirVariablesPE0006(ByVal oBePedidoEnc As clsBeTrans_pe_enc,
+                                                     ByVal oListaDetalles As List(Of clsBeTrans_pe_det),
+                                                     ByVal pUsuario As String) As Dictionary(Of String, String)
+
+        Dim dic As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
+
+        Try
+            ' Datos del encabezado
+            dic("{CodigoEmpresa}") = If(String.IsNullOrWhiteSpace(oBePedidoEnc.Codigo_Empresa_ERP), "", oBePedidoEnc.Codigo_Empresa_ERP)
+            dic("{NombreTipoPedido}") = "Traslado Directo desde WMS"
+            dic("{NumeroDocumento}") = oBePedidoEnc.No_documento.ToString()
+            dic("{FechaDocumento}") = oBePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm")
+            dic("{UsuarioGeneracion}") = If(String.IsNullOrWhiteSpace(pUsuario), "", pUsuario)
+
+            ' Datos de bodegas
+            dic("{CodigoBodegaOrigen}") = If(String.IsNullOrWhiteSpace(oBePedidoEnc.Bodega_Origen), "", oBePedidoEnc.Bodega_Origen)
+            dic("{NombreBodegaOrigen}") = ObtenerNombreBodegaPorCodigo(oBePedidoEnc.Bodega_Origen)
+            dic("{CodigoBodegaDestino}") = If(String.IsNullOrWhiteSpace(oBePedidoEnc.Bodega_Destino), "", oBePedidoEnc.Bodega_Destino)
+            dic("{NombreBodegaDestino}") = ObtenerNombreBodegaPorCodigo(oBePedidoEnc.Bodega_Destino)
+            dic("{Observaciones}") = If(String.IsNullOrWhiteSpace(oBePedidoEnc.Observacion), "", oBePedidoEnc.Observacion)
+
+            ' Construir tabla detalle HTML
+            dic("{TablaDetalleHtml}") = ConstruirTablaDetalleHtmlDesdeLista(oListaDetalles)
+
+        Catch ex As Exception
+            ' En caso de error, agregar valores por defecto
+            dic("{CodigoEmpresa}") = ""
+            dic("{NombreTipoPedido}") = "Traslado Directo desde WMS"
+            dic("{NumeroDocumento}") = ""
+            dic("{FechaDocumento}") = DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+            dic("{UsuarioGeneracion}") = pUsuario
+            dic("{CodigoBodegaOrigen}") = ""
+            dic("{NombreBodegaOrigen}") = ""
+            dic("{CodigoBodegaDestino}") = ""
+            dic("{NombreBodegaDestino}") = ""
+            dic("{Observaciones}") = ""
+            dic("{TablaDetalleHtml}") = "<table border='1'><tr><td>Error al generar detalle</td></tr></table>"
+
+            ' Registrar error
+            clsLnLog_error_wms.Agregar_Error("Error en ConstruirVariablesPE0006: " & ex.Message)
+        End Try
+
+        Return dic
+
+    End Function
+
+    Private Shared Function ConstruirTablaDetalleHtmlDesdeLista(ByVal oListaDetalles As List(Of clsBeTrans_pe_det)) As String
+        Try
+            If oListaDetalles Is Nothing OrElse oListaDetalles.Count = 0 Then
+                Return "<table border='1' cellpadding='4' cellspacing='0' style='border-collapse:collapse;font-family:Segoe UI,Arial,sans-serif;font-size:12px;'><tr><td colspan='3'>No hay detalles</td></tr></table>"
+            End If
+
+            Dim sb As New StringBuilder()
+
+            sb.AppendLine("<table border='1' cellpadding='4' cellspacing='0' style='border-collapse:collapse;font-family:Segoe UI,Arial,sans-serif;font-size:12px;width:100%;'>")
+            sb.AppendLine("<thead>")
+            sb.AppendLine("<tr style='background-color:#f2f2f2;'>")
+            sb.AppendLine("    <th style='padding:8px;text-align:left;'>Código</th>")
+            sb.AppendLine("    <th style='padding:8px;text-align:left;'>Producto</th>")
+            sb.AppendLine("    <th style='padding:8px;text-align:right;'>Cantidad</th>")
+            sb.AppendLine("    <th style='padding:8px;text-align:right;'>Peso</th>")
+            sb.AppendLine("    <th style='padding:8px;text-align:left;'>Presentación</th>")
+            sb.AppendLine("    <th style='padding:8px;text-align:left;'>Unidad</th>")
+            sb.AppendLine("</tr>")
+            sb.AppendLine("</thead>")
+            sb.AppendLine("<tbody>")
+
+            For Each oDetalle As clsBeTrans_pe_det In oListaDetalles
+                sb.AppendLine("<tr>")
+                sb.AppendLine($"    <td style='padding:8px;'>{EscapeHtml(ObtenerCodigoProducto(oDetalle))}</td>")
+                sb.AppendLine($"    <td style='padding:8px;'>{EscapeHtml(oDetalle.Nombre_producto)}</td>")
+                sb.AppendLine($"    <td style='padding:8px;text-align:right;'>{oDetalle.Cantidad.ToString("N2")}</td>")
+                sb.AppendLine($"    <td style='padding:8px;text-align:right;'>{oDetalle.Peso.ToString("N2")}</td>")
+                sb.AppendLine($"    <td style='padding:8px;'>{EscapeHtml(oDetalle.Nom_presentacion)}</td>")
+                sb.AppendLine($"    <td style='padding:8px;'>{EscapeHtml(oDetalle.Nom_unid_med)}</td>")
+                sb.AppendLine("</tr>")
+            Next
+
+            sb.AppendLine("</tbody>")
+            sb.AppendLine("</table>")
+
+            Return sb.ToString()
+
+        Catch ex As Exception
+            Return $"<table border='1' cellpadding='4'><tr><td>Error al generar detalle: {EscapeHtml(ex.Message)}</td></tr></table>"
+        End Try
+    End Function
+
+    Private Shared Function ObtenerCodigoProducto(ByVal oDetalle As clsBeTrans_pe_det) As String
+        Try
+            If oDetalle.ProductoBodega IsNot Nothing Then
+                Return oDetalle.Codigo_Producto
+            End If
+            Return ""
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+
+    Private Shared Function ObtenerNombreBodegaPorCodigo(ByVal pCodigoBodega As String) As String
+        Try
+            If String.IsNullOrWhiteSpace(pCodigoBodega) Then
+                Return String.Empty
+            End If
+
+            ' Intentar obtener la bodega por código
+            Dim oBeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Codigo(pCodigoBodega)
+
+            If oBeBodega IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(oBeBodega.Nombre) Then
+                Return oBeBodega.Nombre
+            End If
+
+            ' Si no se encuentra, retornar el código
+            Return pCodigoBodega
+
+        Catch ex As Exception
+            Return pCodigoBodega
+        End Try
+    End Function
+
+    Private Shared Function ObtenerIdBodegaDestino(ByVal oBePedidoEnc As clsBeTrans_pe_enc) As Integer
+        Try
+            ' Intentar obtener de la propiedad IdBodegaDestino si existe
+            Dim propInfo As System.Reflection.PropertyInfo = oBePedidoEnc.GetType().GetProperty("IdBodegaDestino")
+            If propInfo IsNot Nothing Then
+                Dim valor As Object = propInfo.GetValue(oBePedidoEnc)
+                If valor IsNot Nothing Then
+                    Return Convert.ToInt32(valor)
+                End If
+            End If
+
+            ' Si no existe la propiedad, buscar por código
+            If Not String.IsNullOrWhiteSpace(oBePedidoEnc.Bodega_Destino) Then
+                Dim oBeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Codigo(oBePedidoEnc.Bodega_Destino)
+                If oBeBodega IsNot Nothing Then
+                    Return oBeBodega.IdBodega
+                End If
+            End If
+
+            Return 0
+
+        Catch ex As Exception
+            Return 0
+        End Try
+    End Function
+
+    Private Shared Function EscapeHtml(ByVal pTexto As String) As String
+        If String.IsNullOrEmpty(pTexto) Then
+            Return String.Empty
+        End If
+
+        Return pTexto.Replace("&", "&amp;") _
+                     .Replace("<", "&lt;") _
+                     .Replace(">", "&gt;") _
+                     .Replace("""", "&quot;") _
+                     .Replace("'", "&#39;")
+    End Function
+
+    Private Shared Function ReemplazarVariables(ByVal pTexto As String,
+                                            ByVal pDic As Dictionary(Of String, String)) As String
+
+        If String.IsNullOrEmpty(pTexto) Then
+            Return String.Empty
+        End If
+
+        If pDic Is Nothing OrElse pDic.Count = 0 Then
+            Return pTexto
+        End If
+
+        Try
+            Dim resultado As String = pTexto
+
+            For Each kvp In pDic
+                If Not String.IsNullOrEmpty(kvp.Key) Then
+                    ' Reemplazo insensible a mayúsculas/minúsculas
+                    Dim valorReemplazo As String = If(kvp.Value, "")
+                    Dim indice As Integer = resultado.IndexOf(kvp.Key, StringComparison.OrdinalIgnoreCase)
+
+                    While indice >= 0
+                        resultado = resultado.Remove(indice, kvp.Key.Length).Insert(indice, valorReemplazo)
+                        indice = resultado.IndexOf(kvp.Key, indice + valorReemplazo.Length, StringComparison.OrdinalIgnoreCase)
+                    End While
+                End If
+            Next
+
+            Return resultado
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("Error en ReemplazarVariables: " & ex.Message)
+            Return pTexto
+        End Try
+
+    End Function
+
+    Private Function ObtenerMensajeDiferenciasDespachoPacking() As String
+
+        Dim sb As New System.Text.StringBuilder()
+
+        Try
+            If BeDespachoEnc Is Nothing _
+           OrElse BeDespachoEnc.ListaPedidos Is Nothing _
+           OrElse BeDespachoEnc.ListaPedidos.Count = 0 Then
+                Return String.Empty
+            End If
+
+            Dim totalRegistros As Integer = 0
+
+            For Each ped In BeDespachoEnc.ListaPedidos
+
+                If ped Is Nothing Then Continue For
+
+                Dim dt As DataTable = clsLnTrans_picking_ubic.Get_Diferencias_Despacho_Packing(ped.IdPedidoEnc)
+
+                If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+
+                If sb.Length = 0 Then
+                    sb.AppendLine("Se encontraron diferencias entre verificación y packing.")
+                    sb.AppendLine("")
+                End If
+
+                sb.AppendLine(String.Format("Pedido: {0}", ped.IdPedidoEnc))
+                sb.AppendLine("")
+
+                For Each row As DataRow In dt.Rows
+
+                    Dim idPickingEnc As Integer = ToInteger(row("IdPickingEnc"))
+                    Dim idStockRes As Integer = ToInteger(row("IdStockRes"))
+                    Dim codigo As String = Nz(row("codigo"))
+                    Dim producto As String = Nz(row("producto"))
+                    Dim lote As String = Nz(row("lote"))
+                    Dim licencia As String = Nz(row("lic_plate"))
+
+                    Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
+                    Dim verificado As Double = ToDouble(row("cantidad_verificada"))
+                    Dim empacado As Double = ToDouble(row("cantidad_empacada"))
+
+                    sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
+                    sb.AppendLine(String.Format("Producto: {0}", producto))
+                    sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
+                    sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
+                                            pickeado,
+                                            verificado,
+                                            empacado))
+                    sb.AppendLine(String.Format("IdStockRes: {0}", idStockRes))
+                    sb.AppendLine(New String("-"c, 90))
+
+                    totalRegistros += 1
+                Next
+
+                sb.AppendLine("")
+            Next
+
+            If totalRegistros = 0 Then
+                Return String.Empty
+            End If
+
+            sb.AppendLine("Total de registros con diferencia: " & totalRegistros.ToString())
+
+            Return sb.ToString()
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+        End Try
+
+    End Function
+
+    Private Function Nz(ByVal value As Object) As String
+        If value Is Nothing OrElse IsDBNull(value) Then Return String.Empty
+        Return value.ToString().Trim()
+    End Function
+
+    Private Function ToInteger(ByVal value As Object) As Integer
+        If value Is Nothing OrElse IsDBNull(value) OrElse value.ToString().Trim() = "" Then Return 0
+        Return Convert.ToInt32(value)
+    End Function
+
+    Private Function ToDouble(ByVal value As Object) As Double
+        If value Is Nothing OrElse IsDBNull(value) Then Return 0
+        Return Convert.ToDouble(value)
+    End Function
+
+    Private Function CorregirDiferenciasDespachoPacking() As Integer
+
+        Dim totalActualizados As Integer = 0
+
+        Try
+            If BeDespachoEnc Is Nothing OrElse BeDespachoEnc.ListaPedidos Is Nothing OrElse BeDespachoEnc.ListaPedidos.Count = 0 Then
+                Return 0
+            End If
+
+            For Each ped In BeDespachoEnc.ListaPedidos
+
+                If ped Is Nothing Then Continue For
+                If ped.Picking Is Nothing Then Continue For
+                If Not ped.Picking.Requiere_Preparacion Then Continue For
+
+                totalActualizados += clsLnTrans_picking_ubic.Corregir_Diferencias_Despacho_Packing(ped.IdPedidoEnc)
+            Next
+
+            Return totalActualizados
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+        End Try
+
+    End Function
 
 End Class

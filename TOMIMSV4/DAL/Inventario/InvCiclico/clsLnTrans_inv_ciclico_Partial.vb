@@ -2125,7 +2125,7 @@ Partial Public Class clsLnTrans_inv_ciclico
         Try
 
             Dim pBeTransAjustEnc As New clsBeTrans_ajuste_enc
-            pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
+            pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
             pBeTransAjustEnc.Referencia = "Ajuste por inventario No. " & IdInventario
             pBeTransAjustEnc.Fecha = Date.Now
             pBeTransAjustEnc.Fec_agr = Date.Now
@@ -2143,7 +2143,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             pBeTransAjustEnc.IdCentroCosto = IdCentroCosto
             clsLnTrans_ajuste_enc.Insertar(pBeTransAjustEnc, lConnection, lTransaction)
 
-            pIdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+            pIdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -7051,7 +7051,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                 If ajustes.Count > 0 Then
 
                     ' Crear encabezado para el ajuste
-                    pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID(pConnection, pTransaction) + 1
+                    pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID(pConnection, pTransaction) + 1
                     pBeTransAjustEnc.IdBodega = gBeInventario.IdBodega
                     pBeTransAjustEnc.Idusuario = pUsuario.IdUsuario
                     pBeTransAjustEnc.Fecha = Date.Now
@@ -7078,7 +7078,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                     For Each ajuste In ajustes
 
                         ajuste.IdAjusteDet = clsLnTrans_ajuste_det.MaxID(pConnection, pTransaction) + 1
-                        ajuste.IdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+                        ajuste.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
                         ajuste.IdPropietarioBodega = vIdPropietarioBodega
 
                         If ajuste.Cantidad_nueva - ajuste.Cantidad_original > 0 Then
