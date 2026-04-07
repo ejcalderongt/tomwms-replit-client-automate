@@ -4820,6 +4820,8 @@ Public Class frmAjusteStock
 
     Private Sub frmAjusteStock_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        Dim vPermitirEdicion As Boolean = False
+
         IsLoading = True
 
         Try
@@ -4928,8 +4930,6 @@ Public Class frmAjusteStock
 
             Application.DoEvents()
 
-            Dim vPermitirEdicion As Boolean = False
-
             Select Case Modo
 
                 Case TipoTrans.Nuevo
@@ -4992,6 +4992,12 @@ Public Class frmAjusteStock
             Else
                 cmbBodegaERP.EditValue = 0
             End If
+
+            'Aplicar estado final de habilitación
+            txtReferencia.Enabled = vPermitirEdicion
+            dtpFecha.Enabled = vPermitirEdicion
+            cmdAdd.Visible = vPermitirEdicion
+            mnuDel.Visible = vPermitirEdicion
 
             cmbBodegaERP.Enabled = vPermitirEdicion
             cmbProductoFamilia.Enabled = vPermitirEdicion
