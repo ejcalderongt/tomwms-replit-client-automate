@@ -324,6 +324,9 @@
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Base_Datos\frmBD.Designer.vb">
       <DependentUpon>frmBD.vb</DependentUpon>
     </Compile>
@@ -565,6 +568,9 @@
       <DependentUpon>frmPrincipal02.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
@@ -5571,6 +5577,9 @@
       <Version>3.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="EPPlus">
+      <Version>8.5.1</Version>
     </PackageReference>
     <PackageReference Include="ExcelNumberFormat">
       <Version>1.1.0</Version>
