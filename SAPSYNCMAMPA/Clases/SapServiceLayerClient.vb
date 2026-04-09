@@ -818,7 +818,6 @@ Public Class SapServiceLayerClient
                             End Try
                             ' ====== FIN PATCH ======
 
-
                         Else
                             clsPublic.Actualizar_Progreso(lblprg, $"❌ ERROR {postResp.StatusCode}:")
                             clsPublic.Actualizar_Progreso(lblprg, postContent)

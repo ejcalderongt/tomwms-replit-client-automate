@@ -31,6 +31,13 @@ DAL
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnAjuste_motivo.Get_IdMotivo_By_Codigo(System.String)">
+ <summary>
+ Obtiene el ID del motivo de ajuste por su código o nombre
+ </summary>
+ <param name="motivoTexto">Código o nombre del motivo (ENT, SAL, INV, MER, DEV, CAM, OTR, etc.)</param>
+ <returns>ID del motivo, o 0 si no se encuentra</returns>
+</member>
 <member name="M:TOMWMS.clsLnLog_error_wms.Get_All_By_Referencia_Documento(System.String)">
  <summary>
  #EJC202303011651
@@ -1137,7 +1144,7 @@ Row event argument class
  <param name="pIdOrdenCompraEnc"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnTrans_re_det.Guarda_Trans_re_det(System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeStock_rec}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+<member name="M:TOMWMS.clsLnTrans_re_det.Guarda_Trans_re_det(System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det}@,System.Collections.Generic.List{TOMWMS.clsBeStock_rec}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>
  #EJC202209211314: Concurrencia y copias de stock.
  </summary>
@@ -1230,6 +1237,11 @@ Row event argument class
  </summary>
  <param name="pListObjUM"></param>
  <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Single_By_ProductoBodega_Ubicacion_Lote(System.Int32,System.Int32,System.String,System.Int32)">
+ <summary>
+ Obtiene un stock específico por producto bodega, ubicación y lote
+ </summary>
 </member>
 <member name="M:TOMWMS.clsLnStock.Get_All_By_IdPropietarioBodega(System.Int32)">
  <summary>

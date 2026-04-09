@@ -101,10 +101,10 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
                     vNoDocumento = "WMS" + vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc)
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc)
 
                     DetallesEnviados = 0
 
@@ -115,7 +115,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         '#EJC20210928: Leer ficha de bodega para saber si es almacen avanzado en NAV o NO.
                         vCodigoBodega = clsLnBodega.Get_Codigo_By_IdBodega(lVistaAjustesPendientesEnvio.Item(0).IdBodegaERP)
@@ -208,7 +208,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                             Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet)
 
                             If Not BeFamilia Is Nothing Then
@@ -217,7 +217,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
                             AjDet.UMBas = BeAjusteDet.UmBas
 
                             vDif = Math.Round(AjDet.Cantidad_original - AjDet.Cantidad_nueva, 6)
@@ -409,12 +409,12 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     BeNavEjecucionEnc.IdEjecucionEnc,
                                                                                     BeConfigDet.Idnavconfigdet, CnnLog)
 
                                         lblprg.AppendText(vbNewLine)
-                                        lblprg.AppendText("Error en NAV al procesar el ajuste #: " & AjEnc.Idajusteenc & vbNewLine)
+                                        lblprg.AppendText("Error en NAV al procesar el ajuste #: " & AjEnc.IdAjusteenc & vbNewLine)
                                         lblprg.AppendText(vbNewLine)
                                         lblprg.AppendText(ex.Message)
                                         lblprg.AppendText(vbNewLine)
@@ -580,12 +580,12 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    BeNavEjecucionEnc.IdEjecucionEnc,
                                                                                    BeConfigDet.Idnavconfigdet,
                                                                                    CnnLog)
 
-                                        Actualizar_Progreso(lblprg, "Error en NAV al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        Actualizar_Progreso(lblprg, "Error en NAV al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                     End Try
 
@@ -608,21 +608,21 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         vCorrelativoActual = 0
 
                         If DetallesEnviados = lVistaAjustesPendientesEnvio.Count Then
-                            clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(AjEnc.Idajusteenc, True)
-                            Actualizar_Progreso(lblprg, "Ajuste: " & AjEnc.Idajusteenc & " procesado correctamente [det = count] :)")
+                            clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(AjEnc.IdAjusteenc, True)
+                            Actualizar_Progreso(lblprg, "Ajuste: " & AjEnc.IdAjusteenc & " procesado correctamente [det = count] :)")
                         Else
-                            Actualizar_Progreso(lblprg, String.Format("Incertidumbre de ajuste: " & AjEnc.Idajusteenc & " det = {0} count = {1}", DetallesEnviados, lVistaAjustesPendientesEnvio.Count))
+                            Actualizar_Progreso(lblprg, String.Format("Incertidumbre de ajuste: " & AjEnc.IdAjusteenc & " det = {0} count = {1}", DetallesEnviados, lVistaAjustesPendientesEnvio.Count))
                         End If
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    BeNavEjecucionEnc.IdEjecucionEnc,
                                                                    BeConfigDet.Idnavconfigdet,
                                                                    CnnLog)
 
-                        Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 

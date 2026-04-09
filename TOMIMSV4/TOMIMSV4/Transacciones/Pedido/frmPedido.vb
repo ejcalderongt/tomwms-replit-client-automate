@@ -4714,8 +4714,7 @@ Public Class frmPedido
                         CantidadCell.ErrorText = result
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = result
                         e.Cancel = True
-                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso
-                        Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
+                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso txtReferencia.Text <> "" AndAlso Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
                         dgrid.Rows(CodProductoCell.RowIndex).ErrorText = ""
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = ""
                         dgrid.Rows(PesoCell.RowIndex).ErrorText = ""
@@ -6883,7 +6882,7 @@ Public Class frmPedido
                     valores.Add(BeVW_stock_res.IdProductoTallaColor)
                     valores.Add(BeVW_stock_res.Codigo_Talla)
                     valores.Add(BeVW_stock_res.Codigo_Color)
-                    valores.Add(BeVW_stock_res.Codigo_Producto & BeVW_stock_res.Codigo_Talla & BeVW_stock_res.Codigo_Color)
+                    valores.Add(BeVW_stock_res.Codigo_Producto & BeVW_stock_res.Codigo_Color & BeVW_stock_res.Codigo_Talla)
                 End If
 
                 DTStockRes.Rows.Add(valores.ToArray())
@@ -10043,7 +10042,7 @@ Public Class frmPedido
         Return Nothing
     End Function
 
-    Private Sub mnuEliminarPedido_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedido.ItemClick
+    Private Async Sub mnuEliminarPedido_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedido.ItemClick
 
         Try
 
@@ -10085,6 +10084,30 @@ Public Class frmPedido
 
                                             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                                             SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
+
+                                            '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
+                                            If AP.Bodega.Interface_SAP AndAlso Not clsBD.Instancia.HANA_SL = "" Then
+
+                                                Dim vHanaService = New SapServiceLayerClient()
+                                                Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+                                                Select Case pBePedidoEnc.IdTipoPedido
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
+                                                        Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
+                                                        Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
+                                                        Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
+                                                        Await clsSyncSapFacturaReservaCliente.Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                                  vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+
+                                                End Select
+
+                                            End If
 
                                             If wsTOMHHInstance Is Nothing Then
                                                 clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface (WS Interno de TOMWMS)")
@@ -10169,7 +10192,7 @@ Public Class frmPedido
 
                                                     Try
 
-                                                        If vInterfaceSAP Then
+                                                        If vInterfaceSAP AndAlso clsBD.Instancia.HANA_SL = "" Then
 
                                                             Dim vArgumentosAEnviarAInterface As String = ""
                                                             Dim tipoDocumento As New clsDataContractDI.tTipoDocumentoSalida
@@ -10280,6 +10303,10 @@ Public Class frmPedido
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         Finally
             lblprg.Text = "" : lblprg.Visible = False
+            Try
+                SplashScreenManager.CloseForm(False)
+            Catch ex As Exception
+            End Try
         End Try
 
     End Sub

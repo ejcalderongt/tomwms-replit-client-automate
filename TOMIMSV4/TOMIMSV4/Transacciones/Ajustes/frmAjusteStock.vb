@@ -5,6 +5,7 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports DocumentFormat.OpenXml.Drawing
 
 Public Class frmAjusteStock
 
@@ -111,6 +112,9 @@ Public Class frmAjusteStock
         Try
 
             pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
+
+            txtNoAjuste.Text = pBeTransAjustEnc.Idajusteenc
+
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
             pBeTransAjustEnc.Fec_agr = dtpFecha.EditValue
@@ -145,7 +149,7 @@ Public Class frmAjusteStock
 
         Try
 
-
+            txtNoAjuste.Text = pBeTransAjustEnc.Idajusteenc
             txtReferencia.Text = pBeTransAjustEnc.Referencia
             dtpFecha.EditValue = pBeTransAjustEnc.Fecha
 
@@ -154,11 +158,20 @@ Public Class frmAjusteStock
             User_modTextEdit.Text = pBeTransAjustEnc.User_mod
             Fec_modDateEdit.Text = pBeTransAjustEnc.Fec_mod
 
-            Dim BeCliente As New clsBeCliente
-            BeCliente = clsLnCliente.Get_Single_By_Codigo(pBeTransAjustEnc.IdBodega)
+            If BeBodega Is Nothing Then
+                BeBodega = clsLnBodega.GetSingle_By_Idbodega(AP.IdBodega)
+            End If
 
-            If Not BeCliente Is Nothing Then
+            If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+
+                Dim BeCliente As New clsBeCliente
+                BeCliente = clsLnCliente.Get_Single_By_Codigo(pBeTransAjustEnc.IdBodega)
+
+                If Not BeCliente Is Nothing Then
                 cmbBodegaERP.EditValue = BeCliente.IdCliente
+            End If
+            Else
+            cmbBodegaERP.EditValue = 0
             End If
 
             If pBeTransAjustEnc.IdPropietarioBodega <> 0 Then
@@ -172,19 +185,22 @@ Public Class frmAjusteStock
             txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Dir_Erp))
             txtCentroCostoDepERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Dep_Erp))
 
-            If chkBorrador.Checked Then
-                '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
-                lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
-            Else
-                '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
-                lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
-            End If
+            chkBorrador.Checked = pBeTransAjustEnc.Borrador
 
-            Dim tipoajuste = 0
-            If lBeTransAjusteDet IsNot Nothing Then
-                If lBeTransAjusteDet.Count > 0 Then
-                    '#GT13062022_0933: como este método es usado para abrir un registro existente,
-                    'queda set en el cmbtipoajuste con el tipoajuste guardado en el detalle, sino es el tipo 3 (+/-) entonces puede ser cualquier otro
+            lBeTransAjusteDet.Clear()
+            lBeTransAjusteDetBorrador.Clear()
+
+            lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+
+            Dim tipoajuste As Integer = 0
+
+            If chkBorrador.Checked Then
+                If lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0 Then
+                    tipoajuste = lBeTransAjusteDetBorrador.FirstOrDefault().idtipoajuste
+                End If
+            Else
+                If lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0 Then
                     tipoajuste = lBeTransAjusteDet.FirstOrDefault().Idtipoajuste
                 End If
             End If
@@ -196,19 +212,17 @@ Public Class frmAjusteStock
             End If
 
             Cargar_Detalle()
-
             Carga_Documentos_Asociados()
 
             chkAuditado.Checked = pBeTransAjustEnc.Auditado
-
             chkAuditado.Enabled = Not pBeTransAjustEnc.Enviado_A_ERP
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -369,7 +383,6 @@ Public Class frmAjusteStock
         Dim st As New clsBeVW_stock_res
         Dim ubic, codigo As String
         Dim rc As Integer
-        '#GT16062022_1511: set a 0
         Dim pTipoAjuste As Integer = 0
 
         Es_Ajuste_Positivo_Sin_Stock = False
@@ -393,7 +406,6 @@ Public Class frmAjusteStock
             Try
 
                 Stock.IdPropietarioBodega = cmbPropietarioBodega.EditValue
-                '#GT21112022_0900: envio tipo ajuste para validar si producto tiene la propiedad.
                 Stock.varTipoAjuste = cmbTipoAjuste.EditValue
 
                 If Stock.ShowDialog() <> DialogResult.OK Then
@@ -403,15 +415,20 @@ Public Class frmAjusteStock
                     End Try
                     Return
                 End If
+
             Catch ex As Exception
                 MsgBox("No se puede mostrar el stock")
             End Try
 
-
             'GT21042022: iterar la selección multiple
             If Stock.SeleccionMultiple Then
 
-                lBeTransAjusteDet = New List(Of clsBeTrans_ajuste_det)
+                If chkBorrador.Checked Then
+                    lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
+                Else
+                    lBeTransAjusteDet = New List(Of clsBeTrans_ajuste_det)
+                End If
+
                 If Not cmbBodegaERP.EditValue Is Nothing AndAlso Not cmbBodegaERP.EditValue Is Nothing Then
                     pTipoAjuste = cmbTipoAjuste.EditValue
                 End If
@@ -422,158 +439,289 @@ Public Class frmAjusteStock
 
                     Llenar_Grid_Detalle(StockEspecificoSeleccionado, pTipoAjuste)
 
-                    '#GT13062022_2004: si tiene mas de un registro en grid, bloquear el combo tipo ajuste
                     If dgrid.Rows.Count > 0 Then
                         cmbTipoAjuste.Enabled = False
                     End If
 
                 Next
 
-
-
             Else
 
                 Reservar_Stock(Stock.pObjStock.IdStock)
 
-                BeAjusteDet = New clsBeTrans_ajuste_det
-                BeAjusteDet.IdAjusteDet = 0
-                BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.Idajusteenc
-                BeAjusteDet.IdStock = Stock.pObjStock.IdStock
-                BeAjusteDet.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
-                BeAjusteDet.IdProductoBodega = Stock.pObjStock.IdProductoBodega
-                BeAjusteDet.IdProductoEstado = Stock.pObjStock.IdProductoEstado
-                BeAjusteDet.IdPresentacion = Stock.pObjStock.IdPresentacion
-                BeAjusteDet.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
-                BeAjusteDet.IdUbicacion = Stock.pObjStock.IdUbicacion
+                If chkBorrador.Checked Then
 
-                If BeAjusteDet.IdPresentacion <> 0 Then
-                    BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
-                End If
+                    Dim BeAjusteDetBorrador As New clsBeTrans_ajuste_det_borrador
+                    Dim pProductoTallaColor As New DataTable
 
-                BeAjusteDet.Lote_original = Stock.pObjStock.Lote
-                BeAjusteDet.Lote_nuevo = Stock.pObjStock.Lote
-                BeAjusteDet.Fecha_vence_original = Stock.pObjStock.Fecha_Vence
-                BeAjusteDet.Fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
-                BeAjusteDet.Peso_original = Stock.pObjStock.Peso
-                BeAjusteDet.Peso_nuevo = Stock.pObjStock.Peso
-                BeAjusteDet.Cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                BeAjusteDet.Cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                BeAjusteDet.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.idajustedet = 0
+                    BeAjusteDetBorrador.idajusteenc = pBeTransAjustEnc.IdAjusteenc
+                    BeAjusteDetBorrador.IdStock = Stock.pObjStock.IdStock
+                    BeAjusteDetBorrador.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
+                    BeAjusteDetBorrador.IdProductoBodega = Stock.pObjStock.IdProductoBodega
+                    BeAjusteDetBorrador.IdProductoEstado = Stock.pObjStock.IdProductoEstado
+                    BeAjusteDetBorrador.IdPresentacion = Stock.pObjStock.IdPresentacion
+                    BeAjusteDetBorrador.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
+                    BeAjusteDetBorrador.IdUbicacion = Stock.pObjStock.IdUbicacion
 
-                If BeAjusteDet.IdPresentacion <> 0 Then
-                    BeAjusteDet.Cantidad_original = Math.Round(BeAjusteDet.Cantidad_original / BeAjusteDet.Presentacion.Factor, 6)
-                    BeAjusteDet.Cantidad_nueva = Math.Round(BeAjusteDet.Cantidad_nueva / BeAjusteDet.Presentacion.Factor, 6)
-                    BeAjusteDet.CantReservada = Math.Round(BeAjusteDet.CantReservada / BeAjusteDet.Presentacion.Factor, 6)
-                End If
-
-                BeAjusteDet.UmBas = Stock.pObjStock.UMBas
-                BeAjusteDet.Codigo_producto = Stock.pObjStock.Codigo_Producto
-                BeAjusteDet.Nombre_producto = Stock.pObjStock.Nombre_Producto 'clsLnProducto.GetSingle(Stock.pObjStock.IdProducto).Nombre
-                BeAjusteDet.Idtipoajuste = 0
-                BeAjusteDet.IdMotivoAjuste = 0
-                BeAjusteDet.Observacion = ""
-                BeAjusteDet.Codigo_ajuste = 0
-                BeAjusteDet.Enviado = False
-                BeAjusteDet.lic_plate = Stock.pObjStock.Lic_plate
-                BeAjusteDet.idstockres = IdStockRes
-                BeAjusteDet.idstocklink = 0
-                BeAjusteDet.esnuevolink = 0
-
-                Dim pProductoTallaColor As New DataTable
-
-                If BeBodega.Control_Talla_Color Then
-
-                    BeAjusteDet.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
-                    pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor_origen)
-
-                    If pProductoTallaColor IsNot Nothing Then
-                        BeAjusteDet.Talla_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                        BeAjusteDet.Color_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
-
-                    Else
-                        Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
+                    If BeAjusteDetBorrador.IdPresentacion <> 0 Then
+                        BeAjusteDetBorrador.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDetBorrador.IdPresentacion)
                     End If
 
-                End If
+                    BeAjusteDetBorrador.lote_original = Stock.pObjStock.Lote
+                    BeAjusteDetBorrador.lote_nuevo = Stock.pObjStock.Lote
+                    BeAjusteDetBorrador.fecha_vence_original = Stock.pObjStock.Fecha_Vence
+                    BeAjusteDetBorrador.fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
+                    BeAjusteDetBorrador.peso_original = Stock.pObjStock.Peso
+                    BeAjusteDetBorrador.peso_nuevo = Stock.pObjStock.Peso
+                    BeAjusteDetBorrador.cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
 
-
-                lBeTransAjusteDet.Add(BeAjusteDet)
-
-                ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
-                codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
-
-
-                rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
-
-                dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
-                dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
-
-                dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
-                dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
-
-                dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
-                dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
-
-                '#CKFK 20211214 Agregué esta condición
-                If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                    dgrid.Rows(rc).Cells("ColC antidad").Value = BeAjusteDet.Fecha_vence_original
-                ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
-                    dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
-                ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
-                    dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Lote_original
-                End If
-
-                If BeAjusteDet.IdPresentacion <> 0 Then
-                    dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
-                    dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
-                Else
-                    dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
-                    dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
-                End If
-
-                If BeAjusteDet.lic_plate <> "" Then
-                    dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDet.lic_plate
-                    dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
-                Else
-                    dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
-                    dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
-                End If
-
-                Llenar_Motivo(rc, -1)
-
-                '#GT13062022_16_50: si pTipoAjuste es 0, entonces se deja set de cmbTipoAjuste, para que el grid obtenga las columnas adecuadas
-                Dim cmbIdTipoAjuste = cmbTipoAjuste.EditValue
-                If pTipoAjuste = 0 Then
-                    Llenar_Tipo(rc, cmbIdTipoAjuste)
-                Else
-                    Llenar_Tipo(rc, pTipoAjuste)
-                End If
-
-                Llena_Bodegas_ERP_Grid(rc, -1)
-
-                dgrid.Rows(rc).Selected = True
-
-                '#GT13062022_2004: si tiene mas de un registro en grid, bloquear el combo tipo ajuste
-                If dgrid.Rows.Count > 0 Then
-                    cmbTipoAjuste.Enabled = False
-                End If
-
-                If BeBodega.Control_Talla_Color Then
-
-                    Llenar_Talla(rc, -1)
-                    Llenar_Color(rc, -1)
-
-
-                    If pProductoTallaColor IsNot Nothing Then
-                        dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
-                        dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                        dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
-                    Else
-                        Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
+                    If BeAjusteDetBorrador.IdPresentacion <> 0 Then
+                        BeAjusteDetBorrador.cantidad_original = Math.Round(BeAjusteDetBorrador.cantidad_original / BeAjusteDetBorrador.Presentacion.Factor, 6)
+                        BeAjusteDetBorrador.cantidad_nueva = Math.Round(BeAjusteDetBorrador.cantidad_nueva / BeAjusteDetBorrador.Presentacion.Factor, 6)
+                        BeAjusteDetBorrador.CantReservada = Math.Round(BeAjusteDetBorrador.CantReservada / BeAjusteDetBorrador.Presentacion.Factor, 6)
                     End If
 
-                    dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
-                    dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+                    BeAjusteDetBorrador.UmBas = Stock.pObjStock.UMBas
+                    BeAjusteDetBorrador.codigo_producto = Stock.pObjStock.Codigo_Producto
+                    BeAjusteDetBorrador.nombre_producto = Stock.pObjStock.Nombre_Producto
+                    BeAjusteDetBorrador.idtipoajuste = 0
+                    BeAjusteDetBorrador.idmotivoajuste = 0
+                    BeAjusteDetBorrador.observacion = ""
+                    BeAjusteDetBorrador.codigo_ajuste = 0
+                    BeAjusteDetBorrador.enviado = False
+                    BeAjusteDetBorrador.lic_plate = Stock.pObjStock.Lic_plate
+                    BeAjusteDetBorrador.idstockres = IdStockRes
+                    BeAjusteDetBorrador.idstocklink = 0
+                    BeAjusteDetBorrador.esnuevolink = 0
+
+                    If BeBodega.Control_Talla_Color Then
+
+                        BeAjusteDetBorrador.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
+                        pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDetBorrador.IdProductoTallaColor_origen)
+
+                        If pProductoTallaColor IsNot Nothing Then
+                            BeAjusteDetBorrador.Talla_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                            BeAjusteDetBorrador.Color_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                        Else
+                            Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDetBorrador.IdProductoBodega)
+                        End If
+
+                    End If
+
+                    lBeTransAjusteDetBorrador.Add(BeAjusteDetBorrador)
+
+                    ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDetBorrador.IdUbicacion, AP.IdBodega).NombreCompleto
+                    codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDetBorrador.IdProductoBodega)).Codigo
+
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto, BeAjusteDetBorrador.UmBas, ubic)
+
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
+
+                    dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
+                    dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
+
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
+
+                    If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDetBorrador.fecha_vence_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDetBorrador.cantidad_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDetBorrador.lote_original
+                    End If
+
+                    If BeAjusteDetBorrador.IdPresentacion <> 0 Then
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDetBorrador.Presentacion.Nombre
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
+                    Else
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
+                    End If
+
+                    If BeAjusteDetBorrador.lic_plate <> "" Then
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDetBorrador.lic_plate
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
+                    Else
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
+                    End If
+
+                    Llenar_Motivo(rc, -1)
+
+                    Dim cmbIdTipoAjuste = cmbTipoAjuste.EditValue
+                    If pTipoAjuste = 0 Then
+                        Llenar_Tipo(rc, cmbIdTipoAjuste)
+                    Else
+                        Llenar_Tipo(rc, pTipoAjuste)
+                    End If
+
+                    Llena_Bodegas_ERP_Grid(rc, -1)
+
+                    dgrid.Rows(rc).Selected = True
+
+                    If dgrid.Rows.Count > 0 Then
+                        cmbTipoAjuste.Enabled = False
+                    End If
+
+                    If BeBodega.Control_Talla_Color Then
+
+                        Llenar_Talla(rc, -1)
+                        Llenar_Color(rc, -1)
+
+                        If pProductoTallaColor IsNot Nothing Then
+                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDetBorrador.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                        Else
+                            Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDetBorrador.IdProductoBodega)
+                        End If
+
+                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+
+                    End If
+
+                Else
+
+                    BeAjusteDet = New clsBeTrans_ajuste_det
+                    BeAjusteDet.IdAjusteDet = 0
+                    BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
+                    BeAjusteDet.IdStock = Stock.pObjStock.IdStock
+                    BeAjusteDet.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
+                    BeAjusteDet.IdProductoBodega = Stock.pObjStock.IdProductoBodega
+                    BeAjusteDet.IdProductoEstado = Stock.pObjStock.IdProductoEstado
+                    BeAjusteDet.IdPresentacion = Stock.pObjStock.IdPresentacion
+                    BeAjusteDet.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
+                    BeAjusteDet.IdUbicacion = Stock.pObjStock.IdUbicacion
+
+                    If BeAjusteDet.IdPresentacion <> 0 Then
+                        BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
+                    End If
+
+                    BeAjusteDet.Lote_original = Stock.pObjStock.Lote
+                    BeAjusteDet.Lote_nuevo = Stock.pObjStock.Lote
+                    BeAjusteDet.Fecha_vence_original = Stock.pObjStock.Fecha_Vence
+                    BeAjusteDet.Fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
+                    BeAjusteDet.Peso_original = Stock.pObjStock.Peso
+                    BeAjusteDet.Peso_nuevo = Stock.pObjStock.Peso
+                    BeAjusteDet.Cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDet.Cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDet.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
+
+                    If BeAjusteDet.IdPresentacion <> 0 Then
+                        BeAjusteDet.Cantidad_original = Math.Round(BeAjusteDet.Cantidad_original / BeAjusteDet.Presentacion.Factor, 6)
+                        BeAjusteDet.Cantidad_nueva = Math.Round(BeAjusteDet.Cantidad_nueva / BeAjusteDet.Presentacion.Factor, 6)
+                        BeAjusteDet.CantReservada = Math.Round(BeAjusteDet.CantReservada / BeAjusteDet.Presentacion.Factor, 6)
+                    End If
+
+                    BeAjusteDet.UmBas = Stock.pObjStock.UMBas
+                    BeAjusteDet.Codigo_producto = Stock.pObjStock.Codigo_Producto
+                    BeAjusteDet.Nombre_producto = Stock.pObjStock.Nombre_Producto
+                    BeAjusteDet.Idtipoajuste = 0
+                    BeAjusteDet.IdMotivoAjuste = 0
+                    BeAjusteDet.Observacion = ""
+                    BeAjusteDet.Codigo_ajuste = 0
+                    BeAjusteDet.Enviado = False
+                    BeAjusteDet.lic_plate = Stock.pObjStock.Lic_plate
+                    BeAjusteDet.idstockres = IdStockRes
+                    BeAjusteDet.idstocklink = 0
+                    BeAjusteDet.esnuevolink = 0
+
+                    Dim pProductoTallaColor As New DataTable
+
+                    If BeBodega.Control_Talla_Color Then
+
+                        BeAjusteDet.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
+                        pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor_origen)
+
+                        If pProductoTallaColor IsNot Nothing Then
+                            BeAjusteDet.Talla_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                            BeAjusteDet.Color_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                        Else
+                            Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
+                        End If
+
+                    End If
+
+                    lBeTransAjusteDet.Add(BeAjusteDet)
+
+                    ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
+                    codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
+
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
+
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
+
+                    dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
+                    dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
+
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
+
+                    If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Fecha_vence_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Lote_original
+                    End If
+
+                    If BeAjusteDet.IdPresentacion <> 0 Then
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
+                    Else
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
+                    End If
+
+                    If BeAjusteDet.lic_plate <> "" Then
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDet.lic_plate
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
+                    Else
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
+                    End If
+
+                    Llenar_Motivo(rc, -1)
+
+                    Dim cmbIdTipoAjuste = cmbTipoAjuste.EditValue
+                    If pTipoAjuste = 0 Then
+                        Llenar_Tipo(rc, cmbIdTipoAjuste)
+                    Else
+                        Llenar_Tipo(rc, pTipoAjuste)
+                    End If
+
+                    Llena_Bodegas_ERP_Grid(rc, -1)
+
+                    dgrid.Rows(rc).Selected = True
+
+                    If dgrid.Rows.Count > 0 Then
+                        cmbTipoAjuste.Enabled = False
+                    End If
+
+                    If BeBodega.Control_Talla_Color Then
+
+                        Llenar_Talla(rc, -1)
+                        Llenar_Color(rc, -1)
+
+                        If pProductoTallaColor IsNot Nothing Then
+                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                        Else
+                            Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
+                        End If
+
+                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+
+                    End If
 
                 End If
 
@@ -641,6 +789,9 @@ Public Class frmAjusteStock
             BeAjusteDet.idstockres = IdStockRes
             BeAjusteDet.idstocklink = 0
             BeAjusteDet.esnuevolink = 0
+            BeAjusteDet.IdProductoTallaColor_origen = stockEspecificoSeleccionado.IdProductoTallaColor
+            BeAjusteDet.Talla_origen = stockEspecificoSeleccionado.Codigo_Talla
+            BeAjusteDet.Color_origen = stockEspecificoSeleccionado.Codigo_Color
             lBeTransAjusteDet.Add(BeAjusteDet)
 
             ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
@@ -684,6 +835,9 @@ Public Class frmAjusteStock
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
 
+                Llenar_Talla(rc, -1)
+                Llenar_Color(rc, -1)
+
                 Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor_origen)
 
                 If pProductoTallaColor IsNot Nothing Then
@@ -726,8 +880,8 @@ Public Class frmAjusteStock
 
             If BeBodega.Control_Talla_Color Then
                 Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(pStock.IdProductoTallaColor,
-                                                                                                      clsTransaccion.lConnection,
-                                                                                                      clsTransaccion.lTransaction)
+                                                                                                          clsTransaccion.lConnection,
+                                                                                                          clsTransaccion.lTransaction)
 
                 If pProductoTallaColor IsNot Nothing Then
                     pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
@@ -1022,7 +1176,10 @@ Public Class frmAjusteStock
 
                             DgComboTipo.Value = pidtipo
 
-                            dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
+                            If Not chkBorrador.Checked Then
+                                dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
+                            End If
+
                             Valor_Tipo_Ajuste(pIndex)
 
                         End If
@@ -1237,7 +1394,12 @@ Public Class frmAjusteStock
 
                     If IdTipoAjuste <= 0 Then Return
 
-                    lBeTransAjusteDet(sr).Idtipoajuste = IdTipoAjuste
+                    If chkBorrador.Checked Then
+                        lBeTransAjusteDetBorrador(sr).idtipoajuste = IdTipoAjuste
+                    Else
+                        lBeTransAjusteDet(sr).Idtipoajuste = IdTipoAjuste
+                    End If
+
 
                     dgrid.Rows(sr).Cells("ColCantidad").Value = Nothing
 
@@ -1290,142 +1452,173 @@ Public Class frmAjusteStock
 
         Dim dr() As DataRow
 
-        TipoAjuste_Por_lote = False : TipoAjuste_Por_Fecha_Vence = False : TipoAjuste_Por_Cantidad = False : TipoAjuste_Por_Peso = False
+        TipoAjuste_Por_lote = False
+        TipoAjuste_Por_Fecha_Vence = False
+        TipoAjuste_Por_Cantidad = False
+        TipoAjuste_Por_Peso = False
 
         Try
 
-            If IdTipoAjuste <> -1 Then
+            If IdTipoAjuste = -1 Then Return
 
-                dr = dtt.Select("idtipoajuste=" & IdTipoAjuste)
+            dr = dtt.Select("idtipoajuste=" & IdTipoAjuste)
 
-                If dr.Count = 0 Then Return
+            If dr.Count = 0 Then Return
 
-                If dr(0).Item("modifica_lote") Then TipoAjuste_Por_lote = True
-                If dr(0).Item("momdifica_vencimiento") Then TipoAjuste_Por_Fecha_Vence = True
-                If dr(0).Item("modifica_cantidad") Then TipoAjuste_Por_Cantidad = True
-                If dr(0).Item("modifica_peso") Then TipoAjuste_Por_Peso = True
+            If dr(0).Item("modifica_lote") Then TipoAjuste_Por_lote = True
+            If dr(0).Item("momdifica_vencimiento") Then TipoAjuste_Por_Fecha_Vence = True
+            If dr(0).Item("modifica_cantidad") Then TipoAjuste_Por_Cantidad = True
+            If dr(0).Item("modifica_peso") Then TipoAjuste_Por_Peso = True
 
-                If TipoAjuste_Por_lote Then 'colLote
+            If TipoAjuste_Por_lote Then
 
-                    dgrid.Columns("CantidadP").HeaderText = "Existencia"
-                    dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Cantidad_original
+                Dim vCantidadOriginal As Double = 0
+                Dim vLoteOriginal As String = ""
 
-                    dgrid.Columns("ColCantidad").HeaderText = "Nuevo Lote"
-                    dgrid.Rows(sr).Cells("ColCantidad").ReadOnly = False
-                    dgrid.Columns("colLote").HeaderText = "Lote Actual"
-                    dgrid.Columns("UmBas").ReadOnly = True
-                    dgrid.Columns("colLote").ReadOnly = True
+                If chkBorrador.Checked Then
+                    vCantidadOriginal = lBeTransAjusteDetBorrador(sr).cantidad_original
+                    vLoteOriginal = lBeTransAjusteDetBorrador(sr).lote_original
+                Else
+                    vCantidadOriginal = lBeTransAjusteDet(sr).Cantidad_original
+                    vLoteOriginal = lBeTransAjusteDet(sr).Lote_original
+                End If
 
-                    Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
-                    currencyCellStyle.Format = "N6"
+                dgrid.Columns("CantidadP").HeaderText = "Existencia"
+                dgrid.Rows(sr).Cells("CantidadP").Value = vCantidadOriginal
 
-                    dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("ColCantidad").HeaderText = "Nuevo Lote"
+                dgrid.Rows(sr).Cells("ColCantidad").ReadOnly = False
+                dgrid.Columns("colLote").HeaderText = "Lote Actual"
+                dgrid.Columns("UmBas").ReadOnly = True
+                dgrid.Columns("colLote").ReadOnly = True
 
-                    dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Lote_original
+                Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
+                currencyCellStyle.Format = "N6"
 
-                    dgrid.Columns("ColEnviadoAErp").Visible = True
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vLoteOriginal
 
-                    If Not BeConfig Is Nothing Then
-                        If BeConfig.Interface_SAP Then
-                            dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
-                        Else
-                            dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
-                        End If
+                dgrid.Columns("ColEnviadoAErp").Visible = True
+
+                If Not BeConfig Is Nothing Then
+                    If BeConfig.Interface_SAP Then
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
                     Else
                         dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                     End If
-
-                    Set_Valores_Ajuste_Lote(sr) : Return
-
+                Else
+                    dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                 End If
 
-                If TipoAjuste_Por_Fecha_Vence Then
+                Set_Valores_Ajuste_Lote(sr)
+                Return
 
-                    dgrid.Columns("ColCantidad").HeaderText = "Vence Actual"
-                    dgrid.Columns("CantidadP").HeaderText = "Vence Anterior"
+            End If
 
-                    dgrid.Columns("CantidadP").ReadOnly = True
-                    dgrid.Columns("ColCantidad").ReadOnly = False
-                    dgrid.Columns("colLote").ReadOnly = True
+            If TipoAjuste_Por_Fecha_Vence Then
 
-                    Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
-                    currencyCellStyle.Format = "d"
+                Dim vFechaVenceOriginal As Date
 
-                    dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
-                    dgrid.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
+                If chkBorrador.Checked Then
+                    vFechaVenceOriginal = lBeTransAjusteDetBorrador(sr).fecha_vence_original
+                Else
+                    vFechaVenceOriginal = lBeTransAjusteDet(sr).Fecha_vence_original
+                End If
 
-                    dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Fecha_vence_original
-                    dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Fecha_vence_original
+                dgrid.Columns("ColCantidad").HeaderText = "Vence Actual"
+                dgrid.Columns("CantidadP").HeaderText = "Vence Anterior"
 
-                    dgrid.Columns("ColEnviadoAErp").Visible = True
+                dgrid.Columns("CantidadP").ReadOnly = True
+                dgrid.Columns("ColCantidad").ReadOnly = False
+                dgrid.Columns("colLote").ReadOnly = True
 
-                    If Not BeConfig Is Nothing Then
-                        If BeConfig.Interface_SAP Then
-                            dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
-                        Else
-                            dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
-                        End If
+                Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
+                currencyCellStyle.Format = "d"
+
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
+
+                dgrid.Rows(sr).Cells("CantidadP").Value = vFechaVenceOriginal
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vFechaVenceOriginal
+
+                dgrid.Columns("ColEnviadoAErp").Visible = True
+
+                If Not BeConfig Is Nothing Then
+                    If BeConfig.Interface_SAP Then
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
                     Else
                         dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                     End If
-
-                    Set_Valores_Ajuste_Vence(sr) : Return
-
+                Else
+                    dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                 End If
 
-                If TipoAjuste_Por_Cantidad Then
+                Set_Valores_Ajuste_Vence(sr)
+                Return
 
-                    dgrid.Rows(sr).Cells("colLote").ReadOnly = True
-                    dgrid.Columns("CantidadP").ReadOnly = True
+            End If
 
-                    dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Cantidad_original
-                    dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Cantidad_original
+            If TipoAjuste_Por_Cantidad Then
 
-                    dgrid.Columns("ColCantidad").HeaderText = "Cantidad"
+                Dim vCantidadOriginal As Double = 0
 
-                    Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
-                    currencyCellStyle.Format = "N6"
+                If chkBorrador.Checked Then
+                    vCantidadOriginal = lBeTransAjusteDetBorrador(sr).cantidad_original
+                Else
+                    vCantidadOriginal = lBeTransAjusteDet(sr).Cantidad_original
+                End If
 
-                    dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
-                    dgrid.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
+                dgrid.Rows(sr).Cells("colLote").ReadOnly = True
+                dgrid.Columns("CantidadP").ReadOnly = True
 
-                    dgrid.Columns("ColEnviadoAErp").Visible = True
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vCantidadOriginal
+                dgrid.Rows(sr).Cells("CantidadP").Value = vCantidadOriginal
 
-                    If Not BeConfig Is Nothing Then
-                        If BeConfig.Interface_SAP Then
-                            dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
-                        Else
-                            dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
-                        End If
+                dgrid.Columns("ColCantidad").HeaderText = "Cantidad"
+
+                Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
+                currencyCellStyle.Format = "N6"
+
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
+
+                dgrid.Columns("ColEnviadoAErp").Visible = True
+
+                If Not BeConfig Is Nothing Then
+                    If BeConfig.Interface_SAP Then
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
                     Else
                         dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                     End If
-
-                    Set_Valores_Ajuste_Cantidad(sr) : Return
-
+                Else
+                    dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                 End If
 
-                If TipoAjuste_Por_Peso Then
+                Set_Valores_Ajuste_Cantidad(sr)
+                Return
 
-                    dgrid.Columns("ColCantidad").ReadOnly = False
+            End If
 
-                    Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
-                    currencyCellStyle.Format = "N6"
+            If TipoAjuste_Por_Peso Then
 
-                    dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("ColCantidad").ReadOnly = False
 
-                    Set_Valores_Ajuste_Peso(sr) : Return
+                Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
+                currencyCellStyle.Format = "N6"
 
-                End If
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+
+                Set_Valores_Ajuste_Peso(sr)
+                Return
 
             End If
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1438,20 +1631,31 @@ Public Class frmAjusteStock
 
         Try
 
-            dgrid.Rows(sr).Cells("LoteOrig").Value = lBeTransAjusteDet(sr).Lote_original
+            Dim vLoteOriginal As String = ""
+            Dim vLoteNuevo As String = ""
+
+            If chkBorrador.Checked Then
+                vLoteOriginal = lBeTransAjusteDetBorrador(sr).lote_original
+                vLoteNuevo = lBeTransAjusteDetBorrador(sr).lote_nuevo
+            Else
+                vLoteOriginal = lBeTransAjusteDet(sr).Lote_original
+                vLoteNuevo = lBeTransAjusteDet(sr).Lote_nuevo
+            End If
+
+            dgrid.Rows(sr).Cells("LoteOrig").Value = vLoteOriginal
 
             If Modo = TipoTrans.Editar Then
                 '#CKFK 20211214 Cambié la información porque en ColCantidad va el lote nuevo y en ColLote el original
-                dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Lote_original
-                dgrid.Rows(sr).Cells("ColLote").Value = lBeTransAjusteDet(sr).Lote_nuevo
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vLoteOriginal
+                dgrid.Rows(sr).Cells("ColLote").Value = vLoteNuevo
             End If
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1462,16 +1666,21 @@ Public Class frmAjusteStock
 
     Private Sub Set_Valores_Ajuste_Vence(sr As Integer)
         Try
-            'dgrid.Rows(sr).Cells("CantidadP").Value = Format(lBeTransAjusteDet(sr).Fecha_vence_original, "dd-MM-yyyy")
-            'If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = Format(lBeTransAjusteDet(sr).Fecha_vence_nueva, "dd-MM-yyyy")
-            dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Fecha_vence_original
-            If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Fecha_vence_nueva
+
+            If chkBorrador.Checked Then
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDetBorrador(sr).fecha_vence_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDetBorrador(sr).fecha_vence_nueva
+            Else
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Fecha_vence_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Fecha_vence_nueva
+            End If
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1482,28 +1691,47 @@ Public Class frmAjusteStock
     Private Sub Set_Valores_Ajuste_Cantidad(sr As Integer)
 
         Dim vNuevaCant As Double = 0
+        Dim vCantidadOriginal As Double = 0
+        Dim vCantidadNueva As Double = 0
+        Dim vIdTipoAjuste As Integer = 0
 
         Try
 
             dgrid.Columns("ColCantidad").ReadOnly = False
 
-            If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Cantidad_original - lBeTransAjusteDet(sr).Cantidad_nueva
-
-            If lBeTransAjusteDet(sr).Idtipoajuste = 3 Then
-                vNuevaCant = lBeTransAjusteDet(sr).Cantidad_original + dgrid.Rows(sr).Cells("ColCantidad").Value
-            ElseIf lBeTransAjusteDet(sr).Idtipoajuste = 5 Then
-                vNuevaCant = lBeTransAjusteDet(sr).Cantidad_original - dgrid.Rows(sr).Cells("ColCantidad").Value
+            If chkBorrador.Checked Then
+                vCantidadOriginal = lBeTransAjusteDetBorrador(sr).cantidad_original
+                vCantidadNueva = lBeTransAjusteDetBorrador(sr).cantidad_nueva
+                vIdTipoAjuste = lBeTransAjusteDetBorrador(sr).idtipoajuste
+            Else
+                vCantidadOriginal = lBeTransAjusteDet(sr).Cantidad_original
+                vCantidadNueva = lBeTransAjusteDet(sr).Cantidad_nueva
+                vIdTipoAjuste = lBeTransAjusteDet(sr).Idtipoajuste
             End If
 
-            If lBeTransAjusteDet(sr).Cantidad_original < vNuevaCant Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
-            If lBeTransAjusteDet(sr).Cantidad_original > vNuevaCant Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+            If Modo = TipoTrans.Editar Then
+                If Not chkBorrador.Checked Then
+                    dgrid.Rows(sr).Cells("ColCantidad").Value = vCantidadOriginal - vCantidadNueva
+                Else
+                    dgrid.Rows(sr).Cells("ColCantidad").Value = vCantidadOriginal
+                End If
+            End If
+
+            If vIdTipoAjuste = 3 Then
+                vNuevaCant = vCantidadOriginal + dgrid.Rows(sr).Cells("ColCantidad").Value
+            ElseIf vIdTipoAjuste = 5 Then
+                vNuevaCant = vCantidadOriginal - dgrid.Rows(sr).Cells("ColCantidad").Value
+            End If
+
+            If vCantidadOriginal < vNuevaCant Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+            If vCantidadOriginal > vNuevaCant Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1514,18 +1742,27 @@ Public Class frmAjusteStock
 
     Private Sub Set_Valores_Ajuste_Peso(sr As Integer)
         Try
-            dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Peso_original
-            If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Peso_nuevo
 
-            If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
-            If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+            If chkBorrador.Checked Then
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDetBorrador(sr).peso_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDetBorrador(sr).peso_nuevo
+
+                If lBeTransAjusteDetBorrador(sr).peso_original < lBeTransAjusteDetBorrador(sr).peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                If lBeTransAjusteDetBorrador(sr).peso_original > lBeTransAjusteDetBorrador(sr).peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+            Else
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Peso_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Peso_nuevo
+
+                If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+            End If
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1546,42 +1783,62 @@ Public Class frmAjusteStock
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Return
         End Try
 
         Try
-            str.IdStockRes = lBeTransAjusteDet(sr).idstockres
-            stocklink = lBeTransAjusteDet(sr).idstocklink
 
-            If stocklink = 0 Then
-                clsLnStock_res.Eliminar(str)
+            If chkBorrador.Checked Then
 
-                lBeTransAjusteDet.RemoveAt(sr)
-                dgrid.Rows.RemoveAt(sr)
+                stocklink = lBeTransAjusteDetBorrador(sr).idstocklink
+
+                If stocklink = 0 Then
+                    lBeTransAjusteDetBorrador.RemoveAt(sr)
+                    dgrid.Rows.RemoveAt(sr)
+                Else
+                    For ii = lBeTransAjusteDetBorrador.Count - 1 To 0 Step -1
+                        lBeTransAjusteDetBorrador.RemoveAt(ii)
+                        dgrid.Rows.RemoveAt(ii)
+                    Next
+                End If
+
             Else
-                For ii = lBeTransAjusteDet.Count - 1 To 0 Step -1
 
-                    If Not lBeTransAjusteDet(ii).esnuevolink Then
-                        str.IdStockRes = lBeTransAjusteDet(ii).idstockres
-                        clsLnStock_res.Eliminar(str)
-                    End If
+                str.IdStockRes = lBeTransAjusteDet(sr).idstockres
+                stocklink = lBeTransAjusteDet(sr).idstocklink
 
-                    lBeTransAjusteDet.RemoveAt(ii)
-                    dgrid.Rows.RemoveAt(ii)
-                Next
+                If stocklink = 0 Then
+                    clsLnStock_res.Eliminar(str)
+
+                    lBeTransAjusteDet.RemoveAt(sr)
+                    dgrid.Rows.RemoveAt(sr)
+                Else
+                    For ii = lBeTransAjusteDet.Count - 1 To 0 Step -1
+
+                        If Not lBeTransAjusteDet(ii).esnuevolink Then
+                            str.IdStockRes = lBeTransAjusteDet(ii).idstockres
+                            clsLnStock_res.Eliminar(str)
+                        End If
+
+                        lBeTransAjusteDet.RemoveAt(ii)
+                        dgrid.Rows.RemoveAt(ii)
+                    Next
+                End If
+
             End If
 
-            '#GT13062022_2025: si al caso el grid se queda sin registros, habilitamos el combo del tipo ajuste
             If dgrid.Rows.Count = 0 Then
                 cmbTipoAjuste.Enabled = True
             End If
 
             lblRegs.Caption = "Registros: " & dgrid.Rows.Count
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1864,7 +2121,11 @@ Public Class frmAjusteStock
                     Get_IdMotivo_By_Nombre(vNombreMotivo)
 
                     If IdMotivoAjuste > 0 Then
-                        lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        If chkBorrador.Checked Then
+                            lBeTransAjusteDetBorrador(sr).idmotivoajuste = IdMotivoAjuste
+                        Else
+                            lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        End If
                     End If
 
                 End If
@@ -2026,7 +2287,10 @@ Public Class frmAjusteStock
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
         End Try
 
     End Sub
@@ -2041,221 +2305,407 @@ Public Class frmAjusteStock
         Dim vTalla As String = ""
         Dim vColor As String = ""
 
-        For sr = 0 To dgrid.Rows.Count - 1
+        Try
 
-            vNomTipoAjuste = IIf(IsDBNull(dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue), "", dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue)
+            'Si el usuario inició el ajuste en firme y luego marcó borrador,
+            'sincronizar la lista borrador desde la lista principal.
+            If chkBorrador.Checked Then
 
-            '#CM_18062018: Puse en comentario este metodo porque llama de nuevo a comprobar el IdMotivo pero ya viene en una variable publica,
-            'entonces coloca el IdMotivoAjuste en -1.
-            '#EJC20180924: Que gracioso, quedaba en -1 porque estaba buscando el nombre del tipo en el motivo por eso nunca lo encontraba.
-            'Get_IdMotivo_By_Nombre(vNomMotivo)
-            Get_IdTipo_By_Nombre(vNomTipoAjuste)
+                If (lBeTransAjusteDetBorrador Is Nothing OrElse lBeTransAjusteDetBorrador.Count = 0) AndAlso
+               (lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0) Then
 
-            If IdTipoAjuste < 1 Then
-                dgrid.Rows(sr).Cells(0).Selected = True
-                XtraMessageBox.Show("Linea : " & sr + 1 & " Debe definir el tipo de ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return False
-            End If
+                    lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
 
-            vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
-            Get_IdMotivo_By_Nombre(vNomMotivo)
+                    For Each item As clsBeTrans_ajuste_det In lBeTransAjusteDet
 
-            If IdMotivoAjuste < 1 Then
-                dgrid.Rows(sr).Cells(0).Selected = True
-                XtraMessageBox.Show("Línea : " & sr + 1 & " Debe definir el motivo del ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return False
-            End If
+                        Dim oBorrador As New clsBeTrans_ajuste_det_borrador
 
-            '#EJC20240715: No mandatorio, cumbre.
-            'If dgrid.Rows(sr).Cells("ColObservacion").Value = "" AndAlso Not pBeTransAjustEnc.Ajuste_Por_Inventario Then
-            '    dgrid.Rows(sr).Cells(0).Selected = True
-            '    XtraMessageBox.Show("Línea : " & CInt(sr + 1) & " Falta la observación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            '    Return False
-            'End If
+                        With oBorrador
+                            .idajustedet = item.IdAjusteDet
+                            .idajusteenc = item.IdAjusteEnc
+                            .IdStock = item.IdStock
+                            .IdPropietarioBodega = item.IdPropietarioBodega
+                            .IdProductoBodega = item.IdProductoBodega
+                            .IdProductoEstado = item.IdProductoEstado
+                            .IdPresentacion = item.IdPresentacion
+                            .IdUnidadMedida = item.IdUnidadMedida
+                            .IdUbicacion = item.IdUbicacion
 
-            lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
-            lBeTransAjusteDet(sr).Observacion = dgrid.Rows(sr).Cells("ColObservacion").Value
+                            .lote_original = item.Lote_original
+                            .lote_nuevo = item.Lote_nuevo
+                            .fecha_vence_original = item.Fecha_vence_original
+                            .fecha_vence_nueva = item.Fecha_vence_nueva
+                            .peso_original = item.Peso_original
+                            .peso_nuevo = item.Peso_nuevo
+                            .cantidad_original = item.Cantidad_original
+                            .cantidad_nueva = item.Cantidad_nueva
 
-            If TipoAjuste_Por_lote Then
-                If lBeTransAjusteDet(sr).idstocklink = 0 Then
-                    '#GT27112024: un ajuste positivo podria llevar los mismos datos tanto en origen como destino
-                    If Not Es_Ajuste_Positivo_Sin_Stock Then
-                        If (dgrid.Rows(sr).Cells("LoteOrig").Value = dgrid.Rows(sr).Cells("ColCantidad").Value) Then
-                            XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Return False
-                        End If
-                    End If
+                            .codigo_producto = item.Codigo_producto
+                            .nombre_producto = item.Nombre_producto
+                            .idtipoajuste = item.Idtipoajuste
+                            .idmotivoajuste = item.IdMotivoAjuste
+                            .observacion = item.Observacion
+                            .codigo_ajuste = item.Codigo_ajuste
+                            .enviado = item.Enviado
+                            .IdBodegaERP = item.IdBodegaERP
+                            .lic_plate = item.lic_plate
+                            .referencia_ajuste_erp = item.referencia_ajuste_erp
+                            .estado_ajuste_erp = item.estado_ajuste_erp
+
+                            .idstockres = item.idstockres
+                            .idstocklink = item.idstocklink
+                            .esnuevolink = item.esnuevolink
+
+                            .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen
+                            .Talla_origen = item.Talla_origen
+                            .Color_origen = item.Color_origen
+                            .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino
+                            .Talla_destino = item.Talla_destino
+                            .Color_destino = item.Color_destino
+
+                            .UmBas = item.UmBas
+                            .Factor = item.Factor
+                            .Nombre_Presentacion = item.Nombre_Presentacion
+                            .CantReservada = item.CantReservada
+                            .Presentacion = item.Presentacion
+                        End With
+
+                        lBeTransAjusteDetBorrador.Add(oBorrador)
+
+                    Next
+
                 End If
 
-                lBeTransAjusteDet(sr).Lote_nuevo = dgrid.Rows(sr).Cells("ColCantidad").Value
-                lBeTransAjusteDet(sr).Codigo_ajuste = 16
-
-                dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
-
             End If
 
-            If TipoAjuste_Por_Fecha_Vence Then
+            For sr = 0 To dgrid.Rows.Count - 1
 
-                Try
+                Dim esBorrador As Boolean = chkBorrador.Checked
 
-                    If oDateTimePicker.Visible Then
-                        FechaVenceNueva = oDateTimePicker.Value
+                Dim vIdStockLink As Integer = If(esBorrador, lBeTransAjusteDetBorrador(sr).idstocklink, lBeTransAjusteDet(sr).idstocklink)
+                Dim vIdTipoAjusteActual As Integer = If(esBorrador, lBeTransAjusteDetBorrador(sr).idtipoajuste, lBeTransAjusteDet(sr).Idtipoajuste)
+                Dim vCantidadOriginal As Double = If(esBorrador, lBeTransAjusteDetBorrador(sr).cantidad_original, lBeTransAjusteDet(sr).Cantidad_original)
+                Dim vPesoOriginal As Double = If(esBorrador, lBeTransAjusteDetBorrador(sr).peso_original, lBeTransAjusteDet(sr).Peso_original)
+                Dim vTallaOrigen As String = If(esBorrador, lBeTransAjusteDetBorrador(sr).Talla_origen, lBeTransAjusteDet(sr).Talla_origen)
+                Dim vColorOrigen As String = If(esBorrador, lBeTransAjusteDetBorrador(sr).Color_origen, lBeTransAjusteDet(sr).Color_origen)
+
+                vNomTipoAjuste = IIf(IsDBNull(dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue), "", dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue)
+
+                Get_IdTipo_By_Nombre(vNomTipoAjuste)
+
+                If IdTipoAjuste < 1 Then
+                    dgrid.Rows(sr).Cells(0).Selected = True
+                    XtraMessageBox.Show("Linea : " & sr + 1 & " Debe definir el tipo de ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Return False
+                End If
+
+                vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
+                Get_IdMotivo_By_Nombre(vNomMotivo)
+
+                If IdMotivoAjuste < 1 Then
+                    dgrid.Rows(sr).Cells(0).Selected = True
+                    XtraMessageBox.Show("Línea : " & sr + 1 & " Debe definir el motivo del ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Return False
+                End If
+
+                If esBorrador Then
+                    lBeTransAjusteDetBorrador(sr).idmotivoajuste = IdMotivoAjuste
+                    lBeTransAjusteDetBorrador(sr).observacion = dgrid.Rows(sr).Cells("ColObservacion").Value
+                Else
+                    lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                    lBeTransAjusteDet(sr).Observacion = dgrid.Rows(sr).Cells("ColObservacion").Value
+                End If
+
+                If TipoAjuste_Por_lote Then
+
+                    If vIdStockLink = 0 Then
+                        If Not Es_Ajuste_Positivo_Sin_Stock Then
+                            If (dgrid.Rows(sr).Cells("LoteOrig").Value = dgrid.Rows(sr).Cells("ColCantidad").Value) Then
+                                XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Return False
+                            End If
+                        End If
+                    End If
+
+                    If esBorrador Then
+                        lBeTransAjusteDetBorrador(sr).lote_nuevo = dgrid.Rows(sr).Cells("ColCantidad").Value
+                        lBeTransAjusteDetBorrador(sr).codigo_ajuste = 16
                     Else
-
-                        Dim vValor As String = dgrid.Rows(sr).Cells("ColCantidad").Value
-
-                        If vValor = "" Then
-                            Throw New Exception("No se ha ingresado el valor")
-                        Else
-                            FechaVenceNueva = vValor
-                        End If
-
+                        lBeTransAjusteDet(sr).Lote_nuevo = dgrid.Rows(sr).Cells("ColCantidad").Value
+                        lBeTransAjusteDet(sr).Codigo_ajuste = 16
                     End If
-
-                    FechaOriginalVence = dgrid.Rows(sr).Cells("CantidadP").Value
-
-                    If lBeTransAjusteDet(sr).idstocklink = 0 Then
-                        If (FechaOriginalVence = FechaVenceNueva) Then
-                            XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Return False
-                        End If
-                    End If
-
-                    lBeTransAjusteDet(sr).Fecha_vence_nueva = FechaVenceNueva
-                    lBeTransAjusteDet(sr).Codigo_ajuste = 15
 
                     dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
-                Catch ex As Exception
-                    dgrid.Rows(sr).Cells(0).Selected = True
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " Valor fecha vencimiento incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
-                End Try
+                End If
 
-            End If
+                If TipoAjuste_Por_Fecha_Vence Then
 
-            If TipoAjuste_Por_Cantidad Then
+                    Try
 
-                Try
+                        If oDateTimePicker.Visible Then
+                            FechaVenceNueva = oDateTimePicker.Value
+                        Else
+                            Dim vValor As String = dgrid.Rows(sr).Cells("ColCantidad").Value
 
-                    Dim vNuevaCantidad As Double = 0
-                    Dim vCantidadGrid As Double = Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
+                            If vValor = "" Then
+                                Throw New Exception("No se ha ingresado el valor")
+                            Else
+                                FechaVenceNueva = vValor
+                            End If
+                        End If
 
-                    If (dgrid.Rows(sr).Cells("tipoajuste").Value = Nothing) Then
-                        XtraMessageBox.Show("Linea : " & sr + 1 & " No ha seleccionado correctamente el tipo de ajuste !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        FechaOriginalVence = dgrid.Rows(sr).Cells("CantidadP").Value
+
+                        If vIdStockLink = 0 Then
+                            If (FechaOriginalVence = FechaVenceNueva) Then
+                                XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Return False
+                            End If
+                        End If
+
+                        If esBorrador Then
+                            lBeTransAjusteDetBorrador(sr).fecha_vence_nueva = FechaVenceNueva
+                            lBeTransAjusteDetBorrador(sr).codigo_ajuste = 15
+                        Else
+                            lBeTransAjusteDet(sr).Fecha_vence_nueva = FechaVenceNueva
+                            lBeTransAjusteDet(sr).Codigo_ajuste = 15
+                        End If
+
+                        dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
+
+                    Catch ex As Exception
+                        dgrid.Rows(sr).Cells(0).Selected = True
+                        XtraMessageBox.Show("Linea : " & sr + 1 & " Valor fecha vencimiento incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        Return False
+                    End Try
+
+                End If
+
+                If TipoAjuste_Por_Cantidad Then
+
+                    Try
+
+                        Dim vNuevaCantidad As Double = 0
+
+                        If (dgrid.Rows(sr).Cells("tipoajuste").Value = Nothing) Then
+                            XtraMessageBox.Show("Linea : " & sr + 1 & " No ha seleccionado correctamente el tipo de ajuste !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            Return False
+                        End If
+
+                        If dgrid.Rows(sr).Cells("tipoajuste").Value = 3 Then
+                            vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) + Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
+                        ElseIf dgrid.Rows(sr).Cells("tipoajuste").Value = 5 Then
+                            vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) - Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
+                        End If
+
+                        If vIdStockLink = 0 Then
+                            If (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
+                                XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Return False
+                            End If
+                        End If
+
+                        If dgrid.Rows(sr).Cells("ColCantidad").Value.ToString = "" Then Throw New Exception
+                        ValorGrd = vNuevaCantidad
+
+                        If ValorGrd < 0 Then Throw New Exception
+
+                        If esBorrador Then
+                            lBeTransAjusteDetBorrador(sr).cantidad_nueva = ValorGrd
+
+                            If vIdTipoAjusteActual = 3 Then
+                                lBeTransAjusteDetBorrador(sr).codigo_ajuste = 13
+                            ElseIf vIdTipoAjusteActual = 5 Then
+                                lBeTransAjusteDetBorrador(sr).codigo_ajuste = 17
+                            End If
+                        Else
+                            lBeTransAjusteDet(sr).Cantidad_nueva = ValorGrd
+
+                            If vIdTipoAjusteActual = 3 Then
+                                lBeTransAjusteDet(sr).Codigo_ajuste = 13
+                            ElseIf vIdTipoAjusteActual = 5 Then
+                                lBeTransAjusteDet(sr).Codigo_ajuste = 17
+                            End If
+                        End If
+
+                        If vCantidadOriginal < ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                        If vCantidadOriginal > ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+                        If vCantidadOriginal = ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
+
+                    Catch ex As Exception
+                        XtraMessageBox.Show("Linea : " & sr + 1 & " el valor ingresado en el campo cantidad es incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        Return False
+                    End Try
+
+                End If
+
+                If TipoAjuste_Por_Peso Then
+
+                    Try
+
+                        If vIdStockLink = 0 Then
+                            If (dgrid.Rows(sr).Cells("CantidadP").Value = dgrid.Rows(sr).Cells("ColCantidad").Value) Then
+                                XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distinctos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Return False
+                            End If
+                        End If
+
+                        If dgrid.Rows(sr).Cells("ColCantidad").Value = "" Then Throw New Exception
+                        ValorGrd = dgrid.Rows(sr).Cells("ColCantidad").Value
+                        If ValorGrd < 0 Then Throw New Exception
+
+                        If esBorrador Then
+                            lBeTransAjusteDetBorrador(sr).peso_nuevo = ValorGrd
+                            lBeTransAjusteDetBorrador(sr).codigo_ajuste = 14
+                        Else
+                            lBeTransAjusteDet(sr).Peso_nuevo = ValorGrd
+                            lBeTransAjusteDet(sr).Codigo_ajuste = 14
+                        End If
+
+                        If vPesoOriginal < ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                        If vPesoOriginal > ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+                        If vPesoOriginal = ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
+
+                    Catch ex As Exception
+                        XtraMessageBox.Show("Linea : " & sr + 1 & " Valor peso incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        Return False
+                    End Try
+                End If
+
+                If BeBodega.Control_Talla_Color Then
+
+                    vTalla = dgrid.Rows(sr).Cells("ColTalla").FormattedValue
+                    vColor = dgrid.Rows(sr).Cells("ColColor").FormattedValue
+
+                    If vTallaOrigen = "" Then
+                        XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar una talla.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                         Return False
                     End If
 
-                    If dgrid.Rows(sr).Cells("tipoajuste").Value = 3 Then
-                        vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) + Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
-                    ElseIf dgrid.Rows(sr).Cells("tipoajuste").Value = 5 Then
-                        vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) - Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
+                    If vColorOrigen = "" Then
+                        XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar un color.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        Return False
                     End If
 
-                    If lBeTransAjusteDet(sr).idstocklink = 0 Then
-                        If (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
-                            XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Return False
+                    If esBorrador Then
+                        If vTalla <> vTallaOrigen Then
+                            lBeTransAjusteDetBorrador(sr).Talla_destino = vTalla
+                        End If
+
+                        If vColor <> vColorOrigen Then
+                            lBeTransAjusteDetBorrador(sr).Color_destino = vColor
+                        End If
+                    Else
+                        If vTalla <> vTallaOrigen Then
+                            lBeTransAjusteDet(sr).Talla_destino = vTalla
+                        End If
+
+                        If vColor <> vColorOrigen Then
+                            lBeTransAjusteDet(sr).Color_destino = vColor
                         End If
                     End If
 
-                    If dgrid.Rows(sr).Cells("ColCantidad").Value.ToString = "" Then Throw New Exception
-                    ValorGrd = vNuevaCantidad
-
-                    If ValorGrd < 0 Then Throw New Exception
-
-                    lBeTransAjusteDet(sr).Cantidad_nueva = ValorGrd
-
-                    If lBeTransAjusteDet(sr).Idtipoajuste = 3 Then
-                        lBeTransAjusteDet(sr).Codigo_ajuste = 13
-                    ElseIf lBeTransAjusteDet(sr).Idtipoajuste = 5 Then
-                        lBeTransAjusteDet(sr).Codigo_ajuste = 17
-                    End If
-
-                    If lBeTransAjusteDet(sr).Cantidad_original < lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
-                    If lBeTransAjusteDet(sr).Cantidad_original > lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
-                    If lBeTransAjusteDet(sr).Cantidad_original = lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
-
-                Catch ex As Exception
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " el valor ingresado en el campo cantidad es incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
-                End Try
-
-            End If
-
-            If TipoAjuste_Por_Peso Then
-
-                Try
-
-                    If lBeTransAjusteDet(sr).idstocklink = 0 Then
-                        If (dgrid.Rows(sr).Cells("CantidadP").Value = dgrid.Rows(sr).Cells("ColCantidad").Value) Then
-                            XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distinctos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Return False
-                        End If
-                    End If
-
-                    If dgrid.Rows(sr).Cells("ColCantidad").Value = "" Then Throw New Exception
-                    ValorGrd = dgrid.Rows(sr).Cells("ColCantidad").Value
-                    If ValorGrd < 0 Then Throw New Exception
-
-                    lBeTransAjusteDet(sr).Peso_nuevo = ValorGrd
-                    lBeTransAjusteDet(sr).Codigo_ajuste = 14
-
-                    If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
-                    If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
-                    If lBeTransAjusteDet(sr).Peso_original = lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
-
-                Catch ex As Exception
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " Valor peso incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
-                End Try
-            End If
-
-            If BeBodega.Control_Talla_Color Then
-
-                '#GT17122025: si talla/color de combos es distinto al asignado significa que actualizaron a una nueva combinación.
-                'vTalla = dgrid.Rows(sr).Cells("ColTalla").Value
-                'vColor = dgrid.Rows(sr).Cells("ColColor").Value
-                '#GT: obtener el texto, no el id
-                vTalla = dgrid.Rows(sr).Cells("ColTalla").FormattedValue
-                vColor = dgrid.Rows(sr).Cells("ColColor").FormattedValue
-
-                If lBeTransAjusteDet(sr).Talla_origen = "" Then
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar una talla.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
                 End If
 
-                If lBeTransAjusteDet(sr).Color_origen = "" Then
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar un color.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
-                End If
+            Next
 
-                If vTalla <> lBeTransAjusteDet(sr).Talla_origen Then
-                    lBeTransAjusteDet(sr).Talla_destino = vTalla
-                End If
+            Return True
 
-                If vColor <> lBeTransAjusteDet(sr).Color_origen Then
-                    lBeTransAjusteDet(sr).Color_destino = vColor
-                End If
+        Catch ex As Exception
 
-            End If
+            XtraMessageBox.Show(ex.Message,
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
 
-        Next
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
-        Return True
+            Return False
+
+        End Try
 
     End Function
 
     Private Sub Guardar_Ajuste()
 
-        Dim ss As String = ""
         Dim cc, ic As Integer
         Dim Codigo As String, Lote As String, IdAjusteDet As Integer
         Dim Enviar As Boolean = False
         Dim IdBodegaERP As Integer
         Dim CantidadRegistrosEnviados As Integer = 0
+        Dim EsBorrador As Boolean = chkBorrador.Checked
 
         Try
+
+            'Si por alguna razón la lista principal está vacía pero existe la de borrador,
+            'la reconstruimos para trabajar siempre con una sola lista base.
+            If (lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0) AndAlso
+           (lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0) Then
+
+                lBeTransAjusteDet = New List(Of clsBeTrans_ajuste_det)
+
+                For Each itemBorrador As clsBeTrans_ajuste_det_borrador In lBeTransAjusteDetBorrador
+
+                    Dim oDet As New clsBeTrans_ajuste_det
+
+                    With oDet
+                        .IdAjusteDet = itemBorrador.idajustedet
+                        .IdAjusteEnc = itemBorrador.idajusteenc
+                        .IdStock = itemBorrador.IdStock
+                        .IdPropietarioBodega = itemBorrador.IdPropietarioBodega
+                        .IdProductoBodega = itemBorrador.IdProductoBodega
+                        .IdProductoEstado = itemBorrador.IdProductoEstado
+                        .IdPresentacion = itemBorrador.IdPresentacion
+                        .IdUnidadMedida = itemBorrador.IdUnidadMedida
+                        .IdUbicacion = itemBorrador.IdUbicacion
+                        .Lote_original = itemBorrador.lote_original
+                        .Lote_nuevo = itemBorrador.lote_nuevo
+                        .Fecha_vence_original = itemBorrador.fecha_vence_original
+                        .Fecha_vence_nueva = itemBorrador.fecha_vence_nueva
+                        .Peso_original = itemBorrador.peso_original
+                        .Peso_nuevo = itemBorrador.peso_nuevo
+                        .Cantidad_original = itemBorrador.cantidad_original
+                        .Cantidad_nueva = itemBorrador.cantidad_nueva
+                        .Codigo_producto = itemBorrador.codigo_producto
+                        .Nombre_producto = itemBorrador.nombre_producto
+                        .Idtipoajuste = itemBorrador.idtipoajuste
+                        .IdMotivoAjuste = itemBorrador.idmotivoajuste
+                        .Observacion = itemBorrador.observacion
+                        .Codigo_ajuste = itemBorrador.codigo_ajuste
+                        .Enviado = itemBorrador.enviado
+                        .IdBodegaERP = itemBorrador.IdBodegaERP
+                        .lic_plate = itemBorrador.lic_plate
+                        .referencia_ajuste_erp = itemBorrador.referencia_ajuste_erp
+                        .estado_ajuste_erp = itemBorrador.estado_ajuste_erp
+                        .idstockres = itemBorrador.idstockres
+                        .idstocklink = itemBorrador.idstocklink
+                        .esnuevolink = itemBorrador.esnuevolink
+                        .IdProductoTallaColor_origen = itemBorrador.IdProductoTallaColor_origen
+                        .Talla_origen = itemBorrador.Talla_origen
+                        .Color_origen = itemBorrador.Color_origen
+                        .IdProductoTallaColor_destino = itemBorrador.IdProductoTallaColor_destino
+                        .Talla_destino = itemBorrador.Talla_destino
+                        .Color_destino = itemBorrador.Color_destino
+                        .UmBas = itemBorrador.UmBas
+                        .Factor = itemBorrador.Factor
+                        .Nombre_Presentacion = itemBorrador.Nombre_Presentacion
+
+                        If .IdPresentacion <> 0 Then
+                            .Presentacion = clsLnProducto_presentacion.GetSingle(.IdPresentacion)
+                        End If
+                    End With
+
+                    lBeTransAjusteDet.Add(oDet)
+
+                Next
+
+            End If
+
+            If lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0 Then
+                Throw New Exception("No hay registros para guardar.")
+            End If
 
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
@@ -2264,37 +2714,43 @@ Public Class frmAjusteStock
             pBeTransAjustEnc.Idusuario = AP.UsuarioAp.IdUsuario
             pBeTransAjustEnc.User_agr = AP.UsuarioAp.IdUsuario
             pBeTransAjustEnc.User_mod = AP.UsuarioAp.IdUsuario
-            '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp 
             pBeTransAjustEnc.IdBodega = AP.IdBodega
             pBeTransAjustEnc.IdProductoFamilia = cmbProductoFamilia.EditValue
             pBeTransAjustEnc.IdPropietarioBodega = cmbPropietarioBodega.EditValue
             pBeTransAjustEnc.Auditado = chkAuditado.Checked
+            pBeTransAjustEnc.Borrador = EsBorrador
 
-            '#EJC20220330_2355_BYB: Guardar el centro de costo.
             If Not lcmbCentroCosto.EditValue Is Nothing Then
                 pBeTransAjustEnc.IdCentroCosto = lcmbCentroCosto.EditValue
             End If
 
             cc = 0
 
-            For I = 0 To lBeTransAjusteDet.Count - 1
+            For i = 0 To lBeTransAjusteDet.Count - 1
 
-                lBeTransAjusteDet(I).IdAjusteEnc = pBeTransAjustEnc.Idajusteenc : ic = 0
+                lBeTransAjusteDet(i).IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
+                lBeTransAjusteDet(i).IdBodegaERP = IdBodegaERP
+                lBeTransAjusteDet(i).Idtipoajuste = Val(dgrid.Rows(i).Cells("tipoajuste").Value)
 
-                If lBeTransAjusteDet(I).Lote_original <> lBeTransAjusteDet(I).Lote_nuevo Then ic += 1
-                If lBeTransAjusteDet(I).Fecha_vence_original <> lBeTransAjusteDet(I).Fecha_vence_nueva Then ic += 1
-                If lBeTransAjusteDet(I).Cantidad_original <> lBeTransAjusteDet(I).Cantidad_nueva Then ic += 1
-                If lBeTransAjusteDet(I).Peso_original <> lBeTransAjusteDet(I).Peso_nuevo Then ic += 1
+                ic = 0
+                If lBeTransAjusteDet(i).Lote_original <> lBeTransAjusteDet(i).Lote_nuevo Then ic += 1
+                If lBeTransAjusteDet(i).Fecha_vence_original <> lBeTransAjusteDet(i).Fecha_vence_nueva Then ic += 1
+                If lBeTransAjusteDet(i).Cantidad_original <> lBeTransAjusteDet(i).Cantidad_nueva Then ic += 1
+                If lBeTransAjusteDet(i).Peso_original <> lBeTransAjusteDet(i).Peso_nuevo Then ic += 1
                 If ic > 0 Then cc += 1
 
                 '#EJC20180924: Asignación de bodega de ERP.                
                 DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
-                IdBodegaERP = cmbBodegaERP.EditValue
-                lBeTransAjusteDet(I).IdBodegaERP = IdBodegaERP
+                If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                    IdBodegaERP = cmbBodegaERP.EditValue
+                Else
+                    IdBodegaERP = 0
+                End If
+                lBeTransAjusteDet(i).IdBodegaERP = IdBodegaERP
 
                 '#GT13062022_1906: Asignación del tipoajuste seteado en el grid.     
-                lBeTransAjusteDet(I).Idtipoajuste = dgrid.Rows(I).Cells("tipoajuste").Value
+                lBeTransAjusteDet(i).Idtipoajuste = dgrid.Rows(i).Cells("tipoajuste").Value
 
             Next
 
@@ -2306,13 +2762,17 @@ Public Class frmAjusteStock
                 Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), False, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                 BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
-                                                    AndAlso x.Lote_nuevo = Lote _
-                                                    AndAlso x.IdAjusteDet = IdAjusteDet)
+                                                AndAlso x.Lote_nuevo = Lote _
+                                                AndAlso x.IdAjusteDet = IdAjusteDet)
 
-                '#GT28112024: al ser ajuste positivo, el idstock se obtiene hasta que se presiona guardar
-                If Es_Ajuste_Positivo_Sin_Stock Then
-                    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
-                End If
+                ''#GT28112024: al ser ajuste positivo, el idstock se obtiene hasta que se presiona guardar
+                'If Es_Ajuste_Positivo_Sin_Stock Then
+                '    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
+                'End If
+
+                'If Es_Ajuste_Positivo_Sin_Stock AndAlso Not BeAjusteDet Is Nothing Then
+                '    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
+                'End If
 
                 If Not BeAjusteDet Is Nothing Then
                     BeAjusteDet.Enviado = Enviar
@@ -2323,26 +2783,36 @@ Public Class frmAjusteStock
 
             Next
 
-            '#GT17122025: validar si existe nueva combinación talla/color para guardarla o seguir con los valores de origen.
             Validar_Talla_Color()
+            If EsBorrador Then
 
-            Crear_Movimientos()
-
-            If chkBorrador.Checked Then
                 clsLnTrans_ajuste_enc.Guardar_Borrador_Ajuste(pBeTransAjustEnc,
                                                               lBeTransAjusteDet)
+
             Else
+
+                Crear_Movimientos()
+
                 clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
                                                      lBeTransAjusteDet,
                                                      lBeTransMovimientos)
+
             End If
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
-                If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, True) > 0 Then
+
+                If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, True) > 0 Then
                     XtraMessageBox.Show("Se guardó el ajuste y se actualizó a enviado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
+
             Else
-                XtraMessageBox.Show("Ajuste aplicado correctamente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                If EsBorrador Then
+                    XtraMessageBox.Show("Se guardó el borrador correctamente, puede reanudar mas tarde.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Else
+                    XtraMessageBox.Show("Ajuste aplicado correctamente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
+
             End If
 
             Guardado = True
@@ -2354,26 +2824,30 @@ Public Class frmAjusteStock
             cmbBodegaERP.Enabled = False
             cmbProductoFamilia.Enabled = False
             cmbPropietarioBodega.Enabled = False
-            dtpFecha.Enabled = Modo = False
-            cmdAdd.Visible = Modo = False
-            mnuDel.Visible = Modo = False
-            mnuDividir.Visible = Modo = False
+            dtpFecha.Enabled = False
+            cmdAdd.Visible = False
+            mnuDel.Visible = False
+            mnuDividir.Visible = False
             lcmbCentroCosto.Enabled = False
 
-            dgrid.Enabled = (Modo = True)
+            dgrid.Enabled = True
 
             Set_Estado_Envio_A_ERP()
 
             Deshabilita_Grid()
 
-            Llenar_DS_Rep()
+            If Not EsBorrador Then
+                Llenar_DS_Rep()
+            End If
+
+            If EsBorrador Then Close()
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -2390,63 +2864,125 @@ Public Class frmAjusteStock
 
             clsTransaccion.Begin_Transaction()
 
-            For Each pAjusteDet As clsBeTrans_ajuste_det In lBeTransAjusteDet
+            If chkBorrador.Checked Then
 
-                '#GT17122025: validar si hay cambio en talla/color
-                If BeAjusteDet.IdProductoTallaColor_destino = 0 Then
+                For Each pAjusteDet As clsBeTrans_ajuste_det_borrador In lBeTransAjusteDetBorrador
 
-                    '#GT17122025: validar si cambiaron talla o color en el grid
-                    If BeAjusteDet.Talla_origen <> BeAjusteDet.Talla_destino OrElse BeAjusteDet.Color_origen <> BeAjusteDet.Color_destino Then
+                    If pAjusteDet.IdProductoTallaColor_destino = 0 Then
 
-                        Dim pExisteProductoConTallaColor As New clsBeProducto_talla_color()
-                        Dim vIdProductoBodega = BeAjusteDet.IdProductoBodega
+                        If pAjusteDet.Talla_origen <> pAjusteDet.Talla_destino OrElse pAjusteDet.Color_origen <> pAjusteDet.Color_destino Then
 
-                        Dim BeProducto = clsLnProducto_bodega.Get_BeProducto_By_IdProductoBodega(vIdProductoBodega,
+                            Dim pExisteProductoConTallaColor As New clsBeProducto_talla_color()
+                            Dim vIdProductoBodega = pAjusteDet.IdProductoBodega
+
+                            Dim BeProducto = clsLnProducto_bodega.Get_BeProducto_By_IdProductoBodega(vIdProductoBodega,
                                                                                                  clsTransaccion.lConnection,
                                                                                                  clsTransaccion.lTransaction)
 
-                        Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeAjusteDet.Talla_destino), BeAjusteDet.Talla_destino, BeAjusteDet.Talla_origen)
-                        Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeAjusteDet.Color_destino), BeAjusteDet.Color_destino, BeAjusteDet.Color_origen)
+                            Dim vTalla As String = IIf(Not String.IsNullOrEmpty(pAjusteDet.Talla_destino), pAjusteDet.Talla_destino, pAjusteDet.Talla_origen)
+                            Dim vColor As String = IIf(Not String.IsNullOrEmpty(pAjusteDet.Color_destino), pAjusteDet.Color_destino, pAjusteDet.Color_origen)
 
-                        pExisteProductoConTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
+                            pExisteProductoConTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
                                                                                                                vTalla,
                                                                                                                vColor,
                                                                                                                clsTransaccion.lConnection,
                                                                                                                clsTransaccion.lTransaction)
 
-                        '#GT17122025: si existe la combinación, solo asignamos el idproductotallacolor en destino, talla_destino y color_destino ya estan asignados
-                        If pExisteProductoConTallaColor IsNot Nothing Then
-                            BeAjusteDet.IdProductoTallaColor_destino = pExisteProductoConTallaColor.IdProductoTallaColor
-                        Else
-                            'Dim pProducto As New clsBeProducto()
-                            Dim pProducto_Talla_color As New clsBeProducto_talla_color()
-                            Dim pTalla As New clsBeTalla()
-                            Dim pColor As New clsBeColor()
+                            If pExisteProductoConTallaColor IsNot Nothing Then
+                                pAjusteDet.IdProductoTallaColor_destino = pExisteProductoConTallaColor.IdProductoTallaColor
+                            Else
+                                Dim pProducto_Talla_color As New clsBeProducto_talla_color()
+                                Dim pTalla As New clsBeTalla()
+                                Dim pColor As New clsBeColor()
 
-                            pTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                            pColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                            pProducto_Talla_color.IdProductoTallaColor = clsLnProducto_talla_color.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
-                            pProducto_Talla_color.IdColor = pColor.IdColor
-                            pProducto_Talla_color.IdTalla = pTalla.IdTalla
-                            pProducto_Talla_color.IdProducto = BeProducto.IdProducto
-                            pProducto_Talla_color.Activo = 1
-                            pProducto_Talla_color.Fec_mod = Now
-                            pProducto_Talla_color.Fec_agr = Now
-                            pProducto_Talla_color.IdCampaña = 0
-                            pProducto_Talla_color.User_agr = 1
-                            pProducto_Talla_color.User_mod = 1
-                            pProducto_Talla_color.CodigoSKU = BeProducto.Codigo + pColor.Codigo + pTalla.Codigo
-                            clsLnProducto_talla_color.Insertar(pProducto_Talla_color, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                            BeAjusteDet.IdProductoTallaColor_destino = pProducto_Talla_color.IdProductoTallaColor
-                            BeAjusteDet.Talla_destino = pTalla.Codigo
-                            BeAjusteDet.Color_destino = pColor.Codigo
+                                pTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                                pColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                                pProducto_Talla_color.IdProductoTallaColor = clsLnProducto_talla_color.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
+                                pProducto_Talla_color.IdColor = pColor.IdColor
+                                pProducto_Talla_color.IdTalla = pTalla.IdTalla
+                                pProducto_Talla_color.IdProducto = BeProducto.IdProducto
+                                pProducto_Talla_color.Activo = 1
+                                pProducto_Talla_color.Fec_mod = Now
+                                pProducto_Talla_color.Fec_agr = Now
+                                pProducto_Talla_color.IdCampaña = 0
+                                pProducto_Talla_color.User_agr = 1
+                                pProducto_Talla_color.User_mod = 1
+                                pProducto_Talla_color.CodigoSKU = BeProducto.Codigo + pColor.Codigo + pTalla.Codigo
+
+                                clsLnProducto_talla_color.Insertar(pProducto_Talla_color, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                                pAjusteDet.IdProductoTallaColor_destino = pProducto_Talla_color.IdProductoTallaColor
+                                pAjusteDet.Talla_destino = pTalla.Codigo
+                                pAjusteDet.Color_destino = pColor.Codigo
+                            End If
+
                         End If
 
                     End If
 
-                End If
+                Next
 
-            Next
+            Else
+
+                For Each pAjusteDet As clsBeTrans_ajuste_det In lBeTransAjusteDet
+
+                    If pAjusteDet.IdProductoTallaColor_destino = 0 Then
+
+                        If pAjusteDet.Talla_origen <> pAjusteDet.Talla_destino OrElse pAjusteDet.Color_origen <> pAjusteDet.Color_destino Then
+
+                            Dim pExisteProductoConTallaColor As New clsBeProducto_talla_color()
+                            Dim vIdProductoBodega = pAjusteDet.IdProductoBodega
+
+                            Dim BeProducto = clsLnProducto_bodega.Get_BeProducto_By_IdProductoBodega(vIdProductoBodega,
+                                                                                                 clsTransaccion.lConnection,
+                                                                                                 clsTransaccion.lTransaction)
+
+                            Dim vTalla As String = IIf(Not String.IsNullOrEmpty(pAjusteDet.Talla_destino), pAjusteDet.Talla_destino, pAjusteDet.Talla_origen)
+                            Dim vColor As String = IIf(Not String.IsNullOrEmpty(pAjusteDet.Color_destino), pAjusteDet.Color_destino, pAjusteDet.Color_origen)
+
+                            pExisteProductoConTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
+                                                                                                               vTalla,
+                                                                                                               vColor,
+                                                                                                               clsTransaccion.lConnection,
+                                                                                                               clsTransaccion.lTransaction)
+
+                            If pExisteProductoConTallaColor IsNot Nothing Then
+                                pAjusteDet.IdProductoTallaColor_destino = pExisteProductoConTallaColor.IdProductoTallaColor
+                            Else
+                                Dim pProducto_Talla_color As New clsBeProducto_talla_color()
+                                Dim pTalla As New clsBeTalla()
+                                Dim pColor As New clsBeColor()
+
+                                pTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                                pColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                                pProducto_Talla_color.IdProductoTallaColor = clsLnProducto_talla_color.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
+                                pProducto_Talla_color.IdColor = pColor.IdColor
+                                pProducto_Talla_color.IdTalla = pTalla.IdTalla
+                                pProducto_Talla_color.IdProducto = BeProducto.IdProducto
+                                pProducto_Talla_color.Activo = 1
+                                pProducto_Talla_color.Fec_mod = Now
+                                pProducto_Talla_color.Fec_agr = Now
+                                pProducto_Talla_color.IdCampaña = 0
+                                pProducto_Talla_color.User_agr = 1
+                                pProducto_Talla_color.User_mod = 1
+                                pProducto_Talla_color.CodigoSKU = BeProducto.Codigo + pColor.Codigo + pTalla.Codigo
+
+                                clsLnProducto_talla_color.Insertar(pProducto_Talla_color, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                                pAjusteDet.IdProductoTallaColor_destino = pProducto_Talla_color.IdProductoTallaColor
+                                pAjusteDet.Talla_destino = pTalla.Codigo
+                                pAjusteDet.Color_destino = pColor.Codigo
+                            End If
+
+                        End If
+
+                    End If
+
+                Next
+
+            End If
 
             clsTransaccion.Commit_Transaction()
             clsTransaccion.Close_Conection()
@@ -2466,6 +3002,7 @@ Public Class frmAjusteStock
         Dim Enviar As Boolean = False
         Dim IdBodegaERP As Integer
         Dim CantidadRegistrosEnviados As Integer = 0
+        Dim pStock_Sin_Existencia_Previa As New clsBeStock
 
         Try
 
@@ -2491,6 +3028,51 @@ Public Class frmAjusteStock
 
             For I = 0 To lBeTransAjusteDet.Count - 1
 
+                pStock_Sin_Existencia_Previa = New clsBeStock
+                pStock_Sin_Existencia_Previa.IsNew = 1
+                pStock_Sin_Existencia_Previa.IdPropietarioBodega = lBeTransAjusteDet(I).IdPropietarioBodega
+                pStock_Sin_Existencia_Previa.IdProductoBodega = lBeTransAjusteDet(I).IdProductoBodega
+                pStock_Sin_Existencia_Previa.IdUnidadMedida = lBeTransAjusteDet(I).IdUnidadMedida
+                pStock_Sin_Existencia_Previa.Fecha_Ingreso = Now
+                pStock_Sin_Existencia_Previa.Fecha_vence = lBeTransAjusteDet(I).Fecha_vence_nueva
+                pStock_Sin_Existencia_Previa.IdPresentacion = lBeTransAjusteDet(I).IdPresentacion
+                pStock_Sin_Existencia_Previa.IdProductoEstado = lBeTransAjusteDet(I).IdProductoEstado
+                pStock_Sin_Existencia_Previa.ProductoEstado = New clsBeProducto_estado
+                'pStock_Sin_Existencia_Previa.ProductoEstado = clsLnProducto_estado.Get_Single_By_IdEstado(BeAjusteDet.IdProductoEstado)
+                pStock_Sin_Existencia_Previa.ProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(lBeTransAjusteDet(I).IdProductoEstado, lConnection, lTransaction)
+                pStock_Sin_Existencia_Previa.IdUbicacion = lBeTransAjusteDet(I).IdUbicacion
+                pStock_Sin_Existencia_Previa.IdUbicacion_anterior = lBeTransAjusteDet(I).IdUbicacion
+                pStock_Sin_Existencia_Previa.Cantidad = 1 '#GT28112024: al no existir stock se inserta con 1 por defecto
+                pStock_Sin_Existencia_Previa.Lic_plate = lBeTransAjusteDet(I).lic_plate
+                pStock_Sin_Existencia_Previa.Lote = lBeTransAjusteDet(I).Lote_nuevo
+                pStock_Sin_Existencia_Previa.Peso = lBeTransAjusteDet(I).Peso_nuevo
+                pStock_Sin_Existencia_Previa.User_agr = AP.UsuarioAp.IdUsuario
+                pStock_Sin_Existencia_Previa.Fec_agr = Now
+                pStock_Sin_Existencia_Previa.User_mod = AP.UsuarioAp.IdUsuario
+                pStock_Sin_Existencia_Previa.Fec_mod = Now
+                pStock_Sin_Existencia_Previa.IdBodega = AP.IdBodega
+                pStock_Sin_Existencia_Previa.Activo = 1
+                '#GT28082025: talla/color    
+                pStock_Sin_Existencia_Previa.IdProductoTallaColor = lBeTransAjusteDet(I).IdProductoTallaColor_destino
+
+                '#GT02122024: se inserta primero el stock antes de reservarlo, y hacer el ajuste positivo
+                If clsLnStock.Guardar_Stock_Ajuste_Positivo(pStock_Sin_Existencia_Previa,
+                                                            lConnection,
+                                                            lTransaction) Then
+
+                    lBeTransAjusteDet(I).IdStock = pStock_Sin_Existencia_Previa.IdStock
+
+                    If Reservar_Stock(pStock_Sin_Existencia_Previa.IdStock, lConnection, lTransaction) Then
+
+                        Try
+                            Incrementar_Licencia_BOF_By_Ajuste_Positivo(AP.IdBodega, AP.UsuarioAp.IdUsuario, lConnection, lTransaction)
+                        Catch ex As Exception
+                        End Try
+
+                    End If
+
+                End If
+
                 lBeTransAjusteDet(I).IdAjusteEnc = pBeTransAjustEnc.Idajusteenc : ic = 0
 
                 If lBeTransAjusteDet(I).Lote_original <> lBeTransAjusteDet(I).Lote_nuevo Then ic += 1
@@ -2502,7 +3084,13 @@ Public Class frmAjusteStock
                 '#EJC20180924: Asignación de bodega de ERP.                
                 DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
-                IdBodegaERP = cmbBodegaERP.EditValue
+
+                If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                    IdBodegaERP = cmbBodegaERP.EditValue
+                Else
+                    IdBodegaERP = 0
+                End If
+
                 lBeTransAjusteDet(I).IdBodegaERP = IdBodegaERP
 
                 '#GT13062022_1906: Asignación del tipoajuste seteado en el grid.     
@@ -2523,7 +3111,8 @@ Public Class frmAjusteStock
 
                 '#GT28112024: al ser ajuste positivo, el idstock se obtiene hasta que se presiona guardar
                 If Es_Ajuste_Positivo_Sin_Stock Then
-                    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
+                    'BeAjusteDet.IdStock = vIdStock
+                    'vIdStock += 1
                 End If
 
                 If Not BeAjusteDet Is Nothing Then
@@ -2631,11 +3220,12 @@ Public Class frmAjusteStock
                 If Not Es_Ajuste_Positivo_Sin_Stock Then
                     '#EJC20180924: Asignación de bodega de ERP.                
                     DgComboBodega = TryCast(dgrid.Rows(I).Cells("ColBodega"), DataGridViewComboBoxCell)
-                    IdBodegaERP = cmbBodegaERP.EditValue.Value
+
+                    If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                        IdBodegaERP = cmbBodegaERP.EditValue.Value
+                    End If
                     lBeTransAjusteDet(I).IdBodegaERP = IdBodegaERP
                 End If
-
-
 
             Next
 
@@ -2650,10 +3240,10 @@ Public Class frmAjusteStock
                                                     AndAlso x.Lote_nuevo = Lote _
                                                     AndAlso x.IdAjusteDet = IdAjusteDet)
 
-                '#GT28112024: al ser ajuste positivo, el idstock se obtiene hasta que se presiona guardar
-                If Es_Ajuste_Positivo_Sin_Stock Then
-                    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
-                End If
+                ''#GT28112024: al ser ajuste positivo, el idstock se obtiene hasta que se presiona guardar
+                'If Es_Ajuste_Positivo_Sin_Stock Then
+                '    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
+                'End If
 
                 If Not BeAjusteDet Is Nothing Then
 
@@ -2724,8 +3314,6 @@ Public Class frmAjusteStock
 
     End Sub
 
-
-    Private pStock_Sin_Existencia_Previa As New clsBeStock
     Private Sub Guardar_Ajuste_Positivo_Sin_Stock()
 
         Dim clsTransaccion As New clsTransaccion()
@@ -2734,46 +3322,7 @@ Public Class frmAjusteStock
 
             clsTransaccion.Begin_Transaction()
 
-            pStock_Sin_Existencia_Previa = New clsBeStock
-            pStock_Sin_Existencia_Previa.IsNew = 1
-            pStock_Sin_Existencia_Previa.IdPropietarioBodega = BeAjusteDet.IdPropietarioBodega
-            pStock_Sin_Existencia_Previa.IdProductoBodega = BeAjusteDet.IdProductoBodega
-            pStock_Sin_Existencia_Previa.IdUnidadMedida = BeAjusteDet.IdUnidadMedida
-            pStock_Sin_Existencia_Previa.Fecha_Ingreso = Now
-            pStock_Sin_Existencia_Previa.Fecha_vence = BeAjusteDet.Fecha_vence_nueva
-            pStock_Sin_Existencia_Previa.IdPresentacion = BeAjusteDet.IdPresentacion
-            pStock_Sin_Existencia_Previa.IdProductoEstado = BeAjusteDet.IdProductoEstado
-            pStock_Sin_Existencia_Previa.ProductoEstado = New clsBeProducto_estado
-            'pStock_Sin_Existencia_Previa.ProductoEstado = clsLnProducto_estado.Get_Single_By_IdEstado(BeAjusteDet.IdProductoEstado)
-            pStock_Sin_Existencia_Previa.ProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(BeAjusteDet.IdProductoEstado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-            pStock_Sin_Existencia_Previa.IdUbicacion = BeAjusteDet.IdUbicacion
-            pStock_Sin_Existencia_Previa.IdUbicacion_anterior = BeAjusteDet.IdUbicacion
-            pStock_Sin_Existencia_Previa.Cantidad = 1 '#GT28112024: al no existir stock se inserta con 1 por defecto
-            pStock_Sin_Existencia_Previa.Lic_plate = BeAjusteDet.lic_plate
-            pStock_Sin_Existencia_Previa.Lote = BeAjusteDet.Lote_nuevo
-            pStock_Sin_Existencia_Previa.Peso = BeAjusteDet.Peso_nuevo
-            pStock_Sin_Existencia_Previa.User_agr = AP.UsuarioAp.IdUsuario
-            pStock_Sin_Existencia_Previa.Fec_agr = Now
-            pStock_Sin_Existencia_Previa.User_mod = AP.UsuarioAp.IdUsuario
-            pStock_Sin_Existencia_Previa.Fec_mod = Now
-            pStock_Sin_Existencia_Previa.IdBodega = AP.IdBodega
-            pStock_Sin_Existencia_Previa.Activo = 1
-            '#GT28082025: talla/color    
-            pStock_Sin_Existencia_Previa.IdProductoTallaColor = BeAjusteDet.IdProductoTallaColor_destino
-
-            '#GT02122024: se inserta primero el stock antes de reservarlo, y hacer el ajuste positivo
-            If clsLnStock.Guardar_Stock_Ajuste_Positivo(pStock_Sin_Existencia_Previa,
-                                                        clsTransaccion.lConnection,
-                                                        clsTransaccion.lTransaction) Then
-
-                If Reservar_Stock(pStock_Sin_Existencia_Previa.IdStock, clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
-
-                    Guardar_Ajuste_Positivo(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    Incrementar_Licencia_BOF_By_Ajuste_Positivo(AP.IdBodega, AP.UsuarioAp.IdUsuario, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-                End If
-
-            End If
+            Guardar_Ajuste_Positivo(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
             clsTransaccion.Commit_Transaction()
 
@@ -3433,10 +3982,6 @@ Public Class frmAjusteStock
 
     End Sub
 
-    Private Sub RibbonControl_Click(sender As Object, e As EventArgs) Handles RibbonControl.Click
-
-    End Sub
-
     Private Sub Llenar_DS_Rep()
 
         Dim lRow As DataRow
@@ -3508,7 +4053,7 @@ Public Class frmAjusteStock
             If BeBodega.Control_Talla_Color Then
                 repAjusteTallaColor.DataSource = DsRepAjustes
                 repAjusteTallaColor.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
-                repAjusteTallaColor.Parameters("Bodega").Value = cmbBodegaERP.Text
+                repAjusteTallaColor.Parameters("Bodega").Value = BeBodega.IdBodega
                 repAjusteTallaColor.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
                 repAjusteTallaColor.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
                 repAjusteTallaColor.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
@@ -3518,10 +4063,20 @@ Public Class frmAjusteStock
             Else
                 repAjuste.DataSource = DsRepAjustes
                 repAjuste.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
-                repAjuste.Parameters("Bodega").Value = cmbBodegaERP.Text
+                repAjuste.Parameters("Bodega").Value = BeBodega.IdBodega
                 repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
                 repAjuste.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
                 repAjuste.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+
+
+                If chkBorrador.Checked Then
+                    repAjuste.Parameters("EsBorrador").Value = "Este documento es un Borrador"
+                    repAjuste.RequestParameters = False
+                Else
+                    repAjuste.Parameters("EsBorrador").Value = ""
+                End If
+
+                repAjuste.Parameters("EsBorrador").Visible = False
                 repAjuste.RequestParameters = False
 
                 tool = New ReportPrintTool(repAjuste)
@@ -3529,19 +4084,6 @@ Public Class frmAjusteStock
 
             tool.PreviewForm.WindowState = FormWindowState.Maximized
             tool.ShowPreview()
-
-
-            'repAjuste.DataSource = DsRepAjustes
-            'repAjuste.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
-            'repAjuste.Parameters("Bodega").Value = cmbBodegaERP.Text
-            'repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
-            'repAjuste.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
-            'repAjuste.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-            'repAjuste.RequestParameters = False
-
-            'Dim tool As ReportPrintTool = New ReportPrintTool(repAjuste)
-            'tool.PreviewForm.WindowState = FormWindowState.Maximized
-            'tool.ShowPreview()
 
         Catch ex As Exception
 
@@ -3776,10 +4318,14 @@ Public Class frmAjusteStock
                 }
             frmAjuste.ShowDialog()
 
+            Dim vStock As clsBeStock = frmAjuste.pStockTemporal
+
             If frmAjuste.DialogResult = DialogResult.OK Then
 
-                If frmAjuste.vProducto IsNot Nothing AndAlso frmAjuste.pStockTemporal IsNot Nothing Then
-                    Cargar_producto_Sin_Stock(frmAjuste.vProducto, frmAjuste.pStockTemporal)
+                cmdAdd.Enabled = False
+
+                If frmAjuste.vProducto IsNot Nothing AndAlso vStock IsNot Nothing Then
+                    Cargar_producto_Sin_Stock(frmAjuste.vProducto, vStock)
                 End If
             End If
 
@@ -3791,7 +4337,6 @@ Public Class frmAjusteStock
         End Try
 
     End Sub
-
 
     Private Sub Cargar_producto_Sin_Stock(ByVal vProductoSinStock As clsBeProducto, ByVal pStockTemporal As clsBeStock)
         Try
@@ -3822,7 +4367,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdProductoEstado = pStockTemporal.IdProductoEstado
             BeAjusteDet.IdPresentacion = pStockTemporal.IdPresentacion
             BeAjusteDet.IdUnidadMedida = vProductoSinStock.IdUnidadMedidaBasica
-            BeAjusteDet.IdUbicacion = pStockTemporal.IdUbicacion
+            BeAjusteDet.IdUbicacion = IIf(pStockTemporal.IdUbicacion = 0, ubic, pStockTemporal.IdUbicacion)
 
             If BeAjusteDet.IdPresentacion <> 0 Then
                 BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
@@ -3908,14 +4453,16 @@ Public Class frmAjusteStock
             '#GT16122025: aqui guarda el ajuste en memoria
             lBeTransAjusteDet.Add(BeAjusteDet)
 
-            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, BeAjusteDet.IdUbicacion)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
             dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
             dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
 
-            dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+            Dim pUbicacion As clsBeBodega_ubicacion = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega)
+
+            dgrid.Rows(rc).Cells("colUbicacion").Value = pUbicacion.NombreCompleto ' BeAjusteDet.IdUbicacion
             dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
 
             '#CKFK 20211214 Agregué esta condición
@@ -3971,7 +4518,12 @@ Public Class frmAjusteStock
                 Llenar_Tipo(rc, pTipoAjuste)
             End If
 
-            Llena_Bodegas_ERP_Grid(rc, -1)
+            If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                Llena_Bodegas_ERP_Grid(rc, -1)
+            End If
+
+            dgrid.Rows(rc).Cells("ColEnviadoAErp").Value = BeAjusteDet.Enviado
+            dgrid.Rows(rc).Cells("ColEnviadoAErp").ReadOnly = False
 
             dgrid.Rows(rc).Selected = True
 
@@ -4000,10 +4552,6 @@ Public Class frmAjusteStock
 
     Private Sub frmAjusteStock_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Escape Then Close()
-    End Sub
-
-    Private Sub frmAjusteStock_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
     End Sub
 
     Private Sub Set_Estado_Envio_A_ERP()
@@ -4064,6 +4612,58 @@ Public Class frmAjusteStock
 
     End Sub
 
+    Private Sub chkBorrador_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkBorrador.CheckedChanged
+
+        If IsLoading Then Exit Sub
+        Try
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
+
+            If chkBorrador.Checked Then
+                '=========================================================
+                ' ESCENARIO 1: NORMAL -> BORRADOR
+                ' Solo copiar si la lista borrador no existe o está vacía
+                '=========================================================
+                If (lBeTransAjusteDetBorrador Is Nothing OrElse lBeTransAjusteDetBorrador.Count = 0) AndAlso
+               (lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0) Then
+
+                    lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
+
+                    For Each item As clsBeTrans_ajuste_det In lBeTransAjusteDet
+                        lBeTransAjusteDetBorrador.Add(MapearDetalleABorrador(item, fechaActual, usuarioActual))
+                    Next
+
+                End If
+
+            Else
+                '=========================================================
+                ' ESCENARIO 2: BORRADOR -> NORMAL
+                ' Solo copiar si la lista normal no existe o está vacía
+                '=========================================================
+                If (lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0) AndAlso
+               (lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0) Then
+
+                    lBeTransAjusteDet = New List(Of clsBeTrans_ajuste_det)
+
+                    For Each item As clsBeTrans_ajuste_det_borrador In lBeTransAjusteDetBorrador
+                        lBeTransAjusteDet.Add(MapearBorradorADetalle(item))
+                    Next
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+    End Sub
+
     Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
 
         Try
@@ -4074,6 +4674,9 @@ Public Class frmAjusteStock
     End Sub
 
     Private Sub cmbTipoAjuste_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTipoAjuste.EditValueChanged
+
+        If IsLoading Then Exit Sub
+
         Try
 
             'GT22042022_1612: obtener el tipo de ajuste por defecto, si en caso no se usa seleccionMultiple
@@ -4217,18 +4820,20 @@ Public Class frmAjusteStock
 
     Private Sub frmAjusteStock_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        Dim vPermitirEdicion As Boolean = False
+
         IsLoading = True
 
         Try
 
             Try
-
                 SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                 SplashScreenManager.Default.SetWaitFormCaption("Cargando ajuste...")
-
             Catch ex As Exception
-
             End Try
+
+            '#GT28082025: si bodega controla talla/color mostrar columnas de lo contrario, ocultarlas.
+            BeBodega = AP.Bodega
 
             Try
                 dtt = clsLnAjuste_tipo.Listar(True)
@@ -4256,7 +4861,11 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
             'End If
 
-            cmbBodegaERP.Enabled = (Modo = TipoTrans.Nuevo)
+            cmbBodegaERP.Visible = BeBodega.Bodega_Cliente_Ajuste_ByB
+
+            If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                cmbBodegaERP.Enabled = (Modo = TipoTrans.Nuevo)
+            End If
             cmbProductoFamilia.Enabled = (Modo = TipoTrans.Nuevo)
             cmbPropietarioBodega.Enabled = (Modo = TipoTrans.Nuevo)
             lcmbCentroCosto.Enabled = (Modo = TipoTrans.Nuevo)
@@ -4267,16 +4876,19 @@ Public Class frmAjusteStock
 
             '#EJC20180924_0846PM: La bodega del ERP se registra por línea de detalle, 
             'En encabezado guardar la bodega de WMS. 
-            IMS.Listar_Clientes_By_IdEmpresa(cmbBodegaERP, AP.IdEmpresa)
+            If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                cmbBodegaERP.EditValue = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.Codigo)
 
-            '#GT28082025: si bodega controla talla/color mostrar columnas de lo contrario, ocultarlas.
-            BeBodega = AP.Bodega
+                IMS.Listar_Clientes_By_IdEmpresa(cmbBodegaERP, AP.IdEmpresa)
+            Else
+                cmbBodegaERP.EditValue = 0
+            End If
 
             If BeBodega.Centro_Costo_Dep_Erp = "" AndAlso BeBodega.Centro_Costo_Dir_Erp = "" AndAlso BeBodega.Centro_Costo_Erp = "" Then
 
                 gcCentroCosto.Visible = False
                 lcmbCentroCosto.Visible = True
-                'Label6.Visible = True
+                lblCentroCosto.Visible = True
 
                 IMS.Listar_Centro_Costo_By_IdEmpresa(lcmbCentroCosto, AP.IdEmpresa)
                 txtCentroCostoERP.Text = ""
@@ -4287,7 +4899,7 @@ Public Class frmAjusteStock
 
                 gcCentroCosto.Visible = True
                 lcmbCentroCosto.Visible = False
-                'Label6.Visible = False
+                lblCentroCosto.Visible = False
 
                 txtCentroCostoERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Erp)
                 txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Dir_Erp)
@@ -4295,10 +4907,23 @@ Public Class frmAjusteStock
 
             End If
 
-            'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
-            IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
+            'Dim BeConfig As clsBeI_nav_config_enc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(BeBodega.IdBodega)
 
             BeConfig = clsLnI_nav_config_enc.GetSingle(AP.IdConfiguracionInterface)
+
+            If BeConfig IsNot Nothing Then
+                If BeConfig.Requerir_Centro_Costo_Obligatorio Then
+                    If Not gcCentroCosto.Visible Then
+                        SplashScreenManager.CloseForm(False)
+                        XtraMessageBox.Show("La bodega debe tener definidos los centros de costo para los ajustes, no es posible generar un ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        Guardado = True
+                        Me.Close()
+                    End If
+                End If
+            End If
+
+            'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
+            IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
 
             '#GT29082025: mostrar u ocultar las columnas de talla/color
             Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
@@ -4315,8 +4940,11 @@ Public Class frmAjusteStock
 
                     mnuGuardar.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                     mnuImprimir1.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
+
                     lBeTransAjusteDet.Clear()
-                    txtReferencia.Text = "" : dtpFecha.EditValue = Now
+
+                    txtReferencia.Text = ""
+                    dtpFecha.EditValue = Now
 
                     User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
                     Fec_agrDateEdit.Text = Now
@@ -4324,31 +4952,71 @@ Public Class frmAjusteStock
                     Fec_modDateEdit.Text = Now
                     cmbBodegaERP.EditValue = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.Codigo)
 
+                    If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                        cmbBodegaERP.EditValue = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.Codigo)
+                    Else
+                        cmbBodegaERP.EditValue = 0
+                    End If
+
+                    vPermitirEdicion = True
+
                 Case TipoTrans.Editar
 
                     Guardado = True
-
-                    cmbTipoAjuste.Enabled = False
-
-                    If pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
-                        mnuGuardar.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
-                        mnuGuardar.Enabled = False
-                        dgrid.ReadOnly = True
-                    Else
-                        mnuGuardar.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
-                    End If
-
                     mnuImprimir1.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
-
                     cmbBodegaERP.EditValue = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.Codigo)
 
                     Cargar_Datos()
 
                     Set_Estado_Envio_A_ERP()
+                    'Si es borrador, debe permitirse editar para luego trasladar a tablas finales
+                    If chkBorrador.Checked Then
+                        vPermitirEdicion = True
+                        mnuGuardar.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
+                        mnuGuardar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+                    Else
+                        vPermitirEdicion = False
+
+                        If pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
+                            mnuGuardar.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
+                            mnuGuardar.Enabled = False
+                        Else
+                            mnuGuardar.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
+                        End If
+                    End If
 
             End Select
 
-            'Cargar_Detalle()
+            If BeBodega.Bodega_Cliente_Ajuste_ByB Then
+                cmbBodegaERP.EditValue = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.Codigo)
+            Else
+                cmbBodegaERP.EditValue = 0
+            End If
+
+            'Aplicar estado final de habilitación
+            txtReferencia.Enabled = vPermitirEdicion
+            dtpFecha.Enabled = vPermitirEdicion
+            cmdAdd.Visible = vPermitirEdicion
+            mnuDel.Visible = vPermitirEdicion
+
+            cmbBodegaERP.Enabled = vPermitirEdicion
+            cmbProductoFamilia.Enabled = vPermitirEdicion
+            cmbPropietarioBodega.Enabled = vPermitirEdicion
+            lcmbCentroCosto.Enabled = vPermitirEdicion
+
+            'cmbTipoAjuste: en editar normalmente queda deshabilitado, salvo si es borrador
+            If Modo = TipoTrans.Nuevo Then
+                cmbTipoAjuste.Enabled = True
+            Else
+                cmbTipoAjuste.Enabled = chkBorrador.Checked
+            End If
+
+            If vPermitirEdicion Then
+                dgrid.ReadOnly = False
+            Else
+                Deshabilita_Grid()
+                dgrid.ReadOnly = True
+            End If
 
             Try
                 oDateTimePicker.Visible = False
@@ -4361,9 +5029,9 @@ Public Class frmAjusteStock
             SplashScreenManager.CloseForm(False)
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -4490,6 +5158,228 @@ Public Class frmAjusteStock
 
         Return oDet
 
+    End Function
+    Private Sub btnImportarExcel_Click(sender As Object, e As EventArgs) Handles btnImportarExcel.ItemClick
+        Try
+            ' El tipo de ajuste es obligatorio antes de importar
+            If cmbTipoAjuste.EditValue Is Nothing OrElse CInt(cmbTipoAjuste.EditValue) = 0 Then
+                XtraMessageBox.Show("Seleccione el Tipo de Ajuste antes de importar.",
+                                    "Configuración incompleta", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            Dim idTipoSel As Integer = CInt(cmbTipoAjuste.EditValue)
+
+            Using frm As New frmImportarAjusteExcel(AP.IdBodega,
+                                                    cmbPropietarioBodega.EditValue,
+                                                    idTipoSel)
+                frm.ShowDialog(Me)
+
+                If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
+
+                ' Asignar IdAjusteEnc y cargar al grid
+                For Each det As clsBeTrans_ajuste_det In frm.AjustesParaCargar
+
+                    det.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
+                    lBeTransAjusteDet.Add(det)
+
+                    Dim ubic As String = clsLnBodega_ubicacion.GetSingle(det.IdUbicacion, AP.IdBodega).NombreCompleto
+                    Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
+                                                       If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
+                                                       ubic)
+
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
+                    dgrid.Rows(rc).Cells("UmBas").Value = det.UmBas
+                    dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
+                    dgrid.Rows(rc).Cells("ColObservacion").Value = det.Observacion
+                    dgrid.Rows(rc).Cells("ColLicPlate").Value = det.lic_plate
+
+                    Select Case det.Idtipoajuste
+                        Case 3 ' Positivo
+                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = det.Cantidad_nueva - det.Cantidad_original
+                        Case 5 ' Negativo
+                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = det.Cantidad_original - det.Cantidad_nueva
+                        Case 1 ' Lote
+                            dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = det.Lote_nuevo
+                    End Select
+
+                    Llenar_Motivo(rc, det.IdMotivoAjuste)
+                    Llenar_Tipo(rc, det.Idtipoajuste)
+                    Llena_Bodegas_ERP_Grid(rc, -1)
+
+                Next
+
+                If dgrid.Rows.Count > 0 Then cmbTipoAjuste.Enabled = False
+                lblRegs.Caption = "Registros: " & dgrid.Rows.Count
+
+                XtraMessageBox.Show(frm.AjustesParaCargar.Count & " fila(s) importada(s). Revise y presione Guardar.",
+                                    "Importación exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End Using
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, "Error al importar", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            clsLnLog_error_wms.Agregar_Error("btnImportarExcel_Click: " & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub SincronizarDetalleAjusteSegunModoBorrador()
+        Try
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
+
+            '------------------------------------------------------------
+            ' CASO 1:
+            ' Si está en modo borrador y la lista borrador está vacía,
+            ' pero la lista normal tiene datos, copiar de normal -> borrador
+            '------------------------------------------------------------
+            If chkBorrador.Checked Then
+
+                If (lBeTransAjusteDetBorrador Is Nothing OrElse lBeTransAjusteDetBorrador.Count = 0) AndAlso
+                   (lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0) Then
+
+                    lBeTransAjusteDetBorrador = lBeTransAjusteDet.
+                        Select(Function(item) MapearDetalleABorrador(item, fechaActual, usuarioActual)).
+                        ToList()
+
+                End If
+
+            Else
+                '------------------------------------------------------------
+                ' CASO 2:
+                ' Si ya NO está en modo borrador y la lista normal está vacía,
+                ' pero la lista borrador tiene datos, copiar de borrador -> normal
+                '------------------------------------------------------------
+                If (lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0) AndAlso
+                   (lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0) Then
+
+                    lBeTransAjusteDet = lBeTransAjusteDetBorrador.
+                        Select(Function(item) MapearBorradorADetalle(item)).
+                        ToList()
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+    End Sub
+
+    Private Function MapearDetalleABorrador(item As clsBeTrans_ajuste_det,
+                                            fechaActual As Date,
+                                            usuarioActual As String) As clsBeTrans_ajuste_det_borrador
+
+        Return New clsBeTrans_ajuste_det_borrador With {
+            .idajustedet = item.IdAjusteDet,
+            .idajusteenc = item.IdAjusteEnc,
+            .IdStock = item.IdStock,
+            .IdPropietarioBodega = item.IdPropietarioBodega,
+            .IdProductoBodega = item.IdProductoBodega,
+            .IdProductoEstado = item.IdProductoEstado,
+            .IdPresentacion = item.IdPresentacion,
+            .IdUnidadMedida = item.IdUnidadMedida,
+            .IdUbicacion = item.IdUbicacion,
+        .lote_original = item.Lote_original,
+        .lote_nuevo = item.Lote_nuevo,
+        .fecha_vence_original = item.Fecha_vence_original,
+        .fecha_vence_nueva = item.Fecha_vence_nueva,
+        .peso_original = item.Peso_original,
+        .peso_nuevo = item.Peso_nuevo,
+        .cantidad_original = item.Cantidad_original,
+        .cantidad_nueva = item.Cantidad_nueva,
+        .codigo_producto = item.Codigo_producto,
+        .nombre_producto = item.Nombre_producto,
+        .idtipoajuste = item.Idtipoajuste,
+        .idmotivoajuste = item.IdMotivoAjuste,
+        .observacion = item.Observacion,
+        .codigo_ajuste = item.Codigo_ajuste,
+        .enviado = item.Enviado,
+        .IdBodegaERP = item.IdBodegaERP,
+        .lic_plate = item.lic_plate,
+        .referencia_ajuste_erp = item.referencia_ajuste_erp,
+        .estado_ajuste_erp = item.estado_ajuste_erp,
+        .idstockres = item.idstockres,
+        .idstocklink = item.idstocklink,
+        .esnuevolink = item.esnuevolink,
+        .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen,
+        .Talla_origen = item.Talla_origen,
+        .Color_origen = item.Color_origen,
+        .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino,
+        .Talla_destino = item.Talla_destino,
+        .Color_destino = item.Color_destino,
+        .UmBas = item.UmBas,
+        .Factor = item.Factor,
+        .Nombre_Presentacion = item.Nombre_Presentacion,
+        .CantReservada = item.CantReservada,
+        .Presentacion = item.Presentacion,
+        .estado_borrador = "BORRADOR",
+        .confirmado = False,
+        .procesado = False,
+        .fecha_creacion = fechaActual,
+        .usuario_creacion = usuarioActual,
+        .fecha_modificacion = fechaActual,
+        .usuario_modificacion = usuarioActual
+    }
+    End Function
+
+    Private Function MapearBorradorADetalle(item As clsBeTrans_ajuste_det_borrador) As clsBeTrans_ajuste_det
+
+        Return New clsBeTrans_ajuste_det With {
+            .IdAjusteDet = item.idajustedet,
+            .IdAjusteEnc = item.idajusteenc,
+            .IdStock = item.IdStock,
+            .IdPropietarioBodega = item.IdPropietarioBodega,
+            .IdProductoBodega = item.IdProductoBodega,
+            .IdProductoEstado = item.IdProductoEstado,
+            .IdPresentacion = item.IdPresentacion,
+            .IdUnidadMedida = item.IdUnidadMedida,
+            .IdUbicacion = item.IdUbicacion,
+        .Lote_original = item.lote_original,
+        .Lote_nuevo = item.lote_nuevo,
+        .Fecha_vence_original = item.fecha_vence_original,
+        .Fecha_vence_nueva = item.fecha_vence_nueva,
+        .Peso_original = item.peso_original,
+        .Peso_nuevo = item.peso_nuevo,
+        .Cantidad_original = item.cantidad_original,
+        .Cantidad_nueva = item.cantidad_nueva,
+        .Codigo_producto = item.codigo_producto,
+        .Nombre_producto = item.nombre_producto,
+        .Idtipoajuste = item.idtipoajuste,
+        .IdMotivoAjuste = item.idmotivoajuste,
+        .Observacion = item.observacion,
+        .Codigo_ajuste = item.codigo_ajuste,
+        .Enviado = item.enviado,
+        .IdBodegaERP = item.IdBodegaERP,
+        .lic_plate = item.lic_plate,
+        .referencia_ajuste_erp = item.referencia_ajuste_erp,
+        .estado_ajuste_erp = item.estado_ajuste_erp,
+        .idstockres = item.idstockres,
+        .idstocklink = item.idstocklink,
+        .esnuevolink = item.esnuevolink,
+        .IdProductoTallaColor_origen = item.IdProductoTallaColor_origen,
+        .Talla_origen = item.Talla_origen,
+        .Color_origen = item.Color_origen,
+        .IdProductoTallaColor_destino = item.IdProductoTallaColor_destino,
+        .Talla_destino = item.Talla_destino,
+        .Color_destino = item.Color_destino,
+        .UmBas = item.UmBas,
+        .Factor = item.Factor,
+        .Nombre_Presentacion = item.Nombre_Presentacion,
+        .CantReservada = item.CantReservada,
+        .Presentacion = item.Presentacion
+    }
     End Function
 
 End Class

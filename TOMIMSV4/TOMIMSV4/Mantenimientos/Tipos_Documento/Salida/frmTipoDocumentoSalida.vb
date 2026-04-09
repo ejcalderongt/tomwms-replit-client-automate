@@ -97,6 +97,10 @@ Public Class frmTipoDocumentoSalida
 
                     chkTransferirUbicacion.IsOn = pObjPT.Transferir_Ubicacion
 
+                    chkVerificacionImagenBOF.IsOn = pObjPT.Verificar_con_imagen
+                    chkGeneraGuiaRemision.IsOn = pObjPT.Genera_Guia_Remision
+                    chkAsignarTodosOperadores.IsOn = pObjPT.Asignar_Todos_Operadores
+
                     mnuGuardar.Enabled = False
                     mnuActualizar.Enabled = OpcionesMenu.Modificar
                     mnuEliminar.Enabled = OpcionesMenu.Eliminar
@@ -153,6 +157,9 @@ Public Class frmTipoDocumentoSalida
             objPe_Tipo.Recibir_Producto_Auto_Bodega_Destino = chkRecibirProductoAutoBodegaDestino.IsOn
             objPe_Tipo.Empaque_Tarima = chkEmpaqueTarima.IsOn
             objPe_Tipo.Transferir_Ubicacion = chkTransferirUbicacion.IsOn
+            objPe_Tipo.Verificar_con_imagen = chkVerificacionImagenBOF.IsOn
+            objPe_Tipo.Genera_Guia_Remision = chkGeneraGuiaRemision.IsOn
+            objPe_Tipo.Asignar_Todos_Operadores = chkAsignarTodosOperadores.IsOn
 
             clsLnTrans_pe_tipo.Insertar(objPe_Tipo)
 
@@ -201,6 +208,9 @@ Public Class frmTipoDocumentoSalida
                 pObjPT.Recibir_Producto_Auto_Bodega_Destino = chkRecibirProductoAutoBodegaDestino.IsOn
                 pObjPT.Empaque_Tarima = chkEmpaqueTarima.IsOn
                 pObjPT.Transferir_Ubicacion = chkTransferirUbicacion.IsOn
+                pObjPT.Verificar_con_imagen = chkVerificacionImagenBOF.IsOn
+                pObjPT.Genera_Guia_Remision = chkGeneraGuiaRemision.IsOn
+                pObjPT.Asignar_Todos_Operadores = chkAsignarTodosOperadores.IsOn
 
                 clsLnTrans_pe_tipo.Actualizar(pObjPT)
                 Actualizar = True

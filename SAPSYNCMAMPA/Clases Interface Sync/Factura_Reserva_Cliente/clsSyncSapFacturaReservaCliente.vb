@@ -403,7 +403,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
                     Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    Dim trasladoSincronizado As Boolean = Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(factura.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                    Dim trasladoSincronizado As Boolean = Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(factura.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL, 2).GetAwaiter().GetResult()
 
                     If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
                         Return True
@@ -421,15 +421,16 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
     End Function
 
-    Private Shared Async Function Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(docEntry As String,
-                                                                                      sessionCookie As String,
-                                                                                      baseUrl As String) As Task(Of Boolean)
+    Public Shared Async Function Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(docEntry As String,
+                                                                                     sessionCookie As String,
+                                                                                     baseUrl As String,
+                                                                                     enviado As Integer) As Task(Of Boolean)
 
         Try
             If String.IsNullOrWhiteSpace(docEntry) Then Return False
 
             Dim requestUrl As String = $"Invoices({docEntry})"
-            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim payload As String = $"{{""U_ENVIADO_WMS"": ""{enviado}""}}"
             Dim httpPatch As New HttpMethod("PATCH")
 
             Using handler As New HttpClientHandler()
@@ -700,7 +701,9 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
         Dim dto As New DeliveryNoteDto With {
         .CardCode = clsLnCliente.Get_Codigo_By_IdCliente(BePedidoEnc.IdCliente),
-        .DocDate = Today,
+        .DocDate = BePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .TaxDate = BePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .DocDueDate = Now.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .Comments = $"Entrega generada por WMS sobre Factura de Reserva: {docEntryFacturaReserva} - Ref: {docNumFacturaReserva} - IdWMS: {BePedidoEnc.IdPedidoEnc}",
         .JournalMemo = $"WMS Delivery from ODPI/OINV {docNumFacturaReserva}",
         .U_USR_PICK = vOperadorPickingDefecto,
@@ -712,8 +715,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_Tipo = 1,
-        .DocumentLines = New List(Of DeliveryNoteLineDto)()
-    }
+        .DocumentLines = New List(Of DeliveryNoteLineDto)()}
 
         ' Agrupar para armar cantidades y lotes
         Dim grupos = lTransaccionesSalida.
@@ -784,6 +786,8 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
         Public Property CardCode As String = ""
         Public Property DocDate As Date = Today
+        Public Property TaxDate As Date = Today
+        Public Property DocDueDate As Date = Today
         Public Property Comments As String = ""
         Public Property JournalMemo As String = ""
         Public Property U_USR_PICK As String = ""

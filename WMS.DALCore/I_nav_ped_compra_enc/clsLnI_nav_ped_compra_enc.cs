@@ -2149,7 +2149,6 @@ public class clsLnI_nav_ped_compra_enc
 
                     gBeOrdenCompraEnc.Activo = true;
                     gBeOrdenCompraEnc.IdCampaña = navPedidoCompraEnc.Campaign_No;
-
                     gBeOrdenCompraEnc.Serie = navPedidoCompraEnc.Series;
                     gBeOrdenCompraEnc.Usr_Documento = navPedidoCompraEnc.User_Document;
                     gBeOrdenCompraEnc.Comentarios = navPedidoCompraEnc.Comments;

@@ -2359,16 +2359,16 @@ Partial Public Class clsLnTrans_despacho_enc
                                             clsLnTrans_re_det.Insertar(BeTransReDet, lConnection, lTransaction)
 
                                             clsLnStock.Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino(BePickingUbic,
-                                                                                                             IdUbicacionRecBodDest,
-                                                                                                             BeDespachoEnc,
-                                                                                                             pIdBodega,
-                                                                                                             IdBodegaWMSDestino,
-                                                                                                             pIdEmpresa,
-                                                                                                             BeOrdenCompraEnc,
-                                                                                                             BeRecepcionEnc.IdRecepcionEnc,
-                                                                                                             BeTransReDet,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
+                                                                                                              IdUbicacionRecBodDest,
+                                                                                                              BeDespachoEnc,
+                                                                                                              pIdBodega,
+                                                                                                              IdBodegaWMSDestino,
+                                                                                                              pIdEmpresa,
+                                                                                                              BeOrdenCompraEnc,
+                                                                                                              BeRecepcionEnc.IdRecepcionEnc,
+                                                                                                              BeTransReDet,
+                                                                                                              lConnection,
+                                                                                                              lTransaction)
 
 
                                         Else

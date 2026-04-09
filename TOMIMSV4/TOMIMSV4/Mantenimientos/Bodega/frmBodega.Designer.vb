@@ -433,8 +433,6 @@ Partial Class frmBodega
         Me.chkinferir_origen_en_cambio_ubic = New DevExpress.XtraEditors.CheckEdit()
         Me.chkValidarDisponibilidadEnUbicacionDestino = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
-        Me.cmbEstadoDefectoRack = New DevExpress.XtraEditors.LookUpEdit()
-        Me.Label94 = New System.Windows.Forms.Label()
         Me.chkreemplazoOpcional = New DevExpress.XtraEditors.CheckEdit()
         Me.chkImprimir_Verificacion = New DevExpress.XtraEditors.CheckEdit()
         Me.Label100 = New System.Windows.Forms.Label()
@@ -477,6 +475,8 @@ Partial Class frmBodega
         Me.chkOrdenarPickingDescendente = New DevExpress.XtraEditors.CheckEdit()
         Me.chkOrdenarNombreCompleto = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.cmbEstadoDefectoRack = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label94 = New System.Windows.Forms.Label()
         Me.chkPermitirCambioUbicacionRecepcion = New DevExpress.XtraEditors.CheckEdit()
         Me.chkBloquearLpHH = New DevExpress.XtraEditors.CheckEdit()
         Me.chkIngresoConsolidado = New DevExpress.XtraEditors.CheckEdit()
@@ -552,6 +552,8 @@ Partial Class frmBodega
         Me.lblCambioUbicacionRestrictivo = New System.Windows.Forms.Label()
         Me.lblPermitirCambioUbicIndiceMenor = New System.Windows.Forms.Label()
         Me.lblRequerirMismoProductoPosiciones = New System.Windows.Forms.Label()
+        Me.chkBodegaClienteAjusteByB = New DevExpress.XtraEditors.CheckEdit()
+        Me.lblBodegaClienteAjusteByB = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -903,7 +905,6 @@ Partial Class frmBodega
         CType(Me.chkinferir_origen_en_cambio_ubic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox4.SuspendLayout()
-        CType(Me.cmbEstadoDefectoRack.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -942,6 +943,7 @@ Partial Class frmBodega
         CType(Me.chkOrdenarPickingDescendente.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkOrdenarNombreCompleto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.cmbEstadoDefectoRack.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkPermitirCambioUbicacionRecepcion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkBloquearLpHH.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkIngresoConsolidado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -986,6 +988,7 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkBodegaClienteAjusteByB.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -5176,6 +5179,8 @@ Partial Class frmBodega
         '
         'GroupBox4
         '
+        Me.GroupBox4.Controls.Add(Me.chkBodegaClienteAjusteByB)
+        Me.GroupBox4.Controls.Add(Me.lblBodegaClienteAjusteByB)
         Me.GroupBox4.Controls.Add(Me.chkreemplazoOpcional)
         Me.GroupBox4.Controls.Add(Label93)
         Me.GroupBox4.Controls.Add(Me.chkImprimir_Verificacion)
@@ -5218,25 +5223,6 @@ Partial Class frmBodega
         Me.GroupBox4.Controls.Add(Me.chkPermitirCambioUbicIndiceMenor)
         Me.GroupBox4.Controls.Add(Me.lblRequerirMismoProductoPosiciones)
         Me.GroupBox4.Controls.Add(Me.chkRequerirMismoProductoPosiciones)
-        '
-        'cmbEstadoDefectoRack
-        '
-        Me.cmbEstadoDefectoRack.Location = New System.Drawing.Point(283, 249)
-        Me.cmbEstadoDefectoRack.Margin = New System.Windows.Forms.Padding(4)
-        Me.cmbEstadoDefectoRack.Name = "cmbEstadoDefectoRack"
-        Me.cmbEstadoDefectoRack.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbEstadoDefectoRack.Properties.NullText = ""
-        Me.cmbEstadoDefectoRack.Size = New System.Drawing.Size(124, 22)
-        Me.cmbEstadoDefectoRack.TabIndex = 132
-        '
-        'Label94
-        '
-        Me.Label94.AutoSize = True
-        Me.Label94.Location = New System.Drawing.Point(10, 252)
-        Me.Label94.Name = "Label94"
-        Me.Label94.Size = New System.Drawing.Size(119, 16)
-        Me.Label94.TabIndex = 130
-        Me.Label94.Text = "Estado defecto rack"
         '
         'chkreemplazoOpcional
         '
@@ -5716,6 +5702,25 @@ Partial Class frmBodega
         Me.GroupBox1.TabIndex = 120
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Recepcion"
+        '
+        'cmbEstadoDefectoRack
+        '
+        Me.cmbEstadoDefectoRack.Location = New System.Drawing.Point(283, 249)
+        Me.cmbEstadoDefectoRack.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbEstadoDefectoRack.Name = "cmbEstadoDefectoRack"
+        Me.cmbEstadoDefectoRack.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEstadoDefectoRack.Properties.NullText = ""
+        Me.cmbEstadoDefectoRack.Size = New System.Drawing.Size(124, 22)
+        Me.cmbEstadoDefectoRack.TabIndex = 132
+        '
+        'Label94
+        '
+        Me.Label94.AutoSize = True
+        Me.Label94.Location = New System.Drawing.Point(10, 252)
+        Me.Label94.Name = "Label94"
+        Me.Label94.Size = New System.Drawing.Size(119, 16)
+        Me.Label94.TabIndex = 130
+        Me.Label94.Text = "Estado defecto rack"
         '
         'chkPermitirCambioUbicacionRecepcion
         '
@@ -6421,9 +6426,28 @@ Partial Class frmBodega
         Me.NumericUpDown1.Maximum = New Decimal(New Integer() {3, 0, 0, 0})
         Me.NumericUpDown1.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDown1.Name = "NumericUpDown1"
-        Me.NumericUpDown1.Size = New System.Drawing.Size(98, 22)
+        Me.NumericUpDown1.Size = New System.Drawing.Size(98, 20)
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'chkBodegaClienteAjusteByB
+        '
+        Me.chkBodegaClienteAjusteByB.Location = New System.Drawing.Point(687, 180)
+        Me.chkBodegaClienteAjusteByB.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkBodegaClienteAjusteByB.Name = "chkBodegaClienteAjusteByB"
+        Me.chkBodegaClienteAjusteByB.Properties.Caption = ""
+        Me.chkBodegaClienteAjusteByB.Size = New System.Drawing.Size(23, 24)
+        Me.chkBodegaClienteAjusteByB.TabIndex = 131
+        '
+        'lblBodegaClienteAjusteByB
+        '
+        Me.lblBodegaClienteAjusteByB.AutoSize = True
+        Me.lblBodegaClienteAjusteByB.Location = New System.Drawing.Point(382, 180)
+        Me.lblBodegaClienteAjusteByB.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblBodegaClienteAjusteByB.Name = "lblBodegaClienteAjusteByB"
+        Me.lblBodegaClienteAjusteByB.Size = New System.Drawing.Size(153, 16)
+        Me.lblBodegaClienteAjusteByB.TabIndex = 130
+        Me.lblBodegaClienteAjusteByB.Text = "Bodega cliente ajuste ByB"
         '
         'frmBodega
         '
@@ -6691,7 +6715,6 @@ Partial Class frmBodega
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
-        CType(Me.cmbEstadoDefectoRack.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6733,6 +6756,7 @@ Partial Class frmBodega
         CType(Me.chkOrdenarNombreCompleto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.cmbEstadoDefectoRack.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkPermitirCambioUbicacionRecepcion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkBloquearLpHH.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkIngresoConsolidado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6785,6 +6809,7 @@ Partial Class frmBodega
         CType(Me.chkCambioUbicacionRestrictivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkPermitirCambioUbicIndiceMenor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkRequerirMismoProductoPosiciones.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkBodegaClienteAjusteByB.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -7154,4 +7179,6 @@ Partial Class frmBodega
     Friend WithEvents lblPermitirCambioUbicIndiceMenor As System.Windows.Forms.Label
     Friend WithEvents lblRequerirMismoProductoPosiciones As System.Windows.Forms.Label
 
+    Friend WithEvents chkBodegaClienteAjusteByB As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents lblBodegaClienteAjusteByB As Label
 End Class

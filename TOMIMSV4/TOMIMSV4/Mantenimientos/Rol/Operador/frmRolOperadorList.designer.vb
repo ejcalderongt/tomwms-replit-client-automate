@@ -60,6 +60,8 @@ Partial Class frmRolOperadorList
         Me.GridView1.GridControl = Me.Dgrid
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.Editable = False
+        Me.GridView1.OptionsView.ColumnAutoWidth = False
+        Me.GridView1.OptionsView.ShowAutoFilterRow = True
         '
         'RibbonStatusBar
         '
@@ -79,7 +81,7 @@ Partial Class frmRolOperadorList
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.mnuImprimir, Me.lblRegs, Me.cmdImportarExcel, Me.BarToggleSwitchItem1})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.mnuImprimir, Me.lblRegs, Me.cmdImportarExcel, Me.BarToggleSwitchItem1})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 18
