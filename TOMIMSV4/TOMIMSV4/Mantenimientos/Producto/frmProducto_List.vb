@@ -10,6 +10,9 @@ Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
+Imports System.Net.Http
+Imports System.Text
+Imports Newtonsoft.Json
 
 Public Class frmProductoList
 
@@ -1234,5 +1237,373 @@ Public Class frmProductoList
 
     End Sub
 
+    Private Async Sub mnuImagenesAWS_ItemClickAsync(sender As Object, e As ItemClickEventArgs) Handles mnuImagenesAWS.ItemClick
 
+        Dim apiUrl As String = "https://ufgibcar4c.execute-api.us-west-2.amazonaws.com/dev/catalog/upload"
+        Dim vRutaCDN As String = AP.Bodega.Ruta_CDN
+
+        Try
+            ' Validar DataTable
+            If DT Is Nothing OrElse DT.Rows.Count = 0 Then
+                XtraMessageBox.Show("No hay productos cargados en el DataTable.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+                Exit Sub
+            End If
+
+            ' Validar ruta de imágenes
+            If String.IsNullOrWhiteSpace(vRutaCDN) OrElse Not Directory.Exists(vRutaCDN) Then
+                XtraMessageBox.Show("La ruta local de imágenes no existe o está vacía.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning)
+                Exit Sub
+            End If
+
+            ' AGREGAR COLUMNAS TEMPORALMENTE (sin afectar el grid visiblemente)
+            Dim columnasAgregadas As New List(Of String)
+
+            If Not DT.Columns.Contains("EstadoAWS") Then
+                DT.Columns.Add("EstadoAWS", GetType(String))
+                columnasAgregadas.Add("EstadoAWS")
+            End If
+            If Not DT.Columns.Contains("MensajeAWS") Then
+                DT.Columns.Add("MensajeAWS", GetType(String))
+                columnasAgregadas.Add("MensajeAWS")
+            End If
+            If Not DT.Columns.Contains("RutaImagenAWS") Then
+                DT.Columns.Add("RutaImagenAWS", GetType(String))
+                columnasAgregadas.Add("RutaImagenAWS")
+            End If
+
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+
+            Dim total As Integer = DT.Rows.Count
+            Dim enviados As Integer = 0
+            Dim errores As Integer = 0
+
+            For i As Integer = 0 To DT.Rows.Count - 1
+                Dim row As DataRow = DT.Rows(i)
+
+                SplashScreenManager.Default.SetWaitFormDescription(
+                String.Format("Enviando producto {0} de {1}...", i + 1, total)
+            )
+
+                ' Obtener valores
+                Dim codigo As String = ObtenerValorRow(row, "Código")
+                Dim marca As String = ObtenerValorRow(row, "Marca")
+                Dim familia As String = ObtenerValorRow(row, "Familia")
+                Dim clasificacion As String = ObtenerValorRow(row, "Clasificación")
+                Dim tipoProducto As String = ObtenerValorRow(row, "Tipo Producto")
+
+                If String.IsNullOrWhiteSpace(codigo) Then
+                    row("EstadoAWS") = "ERROR"
+                    row("MensajeAWS") = "Código vacío"
+                    errores += 1
+                    Continue For
+                End If
+
+                Dim rutaImagen As String = BuscarImagenLocalPorCodigo(codigo, vRutaCDN)
+
+                If String.IsNullOrWhiteSpace(rutaImagen) OrElse Not File.Exists(rutaImagen) Then
+                    row("EstadoAWS") = "SIN IMAGEN"
+                    row("MensajeAWS") = "No se encontró imagen local"
+                    errores += 1
+                    Continue For
+                End If
+
+                Dim result = Await EnviarProductoCatalogoAWSAsync(apiUrl,
+                                                                  codigo,
+                                                                  marca,
+                                                                  familia,
+                                                                  clasificacion,
+                                                                  tipoProducto,
+                                                                  rutaImagen)
+
+                If result IsNot Nothing AndAlso String.IsNullOrWhiteSpace(result.verror) Then
+                    row("EstadoAWS") = "ENVIADO"
+                    row("MensajeAWS") = If(result.message, "OK")
+                    row("RutaImagenAWS") = If(result.key, "")
+                    enviados += 1
+                Else
+                    row("EstadoAWS") = "ERROR"
+                    row("MensajeAWS") = If(result IsNot Nothing, result.verror, "Sin respuesta")
+                    errores += 1
+                End If
+
+                ' SOLO actualizar el DataTable, NO el grid
+                ' Los cambios quedarán reflejados cuando el grid se refresque naturalmente
+            Next
+
+            SplashScreenManager.CloseForm(False)
+
+            ' OPCIONAL: Notificar al usuario que puede refrescar el grid manualmente si lo desea
+            If columnasAgregadas.Count > 0 Then
+                XtraMessageBox.Show(
+                String.Format("Proceso finalizado.{0}Enviados: {1}{0}Errores: {2}{0}{0}Nota: Se agregaron nuevas columnas al DataTable. Refresque el grid manualmente para verlas.",
+                              Environment.NewLine, enviados, errores),
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            )
+            Else
+                XtraMessageBox.Show(
+                String.Format("Proceso finalizado.{0}Enviados: {1}{0}Errores: {2}",
+                              Environment.NewLine, enviados, errores),
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            )
+            End If
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(String.Format("Error en mnuImagenesAWS_ItemClickAsync: {0}",
+                                          ex.Message),
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+        End Try
+
+    End Sub
+
+    ' 🔧 FUNCIÓN AUXILIAR PARA MANEJAR DBNull
+    Private Function ObtenerValorRow(row As DataRow, nombreColumna As String) As String
+        If row.Table.Columns.Contains(nombreColumna) Then
+            Dim valor = row(nombreColumna)
+            If valor Is DBNull.Value Then
+                Return ""
+            End If
+            Return valor.ToString().Trim()
+        End If
+        Return ""
+    End Function
+
+    Private Function ImagenAStringBase64(rutaArchivo As String) As String
+        Dim bytes As Byte() = File.ReadAllBytes(rutaArchivo)
+        Return Convert.ToBase64String(bytes)
+    End Function
+
+    Private Async Function EnviarProductoCatalogoAWSAsync(apiUrl As String,
+                                                         codigo As String,
+                                                         marca As String,
+                                                         familia As String,
+                                                         clasificacion As String,
+                                                         tipoProducto As String,
+                                                         rutaImagen As String) As Task(Of AWSResponse)
+
+        Dim response As New AWSResponse()
+
+        Try
+            ' Leer y convertir imagen a Base64
+            Dim imageBytes As Byte() = File.ReadAllBytes(rutaImagen)
+            Dim imageBase64 As String = Convert.ToBase64String(imageBytes)
+
+            ' Obtener nombre del archivo
+            Dim filename As String = Path.GetFileName(rutaImagen)
+
+            ' Validar extensión
+            Dim extensionesPermitidas As String() = {".jpg", ".jpeg", ".png", ".webp"}
+            Dim extension As String = Path.GetExtension(filename).ToLower()
+
+            If Not extensionesPermitidas.Contains(extension) Then
+                response.success = False
+                response.verror = $"Extensión no permitida: {extension}"
+                response.statusCode = 400
+                Return response
+            End If
+
+            ' Validar tamaño (8MB máximo)
+            If imageBytes.Length > 8 * 1024 * 1024 Then
+                response.success = False
+                response.verror = "La imagen excede 8MB"
+                response.statusCode = 400
+                Return response
+            End If
+
+            ' Crear payload
+            Dim payload As New Dictionary(Of String, Object)
+            payload.Add("product_id", codigo)
+            payload.Add("marca", marca)
+            payload.Add("familia", familia)
+            payload.Add("clasificacion", clasificacion)
+            payload.Add("tipo_producto", tipoProducto)
+            payload.Add("filename", filename)
+            payload.Add("image_base64", imageBase64)
+
+            Dim jsonPayload As String = Newtonsoft.Json.JsonConvert.SerializeObject(payload)
+
+            Using client As New HttpClient()
+                client.DefaultRequestHeaders.Accept.Clear()
+                client.DefaultRequestHeaders.Accept.Add(New Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"))
+                client.Timeout = TimeSpan.FromSeconds(60)
+
+                Dim content As New StringContent(jsonPayload, Encoding.UTF8, "application/json")
+                Dim httpResponse As HttpResponseMessage = Await client.PostAsync(apiUrl, content)
+                Dim responseBody As String = Await httpResponse.Content.ReadAsStringAsync()
+
+                ' Guardar respuesta cruda para depuración
+                response.raw_response = responseBody
+                response.statusCode = CInt(httpResponse.StatusCode)
+
+                If httpResponse.IsSuccessStatusCode Then
+                    Try
+                        ' Deserializar respuesta completa
+                        Dim result = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseBody)
+
+                        response.success = True
+
+                        ' Mapear propiedades básicas
+                        If result.ContainsKey("message") Then
+                            response.message = result("message").ToString()
+                        End If
+
+                        If result.ContainsKey("bucket") Then
+                            response.bucket = result("bucket").ToString()
+                        End If
+
+                        If result.ContainsKey("key") Then
+                            response.key = result("key").ToString()
+                        End If
+
+                        If result.ContainsKey("product_id") Then
+                            response.product_id = result("product_id").ToString()
+                        End If
+
+                        If result.ContainsKey("environment") Then
+                            response.environment = result("environment").ToString()
+                        End If
+
+                        ' Procesar objetos procesados (para respuestas con múltiples archivos)
+                        If result.ContainsKey("processed_objects") Then
+                            Dim objectsJson = Newtonsoft.Json.JsonConvert.SerializeObject(result("processed_objects"))
+                            response.processed_objects = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ProcessedObject))(objectsJson)
+                        End If
+
+                        If result.ContainsKey("total_processed") Then
+                            response.total_processed = Convert.ToInt32(result("total_processed"))
+                        End If
+
+                    Catch ex As Exception
+                        response.success = True
+                        response.message = "Respuesta recibida pero no se pudo parsear completamente"
+                        response.verror = ex.Message
+                    End Try
+                Else
+                    response.success = False
+                    response.verror = $"HTTP {httpResponse.StatusCode}: {responseBody}"
+
+                    ' Intentar extraer mensaje de error del cuerpo
+                    Try
+                        Dim errorResult = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseBody)
+                        If errorResult.ContainsKey("error") Then
+                            response.verror = errorResult("error").ToString()
+                        End If
+                    Catch
+                        ' Mantener el error original
+                    End Try
+                End If
+            End Using
+
+        Catch ex As Exception
+            response.success = False
+            response.verror = ex.Message
+            response.statusCode = 500
+        End Try
+
+        Return response
+    End Function
+
+    Private Function BuscarImagenLocalPorCodigo(codigo As String, rutaBase As String) As String
+        Try
+            ' Extensiones permitidas
+            Dim extensiones As String() = {".jpg", ".jpeg", ".png", ".webp"}
+
+            ' Buscar archivos que contengan el código
+            For Each ext In extensiones
+                ' Opción 1: Nombre exacto + extensión
+                Dim rutaExacta As String = Path.Combine(rutaBase, codigo & ext)
+                If File.Exists(rutaExacta) Then
+                    Return rutaExacta
+                End If
+
+                ' Opción 2: Código como parte del nombre (ej: "COD123_imagen.jpg")
+                Dim archivos As String() = Directory.GetFiles(rutaBase, $"*{codigo}*{ext}")
+                If archivos.Length > 0 Then
+                    Return archivos(0)
+                End If
+            Next
+
+            Return String.Empty
+
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+    End Function
+
+End Class
+
+Public Class CatalogUploadRequest
+    Public Property product_id As String
+    Public Property marca As String
+    Public Property familia As String
+    Public Property clasificacion As String
+    Public Property tipo_producto As String
+    Public Property filename As String
+    Public Property image_base64 As String
+End Class
+
+Public Class CatalogUploadResponse
+    Public Property message As String
+    Public Property bucket As String
+    Public Property key As String
+    Public Property product_id As String
+    Public Property environment As String
+    Public Property [error] As String
+End Class
+
+Public Class AWSResponse
+    ' Propiedades básicas
+    Public Property success As Boolean
+    Public Property message As String
+    Public Property verror As String
+
+    ' Propiedades de la imagen/proceso
+    Public Property bucket As String
+    Public Property key As String
+    Public Property product_id As String
+    Public Property environment As String
+
+    ' Propiedades para embeddings múltiples
+    Public Property processed_objects As List(Of ProcessedObject)
+    Public Property total_processed As Integer
+
+    ' Propiedades adicionales
+    Public Property statusCode As Integer
+    Public Property raw_response As String  ' Para depuración
+
+    ' Constructor
+    Public Sub New()
+        processed_objects = New List(Of ProcessedObject)()
+    End Sub
+End Class
+
+' Clase para objetos procesados individualmente
+Public Class ProcessedObject
+    Public Property object_key As String
+    Public Property status As String
+    Public Property product_id As String
+    Public Property process_id As String
+    Public Property embeddings_count As Integer
+    Public Property hash As String
+End Class
+
+' Clase para respuesta de embedding individual
+Public Class EmbeddingResult
+    Public Property model_name As String
+    Public Property embedding_vector As List(Of Double)
+    Public Property model_version As String
+    Public Property processing_time_ms As Integer
+    Public Property status As String
 End Class
