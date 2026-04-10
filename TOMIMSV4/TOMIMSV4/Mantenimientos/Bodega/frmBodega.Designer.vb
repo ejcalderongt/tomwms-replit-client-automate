@@ -5054,6 +5054,25 @@ Partial Class frmBodega
         Me.chkRequerirMismoProductoPosiciones.Properties.Caption = ""
         Me.chkRequerirMismoProductoPosiciones.Size = New System.Drawing.Size(28, 24)
         Me.chkRequerirMismoProductoPosiciones.TabIndex = 130
+        '
+        'lblBodegaClienteAjusteByB
+        '
+        Me.lblBodegaClienteAjusteByB.AutoSize = True
+        Me.lblBodegaClienteAjusteByB.Location = New System.Drawing.Point(383, 253)
+        Me.lblBodegaClienteAjusteByB.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblBodegaClienteAjusteByB.Name = "lblBodegaClienteAjusteByB"
+        Me.lblBodegaClienteAjusteByB.Size = New System.Drawing.Size(153, 16)
+        Me.lblBodegaClienteAjusteByB.TabIndex = 130
+        Me.lblBodegaClienteAjusteByB.Text = "Bodega cliente ajuste ByB"
+        '
+        'chkBodegaClienteAjusteByB
+        '
+        Me.chkBodegaClienteAjusteByB.Location = New System.Drawing.Point(688, 253)
+        Me.chkBodegaClienteAjusteByB.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkBodegaClienteAjusteByB.Name = "chkBodegaClienteAjusteByB"
+        Me.chkBodegaClienteAjusteByB.Properties.Caption = ""
+        Me.chkBodegaClienteAjusteByB.Size = New System.Drawing.Size(23, 24)
+        Me.chkBodegaClienteAjusteByB.TabIndex = 131
         'Label82
         '
         Me.Label82.AutoSize = True
@@ -6429,25 +6448,8 @@ Partial Class frmBodega
         Me.NumericUpDown1.Size = New System.Drawing.Size(98, 20)
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
-        '
-        'chkBodegaClienteAjusteByB
-        '
-        Me.chkBodegaClienteAjusteByB.Location = New System.Drawing.Point(687, 180)
-        Me.chkBodegaClienteAjusteByB.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.chkBodegaClienteAjusteByB.Name = "chkBodegaClienteAjusteByB"
-        Me.chkBodegaClienteAjusteByB.Properties.Caption = ""
-        Me.chkBodegaClienteAjusteByB.Size = New System.Drawing.Size(23, 24)
-        Me.chkBodegaClienteAjusteByB.TabIndex = 131
-        '
-        'lblBodegaClienteAjusteByB
-        '
-        Me.lblBodegaClienteAjusteByB.AutoSize = True
-        Me.lblBodegaClienteAjusteByB.Location = New System.Drawing.Point(382, 180)
-        Me.lblBodegaClienteAjusteByB.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblBodegaClienteAjusteByB.Name = "lblBodegaClienteAjusteByB"
-        Me.lblBodegaClienteAjusteByB.Size = New System.Drawing.Size(153, 16)
-        Me.lblBodegaClienteAjusteByB.TabIndex = 130
-        Me.lblBodegaClienteAjusteByB.Text = "Bodega cliente ajuste ByB"
+
+
         '
         'frmBodega
         '
