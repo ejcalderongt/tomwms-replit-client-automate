@@ -57,7 +57,6 @@ Public Class frmBodegaSelUbic
 
     Private _ubicacionDestinoEsValidaSegunRegla As Boolean = True
     Private _mensajeUbicacionNoValida As String = ""
-    Private _debugValidacionUbicacion As String = ""
 
 
     Public Sub New()
@@ -920,7 +919,6 @@ Public Class frmBodegaSelUbic
             If pBeUbicacion Is Nothing Then Return False
             If pObjBeB Is Nothing Then Return True
 
-            _debugValidacionUbicacion = ""
 
             Dim resultado1 As Boolean = ValidarUbicacionOrigenDestinoDiferente()
             Dim resultado2 As Boolean = EvaluarUbicacionValidaSegunRegla()
@@ -966,7 +964,6 @@ Public Class frmBodegaSelUbic
 
 
     Private Function ValidarCambioUbicacionRestrictivo() As Boolean
-
         Try
             If pObjBeB Is Nothing Then Return True
             If _ubicacionDestinoEsValidaSegunRegla Then Return True
@@ -977,18 +974,13 @@ Public Class frmBodegaSelUbic
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Exclamation)
                 Return False
-            Else
-                XtraMessageBox.Show(_mensajeUbicacionNoValida,
-                                Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information)
-                Return True
             End If
+
+            Return True
 
         Catch ex As Exception
             Throw New Exception("Error validando cambio de ubicación restrictivo: " & ex.Message)
         End Try
-
     End Function
 
 
@@ -997,8 +989,6 @@ Public Class frmBodegaSelUbic
         Try
             _ubicacionDestinoEsValidaSegunRegla = True
             _mensajeUbicacionNoValida = ""
-            _debugValidacionUbicacion = ""
-
             If pObjBeB Is Nothing Then Return True
             If BeProducto Is Nothing Then Return True
 
@@ -1011,13 +1001,7 @@ Public Class frmBodegaSelUbic
             If BeProducto.IdTipoRotacion > 0 AndAlso pBeUbicacion.IdTipoRotacion > 0 Then
                 If BeProducto.IdTipoRotacion <> pBeUbicacion.IdTipoRotacion Then
                     _ubicacionDestinoEsValidaSegunRegla = False
-                    _mensajeUbicacionNoValida =
-                    "DEBUG REGLAS" & vbCrLf &
-                    "No cumple por tipo de rotación." & vbCrLf &
-                    "Producto: " & BeProducto.Codigo & " - " & BeProducto.Nombre & vbCrLf &
-                    "Ubicación: " & pBeUbicacion.IdUbicacion & vbCrLf &
-                    "TipoRotProducto = " & BeProducto.IdTipoRotacion & vbCrLf &
-                    "TipoRotUbicacion = " & pBeUbicacion.IdTipoRotacion
+                    _mensajeUbicacionNoValida = "La ubicación seleccionada no cumple con las reglas de rotación."
                     Return True
                 End If
             End If
@@ -1025,13 +1009,7 @@ Public Class frmBodegaSelUbic
             If BeEstadoProd IsNot Nothing Then
                 If BeEstadoProd.Dañado AndAlso Not pBeUbicacion.Dañado Then
                     _ubicacionDestinoEsValidaSegunRegla = False
-                    _mensajeUbicacionNoValida =
-                    "DEBUG REGLAS" & vbCrLf &
-                    "No cumple por estado dañado." & vbCrLf &
-                    "Producto: " & BeProducto.Codigo & " - " & BeProducto.Nombre & vbCrLf &
-                    "Ubicación: " & pBeUbicacion.IdUbicacion & vbCrLf &
-                    "IdEstado = " & BeEstadoProd.IdEstado & vbCrLf &
-                    "UbicaciónDañado = " & pBeUbicacion.Dañado.ToString()
+                    _mensajeUbicacionNoValida = "La ubicación seleccionada no es válida para el estado del producto."
                     Return True
                 End If
             End If
@@ -1126,15 +1104,6 @@ Public Class frmBodegaSelUbic
 
                 hayReglasAplicables = True
 
-                debugReglas &=
-                "Regla " & regla.IdReglaUbicacionEnc &
-                " | Indice=" & cumpleIndice &
-                " | TipoRot=" & cumpleTipo &
-                " | TipoProd=" & cumpleTipoProducto &
-                " | Estado=" & cumpleEstado &
-                " | CumpleFinal=" & cumple.ToString() &
-                vbCrLf
-
                 If cumple Then
                     existeReglaCompatible = True
                     Exit For
@@ -1142,12 +1111,9 @@ Public Class frmBodegaSelUbic
             Next
 
 
-
             If hayReglasAplicables AndAlso Not existeReglaCompatible Then
                 _ubicacionDestinoEsValidaSegunRegla = False
-                _mensajeUbicacionNoValida =
-                _debugValidacionUbicacion & vbCrLf &
-                "RESULTADO FINAL: NO CUMPLE LA REGLA DE UBICACIÓN."
+                _mensajeUbicacionNoValida = "La ubicación seleccionada no cumple con las reglas configuradas."
             End If
 
             Return True
@@ -1287,8 +1253,7 @@ Public Class frmBodegaSelUbic
             If IdIndiceRotacion = pBeUbicacion.IdIndiceRotacion Then Return True
 
             If pBeUbicacion.IdIndiceRotacion < IdIndiceRotacion Then
-
-                If pObjBeB.permitir_cambio_ubic_indice_menor Then
+                If Not pObjBeB.permitir_cambio_ubic_indice_menor Then
                     XtraMessageBox.Show(
                     String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
                                   IdIndiceRotacion, pBeUbicacion.IdIndiceRotacion),
