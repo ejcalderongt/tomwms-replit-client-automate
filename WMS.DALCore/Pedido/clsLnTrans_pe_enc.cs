@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Pedido;
 using Microsoft.Extensions.Configuration;
 using WMSWebAPI.Dtos.Salidas;
+using AppGlobal;
 public class clsLnTrans_pe_enc
 {
 
@@ -1128,6 +1129,79 @@ public class clsLnTrans_pe_enc
 
             if (idPedidoEnc > 0 && !result.ContainsKey(idPedidoEnc))
                 result.Add(idPedidoEnc, codigo);
+        }
+
+        return result;
+    }
+
+    public static object Get_Usuarios_Documento_By_IdsPedidoEnc(IConfiguration configuration, List<int> pedidoIds)
+    {
+        var result = new Dictionary<int, Tuple<string, string>>();
+
+        if (pedidoIds == null || pedidoIds.Count == 0)
+            return result;
+
+        var ids = pedidoIds.Where(x => x > 0)
+                           .Distinct()
+                           .ToList();
+
+        if (ids.Count == 0)
+            return result;
+
+        using (var lConnection = new SqlConnection(configuration.GetConnectionString("CST")))
+        {
+            lConnection.Open();
+
+            using (var cmd = lConnection.CreateCommand())
+            {
+                cmd.CommandType = CommandType.Text;
+
+                var paramNames = new List<string>();
+                for (int i = 0; i < ids.Count; i++)
+                {
+                    var paramName = "@id" + i;
+                    paramNames.Add(paramName);
+                    cmd.Parameters.Add(paramName, SqlDbType.Int).Value = ids[i];
+                }
+
+                cmd.CommandText = string.Format(@"
+                SELECT 
+                    pe.IdPedidoEnc,
+                    ISNULL(uDoc.Codigo, '') AS UsuarioDocumento,
+                    ISNULL(uDesp.Codigo, '') AS UsuarioDespacho
+                FROM trans_pe_enc pe
+                INNER JOIN usuario uDoc
+                    ON pe.user_agr = uDoc.IdUsuario
+                LEFT JOIN trans_despacho_enc de
+                    ON pe.no_despacho = de.IdDespachoEnc
+                LEFT JOIN usuario uDesp
+                    ON de.user_agr = uDesp.IdUsuario
+                WHERE pe.IdPedidoEnc IN ({0})",
+                    string.Join(",", paramNames));
+
+                using (var dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        var idPedidoEnc = dr["IdPedidoEnc"] == DBNull.Value
+                            ? 0
+                            : Convert.ToInt32(dr["IdPedidoEnc"]);
+
+                        var usuarioDocumento = dr["UsuarioDocumento"] == DBNull.Value
+                            ? ""
+                            : clsPublic.Desencriptar(dr["UsuarioDocumento"].ToString()) ?? "";
+
+                        var usuarioDespacho = dr["UsuarioDespacho"] == DBNull.Value
+                            ? ""
+                            : clsPublic.Desencriptar(dr["UsuarioDespacho"].ToString()) ?? "";
+
+                        if (idPedidoEnc > 0 && !result.ContainsKey(idPedidoEnc))
+                        {
+                            result.Add(idPedidoEnc, Tuple.Create(usuarioDocumento, usuarioDespacho));
+                        }
+                    }
+                }
+            }
         }
 
         return result;

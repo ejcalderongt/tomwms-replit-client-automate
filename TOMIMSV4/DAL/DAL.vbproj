@@ -102,7 +102,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SqlClient, Version=4.6.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SqlClient.4.9.0\lib\net462\System.Data.SqlClient.dll</HintPath>
+      <HintPath>..\..\packages\System.Data.SqlClient.4.9.1\lib\net462\System.Data.SqlClient.dll</HintPath>
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.DirectoryServices" />
@@ -185,6 +185,7 @@
     <Compile Include="Log\clsLnLog_sincronizacion_fallos.vb" />
     <Compile Include="Log\clsLnLog_sincronizacion_nube.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsLnAjuste_motivo_Partial.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsLnTrans_ajuste_det_borrador.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsLnTrans_ajuste_det_doc.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsLnTrans_ajuste_det_doc_partial.vb" />
     <Compile Include="Mantenimientos\Bodega\Importacion\clsLnTrans_bodega_ubicaciones_excel.vb" />
@@ -232,6 +233,16 @@
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsLnTrans_manufactura_tipo.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsLnTrans_oc_pol_motivo_correccion.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsLnTrans_oc_pol_motivo_correccion_bodega.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnBodegaNotificacionContacto.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionCola.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionContacto.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionContactoBodega.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionDestinatarioRegla.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionEvento.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionEventoVariable.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionLayout.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacionPlantilla.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsLnNotificacion.vb" />
     <Compile Include="Mantenimientos\Operador_Bodega\clsLnOperador_jornada_laboral.vb" />
     <Compile Include="Mantenimientos\Operador_Bodega\clsLnOperador_montacarga.vb" />
     <Compile Include="Mantenimientos\Operador_Bodega\ZonaPicking\clsLnOperador_zona_picking_tramo.vb" />

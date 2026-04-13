@@ -1301,10 +1301,9 @@ public class clsLnTrans_oc_enc
         }
     }
 
-    public static int? Get_IdOrdenCompraEnc_By_IdDespachoEnc_And_CodigoBodegaOrigen(
-    IConfiguration configuration,
-    int idDespachoEnc,
-    string? codigoBodegaOrigen)
+    public static int? Get_IdOrdenCompraEnc_By_IdDespachoEnc_And_CodigoBodegaOrigen(IConfiguration configuration,
+                                                                                    int idDespachoEnc,
+                                                                                    string? codigoBodegaOrigen)
     {
         if (string.IsNullOrWhiteSpace(codigoBodegaOrigen))
             return null;

@@ -1223,7 +1223,7 @@ Public Class frmRegularizarInventario
 
             ' Crear encabezado para el ajuste
             pBeTransAjustEnc = New clsBeTrans_ajuste_enc()
-            pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+            pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
             pBeTransAjustEnc.IdBodega = gBeInventario.IdBodega
             pBeTransAjustEnc.Idusuario = AP.UsuarioAp.IdUsuario
             pBeTransAjustEnc.Fecha = Date.Now
@@ -1257,7 +1257,7 @@ Public Class frmRegularizarInventario
                 ' Crear detalle del ajuste
                 Dim pBeAjusteDet As New clsBeTrans_ajuste_det()
                 pBeAjusteDet.IdAjusteDet = clsLnTrans_ajuste_det.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                pBeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+                pBeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
                 pBeAjusteDet.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
                 pBeAjusteDet.IdProductoEstado = BeTransInvCiclico.IdProductoEst_nuevo
                 pBeAjusteDet.IdPresentacion = BeTransInvCiclico.IdPresentacion

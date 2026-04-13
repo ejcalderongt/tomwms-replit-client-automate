@@ -1669,22 +1669,32 @@ Partial Public Class clsLnTrans_picking_ubic
                                                               ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
 
         Dim lReturnList As New List(Of clsBeTrans_picking_ubic)
+        Dim BeBodega As New clsBeBodega
 
         Try
+
+            '#CKFK20260324 Agregué esta consulta para obtener la configuración de la bodega y dependiendo de esto controlar por talla color o por lote y fecha de vencimiento
+            BeBodega = clsLnBodega.GetSingle_By_Idbodega(pPickingUbic.IdBodega, lConnection, lTransaction)
 
             Dim vSQL As String = "SELECT * FROM VW_PickingUbic_By_IdPickingDet
                                   WHERE dañado_picking = 0 
 							      AND (cantidad_solicitada <> cantidad_recibida OR cantidad_solicitada <> cantidad_verificada)
                                   AND IdPickingEnc=@IdPickingEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
-                                  lic_plate=@lic_plate AND 
-                                  ISNULL(IdPresentacion,0) = @IdPresentacion AND
-                                  (Lote = @Lote OR Lote IS NULL)  AND 
-                                  ISNULL(CONVERT(DATE, fecha_vence),CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) AND 
+                                  lic_plate =@lic_plate AND 
+                                  ISNULL(IdPresentacion, 0) = @IdPresentacion AND
                                   IdUbicacion = @IdUbicacion AND
                                   IdProductoEstado = @IdProductoEstado AND 
                                   IdProductoBodega = @IdProductoBodega AND 
                                   no_encontrado = 0 AND dañado_verificacion = 0 "
+
+            '#CKFK20260322 Agregué la condición para controlar por talla color dependiendo de la configuración de la bodega
+            If BeBodega.Control_Talla_Color Then
+                vSQL += " AND IdProductoTallaColor = @IdProductoTallaColor "
+            Else
+                vSQL + = " AND (Lote = @Lote OR Lote IS NULL)   
+                           AND ISNULL(CONVERT(DATE, fecha_vence), CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) "
+            End If
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -1694,12 +1704,17 @@ Partial Public Class clsLnTrans_picking_ubic
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pPickingUbic.IdPickingEnc)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pPickingUbic.IdPresentacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pPickingUbic.IdUnidadMedida)
-                lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPickingUbic.Lote)
-                lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPickingUbic.Fecha_Vence)
                 lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pPickingUbic.Lic_plate)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pPickingUbic.IdUbicacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pPickingUbic.IdProductoEstado)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pPickingUbic.IdProductoBodega)
+
+                If BeBodega.Control_Talla_Color Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoTallaColor", pPickingUbic.IdProductoTallaColor)
+                Else
+                    lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPickingUbic.Lote)
+                    lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPickingUbic.Fecha_Vence)
+                End If
 
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)
@@ -3785,7 +3800,9 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeNuevoTransPickingUbic.IdStock = BePickingUbicStock.IdStock
                                 BeNuevoTransPickingUbic.IdStockRes = BeStockResNuevo.IdStockRes
                                 BeNuevoTransPickingUbic.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
-                                Insertar(BeNuevoTransPickingUbic, lConnection, ltransaction)
+                                Insertar(BeNuevoTransPickingUbic,
+                                         If(Es_Transaccion_Remota, pConnection, lConnection),
+                                         If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 vBePickingUbic.Cantidad_Solicitada = vBePickingUbic.Cantidad_Solicitada - IIf(vBePickingUbic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)
                                 vBePickingUbic.Cantidad_Solicitada = Math.Round(vBePickingUbic.Cantidad_Solicitada, 6)
@@ -6941,9 +6958,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
         Try
 
-
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
 
             If Not pListaPickingUbic Is Nothing Then
 
@@ -8369,5 +8384,88 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+
+    Public Shared Function Get_Op_Verifico_Defecto_By_IdPickingEnc(ByVal IdPickingEnc As Integer,
+                                                                   Optional pConnection As SqlConnection = Nothing,
+                                                                   Optional pTransaction As SqlTransaction = Nothing) As String
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As New SqlCommand
+
+        Get_Op_Verifico_Defecto_By_IdPickingEnc = ""
+
+        Try
+
+            Const sp As String = "select top(1) concat(op.nombres, ' ', op.apellidos) as Operador from trans_picking_ubic pu
+                                  join operador_bodega ob on pu.IdOperadorBodega_Verifico = ob.IdOperadorBodega
+                                  join operador op on ob.IdOperador = op.IdOperador Where(IdPickingEnc = @IdPickingEnc) "
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            End If
+
+            cmd = New SqlCommand(sp, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) _
+                With {.CommandType = CommandType.Text}
+
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", IdPickingEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_Op_Verifico_Defecto_By_IdPickingEnc = IIf(IsDBNull(dt.Rows(0).Item("Operador")), "", dt.Rows(0).Item("Operador"))
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Sub Get_Fechas_Picking(ByRef pFechaInicio As Date,
+                                         ByRef pFechaFin As Date,
+                                         ByVal pIdPedidoEnc As Integer,
+                                         ByVal pConnection As SqlConnection,
+                                         ByVal pTransaction As SqlTransaction)
+
+        Try
+
+            Dim vSQL As String = "SELECT  MIN(fecha_verificado) FechaInicio,MAX(fecha_verificado) FechaFin
+                                  FROM trans_picking_ubic 
+                                  WHERE IdPedidoEnc = @IdPedidoEnc "
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, pConnection)
+                lDataAdapter.SelectCommand.Transaction = pTransaction
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@IdPedidoEnc", pIdPedidoEnc))
+
+                Dim dt As New DataTable
+                lDataAdapter.Fill(dt)
+
+                If dt.Rows.Count = 1 Then
+                    pFechaInicio = IIf(IsDBNull(dt.Rows(0).Item("FechaInicio")), New Date(1900, 1, 1), dt.Rows(0).Item("FechaInicio"))
+                    pFechaFin = IIf(IsDBNull(dt.Rows(0).Item("FechaFin")), New Date(1900, 1, 1), dt.Rows(0).Item("FechaFin"))
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Sub
+
 
 End Class

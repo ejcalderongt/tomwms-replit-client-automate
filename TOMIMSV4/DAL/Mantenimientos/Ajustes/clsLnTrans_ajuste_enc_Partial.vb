@@ -161,7 +161,6 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Sub
 
-
     Public Shared Sub Actualizar_Ajuste(ByVal lDet As List(Of clsBeTrans_ajuste_det),
                                         ByVal lMovs As List(Of clsBeTrans_movimientos),
                                         ByVal pIdEmpresa As Integer,
@@ -850,6 +849,93 @@ Partial Public Class clsLnTrans_ajuste_enc
             Throw
         End Try
     End Function
+    Public Shared Sub Guardar_Borrador_Ajuste(ByVal BeAjusteEnc As clsBeTrans_ajuste_enc,
+                                              ByVal lBeTransAjusteDet As List(Of clsBeTrans_ajuste_det))
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            'Actualiza encabezado
+            Actualizar(BeAjusteEnc, lConnection, lTransaction)
+
+            'Elimina borradores previos del mismo ajuste antes de volver a guardar
+            clsLnTrans_ajuste_det_borrador.Eliminar_Por_IdAjusteEnc(BeAjusteEnc.Idajusteenc,
+                                                                    lConnection,
+                                                                    lTransaction)
+
+            For Each BeAjusteDet As clsBeTrans_ajuste_det In lBeTransAjusteDet
+
+                Dim BeBorrador As New clsBeTrans_ajuste_det_borrador
+
+                With BeBorrador
+                    .idajusteenc = BeAjusteEnc.Idajusteenc
+                    .idajustedet = 0
+
+                    .IdStock = BeAjusteDet.IdStock
+                    .IdPropietarioBodega = BeAjusteDet.IdPropietarioBodega
+                    .IdProductoBodega = BeAjusteDet.IdProductoBodega
+                    .IdProductoEstado = BeAjusteDet.IdProductoEstado
+                    .IdPresentacion = BeAjusteDet.IdPresentacion
+                    .IdUnidadMedida = BeAjusteDet.IdUnidadMedida
+                    .IdUbicacion = BeAjusteDet.IdUbicacion
+
+                    .lote_original = BeAjusteDet.Lote_original
+                    .lote_nuevo = BeAjusteDet.Lote_nuevo
+                    .fecha_vence_original = BeAjusteDet.Fecha_vence_original
+                    .fecha_vence_nueva = BeAjusteDet.Fecha_vence_nueva
+                    .peso_original = BeAjusteDet.Peso_original
+                    .peso_nuevo = BeAjusteDet.Peso_nuevo
+
+                    If BeAjusteDet.IdPresentacion <> 0 Then
+                        .cantidad_original = Math.Round(BeAjusteDet.Cantidad_original * BeAjusteDet.Presentacion.Factor, 6)
+                        .cantidad_nueva = Math.Round(BeAjusteDet.Cantidad_nueva * BeAjusteDet.Presentacion.Factor, 6)
+                    Else
+                        .cantidad_original = BeAjusteDet.Cantidad_original
+                        .cantidad_nueva = BeAjusteDet.Cantidad_nueva
+                    End If
+
+                    .codigo_producto = BeAjusteDet.Codigo_producto
+                    .nombre_producto = BeAjusteDet.Nombre_producto
+                    .idtipoajuste = BeAjusteDet.Idtipoajuste
+                    .idmotivoajuste = BeAjusteDet.IdMotivoAjuste
+                    .observacion = BeAjusteDet.Observacion
+                    .codigo_ajuste = BeAjusteDet.Codigo_ajuste
+                    .enviado = False
+                    .IdBodegaERP = BeAjusteDet.IdBodegaERP
+                    .lic_plate = BeAjusteDet.lic_plate
+                    .referencia_ajuste_erp = ""
+                    .estado_ajuste_erp = False
+
+                    .estado_borrador = "BORRADOR"
+                    .confirmado = False
+                    .procesado = False
+                    .fecha_creacion = Date.Now
+                    .usuario_creacion = BeAjusteEnc.Idusuario.ToString()
+                    .fecha_modificacion = Date.Now
+                    .usuario_modificacion = BeAjusteEnc.Idusuario.ToString()
+                End With
+
+                clsLnTrans_ajuste_det_borrador.Insertar(BeBorrador,
+                                                        lConnection,
+                                                        lTransaction)
+
+            Next
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(ex.Message)
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Sub
+
     Public Shared Function Get_All_VW(ByVal pFechaDel As Date,
                                       ByVal pFechaAl As Date,
                                       ByVal pIdBodega As Integer) As DataTable
@@ -879,4 +965,5 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Function
+
 End Class

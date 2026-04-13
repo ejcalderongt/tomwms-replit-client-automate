@@ -414,8 +414,12 @@ Public Class frmAjustePositivo
     Private Sub cmdGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdGuardar.ItemClick
         Try
 
-            DialogResult = DialogResult.OK
-            Close()
+            If Validar_Datos() Then
+
+                DialogResult = DialogResult.OK
+                Close()
+
+            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -511,7 +515,45 @@ Public Class frmAjustePositivo
         '#GT06012025: el showdialog no retorna Ok por eso solo validamos si el objeto no es nothing
         If frmUbicaciones.pObj IsNot Nothing Then
             txtUbicacion.Text = frmUbicaciones.pObj.NombreCompleto
+            pStockTemporal.IdUbicacion = frmUbicaciones.pObj.IdUbicacion
         End If
 
     End Sub
+
+    Private Function Validar_Datos() As Boolean
+        Try
+
+            If AP.Bodega.Control_Talla_Color Then
+                If String.IsNullOrEmpty(cmbProductoEstado.Text) Then
+                    XtraMessageBox.Show("Debe seleccionar un estado para el producto.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    cmbProductoEstado.Focus()
+                    Return False
+                End If
+                If String.IsNullOrEmpty(cmbTalla.Text) Then
+                    XtraMessageBox.Show("Debe seleccionar una talla.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    cmbTalla.Focus()
+                    Return False
+                End If
+                If String.IsNullOrEmpty(cmbColor.Text) Then
+                    XtraMessageBox.Show("Debe seleccionar un color.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    cmbColor.Focus()
+                    Return False
+                End If
+                If String.IsNullOrEmpty(txtLicencia.Text) Then
+                    XtraMessageBox.Show("Debe seleccionar una licencia para el producto.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    txtLicencia.Focus()
+                    Return False
+                End If
+
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+        Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
+    End Function
+
 End Class

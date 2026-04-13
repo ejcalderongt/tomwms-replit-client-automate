@@ -30,6 +30,7 @@ Public Class clsBeProducto_Presentacion
     Public Property Sistema() As Boolean = False
     Public Property IdPresentacionPallet As Integer = 0
     Public Property Codigo As String = ""
+    Public Property IdTipoEtiqueta As Integer = 0
     Sub New()
     End Sub
 

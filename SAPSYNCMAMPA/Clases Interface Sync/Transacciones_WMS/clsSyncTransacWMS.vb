@@ -1046,7 +1046,7 @@ Public Class clsSyncTransacWMS
 
                     ' Mapeo del encabezado según tu referencia
                     Dim beAjustes As New clsBeTrans_ajuste_enc With {
-                        .Idajusteenc = clsLnTrans_ajuste_enc.MaxID(lConnection, lTransaction) + 1,
+                        .IdAjusteenc = clsLnTrans_ajuste_enc.MaxID(lConnection, lTransaction) + 1,
                         .Fecha = postingDate,
                         .Idusuario = 1,
                         .Referencia = ajuste.NoEnc,
@@ -1128,7 +1128,7 @@ Public Class clsSyncTransacWMS
 
                         Dim beAjusteDet As New clsBeTrans_ajuste_det With {
                         .IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1,
-                        .IdAjusteEnc = beAjustes.Idajusteenc,
+                        .IdAjusteEnc = beAjustes.IdAjusteenc,
                         .IdStock = 0,
                         .IdPropietarioBodega = beAjustes.IdPropietarioBodega,
                         .IdProductoBodega = vIdProductoBodega,

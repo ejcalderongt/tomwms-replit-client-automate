@@ -38,6 +38,7 @@ Public Class clsLnProducto_presentacion
                 .Sistema = IIf(IsDBNull(dr.Item("sistema")), False, dr.Item("sistema"))
                 .IdPresentacionPallet = IIf(IsDBNull(dr.Item("IdPresentacionPallet")), 0, dr.Item("IdPresentacionPallet"))
                 .Codigo = IIf(IsDBNull(dr.Item("Codigo")), "", dr.Item("Codigo"))
+                .IdTipoEtiqueta = IIf(IsDBNull(dr.Item("IdTipoEtiqueta")), 0, dr.Item("IdTipoEtiqueta"))
             End With
 
 
@@ -88,6 +89,7 @@ Public Class clsLnProducto_presentacion
             Ins.Add("codigo", "@codigo", DataType.Parametro)
             If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Ins.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
             Ins.Add("sistema", "@sistema", DataType.Parametro)
+            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Ins.Add("IdTipoEtiqueta", "@sisIdTipoEtiquetatema", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -131,6 +133,7 @@ Public Class clsLnProducto_presentacion
             cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBeProducto_presentacion.Sistema))
             cmd.Parameters.Add(New SqlParameter("@CODIGO", oBeProducto_presentacion.Codigo))
             If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRESENTACIONPALLET", oBeProducto_presentacion.IdPresentacionPallet))
+            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETA", oBeProducto_presentacion.IdTipoEtiqueta))
 
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
@@ -192,6 +195,7 @@ Public Class clsLnProducto_presentacion
             Upd.Add("sistema", "@sistema", DataType.Parametro)
             Upd.Add("codigo", "@codigo", DataType.Parametro)
             If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Upd.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
+            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Upd.Add("IdTipoEtiqueta", "@sisIdTipoEtiquetatema", DataType.Parametro)
             Upd.Where("IdPresentacion = @IdPresentacion")
 
             Dim sp As String = Upd.SQL()
@@ -235,7 +239,7 @@ Public Class clsLnProducto_presentacion
             cmd.Parameters.Add(New SqlParameter("@SISTEMA", oBeProducto_presentacion.Sistema))
             cmd.Parameters.Add(New SqlParameter("@CODIGO", oBeProducto_presentacion.Codigo))
             If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRESENTACIONPALLET", oBeProducto_presentacion.IdPresentacionPallet))
-
+            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETA", oBeProducto_presentacion.IdTipoEtiqueta))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

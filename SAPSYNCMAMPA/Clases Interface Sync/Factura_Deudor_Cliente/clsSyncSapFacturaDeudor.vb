@@ -1,11 +1,15 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Globalization
 Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
+Imports System.Web.Routing
+Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
+Imports TOMWMS.clsSyncSapTrasladosEnvio
 
 Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
@@ -97,10 +101,10 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
 
             ' Filtro a nivel de encabezado (no se puede filtrar por WarehouseCode aquí)
             Dim filtroFacturaDeudor As String = "ReserveInvoice eq 'tNO'"
-            'Dim filtroEstado As String = "DocumentStatus eq 'bost_Close'"
+            Dim filtroGuia As String = "U_Guia ne null and U_Guia ne ''"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
-            Dim filtroFinal As String = $"{filtroFacturaDeudor} and {filtroEnviado}{filtroDocNum}"
+            Dim filtroFinal As String = $"{filtroFacturaDeudor} and {filtroEnviado}{filtroDocNum} and {filtroGuia}"
 
             Dim url As String = $"{BD.Instancia.HANA_SL}Invoices?$filter={Uri.EscapeDataString(filtroFinal)}"
 
@@ -272,8 +276,8 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
     End Function
 
     Private Shared Async Function Marcar_Factura_Deudor_Sincronizada_SLAsync(docEntry As String,
-                                                                               sessionCookie As String,
-                                                                               baseUrl As String) As Task(Of Boolean)
+                                                                             sessionCookie As String,
+                                                                             baseUrl As String) As Task(Of Boolean)
 
         Try
             If String.IsNullOrWhiteSpace(docEntry) Then Return False
@@ -313,5 +317,264 @@ Public Class clsSyncSapFacturaDeudor : Inherits clsInterfaceBase
         End Try
 
     End Function
+
+    Public Shared Async Function Enviar_Factura_Deudor_ClienteAsync(pIdBodega As Integer,
+                                                                     lblprg As RichTextBox,
+                                                                     prg As Windows.Forms.ProgressBar) As Task
+
+        Try
+
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+                Throw New Exception("No se pudo obtener sesión en SAP Service Layer.")
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
+            End If
+
+            Dim lTransaccionesSalida As New List(Of clsBeI_nav_transacciones_out)
+
+            lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor)
+
+            If lTransaccionesSalida IsNot Nothing AndAlso lTransaccionesSalida.Count > 0 Then
+
+                clsPublic.Actualizar_Progreso(lblprg, String.Format("Transacciones a enviar: {0}", lTransaccionesSalida.Count))
+
+                Dim ListaPedidosTransf = (From i In lTransaccionesSalida
+                                          Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc, Key i.Idbodega} Into Group
+                                          Select New With {Key Keys.No_pedido, Key Keys.Idpedidoenc, Key Keys.Idbodega}).
+                                          Where(Function(x) x.Idbodega = pIdBodega).ToList()
+
+                For Each PT In ListaPedidosTransf
+
+                    Dim clsTrans As New clsTransaccion()
+                    Dim BePedidoEnc As clsBeTrans_pe_enc = Nothing
+                    Dim vOperadorVerificoDefecto As String = ""
+                    Dim Enviado_A_Erp As Boolean = False
+                    Dim vUsuarioWMS As String = ""
+                    Dim vEmpresaTransporte As String = ""
+                    Dim vFechaInicioPack As DateTime = Now
+                    Dim vFechaFinPack As DateTime = Now
+                    Dim fechaEnvio As DateTime = Now
+
+                    Try
+                        clsTrans.Begin_Transaction()
+
+                        BePedidoEnc = clsLnTrans_pe_enc.GetSingle(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        If BePedidoEnc Is Nothing OrElse BePedidoEnc.Picking Is Nothing Then
+                            Throw New Exception("El pedido no tiene Picking asociado.")
+                        End If
+
+                        Enviado_A_Erp = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido,
+                                                                                   clsTrans.lConnection,
+                                                                                   clsTrans.lTransaction)
+
+                        If Enviado_A_Erp Then
+                            clsTrans.Commit_Transaction()
+                            clsPublic.Actualizar_Progreso(lblprg, $"ℹ️ La Factura de Deudor DocEntry {PT.No_pedido} ya estaba enviada a ERP.")
+                            Continue For
+                        End If
+
+                        vOperadorVerificoDefecto = clsLnTrans_picking_ubic.Get_Op_Verifico_Defecto_By_IdPickingEnc(BePedidoEnc.Picking.IdPickingEnc,
+                                                                                                                   clsTrans.lConnection,
+                                                                                                                   clsTrans.lTransaction)
+                        If String.IsNullOrWhiteSpace(vOperadorVerificoDefecto) Then
+                            vOperadorVerificoDefecto = ""
+                        End If
+
+                        Dim BeUsuario As clsBeUsuario = clsLnUsuario.GetSingle(IdUsuario,
+                                                                               clsTrans.lConnection,
+                                                                               clsTrans.lTransaction)
+                        If BeUsuario IsNot Nothing Then
+                            vUsuarioWMS = String.Format("{0} {1}", BeUsuario.Nombres, BeUsuario.Apellidos).Trim()
+                        End If
+
+                        Dim BeEmpresa As New clsBeEmpresa_transporte
+                        BeEmpresa.IdEmpresaTransporte = BePedidoEnc.IdEmpresaTransporte
+
+                        clsLnEmpresa_transporte.GetSingle(BeEmpresa, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        If BeEmpresa IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(BeEmpresa.Nombre) Then
+                            vEmpresaTransporte = BeEmpresa.Nombre
+                        End If
+
+                        clsLnTrans_picking_ubic.Get_Fechas_Picking(vFechaInicioPack, vFechaFinPack, BePedidoEnc.IdPedidoEnc,
+                                                                   clsTrans.lConnection, clsTrans.lTransaction)
+
+                        clsTrans.Commit_Transaction()
+
+                    Catch ex As Exception
+                        Try
+                            clsTrans.RollBack_Transaction()
+
+                        Catch
+                        End Try
+
+                        clsPublic.Actualizar_Progreso(lblprg, $"❌ Error leyendo datos de la factura de Deudor DocEntry {PT.No_pedido}: {ex.Message}")
+                        Continue For
+                    Finally
+                        If clsTrans.lConnection IsNot Nothing AndAlso clsTrans.lConnection.State = ConnectionState.Open Then
+                            clsTrans.Close_Conection()
+                        End If
+                    End Try
+
+                    If Not Enviado_A_Erp Then
+
+                        Try
+
+                            Dim dto As New UDF_FacturaDeudor With {
+                                    .U_USR_PACK = vOperadorVerificoDefecto,
+                                    .U_USR_ENVIO = vUsuarioWMS,
+                                    .U_OPERADOR_WMS = vUsuarioWMS,
+                                    .U_GUIA_TRANSPORTISTA = vEmpresaTransporte,
+                                    .U_ESTADO_GUIA = "8",
+                                    .U_DOCUMENTO_WMS = BePedidoEnc.IdPedidoEnc,
+                                    .U_INICIO_PACK = vFechaInicioPack,
+                                    .U_FIN_PACK = vFechaFinPack,
+                                    .U_INICIO_ENVIO = fechaEnvio.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                    .U_FIN_ENVIO = fechaEnvio.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                    .U_ENVIADO_WMS = 1,
+                                    .U_ENVIADO_SAP_WMS = BePedidoEnc.Fec_agr.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}
+
+                            Dim payloadStockTransfer = dto
+                            Dim json As String = JsonConvert.SerializeObject(payloadStockTransfer, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
+
+                            Dim resultado As Boolean = Await Enviar_UDF_Factura_Deudor_SLAsync(PT.No_pedido, json, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
+
+                            If resultado Then
+
+                                Dim clsTransUpd As New clsTransaccion()
+
+                                Try
+                                    clsTransUpd.Begin_Transaction()
+
+                                    clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                      True,
+                                                                                                      IdUsuario,
+                                                                                                      clsTransUpd.lConnection,
+                                                                                                      clsTransUpd.lTransaction)
+
+                                    clsTransUpd.Commit_Transaction()
+
+                                    clsPublic.Actualizar_Progreso(lblprg, $"✅ UDFs actualizados en la Factura de Deudor DocEntry {PT.No_pedido}, DocNum {BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino}")
+
+                                Catch ex2 As Exception
+                                    Try
+                                        clsTransUpd.RollBack_Transaction()
+                                    Catch
+                                    End Try
+
+                                    clsPublic.Actualizar_Progreso(lblprg, $"⚠ No se pudo marcar como enviada a ERP la Factura de Deudor DocEntry {PT.No_pedido}, DocNum {BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino}: {ex2.Message}")
+                                Finally
+                                    If clsTransUpd.lConnection IsNot Nothing AndAlso clsTransUpd.lConnection.State = ConnectionState.Open Then
+                                        clsTransUpd.Close_Conection()
+                                    End If
+                                End Try
+
+                            End If
+
+                        Catch ex As Exception
+                            clsPublic.Actualizar_Progreso(lblprg, $"❌ EXCEPCIÓN PATCH UDF Factura Deudor DocEntry {PT.No_pedido} DocNum {BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino} : {ex.Message}")
+                        End Try
+                        '' ====== FIN PATCH ======
+
+                    End If
+
+                Next
+
+            Else
+
+                clsPublic.Actualizar_Progreso(lblprg, "MSG_240117: No hay transacciones para enviar.")
+
+            End If
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            prg.Value = 0
+            prg.Visible = False
+        End Try
+
+    End Function
+
+    Private Shared Async Function Enviar_UDF_Factura_Deudor_SLAsync(docEntry As String,
+                                                                    payload As String,
+                                                                    sessionCookie As String,
+                                                                    baseUrl As String) As Task(Of Boolean)
+
+        Try
+            If String.IsNullOrWhiteSpace(docEntry) Then Return False
+
+            Dim requestUrl As String = $"Invoices({docEntry})"
+
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al actualizar Invoices. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
+        End Try
+
+    End Function
+
+End Class
+
+<Serializable>
+<JsonObject(MemberSerialization:=MemberSerialization.OptOut)>
+Public Class UDF_FacturaDeudor
+    <JsonProperty("U_USR_PACK", Order:=4)>
+    Public Property U_USR_PACK As String = ""
+    <JsonProperty("U_USR_ENVIO", Order:=5)>
+    Public Property U_USR_ENVIO As String = ""
+    <JsonProperty("U_OPERADOR_WMS", Order:=6)>
+    Public Property U_OPERADOR_WMS As String = ""
+    <JsonProperty("U_GUIA_TRANSPORTISTA", Order:=7)>
+    Public Property U_GUIA_TRANSPORTISTA As String = ""
+    <JsonProperty("U_ESTADO_GUIA", Order:=8)>
+    Public Property U_ESTADO_GUIA As String = ""
+    <JsonProperty("U_DOCUMENTO_WMS", Order:=9)>
+    Public Property U_DOCUMENTO_WMS As Integer = 0
+    <JsonProperty("U_INICIO_PACK", Order:=10)>
+    Public Property U_INICIO_PACK As DateTime = Now
+    <JsonProperty("U_FIN_PACK", Order:=11)>
+    Public Property U_FIN_PACK As DateTime = Now
+    <JsonProperty("U_INICIO_ENVIO", Order:=12)>
+    Public Property U_INICIO_ENVIO As DateTime = Now
+    <JsonProperty("U_FIN_ENVIO", Order:=13)>
+    Public Property U_FIN_ENVIO As DateTime = Now
+
+    <JsonProperty("U_ENVIADO_WMS", Order:=14)>
+    Public Property U_ENVIADO_WMS As Integer = 1
+
+    <JsonProperty("U_ENVIADO_SAP_WMS", Order:=15)>
+    Public Property U_ENVIADO_SAP_WMS As DateTime = Now
 
 End Class

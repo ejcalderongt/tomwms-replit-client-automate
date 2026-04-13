@@ -88,6 +88,7 @@ Partial Class frmAjusteStock_List
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.Editable = False
         Me.GridView1.OptionsFind.AlwaysVisible = True
+        Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
         '
         'Dgrid

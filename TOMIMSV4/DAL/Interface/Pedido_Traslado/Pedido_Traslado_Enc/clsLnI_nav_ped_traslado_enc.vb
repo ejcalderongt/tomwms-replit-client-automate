@@ -785,6 +785,77 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                                    lTransaction,
                                                                                                    lblprg)
 
+#Region "#CKFK20251208 Creación de picking, verificación y despacho automático"
+
+                    If BePedidoEnc IsNot Nothing Then
+
+                        BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
+                        '#EJC20251119: Terminar de afinar el método.
+
+                        If (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS AndAlso BePedidoEnc.Bodega_Destino = "") _
+                            OrElse (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa AndAlso BePedidoEnc.Bodega_Destino <> "") Then
+
+                            If Nuevo_Picking(BePedidoEnc, lConnection, lTransaction) Then
+
+                                Dim pListBePickingUbic As List(Of clsBeTrans_picking_ubic) =
+                                                              clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                                         BePedidoEnc.IdBodega,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
+
+                                BePedidoEnc.IdPickingEnc = pListBePickingUbic.Item(0).IdPickingEnc
+
+                                Dim BeListPickingDet As List(Of clsBeTrans_picking_det) =
+                                                            clsLnTrans_picking_det.Get_All_Picking_Det_By_IdPickingEnc(BePedidoEnc.IdPickingEnc,
+                                                                                                                       lConnection,
+                                                                                                                       lTransaction)
+
+                                Dim BePickingEnc As clsBeTrans_picking_enc = Nothing
+                                BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePedidoEnc.IdPickingEnc,
+                                                                            lConnection,
+                                                                            lTransaction)
+                                Dim pListBeStockRes As List(Of clsBeStock_res) =
+                                                            clsLnStock_res.Get_All_StockRes_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                           lConnection,
+                                                                                                           lTransaction)
+
+                                clsLnTrans_picking_ubic.Procesar_Picking_Desde_BOF(pListBePickingUbic,
+                                                                                       BePedidoEnc.User_agr,
+                                                                                       BeListPickingDet,
+                                                                                       BePickingEnc,
+                                                                                       pListBeStockRes,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+
+                                BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
+
+                                For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
+                                    BePedidoDet.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(BePedidoDet.IdPedidoDet,
+                                                                                                                                  BePedidoEnc.IdPedidoEnc,
+                                                                                                                                  lConnection,
+                                                                                                                                  lTransaction)
+                                Next
+
+                                If BePedidoEnc.IdTipoPedido <> clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor Then
+
+                                    clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
+                                                                                 BePedidoEnc,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+                                End If
+
+                                Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
+
+                            End If
+
+                        End If
+
+                    End If
+#End Region
+
                 End If
 
             End If

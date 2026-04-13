@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>76</ApplicationRevision>
+    <ApplicationRevision>98</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -324,6 +324,9 @@
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Base_Datos\frmBD.Designer.vb">
       <DependentUpon>frmBD.vb</DependentUpon>
     </Compile>
@@ -565,6 +568,9 @@
       <DependentUpon>frmPrincipal02.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
@@ -5450,6 +5456,16 @@
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
+    <PublishFile Include="System.ValueTuple">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
     <PublishFile Include="Tableros_Por_Defecto\Indicador_Ingresos.xml">
       <Visible>False</Visible>
       <Group>
@@ -5581,6 +5597,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="EPPlus">
+      <Version>8.5.1</Version>
+    </PackageReference>
     <PackageReference Include="ExcelNumberFormat">
       <Version>1.1.0</Version>
     </PackageReference>
@@ -5588,16 +5607,16 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>6.1.1</Version>
+      <Version>6.1.4</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>9.0.8</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>9.0.8</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.6.3</Version>
@@ -5606,7 +5625,7 @@
       <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.6.1</Version>
+      <Version>4.6.2</Version>
     </PackageReference>
     <PackageReference Include="Zebra.Printer.SDK">
       <Version>2.15.2634</Version>

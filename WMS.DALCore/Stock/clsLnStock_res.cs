@@ -1,6 +1,5 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Stock;
 using WMSWebAPI.Be;
@@ -1143,4 +1142,3 @@ public class clsLnStock_res
         }
     } 
 }
-
