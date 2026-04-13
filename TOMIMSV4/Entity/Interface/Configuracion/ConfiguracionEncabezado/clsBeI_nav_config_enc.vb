@@ -206,6 +206,7 @@ Public Class clsBeI_nav_config_enc
     Public Property Centro_Costo_Erp As Integer = 0
     Public Property Centro_Costo_Dir_Erp As Integer = 0
     Public Property Centro_Costo_Dep_Erp As Integer = 0
+    Public Property Requerir_Centro_Costo_Obligatorio As Boolean = False
 
     Sub New()
     End Sub

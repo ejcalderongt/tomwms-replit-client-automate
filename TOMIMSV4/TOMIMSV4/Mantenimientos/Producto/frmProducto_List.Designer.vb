@@ -49,6 +49,7 @@ Partial Class frmProductoList
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.Grd = New DevExpress.XtraGrid.GridControl()
         Me.GridView = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.mnuImagenesAWS = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Grd, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -57,14 +58,14 @@ Partial Class frmProductoList
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.cmdImprimir, Me.cmdImportarExcel, Me.BarButtonItem1, Me.lblRegs, Me.mnuEliminarLayoutGrid, Me.cmdImportarReabasto, Me.cmdImprimirCodigoBarra, Me.cmdPlantilla, Me.mnuActualizarControlVencimiento, Me.BarButtonItem2, Me.mnuImportarIndicesRotacion})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.cmdImprimir, Me.cmdImportarExcel, Me.BarButtonItem1, Me.lblRegs, Me.mnuEliminarLayoutGrid, Me.cmdImportarReabasto, Me.cmdImprimirCodigoBarra, Me.cmdPlantilla, Me.mnuActualizarControlVencimiento, Me.BarButtonItem2, Me.mnuImportarIndicesRotacion, Me.mnuImagenesAWS})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 17
+        Me.RibbonControl.MaxItemId = 18
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1472, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1580, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuNuevo
@@ -198,6 +199,7 @@ Partial Class frmProductoList
         Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem2)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuActualizarControlVencimiento)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImportarIndicesRotacion)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImagenesAWS)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RbgActivo
@@ -209,11 +211,11 @@ Partial Class frmProductoList
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.BarButtonItem1)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 673)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 679)
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1472, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1580, 30)
         '
         'Grd
         '
@@ -227,7 +229,7 @@ Partial Class frmProductoList
         Me.Grd.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Grd.MenuManager = Me.RibbonControl
         Me.Grd.Name = "Grd"
-        Me.Grd.Size = New System.Drawing.Size(1472, 480)
+        Me.Grd.Size = New System.Drawing.Size(1580, 486)
         Me.Grd.TabIndex = 0
         Me.Grd.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView})
         '
@@ -240,11 +242,18 @@ Partial Class frmProductoList
         Me.GridView.OptionsView.ColumnAutoWidth = False
         Me.GridView.OptionsView.ShowAutoFilterRow = True
         '
+        'mnuImagenesAWS
+        '
+        Me.mnuImagenesAWS.Caption = "Enviar imágenes a AWS"
+        Me.mnuImagenesAWS.Id = 17
+        Me.mnuImagenesAWS.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem3.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuImagenesAWS.Name = "mnuImagenesAWS"
+        '
         'frmProductoList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1472, 703)
+        Me.ClientSize = New System.Drawing.Size(1580, 709)
         Me.Controls.Add(Me.Grd)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
@@ -285,4 +294,5 @@ Partial Class frmProductoList
     Friend WithEvents mnuActualizarControlVencimiento As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents BarButtonItem2 As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuImportarIndicesRotacion As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuImagenesAWS As DevExpress.XtraBars.BarButtonItem
 End Class

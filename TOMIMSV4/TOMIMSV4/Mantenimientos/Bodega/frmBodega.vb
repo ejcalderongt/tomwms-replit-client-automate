@@ -1309,6 +1309,8 @@ Public Class frmBodega
             chkPermitirCambioUbicIndiceMenor.Checked = pBeBodega.permitir_cambio_ubic_indice_menor
             chkRequerirMismoProductoPosiciones.Checked = pBeBodega.requerir_mismo_producto_posiciones
 
+            chkBodegaClienteAjusteByB.Checked = pBeBodega.Bodega_Cliente_Ajuste_ByB
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -1564,9 +1566,7 @@ Public Class frmBodega
             pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
             pBeBodega.permitir_cambio_ubic_indice_menor = chkPermitirCambioUbicIndiceMenor.Checked
             pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
-
-            Guardar = clsLnBodega.Insertar(pBeBodega) > 0
-
+            pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1805,6 +1805,7 @@ Public Class frmBodega
                 Else
                     pBeBodega.Estado_Defecto_Rack = 0
                 End If
+                pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
 
                 pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
                 '#Nuevos parámetros cambio ubicación

@@ -1,5 +1,7 @@
 ﻿Imports DevExpress.XtraEditors
 Imports DevExpress.XtraSplashScreen
+Imports DocumentFormat.OpenXml.Drawing
+Imports Microsoft.Office.Interop.Excel
 
 Public Class frmDocSalidaRFID
 
@@ -34,10 +36,14 @@ Public Class frmDocSalidaRFID
             End Select
 
         Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message,
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
+        Finally
+            SplashScreenManager.CloseForm(False)
+            Focus()
         End Try
     End Sub
 

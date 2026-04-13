@@ -152,7 +152,6 @@ Public Class clsLnStock
 
             Upd.Init("stock")
             Upd.Add("idbodega", "@idbodega", DataType.Parametro)
-            Upd.Add("idstock", "@idstock", DataType.Parametro)
             Upd.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
             Upd.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
             Upd.Add("idproductoestado", "@idproductoestado", DataType.Parametro)

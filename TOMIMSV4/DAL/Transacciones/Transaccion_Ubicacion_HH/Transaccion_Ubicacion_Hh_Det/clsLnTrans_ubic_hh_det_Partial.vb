@@ -827,19 +827,10 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: " & pStockRes.IdUbicacion & " ubicacion anterior " & pStockRes.IdUbicacion_Anterior & "opoerador " & pMovimiento.IdOperadorBodega
-            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
-                                                  pUsrAgr:=pMovimiento.Usuario_agr,
-                                                  pIdTareaUbicacionEnc:=pIdMovimiento,
-                                                  pIdStock:=pStockRes.IdStock,
-                                                  pIdUMBAs:=pMovimiento.IdUnidadMedida,
-                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
-                                                  pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
-                                                  pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
-                                                  pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
-                                                  pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
-                                                  pCantidad:=pMovimiento.Cantidad,
-                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,pMovimiento.IdEmpresa,pMovimiento.Usuario_agr,pIdMovimiento,pStockRes.IdStock,
+                                                  pMovimiento.IdUnidadMedida,pMovimiento.IdPresentacion,pMovimiento.IdUbicacionOrigen,
+                                                  pMovimiento.IdUbicacionDestino,pMovimiento.IdEstadoOrigen,pMovimiento.IdEstadoDestino,
+                                                  pMovimiento.Cantidad,pMovimiento.IdOperadorBodega,
                                                   pTransaction:=lTransaction,
                                                   pConection:=lConnection)
 
@@ -854,9 +845,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
             End If
 
             vCantidadPendiente = pStockRes.CantidadUmBas
-
-
-
 
             If Not ListaStock Is Nothing Then
 

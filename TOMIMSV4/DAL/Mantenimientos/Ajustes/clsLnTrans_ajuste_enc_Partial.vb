@@ -161,7 +161,6 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Sub
 
-
     Public Shared Sub Actualizar_Ajuste(ByVal lDet As List(Of clsBeTrans_ajuste_det),
                                         ByVal lMovs As List(Of clsBeTrans_movimientos),
                                         ByVal pIdEmpresa As Integer,

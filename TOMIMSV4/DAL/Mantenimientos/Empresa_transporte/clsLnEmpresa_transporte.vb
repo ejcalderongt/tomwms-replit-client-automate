@@ -388,4 +388,35 @@ Public Class clsLnEmpresa_transporte
 
     End Function
 
+    Public Shared Sub GetSingle(ByRef pBeEmpresa_transporte As clsBeEmpresa_transporte,
+                                ByVal pConnection As SqlConnection,
+                                ByVal pTransaction As SqlTransaction)
+
+        Try
+
+            Const sp As String = "SELECT * FROM Empresa_transporte" &
+                                 " Where(IdEmpresaTransporte = @IdEmpresaTransporte)"
+
+            Dim cmd As New SqlCommand(sp, pConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDEMPRESATRANSPORTE", pBeEmpresa_transporte.IdEmpresaTransporte))
+            dad.SelectCommand.Transaction = pTransaction
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Cargar(pBeEmpresa_transporte, dt.Rows(0))
+            End If
+
+        Catch ex1 As SqlException
+            Throw ex1
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Sub
+
 End Class

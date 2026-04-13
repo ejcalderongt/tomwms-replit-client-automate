@@ -562,6 +562,16 @@ Public Class frmPicking
 
         Try
 
+            Dim vAsignarTodos As Boolean = False
+
+            If pListaPedidos IsNot Nothing AndAlso pListaPedidos.Count > 0 Then
+                Dim tmpPedidoEnc = pListaPedidos.FirstOrDefault()
+                Dim pPedido = clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(tmpPedidoEnc)
+
+                vAsignarTodos = pPedido.TipoPedido.Asignar_Todos_Operadores
+
+            End If
+
             DsOrdenCompraRecepcionOperador.Clear()
 
             DTOperadores = clsLnOperador_bodega.Get_All_By_IdBodega_For_Tarea_DT(cmbBodegas.EditValue,
@@ -573,7 +583,7 @@ Public Class frmPicking
                 BeListOp = New List(Of clsBeTrans_picking_op)
             End If
 
-            Listar_Operadores()
+            Listar_Operadores(vAsignarTodos)
 
         Catch ex As Exception
 
@@ -602,7 +612,7 @@ Public Class frmPicking
     Private Sub Listar_Operadores(Optional pSeleccionarTodos As Boolean = True,
                                   Optional PresionoBotonNinguno As Boolean = False)
 
-        Dim SeleccionarTodos As Boolean = False
+        Dim SeleccionarTodos As Boolean = pSeleccionarTodos
 
         Try
 
@@ -723,6 +733,7 @@ Public Class frmPicking
                 Next
 
             Else
+
                 XtraMessageBox.Show("ERROR_CONFIG_20220708: Al parecer no hay operadores configurados para tareas de picking, marque en mantenimiento de operadores la opción de Picking para los operadores que corresponden.",
                 Text,
                 MessageBoxButtons.OK,
@@ -739,7 +750,6 @@ Public Class frmPicking
                 RemoveHandler ritem.CheckedChanged, AddressOf ritem_CheckedChanged
                 AddHandler ritem.CheckedChanged, AddressOf ritem_CheckedChanged
             End If
-
 
             If DgridOperadorBodega.RowCount > 0 Then
                 lblRegs1.Caption = String.Format("Registros: {0}", DgridOperadorBodega.RowCount)
@@ -3383,12 +3393,14 @@ Public Class frmPicking
 
                     '#GT30042025: infiero que desde un pedido la lista solo maneja un registro
                     If pListaPedidos IsNot Nothing AndAlso pListaPedidos.Count > 0 Then
+
                         Dim tmpPedidoEnc = pListaPedidos.FirstOrDefault()
                         Dim pPedido = clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(tmpPedidoEnc)
 
                         If pPedido IsNot Nothing AndAlso pPedido.IdMuelle > 0 Then
                             cmbMuelle.EditValue = pPedido.IdMuelle
                         End If
+
                     End If
 
                 Case TipoTrans.Editar
