@@ -1067,4 +1067,171 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
+    '#GT18032026: retonar el objeto barra_pallet a la HH para el proceso de RFID
+    Public Shared Function Get_Single_By_Barra_RFID(ByVal pListaCodigoBarraPallet As List(Of String)) As List(Of clsBeI_nav_barras_pallet)
+
+        Get_Single_By_Barra_RFID = New List(Of clsBeI_nav_barras_pallet)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Const sp As String = "SELECT * FROM I_nav_barras_pallet Where(codigo_barra = @codigo_barra) "
+
+            For Each pCodigoBarraPallet As String In pListaCodigoBarraPallet
+
+                Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                Dim dad As New SqlDataAdapter(cmd)
+                Dim pBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+                dad.SelectCommand.Parameters.Add(New SqlParameter("@CODIGO_BARRA", pCodigoBarraPallet))
+
+                Dim dt As New DataTable
+                dad.Fill(dt)
+
+                If dt.Rows.Count = 1 Then
+                    Cargar(pBeI_nav_barras_pallet, dt.Rows(0))
+                    pBeI_nav_barras_pallet.Activo = True
+                Else
+                    pBeI_nav_barras_pallet.Codigo_barra = pCodigoBarraPallet
+                    pBeI_nav_barras_pallet.Activo = False
+                End If
+
+                Get_Single_By_Barra_RFID.Add(pBeI_nav_barras_pallet)
+
+            Next
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_CodigoProducto_By_Barra_EPC(ByVal pBarra_Epc As String,
+                                                           ByRef lConnection As SqlConnection,
+                                                           ByRef lTransaction As SqlTransaction) As String
+
+
+        Get_CodigoProducto_By_Barra_EPC = ""
+
+        Try
+
+            Const sp As String = "select Codigo from i_nav_barras_pallet where Codigo_Barra=@pBarra_epc "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pBarra_epc", pBarra_Epc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_CodigoProducto_By_Barra_EPC = dt.Rows(0)("Codigo").ToString()
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    '#GT09042026: el tag no debe tener una salida previa.
+    Public Shared Function Obtener_EPC_Con_Existencia_Para_Salida(ByVal pListaCodigoBarraPallet As List(Of String)) As List(Of clsBeI_nav_barras_pallet)
+
+        Obtener_EPC_Con_Existencia_Para_Salida = New List(Of clsBeI_nav_barras_pallet)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Const spActivo As String =
+                "SELECT p.* " &
+                "FROM I_nav_barras_pallet p " &
+                "WHERE p.codigo_barra = @codigo_barra " &
+                "AND EXISTS ( " &
+                "    SELECT 1 " &
+                "    FROM i_nav_barras_rfid_det d " &
+                "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+                "    WHERE d.Barra_epc = p.codigo_barra " &
+                "      AND e.Tipo = 'ING' " &
+                ") " &
+                "AND NOT EXISTS ( " &
+                "    SELECT 1 " &
+                "    FROM i_nav_barras_rfid_det d " &
+                "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+                "    WHERE d.Barra_epc = p.codigo_barra " &
+                "      AND e.Tipo = 'SAL' " &
+                ")"
+
+            Const spYaSalio As String =
+                "SELECT TOP 1 1 " &
+                "FROM I_nav_barras_pallet p " &
+                "INNER JOIN i_nav_barras_rfid_det d ON d.Barra_epc = p.codigo_barra " &
+                "INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+                "WHERE p.codigo_barra = @codigo_barra " &
+                "  AND e.Tipo = 'SAL' "
+
+            For Each pCodigoBarraPallet As String In pListaCodigoBarraPallet
+
+                Dim pBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet()
+
+                Dim cmd As New SqlCommand(spActivo, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                Dim dad As New SqlDataAdapter(cmd)
+                dad.SelectCommand.Parameters.Add(New SqlParameter("@CODIGO_BARRA", pCodigoBarraPallet))
+
+                Dim dt As New DataTable
+                dad.Fill(dt)
+
+                If dt.Rows.Count = 1 Then
+                    Cargar(pBeI_nav_barras_pallet, dt.Rows(0))
+                    pBeI_nav_barras_pallet.Activo = True
+                    pBeI_nav_barras_pallet.Recibido = False
+                Else
+                    pBeI_nav_barras_pallet.Codigo_barra = pCodigoBarraPallet
+                    pBeI_nav_barras_pallet.Activo = False
+
+                    Dim cmdYaSalio As New SqlCommand(spYaSalio, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    cmdYaSalio.Parameters.Add(New SqlParameter("@CODIGO_BARRA", pCodigoBarraPallet))
+
+                    Dim existeSalidaPrevia As Object = cmdYaSalio.ExecuteScalar()
+
+                    If Not existeSalidaPrevia Is Nothing Then
+                        pBeI_nav_barras_pallet.Recibido = True
+                    Else
+                        pBeI_nav_barras_pallet.Recibido = False
+                    End If
+                End If
+
+                Obtener_EPC_Con_Existencia_Para_Salida.Add(pBeI_nav_barras_pallet)
+
+            Next
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
 End Class

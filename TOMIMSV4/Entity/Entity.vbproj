@@ -686,7 +686,9 @@
     <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsBeTrans_re_tr.vb" />
     <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsBeTrans_re_tr_partial.vb" />
     <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_det.vb" />
+    <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_det_Partial.vb" />
     <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_enc.vb" />
+    <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_enc_Partial.vb" />
     <Compile Include="Transacciones\Servicios\clsBeTrans_servicio_det.vb" />
     <Compile Include="Transacciones\Servicios\clsBeTrans_servicio_enc.vb" />
     <Compile Include="Transacciones\Servicios\clsBe_Servicio.vb" />

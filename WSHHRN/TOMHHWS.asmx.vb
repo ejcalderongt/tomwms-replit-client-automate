@@ -11892,6 +11892,7 @@ Public Class TOMHHWS
         End Try
 
     End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function ml_get_ubicacion_sugerida(ByVal pIdProducto As Integer,
                                               ByVal pIdBodega As Integer,
@@ -18900,5 +18901,215 @@ New JsonSerializerSettings With {
             End If
         End Try
     End Function
+
+    '#GT18032026: validar que tag exista en BD
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Obtener_Barras_Pallet_I_Nav_Lote(ByVal pListaCodigoBarraPallet As List(Of String)) As String
+
+        Try
+
+            Dim vLista As New List(Of clsBeI_nav_barras_pallet)
+            vLista = clsLnI_nav_barras_pallet.Get_Single_By_Barra_RFID(pListaCodigoBarraPallet)
+
+            Return JsonConvert.SerializeObject(vLista)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim js As New JavaScriptSerializer()
+                    Dim vError = New With {.Error = Mensaje}
+
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 500
+                    HttpContext.Current.Response.ContentType = "application/json; charset=utf-8"
+                    HttpContext.Current.Response.Write(js.Serialize(vError))
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                    Return Nothing
+                End If
+
+            End If
+
+            Throw New Exception(Mensaje)
+
+        End Try
+
+    End Function
+
+    '#GT19032026: generar encabezado para tags en HH
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Guardar_Encabezado_RFID(ByVal pEncabezado As clsBeI_nav_barras_rfid_enc) As clsBeI_nav_barras_rfid_enc
+        Guardar_Encabezado_RFID = Nothing
+
+        Try
+
+            Guardar_Encabezado_RFID = clsLnI_nav_barras_rfid_enc.Guardar_Encabezado_Con_Primer_Detalle(pEncabezado)
+
+            Return Guardar_Encabezado_RFID
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#GT26032026: guardar detalle de tags 
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Agregar_Detalle_A_Encabezado_RFID(ByVal pEncabezado As clsBeI_nav_barras_rfid_enc) As Boolean
+        Agregar_Detalle_A_Encabezado_RFID = False
+        Try
+
+            Agregar_Detalle_A_Encabezado_RFID = clsLnI_nav_barras_rfid_enc.Agregar_Detalle_A_Encabezado_RFID(pEncabezado)
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+        End Try
+    End Function
+
+    '#GT07042026: cargar stock para la HH
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer) As List(Of clsBeI_nav_barras_rfid_enc)
+
+        Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
+
+        Try
+
+            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 500
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#GT18032026: validar tag con existencia
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Obtener_EPC_Con_Existencia_Para_Salida(ByVal pListaCodigoBarraPallet As List(Of String)) As String
+        Try
+
+            Dim vLista As New List(Of clsBeI_nav_barras_pallet)
+            vLista = clsLnI_nav_barras_pallet.Obtener_EPC_Con_Existencia_Para_Salida(pListaCodigoBarraPallet)
+
+            Return JsonConvert.SerializeObject(vLista)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim js As New JavaScriptSerializer()
+                    Dim vError = New With {.Error = Mensaje}
+
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 500
+                    HttpContext.Current.Response.ContentType = "application/json; charset=utf-8"
+                    HttpContext.Current.Response.Write(js.Serialize(vError))
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                    Return Nothing
+                End If
+
+            End If
+
+            Throw New Exception(Mensaje)
+        End Try
+    End Function
+
 
 End Class

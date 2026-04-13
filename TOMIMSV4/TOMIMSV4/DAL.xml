@@ -904,6 +904,7 @@ Row event argument class
 <member name="M:TOMWMS.clsLnProducto.Guardar_Transaccion(System.Collections.Generic.List{TOMWMS.clsBeProducto}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>
  Creado por Ricardo García
+ Update GT30032026 mostrar que producto esta dando la excepcion
  </summary>
  <param name="pListObjP"></param>
  <remarks></remarks>
