@@ -1162,7 +1162,7 @@ Public Class frmCargaExcel_DI
                                 Else
 
                                     ObjUM = New clsBeUnidad_medida
-                                    ObjUM.IdUnidadMedida = clsLnUnidad_medida.MaxID(lConnection, lTransaction) + Contador
+                                    ObjUM.IdUnidadMedida = clsLnUnidad_medida.MaxID(lConnection, lTransaction) + 1
                                     ObjUM.Nombre = vUnidadMedidaBasica
                                     ObjUM.Codigo = vUnidadMedidaBasica
                                     ObjUM.Activo = 1

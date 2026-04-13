@@ -1258,11 +1258,12 @@ Public Class frmCargaExcel
                     'GT11082022_1530: validar CLASIFICACION por Id o por descripcion
                     If pDT(i)(2) IsNot DBNull.Value AndAlso pDT(i)(2) IsNot Nothing Then
                         If IsNumeric(pDT(i)(2)) Then
+
                             If clsLnProducto_clasificacion.Exists_By_IdClasificacion_By_IdPropietario(pDT(i)(2), BeProducto.IdPropietario, lConnection, lTransaction) Then
                                 BeProducto.IdClasificacion = CInt(pDT(Indice)(2))
                             Else
                                 'error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "AVISO_20240724: " & " La clasificación por ID no existe en WMS, Fila: " & i + 1 & " Se intentará por descripción")
+                                clsPublic.Actualizar_Progreso(lblPrg, "La clasificación por ID no existe en WMS, Fila: " & i + 1 & " Se intentará por descripción")
 
                                 '#GT11102023: se intenta busqueda tomando el valor como cadena
                                 Dim pNombreClasificacion = CStr(pDT(Indice)(2))
@@ -1279,7 +1280,7 @@ Public Class frmCargaExcel
 
                                     Else
 
-                                        clsPublic.Actualizar_Progreso(lblPrg, "AVISO_20240724: " & " La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
+                                        clsPublic.Actualizar_Progreso(lblPrg, "La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
 
                                         '#GT21062023: sino existe la clasificación por descripción la insertamos
                                         Dim pClasificacion As New clsBeProducto_clasificacion
@@ -1320,7 +1321,7 @@ Public Class frmCargaExcel
                                     BeProducto.IdClasificacion = pProdClasificacion.IdClasificacion
                                 Else
 
-                                    clsPublic.Actualizar_Progreso(lblPrg, "AVISO_20240724: " & " La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
+                                    clsPublic.Actualizar_Progreso(lblPrg, "La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
 
                                     '#GT21062023: sino existe la clasificación por descripción la insertamos
                                     Dim pClasificacion As New clsBeProducto_clasificacion
@@ -1434,6 +1435,7 @@ Public Class frmCargaExcel
 
                                     BeProducto.Marca = New clsBeProducto_marca
                                     pMarca.IdMarca = clsLnProducto_marca.MaxID(lConnection, lTransaction)
+                                    pMarca.Codigo = pMarca.IdMarca
                                     pMarca.IdPropietario = BeProducto.IdPropietario
                                     pMarca.Nombre = pNombreMarca.Trim
                                     pMarca.Activo = True
@@ -1512,6 +1514,10 @@ Public Class frmCargaExcel
 
 
                     If pDT(i)(6) IsNot DBNull.Value AndAlso pDT(i)(6) IsNot Nothing Then
+
+
+                        BeProducto.UnidadMedida = New clsBeUnidad_medida
+
                         If IsNumeric(pDT(i)(6)) Then
                             If clsLnUnidad_medida.Exists(pDT(i)(6), lConnection, lTransaction) Then
                                 BeProducto.IdUnidadMedidaBasica = CInt(pDT(Indice)(6))
@@ -1520,18 +1526,41 @@ Public Class frmCargaExcel
                                 clsPublic.Actualizar_Progreso(lblPrg, "Error: " & " La unidad de medida por ID, no existe en WMS. Fila" & i + 1)
                             End If
                         Else
+
                             Dim pNombreUmbas = CStr(pDT(i)(6))
-                            Dim pUmbas As clsBeUnidad_medida = clsLnUnidad_medida.Existe_By_Nombre_By_IdPropietario(pNombreUmbas.Trim,
+
+                            'Crear unidad de medida
+                            Dim vUnidadMedidaBasica = clsPublic.Quitar_Caracteres_No_Permitidos(pNombreUmbas.Trim)
+                            Dim pUmbas As clsBeUnidad_medida = clsLnUnidad_medida.Existe_By_Nombre_By_IdPropietario(vUnidadMedidaBasica.Trim,
                                                                                                                     BeProducto.IdPropietario,
                                                                                                                     lConnection,
                                                                                                                     lTransaction)
                             If Not pUmbas Is Nothing Then
-                                BeProducto.UnidadMedida = New clsBeUnidad_medida
+
                                 BeProducto.UnidadMedida.IdUnidadMedida = pUmbas.IdUnidadMedida
                                 BeProducto.IdUnidadMedidaBasica = pUmbas.IdUnidadMedida
                             Else
-                                error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "Error: " & " La unidad de medida no existe en WMS. Fila" & i + 1)
+
+                                clsPublic.Actualizar_Progreso(lblPrg, "Aviso: " & " La Familia no existe en WMS, se insertará desde la fila: " & i + 1)
+
+                                Dim ObjUM = New clsBeUnidad_medida
+                                ObjUM.IdUnidadMedida = clsLnUnidad_medida.MaxID(lConnection, lTransaction) + 1
+                                ObjUM.Nombre = vUnidadMedidaBasica
+                                ObjUM.Codigo = vUnidadMedidaBasica
+                                ObjUM.Activo = 1
+                                ObjUM.IdPropietario = BeProducto.IdPropietario
+                                ObjUM.IsNew = True
+                                ObjUM.User_agr = AP.UsuarioAp.IdUsuario
+                                ObjUM.User_mod = AP.UsuarioAp.IdUsuario
+                                ObjUM.Fec_agr = Now
+                                ObjUM.Fec_mod = Now
+
+                                clsLnUnidad_medida.InsertarFromInterface(ObjUM, lConnection, lTransaction)
+
+                                BeProducto.UnidadMedida.IdUnidadMedida = ObjUM.IdUnidadMedida
+                                BeProducto.IdUnidadMedidaBasica = ObjUM.IdUnidadMedida
+
+
                             End If
                         End If
                     End If
@@ -1564,18 +1593,28 @@ Public Class frmCargaExcel
                         End If
                     End If
 
+                    '#GT30032026: nombre del producto
                     If pDT(i)(14) Is DBNull.Value AndAlso pDT(i)(14) Is Nothing Then
                         error_producto = True
                         clsPublic.Actualizar_Progreso(lblPrg, "Error: Falta Nombre del producto. Fila " & i + 1)
                     Else
 
-                        Dim tam_nombre = CStr(pDT(i)(14))
-                        If tam_nombre.Length > 100 Then
-                            error_producto = True
-                            clsPublic.Actualizar_Progreso(lblPrg, "Error: El Nombre excede el tamaño permitido. Fila " & i + 1)
+                        Dim tam_nombre As String = CStr(pDT(i)(14))
+
+                        If tam_nombre.Length > 200 Then
+                            BeProducto.Nombre = tam_nombre.Substring(0, 200)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Aviso: El Nombre excedía el tamaño permitido, fue recortado a 200 caracteres. Fila " & (i + 1))
                         Else
-                            BeProducto.Nombre = CStr(pDT(i)(14))
+                            BeProducto.Nombre = tam_nombre
                         End If
+
+                        'Dim tam_nombre = CStr(pDT(i)(14))
+                        'If tam_nombre.Length > 200 Then
+                        '    error_producto = True
+                        '    clsPublic.Actualizar_Progreso(lblPrg, "Error: El Nombre excede el tamaño permitido. Fila " & i + 1)
+                        'Else
+                        '    BeProducto.Nombre = CStr(pDT(i)(14))
+                        'End If
                     End If
 
                     If pDT(i)(15) Is DBNull.Value Then
@@ -1791,15 +1830,20 @@ Public Class frmCargaExcel
                     If pDT(i)(53) IsNot DBNull.Value AndAlso pDT(i)(53) IsNot Nothing Then
                         If IsNumeric(pDT(i)(53)) Then
 
-                            If clsLnProducto_parametro_a.Existe_Parametro_By_Id(pDT(i)(53),
+                            Dim pParametroAnumerico = CInt(pDT(i)(53))
+
+                            '#GT30032026: si es 0, no se debe validar, porque no se maneja el parametro
+                            If pParametroAnumerico > 0 Then
+                                If clsLnProducto_parametro_a.Existe_Parametro_By_Id(pParametroAnumerico,
                                                                                 lConnection,
                                                                                 lTransaction) Then
-                                BeProducto.IdProductoParametroA = CInt(pDT(i)(53))
-                            Else
-                                'Throw New Exception("El parámetro A: " & pDT(i)(53).ToString() & " no existe en WMS. Fila " & i + 1)
-                                error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro A: " & pDT(i)(53).ToString() & " no existe en WMS. Fila " & i + 1)
+                                    BeProducto.IdProductoParametroA = pParametroAnumerico
+                                Else
+                                    error_producto = True
+                                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro A: " & pDT(i)(53).ToString() & " no existe en WMS. Fila " & i + 1)
+                                End If
                             End If
+
                         Else
                             Dim pProdParametroA = CStr(pDT(i)(53))
                             Dim pParametroA As clsBeProducto_parametro_a = clsLnProducto_parametro_a.GetSingle_By_Name(pProdParametroA.Trim,
@@ -1809,7 +1853,7 @@ Public Class frmCargaExcel
                             If Not pParametroA Is Nothing Then
                                 BeProducto.IdProductoParametroA = pParametroA.IdProductoParametroA
                             Else
-                                'Throw New Exception("El parámetro A: " & pProdParametroA & " no existe en WMS. Fila " & i + 1)
+
                                 error_producto = True
                                 clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro A: " & pProdParametroA & " no existe en WMS. Fila " & i + 1)
                             End If
@@ -1821,15 +1865,25 @@ Public Class frmCargaExcel
                     If pDT(i)(54) IsNot DBNull.Value AndAlso pDT(i)(54) IsNot Nothing Then
                         If IsNumeric(pDT(i)(54)) Then
 
-                            If clsLnProducto_parametro_b.Existe_Parametro_By_Id(pDT(i)(54),
+                            Dim pParametroAnumerico = CInt(pDT(i)(54))
+
+                            '#GT30032026: si es 0, no se debe validar, porque no se maneja el parametro
+                            If pParametroAnumerico > 0 Then
+
+                                If clsLnProducto_parametro_b.Existe_Parametro_By_Id(pParametroAnumerico,
                                                                                 lConnection,
                                                                                 lTransaction) Then
-                                BeProducto.IdProductoParametroB = CInt(pDT(i)(54))
-                            Else
-                                error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro B: " & pDT(i)(54).ToString() & " no esta registrado en WMS. Fila " & i + 1)
+                                    BeProducto.IdProductoParametroB = pParametroAnumerico
+                                Else
+                                    error_producto = True
+                                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro B: " & pParametroAnumerico.ToString() & " no esta registrado en WMS. Fila " & i + 1)
+                                End If
+
                             End If
+
+
                         Else
+
                             Dim pProdParametroB = CStr(pDT(i)(54))
                             Dim pParametroB As clsBeProducto_parametro_b = clsLnProducto_parametro_b.GetSingle_By_Name(pProdParametroB.Trim,
                                                                                                                        lConnection,
@@ -1841,6 +1895,7 @@ Public Class frmCargaExcel
                                 error_producto = True
                                 clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro B: " & pProdParametroB & " no esta registrado en WMS. Fila " & i + 1)
                             End If
+
                         End If
                     End If
 
