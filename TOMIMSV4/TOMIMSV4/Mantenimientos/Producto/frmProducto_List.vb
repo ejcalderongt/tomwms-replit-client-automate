@@ -1,6 +1,8 @@
 ﻿Imports System.Drawing.Printing
 Imports System.IO
+Imports System.Net.Http
 Imports System.Reflection
+Imports System.Text
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports DevExpress.Data
@@ -10,6 +12,7 @@ Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
+Imports Newtonsoft.Json
 
 Public Class frmProductoList
 
@@ -1233,6 +1236,113 @@ Public Class frmProductoList
         End Try
 
     End Sub
+
+
+    Public Class CatalogUploadRequest
+        Public Property product_id As String
+        Public Property marca As String
+        Public Property familia As String
+        Public Property clasificacion As String
+        Public Property tipo_producto As String
+        Public Property filename As String
+        Public Property image_base64 As String
+    End Class
+
+    Public Class CatalogUploadResponse
+        Public Property message As String
+        Public Property bucket As String
+        Public Property key As String
+        Public Property product_id As String
+        Public Property environment As String
+        Public Property [error] As String
+    End Class
+
+    Private Function BuscarImagenLocalPorCodigo(codigoSKU As String, vRutaCDN As String) As String
+        Try
+            Dim productoBase As String = codigoSKU
+            Dim talla As String = ""
+            Dim color As String = ""
+
+            If codigoSKU.Length >= 13 Then
+                productoBase = codigoSKU.Substring(0, 10)
+                talla = codigoSKU.Substring(10, 3)
+                If codigoSKU.Length > 13 Then
+                    color = codigoSKU.Substring(13)
+                End If
+            ElseIf codigoSKU.Length >= 10 Then
+                productoBase = codigoSKU.Substring(0, 10)
+            End If
+
+            Dim patrones As New List(Of String)
+
+            If talla <> "" AndAlso color <> "" Then
+                patrones.Add("._" & productoBase & "-" & talla & "-" & color & "*.png")
+                patrones.Add(productoBase & "-" & talla & "-" & color & "*.png")
+            End If
+
+            If talla <> "" Then
+                patrones.Add("._" & productoBase & "-" & talla & "*.png")
+                patrones.Add(productoBase & "-" & talla & "*.png")
+            End If
+
+            patrones.Add("._" & productoBase & "*.png")
+            patrones.Add(productoBase & "*.png")
+
+            For Each patron In patrones
+                Dim archivos() As String = Directory.GetFiles(vRutaCDN, patron)
+                If archivos IsNot Nothing AndAlso archivos.Length > 0 Then
+                    Return archivos(0)
+                End If
+            Next
+
+            Return Nothing
+
+        Catch
+            Return Nothing
+        End Try
+    End Function
+
+    Private Function ImagenAStringBase64(rutaArchivo As String) As String
+        Dim bytes As Byte() = File.ReadAllBytes(rutaArchivo)
+        Return Convert.ToBase64String(bytes)
+    End Function
+
+    Private Async Function EnviarProductoCatalogoAWSAsync(
+    apiUrl As String,
+    codigo As String,
+    marca As String,
+    familia As String,
+    clasificacion As String,
+    tipoProducto As String,
+    rutaImagen As String) As Task(Of CatalogUploadResponse)
+
+        Dim payload As New CatalogUploadRequest With {
+            .product_id = codigo.Trim(),
+            .marca = If(marca, "").Trim(),
+            .familia = If(familia, "").Trim(),
+            .clasificacion = If(clasificacion, "").Trim(),
+            .tipo_producto = If(tipoProducto, "").Trim(),
+            .filename = Path.GetFileName(rutaImagen),
+            .image_base64 = ImagenAStringBase64(rutaImagen)
+        }
+
+        Dim json As String = JsonConvert.SerializeObject(payload)
+        Using client As New HttpClient()
+            client.Timeout = TimeSpan.FromMinutes(3)
+
+            Dim content As New StringContent(json, Encoding.UTF8, "application/json")
+            Dim response = Await client.PostAsync(apiUrl, content)
+            Dim responseBody As String = Await response.Content.ReadAsStringAsync()
+
+            If response.IsSuccessStatusCode Then
+                Return JsonConvert.DeserializeObject(Of CatalogUploadResponse)(responseBody)
+            Else
+                Dim err As New CatalogUploadResponse
+                err.error = String.Format("HTTP {0}: {1}", CInt(response.StatusCode), responseBody)
+                Return err
+            End If
+        End Using
+    End Function
 
 
 End Class

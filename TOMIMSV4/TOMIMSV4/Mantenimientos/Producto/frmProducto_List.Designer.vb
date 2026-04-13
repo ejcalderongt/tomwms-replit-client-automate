@@ -41,14 +41,14 @@ Partial Class frmProductoList
         Me.cmdImprimirCodigoBarra = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdPlantilla = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizarControlVencimiento = New DevExpress.XtraBars.BarButtonItem()
+        Me.BarButtonItem2 = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuImportarIndicesRotacion = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RbgActivo = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.Grd = New DevExpress.XtraGrid.GridControl()
         Me.GridView = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.BarButtonItem2 = New DevExpress.XtraBars.BarButtonItem()
-        Me.mnuImportarIndicesRotacion = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Grd, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -64,7 +64,7 @@ Partial Class frmProductoList
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1024, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1472, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuNuevo
@@ -156,13 +156,27 @@ Partial Class frmProductoList
         Me.cmdPlantilla.ImageOptions.SvgImage = CType(resources.GetObject("cmdPlantilla.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdPlantilla.Name = "cmdPlantilla"
         '
-        'mnuActualizarControlLote
+        'mnuActualizarControlVencimiento
         '
         Me.mnuActualizarControlVencimiento.Caption = "Actualizar control lote"
         Me.mnuActualizarControlVencimiento.Id = 14
-        Me.mnuActualizarControlVencimiento.ImageOptions.SvgImage = CType(resources.GetObject("mnuActualizarControlLote.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuActualizarControlVencimiento.Name = "mnuActualizarControlLote"
+        Me.mnuActualizarControlVencimiento.ImageOptions.SvgImage = CType(resources.GetObject("mnuActualizarControlVencimiento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuActualizarControlVencimiento.Name = "mnuActualizarControlVencimiento"
         Me.mnuActualizarControlVencimiento.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
+        '
+        'BarButtonItem2
+        '
+        Me.BarButtonItem2.Caption = "Plantilla indices de rotación"
+        Me.BarButtonItem2.Id = 15
+        Me.BarButtonItem2.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem2.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.BarButtonItem2.Name = "BarButtonItem2"
+        '
+        'mnuImportarIndicesRotacion
+        '
+        Me.mnuImportarIndicesRotacion.Caption = "Importar indices de rotación"
+        Me.mnuImportarIndicesRotacion.Id = 16
+        Me.mnuImportarIndicesRotacion.ImageOptions.SvgImage = CType(resources.GetObject("mnuImportarIndicesRotacion.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuImportarIndicesRotacion.Name = "mnuImportarIndicesRotacion"
         '
         'RibbonPage1
         '
@@ -195,11 +209,11 @@ Partial Class frmProductoList
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.BarButtonItem1)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 599)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 673)
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1024, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1472, 30)
         '
         'Grd
         '
@@ -213,7 +227,7 @@ Partial Class frmProductoList
         Me.Grd.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Grd.MenuManager = Me.RibbonControl
         Me.Grd.Name = "Grd"
-        Me.Grd.Size = New System.Drawing.Size(1024, 406)
+        Me.Grd.Size = New System.Drawing.Size(1472, 480)
         Me.Grd.TabIndex = 0
         Me.Grd.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView})
         '
@@ -226,25 +240,11 @@ Partial Class frmProductoList
         Me.GridView.OptionsView.ColumnAutoWidth = False
         Me.GridView.OptionsView.ShowAutoFilterRow = True
         '
-        'BarButtonItem2
-        '
-        Me.BarButtonItem2.Caption = "Plantilla indices de rotación"
-        Me.BarButtonItem2.Id = 15
-        Me.BarButtonItem2.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem2.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.BarButtonItem2.Name = "BarButtonItem2"
-        '
-        'mnuImportarIndicesRotacion
-        '
-        Me.mnuImportarIndicesRotacion.Caption = "Importar indices de rotación"
-        Me.mnuImportarIndicesRotacion.Id = 16
-        Me.mnuImportarIndicesRotacion.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem3.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuImportarIndicesRotacion.Name = "mnuImportarIndicesRotacion"
-        '
         'frmProductoList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1024, 629)
+        Me.ClientSize = New System.Drawing.Size(1472, 703)
         Me.Controls.Add(Me.Grd)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
