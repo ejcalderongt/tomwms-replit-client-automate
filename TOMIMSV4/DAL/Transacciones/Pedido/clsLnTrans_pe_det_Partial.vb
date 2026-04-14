@@ -4232,7 +4232,8 @@ Partial Public Class clsLnTrans_pe_det
         Try
 
 
-            vSQL = "SELECT b.nombre AS Bodega, c.nombre_comercial AS Cliente, p.nombre_comercial AS Propietario, enc.fecha_pedido AS 'Fecha Pedido', det.*, pb.IdProducto " &
+            vSQL = "SELECT b.nombre AS Bodega, c.nombre_comercial AS Cliente, p.nombre_comercial AS Propietario, 
+                           enc.fecha_pedido AS 'Fecha Pedido', det.*, pb.IdProducto " &
                        " FROM trans_pe_det AS det " &
                        " INNER JOIN trans_pe_enc AS enc ON det.IdPedidoEnc = enc.IdPedidoEnc " &
                        " INNER JOIN propietario_bodega AS prb ON enc.IdPropietarioBodega = prb.IdPropietarioBodega " &
@@ -4310,6 +4311,7 @@ Partial Public Class clsLnTrans_pe_det
                             .RoadVAL1 = IIf(IsDBNull(lRow.Item("RoadVAL1")), 0.0, lRow.Item("RoadVAL1"))
                             .RoadVAL2 = IIf(IsDBNull(lRow.Item("RoadVAL2")), "", lRow.Item("RoadVAL2"))
                             .RoadCantProc = IIf(IsDBNull(lRow.Item("RoadCantProc")), 0.0, lRow.Item("RoadCantProc"))
+                            .IdProductoTallaColor = IIf(IsDBNull(lRow.Item("IdProductoTallaColor")), 0, lRow.Item("IdProductoTallaColor"))
 
                         End With
 

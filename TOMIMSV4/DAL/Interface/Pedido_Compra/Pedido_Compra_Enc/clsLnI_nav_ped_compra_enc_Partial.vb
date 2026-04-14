@@ -1,4 +1,5 @@
 Imports System.Configuration
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -3583,6 +3584,18 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                     Try
 
                         Dim DetallePickingUbic As New List(Of clsBeTrans_picking_ubic)
+
+                        BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(navPedidoCompraEnc.Document_Type, lConnection, lTransInterface)
+
+                        If BeTipoDocumento IsNot Nothing Then
+                            Dim vEsImportacion As Boolean = BeTipoDocumento.Es_Importacion
+
+                            If vEsImportacion Then
+                                If BeConfigEnc.Bodega_Prorrateo = "" OrElse BeConfigEnc.Idbodega <> BeConfigEnc.Bodega_Prorrateo Then
+                                    Throw New Exception("El documento está mal configurado, es de importación y la bodega origen no es la bodega de prorrateo ")
+                                End If
+                            End If
+                        End If
 
                         Dim creada = InicializarEncabezadoNuevaOC(navPedidoCompraEnc,
                                                                   BeConfigEnc,
