@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS_QAS</AssemblyName>
+    <AssemblyName>WMS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_INELAC\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
-    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
-    <ProductName>WMS_QAS</ProductName>
+    <InstallUrl>\\192.168.126.79\WMS_INELAC\</InstallUrl>
+    <UpdateUrl>\\192.168.126.79\WMS_INELAC\</UpdateUrl>
+    <ProductName>WMS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS_QAS</SuiteName>
-    <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
+    <SuiteName>WMS</SuiteName>
+    <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>99</ApplicationRevision>
+    <ApplicationRevision>100</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -550,6 +550,42 @@
       <DependentUpon>frmMotivo_CorrecionList.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Motivo_Correccion\frmMotivo_CorrecionList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionContactoBodegaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionDestinatarioReglaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionEventoMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionEventoVariableMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionLayoutMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionPlantillaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Operadores\rptResolucionesOperador.Designer.vb">
@@ -1559,6 +1595,12 @@
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmStockRFID.Designer.vb">
+      <DependentUpon>frmStockRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmStockRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3292,6 +3334,24 @@
     <EmbeddedResource Include="Mantenimientos\Motivo_Correccion\frmMotivo_CorrecionList.resx">
       <DependentUpon>frmMotivo_CorrecionList.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.resx">
+      <DependentUpon>FrmNotificacionContactoBodegaMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.resx">
+      <DependentUpon>FrmNotificacionDestinatarioReglaMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.resx">
+      <DependentUpon>FrmNotificacionEventoMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.resx">
+      <DependentUpon>FrmNotificacionEventoVariableMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.resx">
+      <DependentUpon>FrmNotificacionLayoutMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.resx">
+      <DependentUpon>FrmNotificacionPlantillaMnt.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Operadores\rptResolucionesOperador.resx">
       <DependentUpon>rptResolucionesOperador.vb</DependentUpon>
     </EmbeddedResource>
@@ -3781,6 +3841,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmStockRFID.resx">
+      <DependentUpon>frmStockRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>

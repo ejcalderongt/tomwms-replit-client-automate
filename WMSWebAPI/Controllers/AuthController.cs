@@ -293,5 +293,80 @@ namespace WMSWebAPI.Controllers
             }
         }
 
+        [HttpPost("login-interno")]
+        [AllowAnonymous]
+        public IActionResult LoginInterno([FromBody] LoginDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
+            {
+                return BadRequest(new { mensaje = "Usuario y contraseña son requeridos." });
+            }
+
+            // Credenciales fijas desde configuración
+            var internalUser = _config["InternalAuth:Username"];
+            var internalPassword = _config["InternalAuth:Password"];
+
+            if (string.IsNullOrWhiteSpace(internalUser) || string.IsNullOrWhiteSpace(internalPassword))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    mensaje = "Configuración de credenciales internas no válida."
+                });
+            }
+
+            if (!string.Equals(dto.Username, internalUser, StringComparison.Ordinal) ||
+                !string.Equals(dto.Password, internalPassword, StringComparison.Ordinal))
+            {
+                return Unauthorized(new { mensaje = "Credenciales inválidas." });
+            }
+
+            var keyString = _config["JwtSettings:Key"];
+            var issuer = _config["JwtSettings:Issuer"];
+            var audience = _config["JwtSettings:Audience"];
+            var expireMinutes = _config.GetValue<int?>("JwtSettings:ExpireMinutes") ?? 60;
+
+            if (string.IsNullOrWhiteSpace(keyString) ||
+                string.IsNullOrWhiteSpace(issuer) ||
+                string.IsNullOrWhiteSpace(audience))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    mensaje = "Configuración de JWT no válida."
+                });
+            }
+
+            var key = Encoding.ASCII.GetBytes(keyString);
+
+            var claims = new[]
+            {
+        new Claim(JwtRegisteredClaimNames.Sub, dto.Username),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.Name, dto.Username),
+        new Claim("rol", "interno"),
+        new Claim("auth_type", "fixed_credentials")
+    };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
+                Issuer = issuer,
+                Audience = audience,
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return Ok(new
+            {
+                token = tokenString,
+                usuario = dto.Username,
+                expiraEnUtc = tokenDescriptor.Expires
+            });
+        }
     }
 }

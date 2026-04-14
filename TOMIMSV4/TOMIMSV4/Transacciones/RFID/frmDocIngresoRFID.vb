@@ -35,17 +35,21 @@ Public Class frmDocIngresoRFID
             End Select
 
         Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message,
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
+        Finally
+            SplashScreenManager.CloseForm(False)
+            Focus()
         End Try
     End Sub
-
 
     Private Sub Cargar_Datos()
 
         Dim BeProveedor As New clsBeProveedor
+        Dim dtDetalle As DataTable
 
         Try
 
@@ -56,7 +60,7 @@ Public Class frmDocIngresoRFID
                 End If
 
                 txtIdRFIDEnc.Text = gBeRFIDEnc.IdRFIDEnc
-                txtIdOrdenCompraEnc.Text = gBeRFIDEnc.IdPedidoEnc
+                txtIdOrdenCompraEnc.Text = gBeRFIDEnc.IdOrdenCompraEnc
 
                 If BeProveedor IsNot Nothing Then
                     txtProveedor.Text = BeProveedor.Nombre
@@ -66,17 +70,62 @@ Public Class frmDocIngresoRFID
 
                 txtEstado.Text = gBeRFIDEnc.Estado
                 txtTipo.Text = gBeRFIDEnc.Tipo
-                txtFechaAgr.Text = gBeRFIDEnc.Fec_agr
+                txtFechaAgr.Text = Format(gBeRFIDEnc.Fec_agr, "dd/MM/yyyy HH:mm:ss")
 
-                If gBeRFIDEnc.Detalle.Count > 0 Then
-                    grdDetalle.DataSource = gBeRFIDEnc.Detalle
+                If gBeRFIDEnc.Detalle IsNot Nothing AndAlso gBeRFIDEnc.Detalle.Count > 0 Then
+
+                    dtDetalle = New DataTable
+                    dtDetalle.Columns.Add("IdRFIDEnc", GetType(Integer))
+                    dtDetalle.Columns.Add("Barra_epc", GetType(String))
+                    dtDetalle.Columns.Add("Tagid", GetType(String))
+                    dtDetalle.Columns.Add("IdDispositivo", GetType(String))
+                    dtDetalle.Columns.Add("IdOperador", GetType(Integer))
+                    dtDetalle.Columns.Add("Operador", GetType(String))
+                    dtDetalle.Columns.Add("Producto", GetType(String))
+
+                    For Each det As clsBeI_nav_barras_rfid_det In gBeRFIDEnc.Detalle
+
+                        Dim nombreOperador As String = ""
+                        Dim nombreProducto As String = ""
+
+                        If det.Operador IsNot Nothing Then
+                            nombreOperador = Trim(det.Operador.Nombres & " " & det.Operador.Apellidos)
+                        End If
+
+                        If det.Producto IsNot Nothing Then
+                            nombreProducto = Trim(det.Producto.Codigo & " " & det.Producto.Nombre)
+                        End If
+
+                        dtDetalle.Rows.Add(
+                            det.IdRFIDEnc,
+                            det.Barra_epc,
+                            det.Tagid,
+                            det.IdDispositivo,
+                            det.IdOperador,
+                            nombreOperador,
+                            nombreProducto
+                        )
+                    Next
+
+                    grdDetalle.DataSource = dtDetalle
 
                     If GridView1.Columns.Count > 0 Then
+                        GridView1.Columns("IdRFIDEnc").Caption = "Id RFID Enc"
+                        GridView1.Columns("Barra_epc").Caption = "Barra EPC"
+                        GridView1.Columns("Tagid").Caption = "Tag ID"
+                        GridView1.Columns("IdDispositivo").Caption = "Id Dispositivo"
+                        GridView1.Columns("IdOperador").Caption = "Id Operador"
+                        GridView1.Columns("Operador").Caption = "Operador"
+                        GridView1.Columns("Producto").Caption = "Producto"
+
                         GridView1.OptionsView.ColumnAutoWidth = False
                         GridView1.BestFitColumns()
                         lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
                     End If
 
+                Else
+                    grdDetalle.DataSource = Nothing
+                    lblRegs.Caption = String.Format("Registros: {0}", 0)
                 End If
 
             End If

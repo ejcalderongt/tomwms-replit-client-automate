@@ -185,6 +185,7 @@ Public Class frmConfiguracion
                 BeConfigEnc.Centro_Costo_Erp = nuCentroCostoERP.Value
 
                 BeConfigEnc.Requerir_Centro_Costo_Obligatorio = chkRequerirCentroCostoObligatario.Checked
+                BeConfigEnc.cantidad_en_presentacion_transacciones_out = chkCantidadPresentacionTransaccionesOut.Checked
 
                 '#EJC20171107_REF21_1127PM: clsLnI_nav_config_enc.Actualizar con transaccionalidad y encabezado de configuración
                 If clsLnI_nav_config_enc.Actualizar(BeConfigEnc, lDet, pBeINavConfigEnt) Then
@@ -280,6 +281,7 @@ Public Class frmConfiguracion
                 BeConfigEnc.Centro_Costo_Erp = nuCentroCostoERP.Value
 
                 BeConfigEnc.Requerir_Centro_Costo_Obligatorio = chkRequerirCentroCostoObligatario.Checked
+                BeConfigEnc.cantidad_en_presentacion_transacciones_out = chkCantidadPresentacionTransaccionesOut.Checked
 
                 '#EJC20171107_REF21_1127PM: clsLnI_nav_config_enc.Actualizar con transaccionalidad y encabezado de configuración
                 '#GT12012023_2000: agregue el guardar, porque el Actualizar no agrega nuevos registros.
@@ -891,6 +893,7 @@ Public Class frmConfiguracion
                     nuCentroCostoDirERP.Value = BeConfigEnc.Centro_Costo_Dir_Erp
                     nuCentroCostoERP.Value = BeConfigEnc.Centro_Costo_Erp
                     chkRequerirCentroCostoObligatario.Checked = BeConfigEnc.Requerir_Centro_Costo_Obligatorio
+                    chkCantidadPresentacionTransaccionesOut.Checked = BeConfigEnc.cantidad_en_presentacion_transacciones_out
 
                     mnuGuardar.Enabled = False
 

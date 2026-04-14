@@ -521,8 +521,10 @@ Public Class clsLnBodega
             Upd.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
             Upd.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
             Upd.Add("bodega_cliente_ajuste_byb", "@bodega_cliente_ajuste_byb", DataType.Parametro)
+            Upd.Add("cambio_ubicacion_restrictivo", "@cambio_ubicacion_restrictivo", DataType.Parametro)
+            Upd.Add("permitir_cambio_ubic_indice_menor", "@permitir_cambio_ubic_indice_menor", DataType.Parametro)
+            Upd.Add("requerir_mismo_producto_posiciones", "@requerir_mismo_producto_posiciones", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
-
 
 
             Dim sp As String = Upd.SQL()
@@ -649,6 +651,9 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
             cmd.Parameters.Add(New SqlParameter("@BODEGA_CLIENTE_AJUSTE_BYB", oBeBodega.Bodega_Cliente_Ajuste_ByB))
 
+            cmd.Parameters.Add(New SqlParameter("@CAMBIO_UBICACION_RESTRICTIVO", oBeBodega.cambio_ubicacion_restrictivo))
+            cmd.Parameters.Add(New SqlParameter("@PERMITIR_CAMBIO_UBIC_INDICE_MENOR", oBeBodega.permitir_cambio_ubic_indice_menor))
+            cmd.Parameters.Add(New SqlParameter("@REQUERIR_MISMO_PRODUCTO_POSICIONES", oBeBodega.requerir_mismo_producto_posiciones))
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
