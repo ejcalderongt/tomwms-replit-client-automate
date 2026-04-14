@@ -91,7 +91,7 @@ Public Class clsSyncSapFacturaReserva
                             End If
 
                             Dim BeTipoDocumento As New clsBeTrans_oc_ti
-                            'BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(navPedidoCompraEnc.Document_Type, lConnection, lTransInterface)
+                            BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(BeINavPedCompra.Document_Type, lConnection, lTransaction)
 
                             If BeTipoDocumento IsNot Nothing Then
                                 Dim vEsImportacion As Boolean = BeTipoDocumento.Es_Importacion
