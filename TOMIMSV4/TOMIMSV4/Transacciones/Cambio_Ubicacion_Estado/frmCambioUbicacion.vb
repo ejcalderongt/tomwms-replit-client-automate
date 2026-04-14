@@ -1630,15 +1630,6 @@ Public Class frmCambioUbicacion
 
                     Ubicacion.EsCambioEstado = (tipoOperacion = 3)
 
-                    XtraMessageBox.Show("cmbBodega = " & cmbBodega.EditValue.ToString() &
-                    vbCrLf & "Bodega.IdBodega = " & Bodega.IdBodega.ToString() &
-                    vbCrLf & "Restrictivo = " & Bodega.cambio_ubicacion_restrictivo.ToString() &
-                    vbCrLf & "Indice menor = " & Bodega.permitir_cambio_ubic_indice_menor.ToString() &
-                    vbCrLf & "Mismo producto = " & Bodega.requerir_mismo_producto_posiciones.ToString(),
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information)
-
                     If Ubicacion.ShowDialog() = DialogResult.Yes Then
 
                         pListObjMov = Ubicacion.pListObjMov

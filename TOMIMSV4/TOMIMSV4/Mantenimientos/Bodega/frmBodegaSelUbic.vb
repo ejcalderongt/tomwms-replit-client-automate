@@ -58,6 +58,7 @@ Public Class frmBodegaSelUbic
     Private _ubicacionDestinoEsValidaSegunRegla As Boolean = True
     Private _mensajeUbicacionNoValida As String = ""
 
+
     Public Sub New()
         InitializeComponent()
     End Sub
@@ -917,13 +918,17 @@ Public Class frmBodegaSelUbic
         Try
             If pBeUbicacion Is Nothing Then Return False
             If pObjBeB Is Nothing Then Return True
-            If pObjBeB Is Nothing Then Return True
 
-            If Not ValidarUbicacionOrigenDestinoDiferente() Then Return False
-            If Not EvaluarUbicacionValidaSegunRegla() Then Return False
-            If Not ValidarCambioUbicacionRestrictivo() Then Return False
-            If Not ValidarIndiceRotacionDestino() Then Return False
-            If Not ValidarMismoProductoPosicion() Then Return False
+
+            Dim resultado1 As Boolean = ValidarUbicacionOrigenDestinoDiferente()
+            Dim resultado2 As Boolean = EvaluarUbicacionValidaSegunRegla()
+            Dim resultado3 As Boolean = ValidarCambioUbicacionRestrictivo()
+            Dim resultado4 As Boolean = ValidarIndiceRotacionDestino()
+            Dim resultado5 As Boolean = ValidarMismoProductoPosicion()
+
+            If Not (resultado1 And resultado2 And resultado3 And resultado4 And resultado5) Then
+                Return False
+            End If
 
             Return True
 
@@ -959,7 +964,6 @@ Public Class frmBodegaSelUbic
 
 
     Private Function ValidarCambioUbicacionRestrictivo() As Boolean
-
         Try
             If pObjBeB Is Nothing Then Return True
             If _ubicacionDestinoEsValidaSegunRegla Then Return True
@@ -970,26 +974,45 @@ Public Class frmBodegaSelUbic
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Exclamation)
                 Return False
-            Else
-
-                Return True
             End If
+
+            Return True
 
         Catch ex As Exception
             Throw New Exception("Error validando cambio de ubicación restrictivo: " & ex.Message)
         End Try
-
     End Function
+
+
     Private Function EvaluarUbicacionValidaSegunRegla() As Boolean
 
         Try
             _ubicacionDestinoEsValidaSegunRegla = True
             _mensajeUbicacionNoValida = ""
-
             If pObjBeB Is Nothing Then Return True
             If BeProducto Is Nothing Then Return True
-            If pBeUbicacion Is Nothing Then Return False
-            If BeEstadoProd Is Nothing Then Return True
+
+            If pBeUbicacion Is Nothing Then
+                _ubicacionDestinoEsValidaSegunRegla = False
+                _mensajeUbicacionNoValida = "La ubicación destino no es válida."
+                Return True
+            End If
+
+            If BeProducto.IdTipoRotacion > 0 AndAlso pBeUbicacion.IdTipoRotacion > 0 Then
+                If BeProducto.IdTipoRotacion <> pBeUbicacion.IdTipoRotacion Then
+                    _ubicacionDestinoEsValidaSegunRegla = False
+                    _mensajeUbicacionNoValida = "La ubicación seleccionada no cumple con las reglas de rotación."
+                    Return True
+                End If
+            End If
+
+            If BeEstadoProd IsNot Nothing Then
+                If BeEstadoProd.Dañado AndAlso Not pBeUbicacion.Dañado Then
+                    _ubicacionDestinoEsValidaSegunRegla = False
+                    _mensajeUbicacionNoValida = "La ubicación seleccionada no es válida para el estado del producto."
+                    Return True
+                End If
+            End If
 
             Dim dtReglas As DataTable = clsLnRegla_ubic_enc.Listar(AP.IdBodega, AP.IdEmpresa, True)
 
@@ -997,7 +1020,9 @@ Public Class frmBodegaSelUbic
                 Return True
             End If
 
+            Dim hayReglasAplicables As Boolean = False
             Dim existeReglaCompatible As Boolean = False
+            Dim debugReglas As String = ""
 
             For Each dr As DataRow In dtReglas.Rows
 
@@ -1006,36 +1031,78 @@ Public Class frmBodegaSelUbic
                 clsLnRegla_ubic_enc.GetSingleWithDetails(regla)
 
                 Dim cumple As Boolean = True
+                Dim reglaAplica As Boolean = False
 
-                ' Validar índice de rotación
+                Dim cumpleIndice As String = "N/A"
+                Dim cumpleTipo As String = "N/A"
+                Dim cumpleEstado As String = "N/A"
+                Dim cumpleTipoProducto As String = "N/A"
+
                 If regla.listDetRegla_Ubic_Det_Ir IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Ir.Count > 0 Then
-                    If IdIndiceRotacion = 0 Then
+                    reglaAplica = True
+
+                    If BeProducto.IdIndiceRotacion = 0 Then
                         cumple = False
+                        cumpleIndice = "FALSE (producto sin índice)"
                     Else
-                        cumple = cumple AndAlso regla.listDetRegla_Ubic_Det_Ir.
-                        Any(Function(x) x.Activo AndAlso x.IdIndiceRotacion = IdIndiceRotacion)
+                        Dim okIndice = regla.listDetRegla_Ubic_Det_Ir.
+                        Any(Function(x) x.Activo AndAlso x.IdIndiceRotacion = BeProducto.IdIndiceRotacion)
+
+                        cumple = cumple AndAlso okIndice
+                        cumpleIndice = okIndice.ToString()
                     End If
                 End If
 
-                ' Validar tipo de rotación
                 If regla.listDetRegla_Ubic_Det_Tr IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Tr.Count > 0 Then
+                    reglaAplica = True
+
                     If pBeUbicacion.IdTipoRotacion = 0 Then
                         cumple = False
+                        cumpleTipo = "FALSE (ubicación sin tipo)"
                     Else
-                        cumple = cumple AndAlso regla.listDetRegla_Ubic_Det_Tr.
+                        Dim okTipo = regla.listDetRegla_Ubic_Det_Tr.
                         Any(Function(x) x.Activo AndAlso x.IdTipoRotacion = pBeUbicacion.IdTipoRotacion)
+
+                        cumple = cumple AndAlso okTipo
+                        cumpleTipo = okTipo.ToString()
                     End If
                 End If
 
-                ' Validar estado
-                If regla.listDetRegla_Ubic_Det_Pe IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Pe.Count > 0 Then
-                    If BeEstadoProd Is Nothing OrElse BeEstadoProd.IdEstado = 0 Then
+                If regla.listDetRegla_Ubic_Det_tp IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_tp.Count > 0 Then
+                    reglaAplica = True
+
+                    If BeProducto Is Nothing OrElse BeProducto.IdTipoProducto = 0 Then
                         cumple = False
+                        cumpleTipoProducto = "FALSE (producto sin tipo)"
                     Else
-                        cumple = cumple AndAlso regla.listDetRegla_Ubic_Det_Pe.
-                        Any(Function(x) x.Activo AndAlso x.IdEstado = BeEstadoProd.IdEstado)
+                        Dim okTipoProducto = regla.listDetRegla_Ubic_Det_tp.
+                        Any(Function(x) x.Activo AndAlso x.IdTipoProducto = BeProducto.IdTipoProducto)
+
+                        cumple = cumple AndAlso okTipoProducto
+                        cumpleTipoProducto = okTipoProducto.ToString()
                     End If
                 End If
+
+                If regla.listDetRegla_Ubic_Det_Pe IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Pe.Count > 0 Then
+                    reglaAplica = True
+
+                    If BeEstadoProd Is Nothing OrElse BeEstadoProd.IdEstado = 0 Then
+                        cumple = False
+                        cumpleEstado = "FALSE (sin estado)"
+                    Else
+                        Dim okEstado = regla.listDetRegla_Ubic_Det_Pe.
+                        Any(Function(x) x.Activo AndAlso x.IdEstado = BeEstadoProd.IdEstado)
+
+                        cumple = cumple AndAlso okEstado
+                        cumpleEstado = okEstado.ToString()
+                    End If
+                End If
+
+                If Not reglaAplica Then
+                    Continue For
+                End If
+
+                hayReglasAplicables = True
 
                 If cumple Then
                     existeReglaCompatible = True
@@ -1043,9 +1110,10 @@ Public Class frmBodegaSelUbic
                 End If
             Next
 
-            If Not existeReglaCompatible Then
+
+            If hayReglasAplicables AndAlso Not existeReglaCompatible Then
                 _ubicacionDestinoEsValidaSegunRegla = False
-                _mensajeUbicacionNoValida = "Ubicación no válida para ese producto."
+                _mensajeUbicacionNoValida = "La ubicación seleccionada no cumple con las reglas configuradas."
             End If
 
             Return True
@@ -1055,7 +1123,6 @@ Public Class frmBodegaSelUbic
         End Try
 
     End Function
-
 
     Private Function ValidarMismoProductoPosicion() As Boolean
         Try
@@ -1084,7 +1151,6 @@ Public Class frmBodegaSelUbic
                 idProductoAUbicar = BeProducto.IdProducto
             End If
 
-            ' ── PASO ①: stock en BD ──
             Dim stockDestino As List(Of clsBeVW_stock_res) =
             clsLnStock.Get_All_By_IdUbicacion(pBeUbicacion.IdUbicacion, pBeUbicacion.IdBodega)
 
@@ -1100,14 +1166,11 @@ Public Class frmBodegaSelUbic
                 End If
             End If
 
-            ' ── PASO ①B: stock en memoria (aún no guardado) ──
-            ' En modo normal usamos pObjDet.IdStock para identificar el stock actual
-            ' y BeProducto.IdProducto para comparar contra lo que ya está en memoria
+
             If pListObjDet IsNot Nothing AndAlso pListObjDet.Count > 0 Then
                 Dim hayDistintoEnMemoria = pListObjDet.Any(
                 Function(d)
-                    ' Solo revisar dets que van a la misma ubicación destino
-                    ' y que NO son el mismo stock que estamos moviendo ahora
+
                     If d.IdUbicacionDestino <> pBeUbicacion.IdUbicacion Then Return False
                     If d.IdStock = pObjDet.IdStock Then Return False
                     ' Comparar por IdProducto del stock en memoria
@@ -1134,7 +1197,7 @@ Public Class frmBodegaSelUbic
                 End If
             End If
 
-            ' ── PASO ②: ubicaciones relacionadas en BD ──
+            ' ── ubicaciones relacionadas en BD ──
             Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
             clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
                 pBeUbicacion.IdBodega,
@@ -1182,28 +1245,19 @@ Public Class frmBodegaSelUbic
     End Function
 
     Private Function ValidarIndiceRotacionDestino() As Boolean
-
         Try
             If pObjBeB Is Nothing Then Return True
             If pBeUbicacion Is Nothing Then Return True
-
             If IdIndiceRotacion = 0 Then Return True
             If pBeUbicacion.IdIndiceRotacion = 0 Then Return True
-
-            If IdIndiceRotacion = pBeUbicacion.IdIndiceRotacion Then
-                Return True
-            End If
+            If IdIndiceRotacion = pBeUbicacion.IdIndiceRotacion Then Return True
 
             If pBeUbicacion.IdIndiceRotacion < IdIndiceRotacion Then
-                If pObjBeB.permitir_cambio_ubic_indice_menor Then
-                    Return True
-                Else
-                    XtraMessageBox.Show(String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
-                                                 IdIndiceRotacion,
-                                                 pBeUbicacion.IdIndiceRotacion),
-                                    Text,
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Exclamation)
+                If Not pObjBeB.permitir_cambio_ubic_indice_menor Then
+                    XtraMessageBox.Show(
+                    String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
+                                  IdIndiceRotacion, pBeUbicacion.IdIndiceRotacion),
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Return False
                 End If
             End If
@@ -1213,7 +1267,6 @@ Public Class frmBodegaSelUbic
         Catch ex As Exception
             Throw New Exception("Error validando índice de rotación: " & ex.Message)
         End Try
-
     End Function
     Private Sub Agregar_A_Lista()
 
@@ -1636,7 +1689,7 @@ Public Class frmBodegaSelUbic
 
         Try
 
-            If Not ValidarUbicacionDestinoSeleccionada() Then Exit Sub
+            'If Not ValidarUbicacionDestinoSeleccionada() Then Exit Sub
 
             '#EJC20171001_0719: Validar cuando no tiene presentación.
             If Not BePresentacion Is Nothing Then

@@ -26,11 +26,13 @@ Partial Class frmDocIngresoRFID
         Dim Label1 As System.Windows.Forms.Label
         Dim Label5 As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
+        Me.lblRegs = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
+        Me.txtProveedor = New System.Windows.Forms.TextBox()
         Me.txtIdRFIDEnc = New System.Windows.Forms.TextBox()
         Me.txtIdOrdenCompraEnc = New System.Windows.Forms.TextBox()
         Me.txtFechaAgr = New System.Windows.Forms.TextBox()
@@ -39,8 +41,6 @@ Partial Class frmDocIngresoRFID
         Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
         Me.grdDetalle = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.txtProveedor = New System.Windows.Forms.TextBox()
-        Me.lblRegs = New DevExpress.XtraBars.BarButtonItem()
         Label4 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
@@ -56,6 +56,66 @@ Partial Class frmDocIngresoRFID
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
+        'Label4
+        '
+        Label4.AutoSize = True
+        Label4.Location = New System.Drawing.Point(32, 233)
+        Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label4.Name = "Label4"
+        Label4.Size = New System.Drawing.Size(46, 16)
+        Label4.TabIndex = 13
+        Label4.Text = "Fecha:"
+        '
+        'Label3
+        '
+        Label3.AutoSize = True
+        Label3.Location = New System.Drawing.Point(32, 189)
+        Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label3.Name = "Label3"
+        Label3.Size = New System.Drawing.Size(37, 16)
+        Label3.TabIndex = 11
+        Label3.Text = "Tipo:"
+        '
+        'Label2
+        '
+        Label2.AutoSize = True
+        Label2.Location = New System.Drawing.Point(30, 153)
+        Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label2.Name = "Label2"
+        Label2.Size = New System.Drawing.Size(50, 16)
+        Label2.TabIndex = 10
+        Label2.Text = "Estado:"
+        '
+        'lblFechaIngresoTMS
+        '
+        lblFechaIngresoTMS.AutoSize = True
+        lblFechaIngresoTMS.Location = New System.Drawing.Point(30, 42)
+        lblFechaIngresoTMS.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lblFechaIngresoTMS.Name = "lblFechaIngresoTMS"
+        lblFechaIngresoTMS.Size = New System.Drawing.Size(51, 16)
+        lblFechaIngresoTMS.TabIndex = 8
+        lblFechaIngresoTMS.Text = "Código:"
+        '
+        'Label1
+        '
+        Label1.AutoSize = True
+        Label1.Location = New System.Drawing.Point(30, 75)
+        Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label1.Name = "Label1"
+        Label1.Size = New System.Drawing.Size(55, 16)
+        Label1.TabIndex = 9
+        Label1.Text = "Ingreso:"
+        '
+        'Label5
+        '
+        Label5.AutoSize = True
+        Label5.Location = New System.Drawing.Point(30, 114)
+        Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label5.Name = "Label5"
+        Label5.Size = New System.Drawing.Size(70, 16)
+        Label5.TabIndex = 15
+        Label5.Text = "Proveedor:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -64,19 +124,25 @@ Partial Class frmDocIngresoRFID
         Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
+        Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(936, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
+        '
+        'lblRegs
+        '
+        Me.lblRegs.Caption = "Registros: 0"
+        Me.lblRegs.Id = 1
+        Me.lblRegs.Name = "lblRegs"
         '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
         Me.RibbonPage1.Name = "RibbonPage1"
-        Me.RibbonPage1.Text = "RibbonPage1"
+        Me.RibbonPage1.Text = "Ingreso RFID"
         '
         'RibbonPageGroup1
         '
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
-        Me.RibbonPageGroup1.Text = "RibbonPageGroup1"
         '
         'RibbonStatusBar
         '
@@ -114,6 +180,17 @@ Partial Class frmDocIngresoRFID
         Me.XtraTabPage1.Size = New System.Drawing.Size(934, 330)
         Me.XtraTabPage1.Text = "Encabezado"
         '
+        'txtProveedor
+        '
+        Me.txtProveedor.AcceptsReturn = True
+        Me.txtProveedor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtProveedor.Location = New System.Drawing.Point(116, 112)
+        Me.txtProveedor.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtProveedor.Name = "txtProveedor"
+        Me.txtProveedor.ReadOnly = True
+        Me.txtProveedor.Size = New System.Drawing.Size(156, 23)
+        Me.txtProveedor.TabIndex = 14
+        '
         'txtIdRFIDEnc
         '
         Me.txtIdRFIDEnc.AcceptsReturn = True
@@ -124,16 +201,6 @@ Partial Class frmDocIngresoRFID
         Me.txtIdRFIDEnc.ReadOnly = True
         Me.txtIdRFIDEnc.Size = New System.Drawing.Size(156, 23)
         Me.txtIdRFIDEnc.TabIndex = 4
-        '
-        'Label4
-        '
-        Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(32, 233)
-        Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(46, 16)
-        Label4.TabIndex = 13
-        Label4.Text = "Fecha:"
         '
         'txtIdOrdenCompraEnc
         '
@@ -168,16 +235,6 @@ Partial Class frmDocIngresoRFID
         Me.txtEstado.Size = New System.Drawing.Size(156, 23)
         Me.txtEstado.TabIndex = 6
         '
-        'Label3
-        '
-        Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(32, 189)
-        Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(37, 16)
-        Label3.TabIndex = 11
-        Label3.Text = "Tipo:"
-        '
         'txtTipo
         '
         Me.txtTipo.AcceptsReturn = True
@@ -188,36 +245,6 @@ Partial Class frmDocIngresoRFID
         Me.txtTipo.ReadOnly = True
         Me.txtTipo.Size = New System.Drawing.Size(156, 23)
         Me.txtTipo.TabIndex = 7
-        '
-        'Label2
-        '
-        Label2.AutoSize = True
-        Label2.Location = New System.Drawing.Point(30, 153)
-        Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label2.Name = "Label2"
-        Label2.Size = New System.Drawing.Size(50, 16)
-        Label2.TabIndex = 10
-        Label2.Text = "Estado:"
-        '
-        'lblFechaIngresoTMS
-        '
-        lblFechaIngresoTMS.AutoSize = True
-        lblFechaIngresoTMS.Location = New System.Drawing.Point(30, 42)
-        lblFechaIngresoTMS.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblFechaIngresoTMS.Name = "lblFechaIngresoTMS"
-        lblFechaIngresoTMS.Size = New System.Drawing.Size(51, 16)
-        lblFechaIngresoTMS.TabIndex = 8
-        lblFechaIngresoTMS.Text = "Código:"
-        '
-        'Label1
-        '
-        Label1.AutoSize = True
-        Label1.Location = New System.Drawing.Point(30, 75)
-        Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(55, 16)
-        Label1.TabIndex = 9
-        Label1.Text = "Ingreso:"
         '
         'XtraTabPage2
         '
@@ -242,33 +269,6 @@ Partial Class frmDocIngresoRFID
         Me.GridView1.GridControl = Me.grdDetalle
         Me.GridView1.Name = "GridView1"
         '
-        'txtProveedor
-        '
-        Me.txtProveedor.AcceptsReturn = True
-        Me.txtProveedor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtProveedor.Location = New System.Drawing.Point(116, 112)
-        Me.txtProveedor.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtProveedor.Name = "txtProveedor"
-        Me.txtProveedor.ReadOnly = True
-        Me.txtProveedor.Size = New System.Drawing.Size(156, 23)
-        Me.txtProveedor.TabIndex = 14
-        '
-        'Label5
-        '
-        Label5.AutoSize = True
-        Label5.Location = New System.Drawing.Point(30, 114)
-        Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label5.Name = "Label5"
-        Label5.Size = New System.Drawing.Size(70, 16)
-        Label5.TabIndex = 15
-        Label5.Text = "Proveedor:"
-        '
-        'lblRegs
-        '
-        Me.lblRegs.Caption = "Registros: 0"
-        Me.lblRegs.Id = 1
-        Me.lblRegs.Name = "lblRegs"
-        '
         'frmDocIngresoRFID
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -280,7 +280,7 @@ Partial Class frmDocIngresoRFID
         Me.Name = "frmDocIngresoRFID"
         Me.Ribbon = Me.RibbonControl
         Me.StatusBar = Me.RibbonStatusBar
-        Me.Text = "frmDocIngresoRFID"
+        Me.Text = "Ingreso"
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.XtraTabControl1.ResumeLayout(False)

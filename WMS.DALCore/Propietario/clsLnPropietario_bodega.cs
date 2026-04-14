@@ -1,7 +1,5 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Propietario;
 using Microsoft.Extensions.Configuration;
