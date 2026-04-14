@@ -12234,7 +12234,7 @@ Por favor reportar este problema a DevOps."
 	                                   CASE WHEN v.IdPresentacion IS NULL THEN v.CantidadReservadaUmBas - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_UMBas,
 	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_Pickeada_Presentacion,
 	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN v.Cantidad_Reservada_Pres - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_Presentacion,
-                                v.Codigo_Talla as Talla, v.Codigo_Color as Color 
+                                v.Codigo_Talla as Talla, v.Codigo_Color as Color, DATEDIFF(DAY, GETDATE(), v.fecha_vence) Vence_En
                                 FROM VW_Stock_Res v left outer join 
                                      (SELECT r.IdStock, sum(u.cantidad_recibida) Cant_Pickeada
 	                                  FROM trans_picking_ubic u inner join

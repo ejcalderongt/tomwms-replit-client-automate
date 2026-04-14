@@ -241,7 +241,10 @@ Partial Public Class clsLnTrans_ubic_hh_det
                             BeTrans_ubic_hh_det.Stock.IdStock = CType(lRow("IdStock"), Integer)
                             BeTrans_ubic_hh_det.Stock = clsLnStock.GetSingle(BeTrans_ubic_hh_det.Stock.IdStock, lConnection, lTransaction)
                             '#EJC20180613: If the obj stock doesn't exist, means that the IdStock also doesn't exist any more
-                            If BeTrans_ubic_hh_det.Stock Is Nothing Then BeTrans_ubic_hh_det.Stock = New clsBeStock
+                            If BeTrans_ubic_hh_det.Stock Is Nothing Then
+                                BeTrans_ubic_hh_det.Stock = New clsBeStock
+                                BeTrans_ubic_hh_det.Stock.Lic_plate = CType(lRow("Lic_plate"), String)
+                            End If
                         End If
 
                         If lRow("IdTareaUbicacionDet") IsNot DBNull.Value AndAlso lRow("IdTareaUbicacionDet") IsNot Nothing Then
