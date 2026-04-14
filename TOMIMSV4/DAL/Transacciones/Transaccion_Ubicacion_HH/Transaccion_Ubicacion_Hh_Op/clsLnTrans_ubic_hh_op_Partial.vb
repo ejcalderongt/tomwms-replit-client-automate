@@ -223,12 +223,15 @@ Partial Public Class clsLnTrans_ubic_hh_op
 
                         For Each OBj As clsBeTrans_ubic_hh_op In pListObjOp
 
-                            If Not Existe_Operador(OBj, lConnection, lTransaction) Then
-                                OBj.IdTransUbicHhOp = lMaxOp
-                                OBj.IdTareaUbicacionEnc = pIdTareaUbicacionEnc.IdTareaUbicacionEnc
-                                Insertar(OBj, lConnection, lTransaction)
-                                lMaxOp += 1
+                            If OBj.IdOperadorBodega <> 0 Then
+                                If Not Existe_Operador(OBj, lConnection, lTransaction) Then
+                                    OBj.IdTransUbicHhOp = lMaxOp
+                                    OBj.IdTareaUbicacionEnc = pIdTareaUbicacionEnc.IdTareaUbicacionEnc
+                                    Insertar(OBj, lConnection, lTransaction)
+                                    lMaxOp += 1
+                                End If
                             End If
+
                         Next
 
                     Else

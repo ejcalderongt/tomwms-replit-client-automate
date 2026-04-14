@@ -109,166 +109,208 @@ Public Class frmCambioUbicacion
 #End Region
 
     Dim Bodega As New clsBeBodega
+
+    Private _inicializado As Boolean = False
+
     Private Sub frmCambioUbicacion_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Se deja vacío a propósito.
+        ' Toda la inicialización se mueve a Shown.
+    End Sub
+
+    Private Sub frmCambioUbicacion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+
+        If _inicializado Then Exit Sub
+        _inicializado = True
+
+        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+        SplashScreenManager.Default.SetWaitFormDescription("...")
 
         Try
+            InicializarFormulario()
 
-            If (chkOperadorPorlinea.Checked) Then
-                cmbOperadores.Visible = True
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+        Finally
+            SplashScreenManager.CloseForm(False)
+        End Try
+
+    End Sub
+
+    Private Sub InicializarFormulario()
+
+        If chkOperadorPorlinea.Checked Then
+            cmbOperadores.Visible = True
+            If tabDatos.TabPages.Contains(xtabOperador) Then
                 tabDatos.TabPages.Remove(xtabOperador)
-
-            Else
-                cmbOperadores.Visible = False
+            End If
+        Else
+            cmbOperadores.Visible = False
+            If Not tabDatos.TabPages.Contains(xtabOperador) Then
                 tabDatos.TabPages.Add(xtabOperador)
             End If
+        End If
 
-            If Not AP.Listar_Bodegas_By_Usuario(cmbBodega) Then
-                XtraMessageBox.Show("No hay bodegas definidas para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+        If Not AP.Listar_Bodegas_By_Usuario(cmbBodega) Then
+            XtraMessageBox.Show("No hay bodegas definidas para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
 
-            '#CKFK20181001: Colocar bodega por defecto.
-            cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
-            cmbBodega.RefreshEditValue()
+        '#CKFK20181001: Colocar bodega por defecto.
+        cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
+        cmbBodega.RefreshEditValue()
 
-            If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietarioBodega, cmbBodega.EditValue) Then
-                XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+        If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietarioBodega, cmbBodega.EditValue) Then
+            XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
 
-            If Not IMS.Listar_Operadores(cmbOperadores) Then
-                XtraMessageBox.Show("No hay operadores definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+        If Not IMS.Listar_Operadores(cmbOperadores) Then
+            XtraMessageBox.Show("No hay operadores definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
 
-            lblItemBandera.Text = ""
+        lblItemBandera.Text = ""
 
-            Validar_Operadores()
+        Validar_Operadores()
 
-            txtIdMotivoUbicacion.ReadOnly = False
+        txtIdMotivoUbicacion.ReadOnly = False
 
-            Select Case Modo
+        Select Case Modo
 
-                Case TipoTrans.Nuevo
+            Case TipoTrans.Nuevo
 
-                    Bodega = New clsBeBodega
-                    Bodega = AP.Bodega
+                Bodega = New clsBeBodega
+                Bodega = AP.Bodega
 
-                    User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-                    Fec_agrDateEdit.Text = Now
-                    User_modTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-                    Fec_modDateEdit.Text = Now
+                User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+                Fec_agrDateEdit.Text = Now
+                User_modTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+                Fec_modDateEdit.Text = Now
+
+                If tabDatos.TabPages.Contains(xtabOperador) Then
                     tabDatos.TabPages.Remove(xtabOperador)
+                End If
 
-                    mnuGuardar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+                mnuGuardar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+                mnuActualizar.Enabled = False
+                mnuEliminar.Enabled = False
+                mnuAsignacion.Enabled = False
+                mnuPendiente.Enabled = False
 
-                    mnuActualizar.Enabled = False
-                    mnuEliminar.Enabled = False
-                    mnuAsignacion.Enabled = False
-                    dtpFechaInicio.DateTime = Now
-                    dtpFechaFin.DateTime = Now.AddHours(1)
-                    mnuPendiente.Enabled = False
+                mnuLiberarStockNoProcesado.Enabled = False
+                mnuImprimir1.Enabled = False
+                cmdEliminarDocumento.Visibility = BarItemVisibility.Never
 
-                    clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
+                dtpFechaInicio.DateTime = Now
+                dtpFechaFin.DateTime = Now.AddHours(1)
 
-                    Verifica_Permiso_Ubicacion_Sin_HH()
+                clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
 
-                    If tipoOperacion = 2 Then
-                        groupCambioDeEstado.Visible = False
-                        Text = "Cambio de ubicación"
-                        RibbonPage1.Text = "Cambio de ubicación"
-                        Es_Seleccion_Multiple = True
-                    ElseIf tipoOperacion = 3 Then
-                        groupCambioDeEstado.Visible = True
-                        Text = "Cambio de estado"
-                        RibbonPage1.Text = "Cambio de estado"
-                        Es_Seleccion_Multiple = False
-                    End If
+                Verifica_Permiso_Ubicacion_Sin_HH()
 
+                If tipoOperacion = 2 Then
+                    groupCambioDeEstado.Visible = False
+                    Text = "Cambio de ubicación"
+                    RibbonPage1.Text = "Cambio de ubicación"
+                    Es_Seleccion_Multiple = True
+
+                ElseIf tipoOperacion = 3 Then
+                    groupCambioDeEstado.Visible = True
+                    Text = "Cambio de estado"
+                    RibbonPage1.Text = "Cambio de estado"
+                    Es_Seleccion_Multiple = False
+                End If
+
+                If Bodega IsNot Nothing Then
                     If Not Bodega.Control_Talla_Color Then
                         lblTalla.Visible = False
                         lblColor.Visible = False
                         txtTalla.Visible = False
                         txtColor.Visible = False
                     End If
+                End If
 
-                Case TipoTrans.Editar
+            Case TipoTrans.Editar
 
-                    'Dim Bodega As New clsBeBodega #se traslada a #GT08092025 para uso cuando es nuevo registro.
-                    Bodega = New clsBeBodega
+                lnkUbicacionDestino.Enabled = False
 
-                    clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
+                Bodega = New clsBeBodega
 
-                    clsLnTarimas.GetAllTarimasUsadas(lvTarimasUsadas, gBeTransubicacionHHEnc.IdTareaUbicacionEnc)
+                clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
+                clsLnTarimas.GetAllTarimasUsadas(lvTarimasUsadas, gBeTransubicacionHHEnc.IdTareaUbicacionEnc)
 
-                    If tipoOperacion = 2 Then
-                        groupCambioDeEstado.Visible = False
-                        Text = "Cambio de ubicación"
-                    ElseIf tipoOperacion = 3 Then
-                        groupCambioDeEstado.Visible = True
-                        Text = "Cambio de estado"
-                        mnuImportarListaCambioUbic.Enabled = False
-                    End If
+                If tipoOperacion = 2 Then
+                    groupCambioDeEstado.Visible = False
+                    Text = "Cambio de ubicación"
 
-                    If gBeTransubicacionHHEnc.Estado = "Finalizado" Then
-                        Deshabilitar_Controles()
-                        Deshabilita_Menu()
-                    Else
-                        Habilita_Menu()
-                        chkOperadorPorlinea.Enabled = False
-                        cmbBodega.Enabled = False
-                        cmbPropietarioBodega.Enabled = False
-                        mnuGuardar.Enabled = False
+                ElseIf tipoOperacion = 3 Then
+                    groupCambioDeEstado.Visible = True
+                    Text = "Cambio de estado"
+                    mnuImportarListaCambioUbic.Enabled = False
+                End If
 
-                        mnuActualizar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
-                        mnuEliminar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Eliminar, True)
-                        mnuAsignacion.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+                If gBeTransubicacionHHEnc.Estado = "Finalizado" Then
+                    Deshabilitar_Controles()
+                    Deshabilita_Menu()
+                Else
+                    Habilita_Menu()
+                    chkOperadorPorlinea.Enabled = False
+                    cmbBodega.Enabled = False
+                    cmbPropietarioBodega.Enabled = False
+                    mnuGuardar.Enabled = False
 
-                    End If
+                    mnuActualizar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+                    mnuEliminar.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Eliminar, True)
+                    mnuAsignacion.Enabled = IIf(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+                End If
 
-                    lblEstado.Text = gBeTransubicacionHHEnc.Estado
-                    lbl.Text = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
-                    gBeTareaHh.IdTransaccion = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
-                    gBeTareaHh.IdTareahh = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
+                lblEstado.Text = gBeTransubicacionHHEnc.Estado
+                lbl.Text = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
+                gBeTareaHh.IdTransaccion = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
+                gBeTareaHh.IdTareahh = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
 
-                    txtNoDocumento.Text = gBeTransubicacionHHEnc.No_Documento
+                txtNoDocumento.Text = gBeTransubicacionHHEnc.No_Documento
 
-                    '#CM_20092018_1142AM: se busca la bodega por el IdPropietarioBodega ya que no está en la tabla de encabezado.
-                    Bodega = clsLnPropietario_bodega.GetBodegaByIdPropietarioBodega(gBeTransubicacionHHEnc.IdPropietarioBodega)
+                '#CM_20092018_1142AM: se busca la bodega por el IdPropietarioBodega ya que no está en la tabla de encabezado.
+                Bodega = clsLnPropietario_bodega.GetBodegaByIdPropietarioBodega(gBeTransubicacionHHEnc.IdPropietarioBodega)
+
+                If Bodega IsNot Nothing Then
                     clsLnBodega.GetSingle(Bodega)
+                    cmbBodega.EditValue = Bodega.IdBodega
+                End If
 
+                If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
+                    cmdEliminarDocumento.Visibility = BarItemVisibility.Always
+                Else
+                    cmdEliminarDocumento.Visibility = BarItemVisibility.Never
+                End If
 
-                    If Bodega IsNot Nothing Then
-                        cmbBodega.EditValue = Bodega.IdBodega
-                    End If
+                cmbPropietarioBodega.EditValue = gBeTransubicacionHHEnc.IdPropietarioBodega
+                txtIdMotivoUbicacion.Text = gBeTransubicacionHHEnc.IdMotivoUbicacion
+                txtIdMotivoUbicacion_LostFocus(Nothing, Nothing)
+                dtpFechaInicio.EditValue = gBeTransubicacionHHEnc.FechaInicio
+                dtpHoraInicio.Value = gBeTransubicacionHHEnc.HoraInicio
+                dtpFechaFin.EditValue = gBeTransubicacionHHEnc.FechaFin
+                dtpHoraFin.Value = gBeTransubicacionHHEnc.HoraFin
+                txtObservacion.Text = gBeTransubicacionHHEnc.Observacion
+                chkActivo.Checked = gBeTransubicacionHHEnc.Activo
+                chkOperadorPorlinea.Checked = gBeTransubicacionHHEnc.Operador_por_linea
+                chkUbicacionConHh.Checked = gBeTransubicacionHHEnc.Ubicacion_con_hh
+                User_agrTextEdit.Text = gBeTransubicacionHHEnc.User_agr
+                Fec_agrDateEdit.Text = gBeTransubicacionHHEnc.Fec_agr
+                User_modTextEdit.Text = gBeTransubicacionHHEnc.User_mod
+                Fec_modDateEdit.Text = gBeTransubicacionHHEnc.Fec_mod
 
-                    cmbPropietarioBodega.EditValue = gBeTransubicacionHHEnc.IdPropietarioBodega
-                    txtIdMotivoUbicacion.Text = gBeTransubicacionHHEnc.IdMotivoUbicacion
-                    txtIdMotivoUbicacion_LostFocus(Nothing, Nothing)
-                    dtpFechaInicio.EditValue = gBeTransubicacionHHEnc.FechaInicio
-                    dtpHoraInicio.Value = gBeTransubicacionHHEnc.HoraInicio
-                    dtpFechaFin.EditValue = gBeTransubicacionHHEnc.FechaFin
-                    dtpHoraFin.Value = gBeTransubicacionHHEnc.HoraFin
-                    txtObservacion.Text = gBeTransubicacionHHEnc.Observacion
-                    chkActivo.Checked = gBeTransubicacionHHEnc.Activo
-                    chkOperadorPorlinea.Checked = gBeTransubicacionHHEnc.Operador_por_linea
-                    chkUbicacionConHh.Checked = gBeTransubicacionHHEnc.Ubicacion_con_hh
-                    User_agrTextEdit.Text = gBeTransubicacionHHEnc.User_agr
-                    Fec_agrDateEdit.Text = gBeTransubicacionHHEnc.Fec_agr
-                    User_modTextEdit.Text = gBeTransubicacionHHEnc.User_mod
-                    Fec_modDateEdit.Text = gBeTransubicacionHHEnc.Fec_mod
+                Cargar_Detalle(False)
+                Listar_Operadores()
 
-                    Cargar_Detalle(False)
+                'GT06012022: se carga el stock reservado asociado a la tarea de ubicación
+                Cargar_Datos_Stock_Reservado(gBeTransubicacionHHEnc.IdTareaUbicacionEnc)
 
-                    Listar_Operadores()
+        End Select
 
-            End Select
-
-            Habilita_Item()
-
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
+        Habilita_Item()
 
     End Sub
+
 
     Private Sub Validar_Operadores()
 
@@ -2424,166 +2466,6 @@ Public Class frmCambioUbicacion
             'pListObjOp.Add(pBetrans_ubic_hh_op)
 
         End If
-
-    End Sub
-
-    Private Sub frmCambioUbicacion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-
-        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-        SplashScreenManager.Default.SetWaitFormDescription("...")
-
-        Try
-
-            If (chkOperadorPorlinea.Checked) Then
-                cmbOperadores.Visible = True
-                tabDatos.TabPages.Remove(xtabOperador)
-
-            Else
-                cmbOperadores.Visible = False
-                tabDatos.TabPages.Add(xtabOperador)
-            End If
-
-            If Not AP.Listar_Bodegas_By_Usuario(cmbBodega) Then
-                XtraMessageBox.Show("No hay bodegas definidas para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
-
-            '#CKFK20181001: Colocar bodega por defecto.
-            cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
-            cmbBodega.RefreshEditValue()
-
-            If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietarioBodega, cmbBodega.EditValue) Then
-                XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
-
-            If Not IMS.Listar_Operadores(cmbOperadores) Then
-                XtraMessageBox.Show("No hay operadores definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
-
-            lblItemBandera.Text = ""
-
-            Validar_Operadores()
-
-            txtIdMotivoUbicacion.ReadOnly = False
-
-            Select Case Modo
-
-                Case TipoTrans.Nuevo
-
-                    User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-                    Fec_agrDateEdit.Text = Now
-                    User_modTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-                    Fec_modDateEdit.Text = Now
-                    tabDatos.TabPages.Remove(xtabOperador)
-                    mnuGuardar.Enabled = True
-                    mnuActualizar.Enabled = False
-                    mnuEliminar.Enabled = False
-                    mnuAsignacion.Enabled = False
-                    mnuLiberarStockNoProcesado.Enabled = False
-                    mnuImprimir1.Enabled = False
-                    cmdEliminarDocumento.Visibility = BarItemVisibility.Never
-
-                    dtpFechaInicio.DateTime = Now
-                    dtpFechaFin.DateTime = Now.AddHours(1)
-
-                    clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
-
-                    Verifica_Permiso_Ubicacion_Sin_HH()
-
-                    If tipoOperacion = 2 Then
-                        groupCambioDeEstado.Visible = False
-                        Text = "Cambio de ubicación"
-                        RibbonPage1.Text = "Cambio de ubicación"
-                    ElseIf tipoOperacion = 3 Then
-                        groupCambioDeEstado.Visible = True
-                        Text = "Cambio de estado"
-                        RibbonPage1.Text = "Cambio de estado"
-                    End If
-
-                Case TipoTrans.Editar
-
-                    'GT20122021: al editar inhabilita el link
-                    lnkUbicacionDestino.Enabled = False
-
-                    Dim Bodega As New clsBeBodega
-
-                    clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
-
-                    clsLnTarimas.GetAllTarimasUsadas(lvTarimasUsadas, gBeTransubicacionHHEnc.IdTareaUbicacionEnc)
-
-                    If tipoOperacion = 2 Then
-                        groupCambioDeEstado.Visible = False
-                        Text = "Cambio de ubicación"
-                    ElseIf tipoOperacion = 3 Then
-                        groupCambioDeEstado.Visible = True
-                        Text = "Cambio de estado"
-                    End If
-
-                    If gBeTransubicacionHHEnc.Estado = "Finalizado" Then
-                        Deshabilitar_Controles()
-                        Deshabilita_Menu()
-                    Else
-                        Habilita_Menu()
-                        chkOperadorPorlinea.Enabled = False
-                        cmbBodega.Enabled = False
-                        cmbPropietarioBodega.Enabled = False
-                        mnuGuardar.Enabled = False
-                        mnuActualizar.Enabled = True
-                        mnuEliminar.Enabled = True
-                        mnuAsignacion.Enabled = True
-                    End If
-
-                    lblEstado.Text = gBeTransubicacionHHEnc.Estado
-                    lbl.Text = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
-                    gBeTareaHh.IdTransaccion = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
-                    gBeTareaHh.IdTareahh = gBeTransubicacionHHEnc.IdTareaUbicacionEnc
-
-                    '#CM_20092018_1142AM: se busca la bodega por el IdPropietarioBodega ya que no está en la tabla de encabezado.
-                    Bodega = clsLnPropietario_bodega.GetBodegaByIdPropietarioBodega(gBeTransubicacionHHEnc.IdPropietarioBodega)
-
-                    If Bodega IsNot Nothing Then
-                        cmbBodega.EditValue = Bodega.IdBodega
-                    End If
-
-                    If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
-                        cmdEliminarDocumento.Visibility = BarItemVisibility.Always
-                    Else
-                        cmdEliminarDocumento.Enabled = BarItemVisibility.Never
-                    End If
-
-                    cmbPropietarioBodega.EditValue = gBeTransubicacionHHEnc.IdPropietarioBodega
-                    txtIdMotivoUbicacion.Text = gBeTransubicacionHHEnc.IdMotivoUbicacion
-                    txtIdMotivoUbicacion_LostFocus(Nothing, Nothing)
-                    dtpFechaInicio.EditValue = gBeTransubicacionHHEnc.FechaInicio
-                    dtpHoraInicio.Value = gBeTransubicacionHHEnc.HoraInicio
-                    dtpFechaFin.EditValue = gBeTransubicacionHHEnc.FechaFin
-                    dtpHoraFin.Value = gBeTransubicacionHHEnc.HoraFin
-                    txtObservacion.Text = gBeTransubicacionHHEnc.Observacion
-                    chkActivo.Checked = gBeTransubicacionHHEnc.Activo
-                    chkOperadorPorlinea.Checked = gBeTransubicacionHHEnc.Operador_por_linea
-                    chkUbicacionConHh.Checked = gBeTransubicacionHHEnc.Ubicacion_con_hh
-                    User_agrTextEdit.Text = gBeTransubicacionHHEnc.User_agr
-                    Fec_agrDateEdit.Text = gBeTransubicacionHHEnc.Fec_agr
-                    User_modTextEdit.Text = gBeTransubicacionHHEnc.User_mod
-                    Fec_modDateEdit.Text = gBeTransubicacionHHEnc.Fec_mod
-
-                    Cargar_Detalle(False)
-
-                    Listar_Operadores()
-
-                    'GT06012022: se carga el stock reservado asociado a la tarea de ubicación
-                    Cargar_Datos_Stock_Reservado(gBeTransubicacionHHEnc.IdTareaUbicacionEnc)
-
-            End Select
-
-            Habilita_Item()
-
-        Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        Finally
-            SplashScreenManager.CloseForm(False)
-        End Try
-
 
     End Sub
 
