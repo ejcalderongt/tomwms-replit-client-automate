@@ -131,7 +131,7 @@ namespace WMSWebAPI.Controllers
                                               [FromServices] ILogger<SyncSalidasController> _logger)
         {
             // Validar que el request y el documento interno no sean nulos
-            if (request == null || request.beINavPedCompraEnc == null)
+            if (request == null  | request.beINavPedCompraEnc == null)
             {
                 _logger.LogWarning("Request o documento clsBeI_nav_ped_traslado_enc es nulo.");
                 return BadRequest("Debe proporcionar un documento válido con la estructura { beINavPedCompraEnc: {...} }");
@@ -202,8 +202,8 @@ namespace WMSWebAPI.Controllers
         }
         [HttpGet("mi3/pendientes-procesar")]
         public IActionResult GetSalidasPendientesDeProcesar([FromServices] IConfiguration _configuration,
-                                                    [FromQuery] string? noPedido = null,
-                                                    [FromQuery] int? idTipoDocumento = null)
+                                                            [FromQuery] string? noPedido = null,
+                                                            [FromQuery] int? idTipoDocumento = null)
         {
             try
             {
@@ -259,7 +259,7 @@ namespace WMSWebAPI.Controllers
 
                 var result = data.Select(x =>
                 {
-                    var esTraslado = x.IdTipoDocumento == 6;
+                    var esTraslado = x.IdTipoDocumento == 2;
 
                     var codigoBodegaOrigen = bodegaCodigoById.TryGetValue(x.Idbodega, out var codBodOrigen)
                         ? codBodOrigen

@@ -1204,8 +1204,8 @@ Public Class frmLoginEx
 
             'GenerateVoicePickCode("17404003900174", "000455", "250225")
 
-            Dim FRM As New FrmNotificacionEventoMnt
-            FRM.ShowDialog()
+            'Dim FRM As New FrmNotificacionEventoMnt
+            'FRM.ShowDialog()
 
         Catch ex As Exception
 

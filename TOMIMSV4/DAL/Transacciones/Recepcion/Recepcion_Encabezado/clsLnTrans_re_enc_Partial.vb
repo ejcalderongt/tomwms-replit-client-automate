@@ -5663,7 +5663,6 @@ Partial Public Class clsLnTrans_re_enc
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdBodega:=BeOrdenCompraEnc.IdBodega,
                                                  pIdUsuarioAgr:=BeOrdenCompraEnc.User_Agr,
-                                                 pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try

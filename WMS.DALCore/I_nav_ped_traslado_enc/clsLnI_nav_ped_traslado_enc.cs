@@ -12,6 +12,7 @@ using WMS.EntityCore.Log;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
+using WMS.EntityCore.Road;
 using WMSWebAPI.Be;
 
 
@@ -409,6 +410,7 @@ namespace WMS.DALCore
                 // =========================
                 int insertadas = 0;
                 int insertadasTabla = 0;
+                var mensajesFallo = new List<string>();
 
                 clsBeI_nav_ped_traslado_det beNavDetAnt = new clsBeI_nav_ped_traslado_det();
                 clsBeTrans_pe_det? refBePedidoDet = new clsBeTrans_pe_det();
@@ -519,6 +521,11 @@ namespace WMS.DALCore
                         }
                         else
                         {
+                            // Captura razón específica antes de sobreescribir con código genérico
+                            if (!string.IsNullOrWhiteSpace(PDet.Process_Result) &&
+                                !PDet.Process_Result.StartsWith("ERROR_202310021910A"))
+                                mensajesFallo.Add(PDet.Process_Result);
+
                             // Marcado de error en tabla intermedia
                             PDet.Status = 0;
                             PDet.Process_Result = "ERROR_202310021910A: No se pudo completar la reserva, consulte log_error_wms.";
@@ -579,7 +586,10 @@ namespace WMS.DALCore
                     {
                         clsLnTrans_pe_det.Eliminar_Detalle_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc, lConectionInterface, lTransInterface);
                         clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConectionInterface, lTransInterface);
-                        throw new Exception($"Pedido '{pBePedidoEnc.Referencia}' quedó sin reservas/lineas (se revirtió).");
+                        string detalleFallo = mensajesFallo.Count > 0
+                            ? " Detalle: " + string.Join("; ", mensajesFallo)
+                            : string.Empty;
+                        throw new Exception($"Pedido '{pBePedidoEnc.Referencia}' quedó sin reservas/lineas (se revirtió).{detalleFallo}");
                     }
                 }
 
@@ -976,6 +986,9 @@ namespace WMS.DALCore
                                                             pBeTrasladoDet.Quantity);
                             }
                         }
+
+                        if (!string.IsNullOrWhiteSpace(pBeStockRes.UltimoMensajeFallo))
+                            vMensajeEx += $" Razón: {pBeStockRes.UltimoMensajeFallo}";
 
                         pBeTrasladoDet.Process_Result = vMensajeEx;
 

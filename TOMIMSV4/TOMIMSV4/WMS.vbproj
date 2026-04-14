@@ -41,7 +41,7 @@
     <SuiteName>WMS_QA</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>83</ApplicationRevision>
+    <ApplicationRevision>88</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -549,6 +549,42 @@
     <Compile Include="Mantenimientos\Motivo_Correccion\frmMotivo_CorrecionList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionContactoBodegaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionDestinatarioReglaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionEventoMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionEventoVariableMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionLayoutMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.Designer.vb">
+      <DependentUpon>FrmNotificacionPlantillaMnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Operadores\rptResolucionesOperador.Designer.vb">
       <DependentUpon>rptResolucionesOperador.vb</DependentUpon>
     </Compile>
@@ -565,6 +601,9 @@
       <DependentUpon>frmPrincipal02.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
@@ -3285,6 +3324,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Motivo_Correccion\frmMotivo_CorrecionList.resx">
       <DependentUpon>frmMotivo_CorrecionList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionContactoBodegaMnt.resx">
+      <DependentUpon>FrmNotificacionContactoBodegaMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionDestinatarioReglaMnt.resx">
+      <DependentUpon>FrmNotificacionDestinatarioReglaMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoMnt.resx">
+      <DependentUpon>FrmNotificacionEventoMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionEventoVariableMnt.resx">
+      <DependentUpon>FrmNotificacionEventoVariableMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionLayoutMnt.resx">
+      <DependentUpon>FrmNotificacionLayoutMnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\NotificacionEvento\FrmNotificacionPlantillaMnt.resx">
+      <DependentUpon>FrmNotificacionPlantillaMnt.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Operadores\rptResolucionesOperador.resx">
       <DependentUpon>rptResolucionesOperador.vb</DependentUpon>

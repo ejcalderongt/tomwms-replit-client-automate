@@ -21,7 +21,7 @@ Public Class clsLnTrans_picking_ubic
                 .IdProductoEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado"))
                 .IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
                 .IdUnidadMedida = IIf(IsDBNull(dr.Item("IdUnidadMedida")), 0, dr.Item("IdUnidadMedida"))
-                .IdUbicacionAnterior = IIf(IsDBNull(dr.Item("IdUbicacionAnterior")), 0, dr.Item("IdUbicacionAnterior"))
+                .IdUbicacionAnterior = Val(IIf(IsDBNull(dr.Item("IdUbicacionAnterior")), 0, dr.Item("IdUbicacionAnterior")))
                 .IdRecepcion = IIf(IsDBNull(dr.Item("IdRecepcion")), 0, dr.Item("IdRecepcion"))
                 .Lote = IIf(IsDBNull(dr.Item("lote")), "", dr.Item("lote"))
                 .Fecha_Vence = IIf(IsDBNull(dr.Item("fecha_vence")), Date.Now, dr.Item("fecha_vence"))

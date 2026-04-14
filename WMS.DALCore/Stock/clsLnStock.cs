@@ -1300,21 +1300,9 @@ public class clsLnStock
                 }
             }
 
-            // Validación de vencimiento
-            if (pBeStockRes.IdUbicacionAbastecerCon == 0)
-            {
-                if (BeBodega != null && pBeProductoOutput != null)
-                {
-                    if (pBeProductoOutput.control_vencimiento)
-                    {
-                        // Validación para devolución a proveedor
-                        if (!BeBodega.Despachar_producto_vencido && !pEs_Devolucion)
-                        {
-                            vSQL += " And stock.fecha_vence > GETDATE() ";
-                        }
-                    }
-                }
-            }
+            // NOTA: El filtro de vencimiento (stock.fecha_vence > GETDATE()) fue removido del SQL.
+            // Ahora se aplica en código (LINQ) dentro de StockQueryStep.FilterExpiredStock()
+            // para poder detectar si el fallo fue por stock vencido vs. no tener stock en absoluto.
 
             // Excluir ubicaciones de despacho
             if (pBeStockRes.IdUbicacionAbastecerCon == 0)

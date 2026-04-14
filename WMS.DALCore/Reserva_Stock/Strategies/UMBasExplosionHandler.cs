@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 
@@ -23,11 +28,9 @@ namespace WMS.StockReservation.Strategies
 
         protected override bool CanProcess(ReservationContext context)
         {
-            // Solo procesa si está habilitado el modo explosión o UMBas
             if (!context.IsExplosionModeEnabled && !context.IsUMBasModeEnabled)
                 return false;
 
-            // Verificar que haya stock disponible
             var availableStock = context.WorkingStockList?
                 .Where(s => s.Cantidad > 0)
                 .ToList();
@@ -61,24 +64,20 @@ namespace WMS.StockReservation.Strategies
 
         private void ProcessExplosion(ReservationContext context, HandlerResult result)
         {
-            // Explosión: romper cajas/pallets en unidades
             var presentationFactor = context.DefaultPresentation?.Factor ?? 1;
 
-            // Convertir pending de presentación a UMBas
             double pendingInUMBas = _converter.ConvertToUMBas(
                 context.PendingQuantity,
                 presentationFactor);
 
             _logger.LogInfo($"Explosión: {context.PendingQuantity:F6} presentación = {pendingInUMBas:F6} UMBas");
 
-            // Ordenar stock por FEFO y lic_plate
             var orderedStock = context.WorkingStockList
                 .Where(s => s.Cantidad > 0)
                 .OrderBy(s => s.Fecha_vence)
                 .ThenBy(s => s.Lic_plate)
                 .ToList();
 
-            // Reservar en UMBas
             foreach (var stock in orderedStock)
             {
                 if (pendingInUMBas <= 0.000001) break;
@@ -87,10 +86,8 @@ namespace WMS.StockReservation.Strategies
 
                 if (quantityToReserve <= 0.000001) continue;
 
-                // Crear reserva en UMBas (IdPresentacion = 0)
                 var reservation = CreateReservation(context, stock, quantityToReserve, isUMBas: true);
 
-                // Actualizar stock
                 stock.Cantidad -= quantityToReserve;
                 pendingInUMBas -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
@@ -102,42 +99,32 @@ namespace WMS.StockReservation.Strategies
                     $"Explosión a UMBas | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
 
-            // NO modificar context.PendingQuantity aquí - lo hace ReservationLoopStep
-            // result.ReservedQuantity ya contiene la cantidad en UMBas
-
             _logger.LogCheckpoint($"#CASO_EXPLOSION_END - Reservado: {result.ReservedQuantity:F6} UMBas");
         }
 
         private void ProcessUMBas(ReservationContext context, HandlerResult result)
         {
-            // UMBas: reservar en unidad base desde stock en presentación
             var presentationFactor = context.DefaultPresentation?.Factor ?? 1;
 
             _logger.LogInfo($"UMBas: Pendiente {context.PendingQuantity:F6} UMBas");
 
-            // Ordenar stock por FEFO y lic_plate
             var orderedStock = context.WorkingStockList
                 .Where(s => s.Cantidad > 0)
                 .OrderBy(s => s.Fecha_vence)
                 .ThenBy(s => s.Lic_plate)
                 .ToList();
 
-            // Reservar directamente en UMBas
             foreach (var stock in orderedStock)
             {
                 if (context.PendingQuantity <= 0.000001) break;
 
-                // Convertir stock disponible a UMBas
                 double stockInUMBas = _converter.ConvertToUMBas(stock.Cantidad, presentationFactor);
                 double quantityToReserve = Math.Min(stockInUMBas, context.PendingQuantity);
 
                 if (quantityToReserve <= 0.000001) continue;
 
-                // Crear reserva en UMBas
                 var reservation = CreateReservation(context, stock, quantityToReserve, isUMBas: true);
 
-                // Actualizar stock (descontar en presentación)
-                // NO modificar context.PendingQuantity - lo hace ReservationLoopStep
                 double stockDecrease = _converter.ConvertToPresentation(quantityToReserve, presentationFactor);
                 stock.Cantidad -= stockDecrease;
                 result.ReservedQuantity += quantityToReserve;
@@ -167,37 +154,38 @@ namespace WMS.StockReservation.Strategies
                 IdPropietarioBodega = stock.IdPropietarioBodega,
                 IdProductoEstado = stock.IdProductoEstado,
                 IdUbicacion = stock.IdUbicacion,
-                
+
                 // Presentación y cantidad (UMBas no tiene presentación)
                 IdPresentacion = isUMBas ? 0 : context.Request.IdPresentacion,
                 IdUnidadMedida = stock.IdUnidadMedida,
                 Cantidad = quantity,
-                
+
                 // Trazabilidad del stock
                 Lote = stock.Lote,
                 Lic_plate = stock.Lic_plate,
                 Serial = stock.Serial,
                 Uds_lic_plate = stock.Uds_lic_plate,
                 No_bulto = stock.No_bulto,
-                
+
                 // Fechas
                 Fecha_ingreso = stock.Fecha_Ingreso,
                 Fecha_vence = stock.Fecha_vence,
                 Fecha_manufactura = stock.Fecha_Manufactura,
                 Añada = stock.Añada,
-                
+
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
-                
-                
+
+                // Transacción y pedido
+                Indicador = context.Request.Indicador,
+                Estado = "UNCOMMITED",
+                IdTransaccion = context.Request.IdTransaccion,
+                IdPedido = context.Request.IdTransaccion,
+                IdPedidoDet = context.Request.IdPedidoDet,
+
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName
             };
-
-            if (context.PedidoDet != null)
-            {
-                reservation.IdPedidoDet = context.PedidoDet.IdPedidoDet;
-            }
 
             return reservation;
         }
