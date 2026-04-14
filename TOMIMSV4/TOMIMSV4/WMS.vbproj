@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_INELAC\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_IDEALSA\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\192.168.126.79\WMS_INELAC\</InstallUrl>
-    <UpdateUrl>\\192.168.126.79\WMS_INELAC\</UpdateUrl>
+    <InstallUrl>\\192.168.126.79\WMS\</InstallUrl>
+    <UpdateUrl>\\192.168.126.79\WMS\</UpdateUrl>
     <ProductName>WMS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>100</ApplicationRevision>
+    <ApplicationRevision>102</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

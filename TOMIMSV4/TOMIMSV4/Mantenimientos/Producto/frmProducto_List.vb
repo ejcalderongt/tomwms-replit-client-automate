@@ -12,8 +12,6 @@ Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
-Imports System.Net.Http
-Imports System.Text
 Imports Newtonsoft.Json
 
 Public Class frmProductoList
