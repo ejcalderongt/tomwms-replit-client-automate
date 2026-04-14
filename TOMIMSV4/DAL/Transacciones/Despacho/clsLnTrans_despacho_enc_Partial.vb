@@ -460,6 +460,13 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                                           lConnection,
                                                                                           lTransaction)
 
+                    If (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS AndAlso
+                               BePedidoEnc.Cliente.Codigo = BePedidoEnc.Bodega_Destino) Then
+                        BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino = True
+                        BeTipoDocumentoSalida.Generar_Recepcion_Auto_Bodega_Destino = True
+                        BeTipoDocumentoSalida.Recibir_Producto_Auto_Bodega_Destino = True
+                    End If
+
                     '#EJC20190710:
                     'Si existe configuración de interface, y la interface dice que no se genera auto (puede que el ERP genere el ingreso atraves de mi3 en demanda en la bodega destino)
                     If Not BeInterfaceConfig Is Nothing Then

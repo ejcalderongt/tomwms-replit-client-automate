@@ -746,6 +746,8 @@ Partial Public Class clsLnTrans_ajuste_enc
             Dim BeMov As clsBeTrans_movimientos
             Dim IdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
             Dim IdStock As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
+            Dim detalle_correcto As Integer = 0
+            Dim detalle_incorrecto As Integer = 0
 
             For Each item As clsBeTrans_ajuste_det In pAjusteEnc.Lineas_Detalle
 
