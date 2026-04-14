@@ -90,6 +90,19 @@ Public Class clsSyncSapFacturaReserva
 
                             End If
 
+                            Dim BeTipoDocumento As New clsBeTrans_oc_ti
+                            'BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(navPedidoCompraEnc.Document_Type, lConnection, lTransInterface)
+
+                            If BeTipoDocumento IsNot Nothing Then
+                                Dim vEsImportacion As Boolean = BeTipoDocumento.Es_Importacion
+
+                                If vEsImportacion Then
+                                    If BeConfigEnc.Bodega_Prorrateo = "" OrElse BeConfigEnc.Idbodega <> BeConfigEnc.Bodega_Prorrateo Then
+                                        Throw New Exception("El documento está mal configurado, es de importación y la bodega origen no es la bodega de prorrateo ")
+                                    End If
+                                End If
+                            End If
+
                             If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
                                                                                     BePedidoCompraEnc,
                                                                                     vResult) Then
