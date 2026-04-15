@@ -6940,8 +6940,6 @@ Public Class frmPedido
             .ShowInGroupColumnFooter = GridView6.Columns("Cantidad_Pres")}
             GridView6.GroupSummary.Add(item3)
 
-            GridView6.Columns("IdProductoTallaColor").Visible = False
-
             GridView6.BestFitColumns()
 
         Catch ex As Exception

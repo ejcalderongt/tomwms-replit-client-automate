@@ -8794,4 +8794,5 @@ MessageBoxButtons.YesNo,
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
+
 End Class
