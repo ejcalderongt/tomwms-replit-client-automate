@@ -751,7 +751,7 @@ Partial Public Class clsLnBodega
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction()
 
-                    Dim vSQL As String = "SELECT Nombre FROM bodega WHERE IdBodega=@IdBodega"
+                    Dim vSQL As String = "SELECT concat(CODIGO, ' - ', Nombre) as Nombre FROM bodega WHERE IdBodega=@IdBodega"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

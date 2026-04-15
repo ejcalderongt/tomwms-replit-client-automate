@@ -325,6 +325,8 @@ Partial Class frmProducto
         Me.TabPresentacion = New DevExpress.XtraTab.XtraTabPage()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.GrpPresentacion = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbEtiquetaPresentacion = New DevExpress.XtraEditors.LookUpEdit()
+        Me.lblEtiquetaPresentacion = New System.Windows.Forms.Label()
         Me.lblSistema = New System.Windows.Forms.Label()
         Me.chkSistema = New DevExpress.XtraEditors.CheckEdit()
         Me.chkGeneraLPAuto = New DevExpress.XtraEditors.CheckEdit()
@@ -490,8 +492,6 @@ Partial Class frmProducto
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.DetalleBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.NumericChartRangeControlClient1 = New DevExpress.XtraEditors.NumericChartRangeControlClient()
-        Me.cmbEtiquetaPresentacion = New DevExpress.XtraEditors.LookUpEdit()
-        Me.lblEtiquetaPresentacion = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -726,6 +726,7 @@ Partial Class frmProducto
         Me.SplitContainer1.SuspendLayout()
         CType(Me.GrpPresentacion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpPresentacion.SuspendLayout()
+        CType(Me.cmbEtiquetaPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkSistema.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkGeneraLPAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkPermitirPaletizar.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -871,7 +872,6 @@ Partial Class frmProducto
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericChartRangeControlClient1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbEtiquetaPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -4040,6 +4040,27 @@ Partial Class frmProducto
         Me.GrpPresentacion.Size = New System.Drawing.Size(1552, 372)
         Me.GrpPresentacion.TabIndex = 0
         '
+        'cmbEtiquetaPresentacion
+        '
+        Me.cmbEtiquetaPresentacion.Location = New System.Drawing.Point(1048, 311)
+        Me.cmbEtiquetaPresentacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbEtiquetaPresentacion.MenuManager = Me.RibbonControl
+        Me.cmbEtiquetaPresentacion.Name = "cmbEtiquetaPresentacion"
+        Me.cmbEtiquetaPresentacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEtiquetaPresentacion.Properties.NullText = ""
+        Me.cmbEtiquetaPresentacion.Size = New System.Drawing.Size(190, 22)
+        Me.cmbEtiquetaPresentacion.TabIndex = 38
+        '
+        'lblEtiquetaPresentacion
+        '
+        Me.lblEtiquetaPresentacion.AutoSize = True
+        Me.lblEtiquetaPresentacion.Location = New System.Drawing.Point(941, 317)
+        Me.lblEtiquetaPresentacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblEtiquetaPresentacion.Name = "lblEtiquetaPresentacion"
+        Me.lblEtiquetaPresentacion.Size = New System.Drawing.Size(53, 16)
+        Me.lblEtiquetaPresentacion.TabIndex = 37
+        Me.lblEtiquetaPresentacion.Text = "Etiqueta"
+        '
         'lblSistema
         '
         Me.lblSistema.AutoSize = True
@@ -5909,27 +5930,6 @@ Partial Class frmProducto
         Me.DetalleBindingSource.DataMember = "Detalle"
         Me.DetalleBindingSource.DataSource = Me.DsResumenStockBindingSource
         '
-        'cmbEtiquetaPresentacion
-        '
-        Me.cmbEtiquetaPresentacion.Location = New System.Drawing.Point(1048, 311)
-        Me.cmbEtiquetaPresentacion.Margin = New System.Windows.Forms.Padding(4)
-        Me.cmbEtiquetaPresentacion.MenuManager = Me.RibbonControl
-        Me.cmbEtiquetaPresentacion.Name = "cmbEtiquetaPresentacion"
-        Me.cmbEtiquetaPresentacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbEtiquetaPresentacion.Properties.NullText = ""
-        Me.cmbEtiquetaPresentacion.Size = New System.Drawing.Size(190, 22)
-        Me.cmbEtiquetaPresentacion.TabIndex = 38
-        '
-        'lblEtiquetaPresentacion
-        '
-        Me.lblEtiquetaPresentacion.AutoSize = True
-        Me.lblEtiquetaPresentacion.Location = New System.Drawing.Point(941, 317)
-        Me.lblEtiquetaPresentacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblEtiquetaPresentacion.Name = "lblEtiquetaPresentacion"
-        Me.lblEtiquetaPresentacion.Size = New System.Drawing.Size(53, 16)
-        Me.lblEtiquetaPresentacion.TabIndex = 37
-        Me.lblEtiquetaPresentacion.Text = "Etiqueta"
-        '
         'frmProducto
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -6110,6 +6110,7 @@ Partial Class frmProducto
         CType(Me.GrpPresentacion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpPresentacion.ResumeLayout(False)
         Me.GrpPresentacion.PerformLayout()
+        CType(Me.cmbEtiquetaPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkSistema.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkGeneraLPAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkPermitirPaletizar.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6277,7 +6278,6 @@ Partial Class frmProducto
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericChartRangeControlClient1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbEtiquetaPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

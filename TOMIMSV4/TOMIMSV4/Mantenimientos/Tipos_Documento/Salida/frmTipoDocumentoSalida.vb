@@ -35,6 +35,8 @@ Public Class frmTipoDocumentoSalida
 
             Llenar_Estados()
 
+            IMS.Listar_TipoIngresoOC(cmbTipoDocumentoIngreso, False)
+
             Select Case Modo
 
                 Case TipoTrans.Nuevo
@@ -418,5 +420,9 @@ Public Class frmTipoDocumentoSalida
          MessageBoxButtons.OK,
          MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub frmTipoDocumentoSalida_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+
     End Sub
 End Class

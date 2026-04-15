@@ -154,6 +154,8 @@ namespace WMSWebAPI.Be
         public string Color { get; set; } = "";
         public int IdProductoTallaColor { get; set; } = 0;
 
+        public string? UltimoMensajeFallo { get; set; } = null;
+
         public clsBeStock_res() { }
 
         public object Clone()
