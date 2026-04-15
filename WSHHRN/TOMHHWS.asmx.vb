@@ -5817,6 +5817,7 @@ Public Class TOMHHWS
         Try
 
             For Each BeVWStockRes As clsBeVW_stock_res In pStockResList
+                clsLnLog_error_wms.Agregar_Error(BeVWStockRes.Movimiento.IdEmpresa, BeVWStockRes.Movimiento.IdBodegaOrigen, "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: " & BeVWStockRes.Movimiento.IdOperadorBodega & " y TipoTarea " & BeVWStockRes.Movimiento.IdTipoTarea)
                 Aplica_Cambio_Estado_Ubic_HH_LicCompleta = clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic(BeVWStockRes.Movimiento, BeVWStockRes, 0, 0)
             Next
 
@@ -11823,6 +11824,7 @@ Public Class TOMHHWS
         End Try
 
     End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function ml_get_ubicacion_sugerida(ByVal pIdProducto As Integer,
                                               ByVal pIdBodega As Integer,
@@ -12971,11 +12973,11 @@ Public Class TOMHHWS
             Dim esvalida As Boolean = clsLnTrans_ubicsug.Ubicacion_Es_Valida(pIdProducto, pIdUbicacion, pIdBodega)
 
             Dim json As String = JsonConvert.SerializeObject(New With {
-                                            .UbicacionValida = esvalida
-                                        },
-                                        New JsonSerializerSettings With {
-                                            .NullValueHandling = NullValueHandling.Include
-                                        })
+    .UbicacionValida = esvalida
+},
+New JsonSerializerSettings With {
+    .NullValueHandling = NullValueHandling.Include
+})
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
@@ -18832,26 +18834,597 @@ Public Class TOMHHWS
         End Try
     End Function
 
-    <WebMethod()>
-    <ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False)>
-    Public Function EsPalletNoEstandarJSON(ByVal pStock As clsBeStock) As Object
-        Try
-            Dim esNoEstandar As Boolean = clsLnStock.Es_Pallet_No_Estandar(pStock)
+    '#GT18032026: validar que tag exista en BD
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Obtener_Barras_Pallet_I_Nav_Lote(ByVal pListaCodigoBarraPallet As List(Of String)) As String
 
-            Return New With {
-                .Error = False,
-                .Resultado = esNoEstandar
-            }
+        Try
+
+            Dim vLista As New List(Of clsBeI_nav_barras_pallet)
+            vLista = clsLnI_nav_barras_pallet.Get_Single_By_Barra_RFID(pListaCodigoBarraPallet)
+
+            Return JsonConvert.SerializeObject(vLista)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim js As New JavaScriptSerializer()
+                    Dim vError = New With {.Error = Mensaje}
+
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 500
+                    HttpContext.Current.Response.ContentType = "application/json; charset=utf-8"
+                    HttpContext.Current.Response.Write(js.Serialize(vError))
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                    Return Nothing
+                End If
+
+            End If
+
+            Throw New Exception(Mensaje)
+
+        End Try
+
+    End Function
+
+    '#GT19032026: generar encabezado para tags en HH
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Guardar_Encabezado_RFID(ByVal pEncabezado As clsBeI_nav_barras_rfid_enc) As clsBeI_nav_barras_rfid_enc
+        Guardar_Encabezado_RFID = Nothing
+
+        Try
+
+            Guardar_Encabezado_RFID = clsLnI_nav_barras_rfid_enc.Guardar_Encabezado_Con_Primer_Detalle(pEncabezado)
+
+            Return Guardar_Encabezado_RFID
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#GT26032026: guardar detalle de tags 
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Agregar_Detalle_A_Encabezado_RFID(ByVal pEncabezado As clsBeI_nav_barras_rfid_enc) As Boolean
+        Agregar_Detalle_A_Encabezado_RFID = False
+        Try
+
+            Agregar_Detalle_A_Encabezado_RFID = clsLnI_nav_barras_rfid_enc.Agregar_Detalle_A_Encabezado_RFID(pEncabezado)
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+        End Try
+    End Function
+
+    '#GT07042026: cargar stock para la HH
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer) As List(Of clsBeI_nav_barras_rfid_enc)
+
+        Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
+
+        Try
+
+            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 500
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#GT18032026: validar tag con existencia
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Obtener_EPC_Con_Existencia_Para_Salida(ByVal pListaCodigoBarraPallet As List(Of String)) As String
+        Try
+
+            Dim vLista As New List(Of clsBeI_nav_barras_pallet)
+            vLista = clsLnI_nav_barras_pallet.Obtener_EPC_Con_Existencia_Para_Salida(pListaCodigoBarraPallet)
+
+            Return JsonConvert.SerializeObject(vLista)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim js As New JavaScriptSerializer()
+                    Dim vError = New With {.Error = Mensaje}
+
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 500
+                    HttpContext.Current.Response.ContentType = "application/json; charset=utf-8"
+                    HttpContext.Current.Response.Write(js.Serialize(vError))
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                    Return Nothing
+                End If
+
+            End If
+
+            Throw New Exception(Mensaje)
+        End Try
+    End Function
+
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Get_Productos_By_IdUbicacion_JSON(ByVal pIdUbicacion As Integer,
+                                                  ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
+
+        Dim curContext As HttpContext = HttpContext.Current
+
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(pIdUbicacion, pIdBodega)
+
+            If lStock Is Nothing Then
+                lStock = New List(Of clsBeVW_stock_res)
+            End If
+
+            Dim jsonResult As String =
+            JsonConvert.SerializeObject(
+                lStock,
+                New JsonSerializerSettings With {
+                    .NullValueHandling = NullValueHandling.Include,
+                    .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    .Formatting = Formatting.None
+                })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(jsonResult)
+            curContext.ApplicationInstance.CompleteRequest()
+
+            Return lStock
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            WriteErrorToEventLog(ex.ToString())
 
-            Return New With {
-                .Error = True,
-                .Mensaje = ex.Message
-            }
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
+            WriteErrorToEventLog(ex.Message)
+
+            If mArch IsNot Nothing AndAlso mArch.Tipo <> "WM" Then
+                Dim DT As New DataTable("CustomError")
+                DT.Columns.Add("Error", GetType(String))
+                DT.Rows.Add(ex.Message)
+
+                Dim sw As New StringWriter()
+                DT.WriteXml(sw)
+
+                curContext.Response.Clear()
+                curContext.Response.StatusCode = 299
+                curContext.Response.SubStatusCode = CInt(HttpStatusCode.InternalServerError)
+                curContext.Response.Output.Write(sw.ToString())
+                curContext.Response.ContentType = "text/xml"
+                curContext.ApplicationInstance.CompleteRequest()
+
+                Return Nothing
+            End If
+
+            Dim errorJson As String =
+            JsonConvert.SerializeObject(
+                New With {
+                    .Error = True,
+                    .Mensaje = ex.Message
+                })
+
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
+
+            Return Nothing
+        End Try
+
+    End Function
+
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Validar_Mismo_Producto_Posicion_JSON(ByVal pIdBodega As Integer,
+                                                     ByVal pIdTramo As Integer,
+                                                     ByVal pIndice_x As Integer,
+                                                     ByVal pNivel As Integer,
+                                                     ByVal pIdUbicacion As Integer,
+                                                     ByVal pIdProductoBodega As Integer) As Object
+
+        Dim curContext As HttpContext = HttpContext.Current
+
+        Try
+            Dim posicionValida As Boolean = True
+
+            Dim lUbicaciones As List(Of clsBeBodega_ubicacion) =
+            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
+                pIdBodega,
+                pIdTramo,
+                pIndice_x,
+                pNivel,
+                pIdUbicacion)
+
+            If lUbicaciones Is Nothing Then
+                lUbicaciones = New List(Of clsBeBodega_ubicacion)
+            End If
+
+            For Each ubic As clsBeBodega_ubicacion In lUbicaciones
+
+                Dim lStock As List(Of clsBeVW_stock_res) =
+                clsLnStock.Get_All_By_IdUbicacion(ubic.IdUbicacion, ubic.IdBodega)
+
+                If lStock Is Nothing OrElse lStock.Count = 0 Then
+                    Continue For
+                End If
+
+                For Each stock As clsBeVW_stock_res In lStock
+                    If stock Is Nothing Then Continue For
+
+                    If stock.IdProductoBodega > 0 AndAlso stock.IdProductoBodega <> pIdProductoBodega Then
+                        posicionValida = False
+                        Exit For
+                    End If
+                Next
+
+                If Not posicionValida Then Exit For
+            Next
+
+            Dim jsonResult As String =
+            JsonConvert.SerializeObject(
+                New With {
+                    .PosicionValida = posicionValida
+                },
+                New JsonSerializerSettings With {
+                    .NullValueHandling = NullValueHandling.Include,
+                    .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    .Formatting = Formatting.None
+                })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(jsonResult)
+            curContext.ApplicationInstance.CompleteRequest()
+
+            Return Nothing
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
+            WriteErrorToEventLog(ex.Message)
+
+            If mArch IsNot Nothing AndAlso mArch.Tipo <> "WM" Then
+                Dim DT As New DataTable("CustomError")
+                DT.Columns.Add("Error", GetType(String))
+                DT.Rows.Add(ex.Message)
+
+                Dim sw As New StringWriter()
+                DT.WriteXml(sw)
+
+                curContext.Response.Clear()
+                curContext.Response.StatusCode = 299
+                curContext.Response.SubStatusCode = CInt(HttpStatusCode.InternalServerError)
+                curContext.Response.Output.Write(sw.ToString())
+                curContext.Response.ContentType = "text/xml"
+                curContext.ApplicationInstance.CompleteRequest()
+
+                Return Nothing
+            End If
+
+            Dim errorJson As String =
+            JsonConvert.SerializeObject(
+                New With {
+                    .Error = True,
+                    .Mensaje = ex.Message
+                })
+
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
+
+            Return Nothing
+        End Try
+
+    End Function
+
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Validar_Regla_Ubicacion_JSON(ByVal pIdProducto As Integer,
+                                             ByVal pIdUbicacion As Integer,
+                                             ByVal pIdBodega As Integer,
+                                             ByVal pIdEmpresa As Integer,
+                                             ByVal pIdEstado As Integer) As Object
+
+        Dim curContext As HttpContext = HttpContext.Current
+
+        Try
+            Dim ubicacionValida As Boolean = True
+            Dim mensaje As String = ""
+
+            Dim BeProducto As clsBeProducto = Nothing
+            Dim BeUbicacion As clsBeBodega_ubicacion = Nothing
+            Dim BeEstadoProd As clsBeProducto_estado = Nothing
+
+            BeProducto = clsLnProducto.Get_Single_By_IdProducto(pIdProducto)
+            BeUbicacion = clsLnBodega_ubicacion.GetSingle(pIdUbicacion, pIdBodega)
+
+            If BeProducto Is Nothing Then
+                ubicacionValida = False
+                mensaje = "No se pudo obtener la información del producto."
+            End If
+
+            If ubicacionValida AndAlso BeUbicacion Is Nothing Then
+                ubicacionValida = False
+                mensaje = "La ubicación destino no es válida."
+            End If
+
+            If ubicacionValida AndAlso pIdEstado > 0 Then
+                BeEstadoProd = clsLnProducto_estado.Get_Single_By_IdEstado(pIdEstado)
+            End If
+
+            ' 1. Validación directa por tipo de rotación
+            If ubicacionValida Then
+                If BeProducto.IdTipoRotacion > 0 AndAlso BeUbicacion.IdTipoRotacion > 0 Then
+                    If BeProducto.IdTipoRotacion <> BeUbicacion.IdTipoRotacion Then
+                        ubicacionValida = False
+                        mensaje = String.Format(
+                        "La ubicación destino no cumple la regla de ubicación. El tipo de rotación del producto ({0}) no coincide con el de la ubicación destino ({1}).",
+                        BeProducto.IdTipoRotacion,
+                        BeUbicacion.IdTipoRotacion)
+                    End If
+                End If
+            End If
+
+            ' 2. Validación directa por estado dañado
+            If ubicacionValida AndAlso BeEstadoProd IsNot Nothing Then
+                If BeEstadoProd.Dañado AndAlso Not BeUbicacion.Dañado Then
+                    ubicacionValida = False
+                    mensaje = "La ubicación destino no cumple la regla de ubicación. El producto está en estado dañado y la ubicación destino no está configurada para productos dañados."
+                End If
+            End If
+
+            ' 3. Validación por reglas configuradas
+            If ubicacionValida Then
+
+                Dim dtReglas As DataTable = clsLnRegla_ubic_enc.Listar(pIdBodega, pIdEmpresa, True)
+
+                If dtReglas IsNot Nothing AndAlso dtReglas.Rows.Count > 0 Then
+
+                    Dim hayReglasAplicables As Boolean = False
+                    Dim existeReglaCompatible As Boolean = False
+
+                    For Each dr As DataRow In dtReglas.Rows
+
+                        Dim regla As New clsBeRegla_ubic_enc()
+                        regla.IdReglaUbicacionEnc = CInt(dr("Código"))
+                        clsLnRegla_ubic_enc.GetSingleWithDetails(regla)
+
+                        Dim cumple As Boolean = True
+                        Dim reglaAplica As Boolean = False
+
+                        If regla.listDetRegla_Ubic_Det_Ir IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Ir.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeProducto.IdIndiceRotacion = 0 Then
+                                cumple = False
+                            Else
+                                Dim okIndice = regla.listDetRegla_Ubic_Det_Ir.
+                                Any(Function(x) x.Activo AndAlso x.IdIndiceRotacion = BeProducto.IdIndiceRotacion)
+
+                                cumple = cumple AndAlso okIndice
+                            End If
+                        End If
+
+                        If regla.listDetRegla_Ubic_Det_Tr IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Tr.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeUbicacion.IdTipoRotacion = 0 Then
+                                cumple = False
+                            Else
+                                Dim okTipo = regla.listDetRegla_Ubic_Det_Tr.
+                                Any(Function(x) x.Activo AndAlso x.IdTipoRotacion = BeUbicacion.IdTipoRotacion)
+
+                                cumple = cumple AndAlso okTipo
+                            End If
+                        End If
+
+                        If regla.listDetRegla_Ubic_Det_tp IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_tp.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeProducto Is Nothing OrElse BeProducto.IdTipoProducto = 0 Then
+                                cumple = False
+                            Else
+                                Dim okTipoProducto = regla.listDetRegla_Ubic_Det_tp.
+                                Any(Function(x) x.Activo AndAlso x.IdTipoProducto = BeProducto.IdTipoProducto)
+
+                                cumple = cumple AndAlso okTipoProducto
+                            End If
+                        End If
+
+                        If regla.listDetRegla_Ubic_Det_Pe IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Pe.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeEstadoProd Is Nothing OrElse BeEstadoProd.IdEstado = 0 Then
+                                cumple = False
+                            Else
+                                Dim okEstado = regla.listDetRegla_Ubic_Det_Pe.
+                                Any(Function(x) x.Activo AndAlso x.IdEstado = BeEstadoProd.IdEstado)
+
+                                cumple = cumple AndAlso okEstado
+                            End If
+                        End If
+
+                        If Not reglaAplica Then
+                            Continue For
+                        End If
+
+                        hayReglasAplicables = True
+
+                        If cumple Then
+                            existeReglaCompatible = True
+                            Exit For
+                        End If
+                    Next
+
+                    If hayReglasAplicables AndAlso Not existeReglaCompatible Then
+                        ubicacionValida = False
+                        mensaje = "La ubicación destino no cumple con las propiedades requeridas del producto (tipo de rotación, índice de rotación, tipo de producto o estado)."
+                    End If
+
+                End If
+
+            End If
+
+            Dim jsonResult As String =
+            JsonConvert.SerializeObject(
+                New With {
+                    .UbicacionValida = ubicacionValida,
+                    .Mensaje = mensaje
+                },
+                New JsonSerializerSettings With {
+                    .NullValueHandling = NullValueHandling.Include,
+                    .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    .Formatting = Formatting.None
+                })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(jsonResult)
+            curContext.ApplicationInstance.CompleteRequest()
+
+            Return Nothing
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pIdUbicacionDestino:=pIdUbicacion)
+            WriteErrorToEventLog(ex.Message)
+
+            If mArch IsNot Nothing AndAlso mArch.Tipo <> "WM" Then
+                Dim DT As New DataTable("CustomError")
+                DT.Columns.Add("Error", GetType(String))
+                DT.Rows.Add(ex.Message)
+
+                Dim sw As New StringWriter()
+                DT.WriteXml(sw)
+
+                curContext.Response.Clear()
+                curContext.Response.StatusCode = 299
+                curContext.Response.SubStatusCode = CInt(HttpStatusCode.InternalServerError)
+                curContext.Response.Output.Write(sw.ToString())
+                curContext.Response.ContentType = "text/xml"
+                curContext.ApplicationInstance.CompleteRequest()
+
+                Return Nothing
+            End If
+
+            Dim errorJson As String =
+            JsonConvert.SerializeObject(
+                New With {
+                    .Error = True,
+                    .Mensaje = ex.Message
+                })
+
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
+
+            Return Nothing
         End Try
     End Function
 
@@ -18912,5 +19485,4 @@ Public Class TOMHHWS
         End Try
 
     End Function
-
 End Class

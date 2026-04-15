@@ -1,16 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.DALCore;
-using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
-using WMS.EntityCore.Trans_re;
-using WMS.EntityCore.Transacciones;
-using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -294,33 +290,176 @@ namespace WMSWebAPI.Services.Salidas
 
             return detalles;
         }
-        public int Insert_salida_mi3(ref clsBeI_nav_ped_traslado_enc BeInavPedSalida, ref string Resultado)
+        public MI3ProcessingResultDto Insert_salida_mi3(clsBeI_nav_ped_traslado_enc BeInavPedSalida)
         {
-            int Insert = 0;
+            var result = new MI3ProcessingResultDto();
+            string resultado = string.Empty;
 
             try
             {
-                if (Datos_Validos(_configuration, BeInavPedSalida))
+                if (!Datos_Validos(_configuration, BeInavPedSalida))
                 {
-                    clsBeTrans_pe_enc? BePedidoEnc = new clsBeTrans_pe_enc();
-                    int cantLineas = 0;
-
-                    BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(BeInavPedSalida, ref Resultado,_configuration);
-
-                    if (BePedidoEnc != null)
-                        cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, _configuration);
-
-                    Insert = cantLineas;
+                    result.Exito = false;
+                    result.Mensaje = "Datos no válidos";
+                    return result;
                 }
-            }           
-            catch (Exception ex1)
+
+                clsBeTrans_pe_enc? BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(
+                    BeInavPedSalida, ref resultado, _configuration);
+
+                if (BePedidoEnc == null)
+                {
+                    result.Exito = false;
+                    result.Mensaje = !string.IsNullOrEmpty(resultado) ? resultado : "Error al procesar el documento";
+                    result.TotalSolicitado = BeInavPedSalida?.lineas_Detalle?.Sum(l => l.Quantity) ?? 0;
+                    result.TotalReservado = 0;
+                    return result;
+                }
+
+                int cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, _configuration);
+                
+                if (cantLineas == 0)
+                {
+                    result.Exito = false;
+                    result.Mensaje = "No se procesaron líneas. Verifique stock disponible.";
+                    result.TotalSolicitado = BeInavPedSalida?.lineas_Detalle?.Sum(l => l.Quantity) ?? 0;
+                    result.TotalReservado = 0;
+                    return result;
+                }
+
+                result.Exito = true;
+                result.Mensaje = "Documento MI3 procesado correctamente.";
+                result.LineasProcesadas = cantLineas;
+                result.Resultado = resultado;
+
+                var connectionString = _configuration.GetConnectionString("WMSConnection") 
+                    ?? _configuration.GetConnectionString("DefaultConnection");
+                    
+                using var conn = new SqlConnection(connectionString);
+                conn.Open();
+
+                result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, conn, null);
+                
+                result.TotalSolicitado = result.LineasDetalle.Sum(l => l.QuantityRequested);
+                result.TotalReservado = result.LineasDetalle.Sum(l => l.QuantityReserved);
+            }
+            catch (Exception ex)
             {
-                throw new Exception(ex1.Message);
+                result.Exito = false;
+                result.Mensaje = ex.Message;
+                result.LineasFallo = BuildLineasFallo(BeInavPedSalida, ex.Message);
             }
 
-            return Insert;
+            return result;
         }
-        private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
+
+        private static List<LineaFalloDto> BuildLineasFallo(
+            clsBeI_nav_ped_traslado_enc documento, string exceptionMessage)
+        {
+            var lista = new List<LineaFalloDto>();
+            if (documento?.lineas_Detalle == null) return lista;
+
+            foreach (var linea in documento.lineas_Detalle)
+            {
+                var fallo = new LineaFalloDto
+                {
+                    NoLinea         = linea.Line_No,
+                    CodigoProducto  = linea.Item_No ?? string.Empty,
+                    Variante        = linea.Variant_Code ?? string.Empty,
+                    UnidadMedida    = linea.Unit_of_Measure_Code ?? string.Empty,
+                    Solicitado      = linea.Quantity,
+                    Reservado       = 0,
+                    Estado          = "Error",
+                    RazonFallo      = ExtractLineFailureReason(linea.Line_No, exceptionMessage)
+                };
+                lista.Add(fallo);
+            }
+
+            return lista;
+        }
+
+        private static string ExtractLineFailureReason(int lineNo, string exceptionMessage)
+        {
+            if (string.IsNullOrWhiteSpace(exceptionMessage))
+                return "No se pudo reservar stock";
+
+            var lineMarker = $"línea {lineNo}:";
+            var idx = exceptionMessage.IndexOf(lineMarker, StringComparison.OrdinalIgnoreCase);
+            if (idx < 0)
+                return "No se pudo reservar stock";
+
+            var segment = exceptionMessage.Substring(idx);
+
+            var razonIdx = segment.IndexOf("Razón:", StringComparison.OrdinalIgnoreCase);
+            if (razonIdx < 0)
+                return "No se pudo reservar stock";
+
+            var razonText = segment.Substring(razonIdx + 6).Trim();
+            var endIdx = razonText.IndexOf(';');
+            return endIdx >= 0 ? razonText.Substring(0, endIdx).Trim() : razonText.Trim();
+        }
+
+        private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, SqlConnection conn, SqlTransaction? tx)
+        {
+            try
+            {
+                var rows = clsLnTrans_pe_det.Get_Detalles_Reserva_By_IdPedidoEnc(idPedidoEnc, conn, tx);
+
+                var lineDict = new Dictionary<int, ReservationLineDetailDto>();
+
+                foreach (var row in rows)
+                {
+                    if (!lineDict.TryGetValue(row.NoLinea, out var lineDetail))
+                    {
+                        lineDetail = new ReservationLineDetailDto
+                        {
+                            LineNo            = row.NoLinea,
+                            ProductCode       = row.ProductCode,
+                            ProductName       = row.ProductName,
+                            QuantityRequested = row.QuantityRequested,
+                            Reservations      = new List<ReservationDetailDto>()
+                        };
+                        lineDict[row.NoLinea] = lineDetail;
+                    }
+
+                    if (row.IdStockRes > 0)
+                    {
+                        double factor = row.Factor > 0 ? row.Factor : 1;
+                        double quantityInRequestedUnit = Math.Round(row.ReservationQty / factor, 6);
+
+                        lineDetail.Reservations.Add(new ReservationDetailDto
+                        {
+                            IdStockRes     = row.IdStockRes,
+                            IdStock        = row.IdStock,
+                            LotNo          = row.LotNo,
+                            ExpirationDate = row.ExpirationDate == DateTime.MinValue ? "" : row.ExpirationDate.ToString("yyyy-MM-dd"),
+                            LocationCode   = row.LocationCode,
+                            Zone           = row.Zone,
+                            Quantity       = quantityInRequestedUnit
+                        });
+                    }
+                }
+
+                foreach (var line in lineDict.Values)
+                {
+                    line.QuantityReserved = line.Reservations.Sum(r => r.Quantity);
+                    line.Status = line.QuantityReserved >= line.QuantityRequested - 0.001
+                        ? "Completa"
+                        : line.QuantityReserved > 0
+                            ? "Parcial"
+                            : "Sin reserva";
+                }
+
+                return lineDict.Values.OrderBy(l => l.LineNo).ToList();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error obteniendo detalles de reserva: {ex.Message}");
+                return new List<ReservationLineDetailDto>();
+            }
+        }
+
+                private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
         {
             bool Datos_Validos = false;
 
@@ -358,6 +497,7 @@ namespace WMSWebAPI.Services.Salidas
 
             return Datos_Validos;
         }
+
         public void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx)
         {
 
@@ -380,39 +520,12 @@ namespace WMSWebAPI.Services.Salidas
                 throw;
             }
 
-
-            
-            var Tipo_Cliente_list = dto.Clientes == null
-                                    ? new List<clsBeCliente_tipo>()
-                                    : dto.Clientes
-                                    .Select(r => _mapper.Map<clsBeCliente_tipo>(r.TipoCliente))
-                                    .ToList();
-
-
-            try 
-            {
-
-                if (Tipo_Cliente_list != null && Tipo_Cliente_list.Count > 0)
-                {
-                    var Tipo_clientes = _mapper.Map<List<clsBeCliente_tipo>>(Tipo_Cliente_list);
-                    clsLnCliente_tipo.InsertarOActualizar(Tipo_clientes, conn, tx);
-                }
-
-            }
-            catch (Exception ex) 
-            {
-                throw new Exception("Error al procesar Tipo Cliente → " + ex.Message, ex);
-            }
-
-            
-
-
             try
             {
                 if (dto.Clientes != null && dto.Clientes.Any())
                 {
-                    var clientes = _mapper.Map<List<clsBeCliente_3pl>>(dto.Clientes);
-                    clsLnCliente.InsertarOActualizar_3pl(clientes, conn, tx);
+                    var clientes = _mapper.Map<List<clsBeCliente>>(dto.Clientes);
+                    clsLnCliente.InsertarOActualizar(clientes, conn, tx);
                 }
 
             }
@@ -491,7 +604,8 @@ namespace WMSWebAPI.Services.Salidas
             try
             {
                 if (dto.Detalle != null && dto.Detalle.Any())
-                {                    
+                {
+                    //var detalle = _mapper.Map<List<clsBeTrans_pe_det>>(dto.Detalle);
                     var detalle = _mapper.Map<List<clsBeTrans_pe_det_3pl>>(dto.Detalle);
                     clsLnTrans_pe_det.InsertOrUpdate_3pl(detalle, conn, tx);
                 }
@@ -533,7 +647,8 @@ namespace WMSWebAPI.Services.Salidas
                 {
                     if (dto.Picking.Detalle != null && dto.Picking.Detalle.Any())
                     {
-                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);                        
+                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);
+                        //clsLnTrans_picking_det.InsertOrUpdate(pickingDet, conn, tx);
                         clsLnTrans_picking_det.InsertOrUpdate_3pl(pickingDet, conn, tx);
                     }
                 }
@@ -547,6 +662,7 @@ namespace WMSWebAPI.Services.Salidas
                     if (dto.Picking.PickingUbic != null && dto.Picking.PickingUbic.Any())
                     {
                         var pickingUbic = _mapper.Map<List<clsBeTrans_picking_ubic_3pl>>(dto.Picking.PickingUbic);
+                        //clsLnTrans_picking_ubic.InsertOrUpdate(pickingUbic, conn, tx);
                         clsLnTrans_picking_ubic.InsertOrUpdate_3pl(pickingUbic, conn, tx);
                     }
                     { }
@@ -608,26 +724,7 @@ namespace WMSWebAPI.Services.Salidas
                     throw new Exception("Error al procesar Prioridad de Picking → " + ex.Message, ex);
                 }
             }
-        }
-        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null)
-        {            
-            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration, noPedido);
-            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
-        }
-        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null,int? idTipoDocumento = null)
-        {
-            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration,
-                                                                                           noPedido,
-                                                                                           idTipoDocumento);
 
-            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
-        }
-        public int Marcar_Salidas_Como_Enviadas(IConfiguration configuration, List<int> idTransacciones)
-        {
-            if (idTransacciones == null || idTransacciones.Count == 0)
-                return 0;
-
-            return clsLnI_nav_transacciones_out.Marcar_Salidas_Como_Enviado(configuration, idTransacciones);
         }
     }
 }

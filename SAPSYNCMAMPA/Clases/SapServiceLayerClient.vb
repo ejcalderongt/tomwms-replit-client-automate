@@ -224,6 +224,12 @@ Public Class SapServiceLayerClient
                 vCodigoBodegaImportacion = BeINavConfigEnc.Bodega_Prorrateo
             End If
 
+            If vEsImportacion Then
+                If String.IsNullOrWhiteSpace(vCodigoBodegaImportacion) Then
+                    Throw New Exception("❌ ERROR: No está configurada la bodega de prorrateo en la configuración de integración.")
+                End If
+            End If
+
             '--- Documento ÚNICO de entrega ---
             Dim entrega As New FacturaReservaEntregaDto With {
             .CardCode = oOrderPurchase.CardCode,
@@ -495,6 +501,12 @@ Public Class SapServiceLayerClient
             If Not BeTransOCTi Is Nothing Then
                 vEsImportacion = BeTransOCTi.Es_Importacion
                 vCodigoBodegaImportacion = BeINavConfigEnc.Bodega_Prorrateo
+            End If
+
+            If vEsImportacion Then
+                If String.IsNullOrWhiteSpace(vCodigoBodegaImportacion) Then
+                    Throw New Exception("❌ ERROR: No está configurada la bodega de prorrateo en la configuración de integración.")
+                End If
             End If
 
             BeReOc = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(BeTransOCEnc.IdOrdenCompraEnc, lINavTransaccionesOut.FirstOrDefault.Idrecepcionenc, lConnection, lTransaction)
@@ -817,7 +829,6 @@ Public Class SapServiceLayerClient
                                 clsPublic.Actualizar_Progreso(lblprg, $"❌ EXCEPCIÓN PATCH OC: {ex.Message}")
                             End Try
                             ' ====== FIN PATCH ======
-
 
                         Else
                             clsPublic.Actualizar_Progreso(lblprg, $"❌ ERROR {postResp.StatusCode}:")

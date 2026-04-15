@@ -25,24 +25,21 @@ Public Class frmDocSalidaRFID_List
     End Sub
 
     Private Sub Cargar_Lista_Pedidos()
-        listaIngresoRFID = New List(Of clsBeI_nav_barras_rfid_enc)
+
+        'listaIngresoRFID = New List(Of clsBeI_nav_barras_rfid_enc)
+
+        Dim listaIngresoRFID As DataTable
 
         Try
 
             listaIngresoRFID = clsLnI_nav_barras_rfid_enc.Get_All_Salidas()
 
-            If listaIngresoRFID IsNot Nothing AndAlso listaIngresoRFID.Count > 0 Then
+            If listaIngresoRFID IsNot Nothing AndAlso listaIngresoRFID.Rows.Count > 0 Then
+
                 Dgrid.DataSource = listaIngresoRFID
 
                 If GridView1.Columns.Count > 0 Then
-
-                    'GridView1.Columns("IdBodega").Visible = False
-                    'GridView1.Columns("IdPropietario").Visible = False
-                    'GridView1.Columns("Activo").Visible = False
-                    'GridView1.Columns("IdPropietarioBodega").Visible = False
-                    'GridView1.Columns("es_devolucion").Visible = False
-                    'GridView1.Columns("Enviado_A_ERP").Visible = False
-
+                    GridView1.Columns("IdRFIDEnc").Caption = "Correlativo"
                     GridView1.OptionsView.ColumnAutoWidth = False
                     GridView1.BestFitColumns()
 
@@ -94,15 +91,20 @@ Public Class frmDocSalidaRFID_List
 
         Try
 
-            If (GridView1.RowCount > 0) Then
+            If GridView1.RowCount > 0 AndAlso GridView1.FocusedRowHandle >= 0 Then
 
-                Dim Dr As DataRowView = GridView1.GetFocusedRow
+                Dim idRFIDEncObj = GridView1.GetFocusedRowCellValue("IdRFIDEnc")
+                'Dim idPedidoEncObj = GridView1.GetFocusedRowCellValue("IdPedidoEnc")
 
-                If Not Dr Is Nothing Then
+                If idRFIDEncObj IsNot Nothing AndAlso idRFIDEncObj IsNot DBNull.Value Then
 
                     BeIngresoRFID = New clsBeI_nav_barras_rfid_enc
-                    BeIngresoRFID.IdRFIDEnc = Dr.Item("Correlativo")
-                    BeIngresoRFID.IdPedidoEnc = Dr.Item("IdSalida")
+                    BeIngresoRFID.IdRFIDEnc = Convert.ToInt32(idRFIDEncObj)
+
+                    'If idPedidoEncObj IsNot Nothing AndAlso idPedidoEncObj IsNot DBNull.Value Then
+                    '    BeIngresoRFID.IdPedidoEnc = Convert.ToInt32(idPedidoEncObj)
+                    'End If
+
                     clsLnI_nav_barras_rfid_enc.GetSingle(BeIngresoRFID)
 
                     Dim lSelectionIndex As Integer = GridView1.FocusedRowHandle
@@ -121,7 +123,6 @@ Public Class frmDocSalidaRFID_List
                             .WindowState = FormWindowState.Normal
                             .Show()
                             .Focus()
-
                         End With
 
                     ElseIf Modo = pModo.Seleccion Then
@@ -138,4 +139,13 @@ Public Class frmDocSalidaRFID_List
 
     End Sub
 
+    Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
+        Try
+            cmdActualizar.Enabled = False
+            Cargar_Lista_Pedidos()
+            cmdActualizar.Enabled = True
+        Catch ex As Exception
+
+        End Try
+    End Sub
 End Class

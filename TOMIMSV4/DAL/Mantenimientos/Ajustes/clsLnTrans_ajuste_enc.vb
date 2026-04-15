@@ -9,7 +9,7 @@ Public Class clsLnTrans_ajuste_enc
 
             With oBeTrans_ajuste_enc
 
-                .Idajusteenc = IIf(IsDBNull(dr.Item("idajusteenc")), 0, dr.Item("idajusteenc"))
+                .IdAjusteenc = IIf(IsDBNull(dr.Item("idajusteenc")), 0, dr.Item("idajusteenc"))
                 .Fecha = IIf(IsDBNull(dr.Item("fecha")), Nothing, dr.Item("fecha"))
                 .Idusuario = IIf(IsDBNull(dr.Item("idusuario")), 0, dr.Item("idusuario"))
                 .Referencia = IIf(IsDBNull(dr.Item("referencia")), "", dr.Item("referencia"))
@@ -27,6 +27,7 @@ Public Class clsLnTrans_ajuste_enc
                 .Centro_Costo_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Erp")), "", dr.Item("Centro_Costo_Erp"))
                 .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
                 .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
+                .Borrador = IIf(IsDBNull(dr.Item("Borrador")), False, dr.Item("Borrador"))
 
             End With
 
@@ -64,6 +65,7 @@ Public Class clsLnTrans_ajuste_enc
             Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
             Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
             Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
+            Ins.Add("borrador", "@borrador", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -78,7 +80,7 @@ Public Class clsLnTrans_ajuste_enc
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", oBeTrans_ajuste_enc.Idajusteenc))
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", oBeTrans_ajuste_enc.IdAjusteenc))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeTrans_ajuste_enc.Fecha))
             cmd.Parameters.Add(New SqlParameter("@IDUSUARIO", oBeTrans_ajuste_enc.Idusuario))
             cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_ajuste_enc.IdBodega))
@@ -96,6 +98,7 @@ Public Class clsLnTrans_ajuste_enc
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeTrans_ajuste_enc.Centro_Costo_Erp))
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dir_Erp))
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dep_Erp))
+            cmd.Parameters.Add(New SqlParameter("@BORRADOR", oBeTrans_ajuste_enc.Borrador))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -103,11 +106,11 @@ Public Class clsLnTrans_ajuste_enc
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            oBeTrans_ajuste_enc.Idajusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
+            oBeTrans_ajuste_enc.IdAjusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
 
             Return rowsAffected
 
-            oBeTrans_ajuste_enc.Idajusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
+            oBeTrans_ajuste_enc.IdAjusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -144,6 +147,7 @@ Public Class clsLnTrans_ajuste_enc
             Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
             Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
             Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
+            Upd.Add("borrador", "@borrador", DataType.Parametro)
             Upd.Where("idajusteenc = @idajusteenc")
 
             Dim sp As String = Upd.SQL()
@@ -159,7 +163,7 @@ Public Class clsLnTrans_ajuste_enc
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", oBeTrans_ajuste_enc.Idajusteenc))
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", oBeTrans_ajuste_enc.IdAjusteenc))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeTrans_ajuste_enc.Fecha))
             cmd.Parameters.Add(New SqlParameter("@IDUSUARIO", oBeTrans_ajuste_enc.Idusuario))
             cmd.Parameters.Add(New SqlParameter("@REFERENCIA", oBeTrans_ajuste_enc.Referencia))
@@ -177,6 +181,7 @@ Public Class clsLnTrans_ajuste_enc
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeTrans_ajuste_enc.Centro_Costo_Erp))
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dir_Erp))
             cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dep_Erp))
+            cmd.Parameters.Add(New SqlParameter("@BORRADOR", oBeTrans_ajuste_enc.Borrador))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -216,7 +221,7 @@ Public Class clsLnTrans_ajuste_enc
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", oBeTrans_ajuste_enc.Idajusteenc))
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", oBeTrans_ajuste_enc.IdAjusteenc))
 
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
@@ -246,7 +251,7 @@ Public Class clsLnTrans_ajuste_enc
 
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDAJUSTEENC", pBeTrans_ajuste_enc.Idajusteenc))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDAJUSTEENC", pBeTrans_ajuste_enc.IdAjusteenc))
 
             Dim dt As New DataTable
             dad.Fill(dt)
@@ -472,6 +477,38 @@ Public Class clsLnTrans_ajuste_enc
         End Using
 
         Return dt
+    End Function
+
+    Public Shared Function GetSingle(ByVal IdAjusteEnc As Integer) As clsBeTrans_ajuste_enc
+
+        Dim pBeTrans_ajuste_enc As New clsBeTrans_ajuste_enc
+
+        Try
+
+            Const sp As String = "SELECT * FROM Trans_ajuste_enc" &
+            " Where(idajusteenc = @idajusteenc)"
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDAJUSTEENC", IdAjusteEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Cargar(pBeTrans_ajuste_enc, dt.Rows(0))
+            End If
+
+            Return pBeTrans_ajuste_enc
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
     End Function
 
 End Class

@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 
@@ -45,18 +50,15 @@ namespace WMS.StockReservation.Strategies
 
             _logger.LogCheckpoint("#CASO_1_START");
 
-            // Filtrar stock de pallets completos
-            var completeStock = (context?.StockListNonPickingZones ?? Enumerable.Empty<clsBeStock>())
-             .Where(s => s != null &&
-                         s.Pallet_Completo &&
-                         !s.UbicacionPicking &&
-                         s.UbicacionNivel > 0 &&
-                         s.Cantidad > 0 &&
-                         s.Fecha_vence == context?.MinExpirationCompletePalletsClavaud)
-             .OrderBy(s => s.Fecha_vence)
-             .ThenBy(s => s.Lic_plate ?? string.Empty)
-             .ToList();
-
+            var completeStock = context.StockListNonPickingZones
+                .Where(s => s.Pallet_Completo &&
+                           !s.UbicacionPicking &&
+                           s.UbicacionNivel > 0 &&
+                           s.Cantidad > 0 &&
+                           s.Fecha_vence == context.MinExpirationCompletePalletsClavaud)
+                .OrderBy(s => s.Fecha_vence)
+                .ThenBy(s => s.Lic_plate)
+                .ToList();
 
             if (completeStock.Count == 0)
             {
@@ -64,21 +66,16 @@ namespace WMS.StockReservation.Strategies
                 return result;
             }
 
-            // Reservar de pallets completos
             foreach (var stock in completeStock)
             {
-
-                const double EPS = 1e-6;
-                if (context == null || context.PendingQuantity <= EPS) break;
+                if (context.PendingQuantity <= 0.000001) break;
 
                 double quantityToReserve = Math.Min(stock.Cantidad, context.PendingQuantity);
 
                 if (quantityToReserve <= 0.000001) continue;
 
-                // Crear reserva
                 var reservation = CreateReservation(context, stock, quantityToReserve);
 
-                // Actualizar stock (NO modificar context.PendingQuantity - lo hace ReservationLoopStep)
                 stock.Cantidad -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
                 result.Reservations.Add(reservation);
@@ -94,9 +91,10 @@ namespace WMS.StockReservation.Strategies
             return result;
         }
 
-        private clsBeStock_res CreateReservation(ReservationContext context,
-                                                 clsBeStock stock,
-                                                 double quantity)
+        private clsBeStock_res CreateReservation(
+            ReservationContext context,
+            clsBeStock stock,
+            double quantity)
         {
             var reservation = new clsBeStock_res
             {
@@ -107,38 +105,38 @@ namespace WMS.StockReservation.Strategies
                 IdPropietarioBodega = stock.IdPropietarioBodega,
                 IdProductoEstado = stock.IdProductoEstado,
                 IdUbicacion = stock.IdUbicacion,
-                
+
                 // Presentación y cantidad
                 IdPresentacion = context.Request.IdPresentacion,
                 IdUnidadMedida = stock.IdUnidadMedida,
                 Cantidad = quantity,
-                
+
                 // Trazabilidad del stock
                 Lote = stock.Lote,
                 Lic_plate = stock.Lic_plate,
                 Serial = stock.Serial,
                 Uds_lic_plate = stock.Uds_lic_plate,
                 No_bulto = stock.No_bulto,
-                
+
                 // Fechas
                 Fecha_ingreso = stock.Fecha_Ingreso,
                 Fecha_vence = stock.Fecha_vence,
                 Fecha_manufactura = stock.Fecha_Manufactura,
                 Añada = stock.Añada,
-                
+
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
-                
-                
+
+                // Transacción y pedido
+                Indicador = context.Request.Indicador,
+                Estado = "UNCOMMITED",
+                IdTransaccion = context.Request.IdTransaccion,
+                IdPedido = context.Request.IdTransaccion,
+                IdPedidoDet = context.Request.IdPedidoDet,
+
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName
             };
-
-            // Copiar detalles adicionales del pedido
-            if (context.PedidoDet != null)
-            {
-                reservation.IdPedidoDet = context.PedidoDet.IdPedidoDet;
-            }
 
             return reservation;
         }

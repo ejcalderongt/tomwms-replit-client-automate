@@ -3951,6 +3951,7 @@ Public Class frmPreFactura
                         If Not chkEstimacionCobro.Checked Then
 
                             If XtraMessageBox.Show("Se guardó la prefactura. ¿Desea enviar para facturación?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+
                                 If Enviar_Prefactura_a_ERP() Then
 
                                     If Not InvokeListarPrefacturas Is Nothing Then InvokeListarPrefacturas.Invoke()
@@ -4075,6 +4076,7 @@ Public Class frmPreFactura
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
+
     End Function
 
 

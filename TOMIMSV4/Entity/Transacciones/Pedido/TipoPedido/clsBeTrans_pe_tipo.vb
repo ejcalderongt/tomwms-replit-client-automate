@@ -81,6 +81,7 @@ Public Class clsBeTrans_pe_tipo
 
     Public Property Verificar_con_imagen As Boolean = False
     Public Property Genera_Guia_Remision As Boolean = False
+    Public Property Asignar_Todos_Operadores As Boolean = False
 
     Sub New()
     End Sub

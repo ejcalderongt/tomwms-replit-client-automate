@@ -276,7 +276,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Hora_fin = IIf(IsDBNull(lRow("Hora_fin")), Now, lRow("Hora_fin"))
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -300,7 +300,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -449,6 +449,8 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Parcial = IIf(IsDBNull(lRow("Permitir_Despacho_Parcial")), False, lRow("Permitir_Despacho_Parcial"))
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Multiple = IIf(IsDBNull(lRow("Permitir_Despacho_Multiple")), False, lRow("Permitir_Despacho_Multiple"))
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
+                        vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
+                        vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))
@@ -459,7 +461,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Hora_fin = IIf(IsDBNull(lRow("Hora_fin")), Now, lRow("Hora_fin"))
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -481,7 +483,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -633,7 +635,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -655,7 +657,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -772,7 +774,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -794,7 +796,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -3283,7 +3285,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Hora_fin = IIf(IsDBNull(lRow("Hora_fin")), Now, lRow("Hora_fin"))
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -3305,7 +3307,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -3407,7 +3409,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Hora_fin = IIf(IsDBNull(lRow("Hora_fin")), Now, lRow("Hora_fin"))
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -3429,7 +3431,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -4051,7 +4053,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -4073,7 +4075,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -4560,9 +4562,14 @@ Partial Public Class clsLnTrans_pe_enc
                                     Where(Function(d) d.ListaStockRes IsNot Nothing AndAlso d.ListaStockRes.Any()).
                                     ToList()
 
-            vIdRecepcion = registrosFiltrados.FirstOrDefault.ListaStockRes.FirstOrDefault.IdRecepcion
+            '#CKFK20260324 Agregue esta validación para que no de error de object not reference
+            If registrosFiltrados IsNot Nothing AndAlso registrosFiltrados.Count > 0 Then
 
-            Get_No_Contenedor_Ingreso = clsLnTrans_re_enc.Get_No_Contenedor_By_IdRecepcionEnc(vIdRecepcion, lConnection, lTransaction)
+                vIdRecepcion = registrosFiltrados.FirstOrDefault.ListaStockRes.FirstOrDefault.IdRecepcion
+
+                Get_No_Contenedor_Ingreso = clsLnTrans_re_enc.Get_No_Contenedor_By_IdRecepcionEnc(vIdRecepcion, lConnection, lTransaction)
+
+            End If
 
         Catch ex As Exception
             Throw ex
@@ -5600,6 +5607,8 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Parcial = IIf(IsDBNull(lRow("Permitir_Despacho_Parcial")), False, lRow("Permitir_Despacho_Parcial"))
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Multiple = IIf(IsDBNull(lRow("Permitir_Despacho_Multiple")), False, lRow("Permitir_Despacho_Multiple"))
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
+                        vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
+                        vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))
@@ -5610,7 +5619,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Hora_fin = IIf(IsDBNull(lRow("Hora_fin")), Now, lRow("Hora_fin"))
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -5632,7 +5641,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -5736,7 +5745,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -5758,7 +5767,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))
@@ -6382,9 +6391,9 @@ Partial Public Class clsLnTrans_pe_enc
             Throw ex
         End Try
 
-    End Function 
+    End Function
 
-     '#GT20052025: obtener los pedidos cerrados, activos y no anulados para enviar a la nube
+    '#GT20052025: obtener los pedidos cerrados, activos y no anulados para enviar a la nube
     Public Shared Function GetAll_By_CDC(ByVal pUltimaFechaSincro As Date, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As List(Of clsBeTrans_pe_enc)
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -6927,7 +6936,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Hora_fin = IIf(IsDBNull(lRow("Hora_fin")), Now, lRow("Hora_fin"))
                     vPedidoEnc.Ubicacion = IIf(IsDBNull(lRow("Ubicacion")), "", lRow("Ubicacion"))
                     vPedidoEnc.Estado = IIf(IsDBNull(lRow("estado")), "", lRow("estado"))
-                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "", lRow("No_despacho"))
+                    vPedidoEnc.No_despacho = IIf(IsDBNull(lRow("No_despacho")), "0", lRow("No_despacho"))
                     vPedidoEnc.Activo = IIf(IsDBNull(lRow("activo")), True, lRow("activo"))
                     vPedidoEnc.User_agr = IIf(IsDBNull(lRow("user_agr")), "", lRow("user_agr"))
                     vPedidoEnc.Fec_agr = IIf(IsDBNull(lRow("fec_agr")), Now, lRow("fec_agr"))
@@ -6951,7 +6960,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.RoadBandera = IIf(IsDBNull(lRow("RoadBandera")), "", lRow("RoadBandera"))
                     vPedidoEnc.RoadStatCom = IIf(IsDBNull(lRow("RoadStatCom")), "", lRow("RoadStatCom"))
                     vPedidoEnc.RoadCalcoBJ = IIf(IsDBNull(lRow("RoadCalcoBJ")), "", lRow("RoadCalcoBJ"))
-                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "", lRow("RoadImpres"))
+                    vPedidoEnc.RoadImpres = IIf(IsDBNull(lRow("RoadImpres")), "0", lRow("RoadImpres"))
                     vPedidoEnc.RoadADD1 = IIf(IsDBNull(lRow("RoadADD1")), "", lRow("RoadADD1"))
                     vPedidoEnc.RoadADD2 = IIf(IsDBNull(lRow("RoadADD2")), "", lRow("RoadADD2"))
                     vPedidoEnc.RoadADD3 = IIf(IsDBNull(lRow("RoadADD3")), "", lRow("RoadADD3"))

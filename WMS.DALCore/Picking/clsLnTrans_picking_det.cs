@@ -1,8 +1,5 @@
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Picking;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Pedido;

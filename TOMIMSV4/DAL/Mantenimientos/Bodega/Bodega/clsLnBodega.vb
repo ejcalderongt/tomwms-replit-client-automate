@@ -118,11 +118,15 @@ Public Class clsLnBodega
                 .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
                 .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
                 .Control_Gondola = IIf(IsDBNull(dr.Item("control_gondola")), False, dr.Item("control_gondola"))
-                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))                
+                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))
                 .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
                 .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
                 .Reemplazo_Opcional = IIf(IsDBNull(dr.Item("reemplazo_opcional")), False, dr.Item("reemplazo_opcional"))
                 .Estado_Defecto_Rack = IIf(IsDBNull(dr.Item("estado_defecto_rack")), 0, dr.Item("estado_defecto_rack"))
+                .cambio_ubicacion_restrictivo = IIf(IsDBNull(dr.Item("cambio_ubicacion_restrictivo")), False, dr.Item("cambio_ubicacion_restrictivo"))
+                .permitir_cambio_ubic_indice_menor = IIf(IsDBNull(dr.Item("permitir_cambio_ubic_indice_menor")), False, dr.Item("permitir_cambio_ubic_indice_menor"))
+                .requerir_mismo_producto_posiciones = IIf(IsDBNull(dr.Item("requerir_mismo_producto_posiciones")), False, dr.Item("requerir_mismo_producto_posiciones"))
+                .Bodega_Cliente_Ajuste_ByB = IIf(IsDBNull(dr.Item("bodega_cliente_ajuste_byb")), False, dr.Item("bodega_cliente_ajuste_byb"))
             End With
 
         Catch ex1 As SqlException
@@ -246,11 +250,12 @@ Public Class clsLnBodega
             Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
             Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
             Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
-            Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)                        
+            Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)
             Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Ins.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
             Ins.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
+            Ins.Add("bodega_cliente_ajuste_byb", "@bodega_cliente_ajuste_byb", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -375,6 +380,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
             cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
             cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
+            cmd.Parameters.Add(New SqlParameter("@BODEGA_CLIENTE_AJUSTE_BYB", oBeBodega.Bodega_Cliente_Ajuste_ByB))
+
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -508,12 +515,17 @@ Public Class clsLnBodega
             Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
             Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
             Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
-            Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)            
+            Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)
             Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Upd.Add("reemplazo_opcional", "@reemplazo_opcional", DataType.Parametro)
             Upd.Add("estado_defecto_rack", "@estado_defecto_rack", DataType.Parametro)
+            Upd.Add("bodega_cliente_ajuste_byb", "@bodega_cliente_ajuste_byb", DataType.Parametro)
+            Upd.Add("cambio_ubicacion_restrictivo", "@cambio_ubicacion_restrictivo", DataType.Parametro)
+            Upd.Add("permitir_cambio_ubic_indice_menor", "@permitir_cambio_ubic_indice_menor", DataType.Parametro)
+            Upd.Add("requerir_mismo_producto_posiciones", "@requerir_mismo_producto_posiciones", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
+
 
             Dim sp As String = Upd.SQL()
 
@@ -637,7 +649,11 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
             cmd.Parameters.Add(New SqlParameter("@REEMPLAZO_OPCIONAL", oBeBodega.Reemplazo_Opcional))
             cmd.Parameters.Add(New SqlParameter("@ESTADO_DEFECTO_RACK", oBeBodega.Estado_Defecto_Rack))
+            cmd.Parameters.Add(New SqlParameter("@BODEGA_CLIENTE_AJUSTE_BYB", oBeBodega.Bodega_Cliente_Ajuste_ByB))
 
+            cmd.Parameters.Add(New SqlParameter("@CAMBIO_UBICACION_RESTRICTIVO", oBeBodega.cambio_ubicacion_restrictivo))
+            cmd.Parameters.Add(New SqlParameter("@PERMITIR_CAMBIO_UBIC_INDICE_MENOR", oBeBodega.permitir_cambio_ubic_indice_menor))
+            cmd.Parameters.Add(New SqlParameter("@REQUERIR_MISMO_PRODUCTO_POSICIONES", oBeBodega.requerir_mismo_producto_posiciones))
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()

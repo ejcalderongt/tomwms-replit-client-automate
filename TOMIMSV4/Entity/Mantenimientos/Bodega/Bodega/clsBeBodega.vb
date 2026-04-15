@@ -165,7 +165,7 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Centro_Costo_Dir_Erp As String = ""
     Public Property Centro_Costo_Dep_Erp As String = ""
     Public Property Priorizar_Cantidad_Superior As Boolean = False
-
+    Public Property Bodega_Cliente_Ajuste_ByB As Boolean = False
 
     Sub New()
     End Sub

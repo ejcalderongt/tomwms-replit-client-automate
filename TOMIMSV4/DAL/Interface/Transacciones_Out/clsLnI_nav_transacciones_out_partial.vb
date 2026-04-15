@@ -574,11 +574,16 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                                 '#EJC20220411:Para BYB, necesito saber si el producto va en presentación.
                                 If Not BeConfigEnc.Equiparar_Productos Then
-                                    If Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Venta_NAV And
-                                       Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS Then
-                                        '#EJC20191122:Como se convierte a UMBas, mantener sin pres.
+
+                                    '#AG20260413 Se agregó parámetro para saber cuando enviar o no el producto en presentación
+                                    If Not BeConfigEnc.cantidad_en_presentacion_transacciones_out Then
                                         .Idpresentacion = 0
                                     End If
+                                    'If Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Venta_NAV And
+                                    '   Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS Then
+                                    '    '#EJC20191122:Como se convierte a UMBas, mantener sin pres.
+                                    '    .Idpresentacion = 0
+                                    'End If
                                 End If
 
                             Else
@@ -2412,12 +2417,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -2432,7 +2437,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
                                                                                          lConnection,
@@ -2472,7 +2477,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -2481,7 +2486,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -2498,7 +2503,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2520,11 +2529,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2543,7 +2552,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2573,11 +2586,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2602,12 +2615,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 
@@ -2675,12 +2688,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -2695,7 +2708,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim BeBodega As New clsBeBodega
                         BeBodega.IdBodega = AjEnc.IdBodega
@@ -2727,22 +2740,29 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             AjusteDoc = New clsBeTrans_ajuste_det_doc()
 
+                            Dim BeConfig As clsBeI_nav_config_enc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(BeBodega.IdBodega)
+
                             '#CKFK 20180927 0953PM Agregué esta condición porque cuando la serie es nueva el correlativo actual va a ser igual a 999999
-                            If vCorrelativoActual = 0 Then
-                                vCorrelativoActual = Val(vNoDocumento.Substring(4, vNoDocumento.Length - 4))
-                                vCorrelativoActual += 1
-                            ElseIf vCorrelativoActual = 999999 Then
-                                vCorrelativoActual = 1
+                            If BeBodega.Interface_SAP AndAlso BeConfig.Requerir_Centro_Costo_Obligatorio Then
+                                vCorrelativoActual = AjDet.IdAjusteDet
                             Else
-                                vCorrelativoActual += 1
+                                If vCorrelativoActual = 0 Then
+                                    vCorrelativoActual = Val(vNoDocumento.Substring(4, vNoDocumento.Length - 4))
+                                    vCorrelativoActual += 1
+                                ElseIf vCorrelativoActual = 999999 Then
+                                    vCorrelativoActual = 1
+                                Else
+                                    vCorrelativoActual += 1
+                                End If
                             End If
+
 
                             vNoDocumento = vNomenclaturaBase + Right("000000" & vCorrelativoActual, 6)
 
-                            clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
+                            clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste " & vNoDocumento & " de número de documento:" & AjEnc.Idajusteenc)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -2751,7 +2771,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -2768,7 +2788,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2783,6 +2807,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
                                         BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
                                         BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
+                                        BeAjusteMI3.Usr_Agr = AjDet.User_Agr
 
                                         lAjustesMI3.Add(BeAjusteMI3)
 
@@ -2793,11 +2818,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2816,7 +2841,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -2831,6 +2860,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
                                         BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
                                         BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
+                                        BeAjusteMI3.Usr_Agr = AjDet.User_Agr
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2848,11 +2878,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -2877,12 +2907,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 
@@ -3612,12 +3642,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio(AjEnc.IdAjusteenc,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -3632,7 +3662,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
                                                                                          lConnection,
@@ -3672,7 +3702,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -3681,7 +3711,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -3698,7 +3728,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -3717,11 +3751,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -3740,7 +3774,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -3767,11 +3805,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -3796,12 +3834,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 
@@ -4103,12 +4141,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 For Each AjEnc In lAjustesPendEnvio
 
-                    vNoDocumento = Right("000000" & AjEnc.Idajusteenc, 6)
+                    vNoDocumento = Right("000000" & AjEnc.IdAjusteenc, 6)
 
                     vNoDocumento = "WMS" + vNoDocumento
                     vNDoc = vNoDocumento
 
-                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio_Agrupados_By_Inventario(AjEnc.Idajusteenc,
+                    lVistaAjustesPendientesEnvio = clsLn_vw_ajustes.Get_All_Pendientes_Envio_Agrupados_By_Inventario(AjEnc.IdAjusteenc,
                                                                                                                      lConnection,
                                                                                                                      lTransaction)
 
@@ -4123,7 +4161,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     If lVistaAjustesPendientesEnvio.Count > 0 Then
 
-                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.IdAjusteenc)
 
                         Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
                                                                                          lConnection,
@@ -4163,7 +4201,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                             clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste número de documento: " & vNoDocumento)
 
                             BeAjusteDet.IdAjusteDet = AjDet.IdAjusteDet
-                            BeAjusteDet.IdAjusteEnc = AjEnc.Idajusteenc
+                            BeAjusteDet.IdAjusteEnc = AjEnc.IdAjusteenc
                             clsLnTrans_ajuste_det.GetSingle(BeAjusteDet, lConnection, lTransaction)
 
                             If Not BeFamilia Is Nothing Then
@@ -4172,7 +4210,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                             '#CM_20180828_2:54PM: Llena datos para el documento de ajustes. 
                             AjusteDoc.Idajustedoc = MaxIdAjusteDoc
-                            AjusteDoc.Idajusteenc = AjEnc.Idajusteenc
+                            AjusteDoc.Idajusteenc = AjEnc.IdAjusteenc
 
                             If AjDet.Modifica_Cantidad Then
 
@@ -4189,7 +4227,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -4208,11 +4250,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                   AjEnc.Idajusteenc,
+                                                                                   AjEnc.IdAjusteenc,
                                                                                    0,
                                                                                    300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -4231,7 +4273,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Bodega_ERP = vCodigoBodegaERP
                                         BeAjusteMI3.NoDocumento = vNoDocumento
                                         BeAjusteMI3.Codigo_Producto = AjDet.Codigo_Producto
-                                        BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        If BeCliente IsNot Nothing Then
+                                            BeAjusteMI3.TipoAjusteERP = IIf(AjEnc.Ajuste_Por_Inventario > 0, AjDet.Codigo_Bodega, BeCliente.Codigo)
+                                        Else
+                                            BeAjusteMI3.TipoAjusteERP = AjDet.Codigo_Bodega
+                                        End If
                                         BeAjusteMI3.TipoAjusteWMS = AjDet.Tipo_Ajuste
                                         BeAjusteMI3.UMBas = AjDet.UMBas
                                         BeAjusteMI3.Cantidad = vDif
@@ -4258,11 +4304,11 @@ Partial Public Class clsLnI_nav_transacciones_out
                                     Catch ex As Exception
 
                                         clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                                    AjEnc.Idajusteenc,
+                                                                                    AjEnc.IdAjusteenc,
                                                                                     0,
                                                                                     300)
 
-                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.Idajusteenc)
+                                        clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el ajuste #: " & AjEnc.IdAjusteenc)
 
                                         vCorrelativoActual -= 1
 
@@ -4287,12 +4333,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                     Else
 
-                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc,
-                                                                   AjEnc.Idajusteenc,
+                        clsLnI_nav_ejecucion_det_error.Inserta_Log("No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc,
+                                                                   AjEnc.IdAjusteenc,
                                                                    0,
                                                                    300)
 
-                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.Idajusteenc)
+                        clsPublic.Actualizar_Progreso(lblprg, "No hay detalle de ajustes válidos para el Id de ajuste #: " & AjEnc.IdAjusteenc)
 
                     End If
 

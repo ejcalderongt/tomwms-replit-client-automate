@@ -5,8 +5,6 @@ using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 using WMSWebAPI.Services.Salidas;
 using WMS.EntityCore.Dtos.Pedido;
-using WMS.EntityCore.Dtos;
-using WMSWebAPI.Dtos.Ingresos;
 
 namespace WMSWebAPI.Controllers
 {
@@ -124,7 +122,12 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
-        
+
+        /// <summary>
+        /// Inserta un documento de traslado/pedido desde MI3.
+        /// ACTUALIZADO: Ahora usa NavPedTrasladoRequestDto para mapear el JSON correctamente
+        /// ANTES de llamar a Datos_Validos(), replicando el patrón de integración SAP HANA.
+        /// </summary>
         [HttpPost("mi3/insertar")]
         public IActionResult PostMi3Documento([FromBody] NavPedTrasladoRequestDto request,
                                               [FromServices] IConfiguration configuration,
@@ -151,41 +154,17 @@ namespace WMSWebAPI.Controllers
 
             try
             {
-                string resultado = string.Empty;
-                var salidaService = _salidaService as SyncSalidasService;
+                var resultado = _salidaService.Insert_salida_mi3(documento);
 
-                if (salidaService == null)
+                if (!resultado.Exito)
                 {
-                    throw new InvalidOperationException("El servicio no implementa la interfaz requerida");
+                    _logger.LogWarning("Documento MI3 procesado con errores: {Mensaje}", resultado.Mensaje);
+                    return StatusCode(422, resultado);
                 }
 
-                // AHORA documento.Lineas_Detalle ya está poblado desde el JSON deserializado                
-                int lineasProcesadas = salidaService.Insert_salida_mi3(ref documento, ref resultado);
+                _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", resultado.LineasProcesadas);
 
-                // Validar resultado de texto (errores explicitos)
-                if (!string.IsNullOrEmpty(resultado) && !resultado.Contains("exito"))
-                {
-                    throw new Exception(resultado);
-                }
-
-                // CRITICO: Si no se procesaron lineas, es un error (reserva fallo)
-                if (lineasProcesadas == 0)
-                {
-                    string mensajeError = !string.IsNullOrEmpty(resultado)
-                        ? resultado
-                        : "No se procesaron lineas. Verifique stock disponible y configuracion de bodega.";
-                    throw new Exception(mensajeError);
-                }
-
-                _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", lineasProcesadas);
-
-                return Ok(new
-                {
-                    Exito = true,
-                    Mensaje = "Documento MI3 procesado correctamente.",
-                    LineasProcesadas = lineasProcesadas,
-                    Resultado = resultado
-                });
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
@@ -200,148 +179,5 @@ namespace WMSWebAPI.Controllers
                 });
             }
         }
-        [HttpGet("mi3/pendientes-procesar")]
-        public IActionResult GetSalidasPendientesDeProcesar([FromServices] IConfiguration _configuration,
-                                                            [FromQuery] string? noPedido = null,
-                                                            [FromQuery] int? idTipoDocumento = null)
-            {
-                try
-                {
-                    // 1) Traer pendientes
-                    var data = _salidaService.Get_Salidas_Pendientes_De_Procesar(noPedido, idTipoDocumento);
-
-                    // 2) Filtro opcional por NoPedido
-                    if (!string.IsNullOrWhiteSpace(noPedido))
-                    {
-                        data = data.Where(x => x.No_pedido != null &&
-                                               x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))
-                                   .ToList();
-                    }
-
-                    // 3) Filtro opcional por IdTipoDocumento
-                    if (idTipoDocumento.HasValue)
-                    {
-                        data = data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)
-                                   .ToList();
-                    }
-
-                    // 4) Minimal por defecto
-                    var umIds = data.Select(x => x.Idunidadmedida)
-                                    .Where(id => id > 0)
-                                    .Distinct()
-                                    .ToList();
-
-                    var presIds = data.Select(x => x.Idpresentacion)
-                                      .Where(id => id > 0)
-                                      .Distinct()
-                                      .ToList();
-
-                    var bodegaIds = data.Select(x => x.Idbodega)
-                                        .Where(id => id > 0)
-                                        .Distinct()
-                                        .ToList();
-
-                    var pedidoIds = data.Select(x => x.Idpedidoenc)
-                                        .Where(id => id > 0)
-                                        .Distinct()
-                                        .ToList();
-
-                    var ums = clsLnUnidad_medida.GetByIds(_configuration, umIds);
-                    var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
-                    var bodegas = clsLnBodega.GetByIds(_configuration, bodegaIds);
-                    var codigoClienteByPedidoId = clsLnTrans_pe_enc.Get_Codigos_Cliente_By_IdsPedidoEnc(_configuration, pedidoIds);
-
-                    var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo ?? "");
-                    var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
-                    var bodegaCodigoById = bodegas.ToDictionary(b => b.IdBodega, b => b.Codigo ?? "");
-
-                    var result = data.Select(x =>
-                    {
-                        var esTraslado = x.IdTipoDocumento == 6;
-
-                        var codigoBodegaOrigen = bodegaCodigoById.TryGetValue(x.Idbodega, out var codBodOrigen)
-                            ? codBodOrigen
-                            : "";
-
-                        var codigoDestino = codigoClienteByPedidoId.TryGetValue(x.Idpedidoenc, out var codDestino)
-                            ? codDestino
-                            : "";
-
-                        var idDocIngresoBodDestino =
-                            esTraslado &&
-                            x.Iddespachoenc > 0 &&
-                            !string.IsNullOrWhiteSpace(codigoBodegaOrigen)
-                                ? clsLnTrans_oc_enc.Get_IdOrdenCompraEnc_By_IdDespachoEnc_And_CodigoBodegaOrigen(
-                                    _configuration,
-                                    x.Iddespachoenc,
-                                    codigoBodegaOrigen)
-                                : null;
-
-                        return new SalidaSimpleReturnDto
-                        {
-                            Idtransaccion = x.Idtransaccion,
-                            No_pedido = x.No_pedido,
-                            Codigo_producto = x.Codigo_producto,
-                            Nombre_producto = x.Nombre_producto,
-                            UM = umById.TryGetValue(x.Idunidadmedida, out var um) ? um : "",
-                            Presentacion = presCodigoById.TryGetValue(x.Idpresentacion, out var codPres) ? codPres : "",
-                            Cantidad = x.Cantidad,
-                            Lote = x.Lote,
-                            Vence = x.Fecha_vence,
-                            Linea = int.TryParse(x.No_linea, out var ln) ? ln : 0,
-                            Licencia = x.Lic_Plate,
-                            Fecha = x.Fec_agr,
-                            Codigo_Bodega_Origen = codigoBodegaOrigen,
-                            Codigo_Bodega_Destino = esTraslado ? codigoDestino : "",
-                            Codigo_Cliente = esTraslado ? "" : codigoDestino,
-                            IdDocIngresoBodDestino = idDocIngresoBodDestino,
-                            IdDocSalidaBodOrigen = x.Idpedidoenc
-                        };
-                    }).ToList();
-
-                    return Ok(result);
-
-                    // Opción para retornar full:
-                    // return Ok(data);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { ok = false, message = ex.Message });
-                }
-            }
-
-        [HttpPatch("mi3/pendientes-procesar/marcar-enviadas")]
-        public IActionResult MarcarSalidasComoEnviadas([FromServices] IConfiguration configuration,
-                                                       [FromBody] MarcarTransaccionesEnviadasRequestDto request)
-        {
-            try
-            {
-                if (request?.IdTransacciones == null || request.IdTransacciones.Count == 0)
-                {
-                    return BadRequest(new
-                    {
-                        ok = false,
-                        message = "Debe enviar IdTransacciones (uno o más)."
-                    });
-                }
-
-                int marcadas = _salidaService.Marcar_Salidas_Como_Enviadas(configuration, request.IdTransacciones);
-
-                return Ok(new
-                {
-                    ok = true,
-                    marcadas
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    ok = false,
-                    message = ex.Message
-                });
-            }
-        }
-
     }
 }

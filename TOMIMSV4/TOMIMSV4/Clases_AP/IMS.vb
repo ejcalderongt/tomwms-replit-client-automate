@@ -3626,4 +3626,77 @@ Public Class IMS
         End Try
 
     End Function
+
+    Public Overloads Shared Function Listar_Proveedor(ByRef Cmb As LookUpEdit) As Boolean
+
+        Listar_Proveedor = False
+
+        Dim DT As New List(Of clsBeProveedor)
+
+        Try
+
+            DT = clsLnProveedor.GetAll().
+             Where(Function(x) x.Activo = True).
+             ToList()
+
+            With Cmb.Properties
+                .DataSource = Nothing
+                .Columns.Clear()
+                .DisplayMember = "Nombre"
+                .ValueMember = "IdProveedor"
+                .DataSource = DT
+                .NullText = String.Empty
+                .PopupWidth = 450
+
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdProveedor", "Código", 80))
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre", "Nombre", 340))
+
+                .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
+                .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoSearch
+                .AutoSearchColumnIndex = 1
+            End With
+
+            Listar_Proveedor = DT.Count > 0
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
+    Public Shared Function Listar_Clientes(ByRef Cmb As LookUpEdit) As Boolean
+
+        Listar_Clientes = False
+
+        Dim DT As New List(Of clsBeCliente)
+
+        Try
+
+            DT = clsLnCliente.GetAll(True).ToList()
+
+            With Cmb.Properties
+                .DataSource = Nothing
+                .Columns.Clear()
+                .DisplayMember = "Nombre_comercial"
+                .ValueMember = "IdCliente"
+                .DataSource = DT
+                .NullText = String.Empty
+                .PopupWidth = 450
+
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdCliente", "Código", 80))
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre_comercial", "Nombre", 340))
+
+                .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
+                .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoSearch
+                .AutoSearchColumnIndex = 1
+            End With
+
+            Listar_Clientes = DT.Count > 0
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
 End Class

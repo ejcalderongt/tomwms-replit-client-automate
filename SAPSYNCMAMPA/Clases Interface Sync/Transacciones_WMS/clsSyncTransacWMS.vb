@@ -1046,7 +1046,7 @@ Public Class clsSyncTransacWMS
 
                     ' Mapeo del encabezado según tu referencia
                     Dim beAjustes As New clsBeTrans_ajuste_enc With {
-                        .Idajusteenc = clsLnTrans_ajuste_enc.MaxID(lConnection, lTransaction) + 1,
+                        .IdAjusteenc = clsLnTrans_ajuste_enc.MaxID(lConnection, lTransaction) + 1,
                         .Fecha = postingDate,
                         .Idusuario = 1,
                         .Referencia = ajuste.NoEnc,
@@ -1077,6 +1077,12 @@ Public Class clsSyncTransacWMS
                     For Each detalle In ajuste.LineasDetalle
 
                         Dim BeProducto As clsBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(detalle.ItemNo, beAjustes.IdBodega, lConnection, lTransaction)
+
+                        If BeProducto Is Nothing Then
+                            Dim vMsgExProd As String = "El producto: " & detalle.ItemNo & " no existe"
+                            Throw New Exception(vMsgExProd)
+                        End If
+
                         Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo_And_IdBodega(detalle.ItemNo, beAjustes.IdBodega, lConnection, lTransaction)
                         'Dim vIdProductoBodega As Integer = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(BeProducto.IdProducto, beAjustes.IdBodega, lConnection, lTransaction)
                         Dim vIdProductoEstado As Integer = clsLnProducto_estado.Get_Buen_Estado_Producto_By_IdPropietario(BePropietario.IdPropietario, lConnection, lTransaction)
@@ -1128,7 +1134,7 @@ Public Class clsSyncTransacWMS
 
                         Dim beAjusteDet As New clsBeTrans_ajuste_det With {
                         .IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1,
-                        .IdAjusteEnc = beAjustes.Idajusteenc,
+                        .IdAjusteEnc = beAjustes.IdAjusteenc,
                         .IdStock = 0,
                         .IdPropietarioBodega = beAjustes.IdPropietarioBodega,
                         .IdProductoBodega = vIdProductoBodega,
@@ -1179,8 +1185,6 @@ Public Class clsSyncTransacWMS
                     End If
                 Next
 
-                Return lAjustes
-
                 lTransaction.Commit()
 
             End Using
@@ -1188,6 +1192,8 @@ Public Class clsSyncTransacWMS
             lConnection.Close()
 
         End Using
+
+        Return lAjustes
 
     End Function
 
@@ -1200,6 +1206,8 @@ Public Class clsSyncTransacWMS
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
             Dim ajustes As List(Of clsBeTrans_ajuste_enc) = Await Get_Ajustes_Tiendas(codigoBodega, lblprg)
+            Dim ajustes_correctos As Integer = 0
+            Dim ajustes_incorrectos As Integer = 0
 
             If ajustes.Count = 0 Then
                 clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
@@ -1236,6 +1244,11 @@ Public Class clsSyncTransacWMS
                             clsTrans.RollBack_Transaction()
                             clsPublic.Actualizar_Progreso(lblprg, "No se pudo marcar en SAP (SL). Se revierte la transacción.")
                         End If
+
+                        ajustes_correctos += 1
+
+                    Else
+                        ajustes_incorrectos += 1
                     End If
 
                 Catch ex As Exception
