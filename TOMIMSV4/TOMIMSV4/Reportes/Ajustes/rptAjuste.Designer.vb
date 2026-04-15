@@ -19,6 +19,7 @@ Partial Public Class rptAjuste
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim XrWatermark1 As DevExpress.XtraReports.UI.XRWatermark = New DevExpress.XtraReports.UI.XRWatermark()
         Me.Detail = New DevExpress.XtraReports.UI.DetailBand()
         Me.XrTable2 = New DevExpress.XtraReports.UI.XRTable()
         Me.XrTableRow2 = New DevExpress.XtraReports.UI.XRTableRow()
@@ -31,6 +32,7 @@ Partial Public Class rptAjuste
         Me.XrTableCell16 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell17 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell18 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell19 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.TopMargin = New DevExpress.XtraReports.UI.TopMarginBand()
         Me.BottomMargin = New DevExpress.XtraReports.UI.BottomMarginBand()
         Me.Trans_ajuste_detTableAdapter = New TOMWMS.dsRepAjustesTableAdapters.trans_ajuste_detTableAdapter()
@@ -46,6 +48,7 @@ Partial Public Class rptAjuste
         Me.XrTableCell11 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell12 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell13 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell20 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.Usuario = New DevExpress.XtraReports.Parameters.Parameter()
         Me.Fecha = New DevExpress.XtraReports.Parameters.Parameter()
         Me.ReportHeader = New DevExpress.XtraReports.UI.ReportHeaderBand()
@@ -65,8 +68,8 @@ Partial Public Class rptAjuste
         Me.GroupFooter2 = New DevExpress.XtraReports.UI.GroupFooterBand()
         Me.ReportFooter = New DevExpress.XtraReports.UI.ReportFooterBand()
         Me.DsRepAjustes3 = New TOMWMS.dsRepAjustes()
-        Me.XrTableCell19 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell20 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.EsBorrador = New DevExpress.XtraReports.Parameters.Parameter()
+        Me.XrLabel7 = New DevExpress.XtraReports.UI.XRLabel()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsRepAjustes3, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -109,7 +112,7 @@ Partial Public Class rptAjuste
         '
         Me.XrTableCell5.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.Producto")})
         Me.XrTableCell5.Name = "XrTableCell5"
-        Me.XrTableCell5.Weight = 1.2740373947533648R
+        Me.XrTableCell5.Weight = 1.2740373947533647R
         '
         'XrTableCell6
         '
@@ -133,12 +136,16 @@ Partial Public Class rptAjuste
         '
         Me.XrTableCell15.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.ValorAnterior")})
         Me.XrTableCell15.Name = "XrTableCell15"
+        Me.XrTableCell15.StylePriority.UseTextAlignment = False
+        Me.XrTableCell15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight
         Me.XrTableCell15.Weight = 0.76552367151338008R
         '
         'XrTableCell16
         '
         Me.XrTableCell16.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.ValorActual")})
         Me.XrTableCell16.Name = "XrTableCell16"
+        Me.XrTableCell16.StylePriority.UseTextAlignment = False
+        Me.XrTableCell16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight
         Me.XrTableCell16.Weight = 0.95025228752918656R
         '
         'XrTableCell17
@@ -152,6 +159,14 @@ Partial Public Class rptAjuste
         Me.XrTableCell18.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.Lote")})
         Me.XrTableCell18.Name = "XrTableCell18"
         Me.XrTableCell18.Weight = 0.64204756505062055R
+        '
+        'XrTableCell19
+        '
+        Me.XrTableCell19.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.LicPlate")})
+        Me.XrTableCell19.Multiline = True
+        Me.XrTableCell19.Name = "XrTableCell19"
+        Me.XrTableCell19.Text = "XrTableCell19"
+        Me.XrTableCell19.Weight = 0.77639626273570672R
         '
         'TopMargin
         '
@@ -272,6 +287,15 @@ Partial Public Class rptAjuste
         Me.XrTableCell13.Text = "Lote"
         Me.XrTableCell13.Weight = 0.64204841373677612R
         '
+        'XrTableCell20
+        '
+        Me.XrTableCell20.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
+        Me.XrTableCell20.Multiline = True
+        Me.XrTableCell20.Name = "XrTableCell20"
+        Me.XrTableCell20.StylePriority.UseFont = False
+        Me.XrTableCell20.Text = "Licencia" & Global.Microsoft.VisualBasic.ChrW(9)
+        Me.XrTableCell20.Weight = 0.776397156548226R
+        '
         'Usuario
         '
         Me.Usuario.Description = "Usuario"
@@ -287,7 +311,7 @@ Partial Public Class rptAjuste
         '
         'ReportHeader
         '
-        Me.ReportHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel6, Me.XrLabel5, Me.XrLabel4, Me.XrLabel3, Me.XrLabel1, Me.XrPanel1, Me.XrPageInfo1})
+        Me.ReportHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel7, Me.XrLabel6, Me.XrLabel5, Me.XrLabel4, Me.XrLabel3, Me.XrLabel1, Me.XrPanel1, Me.XrPageInfo1})
         Me.ReportHeader.HeightF = 166.6666!
         Me.ReportHeader.Name = "ReportHeader"
         '
@@ -314,7 +338,7 @@ Partial Public Class rptAjuste
         Me.XrLabel5.LocationFloat = New DevExpress.Utils.PointFloat(47.33334!, 133.9167!)
         Me.XrLabel5.Name = "XrLabel5"
         Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel5.SizeF = New System.Drawing.SizeF(718.6665!, 23.0!)
+        Me.XrLabel5.SizeF = New System.Drawing.SizeF(352.6665!, 23.0!)
         Me.XrLabel5.StylePriority.UseFont = False
         '
         'Documento
@@ -372,14 +396,14 @@ Partial Public Class rptAjuste
         'XrLabel2
         '
         Me.XrLabel2.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
-        Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(10.00036!, 0.6250222!)
+        Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(10.00036!, 0.6250401!)
         Me.XrLabel2.Multiline = True
         Me.XrLabel2.Name = "XrLabel2"
         Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel2.SizeF = New System.Drawing.SizeF(708.6663!, 36.24998!)
+        Me.XrLabel2.SizeF = New System.Drawing.SizeF(708.6663!, 28.95828!)
         Me.XrLabel2.StylePriority.UseFont = False
         Me.XrLabel2.StylePriority.UseTextAlignment = False
-        Me.XrLabel2.Text = "TOM, WMS" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "DOCUMENTO: AJUSTE DE INVENTARIO"
+        Me.XrLabel2.Text = "TOMWMS - AJUSTE DE INVENTARIO"
         Me.XrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter
         '
         'XrPageInfo1
@@ -424,22 +448,24 @@ Partial Public Class rptAjuste
         Me.DsRepAjustes3.DataSetName = "dsRepAjustes"
         Me.DsRepAjustes3.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
-        'XrTableCell19
+        'EsBorrador
         '
-        Me.XrTableCell19.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.LicPlate")})
-        Me.XrTableCell19.Multiline = True
-        Me.XrTableCell19.Name = "XrTableCell19"
-        Me.XrTableCell19.Text = "XrTableCell19"
-        Me.XrTableCell19.Weight = 0.77639626273570672R
+        Me.EsBorrador.Description = "EsBorrador"
+        Me.EsBorrador.Name = "EsBorrador"
         '
-        'XrTableCell20
+        'XrLabel7
         '
-        Me.XrTableCell20.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
-        Me.XrTableCell20.Multiline = True
-        Me.XrTableCell20.Name = "XrTableCell20"
-        Me.XrTableCell20.StylePriority.UseFont = False
-        Me.XrTableCell20.Text = "Licencia" & Global.Microsoft.VisualBasic.ChrW(9)
-        Me.XrTableCell20.Weight = 0.776397156548226R
+        Me.XrLabel7.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding(Me.EsBorrador, "Text", "")})
+        Me.XrLabel7.Font = New DevExpress.Drawing.DXFont("Arial", 10.0!, DevExpress.Drawing.DXFontStyle.Bold)
+        Me.XrLabel7.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.XrLabel7.LocationFloat = New DevExpress.Utils.PointFloat(421.0287!, 133.9167!)
+        Me.XrLabel7.Multiline = True
+        Me.XrLabel7.Name = "XrLabel7"
+        Me.XrLabel7.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96.0!)
+        Me.XrLabel7.SizeF = New System.Drawing.SizeF(344.9709!, 23.0!)
+        Me.XrLabel7.StylePriority.UseFont = False
+        Me.XrLabel7.StylePriority.UseForeColor = False
+        Me.XrLabel7.Text = "Este documento es un Borrador"
         '
         'rptAjuste
         '
@@ -448,11 +474,14 @@ Partial Public Class rptAjuste
         Me.DataMember = "trans_ajuste_det"
         Me.DataSource = Me.DsRepAjustes3
         Me.Font = New DevExpress.Drawing.DXFont("Arial", 10.0!)
-        Me.Margins = New DevExpress.Drawing.DXMargins(12, 12, 2, 31)
-        Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Usuario, Me.Fecha, Me.Referencia, Me.Bodega, Me.Documento})
+        Me.Margins = New DevExpress.Drawing.DXMargins(12.0!, 12.0!, 2.0!, 31.0!)
+        Me.ParameterPanelLayoutItems.AddRange(New DevExpress.XtraReports.Parameters.ParameterPanelLayoutItem() {New DevExpress.XtraReports.Parameters.ParameterLayoutItem(Me.Usuario, DevExpress.XtraReports.Parameters.Orientation.Horizontal), New DevExpress.XtraReports.Parameters.ParameterLayoutItem(Me.Fecha, DevExpress.XtraReports.Parameters.Orientation.Horizontal), New DevExpress.XtraReports.Parameters.ParameterLayoutItem(Me.Referencia, DevExpress.XtraReports.Parameters.Orientation.Horizontal), New DevExpress.XtraReports.Parameters.ParameterLayoutItem(Me.Bodega, DevExpress.XtraReports.Parameters.Orientation.Horizontal), New DevExpress.XtraReports.Parameters.ParameterLayoutItem(Me.Documento, DevExpress.XtraReports.Parameters.Orientation.Horizontal), New DevExpress.XtraReports.Parameters.ParameterLayoutItem(Me.EsBorrador, DevExpress.XtraReports.Parameters.Orientation.Horizontal)})
+        Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Usuario, Me.Fecha, Me.Referencia, Me.Bodega, Me.Documento, Me.EsBorrador})
         Me.RequestParameters = False
         Me.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic
-        Me.Version = "19.2"
+        Me.Version = "24.2"
+        XrWatermark1.Id = "Watermark1"
+        Me.Watermarks.AddRange(New DevExpress.XtraPrinting.Drawing.Watermark() {XrWatermark1})
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsRepAjustes3, System.ComponentModel.ISupportInitialize).EndInit()
@@ -507,4 +536,6 @@ Partial Public Class rptAjuste
     Friend WithEvents XrTableCell18 As DevExpress.XtraReports.UI.XRTableCell
     Friend WithEvents XrTableCell19 As DevExpress.XtraReports.UI.XRTableCell
     Friend WithEvents XrTableCell20 As DevExpress.XtraReports.UI.XRTableCell
+    Friend WithEvents EsBorrador As DevExpress.XtraReports.Parameters.Parameter
+    Friend WithEvents XrLabel7 As DevExpress.XtraReports.UI.XRLabel
 End Class

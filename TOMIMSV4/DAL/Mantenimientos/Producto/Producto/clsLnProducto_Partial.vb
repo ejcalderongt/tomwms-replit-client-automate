@@ -5162,25 +5162,54 @@ Partial Public Class clsLnProducto
 
     ''' <summary>
     ''' Creado por Ricardo García
+    ''' Update GT30032026 mostrar que producto esta dando la excepcion
     ''' </summary>
     ''' <param name="pListObjP"></param>
     ''' <remarks></remarks>
     Public Shared Sub Guardar_Transaccion(ByRef pListObjP As List(Of clsBeProducto),
-                                          ByRef lConnection As SqlConnection,
-                                          ByRef lTransaction As SqlTransaction)
+                                      ByRef lConnection As SqlConnection,
+                                      ByRef lTransaction As SqlTransaction)
+
+        Dim objActual As clsBeProducto = Nothing
 
         Try
 
             For Each Obj As clsBeProducto In pListObjP
+                objActual = Obj
                 Insertar(Obj, lConnection, lTransaction)
             Next
 
-
         Catch ex As Exception
-            Throw New Exception(ex.Message)
+            Dim codigo As String = If(objActual IsNot Nothing, objActual.Codigo, "Sin código")
+            Throw New Exception("Error al guardar la transacción. Código producto: " & codigo & ". Detalle: " & ex.Message, ex)
         End Try
 
     End Sub
+
+
+
+    'Public Shared Sub Guardar_Transaccion(ByRef pListObjP As List(Of clsBeProducto),
+    '                                      ByRef lConnection As SqlConnection,
+    '                                      ByRef lTransaction As SqlTransaction)
+
+    '    Try
+
+    '        For Each Obj As clsBeProducto In pListObjP
+
+    '            If Obj.Codigo = "260H8ZA0" Then
+    '                Debug.WriteLine(Obj.Codigo)
+    '            End If
+
+    '            Insertar(Obj, lConnection, lTransaction)
+
+    '        Next
+
+
+    '    Catch ex As Exception
+    '        Throw New Exception(ex.Message)
+    '    End Try
+
+    'End Sub
 
     ''' <summary>
     ''' Creado por Ricardo García

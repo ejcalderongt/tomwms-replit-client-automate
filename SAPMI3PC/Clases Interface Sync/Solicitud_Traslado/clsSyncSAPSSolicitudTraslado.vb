@@ -236,8 +236,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                             End If
 
                             Dim BePedidoEncResult As New clsBeTrans_pe_enc
-                            BePedidoEncResult = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
-                                                                                                                          lblprg)
+                            BePedidoEncResult = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
+                                                                                                                       lblprg, Nothing, Nothing)
 
                             If Not BePedidoEncResult Is Nothing Then
 

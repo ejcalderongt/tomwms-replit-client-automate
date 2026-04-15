@@ -257,7 +257,7 @@ Public Class clsLnProducto_marca
             Dim IdxProductoClasificacion As Integer = 0
 
             Dim vSQL As String = "SELECT TOP 1 * FROM producto_marca 
-                                  WHERE IdPropietario=@IdPropietario Nombre like '%" + pNombre + "%'"
+                                  WHERE IdPropietario=@IdPropietario and Nombre like '%" + pNombre + "%'"
 
             Using lDTA As New SqlDataAdapter(vSQL, pConnection)
 

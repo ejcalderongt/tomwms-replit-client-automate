@@ -1,11 +1,10 @@
 using AppGlobal;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Propietario;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Datos_Maestros;
 public class clsLnPropietarios
 {
     private static clsInsert Ins = new clsInsert();
@@ -58,10 +57,10 @@ public class clsLnPropietarios
     }
     public static int Insertar(IConfiguration config, clsBePropietarios oBePropietarios, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
-
         int rowsAffected = 0;
         SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
+        bool esTransaccionPropia = false;
 
         try
         {
@@ -92,9 +91,8 @@ public class clsLnPropietarios
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
             bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
+            SqlCommand cmd;
 
             if (Es_Transaccion_Remota)
             {
@@ -102,45 +100,53 @@ public class clsLnPropietarios
             }
             else
             {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
                 cmd = new SqlCommand(sp, lConnection, lTransaction);
+                esTransaccionPropia = true;
             }
 
             Bind(cmd, oBePropietarios);
-
             rowsAffected = cmd.ExecuteNonQuery();
+
+            // Si el insert fue exitoso y el propietario tiene ID, asignarlo a todas las bodegas
+            if (rowsAffected > 0 && oBePropietarios.IdPropietario > 0)
+            {
+                var connectionToUse = Es_Transaccion_Remota ? pConection! : lConnection;
+                var transactionToUse = Es_Transaccion_Remota ? pTransaction! : lTransaction!;
+
+                AsignarPropietarioATodasLasBodegas(config, oBePropietarios, connectionToUse, transactionToUse, oBePropietarios.User_agr);
+            }
 
             cmd.Dispose();
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            if (esTransaccionPropia && lTransaction != null)
+                lTransaction.Commit();
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
+            if (esTransaccionPropia && lTransaction != null)
                 lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
             if (sf != null) { currentMethodName = sf.GetMethod(); }
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
             throw new Exception(vMsgError);
         }
         finally
         {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
+            if (esTransaccionPropia)
+            {
+                if (lConnection.State == ConnectionState.Open) lConnection.Close();
+                if (lConnection is not null) lConnection.Dispose();
+                if (lTransaction is not null) lTransaction.Dispose();
+            }
         }
         return rowsAffected;
     }
     public static int Insertar(IConfiguration config, clsBePropietarios oBePropietarios)
     {
-
         int rowsAffected = 0;
         SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
@@ -174,18 +180,24 @@ public class clsLnPropietarios
 
             string sp = Ins.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
+            lConnection.Open();
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            cmd = new SqlCommand(sp, lConnection, lTransaction);
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                Bind(cmd, oBePropietarios);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
 
-            Bind(cmd, oBePropietarios);
-
-            rowsAffected = cmd.ExecuteNonQuery();
+            // Si el insert fue exitoso y el propietario tiene ID, asignarlo a todas las bodegas
+            if (rowsAffected > 0 && oBePropietarios.IdPropietario > 0)
+            {
+                AsignarPropietarioATodasLasBodegas(config, oBePropietarios, lConnection, lTransaction, oBePropietarios.User_agr);
+            }
 
             if (lTransaction != null)
                 lTransaction.Commit();
-
         }
         catch (SqlException ex1)
         {
@@ -196,7 +208,6 @@ public class clsLnPropietarios
             MethodBase? currentMethodName = null;
             if (sf != null) { currentMethodName = sf.GetMethod(); }
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
             throw new Exception(vMsgError);
         }
         finally
@@ -961,6 +972,249 @@ public class clsLnPropietarios
         catch (Exception)
         {
             throw;
+        }
+    }
+
+    /// <summary>
+    /// Asigna automáticamente el propietario a todas las bodegas que no tenga asociadas
+    /// </summary>
+    public static void AsignarPropietarioATodasLasBodegas(IConfiguration config,
+                                                          clsBePropietarios oBePropietario,
+                                                          SqlConnection pConection,
+                                                          SqlTransaction pTransaction,
+                                                          string userAgr = "")
+    {
+        try
+        {
+            // Obtener todas las bodegas
+            var listBodegas = clsLnBodega.GetAll(config);
+
+            if (listBodegas == null || !listBodegas.Any())
+                return;
+
+            // Obtener las bodegas ya asociadas al propietario
+            var bodegasAsociadas = clsLnPropietario_bodega.GetAll(config)
+                .Where(pb => pb.IdPropietario == oBePropietario.IdPropietario)
+                .Select(pb => pb.IdBodega)
+                .ToList();
+
+            // Obtener el máximo ID de propietario_bodega
+            int lMax = clsLnPropietario_bodega.MaxID(config, pConection, pTransaction);
+
+            // Crear lista de nuevas asociaciones
+            var nuevasAsociaciones = new List<clsBePropietario_bodega>();
+
+            foreach (var bodega in listBodegas)
+            {
+                // Si el propietario ya está asociado a esta bodega, saltar
+                if (bodegasAsociadas.Contains(bodega.IdBodega))
+                    continue;
+
+                // Crear nueva asociación
+                lMax++;
+                var propietarioBodega = new clsBePropietario_bodega
+                {
+                    IdPropietarioBodega = lMax,
+                    IdPropietario = oBePropietario.IdPropietario,
+                    IdBodega = bodega.IdBodega,
+                    User_agr = !string.IsNullOrEmpty(userAgr) ? userAgr : oBePropietario.User_agr,
+                    Fec_agr = DateTime.Now,
+                    User_mod = "",
+                    Fec_mod = DateTime.Now,
+                    Activo = true
+                };
+
+                nuevasAsociaciones.Add(propietarioBodega);
+            }
+
+            // Insertar todas las nuevas asociaciones
+            if (nuevasAsociaciones.Any())
+            {
+                clsLnPropietario_bodega.InsertOrUpdate(nuevasAsociaciones, pConection, pTransaction);
+            }
+        }
+        catch (Exception ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+    }
+
+    /// <summary>
+    /// Obtiene los IDs de las bodegas asociadas a un propietario (consulta SQL directa)
+    /// </summary>
+    /// <param name="config">Configuración</param>
+    /// <param name="idPropietario">ID del propietario</param>
+    /// <returns>Lista de IDs de bodegas</returns>
+    public static List<int> GetBodegasIdsByPropietarioId(IConfiguration config, int idPropietario)
+    {
+        var result = new List<int>();
+        SqlConnection? connection = null;
+        SqlTransaction? transaction = null;
+
+        try
+        {
+            connection = new SqlConnection(config.GetConnectionString("CST"));
+            connection.Open();
+            transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            const string sp = @"SELECT IdBodega 
+                            FROM propietario_bodega 
+                            WHERE IdPropietario = @IdPropietario 
+                              AND Activo = 1";
+
+            using (var cmd = new SqlCommand(sp, connection, transaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IdPropietario", idPropietario);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+
+            transaction.Commit();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            transaction?.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (connection != null && connection.State == ConnectionState.Open)
+                connection.Close();
+            connection?.Dispose();
+            transaction?.Dispose();
+        }
+    }
+    /// <summary>
+    /// Obtiene las bodegas completas asociadas a un propietario (consulta SQL con JOIN)
+    /// </summary>
+    /// <param name="config">Configuración</param>
+    /// <param name="idPropietario">ID del propietario</param>
+    /// <returns>Lista de objetos clsBeBodega</returns>
+    public static List<clsBeBodega> GetBodegasCompletasByPropietarioId(IConfiguration config, int idPropietario)
+    {
+        var result = new List<clsBeBodega>();
+        SqlConnection? connection = null;
+        SqlTransaction? transaction = null;
+
+        try
+        {
+            connection = new SqlConnection(config.GetConnectionString("CST"));
+            connection.Open();
+            transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            const string sp = @"SELECT b.IdBodega, b.codigo, b.nombre, b.activo, b.direccion, b.telefono
+                            FROM propietario_bodega pb
+                            INNER JOIN Bodega b ON pb.IdBodega = b.IdBodega
+                            WHERE pb.IdPropietario = @IdPropietario 
+                              AND pb.Activo = 1
+                              AND b.activo = 1";
+
+            using (var cmd = new SqlCommand(sp, connection, transaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IdPropietario", idPropietario);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var bodega = new clsBeBodega
+                        {
+                            IdBodega = reader.GetInt32(0),
+                            Codigo = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                            Nombre = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                            Activo = reader.IsDBNull(3) ? false : reader.GetBoolean(3),
+                            Direccion = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                            Telefono = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                        };
+                        result.Add(bodega);
+                    }
+                }
+            }
+
+            transaction.Commit();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            transaction?.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (connection != null && connection.State == ConnectionState.Open)
+                connection.Close();
+            connection?.Dispose();
+            transaction?.Dispose();
+        }
+    }
+    /// <summary>
+    /// Cuenta cuántas bodegas están asociadas a un propietario
+    /// </summary>
+    /// <param name="config">Configuración</param>
+    /// <param name="idPropietario">ID del propietario</param>
+    /// <returns>Número de bodegas asociadas</returns>
+    public static int CountBodegasByPropietarioId(IConfiguration config, int idPropietario)
+    {
+        SqlConnection? connection = null;
+        SqlTransaction? transaction = null;
+
+        try
+        {
+            connection = new SqlConnection(config.GetConnectionString("CST"));
+            connection.Open();
+            transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            const string sp = @"SELECT COUNT(1) 
+                            FROM propietario_bodega 
+                            WHERE IdPropietario = @IdPropietario 
+                              AND Activo = 1";
+
+            using (var cmd = new SqlCommand(sp, connection, transaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IdPropietario", idPropietario);
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                transaction.Commit();
+                return count;
+            }
+        }
+        catch (Exception ex)
+        {
+            transaction?.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (connection != null && connection.State == ConnectionState.Open)
+                connection.Close();
+            connection?.Dispose();
+            transaction?.Dispose();
         }
     }
 }

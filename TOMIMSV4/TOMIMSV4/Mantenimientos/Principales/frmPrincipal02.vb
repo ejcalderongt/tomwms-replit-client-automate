@@ -2622,7 +2622,10 @@ Public Class frmPrincipal02
 
         Try
 
-            If dtpFechaInicio.Value > dtpFechaFin.Value Or dtpFechaFin.Value < dtpFechaInicio.Value Then
+            Dim fechaInicio As Date = dtpFechaInicio.Value.Date
+            Dim fechaFin As Date = dtpFechaFin.Value.Date
+
+            If fechaInicio > fechaFin Then
                 Throw New Exception("Seleccione un rango de fechas válido.")
             End If
 

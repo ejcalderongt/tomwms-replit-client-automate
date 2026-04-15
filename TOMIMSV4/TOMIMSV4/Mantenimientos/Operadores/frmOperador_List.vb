@@ -171,6 +171,8 @@ Public Class frmOperador_List
                         'LayoutView1.OptionsView.ColumnAutoWidth = False
                         'LayoutView1.BestFitColumns()
 
+                        GridView1.BestFitColumns()
+
                     End If
 
                 Catch ex As Exception

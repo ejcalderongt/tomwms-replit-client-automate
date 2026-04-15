@@ -2125,7 +2125,7 @@ Partial Public Class clsLnTrans_inv_ciclico
         Try
 
             Dim pBeTransAjustEnc As New clsBeTrans_ajuste_enc
-            pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
+            pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
             pBeTransAjustEnc.Referencia = "Ajuste por inventario No. " & IdInventario
             pBeTransAjustEnc.Fecha = Date.Now
             pBeTransAjustEnc.Fec_agr = Date.Now
@@ -2143,7 +2143,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             pBeTransAjustEnc.IdCentroCosto = IdCentroCosto
             clsLnTrans_ajuste_enc.Insertar(pBeTransAjustEnc, lConnection, lTransaction)
 
-            pIdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+            pIdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -5109,72 +5109,54 @@ Partial Public Class clsLnTrans_inv_ciclico
 
             '#CKFK20250206 Por una mejora que se hizo en el ingreso de los datos, ya se pueden sumar la cantidades contadas
             'y las cantidades del stock, quité ambas del group by
-            Dim vSQL As String = "SELECT " &
-                            "    t.idinventarioenc, " &
-                            "    t.Codigo, " &
-                            "    t.Producto, " &
-                            "    SUM(t.Cantidad_Stock) AS Cantidad_Stock, " &
-                            "    SUM(t.Cantidad_Ciclico) AS Cantidad_Ciclico, " &
-                            "    t.NombreTipoProducto, " &
-                            "    t.IdProducto, " &
-                            "    t.IdProductoBodega, " &
-                            "    t.IdPresentacion, " &
-                            "    t.Factor, " &
-                            "    t.NombrePresentacion, " &
-                            "    t.UmBas, " &
-                            "    SUM(t.Cantidad_Reservada) AS Cantidad_Reservada " &
-                            "FROM ( " &
-                            "    SELECT " &
-                            "        ciclico.idinventarioenc, " &
-                            "        p.codigo AS Codigo, " &
-                            "        p.nombre AS Producto, " &
-                            "        MAX(ciclico.cant_stock) AS Cantidad_Stock, " &
-                            "        SUM(ciclico.cantidad) AS Cantidad_Ciclico, " &
-                            "        pt.NombreTipoProducto, " &
-                            "        p.IdProducto, " &
-                            "        ciclico.IdProductoBodega, " &
-                            "        ciclico.IdPresentacion, " &
-                            "        ISNULL(pp.factor, 0) AS Factor, " &
-                            "        ISNULL(pp.nombre, '') AS NombrePresentacion, " &
-                            "        um.nombre AS UmBas, " &
-                            "        MAX(ISNULL(ciclico.cantidad_reservada_umbas,0)) AS Cantidad_Reservada " &
-                            "    FROM trans_inv_ciclico ciclico " &
-                            "        INNER JOIN producto_bodega pb ON ciclico.IdProductoBodega = pb.IdProductoBodega " &
-                            "        INNER JOIN producto p ON pb.IdProducto = p.IdProducto " &
-                            "        LEFT JOIN producto_tipo pt ON p.IdTipoProducto = pt.IdTipoProducto " &
-                            "        LEFT JOIN operador op ON ciclico.idoperador = op.IdOperador " &
-                            "        LEFT JOIN producto_presentacion pp ON ciclico.IdPresentacion = pp.IdPresentacion " &
-                            "        INNER JOIN unidad_medida um ON ciclico.IdUnidadMedida = um.IdUnidadMedida " &
-                            "    WHERE ciclico.idinventarioenc = @idinventario " &
-                            "      AND ciclico.IdBodega = @IdBodega " &
-                            "    GROUP BY " &
-                            "        ciclico.idinventarioenc, " &
-                            "        p.codigo, " &
-                            "        p.nombre, " &
-                            "        pt.NombreTipoProducto, " &
-                            "        p.IdProducto, " &
-                            "        ciclico.IdProductoBodega, " &
-                            "        ciclico.IdPresentacion, " &
-                            "        pp.factor, " &
-                            "        pp.nombre, " &
-                            "        um.nombre, " &
-                            "        ciclico.IdStock " &
-                            ") t " &
-                            "GROUP BY " &
-                            "    t.idinventarioenc, " &
-                            "    t.Codigo, " &
-                            "    t.Producto, " &
-                            "    t.NombreTipoProducto, " &
-                            "    t.IdProducto, " &
-                            "    t.IdProductoBodega, " &
-                            "    t.IdPresentacion, " &
-                            "    t.Factor, " &
-                            "    t.NombrePresentacion, " &
-                            "    t.UmBas " &
-                            "ORDER BY t.Codigo"
-
-            '#GT31012025: El group by esta jodiendo, por incluir trans_inv_ciclico_cantidad, porque si hay recuento, el produto no va a coincidir en este valor y mostrará 2 lineas o más.
-
+            Dim vSQL As String = "SELECT t.idinventarioenc, 
+                                     t.Codigo, 
+                                     t.Producto,
+                                     SUM(t.Cantidad_Stock)  Cantidad_Stock, 
+                                     SUM(t.Cantidad_Ciclico) Cantidad_Ciclico, 
+                                     t.NombreTipoProducto, 
+                                     t.IdProducto,
+                                     t.IdProductoBodega, 
+                                     MAX(t.UMBas) AS UMBas,
+                                     SUM(t.Cantidad_Reservada) Cantidad_Reservada,
+                                     MAX(t.IdPresentacion) AS IdPresentacion,
+                                     MAX(t.Factor) AS Factor,
+                                     MAX(t.Presentacion) AS Presentacion
+                                FROM (SELECT trans_inv_ciclico.idinventarioenc, 
+	                                    producto.codigo AS Codigo, 
+	                                    producto.nombre AS Producto,
+	                                    MAX(trans_inv_ciclico.cant_stock) AS Cantidad_Stock, 
+	                                    SUM(trans_inv_ciclico.cantidad) Cantidad_Ciclico, 
+	                                    producto_tipo.NombreTipoProducto, 
+	                                    producto.IdProducto,
+	                                    trans_inv_ciclico.IdProductoBodega,
+	                                    trans_inv_ciclico.IdStock,
+	                                    MAX(trans_inv_ciclico.cantidad_reservada_umbas) AS Cantidad_Reservada,
+	                                    MAX(trans_inv_ciclico.IdPresentacion) AS IdPresentacion,
+	                                    MAX(producto_presentacion.Factor) AS Factor,
+	                                    MAX(unidad_medida.Nombre) AS UMBas,
+	                                    MAX(producto_presentacion.nombre) AS Presentacion
+                                   FROM   trans_inv_ciclico INNER JOIN 
+	                                    producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN 
+	                                    producto ON producto_bodega.IdProducto = producto.IdProducto LEFT OUTER JOIN 
+	                                    producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto LEFT OUTER JOIN
+	                                    producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion 
+	                                    LEFT OUTER JOIN unidad_medida ON producto.IdUnidadMedidaBasica = unidad_medida.IdUnidadMedida
+                                   WHERE trans_inv_ciclico.idinventarioenc = @idinventario AND 
+	                                  trans_inv_ciclico.IdBodega = @IdBodega 
+                                   GROUP BY producto.codigo,
+	                                    trans_inv_ciclico.idinventarioenc, 
+	                                    producto.nombre, 
+	                                    producto_tipo.NombreTipoProducto,
+	                                    producto.IdProducto,
+                                        trans_inv_ciclico.IdProductoBodega,
+	                                    trans_inv_ciclico.IdStock)T
+                              GROUP BY t.idinventarioenc, 
+                                       t.codigo, 
+                                       t.Producto,
+                                       t.NombreTipoProducto, 
+                                       t.IdProducto,
+                                       t.IdProductoBodega"
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
@@ -7051,7 +7033,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                 If ajustes.Count > 0 Then
 
                     ' Crear encabezado para el ajuste
-                    pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID(pConnection, pTransaction) + 1
+                    pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID(pConnection, pTransaction) + 1
                     pBeTransAjustEnc.IdBodega = gBeInventario.IdBodega
                     pBeTransAjustEnc.Idusuario = pUsuario.IdUsuario
                     pBeTransAjustEnc.Fecha = Date.Now
@@ -7078,7 +7060,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                     For Each ajuste In ajustes
 
                         ajuste.IdAjusteDet = clsLnTrans_ajuste_det.MaxID(pConnection, pTransaction) + 1
-                        ajuste.IdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+                        ajuste.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
                         ajuste.IdPropietarioBodega = vIdPropietarioBodega
 
                         If ajuste.Cantidad_nueva - ajuste.Cantidad_original > 0 Then

@@ -74,10 +74,16 @@ Public Class clsSyncSapAjustes
                     Dim EndPoint As String = If(g.Key.Tipo = InvAdjType.Issue, ENTITY_TARGET_INV_GEN_EXITS, ENTITY_TARGET_INV_GEN_ENTRIES)
                     Dim docTxt As String = If(g.Key.Tipo = InvAdjType.Issue, "Salida", "Entrada")
 
+                    Dim vUsuarioWMS As String = ""
+                    Dim BeUsuario As clsBeUsuario = clsLnUsuario.GetSingle(g.Key.Usr_Agr)
+                    If BeUsuario IsNot Nothing Then
+                        vUsuarioWMS = String.Format("{0} {1}", BeUsuario.Nombres, BeUsuario.Apellidos).Trim()
+                    End If
+
                     ' ---------- 2) Construcción de payload ----------
                     Dim payload As InventoryPayload = Build_Inventory_Payload(
                     docDate:=Date.Today,
-                    comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt}) IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
+                    comments:=$"IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
                     journalMemo:=$"WMS {docTxt} – MI3",
                     series:=Nothing,
                     centroCostoErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoErp),
@@ -90,7 +96,7 @@ Public Class clsSyncSapAjustes
                     '#CKFK20251028 Agregamos los campos UDFs necesarios
                     payload.U_ENVIADO_WMS = 1
                     payload.U_MOTIVO_WMS = g.Key.Motivo_Ajuste
-                    payload.U_OPERADOR_WMS = g.Key.Usr_Agr
+                    payload.U_OPERADOR_WMS = vUsuarioWMS
                     payload.U_DOCUMENTO_WMS = g.Key.IdAjusteWMS
                     payload.U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
                     payload.U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
@@ -106,7 +112,7 @@ Public Class clsSyncSapAjustes
                     req.Headers.Add("Cookie", vHanaService.SessionCookie)
                     req.Headers.ConnectionClose = True
 
-                    clsPublic.Actualizar_Progreso(lblprg, $"Publicando {docTxt} {g.Key.Doc} ({payload.DocumentLines.Count} línea(s)) ...")
+                    clsPublic.Actualizar_Progreso(lblprg, $"Publicando {docTxt} {g.Key.IdAjusteWMS} ({payload.DocumentLines.Count} línea(s)) ...")
 
                     Dim resp = Await http.SendAsync(req).ConfigureAwait(False)
                     Dim body = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)

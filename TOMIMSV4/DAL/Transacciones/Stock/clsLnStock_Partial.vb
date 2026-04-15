@@ -7,29 +7,6 @@ Partial Public Class clsLnStock
     Private Shared lpBeProductoOutput As New List(Of clsBeProducto)
     Private Shared lBeBodega As New List(Of clsBeBodega)
 
-    'Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-    '                             ByVal pTransaction As SqlTransaction) As Integer
-
-    '    Try
-
-    '        Dim lMax As Integer = 0
-    '        Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
-
-    '        Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-    '            Dim lReturnValue As Object = lCommand.ExecuteScalar()
-    '            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-    '                lMax = CInt(lReturnValue)
-    '            End If
-    '        End Using
-
-    '        Return lMax
-
-    '    Catch ex As Exception
-    '        Throw ex
-    '    End Try
-
-    'End Function
-
     ''' <summary>
     ''' Busca las existencias para un IdPropietarioBodega
     ''' </summary>

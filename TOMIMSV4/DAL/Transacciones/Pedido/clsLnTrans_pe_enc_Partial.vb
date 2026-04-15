@@ -449,6 +449,8 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Parcial = IIf(IsDBNull(lRow("Permitir_Despacho_Parcial")), False, lRow("Permitir_Despacho_Parcial"))
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Multiple = IIf(IsDBNull(lRow("Permitir_Despacho_Multiple")), False, lRow("Permitir_Despacho_Multiple"))
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
+                        vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
+                        vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))
@@ -5605,6 +5607,8 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Parcial = IIf(IsDBNull(lRow("Permitir_Despacho_Parcial")), False, lRow("Permitir_Despacho_Parcial"))
                         vPedidoEnc.TipoPedido.Permitir_Despacho_Multiple = IIf(IsDBNull(lRow("Permitir_Despacho_Multiple")), False, lRow("Permitir_Despacho_Multiple"))
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
+                        vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
+                        vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))

@@ -5445,6 +5445,7 @@ Public Class frmMenu
             Cierra_Instancia_Previa(frmDocIngresoRFID_List)
 
             With frmDocIngresoRFID_List
+                .Modo = frmDocIngresoRFID_List.pModo.Lista
                 .MdiParent = Me
                 .Show()
                 .Focus()
@@ -5470,6 +5471,32 @@ Public Class frmMenu
             Cierra_Instancia_Previa(frmDocSalidaRFID_List)
 
             With frmDocSalidaRFID_List
+                .Modo = frmDocSalidaRFID_List.pModo.Lista
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Private Sub mnuStock_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuStockTag.ItemClick
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmStockRFID)
+
+            With frmStockRFID
                 .MdiParent = Me
                 .Show()
                 .Focus()

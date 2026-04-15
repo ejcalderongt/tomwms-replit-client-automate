@@ -1012,7 +1012,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                             vCodigoProducto = PDet.Item_No
                             BeProducto = New clsBeProducto()
 
-                            If vMostrar Then clsPublic.Actualizar_Progreso(lblprg, "Procesando producto: " & PDet.Item_No)
+                            If vMostrar Then clsPublic.Actualizar_Progreso(lblprg, "Procesando producto: " & PDet.Item_No & IIf(PDet.Color = "", "", " Color: " & PDet.Color) & IIf(PDet.Size = "", "", " Talla:" & PDet.Size))
 
                             If vCodigoProducto = "WMS66" Then
                                 Debug.Print("7411000360002")
@@ -3803,6 +3803,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
         Try
 
+            Dim BeTipoPedido As New clsBeTrans_pe_tipo
+            BeTipoPedido = clsLnTrans_pe_tipo.Get_Single_By_IdTipoPedido(BePedidoEnc.IdTipoPedido)
+            BePedidoEnc.TipoPedido = BeTipoPedido
+
             BePickingEnc.IdPickingEnc = 0
             BePickingEnc.IdBodega = BePedidoEnc.IdBodega
             BePickingEnc.IdPropietarioBodega = BePedidoEnc.IdPropietarioBodega
@@ -3816,7 +3820,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             BePickingEnc.Fec_mod = Now
             BePickingEnc.Detalle_operador = False
             BePickingEnc.Activo = True
-            BePickingEnc.verifica_auto = True
+            BePickingEnc.verifica_auto = IIf(BePedidoEnc.TipoPedido.Verificar, True, False)
             BePickingEnc.procesado_bof = True
             BePickingEnc.Requiere_Preparacion = False
             BePickingEnc.Fotografia_Verificacion = False
