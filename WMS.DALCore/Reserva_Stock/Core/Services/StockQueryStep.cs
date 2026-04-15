@@ -63,17 +63,18 @@ namespace WMS.StockReservation.Core.Services
             // =========================
             // Consultar stock Picking
             // =========================
-            context.StockListPickingZone = clsLnStock.lStock(ref tempRequest,
-                                                            ref tempProduct,
-                                                            diasVencimiento,
-                                                            context.Configuration,
-                                                            context.Connection,
-                                                            context.Transaction,
-                                                            pExcluirUbicacionPicking: false,
-                                                            Conmutar_Umbas_A_Presentacion: false,
-                                                            pTarea_Reabasto: context.TareaReabasto,
-                                                            pEs_Devolucion: context.EsDevolucion,
-                                                            pEsManufactura: context.EsManufactura);
+            context.StockListPickingZone = clsLnStock.lStock(
+                ref tempRequest,
+                ref tempProduct,
+                diasVencimiento,
+                context.Configuration,
+                context.Connection,
+                context.Transaction,
+                pExcluirUbicacionPicking: false,
+                Conmutar_Umbas_A_Presentacion: false,
+                pTarea_Reabasto: context.TareaReabasto,
+                pEs_Devolucion: context.EsDevolucion,
+                pEsManufactura: context.EsManufactura);
 
             // Re-asignar (por si lStock modifica las referencias)
             context.Request = tempRequest;
@@ -82,10 +83,11 @@ namespace WMS.StockReservation.Core.Services
             // Restar stock ya reservado de la zona Picking
             if (context.StockListPickingZone != null && context.StockListPickingZone.Count > 0)
             {
-                clsLnStock_res.Restar_Stock_Reservado(context.StockListPickingZone,
-                                                        context.Configuration,
-                                                        context.Connection,
-                                                        context.Transaction);
+                clsLnStock_res.Restar_Stock_Reservado(
+                    context.StockListPickingZone,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction);
 
                 // IMPORTANTE: Filtrar SOLO ubicaciones de picking
                 // La consulta con pExcluirUbicacionPicking=false trae TODO el stock,
@@ -134,6 +136,11 @@ namespace WMS.StockReservation.Core.Services
             }
 
             // =========================
+            // Filtrar stock vencido (post-query, con diagnóstico)
+            // =========================
+            FilterExpiredStock(context);
+
+            // =========================
             // Validar fecha_manufactura (post-query)
             // =========================
             if (context.EsManufactura)
@@ -180,6 +187,16 @@ namespace WMS.StockReservation.Core.Services
                     return;
                 }
 
+                if (context.HadExpiredStock)
+                {
+                    context.AddFailure(
+                        Interfaces.ReservationFailureCode.ALL_STOCK_EXPIRED,
+                        $"El stock del producto (ID: {context.ProductId}) existe pero está vencido. No se puede reservar stock vencido.",
+                        context.PendingQuantity);
+                    _logger.LogInfo("#FAILURE_DETECTED: ALL_STOCK_EXPIRED");
+                    return;
+                }
+
                 if (context.HasSpecificLot)
                 {
                     var lotNo = context.SpecificLotNo;
@@ -223,6 +240,84 @@ namespace WMS.StockReservation.Core.Services
                     context.PendingQuantity);
                 _logger.LogInfo("#FAILURE_WARNING: NO_NON_PICKING_STOCK");
             }
+        }
+
+        /// <summary>
+        /// Filtra stock vencido de ambas listas (Picking y NonPicking) usando LINQ en lugar
+        /// de SQL, para poder diagnosticar si la causa de fallo fue el vencimiento del stock.
+        /// Solo aplica cuando el producto controla vencimiento y la bodega no permite
+        /// despachar producto vencido, y no es una devolución, y no está en modo manufactura.
+        /// Establece context.HadExpiredStock = true si había stock pero fue eliminado por vencimiento.
+        /// </summary>
+        private void FilterExpiredStock(ReservationContext context)
+        {
+            if (!ShouldFilterExpiredStock(context))
+                return;
+
+            var now = DateTime.Now;
+            int totalBefore = (context.StockListPickingZone?.Count ?? 0)
+                            + (context.StockListNonPickingZones?.Count ?? 0);
+
+            int removedPicking = 0;
+            int removedNonPicking = 0;
+
+            if (context.StockListPickingZone != null && context.StockListPickingZone.Count > 0)
+            {
+                int before = context.StockListPickingZone.Count;
+                context.StockListPickingZone = context.StockListPickingZone
+                    .Where(s => s.Fecha_vence > now)
+                    .ToList();
+                removedPicking = before - context.StockListPickingZone.Count;
+            }
+
+            if (context.StockListNonPickingZones != null && context.StockListNonPickingZones.Count > 0)
+            {
+                int before = context.StockListNonPickingZones.Count;
+                context.StockListNonPickingZones = context.StockListNonPickingZones
+                    .Where(s => s.Fecha_vence > now)
+                    .ToList();
+                removedNonPicking = before - context.StockListNonPickingZones.Count;
+            }
+
+            int totalAfter = (context.StockListPickingZone?.Count ?? 0)
+                           + (context.StockListNonPickingZones?.Count ?? 0);
+
+            if (removedPicking > 0 || removedNonPicking > 0)
+            {
+                _logger.LogInfo($"#EXPIRY_FILTER | Excluidos por vencimiento: " +
+                               $"Picking={removedPicking}, NonPicking={removedNonPicking}");
+            }
+
+            if (totalBefore > 0 && totalAfter == 0)
+            {
+                context.HadExpiredStock = true;
+                _logger.LogInfo("#EXPIRY_FILTER | Todo el stock disponible estaba vencido → HadExpiredStock=true");
+            }
+        }
+
+        /// <summary>
+        /// Determina si se debe aplicar el filtro de vencimiento en código (LINQ).
+        /// Replica exactamente las mismas condiciones que tenía el SQL original:
+        ///   IdUbicacionAbastecerCon == 0
+        ///   AND BeBodega != null AND pBeProductoOutput != null
+        ///   AND producto.control_vencimiento == true
+        ///   AND !bodega.Despachar_producto_vencido
+        ///   AND !pEs_Devolucion
+        /// Además, no aplica en modo manufactura (fecha_vence no es relevante en ese caso).
+        /// </summary>
+        private static bool ShouldFilterExpiredStock(ReservationContext context)
+        {
+            if (context.EsManufactura) return false;
+            if (context.Request?.IdUbicacionAbastecerCon != 0) return false;
+
+            // Réplica exacta del null-guard del SQL original: BeBodega != null && pBeProductoOutput != null
+            if (context.Bodega == null || context.Product == null) return false;
+
+            if (!context.Product.control_vencimiento) return false;
+            if (context.Bodega.Despachar_producto_vencido) return false;
+            if (context.EsDevolucion) return false;
+
+            return true;
         }
 
         private void FilterInvalidManufacturingDates(ReservationContext context)

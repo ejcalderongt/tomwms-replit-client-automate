@@ -1491,10 +1491,10 @@ Public Class frmEjecucion
 
                 '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
                 Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
-                Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente 
-                Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
-                Await clsSyncTransacWMS.Procesar_Anulacion_Devolucion_SAP(lblprg, prg) 'Anulaciones de notas de crédito
-                Await clsSyncTransacWMS.Procesar_Anulacion_Ventas_SAP(lblprg, prg) 'Anulaciones de ventas
+                'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente 
+                'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
+                'Await clsSyncTransacWMS.Procesar_Anulacion_Devolucion_SAP(lblprg, prg) 'Anulaciones de notas de crédito
+                'Await clsSyncTransacWMS.Procesar_Anulacion_Ventas_SAP(lblprg, prg) 'Anulaciones de ventas
 
             End If
 
