@@ -23,7 +23,7 @@ Public Class frmListaStockControlCalidad
     Public pListUbicHHDet As New List(Of clsBeTrans_ubic_hh_det)
     Private pIdPropietarioBodega As Integer
     Private pListMovimiento As New List(Of clsBeTrans_movimientos)
-    Private pListStockMov As New List(Of clsBeStock)
+    Private pListStockFinal As New List(Of clsBeStock)
     Private pUbicHHDet As New clsBeTrans_ubic_hh_det
     Private pListjOperador As New List(Of clsBeTrans_ubic_hh_op)
 
@@ -535,16 +535,16 @@ Public Class frmListaStockControlCalidad
                                                        pListMovimiento,
                                                        0,
                                                        IdPropietario_,
-                                                       pListStockMov,
+                                                       pListStockFinal,
                                                        pListTransUbicTarimaDisponibles,
                                                        pListTransUbicTarimaUsadas,
                                                        pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
                                                        AP.HostName)
 
-            NotificarCambioEstadoAsync(dtDestinatarios, pListUbicHHDet, pListStockMov, pTrans_ubic_hh_enc)
+            NotificarCambioEstadoAsync(dtDestinatarios, pListUbicHHDet, pListStockFinal, pTrans_ubic_hh_enc)
 
             pListUbicHHDet = New List(Of clsBeTrans_ubic_hh_det)
-            pListStockMov = New List(Of clsBeStock)
+            pListStockFinal = New List(Of clsBeStock)
             pListMovimiento = New List(Of clsBeTrans_movimientos)
             pListjOperador = New List(Of clsBeTrans_ubic_hh_op)
 
@@ -657,7 +657,7 @@ Public Class frmListaStockControlCalidad
 
         Try
 
-            pListStockMov.Clear()
+            pListStockFinal.Clear()
 
             '#GT27120223: llenar la lista con las filas seleccionadas del grid, para luego cargar Estados
             '#GT27122023: mostrar estados de un único propietario.
@@ -695,55 +695,57 @@ Public Class frmListaStockControlCalidad
 
                     'Dim IdTareaUbicacionDet As Integer = 1
 
-                    For Each Stock As clsBeVW_stock_res In listaStockSeleccionado
+                    For Each Stock_Actual As clsBeVW_stock_res In listaStockSeleccionado
 
                         '#GT03022023: Llenamos el objeto Stock
-                        Dim pObjStockMov As New clsBeStock() With {.IdStockOrigen = Stock.IdStock, .IdStock = Stock.IdStock}
-                        clsLnStock.GetSingle(pObjStockMov)
-                        pObjStockMov.IdUbicacion_anterior = Stock.IdUbicacion
-                        pObjStockMov.IdProductoEstado = Stock.IdProductoEstado
+                        Dim Stock_Destino As New clsBeStock() With {.IdStockOrigen = Stock_Actual.IdStock, .IdStock = Stock_Actual.IdStock}
+                        clsLnStock.GetSingle(Stock_Destino)
+                        Stock_Destino.IdUbicacion_anterior = Stock_Actual.IdUbicacion
+                        Stock_Destino.IdProductoEstado = Stock_Actual.IdProductoEstado
+                        Stock_Destino.Fec_mod = Now
+                        Stock_Destino.User_mod = AP.UsuarioAp.IdUsuario
 
                         '#MECR05092025: se agrego columna de "IdProductoTallaColor", "Talla" y "Color"
-                        If Stock.IdProductoTallaColor > 0 Then
-                            Dim DtPtc = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(Stock.IdProductoTallaColor)
+                        If Stock_Actual.IdProductoTallaColor > 0 Then
+                            Dim DtPtc = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(Stock_Actual.IdProductoTallaColor)
                             If DtPtc.Rows.Count > 0 Then
-                                pObjStockMov.Talla = DtPtc.Rows(0)("Talla")
-                                pObjStockMov.Color = DtPtc.Rows(0)("Color")
+                                Stock_Destino.Talla = DtPtc.Rows(0)("Talla")
+                                Stock_Destino.Color = DtPtc.Rows(0)("Color")
                             End If
                         End If
 
-                        pListStockMov.Add(pObjStockMov)
+                        pListStockFinal.Add(Stock_Destino)
 
                         '#GT02012023: creamos la tarea detalle de la HH
                         pUbicHHDet = New clsBeTrans_ubic_hh_det
                         'pUbicHHDet.IdTareaUbicacionDet = IdTareaUbicacionDet
-                        pUbicHHDet.IdStock = Stock.IdStock
+                        pUbicHHDet.IdStock = Stock_Actual.IdStock
                         pUbicHHDet.Producto = New clsBeProducto
                         pUbicHHDet.Stock = New clsBeStock
                         pUbicHHDet.ProductoEstado = New clsBeProducto_estado
                         pUbicHHDet.ProductoPresentacion = New clsBeProducto_Presentacion
                         pUbicHHDet.UnidadMedida = New clsBeUnidad_medida
                         'pUbicHHDet.UbicacionDestino = New clsBeBodega_ubicacion
-                        pUbicHHDet.Producto.Nombre = Stock.Nombre_Producto
-                        pUbicHHDet.Producto.Codigo = Stock.Codigo_Producto
+                        pUbicHHDet.Producto.Nombre = Stock_Actual.Nombre_Producto
+                        pUbicHHDet.Producto.Codigo = Stock_Actual.Codigo_Producto
                         'pUbicHHDet.Stock.IdUbicacion_anterior = Stock.IdUbicacion_Anterior
-                        pUbicHHDet.Stock.Fecha_vence = Stock.Fecha_Vence
-                        pUbicHHDet.Stock.Serial = Stock.Serial
+                        pUbicHHDet.Stock.Fecha_vence = Stock_Actual.Fecha_Vence
+                        pUbicHHDet.Stock.Serial = Stock_Actual.Serial
                         'pUbicHHDet.ProductoEstado.Nombre = CambioEstado.pObj.Nombre
                         pUbicHHDet.Stock.Añada = 0
-                        pUbicHHDet.Stock.Lote = Stock.Lote
-                        pUbicHHDet.Stock.Fecha_Ingreso = Stock.Fecha_ingreso
-                        pUbicHHDet.ProductoPresentacion.IdPresentacion = Stock.IdPresentacion
-                        pUbicHHDet.ProductoPresentacion.Nombre = Stock.Nombre_Presentacion
+                        pUbicHHDet.Stock.Lote = Stock_Actual.Lote
+                        pUbicHHDet.Stock.Fecha_Ingreso = Stock_Actual.Fecha_ingreso
+                        pUbicHHDet.ProductoPresentacion.IdPresentacion = Stock_Actual.IdPresentacion
+                        pUbicHHDet.ProductoPresentacion.Nombre = Stock_Actual.Nombre_Presentacion
                         '#GT02012023: es cambio de estado
-                        pUbicHHDet.IdEstadoOrigen = Stock.IdProductoEstado
+                        pUbicHHDet.IdEstadoOrigen = Stock_Actual.IdProductoEstado
                         pUbicHHDet.IdEstadoDestino = CambioEstado.pObj.IdEstado
                         pUbicHHDet.ProductoEstado.Nombre = CambioEstado.pObj.Nombre
                         '#GT02012023: se requieren datos de la ubicación destino, aunque sea la misma
                         pUbicHHDet.UbicacionDestino = New clsBeBodega_ubicacion
-                        pUbicHHDet.UbicacionDestino.IdUbicacion = Stock.IdUbicacion
-                        pUbicHHDet.IdUbicacionOrigen = Stock.IdUbicacion
-                        pUbicHHDet.IdUbicacionDestino = Stock.IdUbicacion
+                        pUbicHHDet.UbicacionDestino.IdUbicacion = Stock_Actual.IdUbicacion
+                        pUbicHHDet.IdUbicacionOrigen = Stock_Actual.IdUbicacion
+                        pUbicHHDet.IdUbicacionDestino = Stock_Actual.IdUbicacion
                         '#EJC20220211: Agregar Operador por Línea. (Mercopan)
                         Dim Obj As New clsBeTrans_ubic_hh_op() _
                         With {.IdOperadorBodega = IdOperadorBodega,
@@ -762,7 +764,7 @@ Public Class frmListaStockControlCalidad
                         pUbicHHDet.HoraFin = New DateTime(1900, 1, 1, 0, 0, 0)
                         pUbicHHDet.Realizado = False
                         '#GT02012023: el obj stock si tiene campo cantidad, pero lo intenta asociar a cantidadPresentacion ??
-                        pUbicHHDet.Cantidad = pObjStockMov.Cantidad
+                        pUbicHHDet.Cantidad = Stock_Destino.Cantidad
                         pUbicHHDet.Activo = 1
                         pUbicHHDet.IdBodega = AP.IdBodega
                         pListUbicHHDet.Add(pUbicHHDet)
@@ -772,36 +774,36 @@ Public Class frmListaStockControlCalidad
                         mov.IdEmpresa = AP.IdEmpresa
                         mov.IdBodegaOrigen = AP.IdBodega
                         mov.IdTransaccion = pUbicHHDet.IdTareaUbicacionEnc
-                        mov.IdPropietarioBodega = pObjStock.IdPropietarioBodega
-                        mov.IdProductoBodega = pObjStock.IdProductoBodega
-                        mov.IdUbicacionOrigen = Stock.IdUbicacion_Anterior
+                        mov.IdPropietarioBodega = Stock_Destino.IdPropietarioBodega
+                        mov.IdProductoBodega = Stock_Destino.IdProductoBodega
+                        mov.IdUbicacionOrigen = Stock_Actual.IdUbicacion_Anterior
                         mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
-                        mov.IdPresentacion = pObjStock.IdPresentacion
-                        mov.IdEstadoOrigen = Stock.IdProductoEstado 'estado original según stock
+                        mov.IdPresentacion = Stock_Destino.IdPresentacion
+                        mov.IdEstadoOrigen = Stock_Actual.IdProductoEstado 'estado original según stock
                         mov.IdEstadoDestino = CambioEstado.pObj.IdEstado 'nuevo estado según selección de modal
-                        mov.IdUnidadMedida = pObjStock.IdUnidadMedida
+                        mov.IdUnidadMedida = Stock_Destino.IdUnidadMedida
                         mov.IdTipoTarea = clsDataContractDI.tTipoTarea.CEST 'Cambio de Estado
                         mov.IdBodegaDestino = AP.IdBodega
-                        mov.IdRecepcion = pObjStock.IdRecepcionEnc
-                        mov.IdRecepcionDet = pObjStock.IdRecepcionDet
-                        mov.Cantidad = pObjStockMov.Cantidad
-                        mov.Serie = Stock.Serial
-                        mov.Peso = Stock.Peso
-                        mov.Lote = Stock.Lote
-                        mov.Fecha_vence = pObjStock.Fecha_Vence
-                        mov.Fecha = pObjStock.Fecha_ingreso
-                        mov.Barra_pallet = pObjStock.Lic_plate
+                        mov.IdRecepcion = Stock_Destino.IdRecepcionEnc
+                        mov.IdRecepcionDet = Stock_Destino.IdRecepcionDet
+                        mov.Cantidad = Stock_Destino.Cantidad
+                        mov.Serie = Stock_Actual.Serial
+                        mov.Peso = Stock_Actual.Peso
+                        mov.Lote = Stock_Actual.Lote
+                        mov.Fecha_vence = Stock_Destino.Fecha_vence
+                        mov.Fecha = Stock_Destino.Fecha_Ingreso
+                        mov.Barra_pallet = Stock_Destino.Lic_plate
                         mov.Hora_ini = Now
                         mov.Hora_fin = Now
                         mov.Fecha_agr = Now
                         mov.Usuario_agr = AP.IdRol
-                        mov.Cantidad_hist = Stock.CantidadUmBas
-                        mov.Peso_hist = Stock.Peso
-                        mov.IdProductoTallaColor = pObjStock.IdProductoTallaColor
+                        mov.Cantidad_hist = Stock_Actual.CantidadUmBas
+                        mov.Peso_hist = Stock_Actual.Peso
+                        mov.IdProductoTallaColor = Stock_Destino.IdProductoTallaColor
 
                         If pObjStock.IdProductoTallaColor <> 0 Then
                             Dim BEProductoTallaColor As New clsBeProducto_talla_color
-                            BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(pObjStock.IdProductoTallaColor)
+                            BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(Stock_Destino.IdProductoTallaColor)
                             mov.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
                             mov.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
                         Else
@@ -809,10 +811,10 @@ Public Class frmListaStockControlCalidad
                             mov.Color = ""
                         End If
 
-                        If Stock.IdPresentacion <> 0 Then
+                        If Stock_Actual.IdPresentacion <> 0 Then
 
                             Dim BePresentacion As New clsBeProducto_Presentacion
-                            BePresentacion = clsLnProducto_presentacion.GetSingle(Stock.IdPresentacion)
+                            BePresentacion = clsLnProducto_presentacion.GetSingle(Stock_Actual.IdPresentacion)
 
                             If Not BePresentacion Is Nothing Then
                                 If BePresentacion.Factor = 0 Then
