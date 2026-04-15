@@ -1,4 +1,4 @@
-﻿﻿using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Pedido;
 using Microsoft.Extensions.Configuration;
@@ -82,12 +82,12 @@ public class clsLnTrans_pe_det
 
     public static int Insertar(clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-        int idGenerado = 0;
+        int rowsAffected = 0;
 
         try
         {
             Ins.Init("trans_pe_det");
-            // NO agregar idpedidodet porque ahora es identity
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
             Ins.Add("idpedidoenc", "@idpedidoenc", "F");
             Ins.Add("idproductobodega", "@idproductobodega", "F");
             Ins.Add("idestado", "@idestado", "F");
@@ -132,36 +132,32 @@ public class clsLnTrans_pe_det
             Ins.Add("total_linea", "@total_linea", "F");
             Ins.Add("idcliente", "@idcliente", "F");
 
-            string sp = Ins.SQLIdentity("idpedidodet");
+            string sp = Ins.SQL();
 
-            using var cmd = new SqlCommand(sp, pConection, pTransaction)
-            {
-                CommandType = CommandType.Text
-            };
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_pe_det);
 
-            object result = cmd.ExecuteScalar();
-            idGenerado = result != null && result != DBNull.Value
-                ? Convert.ToInt32(result)
-                : 0;
+            rowsAffected = cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
         }
         catch (SqlException)
         {
             throw;
         }
 
-        return idGenerado;
+        return rowsAffected;
     }
 
     public static int Insertar_3pl(clsBeTrans_pe_det_3pl oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-        int idGenerado = 0;
+        int rowsAffected = 0;
 
         try
         {
             Ins.Init("trans_pe_det");
-            // NO agregar idpedidodet porque es IDENTITY
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
             Ins.Add("idpedidoenc", "@idpedidoenc", "F");
             Ins.Add("idproductobodega", "@idproductobodega", "F");
             Ins.Add("idestado", "@idestado", "F");
@@ -206,37 +202,34 @@ public class clsLnTrans_pe_det
             Ins.Add("total_linea", "@total_linea", "F");
             Ins.Add("idcliente", "@idcliente", "F");
 
-            string sp = Ins.SQLIdentity("idpedidodet");
+            string sp = Ins.SQL();
 
-            using var cmd = new SqlCommand(sp, pConection, pTransaction)
-            {
-                CommandType = CommandType.Text
-            };
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind_3pl(cmd, oBeTrans_pe_det);
 
-            object result = cmd.ExecuteScalar();
-            idGenerado = result != null && result != DBNull.Value
-                ? Convert.ToInt32(result)
-                : 0;
+            rowsAffected = cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
         }
         catch (SqlException)
         {
             throw;
         }
 
-        return idGenerado;
+        return rowsAffected;
     }
     public static int Insertar(IConfiguration config, clsBeTrans_pe_det oBeTrans_pe_det)
     {
-        int idGenerado = 0;
+
+        int rowsAffected = 0;
         SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
         {
             Ins.Init("trans_pe_det");
-            // NO agregar idpedidodet porque es IDENTITY
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
             Ins.Add("idpedidoenc", "@idpedidoenc", "F");
             Ins.Add("idproductobodega", "@idproductobodega", "F");
             Ins.Add("idestado", "@idestado", "F");
@@ -281,48 +274,40 @@ public class clsLnTrans_pe_det
             Ins.Add("total_linea", "@total_linea", "F");
             Ins.Add("idcliente", "@idcliente", "F");
 
-            string sp = Ins.SQLIdentity("idpedidodet");
+            string sp = Ins.SQL();
 
-            lConnection.Open();
-            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
 
-            using SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
-            {
-                CommandType = CommandType.Text
-            };
+            lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            cmd = new SqlCommand(sp, lConnection, lTransaction);
 
             Bind(cmd, oBeTrans_pe_det);
 
-            object result = cmd.ExecuteScalar();
-            idGenerado = result != null && result != DBNull.Value
-                ? Convert.ToInt32(result)
-                : 0;
+            rowsAffected = cmd.ExecuteNonQuery();
 
-            lTransaction.Commit();
+            if (lTransaction != null)
+                lTransaction.Commit();
+
         }
         catch (SqlException ex1)
         {
             if (lTransaction is not null)
                 lTransaction.Rollback();
-
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
-            if (sf != null) currentMethodName = sf.GetMethod();
-
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+            
             throw new Exception(vMsgError);
         }
         finally
         {
-            if (lConnection.State == ConnectionState.Open)
-                lConnection.Close();
-
-            lTransaction?.Dispose();
-            lConnection.Dispose();
+            if (lConnection.State == ConnectionState.Open) lConnection.Close();
+            if (lConnection != null) lConnection.Dispose();
+            if (lTransaction != null) lTransaction.Dispose();
         }
-
-        return idGenerado;
+        return rowsAffected;
     }
 
     public static int Actualizar(clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
@@ -332,7 +317,7 @@ public class clsLnTrans_pe_det
         try
         {
             Upd.Init("trans_pe_det");
-            // NO agregar idpedidodet en el SET
+            Upd.Add("idpedidodet", "@idpedidodet", "F");
             Upd.Add("idpedidoenc", "@idpedidoenc", "F");
             Upd.Add("idproductobodega", "@idproductobodega", "F");
             Upd.Add("idestado", "@idestado", "F");
@@ -376,21 +361,20 @@ public class clsLnTrans_pe_det
             Upd.Add("valor_flete", "@valor_flete", "F");
             Upd.Add("total_linea", "@total_linea", "F");
             Upd.Add("idcliente", "@idcliente", "F");
-            Upd.Where("idpedidodet = @idpedidodet");
+            Upd.Where("IdPedidoDet = @IdPedidoDet");
 
             string sp = Upd.SQL();
 
-            using var cmd = new SqlCommand(sp, pConection, pTransaction)
-            {
-                CommandType = CommandType.Text
-            };
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_pe_det);
 
             rowsAffected = cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
         }
         catch (SqlException)
-        {
+        {          
             throw;
         }
 
@@ -404,7 +388,7 @@ public class clsLnTrans_pe_det
         try
         {
             Upd.Init("trans_pe_det");
-            // NO agregar idpedidodet en el SET
+            Upd.Add("idpedidodet", "@idpedidodet", "F");
             Upd.Add("idpedidoenc", "@idpedidoenc", "F");
             Upd.Add("idproductobodega", "@idproductobodega", "F");
             Upd.Add("idestado", "@idestado", "F");
@@ -448,18 +432,17 @@ public class clsLnTrans_pe_det
             Upd.Add("valor_flete", "@valor_flete", "F");
             Upd.Add("total_linea", "@total_linea", "F");
             Upd.Add("idcliente", "@idcliente", "F");
-            Upd.Where("idpedidodet = @idpedidodet");
+            Upd.Where("IdPedidoDet = @IdPedidoDet");
 
             string sp = Upd.SQL();
 
-            using var cmd = new SqlCommand(sp, pConection, pTransaction)
-            {
-                CommandType = CommandType.Text
-            };
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind_3pl(cmd, oBeTrans_pe_det);
 
             rowsAffected = cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
         }
         catch (SqlException)
         {
@@ -755,7 +738,7 @@ public class clsLnTrans_pe_det
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_pe_det o)
     {
-        //cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? o.IdPedidoDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? o.IdPedidoDet : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", o.IdPedidoEnc != 0 ? o.IdPedidoEnc : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", o.IdProductoBodega != 0 ? o.IdProductoBodega : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdEstado", o.IdEstado != 0 ? o.IdEstado : DBNull.Value));
@@ -971,6 +954,67 @@ public class clsLnTrans_pe_det
             throw new Exception(vMsgError);
         }
     }
+
+    public static List<WMS.EntityCore.Dtos.Stock.DetalleReservaDto> Get_Detalles_Reserva_By_IdPedidoEnc(
+        int idPedidoEnc,
+        SqlConnection conn,
+        SqlTransaction? tx)
+    {
+        var result = new List<WMS.EntityCore.Dtos.Stock.DetalleReservaDto>();
+
+        const string sql = @"
+            SELECT
+                pd.No_Linea                                                 AS NoLinea,
+                p.Codigo                                                    AS ProductCode,
+                p.nombre                                                    AS ProductName,
+                pd.Cantidad                                                 AS QuantityRequested,
+                ISNULL(pp.Factor, 1)                                        AS Factor,
+                sr.IdStockRes,
+                sr.IdStock,
+                s.Lote                                                      AS LotNo,
+                s.Fecha_vence                                               AS ExpirationDate,
+                dbo.Nombre_Completo_Ubicacion(bu.IdUbicacion, bu.IdBodega)  AS LocationCode,
+                CASE WHEN bu.ubicacion_picking = 1 THEN 'Picking' ELSE 'Almacenaje' END AS Zone,
+                sr.Cantidad                                                 AS ReservationQty
+            FROM trans_pe_det pd
+            INNER JOIN producto_bodega pb   ON pd.IdProductoBodega  = pb.IdProductoBodega
+            INNER JOIN producto p           ON pb.IdProducto         = p.IdProducto
+            LEFT  JOIN producto_presentacion pp ON pd.IdPresentacion = pp.IdPresentacion
+            LEFT  JOIN stock_res sr ON sr.IdTransaccion    = @IdPedidoEnc
+                                   AND sr.IdProductoBodega  = pd.IdProductoBodega
+            LEFT  JOIN stock s          ON sr.IdStock       = s.IdStock
+            LEFT  JOIN bodega_ubicacion bu ON sr.IdUbicacion = bu.IdUbicacion
+                                          AND sr.IdBodega    = bu.IdBodega
+            WHERE pd.IdPedidoEnc = @IdPedidoEnc
+            ORDER BY pd.No_Linea, sr.IdStockRes";
+
+        using var cmd = new SqlCommand(sql, conn, tx);
+        cmd.Parameters.AddWithValue("@IdPedidoEnc", idPedidoEnc);
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var row = new WMS.EntityCore.Dtos.Stock.DetalleReservaDto
+            {
+                NoLinea           = reader.GetInt32(reader.GetOrdinal("NoLinea")),
+                ProductCode       = reader.IsDBNull(reader.GetOrdinal("ProductCode"))       ? "" : reader.GetString(reader.GetOrdinal("ProductCode")),
+                ProductName       = reader.IsDBNull(reader.GetOrdinal("ProductName"))       ? "" : reader.GetString(reader.GetOrdinal("ProductName")),
+                QuantityRequested = reader.IsDBNull(reader.GetOrdinal("QuantityRequested")) ? 0  : Convert.ToDouble(reader["QuantityRequested"]),
+                Factor            = reader.IsDBNull(reader.GetOrdinal("Factor"))            ? 1  : Convert.ToDouble(reader["Factor"]),
+                IdStockRes        = reader.IsDBNull(reader.GetOrdinal("IdStockRes"))        ? 0  : reader.GetInt32(reader.GetOrdinal("IdStockRes")),
+                IdStock           = reader.IsDBNull(reader.GetOrdinal("IdStock"))           ? 0  : reader.GetInt32(reader.GetOrdinal("IdStock")),
+                LotNo             = reader.IsDBNull(reader.GetOrdinal("LotNo"))             ? "" : reader.GetString(reader.GetOrdinal("LotNo")),
+                ExpirationDate    = reader.IsDBNull(reader.GetOrdinal("ExpirationDate"))    ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("ExpirationDate")),
+                LocationCode      = reader.IsDBNull(reader.GetOrdinal("LocationCode"))      ? "" : reader.GetString(reader.GetOrdinal("LocationCode")),
+                Zone              = reader.IsDBNull(reader.GetOrdinal("Zone"))              ? "" : reader.GetString(reader.GetOrdinal("Zone")),
+                ReservationQty    = reader.IsDBNull(reader.GetOrdinal("ReservationQty"))    ? 0  : Convert.ToDouble(reader["ReservationQty"])
+            };
+            result.Add(row);
+        }
+
+        return result;
+    }
+
     public static int Eliminar_Detalle_By_IdPedidoDet(int pIdPedidoEnc,
                                                      int pIdPedidoDet,
                                                      SqlConnection pConection,

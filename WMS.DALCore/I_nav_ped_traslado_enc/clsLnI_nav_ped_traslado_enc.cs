@@ -486,13 +486,12 @@ namespace WMS.DALCore
                     bool debeInsertar = true;
                     if (pedidoExistente != null)
                     {
-                        debeInsertar = !clsLnTrans_pe_det.Existe(
-                            pedidoExistente.IdPedidoEnc,
-                            PDet.Line_No,
-                            ref pBePedidoDet,
-                            PDet.No,
-                            lConectionInterface,
-                            lTransInterface);
+                        debeInsertar = !clsLnTrans_pe_det.Existe(pedidoExistente.IdPedidoEnc,
+                                                                PDet.Line_No,
+                                                                ref pBePedidoDet,
+                                                                PDet.No,
+                                                                lConectionInterface,
+                                                                lTransInterface);
                     }
 
                     if (debeInsertar)
