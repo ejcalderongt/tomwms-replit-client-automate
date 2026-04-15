@@ -22,10 +22,10 @@ Public Class frmDocSalidaRFID
     Private Sub frmDocSalidaRFID_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         Try
 
-            'IsLoading = True
-
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-            SplashScreenManager.Default.SetWaitFormDescription("Documento de Ingreso RFID...")
+            SplashScreenManager.Default.SetWaitFormDescription("Documento de Salida RFID...")
+
+            IMS.Listar_Clientes(cmbCliente)
 
             Select Case Modo
 
@@ -53,20 +53,16 @@ Public Class frmDocSalidaRFID
 
             If gBeRFIDEnc IsNot Nothing Then
 
-
                 If gBeRFIDEnc.IdCliente > 0 Then
                     BeCliente = clsLnCliente.GetSingle(gBeRFIDEnc.IdCliente)
                 End If
 
-                txtIdRFIDEnc.Text = gBeRFIDEnc.IdRFIDEnc
-                txtIdPedido.Text = gBeRFIDEnc.IdPedidoEnc
-
                 If BeCliente IsNot Nothing Then
-                    txtCliente.Text = BeCliente.Nombre_comercial
-                Else
-                    txtCliente.Text = gBeRFIDEnc.IdCliente
+                    cmbCliente.EditValue = BeCliente.IdCliente
                 End If
 
+                txtIdRFIDEnc.Text = gBeRFIDEnc.IdRFIDEnc
+                txtIdPedido.Text = gBeRFIDEnc.IdPedidoEnc
                 txtEstado.Text = gBeRFIDEnc.Estado
                 txtTipo.Text = gBeRFIDEnc.Tipo
                 txtFechaAgr.Text = gBeRFIDEnc.Fec_agr
@@ -93,4 +89,42 @@ Public Class frmDocSalidaRFID
         End Try
     End Sub
 
+    Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
+        Try
+            If Actualizar() Then
+                XtraMessageBox.Show("Salida actualizada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+                If Not InvokeListarSalidasRFID Is Nothing Then InvokeListarSalidasRFID.Invoke()
+                Close()
+
+            End If
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function Actualizar() As Boolean
+        Try
+
+            If cmbCliente.ItemIndex = -1 Then
+                XtraMessageBox.Show("Seleccione un Proveedor.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            gBeRFIDEnc.IdCliente = cmbCliente.EditValue
+            gBeRFIDEnc.Fec_mod = Now
+
+            Return clsLnI_nav_barras_rfid_enc.Actualizar_Encabezado(gBeRFIDEnc) = 1
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+            Return False
+        End Try
+    End Function
 End Class

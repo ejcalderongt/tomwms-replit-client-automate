@@ -26,6 +26,10 @@ Public Class frmDocIngresoRFID
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Documento de Ingreso RFID...")
 
+            '#GT15042026: carga de lookupedit, no combobox de forms
+            IMS.Listar_Proveedor(cmbProveedor)
+
+
             Select Case Modo
 
                 Case ModoTrans.Nuevo
@@ -59,15 +63,12 @@ Public Class frmDocIngresoRFID
                     BeProveedor = clsLnProveedor.GetSingle(gBeRFIDEnc.IdProveedor)
                 End If
 
-                txtIdRFIDEnc.Text = gBeRFIDEnc.IdRFIDEnc
-                txtIdOrdenCompraEnc.Text = gBeRFIDEnc.IdOrdenCompraEnc
-
                 If BeProveedor IsNot Nothing Then
-                    txtProveedor.Text = BeProveedor.Nombre
-                Else
-                    txtProveedor.Text = gBeRFIDEnc.IdProveedor
+                    cmbProveedor.EditValue = BeProveedor.IdProveedor
                 End If
 
+                txtIdRFIDEnc.Text = gBeRFIDEnc.IdRFIDEnc
+                txtIdOrdenCompraEnc.Text = gBeRFIDEnc.IdOrdenCompraEnc
                 txtEstado.Text = gBeRFIDEnc.Estado
                 txtTipo.Text = gBeRFIDEnc.Tipo
                 txtFechaAgr.Text = Format(gBeRFIDEnc.Fec_agr, "dd/MM/yyyy HH:mm:ss")
@@ -138,5 +139,45 @@ Public Class frmDocIngresoRFID
             MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
+        Try
+            If Actualizar() Then
+                XtraMessageBox.Show("Ingreso actualizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+                If Not InvokeListarIngresosRFID Is Nothing Then InvokeListarIngresosRFID.Invoke()
+                Close()
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function Actualizar() As Boolean
+        Try
+
+            If cmbProveedor.ItemIndex = -1 Then
+                XtraMessageBox.Show("Seleccione un Proveedor.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            gBeRFIDEnc.IdProveedor = cmbProveedor.EditValue
+            gBeRFIDEnc.Fec_mod = Now
+
+            Return clsLnI_nav_barras_rfid_enc.Actualizar_Encabezado(gBeRFIDEnc) = 1
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+            Return False
+        End Try
+    End Function
 
 End Class
