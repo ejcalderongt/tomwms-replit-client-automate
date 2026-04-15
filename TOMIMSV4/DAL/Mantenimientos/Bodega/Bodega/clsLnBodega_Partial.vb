@@ -3604,6 +3604,45 @@ Partial Public Class clsLnBodega
         End Try
 
     End Function
+    '#MA20260415 Metodo para obtener el estado por defecto del rack - mejoras en la cumbre
+    Public Shared Function Get_Estado_Defecto_Rack(ByVal pIdBodega As Integer,
+                                               Optional ByRef pConnection As SqlConnection = Nothing,
+                                               Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
 
 
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim Es_Transaccion_Remota As Boolean = Not (pConnection Is Nothing AndAlso pTransaction Is Nothing)
+
+        Get_Estado_Defecto_Rack = 0
+
+        Try
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            End If
+
+            Dim vSQL As String = "SELECT Estado_Defecto_Rack FROM bodega WHERE IdBodega=@IdBodega"
+
+            Dim lCommand As New SqlCommand(vSQL, IIf(Es_Transaccion_Remota, pConnection, lConnection),
+                                       IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) With {
+            .CommandType = CommandType.Text}
+
+            lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+            Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                Return CInt(lReturnValue)
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(ex.Message)
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+    End Function
 End Class
