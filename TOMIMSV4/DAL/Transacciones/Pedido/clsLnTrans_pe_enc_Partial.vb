@@ -3047,6 +3047,14 @@ Partial Public Class clsLnTrans_pe_enc
             cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", IdPedidoEnc))
             rowsAffected = cmd.ExecuteNonQuery()
 
+            'Elimina la historica
+            sp = " Delete from stock_hist" &
+                 "  Where(IdPedidoEnc = @IdPedidoEnc)"
+            cmd = New SqlCommand(sp, lConnection, lTransaction)
+            cmd.CommandType = CommandType.Text
+            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", IdPedidoEnc))
+            rowsAffected += cmd.ExecuteNonQuery()
+
             'Elimina el encabezado
             sp = " Delete from Trans_pe_enc" &
              "  Where(IdPedidoEnc = @IdPedidoEnc)"
