@@ -4443,9 +4443,9 @@ Partial Public Class clsLnTrans_picking_ubic
                     CantidadStockDestino = BeTransPickingUbic.Cantidad_Solicitada
 
                     '#EJC202309291619:Si existe concurrencia, volver a calcular el IdPIckingUbic.
-                    If Existe_IdPickingUbic(BeTransPickingUbic.IdPickingUbic, lConnection, lTransaction) Then
-                        BeTransPickingUbic.IdPickingUbic = 0 'EJC20260329: Si el IdPickingUbic ya existe, se asigna 0 para que se genere un nuevo Id al insertar.
-                    End If
+                    'If Existe_IdPickingUbic(BeTransPickingUbic.IdPickingUbic, lConnection, lTransaction) Then
+                    '    BeTransPickingUbic.IdPickingUbic = 0 'EJC20260329: Si el IdPickingUbic ya existe, se asigna 0 para que se genere un nuevo Id al insertar.
+                    'End If
 
                     Try
 
