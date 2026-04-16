@@ -477,6 +477,24 @@ Partial Public Class clsLnTrans_despacho_enc
                     'Por tipo de documento se debe determinar cuáles si y cuáles no generan una tarea de recepción en el proceso de desapacho de la bodega origen.
                     'If vConfigInterGenDocIngresoBodDest OrElse BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino Then
 
+                    '#CKFK20260416 Agregué esta validación para evitar que no se generen los ingresos y las recepciones por mala configuración del cliente asociado a la bodega destino   
+                    If vConfigInterGenDocIngresoBodDest AndAlso BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino Then
+
+                        Dim vEsBodegaTraslado As Boolean = BePedidoEnc.Cliente.Es_Bodega_Traslado
+                        Dim vEsBodegaRecepcion As Boolean = BePedidoEnc.Cliente.Es_bodega_recepcion
+                        Dim vUbicacionVirtual As Integer = BePedidoEnc.Cliente.IdUbicacionVirtual
+
+                        If vUbicacionVirtual <> 0 Then
+                            If Not vEsBodegaTraslado Then
+                                Throw New Exception("El cliente asociado a la bodega debe estar configurada como bodega de traslado: " & BePedidoEnc.Cliente.Codigo & "-" & BePedidoEnc.Cliente.Nombre_comercial)
+                            End If
+                            If Not vEsBodegaRecepcion Then
+                                Throw New Exception("El cliente asociado a la bodega debe estar configurada como bodega de recepción: " & BePedidoEnc.Cliente.Codigo & "-" & BePedidoEnc.Cliente.Nombre_comercial)
+                            End If
+                        End If
+
+                    End If
+
                     'EJC20220428: si cumple las 2 condiciones para ser transfer, aunque tipo doc sea pedido cliente
                     If vConfigInterGenDocIngresoBodDest AndAlso BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino Then
 
