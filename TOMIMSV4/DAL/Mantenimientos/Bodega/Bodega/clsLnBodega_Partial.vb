@@ -3604,44 +3604,12 @@ Partial Public Class clsLnBodega
         End Try
 
     End Function
+
     '#MA20260415 Metodo para obtener el estado por defecto del rack - mejoras en la cumbre
     Public Shared Function Get_Estado_Defecto_Rack(ByVal pIdBodega As Integer,
                                                Optional ByRef pConnection As SqlConnection = Nothing,
                                                Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
 
-    Public Shared Function GetUbicacionesVaciasPorArea(idBodega As Integer, area As String) As DataTable
-        Dim dt As New DataTable()
-
-        Try
-            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                Using cmd As New SqlCommand()
-                    cmd.Connection = cn
-                    cmd.CommandType = CommandType.Text
-                    cmd.CommandText =
-                        "SELECT " &
-                        "    Ubicacion, " &
-                        "    Area  " &
-                        " FROM VW_OcupacionBodega " &
-                        "WHERE IdBodega = @IdBodega " &
-                        "  AND Area = @Area " &
-                        "  AND ISNULL(IdStock, 0) = 0 " &
-                        "ORDER BY Ubicacion"
-
-                    cmd.Parameters.AddWithValue("@IdBodega", idBodega)
-                    cmd.Parameters.AddWithValue("@Area", area)
-
-                    Using da As New SqlDataAdapter(cmd)
-                        da.Fill(dt)
-                    End Using
-                End Using
-            End Using
-
-            Return dt
-
-        Catch ex As Exception
-            Throw New Exception("Error al obtener ubicaciones vacías por área: " & ex.Message, ex)
-        End Try
-    End Function
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -3678,4 +3646,39 @@ Partial Public Class clsLnBodega
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
         End Try
     End Function
+
+    Public Shared Function GetUbicacionesVaciasPorArea(idBodega As Integer, area As String) As DataTable
+        Dim dt As New DataTable()
+
+        Try
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand()
+                    cmd.Connection = cn
+                    cmd.CommandType = CommandType.Text
+                    cmd.CommandText =
+                        "SELECT " &
+                        "    Ubicacion, " &
+                        "    Area  " &
+                        " FROM VW_OcupacionBodega " &
+                        "WHERE IdBodega = @IdBodega " &
+                        "  AND Area = @Area " &
+                        "  AND ISNULL(IdStock, 0) = 0 " &
+                        "ORDER BY Ubicacion"
+
+                    cmd.Parameters.AddWithValue("@IdBodega", idBodega)
+                    cmd.Parameters.AddWithValue("@Area", area)
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
+                End Using
+            End Using
+
+            Return dt
+
+        Catch ex As Exception
+            Throw New Exception("Error al obtener ubicaciones vacías por área: " & ex.Message, ex)
+        End Try
+    End Function
+
 End Class
