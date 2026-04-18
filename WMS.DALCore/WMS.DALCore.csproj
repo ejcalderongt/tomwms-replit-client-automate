@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Centro_Costo\" />
+    <Folder Include="mejora_razon_fallo\WMS.EntityCore\Stock\" />
     <Folder Include="Reserva_Stock\Core\Services\" />
     <Folder Include="Reserva_Stock\Strategies\" />
   </ItemGroup>

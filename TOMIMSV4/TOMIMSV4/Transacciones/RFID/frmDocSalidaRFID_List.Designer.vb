@@ -22,7 +22,7 @@ Partial Class frmDocSalidaRFID_List
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDocSalidaRFID_List))
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
-        Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         Me.lblRegs = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -45,7 +45,7 @@ Partial Class frmDocSalidaRFID_List
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.BarButtonItem1, Me.lblRegs})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.lblRegs})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.MaxItemId = 3
         Me.RibbonControl.Name = "RibbonControl"
@@ -54,12 +54,12 @@ Partial Class frmDocSalidaRFID_List
         Me.RibbonControl.Size = New System.Drawing.Size(1008, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
-        'BarButtonItem1
+        'cmdActualizar
         '
-        Me.BarButtonItem1.Caption = "Recargar"
-        Me.BarButtonItem1.Id = 1
-        Me.BarButtonItem1.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.BarButtonItem1.Name = "BarButtonItem1"
+        Me.cmdActualizar.Caption = "Actualizar"
+        Me.cmdActualizar.Id = 1
+        Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdActualizar.Name = "cmdActualizar"
         '
         'lblRegs
         '
@@ -75,7 +75,7 @@ Partial Class frmDocSalidaRFID_List
         '
         'RibbonPageGroup1
         '
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem1)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -211,6 +211,6 @@ Partial Class frmDocSalidaRFID_List
     Friend WithEvents Dgrid As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents RepositoryItemPictureEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit
-    Friend WithEvents BarButtonItem1 As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdActualizar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents lblRegs As DevExpress.XtraBars.BarButtonItem
 End Class

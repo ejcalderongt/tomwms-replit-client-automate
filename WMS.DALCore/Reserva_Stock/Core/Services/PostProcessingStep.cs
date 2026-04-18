@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using WMS.DALCore.I_nav_ped_traslado_det;
-using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -15,55 +14,33 @@ namespace WMS.StockReservation.Core.Services
 
         public void Execute(ReservationContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            if (_logger is null) throw new InvalidOperationException("Logger no inicializado.");
-
-            // Normaliza lista para evitar null refs
-            context.CreatedReservations ??= new List<clsBeStock_res>(); // ajusta tipo real
-
             _logger.LogCheckpoint("#MI3_POST_PROCESSING_START");
 
-            // Request es obligatorio para este step (se usa en pasos 1 y 3)
-            if (context.Request is null)
-                throw new InvalidOperationException("ReservationContext.Request es null en PostProcessingStep.");
-
-            // Connection/Transaction se requieren si vas a insertar/actualizar
-            if (context.Connection is null)
-                throw new InvalidOperationException("ReservationContext.Connection es null en PostProcessingStep.");
-
-            if (context.Transaction is null)
-                throw new InvalidOperationException("ReservationContext.Transaction es null en PostProcessingStep.");
-
-            // =========================
-            // PASO 1: INSERTAR RESERVAS
-            // =========================
+            // PASO 1: INSERTAR RESERVAS EN stock_res (ANTES de actualizar TrasladoDet)
             if (context.CreatedReservations.Count > 0)
             {
                 _logger.LogCheckpoint($"#MI3_INSERTING_STOCK_RES - Count: {context.CreatedReservations.Count}");
 
                 var config = new ConfigurationBuilder().Build();
 
-                // Obtener IdPedidoEnc para IdTransaccion
-                int idPedidoEnc = context.Request.IdPedido > 0 ? context.Request.IdPedido : 0;
-
                 foreach (var reservation in context.CreatedReservations)
                 {
-                    if (reservation is null) continue; // por si la lista trae nulos
-
                     try
                     {
+                        // Calcular MaxID ANTES de cada INSERT
                         int maxId = clsLnStock_res.MaxID(context.Connection, context.Transaction);
                         reservation.IdStockRes = maxId + 1;
 
-                        reservation.IdTransaccion = idPedidoEnc;
-
                         _logger.LogCheckpoint(
-                            $"#MI3_STOCK_RES_MAXID - MaxID: {maxId}, NewIdStockRes: {reservation.IdStockRes}, IdTransaccion: {idPedidoEnc}");
+                            $"#MI3_STOCK_RES_MAXID - MaxID: {maxId}, NewIdStockRes: {reservation.IdStockRes}, " +
+                            $"IdTransaccion: {reservation.IdTransaccion}, IdPedido: {reservation.IdPedido}, " +
+                            $"IdPedidoDet: {reservation.IdPedidoDet}, Indicador: {reservation.Indicador}, Estado: {reservation.Estado}");
 
-                        int rowsAffected = clsLnStock_res.Insertar(config,
-                                                                   reservation,
-                                                                   context.Connection,
-                                                                   context.Transaction);
+                        int rowsAffected = clsLnStock_res.Insertar(
+                            config,
+                            reservation,
+                            context.Connection,
+                            context.Transaction);
 
                         _logger.LogCheckpoint(
                             $"#MI3_STOCK_RES_INSERTED - " +
@@ -123,10 +100,7 @@ namespace WMS.StockReservation.Core.Services
             if (context.Request == null)
                 throw new InvalidOperationException("ReservationContext.Request es null en el resumen.");
 
-            var pending = context.PendingQuantity; // si es decimal no-nullable
-
-            // Si PendingQuantity es decimal?
-            // var pending = context.PendingQuantity ?? 0m;
+            var pending = context.PendingQuantity;
 
             var totalReserved = context.Request.Cantidad - pending;
 
@@ -141,6 +115,7 @@ namespace WMS.StockReservation.Core.Services
             context.ValidateInvariants("POST_PROCESSING_END");
 #endif
 
+            _logger.LogCheckpoint("#MI3_POST_PROCESSING_END");
         }
     }
 }

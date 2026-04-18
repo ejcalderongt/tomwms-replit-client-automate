@@ -488,6 +488,8 @@ Public Class clsPublic
                         Case "IDCONFIGURACION"
                             Dim vIdConfiguracion As Integer
                             If Integer.TryParse(value, vIdConfiguracion) Then
+                                '#EJC20260415 Se inicializa la InstanciaBD porque dio una excepcion
+                                If InstanciaBD Is Nothing Then InstanciaBD = New clsCadenaConexion()
                                 InstanciaBD.IdConfiguracionInterface = vIdConfiguracion
                             End If
                         Case "USUARIOWS"

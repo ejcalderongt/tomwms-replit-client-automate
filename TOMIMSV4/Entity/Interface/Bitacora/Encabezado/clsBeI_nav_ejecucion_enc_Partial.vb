@@ -19,11 +19,6 @@ Partial Public Class clsBeI_nav_ejecucion_enc
     ''' <value>The identifier empresa.</value>
     Public Property IdEmpresa() As Integer
     ''' <summary>
-    ''' Gets or sets the identifier bodega.
-    ''' </summary>
-    ''' <value>The identifier bodega.</value>
-    Public Property IdBodega() As Integer
-    ''' <summary>
     ''' Gets or sets the identifier propietario.
     ''' </summary>
     ''' <value>The identifier propietario.</value>

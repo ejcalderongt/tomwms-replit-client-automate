@@ -1008,6 +1008,18 @@ Entity
  </summary>
  <value><c>true</c> if exitosa; otherwise, <c>false</c>.</value>
 </member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
+ <summary>
+ Gets or sets the identifier bodega.
+ </summary>
+ <value>The identifier bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdTipoDocumento">
+ <summary>
+ Gets or sets the identifier tipo de documento.
+ </summary>
+ <value>The identifier tipo de documento.</value>
+</member>
 <member name="M:TOMWMS.clsBeI_nav_ejecucion_enc.#ctor">
  <summary>
  Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_enc"/> class.
@@ -1033,12 +1045,6 @@ Entity
  Gets or sets the identifier empresa.
  </summary>
  <value>The identifier empresa.</value>
-</member>
-<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
- <summary>
- Gets or sets the identifier bodega.
- </summary>
- <value>The identifier bodega.</value>
 </member>
 <member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdPropietario">
  <summary>

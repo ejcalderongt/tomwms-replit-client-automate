@@ -3805,6 +3805,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
             Dim BeTipoPedido As New clsBeTrans_pe_tipo
             BeTipoPedido = clsLnTrans_pe_tipo.Get_Single_By_IdTipoPedido(BePedidoEnc.IdTipoPedido)
+
+            If (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS AndAlso
+                               BePedidoEnc.Cliente.Codigo = BePedidoEnc.Bodega_Destino) Then
+                BeTipoPedido.Verificar = True
+            End If
+
             BePedidoEnc.TipoPedido = BeTipoPedido
 
             BePickingEnc.IdPickingEnc = 0

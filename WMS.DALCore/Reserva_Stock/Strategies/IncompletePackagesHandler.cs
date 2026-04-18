@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 
@@ -41,16 +45,14 @@ namespace WMS.StockReservation.Strategies
 
             _logger.LogCheckpoint("#CASO_2_START");
 
-            // Filtrar stock de pallets incompletos (null-safe)
-            var incompleteStock = (context?.StockListNonPickingZones ?? Enumerable.Empty<clsBeStock>())
-                .Where(s => s != null &&
-                            !s.Pallet_Completo &&
-                            !s.UbicacionPicking &&
-                            s.UbicacionNivel > 0 &&
-                            s.Cantidad > 0 &&
-                            s.Fecha_vence == context?.MinExpirationIncompletePalletsClavaud)
+            var incompleteStock = context.StockListNonPickingZones
+                .Where(s => !s.Pallet_Completo &&
+                           !s.UbicacionPicking &&
+                           s.UbicacionNivel > 0 &&
+                           s.Cantidad > 0 &&
+                           s.Fecha_vence == context.MinExpirationIncompletePalletsClavaud)
                 .OrderBy(s => s.Fecha_vence)
-                .ThenBy(s => s.Lic_plate ?? string.Empty)
+                .ThenBy(s => s.Lic_plate)
                 .ToList();
 
             if (incompleteStock.Count == 0)
@@ -59,20 +61,16 @@ namespace WMS.StockReservation.Strategies
                 return result;
             }
 
-            // Reservar de pallets incompletos
             foreach (var stock in incompleteStock)
             {
-                const double EPS = 1e-6;
-                if (context == null || context.PendingQuantity <= EPS) break;                
+                if (context.PendingQuantity <= 0.000001) break;
 
                 double quantityToReserve = Math.Min(stock.Cantidad, context.PendingQuantity);
 
                 if (quantityToReserve <= 0.000001) continue;
 
-                // Crear reserva
                 var reservation = CreateReservation(context, stock, quantityToReserve);
 
-                // Actualizar stock (NO modificar context.PendingQuantity - lo hace ReservationLoopStep)
                 stock.Cantidad -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
                 result.Reservations.Add(reservation);
@@ -102,37 +100,38 @@ namespace WMS.StockReservation.Strategies
                 IdPropietarioBodega = stock.IdPropietarioBodega,
                 IdProductoEstado = stock.IdProductoEstado,
                 IdUbicacion = stock.IdUbicacion,
-                
+
                 // Presentación y cantidad
                 IdPresentacion = context.Request.IdPresentacion,
                 IdUnidadMedida = stock.IdUnidadMedida,
                 Cantidad = quantity,
-                
+
                 // Trazabilidad del stock
                 Lote = stock.Lote,
                 Lic_plate = stock.Lic_plate,
                 Serial = stock.Serial,
                 Uds_lic_plate = stock.Uds_lic_plate,
                 No_bulto = stock.No_bulto,
-                
+
                 // Fechas
                 Fecha_ingreso = stock.Fecha_Ingreso,
                 Fecha_vence = stock.Fecha_vence,
                 Fecha_manufactura = stock.Fecha_Manufactura,
                 Añada = stock.Añada,
-                
+
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
-                
-                
+
+                // Transacción y pedido
+                Indicador = context.Request.Indicador,
+                Estado = "UNCOMMITED",
+                IdTransaccion = context.Request.IdTransaccion,
+                IdPedido = context.Request.IdTransaccion,
+                IdPedidoDet = context.Request.IdPedidoDet,
+
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName
             };
-
-            if (context.PedidoDet != null)
-            {
-                reservation.IdPedidoDet = context.PedidoDet.IdPedidoDet;
-            }
 
             return reservation;
         }

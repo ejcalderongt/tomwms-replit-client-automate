@@ -9315,7 +9315,9 @@ Partial Public Class clsLnProducto
 
                 Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = "SELECT * FROM VW_ProductoOC WHERE 1 > 0 "
+                    Dim vSQL As String = "SELECT DISTINCT IdProducto,Clasificación,Familia,Marca,[Unidad Medida], 
+                                                 Codigo, Codigo_Barra,Nombre,Costo,Precio,Kit,Fec_Agr 
+                                          FROM VW_ProductoOC WHERE 1 > 0 "
 
                     If pIdPropietario <> 0 Then
                         vSQL += String.Format(" AND IdPropietario={0}", pIdPropietario)
