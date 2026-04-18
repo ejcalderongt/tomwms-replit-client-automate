@@ -19115,6 +19115,84 @@ New JsonSerializerSettings With {
 
     End Function
 
+    Private Function EsRackDobleProfundidadHH(ByVal ubic As clsBeBodega_ubicacion) As Boolean
+        Try
+            If ubic Is Nothing Then Return False
+            If ubic.IdTramo <= 0 Then Return False
+            If ubic.IdBodega <= 0 Then Return False
+
+            Dim beTramo As clsBeBodega_tramo =
+            clsLnBodega_tramo.GetSingle(ubic.IdTramo, ubic.IdBodega)
+
+            If beTramo Is Nothing Then Return False
+
+            Return beTramo.Es_Rack AndAlso beTramo.IdTipoRack = 4
+
+        Catch ex As Exception
+            Throw New Exception("Error validando si el tramo es rack de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ObtenerOrientacionParejaHH(ByVal orientacion As String) As String
+        If String.IsNullOrWhiteSpace(orientacion) Then Return ""
+
+        Select Case orientacion.Trim().ToUpper()
+            Case "A" : Return "B"
+            Case "B" : Return "A"
+            Case "C" : Return "D"
+            Case "D" : Return "C"
+            Case Else : Return ""
+        End Select
+    End Function
+
+    Private Function ObtenerUbicacionParejaDobleProfundidadHH(ByVal ubic As clsBeBodega_ubicacion) As clsBeBodega_ubicacion
+        Try
+            If ubic Is Nothing Then Return Nothing
+
+            Dim orientacionPareja As String = ObtenerOrientacionParejaHH(ubic.Orientacion_pos)
+
+            If String.IsNullOrWhiteSpace(orientacionPareja) Then Return Nothing
+
+            Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
+            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
+                ubic.IdBodega,
+                ubic.IdTramo,
+                ubic.Indice_x,
+                ubic.Nivel,
+                ubic.IdUbicacion)
+
+            If ubicacionesRelacionadas Is Nothing OrElse ubicacionesRelacionadas.Count = 0 Then
+                Return Nothing
+            End If
+
+            Return ubicacionesRelacionadas.
+            FirstOrDefault(Function(x) x IsNot Nothing AndAlso
+                                      Not String.IsNullOrWhiteSpace(x.Orientacion_pos) AndAlso
+                                      x.Orientacion_pos.Trim().ToUpper() = orientacionPareja)
+
+        Catch ex As Exception
+            Throw New Exception("Error obteniendo ubicación relacionada de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ExisteProductoBodegaDistintoEnUbicacionHH(ByVal idUbicacion As Integer,
+                                                           ByVal idBodega As Integer,
+                                                           ByVal idProductoBodega As Integer) As Boolean
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return False
+
+            Return lStock.Any(Function(s) s IsNot Nothing AndAlso
+                                      s.IdProductoBodega > 0 AndAlso
+                                      s.IdProductoBodega <> idProductoBodega)
+
+        Catch ex As Exception
+            Throw New Exception("Error validando producto en ubicación: " & ex.Message)
+        End Try
+    End Function
+
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Validar_Mismo_Producto_Posicion_JSON(ByVal pIdBodega As Integer,
                                                      ByVal pIdTramo As Integer,
@@ -19127,44 +19205,53 @@ New JsonSerializerSettings With {
 
         Try
             Dim posicionValida As Boolean = True
+            Dim mensaje As String = ""
+            Dim aplicaDobleProfundidad As Boolean = False
 
-            Dim lUbicaciones As List(Of clsBeBodega_ubicacion) =
-            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
-                pIdBodega,
-                pIdTramo,
-                pIndice_x,
-                pNivel,
-                pIdUbicacion)
+            Dim ubicDestino As clsBeBodega_ubicacion =
+            clsLnBodega_ubicacion.GetSingle(pIdUbicacion, pIdBodega)
 
-            If lUbicaciones Is Nothing Then
-                lUbicaciones = New List(Of clsBeBodega_ubicacion)
+            If ubicDestino Is Nothing Then
+                Throw New Exception("No se encontró la ubicación destino.")
             End If
 
-            For Each ubic As clsBeBodega_ubicacion In lUbicaciones
+            ' 1) Validar ubicación destino misma
+            If ExisteProductoBodegaDistintoEnUbicacionHH(
+            ubicDestino.IdUbicacion,
+            ubicDestino.IdBodega,
+            pIdProductoBodega) Then
 
-                Dim lStock As List(Of clsBeVW_stock_res) =
-                clsLnStock.Get_All_By_IdUbicacion(ubic.IdUbicacion, ubic.IdBodega)
+                posicionValida = False
+                mensaje = "La ubicación destino ya contiene un producto diferente. Solo se permite ubicar el mismo producto en esa posición."
+            End If
 
-                If lStock Is Nothing OrElse lStock.Count = 0 Then
-                    Continue For
-                End If
+            ' 2) Si la ubicación destino misma está bien, validar doble profundidad
+            If posicionValida Then
+                aplicaDobleProfundidad = EsRackDobleProfundidadHH(ubicDestino)
 
-                For Each stock As clsBeVW_stock_res In lStock
-                    If stock Is Nothing Then Continue For
+                If aplicaDobleProfundidad Then
+                    Dim ubicPareja As clsBeBodega_ubicacion =
+                    ObtenerUbicacionParejaDobleProfundidadHH(ubicDestino)
 
-                    If stock.IdProductoBodega > 0 AndAlso stock.IdProductoBodega <> pIdProductoBodega Then
-                        posicionValida = False
-                        Exit For
+                    If ubicPareja IsNot Nothing Then
+                        If ExisteProductoBodegaDistintoEnUbicacionHH(
+                        ubicPareja.IdUbicacion,
+                        ubicPareja.IdBodega,
+                        pIdProductoBodega) Then
+
+                            posicionValida = False
+                            mensaje = "La ubicación relacionada en doble profundidad ya contiene un producto diferente. Solo se permite ubicar el mismo producto en ese lado de la posición."
+                        End If
                     End If
-                Next
-
-                If Not posicionValida Then Exit For
-            Next
+                End If
+            End If
 
             Dim jsonResult As String =
             JsonConvert.SerializeObject(
                 New With {
-                    .PosicionValida = posicionValida
+                    .PosicionValida = posicionValida,
+                    .AplicaDobleProfundidad = aplicaDobleProfundidad,
+                    .Mensaje = mensaje
                 },
                 New JsonSerializerSettings With {
                     .NullValueHandling = NullValueHandling.Include,
