@@ -1428,7 +1428,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
             lConnection.Open()
             lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-
             Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino, pMovimiento.IdBodegaDestino)
             Dim esRack As Boolean = False
             Dim licenciaDestino As String = ""

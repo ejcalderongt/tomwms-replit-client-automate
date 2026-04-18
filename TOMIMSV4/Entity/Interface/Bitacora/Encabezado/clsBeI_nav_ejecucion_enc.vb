@@ -86,19 +86,6 @@ Public Class clsBeI_nav_ejecucion_enc
             mExitosa = Value
         End Set
     End Property
-
-    ''' <summary>
-    ''' Gets or sets the identifier bodega.
-    ''' </summary>
-    ''' <value>The identifier bodega.</value>
-    Public Property IdBodega() As Integer = 0
-
-    ''' <summary>
-    ''' Gets or sets the identifier tipo de documento.
-    ''' </summary>
-    ''' <value>The identifier tipo de documento.</value>
-    Property IdTipoDocumento As Integer = 0
-
     ''' <summary>
     ''' Initializes a new instance of the <see cref="clsBeI_nav_ejecucion_enc"/> class.
     ''' </summary>
