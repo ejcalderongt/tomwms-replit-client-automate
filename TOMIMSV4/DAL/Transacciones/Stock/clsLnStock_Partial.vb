@@ -7165,14 +7165,11 @@ Partial Public Class clsLnStock
 
                         If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                            'clsLnVW_stock_res.Cargar(Obj, lDataTable.Rows(0), lConnection, lTransaction)
 
                             For Each lRow As DataRow In lDataTable.Rows
                                 Obj = New clsBeVW_stock_res()
                                 clsLnVW_stock_res.Cargar(Obj, lRow, lConnection, lTransaction)
                             Next
-                            'Else
-                            'Obj = Nothing
 
                         End If
 
