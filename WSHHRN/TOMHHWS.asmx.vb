@@ -18902,14 +18902,16 @@ New JsonSerializerSettings With {
         End Try
     End Function
 
-    '#GT18032026: validar que tag exista en BD
+    '#GT18032026: validar existencia de tag
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Obtener_Barras_Pallet_I_Nav_Lote(ByVal pListaCodigoBarraPallet As List(Of String)) As String
 
         Try
 
             Dim vLista As New List(Of clsBeI_nav_barras_pallet)
-            vLista = clsLnI_nav_barras_pallet.Get_Single_By_Barra_RFID(pListaCodigoBarraPallet)
+            '#GT20042026: la lista valida que exista el tag pero que no tenga un ingreso previo
+            'vLista = clsLnI_nav_barras_pallet.Get_Single_By_Barra_RFID(pListaCodigoBarraPallet)
+            vLista = clsLnI_nav_barras_pallet.Lista_Tags_SinIgreso_Valida(pListaCodigoBarraPallet)
 
             Return JsonConvert.SerializeObject(vLista)
 
