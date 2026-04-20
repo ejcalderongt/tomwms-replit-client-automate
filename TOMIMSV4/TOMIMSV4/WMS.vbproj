@@ -41,7 +41,7 @@
     <SuiteName>WMS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>102</ApplicationRevision>
+    <ApplicationRevision>111</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -337,6 +337,12 @@
       <DependentUpon>frmTablasBD.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Base_Datos\frmTablasBD.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Campaña\frmCampaña.Designer.vb">
@@ -3255,6 +3261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Bodega\Estructura\frmTramo.resx">
       <DependentUpon>frmTramo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.resx">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Bodega_Graficador\frmColumViewervb.resx">
       <DependentUpon>frmColumViewervb.vb</DependentUpon>

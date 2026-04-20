@@ -6,6 +6,7 @@ Imports DevExpress.XtraGrid
 Imports DevExpress.XtraSplashScreen
 Imports DevExpress.XtraTreeList
 Imports DevExpress.XtraTreeList.Nodes
+Imports System.Linq
 
 Public Class frmBodegaSelUbic
 
@@ -58,6 +59,10 @@ Public Class frmBodegaSelUbic
     Private _ubicacionDestinoEsValidaSegunRegla As Boolean = True
     Private _mensajeUbicacionNoValida As String = ""
 
+    Private _suprimirMensajesValidacionMultiple As Boolean = False
+    Private _ultimoMotivoValidacion As String = ""
+
+    Private lErroresSeleccionMultiple As New List(Of clsBeResultadoValidacionCambioUbic)
 
     Public Sub New()
         InitializeComponent()
@@ -559,14 +564,12 @@ Public Class frmBodegaSelUbic
 
                 Get_Info_Ubicacion()
 
-                If Not ValidarUbicacionDestinoSeleccionada() Then Exit Sub
                 If SeleccionMultiple Then
                     '#GT21102024: guardar la ubicación seleccionada
                     Agregar_A_Lista()
-                    '#GT21102024: iterar la lista de stock y crear lista ubic_hh_det
-                    'Agrega_Registros_Detalle()
-                    Agrega_Registros_Detalle_Multiple()
                 Else
+                    'En selección individual sí se valida al momento
+                    If Not ValidarUbicacionDestinoSeleccionada() Then Exit Sub
                     Set_Cantidad_Ubicacion()
                 End If
 
@@ -634,48 +637,41 @@ Public Class frmBodegaSelUbic
 
                 Get_Info_Ubicacion()
 
-                If Not ValidarUbicacionDestinoSeleccionada() Then Exit Sub
+                If SeleccionMultiple Then
 
-                vmax = ubicFalta
-
-                If selUbic.Maximo < vmax Then vmax = selUbic.Maximo
-
-                selUbic.Ubicar = vmax
-
-                Dim BeEstadoDestino As New clsBeProducto_estado() With {.IdEstado = pObjDet.IdEstadoDestino}
-                clsLnProducto_estado.GetSingle(BeEstadoDestino)
-
-                '#EJC20171024_0610PM: Validación para ubicación que no es para producto dañado y el producto se encuentra en estado dañado.
-                If Dañado AndAlso Not pBeUbicacion.Dañado AndAlso Not (EsCambioEstado AndAlso Not BeEstadoDestino.Dañado) Then
-
-                    If XtraMessageBox.Show("¿El producto se encuentra dañado y la ubicación seleccionada no está configurada como ubicación para producto dañado, colocar en ésta ubicación de todas formas?",
-                                            Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                        Exit Sub
-
-                    End If
-
-                End If
-
-                'If (IdIndiceRotacion <> 0 AndAlso pBeUbicacion.IdIndiceRotacion <> 0) AndAlso (IdIndiceRotacion <> pBeUbicacion.IdIndiceRotacion) Then
-
-                '    '#EJC20180126: Validación del índice de rotación Producto Vrs. Ubicación.
-                '    If XtraMessageBox.Show(String.Format("¿El índice de rotación de la ubicación {0} 
-                '    no coincide con el índice de rotación del producto {1}, 
-                '    colocar en ésta ubicación de todas formas?", pBeUbicacion.IdIndiceRotacion, IdIndiceRotacion),
-                '        Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                '        Exit Sub
-
-                '    End If
-
-                'End If
-
-                If vmax = 0 Then
-
-                    Set_Cantidad_Ubicacion()
+                    'En selección múltiple:
+                    '   - no validar aquí todavía
+                    '   - solo guardar la ubicación seleccionada
+                    Agregar_A_Lista()
 
                 Else
 
-                    Agregar_A_Lista()
+                    If Not ValidarUbicacionDestinoSeleccionada() Then Exit Sub
+
+                    vmax = ubicFalta
+
+                    If selUbic.Maximo < vmax Then vmax = selUbic.Maximo
+
+                    selUbic.Ubicar = vmax
+
+                    Dim BeEstadoDestino As New clsBeProducto_estado() With {.IdEstado = pObjDet.IdEstadoDestino}
+                    clsLnProducto_estado.GetSingle(BeEstadoDestino)
+
+                    '#EJC20171024_0610PM: Validación para ubicación que no es para producto dañado y el producto se encuentra en estado dañado.
+                    If Dañado AndAlso Not pBeUbicacion.Dañado AndAlso Not (EsCambioEstado AndAlso Not BeEstadoDestino.Dañado) Then
+
+                        If XtraMessageBox.Show("¿El producto se encuentra dañado y la ubicación seleccionada no está configurada como ubicación para producto dañado, colocar en ésta ubicación de todas formas?",
+                                            Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
+                            Exit Sub
+                        End If
+
+                    End If
+
+                    If vmax = 0 Then
+                        Set_Cantidad_Ubicacion()
+                    Else
+                        Agregar_A_Lista()
+                    End If
 
                 End If
 
@@ -687,7 +683,6 @@ Public Class frmBodegaSelUbic
         End Try
 
     End Sub
-
     Private Sub Get_Info_Ubicacion()
 
         Dim dvol, vol, pvol As Double
@@ -916,6 +911,7 @@ Public Class frmBodegaSelUbic
     Private Function ValidarUbicacionDestinoSeleccionada() As Boolean
 
         Try
+            _ultimoMotivoValidacion = ""
             If pBeUbicacion Is Nothing Then Return False
             If pObjBeB Is Nothing Then Return True
 
@@ -939,6 +935,18 @@ Public Class frmBodegaSelUbic
 
     End Function
 
+
+    Private Sub MostrarMensajeValidacion(motivo As String)
+        _ultimoMotivoValidacion = motivo
+
+        If Not _suprimirMensajesValidacionMultiple Then
+            XtraMessageBox.Show(motivo,
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
     Private Function ValidarUbicacionOrigenDestinoDiferente() As Boolean
 
         Try
@@ -946,10 +954,7 @@ Public Class frmBodegaSelUbic
             If pBeUbicacion Is Nothing Then Return True
 
             If pObjDet.IdUbicacionOrigen = pBeUbicacion.IdUbicacion Then
-                XtraMessageBox.Show("No se permite mover a la misma ubicación de origen.",
-                                Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation)
+                MostrarMensajeValidacion("No se permite mover a la misma ubicación de origen.")
                 Return False
             End If
 
@@ -967,12 +972,8 @@ Public Class frmBodegaSelUbic
         Try
             If pObjBeB Is Nothing Then Return True
             If _ubicacionDestinoEsValidaSegunRegla Then Return True
-
             If pObjBeB.cambio_ubicacion_restrictivo Then
-                XtraMessageBox.Show(_mensajeUbicacionNoValida,
-                                Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation)
+                MostrarMensajeValidacion(_mensajeUbicacionNoValida)
                 Return False
             End If
 
@@ -1124,26 +1125,104 @@ Public Class frmBodegaSelUbic
 
     End Function
 
+    Private Function EsRackDobleProfundidad(ByVal ubic As clsBeBodega_ubicacion) As Boolean
+        Try
+            If ubic Is Nothing Then Return False
+            If ubic.IdTramo <= 0 Then Return False
+            If ubic.IdBodega <= 0 Then Return False
+
+            Dim beTramo As clsBeBodega_tramo =
+            clsLnBodega_tramo.GetSingle(ubic.IdTramo, ubic.IdBodega)
+
+            If beTramo Is Nothing Then Return False
+
+            Return beTramo.Es_Rack AndAlso beTramo.IdTipoRack = 4
+
+        Catch ex As Exception
+            Throw New Exception("Error validando si el tramo es rack de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ObtenerOrientacionPareja(ByVal orientacion As String) As String
+        If String.IsNullOrWhiteSpace(orientacion) Then Return ""
+
+        Select Case orientacion.Trim().ToUpper()
+            Case "A" : Return "B"
+            Case "B" : Return "A"
+            Case "C" : Return "D"
+            Case "D" : Return "C"
+            Case Else : Return ""
+        End Select
+    End Function
+
+    Private Function ObtenerUbicacionParejaDobleProfundidad(ByVal ubic As clsBeBodega_ubicacion) As clsBeBodega_ubicacion
+        Try
+            If ubic Is Nothing Then Return Nothing
+
+            Dim orientacionPareja As String = ObtenerOrientacionPareja(ubic.Orientacion_pos)
+
+            If String.IsNullOrWhiteSpace(orientacionPareja) Then Return Nothing
+
+            Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
+            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
+                ubic.IdBodega,
+                ubic.IdTramo,
+                ubic.Indice_x,
+                ubic.Nivel,
+                ubic.IdUbicacion)
+
+            If ubicacionesRelacionadas Is Nothing OrElse ubicacionesRelacionadas.Count = 0 Then
+                Return Nothing
+            End If
+
+            Return ubicacionesRelacionadas.
+            FirstOrDefault(Function(x) x IsNot Nothing AndAlso
+                                      Not String.IsNullOrWhiteSpace(x.Orientacion_pos) AndAlso
+                                      x.Orientacion_pos.Trim().ToUpper() = orientacionPareja)
+
+        Catch ex As Exception
+            Throw New Exception("Error obteniendo ubicación pareja de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ExisteProductoDistintoEnUbicacion(ByVal idUbicacion As Integer,
+                                                   ByVal idBodega As Integer,
+                                                   ByVal idProductoAUbicar As Integer) As Boolean
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return False
+
+            Return lStock.Any(Function(s) s IsNot Nothing AndAlso
+                                      s.IdProducto > 0 AndAlso
+                                      s.IdProducto <> idProductoAUbicar)
+
+        Catch ex As Exception
+            Throw New Exception("Error validando producto en ubicación: " & ex.Message)
+        End Try
+    End Function
+
     Private Function ValidarMismoProductoPosicion() As Boolean
         Try
             If pObjBeB Is Nothing Then Return True
             If Not pObjBeB.requerir_mismo_producto_posiciones Then Return True
             If pBeUbicacion Is Nothing Then Return True
 
-            ' ── Determinar IdProducto según modo ──
             Dim idProductoAUbicar As Integer = 0
 
             If SeleccionMultiple Then
                 If pStockRes_SeleccionMultiple Is Nothing OrElse
                pStockRes_SeleccionMultiple.Count = 0 Then Return True
+
                 Dim primerIdProducto As Integer = pStockRes_SeleccionMultiple.First().IdProducto
+
                 If pStockRes_SeleccionMultiple.Any(Function(s) s.IdProducto <> primerIdProducto) Then
-                    XtraMessageBox.Show(
-                    "La selección contiene productos diferentes. " &
-                    "Solo se permite mover el mismo producto en una operación.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MostrarMensajeValidacion(
+                    "La selección contiene productos distintos. Solo se permite mover el mismo producto en una misma operación.")
                     Return False
                 End If
+
                 idProductoAUbicar = primerIdProducto
             Else
                 If BeProducto Is Nothing Then Return True
@@ -1158,14 +1237,11 @@ Public Class frmBodegaSelUbic
                 If stockDestino.Any(Function(s) s IsNot Nothing AndAlso
                                             s.IdProducto > 0 AndAlso
                                             s.IdProducto <> idProductoAUbicar) Then
-                    XtraMessageBox.Show(
-                    "La ubicación destino ya contiene un producto diferente. " &
-                    "Solo se permite ubicar el mismo producto en esa posición.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MostrarMensajeValidacion(
+                    "La ubicación destino ya contiene un producto diferente. Solo se permite ubicar el mismo producto en esa posición.")
                     Return False
                 End If
             End If
-
 
             If pListObjDet IsNot Nothing AndAlso pListObjDet.Count > 0 Then
                 Dim hayDistintoEnMemoria = pListObjDet.Any(
@@ -1173,68 +1249,81 @@ Public Class frmBodegaSelUbic
 
                     If d.IdUbicacionDestino <> pBeUbicacion.IdUbicacion Then Return False
                     If d.IdStock = pObjDet.IdStock Then Return False
-                    ' Comparar por IdProducto del stock en memoria
+
                     Dim stockEnMem = pStockRes_SeleccionMultiple.
                         FirstOrDefault(Function(s) s.IdStock = d.IdStock)
+
                     If stockEnMem IsNot Nothing Then
                         Return stockEnMem.IdProducto <> idProductoAUbicar
                     End If
-                    ' Si no está en pStockRes, buscar en lStockMemoria
+
                     Dim stockMem2 = lStockMemoria.
                         FirstOrDefault(Function(s) s.IdStock = d.IdStock)
+
                     If stockMem2 IsNot Nothing Then
                         Return stockMem2.IdProducto <> idProductoAUbicar
                     End If
+
                     Return False
                 End Function)
 
                 If hayDistintoEnMemoria Then
-                    XtraMessageBox.Show(
-                    "La ubicación destino ya tiene asignado un producto diferente " &
-                    "en esta operación. Solo se permite el mismo producto en esa posición.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MostrarMensajeValidacion(
+                    "La ubicación destino ya tiene asignado un producto diferente en esta operación. Solo se permite el mismo producto en esa posición.")
                     Return False
                 End If
             End If
 
-            ' ── ubicaciones relacionadas en BD ──
-            Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
-            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
-                pBeUbicacion.IdBodega,
-                pBeUbicacion.IdTramo,
-                pBeUbicacion.Indice_x,
-                pBeUbicacion.Nivel,
-                pBeUbicacion.IdUbicacion)
-
-            If ubicacionesRelacionadas Is Nothing OrElse ubicacionesRelacionadas.Count = 0 Then
+            If Not EsRackDobleProfundidad(pBeUbicacion) Then
                 Return True
             End If
 
-            Dim productosEncontrados As New List(Of Integer)
+            Dim ubicPareja As clsBeBodega_ubicacion =
+            ObtenerUbicacionParejaDobleProfundidad(pBeUbicacion)
 
-            For Each ubicRelacionada In ubicacionesRelacionadas
-                Dim stockEnUbicacion As List(Of clsBeVW_stock_res) =
-                clsLnStock.Get_All_By_IdUbicacion(ubicRelacionada.IdUbicacion, ubicRelacionada.IdBodega)
+            If ubicPareja Is Nothing Then
+                Return True
+            End If
 
-                If stockEnUbicacion Is Nothing OrElse stockEnUbicacion.Count = 0 Then Continue For
+            If ExisteProductoDistintoEnUbicacion(
+            ubicPareja.IdUbicacion,
+            ubicPareja.IdBodega,
+            idProductoAUbicar) Then
 
-                For Each stock In stockEnUbicacion
-                    If stock Is Nothing Then Continue For
-                    If stock.IdProducto <= 0 Then Continue For
-                    If Not productosEncontrados.Contains(stock.IdProducto) Then
-                        productosEncontrados.Add(stock.IdProducto)
-                    End If
-                Next
-            Next
-
-            If productosEncontrados.Count = 0 Then Return True
-
-            If productosEncontrados.Any(Function(idProd) idProd <> idProductoAUbicar) Then
-                XtraMessageBox.Show(
-                "La posición ya contiene un producto diferente. " &
-                "Solo se permite ubicar el mismo producto en esa posición.",
-                Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MostrarMensajeValidacion(
+                "La ubicación relacionada ya contiene un producto diferente. Solo se permite ubicar el mismo producto esta posición.")
                 Return False
+            End If
+
+            If pListObjDet IsNot Nothing AndAlso pListObjDet.Count > 0 Then
+                Dim hayDistintoEnMemoriaPareja = pListObjDet.Any(
+                Function(d)
+
+                    If d.IdUbicacionDestino <> ubicPareja.IdUbicacion Then Return False
+                    If d.IdStock = pObjDet.IdStock Then Return False
+
+                    Dim stockEnMem = pStockRes_SeleccionMultiple.
+                        FirstOrDefault(Function(s) s.IdStock = d.IdStock)
+
+                    If stockEnMem IsNot Nothing Then
+                        Return stockEnMem.IdProducto <> idProductoAUbicar
+                    End If
+
+                    Dim stockMem2 = lStockMemoria.
+                        FirstOrDefault(Function(s) s.IdStock = d.IdStock)
+
+                    If stockMem2 IsNot Nothing Then
+                        Return stockMem2.IdProducto <> idProductoAUbicar
+                    End If
+
+                    Return False
+                End Function)
+
+                If hayDistintoEnMemoriaPareja Then
+                    MostrarMensajeValidacion(
+                    "La ubicación relacionada ya tiene asignado un producto diferente en esta operación. Solo se permite el mismo producto esta posición.")
+                    Return False
+                End If
             End If
 
             Return True
@@ -1243,7 +1332,6 @@ Public Class frmBodegaSelUbic
             Throw New Exception("Error validando mismo producto por posición: " & ex.Message)
         End Try
     End Function
-
     Private Function ValidarIndiceRotacionDestino() As Boolean
         Try
             If pObjBeB Is Nothing Then Return True
@@ -1253,11 +1341,10 @@ Public Class frmBodegaSelUbic
             If IdIndiceRotacion = pBeUbicacion.IdIndiceRotacion Then Return True
 
             If pBeUbicacion.IdIndiceRotacion < IdIndiceRotacion Then
-                If Not pObjBeB.permitir_cambio_ubic_indice_menor Then
-                    XtraMessageBox.Show(
+                If pObjBeB.permitir_cambio_ubic_indice_menor Then
+                    MostrarMensajeValidacion(
                     String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
-                                  IdIndiceRotacion, pBeUbicacion.IdIndiceRotacion),
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                  IdIndiceRotacion, pBeUbicacion.IdIndiceRotacion))
                     Return False
                 End If
             End If
@@ -1268,6 +1355,197 @@ Public Class frmBodegaSelUbic
             Throw New Exception("Error validando índice de rotación: " & ex.Message)
         End Try
     End Function
+    Private Function ProcesarSeleccionMultipleAlAplicar() As Boolean
+
+        Dim bkSeleccionMultiple As Boolean = SeleccionMultiple
+        Dim huboValidos As Boolean = False
+
+        Try
+
+            _suprimirMensajesValidacionMultiple = True
+            lErroresSeleccionMultiple.Clear()
+
+            If pStockRes_SeleccionMultiple Is Nothing OrElse pStockRes_SeleccionMultiple.Count = 0 Then
+                _suprimirMensajesValidacionMultiple = False
+                XtraMessageBox.Show("No existen registros seleccionados para validar.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            If pBeUbicacion Is Nothing OrElse pBeUbicacion.IdUbicacion = 0 Then
+                _suprimirMensajesValidacionMultiple = False
+                XtraMessageBox.Show("Debe seleccionar una ubicación destino.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            pListObjDet = New List(Of clsBeTrans_ubic_hh_det)
+            pListObjMov = New List(Of clsBeTrans_movimientos)
+            pListStockMov = New List(Of clsBeStock)
+
+            Dim Ubic = lUbicSel.FirstOrDefault()
+
+            If Ubic Is Nothing Then
+                _suprimirMensajesValidacionMultiple = False
+                XtraMessageBox.Show("No se encontró la ubicación seleccionada.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+                Return False
+            End If
+
+            For Each pStockRes In pStockRes_SeleccionMultiple
+
+                Try
+                    pObjDet = New clsBeTrans_ubic_hh_det()
+                    pObjDet.IdStock = pStockRes.IdStock
+                    pObjDet.IdUbicacionOrigen = pStockRes.IdUbicacion
+                    pObjDet.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+
+                    BeProducto = New clsBeProducto()
+                    BeProducto.IdProducto = pStockRes.IdProducto
+                    BeProducto = clsLnProducto.Get_Single_By_IdProducto(BeProducto.IdProducto)
+
+                    BeEstadoProd = New clsBeProducto_estado()
+                    BeEstadoProd.IdEstado = pStockRes.IdProductoEstado
+                    BeEstadoProd = clsLnProducto_estado.Get_Single_By_IdEstado(BeEstadoProd.IdEstado)
+
+                    If BeProducto Is Nothing OrElse BeProducto.IdProducto = 0 Then
+                        Dim err As New clsBeResultadoValidacionCambioUbic()
+                        err.IdStock = pStockRes.IdStock
+                        err.CodigoProducto = pStockRes.Codigo_Producto
+                        err.NombreProducto = pStockRes.Nombre_Producto
+                        err.IdUbicacionOrigen = pStockRes.IdUbicacion
+                        err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+                        err.Motivo = "No se pudo obtener el producto."
+                        lErroresSeleccionMultiple.Add(err)
+                        Continue For
+                    End If
+
+                    If BeEstadoProd Is Nothing OrElse BeEstadoProd.IdEstado = 0 Then
+                        Dim err As New clsBeResultadoValidacionCambioUbic()
+                        err.IdStock = pStockRes.IdStock
+                        err.CodigoProducto = pStockRes.Codigo_Producto
+                        err.NombreProducto = pStockRes.Nombre_Producto
+                        err.IdUbicacionOrigen = pStockRes.IdUbicacion
+                        err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+                        err.Motivo = "No se pudo obtener el estado."
+                        lErroresSeleccionMultiple.Add(err)
+                        Continue For
+                    End If
+
+                    IdIndiceRotacion = pStockRes.IdIndiceRotacion
+                    Dañado = pStockRes.Dañado
+                    Utilizable = pStockRes.EstadoUtilizable
+
+                    SeleccionMultiple = False
+                    _ultimoMotivoValidacion = ""
+
+                    If Not ValidarUbicacionDestinoSeleccionada() Then
+                        Dim err As New clsBeResultadoValidacionCambioUbic()
+                        err.IdStock = pStockRes.IdStock
+                        err.CodigoProducto = pStockRes.Codigo_Producto
+                        err.NombreProducto = pStockRes.Nombre_Producto
+                        err.IdUbicacionOrigen = pStockRes.IdUbicacion
+                        err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+                        err.Motivo = If(String.IsNullOrWhiteSpace(_ultimoMotivoValidacion),
+                                    "No cumple validaciones de ubicación.",
+                                    _ultimoMotivoValidacion)
+                        lErroresSeleccionMultiple.Add(err)
+                        Continue For
+                    End If
+
+                    pDetCorrel += 1
+
+                    prepararObj_Ubic_HH_Det(pStockRes)
+
+                    Dim pObjUbicHHDet As New clsBeTrans_ubic_hh_det()
+                    pObjUbicHHDet = pBeTransUbicHHDet.Clone
+                    pObjUbicHHDet.IdTareaUbicacionDet = pDetCorrel
+                    pObjUbicHHDet.IdUbicacionOrigen = pBeTransUbicHHDet.IdUbicacionOrigen
+                    pObjUbicHHDet.IdUbicacionDestino = Ubic.IdUbicacionDestino
+                    pObjUbicHHDet.Cantidad = pStockRes.CantidadUmBas
+                    pObjUbicHHDet.UbicacionDestino = New clsBeBodega_ubicacion()
+                    pObjUbicHHDet.UbicacionDestino.Descripcion = Ubic.Descripcion
+
+                    If Not EsCambioEstado Then
+                        pObjUbicHHDet.IdEstadoDestino = BeEstadoProd.IdEstado
+                    Else
+                        pObjUbicHHDet.IdEstadoDestino = pBeTransUbicHHDet.IdEstadoDestino
+                    End If
+
+                    pListObjDet.Add(pObjUbicHHDet)
+
+                    Dim pObjStockMov As New clsBeStock() With {
+                    .IdStockOrigen = pStockRes.IdStock,
+                    .IdStock = pStockRes.IdStock
+                }
+
+                    clsLnStock.GetSingle(pObjStockMov)
+
+                    pObjStockMov.IdUbicacion_anterior = pBeTransUbicHHDet.IdUbicacionOrigen
+                    pObjUbicHHDet.Stock = pObjStockMov
+
+                    If EsCambioEstado Then
+                        pObjStockMov.ProductoEstado.IdEstado = pBeTransUbicHHDet.IdEstadoDestino
+                    Else
+                        pObjStockMov.ProductoEstado.IdEstado = pObjStockMov.IdProductoEstado
+                    End If
+
+                    pObjStockMov.Cantidad = pStockRes.CantidadUmBas
+                    pObjStockMov.Producto = New clsBeProducto()
+                    clsLnProducto.GetSingle(clsLnProducto.Get_Single_BeProducto_By_IdProductoBodega(pObjStockMov.IdProductoBodega))
+
+                    If EsCambioEstado Then
+                        pObjUbicHHDet.ProductoEstado.IdEstado = pBeTransUbicHHDet.IdEstadoDestino
+                    Else
+                        pObjUbicHHDet.ProductoEstado.IdEstado = pObjStockMov.IdProductoEstado
+                    End If
+
+                    clsLnProducto_presentacion.GetSingle(pObjUbicHHDet.ProductoPresentacion)
+                    pObjUbicHHDet.ProductoPresentacion.IdPresentacion = pObjStockMov.IdPresentacion
+
+                    Cargar_Movimiento(pObjUbicHHDet, pObjStockMov)
+
+                    pObjStockMov.IdUbicacion = Ubic.IdUbicacionDestino
+                    pListStockMov.Add(pObjStockMov)
+
+                    huboValidos = True
+
+                Catch exItem As Exception
+                    Dim err As New clsBeResultadoValidacionCambioUbic()
+                    err.IdStock = pStockRes.IdStock
+                    err.CodigoProducto = pStockRes.Codigo_Producto
+                    err.NombreProducto = pStockRes.Nombre_Producto
+                    err.IdUbicacionOrigen = pStockRes.IdUbicacion
+                    err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+                    err.Motivo = exItem.Message
+                    lErroresSeleccionMultiple.Add(err)
+                End Try
+
+            Next
+
+            SeleccionMultiple = bkSeleccionMultiple
+            _suprimirMensajesValidacionMultiple = False
+
+            If lErroresSeleccionMultiple.Count > 0 Then
+                Return False
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            SeleccionMultiple = bkSeleccionMultiple
+            _suprimirMensajesValidacionMultiple = False
+            Throw New Exception("Error validando selección múltiple al aplicar: " & ex.Message)
+        End Try
+
+    End Function
+
     Private Sub Agregar_A_Lista()
 
         Dim idx As Integer
@@ -1365,10 +1643,27 @@ Public Class frmBodegaSelUbic
 
             mnuAplicar.Enabled = False
 
+
+
             If lUbicSel.Count = 0 Then
                 DialogResult = DialogResult.Abort
             Else
-                'Agrega_Registros_Detalle()
+
+                If SeleccionMultiple Then
+
+                    If Not ProcesarSeleccionMultipleAlAplicar() Then
+                        If lErroresSeleccionMultiple.Count > 0 Then
+                            Dim frmErrores As New frmResultadoValidacionCambioUbic()
+                            frmErrores.BeListaErrores = lErroresSeleccionMultiple
+                            frmErrores.CantidadValidos = pListObjDet.Count
+                            frmErrores.ShowDialog()
+                        End If
+
+                        mnuAplicar.Enabled = True
+                        Exit Sub
+                    End If
+                End If
+
                 Aplicar = True
                 DialogResult = DialogResult.Yes
             End If
@@ -1380,9 +1675,9 @@ Public Class frmBodegaSelUbic
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1390,7 +1685,6 @@ Public Class frmBodegaSelUbic
         End Try
 
     End Sub
-
     Private Sub Agrega_Registros_Detalle()
 
         Dim pObjUbicHHDet As clsBeTrans_ubic_hh_det

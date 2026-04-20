@@ -1,7 +1,6 @@
 Imports System.IO
 Imports OfficeOpenXml
 Imports OfficeOpenXml.Style
-Imports DevExpress.XtraEditors
 Imports OfficeOpenXml.DataValidation
 
 Public Class frmImportarAjusteExcel
@@ -116,7 +115,7 @@ Public Class frmImportarAjusteExcel
     '=========================================================================
     Private Sub InitializeComponent_Custom()
         ' Configurar licencia de EPPlus
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial
+        ExcelPackage.License.SetNonCommercialPersonal("WMS")
 
         ' ── Panel superior (selección de archivo) ──────────────────────────
         pnlTop = New Panel() With {

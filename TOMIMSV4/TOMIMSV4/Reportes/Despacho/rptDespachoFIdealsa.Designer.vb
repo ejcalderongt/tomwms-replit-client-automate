@@ -20,10 +20,12 @@ Partial Public Class rptDespachoFIdealsa
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim MsSqlConnectionParameters1 As DevExpress.DataAccess.ConnectionParameters.MsSqlConnectionParameters = New DevExpress.DataAccess.ConnectionParameters.MsSqlConnectionParameters()
         Dim CustomSqlQuery1 As DevExpress.DataAccess.Sql.CustomSqlQuery = New DevExpress.DataAccess.Sql.CustomSqlQuery()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(rptDespachoFIdealsa))
         Dim XrSummary1 As DevExpress.XtraReports.UI.XRSummary = New DevExpress.XtraReports.UI.XRSummary()
         Dim XrSummary2 As DevExpress.XtraReports.UI.XRSummary = New DevExpress.XtraReports.UI.XRSummary()
+        Dim XrWatermark1 As DevExpress.XtraReports.UI.XRWatermark = New DevExpress.XtraReports.UI.XRWatermark()
         Me.Detail = New DevExpress.XtraReports.UI.DetailBand()
         Me.XrTable3 = New DevExpress.XtraReports.UI.XRTable()
         Me.XrTableRow6 = New DevExpress.XtraReports.UI.XRTableRow()
@@ -144,6 +146,8 @@ Partial Public Class rptDespachoFIdealsa
         Me.PageFooter = New DevExpress.XtraReports.UI.PageFooterBand()
         Me.XrLabel5 = New DevExpress.XtraReports.UI.XRLabel()
         Me.UsuarioDespacho = New DevExpress.XtraReports.Parameters.Parameter()
+        Me.XrTableCell6 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell15 = New DevExpress.XtraReports.UI.XRTableCell()
         CType(Me.XrTable3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -164,12 +168,12 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrTable3.Name = "XrTable3"
         Me.XrTable3.OddStyleName = "DetailData3_Odd"
         Me.XrTable3.Rows.AddRange(New DevExpress.XtraReports.UI.XRTableRow() {Me.XrTableRow6})
-        Me.XrTable3.SizeF = New System.Drawing.SizeF(794.0!, 25.0!)
+        Me.XrTable3.SizeF = New System.Drawing.SizeF(803.0!, 25.0!)
         Me.XrTable3.StylePriority.UseFont = False
         '
         'XrTableRow6
         '
-        Me.XrTableRow6.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell29, Me.XrTableCell30, Me.XrTableCell31, Me.XrTableCell32, Me.XrTableCell33, Me.XrTableCell34, Me.XrTableCell35, Me.XrTableCell36})
+        Me.XrTableRow6.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell29, Me.XrTableCell30, Me.XrTableCell31, Me.XrTableCell32, Me.XrTableCell33, Me.XrTableCell15, Me.XrTableCell34, Me.XrTableCell35, Me.XrTableCell36})
         Me.XrTableRow6.Name = "XrTableRow6"
         Me.XrTableRow6.Weight = 11.5R
         '
@@ -232,7 +236,7 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrTableCell34.StyleName = "DetailData3"
         Me.XrTableCell34.StylePriority.UseFont = False
         Me.XrTableCell34.Text = "XrTableCell34"
-        Me.XrTableCell34.Weight = 1033071.3348076716R
+        Me.XrTableCell34.Weight = 971547.71280771284R
         '
         'XrTableCell35
         '
@@ -242,7 +246,7 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrTableCell35.StyleName = "DetailData3"
         Me.XrTableCell35.StylePriority.UseFont = False
         Me.XrTableCell35.Text = "XrTableCell35"
-        Me.XrTableCell35.Weight = 766459.51770708757R
+        Me.XrTableCell35.Weight = 827983.13970704633R
         '
         'XrTableCell36
         '
@@ -292,7 +296,11 @@ Partial Public Class rptDespachoFIdealsa
         '
         'SqlDataSource1
         '
-        Me.SqlDataSource1.ConnectionName = "TOMWMS.My.MySettings.IMS4MB_QAConnectionStringPrograN"
+        Me.SqlDataSource1.ConnectionName = "localhost_IMS4MB_INELAC_QA_Connection"
+        MsSqlConnectionParameters1.AuthorizationType = DevExpress.DataAccess.ConnectionParameters.MsSqlAuthorizationType.SqlServer
+        MsSqlConnectionParameters1.DatabaseName = "IMS4MB_INELAC_QA"
+        MsSqlConnectionParameters1.ServerName = "192.168.126.80"
+        Me.SqlDataSource1.ConnectionParameters = MsSqlConnectionParameters1
         Me.SqlDataSource1.Name = "SqlDataSource1"
         CustomSqlQuery1.Name = "VW_Despacho_Rep"
         CustomSqlQuery1.Sql = "SELECT * FROM VW_Despacho_Rep_Res"
@@ -444,7 +452,7 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrPanel1.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrTable2})
         Me.XrPanel1.LocationFloat = New DevExpress.Utils.PointFloat(0!, 0!)
         Me.XrPanel1.Name = "XrPanel1"
-        Me.XrPanel1.SizeF = New System.Drawing.SizeF(800.0!, 32.16667!)
+        Me.XrPanel1.SizeF = New System.Drawing.SizeF(809.0001!, 32.16667!)
         Me.XrPanel1.StyleName = "DetailCaptionBackground3"
         '
         'XrTable2
@@ -453,12 +461,12 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrTable2.LocationFloat = New DevExpress.Utils.PointFloat(5.999985!, 5.000004!)
         Me.XrTable2.Name = "XrTable2"
         Me.XrTable2.Rows.AddRange(New DevExpress.XtraReports.UI.XRTableRow() {Me.XrTableRow4})
-        Me.XrTable2.SizeF = New System.Drawing.SizeF(794.0!, 28.0!)
+        Me.XrTable2.SizeF = New System.Drawing.SizeF(803.0!, 28.0!)
         Me.XrTable2.StylePriority.UseFont = False
         '
         'XrTableRow4
         '
-        Me.XrTableRow4.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell16, Me.XrTableCell17, Me.XrTableCell18, Me.XrTableCell19, Me.XrTableCell20, Me.XrTableCell21, Me.XrTableCell22, Me.XrTableCell23})
+        Me.XrTableRow4.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell16, Me.XrTableCell17, Me.XrTableCell18, Me.XrTableCell19, Me.XrTableCell20, Me.XrTableCell6, Me.XrTableCell21, Me.XrTableCell22, Me.XrTableCell23})
         Me.XrTableRow4.Name = "XrTableRow4"
         Me.XrTableRow4.Weight = 1.0R
         '
@@ -514,7 +522,7 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrTableCell21.StyleName = "DetailCaption3"
         Me.XrTableCell21.StylePriority.UseFont = False
         Me.XrTableCell21.Text = "Lote"
-        Me.XrTableCell21.Weight = 1033071.2990894871R
+        Me.XrTableCell21.Weight = 971548.6657829294R
         '
         'XrTableCell22
         '
@@ -523,7 +531,7 @@ Partial Public Class rptDespachoFIdealsa
         Me.XrTableCell22.StyleName = "DetailCaption3"
         Me.XrTableCell22.StylePriority.UseFont = False
         Me.XrTableCell22.Text = "Vence"
-        Me.XrTableCell22.Weight = 766459.54352402408R
+        Me.XrTableCell22.Weight = 827982.17683058162R
         '
         'XrTableCell23
         '
@@ -1265,13 +1273,33 @@ Partial Public Class rptDespachoFIdealsa
         Me.UsuarioDespacho.Description = "UsuarioDespacho"
         Me.UsuarioDespacho.Name = "UsuarioDespacho"
         '
+        'XrTableCell6
+        '
+        Me.XrTableCell6.Font = New DevExpress.Drawing.DXFont("Microsoft Sans Serif", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
+        Me.XrTableCell6.Multiline = True
+        Me.XrTableCell6.Name = "XrTableCell6"
+        Me.XrTableCell6.StyleName = "DetailCaption3"
+        Me.XrTableCell6.StylePriority.UseFont = False
+        Me.XrTableCell6.Text = "Licencia"
+        Me.XrTableCell6.Weight = 1153844.927431616R
+        '
+        'XrTableCell15
+        '
+        Me.XrTableCell15.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "VW_Despacho_Rep.Licencia")})
+        Me.XrTableCell15.Font = New DevExpress.Drawing.DXFont("Microsoft Sans Serif", 8.0!)
+        Me.XrTableCell15.Multiline = True
+        Me.XrTableCell15.Name = "XrTableCell15"
+        Me.XrTableCell15.StyleName = "DetailData3"
+        Me.XrTableCell15.StylePriority.UseFont = False
+        Me.XrTableCell15.Weight = 1153845.6783459054R
+        '
         'rptDespachoFIdealsa
         '
         Me.Bands.AddRange(New DevExpress.XtraReports.UI.Band() {Me.Detail, Me.TopMargin, Me.BottomMargin, Me.GroupHeaderBand1, Me.GroupHeaderBand2, Me.GroupFooterBand1, Me.GroupFooterBand2, Me.ReportFooterBand1, Me.PageHeader, Me.PageFooter})
         Me.ComponentStorage.AddRange(New System.ComponentModel.IComponent() {Me.SqlDataSource1})
         Me.DataMember = "VW_Despacho_Rep"
         Me.DataSource = Me.SqlDataSource1
-        Me.Margins = New DevExpress.Drawing.DXMargins(17, 23, 2, 36)
+        Me.Margins = New DevExpress.Drawing.DXMargins(17.0!, 23.0!, 2.083333!, 35.75007!)
         Me.PageHeight = 550
         Me.PageWidth = 849
         Me.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom
@@ -1280,9 +1308,11 @@ Partial Public Class rptDespachoFIdealsa
         Me.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic
         Me.ShowPrintMarginsWarning = False
         Me.StyleSheet.AddRange(New DevExpress.XtraReports.UI.XRControlStyle() {Me.Title, Me.GroupCaption3, Me.GroupData3, Me.DetailCaption3, Me.DetailData3, Me.DetailData3_Odd, Me.DetailCaptionBackground3, Me.TotalCaption3, Me.TotalData3, Me.TotalBackground3, Me.GrandTotalCaption3, Me.GrandTotalData3, Me.GrandTotalBackground3, Me.PageInfo})
-        Me.Version = "21.2"
-        Me.Watermark.ForeColor = System.Drawing.Color.DimGray
-        Me.Watermark.TextTransparency = 164
+        Me.Version = "24.2"
+        XrWatermark1.ForeColor = System.Drawing.Color.DimGray
+        XrWatermark1.Id = "Watermark1"
+        XrWatermark1.TextTransparency = 164
+        Me.Watermarks.AddRange(New DevExpress.XtraPrinting.Drawing.Watermark() {XrWatermark1})
         CType(Me.XrTable3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1409,4 +1439,6 @@ Partial Public Class rptDespachoFIdealsa
     Friend WithEvents XrLabel10 As DevExpress.XtraReports.UI.XRLabel
     Friend WithEvents NoBultos As DevExpress.XtraReports.Parameters.Parameter
     Friend WithEvents XrLabel7 As DevExpress.XtraReports.UI.XRLabel
+    Friend WithEvents XrTableCell15 As DevExpress.XtraReports.UI.XRTableCell
+    Friend WithEvents XrTableCell6 As DevExpress.XtraReports.UI.XRTableCell
 End Class

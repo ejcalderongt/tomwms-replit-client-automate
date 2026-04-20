@@ -1448,13 +1448,15 @@ Partial Public Class clsLnTrans_picking_enc
                                 BeStockPickeado = clsLnStock.GetSingle(BeStockPickeado.IdStock,
                                                                        lConnection,
                                                                        lTransaction)
-                                BeStockPickeado.Cantidad = BeTransPickingUbic.Cantidad_Recibida
-                                BeStockPickeado.Peso = BeTransPickingUbic.Peso_recibido
-                                BeStockPickeado.IdPedidoEnc = 0
-                                BeStockPickeado.IdPickingEnc = 0
-                                BeStockPickeado.IdUbicacion_anterior = BeStockPickeado.IdUbicacion
-                                BeStockPickeado.IdUbicacion = pBePickingEnc.IdUbicacionPicking
-                                lBeStockPickeado.Add(BeStockPickeado)
+                                If BeStockPickeado IsNot Nothing Then
+                                    BeStockPickeado.Cantidad = BeTransPickingUbic.Cantidad_Recibida
+                                    BeStockPickeado.Peso = BeTransPickingUbic.Peso_recibido
+                                    BeStockPickeado.IdPedidoEnc = 0
+                                    BeStockPickeado.IdPickingEnc = 0
+                                    BeStockPickeado.IdUbicacion_anterior = BeStockPickeado.IdUbicacion
+                                    BeStockPickeado.IdUbicacion = pBePickingEnc.IdUbicacionPicking
+                                    lBeStockPickeado.Add(BeStockPickeado)
+                                End If
 
                                 clsLnTrans_picking_ubic.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
                                                                                  lConnection,

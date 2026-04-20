@@ -83,5 +83,10 @@ Partial Public Class clsBeI_nav_ejecucion_enc
     ''' </summary>
     ''' <value>The referencia.</value>
     Public Property Referencia As String
+    ''' <summary>
+    ''' Gets or sets the identifier bodega.
+    ''' </summary>
+    ''' <value>The identifier bodega.</value>
+    Public Property IdBodega() As Integer = 0
 
 End Class

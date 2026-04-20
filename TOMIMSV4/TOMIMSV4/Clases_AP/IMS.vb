@@ -1233,8 +1233,14 @@ Public Class IMS
                 'Cmb.ItemIndex = 0
 
                 '#GT20102022_0900: si tiene solo una bodega, se deja por defecto
-                If DT.Rows.Count >= 1 Then
+                If DT.Rows.Count = 1 Then
                     Cmb.ItemIndex = 0
+                    Cmb.Properties.PopupWidth = 700
+                    Cmb.Properties.PopulateColumns()
+                    Cmb.Properties.Columns(0).Visible = False
+                    Cmb.Properties.BestFit()
+                    Cmb.Properties.NullText = ""
+                Else
                     Cmb.Properties.PopupWidth = 700
                     Cmb.Properties.PopulateColumns()
                     Cmb.Properties.Columns(0).Visible = False
