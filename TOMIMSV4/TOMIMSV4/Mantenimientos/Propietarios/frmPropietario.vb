@@ -321,7 +321,8 @@ Public Class frmPropietario
             xtraPropietario.TabPages.Add(TabStock)
             xtraPropietario.TabPages.Add(tabMovimientos)
 
-            Listar_Productos_By_Propietario()
+            '#CKFK20260415 Puse esto en comentario porque demora demasiado en cargar la forma cuando son muchos productos
+            'Listar_Productos_By_Propietario()
             Listar_Estados_By_Propietario()
             Listar_Unidades_De_Medida_By_Propietario()
             Listar_Reglas()
@@ -418,7 +419,9 @@ Public Class frmPropietario
 
                         Listar_Unidades_De_Medida_By_Propietario()
                         Listar_Estados_By_Propietario()
-                        Listar_Productos_By_Propietario()
+
+                        '#CKFK20260415 Puse esto en comentario porque demora demasiado en cargar la forma cuando son muchos productos
+                        ' Listar_Productos_By_Propietario()
 
                         mnuGuardar.Enabled = False
                         mnuActualizar.Enabled = True
@@ -677,7 +680,7 @@ Public Class frmPropietario
 
                     With newRow
 
-                        .Item("Correlativo") = BeProducto("IdProductoBodega")
+                        .Item("Correlativo") = BeProducto("IdProducto")
                         .Item("Clasificación") = BeProducto("Clasificación")
                         .Item("Familia") = BeProducto("Familia")
                         .Item("Marca") = BeProducto("Marca")
@@ -1613,7 +1616,10 @@ Public Class frmPropietario
         End Try
     End Sub
 
-    Private Sub GrpEmpresaTB_Paint(sender As Object, e As PaintEventArgs) Handles GrpEmpresaTB.Paint
+    Private Sub xtraPropietario_SelectedPageChanged(sender As Object, e As DevExpress.XtraTab.TabPageChangedEventArgs) Handles xtraPropietario.SelectedPageChanged
 
+        If TabProductos.Visible AndAlso TabProductos.PageVisible Then
+            Listar_Productos_By_Propietario()
+        End If
     End Sub
 End Class

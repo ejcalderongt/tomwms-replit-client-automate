@@ -9315,7 +9315,9 @@ Partial Public Class clsLnProducto
 
                 Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = "SELECT * FROM VW_ProductoOC WHERE 1 > 0 "
+                    Dim vSQL As String = "SELECT DISTINCT IdProducto,Clasificación,Familia,Marca,[Unidad Medida], 
+                                                 Codigo, Codigo_Barra,Nombre,Costo,Precio,Kit,Fec_Agr 
+                                          FROM VW_ProductoOC WHERE 1 > 0 "
 
                     If pIdPropietario <> 0 Then
                         vSQL += String.Format(" AND IdPropietario={0}", pIdPropietario)
@@ -11100,5 +11102,54 @@ Partial Public Class clsLnProducto
         End Try
 
     End Function
+
+    Public Shared Function Get_Nombre_By_Codigo(ByVal pCodigo As String) As String
+
+        Get_Nombre_By_Codigo = ""
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT p.nombre
+                        FROM producto p                        
+                        WHERE (p.Codigo=@Codigo)"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Get_Nombre_By_Codigo = CType(lRow("nombre"), String)
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

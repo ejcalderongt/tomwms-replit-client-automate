@@ -164,7 +164,6 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 	End Function
 
-
 	Public Shared Function Eliminar(ByRef oBeI_nav_barras_rfid_enc As clsBeI_nav_barras_rfid_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -398,11 +397,12 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Try
 
-			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,IdBodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
+			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
 										 isnull(prov.nombre,'ND') proveedor,ISNULL(cl.nombre_comercial,'ND') cliente
 										 FROM I_nav_barras_rfid_enc enc 
 										 left join proveedor prov on enc.IdProveedor=prov.Idproveedor
 										 left join cliente cl on enc.IdCliente = cl.IdCliente
+										 left join Bodega bd on enc.IdBodega=bd.Idbodega
 										 where ISNULL(Tipo, '') ='ING' "
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -450,11 +450,12 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Try
 
-			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,IdBodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
+			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
 										 isnull(prov.nombre,'ND') proveedor,ISNULL(cl.nombre_comercial,'ND') cliente
 										 FROM I_nav_barras_rfid_enc enc 
 										 left join proveedor prov on enc.IdProveedor=prov.Idproveedor
 										 left join cliente cl on enc.IdCliente = cl.IdCliente
+									     left join Bodega bd on enc.IdBodega=bd.IdBodega
 										 where ISNULL(Tipo, '') ='SAL' "
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1055,6 +1056,70 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Catch ex As Exception
 			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+		End Try
+
+	End Function
+
+	Public Shared Function Actualizar_Encabezado(ByRef oBeI_nav_barras_rfid_enc As clsBeI_nav_barras_rfid_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			Upd.Init("i_nav_barras_rfid_enc")
+			'Upd.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
+			'Upd.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
+			'Upd.Add("idbodega", "@idbodega", DataType.Parametro)
+			'Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
+			'Upd.Add("estado", "@estado", DataType.Parametro)
+			'Upd.Add("tipo", "@tipo", DataType.Parametro)
+			Upd.Add("idproveedor", "@idproveedor", DataType.Parametro)
+			Upd.Add("idcliente", "@idcliente", DataType.Parametro)
+			'Upd.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+			Upd.Where("IdRFIDEnc = @IdRFIDEnc")
+
+			Dim sp As String = Upd.SQL()
+
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection, pTransaction)
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
+
+			cmd.Parameters.Add(New SqlParameter("@IDRFIDENC", oBeI_nav_barras_rfid_enc.IdRFIDEnc))
+			'cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_rfid_enc.IdOrdenCompraEnc))
+			'cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeI_nav_barras_rfid_enc.IdRecepcionEnc))
+			'cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeI_nav_barras_rfid_enc.IdBodega))
+			'cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeI_nav_barras_rfid_enc.Fec_agr))
+			cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeI_nav_barras_rfid_enc.Fec_mod))
+			'cmd.Parameters.Add(New SqlParameter("@ESTADO", oBeI_nav_barras_rfid_enc.Estado))
+			'cmd.Parameters.Add(New SqlParameter("@TIPO", oBeI_nav_barras_rfid_enc.Tipo))
+			cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeI_nav_barras_rfid_enc.IdProveedor))
+			cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeI_nav_barras_rfid_enc.IdCliente))
+			'cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeI_nav_barras_rfid_enc.IdPedidoEnc))
+
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+			cmd.Dispose()
+
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+			Return rowsAffected
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function

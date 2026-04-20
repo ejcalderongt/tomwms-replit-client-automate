@@ -1034,12 +1034,6 @@ Entity
  </summary>
  <value>The identifier empresa.</value>
 </member>
-<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
- <summary>
- Gets or sets the identifier bodega.
- </summary>
- <value>The identifier bodega.</value>
-</member>
 <member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdPropietario">
  <summary>
  Gets or sets the identifier propietario.
@@ -1117,6 +1111,12 @@ Entity
  Gets or sets the referencia.
  </summary>
  <value>The referencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
+ <summary>
+ Gets or sets the identifier bodega.
+ </summary>
+ <value>The identifier bodega.</value>
 </member>
 <member name="T:TOMWMS.clsBeI_nav_ejecucion_res">
  <summary>

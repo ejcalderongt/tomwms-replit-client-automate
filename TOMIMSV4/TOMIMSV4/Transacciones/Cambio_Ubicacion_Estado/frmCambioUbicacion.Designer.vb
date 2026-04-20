@@ -114,6 +114,7 @@ Partial Class frmCambioUbicacion
         Me.mnuPendiente = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdDescargarPlantilla = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdEliminarDocumento = New DevExpress.XtraBars.BarButtonItem()
+        Me.chkAdvanceMode = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -228,7 +229,6 @@ Partial Class frmCambioUbicacion
         Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.chkAdvanceMode = New DevExpress.XtraBars.BarToggleSwitchItem()
         IdPropietarioLabel = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label24 = New System.Windows.Forms.Label()
@@ -770,6 +770,12 @@ Partial Class frmCambioUbicacion
         Me.cmdEliminarDocumento.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarDocumento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdEliminarDocumento.Name = "cmdEliminarDocumento"
         '
+        'chkAdvanceMode
+        '
+        Me.chkAdvanceMode.Caption = "Advance Mode"
+        Me.chkAdvanceMode.Id = 13
+        Me.chkAdvanceMode.Name = "chkAdvanceMode"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -1037,7 +1043,7 @@ Partial Class frmCambioUbicacion
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNewP, Me.cmdGuardar, Me.mnuEliminarDet})
         Me.ToolStripP.Location = New System.Drawing.Point(740, 0)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(534, 27)
+        Me.ToolStripP.Size = New System.Drawing.Size(534, 31)
         Me.ToolStripP.TabIndex = 0
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -1046,7 +1052,7 @@ Partial Class frmCambioUbicacion
         Me.cmdNewP.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdNewP.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewP.Name = "cmdNewP"
-        Me.cmdNewP.Size = New System.Drawing.Size(76, 24)
+        Me.cmdNewP.Size = New System.Drawing.Size(76, 28)
         Me.cmdNewP.Text = "Nuevo"
         '
         'cmdGuardar
@@ -1054,7 +1060,7 @@ Partial Class frmCambioUbicacion
         Me.cmdGuardar.Image = Global.TOMWMS.My.Resources.Resources.greencheck
         Me.cmdGuardar.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdGuardar.Name = "cmdGuardar"
-        Me.cmdGuardar.Size = New System.Drawing.Size(86, 24)
+        Me.cmdGuardar.Size = New System.Drawing.Size(86, 28)
         Me.cmdGuardar.Text = "Guardar"
         '
         'mnuEliminarDet
@@ -1062,7 +1068,7 @@ Partial Class frmCambioUbicacion
         Me.mnuEliminarDet.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuEliminarDet.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuEliminarDet.Name = "mnuEliminarDet"
-        Me.mnuEliminarDet.Size = New System.Drawing.Size(87, 24)
+        Me.mnuEliminarDet.Size = New System.Drawing.Size(87, 28)
         Me.mnuEliminarDet.Text = "Eliminar"
         '
         'groupCambioDeEstado
@@ -1381,10 +1387,10 @@ Partial Class frmCambioUbicacion
         Me.GroupControl5.Controls.Add(Label9)
         Me.GroupControl5.Controls.Add(Me.chkRealizadoDet)
         Me.GroupControl5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl5.Location = New System.Drawing.Point(740, 27)
+        Me.GroupControl5.Location = New System.Drawing.Point(740, 31)
         Me.GroupControl5.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl5.Name = "GroupControl5"
-        Me.GroupControl5.Size = New System.Drawing.Size(534, 294)
+        Me.GroupControl5.Size = New System.Drawing.Size(534, 290)
         Me.GroupControl5.TabIndex = 2
         Me.GroupControl5.Text = "Destino"
         '
@@ -1415,7 +1421,7 @@ Partial Class frmCambioUbicacion
         Me.lblVolumenUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblVolumenUbicacion.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblVolumenUbicacion.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVolumenUbicacion.Location = New System.Drawing.Point(2, 269)
+        Me.lblVolumenUbicacion.Location = New System.Drawing.Point(2, 265)
         Me.lblVolumenUbicacion.Name = "lblVolumenUbicacion"
         Me.lblVolumenUbicacion.Size = New System.Drawing.Size(530, 23)
         Me.lblVolumenUbicacion.TabIndex = 11
@@ -2000,12 +2006,6 @@ Partial Class frmCambioUbicacion
         Me.User_modTextEdit.Name = "User_modTextEdit"
         Me.User_modTextEdit.Size = New System.Drawing.Size(261, 22)
         Me.User_modTextEdit.TabIndex = 10
-        '
-        'chkAdvanceMode
-        '
-        Me.chkAdvanceMode.Caption = "Advance Mode"
-        Me.chkAdvanceMode.Id = 13
-        Me.chkAdvanceMode.Name = "chkAdvanceMode"
         '
         'frmCambioUbicacion
         '

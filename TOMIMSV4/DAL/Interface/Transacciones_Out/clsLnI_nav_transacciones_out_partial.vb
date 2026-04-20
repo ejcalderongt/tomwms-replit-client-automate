@@ -574,11 +574,16 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                                 '#EJC20220411:Para BYB, necesito saber si el producto va en presentación.
                                 If Not BeConfigEnc.Equiparar_Productos Then
-                                    If Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Venta_NAV And
-                                       Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS Then
-                                        '#EJC20191122:Como se convierte a UMBas, mantener sin pres.
+
+                                    '#AG20260413 Se agregó parámetro para saber cuando enviar o no el producto en presentación
+                                    If Not BeConfigEnc.cantidad_en_presentacion_transacciones_out Then
                                         .Idpresentacion = 0
                                     End If
+                                    'If Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Venta_NAV And
+                                    '   Not BeTipoDocumento.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS Then
+                                    '    '#EJC20191122:Como se convierte a UMBas, mantener sin pres.
+                                    '    .Idpresentacion = 0
+                                    'End If
                                 End If
 
                             Else

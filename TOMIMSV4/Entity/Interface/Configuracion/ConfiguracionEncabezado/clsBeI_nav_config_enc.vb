@@ -197,6 +197,8 @@ Public Class clsBeI_nav_config_enc
     Public Property Bodega_Prorrateo As String = ""
     Public Property Bodega_Prorrateo1 As String = ""
 
+    Public Property cantidad_en_presentacion_transacciones_out As Boolean = False
+
     Public Property Codigo_Cliente_Virtual As String = ""
     ''' <summary>
     ''' #CKFK20251030 Agregamos estos tres campos para la integración con ERP 

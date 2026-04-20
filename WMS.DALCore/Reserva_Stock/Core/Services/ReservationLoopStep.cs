@@ -714,7 +714,10 @@ namespace WMS.StockReservation.Core.Services
                     IdUnidadMedida = context.Request.IdUnidadMedida,
                     IdProductoEstado = context.Request.IdProductoEstado,
                     IdPropietarioBodega = context.Request.IdPropietarioBodega,
-                    IdTransaccion = context.IdPedidoEnc,
+                    IdTransaccion = context.Request.IdTransaccion,
+                    IdPedido = context.Request.IdTransaccion,
+                    Indicador = context.Request.Indicador,
+                    Estado = "UNCOMMITED",
                     IdUbicacion = stock.IdUbicacion,
                     Lote = batchNo,
                     Fecha_vence = stock.Fecha_vence
