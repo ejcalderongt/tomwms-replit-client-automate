@@ -3840,7 +3840,6 @@ Public Class frmCargaExcel
 
                             '#GT16062022_0840: aqui esta la magia para llenar lista de objetos para reubicar de forma masiva.
                             Get_Info_Estado_Producto()
-                            clsPublic.Actualizar_Progreso(lblPrg, "PASO BASICO OK fila " & (i + 1))
                             Agrega_Registros_Detalle()
 
                         End If
@@ -3849,10 +3848,6 @@ Public Class frmCargaExcel
                         motivoFila = "La ubicación destino en la fila " & (i + 1) & " no existe"
                         AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
                         lObjStock.Add(pObjStock)
-                        clsPublic.Actualizar_Progreso(lblPrg, "OK: fila " & (i + 1) &
-                                     " aceptada. IdStock=" & IdStock &
-                                     ", origen=" & pObjStock.IdUbicacion &
-                                     ", destino=" & pIdUbicacionDestino)
                         Continue For
                     End If
 
@@ -3902,11 +3897,6 @@ Public Class frmCargaExcel
             Carga_Cambio_Ubicacion = True
 
             SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show("Válidos: " & pListObjDet.Count & vbCrLf &
-                    "Errores: " & lErroresCargaCambioUbic.Count,
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information)
             XtraMessageBox.Show("Se finalizó la lectura del archivo, se procesarán los datos a continuación.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
             DialogResult = DialogResult.OK
@@ -4525,7 +4515,7 @@ Public Class frmCargaExcel
             If pStock.IdIndiceRotacion = ubicDestino.IdIndiceRotacion Then Return True
 
             If ubicDestino.IdIndiceRotacion < pStock.IdIndiceRotacion Then
-                If Not pBodegaOrigen.permitir_cambio_ubic_indice_menor Then
+                If pBodegaOrigen.permitir_cambio_ubic_indice_menor Then
                     motivo = String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
                                        pStock.IdIndiceRotacion, ubicDestino.IdIndiceRotacion)
                     Return False
@@ -4538,7 +4528,6 @@ Public Class frmCargaExcel
             Return False
         End Try
     End Function
-
     Private Function EsRackDobleProfundidadExcel(ByVal ubic As clsBeBodega_ubicacion) As Boolean
         Try
             If ubic Is Nothing Then Return False
