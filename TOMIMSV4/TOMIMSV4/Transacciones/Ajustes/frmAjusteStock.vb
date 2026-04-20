@@ -21,7 +21,7 @@ Public Class frmAjusteStock
     Public Delegate Sub Listar_Ajustes()
     Public Property InvokeListarAjustes As Listar_Ajustes
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
-    Private Stock As FrmStock_List
+    Private frmStockList As FrmStock_List
     Private oDateTimePicker As DateTimePicker
     Private DgComboTipo As New DataGridViewComboBoxCell()
 
@@ -54,7 +54,7 @@ Public Class frmAjusteStock
 
         Try
 
-            Stock = New FrmStock_List(AP.IdBodega, cmbPropietarioBodega.EditValue) With {
+            frmStockList = New FrmStock_List(AP.IdBodega, cmbPropietarioBodega.EditValue) With {
             .Modo = FrmStock_List.pModo.Seleccion,
             .WindowState = FormWindowState.Maximized}
 
@@ -111,9 +111,9 @@ Public Class frmAjusteStock
 
         Try
 
-            pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
+            pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
 
-            txtNoAjuste.Text = pBeTransAjustEnc.Idajusteenc
+            txtNoAjuste.Text = pBeTransAjustEnc.IdAjusteenc
 
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
@@ -149,7 +149,7 @@ Public Class frmAjusteStock
 
         Try
 
-            txtNoAjuste.Text = pBeTransAjustEnc.Idajusteenc
+            txtNoAjuste.Text = pBeTransAjustEnc.IdAjusteenc
             txtReferencia.Text = pBeTransAjustEnc.Referencia
             dtpFecha.EditValue = pBeTransAjustEnc.Fecha
 
@@ -168,10 +168,10 @@ Public Class frmAjusteStock
                 BeCliente = clsLnCliente.Get_Single_By_Codigo(pBeTransAjustEnc.IdBodega)
 
                 If Not BeCliente Is Nothing Then
-                cmbBodegaERP.EditValue = BeCliente.IdCliente
-            End If
+                    cmbBodegaERP.EditValue = BeCliente.IdCliente
+                End If
             Else
-            cmbBodegaERP.EditValue = 0
+                cmbBodegaERP.EditValue = 0
             End If
 
             If pBeTransAjustEnc.IdPropietarioBodega <> 0 Then
@@ -190,8 +190,8 @@ Public Class frmAjusteStock
             lBeTransAjusteDet.Clear()
             lBeTransAjusteDetBorrador.Clear()
 
-            lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
-            lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+            lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
 
             Dim tipoajuste As Integer = 0
 
@@ -256,10 +256,13 @@ Public Class frmAjusteStock
             Dim lDetalleCargar As List(Of clsBeTrans_ajuste_det) = Obtener_Detalle_A_Cargar()
 
             For Each vBeAjustDet As clsBeTrans_ajuste_det In lDetalleCargar
+
                 '#CKFK 20210223 Agregué la bodega a la funciónGet_Nombre_Completo_By_IdUbicacion
                 Ubic = clsLnBodega_ubicacion.Get_Nombre_Completo_By_IdUbicacion(vBeAjustDet.IdUbicacion, AP.IdBodega, clsTrans.lConnection, clsTrans.lTransaction)
 
                 vIdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(vBeAjustDet.IdProductoBodega, clsTrans.lConnection, clsTrans.lTransaction)
+
+                Dim vProveedor As String = vBeAjustDet.IdStock
 
                 If vIdProducto <> 0 Then
 
@@ -405,12 +408,12 @@ Public Class frmAjusteStock
 
             Try
 
-                Stock.IdPropietarioBodega = cmbPropietarioBodega.EditValue
-                Stock.varTipoAjuste = cmbTipoAjuste.EditValue
+                frmStockList.IdPropietarioBodega = cmbPropietarioBodega.EditValue
+                frmStockList.varTipoAjuste = cmbTipoAjuste.EditValue
 
-                If Stock.ShowDialog() <> DialogResult.OK Then
+                If frmStockList.ShowDialog() <> DialogResult.OK Then
                     Try
-                        Stock.Hide()
+                        frmStockList.Hide()
                     Catch ex As Exception
                     End Try
                     Return
@@ -421,7 +424,7 @@ Public Class frmAjusteStock
             End Try
 
             'GT21042022: iterar la selección multiple
-            If Stock.SeleccionMultiple Then
+            If frmStockList.SeleccionMultiple Then
 
                 If chkBorrador.Checked Then
                     lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
@@ -433,7 +436,7 @@ Public Class frmAjusteStock
                     pTipoAjuste = cmbTipoAjuste.EditValue
                 End If
 
-                For Each StockEspecificoSeleccionado In Stock.listaStockSeleccionado
+                For Each StockEspecificoSeleccionado In frmStockList.listSeleccionObjVWStockRes
 
                     Reservar_Stock(StockEspecificoSeleccionado.IdStock)
 
@@ -447,7 +450,7 @@ Public Class frmAjusteStock
 
             Else
 
-                Reservar_Stock(Stock.pObjStock.IdStock)
+                Reservar_Stock(frmStockList.pSingleBEVWStockRes.IdStock)
 
                 If chkBorrador.Checked Then
 
@@ -456,27 +459,27 @@ Public Class frmAjusteStock
 
                     BeAjusteDetBorrador.idajustedet = 0
                     BeAjusteDetBorrador.idajusteenc = pBeTransAjustEnc.IdAjusteenc
-                    BeAjusteDetBorrador.IdStock = Stock.pObjStock.IdStock
-                    BeAjusteDetBorrador.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
-                    BeAjusteDetBorrador.IdProductoBodega = Stock.pObjStock.IdProductoBodega
-                    BeAjusteDetBorrador.IdProductoEstado = Stock.pObjStock.IdProductoEstado
-                    BeAjusteDetBorrador.IdPresentacion = Stock.pObjStock.IdPresentacion
-                    BeAjusteDetBorrador.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
-                    BeAjusteDetBorrador.IdUbicacion = Stock.pObjStock.IdUbicacion
+                    BeAjusteDetBorrador.IdStock = frmStockList.pSingleBEVWStockRes.IdStock
+                    BeAjusteDetBorrador.IdPropietarioBodega = frmStockList.pSingleBEVWStockRes.IdPropietarioBodega
+                    BeAjusteDetBorrador.IdProductoBodega = frmStockList.pSingleBEVWStockRes.IdProductoBodega
+                    BeAjusteDetBorrador.IdProductoEstado = frmStockList.pSingleBEVWStockRes.IdProductoEstado
+                    BeAjusteDetBorrador.IdPresentacion = frmStockList.pSingleBEVWStockRes.IdPresentacion
+                    BeAjusteDetBorrador.IdUnidadMedida = frmStockList.pSingleBEVWStockRes.IdUnidadMedida
+                    BeAjusteDetBorrador.IdUbicacion = frmStockList.pSingleBEVWStockRes.IdUbicacion
 
                     If BeAjusteDetBorrador.IdPresentacion <> 0 Then
                         BeAjusteDetBorrador.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDetBorrador.IdPresentacion)
                     End If
 
-                    BeAjusteDetBorrador.lote_original = Stock.pObjStock.Lote
-                    BeAjusteDetBorrador.lote_nuevo = Stock.pObjStock.Lote
-                    BeAjusteDetBorrador.fecha_vence_original = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDetBorrador.fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDetBorrador.peso_original = Stock.pObjStock.Peso
-                    BeAjusteDetBorrador.peso_nuevo = Stock.pObjStock.Peso
-                    BeAjusteDetBorrador.cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDetBorrador.cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDetBorrador.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.lote_original = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDetBorrador.lote_nuevo = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDetBorrador.fecha_vence_original = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDetBorrador.fecha_vence_nueva = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDetBorrador.peso_original = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDetBorrador.peso_nuevo = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDetBorrador.cantidad_original = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.cantidad_nueva = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.CantReservada = frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
 
                     If BeAjusteDetBorrador.IdPresentacion <> 0 Then
                         BeAjusteDetBorrador.cantidad_original = Math.Round(BeAjusteDetBorrador.cantidad_original / BeAjusteDetBorrador.Presentacion.Factor, 6)
@@ -484,22 +487,22 @@ Public Class frmAjusteStock
                         BeAjusteDetBorrador.CantReservada = Math.Round(BeAjusteDetBorrador.CantReservada / BeAjusteDetBorrador.Presentacion.Factor, 6)
                     End If
 
-                    BeAjusteDetBorrador.UmBas = Stock.pObjStock.UMBas
-                    BeAjusteDetBorrador.codigo_producto = Stock.pObjStock.Codigo_Producto
-                    BeAjusteDetBorrador.nombre_producto = Stock.pObjStock.Nombre_Producto
+                    BeAjusteDetBorrador.UmBas = frmStockList.pSingleBEVWStockRes.UMBas
+                    BeAjusteDetBorrador.codigo_producto = frmStockList.pSingleBEVWStockRes.Codigo_Producto
+                    BeAjusteDetBorrador.nombre_producto = frmStockList.pSingleBEVWStockRes.Nombre_Producto
                     BeAjusteDetBorrador.idtipoajuste = 0
                     BeAjusteDetBorrador.idmotivoajuste = 0
                     BeAjusteDetBorrador.observacion = ""
                     BeAjusteDetBorrador.codigo_ajuste = 0
                     BeAjusteDetBorrador.enviado = False
-                    BeAjusteDetBorrador.lic_plate = Stock.pObjStock.Lic_plate
+                    BeAjusteDetBorrador.lic_plate = frmStockList.pSingleBEVWStockRes.Lic_plate
                     BeAjusteDetBorrador.idstockres = IdStockRes
                     BeAjusteDetBorrador.idstocklink = 0
                     BeAjusteDetBorrador.esnuevolink = 0
 
                     If BeBodega.Control_Talla_Color Then
 
-                        BeAjusteDetBorrador.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
+                        BeAjusteDetBorrador.IdProductoTallaColor_origen = frmStockList.pSingleBEVWStockRes.IdProductoTallaColor
                         pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDetBorrador.IdProductoTallaColor_origen)
 
                         If pProductoTallaColor IsNot Nothing Then
@@ -591,27 +594,27 @@ Public Class frmAjusteStock
                     BeAjusteDet = New clsBeTrans_ajuste_det
                     BeAjusteDet.IdAjusteDet = 0
                     BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
-                    BeAjusteDet.IdStock = Stock.pObjStock.IdStock
-                    BeAjusteDet.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
-                    BeAjusteDet.IdProductoBodega = Stock.pObjStock.IdProductoBodega
-                    BeAjusteDet.IdProductoEstado = Stock.pObjStock.IdProductoEstado
-                    BeAjusteDet.IdPresentacion = Stock.pObjStock.IdPresentacion
-                    BeAjusteDet.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
-                    BeAjusteDet.IdUbicacion = Stock.pObjStock.IdUbicacion
+                    BeAjusteDet.IdStock = frmStockList.pSingleBEVWStockRes.IdStock
+                    BeAjusteDet.IdPropietarioBodega = frmStockList.pSingleBEVWStockRes.IdPropietarioBodega
+                    BeAjusteDet.IdProductoBodega = frmStockList.pSingleBEVWStockRes.IdProductoBodega
+                    BeAjusteDet.IdProductoEstado = frmStockList.pSingleBEVWStockRes.IdProductoEstado
+                    BeAjusteDet.IdPresentacion = frmStockList.pSingleBEVWStockRes.IdPresentacion
+                    BeAjusteDet.IdUnidadMedida = frmStockList.pSingleBEVWStockRes.IdUnidadMedida
+                    BeAjusteDet.IdUbicacion = frmStockList.pSingleBEVWStockRes.IdUbicacion
 
                     If BeAjusteDet.IdPresentacion <> 0 Then
                         BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
                     End If
 
-                    BeAjusteDet.Lote_original = Stock.pObjStock.Lote
-                    BeAjusteDet.Lote_nuevo = Stock.pObjStock.Lote
-                    BeAjusteDet.Fecha_vence_original = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDet.Fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDet.Peso_original = Stock.pObjStock.Peso
-                    BeAjusteDet.Peso_nuevo = Stock.pObjStock.Peso
-                    BeAjusteDet.Cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDet.Cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDet.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDet.Lote_original = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDet.Lote_nuevo = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDet.Fecha_vence_original = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDet.Fecha_vence_nueva = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDet.Peso_original = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDet.Peso_nuevo = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDet.Cantidad_original = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDet.Cantidad_nueva = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDet.CantReservada = frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
 
                     If BeAjusteDet.IdPresentacion <> 0 Then
                         BeAjusteDet.Cantidad_original = Math.Round(BeAjusteDet.Cantidad_original / BeAjusteDet.Presentacion.Factor, 6)
@@ -619,15 +622,15 @@ Public Class frmAjusteStock
                         BeAjusteDet.CantReservada = Math.Round(BeAjusteDet.CantReservada / BeAjusteDet.Presentacion.Factor, 6)
                     End If
 
-                    BeAjusteDet.UmBas = Stock.pObjStock.UMBas
-                    BeAjusteDet.Codigo_producto = Stock.pObjStock.Codigo_Producto
-                    BeAjusteDet.Nombre_producto = Stock.pObjStock.Nombre_Producto
+                    BeAjusteDet.UmBas = frmStockList.pSingleBEVWStockRes.UMBas
+                    BeAjusteDet.Codigo_producto = frmStockList.pSingleBEVWStockRes.Codigo_Producto
+                    BeAjusteDet.Nombre_producto = frmStockList.pSingleBEVWStockRes.Nombre_Producto
                     BeAjusteDet.Idtipoajuste = 0
                     BeAjusteDet.IdMotivoAjuste = 0
                     BeAjusteDet.Observacion = ""
                     BeAjusteDet.Codigo_ajuste = 0
                     BeAjusteDet.Enviado = False
-                    BeAjusteDet.lic_plate = Stock.pObjStock.Lic_plate
+                    BeAjusteDet.lic_plate = frmStockList.pSingleBEVWStockRes.Lic_plate
                     BeAjusteDet.idstockres = IdStockRes
                     BeAjusteDet.idstocklink = 0
                     BeAjusteDet.esnuevolink = 0
@@ -636,7 +639,7 @@ Public Class frmAjusteStock
 
                     If BeBodega.Control_Talla_Color Then
 
-                        BeAjusteDet.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
+                        BeAjusteDet.IdProductoTallaColor_origen = frmStockList.pSingleBEVWStockRes.IdProductoTallaColor
                         pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor_origen)
 
                         If pProductoTallaColor IsNot Nothing Then
@@ -727,7 +730,7 @@ Public Class frmAjusteStock
 
             End If
 
-            Stock.Hide()
+            frmStockList.Hide()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -831,6 +834,8 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
+
+            dgrid.Rows(rc).Cells("ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
@@ -5040,6 +5045,10 @@ Public Class frmAjusteStock
             IsLoading = False
             SplashScreenManager.CloseForm(False)
         End Try
+
+    End Sub
+
+    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
 
     End Sub
 

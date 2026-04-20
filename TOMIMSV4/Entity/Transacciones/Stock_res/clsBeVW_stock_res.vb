@@ -70,12 +70,9 @@ Public Class clsBeVW_stock_res
     Public Property Pallet_No_Estandar As Boolean = False
     Public Property Host As String = ""
     Public Property no_linea As Integer = 0
-
     Public Property Nombre_Clasificacion As String = ""
-
     Public Property Area As String = ""
     Public Property Nombre_Completo As String = ""
-
     Public Property IdOperadorBodega_Asignado As Integer = 0
     Public Property IdRecepcionDet As Integer = 0
     Public Property Codigo_Talla As String = ""
@@ -83,6 +80,7 @@ Public Class clsBeVW_stock_res
     Public Property Codigo_Color As String = ""
     Public Property Nombre_Color As String = ""
     Public Property IdProductoTallaColor As Integer = 0
+    Public Property Proveedor As String = ""
     Sub New()
     End Sub
     Sub New(ByRef IdBodega As Integer, ByVal IdPropietario As Integer, ByVal IdPropietarioBodega As Integer, ByVal IdProducto As Integer, ByVal IdProductoBodega As Integer, ByVal IdStock As Integer,
