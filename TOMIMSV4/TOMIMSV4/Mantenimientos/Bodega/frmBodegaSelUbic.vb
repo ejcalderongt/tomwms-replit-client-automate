@@ -1341,7 +1341,7 @@ Public Class frmBodegaSelUbic
             If IdIndiceRotacion = pBeUbicacion.IdIndiceRotacion Then Return True
 
             If pBeUbicacion.IdIndiceRotacion < IdIndiceRotacion Then
-                If Not pObjBeB.permitir_cambio_ubic_indice_menor Then
+                If pObjBeB.permitir_cambio_ubic_indice_menor Then
                     MostrarMensajeValidacion(
                     String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
                                   IdIndiceRotacion, pBeUbicacion.IdIndiceRotacion))
