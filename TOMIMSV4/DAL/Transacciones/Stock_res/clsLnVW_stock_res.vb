@@ -1256,5 +1256,53 @@ Public Class clsLnVW_stock_res
 
     End Function
 
+    '#EJC20260416:
+    'Obtiene todas las líneas de stock de una licencia completa en una ubicación y bodega.
+    'Se usa para movimientos de licencia completa mixta.
+    Public Shared Function Get_Lista_Stock_Licencia_Completa(ByVal pLicPlate As String,
+                                                         ByVal pIdUbicacion As Integer,
+                                                         ByVal pIdBodega As Integer,
+                                                         ByRef lConnection As SqlConnection,
+                                                         ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
+
+        Get_Lista_Stock_Licencia_Completa = Nothing
+
+        Try
+            Dim lReturnList As New List(Of clsBeVW_stock_res)
+
+            Dim vSQL As String = "SELECT *
+                              FROM vw_stock_res
+                              WHERE Lic_Plate = @Lic_Plate
+                                AND IdUbicacion = @IdUbicacion
+                                AND IdBodega = @IdBodega
+                              ORDER BY Codigo, IdProductoEstado, IdPresentacion"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandTimeout = 60
+                lDTA.SelectCommand.Parameters.AddWithValue("@Lic_Plate", pLicPlate)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                    For Each lRow As DataRow In lDataTable.Rows
+                        Dim Obj As New clsBeVW_stock_res()
+                        Cargar(Obj, lRow, lConnection, lTransaction)
+                        lReturnList.Add(Obj)
+                    Next
+                End If
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
 
 End Class
