@@ -183,7 +183,7 @@ Partial Class frmBodega
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim ButtonImageOptions2 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
-        Dim Code128Generator2 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
+        Dim Code128Generator8 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Me.lblControlGondola = New System.Windows.Forms.Label()
         Me.Label80 = New System.Windows.Forms.Label()
         Me.Label81 = New System.Windows.Forms.Label()
@@ -1113,7 +1113,7 @@ Partial Class frmBodega
         'Label37
         '
         Label37.AutoSize = True
-        Label37.Location = New System.Drawing.Point(310, -10050)
+        Label37.Location = New System.Drawing.Point(345, 107)
         Label37.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label37.Name = "Label37"
         Label37.Size = New System.Drawing.Size(108, 16)
@@ -1123,7 +1123,7 @@ Partial Class frmBodega
         'Label38
         '
         Label38.AutoSize = True
-        Label38.Location = New System.Drawing.Point(310, -10018)
+        Label38.Location = New System.Drawing.Point(345, 135)
         Label38.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label38.Name = "Label38"
         Label38.Size = New System.Drawing.Size(101, 16)
@@ -1133,7 +1133,7 @@ Partial Class frmBodega
         'Label39
         '
         Label39.AutoSize = True
-        Label39.Location = New System.Drawing.Point(310, -10080)
+        Label39.Location = New System.Drawing.Point(345, 77)
         Label39.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label39.Name = "Label39"
         Label39.Size = New System.Drawing.Size(106, 16)
@@ -1143,7 +1143,7 @@ Partial Class frmBodega
         'Label40
         '
         Label40.AutoSize = True
-        Label40.Location = New System.Drawing.Point(310, -10110)
+        Label40.Location = New System.Drawing.Point(345, 48)
         Label40.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label40.Name = "Label40"
         Label40.Size = New System.Drawing.Size(112, 16)
@@ -1153,7 +1153,7 @@ Partial Class frmBodega
         'Label41
         '
         Label41.AutoSize = True
-        Label41.Location = New System.Drawing.Point(20, -10042)
+        Label41.Location = New System.Drawing.Point(25, 117)
         Label41.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label41.Name = "Label41"
         Label41.Size = New System.Drawing.Size(47, 16)
@@ -1163,7 +1163,7 @@ Partial Class frmBodega
         'Label42
         '
         Label42.AutoSize = True
-        Label42.Location = New System.Drawing.Point(20, -10071)
+        Label42.Location = New System.Drawing.Point(25, 85)
         Label42.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label42.Name = "Label42"
         Label42.Size = New System.Drawing.Size(44, 16)
@@ -1173,7 +1173,7 @@ Partial Class frmBodega
         'Label43
         '
         Label43.AutoSize = True
-        Label43.Location = New System.Drawing.Point(20, -10103)
+        Label43.Location = New System.Drawing.Point(25, 53)
         Label43.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label43.Name = "Label43"
         Label43.Size = New System.Drawing.Size(34, 16)
@@ -1263,7 +1263,7 @@ Partial Class frmBodega
         'lblMargenIzquierdoSector
         '
         lblMargenIzquierdoSector.AutoSize = True
-        lblMargenIzquierdoSector.Location = New System.Drawing.Point(368, -302)
+        lblMargenIzquierdoSector.Location = New System.Drawing.Point(407, 61)
         lblMargenIzquierdoSector.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblMargenIzquierdoSector.Name = "lblMargenIzquierdoSector"
         lblMargenIzquierdoSector.Size = New System.Drawing.Size(112, 16)
@@ -1273,7 +1273,7 @@ Partial Class frmBodega
         'lblMargenDerechoSector
         '
         lblMargenDerechoSector.AutoSize = True
-        lblMargenDerechoSector.Location = New System.Drawing.Point(368, -267)
+        lblMargenDerechoSector.Location = New System.Drawing.Point(407, 93)
         lblMargenDerechoSector.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblMargenDerechoSector.Name = "lblMargenDerechoSector"
         lblMargenDerechoSector.Size = New System.Drawing.Size(106, 16)
@@ -1283,7 +1283,7 @@ Partial Class frmBodega
         'lblMargenInferiorSector
         '
         lblMargenInferiorSector.AutoSize = True
-        lblMargenInferiorSector.Location = New System.Drawing.Point(368, -202)
+        lblMargenInferiorSector.Location = New System.Drawing.Point(407, 157)
         lblMargenInferiorSector.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblMargenInferiorSector.Name = "lblMargenInferiorSector"
         lblMargenInferiorSector.Size = New System.Drawing.Size(101, 16)
@@ -1293,7 +1293,7 @@ Partial Class frmBodega
         'lblMargenSuperiorSector
         '
         lblMargenSuperiorSector.AutoSize = True
-        lblMargenSuperiorSector.Location = New System.Drawing.Point(368, -235)
+        lblMargenSuperiorSector.Location = New System.Drawing.Point(407, 124)
         lblMargenSuperiorSector.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblMargenSuperiorSector.Name = "lblMargenSuperiorSector"
         lblMargenSuperiorSector.Size = New System.Drawing.Size(108, 16)
@@ -1603,7 +1603,7 @@ Partial Class frmBodega
         Label13.Location = New System.Drawing.Point(9, 358)
         Label13.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label13.Name = "Label13"
-        Label13.Size = New System.Drawing.Size(467, 20)
+        Label13.Size = New System.Drawing.Size(247, 20)
         Label13.TabIndex = 18
         Label13.Text = "Columna (X):"
         '
@@ -3029,7 +3029,7 @@ Partial Class frmBodega
         Me.GroupControl14.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl14.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl14.Name = "GroupControl14"
-        Me.GroupControl14.Size = New System.Drawing.Size(744, 432)
+        Me.GroupControl14.Size = New System.Drawing.Size(964, 432)
         Me.GroupControl14.TabIndex = 0
         Me.GroupControl14.Text = "Dimensiones"
         '
@@ -3060,7 +3060,7 @@ Partial Class frmBodega
         Me.chkUbicacionesActivas.Name = "chkUbicacionesActivas"
         Me.chkUbicacionesActivas.Properties.Caption = "Listar ubicaciones activas"
         Me.chkUbicacionesActivas.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.[Default]
-        Me.chkUbicacionesActivas.Size = New System.Drawing.Size(740, 24)
+        Me.chkUbicacionesActivas.Size = New System.Drawing.Size(960, 24)
         Me.chkUbicacionesActivas.TabIndex = 1
         '
         'cmbOrientacion
@@ -3108,7 +3108,7 @@ Partial Class frmBodega
         'Label29
         '
         Me.Label29.AutoSize = True
-        Me.Label29.Location = New System.Drawing.Point(310, -9986)
+        Me.Label29.Location = New System.Drawing.Point(345, 168)
         Me.Label29.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label29.Name = "Label29"
         Me.Label29.Size = New System.Drawing.Size(101, 16)
@@ -3149,7 +3149,7 @@ Partial Class frmBodega
         'nUpdAnchoUbicacion
         '
         Me.nUpdAnchoUbicacion.DecimalPlaces = 6
-        Me.nUpdAnchoUbicacion.Location = New System.Drawing.Point(23, 111)
+        Me.nUpdAnchoUbicacion.Location = New System.Drawing.Point(80, 110)
         Me.nUpdAnchoUbicacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.nUpdAnchoUbicacion.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.nUpdAnchoUbicacion.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -3160,7 +3160,7 @@ Partial Class frmBodega
         'nUpdLargoUbicacion
         '
         Me.nUpdLargoUbicacion.DecimalPlaces = 6
-        Me.nUpdLargoUbicacion.Location = New System.Drawing.Point(23, 79)
+        Me.nUpdLargoUbicacion.Location = New System.Drawing.Point(80, 78)
         Me.nUpdLargoUbicacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.nUpdLargoUbicacion.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.nUpdLargoUbicacion.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -3171,7 +3171,7 @@ Partial Class frmBodega
         'nUpdAltoUbicacion
         '
         Me.nUpdAltoUbicacion.DecimalPlaces = 6
-        Me.nUpdAltoUbicacion.Location = New System.Drawing.Point(23, 47)
+        Me.nUpdAltoUbicacion.Location = New System.Drawing.Point(80, 46)
         Me.nUpdAltoUbicacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.nUpdAltoUbicacion.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.nUpdAltoUbicacion.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -4497,7 +4497,7 @@ Partial Class frmBodega
         'Label25
         '
         Me.Label25.AutoSize = True
-        Me.Label25.Location = New System.Drawing.Point(15, -262)
+        Me.Label25.Location = New System.Drawing.Point(15, 91)
         Me.Label25.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label25.Name = "Label25"
         Me.Label25.Size = New System.Drawing.Size(69, 16)
@@ -4507,7 +4507,7 @@ Partial Class frmBodega
         'Label23
         '
         Me.Label23.AutoSize = True
-        Me.Label23.Location = New System.Drawing.Point(14, -300)
+        Me.Label23.Location = New System.Drawing.Point(14, 58)
         Me.Label23.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label23.Name = "Label23"
         Me.Label23.Size = New System.Drawing.Size(70, 16)
@@ -4517,7 +4517,7 @@ Partial Class frmBodega
         'Label14
         '
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(29, -220)
+        Me.Label14.Location = New System.Drawing.Point(15, 127)
         Me.Label14.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(55, 16)
@@ -4527,7 +4527,7 @@ Partial Class frmBodega
         'chkHorizontal
         '
         Me.chkHorizontal.AutoSize = True
-        Me.chkHorizontal.Location = New System.Drawing.Point(128, -222)
+        Me.chkHorizontal.Location = New System.Drawing.Point(128, 128)
         Me.chkHorizontal.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkHorizontal.Name = "chkHorizontal"
         Me.chkHorizontal.Size = New System.Drawing.Size(18, 17)
@@ -4738,7 +4738,7 @@ Partial Class frmBodega
         '
         Me.SplitContainer4.Panel2.Controls.Add(Me.GroupControl14)
         Me.SplitContainer4.Size = New System.Drawing.Size(1784, 432)
-        Me.SplitContainer4.SplitterDistance = 1034
+        Me.SplitContainer4.SplitterDistance = 814
         Me.SplitContainer4.SplitterWidth = 6
         Me.SplitContainer4.TabIndex = 1
         '
@@ -4770,7 +4770,7 @@ Partial Class frmBodega
         Me.GroupControl13.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl13.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl13.Name = "GroupControl13"
-        Me.GroupControl13.Size = New System.Drawing.Size(1034, 432)
+        Me.GroupControl13.Size = New System.Drawing.Size(814, 432)
         Me.GroupControl13.TabIndex = 0
         Me.GroupControl13.Text = "Datos de Ubicación"
         '
@@ -5901,7 +5901,7 @@ Partial Class frmBodega
         Me.Bcc.Name = "Bcc"
         Me.Bcc.Padding = New System.Windows.Forms.Padding(12, 2, 12, 0)
         Me.Bcc.Size = New System.Drawing.Size(195, 53)
-        Me.Bcc.Symbology = Code128Generator2
+        Me.Bcc.Symbology = Code128Generator8
         Me.Bcc.TabIndex = 45
         '
         'cmbSymbology
