@@ -5,7 +5,6 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
-Imports DocumentFormat.OpenXml.Drawing
 
 Public Class frmAjusteStock
 
@@ -5047,11 +5046,6 @@ Public Class frmAjusteStock
         End Try
 
     End Sub
-
-    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
-
-    End Sub
-
     Private Sub Mostrar_Columnas_Talla_Color(ByVal mostrar_talla_color As Boolean)
         Try
 
@@ -5186,11 +5180,22 @@ Public Class frmAjusteStock
 
                 If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
 
+                Dim BeTransAjusteDetBorrador As clsBeTrans_ajuste_det_borrador = Nothing
+
                 ' Asignar IdAjusteEnc y cargar al grid
                 For Each det As clsBeTrans_ajuste_det In frm.AjustesParaCargar
 
+                    BeTransAjusteDetBorrador = New clsBeTrans_ajuste_det_borrador()
+
                     det.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
-                    lBeTransAjusteDet.Add(det)
+
+                    clsPublic.CopyObject(det, BeTransAjusteDetBorrador)
+
+                    If chkBorrador.Checked Then
+                        lBeTransAjusteDetBorrador.Add(BeTransAjusteDetBorrador)
+                    Else
+                        lBeTransAjusteDet.Add(det)
+                    End If
 
                     Dim ubic As String = clsLnBodega_ubicacion.GetSingle(det.IdUbicacion, AP.IdBodega).NombreCompleto
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
