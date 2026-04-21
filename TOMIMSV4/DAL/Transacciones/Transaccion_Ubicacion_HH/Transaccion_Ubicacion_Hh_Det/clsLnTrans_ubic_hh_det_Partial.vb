@@ -1,7 +1,10 @@
 ﻿'Imports System.Configuration
+Imports System.Configuration
 Imports System.Data.SqlClient
+Imports System.IO
+Imports System.Net
 Imports System.Reflection
-Imports DevExpress.Drawing.Printing.Internal
+Imports Newtonsoft.Json
 
 Partial Public Class clsLnTrans_ubic_hh_det
 
@@ -16,7 +19,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                   ORDER BY IdTareaUbicacionDet "
 
             '#EJC20180419:1109PM: Se agrego transaccionalidad a función.
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
 
@@ -443,7 +446,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             Dim vSQL As String = "SELECT * from trans_ubic_hh_det where IdTareaUbicacionDet=@IdTransUbicHhDet"
 
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Using lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
 
@@ -514,7 +517,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Guardar_Detalle = False
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -589,7 +592,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplicar_Movimiento = ""
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -624,7 +627,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Dim IdMaxMov As Integer
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -816,7 +819,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdMovimiento As Integer
         Dim IdStockNuevo As Integer = 0
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
@@ -1236,7 +1239,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Procesar_Cambio_Ubicacion_Dirigido = False
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
         Dim BeTransReabasto As New clsBeTrans_reabastecimiento_log()
 
@@ -1420,7 +1423,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                          ByRef pIdMovimientoNuevo As Integer,
                                                                          ByVal pPosiciones As Integer) As Boolean
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
 
@@ -1745,6 +1748,338 @@ Partial Public Class clsLnTrans_ubic_hh_det
             'If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         End Try
+
+    End Function
+
+    Public Shared Function EsRackDobleProfundidadHH(ByVal ubic As clsBeBodega_ubicacion) As Boolean
+        Try
+            If ubic Is Nothing Then Return False
+            If ubic.IdTramo <= 0 Then Return False
+            If ubic.IdBodega <= 0 Then Return False
+
+            Dim beTramo As clsBeBodega_tramo =
+            clsLnBodega_tramo.GetSingle(ubic.IdTramo, ubic.IdBodega)
+
+            If beTramo Is Nothing Then Return False
+
+            Return beTramo.Es_Rack AndAlso beTramo.IdTipoRack = 4
+
+        Catch ex As Exception
+            Throw New Exception("Error validando si el tramo es rack de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Public Shared Function ObtenerOrientacionParejaHH(ByVal orientacion As String) As String
+        If String.IsNullOrWhiteSpace(orientacion) Then Return ""
+
+        Select Case orientacion.Trim().ToUpper()
+            Case "A" : Return "B"
+            Case "B" : Return "A"
+            Case "C" : Return "D"
+            Case "D" : Return "C"
+            Case Else : Return ""
+        End Select
+    End Function
+
+    Public Shared Function ObtenerUbicacionParejaDobleProfundidadHH(ByVal ubic As clsBeBodega_ubicacion) As clsBeBodega_ubicacion
+        Try
+            If ubic Is Nothing Then Return Nothing
+
+            Dim orientacionPareja As String = ObtenerOrientacionParejaHH(ubic.Orientacion_pos)
+
+            If String.IsNullOrWhiteSpace(orientacionPareja) Then Return Nothing
+
+            Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
+            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
+                ubic.IdBodega,
+                ubic.IdTramo,
+                ubic.Indice_x,
+                ubic.Nivel,
+                ubic.IdUbicacion)
+
+            If ubicacionesRelacionadas Is Nothing OrElse ubicacionesRelacionadas.Count = 0 Then
+                Return Nothing
+            End If
+
+            Return ubicacionesRelacionadas.
+            FirstOrDefault(Function(x) x IsNot Nothing AndAlso
+                                      Not String.IsNullOrWhiteSpace(x.Orientacion_pos) AndAlso
+                                      x.Orientacion_pos.Trim().ToUpper() = orientacionPareja)
+
+        Catch ex As Exception
+            Throw New Exception("Error obteniendo ubicación relacionada de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Public Shared Function ExisteProductoBodegaDistintoEnUbicacionHH(ByVal idUbicacion As Integer,
+                                                           ByVal idBodega As Integer,
+                                                           ByVal idProductoBodega As Integer) As Boolean
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return False
+
+            Return lStock.Any(Function(s) s IsNot Nothing AndAlso
+                                      s.IdProductoBodega > 0 AndAlso
+                                      s.IdProductoBodega <> idProductoBodega)
+
+        Catch ex As Exception
+            Throw New Exception("Error validando producto en ubicación: " & ex.Message)
+        End Try
+    End Function
+
+    Public Shared Function ObtenerCodigoProductoBodegaEnUbicacionHH(ByVal idUbicacion As Integer,
+                                                          ByVal idBodega As Integer,
+                                                          ByVal idProductoBodegaAUbicar As Integer) As String
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+            Dim stockDistinto = lStock.FirstOrDefault(Function(s) s IsNot Nothing AndAlso
+                                                              s.IdProductoBodega > 0 AndAlso
+                                                              s.IdProductoBodega <> idProductoBodegaAUbicar)
+
+            If stockDistinto Is Nothing Then Return ""
+
+            Return stockDistinto.Codigo_Producto
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+
+    Public Shared Function ConstruirMensajePosicionPosteriorHH(ByVal codigoProductoRelacionado As String) As String
+        Return "La posición posterior ya contiene un producto diferente" &
+           If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+           ". Solo se permite ubicar el mismo producto en esta posición."
+    End Function
+
+    Public Shared Function Validar_Mismo_Producto_Posicion_JSON(ByVal pIdBodega As Integer,
+                                                                ByVal pIdTramo As Integer,
+                                                                ByVal pIndice_x As Integer,
+                                                                ByVal pNivel As Integer,
+                                                                ByVal pIdUbicacion As Integer,
+                                                                ByVal pIdProductoBodega As Integer,
+                                                                ByRef posicionValida As Boolean,
+                                                                ByRef mensaje As String,
+                                                                ByRef aplicaDobleProfundidad As Boolean) As Boolean
+
+        Dim resultado As Boolean = False
+
+        Try
+            posicionValida = True
+            mensaje = ""
+            aplicaDobleProfundidad = False
+
+            Dim ubicDestino As clsBeBodega_ubicacion =
+            clsLnBodega_ubicacion.GetSingle(pIdUbicacion, pIdBodega)
+
+            If ubicDestino Is Nothing Then
+                Throw New Exception("No se encontró la ubicación destino.")
+            End If
+
+            ' 1) Validar ubicación destino misma
+            If ExisteProductoBodegaDistintoEnUbicacionHH(
+            ubicDestino.IdUbicacion,
+            ubicDestino.IdBodega,
+            pIdProductoBodega) Then
+
+                posicionValida = False
+                mensaje = "La ubicación destino ya contiene un producto diferente. Solo se permite ubicar el mismo producto en esa posición."
+            End If
+
+            ' 2) Si la ubicación destino misma está bien, validar doble profundidad
+            If posicionValida Then
+                aplicaDobleProfundidad = EsRackDobleProfundidadHH(ubicDestino)
+
+                If aplicaDobleProfundidad Then
+                    Dim ubicPareja As clsBeBodega_ubicacion =
+                    ObtenerUbicacionParejaDobleProfundidadHH(ubicDestino)
+
+                    If ubicPareja IsNot Nothing Then
+                        If ExisteProductoBodegaDistintoEnUbicacionHH(
+                        ubicPareja.IdUbicacion,
+                        ubicPareja.IdBodega,
+                        pIdProductoBodega) Then
+
+                            Dim codigoProductoRelacionado As String =
+                            ObtenerCodigoProductoBodegaEnUbicacionHH(ubicPareja.IdUbicacion,
+                                                                     ubicPareja.IdBodega,
+                                                                     pIdProductoBodega)
+
+                            posicionValida = False
+                            mensaje = ConstruirMensajePosicionPosteriorHH(codigoProductoRelacionado)
+                        End If
+                    End If
+                End If
+            End If
+
+            resultado = True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+        End Try
+
+        Return resultado
+
+    End Function
+
+    Public Shared Function Validar_Regla_Ubicacion_JSON(ByVal pIdProducto As Integer,
+                                                        ByVal pIdUbicacion As Integer,
+                                                        ByVal pIdBodega As Integer,
+                                                        ByVal pIdEmpresa As Integer,
+                                                        ByVal pIdEstado As Integer,
+                                                        ByRef ubicacionValida As Boolean,
+                                                        ByRef mensaje As String) As Boolean
+
+        Dim resultado As Boolean = False
+
+        Try
+
+            Dim BeProducto As clsBeProducto = Nothing
+            Dim BeUbicacion As clsBeBodega_ubicacion = Nothing
+            Dim BeEstadoProd As clsBeProducto_estado = Nothing
+
+            BeProducto = clsLnProducto.Get_Single_By_IdProducto(pIdProducto)
+            BeUbicacion = clsLnBodega_ubicacion.GetSingle(pIdUbicacion, pIdBodega)
+
+            If BeProducto Is Nothing Then
+                ubicacionValida = False
+                mensaje = "No se pudo obtener la información del producto."
+            End If
+
+            If ubicacionValida AndAlso BeUbicacion Is Nothing Then
+                ubicacionValida = False
+                mensaje = "La ubicación destino no es válida."
+            End If
+
+            If ubicacionValida AndAlso pIdEstado > 0 Then
+                BeEstadoProd = clsLnProducto_estado.Get_Single_By_IdEstado(pIdEstado)
+            End If
+
+            ' 1. Validación directa por tipo de rotación
+            If ubicacionValida Then
+                If BeProducto.IdTipoRotacion > 0 AndAlso BeUbicacion.IdTipoRotacion > 0 Then
+                    If BeProducto.IdTipoRotacion <> BeUbicacion.IdTipoRotacion Then
+                        ubicacionValida = False
+                        mensaje = String.Format(
+                        "La ubicación destino no cumple la regla de ubicación. El tipo de rotación del producto ({0}) no coincide con el de la ubicación destino ({1}).",
+                        BeProducto.IdTipoRotacion,
+                        BeUbicacion.IdTipoRotacion)
+                    End If
+                End If
+            End If
+
+            ' 2. Validación directa por estado dañado
+            If ubicacionValida AndAlso BeEstadoProd IsNot Nothing Then
+                If BeEstadoProd.Dañado AndAlso Not BeUbicacion.Dañado Then
+                    ubicacionValida = False
+                    mensaje = "La ubicación destino no cumple la regla de ubicación. El producto está en estado dañado y la ubicación destino no está configurada para productos dañados."
+                End If
+            End If
+
+            ' 3. Validación por reglas configuradas
+            If ubicacionValida Then
+
+                Dim dtReglas As DataTable = clsLnRegla_ubic_enc.Listar(pIdBodega, pIdEmpresa, True)
+
+                If dtReglas IsNot Nothing AndAlso dtReglas.Rows.Count > 0 Then
+
+                    Dim hayReglasAplicables As Boolean = False
+                    Dim existeReglaCompatible As Boolean = False
+
+                    For Each dr As DataRow In dtReglas.Rows
+
+                        Dim regla As New clsBeRegla_ubic_enc()
+                        regla.IdReglaUbicacionEnc = CInt(dr("Código"))
+                        clsLnRegla_ubic_enc.GetSingleWithDetails(regla)
+
+                        Dim cumple As Boolean = True
+                        Dim reglaAplica As Boolean = False
+
+                        If regla.listDetRegla_Ubic_Det_Ir IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Ir.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeProducto.IdIndiceRotacion = 0 Then
+                                cumple = False
+                            Else
+                                Dim okIndice = regla.listDetRegla_Ubic_Det_Ir.
+                                Any(Function(x) x.Activo AndAlso x.IdIndiceRotacion = BeProducto.IdIndiceRotacion)
+
+                                cumple = cumple AndAlso okIndice
+                            End If
+                        End If
+
+                        If regla.listDetRegla_Ubic_Det_Tr IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Tr.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeUbicacion.IdTipoRotacion = 0 Then
+                                cumple = False
+                            Else
+                                Dim okTipo = regla.listDetRegla_Ubic_Det_Tr.
+                                Any(Function(x) x.Activo AndAlso x.IdTipoRotacion = BeUbicacion.IdTipoRotacion)
+
+                                cumple = cumple AndAlso okTipo
+                            End If
+                        End If
+
+                        If regla.listDetRegla_Ubic_Det_tp IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_tp.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeProducto Is Nothing OrElse BeProducto.IdTipoProducto = 0 Then
+                                cumple = False
+                            Else
+                                Dim okTipoProducto = regla.listDetRegla_Ubic_Det_tp.
+                                Any(Function(x) x.Activo AndAlso x.IdTipoProducto = BeProducto.IdTipoProducto)
+
+                                cumple = cumple AndAlso okTipoProducto
+                            End If
+                        End If
+
+                        If regla.listDetRegla_Ubic_Det_Pe IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Pe.Count > 0 Then
+                            reglaAplica = True
+
+                            If BeEstadoProd Is Nothing OrElse BeEstadoProd.IdEstado = 0 Then
+                                cumple = False
+                            Else
+                                Dim okEstado = regla.listDetRegla_Ubic_Det_Pe.
+                                Any(Function(x) x.Activo AndAlso x.IdEstado = BeEstadoProd.IdEstado)
+
+                                cumple = cumple AndAlso okEstado
+                            End If
+                        End If
+
+                        If Not reglaAplica Then
+                            Continue For
+                        End If
+
+                        hayReglasAplicables = True
+
+                        If cumple Then
+                            existeReglaCompatible = True
+                            Exit For
+                        End If
+                    Next
+
+                    If hayReglasAplicables AndAlso Not existeReglaCompatible Then
+                        ubicacionValida = False
+                        mensaje = "La ubicación destino no cumple con las propiedades requeridas del producto (tipo de rotación, índice de rotación, tipo de producto o estado)."
+                    End If
+
+                End If
+
+            End If
+
+            resultado = True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+        End Try
+
+        Return resultado
 
     End Function
 
