@@ -164,10 +164,14 @@ Partial Public Class frmImportarAjusteExcel
             det.Fecha_vence_nueva = New Date(1900, 1, 1)
             det.Peso_original = 0
             det.Peso_nuevo = 0
+            ' Cantidad_original / Cantidad_nueva van en UM base (ya convertidas
+            ' en Resolver_BD multiplicando por Factor cuando aplica).
             det.Cantidad_original = f.CantidadOriginal
             det.Cantidad_nueva = f.CantidadNueva
             det.CantReservada = f.CantReservada
             det.UmBas = f.UmBas
+            det.Factor = f.Factor
+            det.Nombre_Presentacion = f.NombrePresentacion
             det.Codigo_producto = f.CodigoProducto
             det.Nombre_producto = f.NombreProducto
             det.Idtipoajuste = f.IdTipoAjuste
@@ -544,9 +548,14 @@ Partial Public Class frmImportarAjusteExcel
                 f.NombrePresentacion = nombrePres
                 f.Factor = factor
                 f.Presentacion = bePresObj
-                f.CantidadOriginal = cantDispPres
-                f.CantidadNueva = cantNueva
-                f.CantReservada = cantResPres
+                ' IMPORTANTE: Cantidad_original y Cantidad_nueva se almacenan SIEMPRE
+                ' en UM base (igual que Cargar_Detalle del frm padre). El consumer
+                ' divide por Factor solo para visualización en el grid.
+                f.CantidadOriginal = cantDisp
+                f.CantidadNueva = If(f.Hoja = "Ajuste_Cantidad",
+                                     cantNueva * factor,
+                                     cantDisp)
+                f.CantReservada = CDec(beStock.Cantidad_Reservada)
                 f.Valida = True
 
             Catch ex As Exception
@@ -570,17 +579,16 @@ Partial Public Class frmImportarAjusteExcel
 
             For Each f As FilaAjusteExcel In _filasValidadas
 
-                ' Determinar textos de cantidad para mostrar
+                ' Texto de cantidad para preview (en unidades de presentación,
+                ' tal cual lo ingresó el usuario en el Excel).
                 Dim cantTexto As String = ""
                 If f.Valida Then
                     If f.IdTipoAjuste = 1 Then
                         cantTexto = "→ " & f.LoteNuevo
                     ElseIf f.IdTipoAjuste = 3 Then
-                        Dim delta As Decimal = f.CantidadNueva - f.CantidadOriginal
-                        cantTexto = "+" & delta.ToString("N4")
+                        cantTexto = "+" & f.CantidadTexto
                     Else
-                        Dim delta As Decimal = f.CantidadOriginal - f.CantidadNueva
-                        cantTexto = "-" & delta.ToString("N4")
+                        cantTexto = "-" & f.CantidadTexto
                     End If
                 Else
                     cantTexto = f.CantidadTexto
