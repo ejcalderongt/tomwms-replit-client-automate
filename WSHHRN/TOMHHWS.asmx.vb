@@ -19485,4 +19485,136 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
+
+
+    '<WebMethod(), SoapHeader("mArch")>
+    'Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack(ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
+
+    '    Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
+
+
+    '    Try
+
+    '        For Each BeVWStockRes As clsBeVW_stock_res In pStockResList
+    '            Dim idStock As Integer = 0
+    '            Dim idMov As Integer = 0
+
+    '            clsLnLog_error_wms.Agregar_Error(BeVWStockRes.Movimiento.IdEmpresa, BeVWStockRes.Movimiento.IdBodegaOrigen, "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: " & BeVWStockRes.Movimiento.IdOperadorBodega & " y TipoTarea " & BeVWStockRes.Movimiento.IdTipoTarea)
+    '            Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack(BeVWStockRes.Movimiento, BeVWStockRes, idStock, idMov, 0)
+
+    '            If Not Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack Then
+    '                Return False
+    '            End If
+
+    '        Next
+
+    '        Return Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack
+
+    '    Catch ex As Exception
+
+    '        'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+    '        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+    '        Dim Mensaje As String = ex.Message
+    '        WriteErrorToEventLog(Mensaje)
+
+    '        If mArch IsNot Nothing Then
+
+    '            If mArch.Tipo = "WM" Then
+    '                Throw New Exception(Mensaje)
+    '            Else
+    '                Dim currrentContext As HttpContext = HttpContext.Current
+    '                Dim DT As New DataTable("CustomError")
+    '                DT.Columns.Add("Error", GetType(String))
+    '                DT.Rows.Add(Mensaje)
+    '                Dim sw As New StringWriter()
+    '                DT.WriteXml(sw)
+    '                HttpContext.Current.Response.Clear()
+    '                HttpContext.Current.Response.StatusCode = 299
+    '                HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+    '                HttpContext.Current.Response.Output.Write(sw.ToString())
+    '                HttpContext.Current.Response.ContentType = "text/xml"
+    '                HttpContext.Current.Response.End()
+    '            End If
+
+    '        End If
+
+    '    End Try
+
+    'End Function
+
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack(ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
+
+        Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
+
+        Try
+            If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
+                Throw New Exception("La lista enviada no contiene datos.")
+            End If
+
+            '#EJC20260416:
+            'Para licencia completa se toma la primera línea solo como encabezado de contexto.
+            'La composición real de la licencia se reconstruye en BD.
+            Dim primeraLinea As clsBeVW_stock_res = pStockResList(0)
+
+            If primeraLinea.Movimiento Is Nothing Then
+                Throw New Exception("La línea no contiene información de movimiento.")
+            End If
+
+            If String.IsNullOrWhiteSpace(primeraLinea.Lic_plate) Then
+                Throw New Exception("No se recibió la licencia.")
+            End If
+
+            Dim idStock As Integer = 0
+            Dim idMov As Integer = 0
+
+            clsLnLog_error_wms.Agregar_Error(primeraLinea.Movimiento.IdEmpresa,
+                                             primeraLinea.Movimiento.IdBodegaOrigen,
+                                             "Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack: llamada WS usuario: " &
+                                             primeraLinea.Movimiento.IdOperadorBodega &
+                                             " licencia: " & primeraLinea.Lic_plate)
+
+            Dim exito As Boolean =
+                clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_HH_LicenciaCompleta_ConValidacionRack(primeraLinea.Movimiento,
+                                                                                                       primeraLinea.Lic_plate,
+                                                                                                       primeraLinea.IdUbicacion,
+                                                                                                       primeraLinea.Movimiento.IdUbicacionDestino,
+                                                                                                       idStock,
+                                                                                                       idMov,
+                                                                                                       0)
+
+            If Not exito Then Return False
+
+            Return True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+            End If
+        End Try
+
+    End Function
+
 End Class
