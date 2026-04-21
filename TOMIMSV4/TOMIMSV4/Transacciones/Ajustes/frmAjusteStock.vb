@@ -1956,7 +1956,13 @@ Public Class frmAjusteStock
             ubic = clsLnBodega_ubicacion.GetSingle(Item.IdUbicacion, AP.IdBodega).NombreCompleto
             codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(Item.IdProductoBodega)).Codigo
 
-            rc = dgrid.Rows.Add(codigo, Item.Nombre_producto, ubic)
+            ' #ProveedorFix: pasaba 'ubic' como 3er argumento posicional, lo que hacía
+            ' que el texto de ubicación cayera en la columna UmBas. Ahora se asignan
+            ' por nombre las columnas no triviales.
+            rc = dgrid.Rows.Add(codigo, Item.Nombre_producto)
+            dgrid.Rows(rc).Cells("UmBas").Value = Item.UmBas
+            dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+            dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
@@ -4489,7 +4495,7 @@ Public Class frmAjusteStock
 
             '#CKFK 20211214 Agregué esta condición
             If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                dgrid.Rows(rc).Cells("ColC antidad").Value = BeAjusteDet.Fecha_vence_original
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Fecha_vence_original
             ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
                 dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
             ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
