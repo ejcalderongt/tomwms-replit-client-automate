@@ -1001,6 +1001,16 @@ Row event argument class
  <param name="IdEmpresa"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnProveedor.Get_Single_By_IdStock(System.Int32)">
+ <summary>
+ #EJC20260420: Devuelve el proveedor que entregó un stock específico, o Nothing si
+ el stock no proviene de una recepción contra OC (ej. ajuste manual
+ inicial, transferencia, etc.).
+ Es DETERMINÍSTICO: cada stock proviene de a lo sumo una OC.   
+ </summary>
+ <param name="pIdStock"></param>
+ <returns></returns>
+</member>
 <member name="M:TOMWMS.clsLnTrans_oc_det.Actualizar_Cantidad(TOMWMS.clsBeTrans_oc_det@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC20220314: Para byb, en la orden de producci�n sumar la cantidad a la l�nea en UMBAS.

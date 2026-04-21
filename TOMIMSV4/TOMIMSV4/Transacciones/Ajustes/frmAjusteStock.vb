@@ -261,7 +261,8 @@ Public Class frmAjusteStock
 
                 vIdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(vBeAjustDet.IdProductoBodega, clsTrans.lConnection, clsTrans.lTransaction)
 
-                Dim vProveedor As String = ""
+                Dim vProveedor As clsBeProveedor = Nothing
+                Dim sProveedorTexto As String = ""
 
                 If vIdProducto <> 0 Then
 
@@ -269,7 +270,19 @@ Public Class frmAjusteStock
 
                     vBeAjustDet.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vBeAjustDet.IdUnidadMedida, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto, vBeAjustDet.UmBas, vBeAjustDet.Nombre_Presentacion, Ubic)
+                    vProveedor = clsLnProveedor.Get_Single_By_IdProveedor(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If vProveedor IsNot Nothing Then
+                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        Else
+                            sProveedorTexto = vProveedor.Nombre
+                        End If
+                    Else
+                        Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                    End If
+
+                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto, vBeAjustDet.UmBas, vBeAjustDet.Nombre_Presentacion, Ubic, sProveedorTexto)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
@@ -5205,11 +5218,23 @@ Public Class frmAjusteStock
 
                     Dim vIdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(det.IdProductoBodega)
 
-                    Dim vProveedor As String = ""
+                    Dim vProveedor As clsBeProveedor = Nothing
+                    Dim sProveedorTexto As String = ""
+                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(det.IdStock)
+
+                    If vProveedor IsNot Nothing Then
+                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        Else
+                            sProveedorTexto = vProveedor.Nombre
+                        End If
+                    Else
+                        Debug.WriteLine($"No se encontró proveedor para IdStock: {det.IdStock}")
+                    End If
 
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
-                                                       ubic)
+                                                       ubic, sProveedorTexto)
 
                     Llenar_Motivo(rc, det.IdMotivoAjuste)
                     Llenar_Tipo(rc, det.Idtipoajuste)
