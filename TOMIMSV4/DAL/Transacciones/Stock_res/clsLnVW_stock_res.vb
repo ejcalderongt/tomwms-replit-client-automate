@@ -110,6 +110,7 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("IdProductoTallaColor") Then .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
                 If dr.Table.Columns.Contains("Talla") Then .Codigo_Talla = IIf(IsDBNull(dr.Item("Talla")), 0, dr.Item("Talla"))
                 If dr.Table.Columns.Contains("Color") Then .Codigo_Color = IIf(IsDBNull(dr.Item("Color")), 0, dr.Item("Color"))
+                If dr.Table.Columns.Contains("Proveedor") Then .Proveedor = IIf(IsDBNull(dr.Item("Proveedor")), 0, dr.Item("Proveedor"))
 
             End With
 

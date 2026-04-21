@@ -207,6 +207,7 @@ Partial Class frmCliente
         Me.grpLotesBloqueados = New DevExpress.XtraEditors.GroupControl()
         Me.DgridLotesBloqueados = New DevExpress.XtraGrid.GridControl()
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.tsSeleccionarClientes = New DevExpress.XtraEditors.ToggleSwitch()
         IdEmpresaLabel = New System.Windows.Forms.Label()
         CodigoLabel = New System.Windows.Forms.Label()
         Nombre_comercialLabel = New System.Windows.Forms.Label()
@@ -369,6 +370,7 @@ Partial Class frmCliente
         Me.grpLotesBloqueados.SuspendLayout()
         CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdEmpresaLabel
@@ -1667,6 +1669,7 @@ Partial Class frmCliente
         '
         'GroupControl3
         '
+        Me.GroupControl3.Controls.Add(Me.tsSeleccionarClientes)
         Me.GroupControl3.Controls.Add(Me.Grid)
         Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl3.Location = New System.Drawing.Point(2, 28)
@@ -2136,7 +2139,7 @@ Partial Class frmCliente
         Me.ToolStripPR.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNewPR, Me.cmdDesactivarPresentacion})
         Me.ToolStripPR.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripPR.Name = "ToolStripPR"
-        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 31)
+        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 27)
         Me.ToolStripPR.TabIndex = 3
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -2145,7 +2148,7 @@ Partial Class frmCliente
         Me.cmdNewPR.Image = CType(resources.GetObject("cmdNewPR.Image"), System.Drawing.Image)
         Me.cmdNewPR.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewPR.Name = "cmdNewPR"
-        Me.cmdNewPR.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewPR.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewPR.Text = "Nuevo"
         '
         'cmdDesactivarPresentacion
@@ -2153,7 +2156,7 @@ Partial Class frmCliente
         Me.cmdDesactivarPresentacion.Image = CType(resources.GetObject("cmdDesactivarPresentacion.Image"), System.Drawing.Image)
         Me.cmdDesactivarPresentacion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarPresentacion.Name = "cmdDesactivarPresentacion"
-        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(87, 28)
+        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(87, 24)
         Me.cmdDesactivarPresentacion.Text = "Eliminar"
         '
         'tabLotes
@@ -2365,10 +2368,10 @@ Partial Class frmCliente
         '
         Me.grpLotesPermitidos.Controls.Add(Me.dgridLotesPermitidos)
         Me.grpLotesPermitidos.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpLotesPermitidos.Location = New System.Drawing.Point(871, 0)
+        Me.grpLotesPermitidos.Location = New System.Drawing.Point(572, 0)
         Me.grpLotesPermitidos.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.grpLotesPermitidos.Name = "grpLotesPermitidos"
-        Me.grpLotesPermitidos.Size = New System.Drawing.Size(625, 754)
+        Me.grpLotesPermitidos.Size = New System.Drawing.Size(625, 603)
         Me.grpLotesPermitidos.TabIndex = 86
         Me.grpLotesPermitidos.Text = "Lotes Permitidos"
         '
@@ -2382,7 +2385,7 @@ Partial Class frmCliente
         Me.dgridLotesPermitidos.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.dgridLotesPermitidos.MenuManager = Me.RibbonControl
         Me.dgridLotesPermitidos.Name = "dgridLotesPermitidos"
-        Me.dgridLotesPermitidos.Size = New System.Drawing.Size(621, 724)
+        Me.dgridLotesPermitidos.Size = New System.Drawing.Size(621, 573)
         Me.dgridLotesPermitidos.TabIndex = 0
         Me.dgridLotesPermitidos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView4})
         '
@@ -2401,10 +2404,10 @@ Partial Class frmCliente
         '
         Me.grpLotesBloqueados.Controls.Add(Me.DgridLotesBloqueados)
         Me.grpLotesBloqueados.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpLotesBloqueados.Location = New System.Drawing.Point(1621, 0)
+        Me.grpLotesBloqueados.Location = New System.Drawing.Point(1197, 0)
         Me.grpLotesBloqueados.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.grpLotesBloqueados.Name = "grpLotesBloqueados"
-        Me.grpLotesBloqueados.Size = New System.Drawing.Size(500, 754)
+        Me.grpLotesBloqueados.Size = New System.Drawing.Size(500, 603)
         Me.grpLotesBloqueados.TabIndex = 85
         Me.grpLotesBloqueados.Text = "Lotes Bloqueados"
         '
@@ -2418,7 +2421,7 @@ Partial Class frmCliente
         Me.DgridLotesBloqueados.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.DgridLotesBloqueados.MenuManager = Me.RibbonControl
         Me.DgridLotesBloqueados.Name = "DgridLotesBloqueados"
-        Me.DgridLotesBloqueados.Size = New System.Drawing.Size(496, 724)
+        Me.DgridLotesBloqueados.Size = New System.Drawing.Size(496, 573)
         Me.DgridLotesBloqueados.TabIndex = 0
         Me.DgridLotesBloqueados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView3})
         '
@@ -2432,6 +2435,16 @@ Partial Class frmCliente
         Me.GridView3.OptionsView.ShowFilterPanelMode = DevExpress.XtraGrid.Views.Base.ShowFilterPanelMode.Never
         Me.GridView3.OptionsView.ShowGroupPanel = False
         Me.GridView3.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.[True]
+        '
+        'tsSeleccionarClientes
+        '
+        Me.tsSeleccionarClientes.Location = New System.Drawing.Point(472, 3)
+        Me.tsSeleccionarClientes.MenuManager = Me.RibbonControl
+        Me.tsSeleccionarClientes.Name = "tsSeleccionarClientes"
+        Me.tsSeleccionarClientes.Properties.OffText = "Ninguno"
+        Me.tsSeleccionarClientes.Properties.OnText = "Todos"
+        Me.tsSeleccionarClientes.Size = New System.Drawing.Size(115, 24)
+        Me.tsSeleccionarClientes.TabIndex = 97
         '
         'frmCliente
         '
@@ -2567,6 +2580,7 @@ Partial Class frmCliente
         Me.grpLotesBloqueados.ResumeLayout(False)
         CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2704,4 +2718,5 @@ Partial Class frmCliente
     Friend WithEvents mnuGuardarLote As ToolStripButton
     Friend WithEvents txtIdProductoEstadoDefecto As DevExpress.XtraEditors.GridLookUpEdit
     Friend WithEvents GridView7 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents tsSeleccionarClientes As DevExpress.XtraEditors.ToggleSwitch
 End Class

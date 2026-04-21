@@ -31,6 +31,13 @@ DAL
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnAjuste_motivo.Insertar_Motivo_Si_No_Existe(System.String,System.String)">
+ <summary>
+ Inserta un motivo de ajuste con el nombre dado, solo si no existe.
+ </summary>
+ <param name="nombre">Nombre del motivo (ej: ENTRADA, SALIDA, INVENTARIO).</param>
+ <returns>IdMotivoAjuste insertado o existente; 0 en caso de error.</returns>
+</member>
 <member name="M:TOMWMS.clsLnAjuste_motivo.Get_IdMotivo_By_Codigo(System.String)">
  <summary>
  Obtiene el ID del motivo de ajuste por su código o nombre
@@ -992,6 +999,16 @@ Row event argument class
  For TMS By Erik C On 20210124
  </summary>
  <param name="IdEmpresa"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProveedor.Get_Single_By_IdStock(System.Int32)">
+ <summary>
+ #EJC20260420: Devuelve el proveedor que entregó un stock específico, o Nothing si
+ el stock no proviene de una recepción contra OC (ej. ajuste manual
+ inicial, transferencia, etc.).
+ Es DETERMINÍSTICO: cada stock proviene de a lo sumo una OC.   
+ </summary>
+ <param name="pIdStock"></param>
  <returns></returns>
 </member>
 <member name="M:TOMWMS.clsLnTrans_oc_det.Actualizar_Cantidad(TOMWMS.clsBeTrans_oc_det@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">

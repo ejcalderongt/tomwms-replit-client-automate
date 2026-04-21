@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS_QAS</AssemblyName>
+    <AssemblyName>WMS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_IDEALSA\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
-    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
-    <ProductName>WMS_QAS</ProductName>
+    <InstallUrl>\\192.168.126.79\WMS\</InstallUrl>
+    <UpdateUrl>\\192.168.126.79\WMS\</UpdateUrl>
+    <ProductName>WMS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS_QAS</SuiteName>
+    <SuiteName>WMS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>104</ApplicationRevision>
+    <ApplicationRevision>114</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -324,6 +324,9 @@
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.Designer.vb">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </Compile>
     <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -337,6 +340,12 @@
       <DependentUpon>frmTablasBD.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Base_Datos\frmTablasBD.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Campaña\frmCampaña.Designer.vb">
@@ -3238,6 +3247,9 @@
     <EmbeddedResource Include="Mantenimientos\Ajuste\frmAjusteMotivo_List.resx">
       <DependentUpon>frmAjusteMotivo_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.resx">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Backup\frmBackup.resx">
       <DependentUpon>frmBackup.vb</DependentUpon>
     </EmbeddedResource>
@@ -3255,6 +3267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Bodega\Estructura\frmTramo.resx">
       <DependentUpon>frmTramo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.resx">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Bodega_Graficador\frmColumViewervb.resx">
       <DependentUpon>frmColumViewervb.vb</DependentUpon>
@@ -5652,7 +5667,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="EPPlus">
-      <Version>8.5.1</Version>
+      <Version>5.8.14</Version>
     </PackageReference>
     <PackageReference Include="ExcelNumberFormat">
       <Version>1.1.0</Version>

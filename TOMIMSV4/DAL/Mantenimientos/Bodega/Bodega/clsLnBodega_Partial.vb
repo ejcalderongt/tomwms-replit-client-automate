@@ -3604,6 +3604,9 @@ Partial Public Class clsLnBodega
         End Try
 
     End Function
+
+    '#MA20260415 Metodo para obtener el estado por defecto del rack - mejoras en la cumbre
+    Public Shared Function Get_Estado_Defecto_Rack(ByVal pIdBodega As Integer,
     '#MA20260415 Metodo para obtener el estado por defecto del rack - mejoras en la cumbre
     Public Shared Function Get_Estado_Defecto_Rack(ByVal pIdBodega As Integer,
                                                Optional ByRef pConnection As SqlConnection = Nothing,
@@ -3678,7 +3681,4 @@ Partial Public Class clsLnBodega
             Throw New Exception("Error al obtener ubicaciones vacías por área: " & ex.Message, ex)
         End Try
     End Function
-
-
-
 End Class

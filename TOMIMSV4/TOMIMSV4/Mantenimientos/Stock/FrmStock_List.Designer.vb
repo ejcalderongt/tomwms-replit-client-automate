@@ -10,9 +10,9 @@ Partial Class FrmStock_List
                 If components IsNot Nothing Then
                     components.Dispose()
                 End If
-                If pObjStock IsNot Nothing Then
-                    pObjStock.Dispose()
-                    pObjStock = Nothing
+                If pSingleBEVWStockRes IsNot Nothing Then
+                    pSingleBEVWStockRes.Dispose()
+                    pSingleBEVWStockRes = Nothing
                 End If
                 If Dt IsNot Nothing Then
                     Dt.Dispose()
@@ -78,7 +78,7 @@ Partial Class FrmStock_List
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.mnuActualizar, Me.mnuSalir, Me.BarButtonItem4, Me.chkActivos, Me.lblReg, Me.cmdImprimir, Me.lblRegistros, Me.lblProgress, Me.chkSeleccionMultiple, Me.mnuTomarSeleccionados, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuActualizar, Me.mnuSalir, Me.BarButtonItem4, Me.chkActivos, Me.lblReg, Me.cmdImprimir, Me.lblRegistros, Me.lblProgress, Me.chkSeleccionMultiple, Me.mnuTomarSeleccionados, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 21
