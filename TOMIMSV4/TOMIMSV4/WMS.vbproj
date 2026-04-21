@@ -324,6 +324,9 @@
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.Designer.vb">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </Compile>
     <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -3244,6 +3247,9 @@
     <EmbeddedResource Include="Mantenimientos\Ajuste\frmAjusteMotivo_List.resx">
       <DependentUpon>frmAjusteMotivo_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.resx">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Backup\frmBackup.resx">
       <DependentUpon>frmBackup.vb</DependentUpon>
     </EmbeddedResource>
@@ -5661,7 +5667,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="EPPlus">
-      <Version>8.5.1</Version>
+      <Version>5.8.14</Version>
     </PackageReference>
     <PackageReference Include="ExcelNumberFormat">
       <Version>1.1.0</Version>

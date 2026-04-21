@@ -31,6 +31,13 @@ DAL
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnAjuste_motivo.Insertar_Motivo_Si_No_Existe(System.String,System.String)">
+ <summary>
+ Inserta un motivo de ajuste con el nombre dado, solo si no existe.
+ </summary>
+ <param name="nombre">Nombre del motivo (ej: ENTRADA, SALIDA, INVENTARIO).</param>
+ <returns>IdMotivoAjuste insertado o existente; 0 en caso de error.</returns>
+</member>
 <member name="M:TOMWMS.clsLnAjuste_motivo.Get_IdMotivo_By_Codigo(System.String)">
  <summary>
  Obtiene el ID del motivo de ajuste por su código o nombre
