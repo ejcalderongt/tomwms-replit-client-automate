@@ -270,7 +270,7 @@ Public Class frmAjusteStock
 
                     vBeAjustDet.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vBeAjustDet.IdUnidadMedida, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    vProveedor = clsLnProveedor.Get_Single_By_IdProveedor(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
 
                     If vProveedor IsNot Nothing Then
                         If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
