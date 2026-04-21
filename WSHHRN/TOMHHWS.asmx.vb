@@ -5582,11 +5582,9 @@ Public Class TOMHHWS
     '#MA20250210 migracion de xml a Json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON(ByVal pBarra As String,
-                                                                ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+                                                                    ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
 
         Dim curContext As HttpContext = HttpContext.Current
-        Dim infoDestinoObj As Object = Nothing
-        Dim infoUbicacionDestino As DataTable = Nothing
 
         Try
             'No se encontró ninguna ubicación con el código de barra especificado.
@@ -5594,57 +5592,10 @@ Public Class TOMHHWS
             Dim ubicacion As clsBeBodega_ubicacion =
             clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
 
-            If ubicacion Is Nothing Then
-                Dim BeUbicacionNotFound As String =
-                JsonConvert.SerializeObject(
-                    New With {
-                        .ubicacion = Nothing,
-                        .infoDestino = Nothing,
-                        .Mensaje = "Ubicación destino incorrecta"
-                    },
-                    New JsonSerializerSettings With {
-                        .NullValueHandling = NullValueHandling.Include,
-                        .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                        .Formatting = Formatting.None
-                    })
-
-                curContext.Response.Clear()
-                curContext.Response.ContentType = "application/json"
-                curContext.Response.Write(BeUbicacionNotFound)
-                curContext.ApplicationInstance.CompleteRequest()
-                Return Nothing
-            End If
-
-            infoUbicacionDestino = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(ubicacion.IdUbicacion, pIdBodega)
-
-            If ubicacion.Tramo Is Nothing Then ubicacion.Tramo = New clsBeBodega_tramo() With {.Descripcion = ""}
-            If ubicacion.Sector Is Nothing Then ubicacion.Sector = New clsBeBodega_sector() With {.Descripcion = "", .IdBodega = 0}
-
-            If String.IsNullOrEmpty(ubicacion.Descripcion) Then ubicacion.Descripcion = ""
-            If ubicacion.Ancho = 0 Then ubicacion.Ancho = 0
-            If ubicacion.Largo = 0 Then ubicacion.Largo = 0
-            If ubicacion.Alto = 0 Then ubicacion.Alto = 0
-
-            If infoUbicacionDestino IsNot Nothing AndAlso infoUbicacionDestino.Rows.Count > 0 Then
-                Dim row As DataRow = infoUbicacionDestino.Rows(0)
-                infoDestinoObj = New With {
-                .es_rack = If(IsDBNull(row("es_rack")), False, Convert.ToBoolean(row("es_rack"))),
-                .LicenciaDestino = If(IsDBNull(row("LicenciaDestino")), "", row("LicenciaDestino").ToString()),
-                .IdProductoEstado = If(IsDBNull(row("IdProductoEstado")), 0, Convert.ToInt32(row("IdProductoEstado")))
-            }
-            Else
-                infoDestinoObj = New With {
-                .es_rack = False,
-                .LicenciaDestino = "",
-                .IdProductoEstado = 0
-            }
-            End If
-
             Dim BeUbicacion As String =
             JsonConvert.SerializeObject(
                 New With {
-                    .ubicacion = ubicacion,
-                    .infoDestino = infoDestinoObj
+                    .ubicacion = ubicacion
                 },
                 New JsonSerializerSettings With {
                     .NullValueHandling = NullValueHandling.Include,
@@ -5663,25 +5614,6 @@ Public Class TOMHHWS
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
             WriteErrorToEventLog(ex.Message)
-
-            ' Manejo legacy XML
-            If mArch IsNot Nothing AndAlso mArch.Tipo <> "WM" Then
-                Dim DT As New DataTable("CustomError")
-                DT.Columns.Add("Error", GetType(String))
-                DT.Rows.Add(ex.Message)
-
-                Dim sw As New StringWriter()
-                DT.WriteXml(sw)
-
-                curContext.Response.Clear()
-                curContext.Response.StatusCode = 299
-                curContext.Response.SubStatusCode = CInt(HttpStatusCode.InternalServerError)
-                curContext.Response.Output.Write(sw.ToString())
-                curContext.Response.ContentType = "text/xml"
-                curContext.ApplicationInstance.CompleteRequest()
-
-                Return Nothing
-            End If
 
             ' JSON ERROR
             Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
@@ -18902,14 +18834,16 @@ New JsonSerializerSettings With {
         End Try
     End Function
 
-    '#GT18032026: validar que tag exista en BD
+    '#GT18032026: validar existencia de tag
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Obtener_Barras_Pallet_I_Nav_Lote(ByVal pListaCodigoBarraPallet As List(Of String)) As String
 
         Try
 
             Dim vLista As New List(Of clsBeI_nav_barras_pallet)
-            vLista = clsLnI_nav_barras_pallet.Get_Single_By_Barra_RFID(pListaCodigoBarraPallet)
+            '#GT20042026: la lista valida que exista el tag pero que no tenga un ingreso previo
+            'vLista = clsLnI_nav_barras_pallet.Get_Single_By_Barra_RFID(pListaCodigoBarraPallet)
+            vLista = clsLnI_nav_barras_pallet.Lista_Tags_SinIgreso_Valida(pListaCodigoBarraPallet)
 
             Return JsonConvert.SerializeObject(vLista)
 
@@ -19183,6 +19117,112 @@ New JsonSerializerSettings With {
 
     End Function
 
+    Private Function EsRackDobleProfundidadHH(ByVal ubic As clsBeBodega_ubicacion) As Boolean
+        Try
+            If ubic Is Nothing Then Return False
+            If ubic.IdTramo <= 0 Then Return False
+            If ubic.IdBodega <= 0 Then Return False
+
+            Dim beTramo As clsBeBodega_tramo =
+            clsLnBodega_tramo.GetSingle(ubic.IdTramo, ubic.IdBodega)
+
+            If beTramo Is Nothing Then Return False
+
+            Return beTramo.Es_Rack AndAlso beTramo.IdTipoRack = 4
+
+        Catch ex As Exception
+            Throw New Exception("Error validando si el tramo es rack de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ObtenerOrientacionParejaHH(ByVal orientacion As String) As String
+        If String.IsNullOrWhiteSpace(orientacion) Then Return ""
+
+        Select Case orientacion.Trim().ToUpper()
+            Case "A" : Return "B"
+            Case "B" : Return "A"
+            Case "C" : Return "D"
+            Case "D" : Return "C"
+            Case Else : Return ""
+        End Select
+    End Function
+
+    Private Function ObtenerUbicacionParejaDobleProfundidadHH(ByVal ubic As clsBeBodega_ubicacion) As clsBeBodega_ubicacion
+        Try
+            If ubic Is Nothing Then Return Nothing
+
+            Dim orientacionPareja As String = ObtenerOrientacionParejaHH(ubic.Orientacion_pos)
+
+            If String.IsNullOrWhiteSpace(orientacionPareja) Then Return Nothing
+
+            Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
+            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
+                ubic.IdBodega,
+                ubic.IdTramo,
+                ubic.Indice_x,
+                ubic.Nivel,
+                ubic.IdUbicacion)
+
+            If ubicacionesRelacionadas Is Nothing OrElse ubicacionesRelacionadas.Count = 0 Then
+                Return Nothing
+            End If
+
+            Return ubicacionesRelacionadas.
+            FirstOrDefault(Function(x) x IsNot Nothing AndAlso
+                                      Not String.IsNullOrWhiteSpace(x.Orientacion_pos) AndAlso
+                                      x.Orientacion_pos.Trim().ToUpper() = orientacionPareja)
+
+        Catch ex As Exception
+            Throw New Exception("Error obteniendo ubicación relacionada de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ExisteProductoBodegaDistintoEnUbicacionHH(ByVal idUbicacion As Integer,
+                                                           ByVal idBodega As Integer,
+                                                           ByVal idProductoBodega As Integer) As Boolean
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return False
+
+            Return lStock.Any(Function(s) s IsNot Nothing AndAlso
+                                      s.IdProductoBodega > 0 AndAlso
+                                      s.IdProductoBodega <> idProductoBodega)
+
+        Catch ex As Exception
+            Throw New Exception("Error validando producto en ubicación: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ObtenerCodigoProductoBodegaEnUbicacionHH(ByVal idUbicacion As Integer,
+                                                          ByVal idBodega As Integer,
+                                                          ByVal idProductoBodegaAUbicar As Integer) As String
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+            Dim stockDistinto = lStock.FirstOrDefault(Function(s) s IsNot Nothing AndAlso
+                                                              s.IdProductoBodega > 0 AndAlso
+                                                              s.IdProductoBodega <> idProductoBodegaAUbicar)
+
+            If stockDistinto Is Nothing Then Return ""
+
+            Return stockDistinto.Codigo_Producto
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+
+    Private Function ConstruirMensajePosicionPosteriorHH(ByVal codigoProductoRelacionado As String) As String
+        Return "La posición posterior ya contiene un producto diferente" &
+           If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+           ". Solo se permite ubicar el mismo producto en esta posición."
+    End Function
+
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Validar_Mismo_Producto_Posicion_JSON(ByVal pIdBodega As Integer,
                                                      ByVal pIdTramo As Integer,
@@ -19195,44 +19235,58 @@ New JsonSerializerSettings With {
 
         Try
             Dim posicionValida As Boolean = True
+            Dim mensaje As String = ""
+            Dim aplicaDobleProfundidad As Boolean = False
 
-            Dim lUbicaciones As List(Of clsBeBodega_ubicacion) =
-            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
-                pIdBodega,
-                pIdTramo,
-                pIndice_x,
-                pNivel,
-                pIdUbicacion)
+            Dim ubicDestino As clsBeBodega_ubicacion =
+            clsLnBodega_ubicacion.GetSingle(pIdUbicacion, pIdBodega)
 
-            If lUbicaciones Is Nothing Then
-                lUbicaciones = New List(Of clsBeBodega_ubicacion)
+            If ubicDestino Is Nothing Then
+                Throw New Exception("No se encontró la ubicación destino.")
             End If
 
-            For Each ubic As clsBeBodega_ubicacion In lUbicaciones
+            ' 1) Validar ubicación destino misma
+            If ExisteProductoBodegaDistintoEnUbicacionHH(
+            ubicDestino.IdUbicacion,
+            ubicDestino.IdBodega,
+            pIdProductoBodega) Then
 
-                Dim lStock As List(Of clsBeVW_stock_res) =
-                clsLnStock.Get_All_By_IdUbicacion(ubic.IdUbicacion, ubic.IdBodega)
+                posicionValida = False
+                mensaje = "La ubicación destino ya contiene un producto diferente. Solo se permite ubicar el mismo producto en esa posición."
+            End If
 
-                If lStock Is Nothing OrElse lStock.Count = 0 Then
-                    Continue For
-                End If
+            ' 2) Si la ubicación destino misma está bien, validar doble profundidad
+            If posicionValida Then
+                aplicaDobleProfundidad = EsRackDobleProfundidadHH(ubicDestino)
 
-                For Each stock As clsBeVW_stock_res In lStock
-                    If stock Is Nothing Then Continue For
+                If aplicaDobleProfundidad Then
+                    Dim ubicPareja As clsBeBodega_ubicacion =
+                    ObtenerUbicacionParejaDobleProfundidadHH(ubicDestino)
 
-                    If stock.IdProductoBodega > 0 AndAlso stock.IdProductoBodega <> pIdProductoBodega Then
-                        posicionValida = False
-                        Exit For
+                    If ubicPareja IsNot Nothing Then
+                        If ExisteProductoBodegaDistintoEnUbicacionHH(
+                        ubicPareja.IdUbicacion,
+                        ubicPareja.IdBodega,
+                        pIdProductoBodega) Then
+
+                            Dim codigoProductoRelacionado As String =
+                            ObtenerCodigoProductoBodegaEnUbicacionHH(ubicPareja.IdUbicacion,
+                                                                     ubicPareja.IdBodega,
+                                                                     pIdProductoBodega)
+
+                            posicionValida = False
+                            mensaje = ConstruirMensajePosicionPosteriorHH(codigoProductoRelacionado)
+                        End If
                     End If
-                Next
-
-                If Not posicionValida Then Exit For
-            Next
+                End If
+            End If
 
             Dim jsonResult As String =
             JsonConvert.SerializeObject(
                 New With {
-                    .PosicionValida = posicionValida
+                    .PosicionValida = posicionValida,
+                    .AplicaDobleProfundidad = aplicaDobleProfundidad,
+                    .Mensaje = mensaje
                 },
                 New JsonSerializerSettings With {
                     .NullValueHandling = NullValueHandling.Include,
@@ -19288,7 +19342,6 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Validar_Regla_Ubicacion_JSON(ByVal pIdProducto As Integer,
                                              ByVal pIdUbicacion As Integer,
@@ -19494,7 +19547,63 @@ New JsonSerializerSettings With {
 
             Return Nothing
         End Try
-
     End Function
 
+    ' #MA20260326 Validación Rack + Implosion automática
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack(ByVal pMovimiento As clsBeTrans_movimientos,
+                                                                   ByVal pStockRes As clsBeVW_stock_res,
+                                                                   ByRef pIdStockNuevo As Integer,
+                                                                   ByRef pIdMovimientoNuevo As Integer,
+                                                                   ByVal pPosiciones As Integer) As Boolean
+        Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack = False
+
+
+        Try
+            Dim msjControl As String = "Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack: llamada de WS con usuario: " & pMovimiento.IdOperadorBodega & " y TipoTarea " & pMovimiento.IdTipoTarea
+            clsLnLog_error_wms_reab.Agregar_Error(pMensajeExcepcion:=msjControl,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                  pCantidad:=pMovimiento.Cantidad)
+
+            Return clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack(pMovimiento,
+                                                                                         pStockRes,
+                                                                                         pIdStockNuevo,
+                                                                                         pIdMovimientoNuevo,
+                                                                                         pPosiciones)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms_reab.Agregar_Error(vMsgError, pIdStockNuevo, pIdMovimientoNuevo, pMovimiento.Lic_plate, pMovimiento.IdProductoBodega, pMovimiento.Cantidad)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
 End Class

@@ -5,7 +5,6 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
-Imports DocumentFormat.OpenXml.Drawing
 
 Public Class frmAjusteStock
 
@@ -21,7 +20,7 @@ Public Class frmAjusteStock
     Public Delegate Sub Listar_Ajustes()
     Public Property InvokeListarAjustes As Listar_Ajustes
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
-    Private Stock As FrmStock_List
+    Private frmStockList As FrmStock_List
     Private oDateTimePicker As DateTimePicker
     Private DgComboTipo As New DataGridViewComboBoxCell()
 
@@ -54,7 +53,7 @@ Public Class frmAjusteStock
 
         Try
 
-            Stock = New FrmStock_List(AP.IdBodega, cmbPropietarioBodega.EditValue) With {
+            frmStockList = New FrmStock_List(AP.IdBodega, cmbPropietarioBodega.EditValue) With {
             .Modo = FrmStock_List.pModo.Seleccion,
             .WindowState = FormWindowState.Maximized}
 
@@ -111,9 +110,9 @@ Public Class frmAjusteStock
 
         Try
 
-            pBeTransAjustEnc.Idajusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
+            pBeTransAjustEnc.IdAjusteenc = clsLnTrans_ajuste_enc.MaxID() + 1
 
-            txtNoAjuste.Text = pBeTransAjustEnc.Idajusteenc
+            txtNoAjuste.Text = pBeTransAjustEnc.IdAjusteenc
 
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
@@ -149,7 +148,7 @@ Public Class frmAjusteStock
 
         Try
 
-            txtNoAjuste.Text = pBeTransAjustEnc.Idajusteenc
+            txtNoAjuste.Text = pBeTransAjustEnc.IdAjusteenc
             txtReferencia.Text = pBeTransAjustEnc.Referencia
             dtpFecha.EditValue = pBeTransAjustEnc.Fecha
 
@@ -168,10 +167,10 @@ Public Class frmAjusteStock
                 BeCliente = clsLnCliente.Get_Single_By_Codigo(pBeTransAjustEnc.IdBodega)
 
                 If Not BeCliente Is Nothing Then
-                cmbBodegaERP.EditValue = BeCliente.IdCliente
-            End If
+                    cmbBodegaERP.EditValue = BeCliente.IdCliente
+                End If
             Else
-            cmbBodegaERP.EditValue = 0
+                cmbBodegaERP.EditValue = 0
             End If
 
             If pBeTransAjustEnc.IdPropietarioBodega <> 0 Then
@@ -190,8 +189,8 @@ Public Class frmAjusteStock
             lBeTransAjusteDet.Clear()
             lBeTransAjusteDetBorrador.Clear()
 
-            lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
-            lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            lBeTransAjusteDetBorrador = clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+            lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
 
             Dim tipoajuste As Integer = 0
 
@@ -256,10 +255,14 @@ Public Class frmAjusteStock
             Dim lDetalleCargar As List(Of clsBeTrans_ajuste_det) = Obtener_Detalle_A_Cargar()
 
             For Each vBeAjustDet As clsBeTrans_ajuste_det In lDetalleCargar
+
                 '#CKFK 20210223 Agregué la bodega a la funciónGet_Nombre_Completo_By_IdUbicacion
                 Ubic = clsLnBodega_ubicacion.Get_Nombre_Completo_By_IdUbicacion(vBeAjustDet.IdUbicacion, AP.IdBodega, clsTrans.lConnection, clsTrans.lTransaction)
 
                 vIdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(vBeAjustDet.IdProductoBodega, clsTrans.lConnection, clsTrans.lTransaction)
+
+                Dim vProveedor As clsBeProveedor = Nothing
+                Dim sProveedorTexto As String = ""
 
                 If vIdProducto <> 0 Then
 
@@ -267,7 +270,32 @@ Public Class frmAjusteStock
 
                     vBeAjustDet.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vBeAjustDet.IdUnidadMedida, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto, vBeAjustDet.UmBas, vBeAjustDet.Nombre_Presentacion, Ubic)
+                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If vProveedor IsNot Nothing Then
+                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        Else
+                            sProveedorTexto = vProveedor.Nombre
+                        End If
+                    Else
+                        Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                    End If
+
+                    ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Aunque aquí
+                    ' las 5 columnas pasadas SÍ coinciden con el orden actual del Designer
+                    ' (ColCodigoProducto, colNombreProducto, UmBas, colPresentacion,
+                    ' colUbicacion), se unifica el patrón con el resto del archivo para
+                    ' protegerse de futuros reordenamientos en el Designer.
+                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto)
+                    dgrid.Rows(rc).Cells("UmBas").Value = vBeAjustDet.UmBas
+                    dgrid.Rows(rc).Cells("colPresentacion").Value = vBeAjustDet.Nombre_Presentacion
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = Ubic
+
+                    ' #EJCRP 21042026: (consolida #ProveedorFix previo) ColProveedor está al
+                    ' final del grid; se asigna por nombre para no caer en 'motivoajuste'
+                    ' por el orden posicional. sProveedorTexto se calcula líneas arriba.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
@@ -378,6 +406,42 @@ Public Class frmAjusteStock
 
     End Sub
 
+    ' #EJCRP 21042026: Helper centralizado para resolver el texto del Proveedor a partir
+    ' de un IdStock. Devuelve "" cuando no hay IdStock (>0), no proviene de una
+    ' recepción contra OC, o si la consulta falla. Nunca lanza excepción para no
+    ' bloquear la carga del grid. Sobrecargas:
+    '   - Sin transacción: abre/cierra conexión propia (uso fuera de transacciones).
+    '   - Con conn + trans: para llamarlo dentro de una transacción ya abierta.
+    Private Function Get_Proveedor_Texto(ByVal pIdStock As Integer) As String
+        If pIdStock <= 0 Then Return ""
+        Try
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(pIdStock)
+            If be Is Nothing Then Return ""
+            If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                Return $"{be.Codigo} - {be.Nombre}"
+            End If
+            Return be.Nombre
+        Catch
+            Return ""
+        End Try
+    End Function
+
+    Private Function Get_Proveedor_Texto(ByVal pIdStock As Integer,
+                                         ByVal pConn As SqlClient.SqlConnection,
+                                         ByVal pTrans As SqlClient.SqlTransaction) As String
+        If pIdStock <= 0 Then Return ""
+        Try
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(pIdStock, pConn, pTrans)
+            If be Is Nothing Then Return ""
+            If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                Return $"{be.Codigo} - {be.Nombre}"
+            End If
+            Return be.Nombre
+        Catch
+            Return ""
+        End Try
+    End Function
+
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
 
         Dim st As New clsBeVW_stock_res
@@ -405,12 +469,12 @@ Public Class frmAjusteStock
 
             Try
 
-                Stock.IdPropietarioBodega = cmbPropietarioBodega.EditValue
-                Stock.varTipoAjuste = cmbTipoAjuste.EditValue
+                frmStockList.IdPropietarioBodega = cmbPropietarioBodega.EditValue
+                frmStockList.varTipoAjuste = cmbTipoAjuste.EditValue
 
-                If Stock.ShowDialog() <> DialogResult.OK Then
+                If frmStockList.ShowDialog() <> DialogResult.OK Then
                     Try
-                        Stock.Hide()
+                        frmStockList.Hide()
                     Catch ex As Exception
                     End Try
                     Return
@@ -421,7 +485,7 @@ Public Class frmAjusteStock
             End Try
 
             'GT21042022: iterar la selección multiple
-            If Stock.SeleccionMultiple Then
+            If frmStockList.SeleccionMultiple Then
 
                 If chkBorrador.Checked Then
                     lBeTransAjusteDetBorrador = New List(Of clsBeTrans_ajuste_det_borrador)
@@ -433,7 +497,7 @@ Public Class frmAjusteStock
                     pTipoAjuste = cmbTipoAjuste.EditValue
                 End If
 
-                For Each StockEspecificoSeleccionado In Stock.listaStockSeleccionado
+                For Each StockEspecificoSeleccionado In frmStockList.listSeleccionObjVWStockRes
 
                     Reservar_Stock(StockEspecificoSeleccionado.IdStock)
 
@@ -447,7 +511,7 @@ Public Class frmAjusteStock
 
             Else
 
-                Reservar_Stock(Stock.pObjStock.IdStock)
+                Reservar_Stock(frmStockList.pSingleBEVWStockRes.IdStock)
 
                 If chkBorrador.Checked Then
 
@@ -456,27 +520,27 @@ Public Class frmAjusteStock
 
                     BeAjusteDetBorrador.idajustedet = 0
                     BeAjusteDetBorrador.idajusteenc = pBeTransAjustEnc.IdAjusteenc
-                    BeAjusteDetBorrador.IdStock = Stock.pObjStock.IdStock
-                    BeAjusteDetBorrador.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
-                    BeAjusteDetBorrador.IdProductoBodega = Stock.pObjStock.IdProductoBodega
-                    BeAjusteDetBorrador.IdProductoEstado = Stock.pObjStock.IdProductoEstado
-                    BeAjusteDetBorrador.IdPresentacion = Stock.pObjStock.IdPresentacion
-                    BeAjusteDetBorrador.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
-                    BeAjusteDetBorrador.IdUbicacion = Stock.pObjStock.IdUbicacion
+                    BeAjusteDetBorrador.IdStock = frmStockList.pSingleBEVWStockRes.IdStock
+                    BeAjusteDetBorrador.IdPropietarioBodega = frmStockList.pSingleBEVWStockRes.IdPropietarioBodega
+                    BeAjusteDetBorrador.IdProductoBodega = frmStockList.pSingleBEVWStockRes.IdProductoBodega
+                    BeAjusteDetBorrador.IdProductoEstado = frmStockList.pSingleBEVWStockRes.IdProductoEstado
+                    BeAjusteDetBorrador.IdPresentacion = frmStockList.pSingleBEVWStockRes.IdPresentacion
+                    BeAjusteDetBorrador.IdUnidadMedida = frmStockList.pSingleBEVWStockRes.IdUnidadMedida
+                    BeAjusteDetBorrador.IdUbicacion = frmStockList.pSingleBEVWStockRes.IdUbicacion
 
                     If BeAjusteDetBorrador.IdPresentacion <> 0 Then
                         BeAjusteDetBorrador.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDetBorrador.IdPresentacion)
                     End If
 
-                    BeAjusteDetBorrador.lote_original = Stock.pObjStock.Lote
-                    BeAjusteDetBorrador.lote_nuevo = Stock.pObjStock.Lote
-                    BeAjusteDetBorrador.fecha_vence_original = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDetBorrador.fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDetBorrador.peso_original = Stock.pObjStock.Peso
-                    BeAjusteDetBorrador.peso_nuevo = Stock.pObjStock.Peso
-                    BeAjusteDetBorrador.cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDetBorrador.cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDetBorrador.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.lote_original = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDetBorrador.lote_nuevo = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDetBorrador.fecha_vence_original = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDetBorrador.fecha_vence_nueva = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDetBorrador.peso_original = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDetBorrador.peso_nuevo = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDetBorrador.cantidad_original = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.cantidad_nueva = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDetBorrador.CantReservada = frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
 
                     If BeAjusteDetBorrador.IdPresentacion <> 0 Then
                         BeAjusteDetBorrador.cantidad_original = Math.Round(BeAjusteDetBorrador.cantidad_original / BeAjusteDetBorrador.Presentacion.Factor, 6)
@@ -484,22 +548,22 @@ Public Class frmAjusteStock
                         BeAjusteDetBorrador.CantReservada = Math.Round(BeAjusteDetBorrador.CantReservada / BeAjusteDetBorrador.Presentacion.Factor, 6)
                     End If
 
-                    BeAjusteDetBorrador.UmBas = Stock.pObjStock.UMBas
-                    BeAjusteDetBorrador.codigo_producto = Stock.pObjStock.Codigo_Producto
-                    BeAjusteDetBorrador.nombre_producto = Stock.pObjStock.Nombre_Producto
+                    BeAjusteDetBorrador.UmBas = frmStockList.pSingleBEVWStockRes.UMBas
+                    BeAjusteDetBorrador.codigo_producto = frmStockList.pSingleBEVWStockRes.Codigo_Producto
+                    BeAjusteDetBorrador.nombre_producto = frmStockList.pSingleBEVWStockRes.Nombre_Producto
                     BeAjusteDetBorrador.idtipoajuste = 0
                     BeAjusteDetBorrador.idmotivoajuste = 0
                     BeAjusteDetBorrador.observacion = ""
                     BeAjusteDetBorrador.codigo_ajuste = 0
                     BeAjusteDetBorrador.enviado = False
-                    BeAjusteDetBorrador.lic_plate = Stock.pObjStock.Lic_plate
+                    BeAjusteDetBorrador.lic_plate = frmStockList.pSingleBEVWStockRes.Lic_plate
                     BeAjusteDetBorrador.idstockres = IdStockRes
                     BeAjusteDetBorrador.idstocklink = 0
                     BeAjusteDetBorrador.esnuevolink = 0
 
                     If BeBodega.Control_Talla_Color Then
 
-                        BeAjusteDetBorrador.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
+                        BeAjusteDetBorrador.IdProductoTallaColor_origen = frmStockList.pSingleBEVWStockRes.IdProductoTallaColor
                         pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDetBorrador.IdProductoTallaColor_origen)
 
                         If pProductoTallaColor IsNot Nothing Then
@@ -516,10 +580,19 @@ Public Class frmAjusteStock
                     ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDetBorrador.IdUbicacion, AP.IdBodega).NombreCompleto
                     codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDetBorrador.IdProductoBodega)).Codigo
 
-                    rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto, BeAjusteDetBorrador.UmBas, ubic)
+                    ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Antes se
+                    ' pasaban (codigo, nombre, UmBas, ubic) como argumentos posicionales,
+                    ' lo que era frágil ante cambios de orden de columnas en el Designer
+                    ' (las posiciones 3 y 4 NO siempre corresponden a UmBas/colUbicacion;
+                    ' realmente eran UmBas/colPresentacion en este grid). Ahora pasamos
+                    ' solo las 2 primeras (que sí son ColCodigoProducto/colNombreProducto)
+                    ' y el resto se asigna por nombre justo abajo (UmBas, colUbicacion).
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
+                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta desde borrador).
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -591,27 +664,27 @@ Public Class frmAjusteStock
                     BeAjusteDet = New clsBeTrans_ajuste_det
                     BeAjusteDet.IdAjusteDet = 0
                     BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
-                    BeAjusteDet.IdStock = Stock.pObjStock.IdStock
-                    BeAjusteDet.IdPropietarioBodega = Stock.pObjStock.IdPropietarioBodega
-                    BeAjusteDet.IdProductoBodega = Stock.pObjStock.IdProductoBodega
-                    BeAjusteDet.IdProductoEstado = Stock.pObjStock.IdProductoEstado
-                    BeAjusteDet.IdPresentacion = Stock.pObjStock.IdPresentacion
-                    BeAjusteDet.IdUnidadMedida = Stock.pObjStock.IdUnidadMedida
-                    BeAjusteDet.IdUbicacion = Stock.pObjStock.IdUbicacion
+                    BeAjusteDet.IdStock = frmStockList.pSingleBEVWStockRes.IdStock
+                    BeAjusteDet.IdPropietarioBodega = frmStockList.pSingleBEVWStockRes.IdPropietarioBodega
+                    BeAjusteDet.IdProductoBodega = frmStockList.pSingleBEVWStockRes.IdProductoBodega
+                    BeAjusteDet.IdProductoEstado = frmStockList.pSingleBEVWStockRes.IdProductoEstado
+                    BeAjusteDet.IdPresentacion = frmStockList.pSingleBEVWStockRes.IdPresentacion
+                    BeAjusteDet.IdUnidadMedida = frmStockList.pSingleBEVWStockRes.IdUnidadMedida
+                    BeAjusteDet.IdUbicacion = frmStockList.pSingleBEVWStockRes.IdUbicacion
 
                     If BeAjusteDet.IdPresentacion <> 0 Then
                         BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
                     End If
 
-                    BeAjusteDet.Lote_original = Stock.pObjStock.Lote
-                    BeAjusteDet.Lote_nuevo = Stock.pObjStock.Lote
-                    BeAjusteDet.Fecha_vence_original = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDet.Fecha_vence_nueva = Stock.pObjStock.Fecha_Vence
-                    BeAjusteDet.Peso_original = Stock.pObjStock.Peso
-                    BeAjusteDet.Peso_nuevo = Stock.pObjStock.Peso
-                    BeAjusteDet.Cantidad_original = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDet.Cantidad_nueva = Stock.pObjStock.CantidadUmBas - Stock.pObjStock.CantidadReservadaUMBas
-                    BeAjusteDet.CantReservada = Stock.pObjStock.CantidadReservadaUMBas
+                    BeAjusteDet.Lote_original = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDet.Lote_nuevo = frmStockList.pSingleBEVWStockRes.Lote
+                    BeAjusteDet.Fecha_vence_original = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDet.Fecha_vence_nueva = frmStockList.pSingleBEVWStockRes.Fecha_Vence
+                    BeAjusteDet.Peso_original = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDet.Peso_nuevo = frmStockList.pSingleBEVWStockRes.Peso
+                    BeAjusteDet.Cantidad_original = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDet.Cantidad_nueva = frmStockList.pSingleBEVWStockRes.CantidadUmBas - frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
+                    BeAjusteDet.CantReservada = frmStockList.pSingleBEVWStockRes.CantidadReservadaUMBas
 
                     If BeAjusteDet.IdPresentacion <> 0 Then
                         BeAjusteDet.Cantidad_original = Math.Round(BeAjusteDet.Cantidad_original / BeAjusteDet.Presentacion.Factor, 6)
@@ -619,15 +692,15 @@ Public Class frmAjusteStock
                         BeAjusteDet.CantReservada = Math.Round(BeAjusteDet.CantReservada / BeAjusteDet.Presentacion.Factor, 6)
                     End If
 
-                    BeAjusteDet.UmBas = Stock.pObjStock.UMBas
-                    BeAjusteDet.Codigo_producto = Stock.pObjStock.Codigo_Producto
-                    BeAjusteDet.Nombre_producto = Stock.pObjStock.Nombre_Producto
+                    BeAjusteDet.UmBas = frmStockList.pSingleBEVWStockRes.UMBas
+                    BeAjusteDet.Codigo_producto = frmStockList.pSingleBEVWStockRes.Codigo_Producto
+                    BeAjusteDet.Nombre_producto = frmStockList.pSingleBEVWStockRes.Nombre_Producto
                     BeAjusteDet.Idtipoajuste = 0
                     BeAjusteDet.IdMotivoAjuste = 0
                     BeAjusteDet.Observacion = ""
                     BeAjusteDet.Codigo_ajuste = 0
                     BeAjusteDet.Enviado = False
-                    BeAjusteDet.lic_plate = Stock.pObjStock.Lic_plate
+                    BeAjusteDet.lic_plate = frmStockList.pSingleBEVWStockRes.Lic_plate
                     BeAjusteDet.idstockres = IdStockRes
                     BeAjusteDet.idstocklink = 0
                     BeAjusteDet.esnuevolink = 0
@@ -636,7 +709,7 @@ Public Class frmAjusteStock
 
                     If BeBodega.Control_Talla_Color Then
 
-                        BeAjusteDet.IdProductoTallaColor_origen = Stock.pObjStock.IdProductoTallaColor
+                        BeAjusteDet.IdProductoTallaColor_origen = frmStockList.pSingleBEVWStockRes.IdProductoTallaColor
                         pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor_origen)
 
                         If pProductoTallaColor IsNot Nothing Then
@@ -653,10 +726,15 @@ Public Class frmAjusteStock
                     ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
                     codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
 
-                    rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
+                    ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Mismo
+                    ' criterio que en el alta desde borrador: solo Codigo+Nombre por
+                    ' posición; UmBas/colUbicacion ya se asignan por nombre abajo.
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
+                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta directa).
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -727,7 +805,7 @@ Public Class frmAjusteStock
 
             End If
 
-            Stock.Hide()
+            frmStockList.Hide()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -747,7 +825,7 @@ Public Class frmAjusteStock
 
             BeAjusteDet = New clsBeTrans_ajuste_det
             BeAjusteDet.IdAjusteDet = 0
-            BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+            BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
             BeAjusteDet.IdStock = stockEspecificoSeleccionado.IdStock
             BeAjusteDet.IdPropietarioBodega = stockEspecificoSeleccionado.IdPropietarioBodega
             BeAjusteDet.IdProductoBodega = stockEspecificoSeleccionado.IdProductoBodega
@@ -797,7 +875,10 @@ Public Class frmAjusteStock
             ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
             codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
 
-            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
+            ' #EJCRP 21042026: Estandarización del Rows.Add posicional. UmBas y ubic se
+            ' reasignan por nombre justo abajo, así que no hace falta pasarlos por
+            ' posición. ColProveedor se llena un poco más abajo desde stockEspecificoSeleccionado.Proveedor.
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
@@ -831,6 +912,8 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
+
+            dgrid.Rows(rc).Cells("ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
@@ -894,7 +977,7 @@ Public Class frmAjusteStock
             End If
 
             pStock_Reservado.IdStockRes = IdStockRes
-            pStock_Reservado.IdTransaccion = pBeTransAjustEnc.Idajusteenc
+            pStock_Reservado.IdTransaccion = pBeTransAjustEnc.IdAjusteenc
             pStock_Reservado.Indicador = "ajuste_stock" '#EJC20180613 ajuste_stock aplicado.
             pStock_Reservado.IdPedidoDet = 0
             pStock_Reservado.IdStock = pStock.IdStock
@@ -967,7 +1050,7 @@ Public Class frmAjusteStock
             st.IdStock = idstock
             st = clsLnStock.GetSingle(st.IdStock, lConnection, lTransaction)
             rs.IdStockRes = IdStockRes
-            rs.IdTransaccion = pBeTransAjustEnc.Idajusteenc
+            rs.IdTransaccion = pBeTransAjustEnc.IdAjusteenc
             rs.Indicador = "ajuste_stock" '#EJC20180613 ajuste_stock aplicado.
             rs.IdPedidoDet = 0
             rs.IdStock = st.IdStock
@@ -1934,8 +2017,17 @@ Public Class frmAjusteStock
             ubic = clsLnBodega_ubicacion.GetSingle(Item.IdUbicacion, AP.IdBodega).NombreCompleto
             codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(Item.IdProductoBodega)).Codigo
 
-            rc = dgrid.Rows.Add(codigo, Item.Nombre_producto, ubic)
+            ' #EJCRP 21042026: (consolida #ProveedorFix previo) pasaba 'ubic' como 3er
+            ' argumento posicional y caía en la columna UmBas. Estandarizado: solo
+            ' Codigo+Nombre por posición; el resto por nombre.
+            rc = dgrid.Rows.Add(codigo, Item.Nombre_producto)
+            dgrid.Rows(rc).Cells("UmBas").Value = Item.UmBas
+            dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+            dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+            ' #EJCRP 21042026: poblar Proveedor para el detalle del link de quiebre de lote.
+            ' Item.IdStock representa el stock origen del nuevo link.
+            dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
             Llenar_Tipo(rc, Item.Idtipoajuste)
@@ -3073,7 +3165,7 @@ Public Class frmAjusteStock
 
                 End If
 
-                lBeTransAjusteDet(I).IdAjusteEnc = pBeTransAjustEnc.Idajusteenc : ic = 0
+                lBeTransAjusteDet(I).IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc : ic = 0
 
                 If lBeTransAjusteDet(I).Lote_original <> lBeTransAjusteDet(I).Lote_nuevo Then ic += 1
                 If lBeTransAjusteDet(I).Fecha_vence_original <> lBeTransAjusteDet(I).Fecha_vence_nueva Then ic += 1
@@ -3132,7 +3224,7 @@ Public Class frmAjusteStock
 
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
-                If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, True, lConnection, lTransaction) > 0 Then
+                If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, True, lConnection, lTransaction) > 0 Then
                     XtraMessageBox.Show("Se guardó el ajuste y se actualizó a enviado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
             Else
@@ -3208,7 +3300,7 @@ Public Class frmAjusteStock
 
             For I = 0 To lBeTransAjusteDet.Count - 1
 
-                lBeTransAjusteDet(I).IdAjusteEnc = pBeTransAjustEnc.Idajusteenc : ic = 0
+                lBeTransAjusteDet(I).IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc : ic = 0
 
                 If lBeTransAjusteDet(I).Lote_original <> lBeTransAjusteDet(I).Lote_nuevo Then ic += 1
                 If lBeTransAjusteDet(I).Fecha_vence_original <> lBeTransAjusteDet(I).Fecha_vence_nueva Then ic += 1
@@ -3271,7 +3363,7 @@ Public Class frmAjusteStock
                                                      AP.UsuarioAp.IdUsuario)
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
-                If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, True) > 0 Then
+                If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, True) > 0 Then
                     XtraMessageBox.Show("Se actualizó el ajuste correctamente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
             Else
@@ -3467,7 +3559,7 @@ Public Class frmAjusteStock
 
                         Next
 
-                        If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
+                        If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
 
                             Cargar_Datos()
 
@@ -3508,7 +3600,7 @@ Public Class frmAjusteStock
 
                     Next
 
-                    If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
+                    If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
 
                         Cargar_Datos()
 
@@ -4054,7 +4146,7 @@ Public Class frmAjusteStock
                 repAjusteTallaColor.DataSource = DsRepAjustes
                 repAjusteTallaColor.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
                 repAjusteTallaColor.Parameters("Bodega").Value = BeBodega.IdBodega
-                repAjusteTallaColor.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
+                repAjusteTallaColor.Parameters("Documento").Value = pBeTransAjustEnc.IdAjusteenc
                 repAjusteTallaColor.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
                 repAjusteTallaColor.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
                 repAjusteTallaColor.RequestParameters = False
@@ -4064,7 +4156,7 @@ Public Class frmAjusteStock
                 repAjuste.DataSource = DsRepAjustes
                 repAjuste.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
                 repAjuste.Parameters("Bodega").Value = BeBodega.IdBodega
-                repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
+                repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.IdAjusteenc
                 repAjuste.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
                 repAjuste.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
 
@@ -4127,7 +4219,7 @@ Public Class frmAjusteStock
                             Next
 
                         Else
-                            vResult = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.Idajusteenc, True)
+                            vResult = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.IdAjusteenc, True)
                         End If
 
                         If Not vResult = 0 Then
@@ -4145,7 +4237,7 @@ Public Class frmAjusteStock
 
                                 If Not BeINavConfig Is Nothing Then
 
-                                    vArgumentosAEnviarAInterface = "20-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBeTransAjustEnc.Idajusteenc & "-0" & "-" & clsBD.Instancia.NombreInstancia
+                                    vArgumentosAEnviarAInterface = "20-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBeTransAjustEnc.IdAjusteenc & "-0" & "-" & clsBD.Instancia.NombreInstancia
                                     Ejecutar_Interface(vArgumentosAEnviarAInterface, Me)
 
                                 End If
@@ -4183,7 +4275,7 @@ Public Class frmAjusteStock
                                     Next
 
                                 Else
-                                    vResult = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.Idajusteenc, True)
+                                    vResult = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.IdAjusteenc, True)
                                 End If
 
                                 If Not vResult = 0 Then
@@ -4215,7 +4307,7 @@ Public Class frmAjusteStock
                                 Next
 
                             Else
-                                vResult = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.Idajusteenc, False)
+                                vResult = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.IdAjusteenc, False)
                             End If
 
                             If Not vResult = 0 Then
@@ -4360,7 +4452,7 @@ Public Class frmAjusteStock
 
             BeAjusteDet = New clsBeTrans_ajuste_det
             BeAjusteDet.IdAjusteDet = 0
-            BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.Idajusteenc
+            BeAjusteDet.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
             BeAjusteDet.IdStock = 0 'pendiente
             BeAjusteDet.IdPropietarioBodega = pIdPropietarioBodega
             BeAjusteDet.IdProductoBodega = vProductoSinStock.IdProductoBodega
@@ -4453,7 +4545,13 @@ Public Class frmAjusteStock
             '#GT16122025: aqui guarda el ajuste en memoria
             lBeTransAjusteDet.Add(BeAjusteDet)
 
-            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, BeAjusteDet.IdUbicacion)
+            ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Antes pasaba
+            ' (codigo, nombre, UmBas, BeAjusteDet.IdUbicacion) — el IdUbicacion (numérico)
+            ' caía en la columna colPresentacion. UmBas y colUbicacion ya se asignan por
+            ' nombre abajo. NOTA: no se llena ColProveedor aquí porque este flujo es
+            ' "alta de producto sin existencia" donde IdStock = 0 (línea ~4434, "pendiente"):
+            ' al no haber stock previo, no hay proveedor de recepción asociado.
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
@@ -4467,7 +4565,7 @@ Public Class frmAjusteStock
 
             '#CKFK 20211214 Agregué esta condición
             If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                dgrid.Rows(rc).Cells("ColC antidad").Value = BeAjusteDet.Fecha_vence_original
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Fecha_vence_original
             ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
                 dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
             ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
@@ -4586,7 +4684,7 @@ Public Class frmAjusteStock
 
             Dim DT As New DataTable
 
-            DT = clsLnTrans_ajuste_det_doc.GetAll_ByIdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
+            DT = clsLnTrans_ajuste_det_doc.GetAll_ByIdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
 
             grdDocsAsociados.DataSource = DT
 
@@ -4751,7 +4849,7 @@ Public Class frmAjusteStock
 
                         Next
 
-                        If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
+                        If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
 
                             Cargar_Datos()
 
@@ -4792,7 +4890,7 @@ Public Class frmAjusteStock
 
                     Next
 
-                    If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.Idajusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
+                    If clsLnTrans_ajuste_enc.Actualizar_Estado_Enviado_A_ERP(pBeTransAjustEnc.IdAjusteenc, pBeTransAjustEnc.Enviado_A_ERP) > 0 Then
 
                         Cargar_Datos()
 
@@ -5043,6 +5141,10 @@ Public Class frmAjusteStock
 
     End Sub
 
+    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
+
+    End Sub
+
     Private Sub Mostrar_Columnas_Talla_Color(ByVal mostrar_talla_color As Boolean)
         Try
 
@@ -5177,16 +5279,47 @@ Public Class frmAjusteStock
 
                 If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
 
+                Dim BeAjusteDetBorrador As clsBeTrans_ajuste_det_borrador = Nothing
+
                 ' Asignar IdAjusteEnc y cargar al grid
                 For Each det As clsBeTrans_ajuste_det In frm.AjustesParaCargar
 
                     det.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
-                    lBeTransAjusteDet.Add(det)
+
+                    If chkBorrador.Checked Then
+                        BeAjusteDetBorrador = New clsBeTrans_ajuste_det_borrador
+                        clsPublic.CopyObject(det, BeAjusteDetBorrador)
+                        lBeTransAjusteDetBorrador.Add(BeAjusteDetBorrador)
+                    Else
+                        lBeTransAjusteDet.Add(det)
+                    End If
+
 
                     Dim ubic As String = clsLnBodega_ubicacion.GetSingle(det.IdUbicacion, AP.IdBodega).NombreCompleto
+
+                    Dim vIdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(det.IdProductoBodega)
+
+                    Dim vProveedor As clsBeProveedor = Nothing
+                    Dim sProveedorTexto As String = ""
+                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(det.IdStock)
+
+                    If vProveedor IsNot Nothing Then
+                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        Else
+                            sProveedorTexto = vProveedor.Nombre
+                        End If
+                    Else
+                        Debug.WriteLine($"No se encontró proveedor para IdStock: {det.IdStock}")
+                    End If
+
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
-                                                       ubic)
+                                                       ubic, sProveedorTexto)
+
+                    Llenar_Motivo(rc, det.IdMotivoAjuste)
+                    Llenar_Tipo(rc, det.Idtipoajuste)
+                    Llena_Bodegas_ERP_Grid(rc, -1)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
@@ -5197,21 +5330,30 @@ Public Class frmAjusteStock
                     dgrid.Rows(rc).Cells("ColObservacion").Value = det.Observacion
                     dgrid.Rows(rc).Cells("ColLicPlate").Value = det.lic_plate
 
+                    ' Mismo patrón que Cargar_Detalle: Cantidad_original/nueva
+                    ' viajan en UM base; si hay presentación se divide por Factor
+                    ' solo para visualización en el grid.
+                    Dim usarPres As Boolean = (det.IdPresentacion <> 0 AndAlso det.Factor > 0)
+                    Dim divisor As Double = If(usarPres, det.Factor, 1.0)
+
                     Select Case det.Idtipoajuste
                         Case 3 ' Positivo
-                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = det.Cantidad_nueva - det.Cantidad_original
+                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original / divisor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = (det.Cantidad_nueva - det.Cantidad_original) / divisor
                         Case 5 ' Negativo
-                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = det.Cantidad_original - det.Cantidad_nueva
+                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original / divisor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = (det.Cantidad_original - det.Cantidad_nueva) / divisor
                         Case 1 ' Lote
                             dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
                             dgrid.Rows(rc).Cells("ColCantidad").Value = det.Lote_nuevo
                     End Select
 
-                    Llenar_Motivo(rc, det.IdMotivoAjuste)
-                    Llenar_Tipo(rc, det.Idtipoajuste)
-                    Llena_Bodegas_ERP_Grid(rc, -1)
+                    If usarPres Then
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = det.Nombre_Presentacion
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
+                    End If
+
+
 
                 Next
 

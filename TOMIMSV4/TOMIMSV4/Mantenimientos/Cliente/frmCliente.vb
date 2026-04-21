@@ -1682,4 +1682,32 @@ Public Class frmCliente
 
     End Sub
 
+    Private Sub cmbBodegaWMS_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbBodegaWMS.KeyDown
+        Try
+            If e.KeyCode = Keys.Delete Then
+                cmbBodegaWMS.EditValue = Nothing
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub tsSeleccionarClientes_Toggled(sender As Object, e As EventArgs) Handles tsSeleccionarClientes.Toggled
+
+        If tsSeleccionarClientes.IsOn Then
+            Seleccionar_Clientes(True)
+        Else
+            Seleccionar_Clientes(False)
+        End If
+
+    End Sub
+
+    Private Sub Seleccionar_Clientes(valor As Boolean)
+
+        For i As Integer = 0 To gridView1.RowCount - 1
+            gridView1.SetRowCellValue(i, "Selección", valor)
+        Next
+
+    End Sub
+
 End Class

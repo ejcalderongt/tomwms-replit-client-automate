@@ -3965,20 +3965,21 @@ Partial Public Class clsLnBodega_ubicacion
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     Dim vSQL As String = "SELECT  t.es_rack,
-                                        stock.LicenciaDestino,
-                                        stock.IdProductoEstado
+                                      isnull(s.LicenciaDestino, '') LicenciaDestino ,
+                                      isnull(s.IdProductoEstadoDestino, 0) IdProductoEstadoDestino
                                     FROM bodega_ubicacion u
                                     INNER JOIN bodega_tramo t 
                                         ON u.idtramo = t.idtramo
+                                        AND u.idbodega = t.idbodega
                                     OUTER APPLY (
                                         SELECT TOP 1 
                                             s.lic_plate AS LicenciaDestino,
-                                            s.IdProductoEstado
+                                            s.IdProductoEstado As IdProductoEstadoDestino
                                         FROM vw_stock_res s
                                         WHERE s.IdUbicacion = u.IdUbicacion
                                         AND s.IdBodega = u.IdBodega
                                         ORDER BY s.IdStock DESC
-                                    ) stock
+                                    ) s
                                     WHERE u.IdUbicacion = @IdUbicacion
                                     AND u.IdBodega = @IdBodega"
 

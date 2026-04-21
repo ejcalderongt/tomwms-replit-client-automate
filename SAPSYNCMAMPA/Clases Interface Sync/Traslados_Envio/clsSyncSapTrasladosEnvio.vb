@@ -132,19 +132,35 @@ Public Class clsSyncSapTrasladosEnvio
                         If solicitud.Transfer_to_CodeField.Trim <> "" Then
 
                             If Not clsLnCliente.Existe_Cliente_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) Then
-                                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no existe como cliente, se omite el documento {solicitud.No}.")
+                                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no existe como cliente, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
+                                Continue For
+                            End If
+
+                            If clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) = 0 Then
+                                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no tiene ubicación virtual definida, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
+                                Continue For
+                            End If
+
+                            If clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) <> solicitud.Transfer_to_CodeField AndAlso
+                                solicitud.Transfer_to_Code = solicitud.Transfer_to_CodeField Then
+                                clsPublic.Actualizar_Progreso(lblprg, $"La ubicación virtual no tiene el mismo código de la bodega destino {solicitud.Transfer_to_CodeField}, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
                                 Continue For
                             End If
 
                         End If
 
-                        Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+                            Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
-                        Dim trasladoSincronizado As Boolean = Marcar_Traslado_Sincronizado_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL, 1).GetAwaiter().GetResult()
+                        If pedidoEnc IsNot Nothing Then
 
-                        If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
-                            Return True
+                            Dim trasladoSincronizado As Boolean = Marcar_Traslado_Sincronizado_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL, 1).GetAwaiter().GetResult()
+
+                            If trasladoSincronizado Then
+                                Return True
+                            End If
+
                         End If
+
                     End If
 
                 End If
@@ -187,7 +203,7 @@ Public Class clsSyncSapTrasladosEnvio
                 clsPublic.Actualizar_Progreso(lblprg, $"El cliente {codigoSocioNegocio} no existía en WMS y fue insertado.")
                 Return True
             Else
-                clsPublic.Actualizar_Progreso(lblprg, $"No se pudo insertar el cliente {codigoSocioNegocio} en WMS.")
+                clsPublic.Actualizar_Progreso(lblprg, $"No se pudo insertar el cliente {codigoSocioNegocio} en WMS, es posible que sea una bodega y sea necesario crearla manualmente")
                 Return False
             End If
 
@@ -374,10 +390,9 @@ Public Class clsSyncSapTrasladosEnvio
 
         Try
 
-
             Dim jsonCliente As JObject = Await Get_Socio_Negocio_SL(pCodigo, pTipo.ToUpper(), sessionCookie, baseUrl, lConnection, lTransaction)
 
-            If jsonCliente IsNot Nothing Then
+            If jsonCliente IsNot Nothing AndAlso jsonCliente("value") IsNot Nothing AndAlso jsonCliente("value").HasValues Then
                 Dim cliente As clsBeCliente = ConstruirClienteDesdeServiceLayer(jsonCliente, lConnection, lTransaction)
 
                 clsLnCliente.Insertar(cliente, lConnection, lTransaction)

@@ -139,4 +139,13 @@ Public Class frmDocSalidaRFID_List
 
     End Sub
 
+    Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
+        Try
+            cmdActualizar.Enabled = False
+            Cargar_Lista_Pedidos()
+            cmdActualizar.Enabled = True
+        Catch ex As Exception
+
+        End Try
+    End Sub
 End Class

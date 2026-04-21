@@ -30,6 +30,8 @@ Public Class clsLnI_nav_barras_pallet
                 .Codigo_barra = IIf(IsDBNull(dr.Item("codigo_barra")), "", dr.Item("codigo_barra"))
                 .Cantidad_UMP = IIf(IsDBNull(dr.Item("cantidad_ump")), "0", dr.Item("cantidad_ump"))
                 .Impreso = IIf(IsDBNull(dr.Item("Impreso")), False, dr.Item("Impreso"))
+                .SSCC = IIf(IsDBNull(dr.Item("sscc")), "", dr.Item("sscc"))
+                .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
 
             End With
 
@@ -1219,6 +1221,74 @@ Public Class clsLnI_nav_barras_pallet
                 End If
 
                 Obtener_EPC_Con_Existencia_Para_Salida.Add(pBeI_nav_barras_pallet)
+
+            Next
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    '#GT20042026: el tag existe y no tiene ingreso previo
+    Public Shared Function Lista_Tags_SinIgreso_Valida(ByVal pListaCodigoBarraPallet As List(Of String)) As List(Of clsBeI_nav_barras_pallet)
+        Lista_Tags_SinIgreso_Valida = New List(Of clsBeI_nav_barras_pallet)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Const sp As String = "
+            SELECT  p.*,
+                    CASE 
+                        WHEN EXISTS (
+                            SELECT 1
+                            FROM i_nav_barras_rfid_det d
+                            INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc
+                            WHERE d.barra_epc = p.codigo_barra
+                              AND e.Tipo = 'ING'
+                        )
+                        THEN 1
+                        ELSE 0
+                    END AS TieneIngresoPrevio
+            FROM I_nav_barras_pallet p
+            WHERE p.codigo_barra = @codigo_barra"
+
+            For Each pCodigoBarraPallet As String In pListaCodigoBarraPallet
+
+                Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                Dim dad As New SqlDataAdapter(cmd)
+                Dim pBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+                dad.SelectCommand.Parameters.Add(New SqlParameter("@codigo_barra", pCodigoBarraPallet))
+
+                Dim dt As New DataTable
+                dad.Fill(dt)
+
+                If dt.Rows.Count = 1 Then
+                    Cargar(pBeI_nav_barras_pallet, dt.Rows(0))
+
+                    If Convert.ToInt32(dt.Rows(0)("TieneIngresoPrevio")) = 1 Then
+                        pBeI_nav_barras_pallet.Activo = False
+                    Else
+                        pBeI_nav_barras_pallet.Activo = True
+                    End If
+                Else
+                    pBeI_nav_barras_pallet.Codigo_barra = pCodigoBarraPallet
+                    pBeI_nav_barras_pallet.Activo = False
+                End If
+
+                Lista_Tags_SinIgreso_Valida.Add(pBeI_nav_barras_pallet)
 
             Next
 

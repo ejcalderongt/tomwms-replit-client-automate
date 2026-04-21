@@ -25,6 +25,7 @@ Partial Class frmDocSalidaRFID
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
         Dim Label5 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDocSalidaRFID))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.lblRegs = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
@@ -37,10 +38,11 @@ Partial Class frmDocSalidaRFID
         Me.txtFechaAgr = New System.Windows.Forms.TextBox()
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
-        Me.txtCliente = New System.Windows.Forms.TextBox()
         Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
         Me.grdDetalle = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.cmbCliente = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         lblFechaIngresoTMS = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
@@ -54,6 +56,7 @@ Partial Class frmDocSalidaRFID
         Me.XtraTabPage2.SuspendLayout()
         CType(Me.grdDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbCliente.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'lblFechaIngresoTMS
@@ -119,9 +122,9 @@ Partial Class frmDocSalidaRFID
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.lblRegs})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.lblRegs, Me.cmdActualizar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 2
+        Me.RibbonControl.MaxItemId = 3
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -142,6 +145,7 @@ Partial Class frmDocSalidaRFID
         '
         'RibbonPageGroup1
         '
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -160,7 +164,7 @@ Partial Class frmDocSalidaRFID
         Me.txtIdRFIDEnc.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtIdRFIDEnc.Name = "txtIdRFIDEnc"
         Me.txtIdRFIDEnc.ReadOnly = True
-        Me.txtIdRFIDEnc.Size = New System.Drawing.Size(156, 23)
+        Me.txtIdRFIDEnc.Size = New System.Drawing.Size(181, 23)
         Me.txtIdRFIDEnc.TabIndex = 4
         '
         'txtIdPedido
@@ -171,7 +175,7 @@ Partial Class frmDocSalidaRFID
         Me.txtIdPedido.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtIdPedido.Name = "txtIdPedido"
         Me.txtIdPedido.ReadOnly = True
-        Me.txtIdPedido.Size = New System.Drawing.Size(156, 23)
+        Me.txtIdPedido.Size = New System.Drawing.Size(181, 23)
         Me.txtIdPedido.TabIndex = 5
         '
         'txtEstado
@@ -182,7 +186,7 @@ Partial Class frmDocSalidaRFID
         Me.txtEstado.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtEstado.Name = "txtEstado"
         Me.txtEstado.ReadOnly = True
-        Me.txtEstado.Size = New System.Drawing.Size(156, 23)
+        Me.txtEstado.Size = New System.Drawing.Size(181, 23)
         Me.txtEstado.TabIndex = 6
         '
         'txtTipo
@@ -193,7 +197,7 @@ Partial Class frmDocSalidaRFID
         Me.txtTipo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtTipo.Name = "txtTipo"
         Me.txtTipo.ReadOnly = True
-        Me.txtTipo.Size = New System.Drawing.Size(156, 23)
+        Me.txtTipo.Size = New System.Drawing.Size(181, 23)
         Me.txtTipo.TabIndex = 7
         '
         'txtFechaAgr
@@ -204,7 +208,7 @@ Partial Class frmDocSalidaRFID
         Me.txtFechaAgr.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtFechaAgr.Name = "txtFechaAgr"
         Me.txtFechaAgr.ReadOnly = True
-        Me.txtFechaAgr.Size = New System.Drawing.Size(156, 23)
+        Me.txtFechaAgr.Size = New System.Drawing.Size(181, 23)
         Me.txtFechaAgr.TabIndex = 12
         '
         'XtraTabControl1
@@ -219,7 +223,7 @@ Partial Class frmDocSalidaRFID
         '
         'XtraTabPage1
         '
-        Me.XtraTabPage1.Controls.Add(Me.txtCliente)
+        Me.XtraTabPage1.Controls.Add(Me.cmbCliente)
         Me.XtraTabPage1.Controls.Add(Label5)
         Me.XtraTabPage1.Controls.Add(Me.txtIdRFIDEnc)
         Me.XtraTabPage1.Controls.Add(Label4)
@@ -234,17 +238,6 @@ Partial Class frmDocSalidaRFID
         Me.XtraTabPage1.Name = "XtraTabPage1"
         Me.XtraTabPage1.Size = New System.Drawing.Size(930, 277)
         Me.XtraTabPage1.Text = "Encabezado"
-        '
-        'txtCliente
-        '
-        Me.txtCliente.AcceptsReturn = True
-        Me.txtCliente.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCliente.Location = New System.Drawing.Point(116, 109)
-        Me.txtCliente.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtCliente.Name = "txtCliente"
-        Me.txtCliente.ReadOnly = True
-        Me.txtCliente.Size = New System.Drawing.Size(156, 23)
-        Me.txtCliente.TabIndex = 14
         '
         'XtraTabPage2
         '
@@ -269,6 +262,24 @@ Partial Class frmDocSalidaRFID
         Me.GridView1.GridControl = Me.grdDetalle
         Me.GridView1.Name = "GridView1"
         '
+        'cmbCliente
+        '
+        Me.cmbCliente.Location = New System.Drawing.Point(116, 111)
+        Me.cmbCliente.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbCliente.MenuManager = Me.RibbonControl
+        Me.cmbCliente.Name = "cmbCliente"
+        Me.cmbCliente.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbCliente.Properties.NullText = ""
+        Me.cmbCliente.Size = New System.Drawing.Size(181, 22)
+        Me.cmbCliente.TabIndex = 17
+        '
+        'cmdActualizar
+        '
+        Me.cmdActualizar.Caption = "Actualizar"
+        Me.cmdActualizar.Id = 2
+        Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("cmdActualizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdActualizar.Name = "cmdActualizar"
+        '
         'frmDocSalidaRFID
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -289,6 +300,7 @@ Partial Class frmDocSalidaRFID
         Me.XtraTabPage2.ResumeLayout(False)
         CType(Me.grdDetalle, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbCliente.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -308,6 +320,7 @@ Partial Class frmDocSalidaRFID
     Friend WithEvents XtraTabPage2 As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents grdDetalle As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents txtCliente As TextBox
     Friend WithEvents lblRegs As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmbCliente As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmdActualizar As DevExpress.XtraBars.BarButtonItem
 End Class

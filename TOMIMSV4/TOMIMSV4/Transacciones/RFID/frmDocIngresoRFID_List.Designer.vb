@@ -56,7 +56,7 @@ Partial Class frmDocIngresoRFID_List
         '
         'cmdCargar
         '
-        Me.cmdCargar.Caption = "Recargar"
+        Me.cmdCargar.Caption = "Actualizar"
         Me.cmdCargar.Id = 1
         Me.cmdCargar.ImageOptions.SvgImage = CType(resources.GetObject("cmdCargar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdCargar.Name = "cmdCargar"

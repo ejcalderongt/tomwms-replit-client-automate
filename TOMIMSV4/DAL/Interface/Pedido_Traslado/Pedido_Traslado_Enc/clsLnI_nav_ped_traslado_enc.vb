@@ -840,16 +840,25 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                                                                   lTransaction)
                                     Next
 
-                                    If BePedidoEnc.IdTipoPedido <> clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor Then
+                                If BePedidoEnc.IdTipoPedido <> clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor Then
 
-                                        clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
-                                                                                 BePedidoEnc,
-                                                                                 lConnection,
-                                                                                 lTransaction)
+                                    pListBePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                                         BePedidoEnc.IdBodega,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
 
+                                    Dim despachado As Boolean = clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
+                                                                                                         BePedidoEnc,
+                                                                                                         lConnection,
+                                                                                                         lTransaction)
+
+                                    If Not despachado Then
+                                        BePedidoEnc = Nothing
                                     End If
 
-                                    Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
+                                End If
+
+                                Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
 
                                 End If
 
