@@ -5211,6 +5211,10 @@ Public Class frmAjusteStock
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
                                                        ubic)
 
+                    Llenar_Motivo(rc, det.IdMotivoAjuste)
+                    Llenar_Tipo(rc, det.Idtipoajuste)
+                    Llena_Bodegas_ERP_Grid(rc, -1)
+
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
                     dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
@@ -5243,9 +5247,7 @@ Public Class frmAjusteStock
                         dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     End If
 
-                    Llenar_Motivo(rc, det.IdMotivoAjuste)
-                    Llenar_Tipo(rc, det.Idtipoajuste)
-                    Llena_Bodegas_ERP_Grid(rc, -1)
+
 
                 Next
 
