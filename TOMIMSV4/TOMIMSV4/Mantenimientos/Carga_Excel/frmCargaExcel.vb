@@ -4606,6 +4606,33 @@ Public Class frmCargaExcel
         End Try
     End Function
 
+    Private Function ObtenerCodigoProductoEnUbicacionExcel(ByVal idUbicacion As Integer,
+                                                       ByVal idBodega As Integer,
+                                                       ByVal idProductoAUbicar As Integer) As String
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+            Dim stockDistinto = lStock.FirstOrDefault(Function(s) s IsNot Nothing AndAlso
+                                                              s.IdProducto > 0 AndAlso
+                                                              s.IdProducto <> idProductoAUbicar)
+
+            If stockDistinto Is Nothing Then Return ""
+
+            Return stockDistinto.Codigo_Producto
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+
+    Private Function ConstruirMensajePosicionPosteriorExcel(ByVal codigoProductoRelacionado As String) As String
+        Return "La posición posterior ya contiene un producto diferente" &
+           If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+           ". Solo se permite ubicar el mismo producto en esta posición."
+    End Function
+
     Private Function ValidarMismoProductoPosicionExcel(pStock As clsBeVW_stock_res,
                                                    ubicDestino As clsBeBodega_ubicacion,
                                                    ByRef motivo As String) As Boolean
@@ -4648,7 +4675,12 @@ Public Class frmCargaExcel
             ubicPareja.IdBodega,
             idProductoAUbicar) Then
 
-                motivo = "La ubicación relacionada en doble profundidad ya contiene un producto diferente. Solo se permite ubicar el mismo producto en esa posición."
+                Dim codigoProductoRelacionado As String =
+                ObtenerCodigoProductoEnUbicacionExcel(ubicPareja.IdUbicacion,
+                                                      ubicPareja.IdBodega,
+                                                      idProductoAUbicar)
+
+                motivo = ConstruirMensajePosicionPosteriorExcel(codigoProductoRelacionado)
                 Return False
             End If
 

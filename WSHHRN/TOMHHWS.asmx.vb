@@ -19193,6 +19193,34 @@ New JsonSerializerSettings With {
         End Try
     End Function
 
+    Private Function ObtenerCodigoProductoBodegaEnUbicacionHH(ByVal idUbicacion As Integer,
+                                                          ByVal idBodega As Integer,
+                                                          ByVal idProductoBodegaAUbicar As Integer) As String
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+            Dim stockDistinto = lStock.FirstOrDefault(Function(s) s IsNot Nothing AndAlso
+                                                              s.IdProductoBodega > 0 AndAlso
+                                                              s.IdProductoBodega <> idProductoBodegaAUbicar)
+
+            If stockDistinto Is Nothing Then Return ""
+
+            Return stockDistinto.Codigo_Producto
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+
+    Private Function ConstruirMensajePosicionPosteriorHH(ByVal codigoProductoRelacionado As String) As String
+        Return "La posición posterior ya contiene un producto diferente" &
+           If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+           ". Solo se permite ubicar el mismo producto en esta posición."
+    End Function
+
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Validar_Mismo_Producto_Posicion_JSON(ByVal pIdBodega As Integer,
                                                      ByVal pIdTramo As Integer,
@@ -19239,8 +19267,13 @@ New JsonSerializerSettings With {
                         ubicPareja.IdBodega,
                         pIdProductoBodega) Then
 
+                            Dim codigoProductoRelacionado As String =
+                            ObtenerCodigoProductoBodegaEnUbicacionHH(ubicPareja.IdUbicacion,
+                                                                     ubicPareja.IdBodega,
+                                                                     pIdProductoBodega)
+
                             posicionValida = False
-                            mensaje = "La ubicación relacionada en doble profundidad ya contiene un producto diferente. Solo se permite ubicar el mismo producto en ese lado de la posición."
+                            mensaje = ConstruirMensajePosicionPosteriorHH(codigoProductoRelacionado)
                         End If
                     End If
                 End If
@@ -19307,7 +19340,6 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Validar_Regla_Ubicacion_JSON(ByVal pIdProducto As Integer,
                                              ByVal pIdUbicacion As Integer,
