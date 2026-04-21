@@ -3610,7 +3610,6 @@ Partial Public Class clsLnBodega
                                                Optional ByRef pConnection As SqlConnection = Nothing,
                                                Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
 
-
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
         Dim Es_Transaccion_Remota As Boolean = Not (pConnection Is Nothing AndAlso pTransaction Is Nothing)
@@ -3680,5 +3679,4 @@ Partial Public Class clsLnBodega
             Throw New Exception("Error al obtener ubicaciones vacías por área: " & ex.Message, ex)
         End Try
     End Function
-
 End Class

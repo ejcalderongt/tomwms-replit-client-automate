@@ -3216,6 +3216,7 @@ Partial Public Class clsLnTrans_despacho_enc
         End Try
 
     End Function
+
     Public Shared Function Guardar_Despacho(ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
                                             ByVal pBePedidoEnc As clsBeTrans_pe_enc,
                                             ByVal pConnection As SqlConnection,
@@ -3365,30 +3366,32 @@ Partial Public Class clsLnTrans_despacho_enc
             Dim OutBeRecepcionEnc As New clsBeTrans_re_enc()
 
             '#GT21012025: si tipo doc permite, se genera transferencia hacia otra bodega (aca hace el registro de oc y recepcion)
-            Guardar_Despacho_Stock(pBeDespachoEnc,
+            If Guardar_Despacho_Stock(pBeDespachoEnc,
                                    BeInterfaceConfig,
                                    OutBePedidoCompraEnc,
                                    False,
                                    lConnection,
-                                   lTransaction)
+                                   lTransaction) Then
 
-            'Estado en Pickings asociados
-            Verifica_Status_Picking(pBeDespachoEnc,
-                                    lConnection,
-                                    lTransaction)
+                'Estado en Pickings asociados
+                Verifica_Status_Picking(pBeDespachoEnc,
+                                        lConnection,
+                                        lTransaction)
 
-            Guarda_Trans_Packing_Enc(pBeDespachoEnc,
-                                     lConnection,
-                                     lTransaction)
+                Guarda_Trans_Packing_Enc(pBeDespachoEnc,
+                                         lConnection,
+                                         lTransaction)
 
-            'Tabla intermedia para interface.
-            clsLnI_nav_transacciones_out.Insertar_Salida(pBeDespachoEnc.IdEmpresa,
-                                                         pBeDespachoEnc.IdBodega,
-                                                         pBeDespachoEnc,
-                                                         lConnection,
-                                                         lTransaction)
+                'Tabla intermedia para interface.
+                clsLnI_nav_transacciones_out.Insertar_Salida(pBeDespachoEnc.IdEmpresa,
+                                                             pBeDespachoEnc.IdBodega,
+                                                             pBeDespachoEnc,
+                                                             lConnection,
+                                                             lTransaction)
 
-            Guardar_Auto = True
+                Guardar_Auto = True
+
+            End If
 
         Catch ex As Exception
             Throw ex

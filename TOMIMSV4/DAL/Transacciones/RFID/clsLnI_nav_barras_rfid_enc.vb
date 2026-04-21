@@ -420,8 +420,6 @@ Public Class clsLnI_nav_barras_rfid_enc
 						Dim lDataTable As New DataTable
 						lDTA.Fill(lDataTable)
 
-						'Dim vBeI_nav_barras_rfid_enc As New clsBeI_nav_barras_rfid_enc
-
 						If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 							Get_All_Ingresos = New DataTable
 							Get_All_Ingresos = lDataTable
@@ -662,7 +660,7 @@ Public Class clsLnI_nav_barras_rfid_enc
 						End If
 
 					Else
-						Throw New Exception("La barra EPC en el lote ya está registrada para este tipo de operación, no puede agregarse nuevamente.")
+						Throw New Exception("La barra EPC ya está registrada para este tipo de operación, no puede agregarse nuevamente.")
 					End If
 
 				Next

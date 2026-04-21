@@ -11,9 +11,9 @@ Partial Class frmAjusteStock
                     components.Dispose()
                 End If
 
-                If Stock IsNot Nothing Then
-                    Stock.Dispose()
-                    Stock = Nothing
+                If frmStockList IsNot Nothing Then
+                    frmStockList.Dispose()
+                    frmStockList = Nothing
                 End If
             End If
         Finally
@@ -135,6 +135,7 @@ Partial Class frmAjusteStock
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.colProveedor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -590,7 +591,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -599,7 +600,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(155, 28)
+        Me.cmdAdd.Size = New System.Drawing.Size(155, 24)
         Me.cmdAdd.Text = "Ajuste sobre Stock"
         Me.cmdAdd.ToolTipText = "Se modificara stock existente"
         '
@@ -608,7 +609,7 @@ Partial Class frmAjusteStock
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 28)
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 24)
         Me.mnuAjustePositivo.Text = "Ajuste Sin Stock"
         Me.mnuAjustePositivo.ToolTipText = "Se agrega existencia sin stock previa"
         '
@@ -617,7 +618,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
         Me.mnuDel.Text = "Eliminar"
         Me.mnuDel.ToolTipText = "Eliminar Linea Seleccionada"
         '
@@ -626,7 +627,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -901,12 +902,12 @@ Partial Class frmAjusteStock
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgrid.ColumnHeadersHeight = 40
-        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate, Me.colTalla, Me.colColor, Me.colIdProductoTallaColor})
+        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate, Me.colTalla, Me.colColor, Me.colIdProductoTallaColor, Me.colProveedor})
         Me.dgrid.Dock = System.Windows.Forms.DockStyle.Top
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 59)
+        Me.dgrid.Location = New System.Drawing.Point(2, 55)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
@@ -1259,6 +1260,13 @@ Partial Class frmAjusteStock
         Me.GridView1.OptionsBehavior.ReadOnly = True
         Me.GridView1.OptionsFind.AlwaysVisible = True
         '
+        'colProveedor
+        '
+        Me.colProveedor.HeaderText = "Proveedor"
+        Me.colProveedor.MinimumWidth = 6
+        Me.colProveedor.Name = "colProveedor"
+        Me.colProveedor.Width = 125
+        '
         'frmAjusteStock
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -1420,4 +1428,5 @@ Partial Class frmAjusteStock
     Friend WithEvents chkBorrador As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents btnImportarExcel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents txtNoAjuste As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents colProveedor As DataGridViewTextBoxColumn
 End Class

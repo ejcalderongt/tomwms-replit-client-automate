@@ -1,12 +1,14 @@
 using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.DALCore;
+using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
+using WMS.EntityCore.Transacciones;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -459,7 +461,7 @@ namespace WMSWebAPI.Services.Salidas
             }
         }
 
-                private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
+        private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
         {
             bool Datos_Validos = false;
 
@@ -725,6 +727,26 @@ namespace WMSWebAPI.Services.Salidas
                 }
             }
 
+        }
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null)
+        {
+            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration, noPedido);
+            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
+        }
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null, int? idTipoDocumento = null)
+        {
+            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration,
+                                                                                           noPedido,
+                                                                                           idTipoDocumento);
+
+            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
+        }
+        public int Marcar_Salidas_Como_Enviadas(IConfiguration configuration, List<int> idTransacciones)
+        {
+            if (idTransacciones == null || idTransacciones.Count == 0)
+                return 0;
+
+            return clsLnI_nav_transacciones_out.Marcar_Salidas_Como_Enviado(configuration, idTransacciones);
         }
     }
 }

@@ -1331,8 +1331,7 @@ Public Class frmCambioUbicacion
                 .WindowState = FormWindowState.Maximized,
                 .pIdPropietarioBodega = cmbPropietarioBodega.EditValue,
                 .Es_Seleccion_Multiple = Es_Seleccion_Multiple,
-                .listaStockSeleccionado = Nothing,
-                .IdBodega = cmbBodega.EditValue}
+                .listaStockSeleccionado = pStockRes_SeleccionMultiple, .IdBodega = cmbBodega.EditValue}
             End If
 
             Stock.Modo = FrmStock_List.pModo.Seleccion
@@ -1449,8 +1448,15 @@ Public Class frmCambioUbicacion
                     txtIdStock.Text = 1
                     txtCantidad.Value = 1
 
-                    pStockRes_SeleccionMultiple = Stock.listaStockSeleccionado
+                    If pStockRes_SeleccionMultiple Is Nothing Then
+                        pStockRes_SeleccionMultiple = New List(Of clsBeVW_stock_res)
+                    End If
 
+                    For Each item In Stock.listaStockSeleccionado
+                        If Not pStockRes_SeleccionMultiple.Any(Function(x) x.IdStock = item.IdStock) Then
+                            pStockRes_SeleccionMultiple.Add(item)
+                        End If
+                    Next
                     'For Each pObjStock In Stock.listaStockSeleccionado
                     '    prepararObj_Ubic_HH_Det(pObjStock)
                     '    pListObjDet.Add(pBeTransUbicHHDet)
