@@ -371,7 +371,7 @@ Public Class frmImprimir_Etiqueta
                                         pVoicePickLarge, ' {7}
                                         pVoicePickSmall, ' {8}
                                         codigo_barra,  ' {9} con paréntesis
-                                        tmpBarra,      ' {10} sin paréntesis
+                                        tmpBarra,      ' {10} sin paréntesis 
                                         pEmblemaBanasa ' {11}
                                     )
 
