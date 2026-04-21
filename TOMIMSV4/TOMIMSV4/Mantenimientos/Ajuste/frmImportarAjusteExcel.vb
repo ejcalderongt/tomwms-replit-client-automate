@@ -55,6 +55,7 @@ Partial Public Class frmImportarAjusteExcel
         Public UmBas As String = ""
         Public NombreUbicacion As String = ""
         Public NombrePresentacion As String = ""
+        Public NombreProveedor As String = ""
         Public Presentacion As clsBeProducto_Presentacion = Nothing
         Public Factor As Decimal = 1
         Public CantidadOriginal As Decimal
@@ -208,7 +209,7 @@ Partial Public Class frmImportarAjusteExcel
         If dtPreview.Columns.Count = 0 Then
             Dim cols As String() = {
                 "Estado", "Hoja", "Fila", "IdUbicacion", "Ubicacion",
-                "IdStock", "Codigo", "Nombre", "Lote", "LoteNuevo",
+                "IdStock", "Codigo", "Nombre", "Proveedor", "Lote", "LoteNuevo",
                 "Tipo", "Cantidad", "Motivo", "Observacion"
             }
             For Each n As String In cols
@@ -548,6 +549,22 @@ Partial Public Class frmImportarAjusteExcel
                 f.NombrePresentacion = nombrePres
                 f.Factor = factor
                 f.Presentacion = bePresObj
+
+                ' Proveedor (cadena: stock → trans_re_det → trans_oc_enc → proveedor_bodega → proveedor)
+                ' Devuelve Nothing si el stock no proviene de una recepción contra OC.
+                Try
+                    Dim beProv As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(beStock.IdStock)
+                    If beProv IsNot Nothing Then
+                        If Not String.IsNullOrWhiteSpace(beProv.Codigo) Then
+                            f.NombreProveedor = beProv.Codigo & " - " & beProv.Nombre
+                        Else
+                            f.NombreProveedor = beProv.Nombre
+                        End If
+                    End If
+                Catch
+                    ' No bloquea la fila si la consulta de proveedor falla.
+                    f.NombreProveedor = ""
+                End Try
                 ' IMPORTANTE: Cantidad_original y Cantidad_nueva se almacenan SIEMPRE
                 ' en UM base (igual que Cargar_Detalle del frm padre). El consumer
                 ' divide por Factor solo para visualización en el grid.
@@ -605,6 +622,7 @@ Partial Public Class frmImportarAjusteExcel
                     f.IdStockInput.ToString(),
                     f.CodigoProducto,
                     f.NombreProducto,
+                    f.NombreProveedor,
                     f.Lote,
                     loteNuevoMostrar,
                     f.TipoTexto,

@@ -127,6 +127,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.colCantidad = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colMotivo = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colObservacion = New DevExpress.XtraGrid.Columns.GridColumn()
+        Me.colProveedor = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.tabErrores = New DevExpress.XtraTab.XtraTabPage()
         Me.gridErrores = New DevExpress.XtraGrid.GridControl()
         Me.gvErrores = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -431,7 +432,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.gvPreview.Appearance.HeaderPanel.Options.UseFont = True
         Me.gvPreview.Appearance.OddRow.BackColor = System.Drawing.Color.FromArgb(CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.gvPreview.Appearance.OddRow.Options.UseBackColor = True
-        Me.gvPreview.Columns.AddRange(New DevExpress.XtraGrid.Columns.GridColumn() {Me.colEstado, Me.colHoja, Me.colFila, Me.colIdUbicacion, Me.colUbicacion, Me.colIdStock, Me.colCodigo, Me.colNombre, Me.colLote, Me.colLoteNuevo, Me.colTipo, Me.colCantidad, Me.colMotivo, Me.colObservacion})
+        Me.gvPreview.Columns.AddRange(New DevExpress.XtraGrid.Columns.GridColumn() {Me.colEstado, Me.colHoja, Me.colFila, Me.colIdUbicacion, Me.colUbicacion, Me.colIdStock, Me.colCodigo, Me.colNombre, Me.colProveedor, Me.colLote, Me.colLoteNuevo, Me.colTipo, Me.colCantidad, Me.colMotivo, Me.colObservacion})
         Me.gvPreview.GridControl = Me.gridPreview
         Me.gvPreview.Name = "gvPreview"
         Me.gvPreview.OptionsBehavior.Editable = False
@@ -530,7 +531,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.colLote.Name = "colLote"
         Me.colLote.OptionsColumn.AllowEdit = False
         Me.colLote.Visible = True
-        Me.colLote.VisibleIndex = 8
+        Me.colLote.VisibleIndex = 9
         Me.colLote.Width = 110
         '
         'colLoteNuevo
@@ -540,7 +541,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.colLoteNuevo.Name = "colLoteNuevo"
         Me.colLoteNuevo.OptionsColumn.AllowEdit = False
         Me.colLoteNuevo.Visible = True
-        Me.colLoteNuevo.VisibleIndex = 9
+        Me.colLoteNuevo.VisibleIndex = 10
         Me.colLoteNuevo.Width = 110
         '
         'colTipo
@@ -550,7 +551,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.colTipo.Name = "colTipo"
         Me.colTipo.OptionsColumn.AllowEdit = False
         Me.colTipo.Visible = True
-        Me.colTipo.VisibleIndex = 10
+        Me.colTipo.VisibleIndex = 11
         Me.colTipo.Width = 100
         '
         'colCantidad
@@ -562,7 +563,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.colCantidad.Name = "colCantidad"
         Me.colCantidad.OptionsColumn.AllowEdit = False
         Me.colCantidad.Visible = True
-        Me.colCantidad.VisibleIndex = 11
+        Me.colCantidad.VisibleIndex = 12
         Me.colCantidad.Width = 90
         '
         'colMotivo
@@ -572,7 +573,7 @@ Partial Public Class frmImportarAjusteExcel
         Me.colMotivo.Name = "colMotivo"
         Me.colMotivo.OptionsColumn.AllowEdit = False
         Me.colMotivo.Visible = True
-        Me.colMotivo.VisibleIndex = 12
+        Me.colMotivo.VisibleIndex = 13
         Me.colMotivo.Width = 90
         '
         'colObservacion
@@ -582,8 +583,18 @@ Partial Public Class frmImportarAjusteExcel
         Me.colObservacion.Name = "colObservacion"
         Me.colObservacion.OptionsColumn.AllowEdit = False
         Me.colObservacion.Visible = True
-        Me.colObservacion.VisibleIndex = 13
+        Me.colObservacion.VisibleIndex = 14
         Me.colObservacion.Width = 160
+        '
+        'colProveedor
+        '
+        Me.colProveedor.Caption = "Proveedor"
+        Me.colProveedor.FieldName = "Proveedor"
+        Me.colProveedor.Name = "colProveedor"
+        Me.colProveedor.OptionsColumn.AllowEdit = False
+        Me.colProveedor.Visible = True
+        Me.colProveedor.VisibleIndex = 8
+        Me.colProveedor.Width = 160
         '
         'tabErrores
         '
@@ -701,6 +712,7 @@ Partial Public Class frmImportarAjusteExcel
     Friend WithEvents colCantidad As Columns.GridColumn
     Friend WithEvents colMotivo As Columns.GridColumn
     Friend WithEvents colObservacion As Columns.GridColumn
+    Friend WithEvents colProveedor As Columns.GridColumn
     Friend WithEvents errColHoja As Columns.GridColumn
     Friend WithEvents errColFila As Columns.GridColumn
     Friend WithEvents errColCodigo As Columns.GridColumn
