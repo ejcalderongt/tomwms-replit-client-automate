@@ -282,11 +282,19 @@ Public Class frmAjusteStock
                         Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
                     End If
 
-                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto, vBeAjustDet.UmBas, vBeAjustDet.Nombre_Presentacion, Ubic)
+                    ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Aunque aquí
+                    ' las 5 columnas pasadas SÍ coinciden con el orden actual del Designer
+                    ' (ColCodigoProducto, colNombreProducto, UmBas, colPresentacion,
+                    ' colUbicacion), se unifica el patrón con el resto del archivo para
+                    ' protegerse de futuros reordenamientos en el Designer.
+                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto)
+                    dgrid.Rows(rc).Cells("UmBas").Value = vBeAjustDet.UmBas
+                    dgrid.Rows(rc).Cells("colPresentacion").Value = vBeAjustDet.Nombre_Presentacion
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = Ubic
 
-                    ' #ProveedorFix: asignar por nombre para evitar que el orden posicional
-                    ' del Rows.Add caiga en 'motivoajuste' (col 6) y luego sea sobreescrito
-                    ' por Llenar_Motivo. La columna real ColProveedor está al final del grid.
+                    ' #EJCRP 21042026: (consolida #ProveedorFix previo) ColProveedor está al
+                    ' final del grid; se asigna por nombre para no caer en 'motivoajuste'
+                    ' por el orden posicional. sProveedorTexto se calcula líneas arriba.
                     dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
@@ -397,6 +405,42 @@ Public Class frmAjusteStock
         lblRegs.Caption = "Registros: " & dgrid.Rows.Count
 
     End Sub
+
+    ' #EJCRP 21042026: Helper centralizado para resolver el texto del Proveedor a partir
+    ' de un IdStock. Devuelve "" cuando no hay IdStock (>0), no proviene de una
+    ' recepción contra OC, o si la consulta falla. Nunca lanza excepción para no
+    ' bloquear la carga del grid. Sobrecargas:
+    '   - Sin transacción: abre/cierra conexión propia (uso fuera de transacciones).
+    '   - Con conn + trans: para llamarlo dentro de una transacción ya abierta.
+    Private Function Get_Proveedor_Texto(ByVal pIdStock As Integer) As String
+        If pIdStock <= 0 Then Return ""
+        Try
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(pIdStock)
+            If be Is Nothing Then Return ""
+            If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                Return $"{be.Codigo} - {be.Nombre}"
+            End If
+            Return be.Nombre
+        Catch
+            Return ""
+        End Try
+    End Function
+
+    Private Function Get_Proveedor_Texto(ByVal pIdStock As Integer,
+                                         ByVal pConn As SqlClient.SqlConnection,
+                                         ByVal pTrans As SqlClient.SqlTransaction) As String
+        If pIdStock <= 0 Then Return ""
+        Try
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(pIdStock, pConn, pTrans)
+            If be Is Nothing Then Return ""
+            If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                Return $"{be.Codigo} - {be.Nombre}"
+            End If
+            Return be.Nombre
+        Catch
+            Return ""
+        End Try
+    End Function
 
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
 
@@ -536,10 +580,19 @@ Public Class frmAjusteStock
                     ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDetBorrador.IdUbicacion, AP.IdBodega).NombreCompleto
                     codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDetBorrador.IdProductoBodega)).Codigo
 
-                    rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto, BeAjusteDetBorrador.UmBas, ubic)
+                    ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Antes se
+                    ' pasaban (codigo, nombre, UmBas, ubic) como argumentos posicionales,
+                    ' lo que era frágil ante cambios de orden de columnas en el Designer
+                    ' (las posiciones 3 y 4 NO siempre corresponden a UmBas/colUbicacion;
+                    ' realmente eran UmBas/colPresentacion en este grid). Ahora pasamos
+                    ' solo las 2 primeras (que sí son ColCodigoProducto/colNombreProducto)
+                    ' y el resto se asigna por nombre justo abajo (UmBas, colUbicacion).
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
+                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta desde borrador).
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -673,10 +726,15 @@ Public Class frmAjusteStock
                     ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
                     codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
 
-                    rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
+                    ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Mismo
+                    ' criterio que en el alta desde borrador: solo Codigo+Nombre por
+                    ' posición; UmBas/colUbicacion ya se asignan por nombre abajo.
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
+                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta directa).
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -817,7 +875,10 @@ Public Class frmAjusteStock
             ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
             codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
 
-            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
+            ' #EJCRP 21042026: Estandarización del Rows.Add posicional. UmBas y ubic se
+            ' reasignan por nombre justo abajo, así que no hace falta pasarlos por
+            ' posición. ColProveedor se llena un poco más abajo desde stockEspecificoSeleccionado.Proveedor.
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
@@ -1956,14 +2017,17 @@ Public Class frmAjusteStock
             ubic = clsLnBodega_ubicacion.GetSingle(Item.IdUbicacion, AP.IdBodega).NombreCompleto
             codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(Item.IdProductoBodega)).Codigo
 
-            ' #ProveedorFix: pasaba 'ubic' como 3er argumento posicional, lo que hacía
-            ' que el texto de ubicación cayera en la columna UmBas. Ahora se asignan
-            ' por nombre las columnas no triviales.
+            ' #EJCRP 21042026: (consolida #ProveedorFix previo) pasaba 'ubic' como 3er
+            ' argumento posicional y caía en la columna UmBas. Estandarizado: solo
+            ' Codigo+Nombre por posición; el resto por nombre.
             rc = dgrid.Rows.Add(codigo, Item.Nombre_producto)
             dgrid.Rows(rc).Cells("UmBas").Value = Item.UmBas
             dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
             dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+            ' #EJCRP 21042026: poblar Proveedor para el detalle del link de quiebre de lote.
+            ' Item.IdStock representa el stock origen del nuevo link.
+            dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
             Llenar_Tipo(rc, Item.Idtipoajuste)
@@ -4481,7 +4545,13 @@ Public Class frmAjusteStock
             '#GT16122025: aqui guarda el ajuste en memoria
             lBeTransAjusteDet.Add(BeAjusteDet)
 
-            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, BeAjusteDet.IdUbicacion)
+            ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Antes pasaba
+            ' (codigo, nombre, UmBas, BeAjusteDet.IdUbicacion) — el IdUbicacion (numérico)
+            ' caía en la columna colPresentacion. UmBas y colUbicacion ya se asignan por
+            ' nombre abajo. NOTA: no se llena ColProveedor aquí porque este flujo es
+            ' "alta de producto sin existencia" donde IdStock = 0 (línea ~4434, "pendiente"):
+            ' al no haber stock previo, no hay proveedor de recepción asociado.
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
