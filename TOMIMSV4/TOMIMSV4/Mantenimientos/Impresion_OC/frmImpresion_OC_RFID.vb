@@ -120,8 +120,8 @@ Public Class frmImpresion_OC_RFID
                 If GridView1.Columns.ColumnByFieldName("IdPallet") IsNot Nothing Then GridView1.Columns("IdPallet").Visible = False
                 If GridView1.Columns.ColumnByFieldName("Codigo") IsNot Nothing Then GridView1.Columns("Codigo").Visible = True
                 If GridView1.Columns.ColumnByFieldName("Nombre") IsNot Nothing Then GridView1.Columns("Nombre").Visible = True
-                If GridView1.Columns.ColumnByFieldName("Camas_Por_Tarima") IsNot Nothing Then GridView1.Columns("Camas_Por_Tarima").Visible = True
-                If GridView1.Columns.ColumnByFieldName("Cajas_Por_Cama") IsNot Nothing Then GridView1.Columns("Cajas_Por_Cama").Visible = True
+                If GridView1.Columns.ColumnByFieldName("Camas_Por_Tarima") IsNot Nothing Then GridView1.Columns("Camas_Por_Tarima").Visible = False
+                If GridView1.Columns.ColumnByFieldName("Cajas_Por_Cama") IsNot Nothing Then GridView1.Columns("Cajas_Por_Cama").Visible = False
                 If GridView1.Columns.ColumnByFieldName("Cantidad_Presentacion") IsNot Nothing Then GridView1.Columns("Cantidad_Presentacion").Visible = True
                 If GridView1.Columns.ColumnByFieldName("UM_Producto") IsNot Nothing Then GridView1.Columns("UM_Producto").Visible = True
                 If GridView1.Columns.ColumnByFieldName("Lote") IsNot Nothing Then GridView1.Columns("Lote").Visible = True
@@ -139,11 +139,15 @@ Public Class frmImpresion_OC_RFID
                 If GridView1.Columns.ColumnByFieldName("Lote_Numerico") IsNot Nothing Then GridView1.Columns("Lote_Numerico").Visible = False
                 If GridView1.Columns.ColumnByFieldName("fecha_procesado_erp") IsNot Nothing Then GridView1.Columns("fecha_procesado_erp").Visible = False
                 If GridView1.Columns.ColumnByFieldName("Impreso") IsNot Nothing Then GridView1.Columns("Impreso").Visible = True
+                If GridView1.Columns.ColumnByFieldName("SSCC") IsNot Nothing Then GridView1.Columns("SSCC").Visible = True
+                If GridView1.Columns.ColumnByFieldName("GTIN") IsNot Nothing Then GridView1.Columns("GTIN").Visible = True
 
                 GridView1.OptionsView.ColumnAutoWidth = False
                 GridView1.OptionsView.ShowFooter = True
                 GridView1.OptionsBehavior.Editable = False
                 GridView1.OptionsBehavior.ReadOnly = True
+                GridView1.BestFitColumns()
+
             Else
                 grdListaBarraPallets.DataSource = Nothing
                 GridView1.RefreshData()
