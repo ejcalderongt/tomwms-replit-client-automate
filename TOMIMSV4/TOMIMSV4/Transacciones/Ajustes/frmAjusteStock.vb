@@ -282,7 +282,12 @@ Public Class frmAjusteStock
                         Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
                     End If
 
-                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto, vBeAjustDet.UmBas, vBeAjustDet.Nombre_Presentacion, Ubic, sProveedorTexto)
+                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto, vBeAjustDet.UmBas, vBeAjustDet.Nombre_Presentacion, Ubic)
+
+                    ' #ProveedorFix: asignar por nombre para evitar que el orden posicional
+                    ' del Rows.Add caiga en 'motivoajuste' (col 6) y luego sea sobreescrito
+                    ' por Llenar_Motivo. La columna real ColProveedor está al final del grid.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
