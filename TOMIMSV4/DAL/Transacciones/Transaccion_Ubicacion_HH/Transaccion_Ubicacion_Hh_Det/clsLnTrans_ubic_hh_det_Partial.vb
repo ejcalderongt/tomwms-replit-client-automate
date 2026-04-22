@@ -1988,7 +1988,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                          ByRef pIdMovimientoNuevo As Integer,
                                                                          ByVal pPosiciones As Integer) As Boolean
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -2252,7 +2252,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplica_Cambio_Estado_Ubic_HH_LicenciaCompleta_ConValidacionRack = False
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try

@@ -604,6 +604,28 @@ Public Class clsLnTrans_ubicsug : Implements IDisposable
                 End If
             End If
 
+            '#MA20260422
+            Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pIdUbicacion, pIdBodega, lConnection, lTransaction)
+
+            If infoDestinoDT.Rows.Count > 0 Then
+
+                Dim row As DataRow = infoDestinoDT.Rows(0)
+
+                Dim esRack As Boolean = CBool(row("es_rack"))
+
+                If esRack Then
+
+                    Dim estadoDestino As Integer = CInt(row("IdProductoEstadoDestino"))
+
+                    Dim estadoRackDefecto As Integer = clsLnBodega.Get_Estado_Defecto_Rack(pIdBodega, lConnection, lTransaction)
+
+                    If (estadoDestino > 0 OrElse estadoRackDefecto > 0) AndAlso (estadoDestino <> estadoRackDefecto) Then
+                        Ubicacion_Es_Valida = False
+                    End If
+
+                End If
+            End If
+
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
