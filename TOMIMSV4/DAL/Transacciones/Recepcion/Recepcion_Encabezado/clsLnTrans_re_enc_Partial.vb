@@ -4170,14 +4170,17 @@ Partial Public Class clsLnTrans_re_enc
 
                                     End If
 
+                                    '#CKFK20260422puse esto asi AndAlso x.Cantidad >= vCantidadMatch antes solo era =
                                     BeTransOcDet = lTransOcDet.Where(Function(x) x.IdProductoBodega = pBeStockRec.IdProductoBodega _
                                                                      AndAlso x.IdPresentacion = pBeStockRec.IdPresentacion _
                                                                      AndAlso x.IdUnidadMedidaBasica = pBeStockRec.IdUnidadMedida _
-                                                                     AndAlso x.Cantidad = vCantidadMatch).FirstOrDefault()
+                                                                     AndAlso x.Cantidad >= vCantidadMatch).FirstOrDefault()
 
                                     If Not BeTransOcDet Is Nothing Then
                                         pBeStockRec.No_linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.No_Linea = BeTransOcDet.No_Linea
+                                        pBeTransReDet.IdOrdenCompraDet = BeTransOcDet.IdOrdenCompraDet
+                                        pBeTransReDet.IdOrdenCompraEnc = BeTransOcDet.IdOrdenCompraEnc
                                     End If
 
                                 End If

@@ -762,9 +762,13 @@ Public Class clsLnI_nav_ped_traslado_enc
 
             vIndicadorDeExcepcion = 3
 
+            clsPublic.Actualizar_Progreso(lblprg, "Importando traslado " & BePedidoCliente.External_Document_No & " a tabla intermedia...")
+
             If Importar_Traslado_A_Tabla_Intermedia(BePedidoCliente, lblprg, lConnection, lTransaction) Then
 
                 vIndicadorDeExcepcion = 4
+
+                clsPublic.Actualizar_Progreso(lblprg, "Importando traslado " & BePedidoCliente.External_Document_No & " a tabla TOMWMS...")
 
                 vIdxConfig = lBeConfigInMemory.FindIndex(Function(x) x.Idbodega = vIdBodegaOrigen AndAlso x.IdPropietario = vIdPropietario)
 
@@ -798,6 +802,8 @@ Public Class clsLnI_nav_ped_traslado_enc
 
                             If Nuevo_Picking(BePedidoEnc, lConnection, lTransaction) Then
 
+                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking creado para el documento: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
 
                                 Dim pListBePickingUbic As List(Of clsBeTrans_picking_ubic) =
                                                               clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
@@ -829,6 +835,9 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                        lConnection,
                                                                                        lTransaction)
 
+                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking procesado para el documento: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
                                 BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
                                                                                                    lConnection,
                                                                                                    lTransaction)
@@ -853,8 +862,14 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                                          lTransaction)
 
                                     If Not despachado Then
+                                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} no pudo ser despachado {2}",
+                                                                                           BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
                                         BePedidoEnc = Nothing
                                     End If
+
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} despachado {2}",
+                                                                                       BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
 
                                 End If
 

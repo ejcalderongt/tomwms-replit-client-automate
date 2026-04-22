@@ -1,5 +1,4 @@
-﻿'Imports System.Configuration
-Imports System.Configuration
+﻿Imports System.Configuration
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
@@ -1418,12 +1417,12 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
     '#MA20260415  metodo para el cambio de ubicacion - mejoras para la cumbre
     Public Shared Function Aplica_Cambio_Estado_Ubic(ByVal pMovimiento As clsBeTrans_movimientos,
-                                                   ByVal pStockRes As clsBeVW_stock_res,
-                                                   ByRef pIdStockNuevo As Integer,
-                                                   ByRef pIdMovimiento As Integer,
+                                                     ByVal pStockRes As clsBeVW_stock_res,
+                                                     ByRef pIdStockNuevo As Integer,
+                                                     ByRef pIdMovimiento As Integer,
                                                      ByVal lConnection As SqlConnection,
                                                      ByVal lTransaction As SqlTransaction,
-                                                   Optional pPosiciones As Integer = 0) As Boolean
+                                                     Optional pPosiciones As Integer = 0) As Boolean
 
         Aplica_Cambio_Estado_Ubic = False
 
