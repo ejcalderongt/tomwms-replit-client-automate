@@ -1,4 +1,4 @@
-﻿namespace WMS.EntityCore.Dtos.Stock
+namespace WMS.EntityCore.Dtos.Stock
 {
     public class DetalleReservaDto
     {
@@ -14,5 +14,6 @@
         public string LocationCode { get; set; } = string.Empty;
         public string Zone { get; set; } = string.Empty;
         public double ReservationQty { get; set; }
+        public string ProcessResult { get; set; } = string.Empty;
     }
 }
