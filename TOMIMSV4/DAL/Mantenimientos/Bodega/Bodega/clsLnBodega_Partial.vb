@@ -3607,8 +3607,8 @@ Partial Public Class clsLnBodega
 
     '#MA20260415 Metodo para obtener el estado por defecto del rack - mejoras en la cumbre
     Public Shared Function Get_Estado_Defecto_Rack(ByVal pIdBodega As Integer,
-                                               Optional ByRef pConnection As SqlConnection = Nothing,
-                                               Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
+                                                   Optional ByRef pConnection As SqlConnection = Nothing,
+                                                   Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

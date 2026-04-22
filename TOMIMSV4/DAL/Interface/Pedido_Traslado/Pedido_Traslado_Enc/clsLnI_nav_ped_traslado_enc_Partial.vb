@@ -4074,6 +4074,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     Insertar(BePedidoCliente, lConnection, lTransaction)
                 End If
 
+                clsPublic.Actualizar_Progreso(lblprg, "Encabezado de documento " & BePedidoCliente.External_Document_No & " guardado correctamente...")
+
                 vContador += 1
 
                 lTransaction.Save("Encabezado")
@@ -4081,6 +4083,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 Application.DoEvents()
 
                 If Not BePedidoCliente.Lineas_Detalle Is Nothing Then
+
+                    clsPublic.Actualizar_Progreso(lblprg, "Recorriendo detalle del documento " & BePedidoCliente.External_Document_No & "...")
 
                     For Each BeI_Nav_PedidoTrasladoDet As clsBeI_nav_ped_traslado_det In BePedidoCliente.Lineas_Detalle
 
@@ -4111,11 +4115,13 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeBodegaArea.IdBodega, lConnection, lTransaction)
 
                                         If BeBodega Is Nothing Then
+                                            clsPublic.Actualizar_Progreso(lblprg, "ERROR_20231031A: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
                                             Throw New Exception("ERROR_20231031A: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
                                         End If
 
                                     Else
-                                        Throw New Exception("ERROR_20231031: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
+                                        clsPublic.Actualizar_Progreso(lblprg, "ERROR_20231031B: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
+                                        Throw New Exception("ERROR_20231031B: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
                                     End If
 
                                 End If
@@ -4145,6 +4151,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                 If Not BeProductoBodega Is Nothing Then
                                     lProductoBodegaInMemory.Add(BeProductoBodega.Clone())
                                 Else
+                                    clsPublic.Actualizar_Progreso(lblprg, "El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
                                     Throw New Exception("El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
                                 End If
 
@@ -4161,6 +4168,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         End If
 
                                         vContadorLineas += 1
+                                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Se importó producto: {0}{1}", BeI_Nav_PedidoTrasladoDet.Item_No, vbNewLine))
 
                                     Else
 
@@ -4199,11 +4207,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                 Else
                     Console.WriteLine("Pedido de compra sin lineas de detalle?")
+                    clsPublic.Actualizar_Progreso(lblprg, "Pedido de compra sin lineas de detalle")
                 End If
 
             Catch ex As Exception
 
-
+                clsPublic.Actualizar_Progreso(lblprg, ex.Message)
                 clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
                                                           BePedidoCliente.No,
                                                           BeNavEjecucionEnc.IdEjecucionEnc,

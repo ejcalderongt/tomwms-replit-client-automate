@@ -11,6 +11,10 @@ namespace WMSWebAPI.Dtos.Salidas
         public double QuantityReserved { get; set; }
         public string Status { get; set; } = string.Empty;
         public List<ReservationDetailDto> Reservations { get; set; } = new();
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string? FailureCode { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string? FailureReason { get; set; }
     }
 
     public class ReservationDetailDto

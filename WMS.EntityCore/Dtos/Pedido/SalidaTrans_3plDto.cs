@@ -12,7 +12,8 @@ namespace WMSWebAPI.Dtos.Pedido
         public List<TransPePolDto>? Poliza { get; set; }
         public Picking_3plDto? Picking { get; set; }
         public BodegaMuelleDto? BodegaMuelle { get; set; }
-        public List<Cliente_3plDto>? Clientes { get; set; }
+        public List<ClienteDto>? Cliente { get; set; }
+        public List<ClienteDto>? Clientes { get => Cliente; set => Cliente = value; }
         public List<OperadorDto>? Operadores { get; set; }
         public List<OperadorBodegaDto>? OperadorBodega { get; set; }
        
