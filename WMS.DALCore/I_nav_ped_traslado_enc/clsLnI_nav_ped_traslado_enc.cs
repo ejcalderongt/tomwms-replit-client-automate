@@ -556,17 +556,68 @@ namespace WMS.DALCore
                     }
                     else
                     {
-                        // Línea ya existente en trans_pe_det — reproceso no aplicado
-                        string reprocMark = $"LINEA_REPROCESO: Línea {PDet.Line_No} ('{PDet.Item_No}') ya existente en el pedido, no fue reprocesada.";
-                        mensajesFallo.Add(reprocMark);
+                        // Reproceso: la línea ya existe en trans_pe_det.
+                        // Si no tiene reserva completa, se intenta reservar sin re-insertar.
+                        var reservasExistentes = clsLnStock_res.Get_All_By_IdPedidoDet(
+                            pBePedidoDet.IdPedidoDet,
+                            pBePedidoDet.IdPedidoEnc,
+                            lConectionInterface,
+                            lTransInterface);
 
-                        // Actualiza tabla interfaz con marcador de reproceso
-                        // (solo si la línea no fue marcada como exitosa anteriormente)
-                        bool yaExitosa = PDet.Process_Result?.Equals("Ok", StringComparison.OrdinalIgnoreCase) ?? false;
-                        if (!yaExitosa)
+                        double cantReservada = reservasExistentes?.Sum(r => r.Cantidad) ?? 0;
+                        bool yaReservadaCompleta = cantReservada >= pBePedidoDet.Cantidad - 0.001;
+
+                        if (!yaReservadaCompleta)
                         {
-                            PDet.Process_Result = reprocMark;
-                            clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet, lConectionInterface, lTransInterface);
+                            // Intentar reserva sin reinsertar la línea (pSoloReservar: true)
+                            refBePedidoDet = pBePedidoDet;
+                            if (Inserta_Linea_Detalle_Pedido(
+                                    pBePedidoEnc,
+                                    PDet,
+                                    beProducto,
+                                    diasVencimientoCliente,
+                                    beUnidad,
+                                    bePresentacion,
+                                    beCliente,
+                                    BeConfigEnc,
+                                    IdBodegaOrigen,
+                                    IdPropietarioBodegaOrigen,
+                                    lblprg,
+                                    lConectionInterface,
+                                    lTransInterface,
+                                    ref refBePedidoDet,
+                                    pEsManufactura: clienteTiempo?.Es_Manufactura ?? false,
+                                    pSoloReservar: true))
+                            {
+                                PDet.Status = 1;
+                                PDet.Process_Result = "Ok";
+                                clsLnI_nav_ped_traslado_det.Actualizar_Status_Det(PDet, lConectionInterface, lTransInterface);
+                                insertadas++;
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrWhiteSpace(PDet.Process_Result) &&
+                                    !PDet.Process_Result.StartsWith("ERROR_202310021910A"))
+                                    mensajesFallo.Add(PDet.Process_Result);
+
+                                PDet.Status = 0;
+                                PDet.Process_Result = "ERROR_202310021910A: No se pudo completar la reserva (reproceso), consulte log_error_wms.";
+                                clsLnI_nav_ped_traslado_det.Actualizar_Status_Det(PDet, lConectionInterface, lTransInterface);
+                                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet, lConectionInterface, lTransInterface);
+                            }
+                        }
+                        else
+                        {
+                            // La línea ya estaba completamente reservada — reproceso genuino
+                            string reprocMark = $"LINEA_REPROCESO: Línea {PDet.Line_No} ('{PDet.Item_No}') ya reservada en el pedido, no fue reprocesada.";
+                            mensajesFallo.Add(reprocMark);
+
+                            bool yaExitosa = PDet.Process_Result?.Equals("Ok", StringComparison.OrdinalIgnoreCase) ?? false;
+                            if (!yaExitosa)
+                            {
+                                PDet.Process_Result = reprocMark;
+                                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet, lConectionInterface, lTransInterface);
+                            }
                         }
                     }
 
@@ -642,14 +693,16 @@ namespace WMS.DALCore
                                                         SqlConnection lConectionInterface,
                                                         SqlTransaction lTransactionInterface,
                                                         ref clsBeTrans_pe_det? BePedidoDet,
-                                                        bool pEsManufactura = false)
+                                                        bool pEsManufactura = false,
+                                                        bool pSoloReservar = false)
         {
             bool result = false;
 
             clsBeTrans_pe_det pBePedidoDet = new clsBeTrans_pe_det();
             clsBeStock_res pBeStockRes = new clsBeStock_res();
 
-            BePedidoDet = null;
+            if (!pSoloReservar)
+                BePedidoDet = null;
 
             try
             {
@@ -659,7 +712,11 @@ namespace WMS.DALCore
                                                              lTransactionInterface);
 
                 pBePedidoDet = new clsBeTrans_pe_det();
-                pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1;
+                // En reproceso (pSoloReservar=true) se usa el IdPedidoDet existente
+                if (pSoloReservar && BePedidoDet != null)
+                    pBePedidoDet.IdPedidoDet = BePedidoDet.IdPedidoDet;
+                else
+                    pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID(lConectionInterface, lTransactionInterface) + 1;
                 pBePedidoDet.No_linea = pBeTrasladoDet.Line_No;
                 pBePedidoDet.Atributo_variante_1 = pBeTrasladoDet.Variant_Code;
                 pBePedidoDet.IdPedidoEnc = BePedidoEnc.IdPedidoEnc;
@@ -682,7 +739,7 @@ namespace WMS.DALCore
                 pBePedidoDet.IdEstado = pBeConfigEnc.IdProductoEstado;
                 pBePedidoDet.Ndias = pDiasVencimientoCliente;
                 pBePedidoDet.Nom_estado = "Buen Estado";
-                pBePedidoDet.IsNew = true;
+                pBePedidoDet.IsNew = !pSoloReservar;  // false en reproceso: Reservar_Stock_Por_Linea_Interface tomará rama de actualización
                 pBePedidoDet.Fec_agr = DateTime.Now;
                 pBePedidoDet.User_agr = pBeConfigEnc.IdUsuario.ToString();
                 pBePedidoDet.RoadDes = 0;
