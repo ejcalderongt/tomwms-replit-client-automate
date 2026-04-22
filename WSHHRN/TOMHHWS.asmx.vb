@@ -12962,11 +12962,11 @@ Public Class TOMHHWS
             Dim esvalida As Boolean = clsLnTrans_ubicsug.Ubicacion_Es_Valida(pIdProducto, pIdUbicacion, pIdBodega)
 
             Dim json As String = JsonConvert.SerializeObject(New With {
-    .UbicacionValida = esvalida
-},
-New JsonSerializerSettings With {
-    .NullValueHandling = NullValueHandling.Include
-})
+            .UbicacionValida = esvalida
+                        },
+            New JsonSerializerSettings With {
+                .NullValueHandling = NullValueHandling.Include
+            })
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
@@ -19419,6 +19419,7 @@ New JsonSerializerSettings With {
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
 
         Try
+
             If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
                 Throw New Exception("La lista enviada no contiene datos.")
             End If

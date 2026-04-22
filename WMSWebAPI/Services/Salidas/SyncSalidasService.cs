@@ -340,7 +340,7 @@ namespace WMSWebAPI.Services.Salidas
                 using var conn = new SqlConnection(connectionString);
                 conn.Open();
 
-                result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, conn, null);
+                result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, BeInavPedSalida?.No ?? string.Empty, conn, null);
                 
                 result.TotalSolicitado = result.LineasDetalle.Sum(l => l.QuantityRequested);
                 result.TotalReservado = result.LineasDetalle.Sum(l => l.QuantityReserved);
@@ -401,11 +401,30 @@ namespace WMSWebAPI.Services.Salidas
             return endIdx >= 0 ? razonText.Substring(0, endIdx).Trim() : razonText.Trim();
         }
 
-        private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, SqlConnection conn, SqlTransaction? tx)
+        private static (string code, string reason) ResolveFailureReason(string? processResult)
+        {
+            if (string.IsNullOrWhiteSpace(processResult))
+                return ("SIN_STOCK", "Sin stock disponible para cubrir la cantidad solicitada");
+
+            if (processResult.Contains("LINEA_REPROCESO", StringComparison.OrdinalIgnoreCase))
+                return ("LINEA_REPROCESO", "Línea ya existente en el pedido — no fue reprocesada en este envío");
+
+            if (processResult.StartsWith("ERROR_202310021910A", StringComparison.OrdinalIgnoreCase))
+                return ("RESERVA_FALLIDA", "No se pudo completar la reserva de stock (ver log WMS)");
+
+            if (processResult.Equals("Ok", StringComparison.OrdinalIgnoreCase))
+                return ("SIN_RESERVA_NUEVA", "Línea procesada previamente — sin nueva reserva generada");
+
+            return ("RESERVA_FALLIDA", processResult);
+        }
+
+        private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, string noEnc, SqlConnection conn, SqlTransaction? tx)
         {
             try
             {
-                var rows = clsLnTrans_pe_det.Get_Detalles_Reserva_By_IdPedidoEnc(idPedidoEnc, conn, tx);
+                var rows = clsLnTrans_pe_det.Get_Detalles_Reserva_By_IdPedidoEnc(idPedidoEnc, noEnc, conn, tx);
+
+                var processResults = new Dictionary<int, string>();
 
                 var lineDict = new Dictionary<int, ReservationLineDetailDto>();
 
@@ -423,6 +442,9 @@ namespace WMSWebAPI.Services.Salidas
                         };
                         lineDict[row.NoLinea] = lineDetail;
                     }
+
+                    if (!processResults.ContainsKey(row.NoLinea) && !string.IsNullOrWhiteSpace(row.ProcessResult))
+                        processResults[row.NoLinea] = row.ProcessResult;
 
                     if (row.IdStockRes > 0)
                     {
@@ -445,11 +467,13 @@ namespace WMSWebAPI.Services.Salidas
                 foreach (var line in lineDict.Values)
                 {
                     line.QuantityReserved = line.Reservations.Sum(r => r.Quantity);
-                    line.Status = line.QuantityReserved >= line.QuantityRequested - 0.001
-                        ? "Completa"
-                        : line.QuantityReserved > 0
-                            ? "Parcial"
-                            : "Sin reserva";
+                    bool completa = line.QuantityReserved >= line.QuantityRequested - 0.001;
+                    bool parcial  = !completa && line.QuantityReserved > 0;
+
+                    line.Status = completa ? "Completa" : parcial ? "Parcial" : "Sin reserva";
+
+                    if (!completa)
+                        (line.FailureCode, line.FailureReason) = ResolveFailureReason(processResults.GetValueOrDefault(line.LineNo));
                 }
 
                 return lineDict.Values.OrderBy(l => l.LineNo).ToList();
