@@ -554,6 +554,21 @@ namespace WMS.DALCore
                             }
                         }
                     }
+                    else
+                    {
+                        // Línea ya existente en trans_pe_det — reproceso no aplicado
+                        string reprocMark = $"LINEA_REPROCESO: Línea {PDet.Line_No} ('{PDet.Item_No}') ya existente en el pedido, no fue reprocesada.";
+                        mensajesFallo.Add(reprocMark);
+
+                        // Actualiza tabla interfaz con marcador de reproceso
+                        // (solo si la línea no fue marcada como exitosa anteriormente)
+                        bool yaExitosa = PDet.Process_Result?.Equals("Ok", StringComparison.OrdinalIgnoreCase) ?? false;
+                        if (!yaExitosa)
+                        {
+                            PDet.Process_Result = reprocMark;
+                            clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet, lConectionInterface, lTransInterface);
+                        }
+                    }
 
                     beNavDetAnt = PDet;
                     refBePedidoDetAnt = refBePedidoDet;
