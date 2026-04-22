@@ -19417,6 +19417,7 @@ New JsonSerializerSettings With {
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
 
         Try
+
             If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
                 Throw New Exception("La lista enviada no contiene datos.")
             End If
