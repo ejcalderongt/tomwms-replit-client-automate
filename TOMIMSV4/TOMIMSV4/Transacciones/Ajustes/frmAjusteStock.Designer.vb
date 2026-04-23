@@ -121,6 +121,7 @@ Partial Class frmAjusteStock
         Me.colTalla = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.colColor = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colProveedor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
         Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
@@ -135,7 +136,9 @@ Partial Class frmAjusteStock
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.colProveedor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.XtraTabPage3 = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridProductosConsolidados = New DevExpress.XtraGrid.GridControl()
+        Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -209,6 +212,9 @@ Partial Class frmAjusteStock
         Me.PanelControl1.SuspendLayout()
         CType(Me.grdDocsAsociados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.XtraTabPage3.SuspendLayout()
+        CType(Me.dgridProductosConsolidados, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -1108,6 +1114,13 @@ Partial Class frmAjusteStock
         Me.colIdProductoTallaColor.Visible = False
         Me.colIdProductoTallaColor.Width = 125
         '
+        'colProveedor
+        '
+        Me.colProveedor.HeaderText = "Proveedor"
+        Me.colProveedor.MinimumWidth = 6
+        Me.colProveedor.Name = "colProveedor"
+        Me.colProveedor.Width = 125
+        '
         'DockManager1
         '
         Me.DockManager1.AutoHideContainers.AddRange(New DevExpress.XtraBars.Docking.AutoHideContainer() {Me.AutoHideContainer2})
@@ -1210,7 +1223,7 @@ Partial Class frmAjusteStock
         Me.XtraTabControl1.SelectedTabPage = Me.XtraTabPage1
         Me.XtraTabControl1.Size = New System.Drawing.Size(1484, 560)
         Me.XtraTabControl1.TabIndex = 34
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2})
+        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2, Me.XtraTabPage3})
         '
         'XtraTabPage1
         '
@@ -1260,12 +1273,33 @@ Partial Class frmAjusteStock
         Me.GridView1.OptionsBehavior.ReadOnly = True
         Me.GridView1.OptionsFind.AlwaysVisible = True
         '
-        'colProveedor
+        'XtraTabPage3
         '
-        Me.colProveedor.HeaderText = "Proveedor"
-        Me.colProveedor.MinimumWidth = 6
-        Me.colProveedor.Name = "colProveedor"
-        Me.colProveedor.Width = 125
+        Me.XtraTabPage3.Controls.Add(Me.dgridProductosConsolidados)
+        Me.XtraTabPage3.Name = "XtraTabPage3"
+        Me.XtraTabPage3.Size = New System.Drawing.Size(1482, 530)
+        Me.XtraTabPage3.Text = "Resumen de ajuste"
+        '
+        'dgridProductosConsolidados
+        '
+        Me.dgridProductosConsolidados.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridProductosConsolidados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridProductosConsolidados.Location = New System.Drawing.Point(0, 0)
+        Me.dgridProductosConsolidados.MainView = Me.GridView3
+        Me.dgridProductosConsolidados.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridProductosConsolidados.MenuManager = Me.RibbonControl
+        Me.dgridProductosConsolidados.Name = "dgridProductosConsolidados"
+        Me.dgridProductosConsolidados.Size = New System.Drawing.Size(1482, 530)
+        Me.dgridProductosConsolidados.TabIndex = 1
+        Me.dgridProductosConsolidados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView3})
+        '
+        'GridView3
+        '
+        Me.GridView3.DetailHeight = 431
+        Me.GridView3.GridControl = Me.dgridProductosConsolidados
+        Me.GridView3.Name = "GridView3"
+        Me.GridView3.OptionsBehavior.ReadOnly = True
+        Me.GridView3.OptionsFind.AlwaysVisible = True
         '
         'frmAjusteStock
         '
@@ -1343,6 +1377,9 @@ Partial Class frmAjusteStock
         Me.PanelControl1.ResumeLayout(False)
         CType(Me.grdDocsAsociados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.XtraTabPage3.ResumeLayout(False)
+        CType(Me.dgridProductosConsolidados, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1429,4 +1466,7 @@ Partial Class frmAjusteStock
     Friend WithEvents btnImportarExcel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents txtNoAjuste As DevExpress.XtraEditors.TextEdit
     Friend WithEvents colProveedor As DataGridViewTextBoxColumn
+    Friend WithEvents XtraTabPage3 As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents dgridProductosConsolidados As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView3 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class
