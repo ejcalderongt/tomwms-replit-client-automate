@@ -1275,7 +1275,7 @@ Public Class clsLnVW_stock_res
                               WHERE Lic_Plate = @Lic_Plate
                                 AND IdUbicacion = @IdUbicacion
                                 AND IdBodega = @IdBodega
-                              ORDER BY Codigo, IdProductoEstado, IdPresentacion"
+                              ORDER BY IdStock"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
                 lDTA.SelectCommand.CommandType = CommandType.Text
