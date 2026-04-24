@@ -76,7 +76,7 @@ Public Class frmAjusteStock
         Try
 
             '#EJC20180924_1048PM: Si es un ajuste por inventario, se debe habilitar en el grid la bodega para que sea editable, para que se modifique, previo a envío a ERP.
-            For Each Col As DevExpress.XtraGrid.Columns.GridColumn In dgridView.Columns
+            For Each Col As DataGridViewColumn In dgrid.Columns
                 If Col.Name = "ColEnviadoAErp" Then
                     Col.ReadOnly = False
                 ElseIf (Col.Name = "ColBodega") AndAlso pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
@@ -237,7 +237,7 @@ Public Class frmAjusteStock
         Dim vIdProducto As Integer
         Dim clsTrans As New clsTransaccion
 
-        dgrid.SuspendLayout() : dgridView.ClearAllRows()
+        dgrid.SuspendLayout() : dgrid.Rows.Clear()
 
         Try
 
@@ -287,18 +287,18 @@ Public Class frmAjusteStock
                     ' (ColCodigoProducto, colNombreProducto, UmBas, colPresentacion,
                     ' colUbicacion), se unifica el patrón con el resto del archivo para
                     ' protegerse de futuros reordenamientos en el Designer.
-                    rc = dgridView.AppendRow(Codigo, vBeAjustDet.Nombre_producto)
-                    dgridView.Cell(rc, "UmBas").Value = vBeAjustDet.UmBas
-                    dgridView.Cell(rc, "colPresentacion").Value = vBeAjustDet.Nombre_Presentacion
-                    dgridView.Cell(rc, "colUbicacion").Value = Ubic
+                    rc = dgrid.Rows.Add(Codigo, vBeAjustDet.Nombre_producto)
+                    dgrid.Rows(rc).Cells("UmBas").Value = vBeAjustDet.UmBas
+                    dgrid.Rows(rc).Cells("colPresentacion").Value = vBeAjustDet.Nombre_Presentacion
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = Ubic
 
                     ' #EJCRP 21042026: (consolida #ProveedorFix previo) ColProveedor está al
                     ' final del grid; se asigna por nombre para no caer en 'motivoajuste'
                     ' por el orden posicional. sProveedorTexto se calcula líneas arriba.
-                    dgridView.Cell(rc, "ColProveedor").Value = sProveedorTexto
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
 
-                    dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
-                    dgridView.Cell(rc, "ColLote").Value = vBeAjustDet.Lote_original
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
 
                     Llenar_Motivo(rc, vBeAjustDet.IdMotivoAjuste, clsTrans.lConnection, clsTrans.lTransaction)
                     Llenar_Tipo(rc, vBeAjustDet.Idtipoajuste, clsTrans.lConnection, clsTrans.lTransaction)
@@ -308,52 +308,52 @@ Public Class frmAjusteStock
 
                     If vBeAjustDet.Idtipoajuste = 3 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgridView.Cell(rc, "CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
-                            dgridView.Cell(rc, "ColCantidad").Value = (vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
                         Else
-                            dgridView.Cell(rc, "CantidadP").Value = vBeAjustDet.Cantidad_original
-                            dgridView.Cell(rc, "ColCantidad").Value = vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original
+                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 5 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgridView.Cell(rc, "CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
-                            dgridView.Cell(rc, "ColCantidad").Value = (vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva) / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva) / vBeAjustDet.Factor
                         Else
-                            dgridView.Cell(rc, "CantidadP").Value = vBeAjustDet.Cantidad_original
-                            dgridView.Cell(rc, "ColCantidad").Value = vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva
+                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 1 Then 'Ajuste Lote
                         '#EJC20180726: Desplegar lote anterior y nuevo lote
                         '#CKFK 20211214 Cambié el orden de los valores en ColCantidad siempre voy a colocar el nuevo valor
-                        dgridView.Cell(rc, "ColLote").Value = vBeAjustDet.Lote_original
-                        dgridView.Cell(rc, "ColCantidad").Value = vBeAjustDet.Lote_nuevo
+                        dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Lote_nuevo
                     ElseIf vBeAjustDet.Idtipoajuste = 2 Then 'Ajuste vencimiento
                         '#CKFK 20211214 La fecha vence nueva se estaba colocando en el lote, lo modifique
                         '#CKFK 20211214 Cambié el orden de los valores en ColCantidad siempre voy a colocar el nuevo valor
-                        dgridView.Cell(rc, "CantidadP").Value = vBeAjustDet.Fecha_vence_original
-                        dgridView.Cell(rc, "ColCantidad").Value = vBeAjustDet.Fecha_vence_nueva
+                        dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Fecha_vence_original
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Fecha_vence_nueva
                     ElseIf vBeAjustDet.Idtipoajuste = 4 Then ' Ajuste Peso
-                        dgridView.Cell(rc, "ColCantidad").Value = vBeAjustDet.Peso_nuevo
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Peso_nuevo
                     End If
 
                     '#CKFK 20211214 Quité esta columna porque estaba repetida dos veces
-                    'dgridView.Cell(rc, "ColObservacion").Value = vBeAjustDet.Observacion
+                    'dgrid.Rows(rc).Cells("ColObservacion").Value = vBeAjustDet.Observacion
 
-                    dgridView.Cell(rc, "colUbicacion").Value = Ubic
-                    dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = Ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
                     If vBeAjustDet.IdPresentacion <> 0 Then
-                        dgridView.Cell(rc, "colPresentacion").Value = vBeAjustDet.Nombre_Presentacion
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = vBeAjustDet.Nombre_Presentacion
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     Else
-                        dgridView.Cell(rc, "colPresentacion").Value = Nothing
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     End If
 
-                    dgridView.Cell(rc, "ColEnviadoAErp").Value = vBeAjustDet.Enviado
-                    dgridView.Cell(rc, "ColIdAjusteDEt").Value = vBeAjustDet.IdAjusteDet 'IdAjusteDet by EJC
-                    dgridView.Cell(rc, "UmBas").Value = vBeAjustDet.UmBas
-                    dgridView.Cell(rc, "ColObservacion").Value = vBeAjustDet.Observacion
-                    dgridView.Cell(rc, "ColLicPlate").Value = vBeAjustDet.lic_plate
+                    dgrid.Rows(rc).Cells("ColEnviadoAErp").Value = vBeAjustDet.Enviado
+                    dgrid.Rows(rc).Cells("ColIdAjusteDEt").Value = vBeAjustDet.IdAjusteDet 'IdAjusteDet by EJC
+                    dgrid.Rows(rc).Cells("UmBas").Value = vBeAjustDet.UmBas
+                    dgrid.Rows(rc).Cells("ColObservacion").Value = vBeAjustDet.Observacion
+                    dgrid.Rows(rc).Cells("ColLicPlate").Value = vBeAjustDet.lic_plate
 
                     If BeBodega.Control_Talla_Color Then
 
@@ -363,9 +363,9 @@ Public Class frmAjusteStock
 
                             Dim tmpTalla = clsLnTalla.GetSingle_By_IdTalla(tmpProductoTallaColor.IdTalla)
                             Dim tmpColor = clsLnColor.GetSingle_By_IdColor(tmpProductoTallaColor.IdColor)
-                            dgridView.Cell(rc, "colIdProductoTallaColor").Value = tmpProductoTallaColor.IdProductoTallaColor
-                            dgridView.Cell(rc, "colTalla").Value = tmpTalla.Codigo
-                            dgridView.Cell(rc, "colColor").Value = tmpColor.Codigo
+                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = tmpProductoTallaColor.IdProductoTallaColor
+                            dgrid.Rows(rc).Cells("colTalla").Value = tmpTalla.Codigo
+                            dgrid.Rows(rc).Cells("colColor").Value = tmpColor.Codigo
 
                         End If
 
@@ -402,7 +402,7 @@ Public Class frmAjusteStock
 
         dgrid.ResumeLayout()
 
-        lblRegs.Caption = "Registros: " & dgridView.RowCount
+        lblRegs.Caption = "Registros: " & dgrid.Rows.Count
 
     End Sub
 
@@ -452,14 +452,14 @@ Public Class frmAjusteStock
         Es_Ajuste_Positivo_Sin_Stock = False
 
         Try
-            dgridView.EndEdit()
+            dgrid.EndEdit()
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
         Try
-            If dgridView.IsCurrentCellInEditMode() Then commitValue()
+            If dgrid.IsCurrentCellInEditMode Then commitValue()
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -503,7 +503,7 @@ Public Class frmAjusteStock
 
                     Llenar_Grid_Detalle(StockEspecificoSeleccionado, pTipoAjuste)
 
-                    If dgridView.RowCount > 0 Then
+                    If dgrid.Rows.Count > 0 Then
                         cmbTipoAjuste.Enabled = False
                     End If
 
@@ -587,41 +587,41 @@ Public Class frmAjusteStock
                     ' realmente eran UmBas/colPresentacion en este grid). Ahora pasamos
                     ' solo las 2 primeras (que sí son ColCodigoProducto/colNombreProducto)
                     ' y el resto se asigna por nombre justo abajo (UmBas, colUbicacion).
-                    rc = dgridView.AppendRow(codigo, BeAjusteDetBorrador.nombre_producto)
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto)
 
-                    dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
-                    dgridView.Cell(rc, "ColLote").Value = BeAjusteDetBorrador.lote_original
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
                     ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta desde borrador).
-                    dgridView.Cell(rc, "ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
 
-                    dgridView.Cell(rc, "UmBas").Value = BeAjusteDetBorrador.UmBas
-                    dgridView.Columns("UmBas").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                    dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
+                    dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
 
-                    dgridView.Cell(rc, "colUbicacion").Value = ubic
-                    dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
 
-                    If dgridView.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                        dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDetBorrador.fecha_vence_original
-                    ElseIf dgridView.Columns("ColCantidad").HeaderText = "Existencia" Then
-                        dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDetBorrador.cantidad_original
-                    ElseIf dgridView.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
-                        dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDetBorrador.lote_original
+                    If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDetBorrador.fecha_vence_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDetBorrador.cantidad_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDetBorrador.lote_original
                     End If
 
                     If BeAjusteDetBorrador.IdPresentacion <> 0 Then
-                        dgridView.Cell(rc, "colPresentacion").Value = BeAjusteDetBorrador.Presentacion.Nombre
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDetBorrador.Presentacion.Nombre
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     Else
-                        dgridView.Cell(rc, "colPresentacion").Value = Nothing
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     End If
 
                     If BeAjusteDetBorrador.lic_plate <> "" Then
-                        dgridView.Cell(rc, "ColLicPlate").Value = BeAjusteDetBorrador.lic_plate
-                        dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDetBorrador.lic_plate
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
                     Else
-                        dgridView.Cell(rc, "ColLicPlate").Value = Nothing
-                        dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
                     End If
 
                     Llenar_Motivo(rc, -1)
@@ -635,9 +635,9 @@ Public Class frmAjusteStock
 
                     Llena_Bodegas_ERP_Grid(rc, -1)
 
-                    dgridView.SelectRow(rc)
+                    dgrid.Rows(rc).Selected = True
 
-                    If dgridView.RowCount > 0 Then
+                    If dgrid.Rows.Count > 0 Then
                         cmbTipoAjuste.Enabled = False
                     End If
 
@@ -647,15 +647,15 @@ Public Class frmAjusteStock
                         Llenar_Color(rc, -1)
 
                         If pProductoTallaColor IsNot Nothing Then
-                            dgridView.Cell(rc, "colIdProductoTallaColor").Value = BeAjusteDetBorrador.IdProductoTallaColor_origen
-                            dgridView.Cell(rc, "colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                            dgridView.Cell(rc, "colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDetBorrador.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
                         Else
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDetBorrador.IdProductoBodega)
                         End If
 
-                        dgridView.Columns("colTalla").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-                        dgridView.Columns("colColor").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
 
                     End If
 
@@ -729,41 +729,41 @@ Public Class frmAjusteStock
                     ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Mismo
                     ' criterio que en el alta desde borrador: solo Codigo+Nombre por
                     ' posición; UmBas/colUbicacion ya se asignan por nombre abajo.
-                    rc = dgridView.AppendRow(codigo, BeAjusteDet.Nombre_producto)
+                    rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
 
-                    dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
-                    dgridView.Cell(rc, "ColLote").Value = BeAjusteDet.Lote_original
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
                     ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta directa).
-                    dgridView.Cell(rc, "ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
 
-                    dgridView.Cell(rc, "UmBas").Value = BeAjusteDet.UmBas
-                    dgridView.Columns("UmBas").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                    dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
+                    dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
 
-                    dgridView.Cell(rc, "colUbicacion").Value = ubic
-                    dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
 
-                    If dgridView.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                        dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Fecha_vence_original
-                    ElseIf dgridView.Columns("ColCantidad").HeaderText = "Existencia" Then
-                        dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Cantidad_original
-                    ElseIf dgridView.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
-                        dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Lote_original
+                    If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Fecha_vence_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
+                    ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
+                        dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Lote_original
                     End If
 
                     If BeAjusteDet.IdPresentacion <> 0 Then
-                        dgridView.Cell(rc, "colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     Else
-                        dgridView.Cell(rc, "colPresentacion").Value = Nothing
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     End If
 
                     If BeAjusteDet.lic_plate <> "" Then
-                        dgridView.Cell(rc, "ColLicPlate").Value = BeAjusteDet.lic_plate
-                        dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDet.lic_plate
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
                     Else
-                        dgridView.Cell(rc, "ColLicPlate").Value = Nothing
-                        dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
+                        dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
                     End If
 
                     Llenar_Motivo(rc, -1)
@@ -777,9 +777,9 @@ Public Class frmAjusteStock
 
                     Llena_Bodegas_ERP_Grid(rc, -1)
 
-                    dgridView.SelectRow(rc)
+                    dgrid.Rows(rc).Selected = True
 
-                    If dgridView.RowCount > 0 Then
+                    If dgrid.Rows.Count > 0 Then
                         cmbTipoAjuste.Enabled = False
                     End If
 
@@ -789,15 +789,15 @@ Public Class frmAjusteStock
                         Llenar_Color(rc, -1)
 
                         If pProductoTallaColor IsNot Nothing Then
-                            dgridView.Cell(rc, "colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
-                            dgridView.Cell(rc, "colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                            dgridView.Cell(rc, "colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
                         Else
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
                         End If
 
-                        dgridView.Columns("colTalla").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-                        dgridView.Columns("colColor").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
 
                     End If
 
@@ -812,7 +812,7 @@ Public Class frmAjusteStock
             Return
         End Try
 
-        lblRegs.Caption = "Registros: " & dgridView.RowCount
+        lblRegs.Caption = "Registros: " & dgrid.Rows.Count
 
     End Sub
 
@@ -878,42 +878,42 @@ Public Class frmAjusteStock
             ' #EJCRP 21042026: Estandarización del Rows.Add posicional. UmBas y ubic se
             ' reasignan por nombre justo abajo, así que no hace falta pasarlos por
             ' posición. ColProveedor se llena un poco más abajo desde stockEspecificoSeleccionado.Proveedor.
-            rc = dgridView.AppendRow(codigo, BeAjusteDet.Nombre_producto)
-            dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
-            dgridView.Cell(rc, "ColLote").Value = BeAjusteDet.Lote_original
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
+            dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+            dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
-            dgridView.Cell(rc, "UmBas").Value = BeAjusteDet.UmBas
-            dgridView.Columns("UmBas").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+            dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
+            dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
 
-            dgridView.Cell(rc, "colUbicacion").Value = ubic
-            dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+            dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+            dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
 
             '#CKFK 20211214 Agregué esta condición
-            If dgridView.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Fecha_vence_original
-            ElseIf dgridView.Columns("ColCantidad").HeaderText = "Existencia" Then
-                dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Cantidad_original
-            ElseIf dgridView.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
-                dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Lote_original
+            If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Fecha_vence_original
+            ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
+            ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Lote_original
             End If
 
             If BeAjusteDet.IdPresentacion <> 0 Then
-                dgridView.Cell(rc, "colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
-                dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
+                dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
             Else
-                dgridView.Cell(rc, "colPresentacion").Value = Nothing
-                dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
             End If
 
             If BeAjusteDet.lic_plate <> "" Then
-                dgridView.Cell(rc, "ColLicPlate").Value = BeAjusteDet.lic_plate
-                dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDet.lic_plate
+                dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             Else
-                dgridView.Cell(rc, "ColLicPlate").Value = Nothing
-                dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
+                dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
-            dgridView.Cell(rc, "ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
+            dgrid.Rows(rc).Cells("ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
@@ -925,9 +925,9 @@ Public Class frmAjusteStock
 
                 If pProductoTallaColor IsNot Nothing Then
 
-                    dgridView.Cell(rc, "ColIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
-                    dgridView.Cell(rc, "colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                    dgridView.Cell(rc, "colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                    dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
+                    dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                    dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
 
                 End If
 
@@ -1122,7 +1122,7 @@ Public Class frmAjusteStock
                 dt = clsLnTalla.Listar(True)
             End If
 
-            DgCombo = TryCast(dgrid.Rows(pIndex).Cells("ColTalla"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+            DgCombo = TryCast(dgrid.Rows(pIndex).Cells("ColTalla"), DataGridViewComboBoxCell)
             DgCombo.DataSource = dt
             DgCombo.ValueMember = "IdTalla"
             DgCombo.DisplayMember = "Codigo"
@@ -1160,7 +1160,7 @@ Public Class frmAjusteStock
                 dt = clsLnColor.Listar(True)
             End If
 
-            DgCombo = TryCast(dgrid.Rows(pIndex).Cells("ColColor"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+            DgCombo = TryCast(dgrid.Rows(pIndex).Cells("ColColor"), DataGridViewComboBoxCell)
             DgCombo.DataSource = dt
             DgCombo.ValueMember = "IdColor"
             DgCombo.DisplayMember = "Codigo"
@@ -1197,7 +1197,7 @@ Public Class frmAjusteStock
             End If
 
 
-            DgCombo = TryCast(dgrid.Rows(pIndex).Cells("motivoajuste"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+            DgCombo = TryCast(dgrid.Rows(pIndex).Cells("motivoajuste"), DataGridViewComboBoxCell)
             DgCombo.DataSource = dt
             DgCombo.ValueMember = "Idmotivoajuste"
             DgCombo.DisplayMember = "Nombre"
@@ -1252,7 +1252,7 @@ Public Class frmAjusteStock
 
                         If pidtipo = 3 OrElse pidtipo = 5 Then
 
-                            DgComboTipo = TryCast(dgrid.Rows(pIndex).Cells("tipoajuste"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                            DgComboTipo = TryCast(dgrid.Rows(pIndex).Cells("tipoajuste"), DataGridViewComboBoxCell)
                             DgComboTipo.DataSource = dt
                             DgComboTipo.DisplayMember = "Nombre"
                             DgComboTipo.ValueMember = "Idtipoajuste"
@@ -1260,7 +1260,7 @@ Public Class frmAjusteStock
                             DgComboTipo.Value = pidtipo
 
                             If Not chkBorrador.Checked Then
-                                dgridView.Columns("tipoajuste").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                                dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
                             End If
 
                             Valor_Tipo_Ajuste(pIndex)
@@ -1269,11 +1269,11 @@ Public Class frmAjusteStock
 
                     Case TipoTrans.Nuevo
 
-                        DgComboTipo = TryCast(dgrid.Rows(pIndex).Cells("tipoajuste"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                        DgComboTipo = TryCast(dgrid.Rows(pIndex).Cells("tipoajuste"), DataGridViewComboBoxCell)
                         DgComboTipo.DataSource = dt
                         DgComboTipo.DisplayMember = "Nombre"
                         DgComboTipo.ValueMember = "Idtipoajuste"
-                        dgridView.Columns("tipoajuste").OptionsColumn.AllowEdit = False  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = False
                         Valor_Tipo_Ajuste(pIndex)
 
                         If pidtipo = 3 Then
@@ -1285,20 +1285,20 @@ Public Class frmAjusteStock
             Else
 
                 'GT22042022_1459: sino es ajuste por cantidad, cargamos los demas tipos, y se deja en set el del combo en el enc.
-                If dgridView.RowCount = 0 Then
+                If dgrid.Rows.Count = 0 Then
                     dt = clsLnAjuste_tipo.GetAll()
                 Else
                     dt = clsLnAjuste_tipo.GetAll()
                 End If
 
-                DgComboTipo = TryCast(dgrid.Rows(pIndex).Cells("tipoajuste"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                DgComboTipo = TryCast(dgrid.Rows(pIndex).Cells("tipoajuste"), DataGridViewComboBoxCell)
 
                 DgComboTipo.DataSource = dt
                 DgComboTipo.DisplayMember = "Nombre"
                 DgComboTipo.ValueMember = "Idtipoajuste"
 
                 If pidtipo <> -1 Then
-                    dgridView.Columns("tipoajuste").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                    dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
                     DgComboTipo.Value = pidtipo
                     IdTipoAjuste = pidtipo
                     Valor_Tipo_Ajuste(pIndex)
@@ -1332,31 +1332,52 @@ Public Class frmAjusteStock
 
     End Sub
 
-    ' MIGRADO: DataGridView.EditingControlShowing -> GridView.ShownEditor.
-    ' En DX el editor activo se accede vía view.ActiveEditor (BaseEdit).
-    ' SelectedValueChanged (DGV ComboBox) equivale a EditValueChanged (DX BaseEdit).
-    Private Sub dgridView_ShownEditor(sender As Object, e As EventArgs) Handles dgridView.ShownEditor
+    Private Sub grdData_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles dgrid.EditingControlShowing
+
         Try
-            Dim view = TryCast(sender, DevExpress.XtraGrid.Views.Grid.GridView)
-            If view Is Nothing OrElse view.ActiveEditor Is Nothing Then Return
 
-            Dim colName As String = If(view.FocusedColumn IsNot Nothing, view.FocusedColumn.FieldName, "")
+            If TypeOf e.Control Is System.Windows.Forms.ComboBox Then
 
-            If colName = "tipoajuste" Then
-                AddHandler view.ActiveEditor.EditValueChanged, LastEventHandlerTipo
-                AddHandler view.ActiveEditor.Leave, AddressOf RemoveValueChangedHandlerTipo
-            End If
+                If dgrid.CurrentCell.OwningColumn.Name = "tipoajuste" Then
 
-            If colName = "motivoajuste" Then
-                AddHandler view.ActiveEditor.EditValueChanged, LastEventHandlerMotivo
-                AddHandler view.ActiveEditor.Leave, AddressOf RemoveValueChangedHandlerMotivo
+                    If TypeOf (e.Control) Is DataGridViewComboBoxEditingControl Then
+
+                        Dim cboThisComboBox = DirectCast(e.Control, DataGridViewComboBoxEditingControl)
+
+                        AddHandler cboThisComboBox.SelectedValueChanged, LastEventHandlerTipo
+                        AddHandler cboThisComboBox.Leave, AddressOf RemoveValueChangedHandlerTipo
+
+                    End If
+
+                End If
+
+                If dgrid.CurrentCell.OwningColumn.Name = "motivoajuste" Then
+
+                    If TypeOf (e.Control) Is DataGridViewComboBoxEditingControl Then
+
+                        Dim cboThisComboBox = DirectCast(e.Control, DataGridViewComboBoxEditingControl)
+
+                        AddHandler cboThisComboBox.SelectedValueChanged, LastEventHandlerMotivo
+                        AddHandler cboThisComboBox.Leave, AddressOf RemoveValueChangedHandlerMotivo
+
+                    End If
+
+                End If
+
             End If
 
         Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+
         End Try
+
     End Sub
 
     Private Sub comboTalla_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
@@ -1366,13 +1387,13 @@ Public Class frmAjusteStock
 
         Try
 
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
 
-                sr = dgridView.GetSelectedRows()(0)
+                sr = dgrid.SelectedRows(0).Index
 
-                dgridView.EndEdit()
+                dgrid.EndEdit()
 
-                DgCombo = TryCast(dgrid.Rows(sr).Cells("ColTalla"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                DgCombo = TryCast(dgrid.Rows(sr).Cells("ColTalla"), DataGridViewComboBoxCell)
 
                 Dim vNombreTipo As String = DgCombo.EditedFormattedValue
 
@@ -1403,13 +1424,13 @@ Public Class frmAjusteStock
 
         Try
 
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
 
-                sr = dgridView.GetSelectedRows()(0)
+                sr = dgrid.SelectedRows(0).Index
 
-                dgridView.EndEdit()
+                dgrid.EndEdit()
 
-                DgCombo = TryCast(dgrid.Rows(sr).Cells("ColColor"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                DgCombo = TryCast(dgrid.Rows(sr).Cells("ColColor"), DataGridViewComboBoxCell)
 
                 Dim vNombreTipo As String = DgCombo.EditedFormattedValue
 
@@ -1440,13 +1461,13 @@ Public Class frmAjusteStock
 
         Try
 
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
 
-                sr = dgridView.GetSelectedRows()(0)
+                sr = dgrid.SelectedRows(0).Index
 
-                dgridView.EndEdit()
+                dgrid.EndEdit()
 
-                DgCombo = TryCast(dgrid.Rows(sr).Cells("tipoajuste"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                DgCombo = TryCast(dgrid.Rows(sr).Cells("tipoajuste"), DataGridViewComboBoxCell)
 
                 Dim vNombreTipo As String = DgCombo.EditedFormattedValue
 
@@ -1463,15 +1484,15 @@ Public Class frmAjusteStock
                     End If
 
 
-                    dgridView.Cell(sr, "ColCantidad").Value = Nothing
+                    dgrid.Rows(sr).Cells("ColCantidad").Value = Nothing
 
                     If TipoAjuste_Por_Fecha_Vence Then
 
-                        oDateTimePicker.Location = dgridView.GetCellRect(sr, dgridView.Columns(8)).Location
+                        oDateTimePicker.Location = dgrid.GetCellDisplayRectangle((8), sr, False).Location
                         oDateTimePicker.Visible = True
 
-                        If dgridView.GetFocusedValue() IsNot DBNull.Value AndAlso IsDate(dgridView.GetFocusedValue()) Then
-                            oDateTimePicker.Value = dgridView.GetFocusedValue()
+                        If dgrid.CurrentCell.Value IsNot DBNull.Value AndAlso IsDate(dgrid.CurrentCell.Value) Then
+                            oDateTimePicker.Value = dgrid.CurrentCell.Value
                         Else
                             oDateTimePicker.Value = Today
                         End If
@@ -1545,31 +1566,31 @@ Public Class frmAjusteStock
                     vLoteOriginal = lBeTransAjusteDet(sr).Lote_original
                 End If
 
-                dgridView.Columns("CantidadP").HeaderText = "Existencia"
-                dgridView.Cell(sr, "CantidadP").Value = vCantidadOriginal
+                dgrid.Columns("CantidadP").HeaderText = "Existencia"
+                dgrid.Rows(sr).Cells("CantidadP").Value = vCantidadOriginal
 
-                dgridView.Columns("ColCantidad").HeaderText = "Nuevo Lote"
-                dgridView.Columns("ColCantidad").OptionsColumn.AllowEdit = False  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-                dgridView.Columns("colLote").HeaderText = "Lote Actual"
-                dgridView.Columns("UmBas").ReadOnly = True
-                dgridView.Columns("colLote").ReadOnly = True
+                dgrid.Columns("ColCantidad").HeaderText = "Nuevo Lote"
+                dgrid.Rows(sr).Cells("ColCantidad").ReadOnly = False
+                dgrid.Columns("colLote").HeaderText = "Lote Actual"
+                dgrid.Columns("UmBas").ReadOnly = True
+                dgrid.Columns("colLote").ReadOnly = True
 
                 Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
                 currencyCellStyle.Format = "N6"
 
-                dgridView.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
-                dgridView.Cell(sr, "ColCantidad").Value = vLoteOriginal
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vLoteOriginal
 
-                dgridView.Columns("ColEnviadoAErp").Visible = True
+                dgrid.Columns("ColEnviadoAErp").Visible = True
 
                 If Not BeConfig Is Nothing Then
                     If BeConfig.Interface_SAP Then
-                        dgridView.Cell(sr, "ColEnviadoAErp").Value = False
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
                     Else
-                        dgridView.Cell(sr, "ColEnviadoAErp").Value = True
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                     End If
                 Else
-                    dgridView.Cell(sr, "ColEnviadoAErp").Value = True
+                    dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                 End If
 
                 Set_Valores_Ajuste_Lote(sr)
@@ -1587,32 +1608,32 @@ Public Class frmAjusteStock
                     vFechaVenceOriginal = lBeTransAjusteDet(sr).Fecha_vence_original
                 End If
 
-                dgridView.Columns("ColCantidad").HeaderText = "Vence Actual"
-                dgridView.Columns("CantidadP").HeaderText = "Vence Anterior"
+                dgrid.Columns("ColCantidad").HeaderText = "Vence Actual"
+                dgrid.Columns("CantidadP").HeaderText = "Vence Anterior"
 
-                dgridView.Columns("CantidadP").ReadOnly = True
-                dgridView.Columns("ColCantidad").ReadOnly = False
-                dgridView.Columns("colLote").ReadOnly = True
+                dgrid.Columns("CantidadP").ReadOnly = True
+                dgrid.Columns("ColCantidad").ReadOnly = False
+                dgrid.Columns("colLote").ReadOnly = True
 
                 Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
                 currencyCellStyle.Format = "d"
 
-                dgridView.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
-                dgridView.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
 
-                dgridView.Cell(sr, "CantidadP").Value = vFechaVenceOriginal
-                dgridView.Cell(sr, "ColCantidad").Value = vFechaVenceOriginal
+                dgrid.Rows(sr).Cells("CantidadP").Value = vFechaVenceOriginal
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vFechaVenceOriginal
 
-                dgridView.Columns("ColEnviadoAErp").Visible = True
+                dgrid.Columns("ColEnviadoAErp").Visible = True
 
                 If Not BeConfig Is Nothing Then
                     If BeConfig.Interface_SAP Then
-                        dgridView.Cell(sr, "ColEnviadoAErp").Value = False
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
                     Else
-                        dgridView.Cell(sr, "ColEnviadoAErp").Value = True
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                     End If
                 Else
-                    dgridView.Cell(sr, "ColEnviadoAErp").Value = True
+                    dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                 End If
 
                 Set_Valores_Ajuste_Vence(sr)
@@ -1630,30 +1651,30 @@ Public Class frmAjusteStock
                     vCantidadOriginal = lBeTransAjusteDet(sr).Cantidad_original
                 End If
 
-                dgridView.Columns("colLote").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-                dgridView.Columns("CantidadP").ReadOnly = True
+                dgrid.Rows(sr).Cells("colLote").ReadOnly = True
+                dgrid.Columns("CantidadP").ReadOnly = True
 
-                dgridView.Cell(sr, "ColCantidad").Value = vCantidadOriginal
-                dgridView.Cell(sr, "CantidadP").Value = vCantidadOriginal
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vCantidadOriginal
+                dgrid.Rows(sr).Cells("CantidadP").Value = vCantidadOriginal
 
-                dgridView.Columns("ColCantidad").HeaderText = "Cantidad"
+                dgrid.Columns("ColCantidad").HeaderText = "Cantidad"
 
                 Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
                 currencyCellStyle.Format = "N6"
 
-                dgridView.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
-                dgridView.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("CantidadP").DefaultCellStyle = currencyCellStyle
 
-                dgridView.Columns("ColEnviadoAErp").Visible = True
+                dgrid.Columns("ColEnviadoAErp").Visible = True
 
                 If Not BeConfig Is Nothing Then
                     If BeConfig.Interface_SAP Then
-                        dgridView.Cell(sr, "ColEnviadoAErp").Value = False
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = False
                     Else
-                        dgridView.Cell(sr, "ColEnviadoAErp").Value = True
+                        dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                     End If
                 Else
-                    dgridView.Cell(sr, "ColEnviadoAErp").Value = True
+                    dgrid.Rows(sr).Cells("ColEnviadoAErp").Value = True
                 End If
 
                 Set_Valores_Ajuste_Cantidad(sr)
@@ -1663,12 +1684,12 @@ Public Class frmAjusteStock
 
             If TipoAjuste_Por_Peso Then
 
-                dgridView.Columns("ColCantidad").ReadOnly = False
+                dgrid.Columns("ColCantidad").ReadOnly = False
 
                 Dim currencyCellStyle As DataGridViewCellStyle = New DataGridViewCellStyle()
                 currencyCellStyle.Format = "N6"
 
-                dgridView.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
+                dgrid.Columns("ColCantidad").DefaultCellStyle = currencyCellStyle
 
                 Set_Valores_Ajuste_Peso(sr)
                 Return
@@ -1704,12 +1725,12 @@ Public Class frmAjusteStock
                 vLoteNuevo = lBeTransAjusteDet(sr).Lote_nuevo
             End If
 
-            dgridView.Cell(sr, "LoteOrig").Value = vLoteOriginal
+            dgrid.Rows(sr).Cells("LoteOrig").Value = vLoteOriginal
 
             If Modo = TipoTrans.Editar Then
                 '#CKFK 20211214 Cambié la información porque en ColCantidad va el lote nuevo y en ColLote el original
-                dgridView.Cell(sr, "ColCantidad").Value = vLoteOriginal
-                dgridView.Cell(sr, "ColLote").Value = vLoteNuevo
+                dgrid.Rows(sr).Cells("ColCantidad").Value = vLoteOriginal
+                dgrid.Rows(sr).Cells("ColLote").Value = vLoteNuevo
             End If
 
         Catch ex As Exception
@@ -1730,11 +1751,11 @@ Public Class frmAjusteStock
         Try
 
             If chkBorrador.Checked Then
-                dgridView.Cell(sr, "CantidadP").Value = lBeTransAjusteDetBorrador(sr).fecha_vence_original
-                If Modo = TipoTrans.Editar Then dgridView.Cell(sr, "ColCantidad").Value = lBeTransAjusteDetBorrador(sr).fecha_vence_nueva
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDetBorrador(sr).fecha_vence_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDetBorrador(sr).fecha_vence_nueva
             Else
-                dgridView.Cell(sr, "CantidadP").Value = lBeTransAjusteDet(sr).Fecha_vence_original
-                If Modo = TipoTrans.Editar Then dgridView.Cell(sr, "ColCantidad").Value = lBeTransAjusteDet(sr).Fecha_vence_nueva
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Fecha_vence_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Fecha_vence_nueva
             End If
 
         Catch ex As Exception
@@ -1759,7 +1780,7 @@ Public Class frmAjusteStock
 
         Try
 
-            dgridView.Columns("ColCantidad").ReadOnly = False
+            dgrid.Columns("ColCantidad").ReadOnly = False
 
             If chkBorrador.Checked Then
                 vCantidadOriginal = lBeTransAjusteDetBorrador(sr).cantidad_original
@@ -1773,20 +1794,20 @@ Public Class frmAjusteStock
 
             If Modo = TipoTrans.Editar Then
                 If Not chkBorrador.Checked Then
-                    dgridView.Cell(sr, "ColCantidad").Value = vCantidadOriginal - vCantidadNueva
+                    dgrid.Rows(sr).Cells("ColCantidad").Value = vCantidadOriginal - vCantidadNueva
                 Else
-                    dgridView.Cell(sr, "ColCantidad").Value = vCantidadOriginal
+                    dgrid.Rows(sr).Cells("ColCantidad").Value = vCantidadOriginal
                 End If
             End If
 
             If vIdTipoAjuste = 3 Then
-                vNuevaCant = vCantidadOriginal + dgridView.Cell(sr, "ColCantidad").Value
+                vNuevaCant = vCantidadOriginal + dgrid.Rows(sr).Cells("ColCantidad").Value
             ElseIf vIdTipoAjuste = 5 Then
-                vNuevaCant = vCantidadOriginal - dgridView.Cell(sr, "ColCantidad").Value
+                vNuevaCant = vCantidadOriginal - dgrid.Rows(sr).Cells("ColCantidad").Value
             End If
 
-            If vCantidadOriginal < vNuevaCant Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-            If vCantidadOriginal > vNuevaCant Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
+            If vCantidadOriginal < vNuevaCant Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+            If vCantidadOriginal > vNuevaCant Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
 
         Catch ex As Exception
 
@@ -1806,17 +1827,17 @@ Public Class frmAjusteStock
         Try
 
             If chkBorrador.Checked Then
-                dgridView.Cell(sr, "CantidadP").Value = lBeTransAjusteDetBorrador(sr).peso_original
-                If Modo = TipoTrans.Editar Then dgridView.Cell(sr, "ColCantidad").Value = lBeTransAjusteDetBorrador(sr).peso_nuevo
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDetBorrador(sr).peso_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDetBorrador(sr).peso_nuevo
 
-                If lBeTransAjusteDetBorrador(sr).peso_original < lBeTransAjusteDetBorrador(sr).peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-                If lBeTransAjusteDetBorrador(sr).peso_original > lBeTransAjusteDetBorrador(sr).peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
+                If lBeTransAjusteDetBorrador(sr).peso_original < lBeTransAjusteDetBorrador(sr).peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                If lBeTransAjusteDetBorrador(sr).peso_original > lBeTransAjusteDetBorrador(sr).peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
             Else
-                dgridView.Cell(sr, "CantidadP").Value = lBeTransAjusteDet(sr).Peso_original
-                If Modo = TipoTrans.Editar Then dgridView.Cell(sr, "ColCantidad").Value = lBeTransAjusteDet(sr).Peso_nuevo
+                dgrid.Rows(sr).Cells("CantidadP").Value = lBeTransAjusteDet(sr).Peso_original
+                If Modo = TipoTrans.Editar Then dgrid.Rows(sr).Cells("ColCantidad").Value = lBeTransAjusteDet(sr).Peso_nuevo
 
-                If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-                If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
+                If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
             End If
 
         Catch ex As Exception
@@ -1837,10 +1858,10 @@ Public Class frmAjusteStock
         Dim sr, stocklink, ii As Integer
         Dim str As New clsBeStock_res
 
-        dgridView.EndEdit()
+        dgrid.EndEdit()
 
         Try
-            sr = dgridView.GetSelectedRows()(0)
+            sr = dgrid.SelectedRows(0).Index
             If MessageBox.Show("Eliminar registro ?", "", MessageBoxButtons.YesNo) <> DialogResult.Yes Then Return
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
@@ -1856,11 +1877,11 @@ Public Class frmAjusteStock
 
                 If stocklink = 0 Then
                     lBeTransAjusteDetBorrador.RemoveAt(sr)
-                    dgridView.RemoveRow(sr)
+                    dgrid.Rows.RemoveAt(sr)
                 Else
                     For ii = lBeTransAjusteDetBorrador.Count - 1 To 0 Step -1
                         lBeTransAjusteDetBorrador.RemoveAt(ii)
-                        dgridView.RemoveRow(ii)
+                        dgrid.Rows.RemoveAt(ii)
                     Next
                 End If
 
@@ -1873,7 +1894,7 @@ Public Class frmAjusteStock
                     clsLnStock_res.Eliminar(str)
 
                     lBeTransAjusteDet.RemoveAt(sr)
-                    dgridView.RemoveRow(sr)
+                    dgrid.Rows.RemoveAt(sr)
                 Else
                     For ii = lBeTransAjusteDet.Count - 1 To 0 Step -1
 
@@ -1883,17 +1904,17 @@ Public Class frmAjusteStock
                         End If
 
                         lBeTransAjusteDet.RemoveAt(ii)
-                        dgridView.RemoveRow(ii)
+                        dgrid.Rows.RemoveAt(ii)
                     Next
                 End If
 
             End If
 
-            If dgridView.RowCount = 0 Then
+            If dgrid.Rows.Count = 0 Then
                 cmbTipoAjuste.Enabled = True
             End If
 
-            lblRegs.Caption = "Registros: " & dgridView.RowCount
+            lblRegs.Caption = "Registros: " & dgrid.Rows.Count
 
         Catch ex As Exception
 
@@ -1915,10 +1936,10 @@ Public Class frmAjusteStock
         Dim sr, rc As Integer
         Dim tval, nval, oval, tpes, npes, opes As Double
 
-        dgridView.EndEdit()
+        dgrid.EndEdit()
 
         Try
-            sr = dgridView.GetSelectedRows()(0)
+            sr = dgrid.SelectedRows(0).Index
             It = lBeTransAjusteDet(sr)
             tval = It.Cantidad_original
             tpes = It.Peso_original
@@ -1999,19 +2020,19 @@ Public Class frmAjusteStock
             ' #EJCRP 21042026: (consolida #ProveedorFix previo) pasaba 'ubic' como 3er
             ' argumento posicional y caía en la columna UmBas. Estandarizado: solo
             ' Codigo+Nombre por posición; el resto por nombre.
-            rc = dgridView.AppendRow(codigo, Item.Nombre_producto)
-            dgridView.Cell(rc, "UmBas").Value = Item.UmBas
-            dgridView.Cell(rc, "colUbicacion").Value = ubic
-            dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-            dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
+            rc = dgrid.Rows.Add(codigo, Item.Nombre_producto)
+            dgrid.Rows(rc).Cells("UmBas").Value = Item.UmBas
+            dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+            dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
+            dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             ' #EJCRP 21042026: poblar Proveedor para el detalle del link de quiebre de lote.
             ' Item.IdStock representa el stock origen del nuevo link.
-            dgridView.Cell(rc, "ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
+            dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
             Llenar_Tipo(rc, Item.Idtipoajuste)
 
-            lblRegs.Caption = "Registros: " & dgridView.RowCount
+            lblRegs.Caption = "Registros: " & dgrid.Rows.Count
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -2035,21 +2056,21 @@ Public Class frmAjusteStock
         'grdData.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
         Try
-            sr = dgridView.GetSelectedRows()(0)
-            v1 = dgridView.Cell(sr, "CantidadP").Value
-            v2 = dgridView.Cell(sr, "ColCantidad").Value
-            If v1 < v2 Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-            If v1 > v2 Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
-            If v1 = v2 Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+            sr = dgrid.SelectedRows(0).Index
+            v1 = dgrid.Rows(sr).Cells("CantidadP").Value
+            v2 = dgrid.Rows(sr).Cells("ColCantidad").Value
+            If v1 < v2 Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+            If v1 > v2 Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+            If v1 = v2 Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
         Catch ex As Exception
-            dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+            dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
         End Try
 
         Return True
 
         Try
-            sr = dgridView.GetSelectedRows()(0)
-            Get_IdTipo_By_Nombre(dgridView.Cell(sr, "tipoajuste").EditedFormattedValue)
+            sr = dgrid.SelectedRows(0).Index
+            Get_IdTipo_By_Nombre(dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue)
             Valor_Tipo_Ajuste(sr)
 
             If lBeTransAjusteDet(sr).IdMotivoAjuste = 0 Or lBeTransAjusteDet(sr).Idtipoajuste = 0 Then
@@ -2057,15 +2078,15 @@ Public Class frmAjusteStock
                 Return False
             End If
 
-            If dgridView.IsCurrentCellInEditMode() Then
-                lBeTransAjusteDet(sr).Observacion = dgridView.GetRowCellValue(sr, dgridView.Columns(8))
-                ov = dgridView.GetRowCellValue(sr, dgridView.Columns(6))
+            If dgrid.IsCurrentCellInEditMode Then
+                lBeTransAjusteDet(sr).Observacion = dgrid.Rows(sr).Cells(8).EditedFormattedValue
+                ov = dgrid.Rows(sr).Cells(6).EditedFormattedValue
             Else
-                lBeTransAjusteDet(sr).Observacion = dgridView.GetRowCellValue(sr, dgridView.Columns(8))
-                ov = dgridView.Cell(sr, "ColCantidad").Value
+                lBeTransAjusteDet(sr).Observacion = dgrid.Rows(sr).Cells(8).Value
+                ov = dgrid.Rows(sr).Cells("ColCantidad").Value
             End If
 
-            dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+            dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
             If TipoAjuste_Por_lote Then
                 lBeTransAjusteDet(sr).Lote_nuevo = CStr(ov)
@@ -2114,9 +2135,9 @@ Public Class frmAjusteStock
                     lBeTransAjusteDet(sr).Fecha_vence_nueva = lBeTransAjusteDet(sr).Fecha_vence_original
                     lBeTransAjusteDet(sr).Peso_nuevo = lBeTransAjusteDet(sr).Peso_original
 
-                    If lBeTransAjusteDet(sr).Cantidad_original < lBeTransAjusteDet(sr).Cantidad_nueva Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-                    If lBeTransAjusteDet(sr).Cantidad_original > lBeTransAjusteDet(sr).Cantidad_nueva Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
-                    If lBeTransAjusteDet(sr).Cantidad_original = lBeTransAjusteDet(sr).Cantidad_nueva Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+                    If lBeTransAjusteDet(sr).Cantidad_original < lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                    If lBeTransAjusteDet(sr).Cantidad_original > lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+                    If lBeTransAjusteDet(sr).Cantidad_original = lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
                     Return True
                 Catch ex As Exception
@@ -2140,9 +2161,9 @@ Public Class frmAjusteStock
                     lBeTransAjusteDet(sr).Fecha_vence_nueva = lBeTransAjusteDet(sr).Fecha_vence_original
                     lBeTransAjusteDet(sr).Cantidad_nueva = lBeTransAjusteDet(sr).Cantidad_original
 
-                    If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-                    If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
-                    If lBeTransAjusteDet(sr).Peso_original = lBeTransAjusteDet(sr).Peso_nuevo Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+                    If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                    If lBeTransAjusteDet(sr).Peso_original > lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+                    If lBeTransAjusteDet(sr).Peso_original = lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
                     Return True
                 Catch ex As Exception
@@ -2177,13 +2198,13 @@ Public Class frmAjusteStock
 
         Try
 
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
 
-                sr = dgridView.GetSelectedRows()(0)
+                sr = dgrid.SelectedRows(0).Index
 
-                dgridView.EndEdit()
+                dgrid.EndEdit()
 
-                DgCombo = TryCast(dgrid.Rows(sr).Cells("motivoajuste"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                DgCombo = TryCast(dgrid.Rows(sr).Cells("motivoajuste"), DataGridViewComboBoxCell)
 
                 vNombreMotivo = DgCombo.EditedFormattedValue
 
@@ -2266,8 +2287,7 @@ Public Class frmAjusteStock
 
     End Sub
 
-    ' MIGRADO: DataGridView.CellEndEdit -> GridView.CellValueChanged.
-    Private Sub dgridView_CellValueChanged(sender As Object, e As DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs) Handles dgridView.CellValueChanged
+    Private Sub grdData_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgrid.CellEndEdit
         Try
             'commitValue()
             oDateTimePicker.Visible = False
@@ -2277,19 +2297,16 @@ Public Class frmAjusteStock
         End Try
     End Sub
 
-    ' MIGRADO: DataGridView.CellBeginEdit -> GridView.ShowingEditor.
-    Private Sub dgridView_ShowingEditor(sender As Object, e As ComponentModel.CancelEventArgs) Handles dgridView.ShowingEditor
+    Private Sub grdData_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgrid.CellBeginEdit
 
-        If dgrid.Focused AndAlso dgridView.FocusedColumn IsNot Nothing AndAlso dgridView.FocusedColumn.VisibleIndex = 7 Then
+        If dgrid.Focused AndAlso dgrid.CurrentCell.ColumnIndex = 7 Then
 
             If TipoAjuste_Por_Fecha_Vence Then
-                Dim h As Integer = dgridView.FocusedRowHandle
-                oDateTimePicker.Location = dgridView.GetCellRect(h, dgridView.Columns(8)).Location
+                oDateTimePicker.Location = dgrid.GetCellDisplayRectangle((8), e.RowIndex, False).Location
                 oDateTimePicker.Visible = True
 
-                Dim cv = dgridView.GetFocusedValue()
-                If cv IsNot Nothing AndAlso Not IsDBNull(cv) AndAlso IsDate(cv) Then
-                    oDateTimePicker.Value = CDate(cv)
+                If dgrid.CurrentCell.Value IsNot DBNull.Value AndAlso IsDate(dgrid.CurrentCell.Value) Then
+                    oDateTimePicker.Value = dgrid.CurrentCell.Value
                 Else
                     oDateTimePicker.Value = Today
                 End If
@@ -2301,25 +2318,19 @@ Public Class frmAjusteStock
 
     End Sub
 
-    ' MIGRADO: DataGridView.CellEnter -> GridView.FocusedColumnChanged.
-    ' En DX no hay equivalente directo a "celda enter" — usamos FocusedColumnChanged
-    ' que dispara cuando la columna foco cambia (combinado con el row foco actual).
-    Private Sub dgridView_FocusedColumnChanged(sender As Object, e As DevExpress.XtraGrid.Views.Base.FocusedColumnChangedEventArgs) Handles dgridView.FocusedColumnChanged
+    Private Sub grdData_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgrid.CellEnter
 
         Try
-            If e.FocusedColumn IsNot Nothing AndAlso e.FocusedColumn.VisibleIndex = 5 Then
+
+            If e.ColumnIndex = 5 Then
 
                 oDateTimePicker.Visible = False
 
-                Dim h As Integer = dgridView.FocusedRowHandle
-                If h < 0 Then Return
-
-                Dim raw As Object = dgridView.GetRowCellDisplayText(h, "tipoajuste")
-                Dim vNomTipo As String = If(raw Is Nothing OrElse IsDBNull(raw), "", raw.ToString())
+                Dim vNomTipo As String = IIf(IsDBNull(dgrid.Rows(e.RowIndex).Cells("tipoajuste").EditedFormattedValue), "", dgrid.Rows(e.RowIndex).Cells("tipoajuste").EditedFormattedValue)
 
                 If vNomTipo <> "" Then
                     Get_IdTipo_By_Nombre(vNomTipo)
-                    Valor_Tipo_Ajuste(h)
+                    Valor_Tipo_Ajuste(e.RowIndex)
                     If IdTipoAjuste > 0 Then oDateTimePicker.Visible = TipoAjuste_Por_Fecha_Vence
                 End If
 
@@ -2336,13 +2347,13 @@ Public Class frmAjusteStock
 
             If XtraMessageBox.Show("¿Guardar ajuste?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
-                If dgridView.IsCurrentCellInEditMode() Then
+                If dgrid.IsCurrentCellInEditMode Then
                     If Not commitValue() Then Return
                 End If
 
-                dgridView.EndEdit()
+                dgrid.EndEdit()
 
-                If dgridView.RowCount = 0 Then
+                If dgrid.Rows.Count = 0 Then
                     XtraMessageBox.Show("La transaccion debe contener al menos 1 ajuste", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return
                 End If
 
@@ -2459,7 +2470,7 @@ Public Class frmAjusteStock
 
             End If
 
-            For sr = 0 To dgridView.RowCount - 1
+            For sr = 0 To dgrid.Rows.Count - 1
 
                 Dim esBorrador As Boolean = chkBorrador.Checked
 
@@ -2470,38 +2481,38 @@ Public Class frmAjusteStock
                 Dim vTallaOrigen As String = If(esBorrador, lBeTransAjusteDetBorrador(sr).Talla_origen, lBeTransAjusteDet(sr).Talla_origen)
                 Dim vColorOrigen As String = If(esBorrador, lBeTransAjusteDetBorrador(sr).Color_origen, lBeTransAjusteDet(sr).Color_origen)
 
-                vNomTipoAjuste = IIf(IsDBNull(dgridView.Cell(sr, "tipoajuste").EditedFormattedValue), "", dgridView.Cell(sr, "tipoajuste").EditedFormattedValue)
+                vNomTipoAjuste = IIf(IsDBNull(dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue), "", dgrid.Rows(sr).Cells("tipoajuste").EditedFormattedValue)
 
                 Get_IdTipo_By_Nombre(vNomTipoAjuste)
 
                 If IdTipoAjuste < 1 Then
-                    dgridView.SelectRow(sr)
+                    dgrid.Rows(sr).Cells(0).Selected = True
                     XtraMessageBox.Show("Linea : " & sr + 1 & " Debe definir el tipo de ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Return False
                 End If
 
-                vNomMotivo = dgridView.Cell(sr, "motivoajuste").EditedFormattedValue
+                vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
                 Get_IdMotivo_By_Nombre(vNomMotivo)
 
                 If IdMotivoAjuste < 1 Then
-                    dgridView.SelectRow(sr)
+                    dgrid.Rows(sr).Cells(0).Selected = True
                     XtraMessageBox.Show("Línea : " & sr + 1 & " Debe definir el motivo del ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Return False
                 End If
 
                 If esBorrador Then
                     lBeTransAjusteDetBorrador(sr).idmotivoajuste = IdMotivoAjuste
-                    lBeTransAjusteDetBorrador(sr).observacion = dgridView.Cell(sr, "ColObservacion").Value
+                    lBeTransAjusteDetBorrador(sr).observacion = dgrid.Rows(sr).Cells("ColObservacion").Value
                 Else
                     lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
-                    lBeTransAjusteDet(sr).Observacion = dgridView.Cell(sr, "ColObservacion").Value
+                    lBeTransAjusteDet(sr).Observacion = dgrid.Rows(sr).Cells("ColObservacion").Value
                 End If
 
                 If TipoAjuste_Por_lote Then
 
                     If vIdStockLink = 0 Then
                         If Not Es_Ajuste_Positivo_Sin_Stock Then
-                            If (dgridView.Cell(sr, "LoteOrig").Value = dgridView.Cell(sr, "ColCantidad").Value) Then
+                            If (dgrid.Rows(sr).Cells("LoteOrig").Value = dgrid.Rows(sr).Cells("ColCantidad").Value) Then
                                 XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                                 Return False
                             End If
@@ -2509,14 +2520,14 @@ Public Class frmAjusteStock
                     End If
 
                     If esBorrador Then
-                        lBeTransAjusteDetBorrador(sr).lote_nuevo = dgridView.Cell(sr, "ColCantidad").Value
+                        lBeTransAjusteDetBorrador(sr).lote_nuevo = dgrid.Rows(sr).Cells("ColCantidad").Value
                         lBeTransAjusteDetBorrador(sr).codigo_ajuste = 16
                     Else
-                        lBeTransAjusteDet(sr).Lote_nuevo = dgridView.Cell(sr, "ColCantidad").Value
+                        lBeTransAjusteDet(sr).Lote_nuevo = dgrid.Rows(sr).Cells("ColCantidad").Value
                         lBeTransAjusteDet(sr).Codigo_ajuste = 16
                     End If
 
-                    dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
                 End If
 
@@ -2527,7 +2538,7 @@ Public Class frmAjusteStock
                         If oDateTimePicker.Visible Then
                             FechaVenceNueva = oDateTimePicker.Value
                         Else
-                            Dim vValor As String = dgridView.Cell(sr, "ColCantidad").Value
+                            Dim vValor As String = dgrid.Rows(sr).Cells("ColCantidad").Value
 
                             If vValor = "" Then
                                 Throw New Exception("No se ha ingresado el valor")
@@ -2536,7 +2547,7 @@ Public Class frmAjusteStock
                             End If
                         End If
 
-                        FechaOriginalVence = dgridView.Cell(sr, "CantidadP").Value
+                        FechaOriginalVence = dgrid.Rows(sr).Cells("CantidadP").Value
 
                         If vIdStockLink = 0 Then
                             If (FechaOriginalVence = FechaVenceNueva) Then
@@ -2553,10 +2564,10 @@ Public Class frmAjusteStock
                             lBeTransAjusteDet(sr).Codigo_ajuste = 15
                         End If
 
-                        dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+                        dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
                     Catch ex As Exception
-                        dgridView.SelectRow(sr)
+                        dgrid.Rows(sr).Cells(0).Selected = True
                         XtraMessageBox.Show("Linea : " & sr + 1 & " Valor fecha vencimiento incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                         Return False
                     End Try
@@ -2569,25 +2580,25 @@ Public Class frmAjusteStock
 
                         Dim vNuevaCantidad As Double = 0
 
-                        If (dgridView.Cell(sr, "tipoajuste").Value = Nothing) Then
+                        If (dgrid.Rows(sr).Cells("tipoajuste").Value = Nothing) Then
                             XtraMessageBox.Show("Linea : " & sr + 1 & " No ha seleccionado correctamente el tipo de ajuste !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                             Return False
                         End If
 
-                        If dgridView.Cell(sr, "tipoajuste").Value = 3 Then
-                            vNuevaCantidad = Val(dgridView.Cell(sr, "CantidadP").Value) + Val(dgridView.Cell(sr, "ColCantidad").Value)
-                        ElseIf dgridView.Cell(sr, "tipoajuste").Value = 5 Then
-                            vNuevaCantidad = Val(dgridView.Cell(sr, "CantidadP").Value) - Val(dgridView.Cell(sr, "ColCantidad").Value)
+                        If dgrid.Rows(sr).Cells("tipoajuste").Value = 3 Then
+                            vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) + Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
+                        ElseIf dgrid.Rows(sr).Cells("tipoajuste").Value = 5 Then
+                            vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) - Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
                         End If
 
                         If vIdStockLink = 0 Then
-                            If (dgridView.Cell(sr, "CantidadP").Value = vNuevaCantidad) Then
+                            If (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
                                 XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                                 Return False
                             End If
                         End If
 
-                        If dgridView.Cell(sr, "ColCantidad").Value.ToString = "" Then Throw New Exception
+                        If dgrid.Rows(sr).Cells("ColCantidad").Value.ToString = "" Then Throw New Exception
                         ValorGrd = vNuevaCantidad
 
                         If ValorGrd < 0 Then Throw New Exception
@@ -2610,9 +2621,9 @@ Public Class frmAjusteStock
                             End If
                         End If
 
-                        If vCantidadOriginal < ValorGrd Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-                        If vCantidadOriginal > ValorGrd Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
-                        If vCantidadOriginal = ValorGrd Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+                        If vCantidadOriginal < ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                        If vCantidadOriginal > ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+                        If vCantidadOriginal = ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
                     Catch ex As Exception
                         XtraMessageBox.Show("Linea : " & sr + 1 & " el valor ingresado en el campo cantidad es incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2626,14 +2637,14 @@ Public Class frmAjusteStock
                     Try
 
                         If vIdStockLink = 0 Then
-                            If (dgridView.Cell(sr, "CantidadP").Value = dgridView.Cell(sr, "ColCantidad").Value) Then
+                            If (dgrid.Rows(sr).Cells("CantidadP").Value = dgrid.Rows(sr).Cells("ColCantidad").Value) Then
                                 XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distinctos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                                 Return False
                             End If
                         End If
 
-                        If dgridView.Cell(sr, "ColCantidad").Value = "" Then Throw New Exception
-                        ValorGrd = dgridView.Cell(sr, "ColCantidad").Value
+                        If dgrid.Rows(sr).Cells("ColCantidad").Value = "" Then Throw New Exception
+                        ValorGrd = dgrid.Rows(sr).Cells("ColCantidad").Value
                         If ValorGrd < 0 Then Throw New Exception
 
                         If esBorrador Then
@@ -2644,9 +2655,9 @@ Public Class frmAjusteStock
                             lBeTransAjusteDet(sr).Codigo_ajuste = 14
                         End If
 
-                        If vPesoOriginal < ValorGrd Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox2.Image
-                        If vPesoOriginal > ValorGrd Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox3.Image
-                        If vPesoOriginal = ValorGrd Then dgridView.Cell(sr, "ColDiferencia").Value = PictureBox1.Image
+                        If vPesoOriginal < ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
+                        If vPesoOriginal > ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox3.Image
+                        If vPesoOriginal = ValorGrd Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox1.Image
 
                     Catch ex As Exception
                         XtraMessageBox.Show("Linea : " & sr + 1 & " Valor peso incorrecto", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2656,8 +2667,8 @@ Public Class frmAjusteStock
 
                 If BeBodega.Control_Talla_Color Then
 
-                    vTalla = dgridView.Cell(sr, "ColTalla").FormattedValue
-                    vColor = dgridView.Cell(sr, "ColColor").FormattedValue
+                    vTalla = dgrid.Rows(sr).Cells("ColTalla").FormattedValue
+                    vColor = dgrid.Rows(sr).Cells("ColColor").FormattedValue
 
                     If vTallaOrigen = "" Then
                         XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar una talla.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2811,7 +2822,7 @@ Public Class frmAjusteStock
 
                 lBeTransAjusteDet(i).IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
                 lBeTransAjusteDet(i).IdBodegaERP = IdBodegaERP
-                lBeTransAjusteDet(i).Idtipoajuste = Val(dgridView.Cell(i, "tipoajuste").Value)
+                lBeTransAjusteDet(i).Idtipoajuste = Val(dgrid.Rows(i).Cells("tipoajuste").Value)
 
                 ic = 0
                 If lBeTransAjusteDet(i).Lote_original <> lBeTransAjusteDet(i).Lote_nuevo Then ic += 1
@@ -2821,7 +2832,7 @@ Public Class frmAjusteStock
                 If ic > 0 Then cc += 1
 
                 '#EJC20180924: Asignación de bodega de ERP.                
-                DgComboBodega = TryCast(dgridView.Cell(dgridView.FocusedRowHandle, "ColBodega"), DataGridViewComboBoxCell)
+                DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
                 If BeBodega.Bodega_Cliente_Ajuste_ByB Then
                     IdBodegaERP = cmbBodegaERP.EditValue
@@ -2831,16 +2842,16 @@ Public Class frmAjusteStock
                 lBeTransAjusteDet(i).IdBodegaERP = IdBodegaERP
 
                 '#GT13062022_1906: Asignación del tipoajuste seteado en el grid.     
-                lBeTransAjusteDet(i).Idtipoajuste = dgridView.Cell(i, "tipoajuste").Value
+                lBeTransAjusteDet(i).Idtipoajuste = dgrid.Rows(i).Cells("tipoajuste").Value
 
             Next
 
-            For i = 0 To dgridView.RowCount - 1
+            For i = 0 To dgrid.Rows.Count - 1
 
-                Codigo = IIf(IsDBNull(dgridView.Cell(i, "ColCodigoProducto").Value), "", dgridView.Cell(i, "ColCodigoProducto").Value)
-                Lote = IIf(IsDBNull(dgridView.Cell(i, "ColLote").Value), "", dgridView.Cell(i, "ColLote").Value)
-                IdAjusteDet = IIf(IsDBNull(dgridView.Cell(i, "ColIdAjusteDEt").Value), 0, dgridView.Cell(i, "ColIdAjusteDEt").Value)
-                Enviar = IIf(IsDBNull(dgridView.Cell(i, "ColEnviadoAErp").Value), False, dgridView.Cell(i, "ColEnviadoAErp").Value)
+                Codigo = IIf(IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value), "", dgrid.Rows(i).Cells("ColCodigoProducto").Value)
+                Lote = IIf(IsDBNull(dgrid.Rows(i).Cells("ColLote").Value), "", dgrid.Rows(i).Cells("ColLote").Value)
+                IdAjusteDet = IIf(IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value), 0, dgrid.Rows(i).Cells("ColIdAjusteDEt").Value)
+                Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), False, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                 BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                 AndAlso x.Lote_nuevo = Lote _
@@ -3163,7 +3174,7 @@ Public Class frmAjusteStock
                 If ic > 0 Then cc += 1
 
                 '#EJC20180924: Asignación de bodega de ERP.                
-                DgComboBodega = TryCast(dgridView.Cell(dgridView.FocusedRowHandle, "ColBodega"), DataGridViewComboBoxCell)
+                DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
 
                 If BeBodega.Bodega_Cliente_Ajuste_ByB Then
@@ -3175,16 +3186,16 @@ Public Class frmAjusteStock
                 lBeTransAjusteDet(I).IdBodegaERP = IdBodegaERP
 
                 '#GT13062022_1906: Asignación del tipoajuste seteado en el grid.     
-                lBeTransAjusteDet(I).Idtipoajuste = dgridView.Cell(I, "tipoajuste").Value
+                lBeTransAjusteDet(I).Idtipoajuste = dgrid.Rows(I).Cells("tipoajuste").Value
 
             Next
 
-            For i = 0 To dgridView.RowCount - 1
+            For i = 0 To dgrid.Rows.Count - 1
 
-                Codigo = IIf(IsDBNull(dgridView.Cell(i, "ColCodigoProducto").Value), "", dgridView.Cell(i, "ColCodigoProducto").Value)
-                Lote = IIf(IsDBNull(dgridView.Cell(i, "ColLote").Value), "", dgridView.Cell(i, "ColLote").Value)
-                IdAjusteDet = IIf(IsDBNull(dgridView.Cell(i, "ColIdAjusteDEt").Value), 0, dgridView.Cell(i, "ColIdAjusteDEt").Value)
-                Enviar = IIf(IsDBNull(dgridView.Cell(i, "ColEnviadoAErp").Value), False, dgridView.Cell(i, "ColEnviadoAErp").Value)
+                Codigo = IIf(IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value), "", dgrid.Rows(i).Cells("ColCodigoProducto").Value)
+                Lote = IIf(IsDBNull(dgrid.Rows(i).Cells("ColLote").Value), "", dgrid.Rows(i).Cells("ColLote").Value)
+                IdAjusteDet = IIf(IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value), 0, dgrid.Rows(i).Cells("ColIdAjusteDEt").Value)
+                Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), False, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                 BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                     AndAlso x.Lote_nuevo = Lote _
@@ -3300,7 +3311,7 @@ Public Class frmAjusteStock
                 '#GT28112024: ejecutar código normal sino es positivo el ajuste.
                 If Not Es_Ajuste_Positivo_Sin_Stock Then
                     '#EJC20180924: Asignación de bodega de ERP.                
-                    DgComboBodega = TryCast(dgrid.Rows(I).Cells("ColBodega"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+                    DgComboBodega = TryCast(dgrid.Rows(I).Cells("ColBodega"), DataGridViewComboBoxCell)
 
                     If BeBodega.Bodega_Cliente_Ajuste_ByB Then
                         IdBodegaERP = cmbBodegaERP.EditValue.Value
@@ -3310,12 +3321,12 @@ Public Class frmAjusteStock
 
             Next
 
-            For i = 0 To dgridView.RowCount - 1
+            For i = 0 To dgrid.Rows.Count - 1
 
-                Codigo = IIf(IsDBNull(dgridView.Cell(i, "ColCodigoProducto").Value), "", dgridView.Cell(i, "ColCodigoProducto").Value)
-                Lote = IIf(IsDBNull(dgridView.Cell(i, "ColLote").Value), "", dgridView.Cell(i, "ColLote").Value)
-                IdAjusteDet = IIf(IsDBNull(dgridView.Cell(i, "ColIdAjusteDEt").Value), 0, dgridView.Cell(i, "ColIdAjusteDEt").Value)
-                Enviar = IIf(IsDBNull(dgridView.Cell(i, "ColEnviadoAErp").Value), False, dgridView.Cell(i, "ColEnviadoAErp").Value)
+                Codigo = IIf(IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value), "", dgrid.Rows(i).Cells("ColCodigoProducto").Value)
+                Lote = IIf(IsDBNull(dgrid.Rows(i).Cells("ColLote").Value), "", dgrid.Rows(i).Cells("ColLote").Value)
+                IdAjusteDet = IIf(IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value), 0, dgrid.Rows(i).Cells("ColIdAjusteDEt").Value)
+                Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), False, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                 BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                     AndAlso x.Lote_nuevo = Lote _
@@ -3428,7 +3439,7 @@ Public Class frmAjusteStock
 
         Try
 
-            DgComboBodega = TryCast(dgrid.Rows(pIndex).Cells("ColBodega"), DataGridViewComboBoxCell)  ' TODO-MIGRAR-DX: TryCast a DataGridViewComboBoxCell no aplica en DX. Usar dgridView.Columns("X").ColumnEdit (RepositoryItem).
+            DgComboBodega = TryCast(dgrid.Rows(pIndex).Cells("ColBodega"), DataGridViewComboBoxCell)
             DgComboBodega.DropDownWidth = 200
 
             Dim DT As New DataTable
@@ -3479,14 +3490,14 @@ Public Class frmAjusteStock
             Dim BeAjusteDet As New clsBeTrans_ajuste_det
             Dim Enviar As Boolean = False
 
-            dgridView.EndEdit(DataGridViewDataErrorContexts.Commit)
+            dgrid.EndEdit(DataGridViewDataErrorContexts.Commit)
 
-            For i = 0 To dgridView.RowCount - 1
+            For i = 0 To dgrid.Rows.Count - 1
 
-                Codigo = IIf(IsDBNull(dgridView.Cell(i, "ColCodigoProducto").Value), "", dgridView.Cell(i, "ColCodigoProducto").Value)
-                Lote = IIf(IsDBNull(dgridView.Cell(i, "ColLote").Value), "", dgridView.Cell(i, "ColLote").Value)
-                IdAjusteDet = IIf(IsDBNull(dgridView.Cell(i, "ColIdAjusteDEt").Value), 0, dgridView.Cell(i, "ColIdAjusteDEt").Value)
-                Enviar = IIf(IsDBNull(dgridView.Cell(i, "ColEnviadoAErp").Value), False, dgridView.Cell(i, "ColEnviadoAErp").Value)
+                Codigo = IIf(IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value), "", dgrid.Rows(i).Cells("ColCodigoProducto").Value)
+                Lote = IIf(IsDBNull(dgrid.Rows(i).Cells("ColLote").Value), "", dgrid.Rows(i).Cells("ColLote").Value)
+                IdAjusteDet = IIf(IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value), 0, dgrid.Rows(i).Cells("ColIdAjusteDEt").Value)
+                Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), False, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                 If Not Enviar Then
                     Get_Cantidad_No_Enviados += 1
@@ -3530,12 +3541,12 @@ Public Class frmAjusteStock
                         Dim BeAjusteDet As New clsBeTrans_ajuste_det
                         Dim Enviar As Boolean = False
 
-                        For i = 0 To dgridView.RowCount - 1
+                        For i = 0 To dgrid.Rows.Count - 1
 
-                            Codigo = IIf(IsDBNull(dgridView.Cell(i, "ColCodigoProducto").Value), "", dgridView.Cell(i, "ColCodigoProducto").Value)
-                            Lote = IIf(IsDBNull(dgridView.Cell(i, "ColLote").Value), "", dgridView.Cell(i, "ColLote").Value)
-                            IdAjusteDet = IIf(IsDBNull(dgridView.Cell(i, "ColIdAjusteDEt").Value), 0, dgridView.Cell(i, "ColIdAjusteDEt").Value)
-                            Enviar = IIf(IsDBNull(dgridView.Cell(i, "ColEnviadoAErp").Value), False, dgridView.Cell(i, "ColEnviadoAErp").Value)
+                            Codigo = IIf(IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value), "", dgrid.Rows(i).Cells("ColCodigoProducto").Value)
+                            Lote = IIf(IsDBNull(dgrid.Rows(i).Cells("ColLote").Value), "", dgrid.Rows(i).Cells("ColLote").Value)
+                            IdAjusteDet = IIf(IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value), 0, dgrid.Rows(i).Cells("ColIdAjusteDEt").Value)
+                            Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), False, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                             BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                                  AndAlso x.Lote_nuevo = Lote AndAlso x.IdAjusteDet = IdAjusteDet)
@@ -3571,11 +3582,11 @@ Public Class frmAjusteStock
                     Dim Codigo As String, Lote As String, IdAjusteDet As Integer
                     Dim BeAjusteDet As New clsBeTrans_ajuste_det
 
-                    For i = 0 To dgridView.RowCount - 1
+                    For i = 0 To dgrid.Rows.Count - 1
 
-                        Codigo = dgridView.Cell(i, "ColCodigoProducto").Value
-                        Lote = dgridView.Cell(i, "ColLote").Value
-                        IdAjusteDet = dgridView.Cell(i, "ColIdAjusteDEt").Value
+                        Codigo = dgrid.Rows(i).Cells("ColCodigoProducto").Value
+                        Lote = dgrid.Rows(i).Cells("ColLote").Value
+                        IdAjusteDet = dgrid.Rows(i).Cells("ColIdAjusteDEt").Value
 
                         BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                    AndAlso x.Lote_nuevo = Lote AndAlso x.IdAjusteDet = IdAjusteDet)
@@ -4004,11 +4015,11 @@ Public Class frmAjusteStock
 
         Try
 
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
 
-                If dgridView.SelectedRowsCount > 0 Then
+                If dgrid.SelectedRows.Count > 0 Then
 
-                    Dim Fila As DataGridViewRow = dgridView.GetSelectedRows()(0)
+                    Dim Fila As DataGridViewRow = dgrid.SelectedRows(0)
 
                     If Fila IsNot Nothing Then
 
@@ -4074,53 +4085,53 @@ Public Class frmAjusteStock
 
             DsRepAjustes.trans_ajuste_det.Clear()
 
-            For i = 0 To dgridView.RowCount - 1
+            For i = 0 To dgrid.Rows.Count - 1
 
                 lRow = DsRepAjustes.trans_ajuste_det.NewRow
 
                 With lRow
 
-                    .Item("Codigo") = dgridView.Cell(i, "ColCodigoProducto").Value
-                    .Item("Producto") = dgridView.Cell(i, "ColNombreProducto").Value
+                    .Item("Codigo") = dgrid.Rows(i).Cells("ColCodigoProducto").Value
+                    .Item("Producto") = dgrid.Rows(i).Cells("ColNombreProducto").Value
 
-                    If dgridView.Cell(i, "colUbicacion").Value IsNot Nothing Then
-                        .Item("Ubicacion") = dgridView.Cell(i, "colUbicacion").Value.ToString.Substring(IIf(dgridView.Cell(i, "colUbicacion").Value.ToString.IndexOf("#") = -1, 0, dgridView.Cell(i, "colUbicacion").Value.ToString.IndexOf("#") + 1))
+                    If dgrid.Rows(i).Cells("colUbicacion").Value IsNot Nothing Then
+                        .Item("Ubicacion") = dgrid.Rows(i).Cells("colUbicacion").Value.ToString.Substring(IIf(dgrid.Rows(i).Cells("colUbicacion").Value.ToString.IndexOf("#") = -1, 0, dgrid.Rows(i).Cells("colUbicacion").Value.ToString.IndexOf("#") + 1))
                     End If
 
-                    .Item("Motivo") = dgridView.Cell(i, "motivoajuste").EditedFormattedValue
-                    .Item("Tipo") = dgridView.Cell(i, "tipoajuste").EditedFormattedValue
+                    .Item("Motivo") = dgrid.Rows(i).Cells("motivoajuste").EditedFormattedValue
+                    .Item("Tipo") = dgrid.Rows(i).Cells("tipoajuste").EditedFormattedValue
 
                     Select Case .Item("Tipo")
                         Case "Ajuste Lote."
-                            .Item("ValorAnterior") = dgridView.Cell(i, "ColLote").Value
-                            .Item("ValorActual") = dgridView.Cell(i, "ColCantidad").Value
+                            .Item("ValorAnterior") = dgrid.Rows(i).Cells("ColLote").Value
+                            .Item("ValorActual") = dgrid.Rows(i).Cells("ColCantidad").Value
                         Case "Ajuste Vencimiento"
-                            .Item("ValorAnterior") = Format(dgridView.Cell(i, "CantidadP").Value, "dd-MM-yyyy")
-                            .Item("ValorActual") = Format(dgridView.Cell(i, "ColCantidad").Value, "dd-MM-yyyy")
+                            .Item("ValorAnterior") = Format(dgrid.Rows(i).Cells("CantidadP").Value, "dd-MM-yyyy")
+                            .Item("ValorActual") = Format(dgrid.Rows(i).Cells("ColCantidad").Value, "dd-MM-yyyy")
 
                             '#CKFK 20211217 Corrección para evitar que ponga esto "dd-MM-yyyy" 
                             If .Item("ValorActual") = "dd-MM-yyyy" Then
-                                .Item("ValorActual") = dgridView.Cell(i, "ColCantidad").Value
+                                .Item("ValorActual") = dgrid.Rows(i).Cells("ColCantidad").Value
                             End If
                         Case "Ajuste Positivo"
-                            .Item("ValorAnterior") = dgridView.Cell(i, "CantidadP").Value
-                            .Item("ValorActual") = dgridView.Cell(i, "CantidadP").Value + dgridView.Cell(i, "ColCantidad").Value
+                            .Item("ValorAnterior") = dgrid.Rows(i).Cells("CantidadP").Value
+                            .Item("ValorActual") = dgrid.Rows(i).Cells("CantidadP").Value + dgrid.Rows(i).Cells("ColCantidad").Value
                         Case "Ajuste Peso"
-                            .Item("ValorAnterior") = dgridView.Cell(i, "CantidadP").Value
-                            .Item("ValorActual") = dgridView.Cell(i, "ColCantidad").Value
+                            .Item("ValorAnterior") = dgrid.Rows(i).Cells("CantidadP").Value
+                            .Item("ValorActual") = dgrid.Rows(i).Cells("ColCantidad").Value
                         Case "Ajuste Negativo"
-                            .Item("ValorAnterior") = dgridView.Cell(i, "CantidadP").Value
-                            .Item("ValorActual") = dgridView.Cell(i, "CantidadP").Value - dgridView.Cell(i, "ColCantidad").Value
+                            .Item("ValorAnterior") = dgrid.Rows(i).Cells("CantidadP").Value
+                            .Item("ValorActual") = dgrid.Rows(i).Cells("CantidadP").Value - dgrid.Rows(i).Cells("ColCantidad").Value
                     End Select
 
-                    .Item("Observacion") = dgridView.Cell(i, "ColObservacion").Value
-                    .Item("Lote") = dgridView.GetRowCellValue(i, dgridView.Columns(10))
-                    .Item("LicPlate") = dgridView.Cell(i, "ColLicPlate").Value
+                    .Item("Observacion") = dgrid.Rows(i).Cells("ColObservacion").Value
+                    .Item("Lote") = dgrid.Rows(i).Cells(10).Value
+                    .Item("LicPlate") = dgrid.Rows(i).Cells("ColLicPlate").Value
 
 
                     If BeBodega.Control_Talla_Color Then
-                        .Item("talla_destino") = dgridView.Cell(i, "ColTalla").Value.ToString()
-                        .Item("color_destino") = dgridView.Cell(i, "ColColor").Value.ToString()
+                        .Item("talla_destino") = dgrid.Rows(i).Cells("ColTalla").Value.ToString()
+                        .Item("color_destino") = dgrid.Rows(i).Cells("ColColor").Value.ToString()
                     End If
 
                 End With
@@ -4369,14 +4380,14 @@ Public Class frmAjusteStock
     Private Sub mnuAjustePositivo_Click(sender As Object, e As EventArgs) Handles mnuAjustePositivo.Click
 
         Try
-            dgridView.EndEdit()
+            dgrid.EndEdit()
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
         Try
-            If dgridView.IsCurrentCellInEditMode() Then commitValue()
+            If dgrid.IsCurrentCellInEditMode Then commitValue()
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -4540,41 +4551,41 @@ Public Class frmAjusteStock
             ' nombre abajo. NOTA: no se llena ColProveedor aquí porque este flujo es
             ' "alta de producto sin existencia" donde IdStock = 0 (línea ~4434, "pendiente"):
             ' al no haber stock previo, no hay proveedor de recepción asociado.
-            rc = dgridView.AppendRow(codigo, BeAjusteDet.Nombre_producto)
-            dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
-            dgridView.Cell(rc, "ColLote").Value = BeAjusteDet.Lote_original
+            rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
+            dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+            dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
-            dgridView.Cell(rc, "UmBas").Value = BeAjusteDet.UmBas
-            dgridView.Columns("UmBas").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+            dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
+            dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
 
             Dim pUbicacion As clsBeBodega_ubicacion = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega)
 
-            dgridView.Cell(rc, "colUbicacion").Value = pUbicacion.NombreCompleto ' BeAjusteDet.IdUbicacion
-            dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+            dgrid.Rows(rc).Cells("colUbicacion").Value = pUbicacion.NombreCompleto ' BeAjusteDet.IdUbicacion
+            dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
 
             '#CKFK 20211214 Agregué esta condición
-            If dgridView.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
-                dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Fecha_vence_original
-            ElseIf dgridView.Columns("ColCantidad").HeaderText = "Existencia" Then
-                dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Cantidad_original
-            ElseIf dgridView.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
-                dgridView.Cell(rc, "ColCantidad").Value = BeAjusteDet.Lote_original
+            If dgrid.Columns("ColCantidad").HeaderText = "Vence Anterior" Then
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Fecha_vence_original
+            ElseIf dgrid.Columns("ColCantidad").HeaderText = "Existencia" Then
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Cantidad_original
+            ElseIf dgrid.Columns("ColCantidad").HeaderText = "Lote Anterior" Then
+                dgrid.Rows(rc).Cells("ColCantidad").Value = BeAjusteDet.Lote_original
             End If
 
             If BeAjusteDet.IdPresentacion <> 0 Then
-                dgridView.Cell(rc, "colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
-                dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("colPresentacion").Value = BeAjusteDet.Presentacion.Nombre
+                dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
             Else
-                dgridView.Cell(rc, "colPresentacion").Value = Nothing
-                dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
+                dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
             End If
 
             If BeAjusteDet.lic_plate <> "" Then
-                dgridView.Cell(rc, "ColLicPlate").Value = BeAjusteDet.lic_plate
-                dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDet.lic_plate
+                dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             Else
-                dgridView.Cell(rc, "ColLicPlate").Value = Nothing
-                dgridView.Columns("ColLicPlate").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                dgrid.Rows(rc).Cells("ColLicPlate").Value = Nothing
+                dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
             '#GT15122025: llenar los combos para talla/color
@@ -4584,13 +4595,13 @@ Public Class frmAjusteStock
                 Llenar_Color(rc, -1)
 
                 If pProductoTallaExiste IsNot Nothing Then
-                    dgridView.Cell(rc, "colIdProductoTallaColor").Value = pProductoTallaExiste.IdProductoTallaColor
-                    dgridView.Cell(rc, "colTalla").Value = pTalla.Codigo
-                    dgridView.Cell(rc, "colColor").Value = pColor.Codigo
+                    dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = pProductoTallaExiste.IdProductoTallaColor
+                    dgrid.Rows(rc).Cells("colTalla").Value = pTalla.Codigo
+                    dgrid.Rows(rc).Cells("colColor").Value = pColor.Codigo
                 Else
-                    dgridView.Cell(rc, "colIdProductoTallaColor").Value = 0
-                    dgridView.Cell(rc, "colTalla").Value = pTalla.Codigo
-                    dgridView.Cell(rc, "colColor").Value = pColor.Codigo
+                    dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = 0
+                    dgrid.Rows(rc).Cells("colTalla").Value = pTalla.Codigo
+                    dgrid.Rows(rc).Cells("colColor").Value = pColor.Codigo
                 End If
 
             End If
@@ -4609,13 +4620,13 @@ Public Class frmAjusteStock
                 Llena_Bodegas_ERP_Grid(rc, -1)
             End If
 
-            dgridView.Cell(rc, "ColEnviadoAErp").Value = BeAjusteDet.Enviado
-            dgridView.Columns("ColEnviadoAErp").OptionsColumn.AllowEdit = False  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+            dgrid.Rows(rc).Cells("ColEnviadoAErp").Value = BeAjusteDet.Enviado
+            dgrid.Rows(rc).Cells("ColEnviadoAErp").ReadOnly = False
 
-            dgridView.SelectRow(rc)
+            dgrid.Rows(rc).Selected = True
 
             '#GT13062022_2004: si tiene mas de un registro en grid, bloquear el combo tipo ajuste
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
                 cmbTipoAjuste.Enabled = False
             End If
 
@@ -4631,8 +4642,8 @@ Public Class frmAjusteStock
     Private Sub oDateTimePicker_ValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 
         If oDateTimePicker.Visible Then
-            'dgridView.Cell(dgridView.FocusedRowHandle, "ColCantidad").Value = Format(oDateTimePicker.Value.Date, "dd-MM-yyyy")
-            dgridView.Cell(dgridView.FocusedRowHandle, "ColCantidad").Value = oDateTimePicker.Value
+            'dgrid.CurrentRow.Cells("ColCantidad").Value = Format(oDateTimePicker.Value.Date, "dd-MM-yyyy")
+            dgrid.CurrentRow.Cells("ColCantidad").Value = oDateTimePicker.Value
         End If
 
     End Sub
@@ -4751,12 +4762,10 @@ Public Class frmAjusteStock
         End Try
     End Sub
 
-    ' MIGRADO: DataGridView.DataError -> GridView.InvalidValueException.
-    ' DX permite además ExceptionMode (DisplayError/NoAction/ThrowException).
-    Private Sub dgridView_InvalidValueException(sender As Object, e As DevExpress.XtraGrid.Views.Base.InvalidValueExceptionEventArgs) Handles dgridView.InvalidValueException
+    Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
+
         Try
-            ' Igual que el original: silencioso. Si quisiéramos suprimir UI:
-            ' e.ExceptionMode = DevExpress.XtraEditors.Controls.ExceptionMode.NoAction
+
         Catch ex As Exception
             Debug.Print(ex.Message)
         End Try
@@ -4780,12 +4789,12 @@ Public Class frmAjusteStock
             End If
 
             'GT22042022: si cambia el tipo de ajuste en el combo del enc, se actualiza el combo del grid
-            If dgridView.RowCount > 0 Then
+            If dgrid.Rows.Count > 0 Then
 
                 Dim fila As Object = cmbTipoAjuste.GetSelectedDataRow
                 Dim pIdTipoAjuste = fila.Item("nombre")
 
-                For sr = 0 To dgridView.RowCount - 1
+                For sr = 0 To dgrid.Rows.Count - 1
                     Llenar_Tipo(sr, IdTipoAjuste)
                 Next
 
@@ -4822,12 +4831,12 @@ Public Class frmAjusteStock
                         Dim BeAjusteDet As New clsBeTrans_ajuste_det
                         Dim Enviar As Boolean = False
 
-                        For i = 0 To dgridView.RowCount - 1
+                        For i = 0 To dgrid.Rows.Count - 1
 
-                            Codigo = IIf(IsDBNull(dgridView.Cell(i, "ColCodigoProducto").Value), "", dgridView.Cell(i, "ColCodigoProducto").Value)
-                            Lote = IIf(IsDBNull(dgridView.Cell(i, "ColLote").Value), "", dgridView.Cell(i, "ColLote").Value)
-                            IdAjusteDet = IIf(IsDBNull(dgridView.Cell(i, "ColIdAjusteDEt").Value), 0, dgridView.Cell(i, "ColIdAjusteDEt").Value)
-                            Enviar = IIf(IsDBNull(dgridView.Cell(i, "ColEnviadoAErp").Value), True, dgridView.Cell(i, "ColEnviadoAErp").Value)
+                            Codigo = IIf(IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value), "", dgrid.Rows(i).Cells("ColCodigoProducto").Value)
+                            Lote = IIf(IsDBNull(dgrid.Rows(i).Cells("ColLote").Value), "", dgrid.Rows(i).Cells("ColLote").Value)
+                            IdAjusteDet = IIf(IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value), 0, dgrid.Rows(i).Cells("ColIdAjusteDEt").Value)
+                            Enviar = IIf(IsDBNull(dgrid.Rows(i).Cells("ColEnviadoAErp").Value), True, dgrid.Rows(i).Cells("ColEnviadoAErp").Value)
 
                             BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                                  AndAlso x.Lote_nuevo = Lote AndAlso x.IdAjusteDet = IdAjusteDet)
@@ -4863,11 +4872,11 @@ Public Class frmAjusteStock
                     Dim Codigo As String, Lote As String, IdAjusteDet As Integer
                     Dim BeAjusteDet As New clsBeTrans_ajuste_det
 
-                    For i = 0 To dgridView.RowCount - 1
+                    For i = 0 To dgrid.Rows.Count - 1
 
-                        Codigo = dgridView.Cell(i, "ColCodigoProducto").Value
-                        Lote = dgridView.Cell(i, "ColLote").Value
-                        IdAjusteDet = dgridView.Cell(i, "ColIdAjusteDEt").Value
+                        Codigo = dgrid.Rows(i).Cells("ColCodigoProducto").Value
+                        Lote = dgrid.Rows(i).Cells("ColLote").Value
+                        IdAjusteDet = dgrid.Rows(i).Cells("ColIdAjusteDEt").Value
 
                         BeAjusteDet = lBeTransAjusteDet.Find(Function(x) x.Codigo_producto = Codigo _
                                                    AndAlso x.Lote_nuevo = Lote AndAlso x.IdAjusteDet = IdAjusteDet)
@@ -5101,10 +5110,10 @@ Public Class frmAjusteStock
             End If
 
             If vPermitirEdicion Then
-                dgridView.OptionsBehavior.Editable = False  ' TODO-MIGRAR-DX: invertir lógica (Editable = Not ReadOnly)
+                dgrid.ReadOnly = False
             Else
                 Deshabilita_Grid()
-                dgridView.OptionsBehavior.Editable = True  ' TODO-MIGRAR-DX: invertir lógica (Editable = Not ReadOnly)
+                dgrid.ReadOnly = True
             End If
 
             Try
@@ -5140,7 +5149,7 @@ Public Class frmAjusteStock
         Try
 
             '#EJC20180924_1048PM: Si es un ajuste por inventario, se debe habilitar en el grid la bodega para que sea editable, para que se modifique, previo a envío a ERP.
-            For Each Col As DevExpress.XtraGrid.Columns.GridColumn In dgridView.Columns
+            For Each Col As DataGridViewColumn In dgrid.Columns
                 If Col.Name = "ColTalla" AndAlso Not mostrar_talla_color Then
                     Col.Visible = False
                 ElseIf (Col.Name = "ColColor") AndAlso Not mostrar_talla_color Then
@@ -5304,7 +5313,7 @@ Public Class frmAjusteStock
                         Debug.WriteLine($"No se encontró proveedor para IdStock: {det.IdStock}")
                     End If
 
-                    Dim rc As Integer = dgridView.AppendRow(det.Codigo_producto, det.Nombre_producto, det.UmBas,
+                    Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
                                                        ubic, sProveedorTexto)
 
@@ -5312,14 +5321,14 @@ Public Class frmAjusteStock
                     Llenar_Tipo(rc, det.Idtipoajuste)
                     Llena_Bodegas_ERP_Grid(rc, -1)
 
-                    dgridView.Cell(rc, "ColDiferencia").Value = PictureBox1.Image
-                    dgridView.Cell(rc, "ColLote").Value = det.Lote_original
-                    dgridView.Cell(rc, "colUbicacion").Value = ubic
-                    dgridView.Columns("colUbicacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-                    dgridView.Cell(rc, "UmBas").Value = det.UmBas
-                    dgridView.Columns("UmBas").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
-                    dgridView.Cell(rc, "ColObservacion").Value = det.Observacion
-                    dgridView.Cell(rc, "ColLicPlate").Value = det.lic_plate
+                    dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
+                    dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
+                    dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
+                    dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
+                    dgrid.Rows(rc).Cells("UmBas").Value = det.UmBas
+                    dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
+                    dgrid.Rows(rc).Cells("ColObservacion").Value = det.Observacion
+                    dgrid.Rows(rc).Cells("ColLicPlate").Value = det.lic_plate
 
                     ' Mismo patrón que Cargar_Detalle: Cantidad_original/nueva
                     ' viajan en UM base; si hay presentación se divide por Factor
@@ -5329,27 +5338,27 @@ Public Class frmAjusteStock
 
                     Select Case det.Idtipoajuste
                         Case 3 ' Positivo
-                            dgridView.Cell(rc, "CantidadP").Value = det.Cantidad_original / divisor
-                            dgridView.Cell(rc, "ColCantidad").Value = (det.Cantidad_nueva - det.Cantidad_original) / divisor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original / divisor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = (det.Cantidad_nueva - det.Cantidad_original) / divisor
                         Case 5 ' Negativo
-                            dgridView.Cell(rc, "CantidadP").Value = det.Cantidad_original / divisor
-                            dgridView.Cell(rc, "ColCantidad").Value = (det.Cantidad_original - det.Cantidad_nueva) / divisor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = det.Cantidad_original / divisor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = (det.Cantidad_original - det.Cantidad_nueva) / divisor
                         Case 1 ' Lote
-                            dgridView.Cell(rc, "ColLote").Value = det.Lote_original
-                            dgridView.Cell(rc, "ColCantidad").Value = det.Lote_nuevo
+                            dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = det.Lote_nuevo
                     End Select
 
                     If usarPres Then
-                        dgridView.Cell(rc, "colPresentacion").Value = det.Nombre_Presentacion
-                        dgridView.Columns("colPresentacion").OptionsColumn.AllowEdit = True  ' TODO-MIGRAR-DX: ReadOnly era por-celda; AllowEdit es por-columna. Verificar lógica.
+                        dgrid.Rows(rc).Cells("colPresentacion").Value = det.Nombre_Presentacion
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                     End If
 
 
 
                 Next
 
-                If dgridView.RowCount > 0 Then cmbTipoAjuste.Enabled = False
-                lblRegs.Caption = "Registros: " & dgridView.RowCount
+                If dgrid.Rows.Count > 0 Then cmbTipoAjuste.Enabled = False
+                lblRegs.Caption = "Registros: " & dgrid.Rows.Count
 
                 XtraMessageBox.Show(frm.AjustesParaCargar.Count & " fila(s) importada(s). Revise y presione Guardar.",
                                     "Importación exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -5515,261 +5524,4 @@ Public Class frmAjusteStock
     }
     End Function
 
-
-#Region "Consolidado (feature_ajuste B1) — agregado en frmAjusteStock"
-
-    ' Campos privados del tab + grid consolidado. Construidos por código en
-    ' BuildTabsAndConsolidado() para no tocar el Designer (que VS regenera).
-    Private tabAjuste As DevExpress.XtraTab.XtraTabControl
-    Private tabPageDetalle As DevExpress.XtraTab.XtraTabPage
-    Private tabPageConsolidado As DevExpress.XtraTab.XtraTabPage
-    Private gridConsolidado As DevExpress.XtraGrid.GridControl
-    Private viewConsolidado As DevExpress.XtraGrid.Views.Grid.GridView
-    Private _tabsConstruidos As Boolean = False
-
-    ''' <summary>
-    ''' Estructura de fila del consolidado. Group by:
-    '''   Codigo_producto + Nombre_producto + Bodega
-    ''' Métricas: Sistema (CantidadP), Físico (ColCantidad), Diferencia, Líneas.
-    ''' </summary>
-    Private Class FilaConsolidado
-        Public Property Codigo_producto As String
-        Public Property Nombre_producto As String
-        Public Property Bodega As String
-        Public Property CantSistema As Decimal
-        Public Property CantFisico As Decimal
-        Public Property Diferencia As Decimal
-        Public Property Lineas As Integer
-    End Class
-
-    ''' <summary>
-    ''' Handler adicional del evento Shown. VB.NET soporta múltiples handlers
-    ''' para el mismo evento, así que NO interferimos con el frmAjusteStockNV_Shown
-    ''' original; sólo agregamos esta inicialización idempotente.
-    ''' </summary>
-    Private Sub NV_Shown_BuildTabs(sender As Object, e As EventArgs) Handles Me.Shown
-        If _tabsConstruidos Then Return
-        Try
-            BuildTabsAndConsolidado()
-            _tabsConstruidos = True
-        Catch ex As Exception
-            ' Si algo falla acá, no rompemos el form: sólo deshabilitamos el feature.
-            ' El form sigue operando como el frmAjusteStock original.
-            Try
-                XtraMessageBox.Show(
-                    "No se pudo inicializar el tab Consolidado: " & ex.Message,
-                    "frmAjusteStock",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Catch
-            End Try
-        End Try
-    End Sub
-
-    ''' <summary>
-    ''' Reorganiza GroupControl4 para meter dgrid (y ToolStripP si está) dentro
-    ''' de un XtraTabControl con dos páginas: "Detalle" y "Consolidado".
-    ''' RibbonStatusBar queda fuera del tab (al pie de GroupControl4).
-    ''' </summary>
-    Private Sub BuildTabsAndConsolidado()
-        ' Sanity check: necesitamos GroupControl4 + dgrid.
-        If GroupControl4 Is Nothing OrElse dgrid Is Nothing Then
-            Return
-        End If
-
-        ' Suspender layout para evitar repintados intermedios.
-        GroupControl4.SuspendLayout()
-        Try
-            ' --- Tab control raíz dentro de GroupControl4 ---
-            tabAjuste = New DevExpress.XtraTab.XtraTabControl()
-            tabAjuste.Name = "tabAjuste"
-            tabAjuste.Dock = DockStyle.Fill
-            tabAjuste.HeaderLocation = DevExpress.XtraTab.TabHeaderLocation.Top
-
-            tabPageDetalle = New DevExpress.XtraTab.XtraTabPage()
-            tabPageDetalle.Name = "tabPageDetalle"
-            tabPageDetalle.Text = "Detalle"
-
-            tabPageConsolidado = New DevExpress.XtraTab.XtraTabPage()
-            tabPageConsolidado.Name = "tabPageConsolidado"
-            tabPageConsolidado.Text = "Consolidado"
-
-            tabAjuste.TabPages.Add(tabPageDetalle)
-            tabAjuste.TabPages.Add(tabPageConsolidado)
-
-            ' --- Reparenting del dgrid (y ToolStripP si vive en GroupControl4) ---
-            ' Los Remove() del padre y Add() en el nuevo padre conservan
-            ' instance state, columnas, datos, eventos.
-            Dim toolStripPCtl As Control = Nothing
-            For Each c As Control In GroupControl4.Controls
-                If c IsNot Nothing AndAlso c.Name = "ToolStripP" Then
-                    toolStripPCtl = c
-                    Exit For
-                End If
-            Next
-
-            GroupControl4.Controls.Remove(dgrid)
-            If toolStripPCtl IsNot Nothing Then
-                GroupControl4.Controls.Remove(toolStripPCtl)
-            End If
-
-            ' Agregar tab control al GroupControl4 (Dock=Fill ocupa todo lo
-            ' restante después del RibbonStatusBar, que está dockeado Bottom).
-            GroupControl4.Controls.Add(tabAjuste)
-
-            ' Mover dgrid al tab Detalle, full-fill.
-            tabPageDetalle.Controls.Add(dgrid)
-            dgrid.Dock = DockStyle.Fill
-            ' Si ToolStripP existía, también va al tab detalle (top).
-            If toolStripPCtl IsNot Nothing Then
-                tabPageDetalle.Controls.Add(toolStripPCtl)
-                toolStripPCtl.Dock = DockStyle.Top
-            End If
-
-            ' --- Grid consolidado en el segundo tab ---
-            BuildGridConsolidado()
-
-            ' --- Hook: refrescar al entrar al tab Consolidado ---
-            AddHandler tabAjuste.SelectedPageChanged, AddressOf tabAjuste_SelectedPageChanged
-        Finally
-            GroupControl4.ResumeLayout(False)
-            GroupControl4.PerformLayout()
-        End Try
-    End Sub
-
-    Private Sub BuildGridConsolidado()
-        gridConsolidado = New DevExpress.XtraGrid.GridControl()
-        gridConsolidado.Name = "gridConsolidado"
-        gridConsolidado.Dock = DockStyle.Fill
-
-        viewConsolidado = New DevExpress.XtraGrid.Views.Grid.GridView()
-        viewConsolidado.Name = "viewConsolidado"
-        viewConsolidado.OptionsBehavior.Editable = False
-        viewConsolidado.OptionsBehavior.ReadOnly = True
-        viewConsolidado.OptionsView.ShowGroupPanel = True
-        viewConsolidado.OptionsView.ShowFooter = True
-        viewConsolidado.OptionsView.ColumnAutoWidth = False
-
-        gridConsolidado.MainView = viewConsolidado
-        gridConsolidado.ViewCollection.Add(viewConsolidado)
-
-        ' Columnas (visibleIndex secuencial según orden de inserción).
-        Dim cols As New List(Of DevExpress.XtraGrid.Columns.GridColumn)()
-        cols.Add(MakeCol("Codigo_producto", "Código",     110, 0, isNumeric:=False))
-        cols.Add(MakeCol("Nombre_producto", "Producto",   320, 1, isNumeric:=False))
-        cols.Add(MakeCol("Bodega",          "Bodega",     120, 2, isNumeric:=False))
-        cols.Add(MakeCol("CantSistema",     "Sistema",    100, 3, isNumeric:=True))
-        cols.Add(MakeCol("CantFisico",      "Físico",     100, 4, isNumeric:=True))
-        cols.Add(MakeCol("Diferencia",      "Diferencia", 100, 5, isNumeric:=True))
-        cols.Add(MakeCol("Lineas",          "Líneas",      70, 6, isNumeric:=True, decimals:=0))
-
-        ' Footers SUM en columnas numéricas (excepto Líneas que usa COUNT-like).
-        AddSumFooter(cols(3))  ' CantSistema
-        AddSumFooter(cols(4))  ' CantFisico
-        AddSumFooter(cols(5))  ' Diferencia
-        AddSumFooter(cols(6))  ' Lineas (también SUM porque cada fila ya tiene su count)
-
-        viewConsolidado.Columns.AddRange(cols.ToArray())
-
-        tabPageConsolidado.Controls.Add(gridConsolidado)
-    End Sub
-
-    Private Function MakeCol(fieldName As String, caption As String, width As Integer,
-                             isNumeric As Boolean, Optional decimals As Integer = 2) _
-                             As DevExpress.XtraGrid.Columns.GridColumn
-        Dim c As New DevExpress.XtraGrid.Columns.GridColumn()
-        c.FieldName = fieldName
-        c.Caption = caption
-        c.Width = width
-        c.Visible = True
-        c.VisibleIndex = viewConsolidado.Columns.Count + (Function() As Integer
-            ' VisibleIndex secuencial. Lo recalculamos cuando se agregan al view.
-            Return 0
-        End Function).Invoke() ' placeholder — DX asigna correctamente al hacer AddRange.
-        If isNumeric Then
-            c.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-            c.DisplayFormat.FormatString = If(decimals = 0, "n0", "n" & decimals)
-            c.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far
-            c.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
-        End If
-        Return c
-    End Function
-
-    Private Sub AddSumFooter(c As DevExpress.XtraGrid.Columns.GridColumn)
-        Dim summary As New DevExpress.XtraGrid.GridColumnSummaryItem()
-        summary.SummaryType = DevExpress.Data.SummaryItemType.Sum
-        summary.FieldName = c.FieldName
-        Dim fmt As String = If(c.FieldName = "Lineas", "{0:n0}", "{0:n2}")
-        summary.DisplayFormat = fmt
-        c.Summary.Add(summary)
-    End Sub
-
-    ''' <summary>
-    ''' Recalcula el consolidado leyendo lo que hay en `dgrid` actualmente
-    ''' y lo bindea a `gridConsolidado`. Lazy: sólo se llama cuando el
-    ''' usuario entra al tab "Consolidado", para no penalizar la captura.
-    ''' </summary>
-    Private Sub RefrescarConsolidado()
-        If dgrid Is Nothing OrElse gridConsolidado Is Nothing Then Return
-
-        Dim filas As New List(Of FilaConsolidado)()
-        For h_NV As Integer = 0 To dgridView.RowCount - 1
-            If dgridView.IsNewItemRow(h_NV) Then Continue For
-
-            Dim codigo As String = SafeStr(dgridView.GetRowCellValue(h_NV, "ColCodigoProducto"))
-            If String.IsNullOrWhiteSpace(codigo) Then Continue For
-
-            filas.Add(New FilaConsolidado() With {
-                .Codigo_producto = codigo,
-                .Nombre_producto = SafeStr(dgridView.GetRowCellValue(h_NV, "colNombreProducto")),
-                .Bodega = SafeStr(dgridView.GetRowCellValue(h_NV, "ColBodega")),
-                .CantSistema = SafeDec(dgridView.GetRowCellValue(h_NV, "CantidadP")),
-                .CantFisico = SafeDec(dgridView.GetRowCellValue(h_NV, "ColCantidad")),
-                .Diferencia = SafeDec(dgridView.GetRowCellValue(h_NV, "ColDiferencia")),
-                .Lineas = 1
-            })
-        Next
-
-        Dim agrupado = filas.
-            GroupBy(Function(f) New With {
-                Key f.Codigo_producto, Key f.Nombre_producto, Key f.Bodega
-            }).
-            Select(Function(g) New FilaConsolidado() With {
-                .Codigo_producto = g.Key.Codigo_producto,
-                .Nombre_producto = g.Key.Nombre_producto,
-                .Bodega = g.Key.Bodega,
-                .CantSistema = g.Sum(Function(x) x.CantSistema),
-                .CantFisico = g.Sum(Function(x) x.CantFisico),
-                .Diferencia = g.Sum(Function(x) x.Diferencia),
-                .Lineas = g.Count()
-            }).
-            OrderBy(Function(f) f.Bodega).
-            ThenBy(Function(f) f.Codigo_producto).
-            ToList()
-
-        gridConsolidado.DataSource = agrupado
-        viewConsolidado.BestFitColumns()
-    End Sub
-
-    Private Shared Function SafeStr(v As Object) As String
-        If v Is Nothing OrElse v Is DBNull.Value Then Return String.Empty
-        Return v.ToString().Trim()
-    End Function
-
-    Private Shared Function SafeDec(v As Object) As Decimal
-        If v Is Nothing OrElse v Is DBNull.Value Then Return 0D
-        Dim d As Decimal
-        If Decimal.TryParse(v.ToString(), d) Then Return d
-        Return 0D
-    End Function
-
-    Private Sub tabAjuste_SelectedPageChanged(sender As Object,
-                                              e As DevExpress.XtraTab.TabPageChangedEventArgs)
-        If e.Page Is tabPageConsolidado Then
-            RefrescarConsolidado()
-        End If
-    End Sub
-
-#End Region
-
 End Class
-
