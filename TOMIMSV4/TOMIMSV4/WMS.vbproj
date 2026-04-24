@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>115</ApplicationRevision>
+    <ApplicationRevision>120</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
