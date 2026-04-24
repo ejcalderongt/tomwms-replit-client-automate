@@ -5135,6 +5135,9 @@ Public Class frmAjusteStock
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         Finally
+            ' #RC2026 INIT - Inicializa el resumen consolidado por (Codigo|Talla|Color).
+            ' Idempotente: solo arma el datasource y las columnas la primera vez.
+            Try : Hook_Init_Resumen_Consolidado_2026() : Catch : End Try
             IsLoading = False
             SplashScreenManager.CloseForm(False)
         End Try
@@ -5523,5 +5526,318 @@ Public Class frmAjusteStock
         .Presentacion = item.Presentacion
     }
     End Function
+
+
+#Region "Resumen_Consolidado_2026"
+    ' ============================================================================
+    '  RESUMEN CONSOLIDADO 2026 — agrupa el detalle por (Codigo|Talla|Color)
+    '  y lo muestra en el grid DevExpress `dgridProductosConsolidados`
+    '  (MainView = GridView3, declarado read-only en Designer).
+    '
+    '  Una sola vista, una sola responsabilidad:
+    '    - 1 fila por (Codigo | Talla | Color)
+    '    - sumas: # lineas, Existencia, Cantidad ajuste, Diferencia
+    '    - sets: Bodegas, Ubicaciones (texto separado por coma / pipe)
+    '    - resalta filas con Diferencia <> 0 en rosa palido
+    '    - footer con totales (sumas y conteo de productos distintos)
+    '    - autofilter row activado para inspeccion rapida
+    '
+    '  No modifica el dgrid clasico ni su logica de carga / edicion / guardado.
+    '  Se refresca solo cuando el dgrid clasico cambia o cuando el usuario
+    '  entra a la pestana del resumen.
+    '
+    '  Hook a invocar UNA vez desde frmAjusteStock_Shown (al final, en Finally):
+    '    Try : Hook_Init_Resumen_Consolidado_2026() : Catch : End Try
+    '  (Esa linea ya quedo agregada en este archivo - buscar "#RC2026 INIT".)
+    ' ============================================================================
+
+    Private DT_RC2026_Consolidado As DataTable
+    Private RC2026_Inicializado As Boolean = False
+
+    Private Sub mnuImprimirResumen_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuImprimirResumen.ItemClick
+
+    End Sub
+
+    Private RC2026_Refrescando As Boolean = False  ' guard re-entrancy
+
+    Private Sub Hook_Init_Resumen_Consolidado_2026()
+        If RC2026_Inicializado Then Return
+
+        Try
+            Build_DT_Consolidado_RC2026()
+            Set_Columnas_GridView3_RC2026()
+
+            ' Auto-refresh: NO reemplaza handlers, agrega en paralelo.
+            ' Cualquier cambio en el dgrid clasico dispara recalculo si la
+            ' pestana del resumen esta activa (ahorra trabajo si no se ve).
+            AddHandler dgrid.RowsAdded, AddressOf dgrid_AnyChange_RC2026
+            AddHandler dgrid.RowsRemoved, AddressOf dgrid_AnyChange_RC2026
+            AddHandler dgrid.CellValueChanged, AddressOf dgrid_AnyChange_RC2026
+            AddHandler dgrid.RowValidated, AddressOf dgrid_AnyChange_RC2026
+
+            If XtraTabControl1 IsNot Nothing Then
+                AddHandler XtraTabControl1.SelectedPageChanged,
+                    Sub(s, e2) Refrescar_Resumen_Consolidado_RC2026()
+            End If
+
+            RC2026_Inicializado = True
+            Refrescar_Resumen_Consolidado_RC2026()
+        Catch ex As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error(
+                    "Hook_Init_Resumen_Consolidado_2026: " & ex.Message)
+            Catch
+            End Try
+        End Try
+    End Sub
+
+    Private Sub dgrid_AnyChange_RC2026(sender As Object, e As EventArgs)
+        ' Solo recalcula si la pestana del resumen esta visible.
+        If XtraTabControl1 Is Nothing OrElse
+           XtraTabControl1.SelectedTabPage Is Nothing Then Return
+        If XtraTabControl1.SelectedTabPage IsNot tabResumenAjuste Then Return
+        Refrescar_Resumen_Consolidado_RC2026()
+    End Sub
+
+    Private Sub Build_DT_Consolidado_RC2026()
+        DT_RC2026_Consolidado = New DataTable("ResumenConsolidado")
+        With DT_RC2026_Consolidado.Columns
+            .Add("Codigo", GetType(String))
+            .Add("Producto", GetType(String))
+            .Add("UmBas", GetType(String))
+            .Add("Talla", GetType(String))
+            .Add("Color", GetType(String))
+            .Add("Lineas", GetType(Integer))
+            .Add("Existencia", GetType(Decimal))
+            .Add("Cantidad", GetType(Decimal))
+            .Add("Diferencia", GetType(Decimal))
+            .Add("Bodegas", GetType(String))
+            .Add("Ubicaciones", GetType(String))
+        End With
+    End Sub
+
+    ' --- Helpers de lectura segura sobre el dgrid clasico --------------------
+    Private Function CellRC_Obj(rowIdx As Integer, name As String) As Object
+        Try
+            If rowIdx < 0 OrElse rowIdx >= dgrid.Rows.Count Then Return Nothing
+            Dim r = dgrid.Rows(rowIdx)
+            If r.IsNewRow Then Return Nothing
+            If Not dgrid.Columns.Contains(name) Then Return Nothing
+            Dim v = r.Cells(name).Value
+            If v Is Nothing OrElse IsDBNull(v) Then Return Nothing
+            Return v
+        Catch
+            Return Nothing
+        End Try
+    End Function
+
+    Private Function CellRC_Str(rowIdx As Integer, name As String) As String
+        Dim v = CellRC_Obj(rowIdx, name)
+        If v Is Nothing Then Return ""
+        Return v.ToString()
+    End Function
+
+    Private Function CellRC_Dec(rowIdx As Integer, name As String) As Decimal
+        Dim v = CellRC_Obj(rowIdx, name)
+        If v Is Nothing Then Return 0D
+        Dim d As Decimal
+        If Decimal.TryParse(v.ToString(),
+                            Globalization.NumberStyles.Any,
+                            Globalization.CultureInfo.CurrentCulture, d) Then Return d
+        Return 0D
+    End Function
+
+    ' --- Refresh principal ---------------------------------------------------
+    Public Sub Refrescar_Resumen_Consolidado_RC2026()
+        If Not RC2026_Inicializado Then Return
+        If RC2026_Refrescando Then Return
+        RC2026_Refrescando = True
+        Try
+            ' Acumulador en memoria: clave = "Codigo|Talla|Color"
+            Dim acc As New Dictionary(Of String, Object())
+
+            For i As Integer = 0 To dgrid.Rows.Count - 1
+                If dgrid.Rows(i).IsNewRow Then Continue For
+
+                Dim cod = CellRC_Str(i, "ColCodigoProducto")
+                Dim prod = CellRC_Str(i, "colNombreProducto")
+                Dim umb = CellRC_Str(i, "UmBas")
+                Dim tal = CellRC_Str(i, "colTalla")
+                Dim col = CellRC_Str(i, "colColor")
+                Dim exi = CellRC_Dec(i, "CantidadP")
+                Dim can = CellRC_Dec(i, "ColCantidad")
+                ' Diferencia se calcula SIEMPRE como (Cantidad - Existencia)
+                ' para que el consolidado sea correcto en borrador, antes de
+                ' que el flujo principal recalcule la columna ColDiferencia
+                ' del dgrid clasico (que puede estar vacia / desactualizada).
+                Dim dif = can - exi
+                Dim bod = CellRC_Str(i, "ColBodega").Trim()
+                Dim ubi = CellRC_Str(i, "colUbicacion").Trim()
+
+                ' Si la fila no tiene codigo, no aporta al consolidado.
+                If cod Is Nothing OrElse cod.Trim() = "" Then Continue For
+
+                Dim key = cod & "|" & tal & "|" & col
+                If Not acc.ContainsKey(key) Then
+                    acc(key) = New Object() {
+                        cod, prod, umb, tal, col,
+                        0, 0D, 0D, 0D,
+                        New HashSet(Of String)(StringComparer.OrdinalIgnoreCase),
+                        New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                    }
+                End If
+                Dim row = acc(key)
+                row(5) = CInt(row(5)) + 1
+                row(6) = CDec(row(6)) + exi
+                row(7) = CDec(row(7)) + can
+                row(8) = CDec(row(8)) + dif
+                Dim setBod = DirectCast(row(9), HashSet(Of String))
+                Dim setUbi = DirectCast(row(10), HashSet(Of String))
+                If bod <> "" Then setBod.Add(bod)
+                If ubi <> "" Then setUbi.Add(ubi)
+            Next
+
+            DT_RC2026_Consolidado.BeginLoadData()
+            DT_RC2026_Consolidado.Rows.Clear()
+            For Each kv In acc
+                Dim row = kv.Value
+                Dim setBod = DirectCast(row(9), HashSet(Of String))
+                Dim setUbi = DirectCast(row(10), HashSet(Of String))
+                DT_RC2026_Consolidado.Rows.Add(
+                    row(0), row(1), row(2), row(3), row(4),
+                    CInt(row(5)), CDec(row(6)), CDec(row(7)), CDec(row(8)),
+                    String.Join(", ", setBod),
+                    String.Join(" | ", setUbi))
+            Next
+            DT_RC2026_Consolidado.EndLoadData()
+
+            ' Bind idempotente
+            If dgridProductosConsolidados.DataSource IsNot DT_RC2026_Consolidado Then
+                dgridProductosConsolidados.DataSource = DT_RC2026_Consolidado
+            End If
+        Catch ex As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error(
+                    "Refrescar_Resumen_Consolidado_RC2026: " & ex.Message)
+            Catch
+            End Try
+        Finally
+            RC2026_Refrescando = False
+        End Try
+    End Sub
+
+    ' --- Setup de GridView3 (la vista del dgridProductosConsolidados) --------
+    Private Sub Set_Columnas_GridView3_RC2026()
+        Try
+            If GridView3 Is Nothing Then Return
+
+            GridView3.OptionsView.ShowFooter = True
+            GridView3.OptionsView.ShowGroupPanel = False
+            GridView3.OptionsView.ColumnAutoWidth = False
+            GridView3.OptionsView.ShowAutoFilterRow = True
+            GridView3.OptionsBehavior.Editable = False
+            GridView3.OptionsBehavior.ReadOnly = True
+            GridView3.OptionsSelection.MultiSelect = False
+            GridView3.OptionsCustomization.AllowFilter = True
+            GridView3.OptionsFind.AlwaysVisible = True
+            GridView3.Columns.Clear()
+
+            Dim idx As Integer = 0
+            Dim addCol = Sub(field As String, caption As String,
+                             width As Integer, fmt As String)
+                             Dim c As New DevExpress.XtraGrid.Columns.GridColumn With {
+                                 .FieldName = field,
+                                 .Caption = caption,
+                                 .Visible = True,
+                                 .VisibleIndex = idx,
+                                 .Width = width
+                             }
+                             c.OptionsColumn.AllowEdit = False
+                             c.OptionsColumn.ReadOnly = True
+                             If fmt <> "" Then
+                                 c.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                                 c.DisplayFormat.FormatString = fmt
+                             End If
+                             GridView3.Columns.Add(c)
+                             idx += 1
+                         End Sub
+
+            addCol("Codigo", "Codigo", 100, "")
+            addCol("Producto", "Producto", 260, "")
+            addCol("UmBas", "UmBas", 70, "")
+            addCol("Talla", "Talla", 70, "")
+            addCol("Color", "Color", 80, "")
+            addCol("Lineas", "# Lineas", 70, "{0:n0}")
+            addCol("Existencia", "Existencia", 110, "{0:n6}")
+            addCol("Cantidad", "Cantidad ajuste", 120, "{0:n6}")
+            addCol("Diferencia", "Diferencia", 110, "{0:n6}")
+            addCol("Bodegas", "Bodegas", 150, "")
+            addCol("Ubicaciones", "Ubicaciones", 350, "")
+
+            With GridView3.Columns("Lineas").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Total lineas: {0:n0}"
+            End With
+            With GridView3.Columns("Existencia").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Sum Exist: {0:n6}"
+            End With
+            With GridView3.Columns("Cantidad").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Sum Cant: {0:n6}"
+            End With
+            With GridView3.Columns("Diferencia").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Sum Dif: {0:n6}"
+            End With
+            With GridView3.Columns("Codigo").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Count
+                .DisplayFormat = "Productos distintos: {0:n0}"
+            End With
+
+            ' Ajuste visual: alinear numericos a la derecha
+            For Each fn In {"Lineas", "Existencia", "Cantidad", "Diferencia"}
+                GridView3.Columns(fn).AppearanceCell.TextOptions.HAlignment =
+                GridView3.Columns(fn).AppearanceCell.TextOptions.HAlignment =
+                    DevExpress.Utils.HorzAlignment.Far
+                GridView3.Columns(fn).AppearanceHeader.TextOptions.HAlignment =
+                    DevExpress.Utils.HorzAlignment.Far
+            Next
+
+            ' Resaltar filas con Diferencia <> 0
+            AddHandler GridView3.RowStyle, AddressOf GridView3_RowStyle_RC2026
+        Catch ex As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error(
+                    "Set_Columnas_GridView3_RC2026: " & ex.Message)
+            Catch
+            End Try
+        End Try
+    End Sub
+
+    Private Sub GridView3_RowStyle_RC2026(
+            sender As Object,
+            e As DevExpress.XtraGrid.Views.Grid.RowStyleEventArgs)
+        Try
+            Dim gv = DirectCast(sender,
+                                DevExpress.XtraGrid.Views.Grid.GridView)
+            If e.RowHandle < 0 Then Return
+            Dim difObj = gv.GetRowCellValue(e.RowHandle, "Diferencia")
+            If difObj Is Nothing OrElse IsDBNull(difObj) Then Return
+            Dim dif As Decimal = 0D
+            If Decimal.TryParse(difObj.ToString(),
+                                Globalization.NumberStyles.Any,
+                                Globalization.CultureInfo.CurrentCulture,
+                                dif) Then
+                If dif <> 0D Then
+                    e.Appearance.BackColor =
+                        System.Drawing.Color.FromArgb(255, 252, 232, 232)
+                End If
+            End If
+        Catch
+        End Try
+    End Sub
+
+#End Region
 
 End Class
