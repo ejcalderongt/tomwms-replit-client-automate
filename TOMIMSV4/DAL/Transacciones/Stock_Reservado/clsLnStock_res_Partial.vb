@@ -96,7 +96,7 @@ Partial Public Class clsLnStock_res
 
         Try
 
-            Dim vSQL As String = "SELECT * FROM stock_res WHERE IdPedido = @IdPedidoEnc AND IdBodega = @IdBodega"
+            Dim vSQL As String = "SELECT top(1) IdStockRes FROM stock_res WHERE IdPedido = @IdPedidoEnc AND IdBodega = @IdBodega"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

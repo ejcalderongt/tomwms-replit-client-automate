@@ -1,14 +1,16 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Configuration
+Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
+Imports DevExpress.Office.Utils
+Imports DevExpress.XtraEditors
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
-Imports System.Configuration
 
 Public Class clsSyncTransacWMS
 
@@ -30,15 +32,12 @@ Public Class clsSyncTransacWMS
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
-        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
-        Dim vEsTransferenciaDirecta As Boolean = False
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
         End If
 
         Try
-
             vHanaService = New SapServiceLayerClient()
 
             Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
@@ -50,52 +49,35 @@ Public Class clsSyncTransacWMS
                 clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
             End If
 
-            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo venta(s).")
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
-            Dim filtroVentas As String = "( U_Document_Type eq '3')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
+            Dim filtroVentas As String = "(U_Document_Type eq '2')"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
 
-            Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
+            Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(filtroFinal,
+                                                                             vHanaService.SessionCookie,
+                                                                             BD.Instancia.HANA_SL,
+                                                                             lblprg)
 
-            Using handler As New HttpClientHandler()
+            If allRows.Count = 0 Then
+                Return lPedidosCliente
+            End If
 
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
-                handler.UseCookies = False
-
-                Using client As New HttpClient(handler)
-
-                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
-                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
-
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
-
-                    If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener transacciones de la bodega: {pCodigoBodegaInterface}-{response.StatusCode}, {errorDetail}")
-                    End If
-
-                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                    Dim parsed = JObject.Parse(json)
-
-                    Dim jsonResponse As String = json
-
-                    lPedidosCliente = ProcesarTransaccionesWMSCompleto(jsonResponse, pCodigoBodegaInterface, BePropietario)
-
-                End Using
-
-            End Using
+            Dim jsonResponse As String = SapServiceBase.CrearJsonResponseDesdeRows(allRows)
+            lPedidosCliente = ProcesarTransaccionesWMSCompleto(jsonResponse, pCodigoBodegaInterface, BePropietario, clsDataContractDI.tTipoDocumentoSalida.Pedido_Consolidado)
 
             Return lPedidosCliente
 
         Catch ex As Exception
-            Throw New Exception("(SL) Get_Traslados_SAP_SL: " & ex.Message, ex)
+            Throw New Exception("(SL) Get_Ventas_Tiendas: " & ex.Message, ex)
         End Try
     End Function
 
     Public Shared Function ProcesarTransaccionesWMSCompleto(jsonResponse As String,
                                                             pCodigoBodegaInterface As String,
-                                                            BePropietario As clsBePropietarios) As List(Of clsBeI_nav_ped_traslado_enc)
+                                                            BePropietario As clsBePropietarios,
+                                                            pIdTipoDocumento As clsDataContractDI.tTipoDocumentoSalida) As List(Of clsBeI_nav_ped_traslado_enc)
         Try
             ' 1. Deserializar JSON
             Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
@@ -118,7 +100,7 @@ Public Class clsSyncTransacWMS
                 .TransferToCode = primerRegistro.U_Transfer_to_Code,
                 .TransferToName = primerRegistro.U_Transfer_to_Name,
                 .ReceipDocumentReference = primerRegistro.U_Receip_Document_Reference,
-                .DocumentType = primerRegistro.U_Document_Type,
+                .DocumentType = pIdTipoDocumento,
                 .LineasDetalle = New List(Of PedidoTrasladoDetalle)()
             }
 
@@ -154,7 +136,7 @@ Public Class clsSyncTransacWMS
 
     Public Shared Function MapearAClasesNegocio(transaccionesAgrupadas As List(Of PedidoTrasladoEncabezado),
                                                 pCodigoBodegaInterface As String,
-                                                BePropietario As Object) As List(Of clsBeI_nav_ped_traslado_enc)
+                                                BePropietario As clsBePropietarios) As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)()
 
@@ -172,7 +154,7 @@ Public Class clsSyncTransacWMS
             .Receipt_Date = postingDate,
             .Shipment_Date = postingDate,
             .Status = 1,
-            .Transfer_from_Code = pCodigoBodegaInterface,
+            .Transfer_from_Code = pedido.TransferFromCode,
             .Transfer_from_Contact = pedido.TransferFromContact,
             .Transfer_to_Contact = pedido.TransferToName,
             .Transfer_to_CodeField = pedido.TransferToCode,
@@ -181,7 +163,7 @@ Public Class clsSyncTransacWMS
             .Receipt_Document_Reference = pedido.ExternalDocumentNo,
             .Company_Code = pedido.CompanyCode,
             .Comments = $"Serie: {pedido.Serie} - Documento: {pedido.ExternalDocumentNo}",
-            .Document_Type = tTipoDocumentoSalida.Factura_Deudor,
+            .Document_Type = pedido.DocumentType,
             .Transportation_Guide = pedido.ReceipDocumentReference,
             .External_Document_No = pedido.ExternalDocumentNo,
             .Transfer_to_Name = pedido.TransferToName,
@@ -343,18 +325,22 @@ Public Class clsSyncTransacWMS
             Dim PedidoClienteExistente As New clsBeTrans_pe_enc
 
             If facturas.Count = 0 Then
-                clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
+                clsPublic.Actualizar_Progreso(lblprg, "No hay pedidos de cliente para importar.")
                 Return False
             End If
 
             For Each factura In facturas
 
+                If factura.Transfer_from_Code <> "01" Then
+                    Debug.Print(factura.Transfer_from_Code)
+                End If
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando pedido de cliente de SAP (@Transac_WMS): {factura.Receipt_Document_Reference}/{factura.No}{vbNewLine}")
 
                 Dim clsTrans As New clsTransaccion
                 clsTrans.Begin_Transaction()
 
                 Try
+
 
                     '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
                     If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
@@ -364,17 +350,20 @@ Public Class clsSyncTransacWMS
                         If pedidoEnc IsNot Nothing Then
 
                             Dim listaDocEntryDistintos As List(Of Integer) = factura.Lineas_Detalle.Select(Function(x) x.DocEntry) _
-                                                                                               .Distinct() _
-                                                                                               .ToList()
+                                                                                                                        .Distinct() _
+                                                                                                                        .ToList()
 
                             Dim trasladoSincronizado As Boolean = Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
 
                             If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
                                 clsPublic.Actualizar_Progreso(lblprg, "Documento procesado correctamente :) !")
-                                Return True
                             End If
 
                         End If
+
+                    Else
+
+                        Throw New Exception("No se pudo procesar en su totalidad la venta")
 
                     End If
 
@@ -443,13 +432,12 @@ Public Class clsSyncTransacWMS
 #End Region
 
 #Region "Notas de Crédito (Devoluciones)"
+
     Private Shared Async Function Get_Devoluciones_Tiendas(pCodigoBodegaInterface As String,
-                                                           lblprg As RichTextBox) As Task(Of List(Of clsBeI_nav_ped_compra_enc))
+                                                       lblprg As RichTextBox) As Task(Of List(Of clsBeI_nav_ped_compra_enc))
 
         Dim lDevolucionesCliente As New List(Of clsBeI_nav_ped_compra_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
-        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
-        Dim vEsTransferenciaDirecta As Boolean = False
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
@@ -468,120 +456,91 @@ Public Class clsSyncTransacWMS
                 clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
             End If
 
-            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo devolucion(es) de tienda.")
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
-            Dim filtroVentas As String = "( U_Document_Type eq '17')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
+            Dim filtroVentas As String = "(U_Document_Type eq '17')"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
 
-            Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
+            Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(
+            filtroFinal,
+            vHanaService.SessionCookie,
+            BD.Instancia.HANA_SL,
+            lblprg)
 
-            Using handler As New HttpClientHandler()
+            If allRows.Count = 0 Then
+                Return lDevolucionesCliente
+            End If
 
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
-                handler.UseCookies = False
+            Dim grupos = allRows _
+            .OfType(Of JObject)() _
+            .GroupBy(Function(r) New With {
+                Key .DocEntry = r.Value(Of Integer?)("U_NoEnc").GetValueOrDefault(-1),
+                Key .CodBodega = r.Value(Of String)("U_Transfer_From_Code")
+            })
 
-                Using client As New HttpClient(handler)
+            For Each grupo In grupos
 
-                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
-                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                Try
+                    Dim docEntry As Integer = grupo.Key.DocEntry
+                    Dim rowEnc As JObject = grupo.First()
+                    Dim documentLines As New JArray()
 
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
-
-                    If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener transacciones de la bodega: {pCodigoBodegaInterface}-{response.StatusCode}, {errorDetail}")
-                    End If
-
-                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                    Dim parsed = JObject.Parse(json)
-
-                    ' Cache para no pedir el mismo vendedor varias veces
-                    Dim cacheSalesName As New Dictionary(Of Integer, String)(capacity:=16)
-                    ' parsed("value") viene de tu consulta a transac_wms,
-                    ' y cada fila representa una línea (no un encabezado con DocumentLines)
-
-                    Dim grupos = parsed("value") _
-                                .OfType(Of JObject)() _
-                                .GroupBy(Function(r) New With {
-                                    Key .DocEntry = r.Value(Of Integer?)("U_NoEnc").GetValueOrDefault(-1),
-                                    Key .CodBodega = r.Value(Of String)("U_Transfer_From_Code")
-                                })
-
-                    For Each grupo In grupos
-
-                        Dim docEntry As Integer = grupo.Key.DocEntry
-                        Dim codBodega As String = grupo.Key.CodBodega
-
-                        ' Tomamos una fila como "representante" para el encabezado
-                        Dim rowEnc As JObject = grupo.First()
-
-                        ' Construimos el JArray DocumentLines a partir de TODAS las filas del grupo
-                        Dim documentLines As New JArray()
-
-                        For Each row As JObject In grupo
-                            Dim linea As New JObject()
-
-                            ' Aquí mapeas las columnas de transac_wms a la estructura que esperan tus mappers
-                            linea("ItemCode") = row("U_Item_No")
-                            linea("LineNum") = row("U_Line_No")
-                            linea("Planed_Receipt_Date") = row("U_Posting_Date")
-                            linea("Quantity") = row("U_Qty_to_Ship")
-                            linea("ItemDescription") = row("U_Descripcion")
-                            linea("U_Color") = row("U_Color")
-                            linea("U_Talla") = row("U_Size")
-                            linea("WarehouseCode") = row("U_Transfer_From_Code")
-                            linea("BaseEntry") = row("BaseEntry")
-                            linea("MeasureUnit") = row("U_Unit_of_Mesasure_Code")
-
-                            documentLines.Add(linea)
-                        Next
-
-                        ' Tallas/colores auxiliares (ya usando el JArray que acabas de construir)
-                        Dim dtDetTallaColor As DataTable =
-                        DevolucionTransacWMS_Mapper.ConstruirTablaDesdeJsonTallasColores_Devolucion(documentLines, docEntry, 0)
-
-                        ' Encabezado (con la fila representante del grupo)
-                        Dim encabezado As clsBeI_nav_ped_compra_enc =
-                        DevolucionTransacWMS_Mapper.MapearEncabezado_Devolucion(rowEnc)
-
-                        ' Detalle
-                        encabezado.Lineas_Detalle =
-                        DevolucionTransacWMS_Mapper.MapearDetalle_Devolucion(documentLines)
-
-                        encabezado.DocEntriesTransacWms = grupo.
-                                    Select(Function(r) r.Value(Of Integer)("DocEntry")).
-                                    Distinct().
-                                    ToList()
-
-                        ' Tallas/Colores
-                        If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
-                            encabezado.Lineas_Detalle_Talla_Color =
-                         Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(dtDetTallaColor,
-                                                                                              IdUsuario,
-                                                                                              vHanaService.SessionCookie,
-                                                                                              BD.Instancia.HANA_SL).ConfigureAwait(False)
-                        Else
-                            encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
-                        End If
-
-                        ' Campaña
-                        Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(0)
-                        encabezado.Campaña = BeCampaña
-
-                        ' Agregas el encabezado ya armado (con todas sus líneas)
-                        lDevolucionesCliente.Add(encabezado)
-
+                    For Each row As JObject In grupo
+                        Dim linea As New JObject()
+                        linea("ItemCode") = row("U_Item_No")
+                        linea("LineNum") = row("U_Line_No")
+                        linea("Planed_Receipt_Date") = row("U_Posting_Date")
+                        linea("Quantity") = row("U_Qty_to_Ship")
+                        linea("ItemDescription") = row("U_Descripcion")
+                        linea("U_Color") = row("U_Color")
+                        linea("U_Talla") = row("U_Size")
+                        linea("WarehouseCode") = row("U_Transfer_From_Code")
+                        linea("BaseEntry") = row("BaseEntry")
+                        linea("MeasureUnit") = row("U_Unit_of_Mesasure_Code")
+                        documentLines.Add(linea)
                     Next
 
-                End Using
+                    Dim dtDetTallaColor As DataTable =
+                    DevolucionTransacWMS_Mapper.ConstruirTablaDesdeJsonTallasColores_Devolucion(documentLines, docEntry, 0)
 
-            End Using
+                    Dim encabezado As clsBeI_nav_ped_compra_enc =
+                    DevolucionTransacWMS_Mapper.MapearEncabezado_Devolucion(rowEnc)
+
+                    encabezado.Lineas_Detalle =
+                    DevolucionTransacWMS_Mapper.MapearDetalle_Devolucion(documentLines)
+
+                    encabezado.DocEntriesTransacWms = grupo.
+                    Select(Function(r) r.Value(Of Integer)("DocEntry")).
+                    Distinct().
+                    ToList()
+
+                    If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
+                        encabezado.Lineas_Detalle_Talla_Color =
+                        Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(
+                            dtDetTallaColor,
+                            IdUsuario,
+                            vHanaService.SessionCookie,
+                            BD.Instancia.HANA_SL).ConfigureAwait(False)
+                    Else
+                        encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
+                    End If
+
+                    Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(0)
+                    encabezado.Campaña = BeCampaña
+
+                    lDevolucionesCliente.Add(encabezado)
+
+                Catch ex As Exception
+                    clsPublic.Actualizar_Progreso(lblprg, "La Nota de Crédito " & grupo.Key.DocEntry & " tiene datos inconsistentes.")
+                End Try
+
+            Next
 
             Return lDevolucionesCliente
 
         Catch ex As Exception
-            Throw New Exception("(SL) Get_Traslados_SAP_SL: " & ex.Message, ex)
+            Throw New Exception("(SL) Get_Devoluciones_Tiendas: " & ex.Message, ex)
         End Try
     End Function
 
@@ -599,14 +558,14 @@ Public Class clsSyncTransacWMS
 
             BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
 
-            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo Notas de crédito(Devoluciones de cliente).")
 
             Dim lDevolucionesCliente As New List(Of clsBeI_nav_ped_compra_enc)
             lDevolucionesCliente = Await Get_Devoluciones_Tiendas(BeBodega.Codigo,
                                                                   lblprg)
 
             If lDevolucionesCliente Is Nothing Then
-                clsPublic.Actualizar_Progreso(lblprg, "No se obtuvieron notas de crédito(Devoluciones de cliente).")
+                clsPublic.Actualizar_Progreso(lblprg, "No se obtuvieron Notas de crédito(Devoluciones de cliente).")
                 Return False
             End If
 
@@ -895,11 +854,10 @@ Public Class clsSyncTransacWMS
     End Function
 
     Private Shared Async Function Get_Ajustes_Tiendas(pCodigoBodegaInterface As String,
-                                                      lblprg As RichTextBox) As Task(Of List(Of clsBeTrans_ajuste_enc))
+                                                  lblprg As RichTextBox) As Task(Of List(Of clsBeTrans_ajuste_enc))
 
         Dim lAjustes As New List(Of clsBeTrans_ajuste_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
-        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_IdBodega_SL(BeConfigEnc.Idbodega)
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
@@ -918,46 +876,29 @@ Public Class clsSyncTransacWMS
                 clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
             End If
 
-            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo ajuste(s).")
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
-            Dim filtroVentas As String = "( U_Document_Type eq '100')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
+            Dim filtroVentas As String = "(U_Document_Type eq '100')"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
 
-            Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
+            Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(
+            filtroFinal,
+            vHanaService.SessionCookie,
+            BD.Instancia.HANA_SL,
+            lblprg)
 
-            Using handler As New HttpClientHandler()
+            If allRows.Count = 0 Then
+                Return lAjustes
+            End If
 
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
-                handler.UseCookies = False
-
-                Using client As New HttpClient(handler)
-
-                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
-                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
-
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
-
-                    If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener transacciones de la bodega: {pCodigoBodegaInterface}-{response.StatusCode}, {errorDetail}")
-                    End If
-
-                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                    Dim parsed = JObject.Parse(json)
-
-                    Dim jsonResponse As String = json
-
-                    lAjustes = ProcesarTransaccionesWMS_Ajustes(jsonResponse, pCodigoBodegaInterface, BePropietario)
-
-                End Using
-
-            End Using
+            Dim jsonResponse As String = SapServiceBase.CrearJsonResponseDesdeRows(allRows)
+            lAjustes = ProcesarTransaccionesWMS_Ajustes(jsonResponse, pCodigoBodegaInterface, BePropietario)
 
             Return lAjustes
 
         Catch ex As Exception
-            Throw New Exception("(SL) Get_Traslados_SAP_SL: " & ex.Message, ex)
+            Throw New Exception("(SL) Get_Ajustes_Tiendas: " & ex.Message, ex)
         End Try
     End Function
 
@@ -1273,12 +1214,10 @@ Public Class clsSyncTransacWMS
 #Region "Anulación devolución de cliente"
 
     Private Shared Function Get_Anulacion_Devolucion_Tiendas(pCodigoBodegaInterface As String,
-                                                             lblprg As RichTextBox) As List(Of clsBeI_nav_ped_traslado_enc)
+                                                         lblprg As RichTextBox) As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
-        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
-        Dim vEsTransferenciaDirecta As Boolean = False
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
@@ -1297,46 +1236,29 @@ Public Class clsSyncTransacWMS
                 clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
             End If
 
-            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo anulacion(es) de devoluciones de tienda.")
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null OR U_Procesado_WMS eq 2)"
-            Dim filtroVentas As String = "( U_Document_Type eq '15')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
+            Dim filtroVentas As String = "(U_Document_Type eq '15')"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
 
-            Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
+            Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(
+            filtroFinal,
+            vHanaService.SessionCookie,
+            BD.Instancia.HANA_SL,
+            lblprg)
 
-            Using handler As New HttpClientHandler()
+            If allRows.Count = 0 Then
+                Return lPedidosCliente
+            End If
 
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
-                handler.UseCookies = False
-
-                Using client As New HttpClient(handler)
-
-                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
-                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
-
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
-
-                    If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener transacciones de la bodega: {pCodigoBodegaInterface}-{response.StatusCode}, {errorDetail}")
-                    End If
-
-                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                    Dim parsed = JObject.Parse(json)
-
-                    Dim jsonResponse As String = json
-
-                    lPedidosCliente = ProcesarTransaccionesWMSCompleto(jsonResponse, pCodigoBodegaInterface, BePropietario)
-
-                End Using
-
-            End Using
+            Dim jsonResponse As String = SapServiceBase.CrearJsonResponseDesdeRows(allRows)
+            lPedidosCliente = ProcesarTransaccionesWMSCompleto(jsonResponse, pCodigoBodegaInterface, BePropietario, clsDataContractDI.tTipoDocumentoSalida.Anulacion_Devolucion)
 
             Return lPedidosCliente
 
         Catch ex As Exception
-            Throw New Exception("(SL) Get_Traslados_SAP_SL: " & ex.Message, ex)
+            Throw New Exception("(SL) Get_Anulacion_Devolucion_Tiendas: " & ex.Message, ex)
         End Try
     End Function
 
@@ -1665,15 +1587,13 @@ Public Class clsSyncTransacWMS
 
 #End Region
 
-
 #Region "Anulación ventas"
+
     Private Shared Async Function Get_Anulacion_Ventas_Tiendas(pCodigoBodegaInterface As String,
-                                                               lblprg As RichTextBox) As Task(Of List(Of clsBeI_nav_ped_compra_enc))
+                                                           lblprg As RichTextBox) As Task(Of List(Of clsBeI_nav_ped_compra_enc))
 
         Dim lAnulacionVentas As New List(Of clsBeI_nav_ped_compra_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
-        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
-        Dim vEsTransferenciaDirecta As Boolean = False
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
@@ -1692,118 +1612,84 @@ Public Class clsSyncTransacWMS
                 clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
             End If
 
-            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo anulacion(es) de ventas.")
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
-            Dim filtroVentas As String = "( U_Document_Type eq '18')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
+            Dim filtroVentas As String = "(U_Document_Type eq '18')"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
 
-            Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
+            Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(filtroFinal,
+                                                                             vHanaService.SessionCookie,
+                                                                             BD.Instancia.HANA_SL,
+                                                                             lblprg)
 
-            Using handler As New HttpClientHandler()
+            If allRows.Count = 0 Then
+                Return lAnulacionVentas
+            End If
 
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
-                handler.UseCookies = False
+            Dim grupos = allRows _
+            .OfType(Of JObject)() _
+            .GroupBy(Function(r) New With {
+                Key .DocEntry = r.Value(Of Integer?)("U_NoEnc").GetValueOrDefault(-1),
+                Key .CodBodega = r.Value(Of String)("U_Transfer_From_Code")
+            })
 
-                Using client As New HttpClient(handler)
+            For Each grupo In grupos
 
-                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
-                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                Dim docEntry As Integer = grupo.Key.DocEntry
+                Dim rowEnc As JObject = grupo.First()
+                Dim documentLines As New JArray()
 
-                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
+                For Each row As JObject In grupo
+                    Dim linea As New JObject()
+                    linea("ItemCode") = row("U_Item_No")
+                    linea("LineNum") = row("U_Line_No")
+                    linea("Planed_Receipt_Date") = row("U_Posting_Date")
+                    linea("Quantity") = row("U_Qty_to_Ship")
+                    linea("ItemDescription") = row("U_Descripcion")
+                    linea("U_Color") = row("U_Color")
+                    linea("U_Talla") = row("U_Size")
+                    linea("WarehouseCode") = row("U_Transfer_From_Code")
+                    linea("BaseEntry") = row("BaseEntry")
+                    linea("MeasureUnit") = row("U_Unit_of_Mesasure_Code")
+                    documentLines.Add(linea)
+                Next
 
-                    If Not response.IsSuccessStatusCode Then
-                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                        Throw New Exception($"Error al obtener transacciones de la bodega: {pCodigoBodegaInterface}-{response.StatusCode}, {errorDetail}")
-                    End If
+                Dim dtDetTallaColor As DataTable =
+                DevolucionTransacWMS_Mapper.ConstruirTablaDesdeJsonTallasColores_Devolucion(documentLines, docEntry, 0)
 
-                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-                    Dim parsed = JObject.Parse(json)
+                Dim encabezado As clsBeI_nav_ped_compra_enc =
+                DevolucionTransacWMS_Mapper.MapearEncabezado_Devolucion(rowEnc)
 
-                    ' Cache para no pedir el mismo vendedor varias veces
-                    Dim cacheSalesName As New Dictionary(Of Integer, String)(capacity:=16)
+                encabezado.Lineas_Detalle =
+                DevolucionTransacWMS_Mapper.MapearDetalle_Devolucion(documentLines)
 
-                    Dim grupos = parsed("value") _
-                                .OfType(Of JObject)() _
-                                .GroupBy(Function(r) New With {
-                                    Key .DocEntry = r.Value(Of Integer?)("U_NoEnc").GetValueOrDefault(-1),
-                                    Key .CodBodega = r.Value(Of String)("U_Transfer_From_Code")
-                                })
+                encabezado.DocEntriesTransacWms = grupo.
+                Select(Function(r) r.Value(Of Integer)("DocEntry")).
+                Distinct().
+                ToList()
 
-                    For Each grupo In grupos
+                If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
+                    encabezado.Lineas_Detalle_Talla_Color =
+                    Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(
+                        dtDetTallaColor,
+                        IdUsuario,
+                        vHanaService.SessionCookie,
+                        BD.Instancia.HANA_SL).ConfigureAwait(False)
+                Else
+                    encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
+                End If
 
-                        Dim docEntry As Integer = grupo.Key.DocEntry
-                        Dim codBodega As String = grupo.Key.CodBodega
+                Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(0)
+                encabezado.Campaña = BeCampaña
 
-                        ' Tomamos una fila como "representante" para el encabezado
-                        Dim rowEnc As JObject = grupo.First()
-
-                        ' Construimos el JArray DocumentLines a partir de TODAS las filas del grupo
-                        Dim documentLines As New JArray()
-
-                        For Each row As JObject In grupo
-                            Dim linea As New JObject()
-
-                            ' Aquí mapeas las columnas de transac_wms a la estructura que esperan tus mappers
-                            linea("ItemCode") = row("U_Item_No")
-                            linea("LineNum") = row("U_Line_No")
-                            linea("Planed_Receipt_Date") = row("U_Posting_Date")
-                            linea("Quantity") = row("U_Qty_to_Ship")
-                            linea("ItemDescription") = row("U_Descripcion")
-                            linea("U_Color") = row("U_Color")
-                            linea("U_Talla") = row("U_Size")
-                            linea("WarehouseCode") = row("U_Transfer_From_Code")
-                            linea("BaseEntry") = row("BaseEntry")
-                            linea("MeasureUnit") = row("U_Unit_of_Mesasure_Code")
-
-                            documentLines.Add(linea)
-                        Next
-
-                        ' Tallas/colores auxiliares (ya usando el JArray que acabas de construir)
-                        Dim dtDetTallaColor As DataTable =
-                        DevolucionTransacWMS_Mapper.ConstruirTablaDesdeJsonTallasColores_Devolucion(documentLines, docEntry, 0)
-
-                        ' Encabezado (con la fila representante del grupo)
-                        Dim encabezado As clsBeI_nav_ped_compra_enc =
-                        DevolucionTransacWMS_Mapper.MapearEncabezado_Devolucion(rowEnc)
-
-                        ' Detalle
-                        encabezado.Lineas_Detalle =
-                        DevolucionTransacWMS_Mapper.MapearDetalle_Devolucion(documentLines)
-
-                        encabezado.DocEntriesTransacWms = grupo.
-                                    Select(Function(r) r.Value(Of Integer)("DocEntry")).
-                                    Distinct().
-                                    ToList()
-
-                        ' Tallas/Colores
-                        If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
-                            encabezado.Lineas_Detalle_Talla_Color =
-                         Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(dtDetTallaColor,
-                                                                                              IdUsuario,
-                                                                                              vHanaService.SessionCookie,
-                                                                                              BD.Instancia.HANA_SL).ConfigureAwait(False)
-                        Else
-                            encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
-                        End If
-
-                        ' Campaña
-                        Dim BeCampaña As clsBeCampaña = clsLnCampaña.Get_Single_By_IdCampaña(0)
-                        encabezado.Campaña = BeCampaña
-
-                        ' Agregas el encabezado ya armado (con todas sus líneas)
-                        lAnulacionVentas.Add(encabezado)
-
-                    Next
-
-                End Using
-
-            End Using
+                lAnulacionVentas.Add(encabezado)
+            Next
 
             Return lAnulacionVentas
 
         Catch ex As Exception
-            Throw New Exception("(SL) Get_Traslados_SAP_SL: " & ex.Message, ex)
+            Throw New Exception("(SL) Get_Anulacion_Ventas_Tiendas: " & ex.Message, ex)
         End Try
     End Function
 
@@ -2200,4 +2086,5 @@ Public Class TRANSAC_WMS_DTO
             Return Transfered = "Y"
         End Get
     End Property
+
 End Class

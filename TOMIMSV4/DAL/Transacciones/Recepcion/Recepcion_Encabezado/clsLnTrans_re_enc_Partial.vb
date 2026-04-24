@@ -8923,6 +8923,10 @@ Partial Public Class clsLnTrans_re_enc
                 IdBodegaDestino = BeOrdenCompraEnc.IdBodega
                 BeProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(BeMI3Config.IdProductoEstado_NC, lConnection, lTransaction)
 
+                If BeProductoEstado Is Nothing Then
+                    Throw New Exception("No está configurado el estado por defecto para la Nota de Crédito en la Bodega: " & IdBodegaDestino)
+                End If
+
                 BeRecepcionEnc.IsNew = True
                 BeRecepcionEnc.IdRecepcionEnc = MaxID(lConnection, lTransaction) + 1
                 BeRecepcionEnc.PropietarioBodega = New clsBePropietario_bodega
