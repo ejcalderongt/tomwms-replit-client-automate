@@ -641,6 +641,36 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Dim vNuevoLicPlate As String = pStockRes.Lic_plate
             Dim vPresentacion As Integer = pStockRes.IdPresentacion
 
+            '#MA20260424 Validaciones
+            Dim infoDestino As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino, pMovimiento.IdBodegaDestino)
+
+            If infoDestino Is Nothing OrElse infoDestino.Rows.Count = 0 Then
+                Throw New Exception("No se encontró información de la licencia destino.")
+            End If
+
+            Dim row = infoDestino.Rows(0)
+
+            Dim ubicacionDestino As Integer = If(IsDBNull(row("IdUbicacionDestino")), 0, CInt(row("IdUbicacionDestino")))
+
+            Dim estadoDestino As Integer = If(IsDBNull(row("IdProductoEstadoDestino")), 0, CInt(row("IdProductoEstadoDestino")))
+
+            Dim ubicacionOrigen As Integer = pStockRes.IdUbicacion
+            Dim estadoOrigen As Integer = pStockRes.IdProductoEstado
+
+            '1.#MA20260424 Validar ubicación
+            If ubicacionOrigen <> ubicacionDestino Then
+                Throw New Exception("No se puede implosionar porque las ubicaciones son diferentes. " &
+                       "Origen: " & ubicacionOrigen &
+                       ", Destino: " & ubicacionDestino)
+            End If
+
+            '2.#MA20260424 Validar estado
+            If estadoOrigen <> estadoDestino Then
+                Throw New Exception("No se puede implosionar porque los estados son diferentes. " &
+                      "Origen: " & estadoOrigen &
+                      ", Destino: " & estadoDestino)
+            End If
+
             pStockRes.Lic_plate = pStockRes.Lic_plate_Anterior
             pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
 
@@ -819,7 +849,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -1432,7 +1462,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdStockNuevo As Integer = 0
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -2029,6 +2059,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             Dim tieneLicenciaDestino As Boolean = licenciaDestino <> ""
             Dim tieneEstadoDestino As Boolean = IdProductoEstadoDestino > 0
+            Dim EsCambioEstado As Boolean = (pMovimiento.IdEstadoOrigen <> pMovimiento.IdEstadoDestino)
 
             '#EJC20260416:
             'Cambio de estado:
@@ -2036,6 +2067,11 @@ Partial Public Class clsLnTrans_ubic_hh_det
             If tieneEstadoDestino AndAlso IdProductoEstadoDestino <> IdProductoEstadoOrigen Then
                 requiereCambioEstado = True
             End If
+
+            If EsCambioEstado Then
+                requiereCambioEstado = True
+            End If
+
 
             '#EJC20260416:
             'Regla especial de rack:
@@ -2244,7 +2280,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                            ByVal pIdUbicacionDestino As Integer,
                                                                                            ByRef pIdStockNuevo As Integer,
                                                                                            ByRef pIdMovimientoNuevo As Integer,
-                                                                                           Optional ByVal pPosiciones As Integer = 0) As Boolean
+                                                                                           Optional ByVal pPosiciones As Integer = 0,
+                                                                                           Optional EsCambioEstado As Boolean = False) As Boolean
 
         Aplica_Cambio_Estado_Ubic_HH_LicenciaCompleta_ConValidacionRack = False
 
@@ -2257,12 +2294,11 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             '#EJC20260416:
             'La fuente de verdad de la licencia completa debe ser BD, no la HH.
-            Dim listaLicencia As List(Of clsBeVW_stock_res) =
-                clsLnVW_stock_res.Get_Lista_Stock_Licencia_Completa(pLicPlate,
-                                                                    pIdUbicacionOrigen,
-                                                                    pMovimiento.IdBodegaOrigen,
-                                                                    lConnection,
-                                                                    lTransaction)
+            Dim listaLicencia As List(Of clsBeVW_stock_res) = clsLnVW_stock_res.Get_Lista_Stock_Licencia_Completa(pLicPlate,
+                                                                                                                 pIdUbicacionOrigen,
+                                                                                                                 pMovimiento.IdBodegaOrigen,
+                                                                                                                 lConnection,
+                                                                                                                 lTransaction)
 
             If listaLicencia Is Nothing OrElse listaLicencia.Count = 0 Then
                 Throw New Exception("No se encontró stock para la licencia completa.")
@@ -2270,8 +2306,15 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             Dim propietarioOriginal As Integer = pMovimiento.IdPropietarioBodega
 
+            ' Dim BeMovimientoTransitorio As clsBeTrans_movimientos = pMovimiento
+            Dim BeMovimientoTransitorio As clsBeTrans_movimientos
+
+
             '#EJC20260416:
             'Se procesa cada línea real de la licencia dentro de la misma transacción.
+            Dim listaMovimientos As New List(Of Integer)
+            Dim listaStocks As New List(Of Integer)
+
             For Each stockLinea As clsBeVW_stock_res In listaLicencia
 
                 Dim idStockLinea As Integer = 0
@@ -2279,12 +2322,18 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
                 '#EJC20260416:
                 'Se prepara un movimiento por línea, manteniendo la intención común de la licencia completa.
-                stockLinea.Movimiento = pMovimiento
+                BeMovimientoTransitorio = New clsBeTrans_movimientos()
+                clsPublic.CopyObject(pMovimiento, BeMovimientoTransitorio)
+                BeMovimientoTransitorio.Fecha_vence = stockLinea.Fecha_Vence
+                ' clsPublic.CopyObject(stockLinea, BeMovimientoTransitorio)
+                stockLinea.Movimiento = BeMovimientoTransitorio
+                stockLinea.Movimiento.IdProductoBodega = stockLinea.IdProductoBodega
                 stockLinea.Movimiento.IdUbicacionOrigen = pIdUbicacionOrigen
                 stockLinea.Movimiento.IdUbicacionDestino = pIdUbicacionDestino
                 stockLinea.Movimiento.Lic_plate = pLicPlate
                 stockLinea.Movimiento.Fecha = DateTime.Now
                 stockLinea.Movimiento.Fecha_agr = DateTime.Now
+
                 stockLinea.Movimiento.IdPropietarioBodega = propietarioOriginal
                 '#EJC20260416:
                 'Se reutiliza el método actual por línea.
@@ -2294,15 +2343,27 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                               idMovLinea,
                                                                                               pPosiciones,
                                                                                               lConnection,
-                                                                                              lTransaction)
+                                                                                              lTransaction,
+                                                                                              EsCambioEstado)
 
                 If Not exito Then
                     Throw New Exception("No se pudo aplicar el proceso a una línea de la licencia.")
                 End If
 
-                If idStockLinea > 0 Then pIdStockNuevo = idStockLinea
-                If idMovLinea > 0 Then pIdMovimientoNuevo = idMovLinea
+                If idStockLinea > 0 Then listaStocks.Add(idStockLinea)
+                If idMovLinea > 0 Then listaMovimientos.Add(idMovLinea)
+
+                'If idStockLinea > 0 Then pIdStockNuevo = idStockLinea
+                'If idMovLinea > 0 Then pIdMovimientoNuevo = idMovLinea
             Next
+
+            If listaStocks.Count > 0 Then
+                pIdStockNuevo = listaStocks(0)
+            End If
+
+            If listaMovimientos.Count > 0 Then
+                pIdMovimientoNuevo = listaMovimientos(0)
+            End If
 
             lTransaction.Commit()
             Return True
@@ -2325,17 +2386,20 @@ Partial Public Class clsLnTrans_ubic_hh_det
     '#EJC20260416:
     'Versión interna para reutilizar la lógica actual dentro de una transacción ya abierta.
     Private Shared Function Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack_Interno(ByVal pMovimiento As clsBeTrans_movimientos,
-                                                                                    ByVal pStockRes As clsBeVW_stock_res,
-                                                                                    ByRef pIdStockNuevo As Integer,
-                                                                                    ByRef pIdMovimientoNuevo As Integer,
-                                                                                    ByVal pPosiciones As Integer,
-                                                                                    ByVal lConnection As SqlConnection,
-                                                                                    ByVal lTransaction As SqlTransaction) As Boolean
+                                                                                   ByVal pStockRes As clsBeVW_stock_res,
+                                                                                   ByRef pIdStockNuevo As Integer,
+                                                                                   ByRef pIdMovimientoNuevo As Integer,
+                                                                                   ByVal pPosiciones As Integer,
+                                                                                   ByVal lConnection As SqlConnection,
+                                                                                   ByVal lTransaction As SqlTransaction,
+                                                                                   ByVal EsCambioEstado As Boolean) As Boolean
 
         Try
-            Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
-                                                                                               pMovimiento.IdBodegaDestino)
 
+            Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
+                                                                                              pMovimiento.IdBodegaDestino,
+                                                                                              lConnection,
+                                                                                              lTransaction)
             Dim esRack As Boolean = False
             Dim licenciaDestino As String = ""
             Dim IdProductoEstadoDestino As Integer = 0
@@ -2396,6 +2460,37 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             Dim exitoPaso As Boolean = False
 
+            If infoDestinoDT.Rows.Count > 0 Then
+
+                Dim row As DataRow = infoDestinoDT.Rows(0)
+                esRack = CBool(row("es_rack"))
+
+                If esRack Then
+
+                    Dim estadoDestino As Integer = CInt(row("IdProductoEstadoDestino"))
+                    estadoRackDefecto = clsLnBodega.Get_Estado_Defecto_Rack(pMovimiento.IdBodegaDestino, lConnection, lTransaction)
+
+                    If (estadoDestino > 0 OrElse estadoRackDefecto > 0) AndAlso (estadoDestino <> estadoRackDefecto) Then
+
+                        Dim BePEstadoDesst = clsLnProducto_estado.Get_Single_By_IdEstado(estadoDestino, lConnection, lTransaction)
+                        Dim BeEstadoRack = clsLnProducto_estado.Get_Single_By_IdEstado(estadoRackDefecto, lConnection, lTransaction)
+
+                        If BePEstadoDesst IsNot Nothing AndAlso BeEstadoRack IsNot Nothing Then
+                            Throw New Exception($"MSG20260422: La ubicación destino: {pMovimiento.IdUbicacionDestino} " &
+                                                $"no acepta el estado de producto: {BePEstadoDesst.Nombre}. " &
+                                                $"El rack está configurado para: {BeEstadoRack.Nombre}")
+                        Else
+                            If Not estadoDestino = 0 Then
+                                Throw New Exception("MSG20260422A: No se pudo obtener la información del estado asociado al tramo (rack) y no se puede completar la validación del destino.")
+                            End If
+                        End If
+
+                    End If
+
+                End If
+
+            End If
+
             '#EJC20260416: Paso 1 - Estado
             If requiereCambioEstado Then
 
@@ -2404,6 +2499,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                 pMovimiento.IdEstadoDestino = IdProductoEstadoDestino
                 pMovimiento.IdUbicacionOrigen = IdUbicacionOrigen
                 pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+                pMovimiento.Lic_plate = ""
                 pMovimiento.Fecha = DateTime.Now
                 pMovimiento.Fecha_agr = DateTime.Now
 
@@ -2418,23 +2514,24 @@ Partial Public Class clsLnTrans_ubic_hh_det
                 If Not exitoPaso Then Throw New Exception("Error al aplicar cambio de estado.")
 
                 pStockRes.IdProductoEstado = IdProductoEstadoDestino
+
                 If pIdStockNuevo > 0 Then pStockRes.IdStock = pIdStockNuevo
             End If
 
             '#EJC20260416: Paso 2 - Implosión
             If requiereImplosion Then
 
-                pStockRes.Lic_plate_Anterior = pStockRes.Lic_plate
+                pStockRes.Lic_plate_Anterior = pStockRes.Lic_plate 'pStockRes.Lic_plate_Anterior 'pStockRes.Lic_plate
                 pStockRes.Lic_plate = licenciaDestino
 
                 pMovimiento.IdPropietarioBodega = propietarioOriginal
-                pMovimiento.IdTipoTarea = 12
+                pMovimiento.IdTipoTarea = clsDataContractDI.tTipoTarea.PACK
                 pMovimiento.Lic_plate = pStockRes.Lic_plate_Anterior
                 pMovimiento.Barra_pallet = licenciaDestino
                 pMovimiento.IdEstadoOrigen = pStockRes.IdProductoEstado
                 pMovimiento.IdEstadoDestino = pStockRes.IdProductoEstado
                 pMovimiento.IdUbicacionOrigen = IdUbicacionOrigen
-                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen ' 0 'No mover de ubicación, hasta el final.
                 pMovimiento.Fecha = DateTime.Now
                 pMovimiento.Fecha_agr = DateTime.Now
 
@@ -2466,6 +2563,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
                 pStockRes.IdUbicacion_Anterior = pStockRes.IdUbicacion
                 pStockRes.IdUbicacion = IdUbicacionDestino
+
                 If pIdStockNuevo > 0 Then pStockRes.IdStock = pIdStockNuevo
             End If
 
