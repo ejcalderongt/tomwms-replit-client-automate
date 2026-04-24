@@ -73,27 +73,32 @@ Public Class DevolucionTransacWMS_Mapper
     Public Shared Function ConstruirTablaDesdeJsonTallasColores_Devolucion(documentLines As JArray, docEntry As Integer, campaña As Integer) As DataTable
         Dim dt As New DataTable()
 
-        dt.Columns.Add("U_Modelo", GetType(String))
-        dt.Columns.Add("U_Talla", GetType(String))
-        dt.Columns.Add("U_Color", GetType(String))
-        dt.Columns.Add("U_Campania", GetType(Integer))
-        dt.Columns.Add("DocEntry", GetType(Integer))
+        Try
+            dt.Columns.Add("U_Modelo", GetType(String))
+            dt.Columns.Add("U_Talla", GetType(String))
+            dt.Columns.Add("U_Color", GetType(String))
+            dt.Columns.Add("U_Campania", GetType(Integer))
+            dt.Columns.Add("DocEntry", GetType(Integer))
 
-        For Each linea As JObject In documentLines
-            Dim modelo = linea.Value(Of String)("ItemCode")
-            Dim talla = linea.Value(Of String)("U_Talla")
-            Dim color = linea.Value(Of String)("U_Color")
+            For Each linea As JObject In documentLines
+                Dim modelo = linea.Value(Of String)("ItemCode")
+                Dim talla = linea.Value(Of String)("U_Talla")
+                Dim color = linea.Value(Of String)("U_Color")
 
-            If Not String.IsNullOrWhiteSpace(talla) OrElse Not String.IsNullOrWhiteSpace(color) Then
-                Dim r = dt.NewRow()
-                r("U_Modelo") = modelo
-                r("U_Talla") = talla
-                r("U_Color") = color
-                r("U_Campania") = campaña
-                r("DocEntry") = docEntry
-                dt.Rows.Add(r)
-            End If
-        Next
+                If Not String.IsNullOrWhiteSpace(talla) OrElse Not String.IsNullOrWhiteSpace(color) Then
+                    Dim r = dt.NewRow()
+                    r("U_Modelo") = modelo
+                    r("U_Talla") = talla
+                    r("U_Color") = color
+                    r("U_Campania") = campaña
+                    r("DocEntry") = docEntry
+                    dt.Rows.Add(r)
+                End If
+            Next
+
+        Catch ex As Exception
+
+        End Try
 
         Return dt
     End Function
@@ -105,74 +110,80 @@ Public Class DevolucionTransacWMS_Mapper
 
         Dim lista As New List(Of clsBeProducto_talla_color)
 
-        Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Try
 
-            lConnection.Open()
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-            Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lConnection.Open()
 
-                For Each det As DataRow In dtDetTallaColor.Rows
-                    Dim d As New clsBeProducto_talla_color()
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
-                    If BeProducto IsNot Nothing Then
-                        d.IdProducto = BeProducto.IdProducto
-                    Else
-                        Await clsSyncSAPProducto.Insertar_Producto_From_Sap_HanaAsync(det("U_Modelo").ToString(), lConnection, lTransaction,
-                                                                                     SessionCookie, BaseURL, Nothing)
+                    For Each det As DataRow In dtDetTallaColor.Rows
+                        Dim d As New clsBeProducto_talla_color()
 
-                        BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
+                        Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
                         If BeProducto IsNot Nothing Then
                             d.IdProducto = BeProducto.IdProducto
                         Else
-                            Throw New Exception("No se pudo insertar ni recuperar el producto con código: " & det("U_Modelo").ToString())
-                        End If
-                    End If
+                            Await clsSyncSAPProducto.Insertar_Producto_From_Sap_HanaAsync(det("U_Modelo").ToString(), lConnection, lTransaction,
+                                                                                     SessionCookie, BaseURL, Nothing)
 
-                    Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lConnection, lTransaction)
-                    If BeTalla IsNot Nothing Then
-                        d.IdTalla = BeTalla.IdTalla
-                    Else
-                        d.IdTalla = Await clsSyncSapTalla.Insertar_Talla_From_Sap_HanaAsync(det("U_Talla").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
-
-                        If d.IdTalla = 0 Then
-                            Throw New Exception("No se pudo insertar ni recuperar la talla con código: " & det("U_Color").ToString())
+                            BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
+                            If BeProducto IsNot Nothing Then
+                                d.IdProducto = BeProducto.IdProducto
+                            Else
+                                Throw New Exception("No se pudo insertar ni recuperar el producto con código: " & det("U_Modelo").ToString())
+                            End If
                         End If
 
-                    End If
+                        Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lConnection, lTransaction)
+                        If BeTalla IsNot Nothing Then
+                            d.IdTalla = BeTalla.IdTalla
+                        Else
+                            d.IdTalla = Await clsSyncSapTalla.Insertar_Talla_From_Sap_HanaAsync(det("U_Talla").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
 
-                    Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lConnection, lTransaction)
-                    If BeColor IsNot Nothing Then
-                        d.IdColor = BeColor.IdColor
-                    Else
-                        d.IdColor = Await clsSyncSapColor.Insertar_Color_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
+                            If d.IdTalla = 0 Then
+                                Throw New Exception("No se pudo insertar ni recuperar la talla con código: " & det("U_Color").ToString())
+                            End If
 
-                        If d.IdColor = 0 Then
-                            Throw New Exception("No se pudo insertar ni recuperar el color con código: " & det("U_Color").ToString())
                         End If
 
-                    End If
+                        Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lConnection, lTransaction)
+                        If BeColor IsNot Nothing Then
+                            d.IdColor = BeColor.IdColor
+                        Else
+                            d.IdColor = Await clsSyncSapColor.Insertar_Color_From_Sap_HanaAsync(det("U_Color").ToString(), SessionCookie, BaseURL, lConnection, lTransaction)
 
-                    d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
+                            If d.IdColor = 0 Then
+                                Throw New Exception("No se pudo insertar ni recuperar el color con código: " & det("U_Color").ToString())
+                            End If
 
-                    d.IdCampaña = 0
+                        End If
 
-                    d.Fec_agr = Date.Now()
-                    d.User_agr = Usuario
-                    d.Fec_mod = Date.Now()
-                    d.User_mod = Usuario
+                        d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
 
-                    clsLnProducto_talla_color.InsertOrUpdate(d, lConnection, lTransaction)
-                    lista.Add(d)
-                Next
+                        d.IdCampaña = 0
 
-                lTransaction.Commit()
+                        d.Fec_agr = Date.Now()
+                        d.User_agr = Usuario
+                        d.Fec_mod = Date.Now()
+                        d.User_mod = Usuario
+
+                        clsLnProducto_talla_color.InsertOrUpdate(d, lConnection, lTransaction)
+                        lista.Add(d)
+                    Next
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
 
             End Using
 
-            lConnection.Close()
-
-        End Using
+        Catch ex As Exception
+            Throw ex
+        End Try
 
         Return Await Task.FromResult(lista)
 

@@ -879,6 +879,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                             skip += filasPagina
                         End Using
                     End While
+
                 End Using
 
             End Using

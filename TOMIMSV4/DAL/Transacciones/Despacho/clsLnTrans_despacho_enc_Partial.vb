@@ -450,6 +450,7 @@ Partial Public Class clsLnTrans_despacho_enc
             Dim BeTipoDocumentoSalida As New clsBeTrans_pe_tipo()
             Dim vConfigInterGenDocIngresoBodDest As Boolean = False
             Dim vIdPropietario As Integer = 0
+            Dim resultado As Boolean = False
 
             If BeDespachoEnc IsNot Nothing Then
 
@@ -1042,6 +1043,8 @@ Partial Public Class clsLnTrans_despacho_enc
 
                             End If
 
+                            resultado = (vContadorDocumentosOC > 0)
+
                         Else
 
                             'GT16022022: se elimina del stock porque se transfiere a otra bodega
@@ -1053,6 +1056,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                       AllowNegativeExceptionOnStock,
                                                                       lConnection,
                                                                       lTransaction)
+
+                            resultado = True
 
                         End If
 
@@ -1069,6 +1074,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                        lConnection,
                                                                        lTransaction)
 
+                            resultado = True
+
                         Else
 
                             Guarda_Trans_Despacho_Stock_Restar_Origen(BeDespachoEnc,
@@ -1079,6 +1086,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                       AllowNegativeExceptionOnStock,
                                                                       lConnection,
                                                                       lTransaction)
+
+                            resultado = True
 
                         End If
 
@@ -1094,6 +1103,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                   lConnection,
                                                                   lTransaction)
 
+
+                        resultado = True
 
                     End If
 
@@ -1116,7 +1127,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
             End If
 
-            Guardar_Despacho_Stock = (vContadorDocumentosOC > 0)
+            Guardar_Despacho_Stock = resultado
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)

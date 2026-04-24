@@ -18623,6 +18623,7 @@ Public Class TOMHHWS
         End Try
 
     End Function
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_TipoEtiqueta_By_Id(ByVal pIdTipoEtiqueta As Integer) As clsBeTipo_etiqueta
         Try
@@ -18662,6 +18663,7 @@ Public Class TOMHHWS
             Return Nothing ' ✅ si no hay mArch, igual retornar algo
         End Try
     End Function
+
     '#MA20251204'
     <WebMethod(), SoapHeader("mArch")>
     Public Function Operador_Tiene_Permiso(ByVal pOperador As clsBeOperador, ByVal pOpcion As String) As Boolean
@@ -19417,6 +19419,7 @@ Public Class TOMHHWS
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
 
         Try
+
             If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
                 Throw New Exception("La lista enviada no contiene datos.")
             End If
@@ -19486,4 +19489,5 @@ Public Class TOMHHWS
             End If
         End Try
     End Function
+
 End Class

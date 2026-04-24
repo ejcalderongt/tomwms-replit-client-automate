@@ -1487,14 +1487,13 @@ Public Class frmEjecucion
 
             If Ejecutar Then
                 lblprg.Clear()
-                'Dim unused = Await ProcesarTodoAsync()
 
                 '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
-                Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
-                'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente 
-                'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
-                'Await clsSyncTransacWMS.Procesar_Anulacion_Devolucion_SAP(lblprg, prg) 'Anulaciones de notas de crédito
-                'Await clsSyncTransacWMS.Procesar_Anulacion_Ventas_SAP(lblprg, prg) 'Anulaciones de ventas
+                Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes - 100
+                Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente - 17
+                Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente - 2
+                Await clsSyncTransacWMS.Procesar_Anulacion_Devolucion_SAP(lblprg, prg) 'Anulaciones de notas de crédito - 15
+                Await clsSyncTransacWMS.Procesar_Anulacion_Ventas_SAP(lblprg, prg) 'Anulaciones de ventas - 18
 
             End If
 

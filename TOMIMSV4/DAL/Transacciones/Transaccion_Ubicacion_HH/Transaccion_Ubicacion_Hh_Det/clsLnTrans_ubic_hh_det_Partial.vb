@@ -1,10 +1,6 @@
-﻿'Imports System.Configuration
-Imports System.Configuration
+﻿Imports System.Configuration
 Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Net
 Imports System.Reflection
-Imports Newtonsoft.Json
 
 Partial Public Class clsLnTrans_ubic_hh_det
 
@@ -823,7 +819,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -1418,12 +1414,12 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
     '#MA20260415  metodo para el cambio de ubicacion - mejoras para la cumbre
     Public Shared Function Aplica_Cambio_Estado_Ubic(ByVal pMovimiento As clsBeTrans_movimientos,
-                                                       ByVal pStockRes As clsBeVW_stock_res,
-                                                       ByRef pIdStockNuevo As Integer,
-                                                       ByRef pIdMovimiento As Integer,
-                                                       ByVal lConnection As SqlConnection,
-                                                       ByVal lTransaction As SqlTransaction,
-                                                       Optional pPosiciones As Integer = 0) As Boolean
+                                                     ByVal pStockRes As clsBeVW_stock_res,
+                                                     ByRef pIdStockNuevo As Integer,
+                                                     ByRef pIdMovimiento As Integer,
+                                                     ByVal lConnection As SqlConnection,
+                                                     ByVal lTransaction As SqlTransaction,
+                                                     Optional pPosiciones As Integer = 0) As Boolean
 
         Aplica_Cambio_Estado_Ubic = False
 
@@ -1436,7 +1432,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdStockNuevo As Integer = 0
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
