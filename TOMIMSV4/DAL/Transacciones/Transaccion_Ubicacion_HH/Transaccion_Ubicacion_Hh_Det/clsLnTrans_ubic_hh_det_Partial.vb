@@ -641,6 +641,36 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Dim vNuevoLicPlate As String = pStockRes.Lic_plate
             Dim vPresentacion As Integer = pStockRes.IdPresentacion
 
+            '#MA20260424 Validaciones
+            Dim infoDestino As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino, pMovimiento.IdBodegaDestino)
+
+            If infoDestino Is Nothing OrElse infoDestino.Rows.Count = 0 Then
+                Throw New Exception("No se encontró información de la licencia destino.")
+            End If
+
+            Dim row = infoDestino.Rows(0)
+
+            Dim ubicacionDestino As Integer = If(IsDBNull(row("IdUbicacionDestino")), 0, CInt(row("IdUbicacionDestino")))
+
+            Dim estadoDestino As Integer = If(IsDBNull(row("IdProductoEstadoDestino")), 0, CInt(row("IdProductoEstadoDestino")))
+
+            Dim ubicacionOrigen As Integer = pStockRes.IdUbicacion
+            Dim estadoOrigen As Integer = pStockRes.IdProductoEstado
+
+            '1.#MA20260424 Validar ubicación
+            If ubicacionOrigen <> ubicacionDestino Then
+                Throw New Exception("No se puede implosionar porque las ubicaciones son diferentes. " &
+                       "Origen: " & ubicacionOrigen &
+                       ", Destino: " & ubicacionDestino)
+            End If
+
+            '2.#MA20260424 Validar estado
+            If estadoOrigen <> estadoDestino Then
+                Throw New Exception("No se puede implosionar porque los estados son diferentes. " &
+                      "Origen: " & estadoOrigen &
+                      ", Destino: " & estadoDestino)
+            End If
+
             pStockRes.Lic_plate = pStockRes.Lic_plate_Anterior
             pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
 
@@ -2029,6 +2059,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             Dim tieneLicenciaDestino As Boolean = licenciaDestino <> ""
             Dim tieneEstadoDestino As Boolean = IdProductoEstadoDestino > 0
+            Dim EsCambioEstado As Boolean = (pMovimiento.IdEstadoOrigen <> pMovimiento.IdEstadoDestino)
 
             '#EJC20260416:
             'Cambio de estado:
@@ -2036,6 +2067,11 @@ Partial Public Class clsLnTrans_ubic_hh_det
             If tieneEstadoDestino AndAlso IdProductoEstadoDestino <> IdProductoEstadoOrigen Then
                 requiereCambioEstado = True
             End If
+
+            If EsCambioEstado Then
+                requiereCambioEstado = True
+            End If
+
 
             '#EJC20260416:
             'Regla especial de rack:
