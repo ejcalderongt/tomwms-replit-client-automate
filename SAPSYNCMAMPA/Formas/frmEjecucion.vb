@@ -1487,7 +1487,6 @@ Public Class frmEjecucion
 
             If Ejecutar Then
                 lblprg.Clear()
-                'Dim unused = Await ProcesarTodoAsync()
 
                 '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
                 Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes - 100
