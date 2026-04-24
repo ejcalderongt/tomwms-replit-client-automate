@@ -1,9 +1,6 @@
 ﻿Imports System.Configuration
 Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Net
 Imports System.Reflection
-Imports Newtonsoft.Json
 
 Partial Public Class clsLnTrans_ubic_hh_det
 

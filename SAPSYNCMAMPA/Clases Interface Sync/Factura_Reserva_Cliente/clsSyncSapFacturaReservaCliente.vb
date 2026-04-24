@@ -316,7 +316,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         .Receipt_Document_Reference = factura_Reserva_Cliente("DocNum").ToString(),
                         .Company_Code = "",
                         .Comments = factura_Reserva_Cliente("Comments")?.ToString(),
-                        .Document_Type = tTipoDocumentoSalida.Pedido_De_Cliente,
+                        .Document_Type = tTipoDocumentoSalida.Factura_Reserva_Cliente,
                         .Transportation_Guide = factura_Reserva_Cliente("U_Guia")?.ToString(),
                         .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
                     }
@@ -383,7 +383,6 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            'Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Factura_Reserva_Cliente_SAP_SL()
             Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Await Get_Factura_Reserva_Cliente_SAP_SLAsync(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
             Dim pBePedidoEnc As New clsBeTrans_pe_enc
             Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
