@@ -138,6 +138,12 @@ Public Class frmPicking
         cmdVerificarNuevamente.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuDespachado.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuVerificarPickeados.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuReemplazo.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
+
+        lnkAgregarPedido.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
+        cmdNoPickeado
 
     End Sub
 
