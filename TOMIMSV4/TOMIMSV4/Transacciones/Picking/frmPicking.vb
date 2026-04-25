@@ -143,7 +143,6 @@ Public Class frmPicking
 
         lnkAgregarPedido.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
-        cmdNoPickeado
 
     End Sub
 

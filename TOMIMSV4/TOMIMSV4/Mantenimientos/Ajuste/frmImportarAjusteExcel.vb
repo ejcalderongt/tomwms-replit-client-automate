@@ -18,6 +18,7 @@ Partial Public Class frmImportarAjusteExcel
     Private _idPropietarioBodega As Integer
     Private _idTipoAjuste As Integer          ' 3=Positivo, 5=Negativo, 1=Lote
     Private _idMotivoDefault As Integer = 0   ' opcional
+    Private _controlTallaColor As Boolean = False    ' bodega.Control_Talla_Color
 
     Private _rutaArchivo As String = ""
     Private _filasValidadas As New List(Of FilaAjusteExcel)
@@ -66,17 +67,26 @@ Partial Public Class frmImportarAjusteExcel
         Public CantidadOriginal As Decimal
         Public CantidadNueva As Decimal
         Public CantReservada As Decimal
+
+        ' Talla/Color (solo aplican cuando la bodega controla talla/color).
+        ' Se resuelven automáticamente desde el IdStock en Resolver_BD; NO
+        ' se piden columnas en el Excel para evitar errores de tipeo.
+        Public IdProductoTallaColor As Integer = 0
+        Public Talla As String = ""
+        Public Color As String = ""
     End Class
 
     Public Sub New(idBodega As Integer,
                    idPropietarioBodega As Integer,
-                   idTipoAjuste As Integer)
+                   idTipoAjuste As Integer,
+                   Optional controlTallaColor As Boolean = False)
 
         InitializeComponent()
 
         _idBodega = idBodega
         _idPropietarioBodega = idPropietarioBodega
         _idTipoAjuste = idTipoAjuste
+        _controlTallaColor = controlTallaColor
 
         Me.Text = "Importar Ajuste desde Excel"
         Me.Size = New Size(1100, 700)
@@ -189,6 +199,14 @@ Partial Public Class frmImportarAjusteExcel
             det.idstockres = 0
             det.idstocklink = 0
             det.esnuevolink = 0
+            ' Talla/Color: solo se popularon en Resolver_BD si _controlTallaColor=True.
+            ' Para Ajuste_Cantidad la combinación no cambia → destino = origen.
+            det.IdProductoTallaColor_origen = f.IdProductoTallaColor
+            det.Talla_origen = f.Talla
+            det.Color_origen = f.Color
+            det.IdProductoTallaColor_destino = f.IdProductoTallaColor
+            det.Talla_destino = f.Talla
+            det.Color_destino = f.Color
             If f.Presentacion IsNot Nothing Then det.Presentacion = f.Presentacion
             AjustesParaCargar.Add(det)
         Next
@@ -215,6 +233,7 @@ Partial Public Class frmImportarAjusteExcel
             Dim cols As String() = {
                 "Estado", "Hoja", "Fila", "IdUbicacion", "Ubicacion",
                 "IdStock", "Codigo", "Nombre", "Proveedor", "Lote", "LoteNuevo",
+                "Talla", "Color",
                 "Tipo", "Cantidad", "Motivo", "Observacion"
             }
             For Each n As String In cols
@@ -668,6 +687,40 @@ Partial Public Class frmImportarAjusteExcel
                 f.Factor = factor
                 f.Presentacion = bePresObj
 
+                ' ── Resolución talla/color ───────────────────────────────
+                ' Solo aplica si la bodega controla talla/color. La combinación
+                ' viene determinada por el IdStock (que ya identifica unívocamente
+                ' IdProductoBodega + Lote + IdProductoTallaColor). NO se piden
+                ' columnas Talla/Color en el Excel para evitar errores de tipeo:
+                ' se resuelven aquí y se muestran en el preview como referencia.
+                If _controlTallaColor Then
+                    If beStock.IdProductoTallaColor > 0 Then
+                        f.IdProductoTallaColor = beStock.IdProductoTallaColor
+                        Try
+                            Dim dtTC As DataTable =
+                                clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(
+                                    beStock.IdProductoTallaColor)
+                            If dtTC IsNot Nothing AndAlso dtTC.Rows.Count > 0 Then
+                                f.Talla = If(IsDBNull(dtTC.Rows(0).Item("Talla")), "",
+                                             dtTC.Rows(0).Item("Talla").ToString())
+                                f.Color = If(IsDBNull(dtTC.Rows(0).Item("Color")), "",
+                                             dtTC.Rows(0).Item("Color").ToString())
+                            End If
+                        Catch
+                            ' Si la consulta falla, dejamos talla/color como string
+                            ' vacío pero conservamos el IdProductoTallaColor para
+                            ' que el frmAjusteStock pueda hacer el lookup por su lado.
+                        End Try
+                    Else
+                        ' Bodega controla pero el stock no tiene combinación asignada:
+                        ' registro inconsistente, marcamos la fila como error.
+                        Throw New Exception(
+                            "La bodega IdBodega=" & _idBodega &
+                            " controla talla/color, pero el IdStock=" & f.IdStockInput &
+                            " no tiene IdProductoTallaColor asignado.")
+                    End If
+                End If
+
                 ' Proveedor (cadena: stock → trans_re_det → trans_oc_enc → proveedor_bodega → proveedor)
                 ' Devuelve Nothing si el stock no proviene de una recepción contra OC.
                 Try
@@ -749,6 +802,8 @@ Partial Public Class frmImportarAjusteExcel
                     f.NombreProveedor,
                     f.Lote,
                     loteNuevoMostrar,
+                    f.Talla,
+                    f.Color,
                     f.TipoTexto,
                     cantTexto,
                     f.MotivoTexto,
