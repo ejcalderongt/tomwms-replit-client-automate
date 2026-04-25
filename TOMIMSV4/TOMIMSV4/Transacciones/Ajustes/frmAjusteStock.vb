@@ -325,7 +325,7 @@ Public Class frmAjusteStock
                     ' #EJCRP 21042026: (consolida #ProveedorFix previo) ColProveedor está al
                     ' final del grid; se asigna por nombre para no caer en 'motivoajuste'
                     ' por el orden posicional. sProveedorTexto se calcula líneas arriba.
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(vBeAjustDet)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
@@ -2058,7 +2058,9 @@ Public Class frmAjusteStock
 
         Try
             sr = dgrid.SelectedRows(0).Index
-            If MessageBox.Show("Eliminar registro ?", "", MessageBoxButtons.YesNo) <> DialogResult.Yes Then Return
+            If XtraMessageBox.Show("¿Eliminar registro?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then
+                Return
+            End If
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -5888,7 +5890,7 @@ Public Class frmAjusteStock
                     Llena_Bodegas_ERP_Grid(rc, -1)
 
                     '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1):
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(det)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
