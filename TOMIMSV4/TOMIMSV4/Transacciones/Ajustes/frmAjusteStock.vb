@@ -3027,6 +3027,35 @@ Public Class frmAjusteStock
                 Throw New Exception("No hay registros para guardar.")
             End If
 
+            '#FIX_v15_RECUPERAR_PRODUCTO_2026-04-25 (I2): completar código/nombre faltantes.
+            For Each detItem As clsBeTrans_ajuste_det In lBeTransAjusteDet
+                If String.IsNullOrWhiteSpace(detItem.Codigo_producto) OrElse
+                   String.IsNullOrWhiteSpace(detItem.Nombre_producto) Then
+                    Try
+                        If detItem.IdProductoBodega > 0 Then
+                            Dim idProd As Integer =
+                                clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(
+                                    detItem.IdProductoBodega)
+                            If idProd > 0 Then
+                                Dim prod = clsLnProducto.Get_Single_By_IdProducto(idProd)
+                                If prod IsNot Nothing Then
+                                    If String.IsNullOrWhiteSpace(detItem.Codigo_producto) Then
+                                        detItem.Codigo_producto = prod.Codigo
+                                    End If
+                                    If String.IsNullOrWhiteSpace(detItem.Nombre_producto) Then
+                                        detItem.Nombre_producto = prod.Nombre
+                                    End If
+                                End If
+                            End If
+                        End If
+                    Catch ex As Exception
+                        clsLnLog_error_wms.Agregar_Error(
+                            "v15.I2 Recuperar producto IdProductoBodega=" &
+                            detItem.IdProductoBodega & ": " & ex.Message)
+                    End Try
+                End If
+            Next
+
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
             pBeTransAjustEnc.Fec_agr = dtpFecha.EditValue
@@ -3315,32 +3344,42 @@ Public Class frmAjusteStock
         End Try
     End Sub
 
-    '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2 helper):
+    '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2 helper) — REWRITE v16:
     'Reconstruye lBeTransAjusteDet para que refleje exactamente el grid.
     Private Sub Sincronizar_Lista_Con_Grid()
         Dim lNueva As New List(Of clsBeTrans_ajuste_det)
         Dim lOriginal As List(Of clsBeTrans_ajuste_det) =
             If(lBeTransAjusteDet, New List(Of clsBeTrans_ajuste_det))
 
-        For i As Integer = 0 To dgrid.Rows.Count - 1
+        Dim filasGrid As New List(Of DataGridViewRow)
+        For iRow As Integer = 0 To dgrid.Rows.Count - 1
+            If Not dgrid.Rows(iRow).IsNewRow Then filasGrid.Add(dgrid.Rows(iRow))
+        Next
 
-            If dgrid.Rows(i).IsNewRow Then Continue For
+        Dim modoPosicional As Boolean = (filasGrid.Count = lOriginal.Count)
+
+        For i As Integer = 0 To filasGrid.Count - 1
+
+            Dim row As DataGridViewRow = filasGrid(i)
 
             Dim Codigo As String = If(
-                IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value),
-                "", CStr(dgrid.Rows(i).Cells("ColCodigoProducto").Value))
+                IsDBNull(row.Cells("ColCodigoProducto").Value),
+                "", CStr(row.Cells("ColCodigoProducto").Value))
             Dim Lote As String = If(
-                IsDBNull(dgrid.Rows(i).Cells("ColLote").Value),
-                "", CStr(dgrid.Rows(i).Cells("ColLote").Value))
+                IsDBNull(row.Cells("ColLote").Value),
+                "", CStr(row.Cells("ColLote").Value))
             Dim IdAjusteDet As Integer = If(
-                IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value),
-                0, CInt(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value))
+                IsDBNull(row.Cells("ColIdAjusteDEt").Value),
+                0, CInt(row.Cells("ColIdAjusteDEt").Value))
 
-            Dim found As clsBeTrans_ajuste_det =
-                lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
-                                AndAlso x.Lote_nuevo = Lote _
-                                AndAlso x.IdAjusteDet = IdAjusteDet)
+            Dim found As clsBeTrans_ajuste_det = Nothing
 
+            '1) Match nominal en lista principal
+            found = lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
+                                    AndAlso x.Lote_nuevo = Lote _
+                                    AndAlso x.IdAjusteDet = IdAjusteDet)
+
+            '2) Fallback nominal en borrador
             If found Is Nothing AndAlso
                lBeTransAjusteDetBorrador IsNot Nothing Then
                 Dim foundBorr As clsBeTrans_ajuste_det_borrador =
@@ -3350,6 +3389,31 @@ Public Class frmAjusteStock
                           AndAlso x.idajustedet = IdAjusteDet)
                 If foundBorr IsNot Nothing Then
                     found = Convertir_Borrador_A_Detalle(foundBorr)
+                End If
+            End If
+
+            '3) FIX_v16_J1: fallback posicional + backfill de campos vacíos
+            If found Is Nothing AndAlso modoPosicional AndAlso i < lOriginal.Count Then
+                found = lOriginal(i)
+
+                If String.IsNullOrWhiteSpace(found.Codigo_producto) Then
+                    found.Codigo_producto = Codigo
+                End If
+
+                Try
+                    Dim nombreGrid As String = If(
+                        IsDBNull(row.Cells("ColNombreProducto").Value),
+                        "", CStr(row.Cells("ColNombreProducto").Value))
+                    If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
+                       Not String.IsNullOrWhiteSpace(nombreGrid) Then
+                        found.Nombre_producto = nombreGrid
+                    End If
+                Catch
+                End Try
+
+                If String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
+                   Not String.IsNullOrWhiteSpace(Lote) Then
+                    found.Lote_nuevo = Lote
                 End If
             End If
 
@@ -3364,12 +3428,13 @@ Public Class frmAjusteStock
 
         lBeTransAjusteDet = lNueva
 
+        'FIX_v16_J2: usar mapeo explícito al espejo borrador
         If chkBorrador.Checked AndAlso lBeTransAjusteDetBorrador IsNot Nothing Then
             Dim lNuevoBorr As New List(Of clsBeTrans_ajuste_det_borrador)
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
             For Each d As clsBeTrans_ajuste_det In lNueva
-                Dim b As New clsBeTrans_ajuste_det_borrador
-                clsPublic.CopyObject(d, b)
-                lNuevoBorr.Add(b)
+                lNuevoBorr.Add(MapearDetalleABorrador(d, fechaActual, usuarioActual))
             Next
             lBeTransAjusteDetBorrador = lNuevoBorr
         End If
@@ -5635,9 +5700,10 @@ Public Class frmAjusteStock
 
                     det.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
 
+                    '#FIX_v15_IMPORTER_BORRADOR_2026-04-25 (I1): mapeo explícito al borrador.
                     If chkBorrador.Checked Then
-                        BeAjusteDetBorrador = New clsBeTrans_ajuste_det_borrador
-                        clsPublic.CopyObject(det, BeAjusteDetBorrador)
+                        BeAjusteDetBorrador = MapearDetalleABorrador(
+                            det, Now, AP.UsuarioAp.IdUsuario.ToString())
                         lBeTransAjusteDetBorrador.Add(BeAjusteDetBorrador)
                     Else
                         lBeTransAjusteDet.Add(det)
