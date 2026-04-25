@@ -481,7 +481,7 @@ Public Class frmAjusteStock
                 oBe.Codigo_Proveedor = If(be.Codigo, "")
                 oBe.Nombre_Proveedor = If(be.Nombre, "")
                 If Not String.IsNullOrWhiteSpace(be.Codigo) Then
-                    Return $"{be.Codigo} - {be.Nombre}"
+                    Return $"{be.Nombre}"
                 End If
                 Return If(be.Nombre, "")
             End If
