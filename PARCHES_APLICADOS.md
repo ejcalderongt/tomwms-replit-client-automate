@@ -14,6 +14,7 @@
 | 2026-04-25 00:15 | v15_consolidado_2026-04-25 | v15.I1 + v15.I2 | manual | ✅ aplicado | Importer borrador mapeo explícito + recuperación código/nombre producto |
 | 2026-04-25 00:35 | v16_consolidado_2026-04-25 | v16.J1 + v16.J2 | manual | ✅ aplicado | Rewrite sync con fallback posicional + espejo borrador con MapearDetalleABorrador |
 | 2026-04-25 00:43 | v17_bundle_2026-04-25 | I1 + I2 + J1/J2 | verificación/no-op | ✅ ya incorporado | Bundle en formato `.patch`; contenido ya presente por v15+v16, no cambios adicionales |
+| 2026-04-25 01:29 | v18_bundle_2026-04-25 | v18.D2 | manual | ✅ aplicado | Cargar_Detalle usa existenciaLive local para CantidadP sin pisar Cantidad_original |
 
 ## Cómo actualizar esta bitácora
 

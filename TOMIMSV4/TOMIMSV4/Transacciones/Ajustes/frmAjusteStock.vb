@@ -315,7 +315,8 @@ Public Class frmAjusteStock
                     Llenar_Talla(rc, -1)
                     Llenar_Color(rc, -1)
 
-                    '#FIX_v14_EXISTENCIA_LIVE_2026-04-25 (H2): refrescar existencia al cargar.
+                    '#FIX_v18_CARGAR_DISPLAY_2026-04-25 (D2): existencia live solo para display.
+                    Dim existenciaLive As Decimal = vBeAjustDet.Cantidad_original
                     If vBeAjustDet.IdStock > 0 AndAlso
                        (vBeAjustDet.Idtipoajuste = 3 OrElse vBeAjustDet.Idtipoajuste = 5) Then
                         Try
@@ -323,7 +324,7 @@ Public Class frmAjusteStock
                                 vBeAjustDet.IdStock,
                                 clsTrans.lConnection, clsTrans.lTransaction)
                             If stockActual IsNot Nothing AndAlso stockActual.IdStock > 0 Then
-                                vBeAjustDet.Cantidad_original = stockActual.Cantidad
+                                existenciaLive = stockActual.Cantidad
                             End If
                         Catch ex As Exception
                             clsLnLog_error_wms.Agregar_Error(
@@ -333,18 +334,18 @@ Public Class frmAjusteStock
 
                     If vBeAjustDet.Idtipoajuste = 3 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = existenciaLive / vBeAjustDet.Factor
                             dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
                         Else
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
+                            dgrid.Rows(rc).Cells("CantidadP").Value = existenciaLive
                             dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 5 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = existenciaLive / vBeAjustDet.Factor
                             dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva) / vBeAjustDet.Factor
                         Else
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
+                            dgrid.Rows(rc).Cells("CantidadP").Value = existenciaLive
                             dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 1 Then 'Ajuste Lote
