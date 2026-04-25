@@ -1563,7 +1563,7 @@ Partial Public Class clsLnProveedor
             lConnection.Open()
             lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Const sql As String = "SELECT * FROM VW_Stock_Res where IdStock = @IdStock "
+            Const sql As String = "SELECT IdProveedor FROM VW_Stock_Res where IdStock = @IdStock "
 
             Dim cmd As New SqlCommand(sql, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.Add(New SqlParameter("@IdStock", pIdStock))
