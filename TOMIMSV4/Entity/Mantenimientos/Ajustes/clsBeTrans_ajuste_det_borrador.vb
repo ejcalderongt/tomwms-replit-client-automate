@@ -15,8 +15,8 @@
         lote_original = String.Empty
         lote_nuevo = String.Empty
 
-        fecha_vence_original = DateTime.MinValue
-        fecha_vence_nueva = DateTime.MinValue
+        fecha_vence_original = New Date(1900, 1, 1)
+        fecha_vence_nueva = New Date(1900, 1, 1)
 
         peso_original = 0
         peso_nuevo = 0
@@ -39,9 +39,9 @@
         estado_borrador = "BORRADOR"
         confirmado = False
         procesado = False
-        fecha_creacion = DateTime.MinValue
+        fecha_creacion = New Date(1900, 1, 1)
         usuario_creacion = String.Empty
-        fecha_modificacion = DateTime.MinValue
+        fecha_modificacion = New Date(1900, 1, 1)
         usuario_modificacion = String.Empty
 
         Nombre_Presentacion = String.Empty
