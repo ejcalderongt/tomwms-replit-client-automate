@@ -66,6 +66,7 @@ Partial Class frmAjusteStock
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.chkBorrador = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.btnImportarExcel = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuImprimirResumen = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -139,7 +140,7 @@ Partial Class frmAjusteStock
         Me.tabResumenAjuste = New DevExpress.XtraTab.XtraTabPage()
         Me.dgridProductosConsolidados = New DevExpress.XtraGrid.GridControl()
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.mnuImprimirResumen = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEliminarAjusteBorrador = New DevExpress.XtraBars.BarButtonItem()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -434,10 +435,10 @@ Partial Class frmAjusteStock
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel, Me.mnuImprimirResumen})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel, Me.mnuImprimirResumen, Me.mnuEliminarAjusteBorrador})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 19
+        Me.RibbonControl.MaxItemId = 20
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -491,6 +492,13 @@ Partial Class frmAjusteStock
         Me.btnImportarExcel.ImageOptions.SvgImage = CType(resources.GetObject("btnImportarExcel.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.btnImportarExcel.Name = "btnImportarExcel"
         '
+        'mnuImprimirResumen
+        '
+        Me.mnuImprimirResumen.Caption = "Resumen"
+        Me.mnuImprimirResumen.Id = 18
+        Me.mnuImprimirResumen.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimirResumen.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuImprimirResumen.Name = "mnuImprimirResumen"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -507,6 +515,7 @@ Partial Class frmAjusteStock
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAuditado)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkBorrador)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.btnImportarExcel)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarAjusteBorrador, True)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -1303,12 +1312,12 @@ Partial Class frmAjusteStock
         Me.GridView3.OptionsBehavior.ReadOnly = True
         Me.GridView3.OptionsFind.AlwaysVisible = True
         '
-        'mnuImprimirResumen
+        'mnuEliminarAjusteBorrador
         '
-        Me.mnuImprimirResumen.Caption = "Resumen"
-        Me.mnuImprimirResumen.Id = 18
-        Me.mnuImprimirResumen.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuImprimirResumen.Name = "mnuImprimirResumen"
+        Me.mnuEliminarAjusteBorrador.Caption = "Eliminar"
+        Me.mnuEliminarAjusteBorrador.Id = 19
+        Me.mnuEliminarAjusteBorrador.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarAjusteBorrador.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEliminarAjusteBorrador.Name = "mnuEliminarAjusteBorrador"
         '
         'frmAjusteStock
         '
@@ -1479,4 +1488,5 @@ Partial Class frmAjusteStock
     Friend WithEvents dgridProductosConsolidados As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView3 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents mnuImprimirResumen As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuEliminarAjusteBorrador As DevExpress.XtraBars.BarButtonItem
 End Class

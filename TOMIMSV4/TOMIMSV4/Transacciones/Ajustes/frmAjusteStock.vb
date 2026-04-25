@@ -6049,6 +6049,10 @@ Public Class frmAjusteStock
         End Try
     End Sub
 
+    Private Sub mnuEliminarAjusteBorrador_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEliminarAjusteBorrador.ItemClick
+        Eliminar_Ajuste_Si_Sin_Detalle()
+    End Sub
+
     Private Sub dgrid_AnyChange_RC2026(sender As Object, e As EventArgs)
         ' Solo recalcula si la pestana del resumen esta visible.
         If XtraTabControl1 Is Nothing OrElse
