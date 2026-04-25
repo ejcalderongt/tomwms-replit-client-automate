@@ -1353,6 +1353,32 @@ Public Class frmAjusteStock
             'entonces deja de ser 3 y podria ser 5 (3 y 5 son los ajustes por cantidad).
             '#GT10062022_1640
 
+            '#FIX_v19_LLENAR_TIPO_PRIMERA_FILA_2026-04-25 (E1):
+            'Sincronizar IdTipoAjuste (campo de form) con cmbTipoAjuste.EditValue
+            'cuando aun no fue inicializado. Causa raiz del bug: en Form_Load se hace
+            '"cmbTipoAjuste.EditValue = 3" pero cmbTipoAjuste_EditValueChanged hace
+            '"If IsLoading Then Exit Sub", por lo cual IdTipoAjuste queda en 0 hasta
+            'que el handler dispare por accion del usuario. La PRIMERA fila agregada
+            'al grid llamaba Llenar_Tipo con IdTipoAjuste=0, caia al ELSE branch
+            '(GetAll + ReadOnly=True + Value=pidtipo) y dejaba el combo bloqueado en
+            'Positivo. La SEGUNDA fila ya tenia IdTipoAjuste sincronizado por la
+            'asignacion de la linea 1421 dentro del ELSE, asi que entraba al IF
+            'branch (Get_by_Cantidad + ReadOnly=False) y mostraba ambas opciones.
+            If IdTipoAjuste <> 3 AndAlso IdTipoAjuste <> 5 Then
+                Try
+                    Dim vEditValueEnc As Object = cmbTipoAjuste.EditValue
+                    If vEditValueEnc IsNot Nothing AndAlso IsNumeric(vEditValueEnc) Then
+                        Dim vIdTipoAjusteEnc As Integer = CInt(vEditValueEnc)
+                        If vIdTipoAjusteEnc = 3 OrElse vIdTipoAjusteEnc = 5 Then
+                            IdTipoAjuste = vIdTipoAjusteEnc
+                        End If
+                    End If
+                Catch
+                    'Si el combo del enc aun no esta inicializado, dejar IdTipoAjuste
+                    'como esta y caer al ELSE branch original (comportamiento previo).
+                End Try
+            End If
+
             If IdTipoAjuste = 3 OrElse IdTipoAjuste = 5 Then
 
                 Dim vTransaccionRemota As Boolean = (lConnection IsNot Nothing AndAlso lTransaction IsNot Nothing)
@@ -1995,6 +2021,19 @@ Public Class frmAjusteStock
                 stocklink = lBeTransAjusteDetBorrador(sr).idstocklink
 
                 If stocklink = 0 Then
+                    '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
+                    'Eliminar Stock_res reservado al quitar la fila en modo borrador.
+                    'Causa raiz: en alta de fila desde frmStockList se llama
+                    'Reservar_Stock incondicionalmente (linea 539, antes del
+                    'IF chkBorrador.Checked), por lo cual la fila borrador tambien
+                    'tiene un IdStockRes valido. La rama no-borrador (debajo) ya
+                    'eliminaba el stock_res; faltaba replicar la limpieza aca para
+                    'no dejar reservas huerfanas que bloqueen la disponibilidad.
+                    str.IdStockRes = lBeTransAjusteDetBorrador(sr).idstockres
+                    If str.IdStockRes > 0 Then
+                        clsLnStock_res.Eliminar(str)
+                    End If
+
                     lBeTransAjusteDetBorrador.RemoveAt(sr)
                     dgrid.Rows.RemoveAt(sr)
                 Else
@@ -2002,6 +2041,19 @@ Public Class frmAjusteStock
                     'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDetBorrador.Count - 1 To 0 Step -1
                         If lBeTransAjusteDetBorrador(ii).idstocklink = stocklink Then
+                            '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
+                            'Eliminar Stock_res tambien para cada hermana del
+                            'mismo idstocklink antes de quitarla de la lista.
+                            'Espejo de la rama no-borrador (lineas 2030-2032)
+                            'que hace clsLnStock_res.Eliminar para cada idstockres
+                            'de las filas hermanas. Aca no aplicamos el filtro
+                            '"Not esnuevolink" porque en borrador todas las filas
+                            'son nuevas reservas locales que deben liberarse.
+                            str.IdStockRes = lBeTransAjusteDetBorrador(ii).idstockres
+                            If str.IdStockRes > 0 Then
+                                clsLnStock_res.Eliminar(str)
+                            End If
+
                             lBeTransAjusteDetBorrador.RemoveAt(ii)
                             If ii < dgrid.Rows.Count Then
                                 dgrid.Rows.RemoveAt(ii)
