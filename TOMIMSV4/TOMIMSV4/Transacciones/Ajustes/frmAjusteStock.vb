@@ -2074,6 +2074,7 @@ Public Class frmAjusteStock
                 stocklink = lBeTransAjusteDetBorrador(sr).idstocklink
 
                 If stocklink = 0 Then
+
                     '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
                     'Eliminar Stock_res reservado al quitar la fila en modo borrador.
                     'Causa raiz: en alta de fila desde frmStockList se llama
@@ -2087,8 +2088,12 @@ Public Class frmAjusteStock
                         clsLnStock_res.Eliminar(str)
                     End If
 
+                    clsLnTrans_ajuste_det_borrador.Eliminar_Por_IdAjusteEnc_And_IdAjusteDet(lBeTransAjusteDetBorrador(sr).idajusteenc, lBeTransAjusteDetBorrador(sr).IdAjusteDetBorrador)
+
                     lBeTransAjusteDetBorrador.RemoveAt(sr)
+
                     dgrid.Rows.RemoveAt(sr)
+
                 Else
                     '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
                     'Borrar solo filas hermanas del mismo idstocklink.

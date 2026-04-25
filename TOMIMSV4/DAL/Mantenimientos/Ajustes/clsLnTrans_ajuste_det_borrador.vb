@@ -500,4 +500,47 @@ Public Class clsLnTrans_ajuste_det_borrador
 
     End Function
 
+    Public Shared Function Eliminar_Por_IdAjusteEnc_And_IdAjusteDet(ByVal pIdAjusteEnc As Integer,
+                                                                    ByVal pIdAjusteDetBorrador As Integer,
+                                                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = "DELETE FROM trans_ajuste_det_borrador WHERE idajusteenc = @idajusteenc and idajustedetborrador = @idajustedetborrador "
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", pIdAjusteEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEDETBORRADOR", pIdAjusteDetBorrador))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
 End Class
