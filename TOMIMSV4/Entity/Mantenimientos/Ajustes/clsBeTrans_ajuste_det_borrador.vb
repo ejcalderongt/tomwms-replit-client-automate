@@ -60,6 +60,11 @@
         idstockres = 0
         esnuevolink = 0
 
+        '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+        IdProveedor = 0
+        Codigo_Proveedor = String.Empty
+        Nombre_Proveedor = String.Empty
+
         Presentacion = New clsBeProducto_Presentacion()
     End Sub
 
@@ -112,6 +117,12 @@
     Public Property CantReservada As Object
     Public Property idstockres As Integer
     Public Property esnuevolink As Integer
+
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    Public Property IdProveedor As Integer
+    Public Property Codigo_Proveedor As String
+    Public Property Nombre_Proveedor As String
+
     Public Property Presentacion As clsBeProducto_Presentacion
 
 End Class

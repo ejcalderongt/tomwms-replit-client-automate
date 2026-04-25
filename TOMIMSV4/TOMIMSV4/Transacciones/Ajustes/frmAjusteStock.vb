@@ -279,16 +279,37 @@ Public Class frmAjusteStock
 
                     vBeAjustDet.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vBeAjustDet.IdUnidadMedida, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+                    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: si el detalle ya tiene
+                    ' proveedor persistido (idproveedor / codigo_proveedor / nombre_proveedor
+                    ' provenientes de trans_ajuste_det), usarlo directo y evitar el lookup
+                    ' por IdStock (que puede haber cambiado luego del cierre del lote).
+                    ' Si NO hay proveedor persistido, hacer el lookup y guardarlo en el BE
+                    ' para que el próximo guardado lo deje en BD.
+                    If vBeAjustDet.IdProveedor > 0 _
+                       OrElse Not String.IsNullOrWhiteSpace(vBeAjustDet.Codigo_Proveedor) _
+                       OrElse Not String.IsNullOrWhiteSpace(vBeAjustDet.Nombre_Proveedor) Then
 
-                    If vProveedor IsNot Nothing Then
-                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
-                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        If Not String.IsNullOrWhiteSpace(vBeAjustDet.Codigo_Proveedor) Then
+                            sProveedorTexto = $"{vBeAjustDet.Codigo_Proveedor} - {vBeAjustDet.Nombre_Proveedor}"
                         Else
-                            sProveedorTexto = vProveedor.Nombre
+                            sProveedorTexto = If(vBeAjustDet.Nombre_Proveedor, "")
                         End If
                     Else
-                        Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                        vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        If vProveedor IsNot Nothing Then
+                            vBeAjustDet.IdProveedor = vProveedor.IdProveedor
+                            vBeAjustDet.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                            vBeAjustDet.Nombre_Proveedor = If(vProveedor.Nombre, "")
+
+                            If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                                sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                            Else
+                                sProveedorTexto = If(vProveedor.Nombre, "")
+                            End If
+                        Else
+                            Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                        End If
                     End If
 
                     ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Aunque aquí
@@ -468,6 +489,48 @@ Public Class frmAjusteStock
         End Try
     End Function
 
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    ' Resuelve el proveedor por IdStock, lo persiste en el BE de detalle (IdProveedor /
+    ' Codigo_Proveedor / Nombre_Proveedor) y devuelve el texto formateado para mostrar
+    ' en la columna ColProveedor de la grilla. Si el lookup falla devuelve "".
+    Private Function Resolver_Proveedor_Y_Persistir(ByVal oBe As clsBeTrans_ajuste_det) As String
+        Try
+            If oBe Is Nothing Then Return ""
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(oBe.IdStock)
+            If be IsNot Nothing Then
+                oBe.IdProveedor = be.IdProveedor
+                oBe.Codigo_Proveedor = If(be.Codigo, "")
+                oBe.Nombre_Proveedor = If(be.Nombre, "")
+                If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                    Return $"{be.Codigo} - {be.Nombre}"
+                End If
+                Return If(be.Nombre, "")
+            End If
+        Catch
+        End Try
+        Return ""
+    End Function
+
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    ' Sobrecarga para clsBeTrans_ajuste_det_borrador.
+    Private Function Resolver_Proveedor_Y_Persistir(ByVal oBe As clsBeTrans_ajuste_det_borrador) As String
+        Try
+            If oBe Is Nothing Then Return ""
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(oBe.IdStock)
+            If be IsNot Nothing Then
+                oBe.IdProveedor = be.IdProveedor
+                oBe.Codigo_Proveedor = If(be.Codigo, "")
+                oBe.Nombre_Proveedor = If(be.Nombre, "")
+                If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                    Return $"{be.Codigo} - {be.Nombre}"
+                End If
+                Return If(be.Nombre, "")
+            End If
+        Catch
+        End Try
+        Return ""
+    End Function
+
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
 
         Dim st As New clsBeVW_stock_res
@@ -617,8 +680,9 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
-                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta desde borrador).
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
+                    ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar
+                    ' Proveedor en grilla y persistirlo en el BE borrador para guardado.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(BeAjusteDetBorrador)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -759,8 +823,9 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
-                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta directa).
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
+                    ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar
+                    ' Proveedor en grilla y persistirlo en el BE de detalle para guardado.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(BeAjusteDet)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -939,7 +1004,14 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
-            dgrid.Rows(rc).Cells("ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistir IdProveedor / Codigo /
+            ' Nombre en el BE; si el lookup por IdStock falla, fallback al texto que ya
+            ' venía precargado en stockEspecificoSeleccionado.Proveedor.
+            Dim sProveedorTextoSE As String = Resolver_Proveedor_Y_Persistir(BeAjusteDet)
+            If String.IsNullOrWhiteSpace(sProveedorTextoSE) Then
+                sProveedorTextoSE = stockEspecificoSeleccionado.Proveedor
+            End If
+            dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTextoSE
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
@@ -2210,9 +2282,10 @@ Public Class frmAjusteStock
             dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
             dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
-            ' #EJCRP 21042026: poblar Proveedor para el detalle del link de quiebre de lote.
+            ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar Proveedor
+            ' para el detalle del link de quiebre de lote y persistirlo en el BE.
             ' Item.IdStock representa el stock origen del nuevo link.
-            dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
+            dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(Item)
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
             Llenar_Tipo(rc, Item.Idtipoajuste)
@@ -5773,6 +5846,20 @@ Public Class frmAjusteStock
                     vProveedor = clsLnProveedor.Get_Single_By_IdStock(det.IdStock)
 
                     If vProveedor IsNot Nothing Then
+                        '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistir proveedor en el
+                        ' BE de detalle (det) para que el guardado deje las columnas en
+                        ' trans_ajuste_det. Si la fila se mapeó a borrador, propagar también
+                        ' al BeAjusteDetBorrador correspondiente (mismo det).
+                        det.IdProveedor = vProveedor.IdProveedor
+                        det.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                        det.Nombre_Proveedor = If(vProveedor.Nombre, "")
+
+                        If chkBorrador.Checked AndAlso BeAjusteDetBorrador IsNot Nothing Then
+                            BeAjusteDetBorrador.IdProveedor = vProveedor.IdProveedor
+                            BeAjusteDetBorrador.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                            BeAjusteDetBorrador.Nombre_Proveedor = If(vProveedor.Nombre, "")
+                        End If
+
                         If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
                             sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
                         Else
