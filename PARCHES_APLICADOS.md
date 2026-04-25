@@ -19,6 +19,7 @@
 | 2026-04-25 01:55 | v20_bundle | v20 proveedor persistencia (entities + DAL + form) | apply (.patch) | ✅ aplicado | Agrega/persiste datos de proveedor en detalle y borrador |
 | 2026-04-25 01:59 | v21_bundle.zip | v21.G1 + v21.G2 | manual (sobre v18) | ✅ aplicado | Existencia live solo en borrador + ColCantidad = Abs(Cantidad_nueva - Cantidad_original) para tipo 3/5 |
 | 2026-04-25 02:14 | v22_bundle_2026-04-25.zip | v22 (existencia from BD) | manual | ✅ aplicado | Se elimina refresh live desde Stock; CantidadP usa Cantidad_original persistida |
+| 2026-04-25 02:46 | v23_bundle_2026-04-25.zip | v23 reglas eliminar ajuste | apply (.patch) | ✅ aplicado | Ajusta validaciones de eliminación considerando modo borrador y listas en memoria |
 
 ## Cómo actualizar esta bitácora
 
