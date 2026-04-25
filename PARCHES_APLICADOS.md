@@ -17,6 +17,7 @@
 | 2026-04-25 01:29 | v18_bundle_2026-04-25 | v18.D2 | manual | ✅ aplicado | Cargar_Detalle usa existenciaLive local para CantidadP sin pisar Cantidad_original |
 | 2026-04-25 01:38 | v19_bundle_2026-04-25 | v19.E1 + v19.F1 | apply (.patch) | ✅ aplicado | Llenar_Tipo sincroniza IdTipoAjuste inicial + libera stock_res al eliminar en borrador |
 | 2026-04-25 01:55 | v20_bundle | v20 proveedor persistencia (entities + DAL + form) | apply (.patch) | ✅ aplicado | Agrega/persiste datos de proveedor en detalle y borrador |
+| 2026-04-25 01:59 | v21_bundle.zip | v21.G1 + v21.G2 | manual (sobre v18) | ✅ aplicado | Existencia live solo en borrador + ColCantidad = Abs(Cantidad_nueva - Cantidad_original) para tipo 3/5 |
 
 ## Cómo actualizar esta bitácora
 
