@@ -315,6 +315,22 @@ Public Class frmAjusteStock
                     Llenar_Talla(rc, -1)
                     Llenar_Color(rc, -1)
 
+                    '#FIX_v14_EXISTENCIA_LIVE_2026-04-25 (H2): refrescar existencia al cargar.
+                    If vBeAjustDet.IdStock > 0 AndAlso
+                       (vBeAjustDet.Idtipoajuste = 3 OrElse vBeAjustDet.Idtipoajuste = 5) Then
+                        Try
+                            Dim stockActual As clsBeStock = clsLnStock.GetSingle(
+                                vBeAjustDet.IdStock,
+                                clsTrans.lConnection, clsTrans.lTransaction)
+                            If stockActual IsNot Nothing AndAlso stockActual.IdStock > 0 Then
+                                vBeAjustDet.Cantidad_original = stockActual.Cantidad
+                            End If
+                        Catch ex As Exception
+                            clsLnLog_error_wms.Agregar_Error(
+                                "Refrescar existencia IdStock=" & vBeAjustDet.IdStock & ": " & ex.Message)
+                        End Try
+                    End If
+
                     If vBeAjustDet.Idtipoajuste = 3 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
                             dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
@@ -1981,9 +1997,15 @@ Public Class frmAjusteStock
                     lBeTransAjusteDetBorrador.RemoveAt(sr)
                     dgrid.Rows.RemoveAt(sr)
                 Else
+                    '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
+                    'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDetBorrador.Count - 1 To 0 Step -1
-                        lBeTransAjusteDetBorrador.RemoveAt(ii)
-                        dgrid.Rows.RemoveAt(ii)
+                        If lBeTransAjusteDetBorrador(ii).idstocklink = stocklink Then
+                            lBeTransAjusteDetBorrador.RemoveAt(ii)
+                            If ii < dgrid.Rows.Count Then
+                                dgrid.Rows.RemoveAt(ii)
+                            End If
+                        End If
                     Next
                 End If
 
@@ -1998,15 +2020,23 @@ Public Class frmAjusteStock
                     lBeTransAjusteDet.RemoveAt(sr)
                     dgrid.Rows.RemoveAt(sr)
                 Else
+                    '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
+                    'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDet.Count - 1 To 0 Step -1
 
-                        If Not lBeTransAjusteDet(ii).esnuevolink Then
-                            str.IdStockRes = lBeTransAjusteDet(ii).idstockres
-                            clsLnStock_res.Eliminar(str)
-                        End If
+                        If lBeTransAjusteDet(ii).idstocklink = stocklink Then
 
-                        lBeTransAjusteDet.RemoveAt(ii)
-                        dgrid.Rows.RemoveAt(ii)
+                            If Not lBeTransAjusteDet(ii).esnuevolink Then
+                                str.IdStockRes = lBeTransAjusteDet(ii).idstockres
+                                clsLnStock_res.Eliminar(str)
+                            End If
+
+                            lBeTransAjusteDet.RemoveAt(ii)
+                            If ii < dgrid.Rows.Count Then
+                                dgrid.Rows.RemoveAt(ii)
+                            End If
+
+                        End If
                     Next
                 End If
 
@@ -2847,6 +2877,73 @@ Public Class frmAjusteStock
 
     End Function
 
+    '#FIX_v14_ELIMINAR_AJUSTE_2026-04-25 (H1):
+    'Elimina el ajuste actual solo si no tiene detalle.
+    Public Sub Eliminar_Ajuste_Si_Sin_Detalle()
+        Try
+            If pBeTransAjustEnc Is Nothing OrElse
+               pBeTransAjustEnc.IdAjusteenc <= 0 Then
+                XtraMessageBox.Show(
+                    "No hay un ajuste cargado para eliminar.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Dim filasGrid As Integer = 0
+            For Each row As DataGridViewRow In dgrid.Rows
+                If Not row.IsNewRow Then filasGrid += 1
+            Next
+            If filasGrid > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & filasGrid & " fila(s) en el grid. Elimine los detalles antes de eliminar el ajuste.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            Dim detalles As List(Of clsBeTrans_ajuste_det) =
+                clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+            If detalles IsNot Nothing AndAlso detalles.Count > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & detalles.Count & " detalle(s) persistido(s) en Trans_ajuste_det. Elimine los detalles antes de eliminar el ajuste.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            Dim detallesBorr As List(Of clsBeTrans_ajuste_det_borrador) =
+                clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+            If detallesBorr IsNot Nothing AndAlso detallesBorr.Count > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & detallesBorr.Count & " detalle(s) en estado borrador. Elimine los detalles antes.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            Dim resp As DialogResult = XtraMessageBox.Show(
+                "Confirma eliminar el ajuste #" & pBeTransAjustEnc.IdAjusteenc &
+                "?" & vbCrLf & vbCrLf & "Esta operación es irreversible.",
+                "Eliminar ajuste sin detalle",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2)
+            If resp <> DialogResult.Yes Then Return
+
+            clsLnTrans_ajuste_enc.RollBackStockRes(pBeTransAjustEnc)
+
+            XtraMessageBox.Show(
+                "Ajuste eliminado correctamente.",
+                Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            Guardado = True
+            Me.Close()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text,
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            clsLnLog_error_wms.Agregar_Error(
+                "Eliminar_Ajuste_Si_Sin_Detalle: " & ex.Message)
+        End Try
+    End Sub
+
     Private Sub Guardar_Ajuste()
 
         Dim cc, ic As Integer
@@ -2922,6 +3019,10 @@ Public Class frmAjusteStock
 
             End If
 
+            '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2):
+            'Reconciliar lista vs grid antes de iterar por índice.
+            Sincronizar_Lista_Con_Grid()
+
             If lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0 Then
                 Throw New Exception("No hay registros para guardar.")
             End If
@@ -2958,8 +3059,9 @@ Public Class frmAjusteStock
                 If lBeTransAjusteDet(i).Peso_original <> lBeTransAjusteDet(i).Peso_nuevo Then ic += 1
                 If ic > 0 Then cc += 1
 
-                '#EJC20180924: Asignación de bodega de ERP.                
-                DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
+                '#EJC20180924: Asignación de bodega de ERP.
+                '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G3): usar la fila del bucle.
+                DgComboBodega = TryCast(dgrid.Rows(i).Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
                 If BeBodega.Bodega_Cliente_Ajuste_ByB Then
                     IdBodegaERP = cmbBodegaERP.EditValue
@@ -3211,6 +3313,66 @@ Public Class frmAjusteStock
             clsTransaccion.Close_Conection()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2 helper):
+    'Reconstruye lBeTransAjusteDet para que refleje exactamente el grid.
+    Private Sub Sincronizar_Lista_Con_Grid()
+        Dim lNueva As New List(Of clsBeTrans_ajuste_det)
+        Dim lOriginal As List(Of clsBeTrans_ajuste_det) =
+            If(lBeTransAjusteDet, New List(Of clsBeTrans_ajuste_det))
+
+        For i As Integer = 0 To dgrid.Rows.Count - 1
+
+            If dgrid.Rows(i).IsNewRow Then Continue For
+
+            Dim Codigo As String = If(
+                IsDBNull(dgrid.Rows(i).Cells("ColCodigoProducto").Value),
+                "", CStr(dgrid.Rows(i).Cells("ColCodigoProducto").Value))
+            Dim Lote As String = If(
+                IsDBNull(dgrid.Rows(i).Cells("ColLote").Value),
+                "", CStr(dgrid.Rows(i).Cells("ColLote").Value))
+            Dim IdAjusteDet As Integer = If(
+                IsDBNull(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value),
+                0, CInt(dgrid.Rows(i).Cells("ColIdAjusteDEt").Value))
+
+            Dim found As clsBeTrans_ajuste_det =
+                lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
+                                AndAlso x.Lote_nuevo = Lote _
+                                AndAlso x.IdAjusteDet = IdAjusteDet)
+
+            If found Is Nothing AndAlso
+               lBeTransAjusteDetBorrador IsNot Nothing Then
+                Dim foundBorr As clsBeTrans_ajuste_det_borrador =
+                    lBeTransAjusteDetBorrador.Find(
+                        Function(x) x.codigo_producto = Codigo _
+                          AndAlso x.lote_nuevo = Lote _
+                          AndAlso x.idajustedet = IdAjusteDet)
+                If foundBorr IsNot Nothing Then
+                    found = Convertir_Borrador_A_Detalle(foundBorr)
+                End If
+            End If
+
+            If found IsNot Nothing Then
+                lNueva.Add(found)
+            Else
+                Throw New Exception(String.Format(
+                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
+                    i + 1, Codigo, Lote, IdAjusteDet))
+            End If
+        Next
+
+        lBeTransAjusteDet = lNueva
+
+        If chkBorrador.Checked AndAlso lBeTransAjusteDetBorrador IsNot Nothing Then
+            Dim lNuevoBorr As New List(Of clsBeTrans_ajuste_det_borrador)
+            For Each d As clsBeTrans_ajuste_det In lNueva
+                Dim b As New clsBeTrans_ajuste_det_borrador
+                clsPublic.CopyObject(d, b)
+                lNuevoBorr.Add(b)
+            Next
+            lBeTransAjusteDetBorrador = lNuevoBorr
+        End If
     End Sub
 
     Private Sub Guardar_Ajuste_Positivo(ByRef lConnection As SqlConnection, ByRef lTransaction As SqlTransaction)
@@ -5155,6 +5317,8 @@ Public Class frmAjusteStock
             'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
             IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
 
+            cmbTipoAjuste.EditValue = 3
+
             '#GT29082025: mostrar u ocultar las columnas de talla/color
             Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
 
@@ -5276,17 +5440,9 @@ Public Class frmAjusteStock
 
     End Sub
 
-    '#FIX_v11_HANDLER_DUPLICADO_2026-04-25 (E1):
-    'ELIMINADO: handler btnImportarExcel_Click vacío con firma
-    'DevExpress.XtraBars.ItemClickEventArgs.
-    'Existía un segundo handler con la misma cláusula Handles
-    '(btnImportarExcel.ItemClick) que SÍ contiene toda la lógica
-    'de importación de Excel (incluida la asignación de la columna proveedor
-    'vía sProveedorTexto). En VB.NET, cuando dos Subs comparten
-    'la misma cláusula Handles, ambos se ejecutan secuencialmente — el vacío
-    'no causaba problema funcional pero era código muerto que confundía la
-    'lectura y abría riesgo de duplicación si alguien lo "completara" en el
-    'futuro. Se mantiene únicamente el handler con lógica completa.
+    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
+
+    End Sub
 
     Private Sub Mostrar_Columnas_Talla_Color(ByVal mostrar_talla_color As Boolean)
         Try
@@ -5404,6 +5560,38 @@ Public Class frmAjusteStock
         Return oDet
 
     End Function
+
+    '#FIX_v12_HASH_EXCEL_2026-04-25 (F1):
+    'HashSet de hashes SHA-256 de los lotes ya importados en la sesión actual.
+    Private pHashesExcelImportadosSesion As New HashSet(Of String)
+
+    '#FIX_v12_HASH_EXCEL_2026-04-25 (F1 helper):
+    Private Function CalcularHashImportacion(
+            ByVal lote As List(Of clsBeTrans_ajuste_det)) As String
+        If lote Is Nothing OrElse lote.Count = 0 Then Return ""
+        Try
+            Dim sb As New System.Text.StringBuilder()
+            Dim ordenado = lote.OrderBy(Function(x) x.Codigo_producto) _
+                               .ThenBy(Function(x) x.Lote_original) _
+                               .ThenBy(Function(x) x.IdStock)
+            For Each d As clsBeTrans_ajuste_det In ordenado
+                sb.Append(If(d.Codigo_producto, "")).Append("|"c)
+                sb.Append(If(d.Lote_original, "")).Append("|"c)
+                sb.Append(d.IdStock).Append("|"c)
+                sb.Append(d.Cantidad_original.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Cantidad_nueva.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Idtipoajuste).Append(";"c)
+            Next
+            Using sha As System.Security.Cryptography.SHA256 = System.Security.Cryptography.SHA256.Create()
+                Dim bytes() As Byte = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(sb.ToString()))
+                Return BitConverter.ToString(bytes).Replace("-", "")
+            End Using
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("CalcularHashImportacion: " & ex.Message)
+            Return ""
+        End Try
+    End Function
+
     Private Sub btnImportarExcel_Click(sender As Object, e As EventArgs) Handles btnImportarExcel.ItemClick
         Try
             ' El tipo de ajuste es obligatorio antes de importar
@@ -5422,6 +5610,23 @@ Public Class frmAjusteStock
                 frm.ShowDialog(Me)
 
                 If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
+
+                '#FIX_v12_HASH_EXCEL_2026-04-25 (F1): evitar doble import accidental.
+                Dim hashLote As String = CalcularHashImportacion(frm.AjustesParaCargar)
+                If Not String.IsNullOrEmpty(hashLote) Then
+                    If pHashesExcelImportadosSesion.Contains(hashLote) Then
+                        Dim resp As DialogResult = XtraMessageBox.Show(
+                            "El archivo Excel que está intentando importar coincide exactamente con uno ya importado en esta sesión del ajuste." & vbCrLf & vbCrLf &
+                            "¿Desea importarlo de todas formas? Continuar generará filas duplicadas en el grid.",
+                            "Archivo duplicado",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning,
+                            MessageBoxDefaultButton.Button2)
+                        If resp <> DialogResult.Yes Then Return
+                    Else
+                        pHashesExcelImportadosSesion.Add(hashLote)
+                    End If
+                End If
 
                 Dim BeAjusteDetBorrador As clsBeTrans_ajuste_det_borrador = Nothing
 
@@ -5457,9 +5662,10 @@ Public Class frmAjusteStock
                         Debug.WriteLine($"No se encontró proveedor para IdStock: {det.IdStock}")
                     End If
 
+                    '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1): asignación nominal de proveedor.
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
-                                                       ubic, sProveedorTexto)
+                                                       ubic)
 
                     Llenar_Motivo(rc, det.IdMotivoAjuste)
                     Llenar_Tipo(rc, det.Idtipoajuste)
@@ -5494,6 +5700,9 @@ Public Class frmAjusteStock
                     End If
 
                     Llena_Bodegas_ERP_Grid(rc, -1)
+
+                    '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1):
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
