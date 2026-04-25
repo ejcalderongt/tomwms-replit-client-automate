@@ -5276,9 +5276,17 @@ Public Class frmAjusteStock
 
     End Sub
 
-    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
-
-    End Sub
+    '#FIX_v11_HANDLER_DUPLICADO_2026-04-25 (E1):
+    'ELIMINADO: handler btnImportarExcel_Click vacío con firma
+    'DevExpress.XtraBars.ItemClickEventArgs.
+    'Existía un segundo handler con la misma cláusula Handles
+    '(btnImportarExcel.ItemClick) que SÍ contiene toda la lógica
+    'de importación de Excel (incluida la asignación de la columna proveedor
+    'vía sProveedorTexto). En VB.NET, cuando dos Subs comparten
+    'la misma cláusula Handles, ambos se ejecutan secuencialmente — el vacío
+    'no causaba problema funcional pero era código muerto que confundía la
+    'lectura y abría riesgo de duplicación si alguien lo "completara" en el
+    'futuro. Se mantiene únicamente el handler con lógica completa.
 
     Private Sub Mostrar_Columnas_Talla_Color(ByVal mostrar_talla_color As Boolean)
         Try
