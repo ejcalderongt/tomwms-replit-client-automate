@@ -336,32 +336,16 @@ Public Class frmAjusteStock
                     Llenar_Talla(rc, -1)
                     Llenar_Color(rc, -1)
 
-                    '#FIX_v18_CARGAR_DISPLAY_2026-04-25 (D2) +
-                    '#FIX_v21_AJUSTE_EXIST_CANT_2026-04-25 (G1/G2):
-                    ' - existencia live solo en modo borrador
-                    ' - ColCantidad para tipo 3/5 se muestra como valor absoluto del diff
-                    Dim existenciaLive As Decimal = vBeAjustDet.Cantidad_original
-                    If chkBorrador.Checked AndAlso vBeAjustDet.IdStock > 0 AndAlso
-                       (vBeAjustDet.Idtipoajuste = 3 OrElse vBeAjustDet.Idtipoajuste = 5) Then
-                        Try
-                            Dim stockActual As clsBeStock = clsLnStock.GetSingle(
-                                vBeAjustDet.IdStock,
-                                clsTrans.lConnection, clsTrans.lTransaction)
-                            If stockActual IsNot Nothing AndAlso stockActual.IdStock > 0 Then
-                                existenciaLive = stockActual.Cantidad
-                            End If
-                        Catch ex As Exception
-                            clsLnLog_error_wms.Agregar_Error(
-                                "Refrescar existencia IdStock=" & vBeAjustDet.IdStock & ": " & ex.Message)
-                        End Try
-                    End If
-
+                    '#FIX_v22_AJUSTE_EXIST_FROM_BD_2026-04-25:
+                    'Eliminar refresh "live" desde Stock; usar siempre la
+                    'Cantidad_original persistida en BD como fuente de verdad
+                    'para CantidadP / Existencia. (Se mantiene v21.G2 en ColCantidad).
                     If vBeAjustDet.Idtipoajuste = 3 OrElse vBeAjustDet.Idtipoajuste = 5 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgrid.Rows(rc).Cells("CantidadP").Value = existenciaLive / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
                             dgrid.Rows(rc).Cells("ColCantidad").Value = Math.Abs(vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
                         Else
-                            dgrid.Rows(rc).Cells("CantidadP").Value = existenciaLive
+                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
                             dgrid.Rows(rc).Cells("ColCantidad").Value = Math.Abs(vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original)
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 1 Then 'Ajuste Lote

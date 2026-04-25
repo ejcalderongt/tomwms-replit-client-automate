@@ -1563,13 +1563,7 @@ Partial Public Class clsLnProveedor
             lConnection.Open()
             lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Const sql As String =
-            " SELECT TOP 1 pb.IdProveedor " &
-            " FROM   stock           s " &
-            " INNER JOIN trans_re_det     rd  ON rd.IdRecepcionDet  = s.IdRecepcionDet " &
-            " INNER JOIN trans_oc_enc     oce ON oce.IdOrdenCompraEnc = rd.IdOrdenCompraEnc " &
-            " INNER JOIN proveedor_bodega pb  ON pb.IdAsignacion    = oce.IdProveedorBodega " &
-            " WHERE  s.IdStock = @IdStock "
+            Const sql As String = "SELECT * FROM VW_Stock_Res where IdStock = @IdStock "
 
             Dim cmd As New SqlCommand(sql, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.Add(New SqlParameter("@IdStock", pIdStock))
