@@ -195,15 +195,6 @@ Public Class frmAjusteStock
             Dim tipoajuste As Integer = 0
 
             If chkBorrador.Checked Then
-
-                '#FIX_v9_BORRADOR_RESERVA_2026-04-25 (C3):
-                'Validar que las reservas en stock_res asociadas al borrador sigan vivas.
-                'Si algún IdStock fue consumido o liberado por terceros entre sesiones,
-                'recrear la reserva. Si no se puede recrear (stock agotado), marcar el
-                'detalle visualmente para que el operador lo revise antes de aplicar.
-                Validar_Reservas_Borrador_Al_Cargar(lBeTransAjusteDetBorrador,
-                                                    pBeTransAjustEnc.IdAjusteenc)
-
                 If lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0 Then
                     tipoajuste = lBeTransAjusteDetBorrador.FirstOrDefault().idtipoajuste
                 End If
@@ -2379,22 +2370,7 @@ Public Class frmAjusteStock
                 If Not Validar_Datos() Then Return
 
                 '#GT27112024: ajuste normal debe entrar por aca
-                '#FIX_v8_2026-04-25: defensa contra bug duplicado ajuste positivo.
-                'La bandera Es_Ajuste_Positivo_Sin_Stock se prendÃ­a indebidamente desde
-                'cmbTipoAjuste_EditValueChanged (linea 4795) al elegir IdTipoAjuste=3,
-                'incluso cuando todos los detalles tenÃ­an stock previo (IdStock > 0).
-                'Resultado: el flujo entraba en Guardar_Ajuste_Positivo_Sin_Stock que
-                'usa Guardar_Stock_Ajuste_Positivo (DAL 16375) que SOLO hace INSERT,
-                'creando un IdStock nuevo en lugar de actualizar el origen.
-                '
-                'Defensa: Ruta B (Guardar_Ajuste_Positivo_Sin_Stock) solo si REALMENTE
-                'hay al menos un detalle SIN stock previo (IdStock = 0). En caso
-                'contrario forzar Ruta A para que Procesar_Ajuste actualice el origen.
-                Dim hayDetalleSinStockPrevio As Boolean =
-                    lBeTransAjusteDet IsNot Nothing AndAlso
-                    lBeTransAjusteDet.Any(Function(d) d.IdStock = 0)
-
-                If Not Es_Ajuste_Positivo_Sin_Stock OrElse Not hayDetalleSinStockPrevio Then
+                If Not Es_Ajuste_Positivo_Sin_Stock Then
 
                     If pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
                         Actualizar_Ajuste()
@@ -4387,116 +4363,12 @@ Public Class frmAjusteStock
 
     End Sub
 
-    '#FIX_v9_BORRADOR_RESERVA_2026-04-25 (C3):
-    'Helper invocado al cargar un ajuste borrador existente. Verifica que cada
-    'detalle tenga su correspondiente reserva en stock_res; si no, intenta
-    'recrearla. Devuelve la cantidad de detalles que NO se pudieron re-reservar
-    '(stock agotado/eliminado por terceros).
-    Private Function Validar_Reservas_Borrador_Al_Cargar(
-            ByVal lDetallesBorrador As List(Of clsBeTrans_ajuste_det_borrador),
-            ByVal pIdAjusteEnc As Integer) As Integer
-
-        Dim cntFaltantes As Integer = 0
-        Dim cntRecreados As Integer = 0
-        Dim warnings As New System.Text.StringBuilder()
-
-        Try
-            If lDetallesBorrador Is Nothing OrElse lDetallesBorrador.Count = 0 Then Return 0
-
-            Dim reservasVivas As List(Of clsBeStock_res) =
-                clsLnStock_res.GetAll_By_IdTransaccion_Indicador(pIdAjusteEnc, "ajuste_stock_borrador")
-
-            Dim setIdStockReservados As New HashSet(Of Integer)
-            If reservasVivas IsNot Nothing Then
-                For Each rsv In reservasVivas
-                    setIdStockReservados.Add(rsv.IdStock)
-                Next
-            End If
-
-            For Each det As clsBeTrans_ajuste_det_borrador In lDetallesBorrador
-                If det.IdStock <= 0 Then Continue For
-                If setIdStockReservados.Contains(det.IdStock) Then Continue For
-
-                'Reserva faltante: intentar recrear
-                Dim ok As Boolean = Reservar_Stock_Borrador_Standalone(det.IdStock, pIdAjusteEnc)
-                If ok Then
-                    cntRecreados += 1
-                Else
-                    cntFaltantes += 1
-                    warnings.AppendLine(String.Format(
-                        "  - IdStock {0}, lote {1}, producto {2}: stock no disponible.",
-                        det.IdStock, det.lote_original, det.codigo_producto))
-                End If
-            Next
-
-            If cntFaltantes > 0 Then
-                XtraMessageBox.Show(
-                    String.Format(
-                        "Se reanudó el borrador pero {0} detalle(s) tienen stock " &
-                        "consumido por otros procesos:" & vbCrLf & vbCrLf & "{1}" & vbCrLf &
-                        "Revise estos detalles antes de aplicar el ajuste.",
-                        cntFaltantes, warnings.ToString()),
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            End If
-
-        Catch ex As Exception
-            clsLnLog_error_wms.Agregar_Error(
-                "Validar_Reservas_Borrador_Al_Cargar: " & ex.Message)
-        End Try
-
-        Return cntFaltantes
-    End Function
-
-    '#FIX_v9_BORRADOR_RESERVA_2026-04-25 (C3 helper):
-    'Wrap defensivo de Reservar_Stock con su propia tx, devuelve True/False sin
-    'mostrar MessageBox individual (el agregado lo hace Validar_Reservas_Borrador_Al_Cargar).
-    Private Function Reservar_Stock_Borrador_Standalone(ByVal idstock As Integer,
-                                                         ByVal pIdAjusteEnc As Integer) As Boolean
-        Dim ct As New clsTransaccion()
-        Try
-            ct.Begin_Transaction()
-            Dim ok = clsLnTrans_ajuste_enc.Reservar_Stock_Para_Borrador_Standalone(
-                idstock, pIdAjusteEnc, AP.HostName, AP.UsuarioAp.IdUsuario,
-                ct.lConnection, ct.lTransaction)
-            ct.Commit_Transaction()
-            Return ok
-        Catch ex As Exception
-            ct.RollBack_Transaction()
-            clsLnLog_error_wms.Agregar_Error("Reservar_Stock_Borrador_Standalone: " & ex.Message)
-            Return False
-        Finally
-            ct.Close_Conection()
-        End Try
-    End Function
-
     Private Sub frmAjusteStock_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Try
             If Not Guardado Then
                 If XtraMessageBox.Show("No ha guardado el ajuste. ¿Salir sin guardar?", Text,
                                         MessageBoxButtons.YesNo,
                                         MessageBoxIcon.Error) = DialogResult.Yes Then
-
-                    '#FIX_v9_BORRADOR_RESERVA_2026-04-25 (C4):
-                    'Si el operador cierra el form con un borrador NUEVO en memoria (Idajusteenc=0)
-                    'que NO llegó a guardarse, limpiar reservas huérfanas por IdStock.
-                    If pBeTransAjustEnc IsNot Nothing AndAlso
-                       pBeTransAjustEnc.Idajusteenc = 0 AndAlso
-                       chkBorrador.Checked AndAlso
-                       lBeTransAjusteDet IsNot Nothing AndAlso lBeTransAjusteDet.Count > 0 Then
-
-                        For Each det In lBeTransAjusteDet
-                            If det.IdStock > 0 Then
-                                Try
-                                    clsLnStock_res.Eliminar_By_IdStock_Y_IdTransaccion(det.IdStock, 0)
-                                Catch exDet As Exception
-                                    clsLnLog_error_wms.Agregar_Error(
-                                        "FormClosing - Eliminar reserva huérfana IdStock=" &
-                                        det.IdStock & ": " & exDet.Message)
-                                End Try
-                            End If
-                        Next
-                    End If
-
                     clsLnTrans_ajuste_enc.RollBackStockRes(pBeTransAjustEnc)
                 Else
                     e.Cancel = True
@@ -4920,12 +4792,7 @@ Public Class frmAjusteStock
 
             If IdTipoAjuste = 3 Then
                 mnuAjustePositivo.Enabled = True
-                '#FIX_v8_2026-04-25: NO prender la bandera acÃ¡. La bandera
-                'Es_Ajuste_Positivo_Sin_Stock SOLO debe activarse cuando el operador
-                'usa explÃ­citamente mnuAjustePositivo_Click (agregar producto SIN stock previo).
-                'Antes: Es_Ajuste_Positivo_Sin_Stock = True
-                'Esa lÃ­nea provocaba que ajustes positivos masivos vÃ­a Excel (con IdStock previo)
-                'crearan un IdStock nuevo en lugar de actualizar el origen.
+                Es_Ajuste_Positivo_Sin_Stock = True
             Else
                 mnuAjustePositivo.Enabled = False
                 Es_Ajuste_Positivo_Sin_Stock = False
