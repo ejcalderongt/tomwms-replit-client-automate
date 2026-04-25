@@ -3187,7 +3187,8 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             If Not EsBorrador Then
-                Llenar_DS_Rep()
+                'Llenar_DS_Rep()
+                Imprimir_Detalle_Ajuste_RC2026()
             End If
 
             If EsBorrador Then Close()
