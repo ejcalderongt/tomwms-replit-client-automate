@@ -1276,7 +1276,7 @@ Public Class frmAjusteStock
                         dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = False
                         Valor_Tipo_Ajuste(pIndex)
 
-                        If pidtipo = 3 Then
+                        If pidtipo = 3 OrElse pidtipo = 5 Then
                             DgComboTipo.Value = pidtipo
                         End If
 
@@ -5287,7 +5287,8 @@ Public Class frmAjusteStock
 
             Using frm As New frmImportarAjusteExcel(AP.IdBodega,
                                                     cmbPropietarioBodega.EditValue,
-                                                    idTipoSel)
+                                                    idTipoSel,
+                                                    BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color)
                 frm.ShowDialog(Me)
 
                 If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
@@ -5332,6 +5333,36 @@ Public Class frmAjusteStock
 
                     Llenar_Motivo(rc, det.IdMotivoAjuste)
                     Llenar_Tipo(rc, det.Idtipoajuste)
+
+                    ' Cinturón defensivo: forzar el valor del combo aunque
+                    ' Llenar_Tipo no lo haya seteado (el fix raíz va en
+                    ' Llenar_Tipo, branch Case TipoTrans.Nuevo).
+                    Try
+                        dgrid.Rows(rc).Cells("tipoajuste").Value = det.Idtipoajuste
+                    Catch
+                    End Try
+
+                    ' Talla/Color: solo cuando la bodega controla. El importador
+                    ' resolvió IdProductoTallaColor desde el IdStock; aquí se
+                    ' propaga al dgrid usando el patrón canónico (líneas 921-934
+                    ' del flujo manual: Llenar_Talla/Color cargan los DataSource).
+                    If BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color _
+                       AndAlso det.IdProductoTallaColor_origen > 0 Then
+                        Try
+                            Llenar_Talla(rc, -1)
+                            Llenar_Color(rc, -1)
+                            dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = det.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = det.Talla_origen
+                            dgrid.Rows(rc).Cells("colColor").Value = det.Color_origen
+                            dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                            dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+                        Catch ex As Exception
+                            ' No bloquea la importación si el lookup falla.
+                            clsLnLog_error_wms.Agregar_Error(
+                                "btnImportarExcel_Click talla/color row " & rc & ": " & ex.Message)
+                        End Try
+                    End If
+
                     Llena_Bodegas_ERP_Grid(rc, -1)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
