@@ -132,7 +132,7 @@ git -c http.extraHeader="Authorization: Basic $AUTH" \
 | Quién | Repo | Path | Notas |
 |---|---|---|---|
 | Erik (yejc2) | TOMWMS_BOF | `C:\Users\yejc2\source\repos\TOMWMS` | Confirmado 2026-04-26 |
-| Erik (yejc2) | TOMHH2025 | `C:\Users\yejc2\source\repos\TOMHH2025` | Asumido por convención. Confirmar. |
+| Erik (yejc2) | TOMHH2025 | `C:\Users\yejc2\StudioProjects\TOMHH2025` | ✓ Confirmado 2026-04-26 (Android Studio default workspace) |
 | openclaw | (ambos) | misma máquina, mismos paths que Erik | **Confirmado 2026-04-26**: openclaw corre en la PC de Erik (yejc2). Mismo working set local. Implicación: si Erik tiene algo unstaged, openclaw también lo ve. |
 
 ## 7.bis Snapshot inventario TOMHH2025 (`dev_2028_merge`, 2026-04-26)
@@ -140,8 +140,8 @@ git -c http.extraHeader="Authorization: Basic $AUTH" \
 - **694 archivos** · **163 directorios**
 - Top extensiones: `.java` = 405, `.xml` = 167, `.png` = 94, `.jar` = 14
 - **Estructura**: proyecto Android Gradle estándar (`app/`, `gradle/`, `build.gradle`, `settings.gradle`, `gradlew`).
-- **Package raíz Java**: `com.dts.*` (subpackages incluyen `com.dts.tom`, `com.dts.base`).
-- **Activities declaradas en `AndroidManifest.xml`**: **58**. Solo `MainActivity` y `PrintReceiverActivity` usan el sufijo `Activity` en el nombre del archivo. Las otras 56 se llaman distinto (es necesario leer el manifest, no buscar por filename).
+- **Package raíz Java**: `com.dts.*`. Subpaquetes confirmados: `com.dts.tom.*` (UI/activities), `com.dts.base.*` (clases base, WebService), `com.dts.classes.<Mantenimientos|Transacciones>.<Modulo>` (POJOs de dominio), `com.dts.ladapt.*` (adapters, 30 archivos), `com.dts.servicios.*` (services, 5 archivos), `com.dts.rfid.*` (RFID, 11 archivos).
+- **Activities declaradas en `AndroidManifest.xml`**: **64** (corregido — el conteo previo de 58 era con un grep simple que se perdía las que tienen newline después de `<activity`). De las 64: `MainActivity`, `Mainmenu`, `PBase` y 61 son `frm_*` distribuidas en 13 módulos de negocio. Solo `MainActivity` y `PrintReceiverActivity` usan sufijo `Activity` en filename — el resto NO. Para mapear activities reales, parsear el manifest, NO buscar por filename.
 - **Sufijos comunes en filenames** (top): `Manager` (5), `Base` (4), `Adapter` (4), `Service` (2), `Listener` (2), `Holder` (2), `Activity` (2), `Util` (2), `Dialog` (1), `Fragment` (1).
 - **Archivos clave conocidos**:
   - `/app/src/main/java/com/dts/base/WebService.java` (759 líneas, 27 KB) — capa HTTP/SOAP de la HH al backend. Contiene la regla legacy de la `ñ` en línea 352 (método `normalize`).
@@ -164,3 +164,19 @@ Para contexto (no necesariamente accesibles ni relevantes hoy):
 - `ROAD_FORTUNA`, `ROAD_TOLEDANO`, `RoadPOD`
 - `DMF` — AudioFingerPrinting solutions
 - `GenCodeSQL`
+
+
+## 8. Nota sobre BD Killios (AWS) — VOLATILIDAD
+
+La BD operacional Killios (SQL Server en AWS, secret `WMS_KILLIOS_DB_PASSWORD`) **no es un servicio gestionado por nosotros**. Puede:
+
+- **Dejar de existir** (si Erik no renueva la instancia AWS).
+- **Restaurarse en otro lugar** para casos de análisis o funcionalidad.
+- **Migrar de proveedor** sin previo aviso.
+
+**Reglas para sesiones que dependan de Killios**:
+1. Antes de usarla, validar conectividad con un `SELECT 1`.
+2. Si el host/credenciales cambiaron, actualizar este archivo + `brain/replit.md` antes de continuar.
+3. **Nunca asumir** que el modelo de Killios = modelo de producción del cliente. El cliente tiene su propia instancia.
+4. La BD es para **analizar el modelo y validar estados de prueba**, no para operación real.
+5. Si Killios no responde y la sesión la necesita, **detenerse y reportar** — no inventar el shape de las tablas.

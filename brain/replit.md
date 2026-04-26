@@ -26,9 +26,13 @@ Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS**
 | Proyecto / Repo | URL clone (HTTPS) | Default branch | Branch trabajo | Tamaño | Path local Erik |
 |---|---|---|---|---|---|
 | `TOMWMS_BOF` / `TOMWMS_BOF` | `https://dev.azure.com/ejcalderon0892/TOMWMS_BOF/_git/TOMWMS_BOF` | `master` | `dev_2028_merge` | 376 MB · 9609 archivos · 1708 dirs | `C:\Users\yejc2\source\repos\TOMWMS` |
-| `TOMHH2025` / `TOMHH2025` | `https://dev.azure.com/ejcalderon0892/TOMHH2025/_git/TOMHH2025` | `master` | `dev_2028_merge` | 14 MB · 694 archivos · 405 `.java` · 58 activities (manifest) | `C:\Users\yejc2\source\repos\TOMHH2025` (asumido — ver nota) |
+| `TOMHH2025` / `TOMHH2025` | `https://dev.azure.com/ejcalderon0892/TOMHH2025/_git/TOMHH2025` | `master` | `dev_2028_merge` | 14 MB · 694 archivos · 405 `.java` · **64 activities** (manifest) | `C:\Users\yejc2\StudioProjects\TOMHH2025` ✓ confirmado 2026-04-26 |
 
-**openclaw = misma máquina que Erik (yejc2), mismo working set**. Confirmado 2026-04-26. Path TOMHH2025 local asumido en `C:\Users\yejc2\source\repos\TOMHH2025` siguiendo la convención de Erik — confirmar en próxima sesión si no es ese.
+**openclaw = misma máquina que Erik (yejc2), mismo working set**. Confirmado 2026-04-26. Paths locales validados:
+- BOF: `C:\Users\yejc2\source\repos\TOMWMS`
+- HH: `C:\Users\yejc2\StudioProjects\TOMHH2025` (Android Studio, no `repos/` como se asumió inicialmente)
+
+**BD Killios (AWS) es VOLÁTIL**: el host puede dejar de existir, migrar de proveedor o restaurarse en otro entorno para análisis puntual. **No asumir que el connection string actual es permanente**. Antes de cualquier sesión que dependa de la BD, validar conectividad y, si cambió, actualizar este archivo + `brain/agent-context/AZURE_ACCESS.md`. La BD es referencia para entender el modelo y validar estados, NO es un servicio de producción gestionado por nosotros.
 
 **Composición de TOMWMS_BOF en `dev_2028_merge` (snapshot 2026-04-26)**:
 - Conteo por extensión: `.vb` = 3218, `.cs` = 1083, `.resx` = 657, `.svg` = 1624, `.xml` = 199, `.svc` = 94, `.config` = 119
@@ -165,3 +169,21 @@ pnpm workspace monorepo TypeScript. Hospeda artefactos de soporte al WMS (no es 
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 Ver el skill `pnpm-workspace` para estructura, TypeScript setup y detalles de paquetes.
+
+
+---
+
+## Análisis de impacto cruzado HH ↔ BOF
+
+El brain mantiene **dos skills paralelos** porque el WMS es un sistema de dos cabezas:
+
+- `brain/skills/wms-tomwms/` → backend (TOMWMS_BOF, VB.NET, `.asmx`).
+- `brain/skills/wms-tomhh2025/` → frontend Android (TOMHH2025, Java).
+
+**Cualquier cambio que toque el contrato HH↔BOF debe pasar por análisis cruzado** antes de aplicarse. La sección 7 del SKILL de HH tiene la matriz de riesgos completa. Resumen mínimo:
+
+- **Tocás un `.asmx` del BOF** → ¿qué `com.dts.tom.*` lo llama? ¿el cambio de shape rompe Gson?
+- **Tocás el JSON que la HH manda** → ¿el método `.asmx` lo deserializa con tolerancia o estricto?
+- **Cambiás reglas de negocio en SP/BOF** → ¿la HH muestra el nuevo error de manera entendible?
+
+Si cualquiera de estas tiene respuesta negativa o desconocida, el cambio no es seguro y se documenta en `brain/_inbox/_proposals/` antes de aplicarlo.

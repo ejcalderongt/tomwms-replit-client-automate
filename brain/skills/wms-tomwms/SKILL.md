@@ -37,7 +37,7 @@ Este skill es la **única referencia local** que el agente Replit debe cargar pa
 | Repo | Hosting | Lenguaje | Rol | Branch activa |
 |---|---|---|---|---|
 | `TOMWMS_BOF` | Azure DevOps `ejcalderon0892` (376 MB · 9609 archivos · 3218 `.vb`) | VB.NET + C# | Backend core: WinForms `TOMIMSV4`, `WSHHRN` (`.asmx`), `WSSAPSYNC`, `WMSWebAPI`, `Entity`, `DAL`, `EntityCore`, `DALCore`, interfaces (NAV, SAP, Cealsa, DMS, AWS). **El cerebro de código.** | `dev_2028_merge` (default Azure: `master`) |
-| `TOMHH2025` | Azure DevOps `ejcalderon0892` (14 MB · 694 archivos) | Java | App Android Handheld. **405 `.java`**, **58 activities** declaradas en `AndroidManifest.xml` (la mayoría no usan sufijo `Activity` en filename, solo `MainActivity` y `PrintReceiverActivity` lo hacen). Package raíz: `com.dts.*` (subpackages `com.dts.tom`, `com.dts.base`, etc.). | `dev_2028_merge` (default Azure: `master`) |
+| `TOMHH2025` | Azure DevOps `ejcalderon0892` (14 MB · 694 archivos) | Java | App Android Handheld. **405 `.java`**, **64 activities** declaradas en `AndroidManifest.xml` distribuidas en 13 módulos de negocio. Package raíz: `com.dts.*`. **Skill canónico de la HH: ver `brain/skills/wms-tomhh2025/`**. | `dev_2028_merge` (default Azure: `master`) |
 | `DBA` | GitHub `ejcalderongt/DBA` (no en Azure) | T-SQL | Schema + SPs SQL Server productivos. WIP `VW_Stock_Res`. | — |
 | `tomwms-replit-client-automate` | GitHub `ejcalderongt` | Mixto | **Repo de intercambio**: bundles, scripts y este brain (`wms-brain` branch). | `main` (bundles) + `wms-brain` (conocimiento) |
 | Workspace Replit | Replit | TS/Node/Python | Productor: scripts + brain + builders. **Tiene acceso de SOLO LECTURA al WMS via Azure DevOps REST API**. Ver `agent-context/AZURE_ACCESS.md`. | sesión |
@@ -363,3 +363,16 @@ Cualquier cambio a este skill debe:
 1. Aplicarse en **ambas copias**: `.local/skills/wms-tomwms/SKILL.md` (workspace) y `brain/skills/wms-tomwms/SKILL.md` (rama `wms-brain`).
 2. Idealmente entrar al brain vía `scripts/brain_bridge.mjs` con un evento `type=skill_update` que documente la razón.
 3. Quedar reflejado en el commit log de `wms-brain` con mensaje `wms-brain: skill <sección> — <razón>`.
+
+
+---
+
+## Cross-impact con TOMHH2025 (handheld)
+
+El backend (este skill) y la HH (`brain/skills/wms-tomhh2025/`) están acoplados por contrato JSON sobre los `.asmx`. **Antes de tocar un `.asmx` que la HH consume**:
+
+1. Verificar qué métodos del `.asmx` están vivos en HH (buscar referencias en `com.dts.*`).
+2. Si cambia el shape del DTO de request/response → coordinar release HH + BOF, o asegurar backwards-compat.
+3. Si cambia la lógica de negocio sin cambiar contrato → validar que los mensajes de error que devuelve siguen siendo entendibles para el operario.
+
+La matriz completa de riesgos vive en `brain/skills/wms-tomhh2025/SKILL.md` §7.
