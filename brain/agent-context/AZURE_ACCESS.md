@@ -129,10 +129,26 @@ git -c http.extraHeader="Authorization: Basic $AUTH" \
 
 ## 7. Paths locales conocidos
 
-| Quién | Path | Notas |
-|---|---|---|
-| Erik (yejc2) | `C:\Users\yejc2\source\repos\TOMWMS` | Confirmado 2026-04-26 |
-| openclaw | (por confirmar) | ¿Misma máquina que Erik? ¿Mismo path? |
+| Quién | Repo | Path | Notas |
+|---|---|---|---|
+| Erik (yejc2) | TOMWMS_BOF | `C:\Users\yejc2\source\repos\TOMWMS` | Confirmado 2026-04-26 |
+| Erik (yejc2) | TOMHH2025 | `C:\Users\yejc2\source\repos\TOMHH2025` | Asumido por convención. Confirmar. |
+| openclaw | (ambos) | misma máquina, mismos paths que Erik | **Confirmado 2026-04-26**: openclaw corre en la PC de Erik (yejc2). Mismo working set local. Implicación: si Erik tiene algo unstaged, openclaw también lo ve. |
+
+## 7.bis Snapshot inventario TOMHH2025 (`dev_2028_merge`, 2026-04-26)
+
+- **694 archivos** · **163 directorios**
+- Top extensiones: `.java` = 405, `.xml` = 167, `.png` = 94, `.jar` = 14
+- **Estructura**: proyecto Android Gradle estándar (`app/`, `gradle/`, `build.gradle`, `settings.gradle`, `gradlew`).
+- **Package raíz Java**: `com.dts.*` (subpackages incluyen `com.dts.tom`, `com.dts.base`).
+- **Activities declaradas en `AndroidManifest.xml`**: **58**. Solo `MainActivity` y `PrintReceiverActivity` usan el sufijo `Activity` en el nombre del archivo. Las otras 56 se llaman distinto (es necesario leer el manifest, no buscar por filename).
+- **Sufijos comunes en filenames** (top): `Manager` (5), `Base` (4), `Adapter` (4), `Service` (2), `Listener` (2), `Holder` (2), `Activity` (2), `Util` (2), `Dialog` (1), `Fragment` (1).
+- **Archivos clave conocidos**:
+  - `/app/src/main/java/com/dts/base/WebService.java` (759 líneas, 27 KB) — capa HTTP/SOAP de la HH al backend. Contiene la regla legacy de la `ñ` en línea 352 (método `normalize`).
+  - `/app/src/main/java/com/dts/tom/MainActivity.java` — entrypoint.
+  - `/app/src/main/java/com/dts/tom/PrintReceiverActivity.java` — receiver de impresión.
+  - `/app/src/main/AndroidManifest.xml` — declaraciones de activities, permisos.
+- **Observación**: el manifest tiene 58 activities pero solo 2 archivos terminan en `Activity.java`. Para mapear el grafo de activities reales hay que parsear el manifest, no listar filenames.
 
 ---
 

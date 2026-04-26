@@ -37,7 +37,7 @@ Este skill es la **única referencia local** que el agente Replit debe cargar pa
 | Repo | Hosting | Lenguaje | Rol | Branch activa |
 |---|---|---|---|---|
 | `TOMWMS_BOF` | Azure DevOps `ejcalderon0892` (376 MB · 9609 archivos · 3218 `.vb`) | VB.NET + C# | Backend core: WinForms `TOMIMSV4`, `WSHHRN` (`.asmx`), `WSSAPSYNC`, `WMSWebAPI`, `Entity`, `DAL`, `EntityCore`, `DALCore`, interfaces (NAV, SAP, Cealsa, DMS, AWS). **El cerebro de código.** | `dev_2028_merge` (default Azure: `master`) |
-| `TOMHH2025` | Azure DevOps `ejcalderon0892` (14 MB) | Java | App Android Handheld (405 `.java`, 55 `Activity`). | `dev_2028_merge` (default Azure: `master`) |
+| `TOMHH2025` | Azure DevOps `ejcalderon0892` (14 MB · 694 archivos) | Java | App Android Handheld. **405 `.java`**, **58 activities** declaradas en `AndroidManifest.xml` (la mayoría no usan sufijo `Activity` en filename, solo `MainActivity` y `PrintReceiverActivity` lo hacen). Package raíz: `com.dts.*` (subpackages `com.dts.tom`, `com.dts.base`, etc.). | `dev_2028_merge` (default Azure: `master`) |
 | `DBA` | GitHub `ejcalderongt/DBA` (no en Azure) | T-SQL | Schema + SPs SQL Server productivos. WIP `VW_Stock_Res`. | — |
 | `tomwms-replit-client-automate` | GitHub `ejcalderongt` | Mixto | **Repo de intercambio**: bundles, scripts y este brain (`wms-brain` branch). | `main` (bundles) + `wms-brain` (conocimiento) |
 | Workspace Replit | Replit | TS/Node/Python | Productor: scripts + brain + builders. **Tiene acceso de SOLO LECTURA al WMS via Azure DevOps REST API**. Ver `agent-context/AZURE_ACCESS.md`. | sesión |
@@ -74,7 +74,7 @@ Consolidadas de `replit.md` + `tools/agent-context/AGENTS.md`. Si alguna se cont
 2. **No mezclar HH (Java) con backend (VB.NET)** en el mismo bundle / commit / PR.
 3. **No tocar `Reference.vb`.** Son proxies SOAP autogenerados; la implementación real vive en `*.asmx.vb`.
 4. **No reescribir desde cero.** Debuggear primero. Siempre. Si una propuesta requiere reescribir un módulo entero, parar y pedir confirmación explícita.
-5. **UTF-8 con BOM en VB.** Mantener `ñ` y acentos. Nunca guardar como ANSI. Eliminar cualquier `.replace("ñ","n")` heredado (ej. `WebService.java` línea 352).
+5. **UTF-8 con BOM en VB.** Mantener `ñ` y acentos. Nunca guardar como ANSI. Eliminar cualquier `.replace("ñ","n")` heredado en HH (`TOMHH2025/app/src/main/java/com/dts/base/WebService.java` línea 352, dentro del método `private String normalize(String s)`. Validado 2026-04-26: la línea sigue presente con comentario `// si ya no lo necesitas, quítalo`).
 6. **Migración XML→JSON: oportunista.** Método legacy estable → NO se migra. Funcionalidad **nueva** → JSON por defecto, **Forma A** (ver `conventions.md`).
 7. **NUNCA loguear, imprimir ni embeber en código** los secrets `WMS_KILLIOS_DB_PASSWORD`, `BRAIN_IMPORT_TOKEN`, `AZURE_DEVOPS_PAT`, `GITHUB_TOKEN`, `SESSION_SECRET`. Solo referencia por nombre.
 8. **Conexión a KILLIOS prod = solo lectura** desde el agente. Cualquier write lo hace Erik con el procedimiento normal.

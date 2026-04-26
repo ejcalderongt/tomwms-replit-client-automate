@@ -26,7 +26,9 @@ Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS**
 | Proyecto / Repo | URL clone (HTTPS) | Default branch | Branch trabajo | Tamaño | Path local Erik |
 |---|---|---|---|---|---|
 | `TOMWMS_BOF` / `TOMWMS_BOF` | `https://dev.azure.com/ejcalderon0892/TOMWMS_BOF/_git/TOMWMS_BOF` | `master` | `dev_2028_merge` | 376 MB · 9609 archivos · 1708 dirs | `C:\Users\yejc2\source\repos\TOMWMS` |
-| `TOMHH2025` / `TOMHH2025` | `https://dev.azure.com/ejcalderon0892/TOMHH2025/_git/TOMHH2025` | `master` | `dev_2028_merge` | 14 MB | (por confirmar) |
+| `TOMHH2025` / `TOMHH2025` | `https://dev.azure.com/ejcalderon0892/TOMHH2025/_git/TOMHH2025` | `master` | `dev_2028_merge` | 14 MB · 694 archivos · 405 `.java` · 58 activities (manifest) | `C:\Users\yejc2\source\repos\TOMHH2025` (asumido — ver nota) |
+
+**openclaw = misma máquina que Erik (yejc2), mismo working set**. Confirmado 2026-04-26. Path TOMHH2025 local asumido en `C:\Users\yejc2\source\repos\TOMHH2025` siguiendo la convención de Erik — confirmar en próxima sesión si no es ese.
 
 **Composición de TOMWMS_BOF en `dev_2028_merge` (snapshot 2026-04-26)**:
 - Conteo por extensión: `.vb` = 3218, `.cs` = 1083, `.resx` = 657, `.svg` = 1624, `.xml` = 199, `.svc` = 94, `.config` = 119
