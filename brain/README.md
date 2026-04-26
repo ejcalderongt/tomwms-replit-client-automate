@@ -1,42 +1,119 @@
-# wms-brain
+# brain — del agente Replit que mantiene el WMS de Erik Calderon
 
-Rama del repo de intercambio que contiene el **brain del agente Replit** sobre el WMS.
+Esta rama (`wms-brain`) es el **canal de conocimiento** del agente. Vive
+separada de la rama `main` (que tiene los bundles operativos), como
+**orphan branch** sin historia compartida.
 
-## Que vive aca
+> **Politica del repo**: este repo de intercambio (`tomwms-replit-client-automate`)
+> NO contiene codigo WMS. Solo bundles, scripts y este brain.
 
-Conocimiento estructurado y herramientas que el agente productor (Replit) usa para trabajar en TOMWMS:
+---
 
-- `replit.md` — indice maestro: producto, repos Azure DevOps, equipo, reglas vinculantes, acceso SQL Server, mapa al WikiHub Portal.
-- `agent-context/` — protocolo operativo del agente: `AGENTS.md` y `CASE_INTAKE_TEMPLATE.md`.
-- `sql-catalog/` — extractor del catalogo de BD del WMS (`extract.sql` + `extract_sql_catalog.py`).
-- `wms-agent/` — herramienta Python `wmsa` (CLI del agente).
-- `tasks-historicas/` — planes de tasks ejecutadas que sirven como referencia.
+## Estructura
 
-## Que NO vive aca (por contrato)
+```
+brain/
+├── README.md                  <- este archivo
+├── BRIDGE.md                  <- mecanismo de actualizacion del brain
+├── replit.md                  <- indice maestro WMS
+├── skills/                    <- skills versionados (source of truth)
+│   └── wms-tomwms/
+│       ├── SKILL.md           <- skill canonico
+│       └── conventions.md     <- convenciones VB/Java/SQL/JSON
+├── agent-context/
+│   ├── AGENTS.md              <- protocolo operativo (para agentes locales)
+│   └── CASE_INTAKE_TEMPLATE.md
+├── sql-catalog/               <- extractor del catalogo SQL productivo
+├── wms-agent/                 <- CLI `wmsa` (Python)
+├── tasks-historicas/          <- tareas resueltas como referencia
+├── _inbox/                    <- eventos del bridge pendientes (.json)
+├── _proposals/                <- propuestas generadas por el bridge (.md)
+└── _processed/                <- eventos resueltos (.json)
+```
 
-Siguiendo la regla establecida en `entregables_ajuste/AGENTS.md` (rama main):
+---
 
-- **Codigo fuente del WMS** (`*.vb`, `*.Designer.vb`, `.resx`, etc.): vive en Azure DevOps repo `TOMWMS_BOF`. No se duplica aca.
-- **Bundles operativos** (`entregables_ajuste/<fecha>/vNN_bundle/`): viven en `main`.
-- **Datos productivos crudos** (`*.xlsx` con datos reales, capturas de UI): no son brain estructurado, son input.
-- **Secrets** de cualquier tipo (PAT, passwords, tokens): jamas. Solo se referencian por nombre.
+## Que esta y que no esta versionado aca
 
-## Relacion con otras fuentes de conocimiento
+### Si esta
 
-| Fuente | Rol | Acceso |
-|---|---|---|
-| **Esta rama (`wms-brain`)** | Brain estructurado del agente, versionado | git |
-| **WikiHub Portal** `https://tomwms-wikidev.replit.app` | Wiki humana profunda (Jira, releases, BD, modulos) | API REST |
-| **Azure DevOps** | Codigo fuente WMS y HH | PAT |
-| **SQL Server EC2** | Datos productivos | password en secret |
-| **Workspace Replit** del agente | Working copy efimera + entorno productor | sesion del agente |
+- **Skills** (`skills/wms-tomwms/SKILL.md`, `conventions.md`): guia canonica
+  del agente.
+- **Indice maestro** (`replit.md`): topologia, equipo, reglas duras de alto nivel.
+- **Protocolo agentes locales** (`agent-context/AGENTS.md`): como openclaw
+  debe pensar el WMS.
+- **Tooling**: `sql-catalog`, `wms-agent`.
+- **Eventos del bridge**: cola estructurada de notificaciones.
 
-## Politica de actualizacion
+### NO esta
 
-- Esta rama se actualiza explicitamente cuando hay un cambio significativo en `replit.md`, en los protocolos de `agent-context/`, o en las herramientas (`sql-catalog`, `wms-agent`).
-- No se mergea a `main` ni `main` se mergea aca. Son canales paralelos con propositos distintos.
-- El consumidor (openclaw) puede leer esta rama si necesita entender contexto, pero **no la necesita para aplicar bundles**. Para aplicar bundles alcanza con `main` (AGENTS.md + scripts + bundle vNN).
+- **Codigo WMS** (.vb, .java, .asmx, .sql del producto). Vive en Azure
+  DevOps, no en GitHub. Regla dura.
+- **`attached_assets/`**: capturas y data cruda. No es brain estructurado;
+  cuando una captura sea referencia para un caso concreto, se incorpora al
+  playbook puntual, no como dump.
+- **Secrets**: nada con `WMS_*`, `BRAIN_IMPORT_TOKEN`, `AZURE_DEVOPS_PAT`,
+  `GITHUB_TOKEN`. Solo referencias por nombre.
 
-## Inconsistencia conocida
+---
 
-El `replit.md` referencia el skill local `.local/skills/wms-tomwms/SKILL.md` con playbooks (arquitectura, protocolo HH<->WS, convenciones JSON, modelo de datos). **Ese archivo no existe en disco actualmente.** Es deuda tecnica del brain — pendiente de reconstruir.
+## Bridge — actualizacion del brain
+
+Cuando se aplica un parche o funcionalidad al WMS, el brain puede necesitar
+actualizarse para reflejar el nuevo estado. El **bridge** es el mecanismo
+estructurado que conecta esos dos mundos:
+
+1. Tras un `apply_bundle` OK (o por orden explicita), se escribe un evento
+   en `brain/_inbox/<id>.json`.
+2. El productor (Replit) corre `brain_bridge analyze <id>` que genera una
+   propuesta heuristica en `brain/_proposals/<id>.md`.
+3. El agente (humano o IA en sesion) revisa, edita los .md del brain si
+   corresponde, y marca `brain_bridge apply <id>`.
+
+Ver **`BRIDGE.md`** para flujo completo, comandos y estructura del evento.
+
+---
+
+## Como leer este brain del lado openclaw (consumidor)
+
+```powershell
+cd C:\tomwms-exchange
+git fetch origin
+git switch wms-brain        # cambia el working tree
+
+# o sin cambiar de rama:
+git show origin/wms-brain:brain/skills/wms-tomwms/SKILL.md
+git show origin/wms-brain:brain/replit.md
+```
+
+Para listar eventos pendientes en el inbox:
+
+```powershell
+git fetch origin
+git ls-tree --name-only origin/wms-brain:brain/_inbox/
+```
+
+---
+
+## Reglas
+
+1. La rama `wms-brain` **nunca** se mergea con `main`.
+2. Cambios estructurales al SKILL deben ir acompanados de un evento
+   `type=skill_update` para trazabilidad.
+3. Eventos en `_inbox/` deben procesarse a `_processed/` (apply o skip)
+   en cada sesion del productor. No deben acumularse.
+4. `_proposals/<id>.md` es **escritura del bridge**. No editar a mano. Si
+   se quiere documentar la decision, usar el campo `--note` del apply.
+
+---
+
+## Referencia cruzada
+
+| Documento | Rol |
+|---|---|
+| `replit.md` | Indice maestro: topologia, reglas duras de alto nivel, infraestructura. |
+| `skills/wms-tomwms/SKILL.md` | Skill canonico operativo. **Cargar en cada sesion.** |
+| `skills/wms-tomwms/conventions.md` | Convenciones de codigo VB / Java / SQL / JSON. |
+| `agent-context/AGENTS.md` | Protocolo para agentes locales (openclaw). |
+| `BRIDGE.md` | Mecanismo de actualizacion del brain. |
+| `wms-agent/README.md` | CLI `wmsa` para la PC del consumidor. |
