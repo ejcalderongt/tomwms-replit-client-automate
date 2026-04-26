@@ -21,6 +21,9 @@ function parseArgs(argv) {
     else if (a === "--yes" || a === "-y") args.yes = true;
     else if (a === "--help" || a === "-h") args.help = true;
     else if (a === "--bundles-root") args.bundlesRoot = argv[++i];
+    else if (a === "--brain-message") args.brainMessage = argv[++i];
+    else if (a === "--brain-modules") args.brainModules = argv[++i];
+    else if (a === "--brain-tags") args.brainTags = argv[++i];
     else throw new Error(`Argumento desconocido: ${a}`);
   }
   return args;
@@ -43,6 +46,14 @@ Args:
   --dry-run            Correr todas las validaciones, NO aplicar.
   --yes / -y           Confirmar automaticamente (uso CI).
   --bundles-root <d>   Default: <dir del script>/../entregables_ajuste
+
+Brain bridge (opcional):
+  --brain-message <s>  Si se pasa, despues del exito escribe brain_event.json
+                       en el bundle dir. El upload al inbox del brain queda
+                       como accion separada (brain_bridge notify
+                       --from-event-file <bundle>/brain_event.json).
+  --brain-modules <s>  Csv de modulos tocados (ej. "frmAjusteStock,ajuste_rules").
+  --brain-tags <s>     Csv de tags (ej. "validation,ajuste").
 
 Comportamiento:
   1. Resuelve el bundle (--latest ordena por fecha+vNN descendente).
@@ -503,6 +514,42 @@ async function main() {
   console.log(`  rama:    ${branch}`);
   console.log(`  commit:  ${commitSha}`);
   console.log(`  log:     ${logPath}`);
+
+  // Brain event draft (opcional). NO sube nada al exchange repo aca; solo
+  // escribe el JSON. El upload lo hace despues `brain_bridge notify
+  // --from-event-file <bundle>/brain_event.json --exchange-repo <path>`.
+  if (args.brainMessage) {
+    const csv = (s) => (s ? s.split(",").map((x) => x.trim()).filter(Boolean) : []);
+    const brainEvent = {
+      schema_version: "1",
+      created_at: isoLocal(),
+      type: "apply_succeeded",
+      source: "apply_bundle",
+      host: process.env.COMPUTERNAME || process.env.HOSTNAME || "unknown",
+      ref: {
+        bundle: bundle.manifest.version,
+        commit_sha: commitSha,
+        rama_destino: bundle.manifest.rama_destino,
+        files_changed: bundle.manifest.files.map((f) => f.path),
+        marker: bundle.manifest.marker,
+      },
+      context: {
+        message: args.brainMessage,
+        modules_touched: csv(args.brainModules),
+        tags: csv(args.brainTags),
+      },
+      analysis: null,
+      proposal: null,
+      status: "draft",
+      decision: null,
+      history: [{ at: isoLocal(), action: "apply_bundle_draft" }],
+    };
+    const evPath = join(bundle.dir, "brain_event.json");
+    writeFileSync(evPath, JSON.stringify(brainEvent, null, 2) + "\n");
+    console.log(`  brain:   ${evPath}`);
+    console.log(`  -> subir con: node scripts/brain_bridge.mjs notify --from-event-file ${evPath} --exchange-repo <path-clon-exchange-en-rama-wms-brain>`);
+  }
+
   console.log("");
   console.log("Comandos sugeridos para mergear (revisa antes en VS):");
   const target = args.ramaDestino || bundle.manifest.rama_destino;
