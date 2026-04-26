@@ -1,16 +1,16 @@
-# Instalación
+# Brain Up MVP
 
-## Exportar
+## Uso
 ```powershell
-.\scripts\openclaw-export.ps1
+.\scripts\brain-up.ps1 -PromptSql
 ```
 
-## Probar restore
+## Sin prompt SQL
 ```powershell
-.\scripts\openclaw-restore.ps1 -Mode Bootstrap
+.\scripts\brain-up.ps1
 ```
 
-## Simular sync de config
+## Consulta MVP
 ```powershell
-.\scripts\openclaw-set-config.ps1 -DryRun
+.\scripts\brain-query.ps1 -Question "analiza si el idstock existe y está reservado"
 ```
