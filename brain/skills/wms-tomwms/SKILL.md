@@ -36,17 +36,17 @@ Este skill es la **única referencia local** que el agente Replit debe cargar pa
 
 | Repo | Hosting | Lenguaje | Rol | Branch activa |
 |---|---|---|---|---|
-| `TOMWMS_BOF` | Azure DevOps `ejcalderon0892` | VB.NET | Backend core: WinForms TOMIMSV4, WSHHRN (`.asmx`), WSSAPSYNC, WMSWebAPI, Entity, DAL, EntityCore, DALCore, interfaces (NAV, SAP, Cealsa, DMS, AWS). **El cerebro de código.** | `dev_2028_merge` |
-| `TOMHH2025` | Azure DevOps `ejcalderon0892` | Java | App Android Handheld (405 `.java`, 55 `Activity`). | `dev_2028_merge` |
-| `TOMWMS_DBA` (ó `ejcalderongt/DBA` en GitHub) | Azure DevOps + GitHub | T-SQL | Schema + SPs SQL Server productivos. WIP `VW_Stock_Res`. | — |
-| `tomwms-replit-client-automate` | GitHub `ejcalderongt` | Mixto | **Repo de intercambio**: bundles, scripts y esta brain (`wms-brain` branch). | `main` (bundles) + `wms-brain` (conocimiento) |
-| Workspace Replit | Replit | TS/Node/Python | Productor: scripts + brain + builders. NO clona el WMS completo. | sesión |
+| `TOMWMS_BOF` | Azure DevOps `ejcalderon0892` (376 MB · 9609 archivos · 3218 `.vb`) | VB.NET + C# | Backend core: WinForms `TOMIMSV4`, `WSHHRN` (`.asmx`), `WSSAPSYNC`, `WMSWebAPI`, `Entity`, `DAL`, `EntityCore`, `DALCore`, interfaces (NAV, SAP, Cealsa, DMS, AWS). **El cerebro de código.** | `dev_2028_merge` (default Azure: `master`) |
+| `TOMHH2025` | Azure DevOps `ejcalderon0892` (14 MB) | Java | App Android Handheld (405 `.java`, 55 `Activity`). | `dev_2028_merge` (default Azure: `master`) |
+| `DBA` | GitHub `ejcalderongt/DBA` (no en Azure) | T-SQL | Schema + SPs SQL Server productivos. WIP `VW_Stock_Res`. | — |
+| `tomwms-replit-client-automate` | GitHub `ejcalderongt` | Mixto | **Repo de intercambio**: bundles, scripts y este brain (`wms-brain` branch). | `main` (bundles) + `wms-brain` (conocimiento) |
+| Workspace Replit | Replit | TS/Node/Python | Productor: scripts + brain + builders. **Tiene acceso de SOLO LECTURA al WMS via Azure DevOps REST API**. Ver `agent-context/AZURE_ACCESS.md`. | sesión |
 
 **Reglas duras de topología** (ver también `entregables_ajuste/AGENTS.md`):
 
 - El repo de intercambio en GitHub **no contiene código WMS**. Solo bundles + scripts + brain.
 - Azure DevOps **no recibe push automático** ni del productor ni del consumidor. Los patches viajan por bundle y el merge a `dev_2028_merge` lo hace el humano desde VS.
-- El productor (Replit) **no tiene clonado el WMS**. Si necesita ver código, va a través de Brain API o pide al usuario que pegue el archivo.
+- El productor (Replit) tiene **acceso de SOLO LECTURA** al WMS vía Azure DevOps REST API (PAT `AZURE_DEVOPS_PAT`, validado 2026-04-26). **NO** clona el repo entero (376 MB) salvo casos de extracción completa puntual. Lee archivos on-demand vía API. **NUNCA** pushea a Azure. Comandos pegables en `agent-context/AZURE_ACCESS.md`.
 
 ---
 

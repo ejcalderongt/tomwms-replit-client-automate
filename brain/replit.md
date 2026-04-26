@@ -19,15 +19,36 @@ Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS**
 | **Stack HH (Handheld Android)** | Java, Android API minSdk/targetSdk=24, compileSdk=34, applicationId `com.dts.tom` v8.2.3 |
 | **Stack web moderno (parcial)** | C# .NET Core / .NET 8.0 (EntityCore + DALCore + WMSWebAPI, migración incompleta) |
 
-## 2. Repositorios (Azure DevOps `ejcalderon0892`)
+## 2. Repositorios
 
-| Proyecto | Repo | Rama de trabajo | Path local | Notas |
-|---|---|---|---|---|
-| `TOMWMS_BOF` | `TOMWMS_BOF` | `dev_2028_merge` | `/tmp/TOMWMS_v2/` | Backend principal: WinForms TOMIMSV4, WSHHRN (.asmx), WSSAPSYNC, WMSWebAPI, Entity, DAL, EntityCore, DALCore, interfaces (NAV, SAP, Cealsa, DMS, AWS) |
-| `TOMHH2025` | `TOMHH2025` | `dev_2028_merge` | `/tmp/TOMHH2025/` | App Android Handheld (405 .java, 55 activities) |
-| `ejcalderongt/DBA` (GitHub) | `DBA` | — | — | Scripts SQL versionados (incluye trabajo en curso `VW_Stock_Res`) |
+### 2.1 Azure DevOps (org `ejcalderon0892`)
 
-**Auth Azure DevOps en sandbox:** `AUTH=$(printf ":%s" "$AZURE_DEVOPS_PAT" | base64 -w0)` (secreto disponible). NO commit/push automático sin permiso explícito del usuario.
+| Proyecto / Repo | URL clone (HTTPS) | Default branch | Branch trabajo | Tamaño | Path local Erik |
+|---|---|---|---|---|---|
+| `TOMWMS_BOF` / `TOMWMS_BOF` | `https://dev.azure.com/ejcalderon0892/TOMWMS_BOF/_git/TOMWMS_BOF` | `master` | `dev_2028_merge` | 376 MB · 9609 archivos · 1708 dirs | `C:\Users\yejc2\source\repos\TOMWMS` |
+| `TOMHH2025` / `TOMHH2025` | `https://dev.azure.com/ejcalderon0892/TOMHH2025/_git/TOMHH2025` | `master` | `dev_2028_merge` | 14 MB | (por confirmar) |
+
+**Composición de TOMWMS_BOF en `dev_2028_merge` (snapshot 2026-04-26)**:
+- Conteo por extensión: `.vb` = 3218, `.cs` = 1083, `.resx` = 657, `.svg` = 1624, `.xml` = 199, `.svc` = 94, `.config` = 119
+- Subraíces principales del solution: `TOMIMSV4/`, `WSHHRN/`, `WSSAPSYNC/`, `WMSWebAPI/`, `WMS.AppGlobalCore/`, `WMS.DALCore/`, `WMS.EntityCore/`, `WMSPortal/`, `DMS/`, `MES/`, `MI3/`, `IAService/`, `SAPSYNCCUMBRE/`, `SAPSYNCMAMPA/`, `SAPSYNC_Killios/`
+- Solution: `TOMWMS.sln`
+- Topología `TOMIMSV4/`: `DAL`, `DataSets`, `Entity`, `Resources`, `Service References`, `TOMIMSV4` (subraíz anidada legacy), `TOMIMS_WCF`, `Transacciones`
+- ⚠ Hay duplicación entre `/TOMIMSV4/...` y `/TOMIMSV4/TOMIMSV4/...` (legacy nested). Verificar siempre cuál archivo está activo antes de tocar.
+
+### 2.2 GitHub (org `ejcalderongt`)
+
+| Repo | URL | Rol | Notas |
+|---|---|---|---|
+| `tomwms-replit-client-automate` | `https://github.com/ejcalderongt/tomwms-replit-client-automate` | Repo intercambio | Ramas: `main` (bundles + scripts) + `wms-brain` (este brain) |
+| `DBA` | `https://github.com/ejcalderongt/DBA` | Scripts SQL | Schema y SPs versionados. WIP `VW_Stock_Res`. **No vive en Azure DevOps**. |
+
+### 2.3 Acceso desde Replit (validado 2026-04-26)
+
+- **Sí hay acceso de LECTURA** a TOMWMS_BOF y TOMHH2025 desde el container Replit usando `AZURE_DEVOPS_PAT`.
+- **Método preferido**: API REST de Azure DevOps con header `Authorization: Basic $(printf ":%s" "$AZURE_DEVOPS_PAT" | base64 -w0)`. Permite leer árbol y archivos individuales sin clonar 376 MB.
+- **Método alternativo**: `git clone` con el mismo header vía `-c http.extraHeader=...`. Solo si se necesita el repo entero local (ej. extractor inicial de code-index).
+- **NO se hace push a Azure DevOps desde el agente**. Nunca. Los cambios viajan por bundle vía intercambio GitHub.
+- Detalle operativo y comandos pegables en `brain/agent-context/AZURE_ACCESS.md`.
 
 ## 3. Equipo y autoría de commits
 
@@ -50,6 +71,7 @@ Para identificar autor de cualquier convención particular (ej. reglas en `WebSe
 3. **Mantener `ñ`**: eliminar `.replace("ñ","n")` en `WebService.java` línea 352. La HH debe procesar `ñ` correctamente como UTF-8.
 4. **NO commit/push automático** sin permiso explícito del usuario.
 5. **NO mezclar** cambios de HH (Android) y backend (VB.NET) en el mismo commit.
+6. **Acceso al WMS desde el agente Replit = SOLO LECTURA** vía Azure DevOps REST API. Cero `git push` a Azure. Detalle en `brain/agent-context/AZURE_ACCESS.md`.
 
 ## 5. Acceso a SQL Server
 
