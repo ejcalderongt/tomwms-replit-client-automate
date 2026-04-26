@@ -1,7 +1,7 @@
 {
   "repo": "tomwms-replit-client-automate",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "last_export_utc": null,
   "artifacts": [],
-  "notes": "Base bootstrap repository for OpenClaw/TOMWMS environment replication"
+  "notes": "Bootstrap repo for OpenClaw/TOMWMS environment replication"
 }

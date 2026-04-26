@@ -1,21 +1,16 @@
 # Instalación
 
-## Requisitos
-- Git
-- PowerShell 7+
-- OpenClaw instalado en la máquina destino
-
-## Primer bootstrap
-```powershell
-.\scripts\openclaw-restore.ps1 -Mode Bootstrap
-```
-
-## Exportar estado
+## Exportar
 ```powershell
 .\scripts\openclaw-export.ps1
 ```
 
-## Restaurar
+## Probar restore
 ```powershell
-.\scripts\openclaw-restore.ps1 -Mode Restore
+.\scripts\openclaw-restore.ps1 -Mode Bootstrap
+```
+
+## Simular sync de config
+```powershell
+.\scripts\openclaw-set-config.ps1 -DryRun
 ```

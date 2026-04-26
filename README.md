@@ -1,19 +1,19 @@
 # TOMWMS Replit Client Automate
 
-Repositorio de bootstrap, sync y restore para replicar el ambiente OpenClaw/TOMWMS entre máquinas.
+Repositorio base para sincronizar ambiente OpenClaw/TOMWMS entre máquinas.
 
-## Qué guarda
-- Skills propias
-- Scripts de automatización
-- Configuración exportable
+## Incluye
+- Scripts PowerShell de export, restore y set-config
+- Carpeta para skills reutilizables
 - Manifiestos de estado
-- Backups operativos
+- Reglas de sincronización
 
-## Flujo
-1. `scripts/openclaw-export.ps1`
-2. commit/versionado
-3. `scripts/openclaw-restore.ps1` en otra máquina
-4. validación y log
+## Flujo recomendado
+1. Exportar el estado actual.
+2. Versionar los cambios.
+3. Revisar diff en rama efímera.
+4. Restaurar en otra máquina.
+5. Validar que el estado coincida.
 
-## Objetivo
-Replicar un entorno funcional con el menor riesgo posible, sin copiar secretos en claro.
+## Regla principal
+No guardar secretos en claro.
