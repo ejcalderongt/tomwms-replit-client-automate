@@ -1,0 +1,31 @@
+{
+  "bundle": "v23_bundle",
+  "fecha": "2026-04-25",
+  "rama_destino": "dev_2028_merge",
+  "base_commit": "v22 aplicado (post 32cb29f30d22406df3e633e52e71a5f9)",
+  "marcador_global": "#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25",
+  "descripcion": "Eliminar_Ajuste_Si_Sin_Detalle robustecido: bloquea ajustes finalizados (G1), cuenta desde lista en memoria en vez de dgrid.Rows (G2), mantiene defensa contra trans_ajuste_det_borrador en BD (G3).",
+  "patches_orden": [
+    "0001-frm-eliminar-ajuste-rules-borrador-y-lista-memoria.patch"
+  ],
+  "archivos": [
+    {
+      "path": "TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb",
+      "encoding": "UTF8",
+      "md5_orig": "32cb29f30d22406df3e633e52e71a5f9",
+      "md5_mod": "14f1a78771eb3dd7d9ace6c2bc2440fc",
+      "patch": "0001-frm-eliminar-ajuste-rules-borrador-y-lista-memoria.patch",
+      "cambios": "Eliminar_Ajuste_Si_Sin_Detalle: bloquea no-borrador, cuenta desde lista en memoria, mantiene defensa BD."
+    }
+  ],
+  "validacion": {
+    "git_apply_check": "OK",
+    "rebuild_byte_identical": true
+  },
+  "compatibilidad": {
+    "v20": "Sin conflicto (toca el sub Eliminar_Ajuste_Si_Sin_Detalle ~linea 2887; v20 toco Cargar_Detalle ~273-292).",
+    "v21": "Sin conflicto (zonas distintas).",
+    "v22": "Sin conflicto. Aplicar sobre v22.",
+    "v14_H1": "Reemplaza la logica del marcador #FIX_v14_ELIMINAR_AJUSTE_2026-04-25 (H1). El marcador H1 (comentario en la linea 2886) se mantiene como cabecera; los marcadores G1/G2/G3 nuevos se anaden dentro del cuerpo del sub."
+  }
+}
