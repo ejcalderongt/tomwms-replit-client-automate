@@ -1,0 +1,122 @@
+id: RES-001
+title: Reserva FEFO simple, una bodega, dos ubicaciones
+module: reservation
+priority: P0
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: clsLnStock_res
+  function: Ejecuta_QA_CASO_1_IDEAL_20231002011101
+  source: wms-brain/test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-IDEAL_20231002011101.md
+
+description: >
+  Hay cajas en almacenamiento que vencen primero vs cajas en zona de picking
+  que vencen después. El motor de reservas (legacy o MI3) debe reservar la
+  caja del almacenamiento respetando FEFO, no la de picking.
+
+  Es el caso canónico que valida que el motor no se conforma con tomar lo
+  más cercano (picking) sino que prioriza lo que vence antes (almacenamiento).
+
+required_config:
+  i_nav_config_enc.usar_fefo: 1
+  producto.control_vencimiento: 1
+  producto.control_lote: 1
+  bodega.usa_zona_picking: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+    note: "Equivalente a clsLnStock_res.Clear_BD_For_Test_Cases()"
+
+  - action: insert_stock
+    name: stock_almacenaje
+    values:
+      bodega: "{bodega activa}"
+      producto: "47022"
+      ubicacion: "{ubicacion no-picking activa}"
+      lote: "CASO_USO1_MI3_AUTOMATE"
+      vencimiento: "2026-01-01"
+      cantidad_unidades: 1
+      presentacion: "{presentacion default del producto}"
+      estado: "{IdProductoEstado de i_nav_config_enc}"
+      propietario: "{propietario sentinel}"
+      lic_plate: "@now"
+
+  - action: insert_stock
+    name: stock_picking
+    values:
+      bodega: "{bodega activa}"
+      producto: "47022"
+      ubicacion: "{ubicacion picking activa}"
+      lote: "CASO_USO1_MI3_AUTOMATE"
+      vencimiento: "2026-01-02"
+      cantidad_unidades: 1
+      presentacion: "{presentacion default del producto}"
+      estado: "{IdProductoEstado de i_nav_config_enc}"
+      propietario: "{propietario sentinel}"
+      lic_plate: "@now+1ms"
+
+action:
+  endpoint: /api/test-bridge/sandbox/reserve
+  method: POST
+  body:
+    pedido:
+      no: "@MaxNoDocumento+1"
+      document_type: Pedido_De_Cliente
+      product_owner_code: "01"
+      transfer_from_code: "{bodega activa}.codigo"
+      transfer_to_code: "{cliente sentinel}.codigo"
+      is_internal_transfer: true
+      lineas:
+        - line_no: 1
+          item_no: "47022"
+          quantity: 1
+          unit_of_measure: "{producto.unidad_medida.codigo}"
+          variant_code: "{presentacion default del producto}.codigo"
+
+expected:
+  - check: row_exists
+    table: stock_res
+    where:
+      idstock: "@stock_almacenaje.id"
+      estado: 1
+    note: "La caja de almacenamiento (vence 2026-01-01) DEBE estar reservada"
+
+  - check: row_absent
+    table: stock_res
+    where:
+      idstock: "@stock_picking.id"
+      estado: 1
+    note: "La caja de picking (vence 2026-01-02) NO debe estar reservada"
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+  - check: column_value
+    table: trans_pe_det
+    where:
+      no_documento: "@pedido.no"
+      line_no: 1
+    column: cantidad_reservada
+    value: 1
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - golden-path
+  - fefo
+  - reservation
+  - mi3
+  - mi3-legacy
+  - from-legacy-caso
+
+notes: |
+  Este escenario es el "hello world" del módulo de reservas. Si falla,
+  todo el motor está roto.
+  El producto sentinel `47022` viene del CASO 1 legacy. Si el cliente no
+  lo tiene, el placeholder `47022` se debe reemplazar por
+  `{producto con control_lote=1 AND control_vencimiento=1}` resuelto del
+  snapshot del cliente.
