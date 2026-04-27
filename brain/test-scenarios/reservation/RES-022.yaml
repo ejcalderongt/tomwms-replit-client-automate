@@ -1,0 +1,38 @@
+# RES-022: BYB — transferencia entre puntos (pedido de traslado)
+id: RES-022
+version: 1
+category: reservation
+severity: medium
+title: "BYB — transferencia entre puntos (pedido de traslado)"
+summary: |
+  Cliente BYB. Usa Importar_Pedido_Cliente_A_Tabla_Intermedia con BeINavPedCompraEnc (estructura de traslado, no pedido de cliente). Validar que el bridge soporta documentos tipo traslado.
+
+requires_config:
+  - Control_lote: true
+  - Control_vencimiento: true
+
+input:
+  requested_qty: -1
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+
+
+expected:
+  1. Sin XML doc detallado en el legacy. Inferir comportamiento desde código línea 17373-17614.
+  2. Validar que Variant_Code = Nothing (sin presentación específica) procesa en UM base.
+
+legacy_origin:
+  case: "CASO 18"
+  function: "Ejecuta_QA_CASO_18_BYB_202311141034"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "17373-17614"
+
+notes: |
+  PENDIENTE: extraer datos exactos del CASO 18 leyendo cuerpo de la función. Stub con cantidades a completar.
