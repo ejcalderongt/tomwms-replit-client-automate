@@ -1,0 +1,103 @@
+id: RES-005
+title: Cancelar reserva existente y verificar liberación de stock
+module: reservation
+priority: P1
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: clsLnStock_res
+  function: TODO_mapear_caso_legacy_si_existe
+  source: pendiente lectura
+
+description: >
+  Existe un pedido reservado (estado=1 en stock_res). Se cancela el
+  pedido y el motor debe liberar el stock (eliminar las filas o
+  marcarlas como inactivas según la convención del módulo). Valida
+  invariante: la cantidad disponible vuelve a su estado pre-reserva.
+
+required_config:
+  i_nav_config_enc.permite_cancelar_reserva: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: insert_stock
+    name: stock_inicial
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con control_lote=1}"
+      ubicacion: "{ubicacion no-picking activa}"
+      lote: "RES005_CANCELAR"
+      cantidad_unidades: 10
+
+  - action: reserve_pedido
+    name: pedido_a_cancelar
+    body:
+      pedido:
+        no: "@MaxNoDocumento+1"
+        document_type: Pedido_De_Cliente
+        product_owner_code: "01"
+        lineas:
+          - line_no: 1
+            item_no: "{producto.codigo}"
+            quantity: 4
+
+  - action: assert_pre_state
+    checks:
+      - check: row_exists
+        table: stock_res
+        where:
+          idstock: "@stock_inicial.id"
+          estado: 1
+        note: "El pedido quedó reservado"
+
+action:
+  endpoint: /api/test-bridge/sandbox/cancel-reservation
+  method: POST
+  body:
+    pedido_id: "@pedido_a_cancelar.id"
+    motivo: "TEST_RES005_AUTOMATE"
+
+expected:
+  - check: row_absent
+    table: stock_res
+    where:
+      idstock: "@stock_inicial.id"
+      estado: 1
+    note: "La reserva debe estar liberada (no más rows con estado=1)"
+
+  - check: column_value
+    table: trans_pe_enc
+    where:
+      no_documento: "@pedido_a_cancelar.no"
+    column: estado
+    value: "CANCELADO"
+
+  - check: custom_sql
+    name: stock_disponible_restituido
+    sql: |
+      SELECT (cantidad - ISNULL(cantidad_reservada, 0)) AS disponible
+      FROM stock WHERE idstock = @stock_inicial.id
+    expected: 10
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - edge-case
+  - reservation
+  - mi3
+  - mi3-legacy
+  - invariant
+
+notes: |
+  Este escenario valida un invariante crítico: la cantidad disponible
+  debe ser `cantidad - cantidad_reservada` siempre. Si después de
+  cancelar la reserva la cantidad disponible no coincide con la
+  inicial, hay un leak de reserva (bug serio).
