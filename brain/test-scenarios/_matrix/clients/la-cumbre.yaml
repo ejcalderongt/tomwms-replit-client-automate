@@ -1,17 +1,41 @@
-slug: la-cumbre
-display_name: LA CUMBRE
-country: GT
-notes: |
-  Cliente con configuración divergente del bloque IDEALSA/KILLIOS.
-  Históricamente ha pedido NO rechazar pedidos incompletos (se prefiere
-  parcial que rechazo). Validar antes de ejecutar escenarios que dependen
-  de Rechazar_Pedido_Si_Esta_Incompleto.
+# Cliente: La Cumbre
+id: la-cumbre
+name: "La Cumbre"
+brand: "LACUMBRE"
+
+# Estado de aprendizaje. Todos los flags están en null hasta correr
+# brain/skills/wms-test-bridge/sql/learn-config.sql contra la bodega del cliente
+# y volcar la fila resultante.
 learned: false
-learned_at: null
-learned_from: null
+learned_from:
+  branch: null          # dev_2023_merge cuando se ejecute contra Killios PRD
+  bodega: null
+  fecha: null
+
+# Flags reales (nombres exactos de la entidad clsBeI_nav_config_enc).
+# Tipos: ver brain/skills/wms-test-bridge/reference/config-flags.md
 flags:
-  IdProductoEstado: null
-  IdPropietario: null
-  Reservar_Desde_Picking_Antes_Que_Almacenamiento: null
-  Permite_Explosion_En_Picking: null
-  Rechazar_Pedido_Si_Esta_Incompleto: "(inferido) false  # confirmar con cliente"
+  Rechazar_pedido_incompleto: null   # pendiente learn-config
+  Despachar_existencia_parcial: null   # pendiente learn-config
+  Convertir_decimales_a_umbas: null   # pendiente learn-config
+  Reservar_UMBas_Primero: null   # pendiente learn-config
+  Implosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica_Desde_Ubicacion_Picking: null   # pendiente learn-config
+  Explosion_Automatica_Nivel_Max: null   # pendiente learn-config
+  IdTipoRotacion: null   # pendiente learn-config
+  IdProductoEstado: null   # pendiente learn-config
+  Conservar_Zona_Picking_Clavaud: null   # pendiente learn-config
+  Excluir_Ubicaciones_Reabasto: null   # pendiente learn-config
+  considerar_paletizado_en_reabasto: null   # pendiente learn-config
+  Considerar_Disponibilidad_Ubicacion_Reabasto: null   # pendiente learn-config
+  Valida_Solo_Codigo: null   # pendiente learn-config
+  Control_lote: null   # pendiente learn-config
+  Control_vencimiento: null   # pendiente learn-config
+  Genera_lp: null   # pendiente learn-config
+
+notes: |
+  Cliente La Cumbre. Sin acceso directo a su BD aún.
+  Hipótesis (a confirmar):
+  - Configuración similar a IDEALSA (modelo distribuidor).
+  - Posiblemente Conservar_Zona_Picking_Clavaud no aplica.
