@@ -1,0 +1,231 @@
+{
+  "domain": "reabastecimiento",
+  "activitiesCount": 2,
+  "activities": [
+    {
+      "activity": "frm_datos_reabastecimiento",
+      "package": "com.dts.tom.Transacciones.Reabastecimiento",
+      "layout": "activity_frm_datos_reabastecimiento",
+      "fileLines": 772,
+      "intentTargets": [
+        "frm_reabastecimiento_manual"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 683,
+          "wm": "Aplica_Cambio_Estado_Ubic_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal pMovimiento As clsBeTrans_movimientos, ByVal pStockRes As clsBeVW_stock_res, ByRef pIdStockNuevo As Integer, ByRef pIdMovimientoNuevo As Integer, ByVal pPosiciones As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_reab",
+            "clsLnTrans_ubic_hh_det"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 690,
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdOperador As Integer, ByVal pIdBodega As Integer",
+          "returns": "clsBeResolucion_lp_operador",
+          "tablesRead": [
+            "log_error_wms",
+            "resolucion_lp_operador",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "resolucion_lp_operador"
+          ],
+          "clsLnUsed": [
+            "clsLnResolucion_lp_operador",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 697,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 702,
+          "wm": "Set_Nuevo_Pallet_Id",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 77,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdUsuario As Integer, ByVal pLicPlateAnt As String, ByVal pLicPlateNuevo As String, ByVal pIdStockNuevo As Integer, ByVal pIdMovimientoNuevo As Integer, ByVal pIdResolucion As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_reab",
+            "clsLnStock"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_reabastecimiento_manual",
+      "package": "com.dts.tom.Transacciones.Reabastecimiento",
+      "layout": "activity_frm_reabastecimiento_manual",
+      "fileLines": 315,
+      "intentTargets": [
+        "frm_datos_reabastecimiento"
+      ],
+      "visibleStrings": [],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 219,
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pCodigo As String, ByVal IdBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 224,
+          "wm": "Get_All_Products_For_Reabastecimiento",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdProducto As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeVW_stock_res)",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        }
+      ]
+    }
+  ],
+  "entryActivity": "frm_datos_reabastecimiento",
+  "exitActivity": null,
+  "uniqueWMsCalled": [
+    "Aplica_Cambio_Estado_Ubic_HH",
+    "Get_All_Products_For_Reabastecimiento",
+    "Get_BeProducto_By_Codigo_For_HH",
+    "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+    "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+    "Set_Nuevo_Pallet_Id"
+  ],
+  "finalizationWMs": [],
+  "partialWMs": [],
+  "tablesWrittenByDomain": [
+    "bodega_ubicacion",
+    "log_error_wms",
+    "producto",
+    "resolucion_lp_operador",
+    "stock",
+    "trans_ubic_hh_det"
+  ],
+  "tablesReadByDomain": [
+    "bodega_ubicacion",
+    "log_error_wms",
+    "producto",
+    "resolucion_lp_operador",
+    "trans_ubic_hh_det",
+    "usuario"
+  ],
+  "states": [
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    }
+  ],
+  "typicalErrors": [],
+  "edgeCases": []
+}
