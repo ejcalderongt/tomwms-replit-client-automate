@@ -1,0 +1,140 @@
+{
+  "generatedAt": "2026-04-27T05:31:32.437Z",
+  "totalServices": 0,
+  "totalFragments": 1,
+  "totalReceivers": 0,
+  "totalAsyncTasks": 2,
+  "totalAdapters": 47,
+  "totalApplications": 1,
+  "services": [],
+  "fragments": [
+    {
+      "className": "TaskHolderFragment",
+      "package": "com.dts.tom.util",
+      "path": "/app/src/main/java/com/dts/tom/util/TaskHolderFragment.java",
+      "extends": "Fragment",
+      "methods": [
+        "onCreate",
+        "setJobs",
+        "onAttach",
+        "onAttach",
+        "onAttachToContext",
+        "setTask",
+        "taskUpdate",
+        "taskFinished",
+        "onDetach",
+        "cancelPrintTask",
+        "setPrintConnectionSpringLoaded",
+        "firePrintConnectionSpringIfLoaded",
+        "getPrintJobs",
+        "ensureTaskRunning",
+        "getCurrentTaskMessage",
+        "signalKill"
+      ],
+      "wmCalls": []
+    }
+  ],
+  "receivers": [],
+  "asyncTasks": [
+    {
+      "className": "NetWorkInfoUtility",
+      "package": "com.dts.base",
+      "path": "/app/src/main/java/com/dts/base/NetWorkInfoUtility.java",
+      "extends": "AsyncTask",
+      "methods": [
+        "doInBackground",
+        "isWifiEnable",
+        "setIsWifiEnable",
+        "isMobileNetworkAvailable",
+        "setIsMobileNetworkAvailable",
+        "isNetWorkAvailableNow",
+        "getConnectionType",
+        "getIPAddress",
+        "getMACAddress"
+      ],
+      "wmCalls": []
+    },
+    {
+      "className": "ZebraPrintTask",
+      "package": "com.dts.tom",
+      "path": "/app/src/main/java/com/dts/tom/ZebraPrintTask.java",
+      "extends": "AsyncTask",
+      "methods": [
+        "onCancelled",
+        "onPostExecute",
+        "onProgressUpdate",
+        "doInBackground",
+        "closeAndClearCachedConnectionHandle",
+        "signalPrinterUnavailable",
+        "isPrinterAvailable",
+        "advanceJob",
+        "attemptJobPrint",
+        "getPrinterConnection",
+        "printTemplate",
+        "wrap",
+        "loadVariablesFromBundle",
+        "populateTemplateVariableDescriptors",
+        "populateZplFileTemplateName",
+        "attemptToExtractFormatTitle",
+        "populateZplFileData",
+        "attachListener",
+        "detachListener",
+        "isWaiting",
+        "getCurrentJobNumber",
+        "getErrorMessage",
+        "getJobId",
+        "getDisplayName",
+        "getStatus",
+        "setJobToError",
+        "getJobParameters",
+        "prepare",
+        "setPrintSuccessful",
+        "getPrintData",
+        "getPrintFilename",
+        "getTemplateTitle",
+        "isFinished"
+      ],
+      "wmCalls": []
+    }
+  ],
+  "applications": [
+    {
+      "className": "appGlobals",
+      "package": "com.dts.base",
+      "path": "/app/src/main/java/com/dts/base/appGlobals.java",
+      "extends": "Application",
+      "methods": [
+        "onCreate",
+        "getList",
+        "onActivityResumed",
+        "onActivityPaused",
+        "userInteracted"
+      ]
+    }
+  ],
+  "adaptersSummary": {
+    "count": 47,
+    "sampleNames": [
+      "list_adapter_detalle_cambio_ubic",
+      "list_view_tareas_cambio_ubic",
+      "list_adapt_consulta_stock",
+      "list_adapt_consulta_stock2",
+      "list_adapt_consulta_ciclico",
+      "list_adapt_detalle_recepcion2",
+      "list_adapt_detalle_recepcion3",
+      "list_adapt_detalle_reemplazo_verif",
+      "list_adapt_detalle_tareas_verificacion",
+      "list_adapt_detalle_tareas_verificacion2",
+      "list_adapt_detalle_tareas_verificacion3",
+      "list_adapt_detalle_tareas_verificacion4",
+      "list_adapt_reemplazos",
+      "list_adapt_tareas_verificacion",
+      "list_adapt_contados",
+      "list_adapt_detalle_picking_cm",
+      "list_adapt_detalle_rec_prod",
+      "list_adapt_detalle_recepcion",
+      "list_adapt_detalle_recepcion_cm",
+      "list_adapt_detalle_reemplazo_picking"
+    ]
+  }
+}
