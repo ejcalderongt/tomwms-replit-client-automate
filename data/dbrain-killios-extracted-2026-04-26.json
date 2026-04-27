@@ -1,0 +1,5601 @@
+{
+  "generatedAt": "2026-04-27T04:24:29.233Z",
+  "totalObjects": 621,
+  "byKind": {
+    "sql-table": 345,
+    "sql-sp": 39,
+    "sql-fn": 17,
+    "sql-view": 220
+  },
+  "objects": [
+    {
+      "schema": "dbo",
+      "name": "ajuste_motivo",
+      "kind": "sql-table",
+      "objectId": 1911117999,
+      "createDate": "2018-01-19T15:15:37.617",
+      "modifyDate": "2018-08-28T15:22:19.830",
+      "rowCount": "8"
+    },
+    {
+      "schema": "dbo",
+      "name": "ajuste_tipo",
+      "kind": "sql-table",
+      "objectId": 1879117885,
+      "createDate": "2018-01-19T15:14:39.920",
+      "modifyDate": "2018-01-19T15:15:57.607",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "Appointments",
+      "kind": "sql-table",
+      "objectId": 1032442802,
+      "createDate": "2016-05-18T11:48:49.430",
+      "modifyDate": "2016-05-18T14:21:22.280",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "arancel",
+      "kind": "sql-table",
+      "objectId": 928110447,
+      "createDate": "2016-07-21T10:00:58.937",
+      "modifyDate": "2018-01-11T12:12:36.050",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "area_estado",
+      "kind": "sql-table",
+      "objectId": 1933458162,
+      "createDate": "2024-02-01T14:23:42.387",
+      "modifyDate": "2024-02-01T14:23:42.387",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "asignar_jornada_laboral",
+      "kind": "sql-sp",
+      "objectId": 1190503520,
+      "createDate": "2024-09-18T11:37:13.767",
+      "modifyDate": "2024-09-18T11:37:13.767",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Auditoria",
+      "kind": "sql-table",
+      "objectId": 1776933602,
+      "createDate": "2023-10-29T08:54:46.417",
+      "modifyDate": "2023-10-29T08:54:46.417",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega",
+      "kind": "sql-table",
+      "objectId": 1148583180,
+      "createDate": "2016-02-08T10:47:46.927",
+      "modifyDate": "2026-02-11T16:31:38.030",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_area",
+      "kind": "sql-table",
+      "objectId": 1927677915,
+      "createDate": "2015-10-27T15:16:05.893",
+      "modifyDate": "2024-02-01T14:25:38.990",
+      "rowCount": "18"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_monitor_parametro",
+      "kind": "sql-table",
+      "objectId": 1904113924,
+      "createDate": "2016-08-01T09:08:33.447",
+      "modifyDate": "2016-08-01T15:10:11.133",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_muelles",
+      "kind": "sql-table",
+      "objectId": 1319063835,
+      "createDate": "2016-06-28T09:12:42.340",
+      "modifyDate": "2024-07-02T12:29:25.603",
+      "rowCount": "8"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_orientacion_pos",
+      "kind": "sql-table",
+      "objectId": 2019642388,
+      "createDate": "2018-02-06T15:14:18.643",
+      "modifyDate": "2018-02-06T15:14:18.900",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_parametros",
+      "kind": "sql-table",
+      "objectId": 1726733304,
+      "createDate": "2017-05-04T09:33:17.417",
+      "modifyDate": "2017-05-04T09:33:17.417",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_sector",
+      "kind": "sql-table",
+      "objectId": 644197345,
+      "createDate": "2015-10-27T17:47:52.717",
+      "modifyDate": "2019-12-10T13:11:53.187",
+      "rowCount": "153"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_tramo",
+      "kind": "sql-table",
+      "objectId": 1109735156,
+      "createDate": "2018-06-01T22:07:53.690",
+      "modifyDate": "2021-10-26T22:59:41.657",
+      "rowCount": "171"
+    },
+    {
+      "schema": "dbo",
+      "name": "bodega_ubicacion",
+      "kind": "sql-table",
+      "objectId": 1429736296,
+      "createDate": "2018-06-03T13:36:11.103",
+      "modifyDate": "2024-07-02T12:29:25.583",
+      "rowCount": "9510"
+    },
+    {
+      "schema": "dbo",
+      "name": "camara",
+      "kind": "sql-table",
+      "objectId": 651201420,
+      "createDate": "2016-03-11T10:30:38.020",
+      "modifyDate": "2018-01-11T12:12:36",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "campaña",
+      "kind": "sql-table",
+      "objectId": 979026769,
+      "createDate": "2025-03-18T11:46:45.523",
+      "modifyDate": "2025-05-13T10:20:31.950",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "centro_costo",
+      "kind": "sql-table",
+      "objectId": 2009266413,
+      "createDate": "2022-05-12T09:06:56.240",
+      "modifyDate": "2024-09-12T08:28:06.067",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "CLBD",
+      "kind": "sql-sp",
+      "objectId": 716633696,
+      "createDate": "2016-08-04T12:07:57.393",
+      "modifyDate": "2016-08-04T12:07:57.393",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "CLBD_INICIARBD",
+      "kind": "sql-sp",
+      "objectId": 1614784960,
+      "createDate": "2018-07-24T15:52:23.130",
+      "modifyDate": "2018-09-18T11:00:08.623",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "CLBD_PRC",
+      "kind": "sql-sp",
+      "objectId": 994206692,
+      "createDate": "2017-03-23T13:59:17.730",
+      "modifyDate": "2018-09-27T00:17:05.430",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "CLBD_PRC_BY_IDBODEGA",
+      "kind": "sql-sp",
+      "objectId": 808546114,
+      "createDate": "2019-12-19T11:57:27.240",
+      "modifyDate": "2020-10-07T21:54:13.407",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "cliente",
+      "kind": "sql-table",
+      "objectId": 2145546827,
+      "createDate": "2017-10-27T09:16:15.203",
+      "modifyDate": "2025-09-04T12:46:26.027",
+      "rowCount": "1083"
+    },
+    {
+      "schema": "dbo",
+      "name": "cliente_bodega",
+      "kind": "sql-table",
+      "objectId": 828582040,
+      "createDate": "2016-02-05T18:48:48.587",
+      "modifyDate": "2024-09-12T08:29:35.977",
+      "rowCount": "3400"
+    },
+    {
+      "schema": "dbo",
+      "name": "cliente_direccion",
+      "kind": "sql-table",
+      "objectId": 190011808,
+      "createDate": "2016-05-27T11:36:21.470",
+      "modifyDate": "2022-12-17T09:39:30.823",
+      "rowCount": "5"
+    },
+    {
+      "schema": "dbo",
+      "name": "cliente_lotes",
+      "kind": "sql-table",
+      "objectId": 828074236,
+      "createDate": "2025-07-10T09:57:09.500",
+      "modifyDate": "2025-07-13T22:50:00.877",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "cliente_tiempos",
+      "kind": "sql-table",
+      "objectId": 1653632984,
+      "createDate": "2016-02-19T14:53:20.590",
+      "modifyDate": "2025-03-18T11:46:14.627",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "cliente_tipo",
+      "kind": "sql-table",
+      "objectId": 1844201620,
+      "createDate": "2015-10-27T18:05:44.230",
+      "modifyDate": "2017-10-27T09:16:15.290",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "cod_barra_clc",
+      "kind": "sql-table",
+      "objectId": 235304048,
+      "createDate": "2018-08-28T20:57:31.710",
+      "modifyDate": "2018-08-28T20:57:31.710",
+      "rowCount": "2432"
+    },
+    {
+      "schema": "dbo",
+      "name": "color",
+      "kind": "sql-table",
+      "objectId": 1139027339,
+      "createDate": "2025-03-18T11:47:13.310",
+      "modifyDate": "2025-05-13T10:20:31.957",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "Concurrencia",
+      "kind": "sql-sp",
+      "objectId": 792546057,
+      "createDate": "2019-12-19T07:58:20.920",
+      "modifyDate": "2019-12-19T07:58:20.920",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "configuracion_alias_campos",
+      "kind": "sql-table",
+      "objectId": 635357528,
+      "createDate": "2022-09-29T16:18:38.197",
+      "modifyDate": "2022-09-29T16:18:38.197",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "configuracion_barra_pallet",
+      "kind": "sql-table",
+      "objectId": 662449584,
+      "createDate": "2019-03-28T16:18:51.797",
+      "modifyDate": "2019-03-28T16:18:52.230",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "configuracion_qa",
+      "kind": "sql-table",
+      "objectId": 2100410752,
+      "createDate": "2023-10-05T16:38:53.253",
+      "modifyDate": "2023-10-05T16:38:53.393",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "configuracion_usuario_det",
+      "kind": "sql-table",
+      "objectId": 315356388,
+      "createDate": "2022-09-14T09:11:54.780",
+      "modifyDate": "2023-08-21T09:17:48.590",
+      "rowCount": "141"
+    },
+    {
+      "schema": "dbo",
+      "name": "configuracion_usuario_enc",
+      "kind": "sql-table",
+      "objectId": 1822837756,
+      "createDate": "2022-09-11T22:45:11.120",
+      "modifyDate": "2022-09-11T22:45:11.120",
+      "rowCount": "19"
+    },
+    {
+      "schema": "dbo",
+      "name": "Contacto",
+      "kind": "sql-table",
+      "objectId": 1728933431,
+      "createDate": "2023-10-29T08:54:46.413",
+      "modifyDate": "2023-10-29T08:54:46.413",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "contenedor",
+      "kind": "sql-table",
+      "objectId": 128107597,
+      "createDate": "2016-07-12T20:29:32.150",
+      "modifyDate": "2016-07-12T20:29:32.417",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "ConvertSecondsFormatoFecha",
+      "kind": "sql-fn",
+      "objectId": 289592270,
+      "createDate": "2020-10-07T22:20:43.457",
+      "modifyDate": "2024-09-12T08:48:41.283",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "dh_ocupacion_bodega",
+      "kind": "sql-table",
+      "objectId": 2101074721,
+      "createDate": "2020-04-20T13:59:19.220",
+      "modifyDate": "2023-08-21T09:17:57.553",
+      "rowCount": "8144"
+    },
+    {
+      "schema": "dbo",
+      "name": "diferencias_movimientos",
+      "kind": "sql-table",
+      "objectId": 593593353,
+      "createDate": "2020-10-07T22:21:56.190",
+      "modifyDate": "2020-10-07T22:21:56.190",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "empresa",
+      "kind": "sql-table",
+      "objectId": 5575058,
+      "createDate": "2014-06-19T11:10:01.157",
+      "modifyDate": "2023-10-05T16:38:53.377",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "empresa_transporte",
+      "kind": "sql-table",
+      "objectId": 80719340,
+      "createDate": "2015-10-27T18:08:04.293",
+      "modifyDate": "2021-05-28T00:08:59.830",
+      "rowCount": "18"
+    },
+    {
+      "schema": "dbo",
+      "name": "empresa_transporte_bodega",
+      "kind": "sql-table",
+      "objectId": 1924201905,
+      "createDate": "2015-10-27T18:07:52.167",
+      "modifyDate": "2016-02-08T10:47:53.157",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "empresa_transporte_pilotos",
+      "kind": "sql-table",
+      "objectId": 2108586600,
+      "createDate": "2016-02-09T08:27:45.837",
+      "modifyDate": "2021-05-28T00:14:10.937",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "empresa_transporte_vehiculos",
+      "kind": "sql-table",
+      "objectId": 2099590618,
+      "createDate": "2016-07-12T18:10:21.817",
+      "modifyDate": "2021-05-28T00:08:59.867",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "estilo",
+      "kind": "sql-table",
+      "objectId": 1235027681,
+      "createDate": "2025-03-18T11:47:46.417",
+      "modifyDate": "2025-05-13T10:20:31.937",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "estructura_grupo",
+      "kind": "sql-table",
+      "objectId": 647113496,
+      "createDate": "2018-01-15T10:52:37.010",
+      "modifyDate": "2023-08-21T09:18:16.817",
+      "rowCount": "238"
+    },
+    {
+      "schema": "dbo",
+      "name": "estructura_tramo",
+      "kind": "sql-table",
+      "objectId": 679113610,
+      "createDate": "2018-01-15T10:52:37.573",
+      "modifyDate": "2023-08-21T09:18:16.847",
+      "rowCount": "68"
+    },
+    {
+      "schema": "dbo",
+      "name": "estructura_ubicacion",
+      "kind": "sql-table",
+      "objectId": 711113724,
+      "createDate": "2018-01-15T10:52:37.663",
+      "modifyDate": "2019-09-02T09:33:03.973",
+      "rowCount": "1448"
+    },
+    {
+      "schema": "dbo",
+      "name": "fdias_Exterior_by_IdCliente",
+      "kind": "sql-fn",
+      "objectId": 3687261,
+      "createDate": "2021-09-16T16:16:30.640",
+      "modifyDate": "2023-09-12T04:16:12.450",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "fdias_locales_by_IdCliente",
+      "kind": "sql-fn",
+      "objectId": 2135170852,
+      "createDate": "2021-09-16T16:13:39.573",
+      "modifyDate": "2023-09-12T04:16:12.457",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "fn_diagramobjects",
+      "kind": "sql-fn",
+      "objectId": 549576996,
+      "createDate": "2014-06-19T11:27:34.937",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "font_det",
+      "kind": "sql-table",
+      "objectId": 1113875135,
+      "createDate": "2017-08-08T11:29:44.127",
+      "modifyDate": "2017-08-08T11:29:45.163",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "font_enc",
+      "kind": "sql-table",
+      "objectId": 909350404,
+      "createDate": "2017-08-03T09:17:09.797",
+      "modifyDate": "2017-08-04T08:43:37.790",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "Get_Codigo_Area_By_IdUbicacion",
+      "kind": "sql-fn",
+      "objectId": 678501696,
+      "createDate": "2024-09-12T08:30:31.630",
+      "modifyDate": "2024-09-12T08:30:31.630",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Get_Porcentaje_Avance_Pedido",
+      "kind": "sql-fn",
+      "objectId": 1725457421,
+      "createDate": "2024-02-01T14:18:59.793",
+      "modifyDate": "2024-02-01T14:18:59.793",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Get_Porcentaje_Avance_Picking",
+      "kind": "sql-fn",
+      "objectId": 1741457478,
+      "createDate": "2024-02-01T14:18:59.800",
+      "modifyDate": "2024-02-01T14:18:59.800",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Get_Ubicaciones_Vacias_By_IdTramo_And_IdBodega",
+      "kind": "sql-sp",
+      "objectId": 204735982,
+      "createDate": "2021-11-18T11:29:10.820",
+      "modifyDate": "2021-11-18T11:29:10.820",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "GetCantidadPesoByProductoBodega",
+      "kind": "sql-sp",
+      "objectId": 1534016596,
+      "createDate": "2016-06-06T10:52:10.363",
+      "modifyDate": "2016-06-16T09:32:33.313",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "GetListaStockByProductoBodega",
+      "kind": "sql-sp",
+      "objectId": 1966018135,
+      "createDate": "2016-06-08T03:41:10.860",
+      "modifyDate": "2016-06-17T12:04:18.357",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "GetResumenStockCantidad",
+      "kind": "sql-sp",
+      "objectId": 1896445880,
+      "createDate": "2016-05-19T10:47:24.100",
+      "modifyDate": "2017-10-02T08:04:14.047",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "horario_laboral_det",
+      "kind": "sql-table",
+      "objectId": 21679225,
+      "createDate": "2016-09-16T16:05:43.143",
+      "modifyDate": "2016-09-16T16:05:43.340",
+      "rowCount": "51"
+    },
+    {
+      "schema": "dbo",
+      "name": "horario_laboral_enc",
+      "kind": "sql-table",
+      "objectId": 2089162588,
+      "createDate": "2016-09-16T16:04:31.247",
+      "modifyDate": "2016-09-16T16:05:43.340",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_acuerdo",
+      "kind": "sql-table",
+      "objectId": 1089595120,
+      "createDate": "2021-05-28T00:07:24.600",
+      "modifyDate": "2021-08-25T10:58:53.187",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_acuerdo_det",
+      "kind": "sql-table",
+      "objectId": 1185595462,
+      "createDate": "2021-05-28T00:07:37.337",
+      "modifyDate": "2021-08-25T09:28:44.590",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_acuerdo_enc",
+      "kind": "sql-table",
+      "objectId": 634641504,
+      "createDate": "2021-08-25T10:58:54.667",
+      "modifyDate": "2021-08-25T10:58:54.667",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_barras_pallet",
+      "kind": "sql-table",
+      "objectId": 2077406620,
+      "createDate": "2018-11-14T16:26:42.560",
+      "modifyDate": "2025-05-05T19:01:50.413",
+      "rowCount": "1056"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_bodega",
+      "kind": "sql-table",
+      "objectId": 1953546143,
+      "createDate": "2017-10-27T09:13:22.170",
+      "modifyDate": "2017-10-27T09:13:22.863",
+      "rowCount": "8"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_cliente",
+      "kind": "sql-table",
+      "objectId": 1041594949,
+      "createDate": "2021-05-28T00:07:20.327",
+      "modifyDate": "2021-08-25T10:58:53.193",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_config_area_bodega",
+      "kind": "sql-table",
+      "objectId": 1901458048,
+      "createDate": "2024-02-01T14:23:36.747",
+      "modifyDate": "2024-02-01T14:23:36.747",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_config_det",
+      "kind": "sql-table",
+      "objectId": 1919450012,
+      "createDate": "2017-09-22T16:41:26.970",
+      "modifyDate": "2017-09-22T16:41:28.133",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_config_enc",
+      "kind": "sql-table",
+      "objectId": 1743449385,
+      "createDate": "2017-09-22T12:36:53.067",
+      "modifyDate": "2026-02-12T08:28:50.663",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_config_ent",
+      "kind": "sql-table",
+      "objectId": 959446592,
+      "createDate": "2017-09-19T16:01:27.047",
+      "modifyDate": "2017-09-19T16:05:42.937",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_config_producto_estado",
+      "kind": "sql-table",
+      "objectId": 592929384,
+      "createDate": "2023-10-16T18:16:42.760",
+      "modifyDate": "2023-10-16T18:16:42.760",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_conversion",
+      "kind": "sql-table",
+      "objectId": 734117856,
+      "createDate": "2021-05-28T00:24:57.943",
+      "modifyDate": "2021-05-28T00:24:57.943",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ejecucion_det_error",
+      "kind": "sql-table",
+      "objectId": 754257892,
+      "createDate": "2018-06-06T12:34:17.650",
+      "modifyDate": "2022-03-15T08:07:51.500",
+      "rowCount": "4021"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ejecucion_enc",
+      "kind": "sql-table",
+      "objectId": 1311447846,
+      "createDate": "2017-09-22T07:34:15.350",
+      "modifyDate": "2023-02-14T10:31:51.407",
+      "rowCount": "7762"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ejecucion_res",
+      "kind": "sql-table",
+      "objectId": 1279447732,
+      "createDate": "2017-09-22T07:34:09.353",
+      "modifyDate": "2023-02-14T10:31:51.380",
+      "rowCount": "7760"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ent",
+      "kind": "sql-table",
+      "objectId": 274920151,
+      "createDate": "2017-09-07T11:08:04.200",
+      "modifyDate": "2017-09-22T16:41:27.980",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ent_filtros",
+      "kind": "sql-table",
+      "objectId": 874590304,
+      "createDate": "2018-01-08T16:11:59.073",
+      "modifyDate": "2021-09-23T17:15:21.680",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ped_compra_det",
+      "kind": "sql-table",
+      "objectId": 1546592698,
+      "createDate": "2018-01-10T13:33:01.560",
+      "modifyDate": "2023-08-21T09:17:51.267",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ped_compra_det_lote",
+      "kind": "sql-table",
+      "objectId": 2121214757,
+      "createDate": "2018-05-14T13:01:03.073",
+      "modifyDate": "2022-07-18T11:27:34.663",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ped_compra_enc",
+      "kind": "sql-table",
+      "objectId": 1807501668,
+      "createDate": "2019-08-09T09:47:01.667",
+      "modifyDate": "2024-09-12T08:31:25.727",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ped_traslado_det",
+      "kind": "sql-table",
+      "objectId": 1858261825,
+      "createDate": "2018-06-14T11:34:22.793",
+      "modifyDate": "2025-03-18T11:46:28.290",
+      "rowCount": "14953"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ped_traslado_det_lote",
+      "kind": "sql-table",
+      "objectId": 649977592,
+      "createDate": "2024-07-02T12:21:26.490",
+      "modifyDate": "2024-07-02T12:21:26.490",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_ped_traslado_enc",
+      "kind": "sql-table",
+      "objectId": 782065972,
+      "createDate": "2017-11-06T08:31:58.440",
+      "modifyDate": "2025-06-11T07:33:43.343",
+      "rowCount": "4237"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_producto",
+      "kind": "sql-table",
+      "objectId": 1325455996,
+      "createDate": "2024-01-24T17:43:34.780",
+      "modifyDate": "2025-08-26T08:57:16.110",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_producto_presentacion",
+      "kind": "sql-table",
+      "objectId": 1097979188,
+      "createDate": "2024-07-02T12:24:36.523",
+      "modifyDate": "2024-07-02T12:24:36.523",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_proveedor",
+      "kind": "sql-table",
+      "objectId": 1005454856,
+      "createDate": "2024-01-24T17:21:56.550",
+      "modifyDate": "2024-01-24T17:21:56.920",
+      "rowCount": "1121"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_servicio",
+      "kind": "sql-table",
+      "objectId": 961594664,
+      "createDate": "2021-05-28T00:07:12.370",
+      "modifyDate": "2021-05-28T00:07:17.640",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_transacciones_out",
+      "kind": "sql-table",
+      "objectId": 1253071700,
+      "createDate": "2020-02-07T12:39:09.877",
+      "modifyDate": "2024-09-18T14:44:23.963",
+      "rowCount": "24193"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_transacciones_out_error",
+      "kind": "sql-table",
+      "objectId": 529593125,
+      "createDate": "2020-10-07T22:21:50.323",
+      "modifyDate": "2020-10-07T22:21:50.323",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "i_nav_transacciones_push",
+      "kind": "sql-table",
+      "objectId": 636737521,
+      "createDate": "2022-01-25T18:12:07.207",
+      "modifyDate": "2022-01-25T18:12:07.207",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "impresion_productos_barras",
+      "kind": "sql-table",
+      "objectId": 466972890,
+      "createDate": "2019-06-24T10:11:02.610",
+      "modifyDate": "2019-11-18T16:23:59.853",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "impresora",
+      "kind": "sql-table",
+      "objectId": 489156888,
+      "createDate": "2016-08-23T11:50:47.740",
+      "modifyDate": "2025-03-27T14:39:47.320",
+      "rowCount": "13"
+    },
+    {
+      "schema": "dbo",
+      "name": "Impresora_Lenguaje",
+      "kind": "sql-table",
+      "objectId": 569977307,
+      "createDate": "2024-07-02T12:19:42.543",
+      "modifyDate": "2024-07-02T12:19:42.543",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "Impresora_Marca",
+      "kind": "sql-table",
+      "objectId": 537977193,
+      "createDate": "2024-07-02T12:19:35.467",
+      "modifyDate": "2024-07-02T12:19:35.467",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "impresora_mensaje",
+      "kind": "sql-table",
+      "objectId": 1987030360,
+      "createDate": "2025-03-27T14:39:42.067",
+      "modifyDate": "2025-03-27T14:39:47.323",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "Impresora_Tipo_Conexion",
+      "kind": "sql-table",
+      "objectId": 601977421,
+      "createDate": "2024-07-02T12:19:49.447",
+      "modifyDate": "2024-07-02T12:19:49.447",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "indicador_det",
+      "kind": "sql-table",
+      "objectId": 2071886648,
+      "createDate": "2023-06-18T22:25:20.827",
+      "modifyDate": "2023-06-18T22:25:20.827",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "indicador_enc",
+      "kind": "sql-table",
+      "objectId": 2039886534,
+      "createDate": "2023-06-18T22:24:19.143",
+      "modifyDate": "2023-06-18T22:24:19.143",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "indice_rotacion",
+      "kind": "sql-table",
+      "objectId": 1351779973,
+      "createDate": "2017-07-14T09:13:39.853",
+      "modifyDate": "2018-01-11T12:12:36.060",
+      "rowCount": "5"
+    },
+    {
+      "schema": "dbo",
+      "name": "Infraestructura",
+      "kind": "sql-table",
+      "objectId": 1632933089,
+      "createDate": "2023-10-29T08:54:46.407",
+      "modifyDate": "2023-10-29T08:54:46.407",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "interface_enc",
+      "kind": "sql-table",
+      "objectId": 1396304134,
+      "createDate": "2017-07-26T12:42:28.973",
+      "modifyDate": "2017-07-26T12:42:29.237",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "Inv_SAP",
+      "kind": "sql-table",
+      "objectId": 2111554806,
+      "createDate": "2025-06-02T22:48:34.107",
+      "modifyDate": "2025-06-02T22:48:34.107",
+      "rowCount": "265"
+    },
+    {
+      "schema": "dbo",
+      "name": "Inv_WMS",
+      "kind": "sql-table",
+      "objectId": 2127554863,
+      "createDate": "2025-06-02T22:53:06.417",
+      "modifyDate": "2025-06-02T22:53:06.417",
+      "rowCount": "244"
+    },
+    {
+      "schema": "dbo",
+      "name": "jornada_laboral",
+      "kind": "sql-table",
+      "objectId": 1763589421,
+      "createDate": "2016-07-12T11:56:23.010",
+      "modifyDate": "2023-05-18T22:36:14.943",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "jornada_sistema",
+      "kind": "sql-table",
+      "objectId": 254116146,
+      "createDate": "2021-05-28T00:13:56.327",
+      "modifyDate": "2021-05-28T00:13:56.327",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "licencia_item",
+      "kind": "sql-table",
+      "objectId": 462064832,
+      "createDate": "2017-11-03T13:25:57.320",
+      "modifyDate": "2022-12-17T09:39:31.177",
+      "rowCount": "23"
+    },
+    {
+      "schema": "dbo",
+      "name": "licencia_llave",
+      "kind": "sql-table",
+      "objectId": 254064091,
+      "createDate": "2017-10-31T14:11:53.673",
+      "modifyDate": "2017-10-31T14:11:54.150",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "licencia_login",
+      "kind": "sql-table",
+      "objectId": 190063863,
+      "createDate": "2017-10-31T14:11:35.560",
+      "modifyDate": "2023-08-21T09:18:16.793",
+      "rowCount": "38"
+    },
+    {
+      "schema": "dbo",
+      "name": "licencia_solic",
+      "kind": "sql-table",
+      "objectId": 222063977,
+      "createDate": "2017-10-31T14:11:35.597",
+      "modifyDate": "2022-01-21T00:57:50.843",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "licencias_pendientes_retroactivo",
+      "kind": "sql-table",
+      "objectId": 1367884140,
+      "createDate": "2023-04-17T20:05:00.057",
+      "modifyDate": "2023-04-17T20:05:00.057",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "log_error_wms",
+      "kind": "sql-table",
+      "objectId": 188071956,
+      "createDate": "2025-06-12T10:06:15.280",
+      "modifyDate": "2025-06-12T10:06:15.490",
+      "rowCount": "66339"
+    },
+    {
+      "schema": "dbo",
+      "name": "log_importacion_excel",
+      "kind": "sql-table",
+      "objectId": 1593264931,
+      "createDate": "2022-05-06T15:20:46.033",
+      "modifyDate": "2022-05-06T15:20:46.033",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "marcaje",
+      "kind": "sql-table",
+      "objectId": 481592954,
+      "createDate": "2020-10-07T22:21:46.020",
+      "modifyDate": "2022-12-17T09:39:31.193",
+      "rowCount": "3701"
+    },
+    {
+      "schema": "dbo",
+      "name": "mensaje_regla",
+      "kind": "sql-table",
+      "objectId": 896110333,
+      "createDate": "2016-07-21T10:00:14.920",
+      "modifyDate": "2016-07-22T10:06:59.247",
+      "rowCount": "10"
+    },
+    {
+      "schema": "dbo",
+      "name": "menu_rol",
+      "kind": "sql-table",
+      "objectId": 1695449214,
+      "createDate": "2017-09-22T10:44:23.720",
+      "modifyDate": "2024-07-02T12:27:52.620",
+      "rowCount": "863"
+    },
+    {
+      "schema": "dbo",
+      "name": "menu_rol_op",
+      "kind": "sql-table",
+      "objectId": 1503396475,
+      "createDate": "2016-05-06T09:02:06.957",
+      "modifyDate": "2023-08-21T09:18:17.073",
+      "rowCount": "187"
+    },
+    {
+      "schema": "dbo",
+      "name": "menu_sistema",
+      "kind": "sql-table",
+      "objectId": 1535396589,
+      "createDate": "2016-05-06T09:07:45.240",
+      "modifyDate": "2023-08-21T09:18:17.083",
+      "rowCount": "289"
+    },
+    {
+      "schema": "dbo",
+      "name": "menu_sistema_op",
+      "kind": "sql-table",
+      "objectId": 1449160308,
+      "createDate": "2016-09-12T11:35:30.197",
+      "modifyDate": "2016-09-12T11:42:01.740",
+      "rowCount": "19"
+    },
+    {
+      "schema": "dbo",
+      "name": "montacarga",
+      "kind": "sql-table",
+      "objectId": 1298871744,
+      "createDate": "2016-04-29T14:05:41.737",
+      "modifyDate": "2022-06-13T22:21:29.633",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "montacarga_bodega",
+      "kind": "sql-table",
+      "objectId": 2086350547,
+      "createDate": "2016-04-25T11:11:15.123",
+      "modifyDate": "2016-04-25T11:11:15.537",
+      "rowCount": "8"
+    },
+    {
+      "schema": "dbo",
+      "name": "montacarga_servicio_enc",
+      "kind": "sql-table",
+      "objectId": 50867298,
+      "createDate": "2016-04-25T11:18:52.083",
+      "modifyDate": "2016-04-25T11:18:53.203",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "montacarga_tipoFalla",
+      "kind": "sql-table",
+      "objectId": 751393796,
+      "createDate": "2016-05-03T09:23:28.403",
+      "modifyDate": "2016-05-03T09:23:29.487",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "motivo_anulacion",
+      "kind": "sql-table",
+      "objectId": 2066158456,
+      "createDate": "2016-03-07T13:45:52.567",
+      "modifyDate": "2016-03-07T13:46:51.343",
+      "rowCount": "16"
+    },
+    {
+      "schema": "dbo",
+      "name": "motivo_anulacion_bodega",
+      "kind": "sql-table",
+      "objectId": 893246237,
+      "createDate": "2015-10-27T18:39:25.510",
+      "modifyDate": "2016-03-07T13:45:53.413",
+      "rowCount": "25"
+    },
+    {
+      "schema": "dbo",
+      "name": "motivo_devolucion",
+      "kind": "sql-table",
+      "objectId": 634537394,
+      "createDate": "2016-06-10T10:57:11.027",
+      "modifyDate": "2018-04-12T12:13:16.813",
+      "rowCount": "12"
+    },
+    {
+      "schema": "dbo",
+      "name": "motivo_devolucion_bodega",
+      "kind": "sql-table",
+      "objectId": 1149247149,
+      "createDate": "2015-10-27T18:42:29.380",
+      "modifyDate": "2016-06-10T10:57:29.993",
+      "rowCount": "12"
+    },
+    {
+      "schema": "dbo",
+      "name": "motivo_ubicacion",
+      "kind": "sql-table",
+      "objectId": 1711397216,
+      "createDate": "2016-05-06T16:35:47.237",
+      "modifyDate": "2016-05-06T16:42:10.330",
+      "rowCount": "12"
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Area",
+      "kind": "sql-fn",
+      "objectId": 796738091,
+      "createDate": "2022-02-18T00:24:51.247",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion",
+      "kind": "sql-fn",
+      "objectId": 273592213,
+      "createDate": "2020-10-07T21:54:52.270",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_1",
+      "kind": "sql-fn",
+      "objectId": 1744217464,
+      "createDate": "2021-11-08T00:17:45.880",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_2",
+      "kind": "sql-fn",
+      "objectId": 1728217407,
+      "createDate": "2021-11-08T00:15:15.540",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_3",
+      "kind": "sql-fn",
+      "objectId": 1792217635,
+      "createDate": "2021-11-08T00:36:48.160",
+      "modifyDate": "2023-09-12T04:16:12.457",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_Barra",
+      "kind": "sql-fn",
+      "objectId": 353592498,
+      "createDate": "2020-10-07T22:21:15.313",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_Barra_1",
+      "kind": "sql-fn",
+      "objectId": 1760217521,
+      "createDate": "2021-11-08T00:18:04.657",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_Barra_2",
+      "kind": "sql-fn",
+      "objectId": 1712217350,
+      "createDate": "2021-11-08T00:14:52.620",
+      "modifyDate": "2023-09-12T04:16:12.453",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Completo_Ubicacion_Barra_3",
+      "kind": "sql-fn",
+      "objectId": 1776217578,
+      "createDate": "2021-11-08T00:35:20.400",
+      "modifyDate": "2023-09-12T04:16:12.457",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Nombre_Tramo",
+      "kind": "sql-fn",
+      "objectId": 2053790574,
+      "createDate": "2022-06-12T01:16:32.323",
+      "modifyDate": "2023-09-12T04:16:12.457",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "operador",
+      "kind": "sql-table",
+      "objectId": 224107939,
+      "createDate": "2016-07-15T15:22:38.273",
+      "modifyDate": "2024-02-01T14:27:44.770",
+      "rowCount": "18"
+    },
+    {
+      "schema": "dbo",
+      "name": "operador_bodega",
+      "kind": "sql-table",
+      "objectId": 1773249372,
+      "createDate": "2015-10-27T21:41:36.117",
+      "modifyDate": "2021-05-28T00:23:20.350",
+      "rowCount": "84"
+    },
+    {
+      "schema": "dbo",
+      "name": "operador_jornada_laboral",
+      "kind": "sql-table",
+      "objectId": 1751885508,
+      "createDate": "2023-05-18T22:36:14.843",
+      "modifyDate": "2023-05-18T22:36:14.997",
+      "rowCount": "58"
+    },
+    {
+      "schema": "dbo",
+      "name": "operador_montacarga",
+      "kind": "sql-table",
+      "objectId": 2133790859,
+      "createDate": "2022-06-13T22:41:11.280",
+      "modifyDate": "2022-06-13T22:41:11.280",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "operador_zona_picking_tramo",
+      "kind": "sql-table",
+      "objectId": 1653789149,
+      "createDate": "2022-06-03T09:40:06.537",
+      "modifyDate": "2022-06-13T15:25:43.213",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "Organizacion",
+      "kind": "sql-table",
+      "objectId": 1680933260,
+      "createDate": "2023-10-29T08:54:46.410",
+      "modifyDate": "2023-10-29T08:54:46.410",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "p_parametro",
+      "kind": "sql-table",
+      "objectId": 223339860,
+      "createDate": "2015-11-16T10:13:42.620",
+      "modifyDate": "2017-07-13T11:23:57.800",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "pais_departamento",
+      "kind": "sql-table",
+      "objectId": 1169491295,
+      "createDate": "2016-05-27T09:01:14.637",
+      "modifyDate": "2016-05-27T09:43:54.903",
+      "rowCount": "69"
+    },
+    {
+      "schema": "dbo",
+      "name": "pais_municipio",
+      "kind": "sql-table",
+      "objectId": 1217491466,
+      "createDate": "2016-05-27T09:03:24.073",
+      "modifyDate": "2023-08-21T09:18:16.973",
+      "rowCount": "401"
+    },
+    {
+      "schema": "dbo",
+      "name": "pais_region",
+      "kind": "sql-table",
+      "objectId": 1441492264,
+      "createDate": "2016-05-27T09:04:50.527",
+      "modifyDate": "2016-05-27T11:36:22.500",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "paises",
+      "kind": "sql-table",
+      "objectId": 258099960,
+      "createDate": "2014-06-20T12:29:36.800",
+      "modifyDate": "2016-05-27T09:43:53.857",
+      "rowCount": "37"
+    },
+    {
+      "schema": "dbo",
+      "name": "perfil_serializado",
+      "kind": "sql-table",
+      "objectId": 857106144,
+      "createDate": "2016-02-10T10:06:02.203",
+      "modifyDate": "2018-01-11T12:12:35.990",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto",
+      "kind": "sql-table",
+      "objectId": 1834593724,
+      "createDate": "2018-01-11T12:12:34.430",
+      "modifyDate": "2025-05-13T10:20:31.953",
+      "rowCount": "319"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_bodega",
+      "kind": "sql-table",
+      "objectId": 905770284,
+      "createDate": "2015-10-27T21:47:41.730",
+      "modifyDate": "2024-07-02T12:22:17.497",
+      "rowCount": "1914"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_clasificacion",
+      "kind": "sql-table",
+      "objectId": 1605580758,
+      "createDate": "2014-06-19T12:22:50.330",
+      "modifyDate": "2024-02-01T14:26:06.990",
+      "rowCount": "28"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_clasificacion_etiqueta",
+      "kind": "sql-table",
+      "objectId": 1677457250,
+      "createDate": "2024-02-01T14:18:42.417",
+      "modifyDate": "2024-02-01T14:18:48.290",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_codigos_barra",
+      "kind": "sql-table",
+      "objectId": 201155862,
+      "createDate": "2016-08-17T12:07:00.593",
+      "modifyDate": "2022-06-22T16:28:58.920",
+      "rowCount": "310"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_estado",
+      "kind": "sql-table",
+      "objectId": 2041826386,
+      "createDate": "2016-04-21T20:08:35.867",
+      "modifyDate": "2025-02-11T23:32:33.383",
+      "rowCount": "18"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_estado_ubic",
+      "kind": "sql-table",
+      "objectId": 1861685780,
+      "createDate": "2016-11-10T11:21:10.500",
+      "modifyDate": "2019-11-20T08:25:43.380",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_familia",
+      "kind": "sql-table",
+      "objectId": 3531096,
+      "createDate": "2016-01-12T07:24:21.743",
+      "modifyDate": "2024-02-01T14:26:06.990",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_imagen",
+      "kind": "sql-table",
+      "objectId": 988738775,
+      "createDate": "2022-03-18T10:48:41.383",
+      "modifyDate": "2022-03-18T10:48:41.383",
+      "rowCount": "9"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_kit_composicion",
+      "kind": "sql-table",
+      "objectId": 625593467,
+      "createDate": "2020-10-07T22:22:11.250",
+      "modifyDate": "2020-10-07T22:22:15.987",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_marca",
+      "kind": "sql-table",
+      "objectId": 323532236,
+      "createDate": "2016-01-12T12:08:52.233",
+      "modifyDate": "2024-07-02T12:25:21.527",
+      "rowCount": "16"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_pallet",
+      "kind": "sql-table",
+      "objectId": 1222347469,
+      "createDate": "2016-04-22T15:12:05.267",
+      "modifyDate": "2023-02-14T10:31:51.337",
+      "rowCount": "61"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_pallet_rec",
+      "kind": "sql-table",
+      "objectId": 512161020,
+      "createDate": "2018-02-24T12:40:24.303",
+      "modifyDate": "2018-02-24T12:40:24.303",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_parametro_a",
+      "kind": "sql-table",
+      "objectId": 1762313538,
+      "createDate": "2022-06-30T18:24:57.127",
+      "modifyDate": "2022-06-30T18:24:57.193",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_parametro_b",
+      "kind": "sql-table",
+      "objectId": 1794313652,
+      "createDate": "2022-06-30T18:24:57.267",
+      "modifyDate": "2022-06-30T18:24:57.333",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_parametros",
+      "kind": "sql-table",
+      "objectId": 631777408,
+      "createDate": "2017-07-13T11:23:55.700",
+      "modifyDate": "2018-01-22T22:18:44.180",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_presentacion",
+      "kind": "sql-table",
+      "objectId": 1447064291,
+      "createDate": "2016-06-29T14:31:23.627",
+      "modifyDate": "2025-02-11T23:41:27.580",
+      "rowCount": "295"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_presentacion_bk",
+      "kind": "sql-table",
+      "objectId": 1957790232,
+      "createDate": "2022-06-07T16:41:33.927",
+      "modifyDate": "2022-06-07T16:41:33.927",
+      "rowCount": "8630"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_presentacion_tarima",
+      "kind": "sql-table",
+      "objectId": 219251936,
+      "createDate": "2017-05-30T14:22:21.053",
+      "modifyDate": "2017-05-30T14:24:54.737",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_presentaciones_conversiones",
+      "kind": "sql-table",
+      "objectId": 998294616,
+      "createDate": "2015-10-28T22:51:06.437",
+      "modifyDate": "2018-01-22T22:18:44.200",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_rellenado",
+      "kind": "sql-table",
+      "objectId": 675585545,
+      "createDate": "2016-07-07T12:28:45.477",
+      "modifyDate": "2021-11-19T17:00:43.520",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_subtarea",
+      "kind": "sql-table",
+      "objectId": 1280931835,
+      "createDate": "2023-10-23T11:44:12.633",
+      "modifyDate": "2023-10-23T11:44:12.767",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_subtarea_tipo",
+      "kind": "sql-table",
+      "objectId": 1216931607,
+      "createDate": "2023-10-23T11:18:12.393",
+      "modifyDate": "2023-10-23T11:44:12.760",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_sustituto",
+      "kind": "sql-table",
+      "objectId": 94675435,
+      "createDate": "2016-03-07T14:40:30.317",
+      "modifyDate": "2018-01-22T22:18:44.227",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_talla_color",
+      "kind": "sql-table",
+      "objectId": 1375552184,
+      "createDate": "2025-05-13T10:20:31.943",
+      "modifyDate": "2025-05-13T10:20:31.960",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "producto_tipo",
+      "kind": "sql-table",
+      "objectId": 1893581784,
+      "createDate": "2014-06-19T12:34:30.770",
+      "modifyDate": "2022-12-17T09:39:33.190",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "propietario_bodega",
+      "kind": "sql-table",
+      "objectId": 1333631844,
+      "createDate": "2016-02-19T09:12:45.637",
+      "modifyDate": "2024-09-12T08:29:35.970",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "propietario_destinatario",
+      "kind": "sql-table",
+      "objectId": 784109934,
+      "createDate": "2016-07-21T09:12:28.280",
+      "modifyDate": "2016-07-25T08:35:57.673",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "propietario_reglas_det",
+      "kind": "sql-table",
+      "objectId": 864110219,
+      "createDate": "2016-07-21T09:40:44.013",
+      "modifyDate": "2016-07-22T10:07:03.980",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "propietario_reglas_enc",
+      "kind": "sql-table",
+      "objectId": 832110105,
+      "createDate": "2016-07-21T09:23:33.653",
+      "modifyDate": "2016-08-23T16:24:24.120",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "propietarios",
+      "kind": "sql-table",
+      "objectId": 1188251338,
+      "createDate": "2016-04-05T11:19:06.623",
+      "modifyDate": "2025-08-01T11:58:02.650",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "Propuesta",
+      "kind": "sql-table",
+      "objectId": 1584932918,
+      "createDate": "2023-10-29T08:54:46.403",
+      "modifyDate": "2023-10-29T08:54:46.403",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "Prospecto",
+      "kind": "sql-table",
+      "objectId": 1552932804,
+      "createDate": "2023-10-29T08:54:46.397",
+      "modifyDate": "2023-10-29T08:54:46.417",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "proveedor",
+      "kind": "sql-table",
+      "objectId": 774397928,
+      "createDate": "2017-08-21T15:01:19.087",
+      "modifyDate": "2025-06-09T21:46:46.963",
+      "rowCount": "1386"
+    },
+    {
+      "schema": "dbo",
+      "name": "proveedor_bodega",
+      "kind": "sql-table",
+      "objectId": 1449772222,
+      "createDate": "2015-10-27T22:02:58.550",
+      "modifyDate": "2024-02-01T14:25:38.973",
+      "rowCount": "4594"
+    },
+    {
+      "schema": "dbo",
+      "name": "proveedor_tiempos",
+      "kind": "sql-table",
+      "objectId": 928930581,
+      "createDate": "2023-10-23T09:06:10.627",
+      "modifyDate": "2023-10-23T09:06:10.637",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regimen_fiscal",
+      "kind": "sql-table",
+      "objectId": 1217595576,
+      "createDate": "2021-05-28T00:07:44.430",
+      "modifyDate": "2021-05-28T00:07:44.430",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_det_ir",
+      "kind": "sql-table",
+      "objectId": 1111779118,
+      "createDate": "2017-07-13T11:36:56.653",
+      "modifyDate": "2017-07-14T09:13:42.140",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_det_pe",
+      "kind": "sql-table",
+      "objectId": 1031778833,
+      "createDate": "2017-07-13T11:36:30.593",
+      "modifyDate": "2017-07-13T11:36:31.017",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_det_pp",
+      "kind": "sql-table",
+      "objectId": 967778605,
+      "createDate": "2017-07-13T11:36:06.110",
+      "modifyDate": "2017-07-13T11:36:06.533",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_det_prop",
+      "kind": "sql-table",
+      "objectId": 903778377,
+      "createDate": "2017-07-13T11:35:49.033",
+      "modifyDate": "2017-07-13T11:35:49.463",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_det_tp",
+      "kind": "sql-table",
+      "objectId": 839778149,
+      "createDate": "2017-07-13T11:35:01.943",
+      "modifyDate": "2017-07-13T11:35:02.430",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_det_tr",
+      "kind": "sql-table",
+      "objectId": 775777921,
+      "createDate": "2017-07-13T11:34:37.107",
+      "modifyDate": "2017-07-14T08:57:33.030",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_enc",
+      "kind": "sql-table",
+      "objectId": 743777807,
+      "createDate": "2017-07-13T11:33:15.647",
+      "modifyDate": "2017-07-13T11:37:43.907",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_prio_det",
+      "kind": "sql-table",
+      "objectId": 745873824,
+      "createDate": "2017-08-06T01:07:05.557",
+      "modifyDate": "2017-08-06T01:07:06.330",
+      "rowCount": "9"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_prio_enc",
+      "kind": "sql-table",
+      "objectId": 41871316,
+      "createDate": "2017-08-05T23:23:54.147",
+      "modifyDate": "2017-08-05T23:27:46.517",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_prio_param",
+      "kind": "sql-table",
+      "objectId": 681873596,
+      "createDate": "2017-08-06T00:07:42.880",
+      "modifyDate": "2017-08-06T00:07:51.640",
+      "rowCount": "9"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_prio_producto",
+      "kind": "sql-table",
+      "objectId": 361872456,
+      "createDate": "2017-08-05T23:29:26.323",
+      "modifyDate": "2017-08-07T15:28:37.617",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_sel",
+      "kind": "sql-table",
+      "objectId": 269348124,
+      "createDate": "2017-08-01T14:45:42.183",
+      "modifyDate": "2017-08-07T14:05:30.687",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_sel_det",
+      "kind": "sql-table",
+      "objectId": 1060302937,
+      "createDate": "2017-07-24T10:10:00.353",
+      "modifyDate": "2017-08-07T14:05:45.323",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_sel_enc",
+      "kind": "sql-table",
+      "objectId": 740301797,
+      "createDate": "2017-07-21T08:26:08.330",
+      "modifyDate": "2017-08-07T14:05:54.280",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubic_sel_item",
+      "kind": "sql-table",
+      "objectId": 1229351544,
+      "createDate": "2017-08-03T10:39:59.780",
+      "modifyDate": "2017-08-07T14:06:02.187",
+      "rowCount": "9"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_ubicacion",
+      "kind": "sql-table",
+      "objectId": 1175779346,
+      "createDate": "2017-07-13T11:37:43.250",
+      "modifyDate": "2020-02-04T18:32:30.640",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "regla_vencimiento",
+      "kind": "sql-table",
+      "objectId": 2045458561,
+      "createDate": "2024-02-01T14:26:06.983",
+      "modifyDate": "2024-02-01T14:26:16.053",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "reglas_recepcion",
+      "kind": "sql-table",
+      "objectId": 1120111131,
+      "createDate": "2016-07-25T11:11:53.507",
+      "modifyDate": "2016-07-28T14:48:02.890",
+      "rowCount": "7"
+    },
+    {
+      "schema": "dbo",
+      "name": "reglas_vencimiento_contacto",
+      "kind": "sql-table",
+      "objectId": 25975369,
+      "createDate": "2024-02-01T14:26:16.050",
+      "modifyDate": "2024-02-01T14:26:16.050",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "resolucion_lp_operador",
+      "kind": "sql-table",
+      "objectId": 1006118825,
+      "createDate": "2021-05-28T00:29:58.277",
+      "modifyDate": "2021-05-28T00:29:58.277",
+      "rowCount": "67"
+    },
+    {
+      "schema": "dbo",
+      "name": "resolucion_lp_usuario",
+      "kind": "sql-table",
+      "objectId": 1161979416,
+      "createDate": "2024-07-02T12:25:09.230",
+      "modifyDate": "2024-07-02T12:25:09.230",
+      "rowCount": "24"
+    },
+    {
+      "schema": "dbo",
+      "name": "Resources",
+      "kind": "sql-table",
+      "objectId": 1064442916,
+      "createDate": "2016-05-18T11:48:49.603",
+      "modifyDate": "2016-05-18T11:48:49.603",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "resultado_aplica_reservado",
+      "kind": "sql-table",
+      "objectId": 797402060,
+      "createDate": "2018-10-09T01:19:30.787",
+      "modifyDate": "2018-10-09T01:19:30.787",
+      "rowCount": "275"
+    },
+    {
+      "schema": "dbo",
+      "name": "road_p_vendedor",
+      "kind": "sql-table",
+      "objectId": 431392656,
+      "createDate": "2016-05-02T11:12:44.783",
+      "modifyDate": "2016-05-02T11:12:46.897",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "road_ruta",
+      "kind": "sql-table",
+      "objectId": 1409440095,
+      "createDate": "2015-11-23T15:13:11.657",
+      "modifyDate": "2016-10-26T14:40:53.477",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "rol",
+      "kind": "sql-table",
+      "objectId": 1040722760,
+      "createDate": "2015-10-27T18:17:37.763",
+      "modifyDate": "2018-01-19T15:47:13.870",
+      "rowCount": "8"
+    },
+    {
+      "schema": "dbo",
+      "name": "rol_bodega",
+      "kind": "sql-table",
+      "objectId": 1360723900,
+      "createDate": "2015-10-27T18:21:29.447",
+      "modifyDate": "2016-04-25T10:54:53.910",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "rol_menu",
+      "kind": "sql-table",
+      "objectId": 1567396703,
+      "createDate": "2016-05-06T09:07:48.723",
+      "modifyDate": "2016-05-06T09:07:50.003",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "rol_operador",
+      "kind": "sql-table",
+      "objectId": 1670349065,
+      "createDate": "2016-04-25T10:24:14.493",
+      "modifyDate": "2016-09-12T11:42:01.743",
+      "rowCount": "14"
+    },
+    {
+      "schema": "dbo",
+      "name": "rol_usuario_estado",
+      "kind": "sql-table",
+      "objectId": 19023349,
+      "createDate": "2024-10-28T22:34:39.197",
+      "modifyDate": "2024-10-28T22:34:39.197",
+      "rowCount": "14"
+    },
+    {
+      "schema": "dbo",
+      "name": "SET_CLIENTES_REC",
+      "kind": "sql-sp",
+      "objectId": 1772689513,
+      "createDate": "2018-04-13T09:59:42.657",
+      "modifyDate": "2018-04-13T09:59:42.657",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "simbologias_codigo_barra",
+      "kind": "sql-table",
+      "objectId": 62675321,
+      "createDate": "2016-03-07T14:04:07.973",
+      "modifyDate": "2018-01-11T12:12:35.993",
+      "rowCount": "9"
+    },
+    {
+      "schema": "dbo",
+      "name": "sis_estado_tarea_hh",
+      "kind": "sql-table",
+      "objectId": 58535342,
+      "createDate": "2016-06-08T14:49:49.977",
+      "modifyDate": "2016-06-08T14:56:11.867",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "sis_obs_log",
+      "kind": "sql-table",
+      "objectId": 1687065146,
+      "createDate": "2016-06-30T15:32:15.703",
+      "modifyDate": "2016-07-06T12:12:24.137",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "sis_prioridad_tarea_hh",
+      "kind": "sql-table",
+      "objectId": 90535456,
+      "createDate": "2016-06-08T14:50:38.787",
+      "modifyDate": "2016-06-08T14:56:11.990",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "sis_tipo_accion",
+      "kind": "sql-table",
+      "objectId": 1658541042,
+      "createDate": "2016-06-14T11:28:31.600",
+      "modifyDate": "2016-07-07T12:28:46.523",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "sis_tipo_tarea",
+      "kind": "sql-table",
+      "objectId": 1912445937,
+      "createDate": "2016-05-19T14:17:21.073",
+      "modifyDate": "2016-09-12T11:37:51.340",
+      "rowCount": "35"
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_AllNightLog",
+      "kind": "sql-sp",
+      "objectId": 1384548166,
+      "createDate": "2020-01-16T08:11:28.483",
+      "modifyDate": "2020-01-16T08:11:28.483",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_AllNightLog_Setup",
+      "kind": "sql-sp",
+      "objectId": 1400548223,
+      "createDate": "2020-01-16T08:11:28.543",
+      "modifyDate": "2020-01-16T08:11:28.630",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_alterdiagram",
+      "kind": "sql-sp",
+      "objectId": 517576882,
+      "createDate": "2014-06-19T11:27:34.933",
+      "modifyDate": "2015-10-04T19:56:52.613",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_Blitz",
+      "kind": "sql-sp",
+      "objectId": 1416548280,
+      "createDate": "2020-01-16T08:11:28.633",
+      "modifyDate": "2020-01-16T08:36:59.280",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_BlitzBackups",
+      "kind": "sql-sp",
+      "objectId": 1432548337,
+      "createDate": "2020-01-16T08:11:29.337",
+      "modifyDate": "2020-01-16T08:11:29.430",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_BlitzCache",
+      "kind": "sql-sp",
+      "objectId": 1368548109,
+      "createDate": "2020-01-16T07:51:10.810",
+      "modifyDate": "2020-01-16T08:11:30.060",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_BlitzFirst",
+      "kind": "sql-sp",
+      "objectId": 1448548394,
+      "createDate": "2020-01-16T08:11:30.080",
+      "modifyDate": "2020-01-16T08:17:05.503",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_BlitzIndex",
+      "kind": "sql-sp",
+      "objectId": 1464548451,
+      "createDate": "2020-01-16T08:11:30.590",
+      "modifyDate": "2020-01-16T08:20:44.533",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_BlitzLock",
+      "kind": "sql-sp",
+      "objectId": 1480548508,
+      "createDate": "2020-01-16T08:11:31.077",
+      "modifyDate": "2020-01-16T08:11:31.193",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_BlitzWho",
+      "kind": "sql-sp",
+      "objectId": 1496548565,
+      "createDate": "2020-01-16T08:11:31.577",
+      "modifyDate": "2020-01-16T08:11:31.617",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "SP_Cambia_Collate",
+      "kind": "sql-sp",
+      "objectId": 107303592,
+      "createDate": "2018-08-28T20:46:55.973",
+      "modifyDate": "2018-08-28T20:46:55.973",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_creatediagram",
+      "kind": "sql-sp",
+      "objectId": 485576768,
+      "createDate": "2014-06-19T11:27:34.933",
+      "modifyDate": "2015-10-04T19:56:52.613",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_DatabaseRestore",
+      "kind": "sql-sp",
+      "objectId": 1512548622,
+      "createDate": "2020-01-16T08:11:31.623",
+      "modifyDate": "2020-01-16T08:11:31.757",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_dropdiagram",
+      "kind": "sql-sp",
+      "objectId": 533576939,
+      "createDate": "2014-06-19T11:27:34.933",
+      "modifyDate": "2015-10-04T19:56:52.613",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_eliminar_by_Referencia",
+      "kind": "sql-sp",
+      "objectId": 73975540,
+      "createDate": "2024-02-01T14:26:25.790",
+      "modifyDate": "2024-02-01T14:26:25.790",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_foreachdb",
+      "kind": "sql-sp",
+      "objectId": 1528548679,
+      "createDate": "2020-01-16T08:11:31.797",
+      "modifyDate": "2020-01-16T08:11:31.827",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "Sp_Get_Table_Size",
+      "kind": "sql-view",
+      "objectId": 500405052,
+      "createDate": "2023-08-15T20:59:29.843",
+      "modifyDate": "2023-08-15T20:59:29.843",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_helpdiagramdefinition",
+      "kind": "sql-sp",
+      "objectId": 469576711,
+      "createDate": "2014-06-19T11:27:34.907",
+      "modifyDate": "2015-10-04T19:56:52.597",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_helpdiagrams",
+      "kind": "sql-sp",
+      "objectId": 453576654,
+      "createDate": "2014-06-19T11:27:34.877",
+      "modifyDate": "2015-10-04T19:56:52.597",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "SP_Importa_Stock_Bodegas_General_y_Dañado",
+      "kind": "sql-sp",
+      "objectId": 123303649,
+      "createDate": "2018-08-28T20:56:13.140",
+      "modifyDate": "2018-08-28T20:56:13.140",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "SP_Importa_Stock_Bodegas_General_y_Dañado_Actualizacion",
+      "kind": "sql-sp",
+      "objectId": 1067307012,
+      "createDate": "2018-09-13T19:06:17.390",
+      "modifyDate": "2018-09-17T11:44:15.507",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "SP_Importa_Stock_Bodegas_General_y_Dañado_Actualizacion_Sin_Importacion",
+      "kind": "sql-sp",
+      "objectId": 1572356816,
+      "createDate": "2018-09-25T10:34:29.417",
+      "modifyDate": "2018-09-25T11:38:40.360",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_index_maintenance_daily",
+      "kind": "sql-sp",
+      "objectId": 1915362088,
+      "createDate": "2022-12-17T09:39:26.170",
+      "modifyDate": "2022-12-17T09:39:26.170",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_ineachdb",
+      "kind": "sql-sp",
+      "objectId": 1544548736,
+      "createDate": "2020-01-16T08:11:31.837",
+      "modifyDate": "2020-01-16T08:11:31.860",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_renamediagram",
+      "kind": "sql-sp",
+      "objectId": 501576825,
+      "createDate": "2014-06-19T11:27:34.933",
+      "modifyDate": "2015-10-04T19:56:52.613",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "SP_STOCK_JORNADA_DESFASE",
+      "kind": "sql-sp",
+      "objectId": 1502836616,
+      "createDate": "2022-09-07T18:12:03.597",
+      "modifyDate": "2022-10-25T23:37:05.440",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "SP_STOCK_JORNADA_DESFASE_RETROACTIVO",
+      "kind": "sql-sp",
+      "objectId": 1847885850,
+      "createDate": "2023-05-18T22:36:15.097",
+      "modifyDate": "2023-05-18T22:36:15.097",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_upgraddiagrams",
+      "kind": "sql-sp",
+      "objectId": 389576426,
+      "createDate": "2014-06-19T11:27:34.877",
+      "modifyDate": "2015-10-04T19:56:52.597",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "sp_WhoIsActive",
+      "kind": "sql-sp",
+      "objectId": 485068964,
+      "createDate": "2020-01-28T16:04:26.137",
+      "modifyDate": "2020-01-28T16:04:26.137",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "stock",
+      "kind": "sql-table",
+      "objectId": 1445072384,
+      "createDate": "2020-02-14T11:42:52.977",
+      "modifyDate": "2024-09-12T08:37:13.890",
+      "rowCount": "4703"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_20250515",
+      "kind": "sql-table",
+      "objectId": 1599552982,
+      "createDate": "2025-05-15T10:10:07.737",
+      "modifyDate": "2025-05-15T10:10:07.737",
+      "rowCount": "151"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_20250606",
+      "kind": "sql-table",
+      "objectId": 28071386,
+      "createDate": "2025-06-06T10:36:41.960",
+      "modifyDate": "2025-06-06T10:36:41.960",
+      "rowCount": "3202"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_20250624",
+      "kind": "sql-table",
+      "objectId": 508073096,
+      "createDate": "2025-06-24T07:35:39.337",
+      "modifyDate": "2025-06-24T07:35:39.337",
+      "rowCount": "3541"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_bodegas23",
+      "kind": "sql-table",
+      "objectId": 108071671,
+      "createDate": "2025-06-07T23:21:08.673",
+      "modifyDate": "2025-06-07T23:21:08.673",
+      "rowCount": "270"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_det",
+      "kind": "sql-table",
+      "objectId": 1310119908,
+      "createDate": "2021-06-02T23:24:40.073",
+      "modifyDate": "2021-06-02T23:24:40.073",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_hist",
+      "kind": "sql-table",
+      "objectId": 65539417,
+      "createDate": "2017-10-16T00:13:44.520",
+      "modifyDate": "2021-06-03T00:02:37.263",
+      "rowCount": "19225"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_jornada",
+      "kind": "sql-table",
+      "objectId": 2033598483,
+      "createDate": "2021-05-28T00:13:11.050",
+      "modifyDate": "2022-10-18T12:54:24.703",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_jornada_temporal",
+      "kind": "sql-table",
+      "objectId": 1399884254,
+      "createDate": "2023-04-17T20:05:00.177",
+      "modifyDate": "2023-04-17T20:05:00.177",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_parametro",
+      "kind": "sql-table",
+      "objectId": 1650872998,
+      "createDate": "2016-04-29T14:30:27.313",
+      "modifyDate": "2020-02-14T11:42:56.010",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_picking20250624",
+      "kind": "sql-table",
+      "objectId": 540073210,
+      "createDate": "2025-06-24T11:25:24.787",
+      "modifyDate": "2025-06-24T11:25:24.787",
+      "rowCount": "14"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_rec",
+      "kind": "sql-table",
+      "objectId": 1675361233,
+      "createDate": "2022-12-17T04:15:30.650",
+      "modifyDate": "2023-08-21T09:17:55.827",
+      "rowCount": "4394"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_res",
+      "kind": "sql-table",
+      "objectId": 1845073809,
+      "createDate": "2020-02-14T11:43:21.733",
+      "modifyDate": "2023-08-21T09:17:56.077",
+      "rowCount": "454"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_res_20250624",
+      "kind": "sql-table",
+      "objectId": 524073153,
+      "createDate": "2025-06-24T07:35:51.927",
+      "modifyDate": "2025-06-24T07:35:51.927",
+      "rowCount": "267"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_res_ped_164",
+      "kind": "sql-table",
+      "objectId": 572737293,
+      "createDate": "2022-01-13T01:41:49.603",
+      "modifyDate": "2022-01-13T01:41:49.603",
+      "rowCount": "38"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_res_se",
+      "kind": "sql-table",
+      "objectId": 1171587312,
+      "createDate": "2016-07-11T15:11:49.487",
+      "modifyDate": "2016-07-11T15:11:49.770",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_se",
+      "kind": "sql-table",
+      "objectId": 1822017622,
+      "createDate": "2016-06-07T16:26:38.590",
+      "modifyDate": "2020-02-14T11:42:55.300",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_se_rec",
+      "kind": "sql-table",
+      "objectId": 1774017451,
+      "createDate": "2016-06-07T16:25:17.857",
+      "modifyDate": "2022-12-17T04:15:31.193",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "stock_transito",
+      "kind": "sql-table",
+      "objectId": 207495968,
+      "createDate": "2019-07-14T09:25:04.203",
+      "modifyDate": "2022-12-17T09:39:30.923",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "sysdiagrams",
+      "kind": "sql-table",
+      "objectId": 405576483,
+      "createDate": "2014-06-19T11:27:34.877",
+      "modifyDate": "2023-08-21T09:18:16.807",
+      "rowCount": "35"
+    },
+    {
+      "schema": "dbo",
+      "name": "t_producto_bodega",
+      "kind": "sql-table",
+      "objectId": 569925252,
+      "createDate": "2019-03-12T16:25:35.237",
+      "modifyDate": "2019-05-21T16:17:48.567",
+      "rowCount": "42357"
+    },
+    {
+      "schema": "dbo",
+      "name": "tablas_sync",
+      "kind": "sql-table",
+      "objectId": 1664113069,
+      "createDate": "2016-07-28T14:57:20.770",
+      "modifyDate": "2016-08-10T15:34:35.637",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "talla",
+      "kind": "sql-table",
+      "objectId": 1059027054,
+      "createDate": "2025-03-18T11:46:52.773",
+      "modifyDate": "2025-05-13T10:20:31.957",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tarea_hh",
+      "kind": "sql-table",
+      "objectId": 154535684,
+      "createDate": "2016-06-08T14:56:10.413",
+      "modifyDate": "2025-02-11T23:41:39.210",
+      "rowCount": "1817"
+    },
+    {
+      "schema": "dbo",
+      "name": "tarifa_tipo_transaccion",
+      "kind": "sql-table",
+      "objectId": 897594436,
+      "createDate": "2021-05-28T00:07:06.420",
+      "modifyDate": "2021-05-28T00:07:06.420",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tarifa_tipo_transaccion_det",
+      "kind": "sql-table",
+      "objectId": 929594550,
+      "createDate": "2021-05-28T00:07:09.877",
+      "modifyDate": "2021-05-28T00:07:09.877",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tarimas",
+      "kind": "sql-table",
+      "objectId": 96107483,
+      "createDate": "2016-07-12T18:55:28.837",
+      "modifyDate": "2016-07-20T11:43:42.567",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "temp_licencia_llave",
+      "kind": "sql-table",
+      "objectId": 242256068,
+      "createDate": "2018-06-04T09:09:22.200",
+      "modifyDate": "2018-06-04T09:09:22.200",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "TempComparacionInventario",
+      "kind": "sql-table",
+      "objectId": 1580024860,
+      "createDate": "2019-11-18T16:23:37.350",
+      "modifyDate": "2025-02-11T23:40:54.287",
+      "rowCount": "7"
+    },
+    {
+      "schema": "dbo",
+      "name": "TempComparativoInventario",
+      "kind": "sql-table",
+      "objectId": 324352370,
+      "createDate": "2018-09-21T11:36:35.253",
+      "modifyDate": "2018-09-21T11:36:35.253",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_actualizacion_costo",
+      "kind": "sql-table",
+      "objectId": 1156251224,
+      "createDate": "2016-04-05T10:41:27.240",
+      "modifyDate": "2016-04-05T11:19:41.990",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_contenedor",
+      "kind": "sql-table",
+      "objectId": 32107255,
+      "createDate": "2016-07-12T18:30:15.397",
+      "modifyDate": "2016-07-12T18:58:10.880",
+      "rowCount": "5"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_etiqueta",
+      "kind": "sql-table",
+      "objectId": 1641877016,
+      "createDate": "2017-08-11T10:02:32.447",
+      "modifyDate": "2025-03-27T14:39:27.753",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_etiqueta_detalle",
+      "kind": "sql-table",
+      "objectId": 1939030189,
+      "createDate": "2025-03-27T14:39:21.030",
+      "modifyDate": "2025-03-27T14:39:27.750",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_rack",
+      "kind": "sql-table",
+      "objectId": 316684326,
+      "createDate": "2018-03-16T10:03:27.127",
+      "modifyDate": "2018-03-16T10:04:45.030",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_rotacion",
+      "kind": "sql-table",
+      "objectId": 1271779688,
+      "createDate": "2017-07-14T08:57:28.073",
+      "modifyDate": "2018-06-03T13:36:11.840",
+      "rowCount": "4"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_tarea_tiempos",
+      "kind": "sql-table",
+      "objectId": 911498476,
+      "createDate": "2019-07-29T10:21:33.003",
+      "modifyDate": "2019-07-29T10:21:33.003",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "tipo_tarima",
+      "kind": "sql-table",
+      "objectId": 64107369,
+      "createDate": "2016-07-12T18:42:32.570",
+      "modifyDate": "2017-05-30T14:22:22.330",
+      "rowCount": "10"
+    },
+    {
+      "schema": "dbo",
+      "name": "TipoConteo",
+      "kind": "sql-table",
+      "objectId": 483636916,
+      "createDate": "2018-01-22T23:15:28.910",
+      "modifyDate": "2018-01-22T23:15:28.910",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "TipoInventario",
+      "kind": "sql-table",
+      "objectId": 451636802,
+      "createDate": "2018-01-22T23:15:05.187",
+      "modifyDate": "2018-01-22T23:15:05.187",
+      "rowCount": "2"
+    },
+    {
+      "schema": "dbo",
+      "name": "tmp_bodega_ubicacion",
+      "kind": "sql-table",
+      "objectId": 524021098,
+      "createDate": "2019-09-02T18:07:52.803",
+      "modifyDate": "2019-09-02T18:07:52.803",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tmp_estructura_ubicacion",
+      "kind": "sql-table",
+      "objectId": 1757405480,
+      "createDate": "2018-11-12T19:15:48.823",
+      "modifyDate": "2018-11-12T19:15:48.823",
+      "rowCount": "400"
+    },
+    {
+      "schema": "dbo",
+      "name": "tmp_i_nav_transacciones_out",
+      "kind": "sql-table",
+      "objectId": 280544233,
+      "createDate": "2019-12-11T12:31:14.960",
+      "modifyDate": "2019-12-11T12:31:14.960",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tmp_licencia_item",
+      "kind": "sql-table",
+      "objectId": 1577264874,
+      "createDate": "2022-05-04T15:15:17.433",
+      "modifyDate": "2022-05-04T15:15:17.433",
+      "rowCount": "65"
+    },
+    {
+      "schema": "dbo",
+      "name": "tmp_picking",
+      "kind": "sql-table",
+      "objectId": 407880720,
+      "createDate": "2023-01-10T12:19:30.660",
+      "modifyDate": "2023-01-10T12:19:30.660",
+      "rowCount": "2951"
+    },
+    {
+      "schema": "dbo",
+      "name": "tmp_stock_res",
+      "kind": "sql-table",
+      "objectId": 477400920,
+      "createDate": "2018-10-08T19:14:54.217",
+      "modifyDate": "2018-10-08T19:14:54.217",
+      "rowCount": "400"
+    },
+    {
+      "schema": "dbo",
+      "name": "tms_ticket",
+      "kind": "sql-table",
+      "objectId": 1441596374,
+      "createDate": "2021-05-28T00:08:59.683",
+      "modifyDate": "2021-06-02T23:24:47.417",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "tms_ticket_pol",
+      "kind": "sql-table",
+      "objectId": 1585596887,
+      "createDate": "2021-05-28T00:09:22.293",
+      "modifyDate": "2022-03-24T17:21:50.337",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_acuerdoscomerciales_det",
+      "kind": "sql-table",
+      "objectId": 1241979701,
+      "createDate": "2024-07-02T12:27:39.363",
+      "modifyDate": "2024-07-02T12:27:44.823",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_acuerdoscomerciales_enc",
+      "kind": "sql-table",
+      "objectId": 1209979587,
+      "createDate": "2024-07-02T12:27:28.790",
+      "modifyDate": "2024-07-02T12:27:44.820",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ajuste_det",
+      "kind": "sql-table",
+      "objectId": 690257664,
+      "createDate": "2018-06-06T09:16:38.907",
+      "modifyDate": "2025-02-11T23:42:13.913",
+      "rowCount": "2113"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ajuste_det_doc",
+      "kind": "sql-table",
+      "objectId": 539305131,
+      "createDate": "2018-08-28T22:46:57.617",
+      "modifyDate": "2018-08-28T22:46:57.670",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ajuste_enc",
+      "kind": "sql-table",
+      "objectId": 1687117201,
+      "createDate": "2018-01-19T14:45:07.497",
+      "modifyDate": "2025-02-11T23:41:09.083",
+      "rowCount": "825"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_bodega_ubicaciones_excel",
+      "kind": "sql-table",
+      "objectId": 201975996,
+      "createDate": "2024-02-02T22:01:29.893",
+      "modifyDate": "2024-02-02T22:01:29.903",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_despacho_det",
+      "kind": "sql-table",
+      "objectId": 802258063,
+      "createDate": "2018-06-06T13:07:48.500",
+      "modifyDate": "2025-02-11T23:43:50.497",
+      "rowCount": "19799"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_despacho_det_lote_num",
+      "kind": "sql-table",
+      "objectId": 194971921,
+      "createDate": "2019-05-21T16:16:42.813",
+      "modifyDate": "2019-05-21T16:16:42.813",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_despacho_enc",
+      "kind": "sql-table",
+      "objectId": 1093683044,
+      "createDate": "2016-10-26T14:40:52.307",
+      "modifyDate": "2025-02-11T23:41:55.510",
+      "rowCount": "4032"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_ciclico",
+      "kind": "sql-table",
+      "objectId": 1472164440,
+      "createDate": "2018-03-15T11:27:45.983",
+      "modifyDate": "2025-07-16T15:39:23.187",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_ciclico_ubic",
+      "kind": "sql-table",
+      "objectId": 1504164554,
+      "createDate": "2018-03-15T11:27:46.110",
+      "modifyDate": "2020-02-04T18:30:56.120",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_detalle",
+      "kind": "sql-table",
+      "objectId": 1167499388,
+      "createDate": "2019-08-05T07:56:11.957",
+      "modifyDate": "2023-01-25T10:07:58.420",
+      "rowCount": "2942"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_enc",
+      "kind": "sql-table",
+      "objectId": 2000882345,
+      "createDate": "2018-10-03T22:00:52.470",
+      "modifyDate": "2024-09-12T08:28:10.327",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_enc_reconteo",
+      "kind": "sql-table",
+      "objectId": 1536164668,
+      "createDate": "2018-03-15T11:27:46.113",
+      "modifyDate": "2018-10-03T22:00:53.243",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_ne",
+      "kind": "sql-table",
+      "objectId": 1318451921,
+      "createDate": "2019-04-08T09:40:07.167",
+      "modifyDate": "2019-04-08T09:40:07.443",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_operador",
+      "kind": "sql-table",
+      "objectId": 1308687860,
+      "createDate": "2018-04-05T09:40:20.273",
+      "modifyDate": "2021-12-01T14:38:52.120",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_reconteo",
+      "kind": "sql-table",
+      "objectId": 1568164782,
+      "createDate": "2018-03-15T11:27:46.130",
+      "modifyDate": "2019-09-02T09:35:45.583",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_resumen",
+      "kind": "sql-table",
+      "objectId": 1247499673,
+      "createDate": "2019-08-05T07:56:43.380",
+      "modifyDate": "2024-09-12T08:30:50.483",
+      "rowCount": "2571"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_stock",
+      "kind": "sql-table",
+      "objectId": 1710069278,
+      "createDate": "2017-12-12T13:41:57.607",
+      "modifyDate": "2025-02-11T23:41:21.940",
+      "rowCount": "4540"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_stock_prod",
+      "kind": "sql-table",
+      "objectId": 469732876,
+      "createDate": "2018-05-28T20:22:22.933",
+      "modifyDate": "2025-05-22T00:03:27.900",
+      "rowCount": "1153"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_teorico_erp",
+      "kind": "sql-table",
+      "objectId": 710501810,
+      "createDate": "2024-09-12T08:30:57.017",
+      "modifyDate": "2024-09-12T08:30:57.017",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inv_tramo",
+      "kind": "sql-table",
+      "objectId": 1646069050,
+      "createDate": "2017-12-12T13:41:20.750",
+      "modifyDate": "2023-08-21T09:18:17.103",
+      "rowCount": "54"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inventario_det",
+      "kind": "sql-table",
+      "objectId": 1675921092,
+      "createDate": "2016-05-16T15:11:09.270",
+      "modifyDate": "2020-02-14T11:42:55.647",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_inventario_enc",
+      "kind": "sql-table",
+      "objectId": 2058490412,
+      "createDate": "2015-11-24T15:00:32.973",
+      "modifyDate": "2016-05-16T15:11:10.457",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_log_pedido_liberacion",
+      "kind": "sql-table",
+      "objectId": 508737065,
+      "createDate": "2021-12-27T11:16:46.593",
+      "modifyDate": "2023-02-09T06:25:35.523",
+      "rowCount": "715"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_log_reubic_stock_res",
+      "kind": "sql-table",
+      "objectId": 1730313424,
+      "createDate": "2022-06-30T18:24:57.030",
+      "modifyDate": "2023-08-21T09:18:17.147",
+      "rowCount": "84"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_manufactura_det",
+      "kind": "sql-table",
+      "objectId": 873978390,
+      "createDate": "2024-07-02T12:22:17.480",
+      "modifyDate": "2024-07-02T12:22:17.500",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_manufactura_enc",
+      "kind": "sql-table",
+      "objectId": 761977991,
+      "createDate": "2024-07-02T12:22:17.440",
+      "modifyDate": "2024-07-02T12:22:17.500",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_manufactura_picking",
+      "kind": "sql-table",
+      "objectId": 969978732,
+      "createDate": "2024-07-02T12:22:17.493",
+      "modifyDate": "2024-07-02T12:22:17.507",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_manufactura_tipo",
+      "kind": "sql-table",
+      "objectId": 713977820,
+      "createDate": "2024-07-02T12:21:56.867",
+      "modifyDate": "2024-07-02T12:22:17.477",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_movimiento_pallet",
+      "kind": "sql-table",
+      "objectId": 1032546912,
+      "createDate": "2020-01-14T17:31:54.627",
+      "modifyDate": "2023-08-21T09:18:16.943",
+      "rowCount": "245"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_movimientos",
+      "kind": "sql-table",
+      "objectId": 1550016653,
+      "createDate": "2016-06-07T09:36:29.640",
+      "modifyDate": "2024-07-02T12:30:47.473",
+      "rowCount": "81641"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_det",
+      "kind": "sql-table",
+      "objectId": 1314207832,
+      "createDate": "2017-04-03T16:41:44.400",
+      "modifyDate": "2024-07-02T12:24:53.387",
+      "rowCount": "1907"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_det_lote",
+      "kind": "sql-table",
+      "objectId": 1657213104,
+      "createDate": "2018-05-14T10:06:24.223",
+      "modifyDate": "2023-08-21T09:18:17.113",
+      "rowCount": "1078"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_docu_ref",
+      "kind": "sql-table",
+      "objectId": 535165152,
+      "createDate": "2021-09-08T00:26:37.787",
+      "modifyDate": "2021-09-08T00:26:38.017",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_embarcador",
+      "kind": "sql-table",
+      "objectId": 924738547,
+      "createDate": "2022-03-07T15:06:31.853",
+      "modifyDate": "2022-03-07T15:06:31.853",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_enc",
+      "kind": "sql-table",
+      "objectId": 1564688772,
+      "createDate": "2018-04-12T12:13:16.377",
+      "modifyDate": "2025-05-05T19:05:40.333",
+      "rowCount": "558"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_estado",
+      "kind": "sql-table",
+      "objectId": 103723472,
+      "createDate": "2016-03-29T08:13:58.157",
+      "modifyDate": "2018-04-12T12:13:16.813",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_imagen",
+      "kind": "sql-table",
+      "objectId": 1090818948,
+      "createDate": "2015-11-16T09:59:30.897",
+      "modifyDate": "2018-04-12T12:13:17.120",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_pol",
+      "kind": "sql-table",
+      "objectId": 836250084,
+      "createDate": "2016-03-31T09:58:53.143",
+      "modifyDate": "2024-02-01T14:18:12.703",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_servicios",
+      "kind": "sql-table",
+      "objectId": 2046122530,
+      "createDate": "2021-08-25T09:25:32.080",
+      "modifyDate": "2021-08-25T09:30:07.967",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_oc_ti",
+      "kind": "sql-table",
+      "objectId": 567725125,
+      "createDate": "2016-03-29T08:20:47.307",
+      "modifyDate": "2025-04-01T10:21:38.163",
+      "rowCount": "15"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_packing_enc",
+      "kind": "sql-table",
+      "objectId": 1082643100,
+      "createDate": "2021-08-26T08:50:44.920",
+      "modifyDate": "2025-07-16T15:39:09.283",
+      "rowCount": "13"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_det",
+      "kind": "sql-table",
+      "objectId": 427968701,
+      "createDate": "2017-10-02T01:38:10.147",
+      "modifyDate": "2024-07-02T12:22:17.500",
+      "rowCount": "14819"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_det_log_reserva",
+      "kind": "sql-table",
+      "objectId": 272928244,
+      "createDate": "2023-10-09T13:57:07.120",
+      "modifyDate": "2024-02-01T14:19:39.697",
+      "rowCount": "22576"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_docu_ref",
+      "kind": "sql-table",
+      "objectId": 378640592,
+      "createDate": "2021-08-25T09:41:37.907",
+      "modifyDate": "2021-08-25T09:41:50.947",
+      "rowCount": "20"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_enc",
+      "kind": "sql-table",
+      "objectId": 1129159168,
+      "createDate": "2016-09-01T16:38:14.697",
+      "modifyDate": "2025-06-11T07:34:55.330",
+      "rowCount": "4202"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_pol",
+      "kind": "sql-table",
+      "objectId": 1297595861,
+      "createDate": "2021-05-28T00:07:52.643",
+      "modifyDate": "2024-10-01T20:58:44.960",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_servicios",
+      "kind": "sql-table",
+      "objectId": 1409596260,
+      "createDate": "2021-05-28T00:08:54.847",
+      "modifyDate": "2021-05-28T00:08:54.847",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_pe_tipo",
+      "kind": "sql-table",
+      "objectId": 803586001,
+      "createDate": "2016-07-08T15:03:06.290",
+      "modifyDate": "2025-08-01T11:53:48.137",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_det",
+      "kind": "sql-table",
+      "objectId": 1992550332,
+      "createDate": "2020-01-25T08:47:16.090",
+      "modifyDate": "2023-10-30T05:18:25.450",
+      "rowCount": "14585"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_det_parametros",
+      "kind": "sql-table",
+      "objectId": 725681733,
+      "createDate": "2016-10-26T13:46:33.650",
+      "modifyDate": "2020-01-25T08:47:16.460",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_enc",
+      "kind": "sql-table",
+      "objectId": 373680479,
+      "createDate": "2016-10-26T13:42:14.263",
+      "modifyDate": "2025-06-25T14:09:33.087",
+      "rowCount": "1293"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_img",
+      "kind": "sql-table",
+      "objectId": 1872933944,
+      "createDate": "2023-10-30T05:18:25.403",
+      "modifyDate": "2023-10-30T05:18:25.450",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_op",
+      "kind": "sql-table",
+      "objectId": 789681961,
+      "createDate": "2016-10-26T13:47:19.430",
+      "modifyDate": "2024-02-01T14:24:45.960",
+      "rowCount": "5895"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_prioridad",
+      "kind": "sql-table",
+      "objectId": 1385980214,
+      "createDate": "2024-07-02T12:29:54.490",
+      "modifyDate": "2024-07-02T12:29:54.490",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_ubic",
+      "kind": "sql-table",
+      "objectId": 2104550731,
+      "createDate": "2020-01-25T08:50:45.827",
+      "modifyDate": "2025-07-16T15:39:09.247",
+      "rowCount": "26567"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_picking_ubic_stock",
+      "kind": "sql-table",
+      "objectId": 404404710,
+      "createDate": "2023-08-15T19:53:50.503",
+      "modifyDate": "2025-04-21T18:31:00.680",
+      "rowCount": "20437"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_prefactura_det",
+      "kind": "sql-table",
+      "objectId": 582501354,
+      "createDate": "2024-09-12T08:29:48.720",
+      "modifyDate": "2024-09-12T08:29:48.720",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_prefactura_enc",
+      "kind": "sql-table",
+      "objectId": 422500784,
+      "createDate": "2024-09-12T08:28:33.317",
+      "modifyDate": "2024-09-12T08:29:41.300",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_prefactura_mov",
+      "kind": "sql-table",
+      "objectId": 614501468,
+      "createDate": "2024-09-12T08:29:54.637",
+      "modifyDate": "2024-09-12T08:29:54.637",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_det",
+      "kind": "sql-table",
+      "objectId": 1329543920,
+      "createDate": "2017-10-19T16:12:09.317",
+      "modifyDate": "2024-10-15T23:41:00.113",
+      "rowCount": "4394"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_det_infraccion",
+      "kind": "sql-table",
+      "objectId": 825158085,
+      "createDate": "2016-08-23T16:24:23.443",
+      "modifyDate": "2018-10-11T09:06:20.210",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_det_lote_num",
+      "kind": "sql-table",
+      "objectId": 258972149,
+      "createDate": "2019-05-21T17:05:33.307",
+      "modifyDate": "2022-12-17T09:39:31.110",
+      "rowCount": "180181"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_det_parametros",
+      "kind": "sql-table",
+      "objectId": 209487875,
+      "createDate": "2016-05-25T10:37:16.380",
+      "modifyDate": "2018-01-19T14:03:02.093",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_enc",
+      "kind": "sql-table",
+      "objectId": 1117403200,
+      "createDate": "2018-10-11T09:06:19.053",
+      "modifyDate": "2024-02-01T14:26:36.217",
+      "rowCount": "576"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_fact",
+      "kind": "sql-table",
+      "objectId": 704109649,
+      "createDate": "2016-07-21T06:33:17.867",
+      "modifyDate": "2018-10-11T09:06:20.357",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_img",
+      "kind": "sql-table",
+      "objectId": 1849825702,
+      "createDate": "2016-04-21T13:42:10.093",
+      "modifyDate": "2018-10-11T09:06:20.523",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_oc",
+      "kind": "sql-table",
+      "objectId": 1437300230,
+      "createDate": "2016-04-14T14:26:07.527",
+      "modifyDate": "2023-08-21T09:18:17.020",
+      "rowCount": "576"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_op",
+      "kind": "sql-table",
+      "objectId": 201819831,
+      "createDate": "2016-04-19T08:39:59.787",
+      "modifyDate": "2023-08-21T09:17:48.530",
+      "rowCount": "1644"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_re_tr",
+      "kind": "sql-table",
+      "objectId": 98867469,
+      "createDate": "2016-04-25T12:03:57.860",
+      "modifyDate": "2018-10-11T09:06:19.440",
+      "rowCount": "10"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_reabastecimiento_log",
+      "kind": "sql-table",
+      "objectId": 510117058,
+      "createDate": "2021-05-28T00:23:53.833",
+      "modifyDate": "2023-02-27T10:57:05.990",
+      "rowCount": "1218"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_series_doc",
+      "kind": "sql-table",
+      "objectId": 222832056,
+      "createDate": "2022-07-02T15:04:38.933",
+      "modifyDate": "2022-07-02T15:04:39.400",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_servicio_det",
+      "kind": "sql-table",
+      "objectId": 282640250,
+      "createDate": "2021-08-25T09:33:26.657",
+      "modifyDate": "2021-08-25T09:33:26.680",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_servicio_enc",
+      "kind": "sql-table",
+      "objectId": 58639452,
+      "createDate": "2021-08-25T09:32:31.630",
+      "modifyDate": "2021-08-25T09:33:26.680",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_tras_det",
+      "kind": "sql-table",
+      "objectId": 1144443201,
+      "createDate": "2016-05-18T12:29:00.510",
+      "modifyDate": "2018-01-11T12:12:36.270",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_tras_enc",
+      "kind": "sql-table",
+      "objectId": 1400444113,
+      "createDate": "2016-05-18T14:41:19.810",
+      "modifyDate": "2016-07-12T18:10:23.973",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_tras_op",
+      "kind": "sql-table",
+      "objectId": 1256443600,
+      "createDate": "2016-05-18T14:12:25.683",
+      "modifyDate": "2018-01-19T14:03:02.273",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ubic_hh_det",
+      "kind": "sql-table",
+      "objectId": 1649545060,
+      "createDate": "2017-10-25T08:48:21.030",
+      "modifyDate": "2024-07-02T12:21:36.820",
+      "rowCount": "695"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ubic_hh_enc",
+      "kind": "sql-table",
+      "objectId": 1542348609,
+      "createDate": "2016-04-25T08:26:45.210",
+      "modifyDate": "2026-02-11T16:20:37.060",
+      "rowCount": "77"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ubic_hh_op",
+      "kind": "sql-table",
+      "objectId": 1988970212,
+      "createDate": "2016-05-24T10:03:15.867",
+      "modifyDate": "2018-01-19T14:03:02.270",
+      "rowCount": "145"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ubic_hh_se",
+      "kind": "sql-table",
+      "objectId": 1203587426,
+      "createDate": "2016-07-11T15:16:41.550",
+      "modifyDate": "2016-07-11T15:16:42.080",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ubic_hh_stock",
+      "kind": "sql-table",
+      "objectId": 661017536,
+      "createDate": "2017-10-16T00:01:44.950",
+      "modifyDate": "2023-08-21T09:18:16.833",
+      "rowCount": "683"
+    },
+    {
+      "schema": "dbo",
+      "name": "trans_ubic_tarima",
+      "kind": "sql-table",
+      "objectId": 160107711,
+      "createDate": "2016-07-15T03:53:14.207",
+      "modifyDate": "2016-07-20T13:34:52.007",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "transacciones_log",
+      "kind": "sql-table",
+      "objectId": 371584462,
+      "createDate": "2016-07-06T12:12:22.700",
+      "modifyDate": "2019-09-02T09:35:10.150",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "turno",
+      "kind": "sql-table",
+      "objectId": 2112062610,
+      "createDate": "2016-01-26T16:34:57.790",
+      "modifyDate": "2016-09-16T16:04:33.457",
+      "rowCount": "6"
+    },
+    {
+      "schema": "dbo",
+      "name": "ubicaciones_por_regla",
+      "kind": "sql-table",
+      "objectId": 1337875933,
+      "createDate": "2017-08-10T11:23:42.730",
+      "modifyDate": "2018-01-19T14:03:02.273",
+      "rowCount": "1102"
+    },
+    {
+      "schema": "dbo",
+      "name": "unidad_medida",
+      "kind": "sql-table",
+      "objectId": 374292393,
+      "createDate": "2015-10-28T22:45:53.130",
+      "modifyDate": "2024-02-01T14:26:36.230",
+      "rowCount": "1"
+    },
+    {
+      "schema": "dbo",
+      "name": "unidad_medida_conversion",
+      "kind": "sql-table",
+      "objectId": 1723973318,
+      "createDate": "2017-10-09T23:32:34.117",
+      "modifyDate": "2017-11-16T14:56:07.367",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "us_solic_det",
+      "kind": "sql-table",
+      "objectId": 449592840,
+      "createDate": "2020-10-07T22:21:35.863",
+      "modifyDate": "2020-10-07T22:21:35.877",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "us_solic_enc",
+      "kind": "sql-table",
+      "objectId": 401592669,
+      "createDate": "2020-10-07T22:21:30.433",
+      "modifyDate": "2020-10-07T22:21:30.853",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "usuario",
+      "kind": "sql-table",
+      "objectId": 493244812,
+      "createDate": "2015-10-27T18:34:32.770",
+      "modifyDate": "2025-07-14T09:32:03.813",
+      "rowCount": "12"
+    },
+    {
+      "schema": "dbo",
+      "name": "usuario_bodega",
+      "kind": "sql-table",
+      "objectId": 1942350034,
+      "createDate": "2016-04-25T10:59:49.167",
+      "modifyDate": "2016-04-25T10:59:50.603",
+      "rowCount": "63"
+    },
+    {
+      "schema": "dbo",
+      "name": "v_motivo_anulacion",
+      "kind": "sql-view",
+      "objectId": 1511012464,
+      "createDate": "2015-11-24T15:40:03.460",
+      "modifyDate": "2015-11-24T16:03:56.667",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "v_trans_pedido",
+      "kind": "sql-view",
+      "objectId": 1056774872,
+      "createDate": "2016-04-11T08:52:03.120",
+      "modifyDate": "2016-04-11T09:39:42.170",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "valores_fijos_reporte_mercancias",
+      "kind": "sql-table",
+      "objectId": 1275359808,
+      "createDate": "2022-10-25T23:36:29.087",
+      "modifyDate": "2022-10-25T23:36:29.087",
+      "rowCount": "3"
+    },
+    {
+      "schema": "dbo",
+      "name": "version_wms_hh",
+      "kind": "sql-table",
+      "objectId": 1402644240,
+      "createDate": "2021-08-26T08:58:20.487",
+      "modifyDate": "2021-08-26T08:58:20.487",
+      "rowCount": "48"
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ajustes",
+      "kind": "sql-view",
+      "objectId": 789734016,
+      "createDate": "2018-05-30T11:09:53.580",
+      "modifyDate": "2025-02-11T23:41:34.133",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Bodega",
+      "kind": "sql-view",
+      "objectId": 1106155036,
+      "createDate": "2016-03-01T14:39:37.303",
+      "modifyDate": "2021-10-28T09:56:21.380",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_BodegaArea",
+      "kind": "sql-view",
+      "objectId": 1785825474,
+      "createDate": "2016-04-21T11:48:32.440",
+      "modifyDate": "2016-04-21T11:48:32.440",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_BodegaMuelle",
+      "kind": "sql-view",
+      "objectId": 1122155093,
+      "createDate": "2016-03-01T14:56:05.880",
+      "modifyDate": "2025-06-15T14:43:09.433",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_BodegaSector",
+      "kind": "sql-view",
+      "objectId": 162867697,
+      "createDate": "2016-04-25T14:25:14.293",
+      "modifyDate": "2016-04-25T14:25:14.293",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_BodegaTramo",
+      "kind": "sql-view",
+      "objectId": 997786812,
+      "createDate": "2022-05-26T14:52:17.137",
+      "modifyDate": "2022-05-26T14:52:17.137",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_BodegaUbicacion",
+      "kind": "sql-view",
+      "objectId": 232544062,
+      "createDate": "2019-12-10T13:24:33.867",
+      "modifyDate": "2024-09-12T08:26:20.507",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_CalculoVencimientos",
+      "kind": "sql-view",
+      "objectId": 2046734444,
+      "createDate": "2017-05-19T23:19:53.580",
+      "modifyDate": "2019-07-25T08:48:40.797",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cambios_Estado",
+      "kind": "sql-view",
+      "objectId": 355024546,
+      "createDate": "2025-02-11T23:32:49.253",
+      "modifyDate": "2025-02-11T23:32:49.253",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cambios_Ubicacion",
+      "kind": "sql-view",
+      "objectId": 1074975056,
+      "createDate": "2019-06-27T12:33:23.897",
+      "modifyDate": "2024-09-12T08:47:34.270",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cantidad_Ingresos_Proveedor",
+      "kind": "sql-view",
+      "objectId": 934502608,
+      "createDate": "2024-09-12T08:50:34.923",
+      "modifyDate": "2024-09-12T08:50:34.923",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cantidad_Pedidos_vrs_Despacho_Clientes",
+      "kind": "sql-view",
+      "objectId": 886502437,
+      "createDate": "2024-09-12T08:49:56.423",
+      "modifyDate": "2024-09-12T08:49:56.423",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cantidad_Tareas_Ubicacion_Op",
+      "kind": "sql-view",
+      "objectId": 428736780,
+      "createDate": "2021-12-21T00:11:39.647",
+      "modifyDate": "2021-12-29T15:08:49.890",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cantidad_Tareas_Ubicacion_Op_Items",
+      "kind": "sql-view",
+      "objectId": 540737179,
+      "createDate": "2021-12-29T15:08:49.880",
+      "modifyDate": "2021-12-29T15:08:49.880",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Cliente",
+      "kind": "sql-view",
+      "objectId": 546153041,
+      "createDate": "2016-02-29T15:11:45.057",
+      "modifyDate": "2024-09-12T08:37:24.670",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ClienteDireccion",
+      "kind": "sql-view",
+      "objectId": 270012093,
+      "createDate": "2016-05-27T13:48:15.723",
+      "modifyDate": "2016-05-27T14:02:05.300",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Clientes_Tiempos",
+      "kind": "sql-view",
+      "objectId": 633977535,
+      "createDate": "2024-07-02T12:21:13.367",
+      "modifyDate": "2024-07-02T12:21:13.367",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ClienteTipo",
+      "kind": "sql-view",
+      "objectId": 610153269,
+      "createDate": "2016-02-29T16:55:57.027",
+      "modifyDate": "2017-08-30T09:01:09.073",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_CodigoBarra_OC",
+      "kind": "sql-view",
+      "objectId": 134395648,
+      "createDate": "2017-08-16T10:40:11.640",
+      "modifyDate": "2017-08-16T10:40:11.640",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Comparativo_NAV_WMS_ConCostos",
+      "kind": "sql-view",
+      "objectId": 1950786157,
+      "createDate": "2018-08-28T15:22:23.090",
+      "modifyDate": "2018-08-31T12:16:32.133",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Configuracion_Usuario_Template",
+      "kind": "sql-view",
+      "objectId": 1886837984,
+      "createDate": "2022-09-11T22:45:11.450",
+      "modifyDate": "2022-09-11T22:45:11.450",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Configuracioninv",
+      "kind": "sql-view",
+      "objectId": 546921120,
+      "createDate": "2017-09-11T15:23:40.117",
+      "modifyDate": "2017-09-21T12:15:59.787",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Conteo_By_Operador",
+      "kind": "sql-view",
+      "objectId": 387024660,
+      "createDate": "2025-02-11T23:39:52.257",
+      "modifyDate": "2025-02-11T23:39:52.257",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ControlCalidad_CambioEstado",
+      "kind": "sql-view",
+      "objectId": 2143554920,
+      "createDate": "2025-06-04T11:43:26.170",
+      "modifyDate": "2025-06-04T11:43:26.170",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho",
+      "kind": "sql-view",
+      "objectId": 1333683899,
+      "createDate": "2016-10-26T14:46:20.073",
+      "modifyDate": "2025-08-04T12:07:24.130",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho_Detalle",
+      "kind": "sql-view",
+      "objectId": 1349683956,
+      "createDate": "2016-10-26T14:50:15.890",
+      "modifyDate": "2017-12-18T10:50:49.177",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho_Rep",
+      "kind": "sql-view",
+      "objectId": 149731736,
+      "createDate": "2018-05-18T16:13:52.210",
+      "modifyDate": "2018-10-04T10:54:27.327",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho_Rep_Det",
+      "kind": "sql-view",
+      "objectId": 739637828,
+      "createDate": "2018-01-23T14:44:16.200",
+      "modifyDate": "2019-12-10T19:56:59.513",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho_Rep_Det_I",
+      "kind": "sql-view",
+      "objectId": 264544176,
+      "createDate": "2019-12-10T18:14:59.547",
+      "modifyDate": "2025-06-09T09:03:14.620",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho_Rep_DyD",
+      "kind": "sql-view",
+      "objectId": 439880834,
+      "createDate": "2023-01-11T11:39:31.743",
+      "modifyDate": "2023-01-11T11:39:31.743",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Despacho_Rep_Res",
+      "kind": "sql-view",
+      "objectId": 755637885,
+      "createDate": "2018-01-23T21:42:46.717",
+      "modifyDate": "2022-04-27T10:46:15.677",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Detalle_Licencias_Inconsistentes",
+      "kind": "sql-view",
+      "objectId": 1984934343,
+      "createDate": "2023-10-30T06:05:42.580",
+      "modifyDate": "2024-02-01T14:20:50.240",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Doc_Con_Diferencias",
+      "kind": "sql-view",
+      "objectId": 1921598084,
+      "createDate": "2021-05-28T00:11:03.717",
+      "modifyDate": "2022-12-13T01:53:45.747",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_EstacionalidadProducto",
+      "kind": "sql-view",
+      "objectId": 588737350,
+      "createDate": "2022-01-13T02:30:09.330",
+      "modifyDate": "2022-01-13T02:30:09.330",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Estado_Envios_Nav",
+      "kind": "sql-view",
+      "objectId": 334780400,
+      "createDate": "2018-06-23T07:38:34.240",
+      "modifyDate": "2018-06-25T22:11:30.937",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Existencia_Valores_Fiscales",
+      "kind": "sql-view",
+      "objectId": 1937598141,
+      "createDate": "2021-05-28T00:11:43.620",
+      "modifyDate": "2021-05-28T00:11:43.620",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "vw_existencias_producto_categoria",
+      "kind": "sql-view",
+      "objectId": 1051970924,
+      "createDate": "2017-10-04T10:04:52.283",
+      "modifyDate": "2017-10-04T10:04:57.427",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ExistenciasPorNoDocumento",
+      "kind": "sql-view",
+      "objectId": 982450724,
+      "createDate": "2019-04-03T15:02:10.187",
+      "modifyDate": "2022-05-24T00:04:15.073",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Fiscal_historico",
+      "kind": "sql-view",
+      "objectId": 858642302,
+      "createDate": "2021-08-25T11:19:26.863",
+      "modifyDate": "2023-05-18T22:36:15.247",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Fiscal_Merca_Vencida",
+      "kind": "sql-view",
+      "objectId": 846118255,
+      "createDate": "2021-05-28T00:26:47.487",
+      "modifyDate": "2022-06-28T17:21:58.913",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Fiscal_Valorización",
+      "kind": "sql-view",
+      "objectId": 50307439,
+      "createDate": "2022-06-16T15:55:55.153",
+      "modifyDate": "2022-06-16T15:55:55.153",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Get_All_PickingUbic_By_IdPickingEnc_Consolidado",
+      "kind": "sql-view",
+      "objectId": 2092742708,
+      "createDate": "2022-04-03T23:54:32.377",
+      "modifyDate": "2025-06-10T23:16:12.077",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Get_All_PickingUbic_By_IdPickingEnc_Detallado",
+      "kind": "sql-view",
+      "objectId": 1643361119,
+      "createDate": "2022-11-22T09:43:08.080",
+      "modifyDate": "2023-02-21T19:46:51.653",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Get_All_Stock_Detalle_Resumen",
+      "kind": "sql-view",
+      "objectId": 1157071358,
+      "createDate": "2020-02-05T16:17:26.087",
+      "modifyDate": "2020-02-05T16:17:26.087",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Get_Detalle_By_IdRecepcionEnc",
+      "kind": "sql-view",
+      "objectId": 410640706,
+      "createDate": "2021-08-25T09:41:59.233",
+      "modifyDate": "2023-02-27T10:57:09.563",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Get_Pedido_Det",
+      "kind": "sql-view",
+      "objectId": 770310004,
+      "createDate": "2022-06-24T12:36:48.957",
+      "modifyDate": "2022-06-24T12:36:48.957",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Get_Single_Pedido",
+      "kind": "sql-view",
+      "objectId": 165067824,
+      "createDate": "2020-01-25T12:46:43.830",
+      "modifyDate": "2025-06-11T08:25:12.680",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_HorarioLaboral",
+      "kind": "sql-view",
+      "objectId": 1154155207,
+      "createDate": "2016-03-01T15:24:03.977",
+      "modifyDate": "2017-10-13T07:36:59.503",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_HorarioLaboralDet",
+      "kind": "sql-view",
+      "objectId": 1456112328,
+      "createDate": "2016-07-27T15:32:07.897",
+      "modifyDate": "2016-07-29T10:44:28.247",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_HorarioLaboralEnc",
+      "kind": "sql-view",
+      "objectId": 1875589820,
+      "createDate": "2016-07-12T12:43:08.010",
+      "modifyDate": "2016-07-12T12:57:23.387",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Impresion_Pallet",
+      "kind": "sql-view",
+      "objectId": 224159994,
+      "createDate": "2018-02-12T12:32:58.360",
+      "modifyDate": "2018-03-12T10:50:09.053",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Impresion_Pallet_Rec",
+      "kind": "sql-view",
+      "objectId": 1168163357,
+      "createDate": "2018-03-12T10:54:42.577",
+      "modifyDate": "2018-03-12T13:44:13.980",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "vw_Indicador_Despachos",
+      "kind": "sql-view",
+      "objectId": 870502380,
+      "createDate": "2024-09-12T08:49:38.167",
+      "modifyDate": "2024-09-12T08:49:38.167",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Indicador_Ingresos",
+      "kind": "sql-view",
+      "objectId": 137975768,
+      "createDate": "2024-02-01T14:27:39.233",
+      "modifyDate": "2024-02-01T14:27:39.233",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "vw_Indicador_Picking",
+      "kind": "sql-view",
+      "objectId": 121975711,
+      "createDate": "2024-02-01T14:27:23.557",
+      "modifyDate": "2024-09-12T08:09:31.007",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Indicador_Picking_Detalle",
+      "kind": "sql-view",
+      "objectId": 2007886420,
+      "createDate": "2023-06-18T22:17:54.600",
+      "modifyDate": "2023-06-18T22:17:54.600",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "vw_Indicador_Verificaciones",
+      "kind": "sql-view",
+      "objectId": 105975654,
+      "createDate": "2024-02-01T14:27:08.780",
+      "modifyDate": "2024-09-12T08:09:19.297",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ingreso_Fiscal",
+      "kind": "sql-view",
+      "objectId": 1661457193,
+      "createDate": "2024-02-01T14:18:21.920",
+      "modifyDate": "2024-09-12T08:04:48.380",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ingresos_Sin_Ticket",
+      "kind": "sql-view",
+      "objectId": 423880777,
+      "createDate": "2023-01-11T11:37:29.513",
+      "modifyDate": "2023-01-11T11:37:29.513",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Inv_Ciclico",
+      "kind": "sql-view",
+      "objectId": 403024717,
+      "createDate": "2025-02-11T23:41:17.073",
+      "modifyDate": "2025-02-11T23:41:17.073",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Inv_Conteo_Operador",
+      "kind": "sql-view",
+      "objectId": 697209684,
+      "createDate": "2018-04-27T15:26:56.100",
+      "modifyDate": "2018-10-03T22:00:06.743",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Inventario_prg_por_tipo",
+      "kind": "sql-view",
+      "objectId": 747305872,
+      "createDate": "2018-09-03T16:12:38.270",
+      "modifyDate": "2018-09-03T16:12:38.270",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Licencias_Por_Ubicacion",
+      "kind": "sql-view",
+      "objectId": 1703885337,
+      "createDate": "2023-05-18T22:36:14.620",
+      "modifyDate": "2023-05-18T22:36:14.620",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Lotes_Despacho",
+      "kind": "sql-view",
+      "objectId": 355688515,
+      "createDate": "2021-09-23T12:52:52.190",
+      "modifyDate": "2021-10-06T18:48:35.133",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_MinimosMaximosPorPresentacion",
+      "kind": "sql-view",
+      "objectId": 1104111074,
+      "createDate": "2016-07-22T11:29:52.623",
+      "modifyDate": "2016-07-22T11:59:05.467",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_MotivoAnulacion",
+      "kind": "sql-view",
+      "objectId": 802153953,
+      "createDate": "2016-03-01T10:21:50.357",
+      "modifyDate": "2017-06-01T04:54:59.300",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_MotivoAnulacionBodega",
+      "kind": "sql-view",
+      "objectId": 1499256496,
+      "createDate": "2017-06-02T13:37:07.293",
+      "modifyDate": "2017-06-02T13:37:07.293",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_MotivoDevolucion",
+      "kind": "sql-view",
+      "objectId": 818154010,
+      "createDate": "2016-03-01T10:25:34.060",
+      "modifyDate": "2017-06-01T04:59:46.427",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos",
+      "kind": "sql-view",
+      "objectId": 1573684754,
+      "createDate": "2016-11-04T09:44:01.720",
+      "modifyDate": "2025-03-18T11:45:25.193",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_20211205",
+      "kind": "sql-view",
+      "objectId": 918502551,
+      "createDate": "2024-09-12T08:50:23.177",
+      "modifyDate": "2024-09-12T08:50:23.177",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_Documento",
+      "kind": "sql-view",
+      "objectId": 670833652,
+      "createDate": "2022-07-21T23:45:35.780",
+      "modifyDate": "2022-07-21T23:45:35.780",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_FIX",
+      "kind": "sql-view",
+      "objectId": 460736894,
+      "createDate": "2021-12-21T02:19:01.650",
+      "modifyDate": "2021-12-21T02:49:13.520",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_N",
+      "kind": "sql-view",
+      "objectId": 1699641248,
+      "createDate": "2018-02-02T12:15:07.477",
+      "modifyDate": "2025-03-18T11:45:41",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_N1",
+      "kind": "sql-view",
+      "objectId": 1202259488,
+      "createDate": "2018-06-13T10:15:40.063",
+      "modifyDate": "2021-08-25T09:27:28.203",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_Propietario",
+      "kind": "sql-view",
+      "objectId": 1193979530,
+      "createDate": "2024-07-02T12:26:29.683",
+      "modifyDate": "2024-09-12T08:24:00.213",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Movimientos_Retroactivos",
+      "kind": "sql-view",
+      "objectId": 1255883741,
+      "createDate": "2023-03-06T00:06:24.437",
+      "modifyDate": "2023-06-18T22:20:27.457",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_MovimientosDetalle",
+      "kind": "sql-view",
+      "objectId": 1009542780,
+      "createDate": "2017-10-18T10:47:45.407",
+      "modifyDate": "2024-09-12T08:47:47.130",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_navdetalleconfiguracion",
+      "kind": "sql-view",
+      "objectId": 898922374,
+      "createDate": "2017-09-12T12:13:31.043",
+      "modifyDate": "2017-09-25T11:45:49.677",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_OcupacionBodega",
+      "kind": "sql-view",
+      "objectId": 248544119,
+      "createDate": "2019-12-10T13:29:59.707",
+      "modifyDate": "2025-02-11T23:42:29.493",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_OcupacionBodegaTramo",
+      "kind": "sql-view",
+      "objectId": 188735925,
+      "createDate": "2021-11-18T11:26:11.820",
+      "modifyDate": "2021-11-18T11:26:11.820",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Operador",
+      "kind": "sql-view",
+      "objectId": 1170155264,
+      "createDate": "2016-03-01T15:48:09.287",
+      "modifyDate": "2022-06-13T22:52:59.380",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Operador_Horario",
+      "kind": "sql-view",
+      "objectId": 318116374,
+      "createDate": "2021-05-28T00:19:02.927",
+      "modifyDate": "2024-09-18T12:04:14.923",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Operador_Zona_Picking",
+      "kind": "sql-view",
+      "objectId": 1685789263,
+      "createDate": "2022-06-03T09:40:07.593",
+      "modifyDate": "2022-07-02T17:19:40.683",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_OrdenCompra",
+      "kind": "sql-view",
+      "objectId": 1805301541,
+      "createDate": "2016-04-14T15:13:41.337",
+      "modifyDate": "2025-06-11T19:13:35.160",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_OrdenCompraPreIngreso",
+      "kind": "sql-view",
+      "objectId": 941298463,
+      "createDate": "2016-04-13T15:39:15.497",
+      "modifyDate": "2018-10-11T09:55:37.750",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Packing",
+      "kind": "sql-view",
+      "objectId": 1815169712,
+      "createDate": "2021-09-10T17:27:26.733",
+      "modifyDate": "2024-10-01T20:58:00.023",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PackingDespachado",
+      "kind": "sql-view",
+      "objectId": 435024831,
+      "createDate": "2025-02-11T23:42:36.400",
+      "modifyDate": "2025-02-11T23:42:36.400",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Pais",
+      "kind": "sql-view",
+      "objectId": 574013176,
+      "createDate": "2016-05-27T17:14:28.963",
+      "modifyDate": "2016-05-27T17:16:39.150",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Pais_Departamento",
+      "kind": "sql-view",
+      "objectId": 590013233,
+      "createDate": "2016-05-27T17:42:10.480",
+      "modifyDate": "2016-05-27T17:42:10.480",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Pais_Region",
+      "kind": "sql-view",
+      "objectId": 606013290,
+      "createDate": "2016-05-27T18:48:49.733",
+      "modifyDate": "2016-05-27T18:49:03.170",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Parametro",
+      "kind": "sql-view",
+      "objectId": 850154124,
+      "createDate": "2016-03-01T10:40:18.597",
+      "modifyDate": "2016-03-01T10:40:18.597",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PE_CON_DIFERENCIAS",
+      "kind": "sql-view",
+      "objectId": 1953598198,
+      "createDate": "2021-05-28T00:11:58.807",
+      "modifyDate": "2021-09-20T16:56:11.613",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Pedido",
+      "kind": "sql-view",
+      "objectId": 981682645,
+      "createDate": "2016-10-26T14:15:42.397",
+      "modifyDate": "2024-09-12T08:27:04.547",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Pedidos_IdPickingEnc",
+      "kind": "sql-view",
+      "objectId": 556073267,
+      "createDate": "2025-07-02T18:22:54.627",
+      "modifyDate": "2025-07-02T18:22:54.627",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Pedidos_List",
+      "kind": "sql-view",
+      "objectId": 257592156,
+      "createDate": "2020-10-07T21:54:38.020",
+      "modifyDate": "2025-07-11T06:36:33.967",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Picking",
+      "kind": "sql-view",
+      "objectId": 965682588,
+      "createDate": "2016-10-26T13:48:12.347",
+      "modifyDate": "2025-06-26T04:29:48.840",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Picking_Det_By_IdPickingEnc",
+      "kind": "sql-view",
+      "objectId": 101067596,
+      "createDate": "2020-01-25T10:22:31.637",
+      "modifyDate": "2024-09-12T08:24:21.057",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PickingUbic_By_IdPedidoDet",
+      "kind": "sql-view",
+      "objectId": 149067767,
+      "createDate": "2020-01-25T12:45:54.067",
+      "modifyDate": "2025-05-05T19:00:37.470",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PickingUbic_By_IdPickingDet",
+      "kind": "sql-view",
+      "objectId": 117067653,
+      "createDate": "2020-01-25T10:34:20.140",
+      "modifyDate": "2022-06-07T19:25:45.190",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PickingUbic_By_IdPickingEnc",
+      "kind": "sql-view",
+      "objectId": 133067710,
+      "createDate": "2020-01-25T10:56:03.870",
+      "modifyDate": "2022-12-23T10:52:09.410",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PickingUbic_Desp_By_IdPedidoDet",
+      "kind": "sql-view",
+      "objectId": 638833538,
+      "createDate": "2022-07-19T18:36:36.717",
+      "modifyDate": "2022-07-21T23:45:35.520",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PickingUbic_Despachado_By_IdPedidoDet",
+      "kind": "sql-view",
+      "objectId": 85067539,
+      "createDate": "2020-01-25T09:19:43.600",
+      "modifyDate": "2022-05-10T12:23:06.953",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_PickingUbicacion",
+      "kind": "sql-view",
+      "objectId": 1365684013,
+      "createDate": "2016-10-26T14:53:59.370",
+      "modifyDate": "2020-01-25T08:58:38.397",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Presentacion_Tarima",
+      "kind": "sql-view",
+      "objectId": 464108794,
+      "createDate": "2016-07-16T15:56:57.647",
+      "modifyDate": "2017-05-30T16:03:05.590",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Productividad_Picking",
+      "kind": "sql-view",
+      "objectId": 831550246,
+      "createDate": "2025-05-05T19:04:53.340",
+      "modifyDate": "2025-05-05T19:04:53.340",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Producto",
+      "kind": "sql-view",
+      "objectId": 946154466,
+      "createDate": "2016-03-01T11:13:40.853",
+      "modifyDate": "2025-05-06T00:11:52.480",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Producto_Estado_Ubic_Bodega",
+      "kind": "sql-view",
+      "objectId": 620021440,
+      "createDate": "2019-09-12T10:12:14.050",
+      "modifyDate": "2024-09-12T08:07:17.270",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Producto_Estado_Ubic_Bodega_HH",
+      "kind": "sql-view",
+      "objectId": 718117799,
+      "createDate": "2021-05-28T00:24:55.170",
+      "modifyDate": "2024-09-12T08:05:51.197",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Producto_Subtareas",
+      "kind": "sql-view",
+      "objectId": 1120931265,
+      "createDate": "2023-10-23T11:05:23.127",
+      "modifyDate": "2023-10-23T12:55:10.553",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoBodegaParametro",
+      "kind": "sql-view",
+      "objectId": 1449824277,
+      "createDate": "2016-04-20T14:26:09.070",
+      "modifyDate": "2016-04-27T09:21:25.420",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoClasificacion",
+      "kind": "sql-view",
+      "objectId": 866154181,
+      "createDate": "2016-03-01T10:42:36.233",
+      "modifyDate": "2021-11-16T08:19:22.690",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoDimension",
+      "kind": "sql-view",
+      "objectId": 339584348,
+      "createDate": "2016-07-06T11:50:10.307",
+      "modifyDate": "2017-06-10T13:48:03.013",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoEstado",
+      "kind": "sql-view",
+      "objectId": 882154238,
+      "createDate": "2016-03-01T10:51:49.903",
+      "modifyDate": "2024-09-12T08:05:38.713",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoEstadoUbic",
+      "kind": "sql-view",
+      "objectId": 863498305,
+      "createDate": "2019-07-29T10:21:01.483",
+      "modifyDate": "2022-05-24T00:04:14.917",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoEstadoUbicacion",
+      "kind": "sql-view",
+      "objectId": 1179255356,
+      "createDate": "2017-06-01T05:05:14.193",
+      "modifyDate": "2020-10-07T21:55:58.180",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoEstadoUbicDefecto",
+      "kind": "sql-view",
+      "objectId": 847498248,
+      "createDate": "2019-07-29T10:20:56.220",
+      "modifyDate": "2019-07-29T10:20:56.220",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoFamilia",
+      "kind": "sql-view",
+      "objectId": 914154352,
+      "createDate": "2016-03-01T11:00:09.603",
+      "modifyDate": "2021-11-16T08:17:25.500",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoMarca",
+      "kind": "sql-view",
+      "objectId": 930154409,
+      "createDate": "2016-03-01T11:04:32.990",
+      "modifyDate": "2024-09-12T08:31:17.330",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoOC",
+      "kind": "sql-view",
+      "objectId": 957298520,
+      "createDate": "2016-04-13T15:57:36.490",
+      "modifyDate": "2018-06-16T06:17:28.847",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoParametro",
+      "kind": "sql-view",
+      "objectId": 1014346728,
+      "createDate": "2016-04-22T09:09:18.780",
+      "modifyDate": "2016-04-22T09:16:16.367",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoPresentacion",
+      "kind": "sql-view",
+      "objectId": 994154637,
+      "createDate": "2016-03-01T13:58:55.067",
+      "modifyDate": "2022-06-24T16:34:56.427",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoRellenado",
+      "kind": "sql-view",
+      "objectId": 1946542068,
+      "createDate": "2016-06-14T12:05:10.137",
+      "modifyDate": "2021-11-19T17:11:37.413",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoSI",
+      "kind": "sql-view",
+      "objectId": 708965652,
+      "createDate": "2016-05-19T23:01:09.230",
+      "modifyDate": "2025-05-05T19:00:22.693",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoSustituto",
+      "kind": "sql-view",
+      "objectId": 1963206094,
+      "createDate": "2016-03-21T15:46:17.897",
+      "modifyDate": "2016-03-21T15:46:17.897",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProductoTipo",
+      "kind": "sql-view",
+      "objectId": 1010154694,
+      "createDate": "2016-03-01T14:04:37.383",
+      "modifyDate": "2021-11-16T10:51:15.313",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Progreso_Picking_By_Operador",
+      "kind": "sql-view",
+      "objectId": 905262480,
+      "createDate": "2022-04-25T15:39:27.980",
+      "modifyDate": "2025-06-05T09:12:24.337",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Propietario",
+      "kind": "sql-view",
+      "objectId": 1026154751,
+      "createDate": "2016-03-01T14:07:23.497",
+      "modifyDate": "2024-09-12T08:23:33.207",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Propietario_Regla_Recepcion",
+      "kind": "sql-view",
+      "objectId": 1168111302,
+      "createDate": "2016-07-25T13:53:16.447",
+      "modifyDate": "2017-07-12T12:08:53.070",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Proveedor",
+      "kind": "sql-view",
+      "objectId": 1042154808,
+      "createDate": "2016-03-01T14:10:12.343",
+      "modifyDate": "2025-06-11T23:52:08.247",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProveedorBodega",
+      "kind": "sql-view",
+      "objectId": 1819257636,
+      "createDate": "2017-06-05T09:27:51.717",
+      "modifyDate": "2025-06-11T23:52:08.067",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_ProximosVencimiento",
+      "kind": "sql-view",
+      "objectId": 1596024917,
+      "createDate": "2019-11-19T16:14:34.030",
+      "modifyDate": "2024-09-12T08:25:30.930",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_REC_CON_OC",
+      "kind": "sql-view",
+      "objectId": 1884689912,
+      "createDate": "2018-04-18T21:10:47.693",
+      "modifyDate": "2022-09-07T23:05:04.280",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_REC_CONOC_FIN",
+      "kind": "sql-view",
+      "objectId": 404300600,
+      "createDate": "2017-07-19T11:27:06.943",
+      "modifyDate": "2017-10-13T06:39:06.263",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_REC_SIN_OC",
+      "kind": "sql-view",
+      "objectId": 1900689969,
+      "createDate": "2018-04-18T21:13:05.370",
+      "modifyDate": "2019-07-25T12:32:54.707",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Recepcion",
+      "kind": "sql-view",
+      "objectId": 1769825417,
+      "createDate": "2016-04-21T11:47:11.750",
+      "modifyDate": "2022-06-07T08:35:19.843",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Recepcion_Det",
+      "kind": "sql-view",
+      "objectId": 884302310,
+      "createDate": "2017-07-21T10:00:53.653",
+      "modifyDate": "2025-03-18T11:45:33.720",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Recepcion_Det_SAT",
+      "kind": "sql-view",
+      "objectId": 365452576,
+      "createDate": "2023-11-06T12:07:58.357",
+      "modifyDate": "2023-11-06T12:07:58.357",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Recepcion_For_HH_By_IdBodega",
+      "kind": "sql-view",
+      "objectId": 686117685,
+      "createDate": "2021-05-28T00:24:34.133",
+      "modifyDate": "2021-08-25T09:24:37.110",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Recepcion_For_HH_By_IdBodega_By_Operador",
+      "kind": "sql-view",
+      "objectId": 830118198,
+      "createDate": "2021-05-28T00:25:40.393",
+      "modifyDate": "2022-06-14T09:43:23.253",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RecepcionConOC",
+      "kind": "sql-view",
+      "objectId": 894014316,
+      "createDate": "2016-05-30T14:22:33.090",
+      "modifyDate": "2017-10-13T06:40:54.157",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RecepcionCostoArancel",
+      "kind": "sql-view",
+      "objectId": 1021298748,
+      "createDate": "2016-04-14T11:09:04.867",
+      "modifyDate": "2017-10-13T07:36:59.543",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RecepcionesEncOC",
+      "kind": "sql-view",
+      "objectId": 2139258776,
+      "createDate": "2017-06-06T10:52:09.930",
+      "modifyDate": "2017-06-06T11:14:01.147",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RecepcionSinOC",
+      "kind": "sql-view",
+      "objectId": 1415780201,
+      "createDate": "2017-07-14T11:04:08.940",
+      "modifyDate": "2017-10-13T06:42:26.610",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RecOC_MIX",
+      "kind": "sql-view",
+      "objectId": 1911781968,
+      "createDate": "2017-07-17T14:32:54.817",
+      "modifyDate": "2017-10-13T06:43:37.837",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Reporte_Detalle_Stock_DataSet",
+      "kind": "sql-view",
+      "objectId": 1371972064,
+      "createDate": "2017-10-06T04:58:18.423",
+      "modifyDate": "2017-10-13T06:33:43.910",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Reporte_Recepcion_20190726",
+      "kind": "sql-view",
+      "objectId": 879498362,
+      "createDate": "2019-07-29T10:21:09.860",
+      "modifyDate": "2019-07-29T10:21:09.860",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Reporte_Recepcion_20190727",
+      "kind": "sql-view",
+      "objectId": 895498419,
+      "createDate": "2019-07-29T10:21:16.820",
+      "modifyDate": "2019-07-29T10:21:16.820",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Resoluciones_Operador",
+      "kind": "sql-view",
+      "objectId": 1659361176,
+      "createDate": "2022-11-28T07:05:41.293",
+      "modifyDate": "2022-11-28T07:05:41.293",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Resoluciones_Usuario",
+      "kind": "sql-view",
+      "objectId": 758501981,
+      "createDate": "2024-09-12T08:32:16.203",
+      "modifyDate": "2024-09-12T08:32:16.203",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Revision_Producto",
+      "kind": "sql-view",
+      "objectId": 398116659,
+      "createDate": "2021-05-28T00:22:18.370",
+      "modifyDate": "2022-06-12T00:55:58.753",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RevisionProducto",
+      "kind": "sql-view",
+      "objectId": 1139587198,
+      "createDate": "2016-07-11T12:52:11.187",
+      "modifyDate": "2017-08-13T09:09:16.990",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Rol_Usuario_Estado",
+      "kind": "sql-view",
+      "objectId": 51023463,
+      "createDate": "2024-10-28T22:34:39.237",
+      "modifyDate": "2024-10-28T22:34:39.237",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_rptMinimosMaximos",
+      "kind": "sql-view",
+      "objectId": 1557684697,
+      "createDate": "2016-11-04T08:48:39.937",
+      "modifyDate": "2017-10-13T06:27:54.630",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_rptMinimosMaximos_v2",
+      "kind": "sql-view",
+      "objectId": 2127502808,
+      "createDate": "2019-08-16T15:01:51.013",
+      "modifyDate": "2019-08-16T15:01:51.013",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_rptProductosProximosVencimiento",
+      "kind": "sql-view",
+      "objectId": 1079062980,
+      "createDate": "2016-06-20T17:21:12.500",
+      "modifyDate": "2017-05-19T23:08:53.433",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_RptStock",
+      "kind": "sql-view",
+      "objectId": 439060700,
+      "createDate": "2016-06-16T12:06:42.960",
+      "modifyDate": "2017-05-05T12:47:33.420",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Servicio",
+      "kind": "sql-view",
+      "objectId": 346640478,
+      "createDate": "2021-08-25T09:37:55.423",
+      "modifyDate": "2021-08-25T09:37:55.423",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock",
+      "kind": "sql-view",
+      "objectId": 1201491409,
+      "createDate": "2016-05-27T09:02:21.683",
+      "modifyDate": "2017-10-18T18:49:40.587",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_CambioUbic",
+      "kind": "sql-view",
+      "objectId": 702833766,
+      "createDate": "2022-07-27T17:06:29.400",
+      "modifyDate": "2024-02-01T14:20:37.887",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Enc",
+      "kind": "sql-view",
+      "objectId": 411968644,
+      "createDate": "2017-10-02T01:01:34.707",
+      "modifyDate": "2017-10-02T01:01:34.707",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Especifico",
+      "kind": "sql-view",
+      "objectId": 1260023720,
+      "createDate": "2019-11-13T14:50:51.027",
+      "modifyDate": "2021-08-25T17:03:16.360",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Jornada",
+      "kind": "sql-view",
+      "objectId": 302116317,
+      "createDate": "2021-05-28T00:18:10.303",
+      "modifyDate": "2022-07-13T19:52:28.570",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Por_Producto_Ubicacion_CI",
+      "kind": "sql-view",
+      "objectId": 1377596146,
+      "createDate": "2021-05-28T00:08:39.797",
+      "modifyDate": "2022-03-09T18:35:11.857",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Recep",
+      "kind": "sql-view",
+      "objectId": 655445509,
+      "createDate": "2017-09-18T10:11:51.510",
+      "modifyDate": "2017-10-13T06:31:55.083",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Rep_20200112",
+      "kind": "sql-view",
+      "objectId": 348736495,
+      "createDate": "2021-12-10T09:37:09.567",
+      "modifyDate": "2021-12-10T09:37:09.567",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Res",
+      "kind": "sql-view",
+      "objectId": 547585089,
+      "createDate": "2016-07-07T09:33:47.940",
+      "modifyDate": "2025-06-13T12:07:08.370",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Res_Consolidador",
+      "kind": "sql-view",
+      "objectId": 990118768,
+      "createDate": "2021-05-28T00:29:54.480",
+      "modifyDate": "2021-05-28T00:29:54.480",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_res_jornada",
+      "kind": "sql-view",
+      "objectId": 1283691821,
+      "createDate": "2021-10-06T19:01:55.620",
+      "modifyDate": "2021-10-07T23:49:00.370",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_res_jornada_merca",
+      "kind": "sql-view",
+      "objectId": 1587692904,
+      "createDate": "2021-10-06T23:21:18.593",
+      "modifyDate": "2022-10-25T23:36:44.280",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Res_Pedido",
+      "kind": "sql-view",
+      "objectId": 66203386,
+      "createDate": "2016-11-24T15:36:55.493",
+      "modifyDate": "2022-09-23T22:14:05.290",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Res_Tipo_Producto",
+      "kind": "sql-view",
+      "objectId": 974782680,
+      "createDate": "2018-06-27T16:56:14.270",
+      "modifyDate": "2022-10-25T23:37:05.433",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Res_US",
+      "kind": "sql-view",
+      "objectId": 774502038,
+      "createDate": "2024-09-12T08:32:26.600",
+      "modifyDate": "2024-09-12T08:32:26.600",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Res_V1",
+      "kind": "sql-view",
+      "objectId": 392544632,
+      "createDate": "2019-12-18T10:26:40.880",
+      "modifyDate": "2019-12-18T10:42:48.917",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Reservado_By_IdPedidoEnc",
+      "kind": "sql-view",
+      "objectId": 1125071244,
+      "createDate": "2020-02-04T10:06:34.197",
+      "modifyDate": "2022-07-13T18:38:36.353",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Resumen",
+      "kind": "sql-view",
+      "objectId": 1427640279,
+      "createDate": "2018-01-29T10:38:24.287",
+      "modifyDate": "2022-09-29T16:18:37.407",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Resumen_20220407",
+      "kind": "sql-view",
+      "objectId": 1881265957,
+      "createDate": "2022-05-10T12:22:52.150",
+      "modifyDate": "2022-05-10T12:22:52.150",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Serie_Parametro",
+      "kind": "sql-view",
+      "objectId": 1406732164,
+      "createDate": "2017-05-02T11:16:42.043",
+      "modifyDate": "2017-05-02T11:16:42.043",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_SP",
+      "kind": "sql-view",
+      "objectId": 251916019,
+      "createDate": "2016-05-10T12:14:06.687",
+      "modifyDate": "2019-04-19T11:06:50.443",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Stock_Transito",
+      "kind": "sql-view",
+      "objectId": 1287063721,
+      "createDate": "2016-06-22T15:06:36.757",
+      "modifyDate": "2025-02-11T14:53:51.427",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_StockEstadosProducto",
+      "kind": "sql-view",
+      "objectId": 1643920978,
+      "createDate": "2016-05-16T13:57:28.130",
+      "modifyDate": "2016-06-06T08:42:25.767",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_StockPresentaciones",
+      "kind": "sql-view",
+      "objectId": 1659921035,
+      "createDate": "2016-05-16T14:02:39.237",
+      "modifyDate": "2021-09-23T14:42:40.337",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tamaño_Tablas",
+      "kind": "sql-view",
+      "objectId": 1997458390,
+      "createDate": "2024-02-01T14:25:04.877",
+      "modifyDate": "2024-09-12T08:05:59.833",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tareas_Activas_HH",
+      "kind": "sql-view",
+      "objectId": 943498590,
+      "createDate": "2019-07-29T10:21:38.787",
+      "modifyDate": "2025-08-02T09:38:01.407",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_tareas_hh",
+      "kind": "sql-view",
+      "objectId": 2073162531,
+      "createDate": "2016-09-16T06:43:56.677",
+      "modifyDate": "2016-09-16T06:43:56.677",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tareas_Operador",
+      "kind": "sql-view",
+      "objectId": 799550132,
+      "createDate": "2025-05-05T19:04:25.757",
+      "modifyDate": "2025-05-05T19:04:25.757",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tareas_Picking_HH",
+      "kind": "sql-view",
+      "objectId": 527497108,
+      "createDate": "2019-07-17T12:52:51.900",
+      "modifyDate": "2025-05-06T00:12:44.860",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tarimas",
+      "kind": "sql-view",
+      "objectId": 608109307,
+      "createDate": "2016-07-18T10:47:47.727",
+      "modifyDate": "2016-07-18T10:50:04.307",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TarimasUsadasEnTransaccion",
+      "kind": "sql-view",
+      "objectId": 624109364,
+      "createDate": "2016-07-19T12:02:40.727",
+      "modifyDate": "2016-07-19T12:06:17.397",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TiempoCliente",
+      "kind": "sql-view",
+      "objectId": 562153098,
+      "createDate": "2016-02-29T16:03:32.897",
+      "modifyDate": "2025-03-18T11:46:08.990",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TiempoProveedor",
+      "kind": "sql-view",
+      "objectId": 77451550,
+      "createDate": "2023-10-31T17:25:08.560",
+      "modifyDate": "2024-02-01T14:22:05.710",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tiempos_Despacho_By_IdPedidoEnc",
+      "kind": "sql-view",
+      "objectId": 1590504945,
+      "createDate": "2024-10-01T20:58:30.040",
+      "modifyDate": "2024-10-01T20:58:30.040",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tiempos_ingreso",
+      "kind": "sql-view",
+      "objectId": 305592327,
+      "createDate": "2020-10-07T22:20:48.680",
+      "modifyDate": "2020-10-07T22:20:48.680",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tiempos_Ingreso_Operador",
+      "kind": "sql-view",
+      "objectId": 1622505059,
+      "createDate": "2024-10-01T20:58:38.897",
+      "modifyDate": "2024-10-01T20:58:38.897",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Tiempos_Picking_Operador",
+      "kind": "sql-view",
+      "objectId": 902502494,
+      "createDate": "2024-09-12T08:50:08.723",
+      "modifyDate": "2024-09-12T08:50:08.723",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TMS_Tikcet",
+      "kind": "sql-view",
+      "objectId": 286116260,
+      "createDate": "2021-05-28T00:17:53.277",
+      "modifyDate": "2022-05-24T00:04:15.100",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TMSTickets_Sin_Retroactivo",
+      "kind": "sql-view",
+      "objectId": 1182835476,
+      "createDate": "2022-08-12T14:19:03.727",
+      "modifyDate": "2022-08-12T14:19:03.727",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Trans_Inv_Conteo",
+      "kind": "sql-view",
+      "objectId": 713209741,
+      "createDate": "2018-04-27T15:26:56.200",
+      "modifyDate": "2018-04-27T15:26:56.200",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Trans_Inv_Stock",
+      "kind": "sql-view",
+      "objectId": 729209798,
+      "createDate": "2018-04-27T15:26:56.240",
+      "modifyDate": "2018-04-27T15:26:56.240",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TRANS_OC_DET",
+      "kind": "sql-view",
+      "objectId": 377208544,
+      "createDate": "2018-04-26T12:14:40.400",
+      "modifyDate": "2018-04-26T12:14:40.400",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Trans_Servicios",
+      "kind": "sql-view",
+      "objectId": 426640763,
+      "createDate": "2021-08-25T09:42:18.803",
+      "modifyDate": "2021-08-25T09:42:18.803",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TransUbicacionHhEnc",
+      "kind": "sql-view",
+      "objectId": 1095063037,
+      "createDate": "2016-06-21T10:03:00.937",
+      "modifyDate": "2026-02-11T17:02:16.477",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_TransUbicHhDet",
+      "kind": "sql-view",
+      "objectId": 1028966792,
+      "createDate": "2016-05-23T10:04:19.790",
+      "modifyDate": "2026-02-11T16:55:29.590",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ubicaciones_Inventario_Ciclico",
+      "kind": "sql-view",
+      "objectId": 316736381,
+      "createDate": "2021-12-01T14:39:14.870",
+      "modifyDate": "2021-12-01T14:39:14.870",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ubicaciones_Picking",
+      "kind": "sql-view",
+      "objectId": 1905598027,
+      "createDate": "2021-05-28T00:11:03.707",
+      "modifyDate": "2021-11-19T10:24:46.760",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ubicaciones_Picking_Resumido",
+      "kind": "sql-view",
+      "objectId": 1090311144,
+      "createDate": "2022-06-26T23:55:19.927",
+      "modifyDate": "2022-06-26T23:55:19.927",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "vw_ubicaciones_por_regla",
+      "kind": "sql-view",
+      "objectId": 1321875876,
+      "createDate": "2017-08-10T11:23:20.457",
+      "modifyDate": "2025-02-11T23:42:08.293",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Ubicaciones_Tramo_Disponibles",
+      "kind": "sql-view",
+      "objectId": 220736039,
+      "createDate": "2021-11-18T11:29:49.477",
+      "modifyDate": "2021-11-18T11:29:49.477",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_UbicacionPicking",
+      "kind": "sql-view",
+      "objectId": 1317683842,
+      "createDate": "2016-10-26T14:43:44.327",
+      "modifyDate": "2019-11-19T16:15:10.440",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_UnidadMedida",
+      "kind": "sql-view",
+      "objectId": 1058154865,
+      "createDate": "2016-03-01T14:13:17.553",
+      "modifyDate": "2021-08-25T09:28:00.193",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Valorizacion_OC",
+      "kind": "sql-view",
+      "objectId": 307688344,
+      "createDate": "2021-09-20T15:32:21.490",
+      "modifyDate": "2021-09-20T15:32:21.490",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Verificacion",
+      "kind": "sql-view",
+      "objectId": 940022580,
+      "createDate": "2019-10-03T15:41:36.470",
+      "modifyDate": "2025-05-22T00:04:14.517",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Verificacion_Consolidada",
+      "kind": "sql-view",
+      "objectId": 453784874,
+      "createDate": "2022-05-25T18:48:33.070",
+      "modifyDate": "2024-09-12T08:24:09.130",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Verificacion_Consolidada_LFV",
+      "kind": "sql-view",
+      "objectId": 1191883513,
+      "createDate": "2023-02-21T19:41:24.560",
+      "modifyDate": "2025-03-18T11:46:22.027",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Verificacion_Detallado_Sin_Licencia",
+      "kind": "sql-view",
+      "objectId": 1164075433,
+      "createDate": "2025-07-16T15:39:18.490",
+      "modifyDate": "2025-07-16T15:39:18.490",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Zona_Picking_Tramo",
+      "kind": "sql-view",
+      "objectId": 1317787952,
+      "createDate": "2022-05-27T09:30:52.117",
+      "modifyDate": "2022-05-27T09:30:52.117",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "VW_Zona_Picking_Tramo_Operador",
+      "kind": "sql-view",
+      "objectId": 2005790403,
+      "createDate": "2022-06-10T17:36:52.887",
+      "modifyDate": "2022-06-10T17:36:52.887",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "WMS_Existencia",
+      "kind": "sql-view",
+      "objectId": 1244075718,
+      "createDate": "2025-08-01T16:29:43.640",
+      "modifyDate": "2025-08-01T16:29:43.640",
+      "rowCount": null
+    },
+    {
+      "schema": "dbo",
+      "name": "zona_picking",
+      "kind": "sql-table",
+      "objectId": 709785786,
+      "createDate": "2022-05-26T08:49:51.077",
+      "modifyDate": "2022-05-26T08:49:51.250",
+      "rowCount": "0"
+    },
+    {
+      "schema": "dbo",
+      "name": "zona_picking_tramo",
+      "kind": "sql-table",
+      "objectId": 805786128,
+      "createDate": "2022-05-26T09:47:37.220",
+      "modifyDate": "2022-05-26T09:47:37.657",
+      "rowCount": "0"
+    }
+  ]
+}
