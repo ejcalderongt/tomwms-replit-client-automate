@@ -23,16 +23,28 @@ import { fileURLToPath } from "node:url";
 import { hostname } from "node:os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SCHEMA_VERSION = "1";
+const SCHEMA_VERSION = "2";
+// schema_version "2" agrego 3 tipos para el caso "investigacion SQL al brain de la BD"
+// (cliente PowerShell WmsBrainClient en rama wms-brain-client). Retrocompatible:
+// los eventos viejos schema 1 siguen procesandose normal por los analyzers de WMS.
 const VALID_TYPES = [
+  // schema_version 1 — eventos originados en el WMS
   "apply_succeeded",
   "apply_failed",
   "skill_update",
   "directive",
   "merge_completed",
   "external_change",
+  // schema_version 2 — eventos de investigacion SQL desde el cliente PowerShell
+  "question_request",
+  "question_answer",
+  "learning_proposed",
 ];
-const VALID_STATUSES = ["pending", "analyzed", "proposed", "applied", "skipped"];
+// "answered" es terminal para question_request cuyo question_answer ya fue producido.
+const VALID_STATUSES = ["pending", "analyzed", "proposed", "applied", "skipped", "answered"];
+
+// Tipos que requieren analyzer de investigacion (no buscan matches en .md del brain).
+const INVESTIGATION_TYPES = new Set(["question_request", "question_answer", "learning_proposed"]);
 
 // ---------- arg parsing -----------------------------------------------------
 
@@ -103,15 +115,17 @@ function nowIso() {
 
 function cmdHelp() {
   console.log(`brain_bridge.mjs — bridge entre eventos operativos y el brain
+schema_version=${SCHEMA_VERSION}  (v1: 6 tipos WMS + 5 estados / v2: +3 tipos investigacion +1 estado)
 
 Subcomandos:
 
   notify    Escribir un evento al inbox.
             --exchange-repo <path>      ruta al clon (debe estar en rama wms-brain)
             --from-event-file <path>    cargar draft generado por apply_bundle
+                                        o por el cliente PowerShell WmsBrainClient
                                         (mutuamente exclusivo con flags individuales).
             --type <tipo>               ${VALID_TYPES.join(" | ")}
-            --source <openclaw|replit|manual|apply_bundle>
+            --source <openclaw|replit|manual|apply_bundle|wms-brain-client>
             --bundle <vNN>              opcional
             --commit <sha>              opcional
             --rama-destino <rama>       opcional (default dev_2028_merge)
@@ -356,6 +370,12 @@ function cmdAnalyze(args) {
     throw new Error(`evento '${id}' ya esta en _processed`);
   }
 
+  // Schema v2: dispatch por type. Los tipos de investigacion NO buscan matches en .md;
+  // generan una propuesta especializada que apunta al cliente PowerShell.
+  if (INVESTIGATION_TYPES.has(ev.type)) {
+    return cmdAnalyzeInvestigation(args, exch, ev);
+  }
+
   const needles = [...new Set([
     ...(ev.context?.modules_touched || []),
     ...(ev.context?.tags || []),
@@ -474,6 +494,131 @@ function cmdAnalyze(args) {
   console.log(`commit + push OK`);
 }
 
+// ---------- analyze: tipos de investigacion (schema v2) ---------------------
+
+function cmdAnalyzeInvestigation(args, exch, ev) {
+  // Para los tipos de investigacion no buscamos matches en .md del brain.
+  // Generamos una propuesta dirigida segun el subtipo: question_request,
+  // question_answer, learning_proposed.
+  const lines = [
+    `# Propuesta de tratamiento — investigacion (schema v2)`,
+    ``,
+    `**Evento**: \`${ev.id}\``,
+    `**Tipo**: \`${ev.type}\``,
+    `**Origen**: ${ev.source} (host ${ev.host})`,
+    `**Fecha**: ${ev.created_at}`,
+    ``,
+    `## Contexto`,
+    ``,
+    ev.context?.message || "_(sin mensaje)_",
+    ``,
+  ];
+
+  if (ev.ref?.question_card_path) {
+    lines.push(`**Question card**: \`${ev.ref.question_card_path}\``);
+    lines.push(``);
+  }
+  if (ev.ref?.question_id) {
+    lines.push(`**Question ID**: \`${ev.ref.question_id}\``);
+    lines.push(``);
+  }
+  if (ev.ref?.cliente) {
+    lines.push(`**Cliente / BD**: \`${ev.ref.cliente}\``);
+    lines.push(``);
+  }
+  if (Array.isArray(ev.ref?.evidence_paths) && ev.ref.evidence_paths.length) {
+    lines.push(`**Evidencia adjunta**:`);
+    for (const p of ev.ref.evidence_paths) lines.push(`- \`${p}\``);
+    lines.push(``);
+  }
+
+  const tagsCsv = (ev.context?.tags || []).map((t) => `\`${t}\``).join(", ") || "_(ninguna)_";
+  lines.push(`**Tags**: ${tagsCsv}`);
+  lines.push(``);
+  lines.push(`---`);
+  lines.push(``);
+
+  let nextStatus;
+  if (ev.type === "question_request") {
+    nextStatus = "proposed";
+    lines.push(`## Que hacer`);
+    lines.push(``);
+    lines.push(`Este evento es una **solicitud de investigacion SQL** desde el cliente PowerShell.`);
+    lines.push(`El brain debe:`);
+    lines.push(``);
+    lines.push(`1. Abrir la question card referenciada (\`${ev.ref?.question_card_path || "<no provisto>"}\`).`);
+    lines.push(`2. Revisar el SQL sugerido y los criterios de "answered".`);
+    lines.push(`3. Ejecutar el SQL contra la BD indicada (read-only) o solicitarle a Erik que lo corra.`);
+    lines.push(`4. Generar un answer card (\`answers/A-NNN-*.md\`) con verdict + confidence.`);
+    lines.push(`5. Emitir un evento \`question_answer\` referenciando este \`question_request\`.`);
+    lines.push(`6. Cuando el answer este aceptado, marcar este evento como \`answered\` con:`);
+    lines.push(``);
+    lines.push(`   \`\`\``);
+    lines.push(`   brain_bridge apply --id ${ev.id} --note "answered by A-NNN" --by <iniciales>`);
+    lines.push(`   \`\`\``);
+  } else if (ev.type === "question_answer") {
+    nextStatus = "proposed";
+    lines.push(`## Que hacer`);
+    lines.push(``);
+    lines.push(`Este evento contiene la **respuesta** a un question_request previo.`);
+    lines.push(`El brain debe:`);
+    lines.push(``);
+    lines.push(`1. Localizar el answer card (\`${ev.ref?.answer_card_path || "<no provisto>"}\`).`);
+    lines.push(`2. Validar verdict (confirmed | partial | inconclusive) y confidence (low | medium | high).`);
+    lines.push(`3. Si verdict = confirmed y confidence >= medium, considerar emitir un \`learning_proposed\` para promover el hallazgo a regla.`);
+    lines.push(`4. Marcar el question_request original como \`answered\` (\`apply --id <orig_id>\`).`);
+    lines.push(`5. Marcar este evento como \`applied\` con \`apply --id ${ev.id} --note "answer registrado"\`.`);
+  } else if (ev.type === "learning_proposed") {
+    nextStatus = "proposed";
+    lines.push(`## Que hacer`);
+    lines.push(``);
+    lines.push(`Este evento propone elevar un hallazgo a **regla del brain** (learning card).`);
+    lines.push(`El brain debe:`);
+    lines.push(``);
+    lines.push(`1. Abrir la learning card propuesta (\`${ev.ref?.learning_card_path || "<no provisto>"}\`).`);
+    lines.push(`2. Decidir destino:`);
+    lines.push(`   - \`brain/skills/wms-tomwms/SKILL.md\` (regla operativa).`);
+    lines.push(`   - \`brain/agent-context/AGENTS.md\` (regla de agente).`);
+    lines.push(`   - \`brain/learnings/L-NNN-*.md\` (hallazgo aislado).`);
+    lines.push(`3. Editar el .md destino agregando la regla.`);
+    lines.push(`4. Marcar este evento como \`applied\` con \`apply --id ${ev.id} --note "regla agregada en <path>"\`.`);
+  }
+
+  lines.push(``);
+  lines.push(`---`);
+  lines.push(``);
+  lines.push(`> Propuesta generada automaticamente por brain_bridge (schema_version=${SCHEMA_VERSION}).`);
+  lines.push(`> Este evento NO genero busqueda heuristica en .md del brain — es un tipo de investigacion.`);
+
+  const propPath = join(exch, "brain", "_proposals", `${ev.id}.md`);
+  writeFileSync(propPath, lines.join("\n") + "\n");
+
+  ev.analysis = {
+    candidate_files: [],
+    needles_used: [],
+    investigation_kind: ev.type,
+    auto: true,
+    at: nowIso(),
+  };
+  ev.proposal = { markdown_path: `brain/_proposals/${ev.id}.md` };
+  ev.status = nextStatus;
+  ev.history.push({ at: nowIso(), action: "analyze" });
+  writeFileSync(ev._path, JSON.stringify(ev, null, 2) + "\n");
+
+  console.log(`propuesta de investigacion escrita: brain/_proposals/${ev.id}.md`);
+  console.log(`evento ${ev.id} (${ev.type}) -> status=${nextStatus}`);
+
+  if (args["no-push"]) {
+    console.log("--no-push: skip git commit/push");
+    return;
+  }
+  git(exch, ["add", `brain/_inbox/${ev.id}.json`, `brain/_proposals/${ev.id}.md`]);
+  git(exch, ["-c", "user.email=brain-bridge@prograx24", "-c", "user.name=brain_bridge",
+             "commit", "-m", `wms-brain: analyze ${ev.id} (${ev.type})`]);
+  git(exch, ["push", "origin", "wms-brain"]);
+  console.log(`commit + push OK`);
+}
+
 function cmdApply(args) {
   const exch = resolve(args["exchange-repo"] || "");
   const id = args.id;
@@ -484,7 +629,13 @@ function cmdApply(args) {
     throw new Error(`evento '${id}' ya esta en _processed`);
   }
 
-  ev.status = "applied";
+  // Schema v2: para question_request, "answered" es status terminal (no "applied")
+  // si la --note refiere a una respuesta. Permitimos forzar via --status.
+  if (ev.type === "question_request" && (args.status === "answered" || /\banswered\b/i.test(args.note || ""))) {
+    ev.status = "answered";
+  } else {
+    ev.status = "applied";
+  }
   ev.decision = {
     by: args.by || "agent",
     at: nowIso(),
