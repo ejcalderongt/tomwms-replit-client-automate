@@ -1,6 +1,6 @@
 # Preguntas para afinar el mapeo del flujo WMS — pasada 7
 
-> **Status global**: 9/25 respondidas + 1 parcial + 2 reabiertas. Ver
+> **Status global**: 11/25 respondidas + 1 parcial + 0 reabiertas. Ver
 > respuestas consolidadas en `respuestas-tanda-1.md` (Erik) y
 > `respuestas-tanda-2.md` (SQL autonomo).
 >
@@ -177,15 +177,18 @@
 
 ### P-17 — Push automatico al ERP
 
-`status: PENDIENTE [PRIORIDAD ALTA]`
+`status: RESPONDIDA → interfaces-erp-por-cliente.md (Erik tanda 3)`
 
-**Evidencia**: `i_nav_transacciones_out` tiene 24,193 filas. Es el outbox hacia NAV/SAP.
-
-**Pregunta**: ¿Es un patron outbox (WMS escribe la transaccion, un job la pushea al ERP, marca exito/error)? ¿Hay reintentos automaticos en error? ¿Que tabla guarda la respuesta del ERP (ej. numero de documento generado)?
-
-> **Contexto adicional (tanda 2)**: ya confirmado que el outbox es
-> unificado (sirve para OC, recepciones, pedidos y despachos). Ver
-> `respuestas-tanda-2.md` P-21. Falta solo la cadencia/reintentos.
+> **TL;DR**: outbox polimorfico. Cada cliente tiene su interface dedicada
+> (MI3 WCF / NavSync push / SAPSYNC* / WebAPI MHS). El "patron" del
+> outbox es flexible y depende de la modalidad de integracion:
+> - **Modalidad 1 (WCF)**: ERP cliente hace pull al WMS via MI3.vbproj
+> - **Modalidad 2 (push programado)**: WMS dispara NavSync.vbproj con args
+> - **Modalidad 3 (SAP dedicado)**: SAPSYNC*.vbproj por cliente
+> - **Modalidad 4 (WebAPI moderno)**: WMS expone REST, cliente consume
+>
+> reserva-webapi es la siguiente generacion del modelo MHS (modalidad 4).
+> 5 PEND nuevas (06-10) sobre detalles finos de cada modalidad.
 
 ---
 
@@ -225,13 +228,15 @@
 
 ### P-21 — Cadencia del outbox `i_nav_transacciones_out`
 
-`status: RESPONDIDA PARCIAL → respuestas-tanda-2.md (SQL); P-21b reabierta`
+`status: RESPONDIDA → interfaces-erp-por-cliente.md (Erik tanda 3)`
 
-**Evidencia**: 24,193 filas vs 4,032 despachos. Es ~6x → no es 1:1 con despachos.
-
-> **TL;DR**: outbox unificado (OC + recepciones + pedidos + despachos).
-> Por eso 24k filas. **Reabierta como P-21b**: ¿cual es el job que
-> polea, con que cadencia, como marca exito vs error, y hay reintentos?
+> **TL;DR**: la cadencia NO es responsabilidad del WMS — depende de la
+> modalidad de integracion del cliente. Idealsa (WCF): el ERP cliente
+> decide cuando polear. BYB (NavSync): scheduler externo dispara el .exe.
+> Killios/Mampa/Becofarma/Cumbre (SAPSYNC*): cada uno con su propio
+> scheduler. MHS (WebAPI): cliente decide cuando consultar.
+>
+> Ver `interfaces-erp-por-cliente.md` para el mapeo completo.
 
 ---
 
@@ -291,7 +296,9 @@ Originalmente las criticas eran 6: P-04, P-08, P-10, P-12, P-16, P-17.
 **Aun necesitan a Erik**:
 
 1. **P-04** (decimales SAP) — la unica critica original abierta para Erik.
-2. **P-16b** (despachos completados sin pedido actualizado).
-3. **P-17 / P-21b** (cadencia y reintentos del outbox).
+2. **P-16b** ya CONFIRMADO en datos (ver `bug-report-p16b.md`). Falta
+   identificar el SP responsable (necesito pistas del nombre).
+3. **PEND-06 a PEND-11** (detalles finos de cada modalidad de interface,
+   ver `interfaces-erp-por-cliente.md` seccion final).
 
 Si tenes 5 minutos para P-04 dejamos cerrado el frente Killios.
