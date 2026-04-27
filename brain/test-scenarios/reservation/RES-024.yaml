@@ -1,0 +1,38 @@
+# RES-024: BYB — transferencia 45 CJS con presentación específica
+id: RES-024
+version: 1
+category: reservation
+severity: medium
+title: "BYB — transferencia 45 CJS con presentación específica"
+summary: |
+  Cliente BYB. BeTrasDet.Quantity = 45 CJS, Variant_Code = BeProductoPresentacionDefecto.Codigo (presentación específica indicada). Reserva en presentación dominante de 45 cajas.
+
+requires_config:
+  - Control_lote: true
+  - Control_vencimiento: true
+
+input:
+  requested_qty: 45
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+
+
+expected:
+  1. Reserva 45 CJS en la presentación por defecto del producto.
+  2. Datos de inventario inicial: pendientes de extraer del cuerpo (líneas 17875-18102).
+
+legacy_origin:
+  case: "CASO 20"
+  function: "Ejecuta_QA_CASO_20_BYB_202311171219"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "17875-18102"
+
+notes: |
+  PENDIENTE: completar setup de inventario inicial.
