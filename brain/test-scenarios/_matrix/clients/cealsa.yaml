@@ -5,20 +5,25 @@ learned_from:
   server: "52.41.114.122,1437"
   database: "IMS4MB_CEALSA_QAS"
   branch: dev_2023_merge_equivalent
-  when: "2026-04-27T14:56:31.611Z"
+  when: "2026-04-27T15:31:09.941Z"
   query: "SELECT c.*, b.nombre AS bodega_nombre, b.codigo AS bodega_codigo FROM i_nav_config_enc c LEFT JOIN bodega b ON b.idEmpresa=c.idempresa AND b.idBodega=c.idbodega WHERE c.idEmpresa=1"
 
 profile:
   erp: "sin ERP integrado"
   rubro: "3PL multi-cliente"
-  modelo_inventario: "1 bodega general + 1 bodega fiscal (passthrough sin flags activos)."
+  modelo_inventario: "1 bodega general + 1 bodega fiscal (passthrough sin flags activos)"
+  modo_reserva: "discrecional (motor del WMS no se invoca por defecto; depende de trans_pe_tipo.ReservaStock o peticion explicita)"
   notas: |
-    Outputs principales: stock jornada (VW_Stock_Jornada, 74 cols) y prefacturación (trans_prefactura_*). NO tiene proceso ni datos de reabastecimiento. equiparar_cliente_con_propietario_en_doc_salida=true (propio del 3PL).
+    WMS recibe lo que dicen polizas de entrada y saca lo que dicen polizas de salida. Operador elige stock discrecionalmente bajo peticion del cliente.
+    Evidencia: trans_pe_det_log_reserva tiene 0 registros en CEALSA.
+    trans_pe_pol y trans_pe_servicios criticos para 3PL.
+    PE0001 y PE0005 con control_poliza=SI.
 
 bodegas:
   - id: 1
     codigo: "B01"
     nombre: "BODEGA GENERAL"
+    tipo: operativa
     flags:
       control_vencimiento: false
       control_lote: false
@@ -53,6 +58,7 @@ bodegas:
   - id: 2
     codigo: "B02"
     nombre: "BODEGA FISCAL"
+    tipo: operativa
     flags:
       control_vencimiento: false
       control_lote: false
@@ -84,3 +90,31 @@ bodegas:
       generar_recepcion_auto_bodega_destino: false
       dias_vida_defecto_perecederos: 0
       IdProductoEstado: 1
+
+tipos_pedido:
+  - id: 1
+    nombre: "PE0001"
+    reserva_stock: true
+    control_poliza: true
+  - id: 2
+    nombre: "PE0002"
+    reserva_stock: true
+  - id: 3
+    nombre: "PE0003"
+    reserva_stock: true
+  - id: 4
+    nombre: "PE0004"
+    reserva_stock: false
+  - id: 5
+    nombre: "PE0005"
+    reserva_stock: true
+    control_poliza: true
+  - id: 7
+    nombre: "Requisicion"
+    reserva_stock: true
+  - id: 9
+    nombre: "PDV_NAV"
+    reserva_stock: true
+
+casos_reserva_observados:
+
