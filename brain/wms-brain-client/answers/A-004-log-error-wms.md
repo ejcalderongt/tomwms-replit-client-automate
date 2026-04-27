@@ -20,7 +20,7 @@ tags: [errores, log, K7, BB, PEND-11]
 
 Confirmado: `log_error_wms` es **mas una bitacora de eventos
 funcionales que un log de errores reales**. Esquema identico
-en K7 y BB: 15 columnas con `MensajeError` (nvarchar(max)),
+en K7 y BB: 15 columnas con `MensajeError` (nvarchar(2500)),
 `Fecha`, y FK opcionales a `IdPedidoEnc`/`IdPickingEnc`/
 `IdRecepcionEnc`. K7 acumula 66,339 filas en 4 meses (May-Sep
 2025), BB lleva 203,782 historicas. La mayoria de los mensajes
@@ -52,7 +52,7 @@ Referencia_Documento | nvarchar | YES | 50
 ```
 
 **Interpretacion**: Cols: `IdError`, `IdEmpresa`, `IdBodega`,
-`Fecha`, `MensajeError` (nvarchar(max)), `IdPedidoEnc`,
+`Fecha`, `MensajeError` (nvarchar(2500)), `IdPedidoEnc`,
 `IdPickingEnc`, `IdRecepcionEnc`, `IdUsuarioAgr`, `Line_No`,
 `Item_No` (nvarchar(50)), `UmBas`, `Variant_Code`,
 `Cantidad` (float), `Referencia_Documento` (nvarchar(50)).

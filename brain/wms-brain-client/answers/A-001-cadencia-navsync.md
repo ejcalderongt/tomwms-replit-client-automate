@@ -115,6 +115,8 @@ del motor.
 
 ## Notas del operador
 
-Las queries se ejecutaron con usuario `sa` desde un host
-autorizado. No se accedio al binario NavSync en el host de aplicacion;
-queda fuera del alcance del agente.
+Las queries se ejecutaron con un login SQL privilegiado desde un
+host autorizado (vease nota de `brain/replit.md` §5: el agente
+deberia migrar a un usuario read-only `read_brain` o equivalente
+cuando este disponible). No se accedio al binario NavSync en el
+host de aplicacion; queda fuera del alcance del agente.
