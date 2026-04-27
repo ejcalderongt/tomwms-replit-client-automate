@@ -1,0 +1,98 @@
+id: INV-001
+title: Ajuste positivo de stock con flag momdifica_vencimiento
+module: ajustes
+priority: P1
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: TODO
+  function: TODO
+  source: pendiente identificar clase de pruebas de ajustes
+
+description: >
+  Se ejecuta un ajuste positivo (alta de stock) sobre un producto con
+  control de vencimiento, usando un tipo de ajuste que tiene la flag
+  `momdifica_vencimiento=1` (con typo, así está en BD).
+
+  Valida que el motor de ajustes inserta el stock con el vencimiento
+  enviado por el operador (lo modifica respecto del default), no usa
+  el default de la presentación.
+
+  Es importante porque la flag tiene un typo histórico que cambiar
+  rompería migraciones y SPs. El test debe cubrir el comportamiento
+  con el nombre actual.
+
+required_config:
+  producto.control_vencimiento: 1
+  ajuste_tipo.momdifica_vencimiento: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: assert_pre_state
+    checks:
+      - check: row_exists
+        table: ajuste_tipo
+        where:
+          codigo: "{ajuste_tipo positivo con momdifica_vencimiento=1}"
+        note: "Pre-condición: existe el tipo de ajuste con la flag activa"
+
+action:
+  endpoint: /api/test-bridge/sandbox/adjustment
+  method: POST
+  body:
+    ajuste:
+      tipo: "{ajuste_tipo positivo con momdifica_vencimiento=1}"
+      bodega: "{bodega activa}"
+      operador_id: "{operador HH sentinel}"
+      lineas:
+        - producto: "{producto con control_vencimiento=1}"
+          ubicacion: "{ubicacion no-picking activa}"
+          cantidad: 5
+          lote: "INV001_AJUSTE"
+          vencimiento: "2027-06-30"
+          presentacion: "{presentacion default}"
+
+expected:
+  - check: row_exists
+    table: stock
+    where:
+      lote: "INV001_AJUSTE"
+      cantidad: 5
+    note: "Quedó el stock insertado"
+
+  - check: column_value
+    table: stock
+    where:
+      lote: "INV001_AJUSTE"
+    column: fecha_vence
+    value: "2027-06-30"
+    note: "El vencimiento es el enviado, NO el default de la presentación"
+
+  - check: row_exists
+    table: trans_aju_enc
+    where:
+      tipo: "{ajuste_tipo positivo}"
+      operador_id: "{operador HH sentinel}"
+    note: "Quedó traza del ajuste en trans_aju_enc"
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - golden-path
+  - ajustes
+  - flag-dependent
+  - legacy-typo
+
+notes: |
+  El typo `momdifica_vencimiento` en lugar de `modifica_vencimiento`
+  es deliberado: así está en la BD productiva. Cambiar el nombre
+  rompería migraciones y SPs. Si en el futuro se renombra, este
+  escenario debe migrarse junto.
