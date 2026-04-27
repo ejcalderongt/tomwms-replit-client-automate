@@ -1,0 +1,75 @@
+{
+  "name": "outbox-health",
+  "version": 1,
+  "protocolVersion": 1,
+  "description": "Diagnostica el estado del outbox i_nav_transacciones_out: cols, distribucion enviado/tipo, pendientes, edad, latencia.",
+  "appliesTo": {
+    "tablesRequired": ["i_nav_transacciones_out"],
+    "schemas": ["dbo"],
+    "minRowsRecommended": 100
+  },
+  "queries": [
+    {
+      "id": "O1",
+      "file": "queries/O1-cols-outbox.sql",
+      "type": "schema",
+      "title": "Columnas del outbox",
+      "description": "Dump de INFORMATION_SCHEMA.COLUMNS para i_nav_transacciones_out. Detecta drift de cols entre clientes."
+    },
+    {
+      "id": "O2",
+      "file": "queries/O2-distribucion-enviado-tipo.sql",
+      "type": "data",
+      "title": "Distribucion enviado x tipo_transaccion",
+      "description": "Matriz 2x2 (enviado=0/1 vs tipo=INGRESO/SALIDA). Identifica si la integracion procesa todo o esta parcial."
+    },
+    {
+      "id": "O3",
+      "file": "queries/O3-pendientes-actuales.sql",
+      "type": "data",
+      "title": "Pendientes actuales por tipo",
+      "description": "Conteo de enviado=0 con la fecha mas vieja y mas reciente. Muestra el rango de pendientes."
+    },
+    {
+      "id": "O4",
+      "file": "queries/O4-pendientes-muestra.sql",
+      "type": "data",
+      "title": "Sample de pendientes mas viejos",
+      "description": "Top 15 pendientes ordenados por fec_agr asc. Util para inspeccionar casos abandonados."
+    },
+    {
+      "id": "O5",
+      "file": "queries/O5-cols-envio-relacionadas.sql",
+      "type": "schema",
+      "title": "Columnas relacionadas con envio/error",
+      "description": "Filtro de cols cuyo nombre matchea enviado/intent/error/fecha/etc. Detecta si esta BD tiene cols extra de error/intentos que otras no."
+    },
+    {
+      "id": "O6",
+      "file": "queries/O6-edad-pendientes.sql",
+      "type": "data",
+      "title": "Edad de pendientes (histograma)",
+      "description": "Histograma de pendientes por rango de edad (0-1d, 2-7d, 8-30d, 31-90d, >90d). Detecta pendientes olvidados."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "RF1",
+      "condition": "O2 muestra > 80% pendientes en algun (tipo_transaccion, enviado=0)",
+      "interpretation": "La interface esta caida o no procesa ese tipo de transaccion. Ver caso BB con 99.9% INGRESOS pendientes."
+    },
+    {
+      "id": "RF2",
+      "condition": "O6 muestra pendientes con edad > 90 dias",
+      "interpretation": "Hay registros olvidados sin reproceso. Posible bug o falta de monitoreo."
+    },
+    {
+      "id": "RF3",
+      "condition": "O1 muestra cols nuevas no documentadas en SPEC",
+      "interpretation": "Drift de schema vs baseline. Considerar Save-WmsBrainSchemaSnapshot."
+    }
+  ],
+  "expectedDurationSeconds": 5,
+  "readOnly": true,
+  "tags": ["outbox", "integracion", "navsync", "sapsync"]
+}
