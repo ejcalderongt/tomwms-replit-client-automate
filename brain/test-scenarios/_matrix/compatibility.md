@@ -1,58 +1,45 @@
 # Matriz de compatibilidad escenario × cliente
 
-> Auto-generada por `compute-matrix.cjs` a partir de `clients/*.yaml` y los
-> `requires_config` de cada `reservation/RES-*.yaml`.
-> Estado: **todos los clientes están `learned: false`** → todas las celdas son
-> `unknown`. Una vez ejecutado `learn-config` contra Killios PRD (rama
-> dev_2023_merge), las celdas se resuelven a `OK` / `N/A` / `INVALID`.
+> Generada automaticamente desde flags reales aprendidos (2026-04-27T14:56:31.611Z).
+> Para clientes con varias bodegas funcionalmente identicas, se mostro una entrada.
+> CEALSA se desdobla en CEALSA-gen (bodega 1) y CEALSA-fiscal (bodega 2, passthrough).
 
 ## Leyenda
 
-- `OK`: el cliente cumple los `requires_config` del escenario; debe correrse y validarse.
-- `N/A`: el cliente NO cumple los `requires_config`; el escenario no aplica.
-- `unknown`: faltan datos del cliente o del escenario; no se puede decidir.
-- `INVALID`: el escenario tiene `requires_config` contradictorios; revisar YAML.
-
-## Hipótesis previas (a confirmar con learn-config)
-
-| Cliente | Hipótesis dominante |
-|---|---|
-| IDEALSA | Control_vencimiento + FEFO + Explosion_Automatica desde pick |
-| BYB | Documentos de traslado, explosión desconocida |
-| KILLIOS | Por confirmar (this is the source of truth) |
-| LA_CUMBRE | Similar a IDEALSA, sin Conservar_Zona_Picking_Clavaud |
+- `OK`: cliente cumple los `requires_config` del escenario; correr y validar.
+- `N/A`: cliente NO cumple `requires_config`; el escenario no aplica.
+- `?`: ambiguedad documentada en el escenario.
 
 ## Matriz
 
-| Escenario | IDEALSA | BYB | KILLIOS | LA_CUMBRE |
-|---|---|---|---|---|
-| RES-001 | unknown | unknown | unknown | unknown |
-| RES-006 | unknown | unknown | unknown | unknown |
-| RES-007 | unknown | unknown | unknown | unknown |
-| RES-008 | unknown | unknown | unknown | unknown |
-| RES-009 | unknown | unknown | unknown | unknown |
-| RES-010 | unknown | unknown | unknown | unknown |
-| RES-011 | unknown | unknown | unknown | unknown |
-| RES-012 | unknown | unknown | unknown | unknown |
-| RES-013 | unknown | unknown | unknown | unknown |
-| RES-014 | unknown | unknown | unknown | unknown |
-| RES-015 | unknown | unknown | unknown | unknown |
-| RES-016 | unknown | unknown | unknown | unknown |
-| RES-017 | unknown | unknown | unknown | unknown |
-| RES-018 | unknown | unknown | unknown | unknown |
-| RES-019 | unknown | unknown | unknown | unknown |
-| RES-020 | unknown | unknown | unknown | unknown |
-| RES-021 | unknown | unknown | unknown | unknown |
-| RES-022 | unknown | unknown | unknown | unknown |
-| RES-023 | unknown | unknown | unknown | unknown |
-| RES-024 | unknown | unknown | unknown | unknown |
-| RES-DIN | unknown | unknown | unknown | unknown |
+| Escenario | KILLIOS | BYB | CEALSA-gen | CEALSA-fiscal | Notas |
+|---|---|---|---|---|---|
+| RES-001 | OK | N/A | N/A | N/A |  |
+| RES-006 | OK | N/A | N/A | N/A |  |
+| RES-007 | OK | N/A | N/A | N/A | duplicado funcional, candidato a colapso |
+| RES-008 | OK | N/A | N/A | N/A |  |
+| RES-009 | OK | N/A | N/A | N/A |  |
+| RES-010 | OK | N/A | N/A | N/A | duplicado funcional, candidato a colapso |
+| RES-011 | OK | N/A | N/A | N/A |  |
+| RES-012 | OK | N/A | N/A | N/A |  |
+| RES-013 | OK | N/A | N/A | N/A |  |
+| RES-014 | OK | N/A | N/A | N/A |  |
+| RES-015 | OK | N/A | N/A | N/A |  |
+| RES-016 | OK | N/A | N/A | N/A |  |
+| RES-017 | OK | N/A | N/A | N/A |  |
+| RES-018 | OK | N/A | N/A | N/A |  |
+| RES-019 | OK | N/A | N/A | N/A | ambiguedad pendiente (rechaza vs explota G) |
+| RES-020 | OK | N/A | N/A | N/A |  |
+| RES-021 | OK | N/A | N/A | N/A | reservar_umbas_primero=false en TODOS → expected del legacy no se cumple en prod |
+| RES-022 | OK | N/A | N/A | N/A |  |
+| RES-023 | OK | N/A | N/A | N/A |  |
+| RES-024 | OK | N/A | N/A | N/A |  |
+| RES-DIN | OK | OK | OK | OK |  |
 
-## Próximo paso para hacer la matriz útil
+## Resumen
 
-1. Ejecutar `brain/skills/wms-test-bridge/sql/learn-config.sql` contra Killios PRD
-   con cada bodega relevante.
-2. Volcar el resultado en `clients/killios.yaml` bajo `flags:` y poner
-   `learned: true`, `learned_from.branch: dev_2023_merge`.
-3. Re-correr `compute-matrix.cjs` para regenerar este archivo.
-4. Repetir para los otros clientes cuando se tenga acceso o se obtengan dumps.
+- **Killios** cumple todos los escenarios FEFO/explosion (control_vencimiento=true, explosion_automatica=true, explosion_automatica_desde_ubicacion_picking=true). Atencion al typo `explosio_automatica_nivel_max=1` vs `explosion_automatica_nivel_max=-1`.
+- **BYB** cumple los mismos. Ademas es el unico para escenarios de reabastecimiento.
+- **CEALSA-gen** cumple basicos, no los SAP-especificos.
+- **CEALSA-fiscal** N/A para todos los escenarios de reserva (bodega passthrough sin flags activos).
+- **RES-021** reservar_umbas_primero=false en los 3 clientes → revisar el expected del escenario, el legacy asumia true.
