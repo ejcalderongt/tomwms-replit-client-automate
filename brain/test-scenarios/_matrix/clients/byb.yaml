@@ -1,17 +1,44 @@
-slug: byb
-display_name: BYB
-country: GT
-notes: |
-  Origen de los CASOs 18, 19, 20 del clsLnStock_res. Suelen incluir fechas
-  vencidas (1900-01-01, 2024-12-XX) para validar manejo de lotes con vencimiento
-  pasado.
+# Cliente: BYB
+id: byb
+name: "BYB"
+brand: "BYB"
+
+# Estado de aprendizaje. Todos los flags están en null hasta correr
+# brain/skills/wms-test-bridge/sql/learn-config.sql contra la bodega del cliente
+# y volcar la fila resultante.
 learned: false
-learned_at: null
-learned_from: null
+learned_from:
+  branch: null          # dev_2023_merge cuando se ejecute contra Killios PRD
+  bodega: null
+  fecha: null
+
+# Flags reales (nombres exactos de la entidad clsBeI_nav_config_enc).
+# Tipos: ver brain/skills/wms-test-bridge/reference/config-flags.md
 flags:
-  IdProductoEstado: "(inferido) ESTADO_DISPONIBLE"
-  IdPropietario: "01"
-  Reservar_Desde_Picking_Antes_Que_Almacenamiento: "(inferido) true"
-  Permite_Explosion_En_Picking: "(inferido) true"
-  Rechazar_Pedido_Si_Esta_Incompleto: "(inferido) true"
-  Permite_Reservar_Lote_Vencido: "(inferido) true  # casos 18-20 usan fechas vencidas"
+  Rechazar_pedido_incompleto: null   # pendiente learn-config
+  Despachar_existencia_parcial: null   # pendiente learn-config
+  Convertir_decimales_a_umbas: null   # pendiente learn-config
+  Reservar_UMBas_Primero: null   # pendiente learn-config
+  Implosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica_Desde_Ubicacion_Picking: null   # pendiente learn-config
+  Explosion_Automatica_Nivel_Max: null   # pendiente learn-config
+  IdTipoRotacion: null   # pendiente learn-config
+  IdProductoEstado: null   # pendiente learn-config
+  Conservar_Zona_Picking_Clavaud: null   # pendiente learn-config
+  Excluir_Ubicaciones_Reabasto: null   # pendiente learn-config
+  considerar_paletizado_en_reabasto: null   # pendiente learn-config
+  Considerar_Disponibilidad_Ubicacion_Reabasto: null   # pendiente learn-config
+  Valida_Solo_Codigo: null   # pendiente learn-config
+  Control_lote: null   # pendiente learn-config
+  Control_vencimiento: null   # pendiente learn-config
+  Genera_lp: null   # pendiente learn-config
+
+notes: |
+  Cliente BYB. Origen de los CASOs 18-20 del legacy QA (transferencias).
+  Hipótesis (a confirmar con learn-config):
+  - Bodega típica de transferencia entre puntos. Los CASOs BYB usan
+    Importar_Pedido_Cliente_A_Tabla_Intermedia con BeINavPedCompraEnc (no Pedido_De_Cliente).
+  - Control_lote y Control_vencimiento probablemente True.
+  - Explosion/Implosion automática: desconocido.
+  - BeTrasDet.Quantity = 45 CJS en CASO 20 sugiere reservas en presentación dominante.
