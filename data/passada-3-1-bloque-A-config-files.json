@@ -1,0 +1,2826 @@
+{
+  "generatedAt": "2026-04-27T04:24:28.448Z",
+  "total": 938,
+  "groups": {
+    "resx": [
+      {
+        "path": "/AWS_WMSBD_Updater/My Project/Resources.resx"
+      },
+      {
+        "path": "/AppGlobal/My Project/Resources.resx"
+      },
+      {
+        "path": "/CEALSAMI3/AppGlobal/My Project/Resources.resx"
+      },
+      {
+        "path": "/CEALSAMI3/DAL/My Project/Resources.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Entity/My Project/Resources.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Mantenimientos/frmNavEnt.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Mantenimientos/frmNavEnt_List.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Principal/frmMenu.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Reportes/frmEjecuciones.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Reportes/frmRegistroInter.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Reportes/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/CEALSAMI3/My Project/Resources.resx"
+      },
+      {
+        "path": "/DMS/Formas/Mantenimientos/Configuracion_Interface/frmConfiguracionHorarios.resx"
+      },
+      {
+        "path": "/DMS/Formas/Mantenimientos/Configuracion_Interface/frmConfiguracionList.resx"
+      },
+      {
+        "path": "/DMS/Formas/Mantenimientos/frmRegistraFechaExpotacion.resx"
+      },
+      {
+        "path": "/DMS/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/DMS/Formas/frmLogEventos.resx"
+      },
+      {
+        "path": "/DMS/My Project/Resources.resx"
+      },
+      {
+        "path": "/DashBorlin/Diseñador/frmDashDesigner.resx"
+      },
+      {
+        "path": "/DashBorlin/My Project/Resources.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Mantenimientos/frmNavEnt.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Mantenimientos/frmNavEnt_List.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Principal/frmMenu.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Reportes/frmEjecuciones.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Reportes/frmRegistroInter.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Reportes/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Reportes/frmRegistrosPendPush.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/DynamicsNavInterface/My Project/Resources.resx"
+      },
+      {
+        "path": "/FíxTheBug/My Project/Resources.resx"
+      },
+      {
+        "path": "/FíxTheBug/frmPolizaTemporal.resx"
+      },
+      {
+        "path": "/FíxTheBug/frmProceso.resx"
+      },
+      {
+        "path": "/FíxTheBug/frmTablaRelacionada.resx"
+      },
+      {
+        "path": "/GoCloud/My Project/Resources.resx"
+      },
+      {
+        "path": "/GoCloudy/My Project/Resources.resx"
+      },
+      {
+        "path": "/MES/Formas/frmImprimir_Etiqueta.resx"
+      },
+      {
+        "path": "/MES/Formas/frmLogin.resx"
+      },
+      {
+        "path": "/MES/Formas/frmSplashQuickTag.resx"
+      },
+      {
+        "path": "/MES/Formas/frmmenu.resx"
+      },
+      {
+        "path": "/MES/Licencia/frmLicSolicitud.resx"
+      },
+      {
+        "path": "/MES/Licencia/frmLicVencida.resx"
+      },
+      {
+        "path": "/MES/Licencia/frmLicencia.resx"
+      },
+      {
+        "path": "/MES/Licencia/frmLicenciaSolicitada.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Conector_WMS/frmEditorIni.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Impresora/frmPrintManager.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Impresora/frmPrinterConfig.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Producto/frmProducto.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Producto/frmProductoList.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Sucursal/frmSucursal.resx"
+      },
+      {
+        "path": "/MES/Mantenimientos/Sucursal/frmSucursalList.resx"
+      },
+      {
+        "path": "/MES/My Project/Resources.resx"
+      },
+      {
+        "path": "/MI3/My Project/Resources.resx"
+      },
+      {
+        "path": "/PlotWH/Formas/WaitForm.resx"
+      },
+      {
+        "path": "/PlotWH/Formas/frmDiseño.resx"
+      },
+      {
+        "path": "/PlotWH/My Project/Resources.resx"
+      },
+      {
+        "path": "/PrintService/My Project/Resources.resx"
+      },
+      {
+        "path": "/PrintService/PrintService.resx"
+      },
+      {
+        "path": "/PrintService/ProjectInstaller.resx"
+      },
+      {
+        "path": "/PrintServices/My Project/Resources.resx"
+      },
+      {
+        "path": "/PrintsService/Forma/frmImpresiones.resx"
+      },
+      {
+        "path": "/PrintsService/My Project/Resources.resx"
+      },
+      {
+        "path": "/Quick_Tag/Formas/frmLogin.resx"
+      },
+      {
+        "path": "/Quick_Tag/Formas/frmPrint_Label.resx"
+      },
+      {
+        "path": "/Quick_Tag/Formas/frmSplashQuickTag.resx"
+      },
+      {
+        "path": "/Quick_Tag/Licencia/frmLicSolicitud.resx"
+      },
+      {
+        "path": "/Quick_Tag/Licencia/frmLicVencida.resx"
+      },
+      {
+        "path": "/Quick_Tag/Licencia/frmLicenciaSolicitada.resx"
+      },
+      {
+        "path": "/Quick_Tag/My Project/Resources.resx"
+      },
+      {
+        "path": "/RFIDPrint/Form1.resx"
+      },
+      {
+        "path": "/RFIDPrint/WaitForm.resx"
+      },
+      {
+        "path": "/SAPMI3PC/AppGlobal/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPMI3PC/DAL/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Entity/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Mantenimientos/frmNavEnt.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Mantenimientos/frmNavEnt_List.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Principal/frmMenu.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Reportes/frmEjecuciones.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Reportes/frmRegistroInter.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Reportes/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/frmTestCon.resx"
+      },
+      {
+        "path": "/SAPMI3PC/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Reportes/frmStockPorLote.resx"
+      },
+      {
+        "path": "/SAPMI3PC/Reportes/frmStockPorLoteArea.resx"
+      },
+      {
+        "path": "/SAPMI3PC/WaitForm.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/AppGlobal/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/DAL/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Entity/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Mantenimientos/frmNavEnt.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Mantenimientos/frmNavEnt_List.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Principal/frmMenu.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Producto/frmProducto_List.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Reportes/frmEjecuciones.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Reportes/frmRegistroInter.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Reportes/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/frmTestCon.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Reportes/frmStockPorLoteArea.resx"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/WaitForm.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/AppGlobal/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/DAL/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Entity/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Mantenimientos/frmNavEnt.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Mantenimientos/frmNavEnt_List.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Principal/frmMenu.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Producto/frmProducto_List.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Reportes/frmEjecuciones.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Reportes/frmRegistroInter.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Reportes/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/frmTestCon.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Reportes/frmStockPorLoteArea.resx"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/WaitForm.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/AppGlobal/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/DAL/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Entity/My Project/Resources.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Mantenimientos/frmNavEnt.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Mantenimientos/frmNavEnt_List.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Principal/frmMenu.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Reportes/frmEjecuciones.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Reportes/frmRegistroInter.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Reportes/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/frmEjecucion.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/frmTestCon.resx"
+      },
+      {
+        "path": "/SAPSYNC_Killios/My Project/Resources.resx"
+      },
+      {
+        "path": "/SW/My Project/Resources.resx"
+      },
+      {
+        "path": "/SW/ProjectInstaller.resx"
+      },
+      {
+        "path": "/TESTWCFHH/My Project/Resources.resx"
+      },
+      {
+        "path": "/TMS/Formas/WaitForm.resx"
+      },
+      {
+        "path": "/TMS/Formas/frmLoginEx.resx"
+      },
+      {
+        "path": "/TMS/Formas/frmPrincipal.resx"
+      },
+      {
+        "path": "/TMS/Formas/frmPrintTicket.resx"
+      },
+      {
+        "path": "/TMS/Formas/frmTicketEdit.resx"
+      },
+      {
+        "path": "/TMS/Formas/frmTicketN.resx"
+      },
+      {
+        "path": "/TMS/Licencia/frmLicSolicitud.resx"
+      },
+      {
+        "path": "/TMS/Licencia/frmLicVencida.resx"
+      },
+      {
+        "path": "/TMS/Licencia/frmLicencia.resx"
+      },
+      {
+        "path": "/TMS/Licencia/frmLicenciaSolicitada.resx"
+      },
+      {
+        "path": "/TMS/My Project/Resources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/DAL/My Project/Resources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Entity/My Project/Resources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/My Project/Resources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Service References/Recursos Localizables/StringResources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/IA/frmIA_Chat.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Acuerdos_Comerciales/Tipo_AcuerdoComercial/frmTipoAcuerdoComercial.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Acuerdos_Comerciales/frmAcuerdoComercial.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Ajuste/frmAjusteLogin.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Ajuste/frmAjusteMotivo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Ajuste/frmAjusteMotivo_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Ajuste/frmAjusteTipo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Ajuste/frmAjusteTipo_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Ajuste/frmImportarAjusteExcel.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Arancel/frmArancel.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Arancel/frmArancel_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Backup/frmBackup.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Base_Datos/frmBD.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Base_Datos/frmTablasBD.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Bodega_Tramo_List/frmBodegaTramoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmEstBodega.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmEstGeneracion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmEstSector.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmEstTramo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmEstructuraBod.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmTramo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Estructura/frmValidacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/Ubicacion/frmBodegaUbicacion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/frmBodega.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/frmBodegaSelUbic.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/frmBodegaT.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/frmBodegaTree.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/frmBodega_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega_Graficador/frmColumViewervb.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega_Graficador/frmDiseñoB.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega_Monitor_Parametro/frmBodegaMonitor_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega_Muelles/frmBodega_Muelles.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega_Muelles/frmBodega_MuellesList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega_Tramo/frmBodegaTramo_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Calendario/frmApunte.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Calendario/frmCalendar.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Calendario/frmCalendar01.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Camara/frmCamara.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Camara/frmCamara_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Campaña/frmCampaña.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Campaña/frmCampaña_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Carga_Excel/frmCargaExcel.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Carga_Excel/frmCargaExcel_Anterior.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Carga_Excel/frmCargaExcel_DI.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Carga_Excel/frmCargaExcel_Inv_Ini_Op_Log.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Carga_Excel/frmCargaExcel_OC.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Centro_Costos/frmCentro_Costos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Centro_Costos/frmCentro_Costos_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente/Tiempos_Clientes/frmTiemposClientes_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente/frmCliente.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente/frmCliente_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente/frmMapa.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente_Tipo/frmClienteTipo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente_Tipo/frmClienteTipo_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Configuracion/frmBaseDatos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Configuracion_Interface/frmConfiguracion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Configuracion_Interface/frmConfiguracionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Consolidador/frmConsolidador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Consolidador/frmConsolidador_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cuadrilla/Cuadrilla/frmCuadrilla.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cuadrilla/Cuadrilla/frmCuadrilla_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cuadrilla/Tipo_Cuadrilla/frmTipoCuadrilla.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cuadrilla/Tipo_Cuadrilla/frmTipoCuadrilla_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/EditorIni/frmEditorIni.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Email/frmcorreorpt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa/frmEmpresa.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa/frmEmpresaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa/frmTablasRelacionadas.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte/frmEmpresa_Transporte.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte/frmEmpresa_TransporteList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte_Piloto/frmEmpresa_Transporte_Piloto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte_Piloto/frmEmpresa_Transporte_PilotoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte_Vehiculo/frmEmpresa_Transporte_Vehiculo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte_Vehiculo/frmEmpresa_Transporte_VehiculoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Font_Tramo/frmFont_Tramo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Font_Tramo/frmFont_Tramo_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Horario_Laboral/frmHorario_Laboral.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Horario_Laboral/frmHorario_LaboralList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/I_Nav_Servicios/frmServicio.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/I_Nav_Servicios/frmServicio_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Impresion_OC/frmImpresion_OC.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Impresion_OC/frmImpresion_OC_RFID.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Impresion_Recepcion/frmImpresionRecepcion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Impresora/frmImpresora.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Impresora/frmImpresora_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Indice_Rotacion/frmIndiceRotacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Indice_Rotacion/frmIndiceRotacion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Jornada_Laboral/frmJornada_Laboral.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Jornada_Laboral/frmJornada_LaboralList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Jornada_Sistema/frmJornadaSistema.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Manufactura/frmTipoTranManufactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Manufactura/frmTipoTranManufactura_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Mensaje_Regla/frmMensajeRegla.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Mensaje_Regla/frmMensajeRegla_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Montacarga/frmMontacarga.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Montacarga/frmMontacargaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Montacarga_TipoFalla/frmMontaCargaTipoFalla.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Montacarga_TipoFalla/frmMontacargaTipoFallaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Anulacion/frmMotivo_Anulacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Anulacion/frmMotivo_AnulacionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Correccion/frmMotivo_Correccion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Correccion/frmMotivo_CorrecionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Devolucion/frmMotivo_Devolucion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Devolucion/frmMotivo_DevolucionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Ubicacion/frmMotivoUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Ubicacion/frmMotivo_UbicacionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/NotificacionEvento/FrmNotificacionContactoBodegaMnt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/NotificacionEvento/FrmNotificacionDestinatarioReglaMnt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/NotificacionEvento/FrmNotificacionEventoMnt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/NotificacionEvento/FrmNotificacionEventoVariableMnt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/NotificacionEvento/FrmNotificacionLayoutMnt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/NotificacionEvento/FrmNotificacionPlantillaMnt.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Operadores/frmOperador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Operadores/frmOperador_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Operadores/rptResolucionesOperador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais/frmPais.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais/frmPais_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais_Departamento/frmDepartamento.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais_Departamento/frmDepartamentoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais_Municipio/frmMunicipio.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais_Municipio/frmMunicipioList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais_Region/frmRegion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Pais_Region/frmRegionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Parametro/frmParametro.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Parametro/frmParametro_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/Licencia/frmLicSolicitud.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/Licencia/frmLicVencida.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/Licencia/frmLicencia.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/Licencia/frmLicenciaSolicitada.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/ReleaseNotesReview.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/frmConnIni.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/frmIniWCF.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/frmLoginEx.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/frmMenu.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/frmPrincipal02.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Principales/frmSplah.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto/AsignaProductosBodega.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto/frmProducto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto/frmProducto_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Clasificacion/frmProducto_Clasificacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Clasificacion/frmProducto_ClasificacionList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Color/frmProducto_Color.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Color/frmProducto_ColorList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Estado/frmProducto_Estado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Estado/frmProducto_EstadoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Estilo/frmProducto_Estilo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Estilo/frmProducto_EstiloList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Etiquetas/Producto_Etiquetas.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Familia/frmProducto_Familia.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Familia/frmProducto_FamiliaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Marca/frmProducto_Marca.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Marca/frmProducto_MarcaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Parametro_A/frmProducto_Parametro_A.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Parametro_A/frmProducto_Parametro_AList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Parametro_B/frmProducto_Parametro_B.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Parametro_B/frmProducto_Parametro_BList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Talla/frmProducto_Talla.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Talla/frmProducto_TallaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Tipo/frmProducto_Tipo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Tipo/frmProducto_TipoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Traslado/frmTraslado_Producto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto_Traslado/frmTraslado_ProductoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios/frmPropietario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios/frmPropietario_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios_Reglas_Mensajes/frmPropietarioReglasMensajes.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios_Reglas_Recepcion/frmAgregaDestinatario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios_Reglas_Recepcion/frmPropietarioDestinatario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios_Reglas_Recepcion/frmPropietarioReglaRecepcion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios_Reglas_Recepcion/frmPropietarioReglaRecepcion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Proveedor/frmProveedor.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Proveedor/frmProveedor_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regimen_Fiscal/frmRegimenFiscal.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regimen_Fiscal/frmRegimen_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/Regla/frmAsociacionReglaUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/Regla/frmReglaUbic.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/Regla/frmReglaUbicEnc_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/ReglaUbicPrioridad/frmReglaUbicPrio.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/ReglaUbicPrioridad/frmReglaUbicPrioList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/ReglaUbicPrioridad/frmReglaUbicSelProd.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/Test/frmUbicSugTest.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Vence/frmReglaVence.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Vence/frmReglasVenceList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Reglas Recepcion/frmRegla_Recepcion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Reglas Recepcion/frmReglas_recepcion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Resolucion_Lp_Operador/frmResolucion_Lp.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Resolucion_Lp_Operador/frmResolucion_Lp_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Road_Ruta/frmListaRoadRuta.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Road_Ruta/frmRoadxRuta.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Road_Vendedor/frmListaRoadVendedor.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Road_Vendedor/frmRoadxVendedor.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Rol/Operador/frmRolOperador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Rol/Operador/frmRolOperadorList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Rol/Usuario/frmRolUsuario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Rol/Usuario/frmRolUsuarioList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Series_Doc/frmSeriesDoc.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Series_Doc/frmSeriesDoc_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Stock/FrmStockList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Stock/FrmStock_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Stock/frmStock_Especifico_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tareas/TipoTareaTiempos/frmTipoTareaTiempos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tareas/TipoTareaTiempos/frmTipoTareaTiempos_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tarifa_Tipo_Transaccion/frmTarifatipoTransaccion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tarifa_Tipo_Transaccion/frmTarifatipoTransaccion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tarimas/frmTarima.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tarimas/frmTarima_Lista.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipo_Contenedor/frmTipoContenedor.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipo_Contenedor/frmTipoContenedor_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipo_Etiqueta/frmTipo_Etiqueta.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipo_Etiqueta/frmTipo_Etiqueta_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipo_Tarima/frmTipoTarima.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipo_Tarima/frmTipoTarima_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipos_Documento/Ingreso/frmTipoDocumentoIngreso.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipos_Documento/Ingreso/frmTipoDocumentoIngresoList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipos_Documento/Salida/frmTipoDocumentoSalida.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Tipos_Documento/Salida/frmTipoDocumentoSalidaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Turno/frmTurno.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Turno/frmTurno_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Unidad_Medida/frmUnidad_Medida.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Unidad_Medida/frmUnidad_MedidaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Unidad_Medida_Conversion/frmUnidad_Medida_Conversion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Unidad_Medida_Conversion/frmUnidad_Medida_Conversion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Usuario/frmUsu.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Usuario/frmUsuList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Wizard/frmAsistente.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Wizard/frmWizardIngles.es-GT.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Wizard/frmWizardIngles.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Zona_Picking/frmZonaPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Zona_Picking/frmZonaPicking_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/My Project/Resources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/QA/frmQA.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ajustes/frmReporteAjustesDet.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ajustes/rptAjuste.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ajustes/rptAjuste_TallaColor.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/Dashboard1.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/frmAnalitica1.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/frmAnaliticaA.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/frmDashView1.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/frmDistribucionPorTramo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/frmIndicadores.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Barras/XtraReport_OC.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Barras/xtrbc.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/ControlCalidad/rptControlCalidadCambioEstado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/ControlCalidad/rptControlCalidadCambioEstadoMampa.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/DashDesigner/frmDashboardDesigner.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/DashViewer/frmDashViewer1.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/Packing/frmPackingDespachado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/frmDetalleSalidas.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/frmDetalleSalidas_DiasPiso.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/frmReportDespacho.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/frmTiemposDespacho.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/rptDespacho.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/rptDespachoFIdealsa.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/rptDespachoMampa.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/rptDespachofCealsa.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Despacho/rptDespachofDyD.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Doc_Diferencias/frmDocConDiferencias.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Doc_Diferencias/frmDocPeConDiferencias.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/EndUser/frmReportDesigner.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmCtaOrdenPoliza.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmCtasOrden.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmExistenciaFiscal.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmIngresoFiscal.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMercaVencida.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMercaderia.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimientos_Retroactivo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmResumenHistorico.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmResumenPorCliente.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmSalidaFiscal.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmStockResJornada.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmStockResJornadaMerca.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Inventario/rptComparativoConCostos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Inventario/rptInventarioConteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Inventario/rptInventarioConteoOperador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Log_Error_WMS/frmLogErrorWMS.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_Barras/frmBarrasInter_list.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_EstadoEnvios/frmEstadoEnviosNAV.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_EstadoEnvios/repEstadoEnviosNAV.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_Log/frmLogMI3.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_Registros/frmRegistroInter.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_Registros/frmRegistrosInterface.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_Registros/frmRegistrosInterfaceRes.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmMovimientosDoc.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmMovimientosKardex.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmMovimientosKardexConDocs.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmMovimientosPoliza.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmReportMovimiento.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmRptMovPorDocu.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmRptMovimiento.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimiento/frmTrazaPorLote.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Movimientos_Detalle/frmMovimientos_Detalle.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Packing/rptPacking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Packing/rptPackingPorBarra.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Packing/rptPackingTallaColor.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Pedido/rptListaUbicaciones.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Picking/frmAuditoriaPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Picking/rptUbicacionesPickingResumido.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Prefactura/rptPrefactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Productividad/Picking/frmfrmProductividadPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/Estacionalidad/frmEstacionalidadProducto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/MinimosMaximos/frmRptMinimoxMaximos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/PendientesRequisicion/frmPendientesRequisicion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/ProductosSinMovimiento/frmProductosSinMovimientos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/ProximosVencimiento/frmRptProximosVencimiento.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/Proximos_A_Vencer/frmProximos_A_Vencer.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto_CambioEstado/frmReportCambiosEstado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto_CambioUbicacion/frmReportCambiosUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Recepcion/Tiempos_Recepcion/frmTiemposRecepcion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Recepcion/frmExistenciasNumDocu.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Recepcion/rptRecepcionSinOc.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Recepcion/rptRepcionOC.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Regla_Vence/frmReglaVencimiento.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/Consolidadores/frmExistenciasConsolidador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/Existencias_Todos_Propietarios/frmResumenExistenciasTodos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/Inventario_En_Linea/frmInventarioEnLinea.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmExistenciasConReserva.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmExistenciasPorEstado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmExistenciasUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmReporteInventarios.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmResumenExistenciaPropietario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmResumenExistencias.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmResumenExistenciasUMBas.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmResumenStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmValorizacionStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmValorizacionStockOC.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/SAT/frmIngresoListSAP.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Servicios/frmServicios.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/DetalleLotePorUbicacion/frmLotePorUbi.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/LicenciasPorUbicacion/frmLicenciasPorUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Parametro/frmRptStockParametro.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Serie/frmRptStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockConLP/frmStockConLp.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorComposicion/frmStockPorComposicion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote/frmStockPorLote.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLoteConDocument/frmStockConDocument.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote_Posicion/frmRegistroLote_Posicion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote_Posicion/frmStockPorLote_Posicion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorTipo/frmStockPorTipo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Stock_Fiscal/FrmStock_Fiscal.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Transito/frmRptStockTransito.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/Stock_Reservado/frmListStockSeek.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/Stock_Reservado/frmStockSeek.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock_Jornada/FrmStockJornadaGeneral.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock_Jornada/frmStockJornada.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Transacciones_Operador/frmRptTransaccionesOP.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Trazabilidad_Lote/frmKardexLote.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Trazabilidad_Lote/frmMovimientosporLote.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ubicacion_Codigos_Barra/frmUbicacion_Etiqueta.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ubicacion_Picking/fmrUbicaciones_Picking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ubicacion_Picking/frmRptUbicacionPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ubicaciones/frmrptUbicacionesVacias.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/XtraReport.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/frmReporte.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/frmReportesGallery.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/Recursos Localizables/StringResources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/Ajustes_Positivos/frmAjustePositivo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmInventarioRes.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCambioUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCambioUbicacion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCantidad.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCantidadUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmControlUbicaciones.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmResultadoValidacionCambioUbic.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Control_Calidad/Cambio_Estado/frmListaStockControlCalidad.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmPickingUbicacionBuscador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Implosion/frmImplosion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmComparacionInventarioStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmConfirmaInventario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmConteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmDatosProducto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmEliminOperadores.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmGeneraReconteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioConteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioDet.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioImport.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioProductos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioVerifica.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmReconteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmSeleccionUbicacionesInv.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Manufactura/frmManufactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Manufactura/frmManufacturaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Manufactura/frmManufacturaPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/frmOrdenCompra.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/frmOrdenCompra_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Ingreso/frmOrdenCompraTI.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Ingreso/frmOrdenCompraTI_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Transaccion/frmTipoTransaccion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmPedido.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmPedido_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmProductoPed_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmTipoTransaccionSalida_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedidos_MI3/frmPedidosInterface.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmCantidadreemplazo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmCapturaParametroPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPedidoDetalleBuscador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreFactura/frmIngresos_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreFactura/frmPreFactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreFactura/frmPreFactura_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreIngreso/frmPreIngreso.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreIngreso/frmPreIngreso_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocIngresoRFID.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocIngresoRFID_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocSalidaRFID.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocSalidaRFID_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmStockRFID.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/Asistente/frmR3Asistente.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmCapturaParametroRecepcionS.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmFactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmImpresionSojet.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmIngreso_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmRecepcion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmRecepcion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion_BOF/frmRecepcionBOF.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Revision_Producto/frmRevisionProducto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Servicios/frmRegServicios.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Servicios/frmServicios_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Stock_Reservado/frmListStockReservado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Stock_Reservado/frmStockReservado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Verificacion_BOF/frmVerificacionBOF.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/WaitForm.resx"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMS_WCF/My Project/Resources.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Ajustes/Ajustes_Positivos/frmAjustePositivo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Ajustes/frmInventarioRes.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCambioUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCambioUbicacion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCantidad.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCantidadUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmControlUbicaciones.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Control_Calidad/Cambio_Estado/frmListaStockControlCalidad.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Despacho/frmDespacho.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Despacho/frmDespacho_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Despacho/frmPickingUbicacionBuscador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Implosion/frmImplosion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmComparacionInventarioStock.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmConfirmaInventario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmConteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmDatosProducto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmEliminOperadores.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmGeneraReconteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmInventario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmInventarioConteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmInventarioImport.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmInventarioList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmInventarioProductos.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmInventarioVerifica.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmReConteo.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/frmSeleccionUbicacionesInv.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Manufactura/frmManufactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Manufactura/frmManufacturaList.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Manufactura/frmManufacturaPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra/frmOrdenCompra.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra/frmOrdenCompra_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Ingreso/frmOrdenCompraTI.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Ingreso/frmOrdenCompraTI_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Transaccion/frmTipoTransaccion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedido/frmPedido.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedido/frmPedido_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedido/frmProductoPed_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedido/frmTipoTransaccionSalida_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedidos_MI3/frmPedidosInterface.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Picking/frmCapturaParametroPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Picking/frmPedidoDetalleBuscador.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Picking/frmPicking.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Picking/frmPicking_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/PreFactura/frmIngresos_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/PreFactura/frmPreFactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/PreFactura/frmPreFactura_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/PreIngreso/frmPreIngreso.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/PreIngreso/frmPreIngreso_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Producto_CambioUbicacion/frmCambioUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Producto_CambioUbicacion/frmCambioUbicacion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Producto_CambioUbicacion/frmCantidad.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Producto_CambioUbicacion/frmCantidadUbicacion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Producto_CambioUbicacion/frmControlUbicaciones.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/Asistente/frmR3Asistente.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/frmCapturaParametroRecepcionS.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/frmFactura.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/frmImpresionSojet.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/frmIngreso_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/frmRecepcion.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/frmRecepcion_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion_BOF/frmRecepcionBOF.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Revision_Producto/frmRevisionProducto.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Servicios/frmRegServicios.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Servicios/frmServicios_List.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Stock_Reservado/frmListStockReservado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Stock_Reservado/frmStockReservado.resx"
+      },
+      {
+        "path": "/TOMIMSV4/WaitForm.resx"
+      },
+      {
+        "path": "/TestMI3/Form1.resx"
+      },
+      {
+        "path": "/TestMI3/Properties/Resources.resx"
+      },
+      {
+        "path": "/TomLic/TomLic/TomLic/Form1.resx"
+      },
+      {
+        "path": "/TomLic/TomLic/TomLic/My Project/Resources.resx"
+      },
+      {
+        "path": "/TomLic/TomLic/TomLic/frmLicGen.resx"
+      },
+      {
+        "path": "/WMSBDUpdater/My Project/Resources.resx"
+      },
+      {
+        "path": "/WMSBDUpdater/frmEjecucion.resx"
+      },
+      {
+        "path": "/WSHHRN/My Project/Resources.resx"
+      },
+      {
+        "path": "/WSSAPSYNC/My Project/Resources.resx"
+      },
+      {
+        "path": "/WindowsApp1/My Project/Resources.resx"
+      }
+    ],
+    "config": [
+      {
+        "path": "/AWS_WMSBD_Updater/Web.Debug.config"
+      },
+      {
+        "path": "/AWS_WMSBD_Updater/Web.Release.config"
+      },
+      {
+        "path": "/AWS_WMSBD_Updater/Web.config"
+      },
+      {
+        "path": "/AWS_WMSBD_Updater/content/net40/Web.config"
+      },
+      {
+        "path": "/AWS_WMSBD_Updater/packages.config"
+      },
+      {
+        "path": "/AppGlobal/App.config"
+      },
+      {
+        "path": "/AppGlobal/packages.config"
+      },
+      {
+        "path": "/CEALSAMI3/AppGlobal/App.config"
+      },
+      {
+        "path": "/CEALSAMI3/AppGlobal/packages.config"
+      },
+      {
+        "path": "/CEALSAMI3/DAL/app.config"
+      },
+      {
+        "path": "/CEALSAMI3/DAL/packages.config"
+      },
+      {
+        "path": "/CEALSAMI3/Resources/App.config"
+      },
+      {
+        "path": "/CEALSAMI3/app.config"
+      },
+      {
+        "path": "/CEALSAMI3/packages.config"
+      },
+      {
+        "path": "/DMS/App.config"
+      },
+      {
+        "path": "/DMS/apiConfig.config"
+      },
+      {
+        "path": "/DashBorlin/app.config"
+      },
+      {
+        "path": "/DynamicsNavInterface/Resources/App.config"
+      },
+      {
+        "path": "/DynamicsNavInterface/app.config"
+      },
+      {
+        "path": "/DynamicsNavInterface/packages.config"
+      },
+      {
+        "path": "/FíxTheBug/App.config"
+      },
+      {
+        "path": "/GoCloud/Areas/HelpPage/Views/Web.config"
+      },
+      {
+        "path": "/GoCloud/Views/Web.config"
+      },
+      {
+        "path": "/GoCloud/Web.Debug.config"
+      },
+      {
+        "path": "/GoCloud/Web.Release.config"
+      },
+      {
+        "path": "/GoCloud/Web.config"
+      },
+      {
+        "path": "/GoCloud/packages.config"
+      },
+      {
+        "path": "/GoCloudy/Account/Web.config"
+      },
+      {
+        "path": "/GoCloudy/Web.Debug.config"
+      },
+      {
+        "path": "/GoCloudy/Web.Release.config"
+      },
+      {
+        "path": "/GoCloudy/Web.config"
+      },
+      {
+        "path": "/MES/App.config"
+      },
+      {
+        "path": "/MI3/Web.Debug.config"
+      },
+      {
+        "path": "/MI3/Web.Release.config"
+      },
+      {
+        "path": "/MI3/Web.config"
+      },
+      {
+        "path": "/MI3/packages.config"
+      },
+      {
+        "path": "/NuGet.config"
+      },
+      {
+        "path": "/Perceptron/PerceptronMejorado/App.config"
+      },
+      {
+        "path": "/PlotWH/App.config"
+      },
+      {
+        "path": "/PrintService/App.config"
+      },
+      {
+        "path": "/PrintServices/App.config"
+      },
+      {
+        "path": "/PrintsService/App.config"
+      },
+      {
+        "path": "/Quick_Tag/App.config"
+      },
+      {
+        "path": "/SAPMI3PC/AppGlobal/App.config"
+      },
+      {
+        "path": "/SAPMI3PC/AppGlobal/packages.config"
+      },
+      {
+        "path": "/SAPMI3PC/DAL/app.config"
+      },
+      {
+        "path": "/SAPMI3PC/DAL/packages.config"
+      },
+      {
+        "path": "/SAPMI3PC/Resources/App.config"
+      },
+      {
+        "path": "/SAPMI3PC/app.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/AppGlobal/App.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/AppGlobal/packages.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/DAL/app.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/DAL/packages.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Resources/App.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/app.config"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/packages.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/AppGlobal/App.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/AppGlobal/packages.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/DAL/app.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/DAL/packages.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Resources/App.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/app.config"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/packages.config"
+      },
+      {
+        "path": "/SAPSYNC_Killios/AppGlobal/App.config"
+      },
+      {
+        "path": "/SAPSYNC_Killios/AppGlobal/packages.config"
+      },
+      {
+        "path": "/SAPSYNC_Killios/DAL/app.config"
+      },
+      {
+        "path": "/SAPSYNC_Killios/DAL/packages.config"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Resources/App.config"
+      },
+      {
+        "path": "/SAPSYNC_Killios/app.config"
+      },
+      {
+        "path": "/SW/App.config"
+      },
+      {
+        "path": "/ServicioImpresion/App.config"
+      },
+      {
+        "path": "/TESTWCFHH/ApplicationInsights.config"
+      },
+      {
+        "path": "/TESTWCFHH/Web.Debug.config"
+      },
+      {
+        "path": "/TESTWCFHH/Web.Release.config"
+      },
+      {
+        "path": "/TESTWCFHH/Web.config"
+      },
+      {
+        "path": "/TESTWCFHH/packages.config"
+      },
+      {
+        "path": "/TMS/App.config"
+      },
+      {
+        "path": "/TOMIMSV4/App.config"
+      },
+      {
+        "path": "/TOMIMSV4/AppGlobal.dll.config"
+      },
+      {
+        "path": "/TOMIMSV4/DAL.dll.config"
+      },
+      {
+        "path": "/TOMIMSV4/DAL/app.config"
+      },
+      {
+        "path": "/TOMIMSV4/DAL/packages.config"
+      },
+      {
+        "path": "/TOMIMSV4/Entity/app.config"
+      },
+      {
+        "path": "/TOMIMSV4/Entity/packages.config"
+      },
+      {
+        "path": "/TOMIMSV4/NavSync.exe.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/AppGlobal.dll.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/DAL.dll.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/DMS.exe.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Entity.dll.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/PerceptronUbicacion.exe.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/PrintsService.exe.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/SAPBOSyncMampa.exe.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Sap.Data.Hana.v4.5.dll.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/apiConfig.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMS_WCF/Web.config"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMS_WCF/packages.config"
+      },
+      {
+        "path": "/TOMIMSV4/packages.config"
+      },
+      {
+        "path": "/TestMI3/app.config"
+      },
+      {
+        "path": "/TomLic/TomLic/TomLic/app.config"
+      },
+      {
+        "path": "/TomLic/TomLic/TomLic/packages.config"
+      },
+      {
+        "path": "/WMSBDUpdater/App.config"
+      },
+      {
+        "path": "/WMSWebAPI/web.config"
+      },
+      {
+        "path": "/WSHHRN/AppGlobal.dll.config"
+      },
+      {
+        "path": "/WSHHRN/CEALSASync.exe.config"
+      },
+      {
+        "path": "/WSHHRN/DAL.dll.config"
+      },
+      {
+        "path": "/WSHHRN/Entity.dll.config"
+      },
+      {
+        "path": "/WSHHRN/NavSync.exe.config"
+      },
+      {
+        "path": "/WSHHRN/PerceptronUbicacion.exe.config"
+      },
+      {
+        "path": "/WSHHRN/SAPBOSync.exe.config"
+      },
+      {
+        "path": "/WSHHRN/WMS.exe.config"
+      },
+      {
+        "path": "/WSHHRN/WMS_PrintService.exe.config"
+      },
+      {
+        "path": "/WSHHRN/Web.Debug.config"
+      },
+      {
+        "path": "/WSHHRN/Web.Release.config"
+      },
+      {
+        "path": "/WSHHRN/Web.config"
+      },
+      {
+        "path": "/WSHHRN/packages.config"
+      },
+      {
+        "path": "/WSSAPSYNC/Web.Debug.config"
+      },
+      {
+        "path": "/WSSAPSYNC/Web.Release.config"
+      },
+      {
+        "path": "/WSSAPSYNC/Web.config"
+      },
+      {
+        "path": "/WindowsApp1/App.config"
+      }
+    ],
+    "xsd": [
+      {
+        "path": "/CEALSAMI3/DAL/Transacciones/Movimiento/dsUbicSug.xsd"
+      },
+      {
+        "path": "/CEALSAMI3/Formas/Reportes/DSEjecuciones.xsd"
+      },
+      {
+        "path": "/DynamicsNavInterface/Formas/Reportes/DSEjecuciones.xsd"
+      },
+      {
+        "path": "/SAPMI3PC/DAL/Transacciones/Movimiento/dsUbicSug.xsd"
+      },
+      {
+        "path": "/SAPMI3PC/Formas/Reportes/DSEjecuciones.xsd"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/DAL/Transacciones/Movimiento/dsUbicSug.xsd"
+      },
+      {
+        "path": "/SAPSYNCCUMBRE/Formas/Reportes/DSEjecuciones.xsd"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/DAL/Transacciones/Movimiento/dsUbicSug.xsd"
+      },
+      {
+        "path": "/SAPSYNCMAMPA/Formas/Reportes/DSEjecuciones.xsd"
+      },
+      {
+        "path": "/SAPSYNC_Killios/DAL/Transacciones/Movimiento/dsUbicSug.xsd"
+      },
+      {
+        "path": "/SAPSYNC_Killios/Formas/Reportes/DSEjecuciones.xsd"
+      },
+      {
+        "path": "/SW/Recepcion_Detalle_Infraccion/dsRecepcionDetalleInfraccion.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFOrdenCompra/ServiceOrdenCompra.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFOrdenCompra/ServiceOrdenCompra1.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFOrdenCompra/ServiceOrdenCompra2.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFOrdenCompra/ServiceOrdenCompra3.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFProductoPresentacion/ServiceProductoPresentacion.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFProductoPresentacion/ServiceProductoPresentacion1.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFProductoPresentacion/ServiceProductoPresentacion2.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioDestinatario/PropietarioDestinatario.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioDestinatario/PropietarioDestinatario1.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioDestinatario/PropietarioDestinatario2.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioDestinatario/PropietarioDestinatario3.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioReglaRecepcion/ServicePropietarioReglaRecepcion.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioReglaRecepcion/ServicePropietarioReglaRecepcion1.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFPropietarioReglaRecepcion/ServicePropietarioReglaRecepcion2.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcion/ServiceRecepcion.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcion/ServiceRecepcion1.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcion/ServiceRecepcion2.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcion/ServiceRecepcion3.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcionInfraccion/ServiceRecepcionInfraccion.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcionInfraccion/ServiceRecepcionInfraccion1.xsd"
+      },
+      {
+        "path": "/SW/Service References/WCFRecepcionInfraccion/ServiceRecepcionInfraccion2.xsd"
+      },
+      {
+        "path": "/TESTWCFHH/Web References/wsPedidoCliente/PedidoCliente.xsd"
+      },
+      {
+        "path": "/TESTWCFHH/Web References/wsPedidoCliente/PedidoCliente0.xsd"
+      },
+      {
+        "path": "/TESTWCFHH/Web References/wsPedidoCliente/PedidoCliente1.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/DAL/Transacciones/Movimiento/dsUbicSug.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/DSCalendarioTarea.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/DataSets/DataSet1.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/IMS4MBCalendar.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/IMS4V2DataSet.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/IMS4V2DataSet1.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Configuracion_QADataSet.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/DSCalendarioTarea.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/DetTramoByBodega.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Dset_Regla_Vence.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/IMS4MBCalendar.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/IMS4V2DataSet.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/IMS4V2DataSet1.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Bodega/DsBodega.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Carga_Excel/DsExcel.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Cliente/DsCliente.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Empresa_Transporte/Bodega/DsEmpresaTransporteBodega.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Anulacion/DsMotivoAnulacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Correccion/DsMotivoCorreccionPoliza.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Motivo_Devolucion/DsMotivoDev.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Operadores/Bodega/DsOperador.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Producto/DsProducto.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Propietarios/DsPropietario.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Proveedor/DsProveedor.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Regla_Ubicacion/DsReglaUb.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Mantenimientos/Stock/DsetSeleccionStock.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ajustes/dsRepAjustes.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Analítica/DsetAnalitica.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Barras/CodBarras.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Inventario/DSReconteo.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/MI3_EstadoEnvios/dsEnviosNav1.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Orden_Compra/CostoArancel/DsOCCostoArancel.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Orden_Compra/PreIngreso/DsOrden_Compra.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Producto/dsRptProducto.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Recepcion/DsRecepcion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Recepcion_Detalle_Infraccion/dsRecepcionDetalleInfraccion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/DsDetalleExistencias.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/DsExistenciasConReserva.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/DsResumenStock.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/DsValorizacionStock.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Parametro/DsStockParametro.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Parametro/Parametros.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Stock/Serie/Series.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Reportes/Ubicacion_Picking/DsListaUbicacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/srvRoadDespacho/srvRoadDespacho.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/srvRoadDespacho/srvRoadDespacho1.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/srvRoadDespacho/srvRoadDespacho2.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/srvRoadDespacho/srvRoadDespacho33.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/srvRoadDespacho/srvRoadDespacho34.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Service References/srvRoadDespacho/srvRoadDespacho35.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/DsOperadorUbicacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/DSConteo.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/DSInventario.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/DSVerificacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/DSRecOC.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/DsOC.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/DsOrdenCompra.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/DsDespacho.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/DsPicking.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/Asistente/DsAsistente.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/DSPR.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/DsOrdenCompraRecepcionOperador.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Revision_Producto/DsRevisionProducto.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/TOMIMSV4/cliente_direccion_dset.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/DsOperadorUbicacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/DSConteo.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/DSInventario.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Inventario/DSVerificacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra/DSRecOC.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra/DsOC.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Orden_Compra/DsOrdenCompra.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedido/DsDespacho.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Pedido/DsPicking.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Producto_CambioUbicacion/DsOperadorUbicacion.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/Asistente/DsAsistente.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/DSPR.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Recepcion/DsOrdenCompraRecepcionOperador.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/Transacciones/Revision_Producto/DsRevisionProducto.xsd"
+      },
+      {
+        "path": "/TOMIMSV4/cliente_direccion_dset.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvBarrasPallet/Barras_Pallet.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvBarrasPallet/Barras_Pallet1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvBarrasPallet/Barras_Pallet2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvCliente/ServiceCliente.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvCliente/ServiceCliente1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvCliente/ServiceCliente2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPedidoCliente/PedidoCliente3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPedidoCliente/PedidoCliente31.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPedidoCliente/PedidoCliente32.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPedidoCompra/PedidoCompra3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPedidoCompra/PedidoCompra31.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPedidoCompra/PedidoCompra32.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto/ServiceProducto.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto/ServiceProducto1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto/ServiceProducto2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto/ServiceProducto3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto2/ServiceProducto.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto2/ServiceProducto1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto2/ServiceProducto2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProducto2/ServiceProducto3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProductoBodega/ServiceProductoBodega.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProductoBodega/ServiceProductoBodega1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProductoBodega/ServiceProductoBodega2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPropietario/ServicePropietario.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPropietario/ServicePropietario1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvPropietario/ServicePropietario2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProveedor/ServiceProveedor3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProveedor/ServiceProveedor31.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProveedor/ServiceProveedor32.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProveedorBodega/ServiceProveedorBodega3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProveedorBodega/ServiceProveedorBodega31.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvProveedorBodega/ServiceProveedorBodega32.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvReportes/srvReportes4.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvReportes/srvReportes41.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvReportes/srvReportes42.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvTransaccionesOut/TransaccionesOut3.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvTransaccionesOut/TransaccionesOut31.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvTransaccionesOut/TransaccionesOut32.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvUnidadMedida/ServiceUnidadMedida.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvUnidadMedida/ServiceUnidadMedida1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvUnidadMedida/ServiceUnidadMedida2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvUsuario/srvUsuario.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvUsuario/srvUsuario1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/srvUsuario/srvUsuario2.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/svBodega/ServiceBodega.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/svBodega/ServiceBodega1.xsd"
+      },
+      {
+        "path": "/TestMI3/Connected Services/svBodega/ServiceBodega2.xsd"
+      }
+    ]
+  }
+}
