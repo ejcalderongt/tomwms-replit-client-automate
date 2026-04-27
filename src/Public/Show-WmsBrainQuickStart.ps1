@@ -129,7 +129,7 @@ function Show-WmsBrainQuickStart {
     # ----- 2. PRE-FLIGHT (solo si no -Compact) -----
     $preflightHasErrors = $false
     if (-not $Compact) {
-        Write-WmsBrainBanner -Lines @('', ' [1/4] PRE-FLIGHT')
+        Write-WmsBrainBanner -Lines @(' ', ' [1/4] PRE-FLIGHT')
         try {
             $env_report = Test-WmsBrainEnvironment -ErrorAction Stop
             $errCount  = @($env_report | Where-Object { $_.Level -eq 'ERROR' }).Count
@@ -148,7 +148,7 @@ function Show-WmsBrainQuickStart {
     # ----- 3. VARIABLES (solo si no -Compact) -----
     $envSummary = [ordered]@{}
     if (-not $Compact) {
-        Write-WmsBrainBanner -Lines @('', ' [2/4] VARIABLES DE ENTORNO')
+        Write-WmsBrainBanner -Lines @(' ', ' [2/4] VARIABLES DE ENTORNO')
         $rows = @()
         foreach ($e in $envCatalog) {
             $val = [Environment]::GetEnvironmentVariable($e.Name)
@@ -202,34 +202,34 @@ function Show-WmsBrainQuickStart {
     $nextSteps += '  Test-WmsBrainConnection -Profile K7-PRD       # ping a SQL'
     $nextSteps += '  Get-WmsBrainQuestion -Status pending          # cards Q-NNN pendientes'
 
-    Write-WmsBrainBanner -Lines @('', ' [3/4] PROXIMOS PASOS')
+    Write-WmsBrainBanner -Lines @(' ', ' [3/4] PROXIMOS PASOS')
     Write-WmsBrainBanner -Lines ($nextSteps | ForEach-Object { '  ' + $_ })
 
     # ----- 5. EJEMPLOS (solo si no -Compact) -----
     if (-not $Compact) {
-        Write-WmsBrainBanner -Lines @('', ' [4/4] EJEMPLOS COPY-PASTE')
+        Write-WmsBrainBanner -Lines @(' ', ' [4/4] EJEMPLOS COPY-PASTE')
         Write-WmsBrainBanner -Lines @(
             '  # Listar las cards Q-NNN pendientes',
             '  Get-WmsBrainQuestion -Status pending',
-            '',
+            ' ',
             '  # Emitir un evento por una card concreta',
             '  New-WmsBrainQuestionEvent -QuestionId Q-003',
-            '',
+            ' ',
             '  # Responder una card (despues de Invoke-WmsBrainQuestion)',
             '  Submit-WmsBrainAnswer -QuestionId Q-003 -Verdict confirmed -Confidence high',
-            '',
+            ' ',
             '  # Query directo a una BD productiva (read-only)',
             '  Invoke-WmsBrainQuery -Profile K7-PRD -Query "SELECT TOP 5 * FROM dbo.Item"',
-            '',
+            ' ',
             '  # Ayuda completa de cualquier cmdlet',
             '  Get-Help New-WmsBrainQuestionEvent -Full',
-            ''
+            ' '
         )
     }
 
     # ----- 6. SetMissing (interactivo, solo si se pidio) -----
     if ($SetMissing -and $missingCritical.Count -gt 0) {
-        Write-WmsBrainBanner -Lines @('', ' INTERACTIVO: setear variables faltantes')
+        Write-WmsBrainBanner -Lines @(' ', ' INTERACTIVO: setear variables faltantes')
         foreach ($e in $missingCritical) {
             $prompt = if ($e.Secret) {
                 "  $($e.Name)  [SECRETO, no se persiste]  ($($e.Hint))"
@@ -267,7 +267,7 @@ function Show-WmsBrainQuickStart {
                 Write-WmsBrainBanner -Lines @("   seteado en sesion (no persistido).")
             }
         }
-        Write-WmsBrainBanner -Lines @('', ' Listo. Si persististe vars, abrilas en una ventana nueva para cargarlas.')
+        Write-WmsBrainBanner -Lines @(' ', ' Listo. Si persististe vars, abrilas en una ventana nueva para cargarlas.')
     }
 
     [PSCustomObject]@{
