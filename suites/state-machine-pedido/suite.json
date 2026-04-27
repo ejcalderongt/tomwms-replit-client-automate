@@ -1,0 +1,28 @@
+{
+  "name": "state-machine-pedido",
+  "version": 1,
+  "protocolVersion": 1,
+  "description": "Valida la integridad de la maquina de estados de un pedido (pedido_enc.estado y transiciones). Detecta pedidos en estados invalidos, transiciones huerfanas y desincronizacion encabezado/detalle.",
+  "appliesTo": {
+    "tablesRequired": ["pedido_enc", "pedido_det"],
+    "schemas": ["dbo"],
+    "minRowsRecommended": 1000
+  },
+  "queries": [
+    {"id": "S1", "file": "queries/S1-distribucion-estados.sql", "type": "data", "title": "Distribucion de estados actuales"},
+    {"id": "S2", "file": "queries/S2-encabezado-vs-detalle.sql", "type": "data", "title": "Coherencia estado encabezado vs detalle"},
+    {"id": "S3", "file": "queries/S3-pedidos-en-estado-terminal-con-pendiente.sql", "type": "data", "title": "Pedidos en estado terminal con detalle pendiente"},
+    {"id": "S4", "file": "queries/S4-historico-transiciones.sql", "type": "data", "title": "Historico de transiciones (ultimos 30d)"},
+    {"id": "S5", "file": "queries/S5-pedidos-sin-transicion.sql", "type": "data", "title": "Pedidos sin ninguna transicion registrada"},
+    {"id": "S6", "file": "queries/S6-edad-en-cada-estado.sql", "type": "data", "title": "Edad de pedidos en cada estado"},
+    {"id": "S7", "file": "queries/S7-cantidades-coherencia.sql", "type": "data", "title": "Coherencia cantidad pedida vs despachada"}
+  ],
+  "redFlags": [
+    {"id": "RF1", "condition": "S2 muestra encabezado=DESPACHADO con lineas en estado!=DESPACHADO", "interpretation": "Posible bug P-16b o transicion incompleta"},
+    {"id": "RF2", "condition": "S3 retorna >0 filas", "interpretation": "Pedidos cerrados pero con cantidad pendiente — datos corruptos"},
+    {"id": "RF3", "condition": "S6 muestra pedidos en PENDIENTE con edad >30d", "interpretation": "Pedidos abandonados o atascados en proceso"}
+  ],
+  "expectedDurationSeconds": 8,
+  "readOnly": true,
+  "tags": ["pedido", "state-machine", "P-16b", "integridad"]
+}
