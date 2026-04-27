@@ -335,7 +335,7 @@ Public Class clsLnProveedor
             Const sp As String = "SELECT * FROM Proveedor 
                                   WHERE(IdProveedor = @IdProveedor)"
 
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IDPROVEEDOR", IdProveedor))
 
@@ -357,5 +357,49 @@ Public Class clsLnProveedor
         End Try
 
     End Function
+    Public Shared Function Get_Single_By_IdProveedor(ByVal IdProveedor As Integer,
+                                                      ByRef lConnection As SqlConnection,
+                                                      ByRef lTransaction As SqlTransaction) As clsBeProveedor
 
+        Get_Single_By_IdProveedor = Nothing
+
+        Try
+            ' Validaciones
+            If lConnection Is Nothing Then
+                Throw New ArgumentNullException(NameOf(lConnection), "La conexión no puede ser Nothing")
+            End If
+
+            If lTransaction Is Nothing Then
+                Throw New ArgumentNullException(NameOf(lTransaction), "La transacción no puede ser Nothing")
+            End If
+
+            If lConnection.State <> ConnectionState.Open Then
+                Throw New InvalidOperationException("La conexión debe estar abierta")
+            End If
+
+            Const sp As String = "SELECT * FROM Proveedor WHERE IdProveedor = @IdProveedor"
+
+            Using cmd As New SqlCommand(sp, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdProveedor", IdProveedor)
+
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
+
+                    If dt.Rows.Count = 1 Then
+                        Dim pBeProveedor As New clsBeProveedor
+                        Cargar(pBeProveedor, dt.Rows(0))
+                        Get_Single_By_IdProveedor = pBeProveedor
+                    End If
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("Get_Single_By_IdProveedor({0}, Connection, Transaction): {1}", IdProveedor, ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        End Try
+
+    End Function
 End Class

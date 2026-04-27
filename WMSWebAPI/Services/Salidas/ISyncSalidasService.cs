@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Pedido;
+using WMS.EntityCore.Transacciones;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -14,5 +15,8 @@ namespace WMSWebAPI.Services.Salidas
         void ProcesarSalidaDesdeDto(SalidaTransDto dto, SqlConnection conn, SqlTransaction tx);
         void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx);
         MI3ProcessingResultDto Insert_salida_mi3(clsBeI_nav_ped_traslado_enc BeInavPedSalida);
+        IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null);
+        IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null, int? idTipoDocumento = null);
+        public int Marcar_Salidas_Como_Enviadas(IConfiguration configuration, List<int> idTransacciones);
     }
 }

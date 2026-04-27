@@ -1284,16 +1284,23 @@ Public Class frmBodegaSelUbic
             If ubicPareja Is Nothing Then
                 Return True
             End If
-
             If ExisteProductoDistintoEnUbicacion(
-            ubicPareja.IdUbicacion,
-            ubicPareja.IdBodega,
-            idProductoAUbicar) Then
+                ubicPareja.IdUbicacion,
+                ubicPareja.IdBodega,
+                idProductoAUbicar) Then
+
+                Dim codigoProductoRelacionado As String =
+                    ObtenerCodigoProductoEnUbicacion(ubicPareja.IdUbicacion,
+                                                     ubicPareja.IdBodega,
+                                                     idProductoAUbicar)
 
                 MostrarMensajeValidacion(
-                "La ubicación relacionada ya contiene un producto diferente. Solo se permite ubicar el mismo producto esta posición.")
+                "La posición posterior ya contiene un producto diferente" &
+                If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+                ". Solo se permite ubicar el mismo producto en esta posición.")
                 Return False
             End If
+
 
             If pListObjDet IsNot Nothing AndAlso pListObjDet.Count > 0 Then
                 Dim hayDistintoEnMemoriaPareja = pListObjDet.Any(
@@ -1320,8 +1327,22 @@ Public Class frmBodegaSelUbic
                 End Function)
 
                 If hayDistintoEnMemoriaPareja Then
+
+                    Dim codigoProductoRelacionado As String = ""
+
+                    Dim detPareja = pListObjDet.FirstOrDefault(Function(d)
+                                                                   Return d.IdUbicacionDestino = ubicPareja.IdUbicacion AndAlso
+                                                          d.IdStock <> pObjDet.IdStock
+                                                               End Function)
+
+                    If detPareja IsNot Nothing AndAlso detPareja.Producto IsNot Nothing Then
+                        codigoProductoRelacionado = detPareja.Producto.Codigo
+                    End If
+
                     MostrarMensajeValidacion(
-                    "La ubicación relacionada ya tiene asignado un producto diferente en esta operación. Solo se permite el mismo producto esta posición.")
+                    "La posición posterior ya contiene un producto diferente" &
+                    If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+                    ". Solo se permite el mismo producto en esta posición.")
                     Return False
                 End If
             End If
@@ -1355,10 +1376,31 @@ Public Class frmBodegaSelUbic
             Throw New Exception("Error validando índice de rotación: " & ex.Message)
         End Try
     End Function
+
+    Private Function ObtenerCodigoProductoEnUbicacion(ByVal idUbicacion As Integer,
+                                                  ByVal idBodega As Integer,
+                                                  ByVal idProductoAUbicar As Integer) As String
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+            Dim stockDistinto = lStock.FirstOrDefault(Function(s) s IsNot Nothing AndAlso
+                                                              s.IdProducto > 0 AndAlso
+                                                              s.IdProducto <> idProductoAUbicar)
+
+            If stockDistinto Is Nothing Then Return ""
+
+            Return stockDistinto.Codigo_Producto
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
     Private Function ProcesarSeleccionMultipleAlAplicar() As Boolean
 
         Dim bkSeleccionMultiple As Boolean = SeleccionMultiple
-        Dim huboValidos As Boolean = False
 
         Try
 
@@ -1368,18 +1410,18 @@ Public Class frmBodegaSelUbic
             If pStockRes_SeleccionMultiple Is Nothing OrElse pStockRes_SeleccionMultiple.Count = 0 Then
                 _suprimirMensajesValidacionMultiple = False
                 XtraMessageBox.Show("No existen registros seleccionados para validar.",
-                                Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation)
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation)
                 Return False
             End If
 
             If pBeUbicacion Is Nothing OrElse pBeUbicacion.IdUbicacion = 0 Then
                 _suprimirMensajesValidacionMultiple = False
                 XtraMessageBox.Show("Debe seleccionar una ubicación destino.",
-                                Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation)
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation)
                 Return False
             End If
 
@@ -1392,9 +1434,9 @@ Public Class frmBodegaSelUbic
             If Ubic Is Nothing Then
                 _suprimirMensajesValidacionMultiple = False
                 XtraMessageBox.Show("No se encontró la ubicación seleccionada.",
-                                Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation)
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation)
                 Return False
             End If
 
@@ -1453,8 +1495,8 @@ Public Class frmBodegaSelUbic
                         err.IdUbicacionOrigen = pStockRes.IdUbicacion
                         err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
                         err.Motivo = If(String.IsNullOrWhiteSpace(_ultimoMotivoValidacion),
-                                    "No cumple validaciones de ubicación.",
-                                    _ultimoMotivoValidacion)
+                                "No cumple validaciones de ubicación.",
+                                _ultimoMotivoValidacion)
                         lErroresSeleccionMultiple.Add(err)
                         Continue For
                     End If
@@ -1514,8 +1556,6 @@ Public Class frmBodegaSelUbic
                     pObjStockMov.IdUbicacion = Ubic.IdUbicacionDestino
                     pListStockMov.Add(pObjStockMov)
 
-                    huboValidos = True
-
                 Catch exItem As Exception
                     Dim err As New clsBeResultadoValidacionCambioUbic()
                     err.IdStock = pStockRes.IdStock
@@ -1532,7 +1572,7 @@ Public Class frmBodegaSelUbic
             SeleccionMultiple = bkSeleccionMultiple
             _suprimirMensajesValidacionMultiple = False
 
-            If lErroresSeleccionMultiple.Count > 0 Then
+            If pListObjDet Is Nothing OrElse pListObjDet.Count = 0 Then
                 Return False
             End If
 
@@ -1545,7 +1585,6 @@ Public Class frmBodegaSelUbic
         End Try
 
     End Function
-
     Private Sub Agregar_A_Lista()
 
         Dim idx As Integer
@@ -1643,44 +1682,47 @@ Public Class frmBodegaSelUbic
 
             mnuAplicar.Enabled = False
 
-
-
             If lUbicSel.Count = 0 Then
                 DialogResult = DialogResult.Abort
-            Else
-
-                If SeleccionMultiple Then
-
-                    If Not ProcesarSeleccionMultipleAlAplicar() Then
-                        If lErroresSeleccionMultiple.Count > 0 Then
-                            Dim frmErrores As New frmResultadoValidacionCambioUbic()
-                            frmErrores.BeListaErrores = lErroresSeleccionMultiple
-                            frmErrores.CantidadValidos = pListObjDet.Count
-                            frmErrores.ShowDialog()
-                        End If
-
-                        mnuAplicar.Enabled = True
-                        Exit Sub
-                    End If
-                End If
-
-                Aplicar = True
-                DialogResult = DialogResult.Yes
+                mnuAplicar.Enabled = True
+                Exit Sub
             End If
 
-            mnuAplicar.Enabled = True
+            If SeleccionMultiple Then
 
+                Dim resultadoOk As Boolean = ProcesarSeleccionMultipleAlAplicar()
+
+                If lErroresSeleccionMultiple IsNot Nothing AndAlso lErroresSeleccionMultiple.Count > 0 Then
+                    Dim frmErrores As New frmResultadoValidacionCambioUbic()
+                    frmErrores.BeListaErrores = lErroresSeleccionMultiple
+                    frmErrores.CantidadValidos = If(pListObjDet Is Nothing, 0, pListObjDet.Count)
+                    frmErrores.ShowDialog()
+                End If
+
+                If Not resultadoOk Then
+                    mnuAplicar.Enabled = True
+                    Exit Sub
+                End If
+
+            End If
+
+            Aplicar = True
+            DialogResult = DialogResult.Yes
+
+            mnuAplicar.Enabled = True
             Close()
 
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
-                            Text,
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error)
+                        Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            mnuAplicar.Enabled = True
 
         End Try
 

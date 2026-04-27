@@ -1542,6 +1542,105 @@ Partial Public Class clsLnProveedor
             Throw ex
         End Try
     End Function
+
+
+    ''' <summary>
+    ''' #EJC20260420: Devuelve el proveedor que entregó un stock específico, o Nothing si
+    ''' el stock no proviene de una recepción contra OC (ej. ajuste manual
+    ''' inicial, transferencia, etc.).
+    ''' Es DETERMINÍSTICO: cada stock proviene de a lo sumo una OC.   
+    ''' </summary>
+    ''' <param name="pIdStock"></param>
+    ''' <returns></returns>
+    Public Shared Function Get_Single_By_IdStock(ByVal pIdStock As Integer) As clsBeProveedor
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Get_Single_By_IdStock = Nothing
+
+        Try
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sql As String = "SELECT IdProveedor FROM VW_Stock_Res where IdStock = @IdStock "
+
+            Dim cmd As New SqlCommand(sql, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@IdStock", pIdStock))
+
+            Dim obj As Object = cmd.ExecuteScalar()
+            lTransaction.Commit()
+
+            If obj IsNot Nothing AndAlso Not IsDBNull(obj) Then
+                Dim vIdProveedor As Integer = CInt(obj)
+                If vIdProveedor > 0 Then
+                    Get_Single_By_IdStock = Get_Single_By_IdProveedor(vIdProveedor)
+                End If
+            End If
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            clsLnLog_error_wms.Agregar_Error("clsLnProveedor.Get_Single_By_IdStock(" &
+                                        pIdStock & "): " & ex.Message)
+            Throw
+        Finally
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Single_By_IdStock(ByVal pIdStock As Integer,
+                                              ByRef lConnection As SqlConnection,
+                                              ByRef lTransaction As SqlTransaction) As clsBeProveedor
+
+        Get_Single_By_IdStock = Nothing
+
+        Try
+            ' Validaciones
+            If lConnection Is Nothing Then
+                Throw New ArgumentNullException(NameOf(lConnection), "La conexión no puede ser Nothing")
+            End If
+
+            If lTransaction Is Nothing Then
+                Throw New ArgumentNullException(NameOf(lTransaction), "La transacción no puede ser Nothing")
+            End If
+
+            If lConnection.State <> ConnectionState.Open Then
+                Throw New InvalidOperationException("La conexión debe estar abierta")
+            End If
+
+            Const sql As String =
+            " SELECT TOP 1 pb.IdProveedor " &
+            " FROM   stock           s " &
+            " INNER JOIN trans_re_det     rd  ON rd.IdRecepcionDet  = s.IdRecepcionDet " &
+            " INNER JOIN trans_oc_enc     oce ON oce.IdOrdenCompraEnc = rd.IdOrdenCompraEnc " &
+            " INNER JOIN proveedor_bodega pb  ON pb.IdAsignacion    = oce.IdProveedorBodega " &
+            " WHERE  s.IdStock = @IdStock "
+
+            Using cmd As New SqlCommand(sql, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdStock", pIdStock)
+
+                Dim obj As Object = cmd.ExecuteScalar()
+
+                If obj IsNot Nothing AndAlso Not IsDBNull(obj) Then
+                    Dim vIdProveedor As Integer = Convert.ToInt32(obj)
+                    If vIdProveedor > 0 Then
+                        ' Necesitas también la sobrecarga de Get_Single_By_IdProveedor
+                        Get_Single_By_IdStock = Get_Single_By_IdProveedor(vIdProveedor, lConnection, lTransaction)
+                    End If
+                End If
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("clsLnProveedor.Get_Single_By_IdStock(" & pIdStock & ", Connection, Transaction): " & ex.Message)
+            Throw
+        End Try
+
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

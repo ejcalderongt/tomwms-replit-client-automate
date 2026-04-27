@@ -111,6 +111,9 @@ Public Class clsDataContractDI
         Factura_Deudor = 14
 
         Factura_Reserva_Cliente = 15
+
+        Anulacion_Devolucion = 16
+
     End Enum
 
     <DataContract(Name:="IdTipoRubroERP")>

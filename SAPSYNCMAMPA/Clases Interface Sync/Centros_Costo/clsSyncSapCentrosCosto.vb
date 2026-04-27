@@ -7,14 +7,18 @@ Imports Newtonsoft.Json.Linq
 Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
     Private Shared fichaCentrosCosto As List(Of clsBeCentro_costo)
-
     Public Shared Async Function Get_Centros_Costo_SAP(sessionCookie As String,
-                                                       baseUrl As String) As Task(Of List(Of clsBeCentro_costo))
+                                                   baseUrl As String) As Task(Of List(Of clsBeCentro_costo))
 
         Dim centros_costo As New List(Of clsBeCentro_costo)
 
         Try
-            Dim requestUrl As String = "ProfitCenters?$filter=Active eq 'tYES' and (InWhichDimension eq 1 or InWhichDimension eq 2 or InWhichDimension eq 3)"
+            Dim pageSize As Integer = 20
+            Dim skip As Integer = 0
+            Dim hayMas As Boolean = True
+            Dim urlBase As String = baseUrl.TrimEnd("/"c) & "/"
+
+            Dim filtro As String = "Active eq 'tYES' and (InWhichDimension eq 1 or InWhichDimension eq 2 or InWhichDimension eq 3)"
 
             Using handler As New HttpClientHandler()
                 handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
@@ -23,43 +27,58 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
                 Using client As New HttpClient(handler)
                     client.DefaultRequestHeaders.ConnectionClose = True
+                    client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
-                    Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
-                        request.Headers.ConnectionClose = True
-                        request.Headers.Add("Cookie", sessionCookie)
-                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                    While hayMas
+                        Dim requestUrl As String =
+                        $"{urlBase}ProfitCenters?$filter={filtro}&$top={pageSize}&$skip={skip}"
 
-                        Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+                        Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
+                            request.Headers.ConnectionClose = True
 
-                        If Not response.IsSuccessStatusCode Then
-                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
-                            Throw New Exception($"Error al obtener centro de costo. Código: {response.StatusCode}, Detalle: {errContent}")
-                        End If
+                            Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
 
-                        Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
-                        Dim obj = JObject.Parse(jsonResponse)
-                        Dim rows = obj("value")
+                            If Not response.IsSuccessStatusCode Then
+                                Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                Throw New Exception($"Error al obtener centros de costo. Código: {response.StatusCode}, Detalle: {errContent}")
+                            End If
 
-                        If rows Is Nothing OrElse Not rows.HasValues Then
-                            Return centros_costo ' Vacía
-                        End If
+                            Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Dim obj = JObject.Parse(jsonResponse)
+                            Dim rows = obj("value")
 
-                        For Each row In rows
-                            Dim centro_costo As New clsBeCentro_costo()
-                            centro_costo.Codigo = row.Value(Of String)("CenterCode")
-                            centro_costo.Nombre = row.Value(Of String)("CenterName")
-                            centro_costo.Referencia = row.Value(Of String)("InWhichDimension")
-                            centro_costo.Activo = True
-                            centro_costo.User_agr = "MI3"
-                            centro_costo.User_mod = "MI3"
-                            centro_costo.Control_Inventario = True
-                            centros_costo.Add(centro_costo)
-                        Next
+                            If rows Is Nothing OrElse Not rows.HasValues Then
+                                hayMas = False
+                                Exit While
+                            End If
 
-                        Return centros_costo
-                    End Using
+                            Dim filasPagina As Integer = rows.Count()
+
+                            For Each row In rows
+                                Dim centro_costo As New clsBeCentro_costo()
+
+                                centro_costo.Codigo = SafeGetString(row, "CenterCode")
+                                centro_costo.Nombre = SafeGetString(row, "CenterName")
+                                centro_costo.Referencia = SafeGetString(row, "InWhichDimension")
+                                centro_costo.Activo = True
+                                centro_costo.User_agr = "MI3"
+                                centro_costo.User_mod = "MI3"
+                                centro_costo.Control_Inventario = True
+
+                                centros_costo.Add(centro_costo)
+                            Next
+
+                            skip += filasPagina
+
+                        End Using
+
+                    End While
+
                 End Using
             End Using
+
+            Return centros_costo
 
         Catch ex As Exception
             Throw New Exception("Error en Get_Centros_Costo_SAP: " & ex.Message, ex)
@@ -114,7 +133,7 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
                 Try
 
-                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Bodega: {0} ", centro.Nombre, vbNewLine))
+                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Centro de costo: {0} ", centro.Nombre, vbNewLine))
 
                     Dim beCentroCostoExistente As clsBeCentro_costo = clsLnCentro_costo.Existe_By_Codigo(centro.Codigo, Cnn, lTrans)
 
@@ -172,6 +191,14 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
         Return ok
 
+    End Function
+
+    Private Shared Function SafeGetString(row As JToken, fieldName As String) As String
+        Dim token = row(fieldName)
+        If token Is Nothing OrElse token.Type = JTokenType.Null Then
+            Return String.Empty
+        End If
+        Return token.ToString().Trim()
     End Function
 
 End Class
