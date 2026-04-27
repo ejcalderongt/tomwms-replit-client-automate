@@ -1,0 +1,39 @@
+# RES-DIN: Caso dinámico parametrizado por configuracion_qa
+id: RES-DIN
+version: 1
+category: reservation
+severity: low
+title: "Caso dinámico parametrizado por configuracion_qa"
+summary: |
+  No es un escenario fijo: lee BeQa (clsBeConfiguracion_qa) y arma el pedido a partir de Cantidad_Pedido_Presentacion + Cantidad_Pedido_UMBas + IdProducto + IdCliente. Sirve como motor de "ejecutar caso de prueba dado de alta en BD".
+
+requires_config:
+
+
+input:
+  requested_qty: 0
+  requested_um: "parametrizado"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+
+
+expected:
+  1. Toma una fila de configuracion_qa.
+  2. Construye BeINavPedCompraEnc con los parámetros declarados.
+  3. Llama Importar_Pedido_Cliente_A_Tabla_Intermedia.
+  4. El bridge debe ofrecer este caso como un "scenario runner" dinámico, no como assert estricto.
+
+legacy_origin:
+  case: "CASO Dinamico"
+  function: "Ejecuta_QA_CASO_Dinamico"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "17232-17372"
+
+notes: |
+  En el bridge nuevo este caso no se replica como assert; en su lugar se ofrece una herramienta para ejecutar cualquier caso desde una fila de configuracion_qa. Útil para regresión rápida con datos reales.
