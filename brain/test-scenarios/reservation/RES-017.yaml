@@ -1,0 +1,40 @@
+# RES-017: Falta stock y la caja a explotar está en almacenamiento (no picking) — rechaza
+id: RES-017
+version: 1
+category: reservation
+severity: high
+title: "Falta stock y la caja a explotar está en almacenamiento (no picking) — rechaza"
+summary: |
+  10 UDS pick + 15 UDS alm + 1 CJ alm. Solicitado 26 UDS. Debe reservar 15 UDS alm; la caja de almacenamiento NO es candidata a explosión si Explosion_Automatica_Desde_Ubicacion_Picking = True. Sin caja en pick para completar, rechaza.
+
+requires_config:
+  - Explosion_Automatica: true
+  - Explosion_Automatica_Desde_Ubicacion_Picking: true
+  - Rechazar_pedido_incompleto: No  # estricto
+
+input:
+  requested_qty: 26
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 10, vence: "2026-12-30", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 15, vence: "2026-12-01", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 1, vence: "2026-12-10", um: "CJS" }
+
+expected:
+  1. Reserva tentativa 15 UDS alm + 10 UDS pick = 25 UDS.
+  2. Falta 1 UDS y la única caja explotable está en almacenamiento (no pick).
+  3. Pedido RECHAZADO completo.
+
+legacy_origin:
+  case: "CASO 13"
+  function: "Ejecuta_QA_CASO_13_IDEAL_20231002011201"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "15894-16139"
+
