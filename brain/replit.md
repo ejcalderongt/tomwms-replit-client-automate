@@ -199,3 +199,51 @@ El brain mantiene **dos skills paralelos** porque el WMS es un sistema de dos ca
 - **Cambiás reglas de negocio en SP/BOF** → ¿la HH muestra el nuevo error de manera entendible?
 
 Si cualquiera de estas tiene respuesta negativa o desconocida, el cambio no es seguro y se documenta en `brain/_inbox/_proposals/` antes de aplicarlo.
+---
+
+## Decisiones registradas
+
+### 2026-04-27 — Bump SCHEMA_VERSION del brain bridge a "2"
+
+**Estado**: aprobado y aplicado.
+
+**Resumen**:
+
+- `scripts/brain_bridge.mjs` (rama main del repo de exchange) actualizado:
+  - `SCHEMA_VERSION = "2"`
+  - 3 tipos nuevos: `question_request`, `question_answer`, `learning_proposed`.
+  - 1 estado terminal nuevo: `answered` (para question_request resueltos).
+  - 3 analyzers nuevos con dispatch por type: `analyzeQuestionRequest`,
+    `analyzeQuestionAnswer`, `analyzeLearningProposed`.
+  - El analyze de un `question_answer` flipea automaticamente el
+    `question_request` referenciado a `status=answered`.
+  - Validacion: `schema_version=1 + tipo_v2` se rechaza en `notify`.
+
+**Compatibilidad**: total. Eventos schema 1 siguen procesandose por el
+analyzer original (`analyzeWmsChange`). Eventos viejos en `_inbox/`,
+`_proposals/`, `_processed/` no requieren migracion.
+
+**Documentacion actualizada**:
+
+- `brain/BRIDGE.md` (este repo): §2.1 con los tres tipos v2, §3.2 con
+  el estado `answered`.
+- `brain/decisions/005-bridge-schema-v2-bump.md` (este repo): registro
+  formal.
+- `PROTOCOL.md` (rama `wms-brain-client`): §4 marcada como aceptada,
+  §5 (workaround `directive+tags`) eliminada con changelog.
+- `CMDLETS.md` (rama `wms-brain-client`): `New-WmsBrainQuestionEvent`
+  pasa a emitir `-Type question_request` nativo.
+
+**Trazabilidad**:
+
+- Propuesta original: `wms-brain-client/EXTENSION-V2-PROPOSAL.md` §1-§7.
+- Sign-off: este registro (`brain/replit.md`, 2026-04-27).
+- Test E2E: ejecutado en sesion del agente Replit. Cycle
+  `question_request` para Q-001: notify -> list -> analyze -> proposed
+  -> notify(question_answer) -> analyze -> answered. Verificado OK.
+
+**Riesgo residual**: bajo. El cliente PowerShell (en construccion en la
+rama `wms-brain-client`) debe leer `SCHEMA_VERSION` del .mjs en
+`Test-WmsBrainEnvironment` y emitir `schema_version: "2"` en los
+nuevos tipos. Si emite v1 + tipo v2, el bridge lo rechaza con error
+claro.
