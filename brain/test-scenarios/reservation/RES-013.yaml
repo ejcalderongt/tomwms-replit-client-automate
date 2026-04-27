@@ -1,0 +1,40 @@
+# RES-013: Explosión de caja en picking para completar UDS faltantes
+id: RES-013
+version: 1
+category: reservation
+severity: high
+title: "Explosión de caja en picking para completar UDS faltantes"
+summary: |
+  9 UDS en almacenamiento + 1 caja en picking. Solicitado 11 UDS. Debe reservar las 9 UDS de almacenamiento y explotar la caja de picking para sacar las 2 UDS restantes.
+
+requires_config:
+  - Explosion_Automatica: true
+  - Explosion_Automatica_Desde_Ubicacion_Picking: true
+  - Explosion_Automatica_Nivel_Max: ">= 1"
+
+input:
+  requested_qty: 11
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 9, vence: "2026-01-02", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 1, vence: "2026-01-02", um: "CJS" }
+
+expected:
+  1. Reserva 9 UDS desde ALMACENAMIENTO.
+  2. Explota 1 CJ en PICKING; reserva 2 UDS resultantes.
+  3. Pedido completo (11 UDS reservadas).
+  4. Resto de la caja explotada queda como UDS sueltas en PICKING (saldo).
+
+legacy_origin:
+  case: "CASO 9"
+  function: "Ejecuta_QA_CASO_9_IDEAL_20231002011144"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "14950-15178"
+
