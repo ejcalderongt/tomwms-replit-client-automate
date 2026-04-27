@@ -1,6 +1,6 @@
 # Preguntas para afinar el mapeo del flujo WMS — pasada 7
 
-> **Status global**: 11/25 respondidas + 1 parcial + 0 reabiertas. Ver
+> **Status global**: 12/25 respondidas + 1 parcial + 0 reabiertas. Ver
 > respuestas consolidadas en `respuestas-tanda-1.md` (Erik) y
 > `respuestas-tanda-2.md` (SQL autonomo).
 >
@@ -298,7 +298,12 @@ Originalmente las criticas eran 6: P-04, P-08, P-10, P-12, P-16, P-17.
 1. **P-04** (decimales SAP) — la unica critica original abierta para Erik.
 2. **P-16b** ya CONFIRMADO en datos (ver `bug-report-p16b.md`). Falta
    identificar el SP responsable (necesito pistas del nombre).
-3. **PEND-06 a PEND-11** (detalles finos de cada modalidad de interface,
-   ver `interfaces-erp-por-cliente.md` seccion final).
+3. **PEND-10 RESUELTA en tanda 4**: outbox usa `enviado=0/1` +
+   `tipo_transaccion=INGRESO/SALIDA`. Ver `interfaces-erp-por-cliente.md`
+   apendice "Marca de envio".
+4. **PEND-12 NUEVA**: BYB tiene 110,795 INGRESOS pendientes en outbox
+   (99.90%) vs solo 107 enviados. ¿Esta caido NavSync para INGRESOS?
+   ¿O los INGRESOS van por otro canal?
+5. **PEND-06, 07, 08, 09, 11** (detalles finos de cada modalidad).
 
 Si tenes 5 minutos para P-04 dejamos cerrado el frente Killios.
