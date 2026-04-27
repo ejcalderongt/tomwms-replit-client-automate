@@ -1,0 +1,41 @@
+# RES-014: Explosión insuficiente: tras explotar la única caja sigue faltando, rechaza pedido
+id: RES-014
+version: 1
+category: reservation
+severity: high
+title: "Explosión insuficiente: tras explotar la única caja sigue faltando, rechaza pedido"
+summary: |
+  Mismo modelado que RES-013 pero solicitado = 26 UDS. Tras reservar 9 UDS de alm y explotar la caja (24 UDS aprox) sigue faltando. Con flag estricto debe rechazar el pedido completo.
+
+requires_config:
+  - Explosion_Automatica: true
+  - Explosion_Automatica_Desde_Ubicacion_Picking: true
+  - Rechazar_pedido_incompleto: No  # estricto
+
+input:
+  requested_qty: 26
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 9, vence: "2026-01-02", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 1, vence: "2026-01-02", um: "CJS" }
+
+expected:
+  1. Intento: 9 UDS alm + explosión caja pick.
+  2. Si la caja contiene < 17 UDS adicionales, no alcanza.
+  3. Pedido RECHAZADO completo. Reservas tentativas se revierten.
+
+legacy_origin:
+  case: "CASO 10"
+  function: "Ejecuta_QA_CASO_10_IDEAL_20231002011146"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "15179-15407"
+
+notes: |
+  El comportamiento exacto depende del Equivalencia_Presentacion del producto 47022 (cuántas UDS por CJ). Parametrizar en input cuando se conozca.
