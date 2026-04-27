@@ -1,275 +1,380 @@
-# 07 · Ciclo de vida de `stock_res` (estados de la reserva)
+# 07 · Ciclo de vida de `stock_res` y máquina de estados
 
-> **Propósito**: documentar los estados que puede tomar una fila de `stock_res` desde su creación hasta su consumición o cancelación, las transiciones permitidas y los puntos del sistema que disparan cada cambio. Este ciclo aplica tanto al motor MI3 nuevo como al legacy.
+> **CORRECCIÓN respecto a la versión anterior**: la versión 1 de este documento atribuía a `stock_res` columnas de auditoría como `Fecha_Commit`, `Fecha_Consumo`, `Fecha_Cancelacion`, `Motivo_Cancelacion`, `Usuario_Commit`, `Usuario_Consumo`, `Usuario_Cancelacion`, `EsExplosion`, `EsUMBas`, `EsZonaPicking`, `IdPresentacionOriginal`. **NINGUNA de esas columnas existe** en `stock_res`. La tabla real tiene 35 columnas validadas live contra Killios productivo (ver `08-mi3-tablas-killios.md` §2).
 >
-> **Cross-refs**: `01-mi3-motor-nuevo-net8.md` (creación), `06-mi3-handlers-detalle.md` (handler que crea), `sql-catalog/reservation-tables.md` (schema), `02-mi3-motor-legacy-vb.md` (`Inserta_Stock_Reservado` legacy).
+> Esta versión documenta el ciclo de vida con las **columnas reales** y explica cómo se infieren las transiciones desde la información disponible (cruzando con `trans_pe_enc.estado` y `trans_pe_enc.fec_mod`).
+>
+> **Cross-refs**: `01-mi3-motor-nuevo-net8.md`, `06-mi3-handlers-detalle.md` (handlers que crean reservas), `08-mi3-tablas-killios.md` §2 (schema real `stock_res`), `09-mi3-logging-observabilidad.md` (cómo reconstruir transiciones desde logs).
 
 ---
 
 ## Índice
 
-1. Estados posibles de `stock_res.Estado`
-2. Diagrama de transiciones
-3. Quién transiciona cada estado
-4. Tabla `stock_res` — campos clave del ciclo de vida
-5. Implicaciones operativas
-6. Cómo investigar reservas "huérfanas" o inconsistentes
+1. Estados posibles del campo `stock_res.estado`
+2. Diagrama de máquina de estados
+3. Transiciones · disparadores y persistencia
+4. Limitaciones del modelo (auditoría incompleta)
+5. Cómo inferir transiciones históricas
+6. Reglas de invariantes
+7. Operaciones de mantenimiento (limpieza de huérfanos)
 
 ---
 
-## 1. Estados posibles de `stock_res.Estado`
+## 1. Estados posibles del campo `stock_res.estado`
 
-Validados contra Killios productivo (passada 3-2):
+`stock_res.estado` es `nvarchar(20) NULL` (sin FK a catálogo). Los valores observados en producción y usados por el motor:
 
-| Valor                | Significado                                                          | Origen              |
-|----------------------|----------------------------------------------------------------------|---------------------|
-| `UNCOMMITED`         | Reserva creada, stock disponible reducido, pero no confirmada        | Motor MI3 (creación)|
-| `COMMITED`           | Reserva confirmada, asociada a una transacción de pedido aprobada    | Aprobación de pedido|
-| `CONSUMED`           | Reserva consumida durante el picking (despacho real)                 | Despacho desde HH   |
-| `CANCELLED`          | Reserva cancelada (por usuario o por timeout)                        | Cancelación de pedido|
-| `EXPIRED`            | Reserva caducada (timeout sin confirmación) — uso poco común         | Job de expiración   |
+| Estado         | Significado                                              | Quién lo escribe                          |
+|----------------|---------------------------------------------------------|------------------------------------------|
+| `UNCOMMITED`   | Reserva creada por el motor, pero el pedido aún no fue aprobado. Es la primera transición desde NULL. | Motor MI3 (`PostProcessingStep.PersistReservations`) |
+| `COMMITED`     | Pedido aprobado. La reserva queda firme.                | Flujo de aprobación de pedido (no motor MI3) |
+| `CONSUMED`    | Stock fue efectivamente despachado. La reserva se consume y `stock.cantidad` se decrementa. | Flujo de despacho |
+| `CANCELLED`    | Reserva cancelada (por cancelación de pedido o por limpieza manual). | Flujo de cancelación o limpieza |
+| `EXPIRED`      | Reserva quedó huérfana (UNCOMMITED por > N días sin aprobación). | Job de limpieza programado |
 
-> **Convención del legacy**: el estado se persiste como string en `varchar(20)`. NO hay tabla de catálogo (`tipos_estado_stock_res`); el código mantiene los strings hardcoded. El motor nuevo usa el enum `ReservationState` con `ToString()` para serializar.
+> **Importante**: la columna **acepta cualquier string** porque no tiene FK ni CHECK constraint. Cualquier typo (`UNCOMITED`, `Commited`, `cancelled` minúscula) sería persistido sin validación. Riesgo abierto a documentar.
 
-### 1.1 Estado por defecto al crear
-
-```vbnet
-' Legacy: Inserta_Stock_Reservado
-BeStockRes.Estado = "UNCOMMITED"
-```
-
-```csharp
-// Nuevo: BaseReservationHandler.CreateReservation
-reservation.Estado = ReservationState.UNCOMMITED.ToString();
-```
-
-Las reservas siempre nacen `UNCOMMITED`. Solo transicionan tras eventos externos.
-
----
-
-## 2. Diagrama de transiciones
+## 2. Diagrama de máquina de estados
 
 ```
-       Motor MI3 (handler)
-              │
-              ▼
-       [UNCOMMITED]  ◄────┐
-         │     │     │     │
-         │     │     │     │ (cancelación dentro de timeout)
-         │     │     │     │
-   (aprobación) │  (timeout)
-         │     │     │     │
-         ▼     │     ▼     │
-    [COMMITED]│  [EXPIRED]─┘
-         │    │
-   (pick HH)  │
-         │    │ (cancelación post-aprobación)
-         ▼    ▼
-    [CONSUMED] [CANCELLED]
+                  ┌──────────────────────────┐
+                  │ Motor MI3 crea reserva   │
+                  │ PostProcessingStep        │
+                  └─────────────┬─────────────┘
+                                │
+                                ▼
+                       ╔════════════════╗
+                       ║  UNCOMMITED    ║
+                       ╚════════════════╝
+                          │           │
+                          │           │
+        Pedido aprobado   │           │   Pedido cancelado
+        (flujo aprobación)│           │   o expiración (job)
+                          ▼           ▼
+              ╔════════════════╗  ╔════════════════╗
+              ║  COMMITED      ║  ║  CANCELLED     ║
+              ╚════════════════╝  ║   o EXPIRED    ║
+                          │       ╚════════════════╝
+                          │
+        Despacho ejecutado│
+        (flujo despacho)  │
+                          ▼
+                ╔════════════════╗
+                ║  CONSUMED      ║◄── Estado terminal
+                ╚════════════════╝
 ```
 
-Transiciones permitidas:
+> **Estados terminales**: `CONSUMED`, `CANCELLED`, `EXPIRED`. No salen a otro estado.
+> **Transiciones inversas**: NO hay. Un `COMMITED` no puede volver a `UNCOMMITED`. Si se cancela, va a `CANCELLED`.
 
-| Desde         | A             | Disparador                                                |
-|---------------|---------------|-----------------------------------------------------------|
-| `UNCOMMITED`  | `COMMITED`    | Aprobación del pedido (job o usuario en BOF Forms)        |
-| `UNCOMMITED`  | `CANCELLED`   | Cancelación manual del pedido                              |
-| `UNCOMMITED`  | `EXPIRED`     | Job de expiración tras N horas sin commit                  |
-| `COMMITED`    | `CONSUMED`    | Pick desde Handheld (despacho físico)                      |
-| `COMMITED`    | `CANCELLED`   | Cancelación post-commit (raro, requiere autorización)      |
-| `CANCELLED`   | (terminal)    | —                                                          |
-| `CONSUMED`    | (terminal)    | —                                                          |
-| `EXPIRED`     | (terminal)    | —                                                          |
+## 3. Transiciones · disparadores y persistencia
 
----
+### 3.1 NULL → `UNCOMMITED` (creación por motor MI3)
 
-## 3. Quién transiciona cada estado
+**Disparador**: `Insertar_Stock_Res_MI3` en motor nuevo (o `Inserta_Stock_Res_MI3` en legacy).
 
-### 3.1 Creación (`UNCOMMITED`)
+**Persistencia**: 1 INSERT por cada `BeStock_res` en `lBeStockAReservar`.
 
-- **Motor MI3 nuevo**: `PostProcessingStep.PersistReservations` ejecuta `INSERT INTO stock_res (..., Estado) VALUES (..., 'UNCOMMITED')`.
-- **Motor MI3 legacy**: `Inserta_Stock_Reservado(lBeStockAReservar, ...)` recorre la lista y persiste con el mismo estado.
-
-### 3.2 `UNCOMMITED` → `COMMITED`
-
-Disparado por:
-
-- **Aprobación de pedido en BOF**: `clsLnTrans_pe_enc.Aprobar_Pedido(IdPedido)` actualiza todos los `stock_res` asociados.
-- **Job de aprobación automática**: para pedidos MI3 sincronizados desde Killios con flag de auto-commit.
-
+**Columnas escritas**:
 ```sql
--- Operación típica
-UPDATE stock_res
-SET Estado = 'COMMITED', Fecha_Commit = GETDATE(), Usuario_Commit = @Usuario
-WHERE IdPedido = @IdPedido AND Estado = 'UNCOMMITED';
+INSERT INTO stock_res (
+    IdTransaccion, Indicador, IdPedidoDet, IdStock,
+    IdPropietarioBodega, IdProductoBodega, IdProductoEstado,
+    IdPresentacion, IdUnidadMedida, IdUbicacion,
+    lote, lic_plate, serial, cantidad, peso,
+    estado, fecha_ingreso, fecha_vence, uds_lic_plate, no_bulto,
+    user_agr, fec_agr, IdBodega, fecha_manufactura, añada,
+    pallet_no_estandar
+) VALUES (
+    @IdTransaccion, @Indicador, @IdPedidoDet, @IdStock,
+    @IdPropietarioBodega, @IdProductoBodega, @IdProductoEstado,
+    @IdPresentacion, @IdUnidadMedida, @IdUbicacion,
+    @lote, @lic_plate, @serial, @cantidad, @peso,
+    'UNCOMMITED', @fecha_ingreso, @fecha_vence, @uds_lic_plate, @no_bulto,
+    @MaquinaQueSolicita, GETDATE(), @IdBodega, @fecha_manufactura, @añada,
+    @pallet_no_estandar
+);
 ```
 
-### 3.3 `COMMITED` → `CONSUMED`
+**Notas**:
+- `user_agr` recibe `MaquinaQueSolicita` (hostname de la HH o nombre del servicio).
+- `fec_agr = GETDATE()` (no se permite override).
+- `user_mod = user_agr` y `fec_mod = fec_agr` inicialmente.
 
-Disparado por:
+### 3.2 `UNCOMMITED` → `COMMITED` (aprobación de pedido)
 
-- **Pick desde Handheld (TOMHH2025)**: cuando el operador escanea el lote y confirma la cantidad picked.
-- **Despacho desde BOF Forms**: para pedidos manuales.
+**Disparador**: `trans_pe_enc.estado` cambia a 'APROBADO' o equivalente.
+
+**Persistencia**: 1 UPDATE por cada reserva del pedido.
 
 ```sql
 UPDATE stock_res
-SET Estado = 'CONSUMED', Fecha_Consumo = GETDATE(), Usuario_Consumo = @Usuario,
-    IdTareaPickingDet = @IdTarea
+SET estado = 'COMMITED',
+    user_mod = @UsuarioAprobador,
+    fec_mod = GETDATE()
+WHERE IdPedidoEnc = @IdPedidoEnc -- vía JOIN con trans_pe_det
+  AND estado = 'UNCOMMITED';
+```
+
+> **Nota**: `stock_res` no tiene `IdPedidoEnc` directo. Hay que JOIN con `trans_pe_det.IdPedidoEnc` para identificar las reservas del pedido. Excepción: el campo `IdPedido bigint` en `stock_res` (sí, redundante) puede ser usado como atajo si el flujo lo populó.
+
+### 3.3 `COMMITED` → `CONSUMED` (despacho)
+
+**Disparador**: ejecución del despacho (`clsLnDespacho.Ejecutar` o equivalente).
+
+**Persistencia**:
+1. UPDATE `stock_res.estado = 'CONSUMED'`.
+2. UPDATE `stock.cantidad -= reserva.cantidad`.
+3. INSERT en `trans_de_*` (detalle de despacho).
+4. UPDATE `trans_pe_enc.estado = 'DESPACHADO'`.
+
+```sql
+-- 1. Reserva consumida
+UPDATE stock_res
+SET estado = 'CONSUMED',
+    IdDespacho = @IdDespacho,
+    user_mod = @UsuarioDespacho,
+    fec_mod = GETDATE()
 WHERE IdStockRes = @IdStockRes;
+
+-- 2. Stock decrementado (transaccional con la anterior)
+UPDATE stock
+SET cantidad = cantidad - @CantidadConsumida,
+    user_mod = @UsuarioDespacho,
+    fec_mod = GETDATE()
+WHERE IdStock = @IdStock;
 ```
 
-Tras `CONSUMED`, también se descuenta físicamente del `stock` (no solo del disponible):
+> **Invariante crítico**: las dos UPDATE deben estar en una sola transacción. Si falla la 2da, rollback completo.
 
+### 3.4 `UNCOMMITED` o `COMMITED` → `CANCELLED` (cancelación)
+
+**Disparador**:
+- Cancelación manual de pedido en BOF.
+- Anulación desde la HH.
+- Limpieza programada cuando un pedido queda en limbo.
+
+**Persistencia**:
 ```sql
-UPDATE stock SET Cantidad = Cantidad - @CantidadConsumida WHERE IdStock = @IdStock;
+UPDATE stock_res
+SET estado = 'CANCELLED',
+    user_mod = @UsuarioCancelacion,
+    fec_mod = GETDATE()
+WHERE IdPedidoDet IN (
+    SELECT IdPedidoDet FROM trans_pe_det WHERE IdPedidoEnc = @IdPedidoEnc
+)
+  AND estado IN ('UNCOMMITED', 'COMMITED');
 ```
 
-### 3.4 `UNCOMMITED|COMMITED` → `CANCELLED`
+> **Importante**: la cancelación NO modifica `stock.cantidad` (porque la reserva nunca se materializó). Solo libera la reserva.
 
-Disparado por:
+### 3.5 `UNCOMMITED` → `EXPIRED` (limpieza programada)
 
-- **Cancelación manual** desde BOF (form cancelación pedidos).
-- **Anulación desde Killios**: si Killios anula un pedido MI3 sincronizado, el endpoint `POST /api/sync/salidas/mi3/anular` cancela las reservas asociadas.
+**Disparador**: job nocturno o programado.
+
+**Política sugerida**: reservas `UNCOMMITED` con `fec_agr < (hoy - 7 días)` → `EXPIRED`.
 
 ```sql
 UPDATE stock_res
-SET Estado = 'CANCELLED', Fecha_Cancelacion = GETDATE(),
-    Usuario_Cancelacion = @Usuario, Motivo_Cancelacion = @Motivo
-WHERE IdPedido = @IdPedido AND Estado IN ('UNCOMMITED', 'COMMITED');
+SET estado = 'EXPIRED',
+    user_mod = 'JOB_LIMPIEZA',
+    fec_mod = GETDATE()
+WHERE estado = 'UNCOMMITED'
+  AND fec_agr < DATEADD(DAY, -7, GETDATE());
 ```
 
-### 3.5 `UNCOMMITED` → `EXPIRED`
+> **Política a definir con Erik**: 7 días es sugerido. Puede ser distinto por bodega.
 
-Job programado (típico cada hora) que cancela reservas viejas:
+## 4. Limitaciones del modelo (auditoría incompleta)
 
-```sql
-UPDATE stock_res
-SET Estado = 'EXPIRED', Fecha_Cancelacion = GETDATE(),
-    Motivo_Cancelacion = 'Auto-expirada tras 24h sin commit'
-WHERE Estado = 'UNCOMMITED' AND Fecha_Reserva < DATEADD(HOUR, -24, GETDATE());
-```
+### 4.1 No hay historial de transiciones
 
-> El threshold de horas se configura en `propietarios.Horas_Auto_Expiracion_Reserva`. Default 24.
+El campo `estado` se sobrescribe en cada cambio. No existe tabla `stock_res_history` ni columnas `Fecha_Commit`/`Fecha_Consumo` separadas.
 
----
+**Consecuencia**: para saber **cuándo** una reserva pasó de UNCOMMITED a COMMITED, hay que cruzar con:
+- `trans_pe_enc.fec_mod` (cambio del pedido) — aproximación.
+- `log_error_wms` filtrado por checkpoints relacionados.
+- Audit log de aplicación si existe.
 
-## 4. Tabla `stock_res` — campos clave del ciclo de vida
+### 4.2 No hay motivo de cancelación en `stock_res`
 
-Detalle completo del schema en `sql-catalog/reservation-tables.md`. Acá los campos relevantes para el ciclo:
+`stock_res` no tiene `Motivo_Cancelacion`. El motivo está en `trans_pe_enc.IdMotivoAnulacionBodega`.
 
-| Campo                       | Tipo            | Descripción                                              |
-|-----------------------------|-----------------|----------------------------------------------------------|
-| `IdStockRes`                | int identity    | PK                                                       |
-| `IdStock`                   | int FK          | Referencia al stock origen                               |
-| `IdPedido`, `IdPedidoDet`   | int FK          | Pedido y línea de pedido                                 |
-| `IdTransaccion`             | int             | Identificador de transacción de reserva                 |
-| `Cantidad`                  | float           | Cantidad reservada                                       |
-| `Estado`                    | varchar(20)     | Ver §1                                                   |
-| `Fecha_Reserva`             | datetime        | Cuando se creó (always populated)                        |
-| `Fecha_Commit`              | datetime        | Cuando pasó a COMMITED (NULL si aún no)                  |
-| `Fecha_Consumo`             | datetime        | Cuando pasó a CONSUMED                                   |
-| `Fecha_Cancelacion`         | datetime        | Cuando pasó a CANCELLED o EXPIRED                        |
-| `Usuario_Reserva`           | varchar(100)    | `MaquinaQueSolicita` original                            |
-| `Usuario_Commit`            | varchar(100)    | Usuario que aprobó                                       |
-| `Usuario_Consumo`           | varchar(100)    | Operador HH                                              |
-| `Usuario_Cancelacion`       | varchar(100)    | Quien canceló                                            |
-| `Motivo_Cancelacion`        | varchar(500)    | Texto libre o código predefinido                         |
-| `Indicador`                 | varchar(10)     | "PED" / "TRA" / "MAN" (tipo de transacción origen)       |
-| `EsExplosion`               | bit             | Si la reserva vino de explosión                          |
-| `EsUMBas`                   | bit             | Si vino del fallback UMBas                               |
-| `EsZonaPicking`             | bit             | Si fue reservada desde zona picking                      |
-| `IdPresentacionOriginal`    | int             | Para reservas EsUMBas, conserva la presentación pedida   |
+### 4.3 No hay marker de explosión / UMBas / Zona Picking
 
----
+`stock_res` no tiene `EsExplosion`, `EsUMBas`, `EsZonaPicking`. Estos atributos solo viven en los logs (`log_error_wms` con checkpoints `#CASO_6_*`, `#FALLBACK_UMBAS`, `#CASO_7_*`).
 
-## 5. Implicaciones operativas
+**Único marker físico**: `stock_res.no_bulto = 1965` indica que la reserva fue generada por la recursión legacy de UMBas (heredado del marker `stock.no_bulto = 1965`).
 
-### 5.1 Stock disponible vs Stock físico
+### 4.4 No hay `IdPresentacionOriginal`
 
-Una fila en `stock_res` con estado `UNCOMMITED` o `COMMITED` **reduce el stock disponible** pero **no el stock físico**:
+Si la reserva es resultado de explosión (caja → unidades), `stock_res.IdPresentacion` ya es la presentación reservada (unidad), no la pedida (caja). No hay forma directa de saber qué presentación pidió originalmente el cliente.
 
-- Stock físico (`stock.Cantidad`): se decrementa solo en `CONSUMED`.
-- Stock disponible: `stock.Cantidad - SUM(stock_res.Cantidad WHERE Estado IN ('UNCOMMITED', 'COMMITED'))`.
+**Workaround**: cruzar con `trans_pe_det.IdPresentacion` que tiene la presentación pedida.
 
-Esta es la lógica que `Restar_Stock_Reservado` aplica en cada llamada del motor MI3.
+### 4.5 `user_mod` se sobrescribe
 
-### 5.2 Reservas huérfanas
+Solo queda registrada la última modificación en `user_mod` + `fec_mod`. No se sabe quién hizo cada transición intermedia.
 
-Una "reserva huérfana" es una fila `stock_res` con estado `UNCOMMITED` cuyo pedido (`trans_pe_enc`) ya está cancelado. Causas históricas:
+## 5. Cómo inferir transiciones históricas
 
-1. **Bug de la persistencia parcial pre-recursión del legacy** (corregido en motor nuevo): el legacy persistía reservas en presentación antes de intentar UMBas. Si la búsqueda UMBas fallaba sin completar, las reservas en presentación quedaban activas.
-2. **Job de expiración no ejecutándose**: si el job está caído por días, se acumulan reservas viejas.
-3. **Crash del proceso BOF a mitad de pedido**: con TransactionScope esto se mitigó en motor nuevo, pero histórico legacy sí sufría.
-
-### 5.3 Reservas zombi
-
-"Reserva zombi" = `stock_res` con estado `COMMITED` cuya transacción de despacho nunca llegó (por ejemplo, pedido aprobado pero el HH nunca lo procesó).
-
-Detección:
+### 5.1 Línea de tiempo aproximada de una reserva
 
 ```sql
-SELECT sr.*, te.Estado AS EstadoPedido
-FROM stock_res sr
-JOIN trans_pe_enc te ON te.IdPedidoEnc = sr.IdPedido
-WHERE sr.Estado = 'COMMITED'
-  AND sr.Fecha_Commit < DATEADD(DAY, -7, GETDATE())
-  AND te.Estado NOT IN ('DESPACHADO', 'CANCELADO');
-```
-
-Estas requieren intervención manual (cancelación o forzar despacho).
-
----
-
-## 6. Cómo investigar reservas problemáticas
-
-### 6.1 Reservas inconsistentes con su pedido
-
-```sql
--- Reservas de un pedido específico con su estado y transiciones
+-- Reconstruir línea de tiempo de IdStockRes = @X
 SELECT
-    sr.IdStockRes, sr.IdStock, sr.Cantidad, sr.Estado,
-    sr.Fecha_Reserva, sr.Fecha_Commit, sr.Fecha_Consumo, sr.Fecha_Cancelacion,
-    sr.Indicador, sr.EsExplosion, sr.EsUMBas, sr.EsZonaPicking,
-    s.Cantidad AS StockFisicoActual,
-    p.Codigo AS Producto,
-    pe.Estado AS EstadoPedido
+    sr.IdStockRes,
+    sr.estado AS EstadoActual,
+    sr.fec_agr AS Cuando_Creada,
+    sr.user_agr AS Quien_Creo,
+    sr.fec_mod AS Ultima_Modificacion,
+    sr.user_mod AS Ultimo_Modificador,
+    pe.estado AS EstadoPedido,
+    pe.fec_mod AS UltimoCambioPedido,
+    pe.IdMotivoAnulacionBodega AS MotivoAnulacion,
+    -- Inferencia: si pedido cambió después de fec_agr de reserva,
+    -- probablemente fue cuando pasó a COMMITED o CANCELLED
+    CASE
+        WHEN sr.estado = 'COMMITED' THEN 'Aprobacion: ~' + CONVERT(NVARCHAR, pe.fec_mod, 120)
+        WHEN sr.estado = 'CANCELLED' THEN 'Cancelacion: ~' + CONVERT(NVARCHAR, pe.fec_mod, 120) + ' Motivo:' + CONVERT(NVARCHAR, pe.IdMotivoAnulacionBodega)
+        WHEN sr.estado = 'CONSUMED' THEN 'Despacho: ~' + CONVERT(NVARCHAR, sr.fec_mod, 120)
+    END AS Inferencia
 FROM stock_res sr
-JOIN stock s ON s.IdStock = sr.IdStock
-JOIN productos p ON p.IdProducto = s.IdProducto
-JOIN trans_pe_enc pe ON pe.IdPedidoEnc = sr.IdPedido
-WHERE sr.IdPedido = @IdPedido
-ORDER BY sr.Fecha_Reserva;
+JOIN trans_pe_det pd ON pd.IdPedidoDet = sr.IdPedidoDet
+JOIN trans_pe_enc pe ON pe.IdPedidoEnc = pd.IdPedidoEnc
+WHERE sr.IdStockRes = @IdStockRes;
 ```
 
-### 6.2 Trazabilidad cruzada con `log_error_wms`
+### 5.2 Cruce con logs para precisión
 
 ```sql
--- Logs del motor MI3 para una transacción
-SELECT *
+-- Logs del pedido relacionados con la reserva
+SELECT Fecha, MensajeError
 FROM log_error_wms
-WHERE Mensaje LIKE '%IdTransaccion=' + CAST(@IdTrans AS VARCHAR) + '%'
-   OR Mensaje LIKE '%IdPedido=' + CAST(@IdPedido AS VARCHAR) + '%'
+WHERE IdPedidoEnc = (SELECT IdPedidoEnc FROM trans_pe_det WHERE IdPedidoDet =
+                      (SELECT IdPedidoDet FROM stock_res WHERE IdStockRes = @IdStockRes))
+  AND (MensajeError LIKE '%RES:%' OR MensajeError LIKE '#%')
 ORDER BY Fecha;
 ```
 
-Buscar checkpoints como `#CASO_*_RESERVED <IdStock>` para correlacionar con `stock_res.IdStock`.
-
-### 6.3 Volumen por estado (dashboard de salud)
+### 5.3 Estado actual vs esperado
 
 ```sql
-SELECT
-    Estado,
-    COUNT(*) AS Cantidad,
-    MIN(Fecha_Reserva) AS MasAntigua,
-    MAX(Fecha_Reserva) AS MasReciente
+-- Reservas que llevan demasiado tiempo en UNCOMMITED
+SELECT IdStockRes, IdPedidoDet, fec_agr, DATEDIFF(HOUR, fec_agr, GETDATE()) AS HorasEnLimbo
 FROM stock_res
-WHERE Fecha_Reserva > DATEADD(DAY, -30, GETDATE())
-GROUP BY Estado
-ORDER BY Cantidad DESC;
+WHERE estado = 'UNCOMMITED'
+  AND fec_agr < DATEADD(DAY, -3, GETDATE())
+ORDER BY fec_agr;
+
+-- Reservas COMMITED de pedidos ya despachados (debería ser CONSUMED)
+SELECT sr.IdStockRes, sr.estado AS EstadoReserva, pe.estado AS EstadoPedido, sr.fec_mod, pe.fec_mod
+FROM stock_res sr
+JOIN trans_pe_det pd ON pd.IdPedidoDet = sr.IdPedidoDet
+JOIN trans_pe_enc pe ON pe.IdPedidoEnc = pd.IdPedidoEnc
+WHERE sr.estado = 'COMMITED'
+  AND pe.estado = 'DESPACHADO'
+  AND pe.fec_mod < DATEADD(DAY, -1, GETDATE());
 ```
 
-> Recordatorio: **Killios productivo es READ-ONLY** desde este wms-brain (regla 08). Estas queries son solo para investigación. Modificaciones se hacen por canal autorizado del DBA.
+## 6. Reglas de invariantes
+
+### 6.1 Invariantes que el motor MI3 debe respetar
+
+1. **Total reservado ≤ stock disponible**:
+   ```sql
+   SELECT IdStock, stock.cantidad,
+          (SELECT SUM(cantidad) FROM stock_res
+           WHERE IdStock = stock.IdStock AND estado IN ('UNCOMMITED','COMMITED')) AS TotalReservado
+   FROM stock
+   WHERE stock.activo = 1
+     AND stock.cantidad < (SELECT SUM(cantidad) FROM stock_res
+                          WHERE IdStock = stock.IdStock AND estado IN ('UNCOMMITED','COMMITED'));
+   ```
+   Resultado esperado: 0 filas. Si > 0, hay invariante violado (over-reservation).
+
+2. **Toda reserva CONSUMED tiene `IdDespacho NOT NULL`**:
+   ```sql
+   SELECT COUNT(*) FROM stock_res WHERE estado = 'CONSUMED' AND IdDespacho IS NULL;
+   ```
+   Resultado esperado: 0. Si > 0, despacho mal procesado.
+
+3. **Toda reserva CANCELLED tiene su pedido en estado CANCELADO o ANULADO**:
+   ```sql
+   SELECT sr.IdStockRes, sr.estado AS Reserva, pe.estado AS Pedido
+   FROM stock_res sr
+   JOIN trans_pe_det pd ON pd.IdPedidoDet = sr.IdPedidoDet
+   JOIN trans_pe_enc pe ON pe.IdPedidoEnc = pd.IdPedidoEnc
+   WHERE sr.estado = 'CANCELLED'
+     AND pe.estado NOT IN ('CANCELADO', 'ANULADO');
+   ```
+   Excepción aceptable: cancelaciones manuales por limpieza.
+
+4. **Reservas con `no_bulto = 1965` son siempre presentación UMBas**:
+   ```sql
+   SELECT IdStockRes, IdPresentacion, no_bulto
+   FROM stock_res
+   WHERE no_bulto = 1965
+     AND IdPresentacion IS NOT NULL
+     AND IdPresentacion != (SELECT IdUMBas FROM producto_bodega WHERE IdProductoBodega = stock_res.IdProductoBodega);
+   ```
+   Resultado esperado: 0. Si > 0, marker mal aplicado.
+
+### 6.2 Invariantes a NO violar manualmente
+
+- NUNCA hacer `UPDATE stock_res SET cantidad = X WHERE ...`. La cantidad reservada es atómica con el stock origen.
+- NUNCA hacer `DELETE FROM stock_res`. Solo `UPDATE estado`.
+- NUNCA cambiar `IdStock` de una reserva existente. Si el stock origen se mueve, crear nueva reserva y cancelar la vieja.
+
+## 7. Operaciones de mantenimiento
+
+### 7.1 Job nocturno: limpieza de UNCOMMITED viejas
+
+```sql
+-- Job: marcar UNCOMMITED > 7 días como EXPIRED
+UPDATE stock_res
+SET estado = 'EXPIRED',
+    user_mod = 'JOB_LIMPIEZA',
+    fec_mod = GETDATE()
+WHERE estado = 'UNCOMMITED'
+  AND fec_agr < DATEADD(DAY, -7, GETDATE());
+```
+
+### 7.2 Job semanal: detección de inconsistencias
+
+Ejecutar las 4 queries de invariantes (§6.1). Si alguna devuelve > 0, alertar al equipo de operaciones.
+
+### 7.3 Detección de huérfanos
+
+```sql
+-- Reservas cuyo pedido fue eliminado (no debería pasar pero por si acaso)
+SELECT sr.*
+FROM stock_res sr
+WHERE NOT EXISTS (
+    SELECT 1 FROM trans_pe_det pd WHERE pd.IdPedidoDet = sr.IdPedidoDet
+);
+```
+
+### 7.4 Compactación / archivado
+
+`stock_res` puede crecer rápido. Política sugerida:
+
+```sql
+-- Mover reservas terminales (CANCELLED, EXPIRED, CONSUMED) > 90 días a tabla histórica
+-- (definir tabla stock_res_historico con mismo schema + flag EsHistorico)
+
+INSERT INTO stock_res_historico (...)
+SELECT ... FROM stock_res
+WHERE estado IN ('CANCELLED', 'EXPIRED', 'CONSUMED')
+  AND fec_mod < DATEADD(DAY, -90, GETDATE());
+
+DELETE FROM stock_res
+WHERE estado IN ('CANCELLED', 'EXPIRED', 'CONSUMED')
+  AND fec_mod < DATEADD(DAY, -90, GETDATE());
+```
+
+> **Importante**: ejecutar SOLO en réplica o en horario de baja actividad. Killios productivo es READ-ONLY desde wms-brain — esta operación se hace por canal autorizado del DBA.
 
 ---
 
-> Próximo: `08-mi3-tablas-killios.md` documenta el schema completo de las 5 tablas críticas (`stock`, `stock_res`, `trans_pe_det`, `i_nav_ped_traslado_det`, `log_error_wms`) y sus FKs cruzadas, con tipos validados contra Killios productivo.
+> Próximo: `09-mi3-logging-observabilidad.md` documenta el contrato `IReservationLogger` y cómo reconstruir el flujo completo de un pedido a partir de los checkpoints.
