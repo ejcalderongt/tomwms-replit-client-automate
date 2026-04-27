@@ -1,0 +1,471 @@
+[
+  {
+    "name": "ConvertSecondsFormatoFecha",
+    "schema": "dbo",
+    "object_id": 289592270,
+    "type": "FN",
+    "modify_date": "2024-09-12T08:48:41.283Z",
+    "params": [
+      {
+        "name": "@Seconds",
+        "type": "decimal",
+        "len": 9,
+        "output": false
+      }
+    ],
+    "lines": 31,
+    "definitionLength": 909,
+    "definition": "-- =============================================\r\nCREATE FUNCTION [dbo].[ConvertSecondsFormatoFecha]\r\n(\r\n@Seconds DECIMAL\r\n)\r\nRETURNS NVARCHAR(50)\r\nAS\r\nBEGIN\r\n\r\nDECLARE @resultado NVARCHAR(50)\r\nDECLARE @dias DECIMAL\r\nDECLARE @segundos_sobrantes DECIMAL\r\nDECLARE @horas AS INT\r\nDECLARE @minutos AS INT\r\nDECLARE @segundos AS INT\r\n\r\nSELECT @dias = @Seconds / (24 * 60 * 60)\r\nSELECT @segundos_sobrantes =ABS(@Seconds -(@dias* (24 * 60 * 60)))\r\nSELECT @horas = @segundos_sobrantes  / (60.0 * 60.0)\r\nSELECT @minutos = ((@segundos_sobrantes % (60.0 * 60.0)) / 60.0)\r\nSELECT @segundos = (((@segundos_sobrantes) % (60.0 * 60.0)) % 60.0)\r\n\r\n-- Declare the return variable here\r\nSELECT @resultado = CONVERT(NVARCHAR(50),@dias) + ' ' + \r\nRIGHT('00'+ CONVERT(NVARCHAR(2),@horas),2) + ':' +\r\nRIGHT('00'+ CONVERT(NVARCHAR(2),@minutos),2) + ':' +\r\nRIGHT('00'+ CONVERT(NVARCHAR(2),@segundos),2);\r\n\r\nRETURN @resultado;\r\n\r\nEND ;",
+    "referenced_tables": []
+  },
+  {
+    "name": "fdias_Exterior_by_IdCliente",
+    "schema": "dbo",
+    "object_id": 3687261,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.450Z",
+    "params": [
+      {
+        "name": "@IdCliente",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdFamilia",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdClasificacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 21,
+    "definitionLength": 420,
+    "definition": "CREATE FUNCTION [dbo].[fdias_Exterior_by_IdCliente] \r\n(\r\n\t@IdCliente INT,\r\n\t@IdFamilia INT,\r\n\t@IdClasificacion INT\r\n)\r\nRETURNS NVARCHAR(250)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado int\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = (select Dias_Exterior from cliente_tiempos \r\n\tWHERE (IdCliente=@IdCliente AND IdClasificacion = @IdClasificacion AND IdFamilia = @IdFamilia) )\r\n\t\r\n\tRETURN @resultado;\r\n\r\nEND\r\n\r\n",
+    "referenced_tables": [
+      "cliente_tiempos"
+    ]
+  },
+  {
+    "name": "fdias_locales_by_IdCliente",
+    "schema": "dbo",
+    "object_id": 2135170852,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.457Z",
+    "params": [
+      {
+        "name": "@IdCliente",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdFamilia",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdClasificacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 21,
+    "definitionLength": 416,
+    "definition": "CREATE FUNCTION [dbo].[fdias_locales_by_IdCliente] \r\n(\r\n\t@IdCliente INT,\r\n\t@IdFamilia INT,\r\n\t@IdClasificacion INT\r\n)\r\nRETURNS NVARCHAR(250)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado int\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = (select Dias_Local from cliente_tiempos \r\n\tWHERE (IdCliente=@IdCliente AND IdClasificacion = @IdClasificacion AND IdFamilia = @IdFamilia) )\r\n\t\r\n\tRETURN @resultado;\r\n\r\nEND\r\n\r\n",
+    "referenced_tables": [
+      "cliente_tiempos"
+    ]
+  },
+  {
+    "name": "fn_diagramobjects",
+    "schema": "dbo",
+    "object_id": 549576996,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [],
+    "lines": 47,
+    "definitionLength": 1693,
+    "definition": "\r\n\tCREATE FUNCTION dbo.fn_diagramobjects() \r\n\tRETURNS int\r\n\tWITH EXECUTE AS N'dbo'\r\n\tAS\r\n\tBEGIN\r\n\t\tdeclare @id_upgraddiagrams\t\tint\r\n\t\tdeclare @id_sysdiagrams\t\t\tint\r\n\t\tdeclare @id_helpdiagrams\t\tint\r\n\t\tdeclare @id_helpdiagramdefinition\tint\r\n\t\tdeclare @id_creatediagram\tint\r\n\t\tdeclare @id_renamediagram\tint\r\n\t\tdeclare @id_alterdiagram \tint \r\n\t\tdeclare @id_dropdiagram\t\tint\r\n\t\tdeclare @InstalledObjects\tint\r\n\r\n\t\tselect @InstalledObjects = 0\r\n\r\n\t\tselect \t@id_upgraddiagrams = object_id(N'dbo.sp_upgraddiagrams'),\r\n\t\t\t@id_sysdiagrams = object_id(N'dbo.sysdiagrams'),\r\n\t\t\t@id_helpdiagrams = object_id(N'dbo.sp_helpdiagrams'),\r\n\t\t\t@id_helpdiagramdefinition = object_id(N'dbo.sp_helpdiagramdefinition'),\r\n\t\t\t@id_creatediagram = object_id(N'dbo.sp_creatediagram'),\r\n\t\t\t@id_renamediagram = object_id(N'dbo.sp_renamediagram'),\r\n\t\t\t@id_alterdiagram = object_id(N'dbo.sp_alterdiagram'), \r\n\t\t\t@id_dropdiagram = object_id(N'dbo.sp_dropdiagram')\r\n\r\n\t\tif @id_upgraddiagrams is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 1\r\n\t\tif @id_sysdiagrams is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 2\r\n\t\tif @id_helpdiagrams is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 4\r\n\t\tif @id_helpdiagramdefinition is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 8\r\n\t\tif @id_creatediagram is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 16\r\n\t\tif @id_renamediagram is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 32\r\n\t\tif @id_alterdiagram  is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 64\r\n\t\tif @id_dropdiagram is not null\r\n\t\t\tselect @InstalledObjects = @InstalledObjects + 128\r\n\t\t\r\n\t\treturn @InstalledObjects \r\n\tEND\r\n\t",
+    "referenced_tables": []
+  },
+  {
+    "name": "Get_Codigo_Area_By_IdUbicacion",
+    "schema": "dbo",
+    "object_id": 678501696,
+    "type": "FN",
+    "modify_date": "2024-09-12T08:30:31.630Z",
+    "params": [
+      {
+        "name": "@IdUbicacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 24,
+    "definitionLength": 447,
+    "definition": "\r\nCREATE FUNCTION [dbo].[Get_Codigo_Area_By_IdUbicacion] \r\n(\r\n\t@IdUbicacion INT,\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(10)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(10)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = a.codigo\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_area a on u.IdArea = a.IdArea\r\n\tand u.IdBodega = a.IdBodega\r\n\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_area",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Get_Porcentaje_Avance_Pedido",
+    "schema": "dbo",
+    "object_id": 1725457421,
+    "type": "FN",
+    "modify_date": "2024-02-01T14:18:59.793Z",
+    "params": [
+      {
+        "name": "@IdPedidoEnc",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 27,
+    "definitionLength": 794,
+    "definition": "-- =============================================\r\n-- Author:\t\tCarolina Fuentes\r\n-- Create date: 14-08-2023\r\n-- Description:\tFunción para obtener porcentaje de avance del Pedido\r\n-- =============================================\r\nCREATE FUNCTION Get_Porcentaje_Avance_Pedido\r\n(\r\n\t@IdPedidoEnc int, @IdBodega int\r\n)\r\nRETURNS float\r\nAS\r\nBEGIN\r\n\t-- Declare the return variable here\r\n\tDECLARE @Porcentaje float = 0\r\n\r\n\tSELECT @Porcentaje = ROUND(SUM(cantidad_verificada)*100/SUM(cantidad_solicitada),2)\r\n\tFROM trans_picking_ubic\r\n\tWHERE dañado_picking = 0 AND dañado_verificacion = 0 AND no_encontrado = 0 \r\n\t      AND IdPedidoEnc = @IdPedidoEnc AND IdBodega = @IdBodega\r\n\tGROUP BY IdPedidoEnc\r\n\tHAVING SUM(cantidad_solicitada)>0\r\n\r\n\t-- Return the result of the function\r\n\tRETURN @Porcentaje\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "trans_picking_ubic"
+    ]
+  },
+  {
+    "name": "Get_Porcentaje_Avance_Picking",
+    "schema": "dbo",
+    "object_id": 1741457478,
+    "type": "FN",
+    "modify_date": "2024-02-01T14:18:59.800Z",
+    "params": [
+      {
+        "name": "@IdPickingEnc",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 28,
+    "definitionLength": 801,
+    "definition": "\r\n-- =============================================\r\n-- Author:\t\tCarolina Fuentes\r\n-- Create date: 14-08-2023\r\n-- Description:\tFunción para obtener porcentaje de avance del Picking\r\n-- =============================================\r\nCREATE FUNCTION Get_Porcentaje_Avance_Picking \r\n(\r\n\t@IdPickingEnc int, @IdBodega int\r\n)\r\nRETURNS float\r\nAS\r\nBEGIN\r\n\t-- Declare the return variable here\r\n\tDECLARE @Porcentaje float = 0\r\n\r\n\tSELECT @Porcentaje = ROUND(SUM(cantidad_recibida)*100/SUM(cantidad_solicitada),2)\r\n\tFROM trans_picking_ubic\r\n\tWHERE dañado_picking = 0 AND dañado_verificacion = 0 AND no_encontrado = 0 \r\n\t      AND IdPickingEnc = @IdPickingEnc AND IdBodega = @IdBodega\r\n\tGROUP BY IdPickingEnc\r\n\tHAVING SUM(cantidad_solicitada)>0\r\n\r\n\t-- Return the result of the function\r\n\tRETURN @Porcentaje\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "trans_picking_ubic"
+    ]
+  },
+  {
+    "name": "Nombre_Area",
+    "schema": "dbo",
+    "object_id": 796738091,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@IdArea",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 23,
+    "definitionLength": 336,
+    "definition": "\r\n\r\nCREATE FUNCTION [dbo].[Nombre_Area] \r\n(\r\n\t@IdArea INT,\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = a.Descripcion\r\n\tFROM bodega_area a\r\n\tWHERE (a.IdArea=@IdArea) \r\n\tAnd a.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_area"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion",
+    "schema": "dbo",
+    "object_id": 273592213,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@IdUbicacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 30,
+    "definitionLength": 1024,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion] \r\n(\r\n\t@IdUbicacion INT,\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\tISNULL(u.orientacion_pos,'0')+ ' - ' +\r\n\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\tand t.IdBodega = u.IdBodega\r\n\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_1",
+    "schema": "dbo",
+    "object_id": 1744217464,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@IdUbicacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 29,
+    "definitionLength": 1013,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_1] \r\n(\r\n\t@IdUbicacion INT,\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t'R' + RIGHT('00'+ SUBSTRING(t.descripcion,2,iif(CHARINDEX('-',t.descripcion,0)<0,1,CHARINDEX('-',t.descripcion,0)-2)),2) + ' - ' +\r\n\t\t\t'C' + RIGHT('00'+ CONVERT(NVARCHAR(10),u.indice_x),2 )+ ' - ' +\r\n\t\t\t'T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ' +\r\n\t\t\t'N' + RIGHT('00' + CONVERT(NVARCHAR(10),u.nivel),2 )+ ' - ' +\r\n\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\tand t.IdBodega = u.IdBodega\r\n\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_2",
+    "schema": "dbo",
+    "object_id": 1728217407,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@IdUbicacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 30,
+    "definitionLength": 1022,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_2] \r\n(\r\n\t@IdUbicacion INT,\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\tand t.IdBodega = u.IdBodega\r\n\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_3",
+    "schema": "dbo",
+    "object_id": 1792217635,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.457Z",
+    "params": [
+      {
+        "name": "@IdUbicacion",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdTipo",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 60,
+    "definitionLength": 2744,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_3] \r\n(\r\n\t@IdUbicacion INT,\r\n\t@IdBodega INT, \r\n\t@IdTipo INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200) = ''\r\n\tDECLARE @res_temp NVARCHAR(200) = ''\r\n\t-- Declare the return variable here\r\n\t\r\n\tIF @IdTipo = 1\r\n\t\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\t\t\tFROM bodega_ubicacion u \r\n\t\t\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\t\t\tand t.IdBodega = u.IdBodega\r\n\t\t\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\t\t\tAnd u.idbodega = @IdBodega\r\n    ELSE IF @IdTipo = 2\r\n\t\t\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t\t\t'R' + RIGHT('00'+ SUBSTRING(t.descripcion,2,iif(CHARINDEX('-',t.descripcion,0)<0,1,CHARINDEX('-',t.descripcion,0)-2)),2) + ' - ' +\r\n\t\t\t\t\t'C' + RIGHT('00'+ CONVERT(NVARCHAR(10),u.indice_x),2 )+ ' - ' +\r\n\t\t\t\t\t'T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ' +\r\n\t\t\t\t\t'N' + RIGHT('00' + CONVERT(NVARCHAR(10),u.nivel),2 )+ ' - ' +\r\n\t\t\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\t\t\tFROM bodega_ubicacion u \r\n\t\t\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\t\t\tand t.IdBodega = u.IdBodega\r\n\t\t\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\t\t\tAnd u.idbodega = @IdBodega\r\n\tELSE IF @IdTipo = 3\r\n\t\t\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\t\t\tFROM bodega_ubicacion u \r\n\t\t\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\t\t\tand t.IdBodega = u.IdBodega\r\n\t\t\tWHERE (u.IdUbicacion=@IdUbicacion) \r\n\t\t\tAnd u.idbodega = @IdBodega\r\n\r\n    RETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_Barra",
+    "schema": "dbo",
+    "object_id": 353592498,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@Barra",
+        "type": "nvarchar",
+        "len": 100,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 30,
+    "definitionLength": 1078,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_Barra] \r\n(\r\n\t@Barra NVARCHAR(50),\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\tISNULL(u.orientacion_pos,'0')+ ' - ' +\r\n\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\tand t.IdBodega = u.IdBodega\r\n\tWHERE (u.IdUbicacion=@Barra OR u.codigo_barra=@Barra OR u.codigo_barra2=@Barra) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_Barra_1",
+    "schema": "dbo",
+    "object_id": 1760217521,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@Barra",
+        "type": "nvarchar",
+        "len": 100,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 31,
+    "definitionLength": 1071,
+    "definition": "\r\nCREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_Barra_1] \r\n(\r\n\t@Barra NVARCHAR(50),\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t'R' + RIGHT('00'+ SUBSTRING(t.descripcion,2,iif(CHARINDEX('-',t.descripcion,0)<0,1,CHARINDEX('-',t.descripcion,0)-2)),2) + ' - ' +\r\n\t\t\t'C' + RIGHT('00'+ CONVERT(NVARCHAR(10),u.indice_x),2 )+ ' - ' +\r\n\t\t\t'T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ' +\r\n\t\t\t'N' + RIGHT('00' + CONVERT(NVARCHAR(10),u.nivel),2 )+ ' - ' +\r\n\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\tand t.IdBodega = u.IdBodega\r\n\tWHERE (u.IdUbicacion=@Barra OR u.codigo_barra=@Barra OR u.codigo_barra2=@Barra) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_Barra_2",
+    "schema": "dbo",
+    "object_id": 1712217350,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.453Z",
+    "params": [
+      {
+        "name": "@Barra",
+        "type": "nvarchar",
+        "len": 100,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 30,
+    "definitionLength": 1076,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_Barra_2] \r\n(\r\n\t@Barra NVARCHAR(50),\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\tFROM bodega_ubicacion u \r\n\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\tand t.IdBodega = u.IdBodega\r\n\tWHERE (u.IdUbicacion=@Barra OR u.codigo_barra=@Barra OR u.codigo_barra2=@Barra) \r\n\tAnd u.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Completo_Ubicacion_Barra_3",
+    "schema": "dbo",
+    "object_id": 1776217578,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.457Z",
+    "params": [
+      {
+        "name": "@Barra",
+        "type": "nvarchar",
+        "len": 100,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdTipo",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 60,
+    "definitionLength": 2888,
+    "definition": "CREATE FUNCTION [dbo].[Nombre_Completo_Ubicacion_Barra_3] \r\n(\r\n\t@Barra NVARCHAR(50),\r\n\t@IdBodega INT, \r\n\t@IdTipo INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200) = ''\r\n\tDECLARE @res_temp NVARCHAR(200) = ''\r\n\t-- Declare the return variable here\r\n\t\r\n\tIF @IdTipo = 1\r\n\t\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\t\t\tFROM bodega_ubicacion u \r\n\t\t\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\t\t\tand t.IdBodega = u.IdBodega\r\n\t\t\tWHERE (u.IdUbicacion=@Barra OR u.codigo_barra=@Barra OR u.codigo_barra2=@Barra) \r\n\t\t\tAnd u.idbodega = @IdBodega\r\n    ELSE IF @IdTipo = 2\r\n\t\t\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t\t\t'R' + RIGHT('00'+ SUBSTRING(t.descripcion,2,iif(CHARINDEX('-',t.descripcion,0)<0,1,CHARINDEX('-',t.descripcion,0)-2)),2) + ' - ' +\r\n\t\t\t\t\t'C' + RIGHT('00'+ CONVERT(NVARCHAR(10),u.indice_x),2 )+ ' - ' +\r\n\t\t\t\t\t'T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ' +\r\n\t\t\t\t\t'N' + RIGHT('00' + CONVERT(NVARCHAR(10),u.nivel),2 )+ ' - ' +\r\n\t\t\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\t\t\tFROM bodega_ubicacion u \r\n\t\t\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\t\t\tand t.IdBodega = u.IdBodega\r\n\t\t\tWHERE (u.IdUbicacion=@Barra OR u.codigo_barra=@Barra OR u.codigo_barra2=@Barra) \r\n\t\t\tAnd u.idbodega = @IdBodega\r\n\tELSE IF @IdTipo = 3\r\n\t\t\tSELECT @resultado = CASE WHEN T.es_rack = 1 THEN\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0, t.descripcion, SUBSTRING(REPLACE(t.descripcion,'-',''),1, LEN(t.descripcion)-2)) + ' - ' +\r\n\t\t\t\t\t'C' + CONVERT(NVARCHAR(10),u.indice_x) + ' - ' +\r\n\t\t\t\t\tiif(CHARINDEX('-',t.descripcion,0)=0,'','T' + SUBSTRING(t.descripcion,iif(CHARINDEX('-',t.descripcion,0)<0,0,CHARINDEX('-',t.descripcion,0)+1),1)+ ' - ') +\r\n\t\t\t\t\t'N' + CONVERT(NVARCHAR(10),u.nivel)+ ' - ' +\r\n\t\t\t\t\t'Pos' + u.orientacion_pos+ ' - ' +\r\n\t\t\t\t\t'#' + CONVERT(NVARCHAR(10),u.IdUbicacion)\r\n\t\t\t\t\tELSE U.descripcion + ' - #' + CONVERT(NVARCHAR(10),u.IdUbicacion) END\r\n\t\t\tFROM bodega_ubicacion u \r\n\t\t\tinner join bodega_tramo t on u.idtramo = t.idtramo \r\n\t\t\tand t.IdBodega = u.IdBodega\r\n\t\t\tWHERE (u.IdUbicacion=@Barra OR u.codigo_barra=@Barra OR u.codigo_barra2=@Barra) \r\n\t\t\tAnd u.idbodega = @IdBodega\r\n\r\n    RETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo",
+      "bodega_ubicacion"
+    ]
+  },
+  {
+    "name": "Nombre_Tramo",
+    "schema": "dbo",
+    "object_id": 2053790574,
+    "type": "FN",
+    "modify_date": "2023-09-12T04:16:12.457Z",
+    "params": [
+      {
+        "name": "@IdTramo",
+        "type": "int",
+        "len": 4,
+        "output": false
+      },
+      {
+        "name": "@IdBodega",
+        "type": "int",
+        "len": 4,
+        "output": false
+      }
+    ],
+    "lines": 23,
+    "definitionLength": 341,
+    "definition": "\r\n\r\nCREATE FUNCTION [dbo].[Nombre_Tramo] \r\n(\r\n\t@IdTramo INT,\r\n\t@IdBodega INT\r\n)\r\nRETURNS NVARCHAR(200)\r\nAS\r\nBEGIN\r\n\t\r\n\tDECLARE @resultado NVARCHAR(200)\r\n\t-- Declare the return variable here\r\n\t\r\n\tSELECT @resultado = a.Descripcion\r\n\tFROM bodega_tramo a\r\n\tWHERE (a.IdTramo=@IdTramo) \r\n\tAnd a.idbodega = @IdBodega\r\n\r\n\tRETURN @resultado;\r\n\r\nEND\r\n",
+    "referenced_tables": [
+      "bodega_tramo"
+    ]
+  }
+]
