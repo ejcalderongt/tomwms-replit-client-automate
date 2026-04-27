@@ -1,0 +1,218 @@
+{
+  "generatedAt": "2026-04-27T05:14:36.650Z",
+  "resolutionCriterion": "Prioridad LEXICOGRÁFICA: 1) methodCount desc, 2) sqlBlockCount desc, 3) referencias externas desc. El path con MÁS método y SQL real es el canónico (es donde está la lógica de negocio); el otro es típicamente stub/wrapper legacy.",
+  "ambiguities": {
+    "clsLnTrans_oc_estado": {
+      "target": "clsLnTrans_oc_estado",
+      "table": "trans_oc_estado",
+      "pathsFound": [
+        "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+        "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb"
+      ],
+      "bodyComparison": {
+        "A": {
+          "path": "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+          "lines": 330,
+          "sqlBlockCount": 11,
+          "tableHitsInBody": 9,
+          "methodCount": 10,
+          "methods": [
+            "Cargar",
+            "Insertar",
+            "Actualizar",
+            "Eliminar",
+            "EliminarTodos",
+            "Listar",
+            "Obtener",
+            "GetAll",
+            "GetAll",
+            "GetSingle"
+          ],
+          "verbCounts": {
+            "": 4,
+            "DELETE": 2,
+            "SELECT": 5
+          },
+          "headerComment": ""
+        },
+        "B": {
+          "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+          "lines": 342,
+          "sqlBlockCount": 10,
+          "tableHitsInBody": 8,
+          "methodCount": 9,
+          "methods": [
+            "Cargar",
+            "Insertar",
+            "Actualizar",
+            "Eliminar",
+            "EliminarTodos",
+            "GetAll",
+            "GetAllForCombo",
+            "GetSingle",
+            "GetSingle"
+          ],
+          "verbCounts": {
+            "": 4,
+            "DELETE": 2,
+            "SELECT": 4
+          },
+          "headerComment": ""
+        }
+      },
+      "externalReferences": [
+        {
+          "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+          "refs": {
+            "totalRefs": 8,
+            "callers": [
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+                "hits": 2
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Encabezado/clsLnTrans_oc_enc_Partial.vb",
+                "hits": 2
+              },
+              {
+                "path": "/TOMIMSV4/DAL/DAL.vbproj",
+                "hits": 1
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado_Partial.vb",
+                "hits": 1
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado_Partial.vb",
+                "hits": 1
+              }
+            ]
+          }
+        },
+        {
+          "path": "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+          "refs": {
+            "totalRefs": 7,
+            "callers": [
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Encabezado/clsLnTrans_oc_enc_Partial.vb",
+                "hits": 2
+              },
+              {
+                "path": "/TOMIMSV4/DAL/DAL.vbproj",
+                "hits": 1
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado_Partial.vb",
+                "hits": 1
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+                "hits": 1
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado_Partial.vb",
+                "hits": 1
+              }
+            ]
+          }
+        }
+      ],
+      "canonicalPath": "/TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+      "legacyPath": "/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb",
+      "justification": "Criterio mejorado (methodCount > sqlBlockCount > refs): /TOMIMSV4/DAL/Transacciones/Movimiento/OrdenCompra/OC_Estado/clsLnTrans_oc_estado.vb con methods=10, sql=11, refs=7."
+    },
+    "clsLnLog_verificacion_bof": {
+      "target": "clsLnLog_verificacion_bof",
+      "table": "log_verificacion_bof",
+      "pathsFound": [
+        "/TOMIMSV4/DAL/Mantenimientos/LogVerificacionBOF/clsLnLog_verificacion_bof.vb",
+        "/TOMIMSV4/DAL/Transacciones/VerificacionBOF/clsLnLog_verificacion_bof.vb"
+      ],
+      "bodyComparison": {
+        "A": {
+          "path": "/TOMIMSV4/DAL/Mantenimientos/LogVerificacionBOF/clsLnLog_verificacion_bof.vb",
+          "lines": 85,
+          "sqlBlockCount": 0,
+          "tableHitsInBody": 1,
+          "methodCount": 1,
+          "methods": [
+            "Insertar"
+          ],
+          "verbCounts": {},
+          "headerComment": ""
+        },
+        "B": {
+          "path": "/TOMIMSV4/DAL/Transacciones/VerificacionBOF/clsLnLog_verificacion_bof.vb",
+          "lines": 431,
+          "sqlBlockCount": 10,
+          "tableHitsInBody": 8,
+          "methodCount": 10,
+          "methods": [
+            "Cargar",
+            "Insertar",
+            "Actualizar",
+            "Eliminar",
+            "Listar",
+            "Get_All",
+            "GetSingle",
+            "MaxID",
+            "MaxID",
+            "Guardar_Log"
+          ],
+          "verbCounts": {
+            "": 4,
+            "DELETE": 1,
+            "SELECT": 5
+          },
+          "headerComment": ""
+        }
+      },
+      "externalReferences": [
+        {
+          "path": "/TOMIMSV4/DAL/Mantenimientos/LogVerificacionBOF/clsLnLog_verificacion_bof.vb",
+          "refs": {
+            "totalRefs": 17,
+            "callers": [
+              {
+                "path": "/WSHHRN/TOMHHWS.asmx.vb",
+                "hits": 13
+              },
+              {
+                "path": "/TOMIMSV4/DAL/DAL.vbproj",
+                "hits": 2
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/Picking/Trans_Picking_Img/clsLnTrans_Picking_Img_Partial.vb",
+                "hits": 2
+              }
+            ]
+          }
+        },
+        {
+          "path": "/TOMIMSV4/DAL/Transacciones/VerificacionBOF/clsLnLog_verificacion_bof.vb",
+          "refs": {
+            "totalRefs": 17,
+            "callers": [
+              {
+                "path": "/WSHHRN/TOMHHWS.asmx.vb",
+                "hits": 13
+              },
+              {
+                "path": "/TOMIMSV4/DAL/DAL.vbproj",
+                "hits": 2
+              },
+              {
+                "path": "/TOMIMSV4/DAL/Transacciones/Picking/Trans_Picking_Img/clsLnTrans_Picking_Img_Partial.vb",
+                "hits": 2
+              }
+            ]
+          }
+        }
+      ],
+      "canonicalPath": "/TOMIMSV4/DAL/Transacciones/VerificacionBOF/clsLnLog_verificacion_bof.vb",
+      "legacyPath": "/TOMIMSV4/DAL/Mantenimientos/LogVerificacionBOF/clsLnLog_verificacion_bof.vb",
+      "justification": "Criterio mejorado (methodCount > sqlBlockCount > refs): /TOMIMSV4/DAL/Transacciones/VerificacionBOF/clsLnLog_verificacion_bof.vb con methods=10, sql=10, refs=17. El duplicado (1 método, 0 SQL) parece ser stub/wrapper legacy."
+    }
+  }
+}
