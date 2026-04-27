@@ -176,3 +176,100 @@ Asumiendo MHS como modelo objetivo:
 Para clientes que NO tienen equipo de desarrollo, la interface dedicada
 (`MI3`, `NavSync`, `SAPSYNC*`) sigue siendo la opcion. El bridge no
 necesita reemplazarlas — coexiste.
+
+---
+
+## Apendice — Marca de envio y patrones reales en datos (Erik tanda 4)
+
+### Mecanismo de marca
+
+El outbox `i_nav_transacciones_out` usa **dos columnas clave** para que cada
+interface (MI3 / NavSync / SAPSYNC* / WebAPI) sepa que enviar:
+
+```sql
+SELECT * FROM i_nav_transacciones_out
+WHERE enviado = 0
+  AND tipo_transaccion = 'INGRESO'   -- o 'SALIDA'
+```
+
+- **`enviado`** (`int`): `0` = pendiente de envio, `1` = ya enviado al ERP.
+- **`tipo_transaccion`** (`nvarchar`): `'INGRESO'` o `'SALIDA'` — permite que
+  cada interface filtre solo las transacciones que le competen (por ejemplo
+  un job de ingresos no procesa salidas, o cada modulo del ERP cliente
+  consume su propio tipo).
+
+Esto cierra **PEND-10** (marca de exito).
+
+### Lo que NO esta en el outbox
+
+Verifique todas las cols. **NO existen** las siguientes columnas que serian
+naturales para un patron outbox completo:
+
+- `fecha_envio` / `fec_envio` — no se sabe **cuando** se envio (solo `fec_mod`).
+- `intentos` / `reintentos` — no hay contador de reintentos.
+- `mensaje_error` — no se guarda el error del ERP en el outbox.
+- `docnum_respuesta` — el numero de documento generado por el ERP no vuelve
+  al outbox (vive en `log_error_wms` segun lo visto en P-16b).
+
+→ Implicacion: **la logica de error/reintento la maneja cada interface por
+fuera del outbox**, probablemente loggeando en `log_error_wms` o tablas
+propias de cada interface (`SAPSYNC*` etc).
+
+### Cols nuevas detectadas (no documentadas en pases previos)
+
+| Columna | Tipo | Observacion |
+|---|---|---|
+| `cantidad_enviada` | `float` | sugerie envio **parcial** posible (split de un registro en varios envios) |
+| `cantidad_pendiente` | `float` | complementaria de la anterior |
+| `auditar` | `bit` | flag de auditoria (sin investigar uso) |
+| `IdRecepcionDet` | `int` | ya identificada en P-09 — granularidad linea |
+| `IdDespachoDet` | `int` | ya identificada — granularidad linea |
+| `IdPedidoEncDevol` | `int` | manejo de **devoluciones** (PEND nuevo) |
+| `no_documento_salida_ref_devol` | `nvarchar` | doc de salida original (devoluciones) |
+
+### Estado real del outbox por BD (snapshot 27/abr/2026)
+
+#### Killios (TOMWMS_KILLIOS_PRD) — saludable
+
+| tipo_transaccion | enviado | filas | % |
+|---|---:|---:|---:|
+| INGRESO | 0 (pendiente) | 3 | 0.07% |
+| INGRESO | 1 (enviado) | 4,391 | 99.93% |
+| SALIDA | 1 (enviado) | 19,799 | 100% |
+| **TOTAL** | | **24,193** | |
+
+> Los 3 pendientes son del **19/ago/2025** (>90 dias). **Posible fallo no
+> atendido**: o nadie resolvio esos 3 INGRESOS, o el snapshot de la BD
+> esta congelado en agosto-2025 y la BD viva los proceso despues.
+> A confirmar con Erik.
+
+#### BYB (IMS4MB_BYB_PRD) — bandera roja
+
+| tipo_transaccion | enviado | filas | % |
+|---|---:|---:|---:|
+| INGRESO | 0 (pendiente) | 110,795 | **99.90%** |
+| INGRESO | 1 (enviado) | 107 | 0.10% |
+| SALIDA | 0 (pendiente) | 145,117 | 34.4% |
+| SALIDA | 1 (enviado) | 277,310 | 65.6% |
+| **TOTAL** | | **533,329** | |
+
+> **Hallazgo critico**: los INGRESOS de BYB **practicamente no se procesan
+> via outbox** (110k pendientes vs 107 enviados). Las SALIDAS si pero con
+> backlog importante. Hipotesis posibles:
+> 1. NavSync solo se ocupa de SALIDAS y los INGRESOS se manejan por otro
+>    canal (WCF directo, manual, batch nightly).
+> 2. NavSync esta caido para INGRESOS desde hace tiempo y nadie noto.
+> 3. El criterio para que NavSync procese un INGRESO es mas estricto
+>    (algun campo adicional ademas de `enviado=0`).
+>
+> **Pregunta nueva PEND-12**: ¿que pasa con esos 110k INGRESOS pendientes
+> en BYB?
+
+#### CEALSA (IMS4MB_CEALSA_QAS) — outbox vacio
+
+| tipo_transaccion | enviado | filas |
+|---|---:|---:|
+| (sin filas) | | 0 |
+
+> CEALSA es 3PL con esquema diferente. Probablemente usa otro mecanismo
+> de integracion (no `i_nav_transacciones_out`).
