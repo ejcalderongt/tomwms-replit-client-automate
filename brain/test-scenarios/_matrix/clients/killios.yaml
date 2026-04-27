@@ -5,20 +5,24 @@ learned_from:
   server: "52.41.114.122,1437"
   database: "TOMWMS_KILLIOS_PRD"
   branch: dev_2023_merge_equivalent
-  when: "2026-04-27T14:56:31.611Z"
+  when: "2026-04-27T15:31:09.941Z"
   query: "SELECT c.*, b.nombre AS bodega_nombre, b.codigo AS bodega_codigo FROM i_nav_config_enc c LEFT JOIN bodega b ON b.idEmpresa=c.idempresa AND b.idBodega=c.idbodega WHERE c.idEmpresa=1"
 
 profile:
-  erp: "SAP Business One (DI-API para lectura/escritura)"
+  erp: "SAP Business One (DI-API)"
   rubro: "alimentos"
   modelo_inventario: "centro abastecimiento Amatitlan + sucursal Z17, ambas con bodega de prorrateo de costeo"
+  modo_reserva: "estricto (rechazar_pedido_incompleto=1: WMS reserva total o aborta)"
   notas: |
-    Procesa pedidos en cajas Y unidades decimales (mayor reto del cliente). 6 bodegas en pares: principal/prorrateo. Interface SAP activa con bonificación inferida desactivada.
+    Procesa pedidos en cajas Y unidades decimales (mayor reto del cliente). 6 bodegas operativas + BOD7 virtual de facturacion.
+    Producto 47022 del legacy NO existe — parametrizar SKU por cliente.
+    Ver adr/ADR-007 para SAP B1 y adr/ADR-010 para terminologia reserva-webapi vs reserva-WMS.
 
 bodegas:
   - id: 1
     codigo: "BOD1"
     nombre: "Bodega Principal"
+    tipo: operativa
     flags:
       control_vencimiento: true
       control_lote: true
@@ -58,6 +62,7 @@ bodegas:
   - id: 2
     codigo: "PRTOK"
     nombre: "Bodega de Prorateo Kilio"
+    tipo: operativa
     flags:
       control_vencimiento: true
       control_lote: true
@@ -97,6 +102,7 @@ bodegas:
   - id: 3
     codigo: "PRTO"
     nombre: "Bodega de Prorateo Garesa"
+    tipo: operativa
     flags:
       control_vencimiento: true
       control_lote: true
@@ -136,6 +142,7 @@ bodegas:
   - id: 4
     codigo: "BOD5"
     nombre: "Bodega Amatitlan"
+    tipo: operativa
     flags:
       control_vencimiento: true
       control_lote: true
@@ -175,6 +182,7 @@ bodegas:
   - id: 5
     codigo: "PRTK17"
     nombre: "Bodega de Prorateo Kilio Z17"
+    tipo: operativa
     flags:
       control_vencimiento: true
       control_lote: true
@@ -214,6 +222,7 @@ bodegas:
   - id: 6
     codigo: "PRT17"
     nombre: "Bodega de Prorateo Garesa Z17"
+    tipo: operativa
     flags:
       control_vencimiento: true
       control_lote: true
@@ -250,3 +259,48 @@ bodegas:
       generar_recepcion_auto_bodega_destino: true
       dias_vida_defecto_perecederos: 0
       IdProductoEstado: 1
+  - id: 7
+    codigo: "BOD7"
+    nombre: "Bodega de Facturacion"
+    tipo: virtual_facturacion
+    nota: "Aparece como bodega_facturacion en i_nav_config_enc pero NO esta en tabla bodega. Anomalia data Amazon vs SQL. Se trata como bodega de facturacion real."
+
+tipos_pedido:
+  - id: 1
+    nombre: "PE0001"
+    reserva_stock: true
+  - id: 3
+    nombre: "PE0003"
+    reserva_stock: true
+  - id: 4
+    nombre: "PE0004"
+    reserva_stock: false
+  - id: 6
+    nombre: "TRAS_WMS"
+    reserva_stock: false
+  - id: 9
+    nombre: "PDV_NAV"
+    reserva_stock: true
+  - id: 12
+    nombre: "DEVPROV"
+    reserva_stock: true
+
+casos_reserva_observados:
+  - caso: "CASO_#24_EJC202310090957"
+    conteo: 18587
+    notas: "camino feliz dominante"
+  - caso: "CASO_#8_EJC202310090957"
+    conteo: 1675
+  - caso: "CASO_#21_EJC202310090957"
+    conteo: 1065
+  - caso: "CASO_#12_EJC202310090957"
+    conteo: 276
+  - caso: "CASO_#20_EJC202310090957"
+    conteo: 267
+  - caso: "CASO_#23_EJC202310090957"
+    conteo: 125
+  - caso: "CASO_#22_EJC202310090957"
+    conteo: 44
+  - caso: "CASO_#9_EJC202310090957"
+    conteo: 1
+    notas: "rarisimo"
