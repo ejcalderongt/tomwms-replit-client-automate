@@ -7,6 +7,52 @@ versionado semantico.
 ## [Unreleased]
 
 ### Added
+- **Cmdlet nuevo `Initialize-WmsBrainConfig`** — wizard interactivo que
+  escribe un config local en `$env:USERPROFILE\.wmsbrain\config.json`
+  con los defaults del operador para conectar a BD y explorar el brain.
+  Pregunta paso a paso por: profile productivo (K7-PRD / BB-PRD /
+  C9-QAS), paths a los 3 repos orphan (auto-detecta
+  `C:\Tools\tomwms-replit-client-*`), credenciales SQL (host, user,
+  opcionalmente password), y BRAIN_BASE_URL. Switches:
+  * `-IncludePassword` — pregunta el password de SQL y lo persiste en
+    el config **cifrado con DPAPI** (`ConvertFrom-SecureString`, scope
+    CurrentUser+Machine — solo descifrable por el mismo usuario en la
+    misma maquina). Sin este switch el config queda sin password.
+  * `-SetEnv` — al final persiste env vars User scope para que los
+    demas cmdlets las lean (sin password como env var: si esta cifrado
+    en el config, hidrata `$env:WMS_KILLIOS_DB_PASSWORD` solo para esta
+    sesion).
+  * `-NonInteractive` — sin prompts, usa defaults; util para CI o
+    bootstraping silencioso (combinar con `-Force` y `-SetEnv`).
+  * `-Force` — sobreescribe config existente sin confirmacion.
+  * `-Path` — destino alternativo (default `~/.wmsbrain/config.json`).
+
+  Devuelve un `PSCustomObject` con `Path`, `Created`, `Config`,
+  `AppliedEnvVars`. Si existe config previo, sus valores se usan como
+  defaults del wizard (solo respondes lo que querés cambiar).
+
+- **Banner ASCII + tagline rotativos** en `Show-WmsBrainQuickStart` y
+  `Initialize-WmsBrainConfig`. La figura ASCII rota por dia del año
+  (7 figuras: cerebro, racks de warehouse, gauge OK/OK, terminal HH,
+  robot, signal bars, pipeline `MAIN<->BRAIN<->CLIENT`); la frase rota
+  por minuto del dia (12 taglines operativos). Determinista pero
+  variable, sin emojis.
+
+- **Helper privado `_Config.ps1`** con funciones nuevas:
+  * `Get-WmsBrainConfigPath` — resuelve la ruta del config local.
+  * `Get-WmsBrainLocalConfig` — lee y parsea el JSON; devuelve `$null`
+    si no existe.
+  * `Save-WmsBrainLocalConfig` — escribe el config (`-Force` para
+    sobreescribir).
+  * `ConvertTo-WmsBrainEncryptedString` / `ConvertFrom-WmsBrainEncryptedString`
+    — wrappers DPAPI sobre `ConvertFrom-SecureString` /
+    `ConvertTo-SecureString`.
+  * `Get-WmsBrainAsciiArt` / `Get-WmsBrainTagline` — devuelven la
+    figura/frase del momento (parametro `-Index` opcional para forzar
+    una eleccion en tests).
+
+  Sube `FunctionsToExport` de 24 a 25 funciones.
+
 - **Cmdlet nuevo `Show-WmsBrainQuickStart`** — guia interactiva de inicio
   rapido. Imprime un dashboard one-shot con: header (version del modulo,
   schema esperado vs detectado), pre-flight (resumen de
@@ -127,6 +173,13 @@ versionado semantico.
   `New-WmsBrainAnswerEvent` y `New-WmsBrainLearningEvent`; resta el bump
   del bridge en `scripts/brain_bridge.mjs` rama `main` para que tome
   efecto en producción y limpiar el workaround del PROTOCOL.md §5.
+
+### Fixed
+- `Show-WmsBrainQuickStart` ya no falla con
+  `ParameterArgumentValidationErrorEmptyStringNotAllowed` al pasar
+  arrays con strings vacios (`''`) a `Write-WmsBrainBanner -Lines`.
+  Reemplazados los 11 separadores visuales por un solo espacio (`' '`)
+  asi nunca disparan la validacion del helper. Visualmente identico.
 
 ## [0.2.0] - 2026-04-27
 

@@ -136,6 +136,64 @@ Get-Help New-WmsBrainQuestionEvent -Examples
 Get-Help Submit-WmsBrainAnswer -Full
 ```
 
+## Configuracion local (wizard)
+
+Si en lugar de setear variable por variable preferis un wizard que escriba un
+**config local** con tus defaults, corre:
+
+```powershell
+Initialize-WmsBrainConfig
+```
+
+Pregunta paso a paso por:
+
+1. **Profile productivo por defecto** (`K7-PRD` / `BB-PRD` / `C9-QAS`).
+2. **Paths a los 3 repos** orphan; auto-detecta `C:\Tools\tomwms-replit-client-*`.
+3. **SQL Server** (host, user); con `-IncludePassword` tambien pide el
+   password y lo guarda **cifrado con DPAPI**
+   (`ConvertFrom-SecureString`, scope CurrentUser+Machine — solo
+   descifrable por vos en esta maquina).
+4. **Brain API base URL** (opcional).
+5. Si **persistir** los valores como variables de entorno User scope
+   para que los demas cmdlets los lean.
+
+Escribe el config en:
+
+```
+$env:USERPROFILE\.wmsbrain\config.json
+```
+
+Modos:
+
+```powershell
+# Wizard interactivo, sin password.
+Initialize-WmsBrainConfig
+
+# Wizard + persiste env vars User scope al final.
+Initialize-WmsBrainConfig -SetEnv
+
+# Wizard + pide y cifra el password de SQL en el config + persiste env vars.
+# Tambien hidrata $env:WMS_KILLIOS_DB_PASSWORD para esta sesion.
+Initialize-WmsBrainConfig -IncludePassword -SetEnv
+
+# Sin prompts, usa defaults (existentes o auto-detectados) + persiste env vars.
+Initialize-WmsBrainConfig -NonInteractive -SetEnv -Force
+```
+
+> **Nota de seguridad**: el password se cifra con DPAPI y solo lo
+> descifras vos en esta misma maquina, pero igual **NUNCA commitees**
+> `$env:USERPROFILE\.wmsbrain\config.json` a un repo. Si compartis la
+> PC con otro usuario, omiti `-IncludePassword` y mantene el password
+> en `$env:WMS_KILLIOS_DB_PASSWORD` a mano por sesion.
+
+Para re-editar el config:
+
+```powershell
+Initialize-WmsBrainConfig -Force
+```
+
+(Usa los valores actuales como defaults — solo respondes lo que querés cambiar.)
+
 ## Variables de entorno
 
 | Var                              | Obligatoria | Detalle                                                     |

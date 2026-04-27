@@ -88,6 +88,17 @@ function Show-WmsBrainQuickStart {
         [switch] $Compact
     )
 
+    # ----- 0a. Banner ASCII + tagline (variables, no en modo Compact) -----
+    if (-not $Compact) {
+        $art = Get-WmsBrainAsciiArt
+        $tag = Get-WmsBrainTagline
+        Write-Host ' '
+        foreach ($line in ($art -split "`r?`n")) { Write-Host $line }
+        Write-Host ' '
+        Write-Host ('  >> {0}' -f $tag)
+        Write-Host ' '
+    }
+
     # ----- 0. Catalogo de variables relevantes -----
     # Critical = se prompteara con -SetMissing.
     # Secret   = nunca se imprime su valor ni se persiste con -Persist.
