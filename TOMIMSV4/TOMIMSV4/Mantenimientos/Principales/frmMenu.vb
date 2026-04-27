@@ -5494,9 +5494,9 @@ Public Class frmMenu
                 If Not permiteMenu(e.Link) Then Return
             End If
 
-            Cierra_Instancia_Previa(frmStockRFID)
+            Cierra_Instancia_Previa(frmExistenciasRFID)
 
-            With frmStockRFID
+            With frmExistenciasRFID
                 .MdiParent = Me
                 .Show()
                 .Focus()

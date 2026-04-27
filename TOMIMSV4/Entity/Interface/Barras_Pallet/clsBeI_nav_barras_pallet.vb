@@ -46,6 +46,8 @@ Public Class clsBeI_nav_barras_pallet
 
     Public Property Codigo_barra() As String = ""
 
+    Public Property Fecha_Procesado_ERP() As Date = New Date(1900, 1, 1)
+
     Public Property Impreso() As Boolean = False
     Public Property SSCC() As String = ""
     Public Property GTIN() As String = ""

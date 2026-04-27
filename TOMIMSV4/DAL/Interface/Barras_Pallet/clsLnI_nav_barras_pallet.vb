@@ -29,6 +29,7 @@ Public Class clsLnI_nav_barras_pallet
                 .Bodega_Destino = IIf(IsDBNull(dr.Item("Bodega_Destino")), "", dr.Item("Bodega_Destino"))
                 .Codigo_barra = IIf(IsDBNull(dr.Item("codigo_barra")), "", dr.Item("codigo_barra"))
                 .Cantidad_UMP = IIf(IsDBNull(dr.Item("cantidad_ump")), "0", dr.Item("cantidad_ump"))
+                .Fecha_Procesado_ERP = IIf(IsDBNull(dr.Item("fecha_procesado_erp")), Nothing, dr.Item("fecha_procesado_erp"))
                 .Impreso = IIf(IsDBNull(dr.Item("Impreso")), False, dr.Item("Impreso"))
                 .SSCC = IIf(IsDBNull(dr.Item("sscc")), "", dr.Item("sscc"))
                 .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
@@ -1034,7 +1035,32 @@ Public Class clsLnI_nav_barras_pallet
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
-            Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
+            Dim sp As String = "SELECT IdPallet,
+            Codigo,
+            Nombre,
+            Camas_Por_Tarima,
+            Cajas_Por_Cama,
+            Cantidad_Presentacion,
+            UM_Producto,
+            Lote,
+            Fecha_Agregado,
+            Fecha_Ingreso,
+            Fecha_Vence,
+            Fecha_Produccion,
+            Activo,
+            Recibido,
+            IdRecepcion,
+            Bodega_Origen,
+            Bodega_Destino,
+            Codigo_Barra,
+            Cantidad_UMP,
+            Lote_Numerico,
+            fecha_procesado_erp,
+            sscc,
+            gtin,
+            Impreso,
+            fecha_procesado_erp 
+            FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)

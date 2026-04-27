@@ -1603,10 +1603,10 @@
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\RFID\frmStockRFID.Designer.vb">
-      <DependentUpon>frmStockRFID.vb</DependentUpon>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </Compile>
-    <Compile Include="Transacciones\RFID\frmStockRFID.vb">
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3851,8 +3851,8 @@
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\RFID\frmStockRFID.resx">
-      <DependentUpon>frmStockRFID.vb</DependentUpon>
+    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -5478,6 +5478,7 @@
     <Folder Include="Mantenimientos\Impresión_Pallet\" />
     <Folder Include="Mantenimientos\PreFactura\" />
     <Folder Include="Mantenimientos\Producto_Parametro\" />
+    <Folder Include="Transacciones\Inventario\Inventario_rfid\" />
     <Folder Include="Transacciones\Picking\Balanceador\" />
     <Folder Include="Web References\bin\" />
   </ItemGroup>
@@ -5651,6 +5652,9 @@
   <ItemGroup>
     <PackageReference Include="ClosedXML">
       <Version>0.102.3</Version>
+    </PackageReference>
+    <PackageReference Include="DevExpress.Win.Design">
+      <Version>24.2.12</Version>
     </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>
