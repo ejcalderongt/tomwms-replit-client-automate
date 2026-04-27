@@ -5,7 +5,7 @@ function Show-WmsBrainQuickStart {
     variables de entorno relevantes y proximos pasos sugeridos.
 
 .DESCRIPTION
-    Imprime un dashboard one-shot con cinco secciones:
+    Imprime un dashboard one-shot con seis secciones:
 
       1. HEADER         — version del modulo, schema esperado vs
                           detectado en brain_bridge.mjs.
@@ -18,7 +18,10 @@ function Show-WmsBrainQuickStart {
       4. PROXIMOS PASOS — lista ordenada de comandos a correr segun lo
                           que falte (setea variables -> Test-WmsBrainEnvironment
                           -> Show-WmsBrainStatus -> Test-WmsBrainConnection -> ...).
-      5. EJEMPLOS       — 4 comandos copy-paste para empezar a usar el
+      5. COMO FUNCIONA  — explicacion intuitiva del flujo (que es una
+                          card Q-NNN, como viaja del BRAIN al cliente,
+                          como se contesta y como vuelve aprendido).
+      6. EJEMPLOS       — comandos copy-paste para empezar a usar el
                           modulo (Get-WmsBrainQuestion, New-WmsBrainQuestionEvent,
                           Submit-WmsBrainAnswer, Invoke-WmsBrainQuery).
 
@@ -41,8 +44,9 @@ function Show-WmsBrainQuickStart {
     seguridad y quedan solo para la sesion.
 
 .PARAMETER Compact
-    Imprime solo HEADER y PROXIMOS PASOS, omite PRE-FLIGHT, VARIABLES y
-    EJEMPLOS. Util cuando ya conoces el modulo y solo queres un nudge.
+    Imprime solo HEADER y PROXIMOS PASOS, omite PRE-FLIGHT, VARIABLES,
+    COMO FUNCIONA y EJEMPLOS. Util cuando ya conoces el modulo y solo
+    queres un nudge.
 
 .OUTPUTS
     PSCustomObject con ModuleVersion, ExpectedSchemaVersion,
@@ -140,7 +144,7 @@ function Show-WmsBrainQuickStart {
     # ----- 2. PRE-FLIGHT (solo si no -Compact) -----
     $preflightHasErrors = $false
     if (-not $Compact) {
-        Write-WmsBrainBanner -Lines @(' ', ' [1/4] PRE-FLIGHT')
+        Write-WmsBrainBanner -Lines @(' ', ' [1/5] PRE-FLIGHT')
         try {
             $env_report = Test-WmsBrainEnvironment -ErrorAction Stop
             $errCount  = @($env_report | Where-Object { $_.Level -eq 'ERROR' }).Count
@@ -159,7 +163,7 @@ function Show-WmsBrainQuickStart {
     # ----- 3. VARIABLES (solo si no -Compact) -----
     $envSummary = [ordered]@{}
     if (-not $Compact) {
-        Write-WmsBrainBanner -Lines @(' ', ' [2/4] VARIABLES DE ENTORNO')
+        Write-WmsBrainBanner -Lines @(' ', ' [2/5] VARIABLES DE ENTORNO')
         $rows = @()
         foreach ($e in $envCatalog) {
             $val = [Environment]::GetEnvironmentVariable($e.Name)
@@ -213,26 +217,85 @@ function Show-WmsBrainQuickStart {
     $nextSteps += '  Test-WmsBrainConnection -Profile K7-PRD       # ping a SQL'
     $nextSteps += '  Get-WmsBrainQuestion -Status pending          # cards Q-NNN pendientes'
 
-    Write-WmsBrainBanner -Lines @(' ', ' [3/4] PROXIMOS PASOS')
+    Write-WmsBrainBanner -Lines @(' ', ' [3/5] PROXIMOS PASOS')
     Write-WmsBrainBanner -Lines ($nextSteps | ForEach-Object { '  ' + $_ })
 
-    # ----- 5. EJEMPLOS (solo si no -Compact) -----
+    # ----- 5. COMO FUNCIONA (solo si no -Compact) -----
     if (-not $Compact) {
-        Write-WmsBrainBanner -Lines @(' ', ' [4/4] EJEMPLOS COPY-PASTE')
+        Write-WmsBrainBanner -Lines @(' ', ' [4/5] COMO FUNCIONA')
         Write-WmsBrainBanner -Lines @(
-            '  # Listar las cards Q-NNN pendientes',
+            '  Que es una CARD?',
+            '    El BRAIN (cerebro central del WMS) detecta hipotesis o',
+            '    dudas operativas y las publica como "cards" Q-NNN',
+            '    (Q-001, Q-002, ...). Pensa la card como una pregunta',
+            '    corta con contexto, por ejemplo:',
+            ' ',
+            '      Q-003: "El rack A-12 quedo con stock negativo despues',
+            '              del conteo X. Fue error de captura o salida',
+            '              sin escanear?"',
+            ' ',
+            '  Flujo end-to-end:',
+            ' ',
+            '    [BRAIN]  publica card Q-NNN en el repo de exchange',
+            '       |',
+            '       v   (hello_sync.mjs detecta cards nuevas)',
+            '    [VOS]   Get-WmsBrainQuestion -Status pending     # listar',
+            '            Show-WmsBrainQuestion -QuestionId Q-NNN  # leer',
+            '            Invoke-WmsBrainQuery -Profile K7-PRD ... # consultar SQL',
+            '       |',
+            '       v   decidis: confirmed / refuted / inconclusive',
+            '    [VOS]   Submit-WmsBrainAnswer -QuestionId Q-NNN -Verdict ...',
+            '       |',
+            '       v   (apply_bundle.mjs empaqueta tu respuesta',
+            '    [BRIDGE]  como bundle versionado y la manda al BRAIN)',
+            '       |',
+            '       v',
+            '    [BRAIN]  aprende: la card pasa a status=closed con tu',
+            '             veredicto, y el patron entra al historial para',
+            '             futuras hipotesis.',
+            ' ',
+            '  Reglas del juego:',
+            '    - Las 3 BDs (K7-PRD/BB-PRD/C9-QAS) son READ-ONLY:',
+            '      este modulo nunca escribe a SQL.',
+            '    - Toda mutacion al BRAIN viaja como bundle versionado',
+            '      por git, nunca como cambio directo.',
+            '    - Los secretos (DB password, tokens) viven en variables',
+            '      de entorno User scope o cifrados con DPAPI en el',
+            '      config local, nunca en el repo.',
+            '    - Si algo falla: Test-WmsBrainEnvironment te dice que',
+            '      esta roto y Show-WmsBrainStatus muestra el estado',
+            '      global del modulo.'
+        )
+    }
+
+    # ----- 6. EJEMPLOS (solo si no -Compact) -----
+    if (-not $Compact) {
+        Write-WmsBrainBanner -Lines @(' ', ' [5/5] EJEMPLOS COPY-PASTE')
+        Write-WmsBrainBanner -Lines @(
+            '  # 1. Listar las cards Q-NNN pendientes (preguntas del BRAIN',
+            '  #    sin responder todavia). Cada card es una hipotesis a',
+            '  #    confirmar, refutar o marcar como no-concluyente.',
             '  Get-WmsBrainQuestion -Status pending',
             ' ',
-            '  # Emitir un evento por una card concreta',
+            '  # 2. Mirar el contenido de una card antes de responder',
+            '  #    (titulo, pregunta, contexto, datos de soporte).',
+            '  Show-WmsBrainQuestion -QuestionId Q-003',
+            ' ',
+            '  # 3. Emitir un evento por una card concreta: la abris para',
+            '  #    vos y queda registrado en el historial que la estas',
+            '  #    trabajando (util si despues otro la quiere ver).',
             '  New-WmsBrainQuestionEvent -QuestionId Q-003',
             ' ',
-            '  # Responder una card (despues de Invoke-WmsBrainQuestion)',
+            '  # 4. Responder la card. El veredicto puede ser:',
+            '  #      confirmed    - la hipotesis del BRAIN era correcta',
+            '  #      refuted      - era falsa',
+            '  #      inconclusive - no se puede saber con los datos',
             '  Submit-WmsBrainAnswer -QuestionId Q-003 -Verdict confirmed -Confidence high',
             ' ',
-            '  # Query directo a una BD productiva (read-only)',
+            '  # 5. Query directo a una BD productiva (read-only siempre).',
             '  Invoke-WmsBrainQuery -Profile K7-PRD -Query "SELECT TOP 5 * FROM dbo.Item"',
             ' ',
-            '  # Ayuda completa de cualquier cmdlet',
+            '  # 6. Ayuda completa de cualquier cmdlet.',
             '  Get-Help New-WmsBrainQuestionEvent -Full',
             ' '
         )
