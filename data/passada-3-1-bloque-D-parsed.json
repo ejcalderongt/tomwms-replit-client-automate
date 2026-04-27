@@ -1,0 +1,485 @@
+{
+  "generatedAt": "2026-04-27T04:29:50.258Z",
+  "filesCount": 38,
+  "classesLogical": 24,
+  "totalMethods": 275,
+  "totalTablesTouched": 28,
+  "classes": [
+    {
+      "name": "clsLnI_nav_config_enc",
+      "parts": 2,
+      "methods": 24,
+      "tables": [
+        "i_nav_config_enc"
+      ],
+      "views": [
+        "vw_configuracioninv"
+      ],
+      "bytes": 78256,
+      "score": 27
+    },
+    {
+      "name": "clsLnRol",
+      "parts": 2,
+      "methods": 18,
+      "tables": [
+        "rol",
+        "menu_sistema"
+      ],
+      "views": [],
+      "bytes": 29353,
+      "score": 24
+    },
+    {
+      "name": "clsLnRol_operador",
+      "parts": 2,
+      "methods": 15,
+      "tables": [
+        "rol_operador",
+        "menu_sistema_op",
+        "menu_rol_op"
+      ],
+      "views": [],
+      "bytes": 22379,
+      "score": 24
+    },
+    {
+      "name": "clsLnTipo_tarea_tiempos",
+      "parts": 1,
+      "methods": 12,
+      "tables": [
+        "tipo_tarea_tiempos",
+        "empresa",
+        "bodega",
+        "sis_tipo_tarea"
+      ],
+      "views": [],
+      "bytes": 17778,
+      "score": 24
+    },
+    {
+      "name": "clsLnI_nav_config_det",
+      "parts": 2,
+      "methods": 16,
+      "tables": [
+        "i_nav_config_det",
+        "i_nav_ent"
+      ],
+      "views": [
+        "vw_navdetalleconfiguracion"
+      ],
+      "bytes": 29312,
+      "score": 22
+    },
+    {
+      "name": "clsLnI_nav_config_ent",
+      "parts": 2,
+      "methods": 13,
+      "tables": [
+        "i_nav_config_ent",
+        "i_nav_ent"
+      ],
+      "views": [],
+      "bytes": 19406,
+      "score": 19
+    },
+    {
+      "name": "clsLnMenu_sistema",
+      "parts": 2,
+      "methods": 13,
+      "tables": [
+        "menu_sistema",
+        "menu_rol"
+      ],
+      "views": [],
+      "bytes": 19299,
+      "score": 19
+    },
+    {
+      "name": "clsLnTipo_etiqueta",
+      "parts": 1,
+      "methods": 13,
+      "tables": [
+        "tipo_etiqueta",
+        "producto_clasificacion_etiqueta"
+      ],
+      "views": [],
+      "bytes": 31926,
+      "score": 19
+    },
+    {
+      "name": "clsLnMenu_rol_op",
+      "parts": 2,
+      "methods": 11,
+      "tables": [
+        "menu_rol_op",
+        "menu_sistema_op"
+      ],
+      "views": [],
+      "bytes": 19380,
+      "score": 17
+    },
+    {
+      "name": "clsLnTipo_contenedor",
+      "parts": 2,
+      "methods": 13,
+      "tables": [
+        "tipo_contenedor"
+      ],
+      "views": [],
+      "bytes": 21259,
+      "score": 16
+    },
+    {
+      "name": "clsLnTipo_tarima",
+      "parts": 2,
+      "methods": 13,
+      "tables": [
+        "tipo_tarima"
+      ],
+      "views": [],
+      "bytes": 20691,
+      "score": 16
+    },
+    {
+      "name": "clsLnConfiguracion_usuario_enc",
+      "parts": 2,
+      "methods": 12,
+      "tables": [
+        "configuracion_usuario_enc"
+      ],
+      "views": [],
+      "bytes": 26613,
+      "score": 15
+    },
+    {
+      "name": "clsLnMenu_rol",
+      "parts": 2,
+      "methods": 12,
+      "tables": [
+        "menu_rol"
+      ],
+      "views": [],
+      "bytes": 24684,
+      "score": 15
+    },
+    {
+      "name": "clsLnConfiguracion_barra_pallet",
+      "parts": 2,
+      "methods": 11,
+      "tables": [
+        "configuracion_barra_pallet"
+      ],
+      "views": [],
+      "bytes": 16652,
+      "score": 14
+    },
+    {
+      "name": "clsLnConfiguracion_usuario_det",
+      "parts": 2,
+      "methods": 8,
+      "tables": [
+        "configuracion_usuario_det",
+        "configuracion_usuario_enc"
+      ],
+      "views": [
+        "vw_configuracion_usuario_template"
+      ],
+      "bytes": 19915,
+      "score": 14
+    },
+    {
+      "name": "clsLnTipo_actualizacion_costo",
+      "parts": 2,
+      "methods": 8,
+      "tables": [
+        "tipo_actualizacion_costo",
+        "propietario_bodega"
+      ],
+      "views": [],
+      "bytes": 13234,
+      "score": 14
+    },
+    {
+      "name": "clsLnMenu_sistema_op",
+      "parts": 1,
+      "methods": 10,
+      "tables": [
+        "menu_sistema_op"
+      ],
+      "views": [],
+      "bytes": 13920,
+      "score": 13
+    },
+    {
+      "name": "clsLnTipo_rotacion",
+      "parts": 1,
+      "methods": 10,
+      "tables": [
+        "tipo_rotacion"
+      ],
+      "views": [],
+      "bytes": 13422,
+      "score": 13
+    },
+    {
+      "name": "clsLnConfiguracion_qa",
+      "parts": 1,
+      "methods": 9,
+      "tables": [
+        "configuracion_qa"
+      ],
+      "views": [],
+      "bytes": 20113,
+      "score": 12
+    },
+    {
+      "name": "clsLnTipo_etiqueta_detalle",
+      "parts": 1,
+      "methods": 9,
+      "tables": [
+        "tipo_etiqueta_detalle"
+      ],
+      "views": [],
+      "bytes": 16581,
+      "score": 12
+    },
+    {
+      "name": "clsLnConfiguracion_alias_campos",
+      "parts": 1,
+      "methods": 8,
+      "tables": [
+        "configuracion_alias_campos"
+      ],
+      "views": [],
+      "bytes": 12382,
+      "score": 11
+    },
+    {
+      "name": "clsLnRol_usuario_estado",
+      "parts": 1,
+      "methods": 8,
+      "tables": [
+        "rol_usuario_estado"
+      ],
+      "views": [],
+      "bytes": 15997,
+      "score": 11
+    },
+    {
+      "name": "clsLnTipo_RotacionPartial",
+      "parts": 1,
+      "methods": 6,
+      "tables": [
+        "tipo_rotacion"
+      ],
+      "views": [],
+      "bytes": 7719,
+      "score": 9
+    },
+    {
+      "name": "clsLnRolUsuarioEstado",
+      "parts": 1,
+      "methods": 3,
+      "tables": [],
+      "views": [
+        "vw_rol_usuario_estado"
+      ],
+      "bytes": 6339,
+      "score": 3
+    }
+  ],
+  "topTables": [
+    [
+      "menu_rol",
+      3
+    ],
+    [
+      "menu_rol_op",
+      3
+    ],
+    [
+      "menu_sistema_op",
+      3
+    ],
+    [
+      "menu_sistema",
+      3
+    ],
+    [
+      "configuracion_barra_pallet",
+      2
+    ],
+    [
+      "configuracion_usuario_det",
+      2
+    ],
+    [
+      "configuracion_usuario_enc",
+      2
+    ],
+    [
+      "i_nav_config_det",
+      2
+    ],
+    [
+      "i_nav_ent",
+      2
+    ],
+    [
+      "i_nav_config_enc",
+      2
+    ],
+    [
+      "i_nav_config_ent",
+      2
+    ],
+    [
+      "rol",
+      2
+    ],
+    [
+      "rol_operador",
+      2
+    ],
+    [
+      "tipo_rotacion",
+      2
+    ],
+    [
+      "tipo_actualizacion_costo",
+      2
+    ],
+    [
+      "tipo_contenedor",
+      2
+    ],
+    [
+      "tipo_tarima",
+      2
+    ],
+    [
+      "configuracion_alias_campos",
+      1
+    ],
+    [
+      "configuracion_qa",
+      1
+    ],
+    [
+      "rol_usuario_estado",
+      1
+    ],
+    [
+      "propietario_bodega",
+      1
+    ],
+    [
+      "tipo_etiqueta",
+      1
+    ],
+    [
+      "producto_clasificacion_etiqueta",
+      1
+    ],
+    [
+      "tipo_etiqueta_detalle",
+      1
+    ],
+    [
+      "tipo_tarea_tiempos",
+      1
+    ],
+    [
+      "empresa",
+      1
+    ],
+    [
+      "bodega",
+      1
+    ],
+    [
+      "sis_tipo_tarea",
+      1
+    ]
+  ],
+  "wmsThatUseConfig": [
+    {
+      "wm": "Get_Menu_Rol_Op_For_HH",
+      "asmxLine": 764,
+      "configClasses": [
+        "clsLnMenu_rol_op"
+      ]
+    },
+    {
+      "wm": "Get_Nombre_Rol_Operador_For_HH_By_IdRolOperador",
+      "asmxLine": 1030,
+      "configClasses": [
+        "clsLnRol_operador"
+      ]
+    },
+    {
+      "wm": "Get_Menu_By_IdRolOperador_For_HH",
+      "asmxLine": 1077,
+      "configClasses": [
+        "clsLnMenu_rol_op"
+      ]
+    },
+    {
+      "wm": "Get_BeRolOPerador_By_IdRolOperador",
+      "asmxLine": 1492,
+      "configClasses": [
+        "clsLnRol_operador"
+      ]
+    },
+    {
+      "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+      "asmxLine": 8949,
+      "configClasses": [
+        "clsLnTipo_etiqueta"
+      ]
+    },
+    {
+      "wm": "Get_Configuracion_Barra_Pallet_By_IdConfiguracion",
+      "asmxLine": 10350,
+      "configClasses": [
+        "clsLnConfiguracion_barra_pallet"
+      ]
+    },
+    {
+      "wm": "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+      "asmxLine": 11207,
+      "configClasses": [
+        "clsLnI_nav_config_enc"
+      ]
+    },
+    {
+      "wm": "Get_Recepcion_Genera_Historico",
+      "asmxLine": 11257,
+      "configClasses": [
+        "clsLnI_nav_config_enc"
+      ]
+    },
+    {
+      "wm": "Finalizar_Recepcion_S",
+      "asmxLine": 16289,
+      "configClasses": [
+        "clsLnI_nav_config_enc"
+      ]
+    },
+    {
+      "wm": "Get_TipoEtiqueta_By_Id",
+      "asmxLine": 18628,
+      "configClasses": [
+        "clsLnTipo_etiqueta"
+      ]
+    }
+  ],
+  "useByClass": {
+    "clsLnMenu_rol_op": 2,
+    "clsLnRol_operador": 2,
+    "clsLnTipo_etiqueta": 2,
+    "clsLnConfiguracion_barra_pallet": 1,
+    "clsLnI_nav_config_enc": 3
+  }
+}
