@@ -1,0 +1,927 @@
+{
+  "generatedAt": "2026-04-27T05:12:30.677Z",
+  "totalFiles": 48,
+  "totalEndpoints": 110,
+  "files": [
+    {
+      "path": "/WMSWebAPI/ApplicationDbContext.cs",
+      "fileName": "ApplicationDbContext.cs",
+      "isCs": true,
+      "lineCount": 17,
+      "isDbContext": true,
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/AcuerdoComercialController.cs",
+      "fileName": "AcuerdoComercialController.cs",
+      "isCs": true,
+      "lineCount": 93,
+      "isDbContext": false,
+      "controllerName": "AcuerdoComercialController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "Procesar"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetAll"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetByIdCliente/{idCliente}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetById/{idAcuerdoEnc}"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/AcuerdoComercialWebhookController.cs",
+      "fileName": "AcuerdoComercialWebhookController.cs",
+      "isCs": true,
+      "lineCount": 372,
+      "isDbContext": false,
+      "controllerName": "AcuerdoComercialWebhookController",
+      "routePrefix": "api/webhooks/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "recibir"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "recibir-lote"
+        },
+        {
+          "verb": "HTTPPUT",
+          "route": "actualizar/{idAcuerdoEnc}"
+        },
+        {
+          "verb": "HTTPDELETE",
+          "route": "eliminar/{idAcuerdoEnc}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "consultar/{idAcuerdoEnc}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "consultar-por-cliente/{idCliente}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "health"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/AjusteController.cs",
+      "fileName": "AjusteController.cs",
+      "isCs": true,
+      "lineCount": 149,
+      "isDbContext": false,
+      "controllerName": "SyncAjustesController",
+      "routePrefix": "api/sync/ajustes",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "mi3/pendientes-envio"
+        },
+        {
+          "verb": "HTTPPUT",
+          "route": "mi3/ajustes/enviados-erp"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/AuthController.cs",
+      "fileName": "AuthController.cs",
+      "isCs": true,
+      "lineCount": 372,
+      "isDbContext": false,
+      "controllerName": "AuthController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "login-propietario"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "reset-password"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "validate-reset-token"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "update-password"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "login-interno"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/BodegaController.cs",
+      "fileName": "BodegaController.cs",
+      "isCs": true,
+      "lineCount": 50,
+      "isDbContext": false,
+      "controllerName": "BodegasController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "listar"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/CambioEstadoController.cs",
+      "fileName": "CambioEstadoController.cs",
+      "isCs": true,
+      "lineCount": 244,
+      "isDbContext": false,
+      "controllerName": "CambioEstadoController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "mi3/pendientes-procesar"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "{id}"
+        },
+        {
+          "verb": "HTTPPATCH",
+          "route": "{id}/sincronizar"
+        },
+        {
+          "verb": "HTTPPATCH",
+          "route": "sincronizar-masivo"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "procesar-pendientes"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/CentroCostoController.cs",
+      "fileName": "CentroCostoController.cs",
+      "isCs": true,
+      "lineCount": 377,
+      "isDbContext": false,
+      "controllerName": "CentroCostoController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "{id}"
+        },
+        {
+          "verb": "HTTPPUT",
+          "route": "{id}"
+        },
+        {
+          "verb": "HTTPDELETE",
+          "route": "{id}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "maxid"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "search"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "activos"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "batch"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "mi3/search"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/ClasificacionController.cs",
+      "fileName": "ClasificacionController.cs",
+      "isCs": true,
+      "lineCount": 116,
+      "isDbContext": false,
+      "controllerName": "ClasificacionController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/ClienteController.cs",
+      "fileName": "ClienteController.cs",
+      "isCs": true,
+      "lineCount": 257,
+      "isDbContext": false,
+      "controllerName": "ClienteController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "/api/Clientes/mi3/asociar_bodega"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/FamiliaController.cs",
+      "fileName": "FamiliaController.cs",
+      "isCs": true,
+      "lineCount": 114,
+      "isDbContext": false,
+      "controllerName": "FamiliaController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/KpiController.cs",
+      "fileName": "KpiController.cs",
+      "isCs": true,
+      "lineCount": 173,
+      "isDbContext": false,
+      "controllerName": "KpiController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "picking"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "verificacion"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "recepcion"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "despacho"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "tendencias/despacho"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "tendencias/operacion/heatmap-diahora"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "stock/res"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/MarcaController.cs",
+      "fileName": "MarcaController.cs",
+      "isCs": true,
+      "lineCount": 114,
+      "isDbContext": false,
+      "controllerName": "MarcaController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/MovimientosController.cs",
+      "fileName": "MovimientosController.cs",
+      "isCs": true,
+      "lineCount": 83,
+      "isDbContext": false,
+      "controllerName": "MovimientosController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "listar"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/PreFacturaController.cs",
+      "fileName": "PreFacturaController.cs",
+      "isCs": true,
+      "lineCount": 276,
+      "isDbContext": false,
+      "controllerName": "PreFacturaController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "GetPendientes"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetById/{id}"
+        },
+        {
+          "verb": "HTTPPUT",
+          "route": "MarcarProcesado/{id}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetTotalPendientes"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "Health"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetTodasPendientes"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/PresentacionController.cs",
+      "fileName": "PresentacionController.cs",
+      "isCs": true,
+      "lineCount": 114,
+      "isDbContext": false,
+      "controllerName": "PresentacionController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/ProductosController.cs",
+      "fileName": "ProductosController.cs",
+      "isCs": true,
+      "lineCount": 356,
+      "isDbContext": false,
+      "controllerName": "ProductosController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/insert"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "single/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "/api/Productos/mi3/asociar_bodega"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/PropietarioController.cs",
+      "fileName": "PropietarioController.cs",
+      "isCs": true,
+      "lineCount": 393,
+      "isDbContext": false,
+      "controllerName": "PropietarioController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "GetAll"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetById/{idPropietario}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetByCodigo/{codigo}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetActivos"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "GetByFilter"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "Crear"
+        },
+        {
+          "verb": "HTTPPUT",
+          "route": "Actualizar/{idPropietario}"
+        },
+        {
+          "verb": "HTTPDELETE",
+          "route": "Eliminar/{idPropietario}"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "Upsert"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "ProcesarLote"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetBodegas/{idPropietario}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetBodegasCompletas/{idPropietario}"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "SincronizarBodegas/{idPropietario}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "GetAllWithBodegas"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "Health"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/PropietarioWebhookController.cs",
+      "fileName": "PropietarioWebhookController.cs",
+      "isCs": true,
+      "lineCount": 285,
+      "isDbContext": false,
+      "controllerName": "PropietarioWebhookController",
+      "routePrefix": "api/webhooks/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "recibir"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "recibir-lote"
+        },
+        {
+          "verb": "HTTPPUT",
+          "route": "actualizar/{idPropietario}"
+        },
+        {
+          "verb": "HTTPDELETE",
+          "route": "eliminar/{idPropietario}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "consultar/{idPropietario}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "consultar-por-codigo/{codigo}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "consultar-bodegas/{idPropietario}"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "sincronizar-bodegas/{idPropietario}"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "health"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/ProveedorController.cs",
+      "fileName": "ProveedorController.cs",
+      "isCs": true,
+      "lineCount": 280,
+      "isDbContext": false,
+      "controllerName": "ProveedorController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "/api/Proveedores/mi3/asociar_bodega"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/StockController.cs",
+      "fileName": "StockController.cs",
+      "isCs": true,
+      "lineCount": 168,
+      "isDbContext": false,
+      "controllerName": "StockController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPGET",
+          "route": "listar"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "resumen"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/SyncIngresosController.cs",
+      "fileName": "SyncIngresosController.cs",
+      "isCs": true,
+      "lineCount": 222,
+      "isDbContext": false,
+      "controllerName": "SyncIngresosController",
+      "routePrefix": "api/sync/ingresos",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "documento-ingreso"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "documentos-ingreso/listar"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "{IdOrdenCompraEnc}/detalle-oc"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "{IdOrdenCompraEnc}/recepciones"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "mi3/pendientes-procesar"
+        },
+        {
+          "verb": "HTTPPATCH",
+          "route": "mi3/pendientes-procesar/marcar-enviadas"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/SyncSalidasController.cs",
+      "fileName": "SyncSalidasController.cs",
+      "isCs": true,
+      "lineCount": 296,
+      "isDbContext": false,
+      "controllerName": "SyncSalidasController",
+      "routePrefix": "api/sync/salidas",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "documento-salida"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "documentos-salida/listar"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "{IdPedidoEnc}/detalle-pe"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "{IdOrdenSalidaEnc}/despachos"
+        },
+        {
+          "verb": "HTTPPOST",
+          "route": "mi3/insertar"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "mi3/pendientes-procesar"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/TestAuthController.cs",
+      "fileName": "TestAuthController.cs",
+      "isCs": true,
+      "lineCount": 19,
+      "isDbContext": false,
+      "controllerName": "TestAuthController",
+      "routePrefix": "api/[controller]",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/TipoProductoController.cs",
+      "fileName": "TipoProductoController.cs",
+      "isCs": true,
+      "lineCount": 130,
+      "isDbContext": false,
+      "controllerName": "TipoProductoController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Controllers/UmbasController.cs",
+      "fileName": "UmbasController.cs",
+      "isCs": true,
+      "lineCount": 124,
+      "isDbContext": false,
+      "controllerName": "UmbasController",
+      "routePrefix": "api/[controller]",
+      "endpoints": [
+        {
+          "verb": "HTTPPOST",
+          "route": "list/mi3/insert"
+        },
+        {
+          "verb": "HTTPGET",
+          "route": "list/mi3/all"
+        }
+      ]
+    },
+    {
+      "path": "/WMSWebAPI/Services/Acuerdos/AcuerdoComercialService.cs",
+      "fileName": "AcuerdoComercialService.cs",
+      "isCs": true,
+      "lineCount": 273,
+      "isDbContext": false,
+      "controllerName": "AcuerdoComercialService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Ajustes/AjustesEnvioService.cs",
+      "fileName": "AjustesEnvioService.cs",
+      "isCs": true,
+      "lineCount": 329,
+      "isDbContext": false,
+      "controllerName": "AjustesEnvioService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Cambio_Estado/CambioEstadoService.cs",
+      "fileName": "CambioEstadoService.cs",
+      "isCs": true,
+      "lineCount": 697,
+      "isDbContext": false,
+      "controllerName": "CambioEstadoService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Centro_Costo/CentroCostoService.cs",
+      "fileName": "CentroCostoService.cs",
+      "isCs": true,
+      "lineCount": 411,
+      "isDbContext": false,
+      "controllerName": "CentroCostoService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Cliente/ClienteMi3SyncService.cs",
+      "fileName": "ClienteMi3SyncService.cs",
+      "isCs": true,
+      "lineCount": 49,
+      "isDbContext": false,
+      "controllerName": "ClienteMi3SyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Ingresos/SyncIngresosService.cs",
+      "fileName": "SyncIngresosService.cs",
+      "isCs": true,
+      "lineCount": 576,
+      "isDbContext": false,
+      "controllerName": "SyncIngresosService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/KPI/KpiReportService.cs",
+      "fileName": "KpiReportService.cs",
+      "isCs": true,
+      "lineCount": 820,
+      "isDbContext": false,
+      "controllerName": "KpiReportService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/LogPortalUx/LogPortalUxService.cs",
+      "fileName": "LogPortalUxService.cs",
+      "isCs": true,
+      "lineCount": 27,
+      "isDbContext": false,
+      "controllerName": "LogPortalUxService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Login_JWT/JwtTokenService.cs",
+      "fileName": "JwtTokenService.cs",
+      "isCs": true,
+      "lineCount": 50,
+      "isDbContext": false,
+      "controllerName": "JwtTokenService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Prefactura/PrefacturaService.cs",
+      "fileName": "PrefacturaService.cs",
+      "isCs": true,
+      "lineCount": 251,
+      "isDbContext": false,
+      "controllerName": "PrefacturaService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/Clasificacion/ProductoClasificacionSyncService.cs",
+      "fileName": "ProductoClasificacionSyncService.cs",
+      "isCs": true,
+      "lineCount": 49,
+      "isDbContext": false,
+      "controllerName": "ProductoClasificacionSyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/Familia/ProductoFamiliaSyncService.cs",
+      "fileName": "ProductoFamiliaSyncService.cs",
+      "isCs": true,
+      "lineCount": 49,
+      "isDbContext": false,
+      "controllerName": "ProductoFamiliaSyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/Marca/ProductoMarcaSyncService.cs",
+      "fileName": "ProductoMarcaSyncService.cs",
+      "isCs": true,
+      "lineCount": 50,
+      "isDbContext": false,
+      "controllerName": "ProductoMarcaSyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/Presentacion/PresentacionMi3SyncService.cs",
+      "fileName": "PresentacionMi3SyncService.cs",
+      "isCs": true,
+      "lineCount": 50,
+      "isDbContext": false,
+      "controllerName": "PresentacionMi3SyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/ProductoMi3SyncService.cs",
+      "fileName": "ProductoMi3SyncService.cs",
+      "isCs": true,
+      "lineCount": 61,
+      "isDbContext": false,
+      "controllerName": "ProductoMi3SyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/ProductoSyncService.cs",
+      "fileName": "ProductoSyncService.cs",
+      "isCs": true,
+      "lineCount": 348,
+      "isDbContext": false,
+      "controllerName": "ProductoSyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/Tipo/ProductoTipoMi3SyncService.cs",
+      "fileName": "ProductoTipoMi3SyncService.cs",
+      "isCs": true,
+      "lineCount": 47,
+      "isDbContext": false,
+      "controllerName": "ProductoTipoMi3SyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Producto/Umbas/UmbasMi3SyncService.cs",
+      "fileName": "UmbasMi3SyncService.cs",
+      "isCs": true,
+      "lineCount": 51,
+      "isDbContext": false,
+      "controllerName": "UmbasMi3SyncService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Propietarios/PropietarioService.cs",
+      "fileName": "PropietarioService.cs",
+      "isCs": true,
+      "lineCount": 441,
+      "isDbContext": false,
+      "controllerName": "PropietarioService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Proveedor/SyncProveedorService.cs",
+      "fileName": "SyncProveedorService.cs",
+      "isCs": true,
+      "lineCount": 139,
+      "isDbContext": false,
+      "controllerName": "SyncProveedorService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Reset_Password/ResetPasswordService.cs",
+      "fileName": "ResetPasswordService.cs",
+      "isCs": true,
+      "lineCount": 150,
+      "isDbContext": false,
+      "controllerName": "ResetPasswordService",
+      "endpoints": []
+    },
+    {
+      "path": "/WMSWebAPI/Services/Salidas/SyncSalidasService.cs",
+      "fileName": "SyncSalidasService.cs",
+      "isCs": true,
+      "lineCount": 776,
+      "isDbContext": false,
+      "controllerName": "SyncSalidasService",
+      "endpoints": []
+    }
+  ]
+}
