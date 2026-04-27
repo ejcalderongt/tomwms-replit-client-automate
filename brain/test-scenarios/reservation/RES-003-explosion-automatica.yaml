@@ -1,0 +1,116 @@
+id: RES-003
+title: Reserva con explosión automática a nivel máximo
+module: reservation
+priority: P0
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: clsLnStock_res
+  function: TODO_mapear_caso_legacy
+  source: pendiente lectura de clsLnStock_res.vb completo
+
+description: >
+  El producto solicitado tiene jerarquía de presentaciones (unidad < caja <
+  pallet) y el flag `explosion_automatica_nivel_max=1`. El motor debe
+  recorrer la jerarquía y reservar a nivel pallet completo cuando la
+  cantidad lo permite, fragmentando en niveles inferiores solo lo necesario.
+
+  Valida el handler `MotorReservaMI3.Explotar_A_Nivel_Maximo` (cuando
+  exista) y la equivalencia con la lógica legacy.
+
+required_config:
+  i_nav_config_enc.explosion_automatica_nivel_max: 1
+  i_nav_config_enc.usar_zona_picking: 1
+  producto.tiene_jerarquia_presentaciones: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: insert_stock
+    name: stock_pallet
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con factor pallet>=120}"
+      ubicacion: "{ubicacion no-picking activa}"
+      lote: "RES003_PALLET"
+      cantidad_unidades: "{1 pallet completo en unidades base}"
+      presentacion: "{presentacion pallet}"
+
+  - action: insert_stock
+    name: stock_cajas
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con factor pallet>=120}"
+      ubicacion: "{ubicacion no-picking activa diferente}"
+      lote: "RES003_CAJAS"
+      cantidad_unidades: "{5 cajas en unidades base}"
+      presentacion: "{presentacion caja}"
+
+  - action: insert_stock
+    name: stock_unidades_picking
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con factor pallet>=120}"
+      ubicacion: "{ubicacion picking activa}"
+      lote: "RES003_UNIDADES"
+      cantidad_unidades: 8
+      presentacion: "{presentacion unidad}"
+
+action:
+  endpoint: /api/test-bridge/sandbox/reserve
+  method: POST
+  body:
+    pedido:
+      no: "@MaxNoDocumento+1"
+      document_type: Pedido_De_Cliente
+      product_owner_code: "01"
+      lineas:
+        - line_no: 1
+          item_no: "{producto.codigo}"
+          quantity: "{1 pallet + 2 cajas + 3 unidades en unidades base}"
+
+expected:
+  - check: row_exists
+    table: stock_res
+    where:
+      idstock: "@stock_pallet.id"
+      estado: 1
+    note: "El pallet completo DEBE estar reservado entero"
+
+  - check: row_count
+    table: stock_res
+    where:
+      lote: "RES003_CAJAS"
+      estado: 1
+    value: 2
+    note: "Deben reservarse 2 cajas"
+
+  - check: row_count
+    table: stock_res
+    where:
+      lote: "RES003_UNIDADES"
+      estado: 1
+    value: 3
+    note: "Deben reservarse 3 unidades del picking"
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - explosion-automatica
+  - reservation
+  - mi3
+  - mi3-legacy
+  - jerarquia-presentaciones
+
+notes: |
+  Validar que el motor MI3 nuevo respeta la misma "estrategia greedy de
+  arriba hacia abajo" que el legacy. Si el motor nuevo decide reservar
+  3 cajas + 5 unidades en lugar de 1 pallet + 2 cajas + 3 unidades, hay
+  que decidir si es mejora o regresión (Erik decide).
