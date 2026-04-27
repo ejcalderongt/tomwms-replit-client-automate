@@ -1,17 +1,46 @@
-slug: idealsa
-display_name: IDEALSA
-country: GT
-notes: |
-  Origen de la mayoría de los CASOs legacy del clsLnStock_res (CASO 1-17).
-  El producto 47022 es el SKU ficticio que IDEALSA usaba como base de pruebas.
+# Cliente: IDEALSA
+id: idealsa
+name: "IDEALSA"
+brand: "IDEAL"
+
+# Estado de aprendizaje. Todos los flags están en null hasta correr
+# brain/skills/wms-test-bridge/sql/learn-config.sql contra la bodega del cliente
+# y volcar la fila resultante.
 learned: false
-learned_at: null
-learned_from: null
+learned_from:
+  branch: null          # dev_2023_merge cuando se ejecute contra Killios PRD
+  bodega: null
+  fecha: null
+
+# Flags reales (nombres exactos de la entidad clsBeI_nav_config_enc).
+# Tipos: ver brain/skills/wms-test-bridge/reference/config-flags.md
 flags:
-  # Esta sección debe llenarse con `wmsa learn-config idealsa` apuntando a una BD del cliente.
-  # Hasta entonces, los flags abajo son INFERIDOS desde lo que los CASOs asumen y NO confirmados.
-  IdProductoEstado: "(inferido) ESTADO_DISPONIBLE"
-  IdPropietario: "01"
-  Reservar_Desde_Picking_Antes_Que_Almacenamiento: false
-  Permite_Explosion_En_Picking: true
-  Rechazar_Pedido_Si_Esta_Incompleto: true
+  Rechazar_pedido_incompleto: null   # pendiente learn-config
+  Despachar_existencia_parcial: null   # pendiente learn-config
+  Convertir_decimales_a_umbas: null   # pendiente learn-config
+  Reservar_UMBas_Primero: null   # pendiente learn-config
+  Implosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica_Desde_Ubicacion_Picking: null   # pendiente learn-config
+  Explosion_Automatica_Nivel_Max: null   # pendiente learn-config
+  IdTipoRotacion: null   # pendiente learn-config
+  IdProductoEstado: null   # pendiente learn-config
+  Conservar_Zona_Picking_Clavaud: null   # pendiente learn-config
+  Excluir_Ubicaciones_Reabasto: null   # pendiente learn-config
+  considerar_paletizado_en_reabasto: null   # pendiente learn-config
+  Considerar_Disponibilidad_Ubicacion_Reabasto: null   # pendiente learn-config
+  Valida_Solo_Codigo: null   # pendiente learn-config
+  Control_lote: null   # pendiente learn-config
+  Control_vencimiento: null   # pendiente learn-config
+  Genera_lp: null   # pendiente learn-config
+
+notes: |
+  Cliente IDEAL. Origen de los CASOs 1-17 del legacy QA.
+  Hipótesis (a confirmar con learn-config):
+  - Control_vencimiento = True (todos los CASOs asumen FEFO con fechas).
+  - Explosion_Automatica = True (CASOs 9, 10, 13, 14, 15, 16 dependen de explotar caja).
+  - Explosion_Automatica_Desde_Ubicacion_Picking = True (mayoría de explosiones suceden en pick).
+  - Rechazar_pedido_incompleto: variable según CASO. CASOs 8, 10, 13 esperan rechazo,
+    CASOs 2, 9, 14 esperan procesar parcial. Posiblemente cambia entre bodegas o
+    el mismo CASO se ejecuta con distintos valores del flag.
+  - IdTipoRotacion = FEFO (3).
