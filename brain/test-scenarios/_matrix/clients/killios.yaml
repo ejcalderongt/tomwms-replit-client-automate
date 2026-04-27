@@ -1,0 +1,17 @@
+slug: killios
+display_name: KILLIOS
+country: GT
+notes: |
+  Cliente actual con BD productiva accesible (SQL Server) en modo read-only.
+  Ningún CASO legacy fue escrito específicamente para KILLIOS, pero la mayoría
+  de los IDEAL aplican porque comparten configuración de FEFO básica.
+learned: false
+learned_at: null
+learned_from: null
+flags:
+  # Llenar con `wmsa learn-config killios` apuntando a la BD prod (read-only).
+  IdProductoEstado: null
+  IdPropietario: null
+  Reservar_Desde_Picking_Antes_Que_Almacenamiento: null
+  Permite_Explosion_En_Picking: null
+  Rechazar_Pedido_Si_Esta_Incompleto: null
