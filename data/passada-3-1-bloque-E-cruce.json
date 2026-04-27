@@ -1,0 +1,5654 @@
+{
+  "generatedAt": "2026-04-27T03:45:57.919Z",
+  "totals": {
+    "webMethods": 344,
+    "wmsWithClasses": 340,
+    "wmsWithTables": 328,
+    "avgInvokesPerWM": 2.29,
+    "avgTablesPerWM": 1.67,
+    "distinctTablesAccessed": 83,
+    "catalogTablesPct": 24.1
+  },
+  "webMethods": [
+    {
+      "name": "Get_Empresa_By_Codigo_And_Clave",
+      "asmxLine": 50,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnEmpresa",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "empresa"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_List_Empresas_For_HH",
+      "asmxLine": 95,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnEmpresa",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "empresa"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Bodegas_By_IdEmpresa_For_HH",
+      "asmxLine": 138,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Android_Get_Bodegas_By_IdEmpresa",
+      "asmxLine": 181,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Productos_By_IdBodega_For_HH",
+      "asmxLine": 224,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Propietarios_By_IdBodega_For_HH",
+      "asmxLine": 267,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnPropietario_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "propietario_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Reglas_Recepcion_For_HH",
+      "asmxLine": 310,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnReglas_recepcion",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "reglas_recepcion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Clientes_By_IdBodega_For_HH",
+      "asmxLine": 354,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnCliente_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "cliente_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Proveedores_By_Bodega_For_HH",
+      "asmxLine": 397,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProveedor_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "proveedor_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_By_IdBodega_HH_Filtro",
+      "asmxLine": 440,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProveedor_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "proveedor_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Motivo_Anulacion_By_IdBodega_For_HH",
+      "asmxLine": 483,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnMotivo_anulacion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "motivo_anulacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Motivos_Anulacion_By_IdBodega_For_HH",
+      "asmxLine": 526,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnMotivo_anulacion_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "motivo_anulacion_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Motivos_Devolucion_By_IdBodega_For_HH",
+      "asmxLine": 569,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnMotivo_devolucion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "motivo_devolucion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Motivos_Devolucion_Bodega_By_IdBodega_For_HH",
+      "asmxLine": 612,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnMotivo_devolucion_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "motivo_devolucion_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Motivos_Ubicacion_For_HH",
+      "asmxLine": 655,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnMotivo_ubicacion",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "motivo_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "ServiceIsAlive",
+      "asmxLine": 700,
+      "bodyLines": 4,
+      "invokes": [],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "GetTimeStampServer",
+      "asmxLine": 707,
+      "bodyLines": 4,
+      "invokes": [],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_Operadores_By_IdBodega_For_HH",
+      "asmxLine": 714,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnOperador_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "operador_bodega",
+        "menu_rol_op",
+        "operador"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Menu_Rol_Op_For_HH",
+      "asmxLine": 764,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnMenu_rol_op",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "menu_rol_op"
+      ],
+      "views": []
+    },
+    {
+      "name": "Operador_Valido_HH",
+      "asmxLine": 807,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnOperador_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "operador_bodega",
+        "menu_rol_op",
+        "operador"
+      ],
+      "views": []
+    },
+    {
+      "name": "GetSis_estado_tarea_hh",
+      "asmxLine": 850,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnSis_estado_tarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "sis_estado_tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "GetTarea_HH",
+      "asmxLine": 895,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Tipo_Recepcion",
+      "asmxLine": 940,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_re_tr_Partial",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_tr"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Recepciones_By_IdBodega",
+      "asmxLine": 986,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Nombre_Rol_Operador_For_HH_By_IdRolOperador",
+      "asmxLine": 1030,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnRol_operador",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "rol_operador"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Menu_By_IdRolOperador_For_HH",
+      "asmxLine": 1077,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnMenu_rol_op",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "menu_rol_op"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Recepciones_For_HH_By_IdBodega",
+      "asmxLine": 1120,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+      "asmxLine": 1164,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+      "asmxLine": 1208,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Trans_Re_Tr_For_HH",
+      "asmxLine": 1251,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_re_tr_Partial",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_re_tr"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Empresas_For_HH",
+      "asmxLine": 1296,
+      "bodyLines": 16,
+      "invokes": [
+        "clsLnEmpresa",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "empresa"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Filtro_TransOCTipo_For_HH",
+      "asmxLine": 1315,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_oc_ti",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_ti"
+      ],
+      "views": []
+    },
+    {
+      "name": "GetSingleRec",
+      "asmxLine": 1360,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeTransOcEnc_By_IdOrdenCompraEnc",
+      "asmxLine": 1404,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "views": [
+        "vw_ordencompra"
+      ]
+    },
+    {
+      "name": "Get_Single_BeTrans_OC_Estado",
+      "asmxLine": 1447,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_oc_estado",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeRolOPerador_By_IdRolOperador",
+      "asmxLine": 1492,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnRol_operador",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "rol_operador"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Impresora_By_IdEmpresa_And_IdBodega",
+      "asmxLine": 1535,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnImpresora",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "impresora"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Impresora_By_IdEmpresa_And_IdBodega_Dt",
+      "asmxLine": 1578,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnImpresora",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "impresora"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+      "asmxLine": 1621,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Producto_By_IdProductoBodega",
+      "asmxLine": 1665,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Control_Lote_And_Vencimiento_By_IdProductoBodega",
+      "asmxLine": 1708,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+      "asmxLine": 1754,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnProducto_estado",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "producto_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Estados_By_IdPropietario_And_IdBodega",
+      "asmxLine": 1800,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_estado",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Estados_By_IdPropietario_JSON",
+      "asmxLine": 1843,
+      "bodyLines": 54,
+      "invokes": [
+        "clsLnProducto_estado",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Estados_By_IdPropietario",
+      "asmxLine": 1900,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnProducto_estado",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "producto_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Estados_Producto_For_HH",
+      "asmxLine": 1946,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_estado",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Single_By_IdEstado",
+      "asmxLine": 1989,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_estado",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_estado"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Presentaciones_By_IdProducto",
+      "asmxLine": 2032,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_presentacion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_presentacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Presentaciones_By_IdProductoBodega",
+      "asmxLine": 2075,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_presentacion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_presentacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+      "asmxLine": 2118,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Detalle_Rec_By_IdRecepcionEnc",
+      "asmxLine": 2161,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "MaxIDStockRec",
+      "asmxLine": 2205,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "MaxIDStockSeRec",
+      "asmxLine": 2247,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnStock_se_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_se_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "MaxIDInventarioCiclico",
+      "asmxLine": 2289,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_inv_ciclico",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_ciclico"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_ProductoParametros_By_IdProducto_HH",
+      "asmxLine": 2332,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_parametros",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_parametros"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+      "asmxLine": 2375,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_re_det_parametros",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det_parametros"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeProducto_By_Codigo_For_HH_JSON",
+      "asmxLine": 2420,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_List_Product_By_CodigoBarra_By_Picking",
+      "asmxLine": 2471,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeProducto_By_Codigo_Or_Licencia",
+      "asmxLine": 2516,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_List_Product_By_CodigoBarra_By_OrdenCompraEnc",
+      "asmxLine": 2559,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeProducto_By_LP_For_HH",
+      "asmxLine": 2606,
+      "bodyLines": 54,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Iniciar_Recepcion_OC",
+      "asmxLine": 2663,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "views": [
+        "vw_ordencompra"
+      ]
+    },
+    {
+      "name": "Guardar_Recepcion",
+      "asmxLine": 2707,
+      "bodyLines": 72,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "GuardarRecepcionModif",
+      "asmxLine": 2782,
+      "bodyLines": 63,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Recepcion_Sin_Presentacion",
+      "asmxLine": 2849,
+      "bodyLines": 66,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_By_IdRecepcionDet_HH",
+      "asmxLine": 2918,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+      "asmxLine": 2964,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_By_IDPickingEnc",
+      "asmxLine": 3011,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_PickingUbic_By_IdPickingEnc",
+      "asmxLine": 3103,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "asmxLine": 3160,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "asmxLine": 3215,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "asmxLine": 3265,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "asmxLine": 3309,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Stock_Rec_By_IdRecepcionEnc",
+      "asmxLine": 3353,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_By_Barra_Proveedor_Cliente",
+      "asmxLine": 3397,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_By_IdRecepcionEnc",
+      "asmxLine": 3442,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "asmxLine": 3486,
+      "bodyLines": 52,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "MaxIdRecEnc",
+      "asmxLine": 3541,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Banderas_Recepcion",
+      "asmxLine": 3584,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Codigos_Barra_By_IdProducto",
+      "asmxLine": 3626,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Single_BodegaMuelle",
+      "asmxLine": 3669,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnBodega_muelles",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega_muelles"
+      ],
+      "views": []
+    },
+    {
+      "name": "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+      "asmxLine": 3710,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_OC_By_IdOrdeCompraDet",
+      "asmxLine": 3751,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_OC_By_IdOrdenCompraEnc_HH",
+      "asmxLine": 3797,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Es_ValidoMuelle_By_CodigoBarra",
+      "asmxLine": 3842,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnBodega_muelles",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega_muelles"
+      ],
+      "views": []
+    },
+    {
+      "name": "Es_ValidaUbicacion_By_IdUbicacion",
+      "asmxLine": 3885,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+      "asmxLine": 3930,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reemplazo_Producto_En_Picking",
+      "asmxLine": 3980,
+      "bodyLines": 73,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Sustituir_Producto_NE_Picking",
+      "asmxLine": 4057,
+      "bodyLines": 68,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "SustituirProductoNEPicking_Test",
+      "asmxLine": 4129,
+      "bodyLines": 70,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Marcar_No_Encontrado",
+      "asmxLine": 4341,
+      "bodyLines": 63,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reservar_Stock_By_IdStock",
+      "asmxLine": 4407,
+      "bodyLines": 68,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reservar_Stock_By_Stock",
+      "asmxLine": 4479,
+      "bodyLines": 73,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reemplazar_ListaPu_By_Stock",
+      "asmxLine": 4555,
+      "bodyLines": 90,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reemplazar_ListPickingUbic_Verificacion",
+      "asmxLine": 4649,
+      "bodyLines": 88,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reemplazo_Automatico",
+      "asmxLine": 4741,
+      "bodyLines": 82,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Valida_Licencia_By_ProductoBodega",
+      "asmxLine": 4827,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Reservar_Y_Reemplazar_Stock_By_IdStock",
+      "asmxLine": 4870,
+      "bodyLines": 93,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Estado_Recepcion",
+      "asmxLine": 4966,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guarda_Firma_Recepcion",
+      "asmxLine": 5008,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Fotos_Recepcion",
+      "asmxLine": 5050,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_re_img",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_img"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Producto_Imagen",
+      "asmxLine": 5092,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnProducto_imagen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_imagen"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Fotos_Verificacion",
+      "asmxLine": 5134,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_Picking_Img",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_All_Producto_Imagen",
+      "asmxLine": 5180,
+      "bodyLines": 37,
+      "invokes": [
+        "clsLnProducto_imagen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_imagen"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Imagen_Recepcion",
+      "asmxLine": 5220,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_re_img",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_img"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Imagen_Verificacion",
+      "asmxLine": 5262,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_Picking_Img",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_All_Reemplazo_By_IdPedidoDet",
+      "asmxLine": 5306,
+      "bodyLines": 52,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "asmxLine": 5361,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdUbicMerma_By_IdBodega",
+      "asmxLine": 5406,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdUbicacion_Picking_By_IdBodega",
+      "asmxLine": 5449,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+      "asmxLine": 5495,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnTrans_ubic_hh_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "trans_ubic_hh_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_By_IdTransUbicEnc_And_IdOperador",
+      "asmxLine": 5543,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+      "asmxLine": 5587,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Trans_Ubic_HH_Det",
+      "asmxLine": 5634,
+      "bodyLines": 66,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Aplicar_Cambio_Estado_HH",
+      "asmxLine": 5703,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Aplica_Cambio_Estado_Ubic_HH",
+      "asmxLine": 5746,
+      "bodyLines": 66,
+      "invokes": [
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_reab",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+      "asmxLine": 5815,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Set_Nuevo_Pallet_Id",
+      "asmxLine": 5864,
+      "bodyLines": 75,
+      "invokes": [
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_reab",
+        "clsLnStock"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Set_LP_Stock",
+      "asmxLine": 5942,
+      "bodyLines": 54,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Set_LP_Stock_Mixto",
+      "asmxLine": 6000,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Estado_Cambio",
+      "asmxLine": 6043,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_ubic_hh_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_ubic_hh_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdUbic_Ciega_Recepcion_By_IdBodega",
+      "asmxLine": 6090,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+      "asmxLine": 6135,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdUbicacion_Recepcion_By_IdBodega",
+      "asmxLine": 6181,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Productos_By_IdUbicacion",
+      "asmxLine": 6225,
+      "bodyLines": 34,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Productos_By_IdUbicacion_Existencias_JSON",
+      "asmxLine": 6262,
+      "bodyLines": 70,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Productos_By_IdUbicacion_Existencias",
+      "asmxLine": 6336,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Productos_By_StockResCI",
+      "asmxLine": 6385,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+      "asmxLine": 6429,
+      "bodyLines": 79,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Productos_By_IdUbicacion_And_LicPlate",
+      "asmxLine": 6510,
+      "bodyLines": 57,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Stock_Por_Producto_Ubicacion",
+      "asmxLine": 6569,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Stock_Por_Producto_Ubicacion_CI",
+      "asmxLine": 6616,
+      "bodyLines": 50,
+      "invokes": [
+        "clsLnStock_CI",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_presentacion",
+        "producto_codigos_barra"
+      ],
+      "views": [
+        "vw_stock_res",
+        "vw_stock_por_producto_ubicacion_ci"
+      ]
+    },
+    {
+      "name": "Get_Stock_Por_Pallet",
+      "asmxLine": 6669,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Stock_Por_Pallet_CI",
+      "asmxLine": 6713,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock_CI",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_presentacion",
+        "producto_codigos_barra"
+      ],
+      "views": [
+        "vw_stock_res",
+        "vw_stock_por_producto_ubicacion_ci"
+      ]
+    },
+    {
+      "name": "Get_Stock_Por_Pallet_By_IdUbicacion_CI",
+      "asmxLine": 6757,
+      "bodyLines": 48,
+      "invokes": [
+        "clsLnStock_CI",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_presentacion",
+        "producto_codigos_barra"
+      ],
+      "views": [
+        "vw_stock_res",
+        "vw_stock_por_producto_ubicacion_ci"
+      ]
+    },
+    {
+      "name": "Get_All_Stock_Especifico_HH",
+      "asmxLine": 6808,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_All_Stock_Especifico_By_IdPedidoDet",
+      "asmxLine": 6855,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_All_Stock_Res_By_IdPedidoDet",
+      "asmxLine": 6906,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "loginHandHeld",
+      "asmxLine": 6951,
+      "bodyLines": 30,
+      "invokes": [
+        "clsLnLicencia_item",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "licencia_item"
+      ],
+      "views": []
+    },
+    {
+      "name": "cancelaConexion",
+      "asmxLine": 6984,
+      "bodyLines": 8,
+      "invokes": [
+        "clsLnLicencia_item",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "licencia_item"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Inventario_By_IdBodega_And_IdOperador",
+      "asmxLine": 6996,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnTrans_inv_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Inventario_Tramos_By_IdTarea",
+      "asmxLine": 7037,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_inv_tramo",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_tramo"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialVerAgrega",
+      "asmxLine": 7080,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnTrans_inv_resumen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "asmxLine": 7130,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnTrans_inv_resumen_grid",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen",
+        "producto_estado",
+        "unidad_medida",
+        "producto_presentacion",
+        "producto_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "asmxLine": 7171,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnTrans_inv_detalle_grid",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle",
+        "producto_estado",
+        "unidad_medida",
+        "bodega_ubicacion",
+        "producto_presentacion",
+        "trans_inv_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialVerGet",
+      "asmxLine": 7220,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_inv_resumen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialDetGet",
+      "asmxLine": 7265,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialVerActualizar",
+      "asmxLine": 7309,
+      "bodyLines": 36,
+      "invokes": [
+        "clsLnTrans_inv_resumen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialDetActualizar",
+      "asmxLine": 7348,
+      "bodyLines": 48,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialVerEliminar",
+      "asmxLine": 7399,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_inv_resumen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialDetEliminar",
+      "asmxLine": 7441,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeProducto_By_IdProducto",
+      "asmxLine": 7483,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+      "asmxLine": 7530,
+      "bodyLines": 84,
+      "invokes": [
+        "clsLnTrans_inv_tramo",
+        "clsLnLog_error_wms",
+        "clsLnTrans_inv_enc"
+      ],
+      "tables": [
+        "trans_inv_tramo",
+        "trans_inv_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo",
+      "asmxLine": 7617,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnTrans_inv_tramo",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_tramo"
+      ],
+      "views": []
+    },
+    {
+      "name": "UbicacionVecina",
+      "asmxLine": 7665,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Agregar_Inventario_Inicial",
+      "asmxLine": 7716,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioInicialAgregaMulti",
+      "asmxLine": 7762,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inventario_Inicial_Acepta_Mal_Estado_By_IdUbicacion",
+      "asmxLine": 7809,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnProducto_estado_ubic",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_estado_ubic"
+      ],
+      "views": []
+    },
+    {
+      "name": "testWS",
+      "asmxLine": 7853,
+      "bodyLines": 7,
+      "invokes": [],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "nombreServidorLicencias",
+      "asmxLine": 7863,
+      "bodyLines": 22,
+      "invokes": [
+        "clsLnLicencia_item",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "licencia_item"
+      ],
+      "views": []
+    },
+    {
+      "name": "validaUbicacionPalet",
+      "asmxLine": 7888,
+      "bodyLines": 49,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_presentacion",
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion",
+        "producto_presentacion",
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "validaUbicacionPaletOld",
+      "asmxLine": 7940,
+      "bodyLines": 31,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_presentacion",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion",
+        "producto_presentacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inventario_Ciclico_ReConteos",
+      "asmxLine": 7975,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnTrans_inv_enc_reconteo",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_enc_reconteo"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioCiclicoListaConteo",
+      "asmxLine": 8016,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnTrans_inv_ciclico_vw",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Inventario_Ciclico_Listar_Conteo",
+      "asmxLine": 8057,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_inv_ciclico_vw",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_Conteo_Inv_Ciclico",
+      "asmxLine": 8101,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_inv_ciclico",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_ciclico"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Stock_Congelado",
+      "asmxLine": 8144,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnTrans_inv_stock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "InventarioCiclicoPaletConteo",
+      "asmxLine": 8186,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_inv_ciclico_vw",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_IdProductoBodega_By_IdProducto_And_IdBodega",
+      "asmxLine": 8229,
+      "bodyLines": 38,
+      "invokes": [
+        "clsLnProducto_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inventario_Ciclico_Actualiza_Conteo",
+      "asmxLine": 8270,
+      "bodyLines": 13,
+      "invokes": [
+        "clsLnTrans_inv_ciclico"
+      ],
+      "tables": [
+        "trans_inv_ciclico"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inventario_Ciclico_Act_Conteo_Andr",
+      "asmxLine": 8326,
+      "bodyLines": 50,
+      "invokes": [
+        "clsLnTrans_inv_ciclico",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_ciclico"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inventario_Ciclico_Actualiza_Reconteo",
+      "asmxLine": 8378,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_inv_ciclico",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_ciclico"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inventario_Agregar_Conteo",
+      "asmxLine": 8422,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTrans_inv_ciclico",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_ciclico"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Nuevo_Correlativo_LicensePlate",
+      "asmxLine": 8465,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Nuevo_Correlativo_LicensePlate_S",
+      "asmxLine": 8513,
+      "bodyLines": 48,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "GetSingleProductoTarima",
+      "asmxLine": 8564,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_presentacion_tarima",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_presentacion_tarima"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Licenses_Plates_By_IdRecepcionEnc",
+      "asmxLine": 8607,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnLicensePlates",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "stock_rec",
+        "producto_presentacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "asmxLine": 8651,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Finalizar_Recepcion",
+      "asmxLine": 8699,
+      "bodyLines": 86,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc",
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "views": [
+        "vw_ordencompra"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_Parcial",
+      "asmxLine": 8788,
+      "bodyLines": 51,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+      "asmxLine": 8842,
+      "bodyLines": 57,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Picking_By_IdPickingEnc",
+      "asmxLine": 8902,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+      "asmxLine": 8949,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTipo_etiqueta",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tipo_etiqueta",
+        "producto_clasificacion_etiqueta"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Single_StockRes",
+      "asmxLine": 8993,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Single_Trans_Picking_Ubic",
+      "asmxLine": 9040,
+      "bodyLines": 49,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Picking",
+      "asmxLine": 9094,
+      "bodyLines": 56,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Picking_Cm",
+      "asmxLine": 9153,
+      "bodyLines": 85,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "stock_res",
+        "trans_picking_ubic",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "asmxLine": 9242,
+      "bodyLines": 66,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_PickingUbic_Por_Verificacion",
+      "asmxLine": 9311,
+      "bodyLines": 57,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "ObtenerPickingDet",
+      "asmxLine": 9371,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnTrans_picking_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_PickingEnc_Procesado",
+      "asmxLine": 9421,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Actualizar_PickingEnc_Procesado_Andr",
+      "asmxLine": 9468,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Actualizar_PickingEnc_Verificado",
+      "asmxLine": 9517,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Tiene_Pedidos_Sin_Verificar_By_IdPickingEnc",
+      "asmxLine": 9564,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "GetSingleTareaHH",
+      "asmxLine": 9609,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Pedidos_A_Verificar_By_IdBodega",
+      "asmxLine": 9652,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_pe_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Pedido_A_Verificar_By_LP",
+      "asmxLine": 9697,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "trans_pe_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_By_IdPedidoEnc",
+      "asmxLine": 9742,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_pe_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_Verificacion_Consolidada",
+      "asmxLine": 9786,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_pe_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_Verificacion_Consolidada_LFV",
+      "asmxLine": 9831,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnTrans_pe_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_pe_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Reemplazo_Producto_By_IdPedidoEnc",
+      "asmxLine": 9882,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "trans_pe_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Single_By_IdPedidoEnc",
+      "asmxLine": 9927,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "trans_pe_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Estado_Pedido",
+      "asmxLine": 9972,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "trans_pe_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Set_Estado_Pedido_Verificado",
+      "asmxLine": 10017,
+      "bodyLines": 57,
+      "invokes": [
+        "clsLnTrans_pe_enc",
+        "clsLnLog_verificacion_bof",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_pe_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Estado_Picking",
+      "asmxLine": 10077,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Get_All_Barras_Pallet_By_IdRecepcionEnc",
+      "asmxLine": 10125,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnProducto_pallet",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "producto_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Inventario_Teorico_By_Codigo",
+      "asmxLine": 10169,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_inv_stock_prod",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_stock_prod"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Barra_Pallet_I_Nav",
+      "asmxLine": 10213,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnI_nav_barras_pallet",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "i_nav_barras_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Pallet_Ingreso_By_Barra",
+      "asmxLine": 10256,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnI_nav_barras_pallet",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "i_nav_barras_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Pallet_Ingreso_By_Barra",
+      "asmxLine": 10303,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnI_nav_barras_pallet",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "i_nav_barras_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Configuracion_Barra_Pallet_By_IdConfiguracion",
+      "asmxLine": 10350,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnConfiguracion_barra_pallet",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "configuracion_barra_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Producto",
+      "asmxLine": 10393,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Producto_Nuevo_Inventario",
+      "asmxLine": 10437,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnTrans_inv_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Datos_Maestros_Inv",
+      "asmxLine": 10486,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Datos_Maestros_Inv_Fam",
+      "asmxLine": 10533,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Datos_Maestros_Inv_Clas",
+      "asmxLine": 10576,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Datos_Maestros_Inv_Marc",
+      "asmxLine": 10619,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Datos_Maestros_Inv_Tip",
+      "asmxLine": 10662,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Datos_Maestros_Inv_UmBas",
+      "asmxLine": 10705,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Stock_By_Lic_Plate_JSON",
+      "asmxLine": 10749,
+      "bodyLines": 81,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Stock_By_Lic_Plate",
+      "asmxLine": 10832,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Stock_By_Lic_Plate_And_Codigo",
+      "asmxLine": 10925,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_All_Productos_By_ImpresionBarras",
+      "asmxLine": 10972,
+      "bodyLines": 50,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Propietarios_By_IdEmpresa",
+      "asmxLine": 11025,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnPropietarios",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "propietarios"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Clasificacion_By_IdPropietario",
+      "asmxLine": 11068,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_clasificacion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_clasificacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_UMB_Pres_Stock_ByIdProducto_And_IdUMBas_AndIdBodega",
+      "asmxLine": 11111,
+      "bodyLines": 50,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Insertar_ImpresionProductosBarra",
+      "asmxLine": 11164,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnImpresion_productos_barras",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "impresion_productos_barras"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+      "asmxLine": 11207,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnI_nav_config_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "i_nav_config_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Recepcion_Genera_Historico",
+      "asmxLine": 11257,
+      "bodyLines": 48,
+      "invokes": [
+        "clsLnI_nav_config_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "i_nav_config_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Codigo_Bodega_By_IdBodega",
+      "asmxLine": 11308,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdEstadoProductoNE_By_IdBodega",
+      "asmxLine": 11351,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnBodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "bodega",
+        "bodega_area",
+        "trans_picking_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeImpresora_By_IdImpresora",
+      "asmxLine": 11394,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnImpresora",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "impresora"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Permite_Imprimir",
+      "asmxLine": 11437,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnImpresora",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "impresora"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Paises",
+      "asmxLine": 11480,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnPaises",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "paises"
+      ],
+      "views": []
+    },
+    {
+      "name": "Android_Get_All_Empresas",
+      "asmxLine": 11525,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnEmpresa",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "empresa"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_cantidad_decimales_calculo",
+      "asmxLine": 11595,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnEmpresa",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "empresa"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Cantidad_decimales_despliegue",
+      "asmxLine": 11638,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnEmpresa",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "empresa"
+      ],
+      "views": []
+    },
+    {
+      "name": "Agregar_Marcaje",
+      "asmxLine": 11681,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnMarcaje",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "marcaje",
+        "operador_bodega"
+      ],
+      "views": []
+    },
+    {
+      "name": "ml_get_ubicacion_sugerida_JSON",
+      "asmxLine": 11727,
+      "bodyLines": 88,
+      "invokes": [
+        "clsLnTransUbicSugerida2",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [],
+      "views": [
+        "vw_stock_res",
+        "vw_ocupacionbodegatramo",
+        "vw_ubicaciones_tramo_disponibles"
+      ]
+    },
+    {
+      "name": "ml_get_ubicacion_sugerida",
+      "asmxLine": 11818,
+      "bodyLines": 59,
+      "invokes": [
+        "clsLnTransUbicSugerida2",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [],
+      "views": [
+        "vw_stock_res",
+        "vw_ocupacionbodegatramo",
+        "vw_ubicaciones_tramo_disponibles"
+      ]
+    },
+    {
+      "name": "Actualiza_Cant_Peso_Verificacion",
+      "asmxLine": 11882,
+      "bodyLines": 57,
+      "invokes": [
+        "clsLnTrans_picking_ubic"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reemplaza_Producto_Dannado_Menor",
+      "asmxLine": 11943,
+      "bodyLines": 69,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "asmxLine": 12016,
+      "bodyLines": 66,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Marcar_Danado",
+      "asmxLine": 12086,
+      "bodyLines": 59,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Familia_Inv",
+      "asmxLine": 12149,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Clasificacion_Inv",
+      "asmxLine": 12191,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Marca_Inv",
+      "asmxLine": 12233,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Tipo_Inv",
+      "asmxLine": 12276,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_UMbas_Inv",
+      "asmxLine": 12319,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Lp",
+      "asmxLine": 12362,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec",
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Lp_In_Stock",
+      "asmxLine": 12412,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec",
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+      "asmxLine": 12456,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec",
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Existe_Lp_By_Licencia_And_IdBodega",
+      "asmxLine": 12500,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "stock_rec",
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Ubicacion_LP",
+      "asmxLine": 12547,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Serie",
+      "asmxLine": 12595,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnStock_rec",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_rec"
+      ],
+      "views": []
+    },
+    {
+      "name": "Es_Pallet_No_Estandar_JSON",
+      "asmxLine": 12640,
+      "bodyLines": 27,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Es_Pallet_No_Estandar",
+      "asmxLine": 12670,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Tiene_Posiciones",
+      "asmxLine": 12712,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Count_Recepciones_For_HH_By_IdBodega",
+      "asmxLine": 12755,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Count_Picking_For_HH_By_IdBodega",
+      "asmxLine": 12800,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Count_Verificaciones_For_HH_By_IdBodega",
+      "asmxLine": 12843,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Count_Cambio_Est_Ubic_For_HH",
+      "asmxLine": 12887,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Count_Tareas_Servicio",
+      "asmxLine": 12931,
+      "bodyLines": 16,
+      "invokes": [
+        "clsLnTarea_hh"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Ubicacion_Es_Valida_JSON",
+      "asmxLine": 12952,
+      "bodyLines": 66,
+      "invokes": [
+        "clsLnTrans_ubicsug",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Ubicacion_Es_Valida",
+      "asmxLine": 13020,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_ubicsug",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Push_Recepcion_To_NAV_For_BYB",
+      "asmxLine": 13070,
+      "bodyLines": 173,
+      "invokes": [
+        "clsLnI_nav_transacciones_push"
+      ],
+      "tables": [
+        "i_nav_transacciones_push"
+      ],
+      "views": []
+    },
+    {
+      "name": "Push_Recepcion_Produccion_To_NAV_For_BYB",
+      "asmxLine": 13246,
+      "bodyLines": 143,
+      "invokes": [
+        "clsLnI_nav_transacciones_push",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "i_nav_transacciones_push"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Transaccion_Error",
+      "asmxLine": 13392,
+      "bodyLines": 53,
+      "invokes": [
+        "clsLnI_nav_transacciones_push",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "i_nav_transacciones_push"
+      ],
+      "views": []
+    },
+    {
+      "name": "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+      "asmxLine": 13448,
+      "bodyLines": 224,
+      "invokes": [
+        "clsLnI_nav_transacciones_push",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "i_nav_transacciones_push"
+      ],
+      "views": []
+    },
+    {
+      "name": "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+      "asmxLine": 13675,
+      "bodyLines": 194,
+      "invokes": [
+        "clsLnI_nav_transacciones_push",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "i_nav_transacciones_push"
+      ],
+      "views": []
+    },
+    {
+      "name": "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+      "asmxLine": 13872,
+      "bodyLines": 236,
+      "invokes": [
+        "clsLnI_nav_transacciones_push",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "i_nav_transacciones_push"
+      ],
+      "views": []
+    },
+    {
+      "name": "Registrar_Pedido_Compra_To_NAV_For_BYB",
+      "asmxLine": 14111,
+      "bodyLines": 133,
+      "invokes": [
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "views": [
+        "vw_ordencompra"
+      ]
+    },
+    {
+      "name": "Borrar_Picking",
+      "asmxLine": 14247,
+      "bodyLines": 59,
+      "invokes": [],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Android_Get_All_Versiones",
+      "asmxLine": 14309,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnVersion_wms_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "version_wms_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+      "asmxLine": 14354,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnResolucion_lp_operador",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "resolucion_lp_operador"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Picking_Para_Empaque_By_IdBodega",
+      "asmxLine": 14403,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_PickingUbic_By_PickingEnc",
+      "asmxLine": 14448,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_PickingUbic_By_PickingEnc_Group",
+      "asmxLine": 14493,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Inserta_Packing",
+      "asmxLine": 14538,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_packing_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_packing_enc"
+      ],
+      "views": [
+        "vw_packingdespachado"
+      ]
+    },
+    {
+      "name": "Actualizar_Estado_Packing",
+      "asmxLine": 14585,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Eliminar_Linea_Packing",
+      "asmxLine": 14630,
+      "bodyLines": 55,
+      "invokes": [
+        "clsLnTrans_packing_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_packing_enc"
+      ],
+      "views": [
+        "vw_packingdespachado"
+      ]
+    },
+    {
+      "name": "Get_All_Packing_By_IdPicking",
+      "asmxLine": 14688,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_packing_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_packing_enc"
+      ],
+      "views": [
+        "vw_packingdespachado"
+      ]
+    },
+    {
+      "name": "Set_Estado_Pendiente_Packing",
+      "asmxLine": 14733,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Get_Disponibilidad_Ubicacion_Destino",
+      "asmxLine": 14779,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnVW_stock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto",
+        "propietario_bodega",
+        "propietarios",
+        "producto_estado",
+        "bodega_ubicacion",
+        "unidad_medida",
+        "producto_presentacion",
+        "producto_talla_color",
+        "talla",
+        "color"
+      ],
+      "views": [
+        "vw_stock_res",
+        "vw_stock_res_pedido"
+      ]
+    },
+    {
+      "name": "Get_Ubicacion_Recepcion_By_Codigo_Barra_And_IdBodega",
+      "asmxLine": 14832,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "bodega_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_IdOrdenCompraEnc_By_Licencia",
+      "asmxLine": 14881,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_oc_det_lote",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_oc_det_lote"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+      "asmxLine": 14934,
+      "bodyLines": 49,
+      "invokes": [
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Existencia_NAV",
+      "asmxLine": 14986,
+      "bodyLines": 48,
+      "invokes": [
+        "clsLnLog_error_wms"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+      "asmxLine": 15037,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_inv_stock_prod",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_stock_prod"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Presentaciones_By_IdProducto_IdBodega",
+      "asmxLine": 15083,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_presentacion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_presentacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Codigos_By_IdInventario_And_IdBodega",
+      "asmxLine": 15126,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_inv_stock_prod",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_stock_prod"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_CantidadInvConteo_By_Producto",
+      "asmxLine": 15172,
+      "bodyLines": 44,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_CantidadInvVer_By_Producto",
+      "asmxLine": 15220,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_inv_resumen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_InventarioItem_By_Licencia",
+      "asmxLine": 15266,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_inv_stock_prod",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_stock_prod"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_Reservas_By_IdStock",
+      "asmxLine": 15310,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+      "asmxLine": 15360,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Ubicaciones_Reservadas_Pallet_Mixto",
+      "asmxLine": 15412,
+      "bodyLines": 54,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+      "asmxLine": 15470,
+      "bodyLines": 47,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Conteo",
+      "asmxLine": 15520,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "Existe_Verificacion",
+      "asmxLine": 15564,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_inv_resumen",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_resumen"
+      ],
+      "views": []
+    },
+    {
+      "name": "Valida_Unico_Producto",
+      "asmxLine": 15610,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_inv_detalle"
+      ],
+      "views": []
+    },
+    {
+      "name": "Crear_Linea_Unidades",
+      "asmxLine": 15657,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_oc_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Actualizar_Estado_Picking_Andr",
+      "asmxLine": 15705,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Get_Codigo_By_CodigoBarra",
+      "asmxLine": 15750,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Codigo_By_CodigoBarra_By_Picking",
+      "asmxLine": 15792,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Lista_Codigos_By_CodigoBarra_By_Picking",
+      "asmxLine": 15838,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Exist_Codigo_By_CodigoBarra",
+      "asmxLine": 15885,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "asmxLine": 15931,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnVW_stock_res",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto",
+        "propietario_bodega",
+        "propietarios",
+        "producto_estado",
+        "bodega_ubicacion",
+        "unidad_medida",
+        "producto_presentacion",
+        "producto_talla_color",
+        "talla",
+        "color"
+      ],
+      "views": [
+        "vw_stock_res",
+        "vw_stock_res_pedido"
+      ]
+    },
+    {
+      "name": "Get_All_Products_For_Reabastecimiento",
+      "asmxLine": 15981,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Guardar_Recepcion_S",
+      "asmxLine": 16027,
+      "bodyLines": 75,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_OC_By_IdOrdenCompraEnc_HH2",
+      "asmxLine": 16105,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH",
+      "asmxLine": 16151,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_oc_det_lote",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc"
+      ],
+      "tables": [
+        "trans_oc_det_lote"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Stock_By_Lic_Plate_And_Codigo2",
+      "asmxLine": 16196,
+      "bodyLines": 46,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_S",
+      "asmxLine": 16289,
+      "bodyLines": 96,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnTrans_oc_enc",
+        "clsLnI_nav_config_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc",
+        "trans_oc_enc",
+        "trans_despacho_det",
+        "i_nav_config_enc"
+      ],
+      "views": [
+        "vw_ordencompra"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_Parcial_Pallet_Proveedor_S",
+      "asmxLine": 16500,
+      "bodyLines": 55,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet",
+      "asmxLine": 16564,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_picking_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+      "asmxLine": 16609,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock_res"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Vencimiento_By_IdBodega_And_Lote",
+      "asmxLine": 16946,
+      "bodyLines": 39,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Value_From_Script",
+      "asmxLine": 17551,
+      "bodyLines": 43,
+      "invokes": [
+        "clsLnLog_error_wms"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Get_LicenciasPacking_Cerrado",
+      "asmxLine": 17597,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_packing_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ],
+      "tables": [
+        "trans_packing_enc"
+      ],
+      "views": [
+        "vw_packingdespachado"
+      ]
+    },
+    {
+      "name": "Get_Verificacion_By_Producto_And_Pedido",
+      "asmxLine": 17642,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnTrans_pe_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe"
+      ],
+      "tables": [
+        "trans_pe_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido",
+      "asmxLine": 17834,
+      "bodyLines": 51,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms",
+        "clsLnLog_verificacion_bof"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_CantidadPedidos_Picking",
+      "asmxLine": 17947,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ],
+      "tables": [
+        "trans_picking_enc"
+      ],
+      "views": [
+        "vw_pedido"
+      ]
+    },
+    {
+      "name": "Get_Presentacion_Defecto_By_Producto",
+      "asmxLine": 17991,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnProducto_presentacion",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_presentacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_All_By_IdUbicacion_And_LicPlate",
+      "asmxLine": 18034,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Get_Producto_Talla_Color_JSON",
+      "asmxLine": 18131,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnProducto_talla_color",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto_talla_color",
+        "talla",
+        "color",
+        "trans_oc_det",
+        "producto_bodega",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+      "asmxLine": 18272,
+      "bodyLines": 51,
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Recepcion_Caja_Master",
+      "asmxLine": 18374,
+      "bodyLines": 60,
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_re_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Picking_Para_Emapaque_Consolidado",
+      "asmxLine": 18438,
+      "bodyLines": 53,
+      "invokes": [
+        "clsLnTarea_hh",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tarea_hh"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+      "asmxLine": 18539,
+      "bodyLines": 42,
+      "invokes": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "bodega_ubicacion"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeProducto_By_Codigo_For_HH",
+      "asmxLine": 18584,
+      "bodyLines": 41,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_TipoEtiqueta_By_Id",
+      "asmxLine": 18628,
+      "bodyLines": 37,
+      "invokes": [
+        "clsLnTipo_etiqueta",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "tipo_etiqueta",
+        "producto_clasificacion_etiqueta"
+      ],
+      "views": []
+    },
+    {
+      "name": "Operador_Tiene_Permiso",
+      "asmxLine": 18669,
+      "bodyLines": 45,
+      "invokes": [
+        "clsLnOperador",
+        "clsLnOperador_bodega",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "operador",
+        "operador_bodega",
+        "menu_rol_op",
+        "menu_sistema_op"
+      ],
+      "views": []
+    },
+    {
+      "name": "Obtener_Etiqueta_Verificacion_WS",
+      "asmxLine": 18718,
+      "bodyLines": 18,
+      "invokes": [
+        "clsLnTrans_verificacion_etiqueta",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [],
+      "views": []
+    },
+    {
+      "name": "Actualiza_Picking_Consolidado",
+      "asmxLine": 18741,
+      "bodyLines": 53,
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+      "asmxLine": 18798,
+      "bodyLines": 28,
+      "invokes": [
+        "clsLnProducto",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "producto"
+      ],
+      "views": []
+    },
+    {
+      "name": "Guardar_Encabezado_RFID",
+      "asmxLine": 18875,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnI_nav_barras_rfid_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "proveedor",
+        "cliente",
+        "bodega",
+        "operador",
+        "i_nav_barras_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Agregar_Detalle_A_Encabezado_RFID",
+      "asmxLine": 18919,
+      "bodyLines": 34,
+      "invokes": [
+        "clsLnI_nav_barras_rfid_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "proveedor",
+        "cliente",
+        "bodega",
+        "operador",
+        "i_nav_barras_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Cargar_Stock_RFID_Paginado",
+      "asmxLine": 18957,
+      "bodyLines": 40,
+      "invokes": [
+        "clsLnI_nav_barras_rfid_enc",
+        "clsLnLog_error_wms"
+      ],
+      "tables": [
+        "proveedor",
+        "cliente",
+        "bodega",
+        "operador",
+        "i_nav_barras_pallet"
+      ],
+      "views": []
+    },
+    {
+      "name": "Get_Productos_By_IdUbicacion_JSON",
+      "asmxLine": 19040,
+      "bodyLines": 69,
+      "invokes": [
+        "clsLnStock",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "views": [
+        "vw_stock_res"
+      ]
+    },
+    {
+      "name": "Validar_Mismo_Producto_Posicion_JSON",
+      "asmxLine": 19112,
+      "bodyLines": 85,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Validar_Regla_Ubicacion_JSON",
+      "asmxLine": 19200,
+      "bodyLines": 81,
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms_ubic"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack",
+      "asmxLine": 19285,
+      "bodyLines": 54,
+      "invokes": [
+        "clsLnLog_error_wms_reab",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    },
+    {
+      "name": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack",
+      "asmxLine": 19417,
+      "bodyLines": 74,
+      "invokes": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tables": [
+        "trans_ubic_hh_det"
+      ],
+      "views": []
+    }
+  ],
+  "tableCallers": {
+    "empresa": [
+      "Get_Empresa_By_Codigo_And_Clave",
+      "Get_List_Empresas_For_HH",
+      "Get_All_Empresas_For_HH",
+      "Android_Get_All_Empresas",
+      "Get_cantidad_decimales_calculo",
+      "Get_Cantidad_decimales_despliegue"
+    ],
+    "bodega": [
+      "Get_Bodegas_By_IdEmpresa_For_HH",
+      "Android_Get_Bodegas_By_IdEmpresa",
+      "Get_IdUbicMerma_By_IdBodega",
+      "Get_IdUbicacion_Picking_By_IdBodega",
+      "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+      "Get_IdUbicacion_Recepcion_By_IdBodega",
+      "Get_Codigo_Bodega_By_IdBodega",
+      "Get_IdEstadoProductoNE_By_IdBodega",
+      "Guardar_Encabezado_RFID",
+      "Agregar_Detalle_A_Encabezado_RFID",
+      "Cargar_Stock_RFID_Paginado"
+    ],
+    "bodega_area": [
+      "Get_Bodegas_By_IdEmpresa_For_HH",
+      "Android_Get_Bodegas_By_IdEmpresa",
+      "Get_IdUbicMerma_By_IdBodega",
+      "Get_IdUbicacion_Picking_By_IdBodega",
+      "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+      "Get_IdUbicacion_Recepcion_By_IdBodega",
+      "Get_Codigo_Bodega_By_IdBodega",
+      "Get_IdEstadoProductoNE_By_IdBodega"
+    ],
+    "trans_picking_enc": [
+      "Get_Bodegas_By_IdEmpresa_For_HH",
+      "Android_Get_Bodegas_By_IdEmpresa",
+      "Get_IdUbicMerma_By_IdBodega",
+      "Get_IdUbicacion_Picking_By_IdBodega",
+      "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+      "Get_IdUbicacion_Recepcion_By_IdBodega",
+      "Get_Picking_By_IdPickingEnc",
+      "Actualizar_PickingEnc_Procesado",
+      "Actualizar_PickingEnc_Procesado_Andr",
+      "Actualizar_PickingEnc_Verificado",
+      "Tiene_Pedidos_Sin_Verificar_By_IdPickingEnc",
+      "Actualizar_Estado_Picking",
+      "Get_Codigo_Bodega_By_IdBodega",
+      "Get_IdEstadoProductoNE_By_IdBodega",
+      "Actualizar_Estado_Packing",
+      "Set_Estado_Pendiente_Packing",
+      "Actualizar_Estado_Picking_Andr",
+      "Get_CantidadPedidos_Picking"
+    ],
+    "producto_bodega": [
+      "Get_Productos_By_IdBodega_For_HH",
+      "Get_Producto_By_IdProductoBodega",
+      "Get_All_PickingUbic_By_IdPickingEnc",
+      "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "Reemplazo_Producto_En_Picking",
+      "Sustituir_Producto_NE_Picking",
+      "SustituirProductoNEPicking_Test",
+      "Marcar_No_Encontrado",
+      "Valida_Licencia_By_ProductoBodega",
+      "Set_Nuevo_Pallet_Id",
+      "Get_IdUbic_Ciega_Recepcion_By_IdBodega",
+      "Get_Productos_By_IdUbicacion",
+      "Get_Productos_By_IdUbicacion_Existencias_JSON",
+      "Get_Productos_By_IdUbicacion_Existencias",
+      "Get_Productos_By_StockResCI",
+      "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+      "Get_Productos_By_IdUbicacion_And_LicPlate",
+      "Get_Stock_Por_Producto_Ubicacion",
+      "Get_Stock_Por_Pallet",
+      "Get_All_Stock_Especifico_HH",
+      "Get_All_Stock_Especifico_By_IdPedidoDet",
+      "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "Get_IdProductoBodega_By_IdProducto_And_IdBodega",
+      "Get_Single_Trans_Picking_Ubic",
+      "Actualizar_Picking",
+      "Guardar_Picking_Cm",
+      "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "Actualizar_PickingUbic_Por_Verificacion",
+      "Get_Stock_By_Lic_Plate_JSON",
+      "Get_Stock_By_Lic_Plate",
+      "Get_Stock_By_Lic_Plate_And_Codigo",
+      "Actualiza_Cant_Peso_Verificacion",
+      "Reemplaza_Producto_Dannado_Menor",
+      "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "Marcar_Danado",
+      "Existe_Lp_In_Stock",
+      "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+      "Existe_Lp_By_Licencia_And_IdBodega",
+      "Es_Pallet_No_Estandar_JSON",
+      "Es_Pallet_No_Estandar",
+      "Tiene_Posiciones",
+      "Get_All_PickingUbic_By_PickingEnc",
+      "Get_All_PickingUbic_By_PickingEnc_Group",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_All_Products_For_Reabastecimiento",
+      "Get_Stock_By_Lic_Plate_And_Codigo2",
+      "Get_Vencimiento_By_IdBodega_And_Lote",
+      "Get_All_By_IdUbicacion_And_LicPlate",
+      "Get_Producto_Talla_Color_JSON",
+      "Actualiza_Picking_Consolidado",
+      "Get_Productos_By_IdUbicacion_JSON"
+    ],
+    "propietario_bodega": [
+      "Get_Propietarios_By_IdBodega_For_HH",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion"
+    ],
+    "reglas_recepcion": [
+      "Get_All_Reglas_Recepcion_For_HH"
+    ],
+    "cliente_bodega": [
+      "Get_Clientes_By_IdBodega_For_HH"
+    ],
+    "proveedor_bodega": [
+      "Get_Proveedores_By_Bodega_For_HH",
+      "Get_All_By_IdBodega_HH_Filtro"
+    ],
+    "motivo_anulacion": [
+      "Get_Motivo_Anulacion_By_IdBodega_For_HH"
+    ],
+    "motivo_anulacion_bodega": [
+      "Get_Motivos_Anulacion_By_IdBodega_For_HH"
+    ],
+    "motivo_devolucion": [
+      "Get_Motivos_Devolucion_By_IdBodega_For_HH"
+    ],
+    "motivo_devolucion_bodega": [
+      "Get_Motivos_Devolucion_Bodega_By_IdBodega_For_HH"
+    ],
+    "motivo_ubicacion": [
+      "Get_Motivos_Ubicacion_For_HH"
+    ],
+    "operador_bodega": [
+      "Get_Operadores_By_IdBodega_For_HH",
+      "Operador_Valido_HH",
+      "Agregar_Marcaje",
+      "Operador_Tiene_Permiso"
+    ],
+    "menu_rol_op": [
+      "Get_Operadores_By_IdBodega_For_HH",
+      "Get_Menu_Rol_Op_For_HH",
+      "Operador_Valido_HH",
+      "Get_Menu_By_IdRolOperador_For_HH",
+      "Operador_Tiene_Permiso"
+    ],
+    "operador": [
+      "Get_Operadores_By_IdBodega_For_HH",
+      "Operador_Valido_HH",
+      "Operador_Tiene_Permiso",
+      "Guardar_Encabezado_RFID",
+      "Agregar_Detalle_A_Encabezado_RFID",
+      "Cargar_Stock_RFID_Paginado"
+    ],
+    "sis_estado_tarea_hh": [
+      "GetSis_estado_tarea_hh"
+    ],
+    "tarea_hh": [
+      "GetTarea_HH",
+      "Get_Recepciones_By_IdBodega",
+      "Get_All_Recepciones_For_HH_By_IdBodega",
+      "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+      "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+      "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+      "GetSingleTareaHH",
+      "Get_Count_Recepciones_For_HH_By_IdBodega",
+      "Get_Count_Picking_For_HH_By_IdBodega",
+      "Get_Count_Verificaciones_For_HH_By_IdBodega",
+      "Get_Count_Cambio_Est_Ubic_For_HH",
+      "Get_Count_Tareas_Servicio",
+      "Get_All_Picking_Para_Empaque_By_IdBodega",
+      "Get_Picking_Para_Emapaque_Consolidado"
+    ],
+    "trans_re_tr": [
+      "Get_Tipo_Recepcion",
+      "Get_All_Trans_Re_Tr_For_HH"
+    ],
+    "rol_operador": [
+      "Get_Nombre_Rol_Operador_For_HH_By_IdRolOperador",
+      "Get_BeRolOPerador_By_IdRolOperador"
+    ],
+    "trans_oc_ti": [
+      "Get_All_Filtro_TransOCTipo_For_HH"
+    ],
+    "trans_re_enc": [
+      "GetSingleRec",
+      "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+      "Guardar_Recepcion",
+      "GuardarRecepcionModif",
+      "Guardar_Recepcion_Sin_Presentacion",
+      "MaxIdRecEnc",
+      "Get_Banderas_Recepcion",
+      "Actualizar_Estado_Recepcion",
+      "Guarda_Firma_Recepcion",
+      "Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "Finalizar_Recepcion",
+      "Finalizar_Recepcion_Parcial",
+      "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+      "Guardar_Recepcion_S",
+      "Finalizar_Recepcion_S",
+      "Finalizar_Recepcion_Parcial_Pallet_Proveedor_S",
+      "Guardar_Recepcion_Caja_Master"
+    ],
+    "trans_oc_enc": [
+      "Get_BeTransOcEnc_By_IdOrdenCompraEnc",
+      "Iniciar_Recepcion_OC",
+      "Finalizar_Recepcion",
+      "Registrar_Pedido_Compra_To_NAV_For_BYB",
+      "Finalizar_Recepcion_S"
+    ],
+    "trans_despacho_det": [
+      "Get_BeTransOcEnc_By_IdOrdenCompraEnc",
+      "Iniciar_Recepcion_OC",
+      "Finalizar_Recepcion",
+      "Registrar_Pedido_Compra_To_NAV_For_BYB",
+      "Finalizar_Recepcion_S"
+    ],
+    "trans_oc_estado": [
+      "Get_Single_BeTrans_OC_Estado"
+    ],
+    "impresora": [
+      "Get_All_Impresora_By_IdEmpresa_And_IdBodega",
+      "Get_All_Impresora_By_IdEmpresa_And_IdBodega_Dt",
+      "Get_BeImpresora_By_IdImpresora",
+      "Get_Permite_Imprimir"
+    ],
+    "producto": [
+      "Get_Control_Lote_And_Vencimiento_By_IdProductoBodega",
+      "Get_BeProducto_By_Codigo_For_HH_JSON",
+      "Get_List_Product_By_CodigoBarra_By_Picking",
+      "Get_BeProducto_By_Codigo_Or_Licencia",
+      "Get_List_Product_By_CodigoBarra_By_OrdenCompraEnc",
+      "Get_All_PickingUbic_By_IdPickingEnc",
+      "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "Get_All_Codigos_Barra_By_IdProducto",
+      "Reemplazo_Producto_En_Picking",
+      "Sustituir_Producto_NE_Picking",
+      "SustituirProductoNEPicking_Test",
+      "Marcar_No_Encontrado",
+      "Valida_Licencia_By_ProductoBodega",
+      "Set_Nuevo_Pallet_Id",
+      "Get_IdUbic_Ciega_Recepcion_By_IdBodega",
+      "Get_Productos_By_IdUbicacion",
+      "Get_Productos_By_IdUbicacion_Existencias_JSON",
+      "Get_Productos_By_IdUbicacion_Existencias",
+      "Get_Productos_By_StockResCI",
+      "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+      "Get_Productos_By_IdUbicacion_And_LicPlate",
+      "Get_Stock_Por_Producto_Ubicacion",
+      "Get_Stock_Por_Pallet",
+      "Get_All_Stock_Especifico_HH",
+      "Get_All_Stock_Especifico_By_IdPedidoDet",
+      "Get_BeProducto_By_IdProducto",
+      "Get_Single_Trans_Picking_Ubic",
+      "Actualizar_Picking",
+      "Guardar_Picking_Cm",
+      "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "Actualizar_PickingUbic_Por_Verificacion",
+      "Existe_Producto",
+      "Get_Datos_Maestros_Inv",
+      "Get_Datos_Maestros_Inv_Fam",
+      "Get_Datos_Maestros_Inv_Clas",
+      "Get_Datos_Maestros_Inv_Marc",
+      "Get_Datos_Maestros_Inv_Tip",
+      "Get_Datos_Maestros_Inv_UmBas",
+      "Get_Stock_By_Lic_Plate_JSON",
+      "Get_Stock_By_Lic_Plate",
+      "Get_Stock_By_Lic_Plate_And_Codigo",
+      "Get_All_Productos_By_ImpresionBarras",
+      "Get_UMB_Pres_Stock_ByIdProducto_And_IdUMBas_AndIdBodega",
+      "Actualiza_Cant_Peso_Verificacion",
+      "Reemplaza_Producto_Dannado_Menor",
+      "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "Marcar_Danado",
+      "Get_Familia_Inv",
+      "Get_Clasificacion_Inv",
+      "Get_Marca_Inv",
+      "Get_Tipo_Inv",
+      "Get_UMbas_Inv",
+      "Existe_Lp",
+      "Existe_Lp_In_Stock",
+      "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+      "Existe_Lp_By_Licencia_And_IdBodega",
+      "Es_Pallet_No_Estandar_JSON",
+      "Es_Pallet_No_Estandar",
+      "Tiene_Posiciones",
+      "Get_All_PickingUbic_By_PickingEnc",
+      "Get_All_PickingUbic_By_PickingEnc_Group",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Codigo_By_CodigoBarra",
+      "Get_Codigo_By_CodigoBarra_By_Picking",
+      "Get_Lista_Codigos_By_CodigoBarra_By_Picking",
+      "Exist_Codigo_By_CodigoBarra",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_All_Products_For_Reabastecimiento",
+      "Get_Stock_By_Lic_Plate_And_Codigo2",
+      "Get_Vencimiento_By_IdBodega_And_Lote",
+      "Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido",
+      "Get_All_By_IdUbicacion_And_LicPlate",
+      "Get_BeProducto_By_Codigo_For_HH",
+      "Actualiza_Picking_Consolidado",
+      "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+      "Get_Productos_By_IdUbicacion_JSON"
+    ],
+    "producto_estado": [
+      "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+      "Get_Estados_By_IdPropietario_And_IdBodega",
+      "Get_Estados_By_IdPropietario_JSON",
+      "Get_Estados_By_IdPropietario",
+      "Get_Estados_Producto_For_HH",
+      "Get_Single_By_IdEstado",
+      "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion"
+    ],
+    "producto_presentacion": [
+      "Get_All_Presentaciones_By_IdProducto",
+      "Get_All_Presentaciones_By_IdProductoBodega",
+      "Get_Stock_Por_Producto_Ubicacion_CI",
+      "Get_Stock_Por_Pallet_CI",
+      "Get_Stock_Por_Pallet_By_IdUbicacion_CI",
+      "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "validaUbicacionPalet",
+      "validaUbicacionPaletOld",
+      "Get_Licenses_Plates_By_IdRecepcionEnc",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_All_Presentaciones_By_IdProducto_IdBodega",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_Presentacion_Defecto_By_Producto"
+    ],
+    "trans_re_det": [
+      "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+      "Get_All_Detalle_Rec_By_IdRecepcionEnc",
+      "Get_Detalle_By_IdRecepcionDet_HH",
+      "Get_Detalle_By_IdRecepcionEnc",
+      "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+      "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "Get_Detalle_Rec_By_IdCompra_Licencia_JSON"
+    ],
+    "stock_rec": [
+      "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+      "Get_All_Detalle_Rec_By_IdRecepcionEnc",
+      "MaxIDStockRec",
+      "Get_BeProducto_By_LP_For_HH",
+      "Get_Detalle_By_IdRecepcionDet_HH",
+      "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "Get_Stock_Rec_By_IdRecepcionEnc",
+      "Get_All_By_Barra_Proveedor_Cliente",
+      "Get_Detalle_By_IdRecepcionEnc",
+      "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+      "Get_Nuevo_Correlativo_LicensePlate",
+      "Get_Nuevo_Correlativo_LicensePlate_S",
+      "Get_Licenses_Plates_By_IdRecepcionEnc",
+      "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "Existe_Lp",
+      "Existe_Lp_In_Stock",
+      "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+      "Existe_Lp_By_Licencia_And_IdBodega",
+      "Get_Ubicacion_LP",
+      "Existe_Serie",
+      "Get_Detalle_Rec_By_IdCompra_Licencia_JSON"
+    ],
+    "stock": [
+      "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+      "Get_All_Detalle_Rec_By_IdRecepcionEnc",
+      "Get_Detalle_By_IdRecepcionDet_HH",
+      "Get_Detalle_By_IdRecepcionEnc",
+      "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+      "Valida_Licencia_By_ProductoBodega",
+      "Set_Nuevo_Pallet_Id",
+      "Get_IdUbic_Ciega_Recepcion_By_IdBodega",
+      "Get_Productos_By_IdUbicacion",
+      "Get_Productos_By_IdUbicacion_Existencias_JSON",
+      "Get_Productos_By_IdUbicacion_Existencias",
+      "Get_Productos_By_StockResCI",
+      "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+      "Get_Productos_By_IdUbicacion_And_LicPlate",
+      "Get_Stock_Por_Producto_Ubicacion",
+      "Get_Stock_Por_Producto_Ubicacion_CI",
+      "Get_Stock_Por_Pallet",
+      "Get_Stock_Por_Pallet_CI",
+      "Get_Stock_Por_Pallet_By_IdUbicacion_CI",
+      "Get_All_Stock_Especifico_HH",
+      "Get_All_Stock_Especifico_By_IdPedidoDet",
+      "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "Get_Stock_By_Lic_Plate_JSON",
+      "Get_Stock_By_Lic_Plate",
+      "Get_Stock_By_Lic_Plate_And_Codigo",
+      "Existe_Lp_In_Stock",
+      "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+      "Existe_Lp_By_Licencia_And_IdBodega",
+      "Es_Pallet_No_Estandar_JSON",
+      "Es_Pallet_No_Estandar",
+      "Tiene_Posiciones",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_All_Products_For_Reabastecimiento",
+      "Get_Stock_By_Lic_Plate_And_Codigo2",
+      "Get_Vencimiento_By_IdBodega_And_Lote",
+      "Get_All_By_IdUbicacion_And_LicPlate",
+      "Get_Producto_Talla_Color_JSON",
+      "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+      "Get_Productos_By_IdUbicacion_JSON"
+    ],
+    "stock_se_rec": [
+      "MaxIDStockSeRec"
+    ],
+    "trans_inv_ciclico": [
+      "MaxIDInventarioCiclico",
+      "Get_Conteo_Inv_Ciclico",
+      "Inventario_Ciclico_Actualiza_Conteo",
+      "Inventario_Ciclico_Act_Conteo_Andr",
+      "Inventario_Ciclico_Actualiza_Reconteo",
+      "Inventario_Agregar_Conteo"
+    ],
+    "producto_parametros": [
+      "Get_All_ProductoParametros_By_IdProducto_HH"
+    ],
+    "trans_re_det_parametros": [
+      "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH"
+    ],
+    "trans_picking_det": [
+      "Get_All_By_IDPickingEnc",
+      "ObtenerPickingDet",
+      "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet"
+    ],
+    "trans_picking_ubic": [
+      "Get_All_PickingUbic_By_IdPickingEnc",
+      "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "Reemplazo_Producto_En_Picking",
+      "Sustituir_Producto_NE_Picking",
+      "SustituirProductoNEPicking_Test",
+      "Marcar_No_Encontrado",
+      "Get_Single_Trans_Picking_Ubic",
+      "Actualizar_Picking",
+      "Guardar_Picking_Cm",
+      "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "Actualizar_PickingUbic_Por_Verificacion",
+      "Actualiza_Cant_Peso_Verificacion",
+      "Reemplaza_Producto_Dannado_Menor",
+      "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "Marcar_Danado",
+      "Get_All_PickingUbic_By_PickingEnc",
+      "Get_All_PickingUbic_By_PickingEnc_Group",
+      "Actualiza_Picking_Consolidado"
+    ],
+    "stock_res": [
+      "Get_All_PickingUbic_By_IdPickingEnc",
+      "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "Reemplazo_Producto_En_Picking",
+      "Sustituir_Producto_NE_Picking",
+      "SustituirProductoNEPicking_Test",
+      "Marcar_No_Encontrado",
+      "Reservar_Stock_By_IdStock",
+      "Reservar_Stock_By_Stock",
+      "Reemplazar_ListaPu_By_Stock",
+      "Reemplazar_ListPickingUbic_Verificacion",
+      "Reemplazo_Automatico",
+      "Reservar_Y_Reemplazar_Stock_By_IdStock",
+      "Get_All_Reemplazo_By_IdPedidoDet",
+      "Get_All_Stock_Res_By_IdPedidoDet",
+      "Get_Single_StockRes",
+      "Get_Single_Trans_Picking_Ubic",
+      "Actualizar_Picking",
+      "Guardar_Picking_Cm",
+      "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "Actualizar_PickingUbic_Por_Verificacion",
+      "Actualiza_Cant_Peso_Verificacion",
+      "Reemplaza_Producto_Dannado_Menor",
+      "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "Marcar_Danado",
+      "Get_All_PickingUbic_By_PickingEnc",
+      "Get_All_PickingUbic_By_PickingEnc_Group",
+      "Get_All_Reservas_By_IdStock",
+      "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+      "Actualizar_Ubicaciones_Reservadas_Pallet_Mixto",
+      "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+      "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+      "Actualiza_Picking_Consolidado"
+    ],
+    "trans_packing_enc": [
+      "Get_All_PickingUbic_By_IdPickingEnc",
+      "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "Reemplazo_Producto_En_Picking",
+      "Sustituir_Producto_NE_Picking",
+      "SustituirProductoNEPicking_Test",
+      "Marcar_No_Encontrado",
+      "Get_Single_Trans_Picking_Ubic",
+      "Actualizar_Picking",
+      "Guardar_Picking_Cm",
+      "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "Actualizar_PickingUbic_Por_Verificacion",
+      "Actualiza_Cant_Peso_Verificacion",
+      "Reemplaza_Producto_Dannado_Menor",
+      "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "Marcar_Danado",
+      "Get_All_PickingUbic_By_PickingEnc",
+      "Get_All_PickingUbic_By_PickingEnc_Group",
+      "Inserta_Packing",
+      "Eliminar_Linea_Packing",
+      "Get_All_Packing_By_IdPicking",
+      "Get_LicenciasPacking_Cerrado",
+      "Actualiza_Picking_Consolidado"
+    ],
+    "bodega_muelles": [
+      "Get_Single_BodegaMuelle",
+      "Es_ValidoMuelle_By_CodigoBarra"
+    ],
+    "trans_oc_det": [
+      "Get_Detalle_OC_By_IdOrdeCompraDet",
+      "Get_Detalle_OC_By_IdOrdenCompraEnc_HH",
+      "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+      "Crear_Linea_Unidades",
+      "Get_Detalle_OC_By_IdOrdenCompraEnc_HH2",
+      "Get_Producto_Talla_Color_JSON"
+    ],
+    "bodega_ubicacion": [
+      "Es_ValidaUbicacion_By_IdUbicacion",
+      "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+      "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+      "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "UbicacionVecina",
+      "validaUbicacionPalet",
+      "validaUbicacionPaletOld",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Ubicacion_Recepcion_By_Codigo_Barra_And_IdBodega",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_Ubicacion_By_Codigo_Barra_And_IdBodega"
+    ],
+    "trans_re_img": [
+      "Guardar_Fotos_Recepcion",
+      "Get_All_Imagen_Recepcion"
+    ],
+    "producto_imagen": [
+      "Guardar_Producto_Imagen",
+      "Get_All_Producto_Imagen"
+    ],
+    "trans_ubic_hh_enc": [
+      "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+      "Actualizar_Estado_Cambio"
+    ],
+    "trans_ubic_hh_det": [
+      "Get_All_By_IdTransUbicEnc_And_IdOperador",
+      "Actualizar_Trans_Ubic_HH_Det",
+      "Aplicar_Cambio_Estado_HH",
+      "Aplica_Cambio_Estado_Ubic_HH",
+      "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+      "Set_LP_Stock",
+      "Set_LP_Stock_Mixto",
+      "Validar_Mismo_Producto_Posicion_JSON",
+      "Validar_Regla_Ubicacion_JSON",
+      "Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack",
+      "Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack"
+    ],
+    "producto_codigos_barra": [
+      "Get_Stock_Por_Producto_Ubicacion_CI",
+      "Get_Stock_Por_Pallet_CI",
+      "Get_Stock_Por_Pallet_By_IdUbicacion_CI"
+    ],
+    "licencia_item": [
+      "loginHandHeld",
+      "cancelaConexion",
+      "nombreServidorLicencias"
+    ],
+    "trans_inv_enc": [
+      "Get_All_Inventario_By_IdBodega_And_IdOperador",
+      "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+      "Guardar_Producto_Nuevo_Inventario"
+    ],
+    "trans_inv_tramo": [
+      "Get_All_Inventario_Tramos_By_IdTarea",
+      "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+      "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo"
+    ],
+    "trans_inv_resumen": [
+      "InventarioInicialVerAgrega",
+      "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "InventarioInicialVerGet",
+      "InventarioInicialVerActualizar",
+      "InventarioInicialVerEliminar",
+      "Get_CantidadInvVer_By_Producto",
+      "Existe_Verificacion"
+    ],
+    "unidad_medida": [
+      "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion"
+    ],
+    "trans_inv_detalle": [
+      "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "InventarioInicialDetGet",
+      "InventarioInicialDetActualizar",
+      "InventarioInicialDetEliminar",
+      "Agregar_Inventario_Inicial",
+      "InventarioInicialAgregaMulti",
+      "validaUbicacionPalet",
+      "Get_CantidadInvConteo_By_Producto",
+      "Existe_Conteo",
+      "Valida_Unico_Producto"
+    ],
+    "producto_estado_ubic": [
+      "Inventario_Inicial_Acepta_Mal_Estado_By_IdUbicacion"
+    ],
+    "trans_inv_enc_reconteo": [
+      "Inventario_Ciclico_ReConteos"
+    ],
+    "trans_inv_stock": [
+      "Get_Stock_Congelado"
+    ],
+    "producto_presentacion_tarima": [
+      "GetSingleProductoTarima"
+    ],
+    "tipo_etiqueta": [
+      "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+      "Get_TipoEtiqueta_By_Id"
+    ],
+    "producto_clasificacion_etiqueta": [
+      "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+      "Get_TipoEtiqueta_By_Id"
+    ],
+    "trans_pe_enc": [
+      "Get_All_Pedidos_A_Verificar_By_IdBodega",
+      "Get_Pedido_A_Verificar_By_LP",
+      "Get_Single_By_IdPedidoEnc",
+      "Actualizar_Estado_Pedido",
+      "Set_Estado_Pedido_Verificado"
+    ],
+    "trans_pe_det": [
+      "Get_Detalle_By_IdPedidoEnc",
+      "Get_Detalle_Verificacion_Consolidada",
+      "Get_Detalle_Verificacion_Consolidada_LFV",
+      "Get_Reemplazo_Producto_By_IdPedidoEnc",
+      "Get_Verificacion_By_Producto_And_Pedido"
+    ],
+    "producto_pallet": [
+      "Get_All_Barras_Pallet_By_IdRecepcionEnc"
+    ],
+    "trans_inv_stock_prod": [
+      "Get_Inventario_Teorico_By_Codigo",
+      "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+      "Get_All_Codigos_By_IdInventario_And_IdBodega",
+      "Get_InventarioItem_By_Licencia"
+    ],
+    "i_nav_barras_pallet": [
+      "Existe_Barra_Pallet_I_Nav",
+      "Get_Pallet_Ingreso_By_Barra",
+      "Get_All_Pallet_Ingreso_By_Barra",
+      "Guardar_Encabezado_RFID",
+      "Agregar_Detalle_A_Encabezado_RFID",
+      "Cargar_Stock_RFID_Paginado"
+    ],
+    "configuracion_barra_pallet": [
+      "Get_Configuracion_Barra_Pallet_By_IdConfiguracion"
+    ],
+    "propietarios": [
+      "Get_All_Propietarios_By_IdEmpresa",
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion"
+    ],
+    "producto_clasificacion": [
+      "Get_All_Clasificacion_By_IdPropietario"
+    ],
+    "impresion_productos_barras": [
+      "Insertar_ImpresionProductosBarra"
+    ],
+    "i_nav_config_enc": [
+      "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+      "Get_Recepcion_Genera_Historico",
+      "Finalizar_Recepcion_S"
+    ],
+    "paises": [
+      "Get_Paises"
+    ],
+    "marcaje": [
+      "Agregar_Marcaje"
+    ],
+    "i_nav_transacciones_push": [
+      "Push_Recepcion_To_NAV_For_BYB",
+      "Push_Recepcion_Produccion_To_NAV_For_BYB",
+      "Guardar_Transaccion_Error",
+      "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+      "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+      "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB"
+    ],
+    "version_wms_hh": [
+      "Android_Get_All_Versiones"
+    ],
+    "resolucion_lp_operador": [
+      "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega"
+    ],
+    "producto_talla_color": [
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_Producto_Talla_Color_JSON"
+    ],
+    "talla": [
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_Producto_Talla_Color_JSON"
+    ],
+    "color": [
+      "Get_Disponibilidad_Ubicacion_Destino",
+      "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "Get_Producto_Talla_Color_JSON"
+    ],
+    "trans_oc_det_lote": [
+      "Get_IdOrdenCompraEnc_By_Licencia",
+      "Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH"
+    ],
+    "menu_sistema_op": [
+      "Operador_Tiene_Permiso"
+    ],
+    "proveedor": [
+      "Guardar_Encabezado_RFID",
+      "Agregar_Detalle_A_Encabezado_RFID",
+      "Cargar_Stock_RFID_Paginado"
+    ],
+    "cliente": [
+      "Guardar_Encabezado_RFID",
+      "Agregar_Detalle_A_Encabezado_RFID",
+      "Cargar_Stock_RFID_Paginado"
+    ]
+  }
+}
