@@ -1,0 +1,5128 @@
+{
+  "generatedAt": "2026-04-27T05:31:32.444Z",
+  "metrics": {
+    "serverWMs": 371,
+    "consumedByHH": 240,
+    "coveragePct": 64.69,
+    "orphans": 129,
+    "zombies": 0,
+    "hhUniqueCalled": 240
+  },
+  "consumed": [
+    {
+      "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_dirigida",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+          "lineNum": 774,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_dirigida",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+          "lineNum": 779,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_consulta_stock",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java",
+          "lineNum": 1026,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1592,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 686,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 611,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1534,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_tramos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_tramos.java",
+          "lineNum": 276,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 782,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_nuevo_reg",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_nuevo_reg.java",
+          "lineNum": 379,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1149,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_editar_ubicacion_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_editar_ubicacion_picking.java",
+          "lineNum": 88,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_datos_reabastecimiento",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java",
+          "lineNum": 697,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_datos_stock_res",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_datos_stock_res.java",
+          "lineNum": 554,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 14,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Presentaciones_By_IdProducto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1582,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 689,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 790,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 465,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1864,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2393,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8477,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8393,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 934,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 952,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 10,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1880,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1692,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1651,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 716,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1843,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_preparacion_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+          "lineNum": 1036,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_datos_reabastecimiento",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java",
+          "lineNum": 690,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8494,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8410,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 9,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeProducto_By_Codigo_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_cambio_ubicacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_detalle_cambio_ubicacion.java",
+          "lineNum": 247,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_consulta_stock",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java",
+          "lineNum": 1039,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 698,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 604,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 786,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1822,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2396,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_reabastecimiento_manual",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_reabastecimiento_manual.java",
+          "lineNum": 219,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 8,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Producto_By_IdProductoBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_consulta_stock_detalleCI",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock_detalleCI.java",
+          "lineNum": 265,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1648,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2385,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_rec_prod_detalle",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+          "lineNum": 752,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8466,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8382,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 930,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 7,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Estados_By_IdPropietario",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 683,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 629,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1548,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 793,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 468,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_nuevo_reg",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_nuevo_reg.java",
+          "lineNum": 376,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 6,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_danado_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_danado_picking.java",
+          "lineNum": 294,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2388,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8471,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8387,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_danado_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java",
+          "lineNum": 326,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 5,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Estados_By_IdPropietario_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1708,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1600,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1182,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1809,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Recepcion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8556,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8675,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8472,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8589,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8731,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8898,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8645,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8812,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_danado_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_danado_picking.java",
+          "lineNum": 299,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_danado_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_danado_picking.java",
+          "lineNum": 305,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_danado_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java",
+          "lineNum": 331,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_danado_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java",
+          "lineNum": 338,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Get_IdUbicMerma_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8533,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8739,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8449,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8653,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1713,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1719,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1749,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1801,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1568,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1571,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 799,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 802,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8509,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8537,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8425,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8453,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Tiene_Posiciones",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1769,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_dirigida",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+          "lineNum": 800,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8884,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8798,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 4,
+      "consumed": true
+    },
+    {
+      "wm": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod_detalle",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+          "lineNum": 761,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8921,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8835,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Fotos_Recepcion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 262,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8888,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8802,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Producto_Imagen",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2449,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8881,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8795,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Imagen_Recepcion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 267,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8893,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8807,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeProducto_By_IdProducto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1186,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 623,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 462,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_consulta_stock_detalleCI",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock_detalleCI.java",
+          "lineNum": 262,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8867,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8781,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Inventario_Teorico_By_Codigo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 695,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1551,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 805,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1782,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_editar_ubicacion_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_editar_ubicacion_picking.java",
+          "lineNum": 91,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_datos_stock_res",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_datos_stock_res.java",
+          "lineNum": 560,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Colores",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1656,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8910,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8824,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Tallas",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1659,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8913,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8827,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 3,
+      "consumed": true
+    },
+    {
+      "wm": "GetSingleRec",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 249,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 308,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8529,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8445,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Single_By_IdEstado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1644,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_dirigida",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+          "lineNum": 792,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8756,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8670,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "MaxIDStockRec",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8525,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8441,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "MaxIDStockSeRec",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8516,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8432,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_ProductoParametros_By_IdProducto_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8488,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8404,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8520,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8436,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeProducto_By_Codigo_Or_Licencia",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 606,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 447,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Iniciar_Recepcion_OC",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1245,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1247,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "GuardarRecepcionModif",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8719,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8633,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Recepcion_Sin_Presentacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8638,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8552,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8760,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8674,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Banderas_Recepcion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 238,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1262,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Codigos_Barra_By_IdProducto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8483,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8399,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8735,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8649,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Reemplazar_ListaPu_By_Stock",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 706,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 723,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Reemplazar_ListPickingUbic_Verificacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_verif",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+          "lineNum": 221,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_prod_reemplazo_verif",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+          "lineNum": 236,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Estado_Recepcion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1252,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1300,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Producto_Imagen",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8877,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8791,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_tareas_cambio_ubicacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_tareas_cambio_ubicacion.java",
+          "lineNum": 332,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_tareas_cambio_ubicacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_tareas_cambio_ubicacion.java",
+          "lineNum": 338,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Trans_Ubic_HH_Det",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1724,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_dirigida",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+          "lineNum": 785,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1729,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_datos_reabastecimiento",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java",
+          "lineNum": 683,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Set_Nuevo_Pallet_Id",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1698,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_datos_reabastecimiento",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java",
+          "lineNum": 702,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1629,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1798,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Productos_By_IdUbicacion_Existencias_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1657,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1678,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1667,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1813,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Stock_Especifico_By_IdPedidoDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 683,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_prod_reemplazo_verif",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+          "lineNum": 214,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1530,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 778,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Inventario_Agregar_Conteo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1579,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1609,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Nuevo_Correlativo_LicensePlate",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8498,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8414,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Nuevo_Correlativo_LicensePlate_S",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8544,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8460,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Licenses_Plates_By_IdRecepcionEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8504,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8420,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8743,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8657,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Picking_By_IdPickingEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1124,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 469,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Reemplazo_Producto_By_IdPedidoEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 477,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_list_prod_reemplazados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazados.java",
+          "lineNum": 110,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_Producto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1169,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1555,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Producto_Nuevo_Inventario",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 707,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_nuevo_reg",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_nuevo_reg.java",
+          "lineNum": 383,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_By_Lic_Plate_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1649,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1804,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_By_Lic_Plate_And_Codigo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1754,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1857,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Agregar_Marcaje",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1872,
+          "type": "soap"
+        },
+        {
+          "callerClass": "Mainmenu",
+          "file": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+          "lineNum": 443,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_Lp",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8764,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8678,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1760,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1837,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_Serie",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8872,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8786,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Es_Pallet_No_Estandar",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1766,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_dirigida",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+          "lineNum": 796,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Count_Cambio_Est_Ubic_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "Mainmenu",
+          "file": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+          "lineNum": 429,
+          "type": "soap"
+        },
+        {
+          "callerClass": "Mainmenu",
+          "file": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+          "lineNum": 435,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Push_Recepcion_Produccion_To_NAV_For_BYB",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8773,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8687,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8807,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8721,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8825,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8739,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8843,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8757,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Inserta_Packing",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_preparacion_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+          "lineNum": 1033,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_preparacion_packing_bulto",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing_bulto.java",
+          "lineNum": 606,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Packing_By_IdPicking",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_preparacion_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+          "lineNum": 1023,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_preparacion_packing_bulto",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing_bulto.java",
+          "lineNum": 603,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1538,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 826,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Presentaciones_By_IdProducto_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 626,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1545,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_CantidadInvVer_By_Producto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1581,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 838,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_Conteo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1575,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 820,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Recepcion_S",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8695,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8609,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Vencimiento_By_IdBodega_And_Lote",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8905,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8819,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Producto_Talla_Color_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1662,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1330,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8916,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8830,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Recepcion_Caja_Master",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_recepcion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+          "lineNum": 8654,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_recepcion_datos_original",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+          "lineNum": 8568,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Operador_Tiene_Permiso",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2485,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 965,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1597,
+          "type": "soap"
+        },
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1189,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Productos_By_IdUbicacion_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1686,
+          "type": "json-post"
+        },
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1818,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 2,
+      "consumed": true
+    },
+    {
+      "wm": "Android_Get_Bodegas_By_IdEmpresa",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1853,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Motivos_Ubicacion_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1635,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Operadores_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1860,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 272,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 278,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Single_BeTrans_OC_Estado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1257,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Impresora_By_IdEmpresa_And_IdBodega_Dt",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1856,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Control_Lote_And_Vencimiento_By_IdProductoBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1177,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "MaxIDInventarioCiclico",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1576,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeProducto_By_Codigo_For_HH_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1639,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_List_Product_By_CodigoBarra_By_Picking",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1162,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_List_Product_By_CodigoBarra_By_OrdenCompraEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1290,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_BeProducto_By_LP_For_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1274,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_By_IdRecepcionDet_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod_detalle",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+          "lineNum": 756,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 283,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 450,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1133,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 456,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_Rec_By_IdRecepcionEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 257,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_By_IdRecepcionEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1296,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Sustituir_Producto_NE_Picking",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 741,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Marcar_No_Encontrado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 755,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Reservar_Stock_By_Stock",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 689,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Reemplazo_Automatico",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2471,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Valida_Licencia_By_ProductoBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2479,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Guarda_Firma_Recepcion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1303,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Fotos_Verificacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 956,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Imagen_Verificacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 961,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_By_IdTransUbicEnc_And_IdOperador",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_cambio_ubicacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_detalle_cambio_ubicacion.java",
+          "lineNum": 240,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1809,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Set_LP_Stock",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1831,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Set_LP_Stock_Mixto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1869,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Estado_Cambio",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_cambio_ubicacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_detalle_cambio_ubicacion.java",
+          "lineNum": 244,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Productos_By_IdUbicacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1826,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Productos_By_StockResCI",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1804,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_Por_Pallet_By_IdUbicacion_CI",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_consulta_stock",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java",
+          "lineNum": 1031,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "loginHandHeld",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1885,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Inventario_By_IdBodega_And_IdOperador",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_inventario",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Inventario/frm_list_inventario.java",
+          "lineNum": 236,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Inventario_Tramos_By_IdTarea",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_tramos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_tramos.java",
+          "lineNum": 273,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialVerAgrega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 796,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 455,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 615,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialVerGet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 459,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialDetGet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 620,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialVerActualizar",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 471,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialDetActualizar",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 632,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialVerEliminar",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+          "lineNum": 474,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "InventarioInicialDetEliminar",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_contados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+          "lineNum": 635,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Agregar_Inventario_Inicial",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1565,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Inventario_Inicial_Acepta_Mal_Estado_By_IdUbicacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1558,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "nombreServidorLicencias",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1890,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "validaUbicacionPalet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1561,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Inventario_Ciclico_ReConteos",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1166,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Inventario_Ciclico_Listar_Conteo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+          "lineNum": 1172,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Conteo_Inv_Ciclico",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1635,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_Congelado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1645,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_IdProductoBodega_By_IdProducto_And_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_guardar",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+          "lineNum": 692,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Inventario_Ciclico_Act_Conteo_Andr",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1567,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Inventario_Ciclico_Actualiza_Reconteo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_add",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+          "lineNum": 1586,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Finalizar_Recepcion_Parcial",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1280,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Single_StockRes",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2411,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Picking",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2415,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Picking_Cm",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2492,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2423,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "ObtenerPickingDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2405,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_PickingEnc_Procesado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1141,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_PickingEnc_Procesado_Andr",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1142,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_PickingEnc_Verificado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 473,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Tiene_Pedidos_Sin_Verificar_By_IdPickingEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 465,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Pedidos_A_Verificar_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 293,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Pedido_A_Verificar_By_LP",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 299,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_By_IdPedidoEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 434,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_Verificacion_Consolidada",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 481,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_Verificacion_Consolidada_LFV",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_verificacion_consolidada_detalle",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_consolidada_detalle.java",
+          "lineNum": 315,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Single_By_IdPedidoEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 438,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Set_Estado_Pedido_Verificado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 461,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Pallet_Ingreso_By_Barra",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1268,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Configuracion_Barra_Pallet_By_IdConfiguracion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 253,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Datos_Maestros_Inv_Fam",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_nuevo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+          "lineNum": 281,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Datos_Maestros_Inv_Clas",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_nuevo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+          "lineNum": 285,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Datos_Maestros_Inv_Marc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_nuevo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+          "lineNum": 289,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Datos_Maestros_Inv_Tip",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_nuevo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+          "lineNum": 293,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Datos_Maestros_Inv_UmBas",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_cic_nuevo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+          "lineNum": 297,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 244,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_cantidad_decimales_calculo",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1863,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Cantidad_decimales_despliegue",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1866,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "ml_get_ubicacion_sugerida_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1738,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualiza_Cant_Peso_Verificacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_verificacion_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+          "lineNum": 940,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Reemplaza_Producto_Dannado_Menor",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_verif",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+          "lineNum": 254,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Marcar_Danado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_verif",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+          "lineNum": 268,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Familia_Inv",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_agrega_prd",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+          "lineNum": 426,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Clasificacion_Inv",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_agrega_prd",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+          "lineNum": 429,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Marca_Inv",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_agrega_prd",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+          "lineNum": 432,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Tipo_Inv",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_agrega_prd",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+          "lineNum": 435,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_UMbas_Inv",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_agrega_prd",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+          "lineNum": 438,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Ubicacion_LP",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_Packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+          "lineNum": 1850,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Es_Pallet_No_Estandar_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1765,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Count_Recepciones_For_HH_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "Mainmenu",
+          "file": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+          "lineNum": 407,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Count_Picking_For_HH_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "Mainmenu",
+          "file": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+          "lineNum": 412,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Count_Verificaciones_For_HH_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "Mainmenu",
+          "file": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+          "lineNum": 424,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Count_Tareas_Servicio",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "wsCantTareas",
+          "file": "/app/src/main/java/com/dts/servicios/wsCantTareas.java",
+          "lineNum": 27,
+          "type": "method-name-const"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Ubicacion_Es_Valida_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1773,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Android_Get_All_Versiones",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1877,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Picking_Para_Empaque_By_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing.java",
+          "lineNum": 273,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_PickingEnc",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_preparacion_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+          "lineNum": 1019,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_PickingEnc_Group",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_preparacion_packing_bulto",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing_bulto.java",
+          "lineNum": 600,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Estado_Packing",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_preparacion_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+          "lineNum": 1041,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Eliminar_Linea_Packing",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_preparacion_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+          "lineNum": 1045,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Set_Estado_Pendiente_Packing",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing.java",
+          "lineNum": 276,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Ubicacion_Recepcion_By_Codigo_Barra_And_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_ingresos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+          "lineNum": 271,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_IdOrdenCompraEnc_By_Licencia",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 303,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 312,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Codigos_By_IdInventario_And_IdBodega",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 809,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_CantidadInvConteo_By_Producto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 813,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_InventarioItem_By_Licencia",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+          "lineNum": 831,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Reservas_By_IdStock",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2452,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Ubicaciones_Reservadas_Pallet_Mixto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_datos_stock_res",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_datos_stock_res.java",
+          "lineNum": 568,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1791,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Existe_Verificacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inv_ini_conteo",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+          "lineNum": 1588,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualizar_Estado_Picking_Andr",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1130,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Exist_Codigo_By_CodigoBarra",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2459,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_stock_res",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_lista_stock_res.java",
+          "lineNum": 272,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_Products_For_Reabastecimiento",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_reabastecimiento_manual",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_reabastecimiento_manual.java",
+          "lineNum": 224,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_OC_By_IdOrdenCompraEnc_HH2",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1319,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1325,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Finalizar_Recepcion_S",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_rec_prod",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+          "lineNum": 1308,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Android_Get_All_Empresas_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "MainActivity",
+          "file": "/app/src/main/java/com/dts/tom/MainActivity.java",
+          "lineNum": 1850,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Stock_Por_Producto_Ubicacion_CI_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_consulta_stock",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java",
+          "lineNum": 1044,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2402,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2408,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": null,
+          "file": "/app/src/main/java/com/dts/base/ApiService.java",
+          "lineNum": 11,
+          "type": "retrofit-get"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Ubicacion_Sugerida_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1814,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Despachar_Pedido",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 492,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_LicenciasPacking_Cerrado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_packing_cerrados",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_list_packing_cerrados.java",
+          "lineNum": 358,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Verificacion_By_Producto_And_Pedido",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 321,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_IdPickingEnc_Tipo_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1152,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Single_By_IdPedidoEnc_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 327,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_verificacion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+          "lineNum": 485,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Tipo_Pedido_Json",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_tareas_recepcion",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+          "lineNum": 333,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_CantidadPedidos_Picking",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_detalle_tareas_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+          "lineNum": 1159,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Presentacion_Defecto_By_Producto",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_list_prod_reemplazo_picking",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+          "lineNum": 771,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Get_Picking_Para_Emapaque_Consolidado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_lista_packing",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing.java",
+          "lineNum": 279,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Actualiza_Picking_Consolidado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_picking_datos",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+          "lineNum": 2439,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Obtener_Barras_Pallet_I_Nav_Lote",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_procesar_rfid",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java",
+          "lineNum": 132,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Guardar_Encabezado_RFID",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_guardar_rfid",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java",
+          "lineNum": 165,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Agregar_Detalle_A_Encabezado_RFID",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_guardar_rfid",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java",
+          "lineNum": 170,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Cargar_Stock_RFID_Paginado",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_inventario_rfid",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_inventario_rfid.java",
+          "lineNum": 473,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Obtener_EPC_Con_Existencia_Para_Salida",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_procesar_rfid",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java",
+          "lineNum": 137,
+          "type": "soap"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Validar_Mismo_Producto_Posicion_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1823,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    },
+    {
+      "wm": "Validar_Regla_Ubicacion_JSON",
+      "ws": "TOMHHWS",
+      "callers": [
+        {
+          "callerClass": "frm_cambio_ubicacion_ciega",
+          "file": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+          "lineNum": 1834,
+          "type": "json-post"
+        }
+      ],
+      "callerCount": 1,
+      "consumed": true
+    }
+  ],
+  "orphans": [
+    {
+      "wm": "Get_Empresa_By_Codigo_And_Clave",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_List_Empresas_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Bodegas_By_IdEmpresa_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Productos_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Propietarios_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Reglas_Recepcion_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Clientes_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Proveedores_By_Bodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_By_IdBodega_HH_Filtro",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Motivo_Anulacion_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Motivos_Anulacion_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Motivos_Devolucion_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Motivos_Devolucion_Bodega_By_IdBodega_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "ServiceIsAlive",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "GetTimeStampServer",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Menu_Rol_Op_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Operador_Valido_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "GetSis_estado_tarea_hh",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "GetTarea_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Tipo_Recepcion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Recepciones_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Nombre_Rol_Operador_For_HH_By_IdRolOperador",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Menu_By_IdRolOperador_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Recepciones_For_HH_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Trans_Re_Tr_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Empresas_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Filtro_TransOCTipo_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_BeTransOcEnc_By_IdOrdenCompraEnc",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_BeRolOPerador_By_IdRolOperador",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Impresora_By_IdEmpresa_And_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Estados_By_IdPropietario_And_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Estados_Producto_For_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Presentaciones_By_IdProductoBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Detalle_Rec_By_IdRecepcionEnc",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_By_IDPickingEnc",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_PickingUbic_By_IdPickingEnc",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_By_Barra_Proveedor_Cliente",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "MaxIdRecEnc",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Single_BodegaMuelle",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Detalle_OC_By_IdOrdenCompraEnc_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Es_ValidoMuelle_By_CodigoBarra",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Es_ValidaUbicacion_By_IdUbicacion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Reemplazo_Producto_En_Picking",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "SustituirProductoNEPicking_Test",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "ReemplazoProductoPickingTest",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Reservar_Stock_By_IdStock",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Reservar_Y_Reemplazar_Stock_By_IdStock",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Reemplazo_By_IdPedidoDet",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_IdUbicacion_Picking_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Aplicar_Cambio_Estado_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_IdUbic_Ciega_Recepcion_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_IdUbicacion_Recepcion_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Productos_By_IdUbicacion_Existencias",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Productos_By_IdUbicacion_And_LicPlate",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_Por_Producto_Ubicacion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_Por_Producto_Ubicacion_CI",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_Por_Pallet",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_Por_Pallet_CI",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Stock_Especifico_HH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Stock_Res_By_IdPedidoDet",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "cancelaConexion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "UbicacionVecina",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "InventarioInicialAgregaMulti",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "testWS",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "validaUbicacionPaletOld",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "InventarioCiclicoListaConteo",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "InventarioCiclicoPaletConteo",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Inventario_Ciclico_Actualiza_Conteo",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "GetSingleProductoTarima",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Finalizar_Recepcion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Single_Trans_Picking_Ubic",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Actualizar_PickingUbic_Por_Verificacion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "GetSingleTareaHH",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Actualizar_Estado_Pedido",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Actualizar_Estado_Picking",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Barras_Pallet_By_IdRecepcionEnc",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Existe_Barra_Pallet_I_Nav",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Pallet_Ingreso_By_Barra",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Datos_Maestros_Inv",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_By_Lic_Plate",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_By_Lic_Plate_And_IdUbicacion",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Productos_By_ImpresionBarras",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Propietarios_By_IdEmpresa",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_Clasificacion_By_IdPropietario",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_UMB_Pres_Stock_ByIdProducto_And_IdUMBas_AndIdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Insertar_ImpresionProductosBarra",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Recepcion_Genera_Historico",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Codigo_Bodega_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_IdEstadoProductoNE_By_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_BeImpresora_By_IdImpresora",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Permite_Imprimir",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Paises",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Android_Get_All_Empresas",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "ml_get_ubicacion_sugerida",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Reemplaza_Producto_Dannado_Mayor_Igual",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Existe_Lp_In_Stock",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Existe_Lp_By_Licencia_And_IdBodega",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Ubicacion_Es_Valida",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Push_Recepcion_To_NAV_For_BYB",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 1,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Guardar_Transaccion_Error",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Registrar_Pedido_Compra_To_NAV_For_BYB",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 2,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Borrar_Picking",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Disponibilidad_Ubicacion_Destino",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Existencia_NAV",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Valida_Unico_Producto",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Crear_Linea_Unidades",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Codigo_By_CodigoBarra",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Codigo_By_CodigoBarra_By_Picking",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Lista_Codigos_By_CodigoBarra_By_Picking",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_By_Lic_Plate_And_Codigo2",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Finalizar_Recepcion_Parcial_Pallet_Proveedor_S",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Picking_By_IdPickingEncJson",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 1,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Reporte_Proximos_A_Vencer_By_OpenIA",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Ask_ChatGPT_JsonResult",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Existe_Lote_By_IdBodega_And_NoLote",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Info_Imagen_By_IA",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Ejecutar_Interface",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Ubicacion_Sugerida",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Value_From_Script",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_All_By_IdUbicacion_And_LicPlate",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "GetSingleRecJson",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Producto_Talla_Color_By_Id",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_TipoEtiqueta_By_Id",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Obtener_Etiqueta_Verificacion_WS",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack",
+      "ws": "TOMHHWS",
+      "sqlBlocks": 0,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_By_ItemCode_And_WsCode",
+      "ws": "srvSAPSync",
+      "sqlBlocks": 1,
+      "tablesRead": 0
+    },
+    {
+      "wm": "Get_Stock_By_WsCode",
+      "ws": "srvSAPSync",
+      "sqlBlocks": 1,
+      "tablesRead": 0
+    }
+  ],
+  "zombies": []
+}
