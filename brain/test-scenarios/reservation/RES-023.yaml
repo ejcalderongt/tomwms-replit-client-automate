@@ -1,0 +1,37 @@
+# RES-023: BYB — transferencia variante 2
+id: RES-023
+version: 1
+category: reservation
+severity: medium
+title: "BYB — transferencia variante 2"
+summary: |
+  Cliente BYB. Variante del CASO 18 con datos distintos (a confirmar leyendo cuerpo de la función).
+
+requires_config:
+  - Control_lote: true
+  - Control_vencimiento: true
+
+input:
+  requested_qty: -1
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+
+
+expected:
+  1. Sin XML doc detallado en el legacy.
+
+legacy_origin:
+  case: "CASO 19"
+  function: "Ejecuta_QA_CASO_19_BYB_202311162103"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "17615-17874"
+
+notes: |
+  PENDIENTE: extraer datos exactos del cuerpo de la función.
