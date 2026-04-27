@@ -1,0 +1,17 @@
+slug: la-cumbre
+display_name: LA CUMBRE
+country: GT
+notes: |
+  Cliente con configuración divergente del bloque IDEALSA/KILLIOS.
+  Históricamente ha pedido NO rechazar pedidos incompletos (se prefiere
+  parcial que rechazo). Validar antes de ejecutar escenarios que dependen
+  de Rechazar_Pedido_Si_Esta_Incompleto.
+learned: false
+learned_at: null
+learned_from: null
+flags:
+  IdProductoEstado: null
+  IdPropietario: null
+  Reservar_Desde_Picking_Antes_Que_Almacenamiento: null
+  Permite_Explosion_En_Picking: null
+  Rechazar_Pedido_Si_Esta_Incompleto: "(inferido) false  # confirmar con cliente"
