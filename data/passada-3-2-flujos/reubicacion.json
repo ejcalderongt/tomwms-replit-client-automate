@@ -1,0 +1,1234 @@
+{
+  "domain": "reubicacion",
+  "activitiesCount": 4,
+  "activities": [
+    {
+      "activity": "frm_cambio_ubicacion_ciega",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "layout": "activity_frm_cambio_ubicacion_ciega",
+      "fileLines": 5335,
+      "intentTargets": [
+        "frm_consulta_stock",
+        "frm_Packing"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 1629,
+          "wm": "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "bodega"
+          ],
+          "tablesWrite": [
+            "bodega"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 1635,
+          "wm": "Get_Motivos_Ubicacion_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "",
+          "returns": "List(Of clsBeMotivo_ubicacion)",
+          "tablesRead": [
+            "log_error_wms",
+            "motivo_ubicacion",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "motivo_ubicacion"
+          ],
+          "clsLnUsed": [
+            "clsLnMotivo_ubicacion",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 1639,
+          "wm": "Get_BeProducto_By_Codigo_For_HH_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pCodigo As String, ByVal IdBodega As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 1644,
+          "wm": "Get_Single_By_IdEstado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdEstado As Integer",
+          "returns": "clsBeProducto_estado",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 1649,
+          "wm": "Get_Stock_By_Lic_Plate_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 83,
+          "paramsRaw": "ByVal pLicensePlate As String, ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 1657,
+          "wm": "Get_Productos_By_IdUbicacion_Existencias_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 72,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdProductoBodega As Integer, ByVal pFechaVence As Date, ByVal pLote As String, ByVal pIdPresentacion As Integer, ByVal pLicencia As String",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 1667,
+          "wm": "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 81,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer, ByVal pIdProductoBodega As Integer, ByVal pLicPlate As String, ByVal pIdPresentacion As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 1678,
+          "wm": "Get_Productos_By_IdUbicacion_Existencias_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 72,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdProductoBodega As Integer, ByVal pFechaVence As Date, ByVal pLote As String, ByVal pIdPresentacion As Integer, ByVal pLicencia As String",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 1686,
+          "wm": "Get_Productos_By_IdUbicacion_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 71,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeVW_stock_res)",
+          "tablesRead": [],
+          "tablesWrite": [
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 10,
+          "lineNum": 1692,
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdOperador As Integer, ByVal pIdBodega As Integer",
+          "returns": "clsBeResolucion_lp_operador",
+          "tablesRead": [
+            "log_error_wms",
+            "resolucion_lp_operador",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "resolucion_lp_operador"
+          ],
+          "clsLnUsed": [
+            "clsLnResolucion_lp_operador",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 11,
+          "lineNum": 1698,
+          "wm": "Set_Nuevo_Pallet_Id",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 77,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdUsuario As Integer, ByVal pLicPlateAnt As String, ByVal pLicPlateNuevo As String, ByVal pIdStockNuevo As Integer, ByVal pIdMovimientoNuevo As Integer, ByVal pIdResolucion As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_reab",
+            "clsLnStock"
+          ]
+        },
+        {
+          "seq": 12,
+          "lineNum": 1708,
+          "wm": "Get_Estados_By_IdPropietario_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 56,
+          "paramsRaw": "ByVal pIdPropietario As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 13,
+          "lineNum": 1713,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 14,
+          "lineNum": 1724,
+          "wm": "Actualizar_Trans_Ubic_HH_Det",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal oBeTrans_ubic_hh_det As clsBeTrans_ubic_hh_det, ByVal pMovimiento As clsBeTrans_movimientos, ByVal pPosiciones As Integer, ByVal pIdReabastecimientoLog As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 15,
+          "lineNum": 1729,
+          "wm": "Aplica_Cambio_Estado_Ubic_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal pMovimiento As clsBeTrans_movimientos, ByVal pStockRes As clsBeVW_stock_res, ByRef pIdStockNuevo As Integer, ByRef pIdMovimientoNuevo As Integer, ByVal pPosiciones As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_reab",
+            "clsLnTrans_ubic_hh_det"
+          ]
+        },
+        {
+          "seq": 16,
+          "lineNum": 1738,
+          "wm": "ml_get_ubicacion_sugerida_JSON",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 90,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pIdBodega As Integer, ByVal pIdProductoBodega As Integer, ByVal pLote As String, ByVal pFechaVence As Date, ByVal pIdProductoEstado As Integer, ByVal pIdUmBas As Integer, ByVal pIdPresentacion As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario",
+            "vw_ocupacionbodegatramo",
+            "vw_stock_res",
+            "vw_ubicaciones_tramo_disponibles"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTransUbicSugerida2",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 17,
+          "lineNum": 1749,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 18,
+          "lineNum": 1754,
+          "wm": "Get_Stock_By_Lic_Plate_And_Codigo",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pLicensePlate As String, ByVal pCodigo As String, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeProducto)",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 19,
+          "lineNum": 1760,
+          "wm": "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pLic_Plate As String, ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 20,
+          "lineNum": 1765,
+          "wm": "Es_Pallet_No_Estandar_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 29,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Object",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 21,
+          "lineNum": 1766,
+          "wm": "Es_Pallet_No_Estandar",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 22,
+          "lineNum": 1769,
+          "wm": "Tiene_Posiciones",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 23,
+          "lineNum": 1773,
+          "wm": "Ubicacion_Es_Valida_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubicsug",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 24,
+          "lineNum": 1782,
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pIdStock As Integer, ByVal pIdBodega As Integer, ByVal pIdUbicacion As Integer, ByVal pIdOperador As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 25,
+          "lineNum": 1791,
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pBeStockRes As clsBeVW_stock_res, ByVal pIdBodega As Integer, ByVal pIdUbicacion As Integer, ByVal pIdOperador As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 26,
+          "lineNum": 1804,
+          "wm": "Get_Productos_By_StockResCI",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "BeStockResCI As clsBeVW_stock_res_CI",
+          "returns": "List(Of clsBeVW_stock_res)",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 27,
+          "lineNum": 1809,
+          "wm": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 48,
+          "paramsRaw": "ByVal pStockResList As List(Of clsBeVW_stock_res)",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnLog_error_wms",
+            "clsLnTrans_ubic_hh_det"
+          ]
+        },
+        {
+          "seq": 28,
+          "lineNum": 1814,
+          "wm": "Get_Ubicacion_Sugerida_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 85,
+          "paramsRaw": "ByVal Licencia As String",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnUbicacionSugerida",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 29,
+          "lineNum": 1818,
+          "wm": "Get_Productos_By_IdUbicacion_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 71,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeVW_stock_res)",
+          "tablesRead": [],
+          "tablesWrite": [
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 30,
+          "lineNum": 1823,
+          "wm": "Validar_Mismo_Producto_Posicion_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 87,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdTramo As Integer, ByVal pIndice_x As Integer, ByVal pNivel As Integer, ByVal pIdUbicacion As Integer, ByVal pIdProductoBodega As Integer",
+          "returns": "Object",
+          "tablesRead": [
+            "trans_ubic_hh_det"
+          ],
+          "tablesWrite": [
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 31,
+          "lineNum": 1834,
+          "wm": "Validar_Regla_Ubicacion_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 83,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer, ByVal pIdEmpresa As Integer, ByVal pIdEstado As Integer",
+          "returns": "Object",
+          "tablesRead": [
+            "trans_ubic_hh_det"
+          ],
+          "tablesWrite": [
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms_ubic"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_cambio_ubicacion_dirigida",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "layout": "activity_frm_cambio_ubicacion_dirigida",
+      "fileLines": 1076,
+      "intentTargets": [],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 774,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 785,
+          "wm": "Actualizar_Trans_Ubic_HH_Det",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal oBeTrans_ubic_hh_det As clsBeTrans_ubic_hh_det, ByVal pMovimiento As clsBeTrans_movimientos, ByVal pPosiciones As Integer, ByVal pIdReabastecimientoLog As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 792,
+          "wm": "Get_Single_By_IdEstado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdEstado As Integer",
+          "returns": "clsBeProducto_estado",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 796,
+          "wm": "Es_Pallet_No_Estandar",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 800,
+          "wm": "Tiene_Posiciones",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_detalle_cambio_ubicacion",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "layout": "activity_frm_detalle_cambio_ubicacion",
+      "fileLines": 700,
+      "intentTargets": [
+        "frm_cambio_ubicacion_dirigida"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 240,
+          "wm": "Get_All_By_IdTransUbicEnc_And_IdOperador",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdTransUbicHhEnc As Integer, ByVal pIdOperador As Integer",
+          "returns": "List(Of clsBeTrans_ubic_hh_det)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 244,
+          "wm": "Actualizar_Estado_Cambio",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pIdTransUbicHHEnc As clsBeTrans_ubic_hh_enc, ByVal finalizar As Boolean",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_enc",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 247,
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pCodigo As String, ByVal IdBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_tareas_cambio_ubicacion",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "layout": "activity_frm_tareas_cambio_ubicacion",
+      "fileLines": 451,
+      "intentTargets": [
+        "frm_detalle_cambio_ubicacion",
+        "frm_cambio_ubicacion_ciega"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 332,
+          "wm": "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "pIdBodega As Integer, ByVal pIdOperador As Integer, pIdTarea As Integer, cambio_estado As Boolean",
+          "returns": "List(Of clsBeTrans_ubic_hh_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        }
+      ]
+    }
+  ],
+  "entryActivity": "frm_tareas_cambio_ubicacion",
+  "exitActivity": null,
+  "uniqueWMsCalled": [
+    "Actualizar_Estado_Cambio",
+    "Actualizar_Trans_Ubic_HH_Det",
+    "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+    "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+    "Aplica_Cambio_Estado_Ubic_HH",
+    "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+    "Es_Pallet_No_Estandar",
+    "Es_Pallet_No_Estandar_JSON",
+    "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+    "Get_All_By_IdTransUbicEnc_And_IdOperador",
+    "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+    "Get_BeProducto_By_Codigo_For_HH",
+    "Get_BeProducto_By_Codigo_For_HH_JSON",
+    "Get_Estados_By_IdPropietario_JSON",
+    "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+    "Get_Motivos_Ubicacion_For_HH",
+    "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+    "Get_Productos_By_IdUbicacion_Existencias_JSON",
+    "Get_Productos_By_IdUbicacion_JSON",
+    "Get_Productos_By_StockResCI",
+    "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+    "Get_Single_By_IdEstado",
+    "Get_Stock_By_Lic_Plate_And_Codigo",
+    "Get_Stock_By_Lic_Plate_JSON",
+    "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+    "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+    "Get_Ubicacion_Sugerida_JSON",
+    "Set_Nuevo_Pallet_Id",
+    "Tiene_Posiciones",
+    "Ubicacion_Es_Valida_JSON",
+    "Validar_Mismo_Producto_Posicion_JSON",
+    "Validar_Regla_Ubicacion_JSON",
+    "ml_get_ubicacion_sugerida_JSON"
+  ],
+  "finalizationWMs": [],
+  "partialWMs": [],
+  "tablesWrittenByDomain": [
+    "bodega",
+    "bodega_ubicacion",
+    "log_error_wms",
+    "motivo_ubicacion",
+    "producto",
+    "producto_estado",
+    "resolucion_lp_operador",
+    "stock",
+    "stock_rec",
+    "stock_res",
+    "trans_ubic_hh_det",
+    "trans_ubic_hh_enc"
+  ],
+  "tablesReadByDomain": [
+    "bodega",
+    "bodega_ubicacion",
+    "log_error_wms",
+    "motivo_ubicacion",
+    "producto",
+    "producto_estado",
+    "resolucion_lp_operador",
+    "stock_rec",
+    "stock_res",
+    "trans_ubic_hh_det",
+    "trans_ubic_hh_enc",
+    "usuario",
+    "vw_ocupacionbodegatramo",
+    "vw_stock_res",
+    "vw_ubicaciones_tramo_disponibles"
+  ],
+  "states": [
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    },
+    {
+      "table": "producto_estado_ubic",
+      "rowCount": 2,
+      "sample": [
+        {
+          "IdProductoEstadUbic": 2,
+          "IdEstado": 2,
+          "IdUbicacionDefecto": 722,
+          "fec_agr": "2025-06-06T19:19:10.127Z",
+          "user_agr": "DTS ",
+          "fec_mod": "2025-06-06T19:19:10.127Z",
+          "user_mod": "DTS ",
+          "activo": true,
+          "IdBodega": 1
+        },
+        {
+          "IdProductoEstadUbic": 1,
+          "IdEstado": 16,
+          "IdUbicacionDefecto": 2,
+          "fec_agr": "2025-06-02T17:18:26.607Z",
+          "user_agr": "DTS ",
+          "fec_mod": "2025-06-02T17:18:26.607Z",
+          "user_mod": "DTS ",
+          "activo": true,
+          "IdBodega": 1
+        }
+      ]
+    }
+  ],
+  "typicalErrors": [
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 70 y TipoTarea 2",
+      "count": 1800,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 70 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 70",
+      "count": 915,
+      "sample": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 70",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 67 y TipoTarea 2",
+      "count": 868,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 67 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 43 y TipoTarea 2",
+      "count": 707,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 43 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 43",
+      "count": 456,
+      "sample": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 43",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 64 y TipoTarea 2",
+      "count": 442,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 64 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 62 y TipoTarea 2",
+      "count": 355,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 62 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 76 y TipoTarea 2",
+      "count": 308,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 76 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 72 y TipoTarea 2",
+      "count": 242,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 72 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 62",
+      "count": 214,
+      "sample": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 62",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 75 y TipoTarea 2",
+      "count": 208,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 75 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 50 y TipoTarea 2",
+      "count": 207,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 50 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1458 ubicacion anterior 0opoerador 67",
+      "count": 199,
+      "sample": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1458 ubicacion anterior 0opoerador 67",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1459 ubicacion anterior 0opoerador 67",
+      "count": 191,
+      "sample": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1459 ubicacion anterior 0opoerador 67",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1450 ubicacion anterior 0opoerador 76",
+      "count": 187,
+      "sample": "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1450 ubicacion anterior 0opoerador 76",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    }
+  ],
+  "edgeCases": [
+    {
+      "kind": "reservas",
+      "wms": [
+        "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+        "Actualizar_Ubicaciones_Reservadas_By_StockRes"
+      ]
+    }
+  ]
+}
