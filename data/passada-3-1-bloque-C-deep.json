@@ -1,0 +1,7 @@
+{
+  "generatedAt": "2026-04-27T04:52:04.548Z",
+  "execMatchesInClsLn": [],
+  "execMatchesCount": 0,
+  "totalClsLnInspected": 38,
+  "conclusion": "Confirmado: ningún clsLn (89 + 24 = 113 archivos) llama a SPs. Solo SQL inline. Los 39 SPs son utilitarios/DBA."
+}
