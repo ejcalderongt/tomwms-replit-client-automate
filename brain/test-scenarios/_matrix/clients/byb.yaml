@@ -1,0 +1,17 @@
+slug: byb
+display_name: BYB
+country: GT
+notes: |
+  Origen de los CASOs 18, 19, 20 del clsLnStock_res. Suelen incluir fechas
+  vencidas (1900-01-01, 2024-12-XX) para validar manejo de lotes con vencimiento
+  pasado.
+learned: false
+learned_at: null
+learned_from: null
+flags:
+  IdProductoEstado: "(inferido) ESTADO_DISPONIBLE"
+  IdPropietario: "01"
+  Reservar_Desde_Picking_Antes_Que_Almacenamiento: "(inferido) true"
+  Permite_Explosion_En_Picking: "(inferido) true"
+  Rechazar_Pedido_Si_Esta_Incompleto: "(inferido) true"
+  Permite_Reservar_Lote_Vencido: "(inferido) true  # casos 18-20 usan fechas vencidas"
