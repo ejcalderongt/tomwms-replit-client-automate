@@ -1,17 +1,41 @@
-slug: killios
-display_name: KILLIOS
-country: GT
-notes: |
-  Cliente actual con BD productiva accesible (SQL Server) en modo read-only.
-  Ningún CASO legacy fue escrito específicamente para KILLIOS, pero la mayoría
-  de los IDEAL aplican porque comparten configuración de FEFO básica.
+# Cliente: Killios
+id: killios
+name: "Killios"
+brand: "KILLIOS"
+
+# Estado de aprendizaje. Todos los flags están en null hasta correr
+# brain/skills/wms-test-bridge/sql/learn-config.sql contra la bodega del cliente
+# y volcar la fila resultante.
 learned: false
-learned_at: null
-learned_from: null
+learned_from:
+  branch: null          # dev_2023_merge cuando se ejecute contra Killios PRD
+  bodega: null
+  fecha: null
+
+# Flags reales (nombres exactos de la entidad clsBeI_nav_config_enc).
+# Tipos: ver brain/skills/wms-test-bridge/reference/config-flags.md
 flags:
-  # Llenar con `wmsa learn-config killios` apuntando a la BD prod (read-only).
-  IdProductoEstado: null
-  IdPropietario: null
-  Reservar_Desde_Picking_Antes_Que_Almacenamiento: null
-  Permite_Explosion_En_Picking: null
-  Rechazar_Pedido_Si_Esta_Incompleto: null
+  Rechazar_pedido_incompleto: null   # pendiente learn-config
+  Despachar_existencia_parcial: null   # pendiente learn-config
+  Convertir_decimales_a_umbas: null   # pendiente learn-config
+  Reservar_UMBas_Primero: null   # pendiente learn-config
+  Implosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica: null   # pendiente learn-config
+  Explosion_Automatica_Desde_Ubicacion_Picking: null   # pendiente learn-config
+  Explosion_Automatica_Nivel_Max: null   # pendiente learn-config
+  IdTipoRotacion: null   # pendiente learn-config
+  IdProductoEstado: null   # pendiente learn-config
+  Conservar_Zona_Picking_Clavaud: null   # pendiente learn-config
+  Excluir_Ubicaciones_Reabasto: null   # pendiente learn-config
+  considerar_paletizado_en_reabasto: null   # pendiente learn-config
+  Considerar_Disponibilidad_Ubicacion_Reabasto: null   # pendiente learn-config
+  Valida_Solo_Codigo: null   # pendiente learn-config
+  Control_lote: null   # pendiente learn-config
+  Control_vencimiento: null   # pendiente learn-config
+  Genera_lp: null   # pendiente learn-config
+
+notes: |
+  Cliente Killios. BD prod accesible READ-ONLY (rama dev_2023_merge).
+  Esta es la fuente para learn-config: ejecutar sql/learn-config.sql contra esta BD.
+  Equivalencia funcional con dev_2028_merge: ver ADR-005.
+  Sin hipótesis previas — se llenan los flags desde el resultado del learn.
