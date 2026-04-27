@@ -1,0 +1,39 @@
+# RES-010: Variante CASO 5 (mismo modelado, mismo expected)
+id: RES-010
+version: 1
+category: reservation
+severity: high
+title: "Variante CASO 5 (mismo modelado, mismo expected)"
+summary: |
+  Repite el modelado del CASO 5 con redacción ligeramente distinta. Marcado como duplicado en el catálogo.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+
+input:
+  requested_qty: 150
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 75, vence: "2026-01-01", um: "CJS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 25, vence: "2026-01-02", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 50, vence: "2026-01-03", um: "CJS" }
+
+expected:
+  1. Mismo expected que RES-009 (pick-alm-pick).
+
+legacy_origin:
+  case: "CASO 6"
+  function: "Ejecuta_QA_CASO_6_IDEAL_20231002011136"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "14286-14511"
+
+notes: |
+  Duplicado funcional de RES-009. Candidato a colapso si el bridge implementa idempotencia.
