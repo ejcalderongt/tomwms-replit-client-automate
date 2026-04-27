@@ -1,0 +1,49 @@
+# RES-020: Mix complejo con explosión final desde almacenamiento (G)
+id: RES-020
+version: 1
+category: reservation
+severity: high
+title: "Mix complejo con explosión final desde almacenamiento (G)"
+summary: |
+  Variante del CASO 15 donde el resultado esperado SÍ explota G (25 CJS alm). Esto sugiere que para este escenario Explosion_Automatica_Desde_Ubicacion_Picking debe ser False o que la política cambia entre clientes.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+  - Explosion_Automatica: true
+  - Explosion_Automatica_Desde_Ubicacion_Picking: false  # CLAVE: permite explotar desde alm
+
+input:
+  requested_qty: 16
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 8, vence: "2026-07-02", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 4, vence: "2026-07-04", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 10, vence: "2026-07-03", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 5, vence: "2026-07-06", um: "CJS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 1, vence: "2026-07-01", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 2, vence: "2026-07-03", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 25, vence: "2026-07-04", um: "CJS" }
+
+expected:
+  1. Reserva E (1 UDS alm).
+  2. Reserva A (8 UDS pick).
+  3. Reserva F (2 UDS alm).
+  4. Reserva B (4 UDS pick).
+  5. Acumulado 15 UDS, falta 1.
+  6. Explota G (25 CJS alm); reserva 1 UDS resultante.
+  7. Pedido completo (16 UDS).
+
+legacy_origin:
+  case: "CASO 16"
+  function: "Ejecuta_QA_CASO_16_IDEAL_202310200156"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "16661-16940"
+
