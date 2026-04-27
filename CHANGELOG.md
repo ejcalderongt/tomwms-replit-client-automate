@@ -4,6 +4,130 @@ Todos los cambios relevantes del modulo PowerShell `WmsBrainClient`.
 Formato: [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 versionado semantico.
 
+## [Unreleased]
+
+### Added
+- **Cmdlet nuevo `Show-WmsBrainQuickStart`** — guia interactiva de inicio
+  rapido. Imprime un dashboard one-shot con: header (version del modulo,
+  schema esperado vs detectado), pre-flight (resumen de
+  `Test-WmsBrainEnvironment`), tabla de variables de entorno relevantes
+  con su estado (OK / MISSING / SET con redaccion para secretos),
+  proximos pasos sugeridos en orden segun lo que falte, y 4-5 ejemplos
+  copy-paste para empezar a usar el modulo. Switches:
+  * `-SetMissing` — abre prompts `Read-Host` para cada variable critica
+    faltante y la setea para la sesion (los secretos via
+    `-AsSecureString`).
+  * `-Persist` — junto con `-SetMissing`, ademas persiste cada var en
+    el scope `User`. Las variables marcadas como secretas (DB password,
+    tokens) NUNCA se persisten en disco aunque se pase `-Persist`,
+    quedan solo para la sesion actual.
+  * `-Compact` — solo header + proximos pasos, omite pre-flight,
+    variables y ejemplos. Util cuando ya conoces el modulo.
+
+  Devuelve un `PSCustomObject` con `ModuleVersion`,
+  `ExpectedSchemaVersion`, `DetectedSchemaVersion`, `EnvSummary`
+  (hashtable nombre->estado) y `NextSteps` (array de strings sugeridos),
+  asi puede consumirse desde scripts. El catalogo de variables relevantes
+  esta declarado al inicio de la funcion y es facil de extender.
+
+  Tambien se enriquecio el bloque `Get-Help` (`.EXAMPLE`, `.OUTPUTS`,
+  `.LINK`) de los cmdlets de mayor uso al arrancar:
+  `Show-WmsBrainStatus`, `Test-WmsBrainEnvironment`,
+  `New-WmsBrainQuestionEvent`, `Submit-WmsBrainAnswer`.
+
+  Sube `FunctionsToExport` de 23 a 24 funciones.
+
+### Changed
+- `scripts/install.ps1` ahora **pinea** las dependencias `powershell-yaml`
+  (`0.4.7`) y `SqlServer` (`22.3.0`) via `Install-Module -RequiredVersion`,
+  para que dos personas que corran el instalador en dias distintos terminen
+  con el mismo build (misma idea que el pin de Pester en CI). Las versiones
+  viven en `$PinnedDependencyVersions` arriba del bloque de dependencias y
+  estan documentadas en `README.md` ("Versiones pinneadas"), junto con las
+  instrucciones para bumpearlas.
+- **Bridge bump a `SCHEMA_VERSION="2"`** en `scripts/brain_bridge.mjs`
+  (rama `main` del exchange, Task #21, 2026-04-27). El bridge ahora
+  procesa end-to-end los tipos `question_request` / `question_answer` /
+  `learning_proposed` y el status terminal `answered`, con dispatcher
+  `analyze` por tipo y side-effect que flipea automaticamente el
+  `question_request` referenciado a `status="answered"` cuando se
+  procesa su `question_answer`. Validacion en `notify` que rechaza
+  `schema_version="1"` con tipos v2-only. Cobertura end-to-end en
+  `scripts/test_brain_bridge_v2.mjs`. Consecuencia operativa: el cliente
+  PowerShell detecta `SCHEMA_VERSION="2"` via
+  `Get-WmsBrainBridgeSchemaVersion` y emite los tipos nativos sin
+  override; el workaround `directive`+`tags` documentado en
+  `docs/PROTOCOL.md` §5 quedo marcado como **OBSOLETO**, y la propuesta
+  formal `docs/EXTENSION-V2-PROPOSAL.md` §7 quedo cerrada en su
+  totalidad. Los eventos schema v1 siguen siendo validos (cambio
+  aditivo, sin migracion de eventos viejos).
+
+### Added
+- Soporte nativo para schema v2 del bridge en los **cuatro** cmdlets de
+  eventos extendidos (Tasks #13 + #20). Cuando el bridge expone
+  `SCHEMA_VERSION="2"` se emite:
+  * `type=question_request` (desde `New-WmsBrainQuestionEvent`) con
+    `schema_version="2"`, `ref.question_id`, `ref.question_card_path`,
+    `ref.rama_repo='wms-brain-client'`, `context.targets[]` y
+    `context.expected_outputs[]` (en vez de `directive` +
+    `tags=["question",Q-NNN,...]`).
+  * `type=question_answer` (desde `Submit-WmsBrainAnswer` y
+    `New-WmsBrainAnswerEvent`) con `schema_version="2"`,
+    `status="answered"` (terminal), `ref.answers_question_id`,
+    `ref.answer_card_path`, `context.verdict`, `context.confidence` (en
+    vez de `directive` + `tags=["answer",A-NNN,Q-NNN]`).
+  * `type=learning_proposed` (desde `New-WmsBrainLearningEvent`) con
+    `schema_version="2"`, `status="pending"`, `ref.learning_id`,
+    `ref.learning_card_path` (si se pasó card),
+    `ref.source_question_id` (si se pasó `-SourceQuestionId`) y
+    `context.scope` (en vez de `directive` +
+    `tags=["learning",L-NNN,scope,...]`).
+- Helper privado `Get-WmsBrainEffectiveSchemaVersion` que resuelve la
+  versión efectiva en este orden: `-LegacyDirective` → fuerza `'1'`;
+  `$env:WMS_BRAIN_FORCE_V1` truthy (`1`/`true`/`yes`/`on`,
+  case-insensitive) → fuerza `'1'`; lectura de `SCHEMA_VERSION` en
+  `$env:WMS_BRAIN_EXCHANGE_REPO_MAIN\scripts\brain_bridge.mjs`; fallback
+  `'1'` si no hay bridge accesible. Garantiza que sin bridge confirmado
+  el cliente sigue en comportamiento legacy.
+- Switch `-LegacyDirective` en los cuatro cmdlets de eventos extendidos
+  (`New-WmsBrainQuestionEvent`, `Submit-WmsBrainAnswer`,
+  `New-WmsBrainAnswerEvent`, `New-WmsBrainLearningEvent`) para forzar
+  emisión legacy v1 puntual sin tener que setear/limpiar la variable de
+  entorno global. Los cuatro cmdlets ahora devuelven `SchemaVersion` y
+  `EmittedType` en el resultado para auditoría.
+- Parámetros nuevos en `New-WmsBrainEvent` necesarios para sostener v2
+  sin romper consumidores v1: `-SchemaVersion '1'|'2'` (default `'1'`),
+  `-Status` (default `'pending'`, habilita `'answered'`), `-RefExtra` y
+  `-ContextExtra` (hashtables que se mergean sobre el shape base).
+  La `[ValidateSet]` de `-Type` se extendió con
+  `question_request`/`question_answer`/`learning_proposed`; la validación
+  cruzada (type vs schema_version) la sigue haciendo
+  `Test-WmsBrainEventShape`.
+- Tests Pester nuevos/extendidos en `tests/Pester/SchemaV2.Tests.ps1`
+  cubriendo: helper de detección (5 ramas), `New-WmsBrainEvent` con v2
+  (incluyendo rechazo de combinaciones inválidas),
+  `New-WmsBrainQuestionEvent` rama v1 default + rama v2 con bridge
+  mockeado + override `-LegacyDirective` + override `WMS_BRAIN_FORCE_V1`,
+  `Submit-WmsBrainAnswer` rama v1 default + rama v2 con bridge mockeado
+  + override `-LegacyDirective`, `New-WmsBrainAnswerEvent` rama v1
+  default + rama v2 (`question_answer`/`status="answered"`) + override
+  `-LegacyDirective` + override `WMS_BRAIN_FORCE_V1`, y
+  `New-WmsBrainLearningEvent` rama v1 default + rama v2 con card +
+  `-SourceQuestionId` + rama v2 minimal sin card/source + override
+  `-LegacyDirective` + override `WMS_BRAIN_FORCE_V1` (Task #20).
+- `tests/Pester/AnswerLearningEvent.Tests.ps1` ahora snapshotea y limpia
+  `WMS_BRAIN_FORCE_V1` y `WMS_BRAIN_EXCHANGE_REPO_MAIN` en el setup,
+  para que las aserciones legacy v1 no queden flakeando si el host del
+  runner ya tuviera esas variables apuntando a un bridge v2.
+
+### Changed
+- `docs/EXTENSION-V2-PROPOSAL.md` actualiza §8 documentando que el
+  cliente PowerShell ya implementa la emisión v2 en los cuatro cmdlets
+  de eventos extendidos (Tasks #13 + #20). §8.5 marca como migrados
+  `New-WmsBrainAnswerEvent` y `New-WmsBrainLearningEvent`; resta el bump
+  del bridge en `scripts/brain_bridge.mjs` rama `main` para que tome
+  efecto en producción y limpiar el workaround del PROTOCOL.md §5.
+
 ## [0.2.0] - 2026-04-27
 
 ### Added

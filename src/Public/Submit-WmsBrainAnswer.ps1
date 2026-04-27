@@ -33,8 +33,76 @@ function Submit-WmsBrainAnswer {
 .PARAMETER ClientRepo
     Default: $env:WMS_BRAIN_CLIENT_REPO.
 
+.PARAMETER LegacyDirective
+    Fuerza el comportamiento legacy (schema v1, type=directive con
+    tags=["answer",...]) incluso si el bridge ya soporta v2. Tambien se
+    puede setear $env:WMS_BRAIN_FORCE_V1 a un valor truthy (1/true/yes/on)
+    para el mismo efecto. Cuando el bridge esta en v2 (y ningun override
+    aplica), se emite type=question_answer con status='answered'.
+
+.OUTPUTS
+    PSCustomObject con AnswerId (A-NNN asignado), QuestionId,
+    AnswerPath (path al .md promovido), EventId, EventPath,
+    SchemaVersion (1 | 2) y EmittedType (directive | question_answer
+    si se notifico, o $null si se uso -NoNotify).
+
 .EXAMPLE
     Submit-WmsBrainAnswer -QuestionId Q-001 -Verdict confirmed -Confidence high
+
+    Caso default: lee el draft local (en $env:TEMP\WmsBrainClient\drafts\Q-001\
+    answer.md), lo sanitiza, lo promueve a answers/A-NNN-q-001.md y
+    notifica al brain.
+
+.EXAMPLE
+    # Forzar emision legacy aun si el bridge ya esta en v2
+    Submit-WmsBrainAnswer -QuestionId Q-001 -Verdict confirmed `
+        -Confidence high -LegacyDirective
+
+    Util durante una transicion de bridge o si el lado consumidor
+    todavia no procesa question_answer.
+
+.EXAMPLE
+    # Editar el draft antes de promover y notificar
+    Submit-WmsBrainAnswer -QuestionId Q-005 -Verdict partial `
+        -Confidence medium -EditNotes
+
+    Abre el draft con notepad/code (segun $env:VISUAL/$env:EDITOR)
+    para retocar antes de promoverlo. Util para tunear redaccion.
+
+.EXAMPLE
+    # Solo escribir el .md, no notificar al brain
+    Submit-WmsBrainAnswer -QuestionId Q-002 -Verdict inconclusive `
+        -Confidence low -NoNotify
+
+    Escribe answers/A-NNN-q-002.md pero NO genera ni encola
+    brain_event. Util si todavia no queres avisar al brain o si vas
+    a notificar a mano despues con New-WmsBrainAnswerEvent.
+
+.EXAMPLE
+    # Workflow completo desde cero
+    Invoke-WmsBrainQuestion -Id Q-008 -Profile BB-PRD     # corre queries, deja draft
+    # ...edita el draft a mano si hace falta...
+    Submit-WmsBrainAnswer -QuestionId Q-008 -Verdict confirmed -Confidence high
+
+    Pipeline tipico end-to-end: investigar -> redactar -> promover y
+    notificar.
+
+.EXAMPLE
+    # Dry-run usando -WhatIf
+    Submit-WmsBrainAnswer -QuestionId Q-001 -Verdict rejected `
+        -Confidence high -WhatIf
+
+    Muestra que .md se va a escribir sin tocar disco (ConfirmImpact=High,
+    asi que igual va a pedir confirmacion sin -WhatIf).
+
+.LINK
+    New-WmsBrainQuestionEvent
+
+.LINK
+    Invoke-WmsBrainQuestion
+
+.LINK
+    Show-WmsBrainQuickStart
 #>
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param(
@@ -48,7 +116,8 @@ function Submit-WmsBrainAnswer {
         [string] $DraftPath,
         [switch] $EditNotes,
         [switch] $NoNotify,
-        [string] $ClientRepo
+        [string] $ClientRepo,
+        [switch] $LegacyDirective
     )
 
     if (-not $ClientRepo) { $ClientRepo = $env:WMS_BRAIN_CLIENT_REPO }
@@ -119,12 +188,39 @@ function Submit-WmsBrainAnswer {
 
     $eventId = $null
     $eventPath = $null
+    $emittedType = $null
+    $effectiveSv = Get-WmsBrainEffectiveSchemaVersion -LegacyDirective:$LegacyDirective
     if (-not $NoNotify) {
-        $msg = "Respuesta a $QuestionId. Verdict=$Verdict, confidence=$Confidence. Card en wms-brain-client/answers/$finalName."
+        $relAnswerPath = "wms-brain-client/answers/$finalName"
+        $msg = "Respuesta a $QuestionId. Verdict=$Verdict, confidence=$Confidence. Card en $relAnswerPath."
         $tags = @('answer', $aId, $QuestionId)
-        $evt = New-WmsBrainEvent -Type directive -Source openclaw -Message $msg -Tags $tags `
-            -FilesChanged @("wms-brain-client/answers/$finalName") `
-            -Confirm:$false
+
+        if ($effectiveSv -eq '2') {
+            $emittedType = 'question_answer'
+            $refExtra = [ordered]@{
+                answers_question_id = $QuestionId
+                answer_card_path    = $relAnswerPath
+            }
+            $contextExtra = [ordered]@{
+                verdict    = $Verdict
+                confidence = $Confidence
+            }
+            Write-WmsBrainLog -Cmdlet 'Submit-WmsBrainAnswer' -Level 'INFO' `
+                -Message "emitiendo question_answer (schema v2, status=answered) para $aId -> $QuestionId"
+            $evt = New-WmsBrainEvent -Type question_answer -Source openclaw -Message $msg -Tags $tags `
+                -FilesChanged @($relAnswerPath) `
+                -SchemaVersion '2' -Status 'answered' `
+                -RefExtra $refExtra -ContextExtra $contextExtra `
+                -Confirm:$false
+        } else {
+            $emittedType = 'directive'
+            Write-WmsBrainLog -Cmdlet 'Submit-WmsBrainAnswer' -Level 'INFO' `
+                -Message "emitiendo directive (workaround v1) para $aId -> $QuestionId"
+            $evt = New-WmsBrainEvent -Type directive -Source openclaw -Message $msg -Tags $tags `
+                -FilesChanged @($relAnswerPath) `
+                -Confirm:$false
+        }
+
         $eventId = $evt.Id
         $eventPath = $evt.Path
         try {
@@ -136,10 +232,12 @@ function Submit-WmsBrainAnswer {
     }
 
     [PSCustomObject]@{
-        AnswerId    = $aId
-        QuestionId  = $QuestionId
-        AnswerPath  = $finalPath
-        EventId     = $eventId
-        EventPath   = $eventPath
+        AnswerId      = $aId
+        QuestionId    = $QuestionId
+        AnswerPath    = $finalPath
+        EventId       = $eventId
+        EventPath     = $eventPath
+        SchemaVersion = $effectiveSv
+        EmittedType   = $emittedType
     }
 }

@@ -31,7 +31,8 @@
         'Show-WmsBrainQuestion',
         'Invoke-WmsBrainQuestion',
         'Submit-WmsBrainAnswer',
-        'Show-WmsBrainStatus'
+        'Show-WmsBrainStatus',
+        'Show-WmsBrainQuickStart'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

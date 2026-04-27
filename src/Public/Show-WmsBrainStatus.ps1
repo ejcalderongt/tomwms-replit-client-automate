@@ -11,8 +11,34 @@ function Show-WmsBrainStatus {
     - Cantidad de eventos pendientes (segun Get-WmsBrainEventQueue, si reachable)
     - Cantidad de questions pendientes (segun Get-WmsBrainQuestion)
 
+.OUTPUTS
+    PSCustomObject con ModuleVersion, ExpectedSchemaVersion,
+    DetectedSchemaVersion, SchemaMatch (bool), EventsPending,
+    QuestionsPending. Util para chequeos rapidos en scripts.
+
 .EXAMPLE
     Show-WmsBrainStatus
+
+    Imprime el banner y devuelve el objeto de estado.
+
+.EXAMPLE
+    $s = Show-WmsBrainStatus
+    if (-not $s.SchemaMatch) {
+        Write-Warning "Schema mismatch: cliente=$($s.ExpectedSchemaVersion) bridge=$($s.DetectedSchemaVersion)"
+    }
+
+    Captura el output para programar logica condicional sobre el match.
+
+.EXAMPLE
+    Show-WmsBrainStatus | Select-Object -ExpandProperty EventsPending
+
+    Cuenta rapida de eventos pendientes en la cola del bridge.
+
+.LINK
+    Show-WmsBrainQuickStart
+
+.LINK
+    Test-WmsBrainEnvironment
 
 .NOTES
     No falla si algun chequeo no es resoluble; solo deja '-' o 'n/a'.

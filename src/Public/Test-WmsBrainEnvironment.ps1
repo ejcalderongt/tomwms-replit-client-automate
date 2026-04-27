@@ -22,11 +22,46 @@ function Test-WmsBrainEnvironment {
     Se eligio throw en vez de exit para no matar la sesion del host del
     llamador desde adentro de un cmdlet de modulo.
 
+.OUTPUTS
+    Lista de PSCustomObject con Level (OK | WARN | ERROR), Section
+    (nombre del chequeo) y Detail (mensaje libre). En modo `-Strict`,
+    si algun chequeo es ERROR ademas lanza un terminating error con
+    codigo logico 3.
+
+.EXAMPLE
+    Test-WmsBrainEnvironment
+
+    Imprime el reporte y devuelve la lista de chequeos. No falla
+    aunque haya ERRORs.
+
 .EXAMPLE
     Test-WmsBrainEnvironment -Strict
 
+    Igual, pero si hay algun chequeo en ERROR lanza terminating error
+    (codigo 3). Para gating en pipelines / scripts.
+
+.EXAMPLE
+    Test-WmsBrainEnvironment | Where-Object Level -ne 'OK' | Format-Table -Auto
+
+    Filtra solo lo que esta WARN o ERROR para foco rapido.
+
+.EXAMPLE
+    $report = Test-WmsBrainEnvironment
+    $missing = @($report | Where-Object { $_.Level -eq 'ERROR' -and $_.Detail -like '*not set*' })
+    Write-Host "Te faltan $($missing.Count) variables criticas."
+
+    Programa logica condicional sobre los chequeos.
+
+.LINK
+    Show-WmsBrainQuickStart
+
+.LINK
+    Show-WmsBrainStatus
+
 .NOTES
     Nunca imprime el contenido de WMS_KILLIOS_DB_PASSWORD ni de tokens.
+    Para una guia interactiva con prompts para setear las vars
+    faltantes, usar `Show-WmsBrainQuickStart -SetMissing`.
 #>
     [CmdletBinding()]
     param(
