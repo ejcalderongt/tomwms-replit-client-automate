@@ -1,0 +1,3236 @@
+{
+  "generatedAt": "2026-04-27T04:48:58.215Z",
+  "source": "TOMWMS_KILLIOS_PRD",
+  "tables": {
+    "trans_re_det_lote_num": {
+      "rowCount": "180181",
+      "columns": [
+        {
+          "name": "IdLoteNum",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcionEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Codigo",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Lote",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Lote_Numerico",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "FechaIngreso",
+          "type": "date",
+          "len": 3,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Cantidad",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdLoteNum"
+      ],
+      "modifyDate": "2022-12-17T09:39:31.110"
+    },
+    "trans_movimientos": {
+      "rowCount": "81641",
+      "columns": [
+        {
+          "name": "IdMovimiento",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdEmpresa",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdBodegaOrigen",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdTransaccion",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacionOrigen",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacionDestino",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdEstadoOrigen",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdEstadoDestino",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedida",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdTipoTarea",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdBodegaDestino",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "serie",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lote",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_vence",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "barra_pallet",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "hora_ini",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "hora_fin",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "usuario_agr",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_hist",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_hist",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lic_plate",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcionDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdDespachoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdDespachoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdEmpresa",
+        "IdBodegaOrigen",
+        "IdTransaccion",
+        "IdMovimiento"
+      ],
+      "modifyDate": "2024-07-02T12:30:47.473"
+    },
+    "trans_picking_ubic": {
+      "rowCount": "26567",
+      "columns": [
+        {
+          "name": "IdPickingUbic",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPickingEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPickingDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStock",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoEstado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedida",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacionAnterior",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcion",
+          "type": "bigint",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lote",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_vence",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_minima",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "serial",
+          "type": "nvarchar",
+          "len": 70,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lic_plate",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "acepto",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_solicitado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_recibido",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_verificado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_despachado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_solicitada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_recibida",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_verificada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "encontrado",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "dañado_verificacion",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_real_vence",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_packing",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_picking",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_verificado",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_packing",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_despachado",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_despachada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "activo",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "dañado_picking",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStockRes",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "lic_plate_reemplazo",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacion_reemplazo",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStock_reemplazo",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega_Pickeo",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega_Verifico",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_encontrado",
+          "type": "bit",
+          "len": 1,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacionTemporal",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega_Asignado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdPickingUbic"
+      ],
+      "modifyDate": "2025-07-16T15:39:09.247"
+    },
+    "trans_pe_det_log_reserva": {
+      "rowCount": "22576",
+      "columns": [
+        {
+          "name": "IdLogReserva",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Fecha",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "Line_No",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Item_No",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "UmBas",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Variant_Code",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "MensajeLog",
+          "type": "nvarchar",
+          "len": -1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Cantidad",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Caso_Reserva",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "EsError",
+          "type": "bit",
+          "len": 1,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "Referencia_Documento",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Fecha_Vence",
+          "type": "date",
+          "len": 3,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStock",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStockRes",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdLogReserva"
+      ],
+      "modifyDate": "2024-02-01T14:19:39.697"
+    },
+    "trans_picking_ubic_stock": {
+      "rowCount": "20437",
+      "columns": [
+        {
+          "name": "IdPickingUbicStock",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPickingUbic",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPickingDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStock",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStockRes",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoEstado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedida",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacionAnterior",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcion",
+          "type": "bigint",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "idpickingenc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega_Pickeo",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega_Verifico",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lote",
+          "type": "nvarchar",
+          "len": 70,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_vence",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_minima",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "serial",
+          "type": "nvarchar",
+          "len": 70,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "licencia",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_recibida",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_verificada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_pickeado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_verificado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_picking",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_verificado",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_despachado",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_despachada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "activo",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacionTemporal",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega_Asignado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcionDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "procesado_bof",
+          "type": "bit",
+          "len": 1,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdUsuario_bof_pickeo",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_procesado_bof",
+          "type": "date",
+          "len": 3,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_pickeada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "host",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdMovimiento",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdPickingUbicStock"
+      ],
+      "modifyDate": "2025-04-21T18:31:00.680"
+    },
+    "trans_despacho_det": {
+      "rowCount": "19799",
+      "columns": [
+        {
+          "name": "IdDespachoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdDespachoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPickingUbic",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "Fecha",
+          "type": "datetime",
+          "len": 8,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "activo",
+          "type": "bit",
+          "len": 1,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedidaBasica",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Codigo",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "NombreProducto",
+          "type": "nvarchar",
+          "len": 500,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "NombreEstado",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "CantidadDespachada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "PesoDespachado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoEstado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdDespachoDet"
+      ],
+      "modifyDate": "2025-02-11T23:43:50.497"
+    },
+    "trans_pe_det": {
+      "rowCount": "14819",
+      "columns": [
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdEstado",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedidaBasica",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Cantidad",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Peso",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Precio",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_recepcion",
+          "type": "bigint",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "ndias",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cant_despachada",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "codigo_producto",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nombre_producto",
+          "type": "nvarchar",
+          "len": 200,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nom_presentacion",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nom_unid_med",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nom_estado",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 60,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_especifica",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadDes",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadDesMon",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadTotal",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadPrecioDoc",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadVAL1",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadVAL2",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadCantProc",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_despachado",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_linea",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "atributo_variante_1",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdStockEspecifico",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "EsPadre",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDetPadre",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Peso_Bruto",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Peso_Neto",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Costo",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "valor_aduana",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "valor_fob",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "valor_iva",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "valor_dai",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "valor_seguro",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "valor_flete",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Total_linea",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdCliente",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdPedidoDet"
+      ],
+      "modifyDate": "2024-07-02T12:22:17.500"
+    },
+    "trans_picking_det": {
+      "rowCount": "14585",
+      "columns": [
+        {
+          "name": "IdPickingDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPickingEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cliente_dias",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_recibida",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "activo",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "codigo",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nombre",
+          "type": "nvarchar",
+          "len": 200,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdPickingDet"
+      ],
+      "modifyDate": "2023-10-30T05:18:25.450"
+    },
+    "trans_picking_op": {
+      "rowCount": "5895",
+      "columns": [
+        {
+          "name": "IdOperadorPicking",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPickingEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 60,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdOperadorPicking"
+      ],
+      "modifyDate": "2024-02-01T14:24:45.960"
+    },
+    "trans_inv_stock": {
+      "rowCount": "4540",
+      "columns": [
+        {
+          "name": "idinventario",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdStock",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdProductoEstado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedida",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacion",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdUbicacion_anterior",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcionEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcionDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPickingEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdDespachoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lote",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lic_plate",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "serial",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_ingreso",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_vence",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "uds_lic_plate",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_bulto",
+          "type": "nvarchar",
+          "len": 40,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_manufactura",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "añada",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "activo",
+          "type": "bit",
+          "len": 1,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "peso",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "temperatura",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_copia",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "idinventario",
+        "IdStock"
+      ],
+      "modifyDate": "2025-02-11T23:41:21.940"
+    },
+    "trans_re_det": {
+      "rowCount": "4394",
+      "columns": [
+        {
+          "name": "IdRecepcionDet",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdRecepcionEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdUnidadMedida",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdProductoEstado",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOperadorBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdMotivoDevolucion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "No_Linea",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "cantidad_recibida",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nombre_producto",
+          "type": "nvarchar",
+          "len": 200,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nombre_presentacion",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nombre_unidad_medida",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "nombre_producto_estado",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lote",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_vence",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_ingreso",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_estadistico",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_minimo",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_maximo",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "peso_unitario",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "observacion",
+          "type": "nvarchar",
+          "len": 300,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "añada",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "costo",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "costo_oc",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "costo_estadistico",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "atributo_variante_1",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "codigo_producto",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "lic_plate",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "pallet_no_estandar",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOrdenCompraEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdOrdenCompraDet",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdJornadaSistema",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "host",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdRecepcionDet",
+        "IdRecepcionEnc"
+      ],
+      "modifyDate": "2024-10-15T23:41:00.113"
+    },
+    "trans_pe_enc": {
+      "rowCount": "4202",
+      "columns": [
+        {
+          "name": "IdPedidoEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": false,
+          "identity": false
+        },
+        {
+          "name": "IdBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdCliente",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdMuelle",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdTipoPedido",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdPickingEnc",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Fecha_Pedido",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "hora_ini",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "hora_fin",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "ubicacion",
+          "type": "nvarchar",
+          "len": 70,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "estado",
+          "type": "nvarchar",
+          "len": 40,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_despacho",
+          "type": "bigint",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "activo",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_agr",
+          "type": "nvarchar",
+          "len": 60,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_agr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "user_mod",
+          "type": "nvarchar",
+          "len": 60,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fec_mod",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_documento",
+          "type": "bigint",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "local",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "pallet_primero",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "dias_cliente",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "anulado",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadKilometraje",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadFechaEntr",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadDirEntrega",
+          "type": "nvarchar",
+          "len": 510,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadTotal",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadDesMonto",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadImpMonto",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadPeso",
+          "type": "float",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadBandera",
+          "type": "nvarchar",
+          "len": 10,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadStatCom",
+          "type": "nvarchar",
+          "len": 2,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadCalcoBJ",
+          "type": "nvarchar",
+          "len": 2,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadImpres",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadADD1",
+          "type": "nvarchar",
+          "len": 10,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadADD2",
+          "type": "nvarchar",
+          "len": 10,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadADD3",
+          "type": "nvarchar",
+          "len": 70,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadStatProc",
+          "type": "nvarchar",
+          "len": 6,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadRechazado",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadRazon_Rechazado",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadInformado",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadSucursal",
+          "type": "nvarchar",
+          "len": 20,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadIdDespacho",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadIdFacturacion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadIdRuta",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadIdVendedor",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadIdRutaDespacho",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "RoadIdVendedorDespacho",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Observacion",
+          "type": "nvarchar",
+          "len": 510,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "PedidoRoad",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "HoraEntregaDesde",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "HoraEntregaHasta",
+          "type": "datetime",
+          "len": 8,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "referencia",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdMotivoAnulacionBodega",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Enviado_A_ERP",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "control_ultimo_lote",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "serie",
+          "type": "nvarchar",
+          "len": 50,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "correlativo",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Referencia_Documento_Ingreso_Bodega_Destino",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "sync_mi3",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "No_Picking_ERP",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "no_documento_externo",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "requiere_tarimas",
+          "type": "bit",
+          "len": 1,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "fecha_preparacion",
+          "type": "date",
+          "len": 3,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdTipoManufactura",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "bodega_origen",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "bodega_destino",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "IdMotivoDevolucion",
+          "type": "int",
+          "len": 4,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "Codigo_Empresa_ERP",
+          "type": "nvarchar",
+          "len": 100,
+          "nullable": true,
+          "identity": false
+        },
+        {
+          "name": "EsExportacion",
+          "type": "bit",
+          "len": 1,
+          "nullable": false,
+          "identity": false
+        }
+      ],
+      "pk": [
+        "IdPedidoEnc"
+      ],
+      "modifyDate": "2025-06-11T07:34:55.330"
+    }
+  },
+  "allTransSummary": [
+    {
+      "name": "trans_re_det_lote_num",
+      "rows": "180181",
+      "modifyDate": "2022-12-17T09:39:31.110"
+    },
+    {
+      "name": "trans_movimientos",
+      "rows": "81641",
+      "modifyDate": "2024-07-02T12:30:47.473"
+    },
+    {
+      "name": "trans_picking_ubic",
+      "rows": "26567",
+      "modifyDate": "2025-07-16T15:39:09.247"
+    },
+    {
+      "name": "trans_pe_det_log_reserva",
+      "rows": "22576",
+      "modifyDate": "2024-02-01T14:19:39.697"
+    },
+    {
+      "name": "trans_picking_ubic_stock",
+      "rows": "20437",
+      "modifyDate": "2025-04-21T18:31:00.680"
+    },
+    {
+      "name": "trans_despacho_det",
+      "rows": "19799",
+      "modifyDate": "2025-02-11T23:43:50.497"
+    },
+    {
+      "name": "trans_pe_det",
+      "rows": "14819",
+      "modifyDate": "2024-07-02T12:22:17.500"
+    },
+    {
+      "name": "trans_picking_det",
+      "rows": "14585",
+      "modifyDate": "2023-10-30T05:18:25.450"
+    },
+    {
+      "name": "trans_picking_op",
+      "rows": "5895",
+      "modifyDate": "2024-02-01T14:24:45.960"
+    },
+    {
+      "name": "trans_inv_stock",
+      "rows": "4540",
+      "modifyDate": "2025-02-11T23:41:21.940"
+    },
+    {
+      "name": "trans_re_det",
+      "rows": "4394",
+      "modifyDate": "2024-10-15T23:41:00.113"
+    },
+    {
+      "name": "trans_pe_enc",
+      "rows": "4202",
+      "modifyDate": "2025-06-11T07:34:55.330"
+    },
+    {
+      "name": "trans_despacho_enc",
+      "rows": "4032",
+      "modifyDate": "2025-02-11T23:41:55.510"
+    },
+    {
+      "name": "trans_inv_detalle",
+      "rows": "2942",
+      "modifyDate": "2023-01-25T10:07:58.420"
+    },
+    {
+      "name": "trans_inv_resumen",
+      "rows": "2571",
+      "modifyDate": "2024-09-12T08:30:50.483"
+    },
+    {
+      "name": "trans_ajuste_det",
+      "rows": "2113",
+      "modifyDate": "2025-02-11T23:42:13.913"
+    },
+    {
+      "name": "trans_oc_det",
+      "rows": "1907",
+      "modifyDate": "2024-07-02T12:24:53.387"
+    },
+    {
+      "name": "trans_re_op",
+      "rows": "1644",
+      "modifyDate": "2023-08-21T09:17:48.530"
+    },
+    {
+      "name": "trans_picking_enc",
+      "rows": "1293",
+      "modifyDate": "2025-06-25T14:09:33.087"
+    },
+    {
+      "name": "trans_reabastecimiento_log",
+      "rows": "1218",
+      "modifyDate": "2023-02-27T10:57:05.990"
+    },
+    {
+      "name": "trans_inv_stock_prod",
+      "rows": "1153",
+      "modifyDate": "2025-05-22T00:03:27.900"
+    },
+    {
+      "name": "trans_oc_det_lote",
+      "rows": "1078",
+      "modifyDate": "2023-08-21T09:18:17.113"
+    },
+    {
+      "name": "trans_ajuste_enc",
+      "rows": "825",
+      "modifyDate": "2025-02-11T23:41:09.083"
+    },
+    {
+      "name": "trans_log_pedido_liberacion",
+      "rows": "715",
+      "modifyDate": "2023-02-09T06:25:35.523"
+    },
+    {
+      "name": "trans_ubic_hh_det",
+      "rows": "695",
+      "modifyDate": "2024-07-02T12:21:36.820"
+    },
+    {
+      "name": "trans_ubic_hh_stock",
+      "rows": "683",
+      "modifyDate": "2023-08-21T09:18:16.833"
+    },
+    {
+      "name": "trans_re_enc",
+      "rows": "576",
+      "modifyDate": "2024-02-01T14:26:36.217"
+    },
+    {
+      "name": "trans_re_oc",
+      "rows": "576",
+      "modifyDate": "2023-08-21T09:18:17.020"
+    },
+    {
+      "name": "trans_oc_enc",
+      "rows": "558",
+      "modifyDate": "2025-05-05T19:05:40.333"
+    },
+    {
+      "name": "trans_movimiento_pallet",
+      "rows": "245",
+      "modifyDate": "2023-08-21T09:18:16.943"
+    },
+    {
+      "name": "trans_ubic_hh_op",
+      "rows": "145",
+      "modifyDate": "2018-01-19T14:03:02.270"
+    },
+    {
+      "name": "trans_log_reubic_stock_res",
+      "rows": "84",
+      "modifyDate": "2023-08-21T09:18:17.147"
+    },
+    {
+      "name": "trans_ubic_hh_enc",
+      "rows": "77",
+      "modifyDate": "2026-02-11T16:20:37.060"
+    },
+    {
+      "name": "trans_inv_tramo",
+      "rows": "54",
+      "modifyDate": "2023-08-21T09:18:17.103"
+    },
+    {
+      "name": "trans_pe_docu_ref",
+      "rows": "20",
+      "modifyDate": "2021-08-25T09:41:50.947"
+    },
+    {
+      "name": "trans_oc_ti",
+      "rows": "15",
+      "modifyDate": "2025-04-01T10:21:38.163"
+    },
+    {
+      "name": "trans_packing_enc",
+      "rows": "13",
+      "modifyDate": "2025-07-16T15:39:09.283"
+    },
+    {
+      "name": "trans_re_tr",
+      "rows": "10",
+      "modifyDate": "2018-10-11T09:06:19.440"
+    },
+    {
+      "name": "trans_oc_estado",
+      "rows": "6",
+      "modifyDate": "2018-04-12T12:13:16.813"
+    },
+    {
+      "name": "trans_pe_tipo",
+      "rows": "6",
+      "modifyDate": "2025-08-01T11:53:48.137"
+    },
+    {
+      "name": "trans_inv_enc",
+      "rows": "3",
+      "modifyDate": "2024-09-12T08:28:10.327"
+    },
+    {
+      "name": "trans_inv_ne",
+      "rows": "1",
+      "modifyDate": "2019-04-08T09:40:07.443"
+    },
+    {
+      "name": "trans_acuerdoscomerciales_det",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:27:44.823"
+    },
+    {
+      "name": "trans_acuerdoscomerciales_enc",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:27:44.820"
+    },
+    {
+      "name": "trans_ajuste_det_doc",
+      "rows": "0",
+      "modifyDate": "2018-08-28T22:46:57.670"
+    },
+    {
+      "name": "trans_bodega_ubicaciones_excel",
+      "rows": "0",
+      "modifyDate": "2024-02-02T22:01:29.903"
+    },
+    {
+      "name": "trans_despacho_det_lote_num",
+      "rows": "0",
+      "modifyDate": "2019-05-21T16:16:42.813"
+    },
+    {
+      "name": "trans_inv_ciclico",
+      "rows": "0",
+      "modifyDate": "2025-07-16T15:39:23.187"
+    },
+    {
+      "name": "trans_inv_ciclico_ubic",
+      "rows": "0",
+      "modifyDate": "2020-02-04T18:30:56.120"
+    },
+    {
+      "name": "trans_inv_enc_reconteo",
+      "rows": "0",
+      "modifyDate": "2018-10-03T22:00:53.243"
+    },
+    {
+      "name": "trans_inv_operador",
+      "rows": "0",
+      "modifyDate": "2021-12-01T14:38:52.120"
+    },
+    {
+      "name": "trans_inv_reconteo",
+      "rows": "0",
+      "modifyDate": "2019-09-02T09:35:45.583"
+    },
+    {
+      "name": "trans_inv_teorico_erp",
+      "rows": "0",
+      "modifyDate": "2024-09-12T08:30:57.017"
+    },
+    {
+      "name": "trans_inventario_det",
+      "rows": "0",
+      "modifyDate": "2020-02-14T11:42:55.647"
+    },
+    {
+      "name": "trans_inventario_enc",
+      "rows": "0",
+      "modifyDate": "2016-05-16T15:11:10.457"
+    },
+    {
+      "name": "trans_manufactura_det",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:22:17.500"
+    },
+    {
+      "name": "trans_manufactura_enc",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:22:17.500"
+    },
+    {
+      "name": "trans_manufactura_picking",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:22:17.507"
+    },
+    {
+      "name": "trans_manufactura_tipo",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:22:17.477"
+    },
+    {
+      "name": "trans_oc_docu_ref",
+      "rows": "0",
+      "modifyDate": "2021-09-08T00:26:38.017"
+    },
+    {
+      "name": "trans_oc_embarcador",
+      "rows": "0",
+      "modifyDate": "2022-03-07T15:06:31.853"
+    },
+    {
+      "name": "trans_oc_imagen",
+      "rows": "0",
+      "modifyDate": "2018-04-12T12:13:17.120"
+    },
+    {
+      "name": "trans_oc_pol",
+      "rows": "0",
+      "modifyDate": "2024-02-01T14:18:12.703"
+    },
+    {
+      "name": "trans_oc_servicios",
+      "rows": "0",
+      "modifyDate": "2021-08-25T09:30:07.967"
+    },
+    {
+      "name": "trans_pe_pol",
+      "rows": "0",
+      "modifyDate": "2024-10-01T20:58:44.960"
+    },
+    {
+      "name": "trans_pe_servicios",
+      "rows": "0",
+      "modifyDate": "2021-05-28T00:08:54.847"
+    },
+    {
+      "name": "trans_picking_det_parametros",
+      "rows": "0",
+      "modifyDate": "2020-01-25T08:47:16.460"
+    },
+    {
+      "name": "trans_picking_img",
+      "rows": "0",
+      "modifyDate": "2023-10-30T05:18:25.450"
+    },
+    {
+      "name": "trans_picking_prioridad",
+      "rows": "0",
+      "modifyDate": "2024-07-02T12:29:54.490"
+    },
+    {
+      "name": "trans_prefactura_det",
+      "rows": "0",
+      "modifyDate": "2024-09-12T08:29:48.720"
+    },
+    {
+      "name": "trans_prefactura_enc",
+      "rows": "0",
+      "modifyDate": "2024-09-12T08:29:41.300"
+    },
+    {
+      "name": "trans_prefactura_mov",
+      "rows": "0",
+      "modifyDate": "2024-09-12T08:29:54.637"
+    },
+    {
+      "name": "trans_re_det_infraccion",
+      "rows": "0",
+      "modifyDate": "2018-10-11T09:06:20.210"
+    },
+    {
+      "name": "trans_re_det_parametros",
+      "rows": "0",
+      "modifyDate": "2018-01-19T14:03:02.093"
+    },
+    {
+      "name": "trans_re_fact",
+      "rows": "0",
+      "modifyDate": "2018-10-11T09:06:20.357"
+    },
+    {
+      "name": "trans_re_img",
+      "rows": "0",
+      "modifyDate": "2018-10-11T09:06:20.523"
+    },
+    {
+      "name": "trans_series_doc",
+      "rows": "0",
+      "modifyDate": "2022-07-02T15:04:39.400"
+    },
+    {
+      "name": "trans_servicio_det",
+      "rows": "0",
+      "modifyDate": "2021-08-25T09:33:26.680"
+    },
+    {
+      "name": "trans_servicio_enc",
+      "rows": "0",
+      "modifyDate": "2021-08-25T09:33:26.680"
+    },
+    {
+      "name": "trans_tras_det",
+      "rows": "0",
+      "modifyDate": "2018-01-11T12:12:36.270"
+    },
+    {
+      "name": "trans_tras_enc",
+      "rows": "0",
+      "modifyDate": "2016-07-12T18:10:23.973"
+    },
+    {
+      "name": "trans_tras_op",
+      "rows": "0",
+      "modifyDate": "2018-01-19T14:03:02.273"
+    },
+    {
+      "name": "trans_ubic_hh_se",
+      "rows": "0",
+      "modifyDate": "2016-07-11T15:16:42.080"
+    },
+    {
+      "name": "trans_ubic_tarima",
+      "rows": "0",
+      "modifyDate": "2016-07-20T13:34:52.007"
+    }
+  ]
+}
