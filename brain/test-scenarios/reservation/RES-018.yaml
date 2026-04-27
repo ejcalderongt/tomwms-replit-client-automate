@@ -1,0 +1,44 @@
+# RES-018: Falta stock pero hay caja en picking explotable — completa con explosión
+id: RES-018
+version: 1
+category: reservation
+severity: high
+title: "Falta stock pero hay caja en picking explotable — completa con explosión"
+summary: |
+  Espejo del CASO 13: la caja está en picking. Tras reservar 15 alm + 10 pick = 25, debe explotar la caja en pick para sacar la última UD faltante. Validar que NO reserve las 26 UDS desde la explosión sino solo la diferencia.
+
+requires_config:
+  - Explosion_Automatica: true
+  - Explosion_Automatica_Desde_Ubicacion_Picking: true
+  - Explosion_Automatica_Nivel_Max: ">= 1"
+
+input:
+  requested_qty: 26
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 10, vence: "2026-12-30", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 15, vence: "2026-12-01", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 1, vence: "2026-12-10", um: "CJS" }
+
+expected:
+  1. Reserva 15 UDS alm.
+  2. Reserva 10 UDS pick.
+  3. Explota 1 CJ pick; reserva 1 UDS resultante.
+  4. Pedido completo (26 UDS).
+  5. Saldo: UDS sobrantes de la caja explotada quedan en pick.
+
+legacy_origin:
+  case: "CASO 14"
+  function: "Ejecuta_QA_CASO_14_IDEAL_20231002011201"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "16140-16388"
+
+notes: |
+  Asserción extra del legacy: validar que no reserve las 26 UDS desde la caja explotada (no debe ignorar el stock suelto preexistente).
