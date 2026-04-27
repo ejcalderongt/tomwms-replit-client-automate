@@ -1,0 +1,38 @@
+# RES-006: FEFO domina ubicación: alm fc cubre, pick fs completa el resto
+id: RES-006
+version: 1
+category: reservation
+severity: high
+title: "FEFO domina ubicación: alm fc cubre, pick fs completa el resto"
+summary: |
+  Hay 75 cajas en almacenamiento con vencimiento corto y 200 cajas en picking con vencimiento posterior. Se solicita 80. Debe reservar 75 desde almacenamiento (más cortas) y completar las 5 restantes desde picking.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+
+input:
+  requested_qty: 80
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 75, vence: "2026-01-01", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 200, vence: "2026-01-02", um: "CJS" }
+
+expected:
+  1. Reserva 75 CJS desde ALMACENAMIENTO (vence 2026-01-01).
+  2. Reserva 5 CJS desde PICKING (vence 2026-01-02).
+  3. Pedido marcado completo. Sin sobrante reservado.
+
+legacy_origin:
+  case: "CASO 2"
+  function: "Ejecuta_QA_CASO_2_IDEAL_20231002011120"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "13348-13577"
+
