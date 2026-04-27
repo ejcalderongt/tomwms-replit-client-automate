@@ -1,0 +1,191 @@
+{
+  "generatedAt": "2026-04-27T05:31:32.443Z",
+  "locales": [
+    "default",
+    "round"
+  ],
+  "totalStringsDefault": 33,
+  "byLocale": {
+    "default": {
+      "file": "/app/src/main/res/values/strings.xml",
+      "count": 33
+    },
+    "round": {
+      "file": "/app/src/main/res/values-round/strings.xml",
+      "count": 1
+    }
+  },
+  "defaultStrings": {
+    "app_name": "TOMWMS",
+    "buscar": "Buscar",
+    "consulta_de_existencia_trx8": "Consulta de Existencia - TRX8",
+    "title_activity_frm_inv_cic_conteo": "frm_inv_cic_conteo",
+    "hello_world": "Hello Square World!",
+    "title_activity_frm_consulta_stock_detalle_c_i": "frm_consulta_stock_detalleCI",
+    "regs_0": "Regs: 0",
+    "nueva": "Nueva",
+    "tareas_de_preparaci_n": "Tareas de preparación",
+    "tarea": "Tarea:",
+    "tom_wms": "TOMWMS",
+    "_19_oct_2021a": "19-Oct-2021A",
+    "textview": "TextView",
+    "inicio_de_sesi_n": "Inicio de sesión",
+    "fecha_version": "21-04-2026",
+    "no_version": "Versión",
+    "por_favor_espere": "Por favor espere...",
+    "vence": "Vence:",
+    "u_m_bas": "U.M. Bas.:",
+    "licencia": "Licencia",
+    "_0en0405140000717": "0EN0405140000717",
+    "vence_en_0_d_as": "Vence en: 0 días",
+    "confirmar": "Confirmar",
+    "c_digo": "Código:",
+    "lote": "Lote:",
+    "presentaci_n": "Presentación:",
+    "reemplazo": "Reemplazo",
+    "no_encontrado": "No Encontrado",
+    "camas_x_tarima_cajas_x_cama": "Camas X Tarima - Cajas X Cama",
+    "cantidad": "Cantidad:",
+    "peso": "Peso:",
+    "estado": "Estado:",
+    "_1008049944_aceite_ideal_maiz_60_ml": "1008049944 - Aceite Ideal Maiz 60 ml"
+  },
+  "otherLocales": {
+    "round": {
+      "hello_world": "Hello Round World!"
+    }
+  },
+  "stringUsage": {
+    "app_name": [
+      "list_adapt_tareas_verificacion",
+      "MainActivity",
+      "Mainmenu",
+      "frm_cambio_ubicacion_ciega",
+      "frm_cambio_ubicacion_dirigida",
+      "frm_detalle_cambio_ubicacion",
+      "frm_tareas_cambio_ubicacion",
+      "frm_consulta_stock",
+      "frm_consulta_stock_detalleCI",
+      "frm_inv_cic_add",
+      "frm_inv_cic_conteo",
+      "frm_inv_cic_guardar",
+      "frm_inv_ini_contados",
+      "frm_inv_ini_conteo",
+      "frm_inv_ini_tramos",
+      "frm_inv_ini_verificacion",
+      "frm_inv_ini_verificados",
+      "frm_Packing",
+      "frm_list_packing_cerrados",
+      "frm_lista_packing",
+      "frm_lista_packing_lotes",
+      "frm_preparacion_packing",
+      "frm_preparacion_packing_bulto",
+      "frm_danado_picking",
+      "frm_detalle_tareas_picking",
+      "frm_editar_ubicacion_picking",
+      "frm_list_prod_reemplazo_picking",
+      "frm_picking_datos",
+      "frm_guardar_rfid",
+      "frm_procesar_rfid",
+      "frm_recepcion_rfid",
+      "frm_datos_reabastecimiento",
+      "frm_detalle_ingresos",
+      "frm_list_rec_prod",
+      "frm_list_rec_prod_detalle",
+      "frm_lista_tareas_recepcion",
+      "frm_rec_ftos",
+      "frm_recepcion_datos",
+      "frm_recepcion_datos_original",
+      "frm_danado_verificacion",
+      "frm_detalle_tareas_verificacion",
+      "frm_list_prod_reemplazo_verif",
+      "frm_verificacion_consolidada_detalle",
+      "frm_verificacion_datos"
+    ],
+    "buscar": [],
+    "consulta_de_existencia_trx8": [
+      "@layout/activity_frm_consulta_stock",
+      "@layout/activity_frm_consulta_stock2"
+    ],
+    "title_activity_frm_inv_cic_conteo": [],
+    "hello_world": [],
+    "title_activity_frm_consulta_stock_detalle_c_i": [],
+    "regs_0": [
+      "@layout/activity_frm_lista_packing"
+    ],
+    "nueva": [
+      "@layout/activity_frm_lista_packing"
+    ],
+    "tareas_de_preparaci_n": [
+      "@layout/activity_frm_lista_packing"
+    ],
+    "tarea": [
+      "@layout/activity_frm_lista_packing"
+    ],
+    "tom_wms": [
+      "@layout/activity_main"
+    ],
+    "_19_oct_2021a": [],
+    "textview": [],
+    "inicio_de_sesi_n": [
+      "@layout/activity_main"
+    ],
+    "fecha_version": [
+      "@layout/activity_main"
+    ],
+    "no_version": [
+      "@layout/activity_main",
+      "@layout/activity_mainmenu"
+    ],
+    "por_favor_espere": [
+      "@layout/dialog_loading"
+    ],
+    "vence": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "u_m_bas": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "licencia": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "_0en0405140000717": [],
+    "vence_en_0_d_as": [],
+    "confirmar": [],
+    "c_digo": [
+      "@layout/activity_frm_consulta_stock",
+      "@layout/activity_frm_consulta_stock2",
+      "@layout/activity_frm_picking_datos"
+    ],
+    "lote": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "presentaci_n": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "reemplazo": [
+      "@layout/activity_frm_picking_datos",
+      "@layout/activity_frm_verificacion_datos"
+    ],
+    "no_encontrado": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "camas_x_tarima_cajas_x_cama": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "cantidad": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "peso": [
+      "@layout/activity_frm_picking_datos"
+    ],
+    "estado": [
+      "@layout/activity_frm_consulta_stock",
+      "@layout/activity_frm_consulta_stock2",
+      "@layout/activity_frm_picking_datos"
+    ],
+    "_1008049944_aceite_ideal_maiz_60_ml": [
+      "@layout/activity_frm_picking_datos"
+    ]
+  }
+}
