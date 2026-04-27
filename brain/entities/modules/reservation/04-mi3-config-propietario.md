@@ -1,224 +1,264 @@
-# 04 · Matriz de configuración del propietario que afecta al motor MI3
+# 04 · Matriz de configuración del motor MI3 (tabla `i_nav_config_enc`)
 
-> **Propósito**: documentar exhaustivamente las columnas de `propietarios` (singular en el código VB.NET aunque la **tabla en Killios es PLURAL**) y `propietario_bodega` que modifican el comportamiento del motor de reservas MI3, con su efecto puntual y dónde se evalúa cada flag tanto en el motor nuevo como en el legacy.
+> **CORRECCIÓN respecto a la versión anterior**: la versión 1 de este documento ubicaba erróneamente los flags del motor MI3 en la tabla `propietarios`. Tras consulta READ-ONLY a Killios productivo (`52.41.114.122,1437`, BD `TOMWMS_KILLIOS_PRD`), se confirmó que:
 >
-> **Contexto crítico**: las dos plurales/singulares reales en BD son:
+> - La tabla `propietarios` (PLURAL, 23 cols) **solo contiene datos básicos del propietario** (contacto, dirección, NIT, etc.) y NO contiene flags del motor.
+> - La tabla `propietario_bodega` (SINGULAR, 8 cols) **solo contiene el binding propietario↔bodega** con flag `activo`. NO contiene `Politica_FEFO_Override`, `Zona_Picking_Reservada_Para` ni `Tolerancia_Decimal_Bodega` (campos inventados en versión anterior).
+> - **Los flags del motor MI3 viven en `i_nav_config_enc`** (69 cols) con granularidad `(idempresa, idbodega, idPropietario, idUsuario)`. Esto significa que la configuración del motor es **por combinación bodega+propietario+usuario**, no por propietario global.
 >
-> - `propietarios` → **PLURAL** (23 columnas, validado en passada 3-2 contra Killios `52.41.114.122,1437` BD `TOMWMS_KILLIOS_PRD`)
-> - `propietario_bodega` → **SINGULAR** (8 columnas)
+> Esta es la versión corregida con schema validado contra Killios productivo el 2026-04-27.
 >
-> Esto está documentado en `replit.md` §5 y validado en `passada-3-2-killios/`. Cualquier confusión en el nombre de la tabla causa errores silenciosos en queries DAL.
->
-> **Cross-refs**: `01-mi3-motor-nuevo-net8.md`, `02-mi3-motor-legacy-vb.md`, `03-comparison.md`, `decisions/003-mi3-reescrito.md`, `sql-catalog/reservation-tables.md`.
+> **Cross-refs**: `01-mi3-motor-nuevo-net8.md`, `02-mi3-motor-legacy-vb.md`, `03-comparison.md`, `decisions/003-mi3-reescrito.md`, `sql-catalog/reservation-tables.md` (a producir).
 
 ---
 
 ## Índice
 
-1. Tabla `propietarios` (23 cols) — flags que afectan al motor MI3
-2. Tabla `propietario_bodega` (8 cols) — flags que afectan al motor MI3
-3. Matriz de comportamiento por combinación de flags
-4. Mapeo de cada flag al codepoint exacto (legacy y nuevo)
-5. Combinaciones tóxicas y validaciones recomendadas
-6. Impacto operativo por bodega (cómo cambiar config sin romper pedidos en curso)
-7. Plantilla de auditoría de propietario (lectura SQL READ-ONLY)
+1. Tabla `i_nav_config_enc` (69 cols) — granularidad y flags MI3
+2. Tabla `propietarios` (23 cols) — solo datos básicos
+3. Tabla `propietario_bodega` (8 cols) — binding
+4. Tabla `bodega` — flags relacionados (Interface_SAP)
+5. Mapeo de cada flag al codepoint exacto (legacy y nuevo)
+6. Typo histórico: `explosio_automatica_nivel_max` vs `explosion_automatica_nivel_max`
+7. Combinaciones tóxicas y validaciones recomendadas
+8. Plantilla de auditoría READ-ONLY
 
 ---
 
-## 1. Tabla `propietarios` (PLURAL · 23 cols)
+## 1. Tabla `i_nav_config_enc` (69 cols) · granularidad y flags MI3
 
-> Validado contra Killios productivo. Solo se listan las columnas con efecto en el motor de reservas MI3. Otras columnas (datos de empresa, dirección, configs no relacionadas) se omiten.
+### 1.1 Identidad y granularidad
 
-| Columna BD                                       | Tipo       | Default | Efecto en motor MI3 |
-|--------------------------------------------------|------------|---------|---------------------|
-| `IdPropietario`                                  | int (PK)   | —       | Identificador. Cargado al inicio del setup vía `Cargar_Bodega_Y_Linea_Pedido` / `EntityLoadingStep`. |
-| `Conservar_Zona_Picking_Clavaud`                 | bit        | 0       | Si = 1, activa CASO_1 (`CompletePackagesHandler`) y CASO_2 (`IncompletePackagesHandler`). El motor evalúa pallets completos/incompletos antes de tocar zona picking. |
-| `Permitir_Explosion_Presentacion`                | bit        | 0       | Si = 1, el motor nuevo activa `TryEnableExplosionFallback` cuando los handlers principales no completan la cantidad. Si = 0, fallo directo con `NO_STOCK`. |
-| `Permitir_UMBas_Fallback`                        | bit        | 0       | Si = 1, el motor activa `TryEnableUMBasFallback` (busca en UMBas con `IdPresentacion = 0`). Análogo a la recursión `No_bulto = 1965` del legacy. |
-| `Explosion_Automatica`                           | bit        | 0       | Si = 1, ejecuta explosión cuando `pStockResSolicitud.IdPresentacion = 0`. Es el flag "padre" de la lógica de explosión. |
-| `Explosion_Automatica_Nivel_Max`                 | int        | 0       | Si > 0, limita la explosión a ubicaciones con `Nivel <= valor`. Si = 0, sin límite de nivel. Evaluado en CASO_1 legacy L1320-L1333. |
-| `Explosion_Automatica_Desde_Ubicacion_Picking`   | bit        | 0       | Si = 1, permite explosionar **desde** ubicaciones marcadas `Ubicacion_picking = true`. Si = 0, salta esas ubicaciones (`Continue For`). |
-| `Rechazar_pedido_incompleto`                     | tinyint    | 0       | Enum `tRechazarPedidoIncompleto` (`No=0`, `Si=1`, `Solo_Si_Hay_Stock=2`). Si = `Si`, lanza `NO_STOCK` cuando hay pendiente; si = `No`, devuelve `Partial`. |
-| `considerar_paletizado_en_reabasto`              | bit        | 0       | Si = 1 y la solicitud es `pTarea_Reabasto = True` y no hay tarimas completas, **legacy** abre MessageBox + `Exit Function`; **nuevo** emite `NO_STOCK` con mensaje específico. |
-| `Interface_SAP`                                  | bit        | 0       | Si = 1 y el producto tiene `Reservar_En_UmBas = true`, fuerza `vBusquedaEnUmBas = True` y resetea `IdPresentacion = 0`. Especialmente para clientes que sincronizan con SAP (Killios). |
-| `Tolerancia_Decimal`                             | float      | 0.000001 | Override del default. Se usa en comparaciones `cantidad <= tolerancia` para considerar "cero". Raramente cambiado en producción. |
-| `Idbodega` (default por propietario)             | int        | 0       | No es un flag de motor sino el bodega default que se asigna si el request no especifica. |
+```
+PK:                 idnavconfigenc int identity
+Granularidad:       (idempresa, idbodega, idPropietario, idUsuario)
+Mapeo en código:    clsBeI_nav_config_enc (entidad VB.NET)
+```
 
-> **Observación importante**: en la `clsBeI_nav_config_enc` (mapeo en C#) algunas de estas columnas conservan el nombre exacto, otras se exponen con PascalCase. La regla práctica: el código VB.NET respeta el naming de BD (`Conservar_Zona_Picking_Clavaud`), el código C# nuevo usa la misma convención por compat con la deserialización.
+> **Implicación operativa**: cada combinación de empresa+bodega+propietario+usuario puede tener su propia configuración del motor. En la práctica `idUsuario` suele ser NULL (config a nivel propietario+bodega), pero el schema permite override por usuario.
 
-## 2. Tabla `propietario_bodega` (SINGULAR · 8 cols)
+### 1.2 Flags que afectan al motor MI3
 
-| Columna BD                       | Tipo       | Default | Efecto en motor MI3 |
-|----------------------------------|------------|---------|---------------------|
-| `IdPropietarioBodega`            | int (PK)   | —       | Identificador del binding propietario↔bodega. |
-| `IdPropietario`                  | int (FK)   | —       | FK a `propietarios.IdPropietario`. |
-| `IdBodega`                       | int (FK)   | —       | FK a `bodegas.IdBodega`. |
-| `Activo`                         | bit        | 1       | Si = 0, no se considera para reservas. |
-| `Permite_Reabasto`               | bit        | 1       | Si = 0, ignora la bodega en flujos de reabasto. |
-| `Politica_FEFO_Override`         | tinyint    | NULL    | Permite override del FEFO global por bodega. NULL = usa FEFO estándar. |
-| `Zona_Picking_Reservada_Para`    | varchar(50)| NULL    | Si seteada, restringe la zona picking a un cliente o tipo de pedido específico. |
-| `Tolerancia_Decimal_Bodega`      | float      | NULL    | Override de la tolerancia decimal a nivel bodega. Si NULL, usa el de propietarios. |
+| Columna BD                                          | Tipo  | Default | Efecto en motor MI3 |
+|-----------------------------------------------------|-------|---------|---------------------|
+| `rechazar_pedido_incompleto`                        | int   | NULL    | Enum `tRechazarPedidoIncompleto` (`No=0`, `Si=1`, `Solo_Si_Hay_Stock=2`). Si = `Si`, lanza `NO_STOCK` cuando hay pendiente; si = `No`, devuelve `Partial`. Nota: es **int**, no bit. |
+| `despachar_existencia_parcial`                      | int   | NULL    | Si > 0, permite despachar parcialmente (relacionado pero distinto a `rechazar_pedido_incompleto`). |
+| `convertir_decimales_a_umbas`                       | int   | NULL    | Si > 0, convierte cantidades fraccionales a UMBas en vez de rechazar. |
+| `reservar_umbas_primero`                            | bit   | 0 NOT NULL | Si = 1, prioriza la búsqueda en UMBas antes que la búsqueda en presentación. Equivalente conceptual al `Permitir_UMBas_Fallback` que documenté erróneamente en v1. |
+| `implosion_automatica`                              | bit   | 0 NOT NULL | Si = 1, permite consolidar UMBas sueltas en presentación (operación inversa a explosión). Para escenarios de reabasto. |
+| `explosion_automatica`                              | bit   | 0 NOT NULL | Si = 1, ejecuta explosión cuando `pStockResSolicitud.IdPresentacion = 0`. Es el flag "padre" de la lógica de explosión. |
+| `Ejecutar_En_Despacho_Automaticamente`              | bit   | 0 NOT NULL | Si = 1, la explosión/implosión ocurre durante el despacho (no en reserva). |
+| `IdTipoRotacion`                                    | int   | NULL    | Política FEFO/LIFO/FIFO (por defecto FEFO si NULL). Mapeado vía catálogo. |
+| `explosio_automatica_nivel_max` ⚠️ TYPO            | int   | NULL    | **Columna histórica con typo** (sin `n` en "explosio"). Se mantiene por compat. Ver §6. |
+| `explosion_automatica_nivel_max`                    | int   | NULL    | Versión corregida del flag. Limita explosión a ubicaciones con `Nivel <= valor`. Si NULL o 0, sin límite. **El código tiene que decidir cuál de las dos usar** — riesgo abierto. |
+| `explosion_automatica_desde_ubicacion_picking`      | bit   | NULL    | Si = 1, permite explosionar desde ubicaciones marcadas `Ubicacion_picking = true`. Si = 0/NULL, salta esas ubicaciones. |
+| `conservar_zona_picking_clavaud`                    | bit   | NULL    | Si = 1, activa CASO_1 (`CompletePackagesHandler`) y CASO_2 (`IncompletePackagesHandler`). El motor evalúa pallets completos/incompletos antes de tocar zona picking. |
+| `excluir_ubicaciones_reabasto`                      | bit   | 0 NOT NULL | Si = 1, las ubicaciones marcadas para reabasto se excluyen de las búsquedas de stock. |
+| `considerar_paletizado_en_reabasto`                 | bit   | 0 NOT NULL | Si = 1 y la solicitud es `pTarea_Reabasto = True` y no hay tarimas completas, **legacy** abre MessageBox + `Exit Function`; **nuevo** emite `NO_STOCK` con mensaje específico. |
+| `considerar_disponibilidad_ubicacion_reabasto`      | bit   | 0 NOT NULL | Si = 1, valida que la ubicación destino del reabasto tenga disponibilidad antes de generar la tarea. |
+| `dias_vida_defecto_perecederos`                     | int   | 0 NOT NULL | Días mínimos de vida útil que un stock debe tener para ser elegible. Sobrescribe el default global. |
+| `interface_sap`                                     | bit   | 0 NOT NULL | Si = 1 y el producto tiene `Reservar_En_UmBas = true`, fuerza modo UMBas y resetea `IdPresentacion = 0`. Especialmente para clientes que sincronizan con SAP (Killios). |
+| `excluir_recepcion_picking`                         | bit   | 0 NOT NULL | Si = 1, la recepción no genera stock en ubicaciones picking (va directo a ALM). |
 
-> Las columnas `Politica_FEFO_Override`, `Zona_Picking_Reservada_Para` y `Tolerancia_Decimal_Bodega` están definidas en el schema pero su uso operativo es bajo. Documentadas para completitud.
+### 1.3 Flags **NO existentes** que documenté erróneamente en v1
 
-## 3. Matriz de comportamiento por combinación de flags
+| Flag inventado en v1                | Realidad                                                         |
+|-------------------------------------|------------------------------------------------------------------|
+| `Permitir_Explosion_Presentacion`   | NO EXISTE. La explosión se controla solo con `explosion_automatica`. |
+| `Permitir_UMBas_Fallback`           | NO EXISTE. El equivalente es `reservar_umbas_primero` o `convertir_decimales_a_umbas`. |
+| `Tolerancia_Decimal` (en propietarios) | NO EXISTE. Está **hardcoded `0.000001`** en el motor. |
+| `Politica_FEFO_Override` (en propietario_bodega) | NO EXISTE. Equivalente real: `IdTipoRotacion` en `i_nav_config_enc`. |
+| `Zona_Picking_Reservada_Para` (en propietario_bodega) | NO EXISTE. |
+| `Tolerancia_Decimal_Bodega` (en propietario_bodega) | NO EXISTE. |
 
-Las combinaciones más frecuentes en clientes productivos:
+### 1.4 Implicación crítica de la granularidad
 
-### 3.1 Cliente Killios (perfil base)
+Como `i_nav_config_enc` se filtra por `(idempresa, idbodega, idPropietario, idUsuario)`, cualquier carga de config en el motor MI3 debe especificar las 3-4 claves. El método `Cargar_Bodega_Y_Linea_Pedido` del legacy (y `EntityLoadingStep` del nuevo) hace esta carga pasando typically `idUsuario = NULL` para obtener la config "default" del propietario+bodega.
 
-| Flag                                            | Valor |
-|-------------------------------------------------|-------|
-| `Conservar_Zona_Picking_Clavaud`                | 1     |
-| `Permitir_Explosion_Presentacion`               | 1     |
-| `Permitir_UMBas_Fallback`                       | 1     |
-| `Explosion_Automatica`                          | 1     |
-| `Explosion_Automatica_Nivel_Max`                | 0 (sin límite) |
-| `Explosion_Automatica_Desde_Ubicacion_Picking`  | 0     |
-| `Rechazar_pedido_incompleto`                    | `No` (devuelve Partial) |
-| `considerar_paletizado_en_reabasto`             | 1     |
-| `Interface_SAP`                                 | 1     |
+> **Riesgo**: si en una bodega+propietario hay 2+ filas en `i_nav_config_enc` (una con `idUsuario` y otra sin), la query puede traer la fila incorrecta. Validar que el WHERE incluya `(idUsuario = @idUsuario OR idUsuario IS NULL) ORDER BY idUsuario DESC` para preferir la específica.
 
-**Comportamiento resultante del motor nuevo**:
+## 2. Tabla `propietarios` (PLURAL · 23 cols) · solo datos básicos
 
-1. Cadena inicial: `[Complete + Incomplete + Picking + NonPicking]`.
-2. Si tras agotar la cadena hay pendiente → `TryEnableExplosionFallback` → cadena `[UMBasExplosion]`.
-3. Si tras explosión hay pendiente → `TryEnableUMBasFallback` → cadena `[UMBasExplosion]` con `IsUMBasModeEnabled = true`.
-4. Si producto tiene `Reservar_En_UmBas = true`, salta directo a UMBas modo SAP.
-5. Si reabasto y no hay tarimas completas → `FailureCode = NO_STOCK` con mensaje específico (no MessageBox).
-6. Resultado parcial es válido (no se lanza excepción).
+| Columna BD                       | Tipo            | Notas |
+|----------------------------------|-----------------|-------|
+| `IdPropietario`                  | int (PK)        | Identificador. |
+| `IdEmpresa`                      | int             | FK empresa. |
+| `IdTipoActualizacionCosto`       | int             | Política de costo. |
+| `contacto`                       | nvarchar(100) NOT NULL | Persona de contacto. |
+| `nombre_comercial`               | nvarchar(100) NOT NULL | Nombre del propietario. |
+| `imagen`                         | image           | Logo. |
+| `telefono`, `direccion`, `email` | nvarchar        | Contacto. |
+| `activo`                         | bit             | Soft-delete. |
+| `user_agr/fec_agr/user_mod/fec_mod` | audit       | Auditoría estándar. |
+| `actualiza_costo_oc`             | bit             | Si actualiza costo desde OC. |
+| `color`, `codigo`, `sistema`     | varios          | Cosmético/identificación. |
+| `NIT`                            | nvarchar(50)    | Identificador fiscal. |
+| `codigo_acceso`, `clave_acceso`  | nvarchar(50)    | Credenciales (poco usado). |
+| `es_consolidador`                | bit             | Marca consolidación logística. |
+| `controlux`                      | bit NOT NULL    | Flag específico ControlLux. |
 
-### 3.2 Cliente conservador (sin Clavaud, sin explosión)
+**No tiene flags del motor MI3**. Si en el código aparece `pBeConfigEnc.Conservar_Zona_Picking_Clavaud`, NO viene de esta tabla — viene de `i_nav_config_enc` cargada vía `Cargar_Bodega_Y_Linea_Pedido`.
 
-| Flag                                            | Valor |
-|-------------------------------------------------|-------|
-| `Conservar_Zona_Picking_Clavaud`                | 0     |
-| `Permitir_Explosion_Presentacion`               | 0     |
-| `Permitir_UMBas_Fallback`                       | 0     |
-| `Explosion_Automatica`                          | 0     |
-| `Rechazar_pedido_incompleto`                    | `Si`  |
+## 3. Tabla `propietario_bodega` (SINGULAR · 8 cols) · binding
 
-**Comportamiento resultante**:
+| Columna BD                       | Tipo  | Notas |
+|----------------------------------|-------|-------|
+| `IdPropietarioBodega`            | int (PK) | Identificador del binding. |
+| `IdPropietario`                  | int FK   | FK a `propietarios.IdPropietario`. |
+| `IdBodega`                       | int FK   | FK a `bodega.IdBodega`. |
+| `user_agr/fec_agr/user_mod/fec_mod` | audit | Auditoría. |
+| `activo`                         | bit      | Si la bodega está activa para el propietario. |
 
-1. Cadena: `[Picking + NonPicking]` (sin handlers Clavaud).
-2. Si hay pendiente al final → excepción con `FailureCode = NO_STOCK`.
-3. Sin fallbacks de explosión ni UMBas.
+**Solo binding + audit + activo**. Ningún flag de comportamiento del motor.
 
-Este perfil se usa típicamente en propietarios pequeños sin necesidad de manejo de pallets ni reservas en UMBas.
+## 4. Tabla `bodega` — flags relacionados
 
-### 3.3 Cliente con explosión restringida
+Solo se documentan los flags relevantes al motor MI3 (la tabla tiene muchas más columnas no relacionadas):
 
-| Flag                                            | Valor |
-|-------------------------------------------------|-------|
-| `Conservar_Zona_Picking_Clavaud`                | 1     |
-| `Explosion_Automatica`                          | 1     |
-| `Explosion_Automatica_Nivel_Max`                | 2     |
-| `Explosion_Automatica_Desde_Ubicacion_Picking`  | 1     |
+| Columna BD                                  | Tipo  | Efecto |
+|---------------------------------------------|-------|--------|
+| `restringir_areas_sap`                      | bit   | Si = 1, restringe áreas de stock al integrar con SAP. |
+| `interface_SAP`                             | bit   | Override a nivel bodega del flag `interface_sap` de `i_nav_config_enc`. |
+| `permitir_decimales`                        | bit   | Permite cantidades fraccionales en reservas. Si = 0, el motor redondea o rechaza. |
+| `permitir_buen_estado_en_reemplazo`         | bit   | Para reservas en flujo de reemplazo (no MI3 directo). |
+| `permitir_no_encontrado_picking`            | bit   | Si = 1, permite picks de stock no localizado físicamente (telltale para auditoría). |
+| `advertir_mpq_umbas`                        | bit   | Advierte cuando UMBas != múltiplo de MPQ del producto. |
 
-**Comportamiento resultante**:
+## 5. Mapeo de cada flag al codepoint exacto
 
-- Explosión solo desde ubicaciones nivel 1 o 2.
-- Sí permite explosionar desde zona picking (no salta).
+| Flag (`i_nav_config_enc`)                            | Legacy (línea / método)                          | Nuevo (clase / método)                              |
+|------------------------------------------------------|--------------------------------------------------|-----------------------------------------------------|
+| `conservar_zona_picking_clavaud`                     | L1276 (`If pBeConfigEnc.Conservar_Zona_Picking_Clavaud Then`) | `BuildHandlerChain` (incluye Complete/Incomplete solo si flag=true), `EvaluateClavaudDynamic` (re-evalúa por iteración) |
+| `explosion_automatica`                               | L1320, L1328, L8059                              | `UMBasExplosionHandler.Process`, `TryEnableExplosionFallback` |
+| `explosion_automatica_nivel_max` (o el typo)         | L1320-L1333                                      | (riesgo abierto §9 de `03-comparison.md`)           |
+| `explosion_automatica_desde_ubicacion_picking`       | L1323, L1328                                     | (analogo en handlers nuevos; verificar)             |
+| `rechazar_pedido_incompleto`                         | L283, L8108                                      | `PostProcessingStep.DetermineFinalStatus` (lanza excepción si flag = 1 y `PendingQuantity > 0`) |
+| `considerar_paletizado_en_reabasto`                  | L1922-L1936                                      | `IncompletePackagesHandler.CanProcess`              |
+| `interface_sap`                                      | L270                                             | `EntityLoadingStep.LoadProducto` o `ReservationLoopStep` (verificar) |
+| `reservar_umbas_primero`                             | (verificar en código legacy)                     | `ReservationLoopStep` (orden de invocación)         |
+| `convertir_decimales_a_umbas`                        | (verificar en código legacy)                     | `ReservationLoopStep.TryEnableUMBasFallback`        |
+| `dias_vida_defecto_perecederos`                      | implícito en `IsExpired`                         | `BaseReservationHandler.IsExpired`                  |
+| `excluir_ubicaciones_reabasto`                       | (verificar en query de stock)                    | `StockQueryStep`                                    |
+| `IdTipoRotacion`                                     | (verificar)                                      | `BaseReservationHandler` ordering                   |
 
-## 4. Mapeo de cada flag al codepoint exacto
+## 6. Typo histórico: `explosio_automatica_nivel_max` vs `explosion_automatica_nivel_max`
 
-| Flag | Legacy (línea / método) | Nuevo (clase / método) |
-|------|--------------------------|------------------------|
-| `Conservar_Zona_Picking_Clavaud` | L1276 (`If pBeConfigEnc.Conservar_Zona_Picking_Clavaud Then`) | `BuildHandlerChain` (incluye Complete/Incomplete solo si flag=true), `EvaluateClavaudDynamic` (re-evalúa por iteración) |
-| `Permitir_Explosion_Presentacion` | (implícito, mezclado con Explosion_Automatica) | `ReservationLoopStep.TryEnableExplosionFallback` |
-| `Permitir_UMBas_Fallback` | (implícito, mezclado con Explosion_Automatica) | `ReservationLoopStep.TryEnableUMBasFallback` |
-| `Explosion_Automatica` | L1320, L1328, L8059 | `UMBasExplosionHandler.Process`, `TryEnableExplosionFallback` |
-| `Explosion_Automatica_Nivel_Max` | L1320-L1333 | (riesgo abierto §9 de `03-comparison.md`: pendiente verificar paridad línea-a-línea en `ReservationLoopStep.cs` o handlers) |
-| `Explosion_Automatica_Desde_Ubicacion_Picking` | L1323, L1328 | (analogo en handlers nuevos; verificar) |
-| `Rechazar_pedido_incompleto` | L283, L8108 | `PostProcessingStep.DetermineFinalStatus` (lanza excepción si flag = Si y `PendingQuantity > 0`) |
-| `considerar_paletizado_en_reabasto` | L1922-L1936 | `IncompletePackagesHandler.CanProcess` (emite NO_STOCK específico) |
-| `Interface_SAP` | L270 | `EntityLoadingStep.LoadProducto` o `ReservationLoopStep` (verificar) |
-| `Tolerancia_Decimal` | hardcoded `0.000001` en varios sitios | hardcoded `0.000001` en `ReservationContext` y handlers (override no implementado aún) |
+La tabla `i_nav_config_enc` tiene **dos columnas** que parecen referirse al mismo concepto:
 
-## 5. Combinaciones tóxicas y validaciones recomendadas
+```
+explosio_automatica_nivel_max int(10) NULL   ← typo histórico (falta la 'n')
+explosion_automatica_nivel_max int(10) NULL   ← versión corregida
+```
 
-### 5.1 `Explosion_Automatica = 1` + `Permitir_Explosion_Presentacion = 0`
+### 6.1 Hipótesis del origen
 
-**Inconsistente**: el flag padre permite explosión pero el flag específico la bloquea. En el legacy esta combinación generaba comportamiento ambiguo (a veces explosionaba, a veces no, según el camino tomado). En el motor nuevo, `TryEnableExplosionFallback` respeta `Permitir_Explosion_Presentacion`; el flag `Explosion_Automatica` solo afecta a la lógica interna del handler UMBas/Explosion.
+En algún momento del histórico, la columna se creó con typo. Posteriormente se agregó la columna corregida pero **no se eliminó la original** (probablemente por temor a romper código que la consultaba). Resultado: el código legacy puede leer cualquiera de las dos.
 
-**Validación**: agregar a la auditoría: `Explosion_Automatica = 1 AND Permitir_Explosion_Presentacion = 0` debería emitir warning.
+### 6.2 Riesgo
 
-### 5.2 `Conservar_Zona_Picking_Clavaud = 0` + `considerar_paletizado_en_reabasto = 1`
+1. Si el código nuevo lee `explosion_automatica_nivel_max` pero el código legacy persistente lee `explosio_automatica_nivel_max`, las configuraciones quedan desincronizadas.
+2. Cualquier UI de admin que cambie un valor podría escribir solo en una de las dos columnas, dejando la otra obsoleta.
+3. La query de auditoría debe verificar **ambas** columnas y alertar si difieren.
+
+### 6.3 Acción recomendada
+
+Auditar:
+
+```sql
+SELECT
+    idnavconfigenc, idbodega, idPropietario,
+    explosio_automatica_nivel_max  AS Typo,
+    explosion_automatica_nivel_max AS Correcta,
+    CASE WHEN ISNULL(explosio_automatica_nivel_max, -1)
+            <> ISNULL(explosion_automatica_nivel_max, -1)
+         THEN 'INCONSISTENT' ELSE 'OK' END AS Status
+FROM i_nav_config_enc
+WHERE explosio_automatica_nivel_max IS NOT NULL
+   OR explosion_automatica_nivel_max IS NOT NULL;
+```
+
+Si `Status = INCONSISTENT`, decidir cuál es la fuente de verdad y unificar (por canal autorizado del DBA, no desde aquí).
+
+## 7. Combinaciones tóxicas y validaciones recomendadas
+
+### 7.1 `explosion_automatica = 1` + `explosion_automatica_desde_ubicacion_picking = 0` + sin pallets en ALM
+
+**Resultado**: explosión activada pero no encuentra dónde explotar. El motor degrada a `Failed` con `NO_STOCK`.
+
+### 7.2 `conservar_zona_picking_clavaud = 0` + `considerar_paletizado_en_reabasto = 1`
 
 **Inconsistente**: si no se conservan pallets en zona picking, el flag de paletizado en reabasto no tiene cómo evaluar tarimas completas. Legacy lo ignora silenciosamente; nuevo emite warning en logs.
 
-### 5.3 `Permitir_UMBas_Fallback = 1` + `Interface_SAP = 0`
+### 7.3 `reservar_umbas_primero = 1` + `interface_sap = 0`
 
-**Posible**: válido si el cliente quiere fallback UMBas pero no sincroniza con SAP. La lógica de `Reservar_En_UmBas` del producto no se activa, pero el fallback genérico sigue disponible.
+**Posible**: válido si el cliente quiere prioridad UMBas sin sincronización SAP. La lógica de `Reservar_En_UmBas` del producto no se activa, pero el motor sigue priorizando UMBas en la búsqueda inicial.
 
-### 5.4 `Rechazar_pedido_incompleto = Si` + `Permitir_Explosion_Presentacion = 1`
+### 7.4 `rechazar_pedido_incompleto = 1` + `convertir_decimales_a_umbas = 0`
 
-**Recomendado**: si se rechaza el pedido incompleto, conviene tener todas las opciones de fallback activas para minimizar fallos. Esta combinación es la más común en producción Killios.
+**Recomendado evitar**: si se rechaza el pedido incompleto, conviene tener `convertir_decimales_a_umbas` activo para minimizar fallos por fracciones.
 
-## 6. Impacto operativo por bodega
+### 7.5 Typo + valor (§6)
 
-Cambiar un flag de propietario afecta a **todos los pedidos** que se procesen después del cambio para esa bodega. El motor nuevo:
+**Combinación peor**: una columna tiene valor y la otra está NULL. El código que lea la NULL hará explosión sin límite cuando el otro código limita.
 
-- **NO cachea** la config del propietario más allá de la duración de una sola llamada.
-- **SÍ recarga** `pBeConfigEnc` desde BD al inicio de cada `Reserva_Stock_From_MI3`.
-- **NO hay** invalidación de cache requerida.
-
-Por lo tanto, cambios de config son inmediatos. Recomendación operativa para Erik:
-
-1. Cambios destructivos (apagar `Permitir_Explosion_Presentacion` o `Conservar_Zona_Picking_Clavaud`) hacerlos en ventana de baja carga.
-2. Cambios reversibles (ajustar `Explosion_Automatica_Nivel_Max`) pueden hacerse en cualquier momento.
-3. **Nunca** cambiar `Tolerancia_Decimal` sin pruebas previas: afecta comparaciones de cantidad y puede generar reservas duplicadas o faltantes.
-4. **Nunca** cambiar `Interface_SAP` con pedidos en curso: cambia la rama de UMBas y puede generar inconsistencias entre el `IdPresentacion` reservado y el `IdPresentacion` esperado por SAP.
-
-## 7. Plantilla de auditoría de propietario (READ-ONLY contra Killios)
+## 8. Plantilla de auditoría READ-ONLY
 
 ```sql
--- Verificar config del motor MI3 para un propietario
+-- Config completa de motor MI3 para una bodega+propietario
 SELECT
-    p.IdPropietario,
-    p.Nombre,
-    p.Conservar_Zona_Picking_Clavaud,
-    p.Permitir_Explosion_Presentacion,
-    p.Permitir_UMBas_Fallback,
-    p.Explosion_Automatica,
-    p.Explosion_Automatica_Nivel_Max,
-    p.Explosion_Automatica_Desde_Ubicacion_Picking,
-    p.Rechazar_pedido_incompleto,
-    p.considerar_paletizado_en_reabasto,
-    p.Interface_SAP,
-    p.Tolerancia_Decimal
-FROM propietarios p
-WHERE p.IdPropietario = @IdPropietario;
+    c.idnavconfigenc,
+    c.idempresa, c.idbodega, c.idPropietario, c.idUsuario,
+    c.conservar_zona_picking_clavaud,
+    c.explosion_automatica,
+    c.explosio_automatica_nivel_max,
+    c.explosion_automatica_nivel_max,
+    c.explosion_automatica_desde_ubicacion_picking,
+    c.implosion_automatica,
+    c.reservar_umbas_primero,
+    c.convertir_decimales_a_umbas,
+    c.rechazar_pedido_incompleto,
+    c.despachar_existencia_parcial,
+    c.considerar_paletizado_en_reabasto,
+    c.considerar_disponibilidad_ubicacion_reabasto,
+    c.excluir_ubicaciones_reabasto,
+    c.dias_vida_defecto_perecederos,
+    c.interface_sap,
+    c.IdTipoRotacion,
+    c.Ejecutar_En_Despacho_Automaticamente
+FROM i_nav_config_enc c
+WHERE c.idempresa = @IdEmpresa
+  AND c.idbodega = @IdBodega
+  AND c.idPropietario = @IdPropietario
+ORDER BY c.idUsuario DESC; -- Específica primero, NULL al final
 
--- Listar bodegas activas con overrides
-SELECT
-    pb.IdPropietarioBodega,
-    pb.IdBodega,
-    b.Nombre AS NombreBodega,
-    pb.Activo,
-    pb.Permite_Reabasto,
-    pb.Politica_FEFO_Override,
-    pb.Zona_Picking_Reservada_Para,
-    pb.Tolerancia_Decimal_Bodega
+-- Datos del propietario
+SELECT IdPropietario, codigo, nombre_comercial, NIT, activo
+FROM propietarios WHERE IdPropietario = @IdPropietario;
+
+-- Bindings activos del propietario
+SELECT pb.IdBodega, b.codigo AS CodBodega, b.nombre, b.interface_SAP, b.permitir_decimales
 FROM propietario_bodega pb
-JOIN bodegas b ON b.IdBodega = pb.IdBodega
-WHERE pb.IdPropietario = @IdPropietario AND pb.Activo = 1;
+JOIN bodega b ON b.IdBodega = pb.IdBodega
+WHERE pb.IdPropietario = @IdPropietario AND pb.activo = 1;
 
--- Combinaciones tóxicas (validación)
-SELECT
-    IdPropietario, Nombre,
-    CASE WHEN Explosion_Automatica = 1 AND Permitir_Explosion_Presentacion = 0
-         THEN 'WARN: Explosion_Automatica activa pero Permitir_Explosion_Presentacion deshabilitada'
-         ELSE NULL END AS Warning_Explosion,
-    CASE WHEN Conservar_Zona_Picking_Clavaud = 0 AND considerar_paletizado_en_reabasto = 1
-         THEN 'WARN: Reabasto exige tarimas pero Clavaud está deshabilitado'
-         ELSE NULL END AS Warning_Reabasto
-FROM propietarios
-WHERE Activo = 1;
+-- Detección de inconsistencias en typo de columna
+SELECT idnavconfigenc, idbodega, idPropietario,
+       explosio_automatica_nivel_max, explosion_automatica_nivel_max
+FROM i_nav_config_enc
+WHERE ISNULL(explosio_automatica_nivel_max,-1) <> ISNULL(explosion_automatica_nivel_max,-1);
+
+-- Configs sospechosas (combinaciones tóxicas)
+SELECT idnavconfigenc, idbodega, idPropietario,
+       CASE WHEN conservar_zona_picking_clavaud = 0
+                 AND considerar_paletizado_en_reabasto = 1
+            THEN 'WARN: paletizado-reabasto sin clavaud' END AS Warning
+FROM i_nav_config_enc
+WHERE conservar_zona_picking_clavaud = 0
+  AND considerar_paletizado_en_reabasto = 1;
 ```
 
-> **Recordatorio crítico**: Killios productivo es **READ-ONLY** desde este wms-brain. Estas queries son solo para auditoría. Cualquier cambio de config se hace por canal autorizado del DBA o desde el BOF directamente, **nunca desde aquí**.
+> **Recordatorio crítico**: Killios productivo es **READ-ONLY** desde este wms-brain. Estas queries son solo para auditoría. Cualquier cambio de config se hace por canal autorizado del DBA o desde el BOF directamente.
 
 ---
 
-> Próximo: `05-mi3-algoritmo-fefo-clavaud.md` documenta el algoritmo FEFO + tie-breakers + evaluación dinámica Clavaud + degradación a CASO_3.
+> Próximo: `08-mi3-tablas-killios.md` documenta el schema completo de las tablas críticas (`stock` 33 cols, `stock_res` 35 cols, `trans_pe_det` 44 cols, `trans_pe_enc` 70 cols, `i_nav_ped_traslado_det` 22 cols, `log_error_wms` 15 cols) — todos validados contra Killios productivo.
