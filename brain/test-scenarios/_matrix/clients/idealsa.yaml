@@ -1,0 +1,17 @@
+slug: idealsa
+display_name: IDEALSA
+country: GT
+notes: |
+  Origen de la mayoría de los CASOs legacy del clsLnStock_res (CASO 1-17).
+  El producto 47022 es el SKU ficticio que IDEALSA usaba como base de pruebas.
+learned: false
+learned_at: null
+learned_from: null
+flags:
+  # Esta sección debe llenarse con `wmsa learn-config idealsa` apuntando a una BD del cliente.
+  # Hasta entonces, los flags abajo son INFERIDOS desde lo que los CASOs asumen y NO confirmados.
+  IdProductoEstado: "(inferido) ESTADO_DISPONIBLE"
+  IdPropietario: "01"
+  Reservar_Desde_Picking_Antes_Que_Almacenamiento: false
+  Permite_Explosion_En_Picking: true
+  Rechazar_Pedido_Si_Esta_Incompleto: true
