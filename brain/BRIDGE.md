@@ -26,7 +26,7 @@ propone. Un humano (o el agente Replit en sesion explicita) decide.
 
 ## 2. Tipos de evento
 
-### 2.0 Schema v1 (vigente desde el dia 1)
+### 2.1 Schema v1 — eventos originados en el WMS
 
 | type               | cuando |
 |---|---|
@@ -37,23 +37,37 @@ propone. Un humano (o el agente Replit en sesion explicita) decide.
 | `merge_completed`  | tras un merge a `dev_2028_merge` confirmado. |
 | `external_change`  | algo externo (BD, infraestructura, equipo) cambio. |
 
-### 2.1 Schema v2 — investigacion SQL al brain de la BD (desde 2026-04-27)
+### 2.2 Schema v2 — eventos de investigacion SQL al brain de la BD
 
-| type                  | cuando                                                                       |
-|-----------------------|------------------------------------------------------------------------------|
-| `question_request`  | el cliente PS encola una pregunta SQL al brain de la BD (Q-001..Q-NNN).      |
-| `question_answer`   | el agente Replit produjo una answer card en respuesta a un `question_request`. |
-| `learning_proposed` | derivacion de varios eventos en una learning card consolidada.               |
+Originados en el cliente PowerShell **WmsBrainClient** (rama `wms-brain-client`),
+que corre en la maquina Windows de Erik via Open Claw.
 
-Bumpear el schema **es retrocompatible**: eventos schema 1 siguen siendo
-validos. Los tres tipos nuevos requieren `schema_version: "2"` o el
-bridge los rechaza en `notify`.
+| type                 | cuando |
+|---|---|
+| `question_request`   | el cliente PS levanta una question card (`questions/Q-NNN-*.md`) y pide investigar el brain de la BD productiva (read-only). |
+| `question_answer`    | el cliente PS produce un answer card (`answers/A-NNN-*.md`) con verdict + confidence + evidencia CSV. |
+| `learning_proposed`  | el cliente PS propone elevar un hallazgo a regla del brain (learning card → `brain/skills/...` o `brain/learnings/L-NNN-*.md`). |
 
-Ver propuesta detallada en `wms-brain-client/EXTENSION-V2-PROPOSAL.md`.
+**Workaround obsoleto** (schema v1): hasta el bump v2, las preguntas se cursaban
+como `type=directive` con `tags=["question","Q-NNN"]`. Ya no es necesario; el
+cliente PS emite `question_request` nativo.
+
+**Estados** (v2 agrega `answered`):
+
+| status      | descripcion |
+|---|---|
+| `pending`   | recien notificado, sin analyze. |
+| `analyzed`  | reservado (no usado en v0). |
+| `proposed`  | analyze genero `_proposals/<id>.md`. |
+| `applied`   | el agente edito el brain o registro la accion; evento movido a `_processed/`. |
+| `skipped`   | descartado, no impacta el brain. |
+| `answered`  | terminal para `question_request` cuyo `question_answer` fue aceptado. |
 
 ---
 
 ## 3. Estructura del evento
+
+### 3.1 Schema v1 (eventos WMS — sin cambios)
 
 ```json
 {
@@ -77,48 +91,57 @@ Ver propuesta detallada en `wms-brain-client/EXTENSION-V2-PROPOSAL.md`.
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending|analyzed|proposed|applied|skipped|answered",
+  "status": "pending|analyzed|proposed|applied|skipped",
   "decision": null,
   "history": [{"at": "...", "action": "notify"}]
 }
 ```
 
----
+### 3.2 Schema v2 (eventos de investigacion)
 
-## 3.1 Estados — schema v1
+Mismo envelope. Diferencia: `type` es uno de los 3 nuevos y `ref` puede traer
+campos opcionales especificos de investigacion. Todos los campos viejos siguen
+siendo validos (ningun campo se removio).
 
+```json
+{
+  "id": "20260427-1845-EJC",
+  "schema_version": "2",
+  "created_at": "2026-04-27T18:45:00-03:00",
+  "type": "question_request",
+  "source": "wms-brain-client",
+  "host": "ERIK-DESK",
+  "ref": {
+    "question_id": "Q-003",
+    "question_card_path": "questions/Q-003-ingresos-byb-pendientes.md",
+    "answer_card_path": null,
+    "learning_card_path": null,
+    "cliente": "BB-PRD",
+    "evidence_paths": []
+  },
+  "context": {
+    "message": "Pregunta Q-003: 110795 INGRESOS pendientes en BB outbox - hipotesis NavSync solo procesa SALIDAS",
+    "modules_touched": [],
+    "tags": ["sap-sync", "navsync", "byb", "outbox"]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [{"at": "...", "action": "notify", "by": "wms-brain-client"}]
+}
 ```
-pending -> analyzed -> proposed -> applied
-                                \-> skipped
-```
 
-| status      | significado                                                              |
-|-------------|--------------------------------------------------------------------------|
-| `pending` | recien encolado en `brain/_inbox/<id>.json`.                           |
-| `analyzed`| el bridge corrio la heuristica (candidatos en `analysis.candidate_files`). |
-| `proposed`| se genero `brain/_proposals/<id>.md` con la propuesta human-readable.  |
-| `applied` | el agente edito los .md del brain y movio el evento a `_processed/`.   |
-| `skipped` | se descarto con `--reason`; movido a `_processed/`.                  |
+**Campos `ref` opcionales (v2)**:
 
-## 3.2 Estados — schema v2 (desde 2026-04-27)
-
-Se agrega un estado terminal especifico para `question_request`:
-
-| status      | significado                                                              |
-|-------------|--------------------------------------------------------------------------|
-| `answered`| un `question_request` cuya `question_answer` ya fue producida (terminal antes de aplicar la doctrina). |
-
-Transiciones por type:
-
-```
-question_request:   pending -> proposed -> answered -> applied | skipped
-question_answer:    pending -> proposed -> applied | skipped
-learning_proposed:  pending -> proposed -> applied | skipped
-```
-
-El flip a `answered` se hace **automaticamente** cuando se procesa un
-`question_answer` cuyo `ref.answers_event_id` apunta a un
-`question_request` vivo. No requiere subcomando manual.
+| campo                 | tipo                                  | uso |
+|---|---|---|
+| `question_id`         | string (`Q-NNN`)                      | id corto de la question card. |
+| `question_card_path`  | path relativo a la rama wms-brain-client | apunta al .md de la pregunta. |
+| `answer_card_path`    | path relativo                         | solo para `question_answer`. |
+| `learning_card_path`  | path relativo                         | solo para `learning_proposed`. |
+| `cliente`             | `K7-PRD`/`BB-PRD`/`C9-QAS`/etc        | BD productiva contra la que se investigo. |
+| `evidence_paths`      | array de paths CSV                    | dumps SQL de evidencia. |
 
 ---
 
@@ -211,7 +234,11 @@ node scripts/brain_bridge.mjs skip --exchange-repo /tmp/exchange-rw --id 2026042
 
 ---
 
-## 6. Que hace el `analyze` (heuristica v0)
+## 6. Que hace el `analyze`
+
+El `analyze` dispatcheza por `event.type`:
+
+### 6.1 Eventos WMS (schema v1) — heuristica de matches en .md
 
 1. Lee todos los `.md` bajo `brain/` (excluye `_inbox/`, `_proposals/`,
    `_processed/`).
@@ -226,6 +253,19 @@ node scripts/brain_bridge.mjs skip --exchange-repo /tmp/exchange-rw --id 2026042
 
 **No** llama a un LLM. **No** edita el brain. Solo dirige la atencion del
 revisor a los archivos relevantes.
+
+### 6.2 Eventos de investigacion (schema v2) — propuesta dirigida
+
+Para `question_request`, `question_answer`, `learning_proposed` el `analyze`
+NO busca matches en .md. Genera una propuesta especializada que:
+
+- Resume el evento (id, tipo, contexto, cliente/BD).
+- Lista los siguientes pasos especificos del subtipo:
+  - **`question_request`**: abrir question card → ejecutar SQL → producir answer card → emitir `question_answer` → marcar como `answered`.
+  - **`question_answer`**: validar verdict + confidence → opcionalmente emitir `learning_proposed` → marcar el `question_request` original como `answered`.
+  - **`learning_proposed`**: decidir destino (`brain/skills/`, `brain/agent-context/`, `brain/learnings/`) → editar el .md → marcar como `applied`.
+
+Misma regla dura: el bridge NO edita el brain. Solo propone.
 
 ### Evolucion futura (no en v0)
 
@@ -281,3 +321,51 @@ Cualquier cambio al bridge debe:
 2. Bumpear el `SCHEMA_VERSION` en `scripts/brain_bridge.mjs` si cambia el
    formato del evento.
 3. Documentar la migracion si los eventos viejos no son compatibles.
+
+### 10.1 Changelog
+
+#### v2 — 2026-04-27 (pasada-11)
+
+**Motivo**: el cliente PowerShell `WmsBrainClient` (rama `wms-brain-client`)
+necesita emitir eventos de investigacion SQL al brain de la BD productiva
+(Killios/BYB/CEALSA, read-only). En v1 se cursaban como `directive` con
+`tags=["question","Q-NNN"]`, lo que perdia semantica y rompia el analyze
+heuristico (matcheaba "question" en cualquier .md).
+
+**Cambios**:
+
+- `SCHEMA_VERSION` `"1"` → `"2"`.
+- 3 tipos nuevos en `VALID_TYPES`: `question_request`, `question_answer`,
+  `learning_proposed`.
+- 1 estado nuevo en `VALID_STATUSES`: `answered` (terminal para
+  `question_request` cuyo answer fue aceptado).
+- Constante `INVESTIGATION_TYPES` (Set) para dispatch en `analyze`.
+- Funcion `cmdAnalyzeInvestigation`: genera propuesta dirigida segun subtipo
+  (no busca matches en .md).
+- `cmdApply` reconoce el case `question_request + note=answered` y bumpea
+  `status=answered` en lugar de `applied`.
+- `cmdHelp` actualizado.
+
+**Retrocompatibilidad**:
+
+- Eventos `schema_version="1"` siguen procesandose normal — los 6 tipos viejos
+  pasan por el analyzer heuristico igual que antes.
+- Ningun campo se removio. Los 3 campos nuevos en `ref` (`question_id`,
+  `question_card_path`, etc.) son opcionales.
+- El estado `answered` solo aplica a `question_request`; el resto sigue con
+  los 5 estados originales.
+
+**Migracion** (workaround → v2):
+
+- Eventos viejos cursados como `directive + tags=["question","Q-NNN"]` se
+  pueden dejar como estan (estan en `_processed/` o `_inbox/` legacy). El
+  cliente PS de aqui en adelante emite el tipo nativo `question_request`.
+- Documentacion de la transicion: `wms-brain-client/questions/MIGRATION-NOTE.md`.
+
+#### v1 — 2026-04 (inicial)
+
+- 6 tipos: `apply_succeeded`, `apply_failed`, `skill_update`, `directive`,
+  `merge_completed`, `external_change`.
+- 5 estados: `pending`, `analyzed`, `proposed`, `applied`, `skipped`.
+- `analyze` heuristico (matches en .md).
+- `notify` / `list` / `show` / `analyze` / `apply` / `skip`.
