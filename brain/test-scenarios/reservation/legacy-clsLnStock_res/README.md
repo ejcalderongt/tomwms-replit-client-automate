@@ -1,193 +1,79 @@
-# Familia legacy `clsLnStock_res.Ejecuta_QA_CASO_*`
+# Inventario `clsLnStock_res` legacy
 
-> Inventario y protocolo de migración de los **20 casos canónicos** de
-> prueba de reservas escritos en VB.NET dentro del BOF, en la clase
-> `Partial Public Class clsLnStock_res`.
->
-> Estos casos fueron validados manualmente por Erik a lo largo del
-> tiempo. Son **fuente de verdad** del comportamiento esperado del
-> motor de reservas (legacy y MI3 nuevo).
+Archivo fuente único:
+[`/TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb`](https://dev.azure.com/ejcalderon0892/TOMWMS_BOF/_git/TOMWMS_BOF?path=/TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb&version=GBdev_2028_merge)
+en repo `TOMWMS_BOF`, rama `dev_2028_merge`.
 
-Skill que opera: `wms-brain/skills/wms-test-bridge/SKILL.md`.
-ADR: `wms-brain/decisions/004-bridge-wms-test-automation.md`.
+> Tamaño: ~2.2 MB / 34381 líneas. Las funciones QA empiezan en la línea 13119.
 
----
+## Funciones detectadas
 
-## 1. Por qué nos importan
+Total: **21 funciones** (17 IDEAL + 1 Dinámico + 3 BYB).
 
-El motor de reservas es el módulo más complejo del WMS. Combina:
-- FEFO (First Expired, First Out).
-- Zona de picking vs almacenamiento.
-- Paquete completo vs fragmentación.
-- Explosión automática a nivel máximo.
-- Control de lote y vencimiento.
-- Múltiples tipos de pedido (cliente, traslado interno, manufactura).
-- Múltiples handlers según config (`i_nav_config_enc`).
+| # | Función | Líneas | Cliente origen | Bloque temático | Mapeo nuevo |
+|---|---|---:|---|---|---|
+| 1 | `Ejecuta_QA_CASO_1_IDEAL_20231002011101` | 13119–13347 (229) | IDEAL | FEFO básico | `RES-001` |
+| 2 | `Ejecuta_QA_CASO_2_IDEAL_20231002011120` | 13348–13577 (230) | IDEAL | FEFO ALM corto + completar picking | `RES-006` |
+| 3 | `Ejecuta_QA_CASO_3_IDEAL_20231002011128` | 13578–13806 (229) | IDEAL | FEFO ALM corto + completar picking (var.) | `RES-007` |
+| 4 | `Ejecuta_QA_CASO_4_IDEAL_20231002011132` | 13807–14043 (237) | IDEAL | Zigzag ALM-PICK-ALM | `RES-008` |
+| 5 | `Ejecuta_QA_CASO_5_IDEAL_20231002011134` | 14044–14285 (242) | IDEAL | Zigzag PICK-ALM-PICK | `RES-009` |
+| 6 | `Ejecuta_QA_CASO_6_IDEAL_20231002011136` | 14286–14511 (226) | IDEAL | Zigzag (variante 6) | `RES-010` |
+| 7 | `Ejecuta_QA_CASO_7_IDEAL_20231002011140` | 14512–14730 (219) | IDEAL | Sin picking, sólo ALM | `RES-011` |
+| 8 | `Ejecuta_QA_CASO_8_IDEAL_20231002011140` | 14731–14949 (219) | IDEAL | Sin picking + ALM insuf. → rechazo | `RES-012` |
+| 9 | `Ejecuta_QA_CASO_9_IDEAL_20231002011144` | 14950–15178 (229) | IDEAL | Explosión desde caja en picking | `RES-013` |
+| 10 | `Ejecuta_QA_CASO_10_IDEAL_20231002011146` | 15179–15407 (229) | IDEAL | Explosión + faltante → rechazo | `RES-014` |
+| 11 | `Ejecuta_QA_CASO_11_IDEAL_20231002011153` | 15408–15650 (243) | IDEAL | Múltiples ALM más cortas | `RES-015` |
+| 12 | `Ejecuta_QA_CASO_12_IDEAL_20231002011159` | 15651–15893 (243) | IDEAL | Múltiples ALM (variante 12) | `RES-016` |
+| 13 | `Ejecuta_QA_CASO_13_IDEAL_20231002011201` | 15894–16139 (246) | IDEAL | Sin picking explosionable → rechazo | `RES-017` |
+| 14 | `Ejecuta_QA_CASO_14_IDEAL_20231002011201` | 16140–16388 (249) | IDEAL | Picking corto + complementar sin re-explosionar | `RES-018` |
+| 15 | `Ejecuta_QA_CASO_15_IDEAL_20231018130000` | 16389–16660 (272) | IDEAL | Mezcla UDS+CJS, FEFO estricto | `RES-019` |
+| 16 | `Ejecuta_QA_CASO_16_IDEAL_202310200156` | 16661–16940 (280) | IDEAL | Mezcla UDS+CJS + explosión final | `RES-020` |
+| 17 | `Ejecuta_QA_CASO_17_IDEAL_202311040904` | 16941–17231 (291) | IDEAL | Empate de fecha → priorizar UDS | `RES-021` |
+| D | `Ejecuta_QA_CASO_Dinamico` | 17232–17372 (141) | _(parametrizado)_ | Caso dinámico desde `clsBeConfiguracion_qa` | `RES-DIN` |
+| 18 | `Ejecuta_QA_CASO_18_BYB_202311141034` | 17373–17614 (242) | BYB | BYB - variante 18 | `RES-022` |
+| 19 | `Ejecuta_QA_CASO_19_BYB_202311162103` | 17615–17874 (260) | BYB | BYB - variante 19 | `RES-023` |
+| 20 | `Ejecuta_QA_CASO_20_BYB_202311171219` | 17875–18102 (228) | BYB | BYB - variante 20 (incluye 1900-01-01) | `RES-024` |
 
-Los 20 `Ejecuta_QA_CASO_*` son la **biblioteca de variantes** que Erik
-fue construyendo a medida que descubría comportamientos esperados.
-Releerlos ayuda a:
+## Constantes hardcoded en TODOS los casos
 
-1. **Entender las variantes**: cada caso aisla una capacidad concreta.
-2. **Calibrar el catálogo nuevo**: cada YAML del catálogo en
-   `test-scenarios/reservation/RES-NNN-*.yaml` debe mapearse a uno o
-   varios casos legacy.
-3. **No dejar capacidades sin cubrir**: si los 20 casos cubrieron
-   regresiones históricas, el catálogo nuevo debe cubrir las mismas
-   regresiones.
-4. **Migración del legacy al MI3 nuevo**: los mismos casos deben
-   pasar contra ambos motores. Si MI3 nuevo da resultado distinto, hay
-   que decidir si es mejora o regresión.
+Estas constantes están repetidas en los 21 casos y son el primer **olor a refactor** que el bridge resuelve parametrizando:
 
----
+| Campo | Valor en legacy | En bridge |
+|---|---|---|
+| `vCodigoProducto` | `"47022"` | parámetro de `RES-NNN.input.product` |
+| `Product_Owner_Code` | `"01"` | parámetro de `RES-NNN.input.owner` |
+| `Document_Type` | `Pedido_De_Cliente` | parámetro de `RES-NNN.input.doc_type` |
+| Patrón de lote | `CASO_USOnn_MI3_AUTOMATE` | parámetro de `RES-NNN.input.lote_pattern` |
+| Función orquestadora | `clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia` | endpoint `POST /api/test-bridge/import-pedido-cliente` |
 
-## 2. Inventario (estado actual del conocimiento)
+## Flags de configuración (`BeConfig.*`) que el legacy lee
 
-| ID nuevo | Caso legacy | Título | Ya documentado | Mapeo a YAML nuevo |
-|---|---|---|---|---|
-| RES-LEG-01 | `Ejecuta_QA_CASO_1_IDEAL_20231002011101` | FEFO almacenaje vs picking, vencimiento | sí ([CASO-01](./CASO-01-IDEAL_20231002011101.md)) | RES-001 |
-| RES-LEG-02 | `Ejecuta_QA_CASO_2_*` | (pendiente leer) | no | TODO |
-| RES-LEG-03 | `Ejecuta_QA_CASO_3_*` | (pendiente leer) | no | TODO |
-| RES-LEG-04 | `Ejecuta_QA_CASO_4_*` | (pendiente leer) | no | TODO |
-| RES-LEG-05 | `Ejecuta_QA_CASO_5_*` | (pendiente leer) | no | TODO |
-| RES-LEG-06 | `Ejecuta_QA_CASO_6_*` | (pendiente leer) | no | TODO |
-| RES-LEG-07 | `Ejecuta_QA_CASO_7_*` | (pendiente leer) | no | TODO |
-| RES-LEG-08 | `Ejecuta_QA_CASO_8_*` | (pendiente leer) | no | TODO |
-| RES-LEG-09 | `Ejecuta_QA_CASO_9_*` | (pendiente leer) | no | TODO |
-| RES-LEG-10 | `Ejecuta_QA_CASO_10_*` | (pendiente leer) | no | TODO |
-| RES-LEG-11 | `Ejecuta_QA_CASO_11_*` | (pendiente leer) | no | TODO |
-| RES-LEG-12 | `Ejecuta_QA_CASO_12_*` | (pendiente leer) | no | TODO |
-| RES-LEG-13 | `Ejecuta_QA_CASO_13_*` | (pendiente leer) | no | TODO |
-| RES-LEG-14 | `Ejecuta_QA_CASO_14_*` | (pendiente leer) | no | TODO |
-| RES-LEG-15 | `Ejecuta_QA_CASO_15_*` | (pendiente leer) | no | TODO |
-| RES-LEG-16 | `Ejecuta_QA_CASO_16_*` | (pendiente leer) | no | TODO |
-| RES-LEG-17 | `Ejecuta_QA_CASO_17_*` | (pendiente leer) | no | TODO |
-| RES-LEG-18 | `Ejecuta_QA_CASO_18_*` | (pendiente leer) | no | TODO |
-| RES-LEG-19 | `Ejecuta_QA_CASO_19_*` | (pendiente leer) | no | TODO |
-| RES-LEG-20 | `Ejecuta_QA_CASO_20_*` | (pendiente leer) | no | TODO |
+Lista parcial detectada por el extractor (los primeros que aparecen en cada función):
 
-**Bloqueante actual**: solo tenemos acceso al CASO 1 vía adjunto. Para
-documentar 2..20 necesitamos:
-1. (preferido) Acceso al archivo `clsLnStock_res.vb` completo desde el
-   repo Azure DevOps `ejcalderon0892/TOMWMS_BOF` rama `dev_2028_merge`.
-2. (alternativa) Que Erik adjunte cada caso en chat.
-3. (alternativa) Acceso vía controller `/api/test-bridge/inspect/code`
-   en el futuro (idea: un endpoint que retorne snippets del código
-   fuente para que Brain los procese — requiere ADR aparte).
+- `IdProductoEstado` — qué estado considerar disponible
+- `IdPropietario` — propietario por defecto
+- `Reservar_Desde_Picking_Antes_Que_Almacenamiento` — invierte FEFO si no, pero gana fecha
+- `Rechazar_Pedido_Si_Esta_Incompleto` — disparador de los CASOs 8, 10, 13
+- `Permite_Explosion_En_Picking` — disparador de los CASOs 9, 13, 14
+- `Considerar_Inventario_En_Otra_Bodega` — alcance de búsqueda
 
----
+> **Nota**: este listado se completa al ejecutar `wmsa learn-config <cliente>` contra una BD real del cliente y leer `clsLnConfiguracion_qa.Obtiene_Configuracion(IdBodega)`.
 
-## 3. Estructura común de un `Ejecuta_QA_CASO_N_*`
+## Cómo se relaciona con la categorización por cliente
 
-A partir del CASO 1 ya leído, el patrón es:
+Cada caso queda mapeado a un escenario `RES-NNN` que declara qué configuración necesita. Después, en `brain/test-scenarios/_matrix/`, cruzamos esa lista con la configuración real conocida de cada cliente para ver dónde aplica.
 
-```vb.net
-Public Shared Function Ejecuta_QA_CASO_N_NOMBRE(
-    ByVal IdBodega As Integer,
-    ByVal IdUsuario As Integer,
-    ByRef Resultado As String) As Boolean
+Ejemplo:
 
-    ' 1) Limpiar BD
-    Clear_BD_For_Test_Cases()
+> **CASO 8** (`RES-012`) requiere `Rechazar_Pedido_Si_Esta_Incompleto = true`. Si IDEALSA y KILLIOS lo tienen activo pero LA CUMBRE no, el escenario `RES-012` aplica para IDEALSA y KILLIOS, y se marca como `not_applicable` para LA CUMBRE (no es un fallo del cliente, es que no aplica).
 
-    ' 2) Preparar inventario:
-    '    - clsLnBodega.GetSingle_By_Idbodega
-    '    - clsLnProducto.Get_Single_By_Codigo("47022" o el del caso)
-    '    - clsLnBodega_ubicacion.Get_Single_Ubicacion_No_Picking / _Picking
-    '    - clsLnI_nav_config_enc.GetSingle_By_IdBodega_And_IdPropietario
-    '    - clsLnPropietario_bodega.Get_IdPropietarioBodega_*
-    '    - clsLnCliente.Get_Cliente_Defecto_Pruebas
-    '
-    '    Insertar 1..N filas en stock con:
-    '    - clsBeStock con IdBodega, IdProductoBodega, IdPropietarioBodega
-    '    - IdProductoEstado, Presentacion, IdUnidadMedida
-    '    - IdUbicacion (picking o no-picking según caso)
-    '    - Lote = "CASO_USOX_MI3_AUTOMATE"
-    '    - Fecha_vence = New Date(...)
-    '    - Cantidad = N * Factor de presentación
-    '    - clsLnStock.Insertar(...)
+Detalle: ver [`brain/test-scenarios/_matrix/README.md`](../_matrix/README.md).
 
-    ' 3) Armar pedido:
-    '    - clsBeI_nav_ped_traslado_enc con Document_Type=Pedido_De_Cliente
-    '    - Product_Owner_Code = "01"
-    '    - Lineas_Detalle con clsBeI_nav_ped_traslado_det
+## Stubs por caso
 
-    ' 4) Disparar flujo:
-    '    - clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia
-    '    - Internamente esto llama al motor de reservas
+Cada caso tiene su propio archivo MD en este directorio con el summary, los datos embebidos extraídos y notas de portado:
 
-    ' 5) Resultado vía RichTextBox (texto descriptivo)
-End Function
-```
-
-**Insumos universales**:
-- Producto sentinel: `47022` (al menos en CASO 1).
-- Propietario: el de `i_nav_config_enc.IdPropietario` (típicamente 1).
-- Cliente: el de `clsLnCliente.Get_Cliente_Defecto_Pruebas`.
-- Bodega y usuario: parámetros del caso.
-
-**Variables entre casos**: cantidad de stocks insertados, ubicaciones
-(picking vs no-picking), lotes, vencimientos, presentación enviada,
-cantidad pedida.
-
----
-
-## 4. Protocolo de migración legacy → catálogo nuevo
-
-Cuando se documenta un caso legacy:
-
-1. Crear `CASO-NN-NOMBRE.md` en este directorio con:
-   - Resumen del summary VB.NET del caso.
-   - Setup detallado (qué stocks se siembran).
-   - Acción (qué pedido se envía).
-   - Resultado esperado (qué debe haber en `stock_res`,
-     `trans_pe_*`, etc.).
-   - Snippet del código original.
-2. Decidir el mapeo:
-   - Si calza con un escenario nuevo existente
-     (`RES-001..005`), agregar `legacy_ref:` en ese YAML.
-   - Si no calza, crear un escenario nuevo
-     (`RES-006`, `RES-007`, ...) que lo represente.
-3. Marcar la fila correspondiente en la tabla de §2 con el mapeo.
-4. Actualizar `test-scenarios/README.md` si hay nuevo escenario.
-
----
-
-## 5. Reglas de la familia legacy
-
-1. **Los 20 casos son ground truth**. Cuando un escenario nuevo da
-   resultado distinto al CASO legacy, **el legacy gana** salvo que
-   Erik decida lo contrario explícitamente.
-2. **No reescribir, traducir**. Los YAMLs nuevos son traducción
-   declarativa, no reinterpretación. Mismas precondiciones, mismas
-   acciones, mismas assertions.
-3. **Conservar IDs y constantes**. Producto `47022`, lote
-   `CASO_USOX_MI3_AUTOMATE`, fechas exactas. Si el cliente target
-   no tiene esos datos, el placeholder los reemplaza pero el caso
-   legacy queda como referencia inmutable.
-4. **Cada CASO documentado es un PR independiente**. Para que el
-   review sea trazable.
-
----
-
-## 6. Próximos pasos
-
-- Conseguir acceso a `clsLnStock_res.vb` completo (rama
-  `dev_2028_merge` del repo BOF en Azure DevOps).
-- Documentar casos 2..20 (uno por archivo `CASO-NN-*.md`).
-- Mapear cada CASO a un YAML del catálogo nuevo (crear nuevos
-  escenarios `RES-006+` si hace falta).
-- Una vez completos los 20 casos, hacer una pasada de cobertura:
-  ¿hay flags de `i_nav_config_enc` o de los 88 bits que NO están
-  cubiertos por ningún caso legacy ni nuevo? Eso son gaps a cubrir.
-
----
-
-## 7. Referencias
-
-- ADR: `wms-brain/decisions/004-bridge-wms-test-automation.md`.
-- Skill: `wms-brain/skills/wms-test-bridge/SKILL.md`.
-- Catálogo nuevo: `wms-brain/test-scenarios/README.md`.
-- Módulo flagship: `wms-brain/entities/modules/reservation/README.md`.
-- DDL: `wms-brain/sql-catalog/reservation-tables.md`.
-- Repo BOF Azure DevOps: `ejcalderon0892/TOMWMS_BOF`, rama `dev_2028_merge`.
+- `CASO-01-1_IDEAL_20231002011101.md` ← documentado en detalle previamente
+- `CASO-02-2_IDEAL_20231002011120.md` ... `CASO-17-17_IDEAL_202311040904.md`
+- `CASO-DINAMICO.md`
+- `CASO-18-18_BYB_202311141034.md` ... `CASO-20-20_BYB_202311171219.md`
