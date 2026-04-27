@@ -1,0 +1,189 @@
+{
+  "generatedAt": "2026-04-27T04:28:47.487Z",
+  "configs": [
+    {
+      "label": "TOMIMSV4 App.config (BOF)",
+      "file": "App.config",
+      "bytes": 3681,
+      "appSettings": [
+        {
+          "key": "CST",
+          "valueLength": 103,
+          "valuePreview": "Data Source=52.32.154.252;Initial Catalog=IMS4MB_QA;Persist "
+        },
+        {
+          "key": "ClientSettingsProvider.ServiceUri",
+          "valueLength": 0,
+          "valuePreview": ""
+        }
+      ],
+      "connectionStrings": [
+        {
+          "name": "TOMIMSV4.My.MySettings.IMS4MB_QAConnectionStringPrograN",
+          "sanitized": "Data Source=PROGRAN;Initial Catalog=IMS4MB_QA;Persist Security Info=True;User ID=***;Password=***"
+        }
+      ],
+      "endpoints": [
+        {
+          "address": "http://localhost:4180/Despacho/ServiceDespacho.svc",
+          "contract": "WCFDespacho.IServiceDespacho"
+        }
+      ],
+      "bindings": 3,
+      "mySettings": [
+        {
+          "name": "IMS4MB_ConnectionStringConfigurable",
+          "valuePreview": "Data Source=PROGRAN;Initial Catalog=IMS4MB_QA;Persist Security Info=True;User ID"
+        }
+      ]
+    },
+    {
+      "label": "TOMIMSV4 AppGlobal.dll.config",
+      "file": "AppGlobal.dll.config",
+      "bytes": 179,
+      "appSettings": [],
+      "connectionStrings": [],
+      "endpoints": [],
+      "bindings": 0,
+      "mySettings": []
+    },
+    {
+      "label": "TOMIMSV4 DAL.dll.config",
+      "file": "DAL.dll.config",
+      "bytes": 1410,
+      "appSettings": [],
+      "connectionStrings": [],
+      "endpoints": [],
+      "bindings": 0,
+      "mySettings": []
+    },
+    {
+      "label": "TOMIMSV4 DAL/app.config",
+      "file": "app.config",
+      "bytes": 11064,
+      "appSettings": [],
+      "connectionStrings": [],
+      "endpoints": [],
+      "bindings": 0,
+      "mySettings": []
+    },
+    {
+      "label": "MI3 Web.config (interface)",
+      "file": "Web.config",
+      "bytes": 13236,
+      "appSettings": [
+        {
+          "key": "CST",
+          "valueLength": 127,
+          "valuePreview": "Data Source=192.168.126.80;Initial Catalog=IMS4MB_IDEALSA_QA"
+        }
+      ],
+      "connectionStrings": [],
+      "endpoints": [],
+      "bindings": 2,
+      "mySettings": [
+        {
+          "name": "CST",
+          "valuePreview": "Data Source=192.168.126.80;Initial Catalog=IMS4MB_IDEALSA_QA;User ID=***;Pa"
+        }
+      ]
+    }
+  ],
+  "androidManifest": {
+    "bytes": 9604,
+    "permissionsCount": 13,
+    "permissions": [
+      "android.permission.WAKE_LOCK",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.BLUETOOTH",
+      "android.permission.BLUETOOTH_ADMIN",
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.ACCESS_COARSE_LOCATION",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_WIFI_STATE",
+      "android.permission.BLUETOOTH_SCAN",
+      "android.permission.BLUETOOTH_CONNECT",
+      "android.permission.BLUETOOTH_ADVERTISE"
+    ],
+    "featuresCount": 1,
+    "features": [
+      "android.hardware.camera"
+    ],
+    "activitiesCount": 64,
+    "activities": [
+      ".Transacciones.Packing.frm_list_packing_cerrados",
+      ".Transacciones.ReubicarStockRes.frm_datos_stock_res",
+      ".Transacciones.Reabastecimiento.frm_reabastecimiento_manual",
+      ".Transacciones.Packing.frm_lista_packing_lp",
+      ".Transacciones.Packing.frm_lista_packing_lotes",
+      ".Transacciones.Packing.frm_preparacion_packing_bulto",
+      ".Transacciones.Packing.frm_preparacion_packing",
+      ".Transacciones.Packing.frm_lista_packing",
+      ".Transacciones.Recepcion.frm_rec_ftos",
+      ".Transacciones.InventarioCiclico.frm_inv_cic_guardar",
+      ".Transacciones.InventarioCiclico.frm_inv_cic_nuevo",
+      ".Transacciones.InventarioCiclico.frm_inv_cic_conteo",
+      ".Transacciones.InventarioCiclico.frm_inv_cic_add",
+      ".Transacciones.Verificacion.frm_list_prod_reemplazados",
+      "com.dts.ladapt.Verificacion.list_adapt_reemplazos",
+      ".Transacciones.InventarioInicial.frm_inv_agrega_prd",
+      ".Transacciones.InventarioInicial.frm_inv_nuevo_reg",
+      "com.dts.ladapt.list_adapt_tareas_inventario",
+      ".Transacciones.Inventario.frm_list_inventario",
+      "com.dts.ladapt.list_adapt_detalle_reemplazo_picking",
+      "com.dts.ladapt.list_adapt_detalle_tareas_picking",
+      "com.dts.ladapt.list_adapt_tareashh_picking",
+      ".Transacciones.Recepcion.frmFirma",
+      ".Transacciones.Recepcion.frm_list_rec_prod_detalle",
+      ".Transacciones.Recepcion.frm_recepcion_datos",
+      ".Transacciones.Recepcion.frm_list_rec_prod",
+      ".Transacciones.Recepcion.frm_detalle_ingresos",
+      ".Transacciones.Recepcion.frm_lista_tareas_recepcion",
+      ".Transacciones.Packing.frm_Packing",
+      ".Transacciones.ConsultaStock.frm_consulta_stock",
+      ".Transacciones.ConsultaStock.frm_consulta_stock_detalleCI",
+      ".Transacciones.InventarioInicial.frm_inv_ini_verificados",
+      ".Transacciones.InventarioInicial.frm_inv_ini_verificacion",
+      ".Transacciones.InventarioInicial.frm_inv_ini_contados",
+      ".Transacciones.InventarioInicial.frm_inv_ini_conteo",
+      ".Transacciones.InventarioInicial.frm_inv_ini_tramos",
+      ".Transacciones.Verificacion.frm_danado_verificacion",
+      ".Transacciones.Verificacion.frm_verificacion_datos",
+      ".Transacciones.Verificacion.frm_detalle_tareas_verificacion",
+      ".Transacciones.Picking.frm_list_prod_reemplazo_picking",
+      ".Transacciones.Picking.frm_danado_picking",
+      ".Transacciones.Picking.frm_picking_datos",
+      ".Transacciones.Picking.frm_detalle_tareas_picking",
+      "com.dts.ladapt.CambioUbicacion.list_adapter_detalle_cambio_ubic",
+      "com.dts.ladapt.CambioUbicacion.list_view_tareas_cambio_ubic",
+      ".Transacciones.CambioUbicacion.frm_cambio_ubicacion_dirigida",
+      ".Transacciones.CambioUbicacion.frm_cambio_ubicacion_ciega",
+      ".Transacciones.CambioUbicacion.frm_detalle_cambio_ubicacion",
+      ".Transacciones.CambioUbicacion.frm_tareas_cambio_ubicacion",
+      ".Transacciones.Verificacion.frm_list_prod_reemplazo_verif",
+      ".Transacciones.ProcesaImagen.frm_imagenes",
+      ".Transacciones.ProcesaImagen.frm_imagen_completa",
+      ".Transacciones.Picking.frm_editar_ubicacion_picking",
+      ".Transacciones.Verificacion.frm_verificacion_consolidada_detalle",
+      ".Transacciones.ReubicarStockRes.frm_lista_stock_res",
+      ".Transacciones.Reabastecimiento.frm_datos_reabastecimiento",
+      ".Transacciones.RFID.frm_menu_rfid",
+      ".Transacciones.RFID.frm_recepcion_rfid",
+      ".Transacciones.RFID.frm_procesar_rfid",
+      ".Transacciones.RFID.frm_guardar_rfid",
+      ".Transacciones.RFID.frm_inventario_rfid",
+      ".MainActivity",
+      ".PBase",
+      ".Mainmenu"
+    ],
+    "servicesCount": 2,
+    "services": [
+      "com.dts.servicios.srvBaseJob",
+      "com.dts.servicios.srvCantTareas"
+    ],
+    "receiversCount": 0,
+    "receivers": []
+  }
+}
