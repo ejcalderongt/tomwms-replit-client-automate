@@ -141,16 +141,69 @@ TOMIMSV4/TOMIMSV4/
 
 ## 7. Modelo de datos crítico
 
-BD `TOMWMS_KILLIOS_PRD` (y análogas por cliente). 542 objetos según el WikiHub. Familias clave que cualquier tarea de stock o transacciones tiene que conocer:
+BD `TOMWMS_KILLIOS_PRD` (y análogas por cliente). **345 tablas + 39 SPs** confirmados 2026-04-27 (el conteo "542 objetos" del WikiHub agrega vistas/funciones/triggers).
+
+> **Naming real (validado 2026-04-27)**: las tablas **NO usan prefijo `t_*`**. Son directas: `trans_oc_det_lote`, `stock`, `cliente_lotes`, `log_importacion_excel`. No confundir con asunciones previas del brain.
 
 | Familia | Naming | Rol |
 |---|---|---|
-| **Stock** | `stock`, `stock_*` | Tablas de existencias actuales por ubicación, lote, fecha de vencimiento. |
+| **Stock** | `stock`, `stock_*` (incluye snapshots `stock_YYYYMMDD`, `stock_hist`, `stock_jornada`, `stock_jornada_temporal`, `stock_picking*`, `stock_rec`, `stock_bodegas23`) | Existencias actuales por ubicación, lote, fecha de vencimiento. **El campo `lote` es parte del stock, no una FK a maestro**. |
 | **Vistas de stock** | `VW_Stock_Res` | Vista resumen reservas/disponibilidad. **WIP en repo `DBA`**. Cambios pendientes. |
-| **Transacciones** | `trans_*` | Movimientos: `trans_recep`, `trans_desp`, `trans_ajuste`, `trans_traslado`, etc. Header + detalle por tipo. |
-| **Ajustes** | `trans_ajuste`, `trans_ajuste_det`, `ajuste_motivo` | Ajustes de stock manuales y por importación Excel. Motivos catalogados en `ajuste_motivo`. |
-| **Maestros** | `productos`, `clientes`, `ubicaciones`, `lotes` | Datos relativamente estables. |
-| **Configuración** | `config_*`, `parametros` | Por cliente / por almacén. |
+| **Transacciones** | `trans_*` | Movimientos: `trans_oc_*` (orden compra), `trans_re_*` (recepción), `trans_despacho_*`, `trans_ajuste`, `trans_traslado`, etc. Header + detalle por tipo. **Sin FKs declaradas** — integridad por convención del DAL VB.NET. |
+| **Ajustes** | `trans_ajuste`, `trans_ajuste_det`, `ajuste_motivo`, `ajuste_tipo` | `ajuste_tipo.modifica_lote` (bit) sabe si el ajuste afecta lote. Motivos catalogados en `ajuste_motivo`. |
+| **Lotes** | (sin maestro propio) | Ver §7.1 abajo. |
+| **Maestros** | `producto`, `cliente`, `bodega` | Datos relativamente estables. **No hay maestro `lotes`**. |
+| **Configuración** | `config_*`, `parametros` + flags por bodega/cliente/producto | Ver §7.1 tabla de flags. |
+| **Interfaces externas** | `i_nav_*` (Navision in/out), SAP via SAPSYNC | Tablas de staging/in-out hacia ERPs. |
+
+### 7.1 Modelo de lotes (validado 2026-04-27 contra Killios)
+
+**No existe maestro independiente** de lotes (no hay `t_lote`, `lotes`, `producto_lote`, `maestro_lote`). El lote es un identificador textual (`nvarchar(100)` típico) embebido en múltiples tablas.
+
+**Tablas dedicadas a la trazabilidad de lote** (6):
+
+| Tabla | Filas hoy | Campos clave | Rol |
+|---|---|---|---|
+| `trans_re_det_lote_num` | **180.181** | `IdLoteNum` PK · `IdRecepcionEnc` · `IdProductoBodega` · `Lote` · `Lote_Numerico` int · `FechaIngreso` · `Cantidad` | **Tabla más usada del modelo de lotes**. Trazabilidad por recepción. |
+| `trans_oc_det_lote` | 1.078 | `IdOrdenCompraDetLote` PK · `lote` · `fecha_vence` date · `lic_plate` · `Ubicacion` · `cantidad`/`cantidad_recibida` · `reclasificar` bit · auditoría completa (`user_agr/fec_agr/user_mod/fec_mod`) | Detalle de lote en orden de compra. **Tabla más rica en metadatos**. |
+| `trans_despacho_det_lote_num` | 0 | `IdDespachoDetLote` PK · `Lote` nvarchar(500) · `LoteNum` · `CantidadDespachada` · `PesoDespachado` · `IdProductoEstado` | **Despacho con lote — vacío hoy**. Probable feature de `dev_2028_merge` aún no usado. |
+| `cliente_lotes` | 0 | `IdClienteLote` PK · `IdCliente` · `IdProducto` · `Lote` · `IdProductoEstado` · `bloquear` bit | Reglas cliente↔producto↔lote (incluye flag para bloquear lote a cliente). Vacío hoy. |
+| `i_nav_ped_compra_det_lote` | (no medido) | — | Interface a Navision para pedidos de compra. |
+| `i_nav_ped_traslado_det_lote` | (no medido) | — | Interface a Navision para pedidos de traslado. |
+
+**Tablas con campo `lote` embebido (no dedicadas pero clave)**:
+
+- `stock`, `stock_hist`, `stock_jornada`, `stock_jornada_temporal`, `stock_rec`, `stock_picking*`, `stock_bodegas23`, snapshots `stock_YYYYMMDD` — todos con `lote` nvarchar.
+- `producto_pallet`, `producto_pallet_rec`, `impresion_productos_barras`, `diferencias_movimientos` — pallet/impresión cargan lote.
+- `i_nav_barras_pallet`, `i_nav_transacciones_out`, `i_nav_transacciones_push` — interfaces Navision propagan lote.
+- `i_nav_config_enc` — config: `control_lote` (bit), `Lote_Defecto_Entrada_NC`, `lote_defecto_nc`.
+
+**Configuración del comportamiento de lotes** (flags):
+
+| Tabla | Campo | Significado |
+|---|---|---|
+| `producto` | `control_lote` (bit) | El producto requiere tracking de lote |
+| `producto` | `genera_lote` (bit) | El sistema autogenera el lote en recepción |
+| `bodega` | `homologar_lote_vencimiento` (bit) | Forzar consistencia de lote↔fecha vence |
+| `bodega` | `restringir_lote_en_reemplazo` (bit) | Limitar reemplazo de lote en operaciones |
+| `cliente` | `control_ultimo_lote` (bit) | Validar contra el último lote despachado |
+| `cliente` | `despachar_lotes_completos` (bit) | No permitir despacho parcial de un lote |
+| `ajuste_tipo` | `modifica_lote` (bit) | Este tipo de ajuste afecta lote |
+
+**Sin FKs declaradas**: ninguna de las tablas de lote tiene foreign keys a nivel BD. La integridad la garantiza el DAL VB.NET. Cualquier import masivo (Excel, API, SP) **debe replicar las validaciones del DAL manualmente** o llamarlo.
+
+### 7.2 Patrón staging Excel (validado 2026-04-27)
+
+Convención del sistema para importaciones Excel, descubierta inspeccionando `trans_bodega_ubicaciones_excel`:
+
+1. **Tabla staging "wide"** con `col1`, `col2`, ..., `colN` (`nvarchar(100)`) — el ejemplo concreto tiene 70+ columnas genéricas. El Excel se vuelca crudo, todas las columnas como string.
+2. **Proceso de promoción**: clase VB.NET (`clsBeTrans_*_excel` o `clsBe<Familia>_excel`) parsea, valida, calcula y promueve a las tablas reales (`trans_*`, `stock`, etc.).
+3. **Logging genérico**: tabla `log_importacion_excel` (6 cols: `IdImportacion` PK, `IdEmpresa`, `IdBodega`, `IdUsuario`, `hash_archivo` nvarchar(300), `fecha`). El `hash_archivo` permite detectar reintento del mismo Excel.
+4. **Logging dedicado por feature**: clases `clsBeLog_<feature>` por encima del log genérico para datos específicos del proceso (rejected rows, conteos, etc.).
+
+Para crear un nuevo "importar X desde Excel", **respetar este patrón**: tabla `<X>_excel` wide + clase `clsBeTrans_<X>_excel` + log genérico + opcional `clsBeLog_importacion_excel_<X>`.
+
+### 7.3 Reglas
 
 **Antes de tocar cualquier query, SP o vista**, consultar el **TOMWMS Brain API** (§9) para `impact` y `dependencies`. Cambiar una columna sin conocer blast radius es la causa #1 de regresiones.
 
@@ -158,18 +211,38 @@ BD `TOMWMS_KILLIOS_PRD` (y análogas por cliente). 542 objetos según el WikiHub
 
 ## 8. Conexión a SQL Server (productiva, solo lectura)
 
+**Estado validación**: ✅ 2026-04-27 desde Replit con script Node + driver `mssql`.
+
 | Dato | Valor |
 |---|---|
 | Servidor | `52.41.114.122,1437` (EC2 AWS, Windows Server 2022) |
 | Puerto | `1437` (no el 1433 default) |
-| BD activa | `TOMWMS_KILLIOS_PRD` |
-| Versión | SQL Server 2022 CU18 Standard (16.0.4185.3) |
+| Versión | SQL Server 2022 CU18 (16.0.4185.3) |
 | Usuario | `sa` |
 | Password | secret `WMS_KILLIOS_DB_PASSWORD` |
-| Driver Node | `tedious` |
-| Driver Python | `pyodbc` (ODBC Driver 17+ for SQL Server) |
+| Encrypt / TrustCert | `false` / `true` |
+| Driver Node | `tedious` (ya en workspace) o `mssql` (instalable on-demand) |
+| Driver Python | `pyodbc` (ODBC Driver 17+ for SQL Server) — local Erik via `wmsa` |
+
+**Bases WMS accesibles** (otras DBs del server son fuera de scope):
+
+| BD | Rol |
+|---|---|
+| `TOMWMS_KILLIOS_PRD` | Target principal: 345 tablas, 39 SPs |
+| `IMS4MB_BYB_PRD` | Cliente BYB, productiva |
+| `IMS4MB_CEALSA_QAS` | Cliente CEALSA, QA |
+
+**Secrets recomendados** (registrar en el workspace para que el agente conecte sin pedir datos por chat):
+
+- `WMS_KILLIOS_DB_HOST` = `52.41.114.122`
+- `WMS_KILLIOS_DB_PORT` = `1437`
+- `WMS_KILLIOS_DB_USER` = `sa`
+- `WMS_KILLIOS_DB_NAME_DEFAULT` = `TOMWMS_KILLIOS_PRD`
+- `WMS_KILLIOS_DB_PASSWORD` *(ya existe)*
 
 Convención para futuros clientes: `WMS_<CLIENTE>_<ENV>_DB_PASSWORD`.
+
+> Detalle completo de reglas + volatilidad Killios: `brain/agent-context/AZURE_ACCESS.md` §9.
 
 ### Snippet Node.js (referencia rápida)
 

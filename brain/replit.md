@@ -81,16 +81,28 @@ Para identificar autor de cualquier convención particular (ej. reglas en `WebSe
 
 ## 5. Acceso a SQL Server
 
+**Estado validación**: ✅ 2026-04-27 (conexión confirmada desde Replit con queries read-only).
+
 | Dato | Valor |
 |---|---|
 | Servidor | `52.41.114.122,1437` (EC2 AWS, Windows Server 2022) |
-| BD activa | `TOMWMS_KILLIOS_PRD` |
+| BD principal | `TOMWMS_KILLIOS_PRD` (345 tablas, 39 SPs) |
+| Otras BDs WMS accesibles | `IMS4MB_BYB_PRD` (BYB prod), `IMS4MB_CEALSA_QAS` (CEALSA QA) |
 | Versión | SQL Server 2022 CU18 Standard (16.0.4185.3) |
 | Usuario | `sa` |
 | Contraseña | secreto `WMS_KILLIOS_DB_PASSWORD` (NUNCA en código ni chat) |
-| Driver Node | `tedious` (instalado en raíz del workspace) |
+| Driver Node | `tedious` (workspace) o `mssql` (instalable) |
+
+**Naming real de tablas** (validado 2026-04-27): SIN prefijo `t_*`. Son `trans_oc_det_lote`, `log_importacion_excel`, `cliente_lotes`, etc. directos.
+
+**Modelo de lotes**: NO existe maestro independiente. Los lotes viven en 6 tablas dedicadas (`trans_re_det_lote_num` 180k filas, `trans_oc_det_lote` 1k filas, `trans_despacho_det_lote_num`, `cliente_lotes`, 2 interfaces Navision) + en muchas tablas con campo `lote` embebido (`stock`, `stock_hist`, `producto_pallet`, etc.). Detalle en `brain/skills/wms-tomwms/SKILL.md` §7.1.
+
+**Secrets recomendados** para que el agente conecte automáticamente entre sesiones (sin pasar datos por chat):
+- `WMS_KILLIOS_DB_HOST`, `WMS_KILLIOS_DB_PORT`, `WMS_KILLIOS_DB_USER`, `WMS_KILLIOS_DB_NAME_DEFAULT`.
 
 Convención para futuras BDs: `WMS_<CLIENTE>_<ENV>_DB_PASSWORD`.
+
+Detalle completo: `brain/agent-context/AZURE_ACCESS.md` §9.
 
 **Snippet de conexión** (referencia rápida):
 

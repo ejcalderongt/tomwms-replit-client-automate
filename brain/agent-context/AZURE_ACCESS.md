@@ -166,17 +166,43 @@ Para contexto (no necesariamente accesibles ni relevantes hoy):
 - `GenCodeSQL`
 
 
-## 8. Nota sobre BD Killios (AWS) — VOLATILIDAD
+## 9. Acceso BD Killios (AWS) — VALIDADO 2026-04-27
 
-La BD operacional Killios (SQL Server en AWS, secret `WMS_KILLIOS_DB_PASSWORD`) **no es un servicio gestionado por nosotros**. Puede:
+**Estado**: ✅ conectado y funcional. Última validación 2026-04-27 con endpoint actual y queries read-only.
 
-- **Dejar de existir** (si Erik no renueva la instancia AWS).
-- **Restaurarse en otro lugar** para casos de análisis o funcionalidad.
-- **Migrar de proveedor** sin previo aviso.
+| Dato | Valor |
+|---|---|
+| Host | `52.41.114.122` |
+| Puerto | `1437` *(no el 1433 default)* |
+| Engine | SQL Server 2022 (RTM-CU18), 16.0.4185.3 |
+| Usuario | `sa` |
+| Password | secret `WMS_KILLIOS_DB_PASSWORD` |
+| Encrypt / TrustCert | `false` / `true` |
 
-**Reglas para sesiones que dependan de Killios**:
-1. Antes de usarla, validar conectividad con un `SELECT 1`.
-2. Si el host/credenciales cambiaron, actualizar este archivo + `brain/replit.md` antes de continuar.
-3. **Nunca asumir** que el modelo de Killios = modelo de producción del cliente. El cliente tiene su propia instancia.
-4. La BD es para **analizar el modelo y validar estados de prueba**, no para operación real.
-5. Si Killios no responde y la sesión la necesita, **detenerse y reportar** — no inventar el shape de las tablas.
+### 9.1 Bases WMS accesibles
+
+(Otras BDs del mismo server son fuera de scope para este brain.)
+
+| BD | Estado | Rol |
+|---|---|---|
+| `TOMWMS_KILLIOS_PRD` | ONLINE | Target principal: 345 tablas, 39 SPs |
+| `IMS4MB_BYB_PRD` | ONLINE | Cliente BYB, productiva |
+| `IMS4MB_CEALSA_QAS` | ONLINE | Cliente CEALSA, QA |
+
+### 9.2 Secrets recomendados (para no pasar datos por chat en futuras sesiones)
+
+Si están registrados en el workspace, el agente conecta automáticamente sin intervención del usuario:
+
+- `WMS_KILLIOS_DB_HOST` = `52.41.114.122`
+- `WMS_KILLIOS_DB_PORT` = `1437`
+- `WMS_KILLIOS_DB_USER` = `sa`
+- `WMS_KILLIOS_DB_NAME_DEFAULT` = `TOMWMS_KILLIOS_PRD`
+- `WMS_KILLIOS_DB_PASSWORD` *(ya existe)*
+
+### 9.3 Reglas duras (no negociables)
+
+1. **Read-only siempre**: el agente solo ejecuta `SELECT/WITH/EXEC/SET/DECLARE/PRINT`. Bloquea `INSERT/UPDATE/DELETE/MERGE/DROP/ALTER/CREATE/TRUNCATE` con guardrail (ver `brain/wms-agent/wmsa/killios.py` para el patrón canónico).
+2. **Volátil**: el endpoint puede cambiar (migración EC2, restore en otro lugar, cambio de puerto). Si falla la conexión, validar que los secrets sigan apuntando a un host vivo antes de continuar.
+3. **No es producción cliente**: este server es de Erik para análisis. Cada cliente real tiene su propia instancia `TOMWMS_<CLIENTE>_PRD`. El modelo es representativo; los datos NO.
+4. **Si no responde y la sesión la necesita**: detenerse y reportar. **No inventar shape de tablas**.
+5. **Naming real**: las tablas **NO** usan prefijo `t_*`. Son `trans_oc_det_lote`, `log_importacion_excel`, `cliente_lotes`, etc. directas. No confundir con la convención del estilo Java/HH (que tampoco la usa).
