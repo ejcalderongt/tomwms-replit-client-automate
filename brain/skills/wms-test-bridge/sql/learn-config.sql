@@ -1,28 +1,25 @@
--- learn-config: lee la configuración de interface de un cliente desde SQL Server (Killios PRD)
--- Fuente legacy: /TOMIMSV4/DAL/Interface/Configuracion/ConfiguracionEncabezado/clsLnI_nav_config_enc_Partial.vb (línea 8)
+-- learn-config: extrae la configuracion completa por bodega
+-- Origen real: tabla i_nav_config_enc (no la vista VW_Configuracioninv).
+-- VW_Configuracioninv solo expone metadatos (id, nombre, propietario), NO los flags.
 --
--- USO:
---   Reemplazar :id_bodega por el id de la bodega del cliente que se desea aprender.
---   La consulta es READ-ONLY y se ejecuta sobre la rama dev_2023_merge en producción.
---
--- COMPATIBILIDAD dev_2023_merge ↔ dev_2028_merge:
---   La lógica de carga de configuración es IDÉNTICA entre ambas ramas (diff vacío).
---   El único cambio relevante en dev_2028_merge es la migración de varias tablas
---   transaccionales a IDENTITY (eliminando MAX(id)+1) por colisiones de concurrencia.
---   La tabla i_nav_config_enc NO está entre las migradas a IDENTITY a la fecha.
---
--- RESULTADO ESPERADO: 0 o 1 fila por (idEmpresa, idBodega).
+-- Uso:
+--   :id_empresa  (default 1)
+--   :id_bodega   (filtra una bodega; omitir el WHERE de bodega para todas)
 
-SELECT *
-FROM   VW_Configuracioninv
-WHERE  idEmpresa = 1
-  AND  idBodega  = :id_bodega;
+-- Forma 1: una bodega
+SELECT c.*, b.nombre AS bodega_nombre, b.codigo AS bodega_codigo
+FROM dbo.i_nav_config_enc c
+LEFT JOIN dbo.bodega b ON b.idEmpresa = c.idempresa AND b.idBodega = c.idbodega
+WHERE c.idEmpresa = :id_empresa AND c.idBodega = :id_bodega;
 
--- Variante por correlativo (si se conoce el id del registro):
--- SELECT * FROM VW_Configuracioninv WHERE correlativo = :correlativo;
+-- Forma 2: todas las bodegas de una empresa
+-- SELECT c.*, b.nombre AS bodega_nombre, b.codigo AS bodega_codigo
+-- FROM dbo.i_nav_config_enc c
+-- LEFT JOIN dbo.bodega b ON b.idEmpresa = c.idempresa AND b.idBodega = c.idbodega
+-- WHERE c.idEmpresa = :id_empresa
+-- ORDER BY c.idbodega;
 
--- Variante todos los clientes/bodegas (para dump completo):
--- SELECT * FROM VW_Configuracioninv;
-
--- Tabla cruda (sin la vista):
--- SELECT * FROM i_nav_config_enc WHERE idnavconfigenc = :pIdConfiguracionEncabezado;
+-- Bodegas en cada cliente (ya verificadas):
+--   TOMWMS_KILLIOS_PRD  (idEmpresa=1): bodegas 1=BOD1, 2=PRTOK, 3=PRTO, 4=BOD5, 5=PRTK17, 6=PRT17
+--   IMS4MB_BYB_PRD      (idEmpresa=1): 2 bodegas
+--   IMS4MB_CEALSA_QAS   (idEmpresa=1): 2 bodegas (1=general, 2=fiscal)
