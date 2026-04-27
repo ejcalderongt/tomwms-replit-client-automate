@@ -1,0 +1,102 @@
+id: RES-004
+title: Reserva con stock insuficiente — manejo parcial
+module: reservation
+priority: P1
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: clsLnStock_res
+  function: TODO_mapear_caso_legacy
+  source: pendiente lectura de clsLnStock_res.vb completo
+
+description: >
+  El pedido solicita más cantidad que la disponible. Según la
+  configuración del cliente, el motor debe (a) reservar todo lo
+  disponible y dejar el resto pendiente, o (b) rechazar el pedido
+  completo. Valida ambos comportamientos con sub-escenarios.
+
+  Es crítico para detectar regresiones del flag
+  `i_nav_config_enc.permite_reserva_parcial`.
+
+required_config:
+  producto.control_lote: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: insert_stock
+    name: stock_disponible
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con control_lote=1}"
+      ubicacion: "{ubicacion no-picking activa}"
+      lote: "RES004_PARCIAL"
+      cantidad_unidades: 5
+
+action:
+  endpoint: /api/test-bridge/sandbox/reserve
+  method: POST
+  body:
+    pedido:
+      no: "@MaxNoDocumento+1"
+      document_type: Pedido_De_Cliente
+      product_owner_code: "01"
+      lineas:
+        - line_no: 1
+          item_no: "{producto.codigo}"
+          quantity: 10
+
+expected:
+  - when: "i_nav_config_enc.permite_reserva_parcial == 1"
+    checks:
+      - check: row_count
+        table: stock_res
+        where:
+          idstock: "@stock_disponible.id"
+          estado: 1
+        value: 1
+        note: "Reserva 5 (todo lo disponible)"
+      - check: column_value
+        table: trans_pe_det
+        where:
+          no_documento: "@pedido.no"
+          line_no: 1
+        column: cantidad_pendiente
+        value: 5
+      - check: column_value
+        table: trans_pe_enc
+        where:
+          no_documento: "@pedido.no"
+        column: estado
+        value: "PARCIAL"
+
+  - when: "i_nav_config_enc.permite_reserva_parcial == 0"
+    checks:
+      - check: row_absent
+        table: stock_res
+        where:
+          idstock: "@stock_disponible.id"
+          estado: 1
+        note: "No reserva nada porque rechaza pedido"
+      - check: column_value
+        table: trans_pe_enc
+        where:
+          no_documento: "@pedido.no"
+        column: estado
+        value: "RECHAZADO_FALTA_STOCK"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - edge-case
+  - reservation
+  - mi3
+  - mi3-legacy
+  - flag-dependent
+
+notes: |
+  Este escenario es flag-dependent. Brain debe ejecutar la rama del
+  `when:` que coincide con la config del cliente, no ambas.
