@@ -1,41 +1,252 @@
-# Cliente: Killios
+# Cliente: killios
 id: killios
-name: "Killios"
-brand: "KILLIOS"
-
-# Estado de aprendizaje. Todos los flags están en null hasta correr
-# brain/skills/wms-test-bridge/sql/learn-config.sql contra la bodega del cliente
-# y volcar la fila resultante.
-learned: false
+learned: true
 learned_from:
-  branch: null          # dev_2023_merge cuando se ejecute contra Killios PRD
-  bodega: null
-  fecha: null
+  server: "52.41.114.122,1437"
+  database: "TOMWMS_KILLIOS_PRD"
+  branch: dev_2023_merge_equivalent
+  when: "2026-04-27T14:56:31.611Z"
+  query: "SELECT c.*, b.nombre AS bodega_nombre, b.codigo AS bodega_codigo FROM i_nav_config_enc c LEFT JOIN bodega b ON b.idEmpresa=c.idempresa AND b.idBodega=c.idbodega WHERE c.idEmpresa=1"
 
-# Flags reales (nombres exactos de la entidad clsBeI_nav_config_enc).
-# Tipos: ver brain/skills/wms-test-bridge/reference/config-flags.md
-flags:
-  Rechazar_pedido_incompleto: null   # pendiente learn-config
-  Despachar_existencia_parcial: null   # pendiente learn-config
-  Convertir_decimales_a_umbas: null   # pendiente learn-config
-  Reservar_UMBas_Primero: null   # pendiente learn-config
-  Implosion_Automatica: null   # pendiente learn-config
-  Explosion_Automatica: null   # pendiente learn-config
-  Explosion_Automatica_Desde_Ubicacion_Picking: null   # pendiente learn-config
-  Explosion_Automatica_Nivel_Max: null   # pendiente learn-config
-  IdTipoRotacion: null   # pendiente learn-config
-  IdProductoEstado: null   # pendiente learn-config
-  Conservar_Zona_Picking_Clavaud: null   # pendiente learn-config
-  Excluir_Ubicaciones_Reabasto: null   # pendiente learn-config
-  considerar_paletizado_en_reabasto: null   # pendiente learn-config
-  Considerar_Disponibilidad_Ubicacion_Reabasto: null   # pendiente learn-config
-  Valida_Solo_Codigo: null   # pendiente learn-config
-  Control_lote: null   # pendiente learn-config
-  Control_vencimiento: null   # pendiente learn-config
-  Genera_lp: null   # pendiente learn-config
+profile:
+  erp: "SAP Business One (DI-API para lectura/escritura)"
+  rubro: "alimentos"
+  modelo_inventario: "centro abastecimiento Amatitlan + sucursal Z17, ambas con bodega de prorrateo de costeo"
+  notas: |
+    Procesa pedidos en cajas Y unidades decimales (mayor reto del cliente). 6 bodegas en pares: principal/prorrateo. Interface SAP activa con bonificación inferida desactivada.
 
-notes: |
-  Cliente Killios. BD prod accesible READ-ONLY (rama dev_2023_merge).
-  Esta es la fuente para learn-config: ejecutar sql/learn-config.sql contra esta BD.
-  Equivalencia funcional con dev_2028_merge: ver ADR-005.
-  Sin hipótesis previas — se llenan los flags desde el resultado del learn.
+bodegas:
+  - id: 1
+    codigo: "BOD1"
+    nombre: "Bodega Principal"
+    flags:
+      control_vencimiento: true
+      control_lote: true
+      control_peso: true
+      IdTipoRotacion: 3
+      rechazar_pedido_incompleto: 1
+      despachar_existencia_parcial: 1
+      convertir_decimales_a_umbas: 1
+      explosion_automatica: true
+      implosion_automatica: true
+      explosion_automatica_desde_ubicacion_picking: true
+      explosion_automatica_nivel_max: -1
+      explosio_automatica_nivel_max: 1
+      reservar_umbas_primero: false
+      conservar_zona_picking_clavaud: true
+      excluir_ubicaciones_reabasto: false
+      considerar_paletizado_en_reabasto: false
+      considerar_disponibilidad_ubicacion_reabasto: false
+      genera_lp: true
+      interface_sap: true
+      sap_control_draft_ajustes: false
+      sap_control_draft_traslados: false
+      inferir_bonificacion_pedido_sap: false
+      rechazar_bonificacion_incompleta: false
+      bodega_prorrateo: "PRT17"
+      bodega_prorrateo1: "PRTK17"
+      bodega_facturacion: "BOD7"
+      bodega_faltante: null
+      equiparar_cliente_con_propietario_en_doc_salida: false
+      crear_recepcion_de_compra_nav: false
+      crear_recepcion_de_transferencia_nav: false
+      push_ingreso_nav_desde_hh: false
+      generar_pedido_ingreso_bodega_destino: true
+      generar_recepcion_auto_bodega_destino: true
+      dias_vida_defecto_perecederos: 0
+      IdProductoEstado: 1
+  - id: 2
+    codigo: "PRTOK"
+    nombre: "Bodega de Prorateo Kilio"
+    flags:
+      control_vencimiento: true
+      control_lote: true
+      control_peso: true
+      IdTipoRotacion: 3
+      rechazar_pedido_incompleto: 1
+      despachar_existencia_parcial: 1
+      convertir_decimales_a_umbas: 1
+      explosion_automatica: true
+      implosion_automatica: true
+      explosion_automatica_desde_ubicacion_picking: true
+      explosion_automatica_nivel_max: -1
+      explosio_automatica_nivel_max: 1
+      reservar_umbas_primero: false
+      conservar_zona_picking_clavaud: true
+      excluir_ubicaciones_reabasto: false
+      considerar_paletizado_en_reabasto: false
+      considerar_disponibilidad_ubicacion_reabasto: false
+      genera_lp: true
+      interface_sap: true
+      sap_control_draft_ajustes: false
+      sap_control_draft_traslados: false
+      inferir_bonificacion_pedido_sap: false
+      rechazar_bonificacion_incompleta: false
+      bodega_prorrateo: "PRTO"
+      bodega_prorrateo1: "PRTOK"
+      bodega_facturacion: "BOD7"
+      bodega_faltante: null
+      equiparar_cliente_con_propietario_en_doc_salida: false
+      crear_recepcion_de_compra_nav: false
+      crear_recepcion_de_transferencia_nav: false
+      push_ingreso_nav_desde_hh: false
+      generar_pedido_ingreso_bodega_destino: true
+      generar_recepcion_auto_bodega_destino: true
+      dias_vida_defecto_perecederos: 0
+      IdProductoEstado: 1
+  - id: 3
+    codigo: "PRTO"
+    nombre: "Bodega de Prorateo Garesa"
+    flags:
+      control_vencimiento: true
+      control_lote: true
+      control_peso: true
+      IdTipoRotacion: 3
+      rechazar_pedido_incompleto: 1
+      despachar_existencia_parcial: 1
+      convertir_decimales_a_umbas: 1
+      explosion_automatica: true
+      implosion_automatica: true
+      explosion_automatica_desde_ubicacion_picking: true
+      explosion_automatica_nivel_max: -1
+      explosio_automatica_nivel_max: 1
+      reservar_umbas_primero: false
+      conservar_zona_picking_clavaud: true
+      excluir_ubicaciones_reabasto: false
+      considerar_paletizado_en_reabasto: false
+      considerar_disponibilidad_ubicacion_reabasto: false
+      genera_lp: true
+      interface_sap: true
+      sap_control_draft_ajustes: false
+      sap_control_draft_traslados: false
+      inferir_bonificacion_pedido_sap: false
+      rechazar_bonificacion_incompleta: false
+      bodega_prorrateo: "PRTO"
+      bodega_prorrateo1: "PRTOK"
+      bodega_facturacion: "BOD7"
+      bodega_faltante: null
+      equiparar_cliente_con_propietario_en_doc_salida: false
+      crear_recepcion_de_compra_nav: false
+      crear_recepcion_de_transferencia_nav: false
+      push_ingreso_nav_desde_hh: false
+      generar_pedido_ingreso_bodega_destino: true
+      generar_recepcion_auto_bodega_destino: true
+      dias_vida_defecto_perecederos: 0
+      IdProductoEstado: 1
+  - id: 4
+    codigo: "BOD5"
+    nombre: "Bodega Amatitlan"
+    flags:
+      control_vencimiento: true
+      control_lote: true
+      control_peso: true
+      IdTipoRotacion: 3
+      rechazar_pedido_incompleto: 1
+      despachar_existencia_parcial: 1
+      convertir_decimales_a_umbas: 1
+      explosion_automatica: true
+      implosion_automatica: true
+      explosion_automatica_desde_ubicacion_picking: true
+      explosion_automatica_nivel_max: -1
+      explosio_automatica_nivel_max: 1
+      reservar_umbas_primero: false
+      conservar_zona_picking_clavaud: true
+      excluir_ubicaciones_reabasto: false
+      considerar_paletizado_en_reabasto: false
+      considerar_disponibilidad_ubicacion_reabasto: false
+      genera_lp: true
+      interface_sap: true
+      sap_control_draft_ajustes: false
+      sap_control_draft_traslados: false
+      inferir_bonificacion_pedido_sap: false
+      rechazar_bonificacion_incompleta: false
+      bodega_prorrateo: "PRTO"
+      bodega_prorrateo1: "PRTOK"
+      bodega_facturacion: "BOD7"
+      bodega_faltante: null
+      equiparar_cliente_con_propietario_en_doc_salida: false
+      crear_recepcion_de_compra_nav: false
+      crear_recepcion_de_transferencia_nav: false
+      push_ingreso_nav_desde_hh: false
+      generar_pedido_ingreso_bodega_destino: true
+      generar_recepcion_auto_bodega_destino: true
+      dias_vida_defecto_perecederos: 0
+      IdProductoEstado: 1
+  - id: 5
+    codigo: "PRTK17"
+    nombre: "Bodega de Prorateo Kilio Z17"
+    flags:
+      control_vencimiento: true
+      control_lote: true
+      control_peso: true
+      IdTipoRotacion: 3
+      rechazar_pedido_incompleto: 1
+      despachar_existencia_parcial: 1
+      convertir_decimales_a_umbas: 1
+      explosion_automatica: true
+      implosion_automatica: true
+      explosion_automatica_desde_ubicacion_picking: true
+      explosion_automatica_nivel_max: -1
+      explosio_automatica_nivel_max: 1
+      reservar_umbas_primero: false
+      conservar_zona_picking_clavaud: true
+      excluir_ubicaciones_reabasto: false
+      considerar_paletizado_en_reabasto: false
+      considerar_disponibilidad_ubicacion_reabasto: false
+      genera_lp: true
+      interface_sap: true
+      sap_control_draft_ajustes: false
+      sap_control_draft_traslados: false
+      inferir_bonificacion_pedido_sap: false
+      rechazar_bonificacion_incompleta: false
+      bodega_prorrateo: "PRT17"
+      bodega_prorrateo1: "PRTK17"
+      bodega_facturacion: "BOD7"
+      bodega_faltante: null
+      equiparar_cliente_con_propietario_en_doc_salida: false
+      crear_recepcion_de_compra_nav: false
+      crear_recepcion_de_transferencia_nav: false
+      push_ingreso_nav_desde_hh: false
+      generar_pedido_ingreso_bodega_destino: true
+      generar_recepcion_auto_bodega_destino: true
+      dias_vida_defecto_perecederos: 0
+      IdProductoEstado: 1
+  - id: 6
+    codigo: "PRT17"
+    nombre: "Bodega de Prorateo Garesa Z17"
+    flags:
+      control_vencimiento: true
+      control_lote: true
+      control_peso: true
+      IdTipoRotacion: 3
+      rechazar_pedido_incompleto: 1
+      despachar_existencia_parcial: 1
+      convertir_decimales_a_umbas: 1
+      explosion_automatica: true
+      implosion_automatica: true
+      explosion_automatica_desde_ubicacion_picking: true
+      explosion_automatica_nivel_max: -1
+      explosio_automatica_nivel_max: 1
+      reservar_umbas_primero: false
+      conservar_zona_picking_clavaud: true
+      excluir_ubicaciones_reabasto: false
+      considerar_paletizado_en_reabasto: false
+      considerar_disponibilidad_ubicacion_reabasto: false
+      genera_lp: true
+      interface_sap: true
+      sap_control_draft_ajustes: false
+      sap_control_draft_traslados: false
+      inferir_bonificacion_pedido_sap: false
+      rechazar_bonificacion_incompleta: false
+      bodega_prorrateo: "PRT17"
+      bodega_prorrateo1: "PRTK17"
+      bodega_facturacion: "BOD7"
+      bodega_faltante: null
+      equiparar_cliente_con_propietario_en_doc_salida: false
+      crear_recepcion_de_compra_nav: false
+      crear_recepcion_de_transferencia_nav: false
+      push_ingreso_nav_desde_hh: false
+      generar_pedido_ingreso_bodega_destino: true
+      generar_recepcion_auto_bodega_destino: true
+      dias_vida_defecto_perecederos: 0
+      IdProductoEstado: 1
