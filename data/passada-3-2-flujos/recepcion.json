@@ -1,0 +1,2660 @@
+{
+  "domain": "recepcion",
+  "activitiesCount": 4,
+  "activities": [
+    {
+      "activity": "frm_recepcion_datos",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "layout": "activity_frm_recepcion_datos",
+      "fileLines": 11482,
+      "intentTargets": [
+        "frm_cambio_ubicacion_ciega",
+        "Mainmenu",
+        "frm_imagenes"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 8466,
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal IdProductoBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_bodega",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_bodega"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_bodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 8471,
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdPropietario As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeProducto_estado)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 8477,
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pActivo As Boolean",
+          "returns": "List(Of clsBeProducto_Presentacion)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_presentacion",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_presentacion"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_presentacion",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 8483,
+          "wm": "Get_All_Codigos_Barra_By_IdProducto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer",
+          "returns": "List(Of clsBeProducto_codigos_barra)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 8488,
+          "wm": "Get_All_ProductoParametros_By_IdProducto_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pActivo As Boolean",
+          "returns": "List(Of clsBeProducto_parametros)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_parametros",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_parametros"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_parametros",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 8494,
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdOperador As Integer, ByVal pIdBodega As Integer",
+          "returns": "clsBeResolucion_lp_operador",
+          "tablesRead": [
+            "log_error_wms",
+            "resolucion_lp_operador",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "resolucion_lp_operador"
+          ],
+          "clsLnUsed": [
+            "clsLnResolucion_lp_operador",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 8498,
+          "wm": "Get_Nuevo_Correlativo_LicensePlate",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdPropietario As Integer, ByVal pIdProducto As Integer",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 8504,
+          "wm": "Get_Licenses_Plates_By_IdRecepcionEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "List(Of clsBeLicensePlates)",
+          "tablesRead": [],
+          "tablesWrite": [],
+          "clsLnUsed": [
+            "clsLnLicensePlates",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 8509,
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal IdRecepcionEnc As Integer, ByVal LicPlate As String, ByVal IdRecepcionDet As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 10,
+          "lineNum": 8516,
+          "wm": "MaxIDStockSeRec",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_se_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_se_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_se_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 11,
+          "lineNum": 8520,
+          "wm": "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer, ByVal pIdRecepcionDet As Integer) As List(Of clsBeTrans_re_det_parametros) 'Implements IServiceGen.GetAllParamsByRecepcionDetalleForHH Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH = New List(Of clsBeTrans_re_det_parametros",
+          "tablesRead": [],
+          "tablesWrite": [
+            "trans_re_det_parametros"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det_parametros",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 12,
+          "lineNum": 8525,
+          "wm": "MaxIDStockRec",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 13,
+          "lineNum": 8529,
+          "wm": "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "clsBeTrans_re_enc",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 14,
+          "lineNum": 8533,
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "bodega",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 15,
+          "lineNum": 8537,
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal IdRecepcionEnc As Integer, ByVal LicPlate As String, ByVal IdRecepcionDet As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 16,
+          "lineNum": 8544,
+          "wm": "Get_Nuevo_Correlativo_LicensePlate_S",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 50,
+          "paramsRaw": "ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdPropietario As Integer, ByVal pIdProducto As Integer, ByVal UltimoPalletGenerado As String",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 17,
+          "lineNum": 8556,
+          "wm": "Guardar_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 74,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pLotesRec As clsBeTrans_oc_det_lote, ByVal pIdEmpresa",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 18,
+          "lineNum": 8638,
+          "wm": "Guardar_Recepcion_Sin_Presentacion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pLotesRec As clsBeTrans_oc_det_lote, ByVal pIdEmpresa",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 19,
+          "lineNum": 8654,
+          "wm": "Guardar_Recepcion_Caja_Master",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 62,
+          "paramsRaw": "ByVal pIdRecpecionEnc As Integer, ByVal pIdOrdenCompra As Integer, ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdUsuario As Integer, ByVal pIdOperadorBodega As Integer, ByVal pListaStockRec As List(Of clsBeStock_rec), ByVal pListaDetLote As List(Of clsBeTrans_oc_det_lote), ByVal ",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_re_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 20,
+          "lineNum": 8675,
+          "wm": "Guardar_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 74,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pLotesRec As clsBeTrans_oc_det_lote, ByVal pIdEmpresa",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 21,
+          "lineNum": 8695,
+          "wm": "Guardar_Recepcion_S",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 77,
+          "paramsRaw": "ByVal pIdRecpecionEnc As Integer, ByVal pIdTipoDocumentoDI As Integer, ByVal pIdOrdenCompraEnc As Integer, ByVal BeRecDet As clsBeTrans_re_det, ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros), ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeS",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 22,
+          "lineNum": 8719,
+          "wm": "GuardarRecepcionModif",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 65,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pbeStockAnt As clsBeStock, ByVal pIdEmpresa As Intege",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 23,
+          "lineNum": 8731,
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByRef oBeTrans_oc_det As clsBeTrans_oc_det",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_oc_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_oc_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_oc"
+          ]
+        },
+        {
+          "seq": 24,
+          "lineNum": 8735,
+          "wm": "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 40,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 25,
+          "lineNum": 8739,
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "bodega",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 26,
+          "lineNum": 8743,
+          "wm": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 59,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pIdOrdenCompraEnc As Integer, ByVal pIdRecepcionEnc As Integer, ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdUsuario As String, ByVal pBeStockRec As clsBeStock_rec, ByVal pBeRecDet As clsBeTrans_re_det, ByVal pBeBarraPallet As clsBeI_nav",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 27,
+          "lineNum": 8756,
+          "wm": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdOrdenCompraEnc As Integer",
+          "returns": "List(Of clsBeTrans_re_det)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_re_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 28,
+          "lineNum": 8760,
+          "wm": "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer, ByVal pIdRecepcionDet As Integer",
+          "returns": "List(Of clsBeStock_rec)",
+          "tablesRead": [
+            "stock_rec"
+          ],
+          "tablesWrite": [
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 29,
+          "lineNum": 8764,
+          "wm": "Existe_Lp",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pLic_Plate As String, ByVal pIdBodega As Integer, ByVal pIdStock As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 30,
+          "lineNum": 8773,
+          "wm": "Push_Recepcion_Produccion_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 145,
+          "paramsRaw": "ByVal DocumentoUbicacion As String, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer, ByVal pIdUsuario As Integer, ByRef pRespuesta As String",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 31,
+          "lineNum": 8807,
+          "wm": "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 226,
+          "paramsRaw": "ByVal DocumentoIngreso As String, ByVal DocumentoRecepcion As String, ByVal NoLinea As Integer, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal NoLote As String, ByVal FechaVence As Date, ByVal NomUnidadMedida As String, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Intege",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 32,
+          "lineNum": 8825,
+          "wm": "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 196,
+          "paramsRaw": "ByVal DocumentoIngreso As String, ByVal DocumentoRecepcion As String, ByVal NoLinea As Integer, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal NoLote As String, ByVal FechaVence As Date, ByVal NomUnidadMedida As String, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Intege",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 33,
+          "lineNum": 8843,
+          "wm": "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 238,
+          "paramsRaw": "ByVal DocumentoIngreso As String, ByVal DocumentoRecepcion As String, ByVal NoLinea As Integer, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal NoLote As String, ByVal FechaVence As Date, ByVal NomUnidadMedida As String, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Intege",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 34,
+          "lineNum": 8867,
+          "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByRef pBeTipo_etiqueta As clsBeTipo_etiqueta, ByVal IdSimbologia As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_clasificacion_etiqueta",
+            "tipo_etiqueta",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "tipo_etiqueta"
+          ],
+          "clsLnUsed": [
+            "clsLnTipo_etiqueta",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 35,
+          "lineNum": 8872,
+          "wm": "Existe_Serie",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pSerie As String, ByVal pIdBodega As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 36,
+          "lineNum": 8877,
+          "wm": "Guardar_Producto_Imagen",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pBeProductoImagen As clsBeProducto_imagen",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_imagen",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_imagen"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_imagen",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 37,
+          "lineNum": 8881,
+          "wm": "Get_All_Producto_Imagen",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 39,
+          "paramsRaw": "ByVal pIdProducto As Integer",
+          "returns": "List(Of clsBeProducto_imagen)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_imagen",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_imagen"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_imagen",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 38,
+          "lineNum": 8884,
+          "wm": "Tiene_Posiciones",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 39,
+          "lineNum": 8888,
+          "wm": "Guardar_Fotos_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer, ByVal Foto As Byte()",
+          "tablesRead": [
+            "trans_re_img"
+          ],
+          "tablesWrite": [
+            "trans_re_img"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_img",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 40,
+          "lineNum": 8893,
+          "wm": "Get_All_Imagen_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdRecepcion As Integer",
+          "returns": "List(Of clsBeTrans_re_img)",
+          "tablesRead": [
+            "trans_re_img"
+          ],
+          "tablesWrite": [
+            "trans_re_img"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_img",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 41,
+          "lineNum": 8898,
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByRef oBeTrans_oc_det As clsBeTrans_oc_det",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_oc_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_oc_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_oc"
+          ]
+        },
+        {
+          "seq": 42,
+          "lineNum": 8905,
+          "wm": "Get_Vencimiento_By_IdBodega_And_Lote",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pNoLote As String",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 43,
+          "lineNum": 8910,
+          "wm": "Get_Colores",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "",
+          "tablesRead": [
+            "color",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "color",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnColor",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 44,
+          "lineNum": 8913,
+          "wm": "Get_Tallas",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "",
+          "tablesRead": [
+            "log_error_wms",
+            "talla",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "talla"
+          ],
+          "clsLnUsed": [
+            "clsLnTalla",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 45,
+          "lineNum": 8916,
+          "wm": "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 53,
+          "paramsRaw": "ByVal pIdOrdenCompra As Integer, ByVal pLicencia As String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_re_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 46,
+          "lineNum": 8921,
+          "wm": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 54,
+          "paramsRaw": "ByVal pIdOrdenCompraEnc As Integer, ByVal pIdRecepcionEnc As Integer, ByVal pIdRecepcionDet As Integer, ByVal pIdHost As String",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_recepcion_datos_original",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "layout": "activity_frm_recepcion_datos",
+      "fileLines": 11371,
+      "intentTargets": [
+        "frm_cambio_ubicacion_ciega",
+        "Mainmenu",
+        "frm_imagenes"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 8382,
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal IdProductoBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_bodega",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_bodega"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_bodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 8387,
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdPropietario As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeProducto_estado)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 8393,
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pActivo As Boolean",
+          "returns": "List(Of clsBeProducto_Presentacion)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_presentacion",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_presentacion"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_presentacion",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 8399,
+          "wm": "Get_All_Codigos_Barra_By_IdProducto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer",
+          "returns": "List(Of clsBeProducto_codigos_barra)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 8404,
+          "wm": "Get_All_ProductoParametros_By_IdProducto_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pActivo As Boolean",
+          "returns": "List(Of clsBeProducto_parametros)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_parametros",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_parametros"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_parametros",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 8410,
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdOperador As Integer, ByVal pIdBodega As Integer",
+          "returns": "clsBeResolucion_lp_operador",
+          "tablesRead": [
+            "log_error_wms",
+            "resolucion_lp_operador",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "resolucion_lp_operador"
+          ],
+          "clsLnUsed": [
+            "clsLnResolucion_lp_operador",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 8414,
+          "wm": "Get_Nuevo_Correlativo_LicensePlate",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdPropietario As Integer, ByVal pIdProducto As Integer",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 8420,
+          "wm": "Get_Licenses_Plates_By_IdRecepcionEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "List(Of clsBeLicensePlates)",
+          "tablesRead": [],
+          "tablesWrite": [],
+          "clsLnUsed": [
+            "clsLnLicensePlates",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 8425,
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal IdRecepcionEnc As Integer, ByVal LicPlate As String, ByVal IdRecepcionDet As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 10,
+          "lineNum": 8432,
+          "wm": "MaxIDStockSeRec",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_se_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_se_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_se_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 11,
+          "lineNum": 8436,
+          "wm": "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer, ByVal pIdRecepcionDet As Integer) As List(Of clsBeTrans_re_det_parametros) 'Implements IServiceGen.GetAllParamsByRecepcionDetalleForHH Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH = New List(Of clsBeTrans_re_det_parametros",
+          "tablesRead": [],
+          "tablesWrite": [
+            "trans_re_det_parametros"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det_parametros",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 12,
+          "lineNum": 8441,
+          "wm": "MaxIDStockRec",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 13,
+          "lineNum": 8445,
+          "wm": "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "clsBeTrans_re_enc",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 14,
+          "lineNum": 8449,
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "bodega",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 15,
+          "lineNum": 8453,
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal IdRecepcionEnc As Integer, ByVal LicPlate As String, ByVal IdRecepcionDet As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 16,
+          "lineNum": 8460,
+          "wm": "Get_Nuevo_Correlativo_LicensePlate_S",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 50,
+          "paramsRaw": "ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdPropietario As Integer, ByVal pIdProducto As Integer, ByVal UltimoPalletGenerado As String",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 17,
+          "lineNum": 8472,
+          "wm": "Guardar_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 74,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pLotesRec As clsBeTrans_oc_det_lote, ByVal pIdEmpresa",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 18,
+          "lineNum": 8552,
+          "wm": "Guardar_Recepcion_Sin_Presentacion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pLotesRec As clsBeTrans_oc_det_lote, ByVal pIdEmpresa",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 19,
+          "lineNum": 8568,
+          "wm": "Guardar_Recepcion_Caja_Master",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 62,
+          "paramsRaw": "ByVal pIdRecpecionEnc As Integer, ByVal pIdOrdenCompra As Integer, ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdUsuario As Integer, ByVal pIdOperadorBodega As Integer, ByVal pListaStockRec As List(Of clsBeStock_rec), ByVal pListaDetLote As List(Of clsBeTrans_oc_det_lote), ByVal ",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_re_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 20,
+          "lineNum": 8589,
+          "wm": "Guardar_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 74,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pLotesRec As clsBeTrans_oc_det_lote, ByVal pIdEmpresa",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 21,
+          "lineNum": 8609,
+          "wm": "Guardar_Recepcion_S",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 77,
+          "paramsRaw": "ByVal pIdRecpecionEnc As Integer, ByVal pIdTipoDocumentoDI As Integer, ByVal pIdOrdenCompraEnc As Integer, ByVal BeRecDet As clsBeTrans_re_det, ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros), ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeS",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 22,
+          "lineNum": 8633,
+          "wm": "GuardarRecepcionModif",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 65,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pRecOrdenCompra As clsBeTrans_re_oc, ByVal pListStockRecSer As List(Of clsBeStock_se_rec), ByVal pListStockRec As List(Of clsBeStock_rec), ByVal pListProductoPallet As List(Of clsBeProducto_pallet), ByVal pbeStockAnt As clsBeStock, ByVal pIdEmpresa As Intege",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 23,
+          "lineNum": 8645,
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByRef oBeTrans_oc_det As clsBeTrans_oc_det",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_oc_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_oc_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_oc"
+          ]
+        },
+        {
+          "seq": 24,
+          "lineNum": 8649,
+          "wm": "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 40,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 25,
+          "lineNum": 8653,
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "bodega",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 26,
+          "lineNum": 8657,
+          "wm": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 59,
+          "paramsRaw": "ByVal pRecEnc As clsBeTrans_re_enc, ByVal pIdOrdenCompraEnc As Integer, ByVal pIdRecepcionEnc As Integer, ByVal pIdEmpresa As Integer, ByVal pIdBodega As Integer, ByVal pIdUsuario As String, ByVal pBeStockRec As clsBeStock_rec, ByVal pBeRecDet As clsBeTrans_re_det, ByVal pBeBarraPallet As clsBeI_nav",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 27,
+          "lineNum": 8670,
+          "wm": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdOrdenCompraEnc As Integer",
+          "returns": "List(Of clsBeTrans_re_det)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_re_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 28,
+          "lineNum": 8674,
+          "wm": "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer, ByVal pIdRecepcionDet As Integer",
+          "returns": "List(Of clsBeStock_rec)",
+          "tablesRead": [
+            "stock_rec"
+          ],
+          "tablesWrite": [
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 29,
+          "lineNum": 8678,
+          "wm": "Existe_Lp",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pLic_Plate As String, ByVal pIdBodega As Integer, ByVal pIdStock As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 30,
+          "lineNum": 8687,
+          "wm": "Push_Recepcion_Produccion_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 145,
+          "paramsRaw": "ByVal DocumentoUbicacion As String, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer, ByVal pIdUsuario As Integer, ByRef pRespuesta As String",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 31,
+          "lineNum": 8721,
+          "wm": "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 226,
+          "paramsRaw": "ByVal DocumentoIngreso As String, ByVal DocumentoRecepcion As String, ByVal NoLinea As Integer, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal NoLote As String, ByVal FechaVence As Date, ByVal NomUnidadMedida As String, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Intege",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 32,
+          "lineNum": 8739,
+          "wm": "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 196,
+          "paramsRaw": "ByVal DocumentoIngreso As String, ByVal DocumentoRecepcion As String, ByVal NoLinea As Integer, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal NoLote As String, ByVal FechaVence As Date, ByVal NomUnidadMedida As String, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Intege",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 33,
+          "lineNum": 8757,
+          "wm": "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 238,
+          "paramsRaw": "ByVal DocumentoIngreso As String, ByVal DocumentoRecepcion As String, ByVal NoLinea As Integer, ByVal CodigoProducto As String, ByVal Cantidad As Double, ByVal NoLote As String, ByVal FechaVence As Date, ByVal NomUnidadMedida As String, ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Intege",
+          "returns": "Boolean",
+          "tablesRead": [
+            "i_nav_transacciones_push"
+          ],
+          "tablesWrite": [
+            "i_nav_transacciones_push"
+          ],
+          "clsLnUsed": [
+            "clsLnI_nav_transacciones_push",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 34,
+          "lineNum": 8781,
+          "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByRef pBeTipo_etiqueta As clsBeTipo_etiqueta, ByVal IdSimbologia As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_clasificacion_etiqueta",
+            "tipo_etiqueta",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "tipo_etiqueta"
+          ],
+          "clsLnUsed": [
+            "clsLnTipo_etiqueta",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 35,
+          "lineNum": 8786,
+          "wm": "Existe_Serie",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pSerie As String, ByVal pIdBodega As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 36,
+          "lineNum": 8791,
+          "wm": "Guardar_Producto_Imagen",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pBeProductoImagen As clsBeProducto_imagen",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_imagen",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_imagen"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_imagen",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 37,
+          "lineNum": 8795,
+          "wm": "Get_All_Producto_Imagen",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 39,
+          "paramsRaw": "ByVal pIdProducto As Integer",
+          "returns": "List(Of clsBeProducto_imagen)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_imagen",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_imagen"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_imagen",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 38,
+          "lineNum": 8798,
+          "wm": "Tiene_Posiciones",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStock As clsBeStock",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 39,
+          "lineNum": 8802,
+          "wm": "Guardar_Fotos_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer, ByVal Foto As Byte()",
+          "tablesRead": [
+            "trans_re_img"
+          ],
+          "tablesWrite": [
+            "trans_re_img"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_img",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 40,
+          "lineNum": 8807,
+          "wm": "Get_All_Imagen_Recepcion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdRecepcion As Integer",
+          "returns": "List(Of clsBeTrans_re_img)",
+          "tablesRead": [
+            "trans_re_img"
+          ],
+          "tablesWrite": [
+            "trans_re_img"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_img",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 41,
+          "lineNum": 8812,
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByRef oBeTrans_oc_det As clsBeTrans_oc_det",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_oc_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_oc_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_oc"
+          ]
+        },
+        {
+          "seq": 42,
+          "lineNum": 8819,
+          "wm": "Get_Vencimiento_By_IdBodega_And_Lote",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pNoLote As String",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 43,
+          "lineNum": 8824,
+          "wm": "Get_Colores",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "",
+          "tablesRead": [
+            "color",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "color",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnColor",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 44,
+          "lineNum": 8827,
+          "wm": "Get_Tallas",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "",
+          "tablesRead": [
+            "log_error_wms",
+            "talla",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "talla"
+          ],
+          "clsLnUsed": [
+            "clsLnTalla",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 45,
+          "lineNum": 8830,
+          "wm": "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 53,
+          "paramsRaw": "ByVal pIdOrdenCompra As Integer, ByVal pLicencia As String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_re_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 46,
+          "lineNum": 8835,
+          "wm": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 54,
+          "paramsRaw": "ByVal pIdOrdenCompraEnc As Integer, ByVal pIdRecepcionEnc As Integer, ByVal pIdRecepcionDet As Integer, ByVal pIdHost As String",
+          "returns": "String",
+          "tablesRead": [
+            "trans_re_det"
+          ],
+          "tablesWrite": [
+            "trans_re_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_det",
+            "clsLnLog_error_wms_rec"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_lista_tareas_recepcion",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "layout": "activity_frm_lista_tareas_recepcion",
+      "fileLines": 1149,
+      "intentTargets": [
+        "Mainmenu",
+        "frm_detalle_ingresos",
+        "frm_detalle_tareas_picking",
+        "frm_detalle_tareas_verificacion",
+        "frm_list_rec_prod",
+        "frm_verificacion_datos"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 272,
+          "wm": "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdOperadorBodega As Integer",
+          "returns": "List(Of clsBeTareasIngresoHH)",
+          "tablesRead": [
+            "tarea_hh"
+          ],
+          "tablesWrite": [
+            "tarea_hh"
+          ],
+          "clsLnUsed": [
+            "clsLnTarea_hh",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 278,
+          "wm": "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeTareasIngresoHH)",
+          "tablesRead": [
+            "log_error_wms",
+            "tarea_hh",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "tarea_hh"
+          ],
+          "clsLnUsed": [
+            "clsLnTarea_hh",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 283,
+          "wm": "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdOperadorBodega As Integer",
+          "returns": "List(Of clsBeTrans_picking_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "tarea_hh",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "tarea_hh"
+          ],
+          "clsLnUsed": [
+            "clsLnTarea_hh",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 293,
+          "wm": "Get_All_Pedidos_A_Verificar_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdOperadorBodega As Integer",
+          "returns": "List(Of clsBeTrans_pe_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "log_verificacion_bof",
+            "trans_pe_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "log_verificacion_bof",
+            "trans_pe_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_pe_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_verificacion_bof"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 299,
+          "wm": "Get_Pedido_A_Verificar_By_LP",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pLP As String",
+          "returns": "List(Of clsBeTrans_pe_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_pe_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_pe_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_pe_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pe"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 303,
+          "wm": "Get_IdOrdenCompraEnc_By_Licencia",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pLicenciaIngreso As String",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_oc_det_lote",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_oc_det_lote"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_oc_det_lote",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 308,
+          "wm": "GetSingleRec",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdRecepcionEnc As Integer",
+          "returns": "clsBeTrans_re_enc",
+          "tablesRead": [
+            "trans_re_enc"
+          ],
+          "tablesWrite": [
+            "trans_re_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_re_enc",
+            "clsLnLog_error_wms_rec"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 312,
+          "wm": "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 51,
+          "paramsRaw": "ByVal pCodigo As String, ByVal pIdOperadorBodega As String",
+          "returns": "DataTable",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_oc_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_oc_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_oc"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 321,
+          "wm": "Get_Verificacion_By_Producto_And_Pedido",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pProducto As String, ByVal pListaPedidos As String",
+          "returns": "clsBeDetallePedidoAVerificar",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_pe_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_pe_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pe"
+          ]
+        },
+        {
+          "seq": 10,
+          "lineNum": 327,
+          "wm": "Get_Single_By_IdPedidoEnc_Json",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 75,
+          "paramsRaw": "ByVal pIdPedidoEnc As Integer, ByVal pCodigoProducto As String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_pe_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_pe_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_pe_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pe"
+          ]
+        },
+        {
+          "seq": 11,
+          "lineNum": 333,
+          "wm": "Get_Tipo_Pedido_Json",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 56,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_pe_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_pe_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_pe_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_recepcion_rfid",
+      "package": "com.dts.tom.Transacciones.RFID",
+      "layout": "activity_frm_recepcion_rfid",
+      "fileLines": 1297,
+      "intentTargets": [
+        "frm_procesar_rfid"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": []
+    }
+  ],
+  "entryActivity": "frm_lista_tareas_recepcion",
+  "exitActivity": null,
+  "uniqueWMsCalled": [
+    "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+    "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+    "Existe_Lp",
+    "Existe_Serie",
+    "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+    "GetSingleRec",
+    "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+    "Get_All_Codigos_Barra_By_IdProducto",
+    "Get_All_Imagen_Recepcion",
+    "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+    "Get_All_Pedidos_A_Verificar_By_IdBodega",
+    "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+    "Get_All_Presentaciones_By_IdProducto",
+    "Get_All_ProductoParametros_By_IdProducto_HH",
+    "Get_All_Producto_Imagen",
+    "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+    "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+    "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+    "Get_Colores",
+    "Get_Detalle_OC_By_IdOrdeCompraDet",
+    "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+    "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+    "Get_IdOrdenCompraEnc_By_Licencia",
+    "Get_IdUbicMerma_By_IdBodega",
+    "Get_Licenses_Plates_By_IdRecepcionEnc",
+    "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+    "Get_Nuevo_Correlativo_LicensePlate",
+    "Get_Nuevo_Correlativo_LicensePlate_S",
+    "Get_Pedido_A_Verificar_By_LP",
+    "Get_Producto_By_IdProductoBodega",
+    "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+    "Get_Single_By_IdPedidoEnc_Json",
+    "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+    "Get_Tallas",
+    "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+    "Get_Tipo_Pedido_Json",
+    "Get_Vencimiento_By_IdBodega_And_Lote",
+    "Get_Verificacion_By_Producto_And_Pedido",
+    "GuardarRecepcionModif",
+    "Guardar_Fotos_Recepcion",
+    "Guardar_Producto_Imagen",
+    "Guardar_Recepcion",
+    "Guardar_Recepcion_Caja_Master",
+    "Guardar_Recepcion_S",
+    "Guardar_Recepcion_Sin_Presentacion",
+    "MaxIDStockRec",
+    "MaxIDStockSeRec",
+    "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+    "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+    "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+    "Push_Recepcion_Produccion_To_NAV_For_BYB",
+    "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+    "Tiene_Posiciones"
+  ],
+  "finalizationWMs": [
+    "Guardar_Recepcion",
+    "Guardar_Recepcion_Sin_Presentacion",
+    "Guardar_Recepcion_Caja_Master",
+    "Guardar_Recepcion_S",
+    "GuardarRecepcionModif",
+    "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+    "Guardar_Producto_Imagen",
+    "Guardar_Fotos_Recepcion"
+  ],
+  "partialWMs": [
+    "Finalizar_Recepcion_Parcial_Pallet_Proveedor"
+  ],
+  "tablesWrittenByDomain": [
+    "bodega",
+    "color",
+    "i_nav_transacciones_push",
+    "log_error_wms",
+    "log_verificacion_bof",
+    "producto",
+    "producto_bodega",
+    "producto_estado",
+    "producto_imagen",
+    "producto_parametros",
+    "producto_presentacion",
+    "resolucion_lp_operador",
+    "stock",
+    "stock_rec",
+    "stock_se_rec",
+    "talla",
+    "tarea_hh",
+    "tipo_etiqueta",
+    "trans_oc_det_lote",
+    "trans_pe_enc",
+    "trans_re_det",
+    "trans_re_det_parametros",
+    "trans_re_enc",
+    "trans_re_img"
+  ],
+  "tablesReadByDomain": [
+    "bodega",
+    "color",
+    "i_nav_transacciones_push",
+    "log_error_wms",
+    "log_verificacion_bof",
+    "producto",
+    "producto_bodega",
+    "producto_clasificacion_etiqueta",
+    "producto_estado",
+    "producto_imagen",
+    "producto_parametros",
+    "producto_presentacion",
+    "resolucion_lp_operador",
+    "stock_rec",
+    "stock_se_rec",
+    "talla",
+    "tarea_hh",
+    "tipo_etiqueta",
+    "trans_oc_det",
+    "trans_oc_det_lote",
+    "trans_pe_det",
+    "trans_pe_enc",
+    "trans_re_det",
+    "trans_re_enc",
+    "trans_re_img",
+    "usuario"
+  ],
+  "states": [
+    {
+      "table": "trans_oc_estado",
+      "rowCount": 6,
+      "sample": [
+        {
+          "IdEstadoOC": 6,
+          "Nombre": "BACK ORDER"
+        },
+        {
+          "IdEstadoOC": 5,
+          "Nombre": "ANULADA"
+        },
+        {
+          "IdEstadoOC": 4,
+          "Nombre": "CERRADA"
+        }
+      ]
+    },
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    }
+  ],
+  "typicalErrors": [
+    {
+      "message": "Guarda_Trans_re_det 1Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 474,
+      "sample": "Guarda_Trans_re_det 1Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 10916",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 2Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 285,
+      "sample": "Guarda_Trans_re_det 2Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 10918",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 3Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 212,
+      "sample": "Guarda_Trans_re_det 3Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 10919",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 4Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 179,
+      "sample": "Guarda_Trans_re_det 4Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 10920",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Reemplazar_ListaPu_By_Stock Error_Reemplazo_A: No es posible reservar más de lo solicitado",
+      "count": 174,
+      "sample": "Reemplazar_ListaPu_By_Stock Error_Reemplazo_A: No es posible reservar más de lo solicitado",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 5Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 152,
+      "sample": "Guarda_Trans_re_det 5Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 10967",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 6Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 137,
+      "sample": "Guarda_Trans_re_det 6Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 10969",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 7Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 122,
+      "sample": "Guarda_Trans_re_det 7Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 11499",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Guarda_Trans_re_det 8Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: <NUM>",
+      "count": 121,
+      "sample": "Guarda_Trans_re_det 8Actualiza_Cantidad_Recibida_OC 1 Guarda_Stock_Rec 1Insertar_Movimientos_Recepcion IdMovimiento: 11502",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    }
+  ],
+  "edgeCases": [
+    {
+      "kind": "alt-wms",
+      "baseName": "get_nuevo_correlativo_licenseplate",
+      "alternatives": [
+        "Get_Nuevo_Correlativo_LicensePlate",
+        "Get_Nuevo_Correlativo_LicensePlate_S"
+      ]
+    },
+    {
+      "kind": "alt-wms",
+      "baseName": "guardar_recepcion",
+      "alternatives": [
+        "Guardar_Recepcion",
+        "Guardar_Recepcion_S"
+      ]
+    }
+  ]
+}
