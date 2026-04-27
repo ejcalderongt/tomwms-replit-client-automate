@@ -1,0 +1,94 @@
+id: RES-002
+title: Reserva con paquete completo y zona picking activa
+module: reservation
+priority: P0
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: clsLnStock_res
+  function: TODO_mapear_caso_legacy
+  source: pendiente lectura de clsLnStock_res.vb completo
+
+description: >
+  Hay stock fraccionado en zona picking y stock en paquete completo en
+  almacenamiento. Cuando el pedido pide una cantidad equivalente a un
+  paquete completo, el motor debe preferir el paquete completo del
+  almacenamiento, no fragmentar el de picking.
+
+  Valida la interacción entre `paquete_completo_*` y `usar_zona_picking`.
+
+required_config:
+  i_nav_config_enc.usar_zona_picking: 1
+  i_nav_config_enc.paquete_completo_obligatorio: 1
+  producto.control_lote: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: insert_stock
+    name: stock_paquete_almacenaje
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con paquete_completo factor>1}"
+      ubicacion: "{ubicacion no-picking activa}"
+      lote: "RES002_PAQ_COMPLETO"
+      cantidad_unidades: "{1 paquete completo}"
+      presentacion: "{presentacion paquete completo}"
+
+  - action: insert_stock
+    name: stock_fraccion_picking
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con paquete_completo factor>1}"
+      ubicacion: "{ubicacion picking activa}"
+      lote: "RES002_FRAC"
+      cantidad_unidades: "{2 unidades sueltas}"
+      presentacion: "{presentacion unidad}"
+
+action:
+  endpoint: /api/test-bridge/sandbox/reserve
+  method: POST
+  body:
+    pedido:
+      no: "@MaxNoDocumento+1"
+      document_type: Pedido_De_Cliente
+      product_owner_code: "01"
+      lineas:
+        - line_no: 1
+          item_no: "{producto.codigo}"
+          quantity: "{1 paquete completo en unidades}"
+
+expected:
+  - check: row_exists
+    table: stock_res
+    where:
+      idstock: "@stock_paquete_almacenaje.id"
+      estado: 1
+    note: "El paquete completo del almacenaje DEBE estar reservado"
+
+  - check: row_absent
+    table: stock_res
+    where:
+      idstock: "@stock_fraccion_picking.id"
+      estado: 1
+    note: "El stock fraccionado de picking NO debe haberse tocado"
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - golden-path
+  - paquete-completo
+  - reservation
+  - mi3
+  - mi3-legacy
+
+notes: |
+  Pendiente: identificar qué CASO_N de clsLnStock_res cubre exactamente
+  esta variante. Probable candidato entre los 20 casos.
