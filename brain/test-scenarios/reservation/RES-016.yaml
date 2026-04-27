@@ -1,0 +1,40 @@
+# RES-016: Como RES-015 pero solicitado = 26: cubre alm completo y completa con picking
+id: RES-016
+version: 1
+category: reservation
+severity: high
+title: "Como RES-015 pero solicitado = 26: cubre alm completo y completa con picking"
+summary: |
+  Mismo modelado que RES-015 con solicitado 26 UDS. Después de reservar 15 + 10 desde alm faltan 1 UDS, que debe tomarse desde picking.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+
+input:
+  requested_qty: 26
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 26, vence: "2026-12-30", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 15, vence: "2026-12-01", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 10, vence: "2026-12-10", um: "UDS" }
+
+expected:
+  1. Reserva 15 UDS alm (2026-12-01).
+  2. Reserva 10 UDS alm (2026-12-10).
+  3. Reserva 1 UDS pick (2026-12-30).
+  4. Pedido completo.
+
+legacy_origin:
+  case: "CASO 12"
+  function: "Ejecuta_QA_CASO_12_IDEAL_20231002011159"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "15651-15893"
+
