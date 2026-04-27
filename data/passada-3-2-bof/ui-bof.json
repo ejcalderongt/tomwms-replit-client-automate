@@ -1,0 +1,2141 @@
+{
+  "generatedAt": "2026-04-27T05:14:36.651Z",
+  "totalForms": 86,
+  "byDomain": {
+    "Ajustes": 6,
+    "Cambio_Ubicacion_Estado": 6,
+    "Control_Calidad": 1,
+    "Despacho": 3,
+    "Implosion": 1,
+    "Inventario": 18,
+    "Manufactura": 3,
+    "Orden_Compra": 5,
+    "Orden_Compra_Tipo_Ingreso": 2,
+    "Orden_Compra_Tipo_Transaccion": 1,
+    "Pedido": 7,
+    "Pedidos_MI3": 1,
+    "Picking": 5,
+    "PreFactura": 3,
+    "PreIngreso": 2,
+    "RFID": 5,
+    "Recepcion": 9,
+    "Recepcion_BOF": 1,
+    "Revision_Producto": 2,
+    "Servicios": 2,
+    "Stock_Reservado": 2,
+    "Verificacion_BOF": 1
+  },
+  "forms": [
+    {
+      "formName": "frmAjustePositivo",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/Ajustes_Positivos/frmAjustePositivo.vb",
+      "domain": "Ajustes",
+      "lineCount": 559,
+      "clsLnUsed": [
+        "clsLnBodega_ubicacion",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnLog_error_wms",
+        "clsLnProducto",
+        "clsLnUnidad_medida",
+        "clsLnProducto_estado",
+        "clsLnProducto_presentacion"
+      ],
+      "clsBeUsed": [
+        "clsBeProducto",
+        "clsBeStock",
+        "clsBeBodega_ubicacion",
+        "clsBeBodega",
+        "clsBeTalla",
+        "clsBeColor"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DGridLegacyAccess",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/DGridLegacyAccess.vb",
+      "domain": "Ajustes",
+      "lineCount": 151,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmAjusteStock",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb",
+      "domain": "Ajustes",
+      "lineCount": 7409,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_ajuste_enc",
+        "clsLnCentro_costo",
+        "clsLnBodega",
+        "clsLnCliente",
+        "clsLnTrans_ajuste_det_borrador",
+        "clsLnTrans_ajuste_det",
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_bodega",
+        "clsLnProducto",
+        "clsLnUnidad_medida",
+        "clsLnProveedor",
+        "clsLnProducto_talla_color",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnProducto_presentacion",
+        "clsLnStock",
+        "clsLnStock_res",
+        "clsLnAjuste_motivo",
+        "clsLnStock_res_Partial",
+        "clsLnAjuste_tipo",
+        "clsLnProducto_estado",
+        "clsLnTrans_movimientos",
+        "clsLnI_nav_config_enc",
+        "clsLnTrans_ajuste_det_doc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_ajuste_enc",
+        "clsBeTrans_ajuste_det",
+        "clsBeTrans_ajuste_det_borrador",
+        "clsBeTrans_movimientos",
+        "clsBeOpcionesMenuRol",
+        "clsBeBodega",
+        "clsBeI_nav_config_enc",
+        "clsBeCliente",
+        "clsBeProveedor",
+        "clsBeVW_stock_res",
+        "clsBeStock_res",
+        "clsBeStock",
+        "clsBeAjuste_tipo",
+        "clsBeProducto_talla_color",
+        "clsBeTalla",
+        "clsBeColor",
+        "clsBeProducto_estado",
+        "clsBeTrans_re_det",
+        "clsBeProducto",
+        "clsBeBodega_ubicacion"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmAjusteStock_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock_List.vb",
+      "domain": "Ajustes",
+      "lineCount": 310,
+      "clsLnUsed": [
+        "clsLnTrans_ajuste_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_ajuste_enc"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmImportarAjusteExcel",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmImportarAjusteExcel.vb",
+      "domain": "Ajustes",
+      "inherits": "DevExpress.XtraBars.Ribbon.RibbonForm",
+      "lineCount": 1362,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnBodega_ubicacion_Partial",
+        "clsLnBodega_ubicacion",
+        "clsLnStock",
+        "clsLnAjuste_motivo",
+        "clsLnProducto",
+        "clsLnProducto_bodega",
+        "clsLnProducto_presentacion",
+        "clsLnUnidad_medida",
+        "clsLnProducto_talla_color",
+        "clsLnProveedor"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_ajuste_det",
+        "clsBeBodega_ubicacion",
+        "clsBeStock",
+        "clsBeProducto",
+        "clsBeProveedor"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioRes",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmInventarioRes.vb",
+      "domain": "Ajustes",
+      "lineCount": 104,
+      "clsLnUsed": [
+        "clsLnTrans_ajuste_enc"
+      ],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCambioUbicacion",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCambioUbicacion.vb",
+      "domain": "Cambio_Ubicacion_Estado",
+      "lineCount": 2838,
+      "clsLnUsed": [
+        "clsLnMenu_sistema",
+        "clsLnLog_error_wms",
+        "clsLnTarimas",
+        "clsLnPropietario_bodega",
+        "clsLnBodega",
+        "clsLnMenu_rol",
+        "clsLnOperador_bodega",
+        "clsLnTrans_ubic_hh_op",
+        "clsLnTrans_ubic_hh_enc",
+        "clsLnTrans_ubic_hh_det",
+        "clsLnTrans_ubic_hh_stock",
+        "clsLnProducto_talla_color",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_estado",
+        "clsLnUnidad_medida",
+        "clsLnBodega_tramo",
+        "clsLnTrans_re_op",
+        "clsLnVW_Stock_Res_Pedido",
+        "clsLnStock_res",
+        "clsLnProducto_presentacion",
+        "clsLnMotivo_ubicacion",
+        "clsLnStock",
+        "clsLnI_nav_config_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_ubic_tarima",
+        "clsBeTrans_movimientos",
+        "clsBeStock",
+        "clsBeTrans_ubic_hh_det",
+        "clsBeTrans_ubic_hh_op",
+        "clsBeVW_stock_res",
+        "clsBeTrans_ubic_hh_stock",
+        "clsBeUbicacionSugeridaRequest",
+        "clsBeTrans_ubic_hh_enc",
+        "clsBeTarea_hh",
+        "clsBeMotivo_ubicacion",
+        "clsBeOpcionesMenuRol",
+        "clsBeMenu_sistema",
+        "clsBeBodega",
+        "clsBeBodega_ubicacion",
+        "clsBeBodega_tramo",
+        "clsBeTalla",
+        "clsBeColor",
+        "clsBeStock_res",
+        "clsBeProducto",
+        "clsBeProducto_estado",
+        "clsBeUnidad_medida",
+        "clsBeOperador",
+        "clsBeUbicacionExcluida"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCambioUbicacion_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCambioUbicacion_List.vb",
+      "domain": "Cambio_Ubicacion_Estado",
+      "lineCount": 424,
+      "clsLnUsed": [
+        "clsLnMenu_rol",
+        "clsLnTrans_ubic_hh_enc",
+        "clsLnLog_error_wms",
+        "clsLnI_nav_config_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_ubic_hh_enc",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCantidad",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCantidad.vb",
+      "domain": "Cambio_Ubicacion_Estado",
+      "lineCount": 66,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCantidadUbicacion",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmCantidadUbicacion.vb",
+      "domain": "Cambio_Ubicacion_Estado",
+      "lineCount": 109,
+      "clsLnUsed": [
+        "clsLnStock",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_ubic_hh_det",
+        "clsBeVW_stock_res",
+        "clsBeProducto_estado"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmControlUbicaciones",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmControlUbicaciones.vb",
+      "domain": "Cambio_Ubicacion_Estado",
+      "lineCount": 68,
+      "clsLnUsed": [
+        "clsLnBodega_ubicacion",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeBodega_ubicacion"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmResultadoValidacionCambioUbic",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Cambio_Ubicacion_Estado/frmResultadoValidacionCambioUbic.vb",
+      "domain": "Cambio_Ubicacion_Estado",
+      "lineCount": 120,
+      "clsLnUsed": [],
+      "clsBeUsed": [
+        "clsBeResultadoValidacionCambioUbic"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmListaStockControlCalidad",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Control_Calidad/Cambio_Estado/frmListaStockControlCalidad.vb",
+      "domain": "Control_Calidad",
+      "lineCount": 1456,
+      "clsLnUsed": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnTrans_ubic_hh_enc",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnOperador_bodega",
+        "clsLnProducto_talla_color",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnProducto_presentacion",
+        "clsLnPropietarios",
+        "clsLnPropietario_destinatario",
+        "clsLnBodega",
+        "clsLnEmpresa",
+        "clsLnProducto",
+        "clsLnUnidad_medida",
+        "clsLnProducto_estado"
+      ],
+      "clsBeUsed": [
+        "clsBeVW_Stock_Res_Pedido",
+        "clsBeVW_stock_res",
+        "clsBeTrans_ubic_hh_enc",
+        "clsBeTrans_ubic_hh_det",
+        "clsBeTrans_movimientos",
+        "clsBeStock",
+        "clsBeTrans_ubic_hh_op",
+        "clsBeTrans_ubic_tarima",
+        "clsBeOpcionesMenuRol",
+        "clsBeConfiguracion_usuario_det",
+        "clsBeProducto",
+        "clsBeProducto_estado",
+        "clsBeUnidad_medida",
+        "clsBeBodega_ubicacion",
+        "clsBeOperador",
+        "clsBeProducto_talla_color",
+        "clsBeStock_res",
+        "clsBeBodega"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDespacho",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb",
+      "domain": "Despacho",
+      "lineCount": 4104,
+      "clsLnUsed": [
+        "clsLnTrans_pe_tipo",
+        "clsLnTrans_despacho_det",
+        "clsLnBodega",
+        "clsLnTrans_despacho_enc",
+        "clsLnI_nav_config_enc",
+        "clsLnLog_error_wms",
+        "clsLnTrans_pe_enc",
+        "clsLnProducto_presentacion",
+        "clsLnTrans_pe_det",
+        "clsLnTrans_picking_enc",
+        "clsLnTrans_packing_enc",
+        "clsLnUsuario",
+        "clsLnEmpresa",
+        "clsLnOperador_bodega",
+        "clsLnOperador",
+        "clsLnEmpresa_transporte_pilotos",
+        "clsLnEmpresa_transporte_vehiculos",
+        "clsLnRoad_ruta",
+        "clsLnNotificacionEvento",
+        "clsLnNotificacionPlantilla",
+        "clsLnNotificacionLayout",
+        "clsLnNotificacionDestinatarioRegla",
+        "clsLnTrans_picking_ubic"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_despacho_enc",
+        "clsBeTrans_picking_det",
+        "clsBeTrans_picking_ubic",
+        "clsBeTrans_pe_enc",
+        "clsBeVW_stock_res",
+        "clsBeRoad_ruta",
+        "clsBeEmpresa_transporte_vehiculos",
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_despacho_det",
+        "clsBeTrans_pe_tipo",
+        "clsBeI_nav_config_enc",
+        "clsBeTrans_pe_det",
+        "clsBeTrans_picking_enc",
+        "clsBeTrans_packing_enc",
+        "clsBeProducto",
+        "clsBeStock_res",
+        "clsBeUsuario",
+        "clsBeOperador_bodega",
+        "clsBeOperador",
+        "clsBeEmpresa_transporte_pilotos",
+        "clsBeBodega"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDespacho_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho_List.vb",
+      "domain": "Despacho",
+      "lineCount": 426,
+      "clsLnUsed": [
+        "clsLnTrans_despacho_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPickingUbicacionBuscador",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmPickingUbicacionBuscador.vb",
+      "domain": "Despacho",
+      "lineCount": 253,
+      "clsLnUsed": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_picking_ubic"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmImplosion",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Implosion/frmImplosion.vb",
+      "domain": "Implosion",
+      "lineCount": 1333,
+      "clsLnUsed": [
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnTrans_ubic_hh_enc",
+        "clsLnOperador_bodega",
+        "clsLnProducto_presentacion",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnBodega",
+        "clsLnEmpresa"
+      ],
+      "clsBeUsed": [
+        "clsBeVW_Stock_Res_Pedido",
+        "clsBeVW_stock_res",
+        "clsBeTrans_ubic_hh_enc",
+        "clsBeTrans_ubic_hh_det",
+        "clsBeTrans_movimientos",
+        "clsBeStock",
+        "clsBeTrans_ubic_hh_op",
+        "clsBeTrans_ubic_tarima",
+        "clsBeOpcionesMenuRol",
+        "clsBeProducto",
+        "clsBeProducto_estado",
+        "clsBeUnidad_medida",
+        "clsBeBodega_ubicacion",
+        "clsBeOperador",
+        "clsBeConfiguracion_usuario_det",
+        "clsBeStock_res"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DSInventario",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/DSInventario.vb",
+      "domain": "Inventario",
+      "lineCount": 8,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "DSVerificacion",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/DSVerificacion.vb",
+      "domain": "Inventario",
+      "lineCount": 5,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmComparacionInventarioStock",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmComparacionInventarioStock.vb",
+      "domain": "Inventario",
+      "lineCount": 485,
+      "clsLnUsed": [
+        "clsLnTrans_inv_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_enc"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmConfirmaInventario",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmConfirmaInventario.vb",
+      "domain": "Inventario",
+      "lineCount": 189,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_inv_ciclico"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_enc",
+        "clsBeTrans_inv_ciclico"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmConteo",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmConteo.vb",
+      "domain": "Inventario",
+      "lineCount": 397,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnProducto",
+        "clsLnProducto_estado",
+        "clsLnProducto_presentacion",
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_talla_color",
+        "clsLnColor",
+        "clsLnTalla",
+        "clsLnTrans_inv_ciclico"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_inv_enc_reconteo",
+        "clsBeProducto",
+        "clsBeBodega_ubicacion"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDatosProducto",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmDatosProducto.vb",
+      "domain": "Inventario",
+      "lineCount": 108,
+      "clsLnUsed": [],
+      "clsBeUsed": [
+        "clsBeProducto"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmEliminOperadores",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmEliminOperadores.vb",
+      "domain": "Inventario",
+      "lineCount": 220,
+      "clsLnUsed": [
+        "clsLnTrans_inv_operador",
+        "clsLnTrans_inv_ciclico",
+        "clsLnTrans_inv_reconteo"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_inv_reconteo",
+        "clsBeTrans_inv_operador"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmGeneraReconteo",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmGeneraReconteo.vb",
+      "domain": "Inventario",
+      "lineCount": 404,
+      "clsLnUsed": [
+        "clsLnTrans_inv_reconteo",
+        "clsLnTrans_inv_enc_reconteo",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_inv_reconteo",
+        "clsBeTrans_inv_enc_reconteo"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventario",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.vb",
+      "domain": "Inventario",
+      "lineCount": 9598,
+      "clsLnUsed": [
+        "clsLnBodega_tramo",
+        "clsLnTrans_inv_enc",
+        "clsLnCliente",
+        "clsLnPropietario_bodega",
+        "clsLnLog_error_wms",
+        "clsLnStock",
+        "clsLnTrans_inv_ciclico",
+        "clsLnTrans_inv_tramo",
+        "clsLnProducto",
+        "clsLnPropietarios",
+        "clsLnTrans_inv_detalle",
+        "clsLnTrans_inv_resumen",
+        "clsLnProducto_bodega",
+        "clsLnProducto_presentacion",
+        "clsLnTrans_inv_stock",
+        "clsLnTrans_inv_ciclico_ubic",
+        "clsLnTrans_inv_operador",
+        "clsLnBodega_orientacion_pos",
+        "clsLnBodega",
+        "clsLnOperador",
+        "clsLnBodega_ubicacion",
+        "clsLnTrans_inv_reconteo",
+        "clsLnTrans_inv_ne",
+        "clsLnProducto_familia",
+        "clsLnProducto_clasificacion",
+        "clsLnTrans_inv_enc_reconteo",
+        "clsLnTrans_inv_stock_prod",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnProducto_estado",
+        "clsLnUsuario"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_enc",
+        "clsBeTrans_inv_tramo",
+        "clsBeBodega_Tramo_Seleccion",
+        "clsBeTrans_inv_ciclico_ubic",
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_inv_enc_reconteo",
+        "clsBeBodega_ubicacion",
+        "clsBeOpcionesMenuRol",
+        "clsBeTarea_hh",
+        "clsBeBodega_tramo",
+        "clsBeProducto",
+        "clsBePropietarios",
+        "clsBeTrans_inv_detalle",
+        "clsBeTrans_inv_resumen",
+        "clsBeStock",
+        "clsBeTrans_movimientos",
+        "clsBeTrans_inv_operador",
+        "clsBeTrans_inv_reconteo",
+        "clsBeProducto_familia",
+        "clsBeProducto_clasificacion",
+        "clsBeOperador",
+        "clsBeTrans_inv_stock_prod",
+        "clsBeConfiguracion_usuario_det",
+        "clsBeUsuario",
+        "clsBeMenu_sistema"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioConteo",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioConteo.vb",
+      "domain": "Inventario",
+      "lineCount": 318,
+      "clsLnUsed": [
+        "clsLnBodega_ubicacion",
+        "clsLnProducto",
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms",
+        "clsLnTrans_inv_resumen"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_detalle",
+        "clsBeBodega_ubicacion",
+        "clsBeProducto",
+        "clsBeTrans_inv_resumen"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioDet",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioDet.vb",
+      "domain": "Inventario",
+      "lineCount": 383,
+      "clsLnUsed": [
+        "clsLnTrans_inv_stock_prod",
+        "clsLnProducto",
+        "clsLnBodega_ubicacion"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_stock_prod",
+        "clsBeProducto"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioImport",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioImport.vb",
+      "domain": "Inventario",
+      "lineCount": 1057,
+      "clsLnUsed": [
+        "clsLnProducto",
+        "clsLnPropietarios",
+        "clsLnUnidad_medida",
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_parametro_a",
+        "clsLnProducto_parametro_b",
+        "clsLnColor",
+        "clsLnTalla",
+        "clsLnTrans_inv_stock_prod",
+        "clsLnLog_error_wms",
+        "clsLnProducto_presentacion"
+      ],
+      "clsBeUsed": [
+        "clsBeProducto",
+        "clsBePropietarios",
+        "clsBeBodega_ubicacion",
+        "clsBeProducto_parametro_a",
+        "clsBeProducto_parametro_b",
+        "clsBeColor",
+        "clsBeTalla",
+        "clsBeTrans_inv_stock_prod"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioList",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioList.vb",
+      "domain": "Inventario",
+      "lineCount": 375,
+      "clsLnUsed": [
+        "clsLnTrans_inv_enc",
+        "clsLnTrans_inv_detalle",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_inv_enc",
+        "clsBeTrans_inv_detalle"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioProductos",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioProductos.vb",
+      "domain": "Inventario",
+      "lineCount": 408,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnProducto",
+        "clsLnTrans_inv_ciclico_ubic",
+        "clsLnTrans_inv_stock"
+      ],
+      "clsBeUsed": [
+        "clsBeVW_stock_res",
+        "clsBeProducto",
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_inv_ciclico_ubic"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmInventarioVerifica",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioVerifica.vb",
+      "domain": "Inventario",
+      "lineCount": 172,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnBodega_ubicacion",
+        "clsLnTrans_inv_resumen"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_resumen",
+        "clsBeBodega_ubicacion"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmReConteo",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmReConteo.vb",
+      "domain": "Inventario",
+      "lineCount": 188,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnProducto",
+        "clsLnProducto_estado",
+        "clsLnProducto_presentacion",
+        "clsLnBodega_ubicacion",
+        "clsLnTrans_inv_reconteo"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_reconteo",
+        "clsBeProducto",
+        "clsBeBodega_ubicacion"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmRegularizarInventario",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.vb",
+      "domain": "Inventario",
+      "lineCount": 1700,
+      "clsLnUsed": [
+        "clsLnTrans_inv_ciclico",
+        "clsLnTrans_movimientos",
+        "clsLnTempComparacionInventario",
+        "clsLnEmpresa",
+        "clsLnStock",
+        "clsLnProducto",
+        "clsLnTrans_ajuste_det",
+        "clsLnTrans_inv_stock",
+        "clsLnLog_error_wms",
+        "clsLnPropietarios",
+        "clsLnTrans_ajuste_enc",
+        "clsLnAjuste_motivo",
+        "clsLnCliente",
+        "clsLnProducto_talla_color",
+        "clsLnColor",
+        "clsLnTalla"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_movimientos",
+        "clsBeStock",
+        "clsBeTrans_inv_enc",
+        "clsBeTrans_ajuste_enc",
+        "clsBeTrans_ajuste_det",
+        "clsBeProducto",
+        "clsBeTrans_inv_stock_prod",
+        "clsBeVW_stock_res",
+        "clsBeTrans_inv_stock",
+        "clsBeProducto_talla_color"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmSeleccionUbicacionesInv",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmSeleccionUbicacionesInv.vb",
+      "domain": "Inventario",
+      "lineCount": 1130,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnBodega_orientacion_pos",
+        "clsLnBodega_area",
+        "clsLnBodega_sector",
+        "clsLnBodega_tramo",
+        "clsLnBodega_ubicacion",
+        "clsLnTrans_inv_ciclico_ubic",
+        "clsLnTrans_inv_stock",
+        "clsLnTrans_inv_ciclico",
+        "clsLnTrans_inv_operador"
+      ],
+      "clsBeUsed": [
+        "clsBeBodega",
+        "clsBeBodega_ubicacion",
+        "clsBeTrans_inv_stock",
+        "clsBeTrans_inv_ciclico_ubic",
+        "clsBeTrans_inv_ciclico",
+        "clsBeTrans_inv_operador"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmManufactura",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Manufactura/frmManufactura.vb",
+      "domain": "Manufactura",
+      "lineCount": 2172,
+      "clsLnUsed": [
+        "clsLnTrans_picking_enc",
+        "clsLnTrans_manufactura_det",
+        "clsLnTrans_picking_det",
+        "clsLnTrans_pe_enc",
+        "clsLnCliente_tiempos",
+        "clsLnLog_error_wms",
+        "clsLnTrans_pe_det",
+        "clsLnPropietario_bodega",
+        "clsLnProducto_presentacion",
+        "clsLnTrans_manufactura_picking",
+        "clsLnProducto",
+        "clsLnTrans_manufactura_tipo",
+        "clsLnTrans_manufactura_enc",
+        "clsLnOperador_bodega",
+        "clsLnTrans_picking_op",
+        "clsLnStock_parametro",
+        "clsLnTrans_picking_det_parametros",
+        "clsLnBodega",
+        "clsLnStock_res"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_manufactura_enc",
+        "clsBeTrans_pe_enc",
+        "clsBeTrans_manufactura_det",
+        "clsBeTrans_pe_det",
+        "clsBeBodega",
+        "clsBeTrans_manufactura_picking",
+        "clsBeTrans_picking_enc",
+        "clsBeTrans_picking_det",
+        "clsBeTrans_picking_det_parametros",
+        "clsBeTrans_picking_op",
+        "clsBeTrans_picking_ubic",
+        "clsBeVW_stock_res",
+        "clsBeStock_parametro",
+        "clsBePropietario_bodega",
+        "clsBeOpcionesMenuRol",
+        "clsBeCliente_tiempos",
+        "clsBeBodega_ubicacion",
+        "clsBeZona_picking_tramo",
+        "clsBeOperador_zona_picking_tramo",
+        "clsBeOperador_bodega",
+        "clsBeProducto",
+        "clsBeUnidad_medida",
+        "clsBeProducto_estado",
+        "clsBeStock_res"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmManufacturaList",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Manufactura/frmManufacturaList.vb",
+      "domain": "Manufactura",
+      "lineCount": 353,
+      "clsLnUsed": [
+        "clsLnTrans_manufactura_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_enc",
+        "clsBeTrans_manufactura_enc",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmManufacturaPicking",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Manufactura/frmManufacturaPicking.vb",
+      "domain": "Manufactura",
+      "lineCount": 102,
+      "clsLnUsed": [
+        "clsLnTrans_pe_det",
+        "clsLnCliente",
+        "clsLnTrans_manufactura_picking"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_manufactura_det",
+        "clsBeTrans_manufactura_enc",
+        "clsBeTrans_pe_enc",
+        "clsBeTrans_pe_det",
+        "clsBeCliente"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DSRecOC",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/DSRecOC.vb",
+      "domain": "Orden_Compra",
+      "lineCount": 5,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "DsOC",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/DsOC.vb",
+      "domain": "Orden_Compra",
+      "lineCount": 23,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "clsProductoCosto",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/clsProductoCosto.vb",
+      "domain": "Orden_Compra",
+      "lineCount": 22,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmOrdenCompra",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/frmOrdenCompra.vb",
+      "domain": "Orden_Compra",
+      "lineCount": 8798,
+      "clsLnUsed": [
+        "clsLnI_nav_ped_compra_enc",
+        "clsLnProveedor",
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_oc",
+        "clsLnTrans_oc_det",
+        "clsLnRegimen_fiscal",
+        "clsLnTrans_oc_pol",
+        "clsLnTipo_actualizacion_costo",
+        "clsLnTrans_acuerdoscomerciales_det",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_oc_imagen",
+        "clsLnPropietarios",
+        "clsLnTrans_oc_ti",
+        "clsLnMotivo_devolucion",
+        "clsLnTrans_oc_docu_ref",
+        "clsLnTrans_acuerdoscomerciales_enc",
+        "clsLnTrans_re_oc",
+        "clsLnMotivo_anulacion_bodega",
+        "clsLnProveedor_bodega",
+        "clsLnTrans_re_det",
+        "clsLnBodega",
+        "clsLnI_nav_config_enc",
+        "clsLnPropietario_bodega",
+        "clsLnProducto",
+        "clsLnProducto_presentacion",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnTms_ticket_pol",
+        "clsLnMenu_rol",
+        "clsLnTrans_oc_servicios",
+        "clsLnTms_ticket",
+        "clsLnEmpresa_transporte_pilotos",
+        "clsLnEmpresa_transporte_vehiculos",
+        "clsLnOperador_bodega",
+        "clsLnProducto_kit_composicion",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnConfiguracion_usuario_det",
+        "clsLnMenu_sistema",
+        "clsLnUsuario",
+        "clsLnTrans_prefactura_enc",
+        "clsLnProducto_talla_color"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_det",
+        "clsBeTrans_oc_imagen",
+        "clsBeTrans_oc_enc",
+        "clsBeTipo_etiqueta",
+        "clsBeTrans_re_enc",
+        "clsBeProducto_kit_composicion",
+        "clsBeTms_ticket_pol",
+        "clsBeBodega",
+        "clsBeI_nav_config_enc",
+        "clsBeProducto",
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_pe_enc",
+        "clsBeRegimen_fiscal",
+        "clsBeProveedor",
+        "clsBePropietario_bodega",
+        "clsBeProveedor_bodega",
+        "clsBeTrans_oc_pol",
+        "clsBeTrans_oc_servicios",
+        "clsBeTipo_actualizacion_costo",
+        "clsBeArancel",
+        "clsBeUnidad_medida",
+        "clsBeTalla",
+        "clsBeColor",
+        "clsBeI_nav_acuerdo_det",
+        "clsBeTrans_acuerdoscomerciales_det",
+        "clsBeTrans_oc_ti",
+        "clsBeTrans_re_det",
+        "clsBeCEALSA_DUCA_ENC",
+        "clsBeLog_error_wms_oc",
+        "clsBePropietarios",
+        "clsBeTms_ticket",
+        "clsBeEmpresa_transporte_pilotos",
+        "clsBeEmpresa_transporte_vehiculos",
+        "clsBeMotivo_devolucion",
+        "clsBeTrans_pe_det",
+        "clsBeConfiguracion_usuario_det",
+        "clsBeUsuario",
+        "clsBeMenu_sistema",
+        "clsBeTrans_oc_pol_motivo_correccion_bodega"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmOrdenCompra_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra/frmOrdenCompra_List.vb",
+      "domain": "Orden_Compra",
+      "lineCount": 799,
+      "clsLnUsed": [
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms",
+        "clsLnI_nav_config_enc",
+        "clsLnMenu_rol",
+        "clsLnBodega",
+        "clsLnConfiguracion_usuario_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_oc_enc",
+        "clsBeI_nav_config_enc",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmOrdenCompraTI",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Ingreso/frmOrdenCompraTI.vb",
+      "domain": "Orden_Compra_Tipo_Ingreso",
+      "lineCount": 216,
+      "clsLnUsed": [
+        "clsLnTrans_oc_ti"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_ti"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmOrdenCompraTI_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Ingreso/frmOrdenCompraTI_List.vb",
+      "domain": "Orden_Compra_Tipo_Ingreso",
+      "lineCount": 220,
+      "clsLnUsed": [
+        "clsLnTrans_oc_ti",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_ti"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmTipoTransaccion_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Orden_Compra_Tipo_Transaccion/frmTipoTransaccion_List.vb",
+      "domain": "Orden_Compra_Tipo_Transaccion",
+      "lineCount": 194,
+      "clsLnUsed": [
+        "clsLnTrans_re_tr_Partial",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_tr",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DsDespacho",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/DsDespacho.vb",
+      "domain": "Pedido",
+      "lineCount": 5,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "DsPicking",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/DsPicking.vb",
+      "domain": "Pedido",
+      "lineCount": 12,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "clsBePedidoDetalleGrid",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/clsBePedidoDetalleGrid.vb",
+      "domain": "Pedido",
+      "lineCount": 23,
+      "clsLnUsed": [],
+      "clsBeUsed": [
+        "clsBePedidoDetalleGrid",
+        "clsBeUnidad_medida"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPedido",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmPedido.vb",
+      "domain": "Pedido",
+      "lineCount": 12345,
+      "clsLnUsed": [
+        "clsLnTrans_pe_enc",
+        "clsLnI_nav_ped_traslado_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pe",
+        "clsLnBodega",
+        "clsLnI_nav_transacciones_out_error",
+        "clsLnProducto_bodega",
+        "clsLnProducto_talla_color",
+        "clsLnStock",
+        "clsLnProducto_presentacion",
+        "clsLnStock_res",
+        "clsLnProducto",
+        "clsLnTrans_pe_pol",
+        "clsLnProducto_kit_composicion",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnPropietarios",
+        "clsLnCliente",
+        "clsLnProducto_estado",
+        "clsLnTrans_pe_det",
+        "clsLnVW_Despacho_Rep",
+        "clsLnTrans_manufactura_enc",
+        "clsLnTrans_manufactura_det",
+        "clsLnTrans_picking_ubic",
+        "clsLnTrans_picking_enc",
+        "clsLnPropietario_bodega",
+        "clsLnTrans_pe_det_log_reserva",
+        "clsLnTrans_picking_det",
+        "clsLnTrans_despacho_enc",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_despacho_det",
+        "clsLnMenu_rol",
+        "clsLnI_nav_config_enc",
+        "clsLnTrans_log_pedido_liberacion",
+        "clsLnRegimen_fiscal",
+        "clsLnTrans_acuerdoscomerciales_det",
+        "clsLnTrans_acuerdoscomerciales_enc",
+        "clsLnCliente_tiempos",
+        "clsLnTrans_picking_img",
+        "clsLnTrans_pe_servicios",
+        "clsLnMotivo_devolucion",
+        "clsLnUsuario",
+        "clsLnTrans_pe_tipo",
+        "clsLnTrans_packing_enc",
+        "clsLnTrans_pe_docu_ref"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_pe_enc",
+        "clsBeCliente",
+        "clsBeProducto",
+        "clsBeStock",
+        "clsBeStock_res",
+        "clsBeCliente_tiempos",
+        "clsBeTrans_pe_det",
+        "clsBePropietarios",
+        "clsBeTrans_picking_enc",
+        "clsBeProducto_kit_composicion",
+        "clsBeBodega",
+        "clsBeI_nav_config_enc",
+        "clsBeTrans_ubic_hh_det",
+        "clsBeVW_stock_res",
+        "clsBeTrans_pe_tipo",
+        "clsBeTrans_picking_img",
+        "clsBeOpcionesMenuRol",
+        "clsBeI_nav_transacciones_out_error",
+        "clsBePropietario_bodega",
+        "clsBeTrans_pe_pol",
+        "clsBeTrans_pe_servicios",
+        "clsBeProducto_estado",
+        "clsBeProducto_talla_color",
+        "clsBeTalla",
+        "clsBeTrans_manufactura_det",
+        "clsBeTrans_manufactura_enc",
+        "clsBeTrans_picking_det",
+        "clsBeTrans_despacho_enc",
+        "clsBeTrans_despacho_det",
+        "clsBeColor",
+        "clsBeTrans_picking_ubic",
+        "clsBeTrans_log_pedido_liberacion",
+        "clsBeRegimen_fiscal",
+        "clsBeCEALSA_DUCA_ENC",
+        "clsBeTrans_acuerdoscomerciales_det",
+        "clsBeUsuario",
+        "clsBeMenu_sistema",
+        "clsBeTrans_packing_enc"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPedido_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmPedido_List.vb",
+      "domain": "Pedido",
+      "lineCount": 1711,
+      "clsLnUsed": [
+        "clsLnMenu_rol",
+        "clsLnLog_error_wms",
+        "clsLnTrans_pe_enc",
+        "clsLnI_nav_ped_traslado_enc",
+        "clsLnTrans_pe_pol",
+        "clsLnBodega",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnTrans_pe_det",
+        "clsLnI_nav_config_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_pe_enc",
+        "clsBeOpcionesMenuRol",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmProductoPed_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmProductoPed_List.vb",
+      "domain": "Pedido",
+      "lineCount": 501,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnProducto",
+        "clsLnConfiguracion_usuario_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeProducto",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmTipoTransaccionSalida_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedido/frmTipoTransaccionSalida_List.vb",
+      "domain": "Pedido",
+      "lineCount": 185,
+      "clsLnUsed": [
+        "clsLnTrans_pe_tipo",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_pe_tipo",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPedidosInterface",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Pedidos_MI3/frmPedidosInterface.vb",
+      "domain": "Pedidos_MI3",
+      "lineCount": 151,
+      "clsLnUsed": [
+        "clsLnI_nav_ped_traslado_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCantidadreemplazo",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmCantidadreemplazo.vb",
+      "domain": "Picking",
+      "lineCount": 749,
+      "clsLnUsed": [
+        "clsLnStock",
+        "clsLnTrans_pe_det",
+        "clsLnProducto_estado",
+        "clsLnBodega",
+        "clsLnBodega_ubicacion",
+        "clsLnProducto_presentacion",
+        "clsLnStock_res",
+        "clsLnLog_error_wms_pick",
+        "clsLnTrans_picking_ubic",
+        "clsLnTrans_pe_enc",
+        "clsLnPropietario_bodega"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_ubic_hh_det",
+        "clsBeStock_res",
+        "clsBeTrans_pe_tipo",
+        "clsBeTrans_picking_ubic",
+        "clsBeOpcionesMenuRol",
+        "clsBeVW_stock_res",
+        "clsBeProducto_estado",
+        "clsBeBodega",
+        "clsBeTrans_pe_enc",
+        "clsBeStock",
+        "clsBePropietario_bodega"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCapturaParametroPicking",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmCapturaParametroPicking.vb",
+      "domain": "Picking",
+      "lineCount": 460,
+      "clsLnUsed": [
+        "clsLnProducto_parametros",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeProducto_parametros",
+        "clsBeProducto",
+        "clsBeTrans_picking_det_parametros"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPedidoDetalleBuscador",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPedidoDetalleBuscador.vb",
+      "domain": "Picking",
+      "lineCount": 593,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_pe_enc",
+        "clsLnConfiguracion_usuario_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_pe_enc",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPicking",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking.vb",
+      "domain": "Picking",
+      "lineCount": 5783,
+      "clsLnUsed": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick",
+        "clsLnTrans_pe_enc",
+        "clsLnBodega_area",
+        "clsLnOperador_bodega",
+        "clsLnTrans_picking_op",
+        "clsLnZona_picking_tramo",
+        "clsLnOperador_zona_picking_tramo",
+        "clsLnProducto",
+        "clsLnCliente_tiempos",
+        "clsLnProducto_presentacion",
+        "clsLnStock_parametro",
+        "clsLnTrans_picking_det_parametros",
+        "clsLnBodega_ubicacion",
+        "clsLnUsuario",
+        "clsLnTrans_pe_det",
+        "clsLnPropietario_bodega",
+        "clsLnTrans_picking_ubic",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnBodega",
+        "clsLnStock_res",
+        "clsLnTarea_hh",
+        "clsLnTrans_packing_enc",
+        "clsLnBodega_muelles",
+        "clsLnTrans_pe_tipo"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_picking_enc",
+        "clsBeTrans_picking_det",
+        "clsBeTrans_picking_det_parametros",
+        "clsBeTrans_picking_op",
+        "clsBeTrans_picking_ubic",
+        "clsBeVW_stock_res",
+        "clsBeStock_parametro",
+        "clsBeBodega",
+        "clsBePropietario_bodega",
+        "clsBeTrans_pe_det",
+        "clsBeOpcionesMenuRol",
+        "clsBeTarea_hh",
+        "clsBeZona_picking_tramo",
+        "clsBeTrans_pe_enc",
+        "clsBeProducto",
+        "clsBeUnidad_medida",
+        "clsBeProducto_estado",
+        "clsBeCliente_tiempos",
+        "clsBeBodega_ubicacion",
+        "clsBeOperador_zona_picking_tramo",
+        "clsBeStock_res",
+        "clsBeUsuario",
+        "clsBeConfiguracion_usuario_det",
+        "clsBeOperador_bodega",
+        "clsBeBodega_muelles",
+        "clsBeTrans_pe_tipo"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPicking_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking_List.vb",
+      "domain": "Picking",
+      "lineCount": 485,
+      "clsLnUsed": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnConfiguracion_usuario_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeOpcionesMenuRol",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmIngresos_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreFactura/frmIngresos_List.vb",
+      "domain": "PreFactura",
+      "lineCount": 147,
+      "clsLnUsed": [
+        "clsLnTrans_oc_pol",
+        "clsLnTrans_oc_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeBodega",
+        "clsBeTrans_oc_enc"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPreFactura",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreFactura/frmPreFactura.vb",
+      "domain": "PreFactura",
+      "lineCount": 5130,
+      "clsLnUsed": [
+        "clsLnTrans_prefactura_enc",
+        "clsLnBodega",
+        "clsLnPropietarios",
+        "clsLnCliente",
+        "clsLnProducto",
+        "clsLnTrans_acuerdoscomerciales_enc",
+        "clsLnTrans_acuerdoscomerciales_det",
+        "clsLnPropietario_bodega",
+        "clsLnLog_error_wms",
+        "clsLnCliente_bodega",
+        "clsLnTrans_pe_pol",
+        "clsLnTrans_oc_pol",
+        "clsLnTrans_oc_enc",
+        "clsLnTms_ticket",
+        "clsLnRegimen_fiscal",
+        "clsLnTrans_oc_servicios",
+        "clsLnTrans_pe_servicios",
+        "clsLnReportesFiscales",
+        "clsLnTrans_oc_ti",
+        "clsLnTrans_pe_enc",
+        "clsLnUnidad_medida",
+        "clsLnStock_jornada",
+        "clsLnTrans_oc_det",
+        "clsLnTrans_re_det",
+        "clsLnMenu_sistema",
+        "clsLnUsuario",
+        "clsLnEmpresa"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_prefactura_enc",
+        "clsBeTrans_prefactura_det",
+        "clsBeTrans_prefactura_mov",
+        "clsBeBodega",
+        "clsBeTrans_oc_enc",
+        "clsBeTrans_oc_pol",
+        "clsBeTrans_pe_pol",
+        "clsBeTrans_oc_ti",
+        "clsBeOpcionesMenuRol",
+        "clsBePropietarios",
+        "clsBeProducto",
+        "clsBeTrans_acuerdoscomerciales_det",
+        "clsBeTms_ticket",
+        "clsBeCEALSA_DUCA_ENC",
+        "clsBeRegimen_fiscal",
+        "clsBeTrans_oc_servicios",
+        "clsBeTrans_pe_servicios",
+        "clsBeTrans_pe_enc",
+        "clsBeTrans_re_det",
+        "clsBeCliente",
+        "clsBeUsuario",
+        "clsBeMenu_sistema",
+        "clsBeTrans_oc_pol_motivo_correccion_bodega"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPreFactura_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreFactura/frmPreFactura_List.vb",
+      "domain": "PreFactura",
+      "lineCount": 323,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_prefactura_enc",
+        "clsLnTrans_picking_ubic",
+        "clsLnBodega_ubicacion",
+        "clsLnBodega_area"
+      ],
+      "clsBeUsed": [
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_prefactura_enc",
+        "clsBeTrans_picking_ubic",
+        "clsBeBodega_ubicacion",
+        "clsBeBodega_area"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPreIngreso",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreIngreso/frmPreIngreso.vb",
+      "domain": "PreIngreso",
+      "lineCount": 5173,
+      "clsLnUsed": [
+        "clsLnTrans_re_tr",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_oc_det",
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms",
+        "clsLnTrans_re_enc",
+        "clsLnBodega",
+        "clsLnTrans_oc_imagen",
+        "clsLnStock_rec",
+        "clsLnProducto_pallet",
+        "clsLnMotivo_anulacion_bodega",
+        "clsLnTrans_re_oc",
+        "clsLnProducto_presentacion",
+        "clsLnBodega_ubicacion",
+        "clsLnProducto",
+        "clsLnProducto_estado",
+        "clsLnPropietarios",
+        "clsLnStock_se_rec",
+        "clsLnTrans_re_op",
+        "clsLnOperador_bodega",
+        "clsLnTrans_re_fact",
+        "clsLnTrans_re_tr_Partial"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_det",
+        "clsBeTrans_re_det",
+        "clsBeTrans_re_tr",
+        "clsBeTrans_re_img",
+        "clsBeTrans_re_op",
+        "clsBeTrans_re_fact",
+        "clsBeStock_rec",
+        "clsBeStock_se_rec",
+        "clsBeTrans_re_det_parametros",
+        "clsBeProducto_pallet",
+        "clsBeTrans_re_enc",
+        "clsBeTrans_oc_enc",
+        "clsBeVW_Impresion_Pallet",
+        "clsBeOpcionesMenuRol",
+        "clsBeBodega",
+        "clsBeMotivo_anulacion_bodega",
+        "clsBePropietario_bodega",
+        "clsBeTrans_re_oc",
+        "clsBeTarea_hh",
+        "clsBeProducto",
+        "clsBeUnidad_medida",
+        "clsBeProducto_estado",
+        "clsBeMotivo_devolucion",
+        "clsBeBodega_ubicacion",
+        "clsBeProducto_presentacion"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmPreIngreso_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/PreIngreso/frmPreIngreso_List.vb",
+      "domain": "PreIngreso",
+      "lineCount": 330,
+      "clsLnUsed": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_enc",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDocIngresoRFID",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocIngresoRFID.vb",
+      "domain": "RFID",
+      "lineCount": 183,
+      "clsLnUsed": [
+        "clsLnProveedor",
+        "clsLnI_nav_barras_rfid_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeI_nav_barras_rfid_enc",
+        "clsBeProveedor",
+        "clsBeI_nav_barras_rfid_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDocIngresoRFID_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocIngresoRFID_List.vb",
+      "domain": "RFID",
+      "lineCount": 156,
+      "clsLnUsed": [
+        "clsLnI_nav_barras_rfid_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeI_nav_barras_rfid_enc"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDocSalidaRFID",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocSalidaRFID.vb",
+      "domain": "RFID",
+      "lineCount": 175,
+      "clsLnUsed": [
+        "clsLnCliente",
+        "clsLnI_nav_barras_rfid_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeI_nav_barras_rfid_enc",
+        "clsBeCliente",
+        "clsBeI_nav_barras_rfid_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmDocSalidaRFID_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmDocSalidaRFID_List.vb",
+      "domain": "RFID",
+      "lineCount": 151,
+      "clsLnUsed": [
+        "clsLnI_nav_barras_rfid_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeI_nav_barras_rfid_enc"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmStockRFID",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmStockRFID.vb",
+      "domain": "RFID",
+      "lineCount": 221,
+      "clsLnUsed": [
+        "clsLnI_nav_barras_rfid_enc",
+        "clsLnConfiguracion_usuario_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeI_nav_barras_rfid_enc",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DsAsistente",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/Asistente/DsAsistente.vb",
+      "domain": "Recepcion",
+      "lineCount": 9,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmR3Asistente",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/Asistente/frmR3Asistente.vb",
+      "domain": "Recepcion",
+      "lineCount": 233,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_re_tr"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_tr"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DsOrdenCompraRecepcionOperador",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/DsOrdenCompraRecepcionOperador.vb",
+      "domain": "Recepcion",
+      "lineCount": 9,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmCapturaParametroRecepcionS",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmCapturaParametroRecepcionS.vb",
+      "domain": "Recepcion",
+      "lineCount": 1573,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnStock_se_rec",
+        "clsLnStock_rec",
+        "clsLnProducto_bodega",
+        "clsLnProducto_presentacion",
+        "clsLnProducto_parametros"
+      ],
+      "clsBeUsed": [
+        "clsBeProducto",
+        "clsBeTrans_re_det_parametros",
+        "clsBeStock_rec",
+        "clsBeStock_se_rec",
+        "clsBeProducto_parametros",
+        "clsBeProducto_pallet"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmFactura",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmFactura.vb",
+      "domain": "Recepcion",
+      "lineCount": 132,
+      "clsLnUsed": [
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_fact"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmImpresionSojet",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmImpresionSojet.vb",
+      "domain": "Recepcion",
+      "lineCount": 844,
+      "clsLnUsed": [
+        "clsLnProducto",
+        "clsLnImpresora",
+        "clsLnTipo_etiqueta_detalle",
+        "clsLnImpresora_mensaje",
+        "clsLnTipo_etiqueta"
+      ],
+      "clsBeUsed": [
+        "clsBeProducto",
+        "clsBeSource",
+        "clsBeObject",
+        "clsBeTipo_etiqueta_detalle",
+        "clsBeResponse",
+        "clsBeTrans_re_det",
+        "clsBePrintSettings",
+        "clsBeImpresora_mensaje",
+        "clsBeMessage",
+        "clsBePrintData"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmIngreso_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmIngreso_List.vb",
+      "domain": "Recepcion",
+      "lineCount": 507,
+      "clsLnUsed": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms",
+        "clsLnConfiguracion_usuario_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_enc",
+        "clsBeBodega",
+        "clsBeConfiguracion_alias_campos",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmRecepcion",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmRecepcion.vb",
+      "domain": "Recepcion",
+      "lineCount": 12883,
+      "clsLnUsed": [
+        "clsLnTrans_re_tr",
+        "clsLnTrans_oc_ti",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_re_det",
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms_rec",
+        "clsLnProducto_estado",
+        "clsLnTrans_oc_imagen",
+        "clsLnTrans_re_enc",
+        "clsLnBodega",
+        "clsLnStock_rec",
+        "clsLnProducto_pallet",
+        "clsLnMotivo_anulacion_bodega",
+        "clsLnPropietario_reglas_enc",
+        "clsLnTrans_re_oc",
+        "clsLnProducto",
+        "clsLnProducto_presentacion",
+        "clsLnBodega_ubicacion",
+        "clsLnPropietario_bodega",
+        "clsLnPropietarios",
+        "clsLnStock_se_rec",
+        "clsLnLog_error_wms",
+        "clsLnMarcaje",
+        "clsLnOperador_bodega",
+        "clsLnTrans_re_op",
+        "clsLnTrans_re_fact",
+        "clsLnEmpresa",
+        "clsLnTrans_re_tr_Partial",
+        "clsLnStock",
+        "clsLnEmpresa_transporte_vehiculos",
+        "clsLnEmpresa_transporte_pilotos",
+        "clsLnMotivo_devolucion",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnProducto_talla_color",
+        "clsLnI_nav_config_enc",
+        "clsLnTms_ticket",
+        "clsLnMenu_rol",
+        "clsLnTipo_etiqueta",
+        "clsLnBodega_area",
+        "clsLnBodega_muelles"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_det",
+        "clsBeTrans_re_det",
+        "clsBeTrans_re_tr",
+        "clsBeTrans_re_img",
+        "clsBeTrans_re_op",
+        "clsBeTrans_re_fact",
+        "clsBeStock_rec",
+        "clsBeStock_se_rec",
+        "clsBeTrans_re_det_parametros",
+        "clsBeProducto_pallet",
+        "clsBeTrans_re_enc",
+        "clsBeTrans_oc_enc",
+        "clsBeBodega",
+        "clsBeTms_ticket",
+        "clsBeEmpresa_transporte_pilotos",
+        "clsBeEmpresa_transporte_vehiculos",
+        "clsBeTrans_oc_ti",
+        "clsBeProducto_estado",
+        "clsBeI_nav_config_enc",
+        "clsBeProductosRecepcion",
+        "clsBeOpcionesMenuRol",
+        "clsBeMotivo_anulacion_bodega",
+        "clsBePropietario_reglas_enc",
+        "clsBePropietario_bodega",
+        "clsBeTrans_re_oc",
+        "clsBeTarea_hh",
+        "clsBeProducto",
+        "clsBeUnidad_medida",
+        "clsBeMotivo_devolucion",
+        "clsBeBodega_ubicacion",
+        "clsBeProveedor_tiempos",
+        "clsBeProducto_talla_color",
+        "clsBeTalla",
+        "clsBeColor",
+        "clsBeTrans_oc_det_lote",
+        "clsBeBodega_area",
+        "clsBeBodega_muelles"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmRecepcion_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmRecepcion_List.vb",
+      "domain": "Recepcion",
+      "lineCount": 354,
+      "clsLnUsed": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_re_enc",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmRecepcionBOF",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Recepcion_BOF/frmRecepcionBOF.vb",
+      "domain": "Recepcion_BOF",
+      "lineCount": 7263,
+      "clsLnUsed": [
+        "clsLnTrans_re_tr",
+        "clsLnTrans_oc_ti",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_oc_det",
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms",
+        "clsLnTrans_oc_imagen",
+        "clsLnTrans_re_enc",
+        "clsLnBodega",
+        "clsLnProducto_estado",
+        "clsLnStock_rec",
+        "clsLnProducto_pallet",
+        "clsLnMotivo_anulacion_bodega",
+        "clsLnPropietario_reglas_enc",
+        "clsLnTrans_re_oc",
+        "clsLnProducto",
+        "clsLnProducto_presentacion",
+        "clsLnBodega_ubicacion",
+        "clsLnPropietario_bodega",
+        "clsLnPropietarios",
+        "clsLnStock_se_rec",
+        "clsLnMarcaje",
+        "clsLnOperador_bodega",
+        "clsLnTrans_re_op",
+        "clsLnEmpresa",
+        "clsLnTrans_re_fact",
+        "clsLnTrans_re_tr_Partial",
+        "clsLnStock",
+        "clsLnEmpresa_transporte_vehiculos",
+        "clsLnEmpresa_transporte_pilotos",
+        "clsLnMotivo_devolucion",
+        "clsLnTms_ticket"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_det",
+        "clsBeTrans_re_det",
+        "clsBeTrans_re_tr",
+        "clsBeTrans_re_img",
+        "clsBeTrans_re_op",
+        "clsBeTrans_re_fact",
+        "clsBeStock_rec",
+        "clsBeStock_se_rec",
+        "clsBeTrans_re_det_parametros",
+        "clsBeProducto_pallet",
+        "clsBeTrans_re_enc",
+        "clsBeTrans_oc_enc",
+        "clsBeBodega",
+        "clsBeTms_ticket",
+        "clsBeEmpresa_transporte_pilotos",
+        "clsBeEmpresa_transporte_vehiculos",
+        "clsBeTrans_oc_ti",
+        "clsBeMotivo_anulacion_bodega",
+        "clsBePropietario_reglas_enc",
+        "clsBePropietario_bodega",
+        "clsBeTrans_re_oc",
+        "clsBeTarea_hh",
+        "clsBeProducto",
+        "clsBeUnidad_medida",
+        "clsBeProducto_estado",
+        "clsBeMotivo_devolucion",
+        "clsBeBodega_ubicacion",
+        "clsBeProveedor_tiempos"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "DsRevisionProducto",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Revision_Producto/DsRevisionProducto.vb",
+      "domain": "Revision_Producto",
+      "lineCount": 9,
+      "clsLnUsed": [],
+      "clsBeUsed": [],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmRevisionProducto",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Revision_Producto/frmRevisionProducto.vb",
+      "domain": "Revision_Producto",
+      "lineCount": 446,
+      "clsLnUsed": [
+        "clsLnProducto",
+        "clsLnStock",
+        "clsLnLog_error_wms",
+        "clsLnTransacciones_log"
+      ],
+      "clsBeUsed": [
+        "clsBeTransacciones_log",
+        "clsBeStock",
+        "clsBeProducto_estado"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmRegServicios",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Servicios/frmRegServicios.vb",
+      "domain": "Servicios",
+      "lineCount": 1332,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_servicio_det",
+        "clsLnPropietario_bodega",
+        "clsLnTrans_oc_pol",
+        "clsLnTrans_servicio_enc",
+        "clsLnTrans_pe_enc",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_oc_det",
+        "clsLnTrans_re_det",
+        "clsLnPropietarios",
+        "clsLnI_nav_acuerdo_det",
+        "clsLnI_nav_acuerdo_enc",
+        "clsLnI_nav_config_enc",
+        "clsLnArancel",
+        "clsLnProducto"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_enc",
+        "clsBeTrans_pe_enc",
+        "clsBeTrans_servicio_enc",
+        "clsBeTrans_servicio_det",
+        "clsBeI_nav_config_enc",
+        "clsBeI_nav_acuerdo_det",
+        "clsBeTrans_oc_pol",
+        "clsBeTrans_oc_det",
+        "clsBeOpcionesMenuRol",
+        "clsBeTrans_re_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmServicios_List",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Servicios/frmServicios_List.vb",
+      "domain": "Servicios",
+      "lineCount": 617,
+      "clsLnUsed": [
+        "clsLnTrans_servicio_enc",
+        "clsLnLog_error_wms",
+        "clsLnTrans_oc_enc",
+        "clsLnTrans_pe_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_oc_enc",
+        "clsBeTrans_pe_enc",
+        "clsBeOpcionesMenuRol"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmListStockReservado",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Stock_Reservado/frmListStockReservado.vb",
+      "domain": "Stock_Reservado",
+      "lineCount": 571,
+      "clsLnUsed": [
+        "clsLnVW_Stock_Res_Pedido",
+        "clsLnLog_error_wms",
+        "clsLnStock_res",
+        "clsLnConfiguracion_usuario_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeVW_Stock_Res_Pedido",
+        "clsBeVW_stock_res",
+        "clsBeOpcionesMenuRol",
+        "clsBeStock_res",
+        "clsBeConfiguracion_usuario_det"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmStockReservado",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Stock_Reservado/frmStockReservado.vb",
+      "domain": "Stock_Reservado",
+      "lineCount": 161,
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnStock_res",
+        "clsLnTrans_picking_det"
+      ],
+      "clsBeUsed": [
+        "clsBeVW_Stock_Res_Pedido",
+        "clsBeStock_res"
+      ],
+      "wsRefs": []
+    },
+    {
+      "formName": "frmVerificacionBOF",
+      "path": "/TOMIMSV4/TOMIMSV4/Transacciones/Verificacion_BOF/frmVerificacionBOF.vb",
+      "domain": "Verificacion_BOF",
+      "lineCount": 1459,
+      "clsLnUsed": [
+        "clsLnBodega",
+        "clsLnVerificacion_estado",
+        "clsLnVerificacion_motivo",
+        "clsLnLog_error_wms",
+        "clsLnCliente",
+        "clsLnProducto_bodega",
+        "clsLnProducto_talla_color",
+        "clsLnTalla",
+        "clsLnColor",
+        "clsLnStock",
+        "clsLnProducto_presentacion",
+        "clsLnTrans_picking_enc"
+      ],
+      "clsBeUsed": [
+        "clsBeTrans_pe_enc",
+        "clsBeOpcionesMenuRol",
+        "clsBeCliente",
+        "clsBeProducto",
+        "clsBeStock",
+        "clsBeStock_res",
+        "clsBeCliente_tiempos",
+        "clsBeTrans_pe_det",
+        "clsBePropietarios",
+        "clsBeTrans_picking_enc",
+        "clsBeTrans_picking_ubic",
+        "clsBeDetallePedidoAVerificar",
+        "clsBeBodega",
+        "clsBeI_nav_config_enc"
+      ],
+      "wsRefs": []
+    }
+  ]
+}
