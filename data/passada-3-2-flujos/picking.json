@@ -1,0 +1,1124 @@
+{
+  "domain": "picking",
+  "activitiesCount": 5,
+  "activities": [
+    {
+      "activity": "frm_picking_datos",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "layout": "activity_frm_picking_datos",
+      "fileLines": 3329,
+      "intentTargets": [
+        "frm_imagenes",
+        "frm_danado_picking",
+        "frm_list_prod_reemplazo_picking",
+        "frm_editar_ubicacion_picking"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 2385,
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal IdProductoBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_bodega",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_bodega"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_bodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 2388,
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdPropietario As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeProducto_estado)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 2393,
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pActivo As Boolean",
+          "returns": "List(Of clsBeProducto_Presentacion)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_presentacion",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_presentacion"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_presentacion",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 2396,
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pCodigo As String, ByVal IdBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 2402,
+          "wm": "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer, ByVal pIdPickingDet As Integer",
+          "returns": "clsBeTrans_picking_det",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 2405,
+          "wm": "ObtenerPickingDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByRef oBeTrans_picking_det As clsBeTrans_picking_det",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 2408,
+          "wm": "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 41,
+          "paramsRaw": "ByVal pIdBodega As Integer, ByVal pIdStockRes As Integer",
+          "returns": "clsBeStock_res",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 2411,
+          "wm": "Get_Single_StockRes",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByRef pBeStock_res As clsBeStock_res",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 2415,
+          "wm": "Actualizar_Picking",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 58,
+          "paramsRaw": "ByVal oBeTrans_picking_ubic As clsBeTrans_picking_ubic, ByVal BeStockRes As clsBeStock_res, ByVal IdBodega As Integer, ByVal pCantidad As Double, ByVal host As String",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 10,
+          "lineNum": 2423,
+          "wm": "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 68,
+          "paramsRaw": "ByVal oBeTrans_picking_ubic As clsBeTrans_picking_ubic, ByVal BeStockRes As clsBeStock_res, ByVal oBeTrans_picking_det As clsBeTrans_picking_det, ByVal IdBodega As Integer, ByVal pBeStockPalletReemplazo As clsBeProducto",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 11,
+          "lineNum": 2439,
+          "wm": "Actualiza_Picking_Consolidado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 55,
+          "paramsRaw": "ByVal pBePickingUbic As clsBeTrans_picking_ubic, ByVal pIdOperador As Integer, ByVal ReemplazoLP As Boolean, ByRef pCantidad As Double, ByRef pPeso As Double, ByVal BeStockPallet As clsBeProducto, ByVal host As String",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 12,
+          "lineNum": 2449,
+          "wm": "Get_All_Producto_Imagen",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 39,
+          "paramsRaw": "ByVal pIdProducto As Integer",
+          "returns": "List(Of clsBeProducto_imagen)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_imagen",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_imagen"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_imagen",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 13,
+          "lineNum": 2452,
+          "wm": "Get_All_Reservas_By_IdStock",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pIdStock As Integer, ByVal pIdBodega As Integer, ByVal pIdPedido As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pe"
+          ]
+        },
+        {
+          "seq": 14,
+          "lineNum": 2459,
+          "wm": "Exist_Codigo_By_CodigoBarra",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pCodigoBarra As String, ByVal pIdProductoBodega As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 15,
+          "lineNum": 2471,
+          "wm": "Reemplazo_Automatico",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 84,
+          "paramsRaw": "pStockRes As clsBeStock_res, CantSol As Double, pPickingUbic As clsBeTrans_picking_ubic, IdUsuarioHH As Integer, Tipo As Integer, ByRef CantPend As Double",
+          "returns": "List(Of clsBeTrans_picking_ubic)",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 16,
+          "lineNum": 2479,
+          "wm": "Valida_Licencia_By_ProductoBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "pLicencia As String, pIdBodega As Integer, pIdProductoBodega As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 17,
+          "lineNum": 2485,
+          "wm": "Operador_Tiene_Permiso",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pOperador As clsBeOperador, ByVal pOpcion As String",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "operador",
+            "operador_bodega",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "operador",
+            "operador_bodega"
+          ],
+          "clsLnUsed": [
+            "clsLnOperador",
+            "clsLnOperador_bodega",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 18,
+          "lineNum": 2492,
+          "wm": "Guardar_Picking_Cm",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 87,
+          "paramsRaw": "ByVal pListaPicking As List(Of clsBeTrans_picking_ubic), ByVal IdBodega As Integer, ByVal pIdOperador As Integer, ByVal host As String, TipoLista As Integer",
+          "returns": "String",
+          "tablesRead": [
+            "stock_res",
+            "trans_picking_ubic"
+          ],
+          "tablesWrite": [
+            "stock_res",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms_pick"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_detalle_tareas_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "layout": "activity_frm_detalle_tareas_picking",
+      "fileLines": 1741,
+      "intentTargets": [
+        "frm_picking_datos"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 1124,
+          "wm": "Get_Picking_By_IdPickingEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer, ByVal pIdOperadorBodega As Integer",
+          "returns": "clsBeTrans_picking_enc",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 1130,
+          "wm": "Actualizar_Estado_Picking_Andr",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pEstadoPicking As String, ByVal pIdPickingEnc As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 1133,
+          "wm": "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer, ByVal pDetalleOperador As Boolean, ByVal pIdOperadorBodega As Integer, ByVal Tipo As Integer",
+          "returns": "List(Of clsBeTrans_picking_ubic)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 1141,
+          "wm": "Actualizar_PickingEnc_Procesado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal oBeTrans_picking_enc As clsBeTrans_picking_enc",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 1142,
+          "wm": "Actualizar_PickingEnc_Procesado_Andr",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 48,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer, ByVal pIdOperadorBodegaCerro As Integer, ByVal pHostCerro As String",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 1149,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 1152,
+          "wm": "Get_All_PickingUbic_By_IdPickingEnc_Tipo_Json",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 62,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer, ByVal pDetalleOperador As Boolean, ByVal pIdOperadorBodega As Integer, ByVal Tipo As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 1159,
+          "wm": "Get_CantidadPedidos_Picking",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal IdPickingEnc As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 1162,
+          "wm": "Get_List_Product_By_CodigoBarra_By_Picking",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pCodigo As String, ByVal IdBodega As Integer, ByVal IdPickingEnc As Integer",
+          "returns": "List(Of clsBeProducto)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_list_prod_reemplazo_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "layout": "activity_frm_list_prod_reemplazo_picking",
+      "fileLines": 1082,
+      "intentTargets": [
+        "frm_picking_datos"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 683,
+          "wm": "Get_All_Stock_Especifico_By_IdPedidoDet",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pBeStockRes As clsBeStock_res, ByVal IdPedidoEnc As Integer, ByVal gIdBodega As Integer",
+          "returns": "DataTable",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pe"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 689,
+          "wm": "Reservar_Stock_By_Stock",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 75,
+          "paramsRaw": "ByVal pBeStock_res As clsBeStock_res, ByVal CantSol As Double, ByVal MaquinaQueSolicita As String, ByVal IdPickingEnc As Integer, ByVal IdPedidoEnc As Integer, ByVal IdUsuarioHH As Integer, ByVal IdPedidoDet As Integer, ByVal IdPickingUbic As Integer, ByVal EsPicking As Boolean, ByVal IdPresentacion",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 706,
+          "wm": "Reemplazar_ListaPu_By_Stock",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 92,
+          "paramsRaw": "ByVal pBeStock_res As clsBeStock_res, ByVal CantSol As Double, ByVal MaquinaQueSolicita As String, ByVal IdPickingEnc As Integer, ByVal IdPedidoEnc As Integer, ByVal IdUsuarioHH As Integer, ByVal IdPedidoDet As Integer, ByVal BePickingUbic As clsBeTrans_picking_ubic, ByVal EsPicking As Boolean, ByVa",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 741,
+          "wm": "Sustituir_Producto_NE_Picking",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 70,
+          "paramsRaw": "ByVal IdPickingEnc As Integer, ByVal IdPickingDet As Integer, ByVal CantSol As Double, ByVal MaquinaQueSolicita As String, ByVal UsuarioHH As Integer, ByVal lBeStockRes As List(Of clsBeStock_res), ByVal IdBodega As Integer, ByVal IdEmpresa As Integer, ByVal IdStockProductoNE As Integer, ByVal IdStoc",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 755,
+          "wm": "Marcar_No_Encontrado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 65,
+          "paramsRaw": "ByVal IdBodega As Integer, ByVal IdEmpresa As Integer, ByVal IdStock As Integer, ByVal IdStockRes As Integer, ByVal UsuarioHH As Integer, ByVal CantNoEncontrada As Double, ByVal IdPropietarioBodega As Integer, ByVal IdPickingUbic As Integer",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pick"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 771,
+          "wm": "Get_Presentacion_Defecto_By_Producto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer",
+          "returns": "clsBeProducto_Presentacion",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_presentacion",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_presentacion"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_presentacion",
+            "clsLnLog_error_wms"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_danado_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "layout": "activity_frm_danado_picking",
+      "fileLines": 489,
+      "intentTargets": [
+        "frm_list_prod_reemplazo_picking",
+        "frm_picking_datos"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 294,
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdPropietario As Integer, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeProducto_estado)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 299,
+          "wm": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal IdUbicacion As Integer, ByVal IdEstado As Integer, ByVal IdBodega As Integer, ByRef pNombreUbicacion As String",
+          "returns": "Boolean",
+          "tablesRead": [
+            "bodega_ubicacion",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_editar_ubicacion_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "layout": "activity_editar_ubicacion_picking",
+      "fileLines": 227,
+      "intentTargets": [],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 88,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion",
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion",
+            "log_error_wms"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 91,
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 49,
+          "paramsRaw": "ByVal pIdStock As Integer, ByVal pIdBodega As Integer, ByVal pIdUbicacion As Integer, ByVal pIdOperador As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_res",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_res"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_res",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        }
+      ]
+    }
+  ],
+  "entryActivity": "frm_detalle_tareas_picking",
+  "exitActivity": null,
+  "uniqueWMsCalled": [
+    "Actualiza_Picking_Consolidado",
+    "Actualizar_Estado_Picking_Andr",
+    "Actualizar_Picking",
+    "Actualizar_PickingEnc_Procesado",
+    "Actualizar_PickingEnc_Procesado_Andr",
+    "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+    "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+    "Exist_Codigo_By_CodigoBarra",
+    "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+    "Get_All_PickingUbic_By_IdPickingEnc_Tipo_Json",
+    "Get_All_Presentaciones_By_IdProducto",
+    "Get_All_Producto_Imagen",
+    "Get_All_Reservas_By_IdStock",
+    "Get_All_Stock_Especifico_By_IdPedidoDet",
+    "Get_BeProducto_By_Codigo_For_HH",
+    "Get_CantidadPedidos_Picking",
+    "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+    "Get_List_Product_By_CodigoBarra_By_Picking",
+    "Get_Picking_By_IdPickingEnc",
+    "Get_Presentacion_Defecto_By_Producto",
+    "Get_Producto_By_IdProductoBodega",
+    "Get_Single_StockRes",
+    "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+    "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+    "Guardar_Picking_Cm",
+    "Marcar_No_Encontrado",
+    "ObtenerPickingDet",
+    "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet",
+    "Operador_Tiene_Permiso",
+    "Reemplazar_ListaPu_By_Stock",
+    "Reemplazo_Automatico",
+    "Reservar_Stock_By_Stock",
+    "Sustituir_Producto_NE_Picking",
+    "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+    "Valida_Licencia_By_ProductoBodega"
+  ],
+  "finalizationWMs": [
+    "Guardar_Picking_Cm"
+  ],
+  "partialWMs": [],
+  "tablesWrittenByDomain": [
+    "bodega_ubicacion",
+    "log_error_wms",
+    "operador",
+    "operador_bodega",
+    "producto",
+    "producto_bodega",
+    "producto_estado",
+    "producto_imagen",
+    "producto_presentacion",
+    "stock",
+    "stock_res",
+    "trans_picking_det",
+    "trans_picking_enc",
+    "trans_picking_ubic"
+  ],
+  "tablesReadByDomain": [
+    "bodega_ubicacion",
+    "log_error_wms",
+    "operador",
+    "operador_bodega",
+    "producto",
+    "producto_bodega",
+    "producto_estado",
+    "producto_imagen",
+    "producto_presentacion",
+    "stock_res",
+    "trans_picking_det",
+    "trans_picking_enc",
+    "trans_picking_ubic",
+    "usuario"
+  ],
+  "states": [
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    }
+  ],
+  "typicalErrors": [],
+  "edgeCases": [
+    {
+      "kind": "alt-wms",
+      "baseName": "get_all_pickingubic_by_idpickingenc_tipo",
+      "alternatives": [
+        "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+        "Get_All_PickingUbic_By_IdPickingEnc_Tipo_Json"
+      ]
+    },
+    {
+      "kind": "incidencias",
+      "wms": [
+        "Marcar_No_Encontrado"
+      ]
+    },
+    {
+      "kind": "reservas",
+      "wms": [
+        "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+        "Get_All_Reservas_By_IdStock",
+        "Reservar_Stock_By_Stock"
+      ]
+    }
+  ]
+}
