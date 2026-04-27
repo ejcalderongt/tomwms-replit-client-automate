@@ -1,127 +1,58 @@
-# SQL Catalog Extractor
+# brain/sql-catalog
 
-Extracts the SQL Server catalog (objects, dependencies, module definitions)
-from `TOMWMS_KILLIOS_PRD` (or any other SQL Server DB) and uploads it to the
-TOMWMS Brain running on Replit.
+Extractores y herramientas para el catálogo SQL del WMS.
 
-This script runs **on your local machine** so the production database password
-never leaves your PC and the production server never has to allow connections
-from Replit.
+## Archivos
 
-## Why local
-
-- The prod DB lives behind your firewall on `52.41.114.122`. Replit would
-  need an inbound IP allowlist to reach it.
-- `WMS_KILLIOS_DB_PASSWORD` is sensitive — keep it on your machine.
-- SQL Server's native ODBC driver is what you already have installed for SSMS.
-- Re-running takes ~2 seconds; no need for a server-side cron.
-
-## Setup (one-time)
-
-```bash
-pip install pyodbc requests
-```
-
-You also need an ODBC driver for SQL Server. On Windows it's installed with
-SSMS by default. Verify with:
-
-```powershell
-Get-OdbcDriver -Name "*SQL Server*"
-```
-
-## Usage
-
-### Option A — extract to file, then upload manually
-
-```bash
-# Set the password in the environment (don't pass it on the CLI!)
-$env:WMS_KILLIOS_DB_PASSWORD = "..."
-
-python extract_sql_catalog.py \
-    --server "52.41.114.122,1437" \
-    --database TOMWMS_KILLIOS_PRD \
-    --user wmsuser \
-    --output ./tomwms_killios_prd.json
-```
-
-Then upload via curl:
-
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data-binary @tomwms_killios_prd.json \
-  https://<your-replit-url>/api/brain/import/sql-catalog
-```
-
-### Option B — extract + upload in one shot
-
-The Brain's write endpoints are protected by a shared token. Set it on your
-machine the same way you set the DB password (it must match the
-`BRAIN_IMPORT_TOKEN` secret configured on Replit):
-
-```powershell
-$env:WMS_KILLIOS_DB_PASSWORD = "..."
-$env:BRAIN_IMPORT_TOKEN       = "..."   # same value as the Replit secret
-
-python extract_sql_catalog.py `
-    --server "52.41.114.122,1437" `
-    --database TOMWMS_KILLIOS_PRD `
-    --user wmsuser `
-    --upload https://<your-replit-dev-domain>/api/brain/import/sql-catalog
-```
-
-The script will send the token in the `X-Brain-Token` header.
-
-### Option C — SSMS only (no Python)
-
-If you don't want to install Python, run the queries in `extract.sql` directly
-in SSMS, export each result grid as JSON, then assemble them into the payload
-shape documented in `../../artifacts/api-server/src/services/importers/sqlCatalog.ts`
-(`SqlCatalogPayloadSchema`).
-
-## What gets extracted
-
-| Section | Source | Notes |
+| Archivo | Output | Para qué |
 |---|---|---|
-| `objects` | `sys.objects` + `sys.schemas` + row counts | tables, views, SPs, functions, triggers (no `is_ms_shipped`) |
-| `dependencies` | `sys.sql_expression_dependencies` | who references whom |
-| `modules` | `sys.sql_modules` | full SQL text of views/SPs/funcs/triggers |
+| `extract_sql_catalog.py` | JSON (Brain API REST) | Indexar el catálogo en la API `/api/brain/import/sql-catalog` para queries programáticas (`/search`, `/impact`, `/writers`). Histórico, corre desde la PC de EJC. |
+| `extract_for_db_brain.mjs` | Markdown idempotente (`db-brain/`) | Generar entities markdown del catálogo en el branch `wms-db-brain` para análisis humano + cross-link con `wms-brain`. Corre desde Replit o PC. |
 
-## Output JSON shape
+## Uso del extractor markdown
 
-```jsonc
-{
-  "database": "TOMWMS_KILLIOS_PRD",
-  "server": "52.41.114.122,1437",
-  "extracted_at": "2026-04-21T05:30:00Z",
-  "extractor_version": "1.0.0",
-  "objects":      [{ "schema":"dbo","name":"VW_Stock_Res","kind":"sql-view","object_id":1234,... }],
-  "dependencies": [{ "from_schema":"dbo","from_name":"VW_Stock_Res","to_schema":"dbo","to_name":"Stock","to_kind_hint":"sql-table","is_ambiguous":false }],
-  "modules":      [{ "schema":"dbo","name":"VW_Stock_Res","definition":"CREATE VIEW dbo.VW_Stock_Res AS ..." }]
-}
+Setup mínimo (Replit ya lo tiene):
+- Node 20+
+- `npm i mssql` en alguna carpeta de la cual ejecutar el script
+
+Ejecutar:
+
+```bash
+WMS_KILLIOS_DB_PASSWORD=... node extract_for_db_brain.mjs --out /path/to/db-brain
 ```
 
-## What the import does
+Variables opcionales (con defaults):
 
-The Replit endpoint atomically replaces all rows in `brain_symbols` and
-`brain_references` belonging to the virtual repo named after the database
-(e.g. `TOMWMS_KILLIOS_PRD`).
-
-After import you can query things like:
-
-```sql
--- All views that depend on the Stock table
-SELECT s.name FROM brain_symbols s
-JOIN brain_references r ON r.from_symbol_id = s.id
-WHERE r.to_symbol_name = 'Stock' AND s.kind = 'sql-view';
-
--- Cross-layer impact: VB methods + SQL views that touch a table
-SELECT s.name, s.kind FROM brain_symbols s
-JOIN brain_references r ON r.from_symbol_id = s.id
-WHERE LOWER(r.to_symbol_name) = 'stock';
+```
+WMS_KILLIOS_DB_HOST=52.41.114.122
+WMS_KILLIOS_DB_PORT=1437
+WMS_KILLIOS_DB_USER=sa
+WMS_KILLIOS_DB_NAME=TOMWMS_KILLIOS_PRD
 ```
 
-## Frequency
+Output esperado:
 
-Re-run after any production schema change (new SP, modified view, dropped
-column). The endpoint is idempotent — repeated runs simply replace the
-catalog.
+```
+db-brain/
+├── tables/<name>.md         · 345 archivos (Killios)
+├── views/<name>.md          · 220 archivos
+├── sps/<name>.md            · 39 archivos
+├── functions/<name>.md      · 17 archivos
+├── tables/_index.md         · listado completo (regenerado)
+├── views/_index.md          · idem
+├── sps/_index.md            · idem
+├── functions/_index.md      · idem
+├── _meta/extracted_at.txt   · timestamp + database
+└── _meta/stats.md           · conteos + top 15 + hallazgos
+```
+
+**Idempotente**: re-correr genera diff limpio, solo cambian objetos que cambiaron en BD desde el último snapshot.
+
+**Preserva** `parametrizacion/` y `dependencias/` (curated por humano + agente).
+
+## Cross-refs
+- `brain/entities/modules/mod-repo-dba` — repo donde están los `.sql` versionados
+- `brain/entities/modules/mod-conexion-sqlserver` — connection details
+- `brain/entities/rules/rule-08-killios-prod-solo-lectura` — el extractor solo lee `sys.*`
+- `brain/entities/rules/rule-09-modulo-definition-sensible` — definitions van al markdown pero NO se logean
+- `db-brain://README` — el output (en branch `wms-db-brain`)
