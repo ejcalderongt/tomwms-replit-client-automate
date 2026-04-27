@@ -1,0 +1,51 @@
+# RES-019: Mix complejo: 7 lotes en pick y alm, FEFO mezclado, sin explotar disponible
+id: RES-019
+version: 1
+category: reservation
+severity: high
+title: "Mix complejo: 7 lotes en pick y alm, FEFO mezclado, sin explotar disponible"
+summary: |
+  Set complejo: 4 lotes pick (8U fc1, 4U fc2, 10CJ fc2, 5CJ fc3) + 3 lotes alm (1U fc0, 2U fc2, 25CJ fc2). Solicitado 16 UDS. Espera reservar E (1U fc0), A (8U fc1), F (2U fc2), B (4U fc2) y luego la falta NO se cubre con explosión disponible: rechazo por incompleto.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+  - Rechazar_pedido_incompleto: No
+
+input:
+  requested_qty: 16
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 8, vence: "2026-07-02", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 4, vence: "2026-07-04", um: "UDS" }
+    - { ubicacion: "PICKING", cantidad: 10, vence: "2026-07-04", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 5, vence: "2026-07-06", um: "CJS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 1, vence: "2026-07-01", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 2, vence: "2026-07-03", um: "UDS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 25, vence: "2026-07-03", um: "CJS" }
+
+expected:
+  1. Reserva E (1 UDS alm 2026-07-01).
+  2. Reserva A (8 UDS pick 2026-07-02).
+  3. Reserva F (2 UDS alm 2026-07-03).
+  4. Reserva B (4 UDS pick 2026-07-04).
+  5. Acumulado 15 UDS, falta 1.
+  6. Validar que NO se explota G (alm) si Explosion_Automatica_Desde_Ubicacion_Picking = True.
+  7. C (en pick, 10 CJS) sí podría explotar pero el legacy esperaba RECHAZO; verificar política.
+  8. Pedido RECHAZADO incompleto si la política activa lo indica.
+
+legacy_origin:
+  case: "CASO 15"
+  function: "Ejecuta_QA_CASO_15_IDEAL_20231018130000"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "16389-16660"
+
+notes: |
+  Caso ambiguo en el legacy: el doc del CASO 15 dice "rechazar" pero el CASO 16 con datos casi idénticos dice "explotar G". Discrepancia a resolver al portar.
