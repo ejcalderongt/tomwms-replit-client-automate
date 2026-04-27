@@ -1,7 +1,8 @@
-# Stats globales del catálogo Killios
+# Stats globales del catálogo TOMWMS_KILLIOS_PRD
 
 > Snapshot: 2026-04-27
 > Source: `TOMWMS_KILLIOS_PRD` @ `52.41.114.122,1437`
+> Extractor: `brain/sql-catalog/extract_for_db_brain.mjs`
 
 ## Conteos por tipo
 
@@ -13,11 +14,7 @@
 | `SQL_SCALAR_FUNCTION` | 17 |
 | **TOTAL** | **621** |
 
-> Triggers (`TR`) y funciones inline/table-valued (`IF`/`TF`) no incluidos en este snapshot inicial. Se agregan si aparecen en algún caso del `wms-brain`.
-
-> WikiHub Portal reporta "542 objetos BD" — la diferencia es que WikiHub no cuenta vistas o usa otro filtro. El número canónico ahora es 621.
-
-## Top 10 tablas por filas
+## Top 15 tablas por filas
 
 | Tabla | Filas | Modify date |
 |---|---:|---|
@@ -31,22 +28,18 @@
 | `trans_picking_ubic_stock` | 20.437 | 2025-04-21 |
 | `trans_despacho_det` | 19.799 | 2025-02-11 |
 | `stock_hist` | 19.225 | 2021-06-03 |
+| `i_nav_ped_traslado_det` | 14.953 | 2025-03-18 |
+| `trans_pe_det` | 14.819 | 2024-07-02 |
+| `trans_picking_det` | 14.585 | 2023-10-30 |
+| `bodega_ubicacion` | 9.510 | 2024-07-02 |
+| `producto_presentacion_bk` | 8.630 | 2022-06-07 |
 
-## Hallazgos clave del snapshot
+## Hallazgos persistentes
 
-- **Naming mixto**: convive `t_*` (heredado, ej. `t_producto_bodega` 42k filas, modify_date 2019) con sin-prefijo (`stock`, `cliente`, `trans_*`).
-- **Sin FKs declaradas** en las tablas operacionales del modelo de lotes (validado 2026-04-27 en familia `trans_*_lote_*`). Integridad por convención del DAL VB.NET. Ver `wms-brain://entities/rules/rule-no-fk-en-trans`.
-- **Backups en BD**: tablas con sufijo `_bk` (ej. `producto_presentacion_bk` 8.6k filas) — no es estructura efímera, está en producción.
-- **Snapshots puntuales**: tablas `stock_YYYYMMDD` (ej. `stock_20250624` 3.5k filas) — convención de respaldo manual.
-- **Typo en producción**: `ajuste_tipo.momdifica_vencimiento` (debería ser `modifica_*`). NO tocar sin coordinar con EJC — puede haber código que lee la columna por nombre exacto.
-
-## Densidad de comportamiento configurable (flags bit)
-
-| Maestro | # flags bit | Notas |
-|---|---:|---|
-| `bodega` | ~57 | El maestro más configurable del WMS. Ver `parametrizacion/flags-bodega`. |
-| `producto` | 17 | Incluye `control_lote`, `genera_lote`, `control_vencimiento`, etc. |
-| `cliente` | 9 | Incluye `despachar_lotes_completos`, `control_ultimo_lote`. |
-| `ajuste_tipo` | 5 | Incluye el typo `momdifica_vencimiento`. |
-
-> No existen tablas `config_*` ni `parametros` en la BD (validado 2026-04-27). El SKILL viejo las mencionaba — afirmación incorrecta. La parametrización vive **embebida en los maestros como columnas bit**.
+- **Naming mixto**: convive `t_*` (heredado, ej. `t_producto_bodega`) con sin-prefijo (`stock`, `cliente`, `trans_*`).
+- **Backups en BD**: tablas con sufijo `_bk` están en producción.
+- **Snapshots puntuales**: `stock_YYYYMMDD` — convención de respaldo manual.
+- **Typo en producción**: `ajuste_tipo.momdifica_vencimiento`. Ver `parametrizacion/flags-ajuste-tipo`.
+- Total dependencias `sys.sql_expression_dependencies`: 2625.
+- Total FKs declaradas: 389 (la mayoría de tablas operacionales no tiene FKs).
+- Total check constraints: 4.

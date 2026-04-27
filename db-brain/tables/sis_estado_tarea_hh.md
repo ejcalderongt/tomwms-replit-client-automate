@@ -1,0 +1,50 @@
+---
+id: db-brain-table-sis-estado-tarea-hh
+type: db-table
+title: dbo.sis_estado_tarea_hh
+schema: dbo
+name: sis_estado_tarea_hh
+kind: table
+rows: 4
+modify_date: 2016-06-08
+extracted_at: 2026-04-27T01:29:47.537Z
+extracted_from: TOMWMS_KILLIOS_PRD
+---
+# `dbo.sis_estado_tarea_hh`
+
+| Atributo | Valor |
+|---|---|
+| Tipo | USER_TABLE |
+| Filas | 4 |
+| Schema modify_date | 2016-06-08 |
+| Columnas | 2 |
+| Índices | 1 |
+| FKs | out:0 in:1 |
+
+## Columnas
+
+| # | Nombre | Tipo | Null | Ident |
+|---:|---|---|:-:|:-:|
+| 1 | `IdEstado` | `int` |  |  |
+| 2 | `descripcion` | `nvarchar(50)` |  |  |
+
+## Índices
+
+| Nombre | Tipo | Columnas |
+|---|---|---|
+| `PK_sis_estado_tarea_hh` | CLUSTERED · **PK** | IdEstado |
+
+## Foreign Keys
+
+### Entrantes (otra tabla → esta)
+
+- `tarea_hh` (`FK_tarea_hh_sis_estado_tarea_hh`)
+
+## Quién la referencia
+
+**3** objetos:
+
+- `CLBD` (stored_procedure)
+- `VW_Tareas_Activas_HH` (view)
+- `VW_tareas_hh` (view)
+

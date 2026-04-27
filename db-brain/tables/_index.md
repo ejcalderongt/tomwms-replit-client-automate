@@ -1,63 +1,355 @@
 # Index — Tablas
 
-> Snapshot 2026-04-27: **5 sample tables** publicadas. Quedan **340** por extraer en commit posterior.
+> Snapshot: 2026-04-27
+> Total: **345**
 
-## Sample tables (esta versión)
+## Listado completo
 
-| Tabla | Filas | Status | Entity |
-|---|---:|---|---|
-| `cliente` | 1.083 | activa | [cliente.md](./cliente.md) |
-| `producto` | 319 | activa | [producto.md](./producto.md) |
-| `stock` | 4.703 | activa | [stock.md](./stock.md) |
-| `cliente_lotes` | 0 | vacia (feature WIP) | [cliente_lotes.md](./cliente_lotes.md) |
-| `log_importacion_excel` | 0 | vacia (sin uso desde 2022) | [log_importacion_excel.md](./log_importacion_excel.md) |
+| Nombre | Filas | Modify date |
+|---|---:|---|
+| [`ajuste_motivo`](./ajuste_motivo.md) | 8 | 2018-08-28 |
+| [`ajuste_tipo`](./ajuste_tipo.md) | 6 | 2018-01-19 |
+| [`Appointments`](./Appointments.md) | 0 | 2016-05-18 |
+| [`arancel`](./arancel.md) | 3 | 2018-01-11 |
+| [`area_estado`](./area_estado.md) | 0 | 2024-02-01 |
+| [`Auditoria`](./Auditoria.md) | 0 | 2023-10-29 |
+| [`bodega`](./bodega.md) | 6 | 2026-02-11 |
+| [`bodega_area`](./bodega_area.md) | 18 | 2024-02-01 |
+| [`bodega_monitor_parametro`](./bodega_monitor_parametro.md) | 0 | 2016-08-01 |
+| [`bodega_muelles`](./bodega_muelles.md) | 8 | 2024-07-02 |
+| [`bodega_orientacion_pos`](./bodega_orientacion_pos.md) | 4 | 2018-02-06 |
+| [`bodega_parametros`](./bodega_parametros.md) | 6 | 2017-05-04 |
+| [`bodega_sector`](./bodega_sector.md) | 153 | 2019-12-10 |
+| [`bodega_tramo`](./bodega_tramo.md) | 171 | 2021-10-26 |
+| [`bodega_ubicacion`](./bodega_ubicacion.md) | 9.510 | 2024-07-02 |
+| [`camara`](./camara.md) | 2 | 2018-01-11 |
+| [`campaña`](./campaña.md) | 0 | 2025-05-13 |
+| [`centro_costo`](./centro_costo.md) | 0 | 2024-09-12 |
+| [`cliente`](./cliente.md) | 1.083 | 2025-09-04 |
+| [`cliente_bodega`](./cliente_bodega.md) | 3.400 | 2024-09-12 |
+| [`cliente_direccion`](./cliente_direccion.md) | 5 | 2022-12-17 |
+| [`cliente_lotes`](./cliente_lotes.md) | 0 | 2025-07-13 |
+| [`cliente_tiempos`](./cliente_tiempos.md) | 0 | 2025-03-18 |
+| [`cliente_tipo`](./cliente_tipo.md) | 6 | 2017-10-27 |
+| [`cod_barra_clc`](./cod_barra_clc.md) | 2.432 | 2018-08-28 |
+| [`color`](./color.md) | 0 | 2025-05-13 |
+| [`configuracion_alias_campos`](./configuracion_alias_campos.md) | 0 | 2022-09-29 |
+| [`configuracion_barra_pallet`](./configuracion_barra_pallet.md) | 1 | 2019-03-28 |
+| [`configuracion_qa`](./configuracion_qa.md) | 0 | 2023-10-05 |
+| [`configuracion_usuario_det`](./configuracion_usuario_det.md) | 141 | 2023-08-21 |
+| [`configuracion_usuario_enc`](./configuracion_usuario_enc.md) | 19 | 2022-09-11 |
+| [`Contacto`](./Contacto.md) | 0 | 2023-10-29 |
+| [`contenedor`](./contenedor.md) | 0 | 2016-07-12 |
+| [`dh_ocupacion_bodega`](./dh_ocupacion_bodega.md) | 8.144 | 2023-08-21 |
+| [`diferencias_movimientos`](./diferencias_movimientos.md) | 0 | 2020-10-07 |
+| [`empresa`](./empresa.md) | 1 | 2023-10-05 |
+| [`empresa_transporte`](./empresa_transporte.md) | 18 | 2021-05-28 |
+| [`empresa_transporte_bodega`](./empresa_transporte_bodega.md) | 0 | 2016-02-08 |
+| [`empresa_transporte_pilotos`](./empresa_transporte_pilotos.md) | 1 | 2021-05-28 |
+| [`empresa_transporte_vehiculos`](./empresa_transporte_vehiculos.md) | 0 | 2021-05-28 |
+| [`estilo`](./estilo.md) | 0 | 2025-05-13 |
+| [`estructura_grupo`](./estructura_grupo.md) | 238 | 2023-08-21 |
+| [`estructura_tramo`](./estructura_tramo.md) | 68 | 2023-08-21 |
+| [`estructura_ubicacion`](./estructura_ubicacion.md) | 1.448 | 2019-09-02 |
+| [`font_det`](./font_det.md) | 1 | 2017-08-08 |
+| [`font_enc`](./font_enc.md) | 1 | 2017-08-04 |
+| [`horario_laboral_det`](./horario_laboral_det.md) | 51 | 2016-09-16 |
+| [`horario_laboral_enc`](./horario_laboral_enc.md) | 6 | 2016-09-16 |
+| [`i_nav_acuerdo`](./i_nav_acuerdo.md) | 0 | 2021-08-25 |
+| [`i_nav_acuerdo_det`](./i_nav_acuerdo_det.md) | 0 | 2021-08-25 |
+| [`i_nav_acuerdo_enc`](./i_nav_acuerdo_enc.md) | 0 | 2021-08-25 |
+| [`i_nav_barras_pallet`](./i_nav_barras_pallet.md) | 1.056 | 2025-05-05 |
+| [`i_nav_bodega`](./i_nav_bodega.md) | 8 | 2017-10-27 |
+| [`i_nav_cliente`](./i_nav_cliente.md) | 0 | 2021-08-25 |
+| [`i_nav_config_area_bodega`](./i_nav_config_area_bodega.md) | 0 | 2024-02-01 |
+| [`i_nav_config_det`](./i_nav_config_det.md) | 0 | 2017-09-22 |
+| [`i_nav_config_enc`](./i_nav_config_enc.md) | 6 | 2026-02-12 |
+| [`i_nav_config_ent`](./i_nav_config_ent.md) | 0 | 2017-09-19 |
+| [`i_nav_config_producto_estado`](./i_nav_config_producto_estado.md) | 0 | 2023-10-16 |
+| [`i_nav_conversion`](./i_nav_conversion.md) | 0 | 2021-05-28 |
+| [`i_nav_ejecucion_det_error`](./i_nav_ejecucion_det_error.md) | 4.021 | 2022-03-15 |
+| [`i_nav_ejecucion_enc`](./i_nav_ejecucion_enc.md) | 7.762 | 2023-02-14 |
+| [`i_nav_ejecucion_res`](./i_nav_ejecucion_res.md) | 7.760 | 2023-02-14 |
+| [`i_nav_ent`](./i_nav_ent.md) | 0 | 2017-09-22 |
+| [`i_nav_ent_filtros`](./i_nav_ent_filtros.md) | 0 | 2021-09-23 |
+| [`i_nav_ped_compra_det`](./i_nav_ped_compra_det.md) | 0 | 2023-08-21 |
+| [`i_nav_ped_compra_det_lote`](./i_nav_ped_compra_det_lote.md) | 0 | 2022-07-18 |
+| [`i_nav_ped_compra_enc`](./i_nav_ped_compra_enc.md) | 0 | 2024-09-12 |
+| [`i_nav_ped_traslado_det`](./i_nav_ped_traslado_det.md) | 14.953 | 2025-03-18 |
+| [`i_nav_ped_traslado_det_lote`](./i_nav_ped_traslado_det_lote.md) | 0 | 2024-07-02 |
+| [`i_nav_ped_traslado_enc`](./i_nav_ped_traslado_enc.md) | 4.237 | 2025-06-11 |
+| [`i_nav_producto`](./i_nav_producto.md) | 0 | 2025-08-26 |
+| [`i_nav_producto_presentacion`](./i_nav_producto_presentacion.md) | 0 | 2024-07-02 |
+| [`i_nav_proveedor`](./i_nav_proveedor.md) | 1.121 | 2024-01-24 |
+| [`i_nav_servicio`](./i_nav_servicio.md) | 0 | 2021-05-28 |
+| [`i_nav_transacciones_out`](./i_nav_transacciones_out.md) | 24.193 | 2024-09-18 |
+| [`i_nav_transacciones_out_error`](./i_nav_transacciones_out_error.md) | 0 | 2020-10-07 |
+| [`i_nav_transacciones_push`](./i_nav_transacciones_push.md) | 0 | 2022-01-25 |
+| [`impresion_productos_barras`](./impresion_productos_barras.md) | 4 | 2019-11-18 |
+| [`impresora`](./impresora.md) | 13 | 2025-03-27 |
+| [`Impresora_Lenguaje`](./Impresora_Lenguaje.md) | 1 | 2024-07-02 |
+| [`Impresora_Marca`](./Impresora_Marca.md) | 1 | 2024-07-02 |
+| [`impresora_mensaje`](./impresora_mensaje.md) | 0 | 2025-03-27 |
+| [`Impresora_Tipo_Conexion`](./Impresora_Tipo_Conexion.md) | 1 | 2024-07-02 |
+| [`indicador_det`](./indicador_det.md) | 4 | 2023-06-18 |
+| [`indicador_enc`](./indicador_enc.md) | 4 | 2023-06-18 |
+| [`indice_rotacion`](./indice_rotacion.md) | 5 | 2018-01-11 |
+| [`Infraestructura`](./Infraestructura.md) | 0 | 2023-10-29 |
+| [`interface_enc`](./interface_enc.md) | 0 | 2017-07-26 |
+| [`Inv_SAP`](./Inv_SAP.md) | 265 | 2025-06-02 |
+| [`Inv_WMS`](./Inv_WMS.md) | 244 | 2025-06-02 |
+| [`jornada_laboral`](./jornada_laboral.md) | 6 | 2023-05-18 |
+| [`jornada_sistema`](./jornada_sistema.md) | 0 | 2021-05-28 |
+| [`licencia_item`](./licencia_item.md) | 23 | 2022-12-17 |
+| [`licencia_llave`](./licencia_llave.md) | 1 | 2017-10-31 |
+| [`licencia_login`](./licencia_login.md) | 38 | 2023-08-21 |
+| [`licencia_solic`](./licencia_solic.md) | 1 | 2022-01-21 |
+| [`licencias_pendientes_retroactivo`](./licencias_pendientes_retroactivo.md) | 0 | 2023-04-17 |
+| [`log_error_wms`](./log_error_wms.md) | 66.339 | 2025-06-12 |
+| [`log_importacion_excel`](./log_importacion_excel.md) | 0 | 2022-05-06 |
+| [`marcaje`](./marcaje.md) | 3.701 | 2022-12-17 |
+| [`mensaje_regla`](./mensaje_regla.md) | 10 | 2016-07-22 |
+| [`menu_rol`](./menu_rol.md) | 863 | 2024-07-02 |
+| [`menu_rol_op`](./menu_rol_op.md) | 187 | 2023-08-21 |
+| [`menu_sistema`](./menu_sistema.md) | 289 | 2023-08-21 |
+| [`menu_sistema_op`](./menu_sistema_op.md) | 19 | 2016-09-12 |
+| [`montacarga`](./montacarga.md) | 2 | 2022-06-13 |
+| [`montacarga_bodega`](./montacarga_bodega.md) | 8 | 2016-04-25 |
+| [`montacarga_servicio_enc`](./montacarga_servicio_enc.md) | 0 | 2016-04-25 |
+| [`montacarga_tipoFalla`](./montacarga_tipoFalla.md) | 2 | 2016-05-03 |
+| [`motivo_anulacion`](./motivo_anulacion.md) | 16 | 2016-03-07 |
+| [`motivo_anulacion_bodega`](./motivo_anulacion_bodega.md) | 25 | 2016-03-07 |
+| [`motivo_devolucion`](./motivo_devolucion.md) | 12 | 2018-04-12 |
+| [`motivo_devolucion_bodega`](./motivo_devolucion_bodega.md) | 12 | 2016-06-10 |
+| [`motivo_ubicacion`](./motivo_ubicacion.md) | 12 | 2016-05-06 |
+| [`operador`](./operador.md) | 18 | 2024-02-01 |
+| [`operador_bodega`](./operador_bodega.md) | 84 | 2021-05-28 |
+| [`operador_jornada_laboral`](./operador_jornada_laboral.md) | 58 | 2023-05-18 |
+| [`operador_montacarga`](./operador_montacarga.md) | 0 | 2022-06-13 |
+| [`operador_zona_picking_tramo`](./operador_zona_picking_tramo.md) | 0 | 2022-06-13 |
+| [`Organizacion`](./Organizacion.md) | 0 | 2023-10-29 |
+| [`p_parametro`](./p_parametro.md) | 0 | 2017-07-13 |
+| [`pais_departamento`](./pais_departamento.md) | 69 | 2016-05-27 |
+| [`pais_municipio`](./pais_municipio.md) | 401 | 2023-08-21 |
+| [`pais_region`](./pais_region.md) | 6 | 2016-05-27 |
+| [`paises`](./paises.md) | 37 | 2016-05-27 |
+| [`perfil_serializado`](./perfil_serializado.md) | 0 | 2018-01-11 |
+| [`producto`](./producto.md) | 319 | 2025-05-13 |
+| [`producto_bodega`](./producto_bodega.md) | 1.914 | 2024-07-02 |
+| [`producto_clasificacion`](./producto_clasificacion.md) | 28 | 2024-02-01 |
+| [`producto_clasificacion_etiqueta`](./producto_clasificacion_etiqueta.md) | 0 | 2024-02-01 |
+| [`producto_codigos_barra`](./producto_codigos_barra.md) | 310 | 2022-06-22 |
+| [`producto_estado`](./producto_estado.md) | 18 | 2025-02-11 |
+| [`producto_estado_ubic`](./producto_estado_ubic.md) | 2 | 2019-11-20 |
+| [`producto_familia`](./producto_familia.md) | 0 | 2024-02-01 |
+| [`producto_imagen`](./producto_imagen.md) | 9 | 2022-03-18 |
+| [`producto_kit_composicion`](./producto_kit_composicion.md) | 0 | 2020-10-07 |
+| [`producto_marca`](./producto_marca.md) | 16 | 2024-07-02 |
+| [`producto_pallet`](./producto_pallet.md) | 61 | 2023-02-14 |
+| [`producto_pallet_rec`](./producto_pallet_rec.md) | 0 | 2018-02-24 |
+| [`producto_parametro_a`](./producto_parametro_a.md) | 0 | 2022-06-30 |
+| [`producto_parametro_b`](./producto_parametro_b.md) | 0 | 2022-06-30 |
+| [`producto_parametros`](./producto_parametros.md) | 0 | 2018-01-22 |
+| [`producto_presentacion`](./producto_presentacion.md) | 295 | 2025-02-11 |
+| [`producto_presentacion_bk`](./producto_presentacion_bk.md) | 8.630 | 2022-06-07 |
+| [`producto_presentacion_tarima`](./producto_presentacion_tarima.md) | 0 | 2017-05-30 |
+| [`producto_presentaciones_conversiones`](./producto_presentaciones_conversiones.md) | 0 | 2018-01-22 |
+| [`producto_rellenado`](./producto_rellenado.md) | 1 | 2021-11-19 |
+| [`producto_subtarea`](./producto_subtarea.md) | 0 | 2023-10-23 |
+| [`producto_subtarea_tipo`](./producto_subtarea_tipo.md) | 3 | 2023-10-23 |
+| [`producto_sustituto`](./producto_sustituto.md) | 0 | 2018-01-22 |
+| [`producto_talla_color`](./producto_talla_color.md) | 0 | 2025-05-13 |
+| [`producto_tipo`](./producto_tipo.md) | 2 | 2022-12-17 |
+| [`propietario_bodega`](./propietario_bodega.md) | 6 | 2024-09-12 |
+| [`propietario_destinatario`](./propietario_destinatario.md) | 1 | 2016-07-25 |
+| [`propietario_reglas_det`](./propietario_reglas_det.md) | 1 | 2016-07-22 |
+| [`propietario_reglas_enc`](./propietario_reglas_enc.md) | 1 | 2016-08-23 |
+| [`propietarios`](./propietarios.md) | 1 | 2025-08-01 |
+| [`Propuesta`](./Propuesta.md) | 0 | 2023-10-29 |
+| [`Prospecto`](./Prospecto.md) | 0 | 2023-10-29 |
+| [`proveedor`](./proveedor.md) | 1.386 | 2025-06-09 |
+| [`proveedor_bodega`](./proveedor_bodega.md) | 4.594 | 2024-02-01 |
+| [`proveedor_tiempos`](./proveedor_tiempos.md) | 0 | 2023-10-23 |
+| [`regimen_fiscal`](./regimen_fiscal.md) | 0 | 2021-05-28 |
+| [`regla_ubic_det_ir`](./regla_ubic_det_ir.md) | 0 | 2017-07-14 |
+| [`regla_ubic_det_pe`](./regla_ubic_det_pe.md) | 0 | 2017-07-13 |
+| [`regla_ubic_det_pp`](./regla_ubic_det_pp.md) | 0 | 2017-07-13 |
+| [`regla_ubic_det_prop`](./regla_ubic_det_prop.md) | 0 | 2017-07-13 |
+| [`regla_ubic_det_tp`](./regla_ubic_det_tp.md) | 0 | 2017-07-13 |
+| [`regla_ubic_det_tr`](./regla_ubic_det_tr.md) | 0 | 2017-07-14 |
+| [`regla_ubic_enc`](./regla_ubic_enc.md) | 0 | 2017-07-13 |
+| [`regla_ubic_prio_det`](./regla_ubic_prio_det.md) | 9 | 2017-08-06 |
+| [`regla_ubic_prio_enc`](./regla_ubic_prio_enc.md) | 1 | 2017-08-05 |
+| [`regla_ubic_prio_param`](./regla_ubic_prio_param.md) | 9 | 2017-08-06 |
+| [`regla_ubic_prio_producto`](./regla_ubic_prio_producto.md) | 1 | 2017-08-07 |
+| [`regla_ubic_sel`](./regla_ubic_sel.md) | 0 | 2017-08-07 |
+| [`regla_ubic_sel_det`](./regla_ubic_sel_det.md) | 0 | 2017-08-07 |
+| [`regla_ubic_sel_enc`](./regla_ubic_sel_enc.md) | 0 | 2017-08-07 |
+| [`regla_ubic_sel_item`](./regla_ubic_sel_item.md) | 9 | 2017-08-07 |
+| [`regla_ubicacion`](./regla_ubicacion.md) | 0 | 2020-02-04 |
+| [`regla_vencimiento`](./regla_vencimiento.md) | 0 | 2024-02-01 |
+| [`reglas_recepcion`](./reglas_recepcion.md) | 7 | 2016-07-28 |
+| [`reglas_vencimiento_contacto`](./reglas_vencimiento_contacto.md) | 0 | 2024-02-01 |
+| [`resolucion_lp_operador`](./resolucion_lp_operador.md) | 67 | 2021-05-28 |
+| [`resolucion_lp_usuario`](./resolucion_lp_usuario.md) | 24 | 2024-07-02 |
+| [`Resources`](./Resources.md) | 0 | 2016-05-18 |
+| [`resultado_aplica_reservado`](./resultado_aplica_reservado.md) | 275 | 2018-10-09 |
+| [`road_p_vendedor`](./road_p_vendedor.md) | 0 | 2016-05-02 |
+| [`road_ruta`](./road_ruta.md) | 0 | 2016-10-26 |
+| [`rol`](./rol.md) | 8 | 2018-01-19 |
+| [`rol_bodega`](./rol_bodega.md) | 0 | 2016-04-25 |
+| [`rol_menu`](./rol_menu.md) | 0 | 2016-05-06 |
+| [`rol_operador`](./rol_operador.md) | 14 | 2016-09-12 |
+| [`rol_usuario_estado`](./rol_usuario_estado.md) | 14 | 2024-10-28 |
+| [`simbologias_codigo_barra`](./simbologias_codigo_barra.md) | 9 | 2018-01-11 |
+| [`sis_estado_tarea_hh`](./sis_estado_tarea_hh.md) | 4 | 2016-06-08 |
+| [`sis_obs_log`](./sis_obs_log.md) | 3 | 2016-07-06 |
+| [`sis_prioridad_tarea_hh`](./sis_prioridad_tarea_hh.md) | 4 | 2016-06-08 |
+| [`sis_tipo_accion`](./sis_tipo_accion.md) | 2 | 2016-07-07 |
+| [`sis_tipo_tarea`](./sis_tipo_tarea.md) | 35 | 2016-09-12 |
+| [`stock`](./stock.md) | 4.703 | 2024-09-12 |
+| [`stock_20250515`](./stock_20250515.md) | 151 | 2025-05-15 |
+| [`stock_20250606`](./stock_20250606.md) | 3.202 | 2025-06-06 |
+| [`stock_20250624`](./stock_20250624.md) | 3.541 | 2025-06-24 |
+| [`stock_bodegas23`](./stock_bodegas23.md) | 270 | 2025-06-07 |
+| [`stock_det`](./stock_det.md) | 0 | 2021-06-02 |
+| [`stock_hist`](./stock_hist.md) | 19.225 | 2021-06-03 |
+| [`stock_jornada`](./stock_jornada.md) | 0 | 2022-10-18 |
+| [`stock_jornada_temporal`](./stock_jornada_temporal.md) | 0 | 2023-04-17 |
+| [`stock_parametro`](./stock_parametro.md) | 0 | 2020-02-14 |
+| [`stock_picking20250624`](./stock_picking20250624.md) | 14 | 2025-06-24 |
+| [`stock_rec`](./stock_rec.md) | 4.394 | 2023-08-21 |
+| [`stock_res`](./stock_res.md) | 454 | 2023-08-21 |
+| [`stock_res_20250624`](./stock_res_20250624.md) | 267 | 2025-06-24 |
+| [`stock_res_ped_164`](./stock_res_ped_164.md) | 38 | 2022-01-13 |
+| [`stock_res_se`](./stock_res_se.md) | 0 | 2016-07-11 |
+| [`stock_se`](./stock_se.md) | 0 | 2020-02-14 |
+| [`stock_se_rec`](./stock_se_rec.md) | 0 | 2022-12-17 |
+| [`stock_transito`](./stock_transito.md) | 6 | 2022-12-17 |
+| [`sysdiagrams`](./sysdiagrams.md) | 35 | 2023-08-21 |
+| [`t_producto_bodega`](./t_producto_bodega.md) | 42.357 | 2019-05-21 |
+| [`tablas_sync`](./tablas_sync.md) | 0 | 2016-08-10 |
+| [`talla`](./talla.md) | 0 | 2025-05-13 |
+| [`tarea_hh`](./tarea_hh.md) | 1.817 | 2025-02-11 |
+| [`tarifa_tipo_transaccion`](./tarifa_tipo_transaccion.md) | 0 | 2021-05-28 |
+| [`tarifa_tipo_transaccion_det`](./tarifa_tipo_transaccion_det.md) | 0 | 2021-05-28 |
+| [`tarimas`](./tarimas.md) | 4 | 2016-07-20 |
+| [`temp_licencia_llave`](./temp_licencia_llave.md) | 3 | 2018-06-04 |
+| [`TempComparacionInventario`](./TempComparacionInventario.md) | 7 | 2025-02-11 |
+| [`TempComparativoInventario`](./TempComparativoInventario.md) | 0 | 2018-09-21 |
+| [`tipo_actualizacion_costo`](./tipo_actualizacion_costo.md) | 3 | 2016-04-05 |
+| [`tipo_contenedor`](./tipo_contenedor.md) | 5 | 2016-07-12 |
+| [`tipo_etiqueta`](./tipo_etiqueta.md) | 6 | 2025-03-27 |
+| [`tipo_etiqueta_detalle`](./tipo_etiqueta_detalle.md) | 0 | 2025-03-27 |
+| [`tipo_rack`](./tipo_rack.md) | 4 | 2018-03-16 |
+| [`tipo_rotacion`](./tipo_rotacion.md) | 4 | 2018-06-03 |
+| [`tipo_tarea_tiempos`](./tipo_tarea_tiempos.md) | 1 | 2019-07-29 |
+| [`tipo_tarima`](./tipo_tarima.md) | 10 | 2017-05-30 |
+| [`TipoConteo`](./TipoConteo.md) | 2 | 2018-01-22 |
+| [`TipoInventario`](./TipoInventario.md) | 2 | 2018-01-22 |
+| [`tmp_bodega_ubicacion`](./tmp_bodega_ubicacion.md) | 0 | 2019-09-02 |
+| [`tmp_estructura_ubicacion`](./tmp_estructura_ubicacion.md) | 400 | 2018-11-12 |
+| [`tmp_i_nav_transacciones_out`](./tmp_i_nav_transacciones_out.md) | 0 | 2019-12-11 |
+| [`tmp_licencia_item`](./tmp_licencia_item.md) | 65 | 2022-05-04 |
+| [`tmp_picking`](./tmp_picking.md) | 2.951 | 2023-01-10 |
+| [`tmp_stock_res`](./tmp_stock_res.md) | 400 | 2018-10-08 |
+| [`tms_ticket`](./tms_ticket.md) | 0 | 2021-06-02 |
+| [`tms_ticket_pol`](./tms_ticket_pol.md) | 0 | 2022-03-24 |
+| [`trans_acuerdoscomerciales_det`](./trans_acuerdoscomerciales_det.md) | 0 | 2024-07-02 |
+| [`trans_acuerdoscomerciales_enc`](./trans_acuerdoscomerciales_enc.md) | 0 | 2024-07-02 |
+| [`trans_ajuste_det`](./trans_ajuste_det.md) | 2.113 | 2025-02-11 |
+| [`trans_ajuste_det_doc`](./trans_ajuste_det_doc.md) | 0 | 2018-08-28 |
+| [`trans_ajuste_enc`](./trans_ajuste_enc.md) | 825 | 2025-02-11 |
+| [`trans_bodega_ubicaciones_excel`](./trans_bodega_ubicaciones_excel.md) | 0 | 2024-02-02 |
+| [`trans_despacho_det`](./trans_despacho_det.md) | 19.799 | 2025-02-11 |
+| [`trans_despacho_det_lote_num`](./trans_despacho_det_lote_num.md) | 0 | 2019-05-21 |
+| [`trans_despacho_enc`](./trans_despacho_enc.md) | 4.032 | 2025-02-11 |
+| [`trans_inv_ciclico`](./trans_inv_ciclico.md) | 0 | 2025-07-16 |
+| [`trans_inv_ciclico_ubic`](./trans_inv_ciclico_ubic.md) | 0 | 2020-02-04 |
+| [`trans_inv_detalle`](./trans_inv_detalle.md) | 2.942 | 2023-01-25 |
+| [`trans_inv_enc`](./trans_inv_enc.md) | 3 | 2024-09-12 |
+| [`trans_inv_enc_reconteo`](./trans_inv_enc_reconteo.md) | 0 | 2018-10-03 |
+| [`trans_inv_ne`](./trans_inv_ne.md) | 1 | 2019-04-08 |
+| [`trans_inv_operador`](./trans_inv_operador.md) | 0 | 2021-12-01 |
+| [`trans_inv_reconteo`](./trans_inv_reconteo.md) | 0 | 2019-09-02 |
+| [`trans_inv_resumen`](./trans_inv_resumen.md) | 2.571 | 2024-09-12 |
+| [`trans_inv_stock`](./trans_inv_stock.md) | 4.540 | 2025-02-11 |
+| [`trans_inv_stock_prod`](./trans_inv_stock_prod.md) | 1.153 | 2025-05-22 |
+| [`trans_inv_teorico_erp`](./trans_inv_teorico_erp.md) | 0 | 2024-09-12 |
+| [`trans_inv_tramo`](./trans_inv_tramo.md) | 54 | 2023-08-21 |
+| [`trans_inventario_det`](./trans_inventario_det.md) | 0 | 2020-02-14 |
+| [`trans_inventario_enc`](./trans_inventario_enc.md) | 0 | 2016-05-16 |
+| [`trans_log_pedido_liberacion`](./trans_log_pedido_liberacion.md) | 715 | 2023-02-09 |
+| [`trans_log_reubic_stock_res`](./trans_log_reubic_stock_res.md) | 84 | 2023-08-21 |
+| [`trans_manufactura_det`](./trans_manufactura_det.md) | 0 | 2024-07-02 |
+| [`trans_manufactura_enc`](./trans_manufactura_enc.md) | 0 | 2024-07-02 |
+| [`trans_manufactura_picking`](./trans_manufactura_picking.md) | 0 | 2024-07-02 |
+| [`trans_manufactura_tipo`](./trans_manufactura_tipo.md) | 0 | 2024-07-02 |
+| [`trans_movimiento_pallet`](./trans_movimiento_pallet.md) | 245 | 2023-08-21 |
+| [`trans_movimientos`](./trans_movimientos.md) | 81.641 | 2024-07-02 |
+| [`trans_oc_det`](./trans_oc_det.md) | 1.907 | 2024-07-02 |
+| [`trans_oc_det_lote`](./trans_oc_det_lote.md) | 1.078 | 2023-08-21 |
+| [`trans_oc_docu_ref`](./trans_oc_docu_ref.md) | 0 | 2021-09-08 |
+| [`trans_oc_embarcador`](./trans_oc_embarcador.md) | 0 | 2022-03-07 |
+| [`trans_oc_enc`](./trans_oc_enc.md) | 558 | 2025-05-05 |
+| [`trans_oc_estado`](./trans_oc_estado.md) | 6 | 2018-04-12 |
+| [`trans_oc_imagen`](./trans_oc_imagen.md) | 0 | 2018-04-12 |
+| [`trans_oc_pol`](./trans_oc_pol.md) | 0 | 2024-02-01 |
+| [`trans_oc_servicios`](./trans_oc_servicios.md) | 0 | 2021-08-25 |
+| [`trans_oc_ti`](./trans_oc_ti.md) | 15 | 2025-04-01 |
+| [`trans_packing_enc`](./trans_packing_enc.md) | 13 | 2025-07-16 |
+| [`trans_pe_det`](./trans_pe_det.md) | 14.819 | 2024-07-02 |
+| [`trans_pe_det_log_reserva`](./trans_pe_det_log_reserva.md) | 22.576 | 2024-02-01 |
+| [`trans_pe_docu_ref`](./trans_pe_docu_ref.md) | 20 | 2021-08-25 |
+| [`trans_pe_enc`](./trans_pe_enc.md) | 4.202 | 2025-06-11 |
+| [`trans_pe_pol`](./trans_pe_pol.md) | 0 | 2024-10-01 |
+| [`trans_pe_servicios`](./trans_pe_servicios.md) | 0 | 2021-05-28 |
+| [`trans_pe_tipo`](./trans_pe_tipo.md) | 6 | 2025-08-01 |
+| [`trans_picking_det`](./trans_picking_det.md) | 14.585 | 2023-10-30 |
+| [`trans_picking_det_parametros`](./trans_picking_det_parametros.md) | 0 | 2020-01-25 |
+| [`trans_picking_enc`](./trans_picking_enc.md) | 1.293 | 2025-06-25 |
+| [`trans_picking_img`](./trans_picking_img.md) | 0 | 2023-10-30 |
+| [`trans_picking_op`](./trans_picking_op.md) | 5.895 | 2024-02-01 |
+| [`trans_picking_prioridad`](./trans_picking_prioridad.md) | 0 | 2024-07-02 |
+| [`trans_picking_ubic`](./trans_picking_ubic.md) | 26.567 | 2025-07-16 |
+| [`trans_picking_ubic_stock`](./trans_picking_ubic_stock.md) | 20.437 | 2025-04-21 |
+| [`trans_prefactura_det`](./trans_prefactura_det.md) | 0 | 2024-09-12 |
+| [`trans_prefactura_enc`](./trans_prefactura_enc.md) | 0 | 2024-09-12 |
+| [`trans_prefactura_mov`](./trans_prefactura_mov.md) | 0 | 2024-09-12 |
+| [`trans_re_det`](./trans_re_det.md) | 4.394 | 2024-10-15 |
+| [`trans_re_det_infraccion`](./trans_re_det_infraccion.md) | 0 | 2018-10-11 |
+| [`trans_re_det_lote_num`](./trans_re_det_lote_num.md) | 180.181 | 2022-12-17 |
+| [`trans_re_det_parametros`](./trans_re_det_parametros.md) | 0 | 2018-01-19 |
+| [`trans_re_enc`](./trans_re_enc.md) | 576 | 2024-02-01 |
+| [`trans_re_fact`](./trans_re_fact.md) | 0 | 2018-10-11 |
+| [`trans_re_img`](./trans_re_img.md) | 0 | 2018-10-11 |
+| [`trans_re_oc`](./trans_re_oc.md) | 576 | 2023-08-21 |
+| [`trans_re_op`](./trans_re_op.md) | 1.644 | 2023-08-21 |
+| [`trans_re_tr`](./trans_re_tr.md) | 10 | 2018-10-11 |
+| [`trans_reabastecimiento_log`](./trans_reabastecimiento_log.md) | 1.218 | 2023-02-27 |
+| [`trans_series_doc`](./trans_series_doc.md) | 0 | 2022-07-02 |
+| [`trans_servicio_det`](./trans_servicio_det.md) | 0 | 2021-08-25 |
+| [`trans_servicio_enc`](./trans_servicio_enc.md) | 0 | 2021-08-25 |
+| [`trans_tras_det`](./trans_tras_det.md) | 0 | 2018-01-11 |
+| [`trans_tras_enc`](./trans_tras_enc.md) | 0 | 2016-07-12 |
+| [`trans_tras_op`](./trans_tras_op.md) | 0 | 2018-01-19 |
+| [`trans_ubic_hh_det`](./trans_ubic_hh_det.md) | 695 | 2024-07-02 |
+| [`trans_ubic_hh_enc`](./trans_ubic_hh_enc.md) | 77 | 2026-02-11 |
+| [`trans_ubic_hh_op`](./trans_ubic_hh_op.md) | 145 | 2018-01-19 |
+| [`trans_ubic_hh_se`](./trans_ubic_hh_se.md) | 0 | 2016-07-11 |
+| [`trans_ubic_hh_stock`](./trans_ubic_hh_stock.md) | 683 | 2023-08-21 |
+| [`trans_ubic_tarima`](./trans_ubic_tarima.md) | 0 | 2016-07-20 |
+| [`transacciones_log`](./transacciones_log.md) | 0 | 2019-09-02 |
+| [`turno`](./turno.md) | 6 | 2016-09-16 |
+| [`ubicaciones_por_regla`](./ubicaciones_por_regla.md) | 1.102 | 2018-01-19 |
+| [`unidad_medida`](./unidad_medida.md) | 1 | 2024-02-01 |
+| [`unidad_medida_conversion`](./unidad_medida_conversion.md) | 0 | 2017-11-16 |
+| [`us_solic_det`](./us_solic_det.md) | 0 | 2020-10-07 |
+| [`us_solic_enc`](./us_solic_enc.md) | 0 | 2020-10-07 |
+| [`usuario`](./usuario.md) | 12 | 2025-07-14 |
+| [`usuario_bodega`](./usuario_bodega.md) | 63 | 2016-04-25 |
+| [`valores_fijos_reporte_mercancias`](./valores_fijos_reporte_mercancias.md) | 3 | 2022-10-25 |
+| [`version_wms_hh`](./version_wms_hh.md) | 48 | 2021-08-26 |
+| [`zona_picking`](./zona_picking.md) | 0 | 2022-05-26 |
+| [`zona_picking_tramo`](./zona_picking_tramo.md) | 0 | 2022-05-26 |
 
-## Top 30 por filas (de las 345 totales)
-
-1. `trans_re_det_lote_num` — 180.181 filas
-2. `trans_movimientos` — 81.641 filas
-3. `log_error_wms` — 66.339 filas
-4. `t_producto_bodega` — 42.357 filas
-5. `trans_picking_ubic` — 26.567 filas
-6. `i_nav_transacciones_out` — 24.193 filas
-7. `trans_pe_det_log_reserva` — 22.576 filas
-8. `trans_picking_ubic_stock` — 20.437 filas
-9. `trans_despacho_det` — 19.799 filas
-10. `stock_hist` — 19.225 filas
-11. `i_nav_ped_traslado_det` — 14.953 filas
-12. `trans_pe_det` — 14.819 filas
-13. `trans_picking_det` — 14.585 filas
-14. `bodega_ubicacion` — 9.510 filas
-15. `producto_presentacion_bk` — 8.630 filas
-16. `dh_ocupacion_bodega` — 8.144 filas
-17. `i_nav_ejecucion_enc` — 7.762 filas
-18. `i_nav_ejecucion_res` — 7.760 filas
-19. `trans_picking_op` — 5.895 filas
-20. `stock` — 4.703 filas
-21. `proveedor_bodega` — 4.594 filas
-22. `trans_inv_stock` — 4.540 filas
-23. `trans_re_det` — 4.394 filas
-24. `stock_rec` — 4.394 filas
-25. `i_nav_ped_traslado_enc` — 4.237 filas
-26. `trans_pe_enc` — 4.202 filas
-27. `trans_despacho_enc` — 4.032 filas
-28. `i_nav_ejecucion_det_error` — 4.021 filas
-29. `marcaje` — 3.701 filas
-30. `stock_20250624` — 3.541 filas
-
-## Familias detectadas (heurística por prefijo/sufijo)
-
-| Familia | Patrón | Ejemplos |
-|---|---|---|
-| Stock | `stock`, `stock_*`, `stock_YYYYMMDD` | stock, stock_hist, stock_jornada, stock_picking, stock_20250624 |
-| Transacciones | `trans_*` | trans_oc_*, trans_re_*, trans_despacho_*, trans_ajuste_*, trans_picking_*, trans_movimientos |
-| Lotes (dedicadas) | mezcla | trans_re_det_lote_num, trans_oc_det_lote, trans_despacho_det_lote_num, cliente_lotes, i_nav_*_lote |
-| Maestros | sin prefijo | producto, cliente, bodega, ajuste_tipo, ajuste_motivo |
-| Interfaces NAV | `i_nav_*` | i_nav_transacciones_out, i_nav_ped_traslado_*, i_nav_ejecucion_* |
-| Logs | `log_*` | log_error_wms, log_importacion_excel |
-| Diferencias | `diferencias_*`, `dh_*` | diferencias_movimientos, dh_ocupacion_bodega |
-| Producto extras | `producto_*` | producto_presentacion_bk, producto_pallet, producto_pallet_rec |
-| Backups/snapshots | `*_bk`, `*_YYYYMMDD` | producto_presentacion_bk, stock_20250624 |
-| Legacy con prefijo | `t_*` | t_producto_bodega (42k filas, 2019) |
-
-> Familias completas en `parametrizacion/README` cuando se complete extracción full.

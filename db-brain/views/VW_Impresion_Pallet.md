@@ -1,0 +1,111 @@
+---
+id: db-brain-view-vw-impresion-pallet
+type: db-view
+title: dbo.VW_Impresion_Pallet
+schema: dbo
+name: VW_Impresion_Pallet
+kind: view
+modify_date: 2018-03-12
+extracted_at: 2026-04-27T01:29:47.537Z
+extracted_from: TOMWMS_KILLIOS_PRD
+---
+# `dbo.VW_Impresion_Pallet`
+
+| Atributo | Valor |
+|---|---|
+| Tipo | VIEW |
+| Schema modify_date | 2018-03-12 |
+| Columnas | 29 |
+
+## Columnas
+
+| # | Nombre | Tipo | Null | Ident |
+|---:|---|---|:-:|:-:|
+| 1 | `IdPallet` | `int` | ✓ |  |
+| 2 | `Rec_No` | `int` | ✓ |  |
+| 3 | `Empresa` | `nvarchar(50)` | ✓ |  |
+| 4 | `Bodega` | `nvarchar(50)` | ✓ |  |
+| 5 | `Propietario_Nombre` | `nvarchar(100)` | ✓ |  |
+| 6 | `IdProveedorBodega` | `int` | ✓ |  |
+| 7 | `Proveedor_Nombre` | `nvarchar(50)` | ✓ |  |
+| 8 | `Proveedor_Tel` | `nvarchar(50)` | ✓ |  |
+| 9 | `Proveedor_Codigo` | `nvarchar(50)` | ✓ |  |
+| 10 | `Proveedor_Dir` | `nvarchar(250)` | ✓ |  |
+| 11 | `Producto_Codigo` | `nvarchar(50)` | ✓ |  |
+| 12 | `Impreso` | `bit` | ✓ |  |
+| 13 | `Producto_Nombre_Largo` | `nvarchar(100)` | ✓ |  |
+| 14 | `Producto_UM` | `nvarchar(50)` | ✓ |  |
+| 15 | `Producto_Presentacion` | `nvarchar(50)` | ✓ |  |
+| 16 | `Producto_Cantidad` | `float` | ✓ |  |
+| 17 | `Producto_Vence` | `datetime` | ✓ |  |
+| 18 | `Producto_Lote` | `nvarchar(50)` | ✓ |  |
+| 19 | `Producto_Estado` | `nvarchar(50)` | ✓ |  |
+| 20 | `LP` | `nvarchar(35)` | ✓ |  |
+| 21 | `PC` | `nvarchar(25)` | ✓ |  |
+| 22 | `Ref_PC` | `nvarchar(50)` | ✓ |  |
+| 23 | `Fecha_PC` | `datetime` | ✓ |  |
+| 24 | `Observacion` | `text` | ✓ |  |
+| 25 | `IdOperadorBodega` | `int` | ✓ |  |
+| 26 | `user_agr` | `nvarchar(25)` | ✓ |  |
+| 27 | `Imprimio` | `nvarchar(201)` | ✓ |  |
+| 28 | `IdEmpresa` | `int` | ✓ |  |
+| 29 | `IdPropietario` | `int` | ✓ |  |
+
+## Consume
+
+- `bodega`
+- `empresa`
+- `producto`
+- `producto_bodega`
+- `producto_pallet`
+- `producto_presentacion`
+- `propietario_bodega`
+- `propietarios`
+- `proveedor`
+- `proveedor_bodega`
+- `trans_oc_enc`
+- `trans_re_det`
+- `trans_re_oc`
+- `unidad_medida`
+- `usuario`
+
+## Definition
+
+> Sensible — no exponer fuera del brain ni a clientes externos.
+
+```sql
+CREATE VIEW dbo.VW_Impresion_Pallet
+AS
+SELECT     dbo.producto_pallet.IdPallet, dbo.producto_pallet.IdRecepcionEnc AS Rec_No, dbo.empresa.nombre AS Empresa, dbo.bodega.nombre AS Bodega, 
+                      dbo.propietarios.nombre_comercial AS Propietario_Nombre, dbo.trans_oc_enc.IdProveedorBodega, dbo.proveedor.nombre AS Proveedor_Nombre, 
+                      dbo.proveedor.telefono AS Proveedor_Tel, dbo.proveedor.codigo AS Proveedor_Codigo, dbo.proveedor.direccion AS Proveedor_Dir, 
+                      dbo.producto.codigo AS Producto_Codigo, dbo.producto_pallet.Impreso, dbo.producto.nombre AS Producto_Nombre_Largo, 
+                      dbo.unidad_medida.Nombre AS Producto_UM, dbo.producto_presentacion.nombre AS Producto_Presentacion, 
+                      dbo.trans_re_det.cantidad_recibida AS Producto_Cantidad, dbo.trans_re_det.fecha_vence AS Producto_Vence, dbo.trans_re_det.lote AS Producto_Lote, 
+                      dbo.trans_re_det.nombre_producto_estado AS Producto_Estado, dbo.producto_pallet.codigo_barra AS LP, dbo.trans_oc_enc.No_Documento AS PC, 
+                      dbo.trans_oc_enc.Referencia AS Ref_PC, dbo.trans_oc_enc.Fecha_Recepcion AS Fecha_PC, dbo.trans_oc_enc.Observacion, dbo.trans_re_det.IdOperadorBodega, 
+                      dbo.trans_re_det.user_agr, dbo.usuario.nombres + ' ' + dbo.usuario.apellidos AS Imprimio, dbo.empresa.IdEmpresa, dbo.propietario_bodega.IdPropietario
+FROM         dbo.proveedor_bodega INNER JOIN
+                      dbo.trans_oc_enc ON dbo.proveedor_bodega.IdAsignacion = dbo.trans_oc_enc.IdProveedorBodega INNER JOIN
+                      dbo.producto_pallet INNER JOIN
+                      dbo.propietario_bodega ON dbo.producto_pallet.IdPropietarioBodega = dbo.propietario_bodega.IdPropietarioBodega INNER JOIN
+                      dbo.propietarios ON dbo.propietario_bodega.IdPropietario = dbo.propietarios.IdPropietario INNER JOIN
+                      dbo.bodega ON dbo.propietario_bodega.IdBodega = dbo.bodega.IdBodega INNER JOIN
+                      dbo.empresa ON dbo.propietarios.IdEmpresa = dbo.empresa.IdEmpresa AND dbo.bodega.IdEmpresa = dbo.empresa.IdEmpresa ON 
+                      dbo.proveedor_bodega.IdBodega = dbo.bodega.IdBodega INNER JOIN
+                      dbo.trans_re_det ON dbo.producto_pallet.IdRecepcionDet = dbo.trans_re_det.IdRecepcionDet AND 
+                      dbo.producto_pallet.IdRecepcionEnc = dbo.trans_re_det.IdRecepcionEnc INNER JOIN
+                      dbo.producto_bodega ON dbo.producto_pallet.IdProductoBodega = dbo.producto_bodega.IdProductoBodega AND 
+                      dbo.bodega.IdBodega = dbo.producto_bodega.IdBodega AND dbo.trans_re_det.IdProductoBodega = dbo.producto_bodega.IdProductoBodega INNER JOIN
+                      dbo.producto ON dbo.propietarios.IdPropietario = dbo.producto.IdPropietario AND dbo.producto_bodega.IdProducto = dbo.producto.IdProducto INNER JOIN
+                      dbo.proveedor ON dbo.proveedor_bodega.IdProveedor = dbo.proveedor.IdProveedor AND dbo.propietarios.IdPropietario = dbo.proveedor.IdPropietario AND 
+                      dbo.empresa.IdEmpresa = dbo.proveedor.IdEmpresa INNER JOIN
+                      dbo.unidad_medida ON dbo.propietarios.IdPropietario = dbo.unidad_medida.IdPropietario AND 
+                      dbo.trans_re_det.IdUnidadMedida = dbo.unidad_medida.IdUnidadMedida AND dbo.producto.IdUnidadMedidaBasica = dbo.unidad_medida.IdUnidadMedida INNER JOIN
+                      dbo.usuario ON dbo.trans_re_det.user_agr = dbo.usuario.IdUsuario LEFT OUTER JOIN
+                      dbo.producto_presentacion ON dbo.producto_pallet.IdPresentacion = dbo.producto_presentacion.IdPresentacion AND 
+                      dbo.producto.IdProducto = dbo.producto_presentacion.IdProducto RIGHT OUTER JOIN
+                      dbo.trans_re_oc ON dbo.trans_oc_enc.IdOrdenCompraEnc = dbo.trans_re_oc.IdOrdenCompraEnc AND 
+                      dbo.producto_pallet.IdRecepcionEnc = dbo.trans_re_oc.IdRecepcionEnc
+WHERE     (NOT (dbo.producto_pallet.IdPallet IS NULL)) AND (dbo.producto_pallet.Impreso = 0)
+```

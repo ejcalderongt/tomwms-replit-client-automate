@@ -1,4 +1,5 @@
-2026-04-27T01:21:57.791Z
+2026-04-27T01:29:47.537Z
 Database: TOMWMS_KILLIOS_PRD
-Server: 52.41.114.122,1437
-Extractor: ad-hoc Node script (mssql driver) — pre-integración con brain/sql-catalog/extract_sql_catalog.py
+Server: 52.41.114.122:1437
+User: sa
+Extractor: brain/sql-catalog/extract_for_db_brain.mjs v1.0
