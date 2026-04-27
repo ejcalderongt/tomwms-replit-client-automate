@@ -3,10 +3,23 @@
 // Versionado en brain/sql-catalog/ del branch wms-brain.
 //
 // Uso:
+//   # solo markdown (db-brain):
 //   node extract_for_db_brain.mjs --out ./db-brain
 //
+//   # markdown + JSON (sin upload):
+//   node extract_for_db_brain.mjs --out ./db-brain --json ./killios.json
+//
+//   # markdown + upload directo a Brain API (sin guardar JSON):
+//   node extract_for_db_brain.mjs --out ./db-brain \
+//     --upload https://<replit>.replit.dev/api/brain/import/sql-catalog
+//
+//   # solo upload (sin generar markdown):
+//   node extract_for_db_brain.mjs --no-markdown \
+//     --upload https://<replit>.replit.dev/api/brain/import/sql-catalog
+//
 // Variables de entorno requeridas:
-//   WMS_KILLIOS_DB_PASSWORD
+//   WMS_KILLIOS_DB_PASSWORD       (siempre)
+//   BRAIN_IMPORT_TOKEN            (solo si --upload)
 //
 // Variables opcionales (con defaults):
 //   WMS_KILLIOS_DB_HOST=52.41.114.122
@@ -30,8 +43,23 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
 const args = process.argv.slice(2);
-const outIdx = args.indexOf("--out");
-const OUT = outIdx >= 0 ? args[outIdx + 1] : "./db-brain";
+function arg(name) {
+  const i = args.indexOf(name);
+  return i >= 0 ? args[i + 1] : null;
+}
+function flag(name) { return args.includes(name); }
+
+const OUT = arg("--out") || "./db-brain";
+const JSON_OUT = arg("--json");
+const UPLOAD_URL = arg("--upload");
+const NO_MARKDOWN = flag("--no-markdown");
+
+if (NO_MARKDOWN && !JSON_OUT && !UPLOAD_URL) {
+  console.error("ERROR: --no-markdown requires --json or --upload");
+  process.exit(2);
+}
+
+const EXTRACTOR_VERSION = "1.1.0";
 
 const HOST = process.env.WMS_KILLIOS_DB_HOST || "52.41.114.122";
 const PORT = parseInt(process.env.WMS_KILLIOS_DB_PORT || "1437", 10);
@@ -208,6 +236,82 @@ function dedupSorted(arr, keyFn) {
   }
   return out.sort((a, b) => keyFn(a).localeCompare(keyFn(b)));
 }
+
+// === Construir payload JSON compatible con Brain API
+//     (POST /api/brain/import/sql-catalog) ===
+function kindFromType(t) {
+  // Mapping canónico Brain API (extract.sql del extractor python).
+  switch ((t || "").trim().toUpperCase()) {
+    case "U":  return "sql-table";
+    case "V":  return "sql-view";
+    case "P":  return "sql-sp";
+    case "FN": return "sql-fn";
+    case "IF": return "sql-fn";
+    case "TF": return "sql-fn";
+    case "TR": return "sql-trigger";
+    default:   return "sql-other";
+  }
+}
+const jsonObjects = objects.map(o => {
+  const def = moduleByObj.get(o.object_id);
+  // Shape EXACTA del extractor python canónico:
+  // {schema, name, kind, object_id, create_date, modify_date, definition_length, row_count}
+  return {
+    schema: o.schema_name,
+    name: o.name,
+    kind: kindFromType(o.type),
+    object_id: o.object_id,
+    create_date: o.create_date,
+    modify_date: o.modify_date,
+    definition_length: def ? def.length : null,
+    row_count: o.row_count !== null && o.row_count !== undefined
+      ? Number(o.row_count) : null,
+  };
+});
+
+const objsByName = new Map();
+for (const o of objects) objsByName.set(o.name.toLowerCase(), o);
+const jsonDeps = allDeps.map(d => {
+  const target = objsByName.get((d.ref_name || "").toLowerCase());
+  return {
+    from_schema: "dbo",
+    from_name: d.from_name,
+    to_schema: target ? target.schema_name : null,
+    to_name: d.ref_name,
+    to_kind_hint: target ? kindFromType(target.type) : null,
+    is_ambiguous: !target,
+  };
+});
+
+const jsonModules = allModules.map(m => {
+  const o = objects.find(x => x.object_id === m.object_id);
+  return {
+    schema: o ? o.schema_name : "dbo",
+    name: o ? o.name : `obj_${m.object_id}`,
+    definition: m.definition || "",
+  };
+});
+
+const payload = {
+  database: NAME,
+  server: `${HOST},${PORT}`,
+  extracted_at: NOW,
+  extractor_version: EXTRACTOR_VERSION,
+  objects: jsonObjects,
+  dependencies: jsonDeps,
+  modules: jsonModules,
+};
+
+if (JSON_OUT) {
+  mkdirSync(join(JSON_OUT, ".."), { recursive: true });
+  writeFileSync(JSON_OUT, JSON.stringify(payload, null, 2), "utf8");
+  const sizeMB = (Buffer.byteLength(JSON.stringify(payload)) / 1024 / 1024).toFixed(2);
+  console.log(`\nWrote JSON payload: ${JSON_OUT} (${sizeMB} MB)`);
+}
+
+if (NO_MARKDOWN) {
+  console.log("\nSkipping markdown generation (--no-markdown).");
+} else {
 
 // === Generar ===
 console.log("\nGenerating markdown...");
@@ -435,4 +539,28 @@ statsMd += `- Total check constraints: ${allChecks.length}.\n`;
 
 writeFileSync(join(OUT, "_meta/stats.md"), statsMd, "utf8");
 
-console.log(`\nDone. Output in ${OUT}`);
+console.log(`\nMarkdown done. Output in ${OUT}`);
+
+} // end if (!NO_MARKDOWN)
+
+// === Upload a Brain API ===
+if (UPLOAD_URL) {
+  const token = process.env.BRAIN_IMPORT_TOKEN;
+  if (!token) {
+    console.warn("WARNING: BRAIN_IMPORT_TOKEN no seteado; el upload se rechazará 401.");
+  }
+  console.log(`\nUploading to ${UPLOAD_URL} ...`);
+  const body = JSON.stringify(payload);
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["X-Brain-Token"] = token;
+  const resp = await fetch(UPLOAD_URL, { method: "POST", headers, body });
+  const text = await resp.text();
+  console.log(`HTTP ${resp.status}`);
+  console.log(text.slice(0, 2000));
+  if (!resp.ok) {
+    console.error(`Upload failed: HTTP ${resp.status}`);
+    process.exit(1);
+  }
+}
+
+console.log("\nDone.");
