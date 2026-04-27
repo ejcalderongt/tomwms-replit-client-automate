@@ -1,0 +1,28 @@
+{
+  "name": "doble-despacho",
+  "version": 1,
+  "protocolVersion": 1,
+  "description": "Reproduce el caso real de un pedido despachado en dos viajes parciales (ej. caso 2328 K7). Util para reproducir bugs de cantidad_pendiente, P-16b, y desincronizacion outbox.",
+  "appliesTo": {
+    "environment": "LOCAL_DEV",
+    "deniedEnvironments": ["PRD", "QAS"],
+    "tablesRequired": [
+      "pedido_enc", "pedido_det",
+      "despacho_enc", "despacho_det",
+      "i_nav_transacciones_out"
+    ]
+  },
+  "files": {
+    "setup": "setup.sql",
+    "expectations": "expectations.sql",
+    "teardown": "teardown.sql"
+  },
+  "expectedSetupDurationSeconds": 5,
+  "tags": ["pedido", "despacho", "parcial", "P-16b", "regression"],
+  "safety": {
+    "writes": true,
+    "requiresConfirm": true,
+    "snapshotBefore": true,
+    "denyOnPrd": true
+  }
+}
