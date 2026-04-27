@@ -1,91 +1,122 @@
 # Cliente KILLIOS
 
-> Centro de abastecimiento de alimentos en Amatitlan, sucursal en Z17, ERP SAP Business One
+> Centro de abastecimiento de alimentos en Amatitlan, sucursal en Z17. ERP SAP Business One. **Modo estricto de reserva**.
 
-## Identificación
+## Identificacion
 
-- **Database (server compartido EC2 `52.41.114.122,1437`)**: `TOMWMS_KILLIOS_PRD`
-- **ERP**: SAP Business One (DI-API para lectura/escritura de documentos)
-- **Rubro**: Alimentos (perecederos)
-- **Bodegas en producción**: 6
+- **Database**: `TOMWMS_KILLIOS_PRD` (productiva, server EC2 `52.41.114.122,1437`)
+- **ERP**: SAP Business One via DI-API
+- **Rubro**: Alimentos perecederos
+- **Bodegas operativas**: 6 + 1 virtual de facturacion
 
 ## Bodegas
 
-| idBodega | Código | Nombre |
-|---|---|---|
-| 1 | BOD1 | Bodega Principal |
-| 2 | PRTOK | Bodega de Prorateo Kilio |
-| 3 | PRTO | Bodega de Prorateo Garesa |
-| 4 | BOD5 | Bodega Amatitlan |
-| 5 | PRTK17 | Bodega de Prorateo Kilio Z17 |
-| 6 | PRT17 | Bodega de Prorateo Garesa Z17 |
+| idBodega | Codigo | Nombre | Tipo |
+|---|---|---|---|
+| 1 | BOD1 | Bodega Principal | operativa (Amatitlan) |
+| 2 | PRTOK | Bodega de Prorateo Kilio | prorrateo |
+| 3 | PRTO | Bodega de Prorateo Garesa | prorrateo |
+| 4 | BOD5 | Bodega Amatitlan | operativa (sucursal) |
+| 5 | PRTK17 | Bodega de Prorateo Kilio Z17 | prorrateo |
+| 6 | PRT17 | Bodega de Prorateo Garesa Z17 | prorrateo |
+| (virtual) | **BOD7** | (no figura en SQL) | **facturacion** |
 
-## Configuración aprendida (i_nav_config_enc)
+**BOD7** es bodega de facturacion virtual: aparece como `bodega_facturacion='BOD7'` en `i_nav_config_enc` para las 6 bodegas operativas, **pero no esta en la tabla `bodega`**. Hipotesis confirmada: desfase data Amazon vs SQL — en otras vistas/sistemas BOD7 sí existe. Se trata como bodega de facturacion real en el modelo del bridge.
 
-Aprendida 2026-04-27T14:56:31.611Z desde `TOMWMS_KILLIOS_PRD`. Bodega de referencia: id=1 (BOD1). Para diferencias intra-cliente, ver YAML.
+## Configuracion aprendida (i_nav_config_enc)
+
+Las 6 bodegas operativas tienen flags identicos salvo `bodega_prorrateo`/`bodega_prorrateo1`. Bodega de referencia: id=1 (BOD1).
 
 | Flag | Valor | Significado |
 |---|---|---|
-| `control_vencimiento` | `true` | Activa lógica FEFO/vencimiento y control de fechas de caducidad |
-| `control_lote` | `true` | Activa control de lote (trazabilidad por lote) |
-| `control_peso` | `true` | Activa control de peso (productos a granel/peso variable) |
-| `IdTipoRotacion` | `3` | 1=FIFO, 2=LIFO, 3=FEFO |
-| `rechazar_pedido_incompleto` | `1` | 0=permisivo (procesa parcial), 1=estricto (rechaza si falta) - SEMANTICA INVERTIDA respecto al enum VB tRechazarPedidoIncompleto.No/Si |
-| `despachar_existencia_parcial` | `1` | 0=no, 1=si |
-| `convertir_decimales_a_umbas` | `1` | Convierte fracciones de presentación a unidades base. Critico para Killios+SAP (cajas + UDS decimales) |
-| `explosion_automatica` | `true` | Permite explotar cajas a UDS automáticamente al reservar |
-| `implosion_automatica` | `true` | Permite agrupar UDS en caja automáticamente |
-| `explosion_automatica_desde_ubicacion_picking` | `true` | Si true, solo cajas en picking son candidatas a explotar (no almacenamiento) |
-| `explosion_automatica_nivel_max` | `-1` | Profundidad máxima de explosión recursiva. -1 = sin límite |
-| `explosio_automatica_nivel_max` | `1` | TYPO HISTORICO del schema. Coexiste con la columna "explosion_". Definir fuente de verdad en ADR |
-| `reservar_umbas_primero` | `false` | Cuando vencimiento empata, prefiere UDS sueltas antes de romper caja |
-| `conservar_zona_picking_clavaud` | `true` | Mantiene asignación zona picking de Clavaud (cliente legacy) |
-| `excluir_ubicaciones_reabasto` | `false` | Excluye ubicaciones marcadas como reabasto al reservar |
-| `considerar_paletizado_en_reabasto` | `false` | Considera paletizado al generar tareas de reabasto |
-| `considerar_disponibilidad_ubicacion_reabasto` | `false` | Verifica disponibilidad antes de planificar reabasto |
-| `genera_lp` | `true` | Genera License Plate (pallet/tarima ID) en recepción |
-| `interface_sap` | `true` | Activa integración con SAP B1 vía DI-API |
-| `sap_control_draft_ajustes` | `false` | Crea ajustes SAP como draft (revisión manual antes de postear) |
-| `sap_control_draft_traslados` | `false` | Crea traslados SAP como draft |
-| `inferir_bonificacion_pedido_sap` | `false` | Detecta líneas bonificadas (UnitPrice=0) en pedidos SAP |
-| `rechazar_bonificacion_incompleta` | `false` | Rechaza pedido si la bonificación no se puede cumplir completa |
-| `bodega_prorrateo` | `"PRT17"` | Bodega contraparte para prorrateo de costos (pares cruzados Z17 ↔ Amatitlan) |
-| `bodega_prorrateo1` | `"PRTK17"` | Segunda bodega de prorrateo (cuando hay más de un par) |
-| `bodega_facturacion` | `"BOD7"` | Bodega virtual donde se asienta la facturación (no operativa). Killios usa BOD7 |
-| `bodega_faltante` | `null` | Bodega contable destino de faltantes/mermas |
-| `equiparar_cliente_con_propietario_en_doc_salida` | `false` | En 3PL, el cliente del documento es el propietario del producto |
-| `crear_recepcion_de_compra_nav` | `false` | Crea recepción NAV automaticamente al recibir orden de compra |
-| `crear_recepcion_de_transferencia_nav` | `false` | Crea recepción NAV al recibir transferencia |
-| `push_ingreso_nav_desde_hh` | `false` | Envia ingresos a NAV desde el handheld al cerrar |
-| `generar_pedido_ingreso_bodega_destino` | `true` | Auto-genera pedido de ingreso en bodega destino al hacer traslado |
-| `generar_recepcion_auto_bodega_destino` | `true` | Auto-genera recepción al recibir el traslado |
-| `dias_vida_defecto_perecederos` | `0` | Dias por defecto a sumar como vencimiento si no viene en el documento |
-| `IdProductoEstado` | `1` | Estado por defecto del producto al ingresar (1=disponible, 0=sin estado) |
+| `control_vencimiento` | true | FEFO + control caducidad |
+| `control_lote` | true | Trazabilidad por lote |
+| `control_peso` | true | Productos peso-variable |
+| `IdTipoRotacion` | 3 | FEFO |
+| **`rechazar_pedido_incompleto`** | **1** | **ESTRICTO**: WMS reserva el TOTAL o aborta y avisa al ERP. NUNCA reserva parcial. |
+| `despachar_existencia_parcial` | 1 | activado |
+| **`convertir_decimales_a_umbas`** | **1** | **CRITICO**: convierte cajas decimales SAP a UDS internas |
+| `explosion_automatica` | true | rompe cajas a UDS |
+| `implosion_automatica` | true | agrupa UDS en cajas |
+| `explosion_automatica_desde_ubicacion_picking` | true | solo cajas en picking explotan |
+| `explosion_automatica_nivel_max` | -1 | sin limite (fuente de verdad) |
+| `explosio_automatica_nivel_max` | 1 | DEPRECADA (typo historico, ALTER mal hecho) |
+| `reservar_umbas_primero` | false | siempre prefiere romper caja |
+| `conservar_zona_picking_clavaud` | true | zona Clavaud preservada |
+| `excluir_ubicaciones_reabasto` | false | |
+| `considerar_paletizado_en_reabasto` | false | (Killios no usa modulo reabasto) |
+| `considerar_disponibilidad_ubicacion_reabasto` | false | |
+| `genera_lp` | true | License Plate en recepcion |
+| **`interface_sap`** | **true** | DI-API SAP B1 activo |
+| `sap_control_draft_ajustes` | false | postea directo |
+| `sap_control_draft_traslados` | false | postea directo |
+| `inferir_bonificacion_pedido_sap` | false | NO infiere |
+| `rechazar_bonificacion_incompleta` | false | |
+| **`bodega_prorrateo`** | varia (PRT17/PRTO/etc.) | par cruzado por bodega |
+| **`bodega_prorrateo1`** | varia (PRTK17/PRTOK/etc.) | segundo par |
+| **`bodega_facturacion`** | **"BOD7"** | virtual no operativa |
+| `bodega_faltante` | null | |
+| `equiparar_cliente_con_propietario_en_doc_salida` | false | (no es 3PL) |
+| `crear_recepcion_de_compra_nav` | false | Killios usa SAP, no NAV |
+| `crear_recepcion_de_transferencia_nav` | false | |
+| `push_ingreso_nav_desde_hh` | false | |
+| `generar_pedido_ingreso_bodega_destino` | true | auto-pedido al trasladar |
+| `generar_recepcion_auto_bodega_destino` | true | auto-recepcion en destino |
+| `dias_vida_defecto_perecederos` | 0 | sin defecto (toma del doc) |
+| `IdProductoEstado` | 1 | disponible por defecto |
 
-## Modelo de operación
+### Pares de prorrateo
 
-- **Centro de abastecimiento principal**: bodega `BOD1` (Bodega Principal, en Amatitlan).
-- **Sucursal de despacho a clientes finales**: bodega `BOD5` (Amatitlan, sucursal) y bodegas Z17.
-- **Bodegas de prorrateo** (donde ingresa el inventario por compras internacionales antes de costeo):
-  - `PRTOK` (Bodega de Prorateo Kilio, principal) → bodega de prorrateo de `BOD1`.
-  - `PRTO` (Bodega de Prorateo Garesa) → bodega de prorrateo cruzado de la otra entidad legal.
-  - `PRTK17` y `PRT17` → equivalentes pero para la sucursal Z17.
-- Una vez costeado en SAP, se ejecuta un traslado de prorrateo → bodega general.
-- Desde Z17 se abastecen pedidos a clientes finales y/o transferencias a las bodegas operativas.
-- **Bodega de facturación virtual**: `BOD7`, no operativa, solo asiento contable.
+| Bodega | bodega_prorrateo | bodega_prorrateo1 |
+|---|---|---|
+| BOD1 | PRT17 | PRTK17 |
+| PRTOK | PRTO | PRTOK |
+| (otras bodegas) | (ver killios.yaml) | |
 
-## Particularidades técnicas
+## Tipos de pedido (trans_pe_tipo)
 
-- **Procesa pedidos en cajas Y unidades decimales** simultáneamente. Reto principal: SAP envia cantidades fraccionarias y el WMS las convierte a unidades base via flag `convertir_decimales_a_umbas=1`.
-- **Integración SAP B1 via DI-API** (`interface_sap=true`). NO usa modo draft (`sap_control_draft_*=false` → postea directo).
-- **Bonificaciones SAP**: NO se infieren ni se rechazan automáticamente (`inferir_bonificacion_pedido_sap=false`).
-- **Explosión automática sin límite** (`explosion_automatica_nivel_max=-1`): puede romper cajas recursivamente hasta UDS sueltas.
-- **NO usa módulo de reabastecimiento de picking**: solo tiene la tabla `trans_reabastecimiento_log` como auditoría; las tablas `zona_picking`, `producto_rellenado` están presentes pero sin uso operativo.
-- **Producto 47022 NO existe en Killios PRD** — el hardcode del legacy era de otro ambiente. El bridge debe parametrizar el SKU.
+| Id | Nombre | ReservaStock |
+|---|---|---|
+| 1 | PE0001 | SI |
+| 3 | PE0003 | SI |
+| 4 | PE0004 | NO |
+| 6 | TRAS_WMS | NO (traslado interno) |
+| 9 | PDV_NAV | SI |
+| 12 | DEVPROV | SI |
 
-## Implicancias para el bridge de tests
+`PE0004` y `TRAS_WMS` **no ejecutan el motor de reserva**. Son utiles para escenarios de "no reserva".
 
-- Para escenarios de reserva, **todas las bodegas Killios son equivalentes** salvo en `bodega_prorrateo`/`bodega_prorrateo1`. Una sola corrida cubre las 6.
-- Para escenarios SAP B1 (postear ajustes, traslados, recepciones de compra) hay que usar Killios. NAV-only escenarios van a BYB.
-- El escenario RES-021 (mismo vencimiento → prefiere UDS sueltas) **NO se cumple en Killios**: `reservar_umbas_primero=false` significa que prefiere romper caja. Revisar expected.
-- Validar conversión cajas↔UDS con factor de presentación SAP (esto requiere joins con `i_nav_producto_presentacion`).
+## Modelo de operacion
+
+- **Centro de abastecimiento principal**: `BOD1` (Amatitlan).
+- **Sucursal de despacho**: `BOD5` (Amatitlan sucursal) y bodegas Z17 (PRTK17/PRT17).
+- **Bodegas de prorrateo**: `PRTOK`/`PRTO` (Amatitlan, dos entidades legales Kilio/Garesa) y `PRTK17`/`PRT17` (Z17). Ahi ingresa el inventario de compra internacional antes del costeo SAP. Tras costeo se ejecuta traslado al operativo.
+- **Bodega de facturacion virtual**: `BOD7`, no operativa.
+
+## Particularidades tecnicas
+
+- **Modo estricto**: `rechazar_pedido_incompleto=1`. Si el motor no puede reservar el TOTAL, aborta y avisa al ERP. Sin reservas parciales.
+- **Procesa cajas + decimales SAP** simultaneamente con `convertir_decimales_a_umbas=1`. Es el reto principal del cliente.
+- **Integracion SAP B1 via DI-API**, NO modo draft.
+- **Bonificaciones SAP**: NO se infieren ni se rechazan automaticamente.
+- **Explosion automatica sin limite** (nivel_max=-1).
+- **NO usa modulo de reabastecimiento de picking**: solo `trans_reabastecimiento_log` como auditoria.
+- **Producto 47022** del legacy NO existe en Killios PRD. Parametrizar el SKU por cliente (no hardcoded).
+
+## Comportamiento observado en reserva-WMS legacy
+
+`trans_pe_det_log_reserva` registra estos casos en Killios PRD (top):
+- CASO_#24 — 18,587 registros (camino feliz dominante)
+- CASO_#8 — 1,675
+- CASO_#21 — 1,065
+- CASO_#12 — 276, CASO_#20 — 267, CASO_#23 — 125, CASO_#22 — 44, CASO_#9 — 1
+
+Casos #1..7, #10, #11, #13..19, #25..27 **nunca se observaron en prod**. Ver `reference/casos-reserva-observados.md` y `adr/ADR-010`.
+
+## Implicancias para el bridge
+
+- Los escenarios contra Killios deben **simular cantidades fraccionarias** del lado del input para ejercitar la conversion decimal.
+- El expected debe distinguir "esperado en reserva-webapi" vs "observado en reserva-WMS legacy" (ver ADR-010).
+- Para escenarios SAP B1 (postear ajustes, traslados, recepciones de compra) usar Killios. Escenarios NAV-only van a BYB.
+- Las 6 bodegas operativas son funcionalmente equivalentes salvo `bodega_prorrateo`/`bodega_prorrateo1`. Una corrida cubre las 6.
+- Para escenarios sin reserva, usar `trans_pe_tipo` con `PE0004` o `TRAS_WMS`.
