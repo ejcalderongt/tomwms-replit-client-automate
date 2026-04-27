@@ -1,0 +1,3850 @@
+{
+  "generatedAt": "2026-04-27T05:31:32.435Z",
+  "totalActivities": 60,
+  "activitiesWithWmCalls": 49,
+  "activities": [
+    {
+      "className": "frm_recepcion_datos",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+      "extends": "PBase",
+      "fileLines": 11482,
+      "layoutRefs": [
+        "activity_frm_recepcion_datos",
+        "simple_spinner_item",
+        "frm_parametros1",
+        "frm_parametros_p",
+        "simple_spinner_dropdown_item",
+        "impresion_cantidad",
+        "frm_fecha_vencimiento"
+      ],
+      "primaryLayout": "activity_frm_recepcion_datos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_cambio_ubicacion_ciega",
+        "Mainmenu",
+        "frm_imagenes"
+      ],
+      "methodCount": 177,
+      "wmCalls": [
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 8466,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "lineNum": 8471,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 8477,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Codigos_Barra_By_IdProducto",
+          "lineNum": 8483,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_ProductoParametros_By_IdProducto_HH",
+          "lineNum": 8488,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 8494,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Nuevo_Correlativo_LicensePlate",
+          "lineNum": 8498,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Licenses_Plates_By_IdRecepcionEnc",
+          "lineNum": 8504,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "lineNum": 8509,
+          "type": "soap"
+        },
+        {
+          "wm": "MaxIDStockSeRec",
+          "lineNum": 8516,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+          "lineNum": 8520,
+          "type": "soap"
+        },
+        {
+          "wm": "MaxIDStockRec",
+          "lineNum": 8525,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+          "lineNum": 8529,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "lineNum": 8533,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "lineNum": 8537,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Nuevo_Correlativo_LicensePlate_S",
+          "lineNum": 8544,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion",
+          "lineNum": 8556,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion_Sin_Presentacion",
+          "lineNum": 8638,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion_Caja_Master",
+          "lineNum": 8654,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion",
+          "lineNum": 8675,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion_S",
+          "lineNum": 8695,
+          "type": "soap"
+        },
+        {
+          "wm": "GuardarRecepcionModif",
+          "lineNum": 8719,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "lineNum": 8731,
+          "type": "soap"
+        },
+        {
+          "wm": "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+          "lineNum": 8735,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "lineNum": 8739,
+          "type": "soap"
+        },
+        {
+          "wm": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+          "lineNum": 8743,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+          "lineNum": 8756,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "lineNum": 8760,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Lp",
+          "lineNum": 8764,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Produccion_To_NAV_For_BYB",
+          "lineNum": 8773,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+          "lineNum": 8807,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+          "lineNum": 8825,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+          "lineNum": 8843,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+          "lineNum": 8867,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Serie",
+          "lineNum": 8872,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Producto_Imagen",
+          "lineNum": 8877,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Producto_Imagen",
+          "lineNum": 8881,
+          "type": "soap"
+        },
+        {
+          "wm": "Tiene_Posiciones",
+          "lineNum": 8884,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Fotos_Recepcion",
+          "lineNum": 8888,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Imagen_Recepcion",
+          "lineNum": 8893,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "lineNum": 8898,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Vencimiento_By_IdBodega_And_Lote",
+          "lineNum": 8905,
+          "type": "soap"
+        },
+        {
+          "wm": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "lineNum": 8921,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Colores",
+          "lineNum": 8910,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Tallas",
+          "lineNum": 8913,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+          "lineNum": 8916,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 46,
+      "uniqueWMsCalled": [
+        "Get_Producto_By_IdProductoBodega",
+        "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Get_All_Codigos_Barra_By_IdProducto",
+        "Get_All_ProductoParametros_By_IdProducto_HH",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Get_Nuevo_Correlativo_LicensePlate",
+        "Get_Licenses_Plates_By_IdRecepcionEnc",
+        "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+        "MaxIDStockSeRec",
+        "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+        "MaxIDStockRec",
+        "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+        "Get_IdUbicMerma_By_IdBodega",
+        "Get_Nuevo_Correlativo_LicensePlate_S",
+        "Guardar_Recepcion",
+        "Guardar_Recepcion_Sin_Presentacion",
+        "Guardar_Recepcion_Caja_Master",
+        "Guardar_Recepcion_S",
+        "GuardarRecepcionModif",
+        "Get_Detalle_OC_By_IdOrdeCompraDet",
+        "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+        "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+        "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+        "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+        "Existe_Lp",
+        "Push_Recepcion_Produccion_To_NAV_For_BYB",
+        "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+        "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+        "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+        "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+        "Existe_Serie",
+        "Guardar_Producto_Imagen",
+        "Get_All_Producto_Imagen",
+        "Tiene_Posiciones",
+        "Guardar_Fotos_Recepcion",
+        "Get_All_Imagen_Recepcion",
+        "Get_Vencimiento_By_IdBodega_And_Lote",
+        "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+        "Get_Colores",
+        "Get_Tallas",
+        "Get_Detalle_Rec_By_IdCompra_Licencia_JSON"
+      ]
+    },
+    {
+      "className": "frm_recepcion_datos_original",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+      "extends": "PBase",
+      "fileLines": 11371,
+      "layoutRefs": [
+        "activity_frm_recepcion_datos",
+        "simple_spinner_item",
+        "frm_parametros1",
+        "frm_parametros_p",
+        "simple_spinner_dropdown_item",
+        "impresion_cantidad",
+        "frm_fecha_vencimiento"
+      ],
+      "primaryLayout": "activity_frm_recepcion_datos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_cambio_ubicacion_ciega",
+        "Mainmenu",
+        "frm_imagenes"
+      ],
+      "methodCount": 177,
+      "wmCalls": [
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 8382,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "lineNum": 8387,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 8393,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Codigos_Barra_By_IdProducto",
+          "lineNum": 8399,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_ProductoParametros_By_IdProducto_HH",
+          "lineNum": 8404,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 8410,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Nuevo_Correlativo_LicensePlate",
+          "lineNum": 8414,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Licenses_Plates_By_IdRecepcionEnc",
+          "lineNum": 8420,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "lineNum": 8425,
+          "type": "soap"
+        },
+        {
+          "wm": "MaxIDStockSeRec",
+          "lineNum": 8432,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+          "lineNum": 8436,
+          "type": "soap"
+        },
+        {
+          "wm": "MaxIDStockRec",
+          "lineNum": 8441,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+          "lineNum": 8445,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "lineNum": 8449,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+          "lineNum": 8453,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Nuevo_Correlativo_LicensePlate_S",
+          "lineNum": 8460,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion",
+          "lineNum": 8472,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion_Sin_Presentacion",
+          "lineNum": 8552,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion_Caja_Master",
+          "lineNum": 8568,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion",
+          "lineNum": 8589,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Recepcion_S",
+          "lineNum": 8609,
+          "type": "soap"
+        },
+        {
+          "wm": "GuardarRecepcionModif",
+          "lineNum": 8633,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "lineNum": 8645,
+          "type": "soap"
+        },
+        {
+          "wm": "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+          "lineNum": 8649,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdUbicMerma_By_IdBodega",
+          "lineNum": 8653,
+          "type": "soap"
+        },
+        {
+          "wm": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+          "lineNum": 8657,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+          "lineNum": 8670,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "lineNum": 8674,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Lp",
+          "lineNum": 8678,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Produccion_To_NAV_For_BYB",
+          "lineNum": 8687,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+          "lineNum": 8721,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+          "lineNum": 8739,
+          "type": "soap"
+        },
+        {
+          "wm": "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+          "lineNum": 8757,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+          "lineNum": 8781,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Serie",
+          "lineNum": 8786,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Producto_Imagen",
+          "lineNum": 8791,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Producto_Imagen",
+          "lineNum": 8795,
+          "type": "soap"
+        },
+        {
+          "wm": "Tiene_Posiciones",
+          "lineNum": 8798,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Fotos_Recepcion",
+          "lineNum": 8802,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Imagen_Recepcion",
+          "lineNum": 8807,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_OC_By_IdOrdeCompraDet",
+          "lineNum": 8812,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Vencimiento_By_IdBodega_And_Lote",
+          "lineNum": 8819,
+          "type": "soap"
+        },
+        {
+          "wm": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "lineNum": 8835,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Colores",
+          "lineNum": 8824,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Tallas",
+          "lineNum": 8827,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Detalle_Rec_By_IdCompra_Licencia_JSON",
+          "lineNum": 8830,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 46,
+      "uniqueWMsCalled": [
+        "Get_Producto_By_IdProductoBodega",
+        "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Get_All_Codigos_Barra_By_IdProducto",
+        "Get_All_ProductoParametros_By_IdProducto_HH",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Get_Nuevo_Correlativo_LicensePlate",
+        "Get_Licenses_Plates_By_IdRecepcionEnc",
+        "Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDet",
+        "MaxIDStockSeRec",
+        "Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HH",
+        "MaxIDStockRec",
+        "Get_BeTransReEnc_By_IdREcepcionEnc_For_HH",
+        "Get_IdUbicMerma_By_IdBodega",
+        "Get_Nuevo_Correlativo_LicensePlate_S",
+        "Guardar_Recepcion",
+        "Guardar_Recepcion_Sin_Presentacion",
+        "Guardar_Recepcion_Caja_Master",
+        "Guardar_Recepcion_S",
+        "GuardarRecepcionModif",
+        "Get_Detalle_OC_By_IdOrdeCompraDet",
+        "Max_IdRecepcion_Det_By_IdRecepcionEnc",
+        "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+        "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+        "Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet",
+        "Existe_Lp",
+        "Push_Recepcion_Produccion_To_NAV_For_BYB",
+        "Push_Recepcion_Pedido_Compra_To_NAV_For_BYB",
+        "Push_Recepcion_Devolucion_Venta_To_NAV_For_BYB",
+        "Push_Recepcion_Transferencias_Ingreso_To_NAV_For_BYB",
+        "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+        "Existe_Serie",
+        "Guardar_Producto_Imagen",
+        "Get_All_Producto_Imagen",
+        "Tiene_Posiciones",
+        "Guardar_Fotos_Recepcion",
+        "Get_All_Imagen_Recepcion",
+        "Get_Vencimiento_By_IdBodega_And_Lote",
+        "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+        "Get_Colores",
+        "Get_Tallas",
+        "Get_Detalle_Rec_By_IdCompra_Licencia_JSON"
+      ]
+    },
+    {
+      "className": "frm_cambio_ubicacion_ciega",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+      "extends": "PBase",
+      "fileLines": 5335,
+      "layoutRefs": [
+        "activity_frm_cambio_ubicacion_ciega",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_cambio_ubicacion_ciega",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_consulta_stock",
+        "frm_Packing"
+      ],
+      "methodCount": 98,
+      "wmCalls": [
+        {
+          "wm": "Get_Motivos_Ubicacion_For_HH",
+          "lineNum": 1635,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_By_IdEstado",
+          "lineNum": 1644,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 1692,
+          "type": "soap"
+        },
+        {
+          "wm": "Set_Nuevo_Pallet_Id",
+          "lineNum": 1698,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Trans_Ubic_HH_Det",
+          "lineNum": 1724,
+          "type": "soap"
+        },
+        {
+          "wm": "Aplica_Cambio_Estado_Ubic_HH",
+          "lineNum": 1729,
+          "type": "soap"
+        },
+        {
+          "wm": "ml_get_ubicacion_sugerida_JSON",
+          "lineNum": 1738,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_By_Lic_Plate_And_Codigo",
+          "lineNum": 1754,
+          "type": "soap"
+        },
+        {
+          "wm": "Es_Pallet_No_Estandar",
+          "lineNum": 1766,
+          "type": "soap"
+        },
+        {
+          "wm": "Tiene_Posiciones",
+          "lineNum": 1769,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+          "lineNum": 1782,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+          "lineNum": 1791,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Productos_By_StockResCI",
+          "lineNum": 1804,
+          "type": "soap"
+        },
+        {
+          "wm": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+          "lineNum": 1809,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+          "lineNum": 1629,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH_JSON",
+          "lineNum": 1639,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Stock_By_Lic_Plate_JSON",
+          "lineNum": 1649,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion_Existencias_JSON",
+          "lineNum": 1657,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+          "lineNum": 1667,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion_Existencias_JSON",
+          "lineNum": 1678,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion_JSON",
+          "lineNum": 1686,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_JSON",
+          "lineNum": 1708,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "lineNum": 1713,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "lineNum": 1719,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "lineNum": 1749,
+          "type": "json-post"
+        },
+        {
+          "wm": "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+          "lineNum": 1760,
+          "type": "json-post"
+        },
+        {
+          "wm": "Es_Pallet_No_Estandar_JSON",
+          "lineNum": 1765,
+          "type": "json-post"
+        },
+        {
+          "wm": "Ubicacion_Es_Valida_JSON",
+          "lineNum": 1773,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Ubicacion_Sugerida_JSON",
+          "lineNum": 1814,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion_JSON",
+          "lineNum": 1818,
+          "type": "json-post"
+        },
+        {
+          "wm": "Validar_Mismo_Producto_Posicion_JSON",
+          "lineNum": 1823,
+          "type": "json-post"
+        },
+        {
+          "wm": "Validar_Regla_Ubicacion_JSON",
+          "lineNum": 1834,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 32,
+      "uniqueWMsCalled": [
+        "Get_Motivos_Ubicacion_For_HH",
+        "Get_Single_By_IdEstado",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Set_Nuevo_Pallet_Id",
+        "Actualizar_Trans_Ubic_HH_Det",
+        "Aplica_Cambio_Estado_Ubic_HH",
+        "ml_get_ubicacion_sugerida_JSON",
+        "Get_Stock_By_Lic_Plate_And_Codigo",
+        "Es_Pallet_No_Estandar",
+        "Tiene_Posiciones",
+        "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+        "Actualizar_Ubicaciones_Reservadas_By_StockRes",
+        "Get_Productos_By_StockResCI",
+        "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+        "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+        "Get_BeProducto_By_Codigo_For_HH_JSON",
+        "Get_Stock_By_Lic_Plate_JSON",
+        "Get_Productos_By_IdUbicacion_Existencias_JSON",
+        "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+        "Get_Productos_By_IdUbicacion_JSON",
+        "Get_Estados_By_IdPropietario_JSON",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+        "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+        "Es_Pallet_No_Estandar_JSON",
+        "Ubicacion_Es_Valida_JSON",
+        "Get_Ubicacion_Sugerida_JSON",
+        "Validar_Mismo_Producto_Posicion_JSON",
+        "Validar_Regla_Ubicacion_JSON"
+      ]
+    },
+    {
+      "className": "frm_picking_datos",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+      "extends": "PBase",
+      "fileLines": 3329,
+      "layoutRefs": [
+        "activity_frm_picking_datos",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item",
+        "frm_picking_escanear_muelle",
+        "dialog_supervisor",
+        "dialog_loading"
+      ],
+      "primaryLayout": "activity_frm_picking_datos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_imagenes",
+        "frm_danado_picking",
+        "frm_list_prod_reemplazo_picking",
+        "frm_editar_ubicacion_picking"
+      ],
+      "methodCount": 78,
+      "wmCalls": [
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 2385,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "lineNum": 2388,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 2393,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 2396,
+          "type": "soap"
+        },
+        {
+          "wm": "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet",
+          "lineNum": 2402,
+          "type": "soap"
+        },
+        {
+          "wm": "ObtenerPickingDet",
+          "lineNum": 2405,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+          "lineNum": 2408,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_StockRes",
+          "lineNum": 2411,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Picking",
+          "lineNum": 2415,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+          "lineNum": 2423,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualiza_Picking_Consolidado",
+          "lineNum": 2439,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Producto_Imagen",
+          "lineNum": 2449,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Reservas_By_IdStock",
+          "lineNum": 2452,
+          "type": "soap"
+        },
+        {
+          "wm": "Exist_Codigo_By_CodigoBarra",
+          "lineNum": 2459,
+          "type": "soap"
+        },
+        {
+          "wm": "Reemplazo_Automatico",
+          "lineNum": 2471,
+          "type": "soap"
+        },
+        {
+          "wm": "Valida_Licencia_By_ProductoBodega",
+          "lineNum": 2479,
+          "type": "soap"
+        },
+        {
+          "wm": "Operador_Tiene_Permiso",
+          "lineNum": 2485,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Picking_Cm",
+          "lineNum": 2492,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 18,
+      "uniqueWMsCalled": [
+        "Get_Producto_By_IdProductoBodega",
+        "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet",
+        "ObtenerPickingDet",
+        "Get_Single_StockRes_By_IdBodega_And_IdStockRes",
+        "Get_Single_StockRes",
+        "Actualizar_Picking",
+        "Actualizar_Picking_Con_Reemplazo_De_Pallet",
+        "Actualiza_Picking_Consolidado",
+        "Get_All_Producto_Imagen",
+        "Get_All_Reservas_By_IdStock",
+        "Exist_Codigo_By_CodigoBarra",
+        "Reemplazo_Automatico",
+        "Valida_Licencia_By_ProductoBodega",
+        "Operador_Tiene_Permiso",
+        "Guardar_Picking_Cm"
+      ]
+    },
+    {
+      "className": "frm_inv_cic_add",
+      "package": "com.dts.tom.Transacciones.InventarioCiclico",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+      "extends": "PBase",
+      "fileLines": 2573,
+      "layoutRefs": [
+        "activity_frm_inv_cic_add",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_cic_add",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_inv_cic_nuevo"
+      ],
+      "methodCount": 44,
+      "wmCalls": [
+        {
+          "wm": "Inventario_Ciclico_Act_Conteo_Andr",
+          "lineNum": 1567,
+          "type": "soap"
+        },
+        {
+          "wm": "MaxIDInventarioCiclico",
+          "lineNum": 1576,
+          "type": "soap"
+        },
+        {
+          "wm": "Inventario_Agregar_Conteo",
+          "lineNum": 1579,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 1582,
+          "type": "soap"
+        },
+        {
+          "wm": "Inventario_Ciclico_Actualiza_Reconteo",
+          "lineNum": 1586,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 1592,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+          "lineNum": 1597,
+          "type": "soap"
+        },
+        {
+          "wm": "Inventario_Agregar_Conteo",
+          "lineNum": 1609,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Conteo_Inv_Ciclico",
+          "lineNum": 1635,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_Congelado",
+          "lineNum": 1645,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 1648,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 1651,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_JSON",
+          "lineNum": 1600,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Colores",
+          "lineNum": 1656,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Tallas",
+          "lineNum": 1659,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Producto_Talla_Color_JSON",
+          "lineNum": 1662,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 16,
+      "uniqueWMsCalled": [
+        "Inventario_Ciclico_Act_Conteo_Andr",
+        "MaxIDInventarioCiclico",
+        "Inventario_Agregar_Conteo",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Inventario_Ciclico_Actualiza_Reconteo",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+        "Get_Conteo_Inv_Ciclico",
+        "Get_Stock_Congelado",
+        "Get_Producto_By_IdProductoBodega",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Get_Estados_By_IdPropietario_JSON",
+        "Get_Colores",
+        "Get_Tallas",
+        "Get_Producto_Talla_Color_JSON"
+      ]
+    },
+    {
+      "className": "frm_list_rec_prod",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+      "extends": "PBase",
+      "fileLines": 2281,
+      "layoutRefs": [
+        "activity_frm_list_rec_prod3",
+        "activity_frm_list_rec_prod2",
+        "activity_frm_list_rec_prod",
+        "progress_dialog",
+        "frmfirmadig"
+      ],
+      "primaryLayout": "activity_frm_list_rec_prod3",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_recepcion_datos",
+        "frm_list_rec_prod_detalle",
+        "frmFirma",
+        "Mainmenu"
+      ],
+      "methodCount": 62,
+      "wmCalls": [
+        {
+          "wm": "Iniciar_Recepcion_OC",
+          "lineNum": 1245,
+          "type": "soap"
+        },
+        {
+          "wm": "Iniciar_Recepcion_OC",
+          "lineNum": 1247,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Estado_Recepcion",
+          "lineNum": 1252,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_BeTrans_OC_Estado",
+          "lineNum": 1257,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Banderas_Recepcion",
+          "lineNum": 1262,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Pallet_Ingreso_By_Barra",
+          "lineNum": 1268,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_LP_For_HH",
+          "lineNum": 1274,
+          "type": "soap"
+        },
+        {
+          "wm": "Finalizar_Recepcion_Parcial",
+          "lineNum": 1280,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_List_Product_By_CodigoBarra_By_OrdenCompraEnc",
+          "lineNum": 1290,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_By_IdRecepcionEnc",
+          "lineNum": 1296,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Estado_Recepcion",
+          "lineNum": 1300,
+          "type": "soap"
+        },
+        {
+          "wm": "Guarda_Firma_Recepcion",
+          "lineNum": 1303,
+          "type": "soap"
+        },
+        {
+          "wm": "Finalizar_Recepcion_S",
+          "lineNum": 1308,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_OC_By_IdOrdenCompraEnc_HH2",
+          "lineNum": 1319,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH",
+          "lineNum": 1325,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Producto_Talla_Color_JSON",
+          "lineNum": 1330,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 16,
+      "uniqueWMsCalled": [
+        "Iniciar_Recepcion_OC",
+        "Actualizar_Estado_Recepcion",
+        "Get_Single_BeTrans_OC_Estado",
+        "Get_Banderas_Recepcion",
+        "Get_All_Pallet_Ingreso_By_Barra",
+        "Get_BeProducto_By_LP_For_HH",
+        "Finalizar_Recepcion_Parcial",
+        "Get_List_Product_By_CodigoBarra_By_OrdenCompraEnc",
+        "Get_Detalle_By_IdRecepcionEnc",
+        "Guarda_Firma_Recepcion",
+        "Finalizar_Recepcion_S",
+        "Get_Detalle_OC_By_IdOrdenCompraEnc_HH2",
+        "Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH",
+        "Get_Producto_Talla_Color_JSON"
+      ]
+    },
+    {
+      "className": "frm_inv_ini_conteo",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+      "extends": "PBase",
+      "fileLines": 2199,
+      "layoutRefs": [
+        "activity_frm_inv_ini_conteo",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_ini_conteo",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_inv_agrega_prd",
+        "frm_inv_ini_contados"
+      ],
+      "methodCount": 61,
+      "wmCalls": [
+        {
+          "wm": "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo",
+          "lineNum": 1530,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 1534,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+          "lineNum": 1538,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto_IdBodega",
+          "lineNum": 1545,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario",
+          "lineNum": 1548,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Inventario_Teorico_By_Codigo",
+          "lineNum": 1551,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Producto",
+          "lineNum": 1555,
+          "type": "soap"
+        },
+        {
+          "wm": "Inventario_Inicial_Acepta_Mal_Estado_By_IdUbicacion",
+          "lineNum": 1558,
+          "type": "soap"
+        },
+        {
+          "wm": "validaUbicacionPalet",
+          "lineNum": 1561,
+          "type": "soap"
+        },
+        {
+          "wm": "Agregar_Inventario_Inicial",
+          "lineNum": 1565,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+          "lineNum": 1568,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+          "lineNum": 1571,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Conteo",
+          "lineNum": 1575,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_CantidadInvVer_By_Producto",
+          "lineNum": 1581,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Verificacion",
+          "lineNum": 1588,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 15,
+      "uniqueWMsCalled": [
+        "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+        "Get_All_Presentaciones_By_IdProducto_IdBodega",
+        "Get_Estados_By_IdPropietario",
+        "Get_Inventario_Teorico_By_Codigo",
+        "Existe_Producto",
+        "Inventario_Inicial_Acepta_Mal_Estado_By_IdUbicacion",
+        "validaUbicacionPalet",
+        "Agregar_Inventario_Inicial",
+        "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+        "Existe_Conteo",
+        "Get_CantidadInvVer_By_Producto",
+        "Existe_Verificacion"
+      ]
+    },
+    {
+      "className": "frm_inv_ini_verificacion",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+      "extends": "PBase",
+      "fileLines": 1352,
+      "layoutRefs": [
+        "activity_frm_inv_ini_verificacion",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item",
+        "simple_dropdown_item_1line"
+      ],
+      "primaryLayout": "activity_frm_inv_ini_verificacion",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_inv_ini_verificados"
+      ],
+      "methodCount": 44,
+      "wmCalls": [
+        {
+          "wm": "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo",
+          "lineNum": 778,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 782,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 786,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 790,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario",
+          "lineNum": 793,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialVerAgrega",
+          "lineNum": 796,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+          "lineNum": 799,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+          "lineNum": 802,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Inventario_Teorico_By_Codigo",
+          "lineNum": 805,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Codigos_By_IdInventario_And_IdBodega",
+          "lineNum": 809,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_CantidadInvConteo_By_Producto",
+          "lineNum": 813,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Conteo",
+          "lineNum": 820,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+          "lineNum": 826,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_InventarioItem_By_Licencia",
+          "lineNum": 831,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_CantidadInvVer_By_Producto",
+          "lineNum": 838,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 15,
+      "uniqueWMsCalled": [
+        "Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Get_Estados_By_IdPropietario",
+        "InventarioInicialVerAgrega",
+        "Actualizar_Inventario_Inicial_By_BeTransInvTramo",
+        "Get_Inventario_Teorico_By_Codigo",
+        "Get_All_Codigos_By_IdInventario_And_IdBodega",
+        "Get_CantidadInvConteo_By_Producto",
+        "Existe_Conteo",
+        "Get_Inventario_Teorico_By_Codigo_O_Licencia",
+        "Get_InventarioItem_By_Licencia",
+        "Get_CantidadInvVer_By_Producto"
+      ]
+    },
+    {
+      "className": "frm_Packing",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+      "extends": "PBase",
+      "fileLines": 3071,
+      "layoutRefs": [
+        "activity_frm__packing",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm__packing",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 52,
+      "wmCalls": [
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 1822,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion",
+          "lineNum": 1826,
+          "type": "soap"
+        },
+        {
+          "wm": "Set_LP_Stock",
+          "lineNum": 1831,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 1843,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_LP",
+          "lineNum": 1850,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_By_Lic_Plate_And_Codigo",
+          "lineNum": 1857,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 1864,
+          "type": "soap"
+        },
+        {
+          "wm": "Set_LP_Stock_Mixto",
+          "lineNum": 1869,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+          "lineNum": 1798,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "lineNum": 1801,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Stock_By_Lic_Plate_JSON",
+          "lineNum": 1804,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_JSON",
+          "lineNum": 1809,
+          "type": "json-post"
+        },
+        {
+          "wm": "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+          "lineNum": 1813,
+          "type": "json-post"
+        },
+        {
+          "wm": "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+          "lineNum": 1837,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 14,
+      "uniqueWMsCalled": [
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Get_Productos_By_IdUbicacion",
+        "Set_LP_Stock",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Get_Ubicacion_LP",
+        "Get_Stock_By_Lic_Plate_And_Codigo",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Set_LP_Stock_Mixto",
+        "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+        "Get_Stock_By_Lic_Plate_JSON",
+        "Get_Estados_By_IdPropietario_JSON",
+        "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+        "Existe_Lp_By_Licencia_And_IdBodega_JSON"
+      ]
+    },
+    {
+      "className": "frm_detalle_tareas_verificacion",
+      "package": "com.dts.tom.Transacciones.Verificacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+      "extends": "PBase",
+      "fileLines": 1388,
+      "layoutRefs": [
+        "activity_frm_detalle_tareas_verificacion2",
+        "activity_frm_detalle_tareas_verificacion",
+        "progress_dialog"
+      ],
+      "primaryLayout": "activity_frm_detalle_tareas_verificacion2",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_verificacion_datos",
+        "frm_list_prod_reemplazados"
+      ],
+      "methodCount": 41,
+      "wmCalls": [
+        {
+          "wm": "Get_Detalle_By_IdPedidoEnc",
+          "lineNum": 434,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_By_IdPedidoEnc",
+          "lineNum": 438,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+          "lineNum": 450,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+          "lineNum": 456,
+          "type": "soap"
+        },
+        {
+          "wm": "Set_Estado_Pedido_Verificado",
+          "lineNum": 461,
+          "type": "soap"
+        },
+        {
+          "wm": "Tiene_Pedidos_Sin_Verificar_By_IdPickingEnc",
+          "lineNum": 465,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Picking_By_IdPickingEnc",
+          "lineNum": 469,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_PickingEnc_Verificado",
+          "lineNum": 473,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Reemplazo_Producto_By_IdPedidoEnc",
+          "lineNum": 477,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_Verificacion_Consolidada",
+          "lineNum": 481,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido",
+          "lineNum": 485,
+          "type": "soap"
+        },
+        {
+          "wm": "Despachar_Pedido",
+          "lineNum": 492,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 12,
+      "uniqueWMsCalled": [
+        "Get_Detalle_By_IdPedidoEnc",
+        "Get_Single_By_IdPedidoEnc",
+        "Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion",
+        "Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc",
+        "Set_Estado_Pedido_Verificado",
+        "Tiene_Pedidos_Sin_Verificar_By_IdPickingEnc",
+        "Get_Picking_By_IdPickingEnc",
+        "Actualizar_PickingEnc_Verificado",
+        "Get_Reemplazo_Producto_By_IdPedidoEnc",
+        "Get_Detalle_Verificacion_Consolidada",
+        "Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido",
+        "Despachar_Pedido"
+      ]
+    },
+    {
+      "className": "MainActivity",
+      "package": "com.dts.tom",
+      "path": "/app/src/main/java/com/dts/tom/MainActivity.java",
+      "extends": "PBase",
+      "fileLines": 2024,
+      "layoutRefs": [
+        "activity_main",
+        "dialog_url",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item",
+        "dialog_loading"
+      ],
+      "primaryLayout": "activity_main",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "Mainmenu"
+      ],
+      "methodCount": 62,
+      "wmCalls": [
+        {
+          "wm": "Android_Get_Bodegas_By_IdEmpresa",
+          "lineNum": 1853,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Impresora_By_IdEmpresa_And_IdBodega_Dt",
+          "lineNum": 1856,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Operadores_By_IdBodega_For_HH",
+          "lineNum": 1860,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_cantidad_decimales_calculo",
+          "lineNum": 1863,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Cantidad_decimales_despliegue",
+          "lineNum": 1866,
+          "type": "soap"
+        },
+        {
+          "wm": "Agregar_Marcaje",
+          "lineNum": 1872,
+          "type": "soap"
+        },
+        {
+          "wm": "Android_Get_All_Versiones",
+          "lineNum": 1877,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 1880,
+          "type": "soap"
+        },
+        {
+          "wm": "loginHandHeld",
+          "lineNum": 1885,
+          "type": "soap"
+        },
+        {
+          "wm": "nombreServidorLicencias",
+          "lineNum": 1890,
+          "type": "soap"
+        },
+        {
+          "wm": "Android_Get_All_Empresas_Json",
+          "lineNum": 1850,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 11,
+      "uniqueWMsCalled": [
+        "Android_Get_Bodegas_By_IdEmpresa",
+        "Get_All_Impresora_By_IdEmpresa_And_IdBodega_Dt",
+        "Get_Operadores_By_IdBodega_For_HH",
+        "Get_cantidad_decimales_calculo",
+        "Get_Cantidad_decimales_despliegue",
+        "Agregar_Marcaje",
+        "Android_Get_All_Versiones",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "loginHandHeld",
+        "nombreServidorLicencias",
+        "Android_Get_All_Empresas_Json"
+      ]
+    },
+    {
+      "className": "frm_lista_tareas_recepcion",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+      "extends": "PBase",
+      "fileLines": 1149,
+      "layoutRefs": [
+        "activity_frm_lista_tareas_recepcion"
+      ],
+      "primaryLayout": "activity_frm_lista_tareas_recepcion",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "Mainmenu",
+        "frm_detalle_ingresos",
+        "frm_detalle_tareas_picking",
+        "frm_detalle_tareas_verificacion",
+        "frm_list_rec_prod",
+        "frm_verificacion_datos"
+      ],
+      "methodCount": 38,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+          "lineNum": 272,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+          "lineNum": 278,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+          "lineNum": 283,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Pedidos_A_Verificar_By_IdBodega",
+          "lineNum": 293,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Pedido_A_Verificar_By_LP",
+          "lineNum": 299,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdOrdenCompraEnc_By_Licencia",
+          "lineNum": 303,
+          "type": "soap"
+        },
+        {
+          "wm": "GetSingleRec",
+          "lineNum": 308,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+          "lineNum": 312,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Verificacion_By_Producto_And_Pedido",
+          "lineNum": 321,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_By_IdPedidoEnc_Json",
+          "lineNum": 327,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Tipo_Pedido_Json",
+          "lineNum": 333,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 11,
+      "uniqueWMsCalled": [
+        "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador",
+        "Get_All_Rec_Ciegas_For_HH_By_IdBodega",
+        "Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega",
+        "Get_All_Pedidos_A_Verificar_By_IdBodega",
+        "Get_Pedido_A_Verificar_By_LP",
+        "Get_IdOrdenCompraEnc_By_Licencia",
+        "GetSingleRec",
+        "Get_ListOrdenCompraEnc_By_Codigo_Producto",
+        "Get_Verificacion_By_Producto_And_Pedido",
+        "Get_Single_By_IdPedidoEnc_Json",
+        "Get_Tipo_Pedido_Json"
+      ]
+    },
+    {
+      "className": "frm_inv_ini_contados",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+      "extends": "PBase",
+      "fileLines": 832,
+      "layoutRefs": [
+        "activity_frm_inv_ini_contados",
+        "frm_inv_edita_detalle",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_ini_contados",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 27,
+      "wmCalls": [
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 604,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_Or_Licencia",
+          "lineNum": 606,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 611,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+          "lineNum": 615,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialDetGet",
+          "lineNum": 620,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_IdProducto",
+          "lineNum": 623,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto_IdBodega",
+          "lineNum": 626,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario",
+          "lineNum": 629,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialDetActualizar",
+          "lineNum": 632,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialDetEliminar",
+          "lineNum": 635,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 10,
+      "uniqueWMsCalled": [
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Get_BeProducto_By_Codigo_Or_Licencia",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc",
+        "InventarioInicialDetGet",
+        "Get_BeProducto_By_IdProducto",
+        "Get_All_Presentaciones_By_IdProducto_IdBodega",
+        "Get_Estados_By_IdPropietario",
+        "InventarioInicialDetActualizar",
+        "InventarioInicialDetEliminar"
+      ]
+    },
+    {
+      "className": "frm_detalle_tareas_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+      "extends": "PBase",
+      "fileLines": 1741,
+      "layoutRefs": [
+        "activity_frm_detalle_tareas_picking",
+        "activity_frm_detalle_tareas_picking2",
+        "activity_frm_detalle_tareas_picking3",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item",
+        "dialog_loading"
+      ],
+      "primaryLayout": "activity_frm_detalle_tareas_picking",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_picking_datos"
+      ],
+      "methodCount": 51,
+      "wmCalls": [
+        {
+          "wm": "Get_Picking_By_IdPickingEnc",
+          "lineNum": 1124,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Estado_Picking_Andr",
+          "lineNum": 1130,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+          "lineNum": 1133,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_PickingEnc_Procesado",
+          "lineNum": 1141,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_PickingEnc_Procesado_Andr",
+          "lineNum": 1142,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 1149,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_CantidadPedidos_Picking",
+          "lineNum": 1159,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_List_Product_By_CodigoBarra_By_Picking",
+          "lineNum": 1162,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_PickingUbic_By_IdPickingEnc_Tipo_Json",
+          "lineNum": 1152,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 9,
+      "uniqueWMsCalled": [
+        "Get_Picking_By_IdPickingEnc",
+        "Actualizar_Estado_Picking_Andr",
+        "Get_All_PickingUbic_By_IdPickingEnc_Tipo",
+        "Actualizar_PickingEnc_Procesado",
+        "Actualizar_PickingEnc_Procesado_Andr",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_CantidadPedidos_Picking",
+        "Get_List_Product_By_CodigoBarra_By_Picking",
+        "Get_All_PickingUbic_By_IdPickingEnc_Tipo_Json"
+      ]
+    },
+    {
+      "className": "frm_inv_cic_guardar",
+      "package": "com.dts.tom.Transacciones.InventarioCiclico",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+      "extends": "PBase",
+      "fileLines": 983,
+      "layoutRefs": [
+        "activity_frm_inv_cic_guardar",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_cic_guardar",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 33,
+      "wmCalls": [
+        {
+          "wm": "Get_Estados_By_IdPropietario",
+          "lineNum": 683,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 686,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 689,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdProductoBodega_By_IdProducto_And_IdBodega",
+          "lineNum": 692,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Inventario_Teorico_By_Codigo",
+          "lineNum": 695,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 698,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Producto_Nuevo_Inventario",
+          "lineNum": 707,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 716,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 8,
+      "uniqueWMsCalled": [
+        "Get_Estados_By_IdPropietario",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Get_IdProductoBodega_By_IdProducto_And_IdBodega",
+        "Get_Inventario_Teorico_By_Codigo",
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Guardar_Producto_Nuevo_Inventario",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega"
+      ]
+    },
+    {
+      "className": "frm_inv_ini_verificados",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+      "extends": "PBase",
+      "fileLines": 629,
+      "layoutRefs": [
+        "activity_frm_inv_ini_verificados",
+        "frm_inv_edita_resumen",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_ini_verificados",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 22,
+      "wmCalls": [
+        {
+          "wm": "Get_BeProducto_By_Codigo_Or_Licencia",
+          "lineNum": 447,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+          "lineNum": 455,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialVerGet",
+          "lineNum": 459,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_IdProducto",
+          "lineNum": 462,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 465,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario",
+          "lineNum": 468,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialVerActualizar",
+          "lineNum": 471,
+          "type": "soap"
+        },
+        {
+          "wm": "InventarioInicialVerEliminar",
+          "lineNum": 474,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 8,
+      "uniqueWMsCalled": [
+        "Get_BeProducto_By_Codigo_Or_Licencia",
+        "Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto",
+        "InventarioInicialVerGet",
+        "Get_BeProducto_By_IdProducto",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Get_Estados_By_IdPropietario",
+        "InventarioInicialVerActualizar",
+        "InventarioInicialVerEliminar"
+      ]
+    },
+    {
+      "className": "frm_detalle_ingresos",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+      "extends": "PBase",
+      "fileLines": 960,
+      "layoutRefs": [
+        "activity_frm_detalle_ingresos",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_detalle_ingresos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_imagenes",
+        "frm_list_rec_prod",
+        "Mainmenu"
+      ],
+      "methodCount": 40,
+      "wmCalls": [
+        {
+          "wm": "Get_Banderas_Recepcion",
+          "lineNum": 238,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+          "lineNum": 244,
+          "type": "soap"
+        },
+        {
+          "wm": "GetSingleRec",
+          "lineNum": 249,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Configuracion_Barra_Pallet_By_IdConfiguracion",
+          "lineNum": 253,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_Rec_By_IdRecepcionEnc",
+          "lineNum": 257,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Fotos_Recepcion",
+          "lineNum": 262,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Imagen_Recepcion",
+          "lineNum": 267,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_Recepcion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 271,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 8,
+      "uniqueWMsCalled": [
+        "Get_Banderas_Recepcion",
+        "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+        "GetSingleRec",
+        "Get_Configuracion_Barra_Pallet_By_IdConfiguracion",
+        "Get_Stock_Rec_By_IdRecepcionEnc",
+        "Guardar_Fotos_Recepcion",
+        "Get_All_Imagen_Recepcion",
+        "Get_Ubicacion_Recepcion_By_Codigo_Barra_And_IdBodega"
+      ]
+    },
+    {
+      "className": "frm_inv_cic_conteo",
+      "package": "com.dts.tom.Transacciones.InventarioCiclico",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+      "extends": "PBase",
+      "fileLines": 1534,
+      "layoutRefs": [
+        "activity_frm_inv_cic_conteo",
+        "frm_filtro_inv_ciclico"
+      ],
+      "primaryLayout": "activity_frm_inv_cic_conteo",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_inv_cic_add"
+      ],
+      "methodCount": 44,
+      "wmCalls": [
+        {
+          "wm": "Inventario_Ciclico_ReConteos",
+          "lineNum": 1166,
+          "type": "soap"
+        },
+        {
+          "wm": "Existe_Producto",
+          "lineNum": 1169,
+          "type": "soap"
+        },
+        {
+          "wm": "Inventario_Ciclico_Listar_Conteo",
+          "lineNum": 1172,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Control_Lote_And_Vencimiento_By_IdProductoBodega",
+          "lineNum": 1177,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_IdProducto",
+          "lineNum": 1186,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+          "lineNum": 1189,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Estados_By_IdPropietario_JSON",
+          "lineNum": 1182,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 7,
+      "uniqueWMsCalled": [
+        "Inventario_Ciclico_ReConteos",
+        "Existe_Producto",
+        "Inventario_Ciclico_Listar_Conteo",
+        "Get_Control_Lote_And_Vencimiento_By_IdProductoBodega",
+        "Get_BeProducto_By_IdProducto",
+        "Get_BeProducto_By_Codigo_Or_Barra_For_HH",
+        "Get_Estados_By_IdPropietario_JSON"
+      ]
+    },
+    {
+      "className": "frm_list_prod_reemplazo_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+      "extends": "PBase",
+      "fileLines": 1082,
+      "layoutRefs": [
+        "activity_frm_list_prod_reemplazo_picking"
+      ],
+      "primaryLayout": "activity_frm_list_prod_reemplazo_picking",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_picking_datos"
+      ],
+      "methodCount": 32,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Stock_Especifico_By_IdPedidoDet",
+          "lineNum": 683,
+          "type": "soap"
+        },
+        {
+          "wm": "Reservar_Stock_By_Stock",
+          "lineNum": 689,
+          "type": "soap"
+        },
+        {
+          "wm": "Reemplazar_ListaPu_By_Stock",
+          "lineNum": 706,
+          "type": "soap"
+        },
+        {
+          "wm": "Reemplazar_ListaPu_By_Stock",
+          "lineNum": 723,
+          "type": "soap"
+        },
+        {
+          "wm": "Sustituir_Producto_NE_Picking",
+          "lineNum": 741,
+          "type": "soap"
+        },
+        {
+          "wm": "Marcar_No_Encontrado",
+          "lineNum": 755,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Presentacion_Defecto_By_Producto",
+          "lineNum": 771,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 7,
+      "uniqueWMsCalled": [
+        "Get_All_Stock_Especifico_By_IdPedidoDet",
+        "Reservar_Stock_By_Stock",
+        "Reemplazar_ListaPu_By_Stock",
+        "Sustituir_Producto_NE_Picking",
+        "Marcar_No_Encontrado",
+        "Get_Presentacion_Defecto_By_Producto"
+      ]
+    },
+    {
+      "className": "frm_verificacion_datos",
+      "package": "com.dts.tom.Transacciones.Verificacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+      "extends": "PBase",
+      "fileLines": 1645,
+      "layoutRefs": [
+        "activity_frm_verificacion_datos",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item",
+        "dialog_supervisor"
+      ],
+      "primaryLayout": "activity_frm_verificacion_datos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_preparacion_packing",
+        "frm_danado_verificacion",
+        "frm_verificacion_consolidada_detalle",
+        "frm_imagenes"
+      ],
+      "methodCount": 44,
+      "wmCalls": [
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 930,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 934,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualiza_Cant_Peso_Verificacion",
+          "lineNum": 940,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "lineNum": 952,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Fotos_Verificacion",
+          "lineNum": 956,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Imagen_Verificacion",
+          "lineNum": 961,
+          "type": "soap"
+        },
+        {
+          "wm": "Operador_Tiene_Permiso",
+          "lineNum": 965,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 7,
+      "uniqueWMsCalled": [
+        "Get_Producto_By_IdProductoBodega",
+        "Get_All_Presentaciones_By_IdProducto",
+        "Actualiza_Cant_Peso_Verificacion",
+        "Guardar_Fotos_Verificacion",
+        "Get_All_Imagen_Verificacion",
+        "Operador_Tiene_Permiso"
+      ]
+    },
+    {
+      "className": "Mainmenu",
+      "package": "com.dts.tom",
+      "path": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+      "extends": "PBase",
+      "fileLines": 1012,
+      "layoutRefs": [
+        "activity_mainmenu"
+      ],
+      "primaryLayout": "activity_mainmenu",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_lista_tareas_recepcion",
+        "frm_cambio_ubicacion_ciega",
+        "frm_Packing",
+        "frm_list_inventario",
+        "frm_consulta_stock",
+        "frm_lista_packing",
+        "frm_reabastecimiento_manual",
+        "frm_lista_stock_res",
+        "frm_menu_rfid",
+        "frm_tareas_cambio_ubicacion"
+      ],
+      "methodCount": 36,
+      "wmCalls": [
+        {
+          "wm": "Get_Count_Recepciones_For_HH_By_IdBodega",
+          "lineNum": 407,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Count_Picking_For_HH_By_IdBodega",
+          "lineNum": 412,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Count_Verificaciones_For_HH_By_IdBodega",
+          "lineNum": 424,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Count_Cambio_Est_Ubic_For_HH",
+          "lineNum": 429,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Count_Cambio_Est_Ubic_For_HH",
+          "lineNum": 435,
+          "type": "soap"
+        },
+        {
+          "wm": "Agregar_Marcaje",
+          "lineNum": 443,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 6,
+      "uniqueWMsCalled": [
+        "Get_Count_Recepciones_For_HH_By_IdBodega",
+        "Get_Count_Picking_For_HH_By_IdBodega",
+        "Get_Count_Verificaciones_For_HH_By_IdBodega",
+        "Get_Count_Cambio_Est_Ubic_For_HH",
+        "Agregar_Marcaje"
+      ]
+    },
+    {
+      "className": "frm_cambio_ubicacion_dirigida",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+      "extends": "PBase",
+      "fileLines": 1076,
+      "layoutRefs": [
+        "activity_frm_cambio_ubicacion_dirigida"
+      ],
+      "primaryLayout": "activity_frm_cambio_ubicacion_dirigida",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 26,
+      "wmCalls": [
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 774,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 779,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Trans_Ubic_HH_Det",
+          "lineNum": 785,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Single_By_IdEstado",
+          "lineNum": 792,
+          "type": "soap"
+        },
+        {
+          "wm": "Es_Pallet_No_Estandar",
+          "lineNum": 796,
+          "type": "soap"
+        },
+        {
+          "wm": "Tiene_Posiciones",
+          "lineNum": 800,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 6,
+      "uniqueWMsCalled": [
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Actualizar_Trans_Ubic_HH_Det",
+        "Get_Single_By_IdEstado",
+        "Es_Pallet_No_Estandar",
+        "Tiene_Posiciones"
+      ]
+    },
+    {
+      "className": "frm_preparacion_packing",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+      "extends": "PBase",
+      "fileLines": 1591,
+      "layoutRefs": [
+        "activity_frm_preparacion_packing",
+        "impresion_cantidad",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_preparacion_packing",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_lista_packing_lp"
+      ],
+      "methodCount": 59,
+      "wmCalls": [
+        {
+          "wm": "Get_All_PickingUbic_By_PickingEnc",
+          "lineNum": 1019,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Packing_By_IdPicking",
+          "lineNum": 1023,
+          "type": "soap"
+        },
+        {
+          "wm": "Inserta_Packing",
+          "lineNum": 1033,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 1036,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Estado_Packing",
+          "lineNum": 1041,
+          "type": "soap"
+        },
+        {
+          "wm": "Eliminar_Linea_Packing",
+          "lineNum": 1045,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 6,
+      "uniqueWMsCalled": [
+        "Get_All_PickingUbic_By_PickingEnc",
+        "Get_All_Packing_By_IdPicking",
+        "Inserta_Packing",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Actualizar_Estado_Packing",
+        "Eliminar_Linea_Packing"
+      ]
+    },
+    {
+      "className": "frm_inv_cic_nuevo",
+      "package": "com.dts.tom.Transacciones.InventarioCiclico",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+      "extends": "PBase",
+      "fileLines": 579,
+      "layoutRefs": [
+        "activity_frm_inv_cic_nuevo",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_cic_nuevo",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 14,
+      "wmCalls": [
+        {
+          "wm": "Get_Datos_Maestros_Inv_Fam",
+          "lineNum": 281,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Datos_Maestros_Inv_Clas",
+          "lineNum": 285,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Datos_Maestros_Inv_Marc",
+          "lineNum": 289,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Datos_Maestros_Inv_Tip",
+          "lineNum": 293,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Datos_Maestros_Inv_UmBas",
+          "lineNum": 297,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 5,
+      "uniqueWMsCalled": [
+        "Get_Datos_Maestros_Inv_Fam",
+        "Get_Datos_Maestros_Inv_Clas",
+        "Get_Datos_Maestros_Inv_Marc",
+        "Get_Datos_Maestros_Inv_Tip",
+        "Get_Datos_Maestros_Inv_UmBas"
+      ]
+    },
+    {
+      "className": "frm_inv_agrega_prd",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+      "extends": "PBase",
+      "fileLines": 591,
+      "layoutRefs": [
+        "activity_frm_inv_agrega_prd",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_agrega_prd",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "frm_inv_nuevo_reg"
+      ],
+      "methodCount": 19,
+      "wmCalls": [
+        {
+          "wm": "Get_Familia_Inv",
+          "lineNum": 426,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Clasificacion_Inv",
+          "lineNum": 429,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Marca_Inv",
+          "lineNum": 432,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Tipo_Inv",
+          "lineNum": 435,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_UMbas_Inv",
+          "lineNum": 438,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 5,
+      "uniqueWMsCalled": [
+        "Get_Familia_Inv",
+        "Get_Clasificacion_Inv",
+        "Get_Marca_Inv",
+        "Get_Tipo_Inv",
+        "Get_UMbas_Inv"
+      ]
+    },
+    {
+      "className": "frm_list_prod_reemplazo_verif",
+      "package": "com.dts.tom.Transacciones.Verificacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+      "extends": "PBase",
+      "fileLines": 900,
+      "layoutRefs": [
+        "activity_frm_list_prod_reemplazo_verif"
+      ],
+      "primaryLayout": "activity_frm_list_prod_reemplazo_verif",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 26,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Stock_Especifico_By_IdPedidoDet",
+          "lineNum": 214,
+          "type": "soap"
+        },
+        {
+          "wm": "Reemplazar_ListPickingUbic_Verificacion",
+          "lineNum": 221,
+          "type": "soap"
+        },
+        {
+          "wm": "Reemplazar_ListPickingUbic_Verificacion",
+          "lineNum": 236,
+          "type": "soap"
+        },
+        {
+          "wm": "Reemplaza_Producto_Dannado_Menor",
+          "lineNum": 254,
+          "type": "soap"
+        },
+        {
+          "wm": "Marcar_Danado",
+          "lineNum": 268,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 5,
+      "uniqueWMsCalled": [
+        "Get_All_Stock_Especifico_By_IdPedidoDet",
+        "Reemplazar_ListPickingUbic_Verificacion",
+        "Reemplaza_Producto_Dannado_Menor",
+        "Marcar_Danado"
+      ]
+    },
+    {
+      "className": "frm_consulta_stock",
+      "package": "com.dts.tom.Transacciones.ConsultaStock",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java",
+      "extends": "PBase",
+      "fileLines": 1221,
+      "layoutRefs": [
+        "activity_frm_consulta_stock2",
+        "activity_frm_consulta_stock",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_consulta_stock2",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 28,
+      "wmCalls": [
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 1026,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_Por_Pallet_By_IdUbicacion_CI",
+          "lineNum": 1031,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 1039,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Stock_Por_Producto_Ubicacion_CI_Json",
+          "lineNum": 1044,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 4,
+      "uniqueWMsCalled": [
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Get_Stock_Por_Pallet_By_IdUbicacion_CI",
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Get_Stock_Por_Producto_Ubicacion_CI_Json"
+      ]
+    },
+    {
+      "className": "frm_datos_reabastecimiento",
+      "package": "com.dts.tom.Transacciones.Reabastecimiento",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java",
+      "extends": "PBase",
+      "fileLines": 772,
+      "layoutRefs": [
+        "activity_frm_datos_reabastecimiento"
+      ],
+      "primaryLayout": "activity_frm_datos_reabastecimiento",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_reabastecimiento_manual"
+      ],
+      "methodCount": 21,
+      "wmCalls": [
+        {
+          "wm": "Aplica_Cambio_Estado_Ubic_HH",
+          "lineNum": 683,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "lineNum": 690,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 697,
+          "type": "soap"
+        },
+        {
+          "wm": "Set_Nuevo_Pallet_Id",
+          "lineNum": 702,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 4,
+      "uniqueWMsCalled": [
+        "Aplica_Cambio_Estado_Ubic_HH",
+        "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Set_Nuevo_Pallet_Id"
+      ]
+    },
+    {
+      "className": "frm_detalle_cambio_ubicacion",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_detalle_cambio_ubicacion.java",
+      "extends": "PBase",
+      "fileLines": 700,
+      "layoutRefs": [
+        "activity_frm_detalle_cambio_ubicacion"
+      ],
+      "primaryLayout": "activity_frm_detalle_cambio_ubicacion",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_cambio_ubicacion_dirigida"
+      ],
+      "methodCount": 22,
+      "wmCalls": [
+        {
+          "wm": "Get_All_By_IdTransUbicEnc_And_IdOperador",
+          "lineNum": 240,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Estado_Cambio",
+          "lineNum": 244,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 247,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_All_By_IdTransUbicEnc_And_IdOperador",
+        "Actualizar_Estado_Cambio",
+        "Get_BeProducto_By_Codigo_For_HH"
+      ]
+    },
+    {
+      "className": "frm_inv_nuevo_reg",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_nuevo_reg.java",
+      "extends": "PBase",
+      "fileLines": 482,
+      "layoutRefs": [
+        "activity_frm_inv_nuevo_reg",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_inv_nuevo_reg",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 17,
+      "wmCalls": [
+        {
+          "wm": "Get_Estados_By_IdPropietario",
+          "lineNum": 376,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 379,
+          "type": "soap"
+        },
+        {
+          "wm": "Guardar_Producto_Nuevo_Inventario",
+          "lineNum": 383,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_Estados_By_IdPropietario",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Guardar_Producto_Nuevo_Inventario"
+      ]
+    },
+    {
+      "className": "frm_lista_packing",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing.java",
+      "extends": "PBase",
+      "fileLines": 465,
+      "layoutRefs": [
+        "activity_frm_lista_packing"
+      ],
+      "primaryLayout": "activity_frm_lista_packing",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_list_packing_cerrados",
+        "frm_preparacion_packing",
+        "frm_preparacion_packing_bulto"
+      ],
+      "methodCount": 17,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Picking_Para_Empaque_By_IdBodega",
+          "lineNum": 273,
+          "type": "soap"
+        },
+        {
+          "wm": "Set_Estado_Pendiente_Packing",
+          "lineNum": 276,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Picking_Para_Emapaque_Consolidado",
+          "lineNum": 279,
+          "type": "json-post"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_All_Picking_Para_Empaque_By_IdBodega",
+        "Set_Estado_Pendiente_Packing",
+        "Get_Picking_Para_Emapaque_Consolidado"
+      ]
+    },
+    {
+      "className": "frm_preparacion_packing_bulto",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing_bulto.java",
+      "extends": "PBase",
+      "fileLines": 964,
+      "layoutRefs": [
+        "activity_frm_preparacion_packing_bulto"
+      ],
+      "primaryLayout": "activity_frm_preparacion_packing_bulto",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_lista_packing_lotes"
+      ],
+      "methodCount": 44,
+      "wmCalls": [
+        {
+          "wm": "Get_All_PickingUbic_By_PickingEnc_Group",
+          "lineNum": 600,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Packing_By_IdPicking",
+          "lineNum": 603,
+          "type": "soap"
+        },
+        {
+          "wm": "Inserta_Packing",
+          "lineNum": 606,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_All_PickingUbic_By_PickingEnc_Group",
+        "Get_All_Packing_By_IdPicking",
+        "Inserta_Packing"
+      ]
+    },
+    {
+      "className": "frm_danado_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_danado_picking.java",
+      "extends": "PBase",
+      "fileLines": 489,
+      "layoutRefs": [
+        "activity_frm_danado_picking",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_danado_picking",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_list_prod_reemplazo_picking",
+        "frm_picking_datos"
+      ],
+      "methodCount": 19,
+      "wmCalls": [
+        {
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "lineNum": 294,
+          "type": "soap"
+        },
+        {
+          "wm": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+          "lineNum": 299,
+          "type": "soap"
+        },
+        {
+          "wm": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+          "lineNum": 305,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+        "Ubicacion_Valida_By_IdUbicacion_And_IdEstado"
+      ]
+    },
+    {
+      "className": "frm_list_rec_prod_detalle",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+      "extends": "PBase",
+      "fileLines": 1068,
+      "layoutRefs": [
+        "activity_frm_list_rec_prod_detalle"
+      ],
+      "primaryLayout": "activity_frm_list_rec_prod_detalle",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_recepcion_datos",
+        "Mainmenu"
+      ],
+      "methodCount": 27,
+      "wmCalls": [
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 752,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Detalle_By_IdRecepcionDet_HH",
+          "lineNum": 756,
+          "type": "soap"
+        },
+        {
+          "wm": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+          "lineNum": 761,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_Producto_By_IdProductoBodega",
+        "Get_Detalle_By_IdRecepcionDet_HH",
+        "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet"
+      ]
+    },
+    {
+      "className": "frm_datos_stock_res",
+      "package": "com.dts.tom.Transacciones.ReubicarStockRes",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_datos_stock_res.java",
+      "extends": "PBase",
+      "fileLines": 639,
+      "layoutRefs": [
+        "activity_frm_datos_stock_res"
+      ],
+      "primaryLayout": "activity_frm_datos_stock_res",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 24,
+      "wmCalls": [
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 554,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+          "lineNum": 560,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Ubicaciones_Reservadas_Pallet_Mixto",
+          "lineNum": 568,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+        "Actualizar_Ubicaciones_Reservadas_Pallet_Mixto"
+      ]
+    },
+    {
+      "className": "frm_danado_verificacion",
+      "package": "com.dts.tom.Transacciones.Verificacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java",
+      "extends": "PBase",
+      "fileLines": 605,
+      "layoutRefs": [
+        "activity_frm_danado_verificacion",
+        "simple_spinner_item",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_danado_verificacion",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_list_prod_reemplazo_verif",
+        "frm_verificacion_consolidada_detalle"
+      ],
+      "methodCount": 23,
+      "wmCalls": [
+        {
+          "wm": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+          "lineNum": 326,
+          "type": "soap"
+        },
+        {
+          "wm": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+          "lineNum": 331,
+          "type": "soap"
+        },
+        {
+          "wm": "Ubicacion_Valida_By_IdUbicacion_And_IdEstado",
+          "lineNum": 338,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 3,
+      "uniqueWMsCalled": [
+        "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+        "Ubicacion_Valida_By_IdUbicacion_And_IdEstado"
+      ]
+    },
+    {
+      "className": "frm_tareas_cambio_ubicacion",
+      "package": "com.dts.tom.Transacciones.CambioUbicacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_tareas_cambio_ubicacion.java",
+      "extends": "PBase",
+      "fileLines": 451,
+      "layoutRefs": [
+        "activity_frm_tareas_cambio_ubicacion"
+      ],
+      "primaryLayout": "activity_frm_tareas_cambio_ubicacion",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_detalle_cambio_ubicacion",
+        "frm_cambio_ubicacion_ciega"
+      ],
+      "methodCount": 17,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+          "lineNum": 332,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador",
+          "lineNum": 338,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador"
+      ]
+    },
+    {
+      "className": "frm_consulta_stock_detalleCI",
+      "package": "com.dts.tom.Transacciones.ConsultaStock",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock_detalleCI.java",
+      "extends": "PBase",
+      "fileLines": 823,
+      "layoutRefs": [
+        "activity_frm_consulta_stock_detalle_c_i",
+        "impresion_cantidad",
+        "simple_spinner_dropdown_item"
+      ],
+      "primaryLayout": "activity_frm_consulta_stock_detalle_c_i",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_cambio_ubicacion_ciega"
+      ],
+      "methodCount": 18,
+      "wmCalls": [
+        {
+          "wm": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+          "lineNum": 262,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Producto_By_IdProductoBodega",
+          "lineNum": 265,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+        "Get_Producto_By_IdProductoBodega"
+      ]
+    },
+    {
+      "className": "frm_inv_ini_tramos",
+      "package": "com.dts.tom.Transacciones.InventarioInicial",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_tramos.java",
+      "extends": "PBase",
+      "fileLines": 442,
+      "layoutRefs": [
+        "activity_frm_inv_ini_tramos",
+        "frm_tipo_conteo"
+      ],
+      "primaryLayout": "activity_frm_inv_ini_tramos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_inv_ini_conteo",
+        "frm_inv_ini_verificacion"
+      ],
+      "methodCount": 17,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Inventario_Tramos_By_IdTarea",
+          "lineNum": 273,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 276,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Get_All_Inventario_Tramos_By_IdTarea",
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega"
+      ]
+    },
+    {
+      "className": "frm_editar_ubicacion_picking",
+      "package": "com.dts.tom.Transacciones.Picking",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_editar_ubicacion_picking.java",
+      "extends": "PBase",
+      "fileLines": 227,
+      "layoutRefs": [
+        "activity_editar_ubicacion_picking"
+      ],
+      "primaryLayout": "activity_editar_ubicacion_picking",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 14,
+      "wmCalls": [
+        {
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+          "lineNum": 88,
+          "type": "soap"
+        },
+        {
+          "wm": "Actualizar_Ubicaciones_Reservadas_By_IdStock",
+          "lineNum": 91,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Get_Ubicacion_By_Codigo_Barra_And_IdBodega",
+        "Actualizar_Ubicaciones_Reservadas_By_IdStock"
+      ]
+    },
+    {
+      "className": "frm_guardar_rfid",
+      "package": "com.dts.tom.Transacciones.RFID",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java",
+      "extends": "PBase",
+      "fileLines": 732,
+      "layoutRefs": [
+        "activity_frm_guardar_rfid"
+      ],
+      "primaryLayout": "activity_frm_guardar_rfid",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "Mainmenu",
+        "frm_menu_rfid"
+      ],
+      "methodCount": 24,
+      "wmCalls": [
+        {
+          "wm": "Guardar_Encabezado_RFID",
+          "lineNum": 165,
+          "type": "soap"
+        },
+        {
+          "wm": "Agregar_Detalle_A_Encabezado_RFID",
+          "lineNum": 170,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Guardar_Encabezado_RFID",
+        "Agregar_Detalle_A_Encabezado_RFID"
+      ]
+    },
+    {
+      "className": "frm_procesar_rfid",
+      "package": "com.dts.tom.Transacciones.RFID",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java",
+      "extends": "PBase",
+      "fileLines": 671,
+      "layoutRefs": [
+        "activity_frm_procesar_rfid"
+      ],
+      "primaryLayout": "activity_frm_procesar_rfid",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "Mainmenu",
+        "frm_guardar_rfid"
+      ],
+      "methodCount": 20,
+      "wmCalls": [
+        {
+          "wm": "Obtener_Barras_Pallet_I_Nav_Lote",
+          "lineNum": 132,
+          "type": "soap"
+        },
+        {
+          "wm": "Obtener_EPC_Con_Existencia_Para_Salida",
+          "lineNum": 137,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Obtener_Barras_Pallet_I_Nav_Lote",
+        "Obtener_EPC_Con_Existencia_Para_Salida"
+      ]
+    },
+    {
+      "className": "frm_reabastecimiento_manual",
+      "package": "com.dts.tom.Transacciones.Reabastecimiento",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_reabastecimiento_manual.java",
+      "extends": "PBase",
+      "fileLines": 315,
+      "layoutRefs": [
+        "activity_frm_reabastecimiento_manual"
+      ],
+      "primaryLayout": "activity_frm_reabastecimiento_manual",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "frm_datos_reabastecimiento"
+      ],
+      "methodCount": 15,
+      "wmCalls": [
+        {
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "lineNum": 219,
+          "type": "soap"
+        },
+        {
+          "wm": "Get_All_Products_For_Reabastecimiento",
+          "lineNum": 224,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 2,
+      "uniqueWMsCalled": [
+        "Get_BeProducto_By_Codigo_For_HH",
+        "Get_All_Products_For_Reabastecimiento"
+      ]
+    },
+    {
+      "className": "frm_list_inventario",
+      "package": "com.dts.tom.Transacciones.Inventario",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Inventario/frm_list_inventario.java",
+      "extends": "PBase",
+      "fileLines": 319,
+      "layoutRefs": [
+        "activity_frm_list_inventario"
+      ],
+      "primaryLayout": "activity_frm_list_inventario",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "frm_inv_ini_tramos",
+        "frm_inv_cic_conteo"
+      ],
+      "methodCount": 15,
+      "wmCalls": [
+        {
+          "wm": "Get_All_Inventario_By_IdBodega_And_IdOperador",
+          "lineNum": 236,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 1,
+      "uniqueWMsCalled": [
+        "Get_All_Inventario_By_IdBodega_And_IdOperador"
+      ]
+    },
+    {
+      "className": "frm_list_packing_cerrados",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_list_packing_cerrados.java",
+      "extends": "PBase",
+      "fileLines": 403,
+      "layoutRefs": [
+        "activity_frm_list_packing_cerrados"
+      ],
+      "primaryLayout": "activity_frm_list_packing_cerrados",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 11,
+      "wmCalls": [
+        {
+          "wm": "Get_LicenciasPacking_Cerrado",
+          "lineNum": 358,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 1,
+      "uniqueWMsCalled": [
+        "Get_LicenciasPacking_Cerrado"
+      ]
+    },
+    {
+      "className": "frm_inventario_rfid",
+      "package": "com.dts.tom.Transacciones.RFID",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_inventario_rfid.java",
+      "extends": "PBase",
+      "fileLines": 631,
+      "layoutRefs": [
+        "activity_frm_existencias_rfid"
+      ],
+      "primaryLayout": "activity_frm_existencias_rfid",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 34,
+      "wmCalls": [
+        {
+          "wm": "Cargar_Stock_RFID_Paginado",
+          "lineNum": 473,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 1,
+      "uniqueWMsCalled": [
+        "Cargar_Stock_RFID_Paginado"
+      ]
+    },
+    {
+      "className": "frm_lista_stock_res",
+      "package": "com.dts.tom.Transacciones.ReubicarStockRes",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_lista_stock_res.java",
+      "extends": "PBase",
+      "fileLines": 339,
+      "layoutRefs": [
+        "activity_frm_lista_stock_res"
+      ],
+      "primaryLayout": "activity_frm_lista_stock_res",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "frm_datos_stock_res"
+      ],
+      "methodCount": 13,
+      "wmCalls": [
+        {
+          "wm": "Get_Stock_Res_By_Codigo_And_IdUbicacion",
+          "lineNum": 272,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 1,
+      "uniqueWMsCalled": [
+        "Get_Stock_Res_By_Codigo_And_IdUbicacion"
+      ]
+    },
+    {
+      "className": "frm_list_prod_reemplazados",
+      "package": "com.dts.tom.Transacciones.Verificacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazados.java",
+      "extends": "PBase",
+      "fileLines": 237,
+      "layoutRefs": [
+        "activity_frm_list_prod_reemplazados"
+      ],
+      "primaryLayout": "activity_frm_list_prod_reemplazados",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 9,
+      "wmCalls": [
+        {
+          "wm": "Get_Reemplazo_Producto_By_IdPedidoEnc",
+          "lineNum": 110,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 1,
+      "uniqueWMsCalled": [
+        "Get_Reemplazo_Producto_By_IdPedidoEnc"
+      ]
+    },
+    {
+      "className": "frm_verificacion_consolidada_detalle",
+      "package": "com.dts.tom.Transacciones.Verificacion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_consolidada_detalle.java",
+      "extends": "PBase",
+      "fileLines": 434,
+      "layoutRefs": [
+        "activity_frm_verificacion_consolidada_detalle",
+        "frm_fecha_vencimiento"
+      ],
+      "primaryLayout": "activity_frm_verificacion_consolidada_detalle",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_danado_verificacion"
+      ],
+      "methodCount": 15,
+      "wmCalls": [
+        {
+          "wm": "Get_Detalle_Verificacion_Consolidada_LFV",
+          "lineNum": 315,
+          "type": "soap"
+        }
+      ],
+      "wmCallCount": 1,
+      "uniqueWMsCalled": [
+        "Get_Detalle_Verificacion_Consolidada_LFV"
+      ]
+    },
+    {
+      "className": "PBase",
+      "package": "com.dts.tom",
+      "path": "/app/src/main/java/com/dts/tom/PBase.java",
+      "extends": "Activity",
+      "fileLines": 216,
+      "layoutRefs": [
+        "activity_pbase"
+      ],
+      "primaryLayout": "activity_pbase",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 19,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "PrintReceiverActivity",
+      "package": "com.dts.tom",
+      "path": "/app/src/main/java/com/dts/tom/PrintReceiverActivity.java",
+      "extends": "Activity",
+      "fileLines": 286,
+      "layoutRefs": [
+        "activity_print_receiver"
+      ],
+      "primaryLayout": "activity_print_receiver",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "MainActivity"
+      ],
+      "methodCount": 18,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_lista_packing_lotes",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing_lotes.java",
+      "extends": "PBase",
+      "fileLines": 269,
+      "layoutRefs": [
+        "activity_frm_lista_packing_lotes"
+      ],
+      "primaryLayout": "activity_frm_lista_packing_lotes",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 11,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_lista_packing_lp",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing_lp.java",
+      "extends": "PBase",
+      "fileLines": 255,
+      "layoutRefs": [
+        "activity_frm_lista_packing_lp",
+        "dialog_form"
+      ],
+      "primaryLayout": "activity_frm_lista_packing_lp",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 11,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_imagen_completa",
+      "package": "com.dts.tom.Transacciones.ProcesaImagen",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ProcesaImagen/frm_imagen_completa.java",
+      "extends": "PBase",
+      "fileLines": 52,
+      "layoutRefs": [
+        "activity_imagen_completa"
+      ],
+      "primaryLayout": "activity_imagen_completa",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 3,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_imagenes",
+      "package": "com.dts.tom.Transacciones.ProcesaImagen",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ProcesaImagen/frm_imagenes.java",
+      "extends": "PBase",
+      "fileLines": 130,
+      "layoutRefs": [
+        "activity_frm_imagenes"
+      ],
+      "primaryLayout": "activity_frm_imagenes",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "frm_imagen_completa"
+      ],
+      "methodCount": 7,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_menu_rfid",
+      "package": "com.dts.tom.Transacciones.RFID",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_menu_rfid.java",
+      "extends": "PBase",
+      "fileLines": 123,
+      "layoutRefs": [
+        "activity_frm_menu_rfid"
+      ],
+      "primaryLayout": "activity_frm_menu_rfid",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [
+        "frm_recepcion_rfid",
+        "frm_inventario_rfid"
+      ],
+      "methodCount": 8,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_recepcion_rfid",
+      "package": "com.dts.tom.Transacciones.RFID",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid.java",
+      "extends": "PBase",
+      "fileLines": 1297,
+      "layoutRefs": [
+        "activity_frm_recepcion_rfid"
+      ],
+      "primaryLayout": "activity_frm_recepcion_rfid",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [
+        "frm_procesar_rfid"
+      ],
+      "methodCount": 35,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frmFirma",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frmFirma.java",
+      "extends": "PBase",
+      "fileLines": 25,
+      "layoutRefs": [
+        "activity_frm_firma"
+      ],
+      "primaryLayout": "activity_frm_firma",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 1,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_rec_ftos",
+      "package": "com.dts.tom.Transacciones.Recepcion",
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_rec_ftos.java",
+      "extends": "PBase",
+      "fileLines": 133,
+      "layoutRefs": [
+        "activity_frm_rec_ftos"
+      ],
+      "primaryLayout": "activity_frm_rec_ftos",
+      "stringRefs": [
+        "app_name"
+      ],
+      "stringRefCount": 1,
+      "intentTargets": [],
+      "methodCount": 6,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    },
+    {
+      "className": "frm_listado_tareas",
+      "package": "com.dts.tom",
+      "path": "/app/src/main/java/com/dts/tom/frm_listado_tareas.java",
+      "extends": "AppCompatActivity",
+      "fileLines": 15,
+      "layoutRefs": [
+        "activity_frm_listado_tareas"
+      ],
+      "primaryLayout": "activity_frm_listado_tareas",
+      "stringRefs": [],
+      "stringRefCount": 0,
+      "intentTargets": [],
+      "methodCount": 1,
+      "wmCalls": [],
+      "wmCallCount": 0,
+      "uniqueWMsCalled": []
+    }
+  ]
+}
