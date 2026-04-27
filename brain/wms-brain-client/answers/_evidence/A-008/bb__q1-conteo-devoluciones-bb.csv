@@ -1,0 +1,5 @@
+tipo_transaccion,clase,enviado,cnt
+INGRESO,normal,0,110795
+INGRESO,normal,1,107
+SALIDA,normal,0,145117
+SALIDA,normal,1,277310

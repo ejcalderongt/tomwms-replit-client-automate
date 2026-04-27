@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "rowCount": 2,
+  "rows": [
+    {
+      "tipo_cantidad": "entera",
+      "tipo_transaccion": "INGRESO",
+      "cnt": 4391,
+      "min_val": 1,
+      "max_val": 4256
+    },
+    {
+      "tipo_cantidad": "entera",
+      "tipo_transaccion": "SALIDA",
+      "cnt": 19799,
+      "min_val": 1,
+      "max_val": 7344
+    }
+  ],
+  "ms": 416
+}

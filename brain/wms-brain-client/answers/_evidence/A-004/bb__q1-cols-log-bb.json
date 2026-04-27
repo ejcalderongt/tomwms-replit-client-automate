@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "rowCount": 15,
+  "rows": [
+    {
+      "COLUMN_NAME": "IdError",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "IdEmpresa",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "IdBodega",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "Fecha",
+      "DATA_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "MensajeError",
+      "DATA_TYPE": "nvarchar",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": -1
+    },
+    {
+      "COLUMN_NAME": "IdPedidoEnc",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "IdPickingEnc",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "IdRecepcionEnc",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "IdUsuarioAgr",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "Line_No",
+      "DATA_TYPE": "int",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "Item_No",
+      "DATA_TYPE": "nvarchar",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": 50
+    },
+    {
+      "COLUMN_NAME": "UmBas",
+      "DATA_TYPE": "nvarchar",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": 50
+    },
+    {
+      "COLUMN_NAME": "Variant_Code",
+      "DATA_TYPE": "nvarchar",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": 50
+    },
+    {
+      "COLUMN_NAME": "Cantidad",
+      "DATA_TYPE": "float",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": null
+    },
+    {
+      "COLUMN_NAME": "Referencia_Documento",
+      "DATA_TYPE": "nvarchar",
+      "IS_NULLABLE": "YES",
+      "CHARACTER_MAXIMUM_LENGTH": 50
+    }
+  ],
+  "ms": 695
+}

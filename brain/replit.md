@@ -135,6 +135,72 @@ URL: **https://tomwms-wikidev.replit.app**
 
 **Regla**: cuando necesite info detallada del WMS y no esté en este replit.md ni en el skill, **primero consultar el wiki vía `/api/*`** antes de buscar en código.
 
+## 7-bis. wms-brain-client (questions ↔ answers ↔ learnings)
+
+El brain WMS usa un protocolo **question/answer card** versionado
+(`protocolVersion: 1`) para destilar conocimiento operativo del
+WMS productivo de manera reproducible y auditable.
+
+### Layout en `brain/wms-brain-client/`
+
+- `templates/` — plantillas (`answer-card.template.md`,
+  `learning-card.template.md`).
+- `examples/` — questions iniciales Q-001..Q-008 (referencia).
+- `questions/` — questions activas pendientes (Q-009..Q-013 ahora).
+- `answers/` — answer cards A-NNN respondiendo a Q-NNN.
+- `answers/_evidence/A-NNN/` — CSV + JSON de cada query ejecutada
+  (sanitizado: codenames de cliente, sin servidores ni claves).
+- `brain/learnings/` — destilado long-lived (L-NNN) con
+  implicancias y acciones.
+
+### Tanda 1 ejecutada (2026-04-27)
+
+Respondidas 8 questions (Q-001..Q-008 → A-001..A-008) ejecutando
+queries read-only contra K7-PRD y BB-PRD. Resumen de veredictos:
+
+| Card | Verdict | Confidence | Hallazgo clave |
+|---|---|---|---|
+| A-001 | partial | medium | NavSync BB SALIDA: 99.5% en 0 seg, writer externo, **0 actividad ultimos 30d** |
+| A-002 | confirmed | high | K7 outbox 100% enteros — SAPSYNCKILLIOS sin redondeo |
+| A-003 | confirmed | high | 110k INGRESOS BB pendientes son **por diseño** (NavSync solo SALIDA tipo_doc=3) |
+| A-004 | confirmed | high | `log_error_wms`: 15 cols, sin severidad, mezcla AVISOs + trazas + errores |
+| A-005 | partial | medium | 27 tablas config + 13 flags `*_sap` confirman multi-tenancy |
+| A-006 | inconclusive | low | DBs Aurora no accesibles desde host del agente |
+| A-007 | confirmed | high | Outbox K7 100% por linea de detalle (1:1 con `IdRecepcionDet`/`IdDespachoDet`) |
+| A-008 | confirmed | high | Outbox NO maneja devoluciones hoy (esquema preparado, 0 uso real) |
+
+### Learnings consolidadas (`brain/learnings/`)
+
+- **L-009** SAPSYNCKILLIOS solo procesa cantidades enteras
+- **L-010** NavSync de BB no procesa INGRESOS — los 110k pendientes son por diseño
+- **L-011** `log_error_wms` es bitacora mixta, no log de errores puros
+- **L-012** **NavSync solo procesa SALIDAs por diseño** (writer externo, latencia ~0 seg)
+- **L-013** Outbox WMS es por linea de detalle (1 outbox = 1 RecepcionDet/DespachoDet)
+
+### Questions abiertas tanda 2 (`brain/wms-brain-client/questions/`)
+
+- **Q-009** Identificar binario y host del NavSync de BB (esta corriendo?)
+- **Q-010** BB tiene 145k SALIDAs `IdTipoDocumento=1` y 30k tipo=4 sin procesar — son devoluciones?
+- **Q-011** Cadencia y caller real del SAPSYNCKILLIOS (writer de `enviado=1` en K7)
+- **Q-012** Convencion de severidad / prefijos en `log_error_wms` (PEND-11 follow-up)
+- **Q-013** Habilitar acceso read-only a DBs Aurora y resto de clientes
+
+### Convenciones del protocolo
+
+- Naming: `Q-NNN-<slug>.md`, `A-NNN-<slug>.md`, `L-NNN-<slug>.md`.
+- Frontmatter YAML con `protocolVersion: 1`.
+- Veredictos validos: `confirmed | partial | inconclusive | rejected`.
+- Confianza: `high | medium | low`.
+- Codenames de cliente: K7=Killios, BB=BYB, C9=CEALSA, ID=Idealsa,
+  MH=Merhonsa, MC=Mercosal, MP=Mercopan, IN=Inelac, MS=MHS,
+  BF=Becofarma, MM=Mampa, LC=LaCumbre.
+- Operator slug `agent-replit` cuando el card es generado por el
+  agente (sin intervencion humana directa).
+- Las queries en suggestedQueries deben ser **read-only**; el
+  runner local del agente las valida con un check sintactico
+  (rechaza INSERT/UPDATE/DELETE/MERGE/EXEC etc., excluyendo
+  comentarios y string literals).
+
 ## 7. Skill local
 
 Para cualquier tarea WMS (bug fix, nueva feature, análisis, etc.), **leer primero** `.local/skills/wms-tomwms/SKILL.md`. Contiene playbooks específicos:
@@ -199,51 +265,3 @@ El brain mantiene **dos skills paralelos** porque el WMS es un sistema de dos ca
 - **Cambiás reglas de negocio en SP/BOF** → ¿la HH muestra el nuevo error de manera entendible?
 
 Si cualquiera de estas tiene respuesta negativa o desconocida, el cambio no es seguro y se documenta en `brain/_inbox/_proposals/` antes de aplicarlo.
----
-
-## Decisiones registradas
-
-### 2026-04-27 — Bump SCHEMA_VERSION del brain bridge a "2"
-
-**Estado**: aprobado y aplicado.
-
-**Resumen**:
-
-- `scripts/brain_bridge.mjs` (rama main del repo de exchange) actualizado:
-  - `SCHEMA_VERSION = "2"`
-  - 3 tipos nuevos: `question_request`, `question_answer`, `learning_proposed`.
-  - 1 estado terminal nuevo: `answered` (para question_request resueltos).
-  - 3 analyzers nuevos con dispatch por type: `analyzeQuestionRequest`,
-    `analyzeQuestionAnswer`, `analyzeLearningProposed`.
-  - El analyze de un `question_answer` flipea automaticamente el
-    `question_request` referenciado a `status=answered`.
-  - Validacion: `schema_version=1 + tipo_v2` se rechaza en `notify`.
-
-**Compatibilidad**: total. Eventos schema 1 siguen procesandose por el
-analyzer original (`analyzeWmsChange`). Eventos viejos en `_inbox/`,
-`_proposals/`, `_processed/` no requieren migracion.
-
-**Documentacion actualizada**:
-
-- `brain/BRIDGE.md` (este repo): §2.1 con los tres tipos v2, §3.2 con
-  el estado `answered`.
-- `brain/decisions/005-bridge-schema-v2-bump.md` (este repo): registro
-  formal.
-- `PROTOCOL.md` (rama `wms-brain-client`): §4 marcada como aceptada,
-  §5 (workaround `directive+tags`) eliminada con changelog.
-- `CMDLETS.md` (rama `wms-brain-client`): `New-WmsBrainQuestionEvent`
-  pasa a emitir `-Type question_request` nativo.
-
-**Trazabilidad**:
-
-- Propuesta original: `wms-brain-client/EXTENSION-V2-PROPOSAL.md` §1-§7.
-- Sign-off: este registro (`brain/replit.md`, 2026-04-27).
-- Test E2E: ejecutado en sesion del agente Replit. Cycle
-  `question_request` para Q-001: notify -> list -> analyze -> proposed
-  -> notify(question_answer) -> analyze -> answered. Verificado OK.
-
-**Riesgo residual**: bajo. El cliente PowerShell (en construccion en la
-rama `wms-brain-client`) debe leer `SCHEMA_VERSION` del .mjs en
-`Test-WmsBrainEnvironment` y emitir `schema_version: "2"` en los
-nuevos tipos. Si emite v1 + tipo v2, el bridge lo rechaza con error
-claro.

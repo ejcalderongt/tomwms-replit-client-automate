@@ -1,0 +1,87 @@
+{
+  "ok": true,
+  "rowCount": 20,
+  "rows": [
+    {
+      "idrecepcionenc": 434,
+      "lineas_outbox": 36
+    },
+    {
+      "idrecepcionenc": 162,
+      "lineas_outbox": 36
+    },
+    {
+      "idrecepcionenc": 71,
+      "lineas_outbox": 35
+    },
+    {
+      "idrecepcionenc": 231,
+      "lineas_outbox": 33
+    },
+    {
+      "idrecepcionenc": 337,
+      "lineas_outbox": 33
+    },
+    {
+      "idrecepcionenc": 483,
+      "lineas_outbox": 32
+    },
+    {
+      "idrecepcionenc": 400,
+      "lineas_outbox": 32
+    },
+    {
+      "idrecepcionenc": 193,
+      "lineas_outbox": 31
+    },
+    {
+      "idrecepcionenc": 88,
+      "lineas_outbox": 31
+    },
+    {
+      "idrecepcionenc": 203,
+      "lineas_outbox": 31
+    },
+    {
+      "idrecepcionenc": 8,
+      "lineas_outbox": 31
+    },
+    {
+      "idrecepcionenc": 303,
+      "lineas_outbox": 30
+    },
+    {
+      "idrecepcionenc": 339,
+      "lineas_outbox": 29
+    },
+    {
+      "idrecepcionenc": 349,
+      "lineas_outbox": 29
+    },
+    {
+      "idrecepcionenc": 46,
+      "lineas_outbox": 28
+    },
+    {
+      "idrecepcionenc": 3,
+      "lineas_outbox": 28
+    },
+    {
+      "idrecepcionenc": 404,
+      "lineas_outbox": 28
+    },
+    {
+      "idrecepcionenc": 504,
+      "lineas_outbox": 28
+    },
+    {
+      "idrecepcionenc": 393,
+      "lineas_outbox": 28
+    },
+    {
+      "idrecepcionenc": 72,
+      "lineas_outbox": 27
+    }
+  ],
+  "ms": 338
+}

@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "rowCount": 3,
+  "rows": [
+    {
+      "job_name": "syspolicy_purge_history",
+      "step_name": "Verify that automation is enabled.",
+      "enabled": 1,
+      "step_command_preview": "IF (msdb.dbo.fn_syspolicy_is_automation_enabled() != 1)\r\n        BEGIN\r\n            RAISERROR(34022, 16, 1)\r\n        END"
+    },
+    {
+      "job_name": "syspolicy_purge_history",
+      "step_name": "Purge history.",
+      "enabled": 1,
+      "step_command_preview": "EXEC msdb.dbo.sp_syspolicy_purge_history"
+    },
+    {
+      "job_name": "syspolicy_purge_history",
+      "step_name": "Erase Phantom System Health Records.",
+      "enabled": 1,
+      "step_command_preview": "$SQLServerConnection = New-Object System.Data.SqlClient.SqlConnection\r\n$SQLServerConnection.ConnectionString = \"Data Source=$(ESCAPE_NONE(SRVR));Initial Catalog=master;Integrated Security=SSPI;Application Name=syspolicy_purge_history\"\r\n$PolicyStoreConnection = New-Object Microsoft.SqlServer.Management.Sdk.Sfc.SqlStoreConnection($SQLServerConnection)\r\n$PolicyStore = New-Object Microsoft.SqlServer.M"
+    }
+  ],
+  "ms": 444
+}

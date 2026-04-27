@@ -1,0 +1,14 @@
+TABLE_NAME,COLUMN_NAME
+bodega,interface_SAP
+bodega,restringir_areas_sap
+cliente,IdBodegaAreaSAP
+i_nav_config_enc,inferir_bonificacion_pedido_sap
+i_nav_config_enc,interface_sap
+i_nav_config_enc,sap_control_draft_ajustes
+i_nav_config_enc,sap_control_draft_traslados
+proveedor,IdBodegaAreaSAP
+road_p_vendedor,devolucion_sap
+trans_ubic_hh_enc,es_traslado_sap
+VW_Productividad_Picking,Solicitud_SAP
+VW_Proveedor,IdBodegaAreaSAP
+VW_TransUbicacionHhEnc,es_traslado_sap

@@ -1,0 +1,88 @@
+{
+  "ok": true,
+  "rowCount": 27,
+  "rows": [
+    {
+      "TABLE_NAME": "bodega_monitor_parametro"
+    },
+    {
+      "TABLE_NAME": "bodega_parametros"
+    },
+    {
+      "TABLE_NAME": "configuracion_alias_campos"
+    },
+    {
+      "TABLE_NAME": "configuracion_barra_pallet"
+    },
+    {
+      "TABLE_NAME": "configuracion_qa"
+    },
+    {
+      "TABLE_NAME": "configuracion_usuario_det"
+    },
+    {
+      "TABLE_NAME": "configuracion_usuario_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_area_bodega"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_det"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_ent"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_producto_estado"
+    },
+    {
+      "TABLE_NAME": "Inv_SAP"
+    },
+    {
+      "TABLE_NAME": "p_parametro"
+    },
+    {
+      "TABLE_NAME": "producto_parametro_a"
+    },
+    {
+      "TABLE_NAME": "producto_parametro_b"
+    },
+    {
+      "TABLE_NAME": "producto_parametros"
+    },
+    {
+      "TABLE_NAME": "stock_parametro"
+    },
+    {
+      "TABLE_NAME": "trans_picking_det_parametros"
+    },
+    {
+      "TABLE_NAME": "trans_re_det_parametros"
+    },
+    {
+      "TABLE_NAME": "VW_Configuracion_Usuario_Template"
+    },
+    {
+      "TABLE_NAME": "VW_Configuracioninv"
+    },
+    {
+      "TABLE_NAME": "VW_navdetalleconfiguracion"
+    },
+    {
+      "TABLE_NAME": "VW_Parametro"
+    },
+    {
+      "TABLE_NAME": "VW_ProductoBodegaParametro"
+    },
+    {
+      "TABLE_NAME": "VW_ProductoParametro"
+    },
+    {
+      "TABLE_NAME": "VW_Stock_Serie_Parametro"
+    }
+  ],
+  "ms": 376
+}

@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "rowCount": 1,
+  "rows": [
+    {
+      "TABLE_NAME": "trans_inv_teorico_erp"
+    }
+  ],
+  "ms": 352
+}

@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "rowCount": 3,
+  "rows": [
+    {
+      "modulo": "OTRO",
+      "cnt": 61448
+    },
+    {
+      "modulo": "PEDIDO",
+      "cnt": 4672
+    },
+    {
+      "modulo": "RECEPCION",
+      "cnt": 219
+    }
+  ],
+  "ms": 488
+}

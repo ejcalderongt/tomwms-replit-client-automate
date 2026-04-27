@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "rowCount": 3,
+  "rows": [
+    {
+      "TABLE_NAME": "motivo_devolucion"
+    },
+    {
+      "TABLE_NAME": "motivo_devolucion_bodega"
+    },
+    {
+      "TABLE_NAME": "VW_MotivoDevolucion"
+    }
+  ],
+  "ms": 355
+}

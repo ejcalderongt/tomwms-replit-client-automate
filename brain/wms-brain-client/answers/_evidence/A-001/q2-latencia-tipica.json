@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "rowCount": 3,
+  "rows": [
+    {
+      "rango_latencia": "1-5 seg",
+      "cnt": 1401
+    },
+    {
+      "rango_latencia": "0 seg (instantaneo)",
+      "cnt": 275866
+    },
+    {
+      "rango_latencia": "> 1 hora",
+      "cnt": 43
+    }
+  ],
+  "ms": 3277
+}

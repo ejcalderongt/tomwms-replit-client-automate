@@ -1,0 +1,31 @@
+error_truncado,cnt,primero,ultimo
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 70 y TipoTarea 2,1800,2025-06-03T11:19:15.407Z,2025-08-19T08:00:40.757Z
+Agregar_Marcaje Referencia a objeto no establecida como instancia de un objeto.,1179,2025-06-10T06:02:58.973Z,2025-08-19T08:49:46.873Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 70,915,2025-06-10T13:16:38.527Z,2025-08-18T15:45:00.303Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 67 y TipoTarea 2,868,2025-06-05T14:01:54.650Z,2025-08-19T08:49:01.157Z
+Error_08012025_Marcaje A: Agregar_Marcaje Referencia a objeto no establecida como instancia de un objeto.,710,2025-07-10T05:55:56.527Z,2025-08-19T08:49:46.873Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 43 y TipoTarea 2,707,2025-06-04T12:41:26.937Z,2025-08-18T12:55:11.517Z
+Error_08012025_Marcaje: Agregar_Marcaje Referencia a objeto no establecida como instancia de un objeto.,457,2025-06-11T06:02:27.093Z,2025-07-09T09:08:56.187Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 43,456,2025-06-10T09:47:04.800Z,2025-08-18T12:55:11.517Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 64 y TipoTarea 2,442,2025-06-03T07:49:18.110Z,2025-08-18T17:51:10.700Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 62 y TipoTarea 2,355,2025-06-04T14:22:57.057Z,2025-08-18T12:26:26.500Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 76 y TipoTarea 2,308,2025-06-03T14:53:05.163Z,2025-08-11T09:26:20.297Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 72 y TipoTarea 2,242,2025-06-03T16:56:47.837Z,2025-08-13T12:11:41.300Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 62,214,2025-06-10T11:15:44.003Z,2025-08-18T12:26:26.500Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 75 y TipoTarea 2,208,2025-06-03T10:23:57.313Z,2025-08-14T11:41:12.300Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 50 y TipoTarea 2,207,2025-06-10T09:11:02.397Z,2025-08-14T11:58:02.080Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1458 ubicacion anterior 0opoerador 67,199,2025-06-17T14:01:20.393Z,2025-08-18T10:34:22.837Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1459 ubicacion anterior 0opoerador 67,191,2025-06-13T10:39:54.937Z,2025-08-11T11:52:50.470Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1450 ubicacion anterior 0opoerador 76,187,2025-06-23T12:17:12.850Z,2025-08-08T11:19:01.140Z
+Reemplazar_ListaPu_By_Stock Error_Reemplazo_A: No es posible reservar más de lo solicitado,174,2025-07-10T11:51:02.947Z,2025-08-18T19:23:32.193Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 66 y TipoTarea 2,147,2025-06-04T12:53:31.787Z,2025-08-11T12:31:17.443Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1450 ubicacion anterior 0opoerador 67,138,2025-06-20T11:55:39.630Z,2025-08-18T10:27:24.687Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1460 ubicacion anterior 0opoerador 67,133,2025-06-11T10:57:49.557Z,2025-08-18T09:24:47.707Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 109,117,2025-06-21T08:56:59.730Z,2025-08-18T18:08:45.420Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 109 y TipoTarea 2,117,2025-06-21T08:56:59.730Z,2025-08-18T18:08:45.420Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 1450 ubicacion anterior 0opoerador 75,116,2025-06-23T11:39:54.743Z,2025-08-14T11:41:12.300Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 50,110,2025-06-26T07:34:47.803Z,2025-07-31T10:28:43.457Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 72,104,2025-07-08T11:09:41.227Z,2025-08-13T11:49:17.153Z
+Picking_Anulado,94,2025-06-05T17:18:25.780Z,2025-08-18T15:40:09.913Z
+Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 56 y TipoTarea 2,93,2025-06-06T11:12:28.747Z,2025-08-14T11:42:57.143Z
+AVISO_20242211_HH_CambioEstadoUbic: ubicacion: 716 ubicacion anterior 0opoerador 64,90,2025-06-10T10:52:31.977Z,2025-08-05T12:18:49.070Z

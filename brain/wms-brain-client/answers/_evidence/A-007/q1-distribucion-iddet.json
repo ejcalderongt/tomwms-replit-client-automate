@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "rowCount": 2,
+  "rows": [
+    {
+      "tipo_transaccion": "INGRESO",
+      "con_recepcion_det": 4394,
+      "con_despacho_det": 0,
+      "sin_ningun_det": 0,
+      "total": 4394
+    },
+    {
+      "tipo_transaccion": "SALIDA",
+      "con_recepcion_det": 0,
+      "con_despacho_det": 19799,
+      "sin_ningun_det": 0,
+      "total": 19799
+    }
+  ],
+  "ms": 371
+}

@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "rowCount": 3,
+  "rows": [
+    {
+      "sp_name": "CLBD_PRC",
+      "modify_date": "2023-12-09T23:20:17.730Z"
+    },
+    {
+      "sp_name": "CLBD_PRC_SIN_INV_INI",
+      "modify_date": "2022-05-08T20:32:41.007Z"
+    },
+    {
+      "sp_name": "CLBD_PRC_BY_IDBODEGA",
+      "modify_date": "2020-01-20T17:38:19.183Z"
+    }
+  ],
+  "ms": 2930
+}

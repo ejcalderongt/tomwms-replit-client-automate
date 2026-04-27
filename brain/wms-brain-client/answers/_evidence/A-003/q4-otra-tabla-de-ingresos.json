@@ -1,0 +1,100 @@
+{
+  "ok": true,
+  "rowCount": 31,
+  "rows": [
+    {
+      "TABLE_NAME": "i_nav_acuerdo"
+    },
+    {
+      "TABLE_NAME": "i_nav_acuerdo_det"
+    },
+    {
+      "TABLE_NAME": "i_nav_acuerdo_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_barras_pallet"
+    },
+    {
+      "TABLE_NAME": "i_nav_bodega"
+    },
+    {
+      "TABLE_NAME": "i_nav_cliente"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_area_bodega"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_det"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_ent"
+    },
+    {
+      "TABLE_NAME": "i_nav_conversion"
+    },
+    {
+      "TABLE_NAME": "i_nav_ejecucion_det_error"
+    },
+    {
+      "TABLE_NAME": "i_nav_ejecucion_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_ejecucion_res"
+    },
+    {
+      "TABLE_NAME": "i_nav_ent"
+    },
+    {
+      "TABLE_NAME": "i_nav_ent_filtros"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_compra_det"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_compra_det_lote"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_compra_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_traslado_det"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_traslado_det_120828"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_traslado_det_lote"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_traslado_enc"
+    },
+    {
+      "TABLE_NAME": "i_nav_ped_traslado_enc_120828"
+    },
+    {
+      "TABLE_NAME": "i_nav_producto"
+    },
+    {
+      "TABLE_NAME": "i_nav_producto_presentacion"
+    },
+    {
+      "TABLE_NAME": "i_nav_proveedor"
+    },
+    {
+      "TABLE_NAME": "i_nav_servicio"
+    },
+    {
+      "TABLE_NAME": "i_nav_transacciones_out"
+    },
+    {
+      "TABLE_NAME": "i_nav_transacciones_out_error"
+    },
+    {
+      "TABLE_NAME": "i_nav_transacciones_push"
+    }
+  ],
+  "ms": 670
+}

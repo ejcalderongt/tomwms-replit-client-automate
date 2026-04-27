@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "rowCount": 2,
+  "rows": [
+    {
+      "COLUMN_NAME": "control_presentaciones",
+      "DATA_TYPE": "bit"
+    },
+    {
+      "COLUMN_NAME": "generar_stock_jornada",
+      "DATA_TYPE": "bit"
+    }
+  ],
+  "ms": 345
+}

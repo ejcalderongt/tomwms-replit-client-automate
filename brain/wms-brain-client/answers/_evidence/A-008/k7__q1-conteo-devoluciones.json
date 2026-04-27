@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "rowCount": 3,
+  "rows": [
+    {
+      "tipo_transaccion": "INGRESO",
+      "clase": "normal",
+      "enviado": 0,
+      "cnt": 3
+    },
+    {
+      "tipo_transaccion": "INGRESO",
+      "clase": "normal",
+      "enviado": 1,
+      "cnt": 4391
+    },
+    {
+      "tipo_transaccion": "SALIDA",
+      "clase": "normal",
+      "enviado": 1,
+      "cnt": 19799
+    }
+  ],
+  "ms": 398
+}

@@ -1,0 +1,16 @@
+COLUMN_NAME,DATA_TYPE,IS_NULLABLE,CHARACTER_MAXIMUM_LENGTH
+IdError,int,NO,
+IdEmpresa,int,YES,
+IdBodega,int,YES,
+Fecha,datetime,YES,
+MensajeError,nvarchar,YES,2500
+IdPedidoEnc,int,NO,
+IdPickingEnc,int,NO,
+IdRecepcionEnc,int,NO,
+IdUsuarioAgr,int,NO,
+Line_No,int,YES,
+Item_No,nvarchar,YES,50
+UmBas,nvarchar,YES,50
+Variant_Code,nvarchar,YES,50
+Cantidad,float,YES,
+Referencia_Documento,nvarchar,YES,50

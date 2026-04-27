@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "rowCount": 13,
+  "rows": [
+    {
+      "TABLE_NAME": "bodega",
+      "COLUMN_NAME": "interface_SAP"
+    },
+    {
+      "TABLE_NAME": "bodega",
+      "COLUMN_NAME": "restringir_areas_sap"
+    },
+    {
+      "TABLE_NAME": "cliente",
+      "COLUMN_NAME": "IdBodegaAreaSAP"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_enc",
+      "COLUMN_NAME": "inferir_bonificacion_pedido_sap"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_enc",
+      "COLUMN_NAME": "interface_sap"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_enc",
+      "COLUMN_NAME": "sap_control_draft_ajustes"
+    },
+    {
+      "TABLE_NAME": "i_nav_config_enc",
+      "COLUMN_NAME": "sap_control_draft_traslados"
+    },
+    {
+      "TABLE_NAME": "proveedor",
+      "COLUMN_NAME": "IdBodegaAreaSAP"
+    },
+    {
+      "TABLE_NAME": "road_p_vendedor",
+      "COLUMN_NAME": "devolucion_sap"
+    },
+    {
+      "TABLE_NAME": "trans_ubic_hh_enc",
+      "COLUMN_NAME": "es_traslado_sap"
+    },
+    {
+      "TABLE_NAME": "VW_Productividad_Picking",
+      "COLUMN_NAME": "Solicitud_SAP"
+    },
+    {
+      "TABLE_NAME": "VW_Proveedor",
+      "COLUMN_NAME": "IdBodegaAreaSAP"
+    },
+    {
+      "TABLE_NAME": "VW_TransUbicacionHhEnc",
+      "COLUMN_NAME": "es_traslado_sap"
+    }
+  ],
+  "ms": 373
+}

@@ -1,0 +1,241 @@
+{
+  "ok": true,
+  "rowCount": 39,
+  "rows": [
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja12",
+      "idunidadmedida": 1,
+      "cnt_uso": 6839
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja24",
+      "idunidadmedida": 1,
+      "cnt_uso": 3798
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 3557
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja6",
+      "idunidadmedida": 1,
+      "cnt_uso": 3035
+    },
+    {
+      "unidad_medida": "Caja12",
+      "codigo_variante": "Caja12",
+      "idunidadmedida": 1,
+      "cnt_uso": 1005
+    },
+    {
+      "unidad_medida": "Caja24",
+      "codigo_variante": "Caja24",
+      "idunidadmedida": 1,
+      "cnt_uso": 826
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja8",
+      "idunidadmedida": 1,
+      "cnt_uso": 605
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja20",
+      "idunidadmedida": 1,
+      "cnt_uso": 516
+    },
+    {
+      "unidad_medida": "Caja6",
+      "codigo_variante": "Caja6",
+      "idunidadmedida": 1,
+      "cnt_uso": 512
+    },
+    {
+      "unidad_medida": "Caja12",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 459
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja15",
+      "idunidadmedida": 1,
+      "cnt_uso": 409
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja5",
+      "idunidadmedida": 1,
+      "cnt_uso": 362
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja4",
+      "idunidadmedida": 1,
+      "cnt_uso": 283
+    },
+    {
+      "unidad_medida": "Caja6",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 271
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja32",
+      "idunidadmedida": 1,
+      "cnt_uso": 264
+    },
+    {
+      "unidad_medida": "Caja24",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 257
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja16",
+      "idunidadmedida": 1,
+      "cnt_uso": 244
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja10",
+      "idunidadmedida": 1,
+      "cnt_uso": 135
+    },
+    {
+      "unidad_medida": "Caja8",
+      "codigo_variante": "Caja8",
+      "idunidadmedida": 1,
+      "cnt_uso": 108
+    },
+    {
+      "unidad_medida": "Caja20",
+      "codigo_variante": "Caja20",
+      "idunidadmedida": 1,
+      "cnt_uso": 108
+    },
+    {
+      "unidad_medida": "Caja15",
+      "codigo_variante": "Caja15",
+      "idunidadmedida": 1,
+      "cnt_uso": 106
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja18",
+      "idunidadmedida": 1,
+      "cnt_uso": 82
+    },
+    {
+      "unidad_medida": "Caja5",
+      "codigo_variante": "Caja5",
+      "idunidadmedida": 1,
+      "cnt_uso": 70
+    },
+    {
+      "unidad_medida": "Caja4",
+      "codigo_variante": "Caja4",
+      "idunidadmedida": 1,
+      "cnt_uso": 57
+    },
+    {
+      "unidad_medida": "Caja16",
+      "codigo_variante": "Caja16",
+      "idunidadmedida": 1,
+      "cnt_uso": 55
+    },
+    {
+      "unidad_medida": "Caja10",
+      "codigo_variante": "Caja10",
+      "idunidadmedida": 1,
+      "cnt_uso": 44
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "Caja30",
+      "idunidadmedida": 1,
+      "cnt_uso": 44
+    },
+    {
+      "unidad_medida": "Caja18",
+      "codigo_variante": "Caja18",
+      "idunidadmedida": 1,
+      "cnt_uso": 24
+    },
+    {
+      "unidad_medida": "",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 22
+    },
+    {
+      "unidad_medida": "Caja16",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 21
+    },
+    {
+      "unidad_medida": "Caja32",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 20
+    },
+    {
+      "unidad_medida": "Caja8",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 14
+    },
+    {
+      "unidad_medida": "Caja15",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 14
+    },
+    {
+      "unidad_medida": "Caja30",
+      "codigo_variante": "Caja30",
+      "idunidadmedida": 1,
+      "cnt_uso": 8
+    },
+    {
+      "unidad_medida": "Caja10",
+      "codigo_variante": "",
+      "idunidadmedida": 1,
+      "cnt_uso": 8
+    },
+    {
+      "unidad_medida": "Caja32",
+      "codigo_variante": "Caja32",
+      "idunidadmedida": 1,
+      "cnt_uso": 4
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "CajaMil",
+      "idunidadmedida": 1,
+      "cnt_uso": 3
+    },
+    {
+      "unidad_medida": "CajaMil",
+      "codigo_variante": "CajaMil",
+      "idunidadmedida": 1,
+      "cnt_uso": 2
+    },
+    {
+      "unidad_medida": "UN",
+      "codigo_variante": "0",
+      "idunidadmedida": 1,
+      "cnt_uso": 2
+    }
+  ],
+  "ms": 513
+}

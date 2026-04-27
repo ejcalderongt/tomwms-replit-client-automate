@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "rowCount": 5,
+  "rows": [
+    {
+      "IdTipoDocumento": 1,
+      "enviado": 0,
+      "cnt": 115165
+    },
+    {
+      "IdTipoDocumento": 1,
+      "enviado": 1,
+      "cnt": 1
+    },
+    {
+      "IdTipoDocumento": 3,
+      "enviado": 0,
+      "cnt": 28
+    },
+    {
+      "IdTipoDocumento": 3,
+      "enviado": 1,
+      "cnt": 277309
+    },
+    {
+      "IdTipoDocumento": 4,
+      "enviado": 0,
+      "cnt": 29924
+    }
+  ],
+  "ms": 3123
+}

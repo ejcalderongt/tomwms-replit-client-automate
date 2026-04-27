@@ -1,0 +1,3 @@
+COLUMN_NAME,DATA_TYPE
+control_presentaciones,bit
+generar_stock_jornada,bit

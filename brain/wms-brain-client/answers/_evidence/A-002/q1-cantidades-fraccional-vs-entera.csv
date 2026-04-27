@@ -1,0 +1,3 @@
+tipo_cantidad,tipo_transaccion,cnt,min_val,max_val
+entera,INGRESO,4391,1,4256
+entera,SALIDA,19799,1,7344

@@ -1,0 +1,10 @@
+job_name,step_name,enabled,step_command_preview
+syspolicy_purge_history,Verify that automation is enabled.,1,"IF (msdb.dbo.fn_syspolicy_is_automation_enabled() != 1)
+        BEGIN
+            RAISERROR(34022, 16, 1)
+        END"
+syspolicy_purge_history,Purge history.,1,EXEC msdb.dbo.sp_syspolicy_purge_history
+syspolicy_purge_history,Erase Phantom System Health Records.,1,"$SQLServerConnection = New-Object System.Data.SqlClient.SqlConnection
+$SQLServerConnection.ConnectionString = ""Data Source=$(ESCAPE_NONE(SRVR));Initial Catalog=master;Integrated Security=SSPI;Application Name=syspolicy_purge_history""
+$PolicyStoreConnection = New-Object Microsoft.SqlServer.Management.Sdk.Sfc.SqlStoreConnection($SQLServerConnection)
+$PolicyStore = New-Object Microsoft.SqlServer.M"
