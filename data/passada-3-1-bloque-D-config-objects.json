@@ -1,0 +1,173 @@
+{
+  "generatedAt": "2026-04-27T04:24:29.235Z",
+  "total": 31,
+  "groups": {
+    "*config*": [
+      {
+        "name": "configuracion_alias_campos",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "configuracion_barra_pallet",
+        "kind": "sql-table",
+        "rows": "1"
+      },
+      {
+        "name": "configuracion_qa",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "configuracion_usuario_det",
+        "kind": "sql-table",
+        "rows": "141"
+      },
+      {
+        "name": "configuracion_usuario_enc",
+        "kind": "sql-table",
+        "rows": "19"
+      },
+      {
+        "name": "VW_Configuracion_Usuario_Template",
+        "kind": "sql-view",
+        "rows": null
+      },
+      {
+        "name": "VW_Configuracioninv",
+        "kind": "sql-view",
+        "rows": null
+      },
+      {
+        "name": "VW_navdetalleconfiguracion",
+        "kind": "sql-view",
+        "rows": null
+      }
+    ],
+    "i_nav_config*": [
+      {
+        "name": "i_nav_config_area_bodega",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "i_nav_config_det",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "i_nav_config_enc",
+        "kind": "sql-table",
+        "rows": "6"
+      },
+      {
+        "name": "i_nav_config_ent",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "i_nav_config_producto_estado",
+        "kind": "sql-table",
+        "rows": "0"
+      }
+    ],
+    "menu*": [
+      {
+        "name": "menu_rol",
+        "kind": "sql-table",
+        "rows": "863"
+      },
+      {
+        "name": "menu_rol_op",
+        "kind": "sql-table",
+        "rows": "187"
+      },
+      {
+        "name": "menu_sistema",
+        "kind": "sql-table",
+        "rows": "289"
+      },
+      {
+        "name": "menu_sistema_op",
+        "kind": "sql-table",
+        "rows": "19"
+      }
+    ],
+    "rol*": [
+      {
+        "name": "rol",
+        "kind": "sql-table",
+        "rows": "8"
+      },
+      {
+        "name": "rol_bodega",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "rol_menu",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "rol_operador",
+        "kind": "sql-table",
+        "rows": "14"
+      },
+      {
+        "name": "rol_usuario_estado",
+        "kind": "sql-table",
+        "rows": "14"
+      }
+    ],
+    "tipo_*": [
+      {
+        "name": "tipo_actualizacion_costo",
+        "kind": "sql-table",
+        "rows": "3"
+      },
+      {
+        "name": "tipo_contenedor",
+        "kind": "sql-table",
+        "rows": "5"
+      },
+      {
+        "name": "tipo_etiqueta",
+        "kind": "sql-table",
+        "rows": "6"
+      },
+      {
+        "name": "tipo_etiqueta_detalle",
+        "kind": "sql-table",
+        "rows": "0"
+      },
+      {
+        "name": "tipo_rack",
+        "kind": "sql-table",
+        "rows": "4"
+      },
+      {
+        "name": "tipo_rotacion",
+        "kind": "sql-table",
+        "rows": "4"
+      },
+      {
+        "name": "tipo_tarea_tiempos",
+        "kind": "sql-table",
+        "rows": "1"
+      },
+      {
+        "name": "tipo_tarima",
+        "kind": "sql-table",
+        "rows": "10"
+      }
+    ],
+    "valores_fijos*": [
+      {
+        "name": "valores_fijos_reporte_mercancias",
+        "kind": "sql-table",
+        "rows": "3"
+      }
+    ]
+  }
+}
