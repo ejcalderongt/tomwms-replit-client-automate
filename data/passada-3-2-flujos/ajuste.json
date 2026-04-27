@@ -1,0 +1,270 @@
+{
+  "domain": "ajuste",
+  "note": "Sin activity HH dedicada. WMs server-side ajuste-relacionados (cubierto desde BOF/Web).",
+  "activitiesCount": 0,
+  "serverWMs": [
+    {
+      "wm": "Aplicar_Cambio_Estado_HH",
+      "ws": "TOMHHWS",
+      "bodyLines": 42,
+      "paramsRaw": "ByVal pMovimiento As clsBeTrans_movimientos, idstock As Integer",
+      "returns": "String",
+      "clsLnUsed": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms"
+      ],
+      "tablesRead": [
+        "log_error_wms",
+        "trans_ubic_hh_det",
+        "usuario"
+      ],
+      "tablesWrite": [
+        "log_error_wms",
+        "trans_ubic_hh_det"
+      ]
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH",
+      "ws": "TOMHHWS",
+      "bodyLines": 68,
+      "paramsRaw": "ByVal pMovimiento As clsBeTrans_movimientos, ByVal pStockRes As clsBeVW_stock_res, ByRef pIdStockNuevo As Integer, ByRef pIdMovimientoNuevo As Integer, ByVal pPosiciones As Integer",
+      "returns": "Boolean",
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_reab",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tablesRead": [
+        "log_error_wms",
+        "trans_ubic_hh_det",
+        "usuario"
+      ],
+      "tablesWrite": [
+        "log_error_wms",
+        "trans_ubic_hh_det"
+      ]
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+      "ws": "TOMHHWS",
+      "bodyLines": 48,
+      "paramsRaw": "ByVal pStockResList As List(Of clsBeVW_stock_res)",
+      "returns": "Boolean",
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tablesRead": [
+        "log_error_wms",
+        "trans_ubic_hh_det",
+        "usuario"
+      ],
+      "tablesWrite": [
+        "log_error_wms",
+        "trans_ubic_hh_det"
+      ]
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack",
+      "ws": "TOMHHWS",
+      "bodyLines": 56,
+      "paramsRaw": "ByVal pMovimiento As clsBeTrans_movimientos, ByVal pStockRes As clsBeVW_stock_res, ByRef pIdStockNuevo As Integer, ByRef pIdMovimientoNuevo As Integer, ByVal pPosiciones As Integer",
+      "returns": "Boolean",
+      "clsLnUsed": [
+        "clsLnLog_error_wms_reab",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tablesRead": [
+        "trans_ubic_hh_det"
+      ],
+      "tablesWrite": [
+        "trans_ubic_hh_det"
+      ]
+    },
+    {
+      "wm": "Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack",
+      "ws": "TOMHHWS",
+      "bodyLines": 76,
+      "paramsRaw": "ByVal pStockResList As List(Of clsBeVW_stock_res)",
+      "returns": "Boolean",
+      "clsLnUsed": [
+        "clsLnLog_error_wms",
+        "clsLnTrans_ubic_hh_det"
+      ],
+      "tablesRead": [
+        "log_error_wms",
+        "trans_ubic_hh_det",
+        "usuario"
+      ],
+      "tablesWrite": [
+        "log_error_wms",
+        "trans_ubic_hh_det"
+      ]
+    }
+  ],
+  "uniqueWMsCalled": [
+    "Aplica_Cambio_Estado_Ubic_HH",
+    "Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack",
+    "Aplica_Cambio_Estado_Ubic_HH_LicCompleta",
+    "Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack",
+    "Aplicar_Cambio_Estado_HH"
+  ],
+  "tablesWrittenByDomain": [
+    "log_error_wms",
+    "trans_ubic_hh_det"
+  ],
+  "tablesReadByDomain": [
+    "log_error_wms",
+    "trans_ubic_hh_det",
+    "usuario"
+  ],
+  "states": [
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    },
+    {
+      "table": "producto_estado",
+      "rowCount": 18,
+      "sample": [
+        {
+          "IdEstado": 18,
+          "IdPropietario": 1,
+          "nombre": "Cambio proveedor",
+          "IdUbicacionDefecto": null,
+          "utilizable": false,
+          "activo": true,
+          "user_agr": "1",
+          "fec_agr": "2025-06-01T21:08:38.467Z",
+          "user_mod": "1",
+          "fec_mod": "2025-06-01T21:08:38.467Z",
+          "dañado": true,
+          "sistema": false,
+          "codigo_bodega_erp": "",
+          "dias_vencimiento_clasificacion": 0,
+          "tolerancia_dias_vencimiento": 0
+        },
+        {
+          "IdEstado": 17,
+          "IdPropietario": 1,
+          "nombre": "Sin etiqueta",
+          "IdUbicacionDefecto": null,
+          "utilizable": false,
+          "activo": true,
+          "user_agr": "1",
+          "fec_agr": "2025-05-30T12:02:05.570Z",
+          "user_mod": "1",
+          "fec_mod": "2025-05-30T12:02:05.570Z",
+          "dañado": true,
+          "sistema": false,
+          "codigo_bodega_erp": "",
+          "dias_vencimiento_clasificacion": 0,
+          "tolerancia_dias_vencimiento": 0
+        },
+        {
+          "IdEstado": 16,
+          "IdPropietario": 1,
+          "nombre": "Mal estado",
+          "IdUbicacionDefecto": 722,
+          "utilizable": true,
+          "activo": true,
+          "user_agr": "1",
+          "fec_agr": "2025-05-30T12:01:39.917Z",
+          "user_mod": "1",
+          "fec_mod": "2025-06-02T17:18:33.937Z",
+          "dañado": true,
+          "sistema": false,
+          "codigo_bodega_erp": "",
+          "dias_vencimiento_clasificacion": 0,
+          "tolerancia_dias_vencimiento": 0
+        }
+      ]
+    }
+  ],
+  "typicalErrors": [
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 70 y TipoTarea 2",
+      "count": 1800,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 70 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 67 y TipoTarea 2",
+      "count": 868,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 67 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 43 y TipoTarea 2",
+      "count": 707,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 43 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 64 y TipoTarea 2",
+      "count": 442,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 64 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 62 y TipoTarea 2",
+      "count": 355,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 62 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 76 y TipoTarea 2",
+      "count": 308,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 76 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 72 y TipoTarea 2",
+      "count": 242,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 72 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 75 y TipoTarea 2",
+      "count": 208,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 75 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 50 y TipoTarea 2",
+      "count": 207,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 50 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    },
+    {
+      "message": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 66 y TipoTarea 2",
+      "count": 147,
+      "sample": "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: 66 y TipoTarea 2",
+      "affectedItems": 0,
+      "affectedUsers": 0
+    }
+  ]
+}
