@@ -1,0 +1,101 @@
+id: PIC-001
+title: Picking de pedido reservado en zona picking
+module: picking
+priority: P0
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: TODO
+  function: TODO
+  source: pendiente identificar clase de pruebas de picking
+
+description: >
+  Existe un pedido ya reservado por el motor MI3, con stock reservado
+  en una ubicación de zona picking. El operador del HH ejecuta el flujo
+  de picking sobre ese pedido y el stock debe ser confirmado/decrementado
+  correctamente, generando los movimientos esperados.
+
+  Valida la pasada del estado `1=reservado` a `2=picado` (o el código
+  equivalente) y la generación de filas en `trans_pe_det_log`.
+
+required_config:
+  i_nav_config_enc.usar_zona_picking: 1
+  bodega.usa_picking_hh: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: insert_stock
+    name: stock_picking
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con control_lote=1}"
+      ubicacion: "{ubicacion picking activa}"
+      lote: "PIC001_RESERVADO"
+      cantidad_unidades: 5
+
+  - action: reserve_pedido
+    name: pedido_a_pickear
+    body:
+      pedido:
+        no: "@MaxNoDocumento+1"
+        document_type: Pedido_De_Cliente
+        product_owner_code: "01"
+        lineas:
+          - line_no: 1
+            item_no: "{producto.codigo}"
+            quantity: 3
+
+action:
+  endpoint: /api/test-bridge/sandbox/pick
+  method: POST
+  body:
+    pedido_id: "@pedido_a_pickear.id"
+    operador_id: "{operador HH sentinel}"
+    confirmaciones:
+      - line_no: 1
+        idstock: "@stock_picking.id"
+        cantidad_pickeada: 3
+        ubicacion_origen: "{ubicacion picking activa}.id"
+
+expected:
+  - check: row_exists
+    table: stock_res
+    where:
+      idstock: "@stock_picking.id"
+      estado: 2
+    note: "El stock pasó de reservado (1) a picado (2)"
+
+  - check: row_exists
+    table: trans_pe_det_log
+    where:
+      no_documento: "@pedido_a_pickear.no"
+      tipo_movimiento: "PICK"
+    note: "Quedó traza del picking en trans_pe_det_log"
+
+  - check: column_value
+    table: trans_pe_det
+    where:
+      no_documento: "@pedido_a_pickear.no"
+      line_no: 1
+    column: cantidad_picada
+    value: 3
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - golden-path
+  - picking
+  - cruza-reservation
+
+notes: |
+  Este escenario depende de RES-001 funcionando bien. Si RES-001 falla,
+  PIC-001 va a fallar también pero por otra razón. Brain debe correr
+  RES-001 antes y abortar PIC-001 si RES-001 no pasó.
