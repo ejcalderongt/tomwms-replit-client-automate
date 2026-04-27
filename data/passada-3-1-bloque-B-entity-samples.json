@@ -1,0 +1,335 @@
+{
+  "generatedAt": "2026-04-27T04:50:47.904Z",
+  "samples": [
+    {
+      "file": "clsBeCliente.vb",
+      "bytes": 3217,
+      "className": "clsBeCliente",
+      "implements": "ICloneable",
+      "propertyCount": 31,
+      "sampleProps": [
+        {
+          "name": "IdCliente",
+          "type": "Integer"
+        },
+        {
+          "name": "IdEmpresa",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPropietario",
+          "type": "Integer"
+        },
+        {
+          "name": "IdTipoCliente",
+          "type": "Integer"
+        },
+        {
+          "name": "IdUbicacionManufactura",
+          "type": "Integer"
+        },
+        {
+          "name": "Codigo",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "file": "clsBeCliente_Partial.vb",
+      "bytes": 3821,
+      "className": "clsBeCliente",
+      "implements": "IDisposable",
+      "propertyCount": 6,
+      "sampleProps": [
+        {
+          "name": "Tipo",
+          "type": "New"
+        },
+        {
+          "name": "Drecciones",
+          "type": "List"
+        },
+        {
+          "name": "Tiempos",
+          "type": "List"
+        },
+        {
+          "name": "Empresa",
+          "type": "clsBeEmpresa"
+        },
+        {
+          "name": "Propietario",
+          "type": "clsBePropietarios"
+        },
+        {
+          "name": "ClienteTipo",
+          "type": "clsBeCliente_tipo"
+        }
+      ]
+    },
+    {
+      "file": "clsBeProveedor.vb",
+      "bytes": 3744,
+      "className": "clsBeProveedor",
+      "implements": "ICloneable",
+      "propertyCount": 28,
+      "sampleProps": [
+        {
+          "name": "IdEmpresa",
+          "type": "Integer"
+        },
+        {
+          "name": "Empresa",
+          "type": "clsBeEmpresa"
+        },
+        {
+          "name": "IdPropietario",
+          "type": "Integer"
+        },
+        {
+          "name": "Propietario",
+          "type": "clsBePropietarios"
+        },
+        {
+          "name": "IdProveedor",
+          "type": "Integer"
+        },
+        {
+          "name": "Codigo",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "file": "clsBeStock.vb",
+      "bytes": 2150,
+      "className": "clsBeStock",
+      "implements": "ICloneable",
+      "propertyCount": 34,
+      "sampleProps": [
+        {
+          "name": "IdBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "IdStock",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "IdProductoEstado",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "Integer"
+        }
+      ]
+    },
+    {
+      "file": "clsBeStock_Partial.vb",
+      "bytes": 2450,
+      "className": "clsBeStock",
+      "implements": "IDisposable",
+      "propertyCount": 14,
+      "sampleProps": [
+        {
+          "name": "IsNew",
+          "type": "Boolean"
+        },
+        {
+          "name": "ProductoValidado",
+          "type": "Boolean"
+        },
+        {
+          "name": "UbicacionAnterior",
+          "type": "String"
+        },
+        {
+          "name": "Presentacion",
+          "type": "New"
+        },
+        {
+          "name": "ProductoEstado",
+          "type": "New"
+        },
+        {
+          "name": "Parametros",
+          "type": "New"
+        }
+      ]
+    },
+    {
+      "file": "clsBeTrans_despacho_det.vb",
+      "bytes": 2625,
+      "className": "clsBeTrans_despacho_det",
+      "implements": "ICloneable",
+      "propertyCount": 20,
+      "sampleProps": [
+        {
+          "name": "IdDespachoDet",
+          "type": "Integer"
+        },
+        {
+          "name": "IdDespachoEnc",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPickingUbic",
+          "type": "Integer"
+        },
+        {
+          "name": "Fecha",
+          "type": "Date"
+        },
+        {
+          "name": "User_agr",
+          "type": "String"
+        },
+        {
+          "name": "Fec_agr",
+          "type": "Date"
+        }
+      ]
+    },
+    {
+      "file": "clsBeTrans_despacho_enc.vb",
+      "bytes": 2461,
+      "className": "clsBeTrans_despacho_enc",
+      "implements": "ICloneable",
+      "propertyCount": 21,
+      "sampleProps": [
+        {
+          "name": "IdDespachoEnc",
+          "type": "Integer"
+        },
+        {
+          "name": "IdBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "IdVehiculo",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPiloto",
+          "type": "Integer"
+        },
+        {
+          "name": "IdRuta",
+          "type": "Integer"
+        }
+      ]
+    },
+    {
+      "file": "clsBeTrans_pe_det.vb",
+      "bytes": 4736,
+      "className": "clsBeTrans_pe_det",
+      "implements": "ICloneable",
+      "propertyCount": 48,
+      "sampleProps": [
+        {
+          "name": "IdPedidoDet",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPedidoEnc",
+          "type": "Integer"
+        },
+        {
+          "name": "IdProductoBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "ProductoBodega",
+          "type": "New"
+        },
+        {
+          "name": "IdEstado",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPresentacion",
+          "type": "Integer"
+        }
+      ]
+    },
+    {
+      "file": "clsBeTrans_pe_enc.vb",
+      "bytes": 7447,
+      "className": "clsBeTrans_pe_enc",
+      "implements": "ICloneable",
+      "propertyCount": 71,
+      "sampleProps": [
+        {
+          "name": "IdPedidoEnc",
+          "type": "Integer"
+        },
+        {
+          "name": "IdBodega",
+          "type": "Integer"
+        },
+        {
+          "name": "IdCliente",
+          "type": "Integer"
+        },
+        {
+          "name": "IdMuelle",
+          "type": "Integer"
+        },
+        {
+          "name": "IdTipoPedido",
+          "type": "Integer"
+        },
+        {
+          "name": "IdPropietarioBodega",
+          "type": "Integer"
+        }
+      ]
+    },
+    {
+      "file": "clsBeTrans_pe_enc_Partial.vb",
+      "bytes": 2523,
+      "className": "clsBeTrans_pe_enc",
+      "implements": "IDisposable",
+      "propertyCount": 10,
+      "sampleProps": [
+        {
+          "name": "IsNew",
+          "type": "Boolean"
+        },
+        {
+          "name": "Picking",
+          "type": "New"
+        },
+        {
+          "name": "PropietarioBodega",
+          "type": "New"
+        },
+        {
+          "name": "Cliente",
+          "type": "New"
+        },
+        {
+          "name": "TipoPedido",
+          "type": "New"
+        },
+        {
+          "name": "Control_Ultimo_Lote",
+          "type": "Boolean"
+        }
+      ]
+    }
+  ]
+}
