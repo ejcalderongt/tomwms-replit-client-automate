@@ -1,8 +1,8 @@
-# Maquina de estados de pedido — confirmada por Erik
+# Maquina de estados de pedido — confirmada por Erik + SQL
 
-> **Version 2** (pasada 9). Transiciones confirmadas por Erik en
-> `respuestas-tanda-1.md` (P-08). La version 1 (pasada 8) era hipotesis;
-> esta es canonica.
+> **Version 3** (pasada 9b). Combina respuestas de Erik (tanda 1) +
+> hallazgos por SQL READ-ONLY (tanda 2). Pendientes derivados PEND-01 y
+> PEND-03 cerrados.
 >
 > Snapshot: Killios PRD, 4,202 pedidos en `trans_pe_enc`.
 
@@ -17,15 +17,15 @@
 | `NUEVO` | 14 | 0.3% | Pedido creado, sin picking |
 | `Verificado` | 7 | 0.2% | Verificacion HH concluida (opcional) |
 
-## Maquina de estados — confirmada
+## Maquina de estados
 
 ```
         +-----------+
         |  (insert) |   creacion manual (BackOffice) o
-        +-----+-----+   push desde ERP (SAP/NAV)
+        +-----+-----+   push desde ERP (SAP/NAV via user_agr=6)
               |
-              | [SI]                   [WMS] solo cuando WMS
-              v                          inyecta el pedido
+              | [SI]                   [WMS] casos sinteticos
+              v                          (15/4040 = 0.4% de PDV_NAV)
         +-----------+              +-----------+
         |   NUEVO   |---[WMS]----->| Pickeado  |
         |  (14)     |              |  (86)     |
@@ -48,9 +48,11 @@
                         sin reserva: raro)
 
    Transiciones especiales:
-   - NUEVO → Pickeado [WMS]: solo WMS-inyectado (traslados entre bodegas
-     virtuales en mismo espacio fisico, ej. BOD7 ↔ bodega real Killios)
-   - Verificado: estado opcional, configurable por usuario o por tipo de pedido
+   - NUEVO → Pickeado [WMS]: solo casos WMS-inyectados (traslados entre
+     bodegas virtuales). Confirmado en SQL: ~15 PDV_NAV con fec_agr=fec_mod
+     y estado=Despachado en una sola transaccion (con IdPickingEnc poblado
+     pero proceso instantaneo).
+   - Verificado: estado opcional, controlado por trans_pe_tipo.Verificar
    - Anulado desde NUEVO: posible pero raro (requiere stock_res previo)
 ```
 
@@ -67,101 +69,110 @@
 | **Anulado** | — | — | — | — | — | — |
 
 **Leyenda**:
-- `SI` = transicion canonica permitida y observada en produccion
-- `OPC` = opcional (depende de configuracion)
-- `WMS-only` = solo cuando WMS inyecta el pedido (no humano via BackOffice/HH)
-- `raro` = posible pero requiere condiciones especificas (stock reservado + orden explicita)
+- `SI` = transicion canonica permitida y observada
+- `OPC` = opcional (controlada por `trans_pe_tipo.Verificar`)
+- `WMS-only` = solo casos sinteticos (~0.4% historico)
+- `raro` = posible pero requiere stock reservado + orden explicita
 - `NO` = transicion prohibida
-- `—` = no aplica
 
-## Reglas confirmadas (P-08 + P-18)
+## Banderas de comportamiento por tipo (`trans_pe_tipo`)
 
-### R-01: Anulado NO es automatico
+**RESUELTO en tanda 2 (PEND-01)**: las 3 banderas maestras son `Preparar`,
+`Verificar`, `ReservaStock`.
 
-Erik: *"solo se anula bajo demanda y no solo pasa a estado anulado cuando
-tiene stock reservado previamente"*.
+### Killios PRD
 
-Implicancia para reserva-webapi: NO implementar anulacion automatica por
-timeout o fallo de reserva. Si reserva falla, dejar el pedido en `NUEVO`
-con flag de error y que el humano decida.
+| Tipo | Descripcion | Preparar | Verificar | ReservaStock | Pedidos historicos |
+|---|---|:---:|:---:|:---:|---:|
+| **PDV_NAV** | Pedido de Venta SAP | false | false | true | 4,040 (96.1%) |
+| **PE0004** | Solicitud de traslado | true | false | false | 156 (3.7%) |
+| **PE0001** | Pedido de Cliente | false | false | true | 4 |
+| **PE0003** | Pedido de cliente | true | **true** | true | 0 (sin uso) |
+| **TRAS_WMS** | Traslado Directo WMS | false | false | **false** | 0 (capacidad latente) |
+| **DEVPROV** | Devolucion proveedor | false | — | — | (no contado) |
 
-### R-02: Pedidos sin lineas se ELIMINAN, no se anulan
+### BYB PRD (referencia)
 
-Erik: *"hay un mecanismo en la forma de pedido para prevenir que hayan
-pedidos sin lineas, entonces generalmente si el pedido no tiene lineas
-se elimina"*.
+- `PE0001` (Pedido_De_Bodega): `Verificar=true` → BYB usa el flujo Verificado.
 
-Implicancia: el conteo bajo de `Anulado` (33) refleja solo cancelaciones
-deliberadas, no abortos tempranos. Los abortos tempranos no dejan rastro
-en `trans_pe_enc`.
+### CEALSA QAS (referencia)
 
-### R-03: Rollback de stock_res obligatorio en Anulado
+- `PE0001` (Transferencia Fiscal a General): `Verificar=true` + `control_poliza=true` (3PL fiscal).
+- `PE0002` (PEDIDO SIN PREPARACION Y SIN VERIFICACION): los 3 flags relevantes en false.
 
-Erik: *"rollback de inventario importante asociado [a Anulado]"*.
+## Reglas confirmadas (R-01..R-06 + R-07..R-09 nuevas de tanda 2)
 
-Implicancia: el bridge debe verificar que despues de anular, las filas
-correspondientes en `stock_res` quedan liberadas. Si encuentra `Anulado`
-con `stock_res` activo, es bug.
+### R-01: Anulado NO es automatico (Erik P-08)
 
-### R-04: WMS puede inyectar pedidos en cualquier estado
+Anulacion requiere accion explicita del usuario. NO implementar anulacion automatica por timeout o fallo de reserva en reserva-webapi.
 
-Erik: *"para transacciones que el mismo WMS inyecta puede ser que por
-proceso se simule un picking y un despacho [...] WMS podria simular un
-pedido, insertarlo en cualquier otro estado"*.
+### R-02: Pedidos sin lineas se ELIMINAN, no se anulan (Erik P-08)
 
-Implicancia: la maquina permite atajo `NUEVO → Pickeado` (e incluso
-`NUEVO → Despachado`?) cuando el origen es WMS-inyectado. **Pendiente**
-identificar el flag o columna que distingue pedidos WMS-inyectados de
-pedidos reales — el bridge necesita saber esto para no marcar como bug
-una transicion que es legitima.
+El form previene pedidos sin lineas eliminandolos. Por eso solo 33 anulados historicos.
 
-### R-05: Verificado es opcional configurable
+### R-03: Rollback de stock_res obligatorio en Anulado (Erik P-08)
 
-Erik: *"Verificado es opcional. Puede ser habilitado por el usuario.
-Puede estar previamente definido en base al tipo de pedido"*.
+Cuando un pedido pasa a Anulado, las filas en `stock_res` deben liberarse. Si el bridge encuentra `Anulado` con `stock_res` activo es bug.
 
-Hipotesis: hay una columna en `trans_pe_tipo` que controla si el tipo
-exige verificacion (algo como `requiere_verificacion`). Pendiente
-identificarla en proxima pasada. Esto explicaria por que hay 7
-`Verificado` historicos (los tipos que lo tenian activado).
+### R-04: WMS puede inyectar pedidos en cualquier estado (Erik P-08, refinado SQL)
 
-### R-06: TRAS_WMS asume reserva previa, NO se valida (DEUDA-001)
+**Refinamiento de tanda 2**: la inyeccion WMS NO salta el modelo, lo SIMULA en una sola transaccion. Todos los PDV_NAV en estados intermedios tienen `IdPickingEnc` ≠ 0. Los 15 casos historicos de "inyeccion directa" tambien tienen IdPickingEnc poblado, solo que el proceso ocurre en milisegundos sin paso por HH.
 
-Ver `respuestas-tanda-1.md` P-18. La bandera `ReservaStock=NO` no se
-valida explicitamente; el flujo asume reserva upstream. Riesgo de doble
-reserva si alguien crea TRAS_WMS sin reserva previa.
+### R-05: Verificado controlado por `trans_pe_tipo.Verificar` (Erik P-08, RESUELTO SQL)
 
-## Columnas de auditoria en trans_pe_enc
+**Resuelto en tanda 2**: la columna existe y se llama exactamente `Verificar` (bit). NO es controlable por el usuario en runtime — es configuracion del catalogo de tipos. Lo que Erik llamo "habilitar por usuario" probablemente refiere al **administrador** que configura el tipo.
 
-- `Fecha_Pedido` (datetime) — cuando se creo
-- `hora_ini` (datetime) — inicio de operacion (¿picking?)
-- `hora_fin` (datetime) — fin
-- `fecha_preparacion` (date) — fecha preparacion
-- `RoadFechaEntr` (datetime) — fecha entrega
-- `HoraEntregaDesde` / `HoraEntregaHasta` — ventana de entrega
-- `user_agr` / `user_mod` — quien creo / quien modifico
+### R-06: TRAS_WMS asume reserva previa, NO se valida (DEUDA-001, Erik P-18)
 
-Estos campos permiten reconstruir el ciclo de vida temporal sin necesidad
-de log separado de transiciones.
+La bandera `ReservaStock=NO` no se valida explicitamente. Riesgo de doble reserva si alguien crea TRAS_WMS sin reserva upstream.
+
+### R-07: Origen ERP marcado por `user_agr=6` (NUEVA, SQL)
+
+99.7% de los pedidos historicos (4190/4202) los creo el usuario sintetico ID=6, que es el job que polea la interface NAV/SAP. Para distinguir "pedido humano" vs "pedido push ERP", reserva-webapi debe usar:
+
+```sql
+CASE WHEN user_agr = '6' THEN 'erp_push' ELSE 'humano' END
+```
+
+### R-08: Pedidos atascados son histórico no purgado (NUEVA, SQL)
+
+Los 180 pedidos en estados intermedios tienen TODOS mas de 90 dias. No reflejan flujo activo — son deuda operativa de limpieza. **El bridge debe excluir estos pedidos del comparativo** (ruido historico).
+
+### R-09: La maquina se respeta siempre, aunque sea instantaneamente (NUEVA, SQL)
+
+Aunque algunos pedidos atraviesan toda la maquina en milisegundos (caso WMS-inyectado), TODOS pasan por todos los estados con `IdPickingEnc` real. **reserva-webapi debe modelar los 6 estados completos** aunque algunos casos los recorran sin paso humano.
+
+## Columnas de auditoria en `trans_pe_enc`
+
+- `Fecha_Pedido` (datetime) — **CONTAMINADA**: hereda fecha del documento NAV/SAP, no es la fecha real WMS
+- `fec_agr` (datetime) — **CANONICA**: cuando WMS creo la fila
+- `fec_mod` (datetime) — ultima modificacion en WMS
+- `hora_ini` / `hora_fin` (datetime) — **CONTAMINADAS** para PDV_NAV: heredan timestamps NAV
+- `user_agr` / `user_mod` — quien creo / quien modifico (user_agr=6 = sintetico ERP)
+- `IdPickingEnc` — vinculacion al picking. Siempre ≠ 0 para pedidos en estados intermedios y Despachado.
+
+**Para timeline real WMS, usar `fec_agr` y `fec_mod`**, NO `Fecha_Pedido`/`hora_ini`/`hora_fin`.
 
 ## Trazabilidad de la informacion
 
 | Aspecto | Fuente | Confianza |
 |---|---|---|
-| Lista de estados | Query directa a `trans_pe_enc` (snapshot 2026-04-27) | Alta |
-| Significado de cada estado | Erik (P-08) | Canonica |
-| Transiciones permitidas | Erik (P-08) | Canonica |
-| WMS-inyectado salta Pendiente | Erik (P-08) | Canonica |
-| Verificado opcional | Erik (P-08) | Canonica |
-| Rollback en Anulado | Erik (P-08) | Canonica |
-| Columna que activa Verificado por tipo | Pendiente | Hipotesis |
-| Flag que marca pedido WMS-inyectado | Pendiente | Hipotesis |
+| Lista de estados | Query `trans_pe_enc` (snapshot 2026-04-27) | Alta |
+| Significado de cada estado | Erik (tanda 1) | Canonica |
+| Transiciones permitidas | Erik (tanda 1) | Canonica |
+| WMS-inyectado salta Pendiente | Erik (tanda 1) + refinado SQL | Canonica |
+| Verificado opcional | Erik (tanda 1) + columna confirmada SQL | Canonica |
+| Rollback en Anulado | Erik (tanda 1) | Canonica |
+| Columna que activa Verificado | `trans_pe_tipo.Verificar` (SQL tanda 2) | **RESUELTO** |
+| Flag pedidos WMS-inyectados | `tipo + user_agr=6` (SQL tanda 2) | **RESUELTO PARCIAL** |
+| `NUEVO → Despachado` directo | 15 casos historicos PDV_NAV (SQL tanda 2) | **RESUELTO** |
+| Atascos > 90 dias = histórico | SQL tanda 2 | Alta |
+| Timeline real usa fec_agr/fec_mod | SQL tanda 2 | Alta |
 
-## Pendientes
+## Pendientes que sobreviven
 
-- **PEND-01**: identificar la columna en `trans_pe_tipo` (o equivalente) que
-  controla si el tipo exige `Verificado`.
-- **PEND-02**: identificar el flag o columna que marca pedidos
-  WMS-inyectados (los que tienen permitido saltarse `Pendiente`).
-- **PEND-03**: confirmar si existe transicion `NUEVO → Despachado` directa
-  (mas alla de `NUEVO → Pickeado → Despachado`) cuando WMS inyecta el pedido.
+- **PEND-01**: ~~RESUELTO~~ → columna es `Verificar`.
+- **PEND-02**: ~~PARCIAL~~ → patron por tipo + user_agr, no flag binario.
+- **PEND-03**: ~~RESUELTO~~ → 15 casos historicos PDV_NAV (0.4%).
+- **PEND-04 (NUEVA)**: ¿hay tambien una "verificacion liviana" que NO pase por `trans_packing_enc` (que solo tiene 13 filas)? Tal vez se registra en `trans_picking_ubic_stock` mediante `IdOperadorBodega_Verifico` y `cantidad_verificada`. Pendiente confirmar con Erik.
+- **PEND-05 (NUEVA)**: ¿el caso `NUEVO → Despachado` instantaneo (15 historicos) se dispara por algun campo especifico del payload o por timing del job?
