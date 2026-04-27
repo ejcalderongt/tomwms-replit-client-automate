@@ -1,0 +1,372 @@
+{
+  "generatedAt": "2026-04-27T04:50:45.299Z",
+  "totalWMs": 344,
+  "mutatorsByVerb": {
+    "Iniciar": 1,
+    "Delete": 1,
+    "Marcar": 2,
+    "Reservar": 3,
+    "Aplicar": 1,
+    "Set": 5,
+    "Finalizar": 5,
+    "Inserta": 1,
+    "Eliminar": 1,
+    "Crear": 1
+  },
+  "totalMutators": 21,
+  "mutatorsByTransTable": {
+    "trans_oc_enc": 3,
+    "trans_despacho_det": 3,
+    "trans_re_det": 1,
+    "stock_rec": 1,
+    "stock": 2,
+    "trans_picking_ubic": 2,
+    "stock_res": 5,
+    "trans_packing_enc": 4,
+    "trans_ubic_hh_det": 3,
+    "trans_re_enc": 5,
+    "trans_pe_enc": 1,
+    "trans_picking_enc": 1,
+    "trans_oc_det": 1
+  },
+  "topOrchestrators": [
+    {
+      "name": "Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet",
+      "line": 3486,
+      "transTables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "allTables": [
+        "trans_re_det",
+        "stock_rec",
+        "stock"
+      ],
+      "invokes": [
+        "clsLnTrans_re_det",
+        "clsLnLog_error_wms_rec"
+      ]
+    },
+    {
+      "name": "Marcar_No_Encontrado",
+      "line": 4341,
+      "transTables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "trans_packing_enc"
+      ],
+      "allTables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion",
+      "line": 8699,
+      "transTables": [
+        "trans_re_enc",
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "allTables": [
+        "trans_re_enc",
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms_rec"
+      ]
+    },
+    {
+      "name": "Marcar_Danado",
+      "line": 12086,
+      "transTables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "trans_packing_enc"
+      ],
+      "allTables": [
+        "trans_picking_ubic",
+        "stock_res",
+        "producto_bodega",
+        "producto",
+        "trans_packing_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_picking_ubic",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_S",
+      "line": 16289,
+      "transTables": [
+        "trans_re_enc",
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "allTables": [
+        "trans_re_enc",
+        "trans_oc_enc",
+        "trans_despacho_det",
+        "i_nav_config_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnTrans_oc_enc",
+        "clsLnI_nav_config_enc",
+        "clsLnLog_error_wms_rec"
+      ]
+    },
+    {
+      "name": "Iniciar_Recepcion_OC",
+      "line": 2663,
+      "transTables": [
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "allTables": [
+        "trans_oc_enc",
+        "trans_despacho_det"
+      ],
+      "invokes": [
+        "clsLnTrans_oc_enc",
+        "clsLnLog_error_wms_rec"
+      ]
+    },
+    {
+      "name": "Reservar_Stock_By_IdStock",
+      "line": 4407,
+      "transTables": [
+        "stock_res"
+      ],
+      "allTables": [
+        "stock_res"
+      ],
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ]
+    },
+    {
+      "name": "Reservar_Stock_By_Stock",
+      "line": 4479,
+      "transTables": [
+        "stock_res"
+      ],
+      "allTables": [
+        "stock_res"
+      ],
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ]
+    },
+    {
+      "name": "Reservar_Y_Reemplazar_Stock_By_IdStock",
+      "line": 4870,
+      "transTables": [
+        "stock_res"
+      ],
+      "allTables": [
+        "stock_res"
+      ],
+      "invokes": [
+        "clsLnStock_res",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pick"
+      ]
+    },
+    {
+      "name": "Aplicar_Cambio_Estado_HH",
+      "line": 5703,
+      "transTables": [
+        "trans_ubic_hh_det"
+      ],
+      "allTables": [
+        "trans_ubic_hh_det"
+      ],
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms"
+      ]
+    },
+    {
+      "name": "Set_Nuevo_Pallet_Id",
+      "line": 5864,
+      "transTables": [
+        "stock"
+      ],
+      "allTables": [
+        "stock",
+        "producto_bodega",
+        "producto"
+      ],
+      "invokes": [
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_reab",
+        "clsLnStock"
+      ]
+    },
+    {
+      "name": "Set_LP_Stock",
+      "line": 5942,
+      "transTables": [
+        "trans_ubic_hh_det"
+      ],
+      "allTables": [
+        "trans_ubic_hh_det"
+      ],
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ]
+    },
+    {
+      "name": "Set_LP_Stock_Mixto",
+      "line": 6000,
+      "transTables": [
+        "trans_ubic_hh_det"
+      ],
+      "allTables": [
+        "trans_ubic_hh_det"
+      ],
+      "invokes": [
+        "clsLnTrans_ubic_hh_det",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_Parcial",
+      "line": 8788,
+      "transTables": [
+        "trans_re_enc"
+      ],
+      "allTables": [
+        "trans_re_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_Parcial_Pallet_Proveedor",
+      "line": 8842,
+      "transTables": [
+        "trans_re_enc"
+      ],
+      "allTables": [
+        "trans_re_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ]
+    },
+    {
+      "name": "Set_Estado_Pedido_Verificado",
+      "line": 10017,
+      "transTables": [
+        "trans_pe_enc"
+      ],
+      "allTables": [
+        "trans_pe_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_pe_enc",
+        "clsLnLog_verificacion_bof",
+        "clsLnLog_error_wms"
+      ]
+    },
+    {
+      "name": "Inserta_Packing",
+      "line": 14538,
+      "transTables": [
+        "trans_packing_enc"
+      ],
+      "allTables": [
+        "trans_packing_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_packing_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ]
+    },
+    {
+      "name": "Eliminar_Linea_Packing",
+      "line": 14630,
+      "transTables": [
+        "trans_packing_enc"
+      ],
+      "allTables": [
+        "trans_packing_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_packing_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ]
+    },
+    {
+      "name": "Set_Estado_Pendiente_Packing",
+      "line": 14733,
+      "transTables": [
+        "trans_picking_enc"
+      ],
+      "allTables": [
+        "trans_picking_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_picking_enc",
+        "clsLnLog_error_wms",
+        "clsLnLog_error_wms_pack"
+      ]
+    },
+    {
+      "name": "Crear_Linea_Unidades",
+      "line": 15657,
+      "transTables": [
+        "trans_oc_det"
+      ],
+      "allTables": [
+        "trans_oc_det"
+      ],
+      "invokes": [
+        "clsLnTrans_oc_det",
+        "clsLnLog_error_wms"
+      ]
+    },
+    {
+      "name": "Finalizar_Recepcion_Parcial_Pallet_Proveedor_S",
+      "line": 16500,
+      "transTables": [
+        "trans_re_enc"
+      ],
+      "allTables": [
+        "trans_re_enc"
+      ],
+      "invokes": [
+        "clsLnTrans_re_enc",
+        "clsLnLog_error_wms_rec"
+      ]
+    }
+  ]
+}
