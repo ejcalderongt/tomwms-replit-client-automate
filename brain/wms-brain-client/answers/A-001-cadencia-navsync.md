@@ -25,8 +25,11 @@ post-insert o llamada inmediata desde un consumer externo. Sin
 embargo no logramos identificar el caller real: SQL Agent solo tiene
 `syspolicy_purge_history` y la busqueda de SPs con
 `UPDATE ... enviado=1` sobre el outbox devolvio 0 resultados, por
-lo que **el writer de `enviado=1` no es un SP local** (probablemente
-un proceso externo Win Service / NavSync.exe).
+lo que es **consistente con un writer externo** (Win Service /
+NavSync.exe). Esta evidencia descarta SPs locales y jobs de SQL
+Agent en BB, pero **no excluye exhaustivamente triggers ni
+procesos en otras BDs/servidores** que no inspeccionamos en esta
+corrida — Q-009 pretende cerrar esa duda.
 
 ## Hallazgos
 
@@ -73,7 +76,10 @@ q1 (no hay actividad en 30 dias).
 
 **Interpretacion**: 0 SPs encontrados. El UPDATE `enviado=1` no
 proviene de ningun SP local en `BB-PRD`. Esto es importante: el
-writer es **externo** (probablemente NavSync.exe o un servicio Windows).
+writer es **consistente con ser externo** al motor SQL
+(probablemente NavSync.exe o un servicio Windows), aunque no se
+descartaron exhaustivamente triggers ni mecanismos en otras
+BDs/servidores.
 
 ### q5 (extra): SQL Agent jobs en BB-PRD
 
@@ -94,8 +100,9 @@ del motor.
 
 - Cadencia historica: **post-insert / sincronica** (~99.5% en 0 seg).
 - Cadencia actual: **detenida** (0 filas en ultimos 30 dias).
-- Writer: **externo al motor SQL** (no es trigger ni SP local, no es
-  SQL Agent job).
+- Writer: **consistente con externo al motor SQL** (descartado SP
+  local y SQL Agent job; no se descartaron exhaustivamente triggers
+  ni procesos en BDs/servidores fuera de scope).
 - Para cerrar la pregunta al 100% se necesita identificar el
   proceso `.exe` / Windows Service que abre la conexion al WMS y
   marca `enviado=1`. Sugerencia para Erik: verificar `tasklist`

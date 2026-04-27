@@ -1,7 +1,7 @@
 ---
 protocolVersion: 1
 id: L-012
-title: NavSync solo procesa SALIDAS por diseño (writer externo, latencia ~0 seg)
+title: NavSync hoy procesa solo SALIDAs tipo_doc=3 (writer consistente con externo, latencia ~0 seg)
 operator: agent-replit
 operatorRole: developer
 createdAt: 2026-04-27T15:00:00Z
@@ -30,13 +30,14 @@ WMS — los hechos comprobados son:
    `fec_agr` y `fec_mod` → patron consistente con trigger /
    llamada sincronica post-insert (no batch periodico).
 
-2. **Writer externo al motor SQL** *(hipotesis fuerte, no
-   prueba absoluta)*: la busqueda de SPs locales con
+2. **Writer consistente con externo al motor SQL** *(hipotesis
+   fuerte, no prueba absoluta)*: la busqueda de SPs locales con
    `UPDATE ... enviado=1 ... i_nav_transacciones_out` devolvio
    0 resultados, y SQL Agent en BB solo tiene
    `syspolicy_purge_history`. Esto es **consistente con** un
-   proceso `.exe` / Windows Service externo, pero no descarta
-   un mecanismo en otra BD/servidor que no inspeccionamos.
+   proceso `.exe` / Windows Service externo. La inspeccion **NO
+   incluyo** triggers DML ni procesos cross-server / linked
+   server, por lo que esos vectores quedan abiertos hasta Q-009.
 
 3. **Solo SALIDAs `IdTipoDocumento=3` operan al 99%**: 277,309
    enviados / 28 pendientes. Los INGRESOs (tipos 6, 8) tuvieron

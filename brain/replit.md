@@ -169,7 +169,7 @@ queries read-only contra K7-PRD y BB-PRD. Resumen de veredictos:
 
 | Card | Verdict | Confidence | Hallazgo clave |
 |---|---|---|---|
-| A-001 | partial | medium | NavSync BB SALIDA: 99.5% en 0 seg, writer externo (hipotesis), 0 actividad ultimos 30d |
+| A-001 | partial | medium | NavSync BB SALIDA: 99.5% en 0 seg, writer consistente con externo (no se descartaron triggers/cross-server), 0 actividad ultimos 30d |
 | A-002 | confirmed | high | K7 outbox 100% enteros — SAPSYNCKILLIOS sin redondeo |
 | A-003 | partial | medium | NavSync BB hoy procesa solo SALIDA tipo 3; INGRESOs sí se procesaron 2022-05→2023-09 (107 filas) y luego se detuvieron |
 | A-004 | confirmed | high | `log_error_wms`: 15 cols, sin severidad, mezcla AVISOs + trazas + errores |
@@ -183,7 +183,7 @@ queries read-only contra K7-PRD y BB-PRD. Resumen de veredictos:
 - **L-009** SAPSYNCKILLIOS solo procesa cantidades enteras
 - **L-010** NavSync de BB dejo de procesar INGRESOs en sep-2023 (110k pendientes acumulados)
 - **L-011** `log_error_wms` es bitacora mixta, no log de errores puros
-- **L-012** NavSync de BB hoy procesa solo SALIDAs tipo_doc=3 (writer externo: hipotesis, no prueba)
+- **L-012** NavSync de BB hoy procesa solo SALIDAs tipo_doc=3 (writer consistente con externo, no exhaustivamente probado)
 - **L-013** Outbox WMS es por linea de detalle (1 outbox = 1 RecepcionDet/DespachoDet)
 
 ### Questions abiertas tanda 2 (`brain/wms-brain-client/questions/`)

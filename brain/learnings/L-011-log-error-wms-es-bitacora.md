@@ -35,7 +35,7 @@ como bitacora general.
 - Estructura real:
 
 ```
-IdError, IdEmpresa, IdBodega, Fecha, MensajeError (nvarchar max),
+IdError, IdEmpresa, IdBodega, Fecha, MensajeError (K7: nvarchar(2500); BB: nvarchar(max)),
 IdPedidoEnc, IdPickingEnc, IdRecepcionEnc, IdUsuarioAgr,
 Line_No, Item_No, UmBas, Variant_Code, Cantidad, Referencia_Documento
 (NO hay columna 'severidad' ni 'modulo')
