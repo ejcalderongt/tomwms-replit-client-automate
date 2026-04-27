@@ -1,0 +1,37 @@
+# RES-012: Stock insuficiente con flag rechazar_pedido_incompleto = No (estricto)
+id: RES-012
+version: 1
+category: reservation
+severity: high
+title: "Stock insuficiente con flag rechazar_pedido_incompleto = No (estricto)"
+summary: |
+  Solo hay 4 unidades en almacenamiento, se solicita 5. Con la bandera estricta el pedido completo debe ser rechazado.
+
+requires_config:
+  - Rechazar_pedido_incompleto: No  # ojo: No=estricto
+
+input:
+  requested_qty: 5
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 4, vence: "2026-01-02", um: "UDS" }
+
+expected:
+  1. Pedido RECHAZADO completo. Cero reservas confirmadas.
+  2. Resultado contiene marca de rechazo por incompletitud.
+
+legacy_origin:
+  case: "CASO 8"
+  function: "Ejecuta_QA_CASO_8_IDEAL_20231002011140"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "14731-14949"
+
+notes: |
+  Trampa semántica: el valor "No" del enum tRechazarPedidoIncompleto significa "rechaza el pedido completo si alguna línea no se puede abastecer". Ver reference/config-flags.md.
