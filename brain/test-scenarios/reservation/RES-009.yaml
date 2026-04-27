@@ -1,0 +1,40 @@
+# RES-009: Salto pick → alm → pick por FEFO
+id: RES-009
+version: 1
+category: reservation
+severity: high
+title: "Salto pick → alm → pick por FEFO"
+summary: |
+  Espejo del CASO 4: tres lotes con fechas crecientes pero ahora el primer y tercer lote están en picking. Patrón pick-alm-pick.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+
+input:
+  requested_qty: 150
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "PICKING", cantidad: 75, vence: "2026-01-01", um: "CJS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 25, vence: "2026-01-02", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 50, vence: "2026-01-03", um: "CJS" }
+
+expected:
+  1. Reserva 75 CJS desde PICKING (vence 2026-01-01).
+  2. Reserva 25 CJS desde ALMACENAMIENTO (vence 2026-01-02).
+  3. Reserva 50 CJS desde PICKING (vence 2026-01-03).
+  4. Pedido completo.
+
+legacy_origin:
+  case: "CASO 5"
+  function: "Ejecuta_QA_CASO_5_IDEAL_20231002011134"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "14044-14285"
+
