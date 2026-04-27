@@ -1,0 +1,24 @@
+{
+  "name": "bug-p16b-detector",
+  "version": 1,
+  "protocolVersion": 1,
+  "description": "Detecta el bug P-16b: pedidos cuyo encabezado vuelve de DESPACHADO a PENDIENTE despues del despacho. Identifica casos historicos, frecuencia y posibles SPs responsables.",
+  "appliesTo": {
+    "tablesRequired": ["pedido_enc", "pedido_det", "pedido_estado_log"],
+    "schemas": ["dbo"]
+  },
+  "queries": [
+    {"id": "B1", "file": "queries/B1-pedidos-vuelta-atras.sql", "type": "data", "title": "Pedidos con transicion DESPACHADO -> PENDIENTE"},
+    {"id": "B2", "file": "queries/B2-detalle-coherencia-enc.sql", "type": "data", "title": "Pedidos con incoherencia detalle/encabezado activa"},
+    {"id": "B3", "file": "queries/B3-frecuencia-temporal.sql", "type": "data", "title": "Frecuencia del bug por mes (ultimos 12)"},
+    {"id": "B4", "file": "queries/B4-sp-candidatos.sql", "type": "data", "title": "SPs que actualizan pedido_enc.estado"},
+    {"id": "B5", "file": "queries/B5-correlacion-con-outbox.sql", "type": "data", "title": "Correlacion del bug con eventos del outbox"}
+  ],
+  "redFlags": [
+    {"id": "RF1", "condition": "B1 retorna >0 filas en los ultimos 30d", "interpretation": "El bug sigue activo. Frenar deploys hasta entender SP responsable."},
+    {"id": "RF2", "condition": "B4 muestra >1 SP que UPDATEa pedido_enc.estado", "interpretation": "Multiples puntos de escritura — auditar cada uno y consolidar"}
+  ],
+  "expectedDurationSeconds": 10,
+  "readOnly": true,
+  "tags": ["bug", "P-16b", "pedido", "investigacion"]
+}
