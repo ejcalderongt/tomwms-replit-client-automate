@@ -1,0 +1,40 @@
+# RES-008: Salto alm → pick → alm por FEFO (3 lotes en 2 zonas)
+id: RES-008
+version: 1
+category: reservation
+severity: high
+title: "Salto alm → pick → alm por FEFO (3 lotes en 2 zonas)"
+summary: |
+  Tres lotes con vencimientos crecientes distribuidos alm/pick/alm. La reserva debe seguir la fecha más corta sin importar la zona, produciendo un patrón alm-pick-alm.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+
+input:
+  requested_qty: 150
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 75, vence: "2026-01-01", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 25, vence: "2026-01-02", um: "CJS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 50, vence: "2026-01-03", um: "CJS" }
+
+expected:
+  1. Reserva 75 CJS desde ALMACENAMIENTO (vence 2026-01-01).
+  2. Reserva 25 CJS desde PICKING (vence 2026-01-02).
+  3. Reserva 50 CJS desde ALMACENAMIENTO (vence 2026-01-03).
+  4. Pedido completo (150 CJS reservadas).
+
+legacy_origin:
+  case: "CASO 4"
+  function: "Ejecuta_QA_CASO_4_IDEAL_20231002011132"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "13807-14043"
+
