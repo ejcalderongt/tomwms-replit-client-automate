@@ -1,0 +1,843 @@
+{
+  "domain": "packing",
+  "activitiesCount": 7,
+  "activities": [
+    {
+      "activity": "frm_Packing",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm__packing",
+      "fileLines": 3071,
+      "intentTargets": [],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 1798,
+          "wm": "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "bodega"
+          ],
+          "tablesWrite": [
+            "bodega"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 1801,
+          "wm": "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pBarra As String, ByVal pIdBodega As Integer",
+          "returns": "clsBeBodega_ubicacion",
+          "tablesRead": [
+            "bodega_ubicacion"
+          ],
+          "tablesWrite": [
+            "bodega_ubicacion"
+          ],
+          "clsLnUsed": [
+            "clsLnBodega_ubicacion",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 1804,
+          "wm": "Get_Stock_By_Lic_Plate_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 83,
+          "paramsRaw": "ByVal pLicensePlate As String, ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 1809,
+          "wm": "Get_Estados_By_IdPropietario_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 56,
+          "paramsRaw": "ByVal pIdPropietario As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_estado",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_estado"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_estado",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 1813,
+          "wm": "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 81,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer, ByVal pIdProductoBodega As Integer, ByVal pLicPlate As String, ByVal pIdPresentacion As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 1822,
+          "wm": "Get_BeProducto_By_Codigo_For_HH",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pCodigo As String, ByVal IdBodega As Integer",
+          "returns": "clsBeProducto",
+          "tablesRead": [
+            "log_error_wms",
+            "producto",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 7,
+          "lineNum": 1826,
+          "wm": "Get_Productos_By_IdUbicacion",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 36,
+          "paramsRaw": "ByVal pIdUbicacion As Integer, ByVal pIdProductoBodega As Integer",
+          "returns": "Object",
+          "tablesRead": [],
+          "tablesWrite": [
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 8,
+          "lineNum": 1831,
+          "wm": "Set_LP_Stock",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 56,
+          "paramsRaw": "ByVal pMovimiento As clsBeTrans_movimientos, pStockRes As clsBeVW_stock_res, pIdResolucionLp As Integer",
+          "returns": "String",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 9,
+          "lineNum": 1837,
+          "wm": "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pLic_Plate As String, ByVal pIdBodega As Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 10,
+          "lineNum": 1843,
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdOperador As Integer, ByVal pIdBodega As Integer",
+          "returns": "clsBeResolucion_lp_operador",
+          "tablesRead": [
+            "log_error_wms",
+            "resolucion_lp_operador",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "resolucion_lp_operador"
+          ],
+          "clsLnUsed": [
+            "clsLnResolucion_lp_operador",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 11,
+          "lineNum": 1850,
+          "wm": "Get_Ubicacion_LP",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pLic_Plate As String, ByVal pIdBodega As Integer, ByVal pIdUbicStock As Integer, ByRef nombre_ubicacion As String",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "stock_rec",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock_rec"
+          ],
+          "clsLnUsed": [
+            "clsLnStock_rec",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_ubic"
+          ]
+        },
+        {
+          "seq": 12,
+          "lineNum": 1857,
+          "wm": "Get_Stock_By_Lic_Plate_And_Codigo",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pLicensePlate As String, ByVal pCodigo As String, ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeProducto)",
+          "tablesRead": [
+            "log_error_wms",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "stock"
+          ],
+          "clsLnUsed": [
+            "clsLnStock",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 13,
+          "lineNum": 1864,
+          "wm": "Get_All_Presentaciones_By_IdProducto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pIdProducto As Integer, ByVal pActivo As Boolean",
+          "returns": "List(Of clsBeProducto_Presentacion)",
+          "tablesRead": [
+            "log_error_wms",
+            "producto_presentacion",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "producto_presentacion"
+          ],
+          "clsLnUsed": [
+            "clsLnProducto_presentacion",
+            "clsLnLog_error_wms"
+          ]
+        },
+        {
+          "seq": 14,
+          "lineNum": 1869,
+          "wm": "Set_LP_Stock_Mixto",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 42,
+          "paramsRaw": "ByVal pStockResList As List(Of clsBeVW_stock_res), pIdResolucionLp As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_ubic_hh_det",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_ubic_hh_det"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_ubic_hh_det",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_preparacion_packing",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm_preparacion_packing",
+      "fileLines": 1591,
+      "intentTargets": [
+        "frm_lista_packing_lp"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 1019,
+          "wm": "Get_All_PickingUbic_By_PickingEnc",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer, ByVal pIdPedidoEnc As Integer",
+          "returns": "List(Of clsBeTrans_picking_ubic)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 1023,
+          "wm": "Get_All_Packing_By_IdPicking",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal IdPicking As Integer, ByVal IdPedidoEnc As Integer",
+          "returns": "List(Of clsBeTrans_packing_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_packing_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_packing_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_packing_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 1033,
+          "wm": "Inserta_Packing",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pTrans_packing_enc As List(Of clsBeTrans_packing_enc), pIdResolucion As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_packing_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_packing_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_packing_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 4,
+          "lineNum": 1036,
+          "wm": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 47,
+          "paramsRaw": "ByVal pIdOperador As Integer, ByVal pIdBodega As Integer",
+          "returns": "clsBeResolucion_lp_operador",
+          "tablesRead": [
+            "log_error_wms",
+            "resolucion_lp_operador",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "resolucion_lp_operador"
+          ],
+          "clsLnUsed": [
+            "clsLnResolucion_lp_operador",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 5,
+          "lineNum": 1041,
+          "wm": "Actualizar_Estado_Packing",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pIdPicking As Integer, ByVal pIdPedidoEnc As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 6,
+          "lineNum": 1045,
+          "wm": "Eliminar_Linea_Packing",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 57,
+          "paramsRaw": "ByVal pBePackingEnc As clsBeTrans_packing_enc, ByVal pIdOperadorBodega As Integer",
+          "returns": "Boolean",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_packing_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_packing_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_packing_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_lista_packing",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm_lista_packing",
+      "fileLines": 465,
+      "intentTargets": [
+        "frm_list_packing_cerrados",
+        "frm_preparacion_packing",
+        "frm_preparacion_packing_bulto"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 273,
+          "wm": "Get_All_Picking_Para_Empaque_By_IdBodega",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pIdBodega As Integer",
+          "returns": "List(Of clsBeTrans_picking_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "tarea_hh",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "tarea_hh"
+          ],
+          "clsLnUsed": [
+            "clsLnTarea_hh",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 276,
+          "wm": "Set_Estado_Pendiente_Packing",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 45,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 279,
+          "wm": "Get_Picking_Para_Emapaque_Consolidado",
+          "transport": "json-post",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 55,
+          "paramsRaw": "",
+          "tablesRead": [
+            "log_error_wms",
+            "tarea_hh",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "tarea_hh"
+          ],
+          "clsLnUsed": [
+            "clsLnTarea_hh",
+            "clsLnLog_error_wms"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_preparacion_packing_bulto",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm_preparacion_packing_bulto",
+      "fileLines": 964,
+      "intentTargets": [
+        "frm_lista_packing_lotes"
+      ],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 600,
+          "wm": "Get_All_PickingUbic_By_PickingEnc_Group",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal pIdPickingEnc As Integer",
+          "returns": "List(Of clsBeTrans_picking_ubic)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_picking_ubic",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_picking_ubic"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_picking_ubic",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 2,
+          "lineNum": 603,
+          "wm": "Get_All_Packing_By_IdPicking",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 44,
+          "paramsRaw": "ByVal IdPicking As Integer, ByVal IdPedidoEnc As Integer",
+          "returns": "List(Of clsBeTrans_packing_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_packing_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_packing_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_packing_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        },
+        {
+          "seq": 3,
+          "lineNum": 606,
+          "wm": "Inserta_Packing",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 46,
+          "paramsRaw": "ByVal pTrans_packing_enc As List(Of clsBeTrans_packing_enc), pIdResolucion As Integer",
+          "returns": "Integer",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_packing_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_packing_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_packing_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_list_packing_cerrados",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm_list_packing_cerrados",
+      "fileLines": 403,
+      "intentTargets": [],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": [
+        {
+          "seq": 1,
+          "lineNum": 358,
+          "wm": "Get_LicenciasPacking_Cerrado",
+          "transport": "soap",
+          "serverDefined": true,
+          "ws": "TOMHHWS",
+          "bodyLines": 43,
+          "paramsRaw": "ByVal pIdPedidoEnc As Integer",
+          "returns": "List(Of clsBeTrans_packing_enc)",
+          "tablesRead": [
+            "log_error_wms",
+            "trans_packing_enc",
+            "usuario"
+          ],
+          "tablesWrite": [
+            "log_error_wms",
+            "trans_packing_enc"
+          ],
+          "clsLnUsed": [
+            "clsLnTrans_packing_enc",
+            "clsLnLog_error_wms",
+            "clsLnLog_error_wms_pack"
+          ]
+        }
+      ]
+    },
+    {
+      "activity": "frm_lista_packing_lotes",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm_lista_packing_lotes",
+      "fileLines": 269,
+      "intentTargets": [],
+      "visibleStrings": [
+        {
+          "key": "app_name",
+          "text": "TOMWMS"
+        }
+      ],
+      "steps": []
+    },
+    {
+      "activity": "frm_lista_packing_lp",
+      "package": "com.dts.tom.Transacciones.Packing",
+      "layout": "activity_frm_lista_packing_lp",
+      "fileLines": 255,
+      "intentTargets": [],
+      "visibleStrings": [],
+      "steps": []
+    }
+  ],
+  "entryActivity": "frm_lista_packing",
+  "exitActivity": null,
+  "uniqueWMsCalled": [
+    "Actualizar_Estado_Packing",
+    "Eliminar_Linea_Packing",
+    "Existe_Lp_By_Licencia_And_IdBodega_JSON",
+    "Get_All_Packing_By_IdPicking",
+    "Get_All_PickingUbic_By_PickingEnc",
+    "Get_All_PickingUbic_By_PickingEnc_Group",
+    "Get_All_Picking_Para_Empaque_By_IdBodega",
+    "Get_All_Presentaciones_By_IdProducto",
+    "Get_BeProducto_By_Codigo_For_HH",
+    "Get_Estados_By_IdPropietario_JSON",
+    "Get_IdUbicacion_Recepcion_By_IdBodega_Json",
+    "Get_LicenciasPacking_Cerrado",
+    "Get_Picking_Para_Emapaque_Consolidado",
+    "Get_Productos_By_IdUbicacion",
+    "Get_Productos_By_IdUbicacion_And_LicPlate_JSON",
+    "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+    "Get_Stock_By_Lic_Plate_And_Codigo",
+    "Get_Stock_By_Lic_Plate_JSON",
+    "Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON",
+    "Get_Ubicacion_LP",
+    "Inserta_Packing",
+    "Set_Estado_Pendiente_Packing",
+    "Set_LP_Stock",
+    "Set_LP_Stock_Mixto"
+  ],
+  "finalizationWMs": [],
+  "partialWMs": [],
+  "tablesWrittenByDomain": [
+    "bodega",
+    "bodega_ubicacion",
+    "log_error_wms",
+    "producto",
+    "producto_estado",
+    "producto_presentacion",
+    "resolucion_lp_operador",
+    "stock",
+    "stock_rec",
+    "tarea_hh",
+    "trans_packing_enc",
+    "trans_picking_enc",
+    "trans_picking_ubic",
+    "trans_ubic_hh_det"
+  ],
+  "tablesReadByDomain": [
+    "bodega",
+    "bodega_ubicacion",
+    "log_error_wms",
+    "producto",
+    "producto_estado",
+    "producto_presentacion",
+    "resolucion_lp_operador",
+    "stock_rec",
+    "tarea_hh",
+    "trans_packing_enc",
+    "trans_picking_enc",
+    "trans_picking_ubic",
+    "trans_ubic_hh_det",
+    "usuario"
+  ],
+  "states": [
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    }
+  ],
+  "typicalErrors": [],
+  "edgeCases": []
+}
