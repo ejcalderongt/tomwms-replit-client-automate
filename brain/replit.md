@@ -13,7 +13,7 @@ Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS**
 | **Producto** | TOM WMS — Warehouse Management System multi-cliente |
 | **Empresa** | PrograX24 |
 | **Owner técnico** | Erik José Calderón (EJC) |
-| **Cliente activo en este Replit** | Killios (BD `TOMWMS_KILLIOS_PRD`) |
+| **Cliente activo en este Replit** | Killios (codename **K7**, BD nombre vive en secreto `WMS_KILLIOS_DB_NAME_DEFAULT`) |
 | **Otros clientes con releases productivas** | Becofarma, La Cumbre, Cealsa, Mampa (MHS) |
 | **Stack backend** | VB.NET .NET Framework 4.8, SQL Server 2022 (sobre EC2 AWS) |
 | **Stack HH (Handheld Android)** | Java, Android API minSdk/targetSdk=24, compileSdk=34, applicationId `com.dts.tom` v8.2.3 |
@@ -32,7 +32,7 @@ Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS**
 - BOF: `C:\Users\yejc2\source\repos\TOMWMS`
 - HH: `C:\Users\yejc2\StudioProjects\TOMHH2025` (Android Studio, no `repos/` como se asumió inicialmente)
 
-**BD Killios (AWS) es VOLÁTIL**: el host puede dejar de existir, migrar de proveedor o restaurarse en otro entorno para análisis puntual. **No asumir que el connection string actual es permanente**. Antes de cualquier sesión que dependa de la BD, validar conectividad y, si cambió, actualizar este archivo + `brain/agent-context/AZURE_ACCESS.md`. La BD es referencia para entender el modelo y validar estados, NO es un servicio de producción gestionado por nosotros.
+**BD Killios es VOLÁTIL**: el host puede dejar de existir, migrar de proveedor o restaurarse en otro entorno para análisis puntual. **No asumir que el connection string actual es permanente**. Antes de cualquier sesión que dependa de la BD, validar conectividad y, si cambió, actualizar el archivo restringido `brain/agent-context/AZURE_ACCESS.md` (NO este archivo: es shared/reviewable). La BD es referencia para entender el modelo y validar estados, NO es un servicio de producción gestionado por nosotros.
 
 **Composición de TOMWMS_BOF en `dev_2028_merge` (snapshot 2026-04-26)**:
 - Conteo por extensión: `.vb` = 3218, `.cs` = 1083, `.resx` = 657, `.svg` = 1624, `.xml` = 199, `.svc` = 94, `.config` = 119
@@ -83,39 +83,48 @@ Para identificar autor de cualquier convención particular (ej. reglas en `WebSe
 
 **Estado validación**: ✅ 2026-04-27 (conexión confirmada desde Replit con queries read-only).
 
-| Dato | Valor |
+> **Nota de privacidad**: este archivo es shared/reviewable. **Hostnames, IPs, nombres de BD y usuarios reales NO van aquí**. Viven en `brain/agent-context/AZURE_ACCESS.md` §9 (acceso restringido) y se inyectan al agente solo via secretos.
+
+| Dato | Donde vive |
 |---|---|
-| Servidor | `52.41.114.122,1437` (EC2 AWS, Windows Server 2022) |
-| BD principal | `TOMWMS_KILLIOS_PRD` (345 tablas, 39 SPs) |
-| Otras BDs WMS accesibles | `IMS4MB_BYB_PRD` (BYB prod), `IMS4MB_CEALSA_QAS` (CEALSA QA) |
-| Versión | SQL Server 2022 CU18 Standard (16.0.4185.3) |
-| Usuario | `sa` |
-| Contraseña | secreto `WMS_KILLIOS_DB_PASSWORD` (NUNCA en código ni chat) |
+| Hostname / IP / port | secretos `WMS_<CODENAME>_<ENV>_DB_HOST`, `..._PORT` |
+| BD por cliente | secreto `WMS_<CODENAME>_<ENV>_DB_NAME_DEFAULT` |
+| Versión motor | SQL Server 2022 CU18 Standard (16.0.x) |
+| Usuario lectura | secreto `WMS_<CODENAME>_<ENV>_DB_USER` (NO usar `sa` ni cuentas privilegiadas; pedir `read_brain` o equivalente) |
+| Contraseña | secreto `WMS_<CODENAME>_<ENV>_DB_PASSWORD` (NUNCA en código ni chat) |
 | Driver Node | `tedious` (workspace) o `mssql` (instalable) |
+
+Codenames activos: K7 (PRD), BB (PRD), C9 (QAS). Pendiente acceso al grupo Aurora (ID/MH/MC/MP/IN) y resto (MS/BF/MM/LC) — ver Q-013.
 
 **Naming real de tablas** (validado 2026-04-27): SIN prefijo `t_*`. Son `trans_oc_det_lote`, `log_importacion_excel`, `cliente_lotes`, etc. directos.
 
 **Modelo de lotes**: NO existe maestro independiente. Los lotes viven en 6 tablas dedicadas (`trans_re_det_lote_num` 180k filas, `trans_oc_det_lote` 1k filas, `trans_despacho_det_lote_num`, `cliente_lotes`, 2 interfaces Navision) + en muchas tablas con campo `lote` embebido (`stock`, `stock_hist`, `producto_pallet`, etc.). Detalle en `brain/skills/wms-tomwms/SKILL.md` §7.1.
 
-**Secrets recomendados** para que el agente conecte automáticamente entre sesiones (sin pasar datos por chat):
-- `WMS_KILLIOS_DB_HOST`, `WMS_KILLIOS_DB_PORT`, `WMS_KILLIOS_DB_USER`, `WMS_KILLIOS_DB_NAME_DEFAULT`.
+Convención de secretos para nuevas BDs: `WMS_<CODENAME>_<ENV>_DB_<PASSWORD|HOST|PORT|USER|NAME_DEFAULT>`.
 
-Convención para futuras BDs: `WMS_<CLIENTE>_<ENV>_DB_PASSWORD`.
+Detalle completo (con valores reales) en archivo restringido: `brain/agent-context/AZURE_ACCESS.md` §9.
 
-Detalle completo: `brain/agent-context/AZURE_ACCESS.md` §9.
-
-**Snippet de conexión** (referencia rápida):
+**Snippet de conexión** (referencia genérica, sin datos sensibles):
 
 ```javascript
 // Ejecutar con: node scriptName.js (NO desde el sandbox JS porque no ve env vars)
 const { Connection, Request } = require('tedious');
+const code = 'KILLIOS'; // codename de cliente activo (mayusculas, ver tabla arriba)
 const config = {
-  server: '52.41.114.122',
-  options: { port: 1437, database: 'TOMWMS_KILLIOS_PRD',
+  server: process.env[`WMS_${code}_DB_HOST`],
+  options: {
+    port: Number(process.env[`WMS_${code}_DB_PORT`] ?? 1433),
+    database: process.env[`WMS_${code}_DB_NAME_DEFAULT`],
     encrypt: false, trustServerCertificate: true,
-    requestTimeout: 60000, connectTimeout: 15000 },
-  authentication: { type: 'default',
-    options: { userName: 'sa', password: process.env.WMS_KILLIOS_DB_PASSWORD } },
+    requestTimeout: 60000, connectTimeout: 15000,
+  },
+  authentication: {
+    type: 'default',
+    options: {
+      userName: process.env[`WMS_${code}_DB_USER`],
+      password: process.env[`WMS_${code}_DB_PASSWORD`],
+    },
+  },
 };
 ```
 
