@@ -1,45 +1,49 @@
-# Matriz de compatibilidad escenario × cliente
+# Matriz de compatibilidad escenario × cliente — v3
 
-> Generada automaticamente desde flags reales aprendidos (2026-04-27T14:56:31.611Z).
-> Para clientes con varias bodegas funcionalmente identicas, se mostro una entrada.
-> CEALSA se desdobla en CEALSA-gen (bodega 1) y CEALSA-fiscal (bodega 2, passthrough).
+> Generada 2026-04-27T15:31:09.941Z. Basada en flags reales aprendidos de `i_nav_config_enc` y log observado en `trans_pe_det_log_reserva`.
 
 ## Leyenda
 
-- `OK`: cliente cumple los `requires_config` del escenario; correr y validar.
-- `N/A`: cliente NO cumple `requires_config`; el escenario no aplica.
-- `?`: ambiguedad documentada en el escenario.
+- `OK` — cliente cumple los `requires_config` del escenario.
+- `OBS` — cliente cumple Y existe evidencia en `trans_pe_det_log_reserva` (caso observado en prod).
+- `N/A` — cliente no cumple los `requires_config`.
+- `THE` — escenario teorico: el cliente cumple flags pero NO hay evidencia productiva. Es target de **reserva-webapi (dev_2028)**.
 
 ## Matriz
 
 | Escenario | KILLIOS | BYB | CEALSA-gen | CEALSA-fiscal | Notas |
 |---|---|---|---|---|---|
-| RES-001 | OK | N/A | N/A | N/A |  |
-| RES-006 | OK | N/A | N/A | N/A |  |
-| RES-007 | OK | N/A | N/A | N/A | duplicado funcional, candidato a colapso |
-| RES-008 | OK | N/A | N/A | N/A |  |
-| RES-009 | OK | N/A | N/A | N/A |  |
-| RES-010 | OK | N/A | N/A | N/A | duplicado funcional, candidato a colapso |
-| RES-011 | OK | N/A | N/A | N/A |  |
-| RES-012 | OK | N/A | N/A | N/A |  |
-| RES-013 | OK | N/A | N/A | N/A |  |
-| RES-014 | OK | N/A | N/A | N/A |  |
-| RES-015 | OK | N/A | N/A | N/A |  |
-| RES-016 | OK | N/A | N/A | N/A |  |
-| RES-017 | OK | N/A | N/A | N/A |  |
-| RES-018 | OK | N/A | N/A | N/A |  |
-| RES-019 | OK | N/A | N/A | N/A | ambiguedad pendiente (rechaza vs explota G) |
-| RES-020 | OK | N/A | N/A | N/A |  |
-| RES-021 | OK | N/A | N/A | N/A | reservar_umbas_primero=false en TODOS → expected del legacy no se cumple en prod |
-| RES-022 | OK | N/A | N/A | N/A |  |
-| RES-023 | OK | N/A | N/A | N/A |  |
-| RES-024 | OK | N/A | N/A | N/A |  |
-| RES-DIN | OK | OK | OK | OK |  |
+| RES-001 | THE | THE | THE | N/A | sin evidencia en log |
+| RES-006 | THE | THE | THE | N/A | sin evidencia |
+| RES-007 | THE | THE | THE | N/A | duplicado funcional con RES-010 |
+| RES-008 | **OBS** (1675) | (THE - 2 reg recientes) | THE | N/A | observado en prod |
+| RES-009 | OBS (1) | THE | THE | N/A | rarisimo en prod |
+| RES-010 | THE | THE | THE | N/A | duplicado con RES-007 |
+| RES-011 | THE | THE | THE | N/A | |
+| RES-012 | **OBS** (276) | THE | THE | N/A | |
+| RES-013 | THE | THE | THE | N/A | |
+| RES-014 | THE | THE | THE | N/A | |
+| RES-015 | THE | THE | THE | N/A | |
+| RES-016 | THE | THE | THE | N/A | |
+| RES-017 | THE | THE | THE | N/A | |
+| RES-018 | N/A | N/A | N/A | N/A | requiere explosion_automatica_desde_ubicacion_picking=false; ningun cliente lo cumple |
+| RES-019 | THE | THE | THE | N/A | ambiguedad pendiente |
+| RES-020 | **OBS** (267) | THE | THE | N/A | pero observado en bodega NO almacenamiento |
+| RES-021 | **OBS** (1065) | THE | THE | N/A | reservar_umbas_primero=false → expected webapi diverge |
+| RES-022 | OBS (44) | THE | THE | N/A | |
+| RES-023 | **OBS** (125) | THE | THE | N/A | |
+| RES-024 | **OBS** (18587) | THE | THE | N/A | camino feliz dominante |
+| RES-DIN | OK | OK | OK | N/A | runner dinamico |
 
 ## Resumen
 
-- **Killios** cumple todos los escenarios FEFO/explosion (control_vencimiento=true, explosion_automatica=true, explosion_automatica_desde_ubicacion_picking=true). Atencion al typo `explosio_automatica_nivel_max=1` vs `explosion_automatica_nivel_max=-1`.
-- **BYB** cumple los mismos. Ademas es el unico para escenarios de reabastecimiento.
-- **CEALSA-gen** cumple basicos, no los SAP-especificos.
-- **CEALSA-fiscal** N/A para todos los escenarios de reserva (bodega passthrough sin flags activos).
-- **RES-021** reservar_umbas_primero=false en los 3 clientes → revisar el expected del escenario, el legacy asumia true.
+- **Killios** tiene flags compatibles con todos los escenarios FEFO/explosion. 9 escenarios estan **observados en log** productivo, los otros 12 son **teoricos / target webapi**.
+- **BYB** cumple los mismos flags. Casi sin actividad reciente en log de reservas (706 registros 2023 con Caso_Reserva NULL + 2 registros 2025).
+- **CEALSA-gen** cumple flags de los escenarios basicos pero **el motor del WMS no se invoca por defecto** (`trans_pe_det_log_reserva` vacio). Aplican solo si el tipo de pedido tiene `ReservaStock=true` y el escenario lo solicita explicitamente.
+- **CEALSA-fiscal** N/A para todos (passthrough sin flags activos).
+
+## Acciones
+
+1. Para cada escenario `THE`, decidir: ¿es candidato a borrar (no aplica), o se mantiene como target de reserva-webapi?
+2. Para cada escenario `OBS`, validar que el expected del bridge coincide con el `MensajeLog` del caso observado.
+3. RES-018 esta en N/A para todos los clientes — revisar si tiene sentido conservar o reformular.
