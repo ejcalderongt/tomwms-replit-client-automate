@@ -1,0 +1,40 @@
+# RES-021: Mismo vencimiento alm: prefiere UDS sueltas sobre caja
+id: RES-021
+version: 1
+category: reservation
+severity: high
+title: "Mismo vencimiento alm: prefiere UDS sueltas sobre caja"
+summary: |
+  1 CJ y 7 UDS ambos en almacenamiento con MISMA fecha de vencimiento. Debe reservar las UDS sueltas (B) antes que romper la caja (A).
+
+requires_config:
+  - Control_vencimiento: true
+  - Reservar_UMBas_Primero: true
+
+input:
+  requested_qty: 7
+  requested_um: "UDS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 1, vence: "2023-12-30", um: "CJS" }
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 7, vence: "2023-12-30", um: "UDS" }
+
+expected:
+  1. Reserva 7 UDS desde ALMACENAMIENTO (lote B).
+  2. Caja A intacta.
+  3. Pedido completo.
+
+legacy_origin:
+  case: "CASO 17"
+  function: "Ejecuta_QA_CASO_17_IDEAL_202311040904"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "16941-17231"
+
+notes: |
+  Confirma que Reservar_UMBas_Primero (o equivalente) es la preferencia cuando vencimiento empata. Si el flag está apagado, comportamiento debe documentarse como diferente.
