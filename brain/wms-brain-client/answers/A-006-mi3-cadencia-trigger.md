@@ -20,12 +20,11 @@ tags: [mi3, wcf, aurora, ID, MH, MC, MP, IN, PEND-06]
 
 **No fue posible responder esta question en esta corrida.** Los
 DBs del grupo Aurora (ID-PRD, MH-PRD, MC-PRD, MP-PRD, IN-PRD) no
-estan accesibles desde el host autorizado para el agente
-(`52.41.114.122,1437` solo expone TOMWMS_KILLIOS_PRD,
-IMS4MB_BYB_PRD y IMS4MB_CEALSA_QAS). Como proxy se busco en K7 si
-hay tablas `mi3*` / `aurora*` / `wcf*` y devolvio 0
-resultados — confirmando que MI3 es un canal de los DBs Aurora,
-no replicado en K7.
+estan accesibles desde el endpoint autorizado para el agente, que
+solo expone los DBs de los codenames K7-PRD, BB-PRD y C9-QAS.
+Como proxy se busco en K7 si hay tablas `mi3*` / `aurora*` /
+`wcf*` y devolvio 0 resultados — confirmando que MI3 es un canal
+de los DBs Aurora, no replicado en K7.
 
 ## Hallazgos
 

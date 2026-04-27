@@ -20,26 +20,34 @@ tags: [outbox, navsync, BB, cadencia, PEND-07, arquitectura]
 
 ## Que aprendimos
 
-NavSync (en BB) **solo procesa SALIDAS por diseño**:
+NavSync (en BB) **hoy procesa de forma fiable solo SALIDAs
+`IdTipoDocumento=3`**. La descripcion "por diseño" es una
+hipotesis razonable pero **no totalmente verificada** desde el
+WMS — los hechos comprobados son:
 
-1. **Cadencia historica**: 99.48% de las SALIDAS marcadas
-   `enviado=1` lo fueron en **0 segundos** entre `fec_agr` y
-   `fec_mod` → patron de trigger / llamada sincronica
-   post-insert, no batch periodico.
+1. **Cadencia historica de SALIDAs tipo 3**: 99.48% de las
+   marcadas `enviado=1` lo fueron en **0 segundos** entre
+   `fec_agr` y `fec_mod` → patron consistente con trigger /
+   llamada sincronica post-insert (no batch periodico).
 
-2. **Writer externo al motor SQL**: la busqueda de SPs locales
-   con `UPDATE ... enviado=1 ... i_nav_transacciones_out`
-   devolvio 0 resultados, y SQL Agent solo tiene
-   `syspolicy_purge_history`. El UPDATE proviene de un proceso
-   `.exe` / Windows Service externo.
+2. **Writer externo al motor SQL** *(hipotesis fuerte, no
+   prueba absoluta)*: la busqueda de SPs locales con
+   `UPDATE ... enviado=1 ... i_nav_transacciones_out` devolvio
+   0 resultados, y SQL Agent en BB solo tiene
+   `syspolicy_purge_history`. Esto es **consistente con** un
+   proceso `.exe` / Windows Service externo, pero no descarta
+   un mecanismo en otra BD/servidor que no inspeccionamos.
 
-3. **Solo cubre SALIDAs tipo_documento=3**: 277,309 enviados /
-   28 pendientes (99.99%). Los INGRESOS y otros tipos de doc
-   (ver L-010) acumulan pendientes "por diseño".
+3. **Solo SALIDAs `IdTipoDocumento=3` operan al 99%**: 277,309
+   enviados / 28 pendientes. Los INGRESOs (tipos 6, 8) tuvieron
+   actividad parcial entre 2022-05 y 2023-09 (ver L-010); los
+   tipos {1, 4, 12} **nunca** se procesaron en el historico
+   completo.
 
-4. **Esta detenido al menos los ultimos 30 dias** en BB-PRD: 0
-   filas marcadas en ese periodo. Esto puede ser ventana
-   especifica de la consulta o real (Q-009 lo confirmara).
+4. **Posible pausa de NavSync en BB** *(no concluyente)*: la
+   consulta de actividad en los ultimos 30 dias devolvio 0
+   filas marcadas. Puede ser ventana de consulta, baja
+   estacional, o pausa real del binario. Q-009 lo confirmara.
 
 ## Evidencia
 

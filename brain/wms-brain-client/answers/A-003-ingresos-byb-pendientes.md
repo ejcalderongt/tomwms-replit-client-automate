@@ -10,22 +10,28 @@ target:
   environment: PRD
 executedAt: 2026-04-27T15:00:00Z
 durationSeconds: 18
-verdict: confirmed
-confidence: high
+verdict: partial
+confidence: medium
 status: answered
 tags: [outbox, navsync, BB, bandera-roja, PEND-12]
 ---
 
 ## Resumen
 
-Confirmado: **NavSync de BB no procesa INGRESOS por diseño**.
-La acumulacion de 110,795 filas `tipo_transaccion='INGRESO'` con
-`enviado=0` se explica por dos hechos: (1) los unicos INGRESOS
-"enviados=1" son **107 filas, todas concentradas en mayo–julio 2022**,
-y (2) los 110k pendientes incluyen `IdTipoDocumento` 6, 8 y 12
-que **nunca tienen versiones enviadas en cantidad significativa**.
-La distribucion temporal arranca en 2022-05 y crece consistentemente,
-sin evidencia de procesamiento posterior.
+Confirmado parcialmente: **NavSync de BB hoy procesa de forma
+fiable solo las SALIDAs `IdTipoDocumento=3`** (>99% enviadas).
+Los INGRESOs (`IdTipoDocumento` ∈ {6, 8}) **fueron procesados
+historicamente**, pero el flujo se interrumpio: el ultimo INGRESO
+con `enviado=1` es de **2023-09-18** y desde entonces no se ha
+enviado ninguno mas (≈2.5 años sin procesar). Las 110,795 filas
+pendientes resultan de la combinacion de (a) tipos que NavSync
+**nunca** ha procesado (`IdTipoDocumento` ∈ {1, 12}) y (b) tipos
+que se procesaron en 2022-2023 pero el flujo se cayo (`tipo` ∈ {6, 8}).
+
+No tenemos evidencia desde el WMS para confirmar si la causa es
+un cambio de SP en el cliente externo, una migracion del ERP, o
+una decision de negocio (no hay rastro en SQL Agent ni en SPs
+locales — ver Q-009).
 
 ## Hallazgos
 
@@ -37,21 +43,7 @@ anio | mes | cnt
 2022 | 5 | 3997
 2022 | 6 | 5165
 2022 | 7 | 5000
-2022 | 8 | 4617
-2022 | 9 | 4204
-2022 | 10 | 5226
-2022 | 11 | 5163
-2022 | 12 | 4113
-2023 | 1 | 5325
-2023 | 2 | 5419
-2023 | 3 | 6896
-2023 | 4 | 5274
-2023 | 5 | 7358
-2023 | 6 | 7576
-2023 | 7 | 7136
-2023 | 8 | 7921
-2023 | 9 | 5853
-2023 | 10 | 5311
+... (acumulacion mensual continua) ...
 2023 | 11 | 6437
 2023 | 12 | 2786
 2024 | 6 | 1
@@ -59,28 +51,43 @@ anio | mes | cnt
 2025 | 10 | 13
 ```
 
-**Interpretacion**: 23 meses con miles de filas pendientes cada uno
-desde mayo 2022. **No hay caida puntual**: el sistema simplemente
-no esta procesando INGRESOS desde el origen.
+**Interpretacion**: 23 meses con miles de filas pendientes desde
+mayo 2022 hasta dic-2023, luego casi cero. La caida en volumen
+mensual coincide con el corte de procesamiento en sep-2023.
 
-### q2: cuando se enviaron INGRESOS (los unicos)
+### q2: cuando se enviaron INGRESOs (los unicos 107)
+
+Distribucion por mes y tipo doc (extraido del CSV completo):
 
 ```
-idtransaccion | fec_agr | fec_mod | no_pedido | codigo_producto | cantidad | IdTipoDocumento | idordencompra | idrecepcionenc
---- | --- | --- | --- | --- | --- | --- | --- | ---
-5068 | 2022-05-30T13:43:10.417Z | 2022-05-30T13:43:10.320Z | PT-186500 | 00025002 | 84 | 8 | 602 | 476
-5069 | 2022-05-30T13:43:23.630Z | 2022-05-30T13:43:23.613Z | PT-186500 | 00025002 | 10 | 8 | 602 | 476
-6453 | 2022-06-07T12:43:12.673Z | 2022-06-07T12:43:12.640Z | PT-187175 | 00100101 | 50000 | 8 | 739 | 611
-6494 | 2022-06-07T14:41:30.257Z | 2022-06-07T14:41:30.227Z | PT-187175 | 00100101 | 9000 | 8 | 739 | 611
-16827 | 2022-07-01T15:57:00.793Z | 2022-07-01T15:57:00.793Z | PT-189028 | 00053205 | 72 | 8 | 1221 | 993
+anio-mes | IdTipoDocumento | cnt
+--- | --- | ---
+2022-05 | 8 | 2
+2022-06 | 8 | 2
+2022-07 | 8 | 13
+2022-08 | 8 | 2
+2022-09 | 8 | 2
+2022-10 | 8 | 2
+2022-11 | 8 | 9
+2022-12 | 8 | 9
+2023-01 | 8 | 12
+2023-04 | 8 | 18
+2023-05 | 8 | 1
+2023-06 | 8 | 2
+2023-07 | 6 | 4
+2023-07 | 8 | 16
+2023-08 | 6 | 12
+2023-09 | 8 | 1
 ```
 
-**Interpretacion**: Las 107 unicas INGRESOS marcadas como enviadas
-ocurrieron entre mayo y julio 2022 (todas con `fec_mod` muy
-cercana a `fec_agr`). Despues de eso, **0 INGRESOS enviados en
-casi 4 años**.
+**Interpretacion**: Los 107 INGRESOs enviados se distribuyen entre
+**mayo-2022 y septiembre-2023** (16 meses). El ritmo nunca fue alto
+(maximo 18/mes) y se concentra en `IdTipoDocumento=8`. El
+`IdTipoDocumento=6` solo aparece procesado en jul-ago 2023 (16 filas
+unicas, todas con prefijo de pedido `RE-*`). **Despues del 2023-09-18:
+0 INGRESOs enviados** en todo el historico hasta hoy (2026-04).
 
-### q3: tipo doc pendiente vs enviado para INGRESOS
+### q3: tipo doc pendiente vs enviado para INGRESOs
 
 ```
 IdTipoDocumento | enviado | cnt
@@ -93,26 +100,33 @@ IdTipoDocumento | enviado | cnt
 12 | 0 | 8879
 ```
 
-**Interpretacion**: `IdTipoDocumento=8` tiene 91 enviados / 6,901
-pendientes (1.3%). `IdTipoDocumento=6` tiene 16 enviados / 94,993
-pendientes (0.017%). `IdTipoDocumento=12` tiene 0 enviados / 8,879
-pendientes. **El procesamiento de INGRESOS esta efectivamente apagado**.
+**Interpretacion**:
+- `IdTipoDocumento=8`: 91 enviados / 6,901 pendientes (1.3%) — flujo
+  vivo en 2022-23, hoy interrumpido.
+- `IdTipoDocumento=6`: 16 enviados / 94,993 pendientes (0.017%) —
+  procesado solo brevemente en jul-ago 2023.
+- `IdTipoDocumento=12`: 0 enviados / 8,879 pendientes — **nunca**
+  procesado.
+- `IdTipoDocumento=1`: 0 enviados / 22 pendientes — **nunca**
+  procesado.
 
-### q7 (extra): pendientes recientes (ultimos 2 años)
+### q6: SPs locales BB que tocan outbox
 
 ```
-anio | mes | cnt
---- | --- | ---
-2024 | 6 | 1
-2025 | 9 | 4
-2025 | 10 | 13
+sp_name | modify_date
+--- | ---
+CLBD_PRC | 2023-12-09T23:20:17.730Z
+CLBD_PRC_SIN_INV_INI | 2022-05-08T20:32:41.007Z
+CLBD_PRC_BY_IDBODEGA | 2020-01-20T17:38:19.183Z
 ```
 
-**Interpretacion**: Sigue ingresando algo (1 en 2024-06, 4 en
-2025-09, 13 en 2025-10) pero a un ritmo mucho menor que en 2022-2023.
-Probablemente otro frente que ya migro a otra tabla / canal.
+**Interpretacion**: Solo 3 SPs en BD BB tocan la tabla outbox y
+ninguno actualiza `enviado=1` (todos hacen `INSERT` o calculo de
+inventario). Esto **es consistente con** un writer externo que
+actualiza `enviado=1`, pero no lo prueba (podria haber un proceso
+en otra BD/servidor).
 
-### q8 (extra contraste): SALIDAS por tipo doc
+### q8 (extra contraste): SALIDAs por tipo doc
 
 ```
 IdTipoDocumento | enviado | cnt
@@ -124,39 +138,46 @@ IdTipoDocumento | enviado | cnt
 4 | 0 | 29924
 ```
 
-**Interpretacion**: Para SALIDAs, el tipo doc 3 esta al 99.99%
-procesado (277,309 enviados / 28 pendientes). Esto refuerza:
-**NavSync de BB esta vivo y funcional, pero solo para SALIDAS de
-tipo doc 3** (ventas/despachos). Tipo doc 1 (devoluciones?) y 4 sí
-estan acumulando pendientes (115k y 30k respectivamente).
+**Interpretacion**: SALIDAs `IdTipoDocumento=3` estan al 99.99%
+procesadas (277,309/28). El resto de tipos (1 y 4) acumulan 145k
+filas sin procesar. Esto refuerza que NavSync **hoy procesa
+exclusivamente SALIDA tipo doc=3**.
 
 ## Conclusion
 
-- Los 110k INGRESOS pendientes **no son falla a corregir**: son
-  resultado de una decision de diseño (NavSync solo procesa SALIDAS,
-  los INGRESOS al ERP entran por otro canal — probablemente el
-  modulo de compras/recepciones del ERP los origina y BB no necesita
-  reportarlos de vuelta).
-- Sin embargo, **acumular 110k filas en una tabla outbox es un
-  pasivo operativo**: complica monitoreo (no se puede usar % de
-  procesamiento como SLO), y consume disco. Sugerimos agregar un
-  flag `procesar=0` o purgar.
-- Tambien hay 145k SALIDAS `IdTipoDocumento=1` pendientes (no era
-  parte de Q-003 pero apareció): merece su propia question.
+- Los 110k INGRESOs pendientes **no son una falla puntual**: son
+  el resultado acumulado de (a) tipos que NavSync nunca ha procesado
+  y (b) un flujo que se proceso parcialmente entre 2022-05 y
+  2023-09 y luego se detuvo.
+- **Causa raiz no determinable desde el WMS**: el writer es externo,
+  no hay logs de NavSync accesibles, no hay job de SQL Agent. Hace
+  falta inspeccionar el host donde corre NavSync (Q-009).
+- Hipotesis razonable: el ERP cambio el origen de las recepciones
+  (las consume directamente) y NavSync dejo de leer el outbox para
+  INGRESOs. Necesita confirmacion del lado cliente.
+- **Recomendacion operativa**: agregar un flag `procesar=0` o purgar
+  filas con `tipo_transaccion='INGRESO'` mas viejas que N meses para
+  no envenenar metricas de SLO basadas en `count(enviado=0)`.
 
-## Anomalias detectadas
+## Anomalias detectadas (no pedidas)
 
-- **115k SALIDAS `IdTipoDocumento=1` pendientes**: no era el foco
-  de la pregunta pero es la siguiente bandera roja.
-- 30k SALIDAS `IdTipoDocumento=4` pendientes (similar).
+- **115k SALIDAs `IdTipoDocumento=1` pendientes** — siguiente bandera
+  roja, abre Q-010.
+- **30k SALIDAs `IdTipoDocumento=4` pendientes** — mismo Q-010.
+- 18 INGRESOs en abr-2023 sugieren un mini-batch retroactivo (ratio
+  arriba de la media). Sin acceso a logs de NavSync no se puede
+  confirmar.
 
 ## Sugerencia de follow-up
 
-- Q-010 (devoluciones BB / SALIDAS tipo doc 1+4 — por que tampoco
-  se procesan).
+- Q-009: identificar binario y host del NavSync de BB (esta corriendo?).
+- Q-010: devoluciones BB / SALIDAs tipo doc 1+4 — por que no se procesan.
 
 ## Notas del operador
 
-Si BB en algun momento tuvo un job que procesaba INGRESOS y se
-desactivo, valdria la pena saber la fecha y motivo (no consta en
-ninguna doc revisada).
+Inicialmente este card afirmaba que los INGRESOs `enviado=1` se
+concentraban solo en mayo-julio 2022 (lectura apresurada de las
+primeras filas del CSV). Revisado el dataset completo, el rango
+correcto es 2022-05 → 2023-09. Verdict bajado a `partial` y confianza
+a `medium` porque la causa de la interrupcion en 2023-09 no es
+verificable desde el WMS.

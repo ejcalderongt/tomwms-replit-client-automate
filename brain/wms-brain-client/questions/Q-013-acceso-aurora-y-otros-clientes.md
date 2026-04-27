@@ -32,16 +32,16 @@ allowFreeFormNotes: true
 
 ## Contexto
 
-A-006 quedo en **inconclusive** porque el host autorizado para
-el agente (`52.41.114.122,1437`) solo expone:
-- TOMWMS_KILLIOS_PRD (K7)
-- IMS4MB_BYB_PRD (BB)
-- IMS4MB_CEALSA_QAS (C9)
+A-006 quedo en **inconclusive** porque el endpoint autorizado
+para el agente solo expone los DBs de tres codenames:
+- K7 (PRD)
+- BB (PRD)
+- C9 (QAS)
 
-El grupo Aurora (ID, MH, MC, MP, IN) usa una arquitectura
-distinta (MI3 WCF) y sus DBs no estan accesibles. Tampoco MS,
-BF, MM, LC. Esto representa **el 60-70% de los clientes** del
-parque WMS.
+El grupo Aurora (codenames ID, MH, MC, MP, IN) usa una
+arquitectura distinta (MI3 WCF) y sus DBs no estan accesibles
+desde el endpoint actual. Tampoco MS, BF, MM, LC. Esto representa
+**el 60-70% de los clientes** del parque WMS.
 
 Esta question es **operativa / de infraestructura**, no SQL: es
 para coordinar con el equipo de operaciones la habilitacion de
