@@ -1,0 +1,109 @@
+id: DES-001
+title: Despacho con verificación obligatoria
+module: despacho
+priority: P0
+status: drafted
+owner: brain
+
+legacy_ref:
+  class: TODO
+  function: TODO
+  source: pendiente identificar clase de pruebas de despacho
+
+description: >
+  Existe un pedido picado, listo para despachar. La bodega tiene la
+  flag `verificacion_obligatoria=1`. El operador del HH ejecuta
+  despacho y debe ser obligado a confirmar cantidad/lote/vencimiento
+  por línea. Si no confirma, el pedido no avanza al estado
+  `DESPACHADO`.
+
+  Valida la flag `bodega.verificacion_obligatoria` y la generación de
+  filas en `verificacion_despacho`.
+
+required_config:
+  bodega.verificacion_obligatoria: 1
+  i_nav_config_enc.usar_zona_picking: 1
+
+setup:
+  - action: clear_bd_for_test_cases
+
+  - action: insert_stock
+    name: stock_a_despachar
+    values:
+      bodega: "{bodega activa}"
+      producto: "{producto con control_lote=1, control_vencimiento=1}"
+      ubicacion: "{ubicacion picking activa}"
+      lote: "DES001_DESPACHO"
+      vencimiento: "2026-12-31"
+      cantidad_unidades: 5
+
+  - action: reserve_pedido
+    name: pedido
+    body:
+      pedido:
+        no: "@MaxNoDocumento+1"
+        document_type: Pedido_De_Cliente
+        product_owner_code: "01"
+        lineas:
+          - line_no: 1
+            item_no: "{producto.codigo}"
+            quantity: 3
+
+  - action: pick_pedido
+    name: picking
+    body:
+      pedido_id: "@pedido.id"
+      cantidad: 3
+
+action:
+  endpoint: /api/test-bridge/sandbox/dispatch
+  method: POST
+  body:
+    pedido_id: "@pedido.id"
+    operador_id: "{operador HH sentinel}"
+    verificaciones:
+      - line_no: 1
+        cantidad_verificada: 3
+        lote_verificado: "DES001_DESPACHO"
+        vencimiento_verificado: "2026-12-31"
+
+expected:
+  - check: row_exists
+    table: verificacion_despacho
+    where:
+      no_documento: "@pedido.no"
+      line_no: 1
+    note: "Quedó traza de la verificación"
+
+  - check: column_value
+    table: trans_pe_enc
+    where:
+      no_documento: "@pedido.no"
+    column: estado
+    value: "DESPACHADO"
+
+  - check: row_exists
+    table: stock_res
+    where:
+      idstock: "@stock_a_despachar.id"
+      estado: 3
+    note: "El stock pasó a estado despachado (3)"
+
+  - check: no_error
+    table: log_error_wms
+    since: "@action_ts"
+
+cleanup:
+  on_replay: rollback
+  on_canary: rollback
+
+tags:
+  - golden-path
+  - despacho
+  - verificacion
+  - cruza-picking
+  - cruza-reservation
+
+notes: |
+  Sub-escenario futuro DES-001b: cuando NO se envían verificaciones,
+  el endpoint debe responder 400 y NO avanzar el pedido a DESPACHADO.
