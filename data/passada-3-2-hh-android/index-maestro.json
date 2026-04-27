@@ -1,0 +1,3476 @@
+{
+  "generatedAt": "2026-04-27T05:31:32.446Z",
+  "source": "Azure DevOps ejcalderon0892/TOMHH2025@dev_2028_merge",
+  "totalFiles": 576,
+  "totalBytes": 5692940,
+  "totalLines": 154806,
+  "byKind": {
+    "gradle": 3,
+    "manifest": 1,
+    "java": 405,
+    "xml-other": 6,
+    "drawable-xml": 21,
+    "layout": 132,
+    "values-other": 5,
+    "strings": 2,
+    "properties": 1
+  },
+  "files": [
+    {
+      "path": "/app/build.gradle",
+      "kind": "gradle",
+      "size": 3539,
+      "sha1": "9a77e2203aa3"
+    },
+    {
+      "path": "/app/src/main/AndroidManifest.xml",
+      "kind": "manifest",
+      "size": 9604,
+      "sha1": "3d9a6e236402"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/ApiService.java",
+      "kind": "java",
+      "size": 422,
+      "sha1": "dcd2926bb48c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/AppMethods.java",
+      "kind": "java",
+      "size": 4458,
+      "sha1": "be07611f7a9b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/DateUtils.java",
+      "kind": "java",
+      "size": 23286,
+      "sha1": "1ecee975c489"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/DecimalDigitsInputFilter.java",
+      "kind": "java",
+      "size": 1364,
+      "sha1": "d60222129e6e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/ExDialog.java",
+      "kind": "java",
+      "size": 2486,
+      "sha1": "ccc1be91c99d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/MiscUtils.java",
+      "kind": "java",
+      "size": 8121,
+      "sha1": "542761f22086"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/NetWorkInfoUtility.java",
+      "kind": "java",
+      "size": 8504,
+      "sha1": "893d2d49896c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/NetworkUtils.java",
+      "kind": "java",
+      "size": 1714,
+      "sha1": "9c3e93642b45"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/RetrofitClient.java",
+      "kind": "java",
+      "size": 497,
+      "sha1": "f92d5aa8f5f5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/WebService.java",
+      "kind": "java",
+      "size": 27416,
+      "sha1": "ec7494d2ff21"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/XMLObject.java",
+      "kind": "java",
+      "size": 15755,
+      "sha1": "ea451a002c70"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/appGlobals.java",
+      "kind": "java",
+      "size": 16366,
+      "sha1": "89eb8d5d2974"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/base/clsClasses.java",
+      "kind": "java",
+      "size": 344,
+      "sha1": "9d5bd9df78fb"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Arancel/clsBeArancel.java",
+      "kind": "java",
+      "size": 2159,
+      "sha1": "8120c9d5e3a5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Arancel/clsBeArancelList.java",
+      "kind": "java",
+      "size": 396,
+      "sha1": "ae263a569127"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Barra_pallet/clsBeI_nav_barras_pallet.java",
+      "kind": "java",
+      "size": 5714,
+      "sha1": "04ee388215bf"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Barra_pallet/clsBeI_nav_barras_palletList.java",
+      "kind": "java",
+      "size": 476,
+      "sha1": "256e021a8c0c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega.java",
+      "kind": "java",
+      "size": 31539,
+      "sha1": "820bfbb86c3b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodegaBase.java",
+      "kind": "java",
+      "size": 5562,
+      "sha1": "56472fa0723e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodegaList.java",
+      "kind": "java",
+      "size": 393,
+      "sha1": "9cace0893334"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_area.java",
+      "kind": "java",
+      "size": 5727,
+      "sha1": "c9d28719124c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_areaList.java",
+      "kind": "java",
+      "size": 401,
+      "sha1": "b4bfad4c9e73"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_muelles.java",
+      "kind": "java",
+      "size": 3721,
+      "sha1": "390ba24dd36b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_muellesList.java",
+      "kind": "java",
+      "size": 407,
+      "sha1": "4be536e89967"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_sector.java",
+      "kind": "java",
+      "size": 6137,
+      "sha1": "9db656091182"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_sectorList.java",
+      "kind": "java",
+      "size": 406,
+      "sha1": "4cc6307a2110"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_tramo.java",
+      "kind": "java",
+      "size": 8616,
+      "sha1": "ebc6d8024e9c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_tramoList.java",
+      "kind": "java",
+      "size": 404,
+      "sha1": "bd487b86a9e6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_ubicacion.java",
+      "kind": "java",
+      "size": 11827,
+      "sha1": "dfe2e5126ebf"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega_ubicacionList.java",
+      "kind": "java",
+      "size": 412,
+      "sha1": "0e5657048795"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente/clsBeCliente.java",
+      "kind": "java",
+      "size": 11116,
+      "sha1": "135ff5168229"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente/clsBeClienteList.java",
+      "kind": "java",
+      "size": 247,
+      "sha1": "baffa80694bc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente_Tipo/clsBeCliente_tipo.java",
+      "kind": "java",
+      "size": 2749,
+      "sha1": "42fe91648077"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente_Tipo/clsBeCliente_tipoList.java",
+      "kind": "java",
+      "size": 263,
+      "sha1": "8af4b885b945"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente_direccion/clsBeCliente_direccion.java",
+      "kind": "java",
+      "size": 5239,
+      "sha1": "48e968479b91"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente_direccion/clsBeCliente_direccionList.java",
+      "kind": "java",
+      "size": 277,
+      "sha1": "6b7890c2a063"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente_tiempos/clsBeCliente_tiempos.java",
+      "kind": "java",
+      "size": 3998,
+      "sha1": "3f54b182e898"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Cliente/clsBeCliente_tiempos/clsBeCliente_tiemposList.java",
+      "kind": "java",
+      "size": 361,
+      "sha1": "86da59593486"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Color/clsBeColor.java",
+      "kind": "java",
+      "size": 3568,
+      "sha1": "2b9e99253ef3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Color/clsBeColorList.java",
+      "kind": "java",
+      "size": 226,
+      "sha1": "5a9c680ef7b7"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Configuracion_barra_pallet/clsBeConfiguracion_barra_pallet.java",
+      "kind": "java",
+      "size": 2099,
+      "sha1": "78dc1034c2c0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Configuracion_barra_pallet/clsBeConfiguracion_barra_palletList.java",
+      "kind": "java",
+      "size": 436,
+      "sha1": "ad7e8982a366"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/CustomError/clsBeCustomError.java",
+      "kind": "java",
+      "size": 635,
+      "sha1": "a1756eebf107"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeEmpresa.java",
+      "kind": "java",
+      "size": 10476,
+      "sha1": "61b44ed94306"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeEmpresaAnd.java",
+      "kind": "java",
+      "size": 8075,
+      "sha1": "78b35b0a5f31"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeEmpresaAndList.java",
+      "kind": "java",
+      "size": 404,
+      "sha1": "e568852b9c88"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeEmpresaBase.java",
+      "kind": "java",
+      "size": 1065,
+      "sha1": "042c12832bfd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeEmpresaList.java",
+      "kind": "java",
+      "size": 397,
+      "sha1": "296c6342ac48"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeFont_Enc.java",
+      "kind": "java",
+      "size": 1161,
+      "sha1": "b0b698f0844b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeFont_det.java",
+      "kind": "java",
+      "size": 2401,
+      "sha1": "de84604f70dd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Empresa/clsBeFont_detList.java",
+      "kind": "java",
+      "size": 400,
+      "sha1": "5278a5110452"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Impresora/clsBeImpresora.java",
+      "kind": "java",
+      "size": 4096,
+      "sha1": "a4dc9496c24a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Impresora/clsBeImpresoraList.java",
+      "kind": "java",
+      "size": 401,
+      "sha1": "db81aaf8ddbd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Menu_rol/clsBeMenu_rol_op.java",
+      "kind": "java",
+      "size": 2671,
+      "sha1": "6fe16dbbd5df"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Menu_rol/clsBeMenu_rol_opList.java",
+      "kind": "java",
+      "size": 403,
+      "sha1": "9c7691e3a7a5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Menu_rol/clsBeMenu_sistema.java",
+      "kind": "java",
+      "size": 264,
+      "sha1": "855d1efd8edc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Menu_rol/clsBeMenu_sistema_op.java",
+      "kind": "java",
+      "size": 1691,
+      "sha1": "fad2fc764384"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Montacarga/clsBeMontacarga.java",
+      "kind": "java",
+      "size": 4067,
+      "sha1": "35225730b4fb"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Motivo_devolucion/clsBeMotivo_devolucion.java",
+      "kind": "java",
+      "size": 3857,
+      "sha1": "a2e981cc9220"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Motivo_devolucion/clsBeMotivo_devolucionList.java",
+      "kind": "java",
+      "size": 427,
+      "sha1": "6807d9a8d33f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Operador/clsBeOperador.java",
+      "kind": "java",
+      "size": 7086,
+      "sha1": "6b3f86fc32a1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Operador/clsBeOperador_bodega.java",
+      "kind": "java",
+      "size": 3038,
+      "sha1": "296e154f7c53"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Operador/clsBeOperador_bodegaList.java",
+      "kind": "java",
+      "size": 412,
+      "sha1": "5a3e6a4ad787"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Indice_Rotacion/clsBeIndice_rotacion.java",
+      "kind": "java",
+      "size": 432,
+      "sha1": "176bb1f4cad4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Indice_Rotacion/clsBeIndice_rotacionList.java",
+      "kind": "java",
+      "size": 269,
+      "sha1": "28b71c9620d3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/P_parametro/clsBeP_parametro.java",
+      "kind": "java",
+      "size": 3404,
+      "sha1": "aa19963f1d47"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/P_parametro/clsBeP_parametroList.java",
+      "kind": "java",
+      "size": 417,
+      "sha1": "28cc4ef5f2fb"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_Presentacion/clsBeProducto_Presentacion.java",
+      "kind": "java",
+      "size": 5454,
+      "sha1": "a9d6b1400bfd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_Presentacion/clsBeProducto_PresentacionList.java",
+      "kind": "java",
+      "size": 449,
+      "sha1": "0fb0ca6769c6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_bodega/clsBeProducto_bodega.java",
+      "kind": "java",
+      "size": 2896,
+      "sha1": "49d442ec8955"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_bodega/clsBeProducto_bodegaList.java",
+      "kind": "java",
+      "size": 430,
+      "sha1": "186db3661377"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_clasificacion/clsBeProducto_clasificacion.java",
+      "kind": "java",
+      "size": 3155,
+      "sha1": "50cdc8992d73"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_clasificacion/clsBeProducto_clasificacionList.java",
+      "kind": "java",
+      "size": 450,
+      "sha1": "486170a6252f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_codigos_barra/clsBeProducto_codigos_barra.java",
+      "kind": "java",
+      "size": 3375,
+      "sha1": "1a5a1dca06f0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_codigos_barra/clsBeProducto_codigos_barraList.java",
+      "kind": "java",
+      "size": 450,
+      "sha1": "c4cba217100f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_estado/clsBeProducto_estado.java",
+      "kind": "java",
+      "size": 5986,
+      "sha1": "e1c992c7499e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_estado/clsBeProducto_estadoList.java",
+      "kind": "java",
+      "size": 429,
+      "sha1": "e67d66a16345"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_estado_ubic/clsBeProducto_estado_ubic.java",
+      "kind": "java",
+      "size": 3621,
+      "sha1": "4ce78cc5b448"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_estado_ubic/clsBeProducto_estado_ubicList.java",
+      "kind": "java",
+      "size": 445,
+      "sha1": "db9956b2d55c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_familia/clsBeProducto_familia.java",
+      "kind": "java",
+      "size": 2829,
+      "sha1": "c2d26ba7476a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_familia/clsBeProducto_familiaList.java",
+      "kind": "java",
+      "size": 433,
+      "sha1": "b7c1c31dbe67"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_imagen/clsBeProducto_imagen.java",
+      "kind": "java",
+      "size": 2011,
+      "sha1": "9dd5671a54fc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_imagen/clsBeProducto_imagenList.java",
+      "kind": "java",
+      "size": 269,
+      "sha1": "3f6eef670850"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_kit/clsBeProducto_kit_composicion.java",
+      "kind": "java",
+      "size": 4737,
+      "sha1": "3ce0912a3bf4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_kit/clsBeProducto_kit_composicionList.java",
+      "kind": "java",
+      "size": 284,
+      "sha1": "a69728eef5b0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_marca/clsBeProducto_marca.java",
+      "kind": "java",
+      "size": 3114,
+      "sha1": "e1a33c65bbc6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_marca/clsBeProducto_marcaList.java",
+      "kind": "java",
+      "size": 428,
+      "sha1": "0330d4e73a6f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_pallet/clsBeProducto_pallet.java",
+      "kind": "java",
+      "size": 6210,
+      "sha1": "2efba9cb33fe"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_pallet/clsBeProducto_palletList.java",
+      "kind": "java",
+      "size": 430,
+      "sha1": "467011db544d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_parametro_a/clsBeProducto_parametro_a.java",
+      "kind": "java",
+      "size": 2310,
+      "sha1": "74f1f0c17ebe"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_parametro_a/clsBeProducto_parametro_aList.java",
+      "kind": "java",
+      "size": 282,
+      "sha1": "739ad5cd2d58"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_parametro_b/clsBeProducto_parametro_b.java",
+      "kind": "java",
+      "size": 2311,
+      "sha1": "fbd53a76a517"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_parametro_b/clsBeProducto_parametro_bList.java",
+      "kind": "java",
+      "size": 283,
+      "sha1": "a93706520347"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_parametros/clsBeProducto_parametros.java",
+      "kind": "java",
+      "size": 4715,
+      "sha1": "acac70289887"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_parametros/clsBeProducto_parametrosList.java",
+      "kind": "java",
+      "size": 442,
+      "sha1": "80f48882d0f3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_presentacion_tarima/clsBeProducto_presentacion_tarima.java",
+      "kind": "java",
+      "size": 3823,
+      "sha1": "51118b88747e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_presentacion_tarima/clsBeProducto_presentacion_tarimaList.java",
+      "kind": "java",
+      "size": 569,
+      "sha1": "0be23672e971"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_rellenado/clsBeProducto_rellenado.java",
+      "kind": "java",
+      "size": 7506,
+      "sha1": "4de858fdb472"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_rellenado/clsBeProducto_rellenadoList.java",
+      "kind": "java",
+      "size": 1286,
+      "sha1": "72112520d942"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_talla_color/clsBeProducto_talla_color.java",
+      "kind": "java",
+      "size": 3308,
+      "sha1": "149d9203f5b2"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_talla_color/clsBeProducto_talla_colorList.java",
+      "kind": "java",
+      "size": 284,
+      "sha1": "b6dc36b9480c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_tipo/clsBeProducto_tipo.java",
+      "kind": "java",
+      "size": 4100,
+      "sha1": "c1c1c435e337"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/Producto_tipo/clsBeProducto_tipoList.java",
+      "kind": "java",
+      "size": 423,
+      "sha1": "44b86e0d3619"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/clsBeProducto.java",
+      "kind": "java",
+      "size": 26664,
+      "sha1": "27b8d0b9aaa3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Producto/clsBeProductoList.java",
+      "kind": "java",
+      "size": 400,
+      "sha1": "dfbc970f7e82"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario/clsBePropietarios.java",
+      "kind": "java",
+      "size": 6472,
+      "sha1": "82f8a92bfaeb"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario/clsBePropietariosList.java",
+      "kind": "java",
+      "size": 424,
+      "sha1": "65c02acef388"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario_bodega/clsBePropietario_bodega.java",
+      "kind": "java",
+      "size": 3274,
+      "sha1": "c83287406ec7"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario_bodega/clsBePropietario_bodegaList.java",
+      "kind": "java",
+      "size": 280,
+      "sha1": "04982656806a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario_reglas/clsBePropietario_reglas_det.java",
+      "kind": "java",
+      "size": 3157,
+      "sha1": "eb9cead3adb8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario_reglas/clsBePropietario_reglas_detList.java",
+      "kind": "java",
+      "size": 288,
+      "sha1": "30f3d2736c01"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario_reglas/clsBePropietario_reglas_enc.java",
+      "kind": "java",
+      "size": 4296,
+      "sha1": "eff857310824"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Propietario/Propietario_reglas/clsBePropietario_reglas_encList.java",
+      "kind": "java",
+      "size": 288,
+      "sha1": "fa0796c5a4a6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Proveedor/Proveedor_bodega/clsBeProveedor_bodega.java",
+      "kind": "java",
+      "size": 2848,
+      "sha1": "669b75e0bd01"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Proveedor/Proveedor_bodega/clsBeProveedor_bodegaList.java",
+      "kind": "java",
+      "size": 272,
+      "sha1": "127ff8d1ab53"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Proveedor/Proveedor_tiempos/clsBeProveedor_tiempos.java",
+      "kind": "java",
+      "size": 4034,
+      "sha1": "ce85fc6b068b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Proveedor/Proveedor_tiempos/clsBeProveedor_tiemposList.java",
+      "kind": "java",
+      "size": 364,
+      "sha1": "7118e67755a7"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Proveedor/clsBeProveedor.java",
+      "kind": "java",
+      "size": 8978,
+      "sha1": "25ae606fdd38"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Proveedor/clsBeProveedorList.java",
+      "kind": "java",
+      "size": 241,
+      "sha1": "ab0ff4118120"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Resolucion_LP/clsBeResolucion_lp_operador.java",
+      "kind": "java",
+      "size": 3860,
+      "sha1": "08904ed3016b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Resolucion_LP/clsBeResolucion_lp_operadorList.java",
+      "kind": "java",
+      "size": 271,
+      "sha1": "55900d708e29"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Rol/clsBeRol_operador.java",
+      "kind": "java",
+      "size": 1139,
+      "sha1": "aab508ada938"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/TipoEtiqueta/clsBeTipo_etiqueta.java",
+      "kind": "java",
+      "size": 4606,
+      "sha1": "24672cdb9312"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/TipoEtiqueta/clsBeTipo_etiquetaList.java",
+      "kind": "java",
+      "size": 249,
+      "sha1": "91fbcc940b76"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Unidad_medida/clsBeUnidad_medida.java",
+      "kind": "java",
+      "size": 3657,
+      "sha1": "0a9df0255cb5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Unidad_medida/clsBeUnidad_medidaList.java",
+      "kind": "java",
+      "size": 253,
+      "sha1": "52c3ff6ded0a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Version/clsBeVersion_wms_hh_and.java",
+      "kind": "java",
+      "size": 1447,
+      "sha1": "51bbd5aaa04e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Mantenimientos/Version/clsBeVersion_wms_hh_andList.java",
+      "kind": "java",
+      "size": 255,
+      "sha1": "e7d8193bf538"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Talla/clsBeTalla.java",
+      "kind": "java",
+      "size": 3076,
+      "sha1": "1b0ca4b26d18"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Talla/clsBeTallaList.java",
+      "kind": "java",
+      "size": 212,
+      "sha1": "fbd33b0fffc2"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/CambioUbicacion/clsBeMotivo_ubicacion/clsBeMotivo_ubicacion.java",
+      "kind": "java",
+      "size": 2268,
+      "sha1": "2b06ba847bc7"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/CambioUbicacion/clsBeMotivo_ubicacion/clsBeMotivo_ubicacionList.java",
+      "kind": "java",
+      "size": 604,
+      "sha1": "64dd813df342"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/CambioUbicacion/clsBeTrans_ubic_hh_det/clsBeTrans_ubic_hh_det.java",
+      "kind": "java",
+      "size": 9457,
+      "sha1": "80220ba5a675"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/CambioUbicacion/clsBeTrans_ubic_hh_det/clsBeTrans_ubic_hh_detList.java",
+      "kind": "java",
+      "size": 448,
+      "sha1": "94688cd3d1d1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/CambioUbicacion/clsBeTrans_ubic_hh_enc/clsBeTrans_ubic_hh_enc.java",
+      "kind": "java",
+      "size": 7467,
+      "sha1": "4f2e531cc6e0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/CambioUbicacion/clsBeTrans_ubic_hh_enc/clsBeTrans_ubic_hh_encList.java",
+      "kind": "java",
+      "size": 449,
+      "sha1": "c48ab274634b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inv_Stock_Prod/clsBeTrans_inv_stock_prod.java",
+      "kind": "java",
+      "size": 4719,
+      "sha1": "640b5362b0f9"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inv_Stock_Prod/clsBeTrans_inv_stock_prodList.java",
+      "kind": "java",
+      "size": 277,
+      "sha1": "1b53a4d1eba2"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioReconteo/clsBeTrans_inv_enc_reconteo.java",
+      "kind": "java",
+      "size": 6888,
+      "sha1": "3ae93c9d880f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioReconteo/clsBeTrans_inv_enc_reconteoList.java",
+      "kind": "java",
+      "size": 285,
+      "sha1": "5e8200ff2105"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioReconteo/clsBe_inv_ciclico_spinner.java",
+      "kind": "java",
+      "size": 723,
+      "sha1": "46439ccc1bc0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioReconteo/clsBe_inv_reconteo_data.java",
+      "kind": "java",
+      "size": 9919,
+      "sha1": "6ac241c3b6da"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioReconteo/clsBe_inv_reconteo_dataList.java",
+      "kind": "java",
+      "size": 276,
+      "sha1": "98fd0650b74c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioTramo/clsBeTrans_inv_tramo.java",
+      "kind": "java",
+      "size": 3962,
+      "sha1": "a32f4f87356a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/InventarioTramo/clsBeTrans_inv_tramoList.java",
+      "kind": "java",
+      "size": 267,
+      "sha1": "2115e9a5c9cc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Ciclico/clsBeTrans_inv_ciclico.java",
+      "kind": "java",
+      "size": 6612,
+      "sha1": "17bfa3322773"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Ciclico/clsBeTrans_inv_ciclicoList.java",
+      "kind": "java",
+      "size": 276,
+      "sha1": "302ae1cbeea0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Ciclico/clsBeTrans_inv_ciclico_vw.java",
+      "kind": "java",
+      "size": 11766,
+      "sha1": "0978c9f6c2ce"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Ciclico/clsBeTrans_inv_ciclico_vwList.java",
+      "kind": "java",
+      "size": 283,
+      "sha1": "f601aedc147e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Detalle/clsBeTrans_inv_detalle.java",
+      "kind": "java",
+      "size": 7039,
+      "sha1": "3fe4aedb2c30"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Detalle/clsBeTrans_inv_detalleList.java",
+      "kind": "java",
+      "size": 276,
+      "sha1": "47d39ed97dc3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Detalle/clsBeTrans_inv_detalle_grid.java",
+      "kind": "java",
+      "size": 3102,
+      "sha1": "525a6680a064"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Detalle/clsBeTrans_inv_detalle_gridList.java",
+      "kind": "java",
+      "size": 284,
+      "sha1": "295cefe15ba1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Resumen/clsBeTrans_inv_resumen.java",
+      "kind": "java",
+      "size": 4167,
+      "sha1": "888807ffa1c3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Resumen/clsBeTrans_inv_resumenList.java",
+      "kind": "java",
+      "size": 274,
+      "sha1": "29a535764bad"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Resumen/clsBeTrans_inv_resumen_grid.java",
+      "kind": "java",
+      "size": 2819,
+      "sha1": "aa6f34243388"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Inventario_Resumen/clsBeTrans_inv_resumen_gridList.java",
+      "kind": "java",
+      "size": 284,
+      "sha1": "8ba2963da47f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Productos_Sugeridos/Inv_Stock_Prod/clsBeTrans_inv_stock_prod_sug.java",
+      "kind": "java",
+      "size": 508,
+      "sha1": "800221839f40"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/Productos_Sugeridos/Inv_Stock_Prod/clsBeTrans_inv_stock_prod_sugList.java",
+      "kind": "java",
+      "size": 305,
+      "sha1": "1a0f3e85f835"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/TipoConteo/clsBeTipoConteo.java",
+      "kind": "java",
+      "size": 749,
+      "sha1": "5477a24db0a8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/TipoConteo/clsBeTipoConteoList.java",
+      "kind": "java",
+      "size": 252,
+      "sha1": "6a67becf6f2c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/TipoInventario/clsBeTipoInventario.java",
+      "kind": "java",
+      "size": 741,
+      "sha1": "f3f812cdaac3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/TipoInventario/clsBeTipoInventarioList.java",
+      "kind": "java",
+      "size": 264,
+      "sha1": "4e8c6eb26396"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/clsBeTrans_inv_enc.java",
+      "kind": "java",
+      "size": 17126,
+      "sha1": "6194ad351848"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Inventario/clsBeTrans_inv_encList.java",
+      "kind": "java",
+      "size": 247,
+      "sha1": "017784995cd4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/Trans_movimiento_pallet/clsBeTrans_movimiento_pallet.java",
+      "kind": "java",
+      "size": 2068,
+      "sha1": "060f1208b46f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/Trans_movimiento_pallet/clsBeTrans_movimiento_palletList.java",
+      "kind": "java",
+      "size": 282,
+      "sha1": "82b60296a314"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/Trans_movimientos/clsBeTrans_movimientos.java",
+      "kind": "java",
+      "size": 9695,
+      "sha1": "53e822a358a3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/Trans_movimientos/clsBeTrans_movimientosList.java",
+      "kind": "java",
+      "size": 277,
+      "sha1": "f17bf3f5a856"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/USUbicSingle/USUbicSingle.java",
+      "kind": "java",
+      "size": 1844,
+      "sha1": "00d395a8ae91"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/USUbicSingle/USUbicSingleList.java",
+      "kind": "java",
+      "size": 248,
+      "sha1": "0a931741fc10"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/USUbicStrucStage1/USUbicStrucStage1.java",
+      "kind": "java",
+      "size": 1649,
+      "sha1": "6830f278a5ea"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/USUbicStrucStage1/USUbicStrucStage1List.java",
+      "kind": "java",
+      "size": 265,
+      "sha1": "544568b5b2a1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/USUbicStrucStage5/USUbicStrucStage5.java",
+      "kind": "java",
+      "size": 898,
+      "sha1": "9b1a2b67852a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/USUbicStrucStage5/USUbicStrucStage5List.java",
+      "kind": "java",
+      "size": 264,
+      "sha1": "578f5b51a3e1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/clsBeVW_Movimientos/clsBeVW_Movimientos.java",
+      "kind": "java",
+      "size": 11196,
+      "sha1": "5fd3a5b049b9"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Movimiento/clsBeVW_Movimientos/clsBeVW_MovimientosList.java",
+      "kind": "java",
+      "size": 272,
+      "sha1": "56e8d1dd16f3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_det/clsBeTrans_oc_det.java",
+      "kind": "java",
+      "size": 16257,
+      "sha1": "c7d2683abf7f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_det/clsBeTrans_oc_detList.java",
+      "kind": "java",
+      "size": 1550,
+      "sha1": "cac84daf1159"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_det_lote/clsBeTrans_oc_det_lote.java",
+      "kind": "java",
+      "size": 7792,
+      "sha1": "2ee303a1c845"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_det_lote/clsBeTrans_oc_det_loteList.java",
+      "kind": "java",
+      "size": 437,
+      "sha1": "22f3d3c36f2c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_enc/clsBeTrans_oc_enc.java",
+      "kind": "java",
+      "size": 7156,
+      "sha1": "4b70c10b1472"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_enc/clsBeTrans_oc_encList.java",
+      "kind": "java",
+      "size": 423,
+      "sha1": "a4f24eec2cbc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_estado/clsBeTrans_oc_estado.java",
+      "kind": "java",
+      "size": 709,
+      "sha1": "654d8c5ca0c3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_estado/clsBeTrans_oc_estadoList.java",
+      "kind": "java",
+      "size": 431,
+      "sha1": "f9c210973bb3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_imagen/clsBeTrans_oc_imagen.java",
+      "kind": "java",
+      "size": 1542,
+      "sha1": "5e38ee405401"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_imagen/clsBeTrans_oc_imagenList.java",
+      "kind": "java",
+      "size": 431,
+      "sha1": "1997fce538d3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_pol/clsBeTrans_oc_pol.java",
+      "kind": "java",
+      "size": 13691,
+      "sha1": "c65dca3382d6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_pol/clsBeTrans_oc_polList.java",
+      "kind": "java",
+      "size": 423,
+      "sha1": "717dc56a74e3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_ti/clsBeTrans_oc_ti.java",
+      "kind": "java",
+      "size": 7986,
+      "sha1": "41254a96e3a7"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_ti/clsBeTrans_oc_tiList.java",
+      "kind": "java",
+      "size": 419,
+      "sha1": "f09c3bcad4dd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_ti/clsDataContractDI.java",
+      "kind": "java",
+      "size": 690,
+      "sha1": "b25df8b18ab6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Packing/clsBeTrans_packing_enc.java",
+      "kind": "java",
+      "size": 6913,
+      "sha1": "c383b14a477e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Packing/clsBeTrans_packing_encList.java",
+      "kind": "java",
+      "size": 252,
+      "sha1": "c989da531945"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Packing/clsBeTrans_packing_enc_bulto.java",
+      "kind": "java",
+      "size": 5722,
+      "sha1": "1d3066cdcac6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Packing/clsBeTrans_packing_lotes.java",
+      "kind": "java",
+      "size": 469,
+      "sha1": "03e8b6ac29dc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/Trasn_pe_pol/clsBeTrans_pe_pol.java",
+      "kind": "java",
+      "size": 13289,
+      "sha1": "5b73cb26fce5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/Trasn_pe_pol/clsBeTrans_pe_polList.java",
+      "kind": "java",
+      "size": 255,
+      "sha1": "d30a18146ab3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/clsBeDetallePedidoAVerificar/clsBeDetallePedidoAVerificar.java",
+      "kind": "java",
+      "size": 7843,
+      "sha1": "112d4bb06285"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/clsBeDetallePedidoAVerificar/clsBeDetallePedidoAVerificarList.java",
+      "kind": "java",
+      "size": 294,
+      "sha1": "c392492419d4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/clsBeTrans_pe_det/clsBeTrans_pe_det.java",
+      "kind": "java",
+      "size": 18443,
+      "sha1": "8c123c3ca905"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/clsBeTrans_pe_det/clsBeTrans_pe_detList.java",
+      "kind": "java",
+      "size": 260,
+      "sha1": "bccef619d5d0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/clsBeTrans_pe_enc/clsBeTrans_pe_enc.java",
+      "kind": "java",
+      "size": 23024,
+      "sha1": "69f2b6cfc958"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Pedido/clsBeTrans_pe_enc/clsBeTrans_pe_encList.java",
+      "kind": "java",
+      "size": 261,
+      "sha1": "ded3d96b2f85"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/Trans_Picking_Img/clsBeTrans_picking_img.java",
+      "kind": "java",
+      "size": 2776,
+      "sha1": "49bd52f879e8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/Trans_Picking_Img/clsBeTrans_picking_imgList.java",
+      "kind": "java",
+      "size": 272,
+      "sha1": "f431c4fdac0b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeStockReemplazo.java",
+      "kind": "java",
+      "size": 894,
+      "sha1": "e6ef5274c74d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_det.java",
+      "kind": "java",
+      "size": 13325,
+      "sha1": "170cc0c521bd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_detList.java",
+      "kind": "java",
+      "size": 252,
+      "sha1": "5bcf41b50753"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_det_parametros.java",
+      "kind": "java",
+      "size": 3071,
+      "sha1": "a894621f4bda"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_det_parametrosList.java",
+      "kind": "java",
+      "size": 274,
+      "sha1": "da6c4934f558"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_enc.java",
+      "kind": "java",
+      "size": 11461,
+      "sha1": "962b8eb7e466"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_encList.java",
+      "kind": "java",
+      "size": 253,
+      "sha1": "13cc5e0e1c17"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_ubic.java",
+      "kind": "java",
+      "size": 21050,
+      "sha1": "0defbd877b5e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_ubicList.java",
+      "kind": "java",
+      "size": 255,
+      "sha1": "6da364d5cf23"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_verificacion_etiqueta.java",
+      "kind": "java",
+      "size": 12868,
+      "sha1": "80951b60d5bc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_verificacion_etiquetaList.java",
+      "kind": "java",
+      "size": 272,
+      "sha1": "f7cc9955d0fa"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/RFID/clsBeI_nav_barras_rfid_det.java",
+      "kind": "java",
+      "size": 2502,
+      "sha1": "6b87cb75758b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/RFID/clsBeI_nav_barras_rfid_detList.java",
+      "kind": "java",
+      "size": 388,
+      "sha1": "4e24aa75d259"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/RFID/clsBeI_nav_barras_rfid_enc.java",
+      "kind": "java",
+      "size": 5417,
+      "sha1": "ddb5dbca0987"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/LicencePlates/clsBeLicensePlates.java",
+      "kind": "java",
+      "size": 2784,
+      "sha1": "2badf12f774d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/LicencePlates/clsBeLicensePlatesList.java",
+      "kind": "java",
+      "size": 453,
+      "sha1": "18cb426ffc23"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Reglas_recepcion/clsBeReglas_recepcion.java",
+      "kind": "java",
+      "size": 3126,
+      "sha1": "388d6a8cd8bf"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Reglas_recepcion/clsBeReglas_recepcionList.java",
+      "kind": "java",
+      "size": 460,
+      "sha1": "84009faba612"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_det/clsBeTrans_re_det.java",
+      "kind": "java",
+      "size": 16964,
+      "sha1": "70eb6b856213"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_det/clsBeTrans_re_detList.java",
+      "kind": "java",
+      "size": 448,
+      "sha1": "9bc07c3b96e9"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_det_lote_num/clsBeTrans_re_det_lote_num.java",
+      "kind": "java",
+      "size": 2361,
+      "sha1": "fd7b5f55c79e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_det_lote_num/clsBeTrans_re_det_lote_numList.java",
+      "kind": "java",
+      "size": 476,
+      "sha1": "f6e4ea59796a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_det_parametros/clsBeTrans_re_det_parametros.java",
+      "kind": "java",
+      "size": 4541,
+      "sha1": "f506ce31bef0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_det_parametros/clsBeTrans_re_det_parametrosList.java",
+      "kind": "java",
+      "size": 482,
+      "sha1": "20fda36e4928"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_fact/clsBeTrans_re_fact.java",
+      "kind": "java",
+      "size": 3075,
+      "sha1": "6ea8bf3d37e8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_fact/clsBeTrans_re_factList.java",
+      "kind": "java",
+      "size": 451,
+      "sha1": "f9f0f62a8a8c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_img/clsBeTrans_re_img.java",
+      "kind": "java",
+      "size": 1984,
+      "sha1": "b54ea093f869"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_img/clsBeTrans_re_imgList.java",
+      "kind": "java",
+      "size": 448,
+      "sha1": "5d7c146b2927"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_oc/clsBeTrans_re_oc.java",
+      "kind": "java",
+      "size": 4219,
+      "sha1": "d39c3d7b7536"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_oc/clsBeTrans_re_ocList.java",
+      "kind": "java",
+      "size": 446,
+      "sha1": "bc1c6d52dd1d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_op/clsBeTrans_re_op.java",
+      "kind": "java",
+      "size": 2569,
+      "sha1": "5ecf8e7b6277"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/Trans_re_op/clsBeTrans_re_opList.java",
+      "kind": "java",
+      "size": 446,
+      "sha1": "7172176bb3e2"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/clsBeTarea_hh.java",
+      "kind": "java",
+      "size": 4513,
+      "sha1": "ca1bd90ef09a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/clsBeTarea_hhList.java",
+      "kind": "java",
+      "size": 3192,
+      "sha1": "9901c350f8f3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/clsBeTareasIngresoHH.java",
+      "kind": "java",
+      "size": 5333,
+      "sha1": "cb84fb09ee9f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/clsBeTareasIngresoHHList.java",
+      "kind": "java",
+      "size": 446,
+      "sha1": "3fa945acdea1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/clsBeTrans_re_enc.java",
+      "kind": "java",
+      "size": 18291,
+      "sha1": "596d3eb02067"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Recepcion/clsBeTrans_re_encList.java",
+      "kind": "java",
+      "size": 440,
+      "sha1": "75029ef293f9"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Parametros/clsBeStock_parametro.java",
+      "kind": "java",
+      "size": 3213,
+      "sha1": "b20a924a24a3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Parametros/clsBeStock_parametroList.java",
+      "kind": "java",
+      "size": 260,
+      "sha1": "de168c85b56f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Revision/clsBeRevision.java",
+      "kind": "java",
+      "size": 4423,
+      "sha1": "0f29d5808fdd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Revision/clsBeRevisionList.java",
+      "kind": "java",
+      "size": 245,
+      "sha1": "72578c75aa47"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock/clsBeStock.java",
+      "kind": "java",
+      "size": 15514,
+      "sha1": "09f9906d4c07"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock/clsBeStockList.java",
+      "kind": "java",
+      "size": 237,
+      "sha1": "9a10ad798c5c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_det/clsBeStock_det.java",
+      "kind": "java",
+      "size": 678,
+      "sha1": "37ce734c0ccb"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_det/clsBeStock_detList.java",
+      "kind": "java",
+      "size": 244,
+      "sha1": "33f4e3c84d84"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_rec/clsBeStock_rec.java",
+      "kind": "java",
+      "size": 10086,
+      "sha1": "b020335bced5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_rec/clsBeStock_recList.java",
+      "kind": "java",
+      "size": 438,
+      "sha1": "70d01b05c4d4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_rec/clsBeStock_rec_methods.java",
+      "kind": "java",
+      "size": 2522,
+      "sha1": "bcc81226e68d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_res/clsBeStock_res.java",
+      "kind": "java",
+      "size": 11974,
+      "sha1": "39d59f04de4f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_res/clsBeStock_resList.java",
+      "kind": "java",
+      "size": 245,
+      "sha1": "5d8c6d3767a8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_res/clsBeVW_stock_res.java",
+      "kind": "java",
+      "size": 18290,
+      "sha1": "d13bbaee4807"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_res/clsBeVW_stock_resList.java",
+      "kind": "java",
+      "size": 441,
+      "sha1": "53f334b08cb9"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_res/clsBeVW_stock_res_CI.java",
+      "kind": "java",
+      "size": 5847,
+      "sha1": "5de39acb4a0a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_res/clsBeVW_stock_res_CI_List.java",
+      "kind": "java",
+      "size": 291,
+      "sha1": "1602f5924c98"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_se_rec/clsBeStock_se_rec.java",
+      "kind": "java",
+      "size": 4010,
+      "sha1": "e50e3e5015b5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/Stock/Stock_se_rec/clsBeStock_se_recList.java",
+      "kind": "java",
+      "size": 427,
+      "sha1": "4fc3eec7d44f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/TipoPedido/clsBeTrans_pe_tipo.java",
+      "kind": "java",
+      "size": 9929,
+      "sha1": "0145db0f9899"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/Transacciones/TipoPedido/clsBeTrans_pe_tipoList.java",
+      "kind": "java",
+      "size": 248,
+      "sha1": "ed19c40cdb18"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/clsBeDetalleCambioUbicacion.java",
+      "kind": "java",
+      "size": 1319,
+      "sha1": "a012eace1da1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/clsBeImagen.java",
+      "kind": "java",
+      "size": 178,
+      "sha1": "a979dacd213e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/clsBeajuste_motivo.java",
+      "kind": "java",
+      "size": 359,
+      "sha1": "ab73469cb135"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/classes/extListChkDlg.java",
+      "kind": "java",
+      "size": 10246,
+      "sha1": "e01f1cde120c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/CambioUbicacion/list_adapter_detalle_cambio_ubic.java",
+      "kind": "java",
+      "size": 5046,
+      "sha1": "03be62d6f309"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/CambioUbicacion/list_view_tareas_cambio_ubic.java",
+      "kind": "java",
+      "size": 2896,
+      "sha1": "619affa25af8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/ClickListener.java",
+      "kind": "java",
+      "size": 179,
+      "sha1": "2d2190a86b05"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/ConsultaStock/list_adapt_consulta_stock.java",
+      "kind": "java",
+      "size": 10366,
+      "sha1": "a598dc0090de"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/ConsultaStock/list_adapt_consulta_stock2.java",
+      "kind": "java",
+      "size": 7839,
+      "sha1": "f2910b75e74f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/InventarioCiclico/list_adapt_consulta_ciclico.java",
+      "kind": "java",
+      "size": 9080,
+      "sha1": "9c3409ce3404"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Recepcion/list_adapt_detalle_recepcion2.java",
+      "kind": "java",
+      "size": 8890,
+      "sha1": "3fa8e29f0fed"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Recepcion/list_adapt_detalle_recepcion3.java",
+      "kind": "java",
+      "size": 6762,
+      "sha1": "2d06315c7cc5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_detalle_reemplazo_verif.java",
+      "kind": "java",
+      "size": 5090,
+      "sha1": "ea12f8338523"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_detalle_tareas_verificacion.java",
+      "kind": "java",
+      "size": 8950,
+      "sha1": "0938cb50b52e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_detalle_tareas_verificacion2.java",
+      "kind": "java",
+      "size": 8838,
+      "sha1": "0d917f3e6898"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_detalle_tareas_verificacion3.java",
+      "kind": "java",
+      "size": 9514,
+      "sha1": "abdaf08c3331"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_detalle_tareas_verificacion4.java",
+      "kind": "java",
+      "size": 7471,
+      "sha1": "851afeaab9ac"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_reemplazos.java",
+      "kind": "java",
+      "size": 6558,
+      "sha1": "3f1bf551175d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/Verificacion/list_adapt_tareas_verificacion.java",
+      "kind": "java",
+      "size": 7394,
+      "sha1": "5753b324c165"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/abc.java",
+      "kind": "java",
+      "size": 46,
+      "sha1": "37eebc1d1c50"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_contados.java",
+      "kind": "java",
+      "size": 3739,
+      "sha1": "6633fce1e989"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_picking_cm.java",
+      "kind": "java",
+      "size": 3563,
+      "sha1": "b662f6a5ff67"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_rec_prod.java",
+      "kind": "java",
+      "size": 7004,
+      "sha1": "858d6848c6e7"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_recepcion.java",
+      "kind": "java",
+      "size": 9509,
+      "sha1": "1d394ac6357d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_recepcion_cm.java",
+      "kind": "java",
+      "size": 4552,
+      "sha1": "49140921d86c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_reemplazo_picking.java",
+      "kind": "java",
+      "size": 6466,
+      "sha1": "b4315a891271"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_tareas_picking.java",
+      "kind": "java",
+      "size": 11224,
+      "sha1": "1c6d88f843a0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_tareas_picking2.java",
+      "kind": "java",
+      "size": 9843,
+      "sha1": "e2f9ac83aed8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_detalle_tareas_picking3.java",
+      "kind": "java",
+      "size": 5505,
+      "sha1": "ca71a8c6e36b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_licenciaspacking.java",
+      "kind": "java",
+      "size": 2628,
+      "sha1": "a24f97cee3ea"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_lista_imagen.java",
+      "kind": "java",
+      "size": 1797,
+      "sha1": "03b0bc3d4cb4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_lista_packing.java",
+      "kind": "java",
+      "size": 4949,
+      "sha1": "9020f2fef6d5"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_lista_packing_bulto.java",
+      "kind": "java",
+      "size": 5250,
+      "sha1": "60ee665a60ae"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_lista_productos_cubic.java",
+      "kind": "java",
+      "size": 3812,
+      "sha1": "70cfb782e9ba"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_lista_productos_recubic.java",
+      "kind": "java",
+      "size": 2916,
+      "sha1": "f2e7a1402ece"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_packing_lotes.java",
+      "kind": "java",
+      "size": 2893,
+      "sha1": "c7d0690ace4b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_packing_lp.java",
+      "kind": "java",
+      "size": 2271,
+      "sha1": "38af5be1a23a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_producto_imagen.java",
+      "kind": "java",
+      "size": 1944,
+      "sha1": "4ce0af1cdff4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_reabast_stock_res.java",
+      "kind": "java",
+      "size": 6044,
+      "sha1": "e2328057ae91"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_reemplazo_detalle.java",
+      "kind": "java",
+      "size": 6286,
+      "sha1": "84bf237fcc94"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_stock_res.java",
+      "kind": "java",
+      "size": 5898,
+      "sha1": "1d8e9c20305f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_stock_res_mixto.java",
+      "kind": "java",
+      "size": 5777,
+      "sha1": "cf7ade6bb8df"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_tareas_inventario.java",
+      "kind": "java",
+      "size": 3533,
+      "sha1": "a4cb629f1d48"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_tareashh_picking.java",
+      "kind": "java",
+      "size": 7262,
+      "sha1": "76155714429e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_tramos_inv_ini.java",
+      "kind": "java",
+      "size": 4021,
+      "sha1": "2f54c4a7b77c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapt_verificados.java",
+      "kind": "java",
+      "size": 3524,
+      "sha1": "0e2b14af404f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_adapter_tareashh.java",
+      "kind": "java",
+      "size": 6322,
+      "sha1": "8b287b0105c3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/list_view_menu2.java",
+      "kind": "java",
+      "size": 3599,
+      "sha1": "751a4cdac39c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/rfid_adapter/InventarioRfidAdapter.java",
+      "kind": "java",
+      "size": 11272,
+      "sha1": "0ad3f89e4831"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/rfid_adapter/InventarioRfidViewHolder.java",
+      "kind": "java",
+      "size": 6546,
+      "sha1": "4f0245c760e8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/rfid_adapter/RfidAdapter.java",
+      "kind": "java",
+      "size": 3052,
+      "sha1": "f06f593a5fcd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/ladapt/rfid_adapter/RfidProcesarAdapter.java",
+      "kind": "java",
+      "size": 2502,
+      "sha1": "18558dd37bdc"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/AccessOperationController.java",
+      "kind": "java",
+      "size": 741,
+      "sha1": "ab177fb829ba"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/ConnectionController.java",
+      "kind": "java",
+      "size": 863,
+      "sha1": "37868e83ff83"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/InventarioRfidReaderManager.java",
+      "kind": "java",
+      "size": 14474,
+      "sha1": "349c4ba2bf27"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/InventarioRfidSearchManager.java",
+      "kind": "java",
+      "size": 6339,
+      "sha1": "fe553f575f53"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/InventarioRfidSelectionManager.java",
+      "kind": "java",
+      "size": 4155,
+      "sha1": "55eb4dce286d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/InventoryController.java",
+      "kind": "java",
+      "size": 108,
+      "sha1": "90bb9aa12f00"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/LocationingController.java",
+      "kind": "java",
+      "size": 110,
+      "sha1": "dbc29a152e05"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/RFIDController.java",
+      "kind": "java",
+      "size": 7373,
+      "sha1": "36f68df4b43e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/RecepcionRfidReaderManager.java",
+      "kind": "java",
+      "size": 15492,
+      "sha1": "e64b4a557c50"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/RecepcionRfidSessionManager.java",
+      "kind": "java",
+      "size": 2835,
+      "sha1": "ff78af076be8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/rfid/RecepcionRfidUiUpdater.java",
+      "kind": "java",
+      "size": 2733,
+      "sha1": "90d74b02960d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/servicios/srvBaseJob.java",
+      "kind": "java",
+      "size": 5616,
+      "sha1": "9a167334650e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/servicios/srvCantTareas.java",
+      "kind": "java",
+      "size": 3900,
+      "sha1": "a65a0bf7f55f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/servicios/startCantTareas.java",
+      "kind": "java",
+      "size": 1001,
+      "sha1": "f8dd42497815"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/servicios/wsBase.java",
+      "kind": "java",
+      "size": 1989,
+      "sha1": "316485b14b8b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/servicios/wsCantTareas.java",
+      "kind": "java",
+      "size": 1790,
+      "sha1": "3c8a04b61fd6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/BluetoothStateHolder.java",
+      "kind": "java",
+      "size": 6779,
+      "sha1": "5ffe77d7e168"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/DrawingView.java",
+      "kind": "java",
+      "size": 5261,
+      "sha1": "ab35e803b7f2"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/FingerPath.java",
+      "kind": "java",
+      "size": 457,
+      "sha1": "44d55b83325b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/ForceUpdateChecker.java",
+      "kind": "java",
+      "size": 3778,
+      "sha1": "c36cb2e49002"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/MainActivity.java",
+      "kind": "java",
+      "size": 75278,
+      "sha1": "d99243aba2de"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Mainmenu.java",
+      "kind": "java",
+      "size": 33498,
+      "sha1": "f52a1f333cd6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/PBase.java",
+      "kind": "java",
+      "size": 5814,
+      "sha1": "5f653cbf20ec"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/PrintJobListAdapter.java",
+      "kind": "java",
+      "size": 2018,
+      "sha1": "6105e1bd4ca1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/PrintReceiverActivity.java",
+      "kind": "java",
+      "size": 9476,
+      "sha1": "ff1d670be39e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+      "kind": "java",
+      "size": 214952,
+      "sha1": "56e02d2527b2"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java",
+      "kind": "java",
+      "size": 38277,
+      "sha1": "082a080e4001"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_detalle_cambio_ubicacion.java",
+      "kind": "java",
+      "size": 24408,
+      "sha1": "763abdd3ecfa"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_tareas_cambio_ubicacion.java",
+      "kind": "java",
+      "size": 15153,
+      "sha1": "0dc97927173f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java",
+      "kind": "java",
+      "size": 49256,
+      "sha1": "bda60867774b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock_detalleCI.java",
+      "kind": "java",
+      "size": 40283,
+      "sha1": "fa682ffd0d7d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Inventario/frm_list_inventario.java",
+      "kind": "java",
+      "size": 9108,
+      "sha1": "e306cb102ce3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java",
+      "kind": "java",
+      "size": 101851,
+      "sha1": "999c7361e3f0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java",
+      "kind": "java",
+      "size": 57304,
+      "sha1": "476b3ae14149"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java",
+      "kind": "java",
+      "size": 36797,
+      "sha1": "5e57f1de03b3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java",
+      "kind": "java",
+      "size": 19761,
+      "sha1": "2d1b1b96ed79"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java",
+      "kind": "java",
+      "size": 18609,
+      "sha1": "c8d192bcac13"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java",
+      "kind": "java",
+      "size": 27181,
+      "sha1": "9139f06f5ab1"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java",
+      "kind": "java",
+      "size": 75136,
+      "sha1": "ed7da613ce05"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_tramos.java",
+      "kind": "java",
+      "size": 12888,
+      "sha1": "e487a4d74941"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java",
+      "kind": "java",
+      "size": 46300,
+      "sha1": "0e826605b788"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java",
+      "kind": "java",
+      "size": 20480,
+      "sha1": "58d57934b96f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_nuevo_reg.java",
+      "kind": "java",
+      "size": 16200,
+      "sha1": "abda3977dd7d"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java",
+      "kind": "java",
+      "size": 121181,
+      "sha1": "752df096f9b6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_list_packing_cerrados.java",
+      "kind": "java",
+      "size": 16163,
+      "sha1": "d93efe52431c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing.java",
+      "kind": "java",
+      "size": 14087,
+      "sha1": "a28833cb0f98"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing_lotes.java",
+      "kind": "java",
+      "size": 8090,
+      "sha1": "60c40f602cf4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing_lp.java",
+      "kind": "java",
+      "size": 8044,
+      "sha1": "acd2b1464642"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java",
+      "kind": "java",
+      "size": 57975,
+      "sha1": "6c1c1a520692"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing_bulto.java",
+      "kind": "java",
+      "size": 30324,
+      "sha1": "3cd7484eb46a"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_danado_picking.java",
+      "kind": "java",
+      "size": 17130,
+      "sha1": "7fbb15a5d741"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java",
+      "kind": "java",
+      "size": 61340,
+      "sha1": "7e92b3afbdc8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_editar_ubicacion_picking.java",
+      "kind": "java",
+      "size": 7051,
+      "sha1": "157eb14e20ca"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java",
+      "kind": "java",
+      "size": 40072,
+      "sha1": "6c7adc14677b"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java",
+      "kind": "java",
+      "size": 136233,
+      "sha1": "50a29986d4da"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ProcesaImagen/ImagenZoom.java",
+      "kind": "java",
+      "size": 563,
+      "sha1": "ff331d32fca0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ProcesaImagen/frm_imagen_completa.java",
+      "kind": "java",
+      "size": 1569,
+      "sha1": "313dd33686f8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ProcesaImagen/frm_imagenes.java",
+      "kind": "java",
+      "size": 4335,
+      "sha1": "c35a8f39250f"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java",
+      "kind": "java",
+      "size": 26143,
+      "sha1": "97445b2178ba"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_inventario_rfid.java",
+      "kind": "java",
+      "size": 19857,
+      "sha1": "79c2bc25c09e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_menu_rfid.java",
+      "kind": "java",
+      "size": 3949,
+      "sha1": "c12594a03be0"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java",
+      "kind": "java",
+      "size": 24374,
+      "sha1": "0fd16fdd9510"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid.java",
+      "kind": "java",
+      "size": 45188,
+      "sha1": "6d34bddf8480"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java",
+      "kind": "java",
+      "size": 29379,
+      "sha1": "84f945d7edf3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_reabastecimiento_manual.java",
+      "kind": "java",
+      "size": 9895,
+      "sha1": "6f9ba3efe73c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frmFirma.java",
+      "kind": "java",
+      "size": 567,
+      "sha1": "a8ffda8e2b39"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java",
+      "kind": "java",
+      "size": 32474,
+      "sha1": "77f4d7335f57"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+      "kind": "java",
+      "size": 87619,
+      "sha1": "2964e6a89990"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+      "kind": "java",
+      "size": 43158,
+      "sha1": "f92b626034e3"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+      "kind": "java",
+      "size": 40147,
+      "sha1": "6b1e23ae3de4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_rec_ftos.java",
+      "kind": "java",
+      "size": 4513,
+      "sha1": "708008dbe98c"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+      "kind": "java",
+      "size": 487453,
+      "sha1": "fa802287a64e"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos_original.java",
+      "kind": "java",
+      "size": 480625,
+      "sha1": "2e74a489f557"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_datos_stock_res.java",
+      "kind": "java",
+      "size": 22457,
+      "sha1": "b674cb3f5c08"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_lista_stock_res.java",
+      "kind": "java",
+      "size": 11483,
+      "sha1": "04631d0d1487"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java",
+      "kind": "java",
+      "size": 20620,
+      "sha1": "acf344a6f997"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java",
+      "kind": "java",
+      "size": 52917,
+      "sha1": "dad248c689b4"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazados.java",
+      "kind": "java",
+      "size": 8295,
+      "sha1": "e28359771618"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java",
+      "kind": "java",
+      "size": 32405,
+      "sha1": "caf9ec0b0464"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_consolidada_detalle.java",
+      "kind": "java",
+      "size": 17699,
+      "sha1": "afb13e2bb1fd"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java",
+      "kind": "java",
+      "size": 61201,
+      "sha1": "123155e9b297"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/ZebraPrintTask.java",
+      "kind": "java",
+      "size": 12437,
+      "sha1": "d6d19cada2a6"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/frm_listado_tareas.java",
+      "kind": "java",
+      "size": 345,
+      "sha1": "1b39c88c16ba"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/list_view_menu.java",
+      "kind": "java",
+      "size": 3078,
+      "sha1": "936bdf7180b8"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/util/CryptUtil.java",
+      "kind": "java",
+      "size": 1804,
+      "sha1": "a9aa2932cd73"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/util/IoUtil.java",
+      "kind": "java",
+      "size": 1586,
+      "sha1": "1fcd9404bb89"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/util/PrintTaskListener.java",
+      "kind": "java",
+      "size": 234,
+      "sha1": "0ebe7828c958"
+    },
+    {
+      "path": "/app/src/main/java/com/dts/tom/util/TaskHolderFragment.java",
+      "kind": "java",
+      "size": 4043,
+      "sha1": "1955a6717f49"
+    },
+    {
+      "path": "/app/src/main/res/color/blanco.xml",
+      "kind": "xml-other",
+      "size": 121,
+      "sha1": "8677c99be1de"
+    },
+    {
+      "path": "/app/src/main/res/drawable/bg_busqueda_borde.xml",
+      "kind": "drawable-xml",
+      "size": 225,
+      "sha1": "a9d11ecede26"
+    },
+    {
+      "path": "/app/src/main/res/drawable/bg_card_rfid.xml",
+      "kind": "drawable-xml",
+      "size": 425,
+      "sha1": "2817fb6b4bae"
+    },
+    {
+      "path": "/app/src/main/res/drawable/bg_chip_activo.xml",
+      "kind": "drawable-xml",
+      "size": 189,
+      "sha1": "6b08295b9184"
+    },
+    {
+      "path": "/app/src/main/res/drawable/color_black.xml",
+      "kind": "drawable-xml",
+      "size": 240,
+      "sha1": "673e6a1b1c77"
+    },
+    {
+      "path": "/app/src/main/res/drawable/color_dark.xml",
+      "kind": "drawable-xml",
+      "size": 239,
+      "sha1": "2398d0bf4dd4"
+    },
+    {
+      "path": "/app/src/main/res/drawable/color_light.xml",
+      "kind": "drawable-xml",
+      "size": 239,
+      "sha1": "e6e49e940e0b"
+    },
+    {
+      "path": "/app/src/main/res/drawable/color_medium.xml",
+      "kind": "drawable-xml",
+      "size": 239,
+      "sha1": "ef9060669ab1"
+    },
+    {
+      "path": "/app/src/main/res/drawable/color_medium_a.xml",
+      "kind": "drawable-xml",
+      "size": 239,
+      "sha1": "525bcab72fea"
+    },
+    {
+      "path": "/app/src/main/res/drawable/color_select.xml",
+      "kind": "drawable-xml",
+      "size": 240,
+      "sha1": "dec0332cffe2"
+    },
+    {
+      "path": "/app/src/main/res/drawable/colortitles.xml",
+      "kind": "drawable-xml",
+      "size": 236,
+      "sha1": "36ea35deded8"
+    },
+    {
+      "path": "/app/src/main/res/drawable/frame_btn_white.xml",
+      "kind": "drawable-xml",
+      "size": 286,
+      "sha1": "ba2071d45c9b"
+    },
+    {
+      "path": "/app/src/main/res/drawable/frame_list_btn.xml",
+      "kind": "drawable-xml",
+      "size": 267,
+      "sha1": "bd3a55dd3444"
+    },
+    {
+      "path": "/app/src/main/res/drawable/frame_rect.xml",
+      "kind": "drawable-xml",
+      "size": 255,
+      "sha1": "f83581000b71"
+    },
+    {
+      "path": "/app/src/main/res/drawable/frame_round.xml",
+      "kind": "drawable-xml",
+      "size": 302,
+      "sha1": "2bca380e52d6"
+    },
+    {
+      "path": "/app/src/main/res/drawable/ic_launcher_background.xml",
+      "kind": "drawable-xml",
+      "size": 5606,
+      "sha1": "867eaa4e4aa8"
+    },
+    {
+      "path": "/app/src/main/res/drawable/line_bottom.xml",
+      "kind": "drawable-xml",
+      "size": 296,
+      "sha1": "c5cf387c1eca"
+    },
+    {
+      "path": "/app/src/main/res/drawable/nuevo_dialogo.xml",
+      "kind": "drawable-xml",
+      "size": 423,
+      "sha1": "90986040d607"
+    },
+    {
+      "path": "/app/src/main/res/drawable/progress_bar_circular_style.xml",
+      "kind": "drawable-xml",
+      "size": 310,
+      "sha1": "12793ba95146"
+    },
+    {
+      "path": "/app/src/main/res/drawable/scrollbar_thumb.xml",
+      "kind": "drawable-xml",
+      "size": 263,
+      "sha1": "097c8c403128"
+    },
+    {
+      "path": "/app/src/main/res/drawable/scrollbar_track.xml",
+      "kind": "drawable-xml",
+      "size": 294,
+      "sha1": "3c0a123d9fe5"
+    },
+    {
+      "path": "/app/src/main/res/drawable/top_strip.xml",
+      "kind": "drawable-xml",
+      "size": 246,
+      "sha1": "d07812b785af"
+    },
+    {
+      "path": "/app/src/main/res/drawable-v24/ic_launcher_foreground.xml",
+      "kind": "xml-other",
+      "size": 1880,
+      "sha1": "a47f7a4e793a"
+    },
+    {
+      "path": "/app/src/main/res/font/anonymous_pro.xml",
+      "kind": "xml-other",
+      "size": 362,
+      "sha1": "41ad12386a99"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_adapt_licenciaspacking.xml",
+      "kind": "layout",
+      "size": 1207,
+      "sha1": "4254943c2072"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_adapt_lista_productos_cubic.xml",
+      "kind": "layout",
+      "size": 3906,
+      "sha1": "cc6ae65770d7"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_editar_ubicacion_picking.xml",
+      "kind": "layout",
+      "size": 8287,
+      "sha1": "40798d6c6520"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm__packing.xml",
+      "kind": "layout",
+      "size": 20198,
+      "sha1": "e795e65599fa"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_cambio_ubicacion_ciega.xml",
+      "kind": "layout",
+      "size": 29397,
+      "sha1": "b6002fc52f05"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_cambio_ubicacion_dirigida.xml",
+      "kind": "layout",
+      "size": 22787,
+      "sha1": "c1d0e1e6b45f"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_consulta_stock.xml",
+      "kind": "layout",
+      "size": 28121,
+      "sha1": "b5c4afd23886"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_consulta_stock2.xml",
+      "kind": "layout",
+      "size": 25302,
+      "sha1": "82944d78b530"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_consulta_stock_detalle_c_i.xml",
+      "kind": "layout",
+      "size": 22969,
+      "sha1": "ba4b5e071baa"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_danado_picking.xml",
+      "kind": "layout",
+      "size": 5121,
+      "sha1": "e97d151af25b"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_danado_verificacion.xml",
+      "kind": "layout",
+      "size": 5229,
+      "sha1": "43f042514d07"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_datos_reabastecimiento.xml",
+      "kind": "layout",
+      "size": 17757,
+      "sha1": "e48e77abbb30"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_datos_stock_res.xml",
+      "kind": "layout",
+      "size": 28625,
+      "sha1": "5eeb025f6cb7"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_cambio_ubicacion.xml",
+      "kind": "layout",
+      "size": 6342,
+      "sha1": "adf030e06cba"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_ingresos.xml",
+      "kind": "layout",
+      "size": 14662,
+      "sha1": "8a523b930cbc"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_tareas_picking.xml",
+      "kind": "layout",
+      "size": 26796,
+      "sha1": "9839e3d8ac69"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_tareas_picking2.xml",
+      "kind": "layout",
+      "size": 26811,
+      "sha1": "bbd8a79e255d"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_tareas_picking3.xml",
+      "kind": "layout",
+      "size": 25966,
+      "sha1": "2383bb6b92ed"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_tareas_verificacion.xml",
+      "kind": "layout",
+      "size": 45577,
+      "sha1": "af1cb5f976e8"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_detalle_tareas_verificacion2.xml",
+      "kind": "layout",
+      "size": 8928,
+      "sha1": "8919fd04414c"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_existencias_rfid.xml",
+      "kind": "layout",
+      "size": 9683,
+      "sha1": "eae84bcfd2c6"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_firma.xml",
+      "kind": "layout",
+      "size": 3033,
+      "sha1": "981b5b8ab05f"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_guardar_rfid.xml",
+      "kind": "layout",
+      "size": 4732,
+      "sha1": "5f35b87f3599"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_imagenes.xml",
+      "kind": "layout",
+      "size": 3713,
+      "sha1": "d00e4e2b6589"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_agrega_prd.xml",
+      "kind": "layout",
+      "size": 8267,
+      "sha1": "76f8434720bd"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_cic_add.xml",
+      "kind": "layout",
+      "size": 17880,
+      "sha1": "71436f06750e"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_cic_conteo.xml",
+      "kind": "layout",
+      "size": 23118,
+      "sha1": "b2e879dcc09c"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_cic_guardar.xml",
+      "kind": "layout",
+      "size": 11531,
+      "sha1": "b953b206a495"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_cic_nuevo.xml",
+      "kind": "layout",
+      "size": 9163,
+      "sha1": "f24ec56c78b0"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_ini_contados.xml",
+      "kind": "layout",
+      "size": 9040,
+      "sha1": "a608df13de22"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_ini_conteo.xml",
+      "kind": "layout",
+      "size": 19171,
+      "sha1": "b123c1b8b85f"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_ini_tramos.xml",
+      "kind": "layout",
+      "size": 5467,
+      "sha1": "1b57f4069d17"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_ini_verificacion.xml",
+      "kind": "layout",
+      "size": 12053,
+      "sha1": "cd02f24e04ba"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_ini_verificados.xml",
+      "kind": "layout",
+      "size": 8655,
+      "sha1": "1395f2234cfc"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_inv_nuevo_reg.xml",
+      "kind": "layout",
+      "size": 9568,
+      "sha1": "248f11e957f4"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_inventario.xml",
+      "kind": "layout",
+      "size": 8240,
+      "sha1": "97153c0db4f1"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_packing_cerrados.xml",
+      "kind": "layout",
+      "size": 4899,
+      "sha1": "12d659f788dd"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_prod_reemplazados.xml",
+      "kind": "layout",
+      "size": 3666,
+      "sha1": "05d7a003518e"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_prod_reemplazo_picking.xml",
+      "kind": "layout",
+      "size": 15377,
+      "sha1": "a6f211fb6983"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_prod_reemplazo_verif.xml",
+      "kind": "layout",
+      "size": 15442,
+      "sha1": "e7d4e42a8a26"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_rec_prod.xml",
+      "kind": "layout",
+      "size": 18335,
+      "sha1": "526c9d21f491"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_rec_prod2.xml",
+      "kind": "layout",
+      "size": 17754,
+      "sha1": "178c5462be44"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_rec_prod3.xml",
+      "kind": "layout",
+      "size": 8671,
+      "sha1": "0790189b61db"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_list_rec_prod_detalle.xml",
+      "kind": "layout",
+      "size": 6978,
+      "sha1": "30d2b5a202f0"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_packing.xml",
+      "kind": "layout",
+      "size": 11898,
+      "sha1": "ded3273dcd25"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_packing_bulto.xml",
+      "kind": "layout",
+      "size": 5616,
+      "sha1": "178259023369"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_packing_cerrado_by_pedido.xml",
+      "kind": "layout",
+      "size": 5366,
+      "sha1": "7c5c35be3a5e"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_packing_lotes.xml",
+      "kind": "layout",
+      "size": 7938,
+      "sha1": "406eebae52a4"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_packing_lp.xml",
+      "kind": "layout",
+      "size": 5327,
+      "sha1": "8caec7030078"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_stock_res.xml",
+      "kind": "layout",
+      "size": 7922,
+      "sha1": "fd72ab512dd8"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_lista_tareas_recepcion.xml",
+      "kind": "layout",
+      "size": 23749,
+      "sha1": "21723cacb9a4"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_listado_tareas.xml",
+      "kind": "layout",
+      "size": 4789,
+      "sha1": "e9cd657cdb66"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_menu_rfid.xml",
+      "kind": "layout",
+      "size": 5746,
+      "sha1": "a87c19f673dd"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_picking_datos.xml",
+      "kind": "layout",
+      "size": 33228,
+      "sha1": "c53cf2f04c46"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_preparacion_packing.xml",
+      "kind": "layout",
+      "size": 22256,
+      "sha1": "943e8ae19fe7"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_preparacion_packing_bulto.xml",
+      "kind": "layout",
+      "size": 8850,
+      "sha1": "12671fa7137a"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_procesar_rfid.xml",
+      "kind": "layout",
+      "size": 7092,
+      "sha1": "91ca9751b7ff"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_reabastecimiento_manual.xml",
+      "kind": "layout",
+      "size": 8848,
+      "sha1": "2a412d51a12b"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_rec_ftos.xml",
+      "kind": "layout",
+      "size": 1839,
+      "sha1": "b6ecddebc8f8"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_recepcion_datos.xml",
+      "kind": "layout",
+      "size": 38591,
+      "sha1": "086c6ab800bf"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_recepcion_rfid.xml",
+      "kind": "layout",
+      "size": 5953,
+      "sha1": "266e9aef2f85"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_tareas_cambio_ubicacion.xml",
+      "kind": "layout",
+      "size": 5026,
+      "sha1": "ade6db5254f8"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_verificacion_consolidada_detalle.xml",
+      "kind": "layout",
+      "size": 15531,
+      "sha1": "aab5d74d7103"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_frm_verificacion_datos.xml",
+      "kind": "layout",
+      "size": 31451,
+      "sha1": "a41e5efb18e1"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_imagen_completa.xml",
+      "kind": "layout",
+      "size": 636,
+      "sha1": "d6cda71c7b5c"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_consulta_ciclico.xml",
+      "kind": "layout",
+      "size": 13225,
+      "sha1": "5cbde5ebb9da"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_consulta_stock.xml",
+      "kind": "layout",
+      "size": 12146,
+      "sha1": "47bbebf1bfa4"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_consulta_stock2.xml",
+      "kind": "layout",
+      "size": 10135,
+      "sha1": "605f04655377"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_contados.xml",
+      "kind": "layout",
+      "size": 3065,
+      "sha1": "753436127294"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_caja_master.xml",
+      "kind": "layout",
+      "size": 2798,
+      "sha1": "8831e8c3c3fe"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_rec_prod.xml",
+      "kind": "layout",
+      "size": 4651,
+      "sha1": "25cc50ca830d"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_recepcion.xml",
+      "kind": "layout",
+      "size": 8482,
+      "sha1": "a6fec0d40eb2"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_recepcion2.xml",
+      "kind": "layout",
+      "size": 7549,
+      "sha1": "7c69fe6e3bb2"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_recepcion3.xml",
+      "kind": "layout",
+      "size": 11559,
+      "sha1": "d518fb504171"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_reemplazo_picking.xml",
+      "kind": "layout",
+      "size": 7174,
+      "sha1": "45e08a5726c5"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_reemplazo_verif.xml",
+      "kind": "layout",
+      "size": 7179,
+      "sha1": "76b29c0ed0e3"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_picking.xml",
+      "kind": "layout",
+      "size": 11205,
+      "sha1": "89491158b566"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_picking2.xml",
+      "kind": "layout",
+      "size": 9911,
+      "sha1": "8a31046ffe45"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_picking3.xml",
+      "kind": "layout",
+      "size": 15019,
+      "sha1": "bee105d8fb45"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_verificacion.xml",
+      "kind": "layout",
+      "size": 9818,
+      "sha1": "cb49901da8ca"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_verificacion2.xml",
+      "kind": "layout",
+      "size": 9098,
+      "sha1": "16609d4df7ea"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_verificacion3.xml",
+      "kind": "layout",
+      "size": 10495,
+      "sha1": "ede9f3c88d12"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_detalle_tareas_verificacion4.xml",
+      "kind": "layout",
+      "size": 11835,
+      "sha1": "ce8bf4663295"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_lista_packing.xml",
+      "kind": "layout",
+      "size": 6151,
+      "sha1": "571362940619"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_lista_packing_bulto.xml",
+      "kind": "layout",
+      "size": 5063,
+      "sha1": "3631273bbfcf"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_packing_lotes.xml",
+      "kind": "layout",
+      "size": 2875,
+      "sha1": "873322b155a4"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_packing_lp.xml",
+      "kind": "layout",
+      "size": 1418,
+      "sha1": "023996bb152f"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_reabast_stock_res.xml",
+      "kind": "layout",
+      "size": 11167,
+      "sha1": "d2afff19e367"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_reemplazos.xml",
+      "kind": "layout",
+      "size": 13352,
+      "sha1": "57c339298553"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_stock_res.xml",
+      "kind": "layout",
+      "size": 13426,
+      "sha1": "fdc4a4d6d049"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_stock_res_mixto.xml",
+      "kind": "layout",
+      "size": 13760,
+      "sha1": "40206895d6d7"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_tareas_inventario.xml",
+      "kind": "layout",
+      "size": 3048,
+      "sha1": "eda9c99ac106"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_tareas_verificacion.xml",
+      "kind": "layout",
+      "size": 5878,
+      "sha1": "b3c3733957fd"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_tareashh_picking.xml",
+      "kind": "layout",
+      "size": 4715,
+      "sha1": "6af786d9071e"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_tramos_inv_ini.xml",
+      "kind": "layout",
+      "size": 2430,
+      "sha1": "686a71469e60"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapt_verificados.xml",
+      "kind": "layout",
+      "size": 2901,
+      "sha1": "082dd905bf9b"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapter_detalle_cambio_ubic.xml",
+      "kind": "layout",
+      "size": 9847,
+      "sha1": "62baa84345f4"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_adapter_tareashh.xml",
+      "kind": "layout",
+      "size": 6864,
+      "sha1": "0d536b56f6ac"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_view_menu.xml",
+      "kind": "layout",
+      "size": 1456,
+      "sha1": "5d22b8df3896"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_list_view_tareas_cambio_ubic.xml",
+      "kind": "layout",
+      "size": 4956,
+      "sha1": "7083d69c878d"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_main.xml",
+      "kind": "layout",
+      "size": 17008,
+      "sha1": "84c123ab2dbe"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_mainmenu.xml",
+      "kind": "layout",
+      "size": 5421,
+      "sha1": "43922272254f"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_pbase.xml",
+      "kind": "layout",
+      "size": 418,
+      "sha1": "d2b692dab546"
+    },
+    {
+      "path": "/app/src/main/res/layout/activity_print_receiver.xml",
+      "kind": "layout",
+      "size": 2022,
+      "sha1": "2b58cfd359b7"
+    },
+    {
+      "path": "/app/src/main/res/layout/adapter_procesar_rfid.xml",
+      "kind": "layout",
+      "size": 3108,
+      "sha1": "857c2fbdf956"
+    },
+    {
+      "path": "/app/src/main/res/layout/adapter_recepcion_rfid.xml",
+      "kind": "layout",
+      "size": 1071,
+      "sha1": "1145817b5f2d"
+    },
+    {
+      "path": "/app/src/main/res/layout/component_print_job.xml",
+      "kind": "layout",
+      "size": 1260,
+      "sha1": "f01e71b30cb7"
+    },
+    {
+      "path": "/app/src/main/res/layout/component_printer_display.xml",
+      "kind": "layout",
+      "size": 769,
+      "sha1": "7ceac19222b1"
+    },
+    {
+      "path": "/app/src/main/res/layout/content_print_receiver.xml",
+      "kind": "layout",
+      "size": 398,
+      "sha1": "6c9fb60fe503"
+    },
+    {
+      "path": "/app/src/main/res/layout/dialog_form.xml",
+      "kind": "layout",
+      "size": 4760,
+      "sha1": "b8d3be77ea46"
+    },
+    {
+      "path": "/app/src/main/res/layout/dialog_loading.xml",
+      "kind": "layout",
+      "size": 1237,
+      "sha1": "4bf0e37f639c"
+    },
+    {
+      "path": "/app/src/main/res/layout/dialog_supervisor.xml",
+      "kind": "layout",
+      "size": 1441,
+      "sha1": "98ac87c7e971"
+    },
+    {
+      "path": "/app/src/main/res/layout/dialog_url.xml",
+      "kind": "layout",
+      "size": 1496,
+      "sha1": "3aa64dd61fc6"
+    },
+    {
+      "path": "/app/src/main/res/layout/dialogstyle.xml",
+      "kind": "layout",
+      "size": 1031,
+      "sha1": "1c188ba6ca06"
+    },
+    {
+      "path": "/app/src/main/res/layout/extlistchkdlg.xml",
+      "kind": "layout",
+      "size": 4652,
+      "sha1": "4f6e00d16a6c"
+    },
+    {
+      "path": "/app/src/main/res/layout/extlistdlgitem.xml",
+      "kind": "layout",
+      "size": 2151,
+      "sha1": "2001d0e5a805"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_fecha_vencimiento.xml",
+      "kind": "layout",
+      "size": 2941,
+      "sha1": "947e7fca640d"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_filtro_inv_ciclico.xml",
+      "kind": "layout",
+      "size": 662,
+      "sha1": "736666a0d7d5"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_inv_edita_detalle.xml",
+      "kind": "layout",
+      "size": 8151,
+      "sha1": "04628e6ff221"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_inv_edita_resumen.xml",
+      "kind": "layout",
+      "size": 4848,
+      "sha1": "a619ebe2697a"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_parametros1.xml",
+      "kind": "layout",
+      "size": 12630,
+      "sha1": "306e22c4afda"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_parametros_p.xml",
+      "kind": "layout",
+      "size": 6249,
+      "sha1": "cb3086714bac"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_picking_escanear_muelle.xml",
+      "kind": "layout",
+      "size": 1189,
+      "sha1": "afb163504567"
+    },
+    {
+      "path": "/app/src/main/res/layout/frm_tipo_conteo.xml",
+      "kind": "layout",
+      "size": 2961,
+      "sha1": "7df1b7309575"
+    },
+    {
+      "path": "/app/src/main/res/layout/frmdetedit.xml",
+      "kind": "layout",
+      "size": 7609,
+      "sha1": "32354aff6ba8"
+    },
+    {
+      "path": "/app/src/main/res/layout/frmfirmadig.xml",
+      "kind": "layout",
+      "size": 3676,
+      "sha1": "400130788e9f"
+    },
+    {
+      "path": "/app/src/main/res/layout/imagen.xml",
+      "kind": "layout",
+      "size": 537,
+      "sha1": "7ce4848394b3"
+    },
+    {
+      "path": "/app/src/main/res/layout/impresion_cantidad.xml",
+      "kind": "layout",
+      "size": 1108,
+      "sha1": "e82d4166b862"
+    },
+    {
+      "path": "/app/src/main/res/layout/item_tag_existencia.xml",
+      "kind": "layout",
+      "size": 4074,
+      "sha1": "c594e617c6af"
+    },
+    {
+      "path": "/app/src/main/res/layout/lista_imagen.xml",
+      "kind": "layout",
+      "size": 398,
+      "sha1": "d466dd105337"
+    },
+    {
+      "path": "/app/src/main/res/layout/notification.xml",
+      "kind": "layout",
+      "size": 1253,
+      "sha1": "f44ee2a7785d"
+    },
+    {
+      "path": "/app/src/main/res/layout/progress_dialog.xml",
+      "kind": "layout",
+      "size": 595,
+      "sha1": "397c04c6912a"
+    },
+    {
+      "path": "/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "kind": "xml-other",
+      "size": 272,
+      "sha1": "c77c0f1d8c3b"
+    },
+    {
+      "path": "/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "kind": "xml-other",
+      "size": 272,
+      "sha1": "c77c0f1d8c3b"
+    },
+    {
+      "path": "/app/src/main/res/values/colors.xml",
+      "kind": "values-other",
+      "size": 335,
+      "sha1": "d5af773264f4"
+    },
+    {
+      "path": "/app/src/main/res/values/dimens.xml",
+      "kind": "values-other",
+      "size": 584,
+      "sha1": "eba2ea7d456f"
+    },
+    {
+      "path": "/app/src/main/res/values/font_certs.xml",
+      "kind": "values-other",
+      "size": 3581,
+      "sha1": "fafdbb87dec3"
+    },
+    {
+      "path": "/app/src/main/res/values/preloaded_fonts.xml",
+      "kind": "values-other",
+      "size": 174,
+      "sha1": "a82e96a3188e"
+    },
+    {
+      "path": "/app/src/main/res/values/strings.xml",
+      "kind": "strings",
+      "size": 2303,
+      "sha1": "0a020703d324"
+    },
+    {
+      "path": "/app/src/main/res/values/styles.xml",
+      "kind": "values-other",
+      "size": 1340,
+      "sha1": "4eb3208b9964"
+    },
+    {
+      "path": "/app/src/main/res/values-round/strings.xml",
+      "kind": "strings",
+      "size": 83,
+      "sha1": "49326a892d43"
+    },
+    {
+      "path": "/app/src/main/res/xml/file_paths.xml",
+      "kind": "xml-other",
+      "size": 442,
+      "sha1": "1d97c3b2394e"
+    },
+    {
+      "path": "/build.gradle",
+      "kind": "gradle",
+      "size": 738,
+      "sha1": "b068d1dd0870"
+    },
+    {
+      "path": "/gradle.properties",
+      "kind": "properties",
+      "size": 1273,
+      "sha1": "8449cbadd557"
+    },
+    {
+      "path": "/settings.gradle",
+      "kind": "gradle",
+      "size": 146,
+      "sha1": "899e2211051d"
+    }
+  ]
+}
