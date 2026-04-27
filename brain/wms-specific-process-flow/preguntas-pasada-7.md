@@ -1,7 +1,8 @@
 # Preguntas para afinar el mapeo del flujo WMS — pasada 7
 
-> **Status global**: 3/25 respondidas (P-08, P-10, P-18). Ver respuestas
-> consolidadas en `respuestas-tanda-1.md`.
+> **Status global**: 9/25 respondidas + 1 parcial + 2 reabiertas. Ver
+> respuestas consolidadas en `respuestas-tanda-1.md` (Erik) y
+> `respuestas-tanda-2.md` (SQL autonomo).
 >
 > Las preguntas originales se mantienen literales (regla 6 del README:
 > las pasadas no se editan, se suceden). Lo unico que se agrega es el
@@ -38,7 +39,7 @@
 
 ### P-04 — Conversion decimales SAP en recepcion
 
-`status: PENDIENTE [PRIORIDAD ALTA]`
+`status: PENDIENTE [PRIORIDAD ALTA — la unica critica abierta para Erik]`
 
 **Evidencia**: Killios tiene `convertir_decimales_a_umbas=1`. SAP B1 acepta cantidades decimales (ej. `3.5 cajas`).
 
@@ -82,35 +83,25 @@
 
 **Evidencia**: Estados observados: NUEVO (14), Pendiente (73), Pickeado (86), Verificado (7), Despachado (3989), Anulado (33).
 
-**Pregunta**: ¿Cual es la matriz de transiciones permitidas? Por ejemplo:
-- ¿Puede un pedido pasar de NUEVO directo a Anulado?
-- ¿Puede saltarse Pendiente (NUEVO → Pickeado directo si hay stock)?
-- ¿Verificado es opcional o solo aplica a tipos de pedido especificos?
-
-> **TL;DR de la respuesta**: matriz canonica completa documentada. Anulado
-> requiere accion explicita. WMS-inyectados pueden saltarse Pendiente.
-> Verificado es opcional configurable.
+> **TL;DR**: matriz canonica completa. Anulado requiere accion explicita.
+> WMS-inyectados pueden saltarse Pendiente. Verificado opcional.
 
 ### P-09 — Pedidos atascados
 
-`status: PENDIENTE`
+`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
 
 **Evidencia**: 86 `Pickeado` + 73 `Pendiente` = 159 pedidos no terminados de un total de 4202 (3.8%).
 
-**Pregunta**: ¿Es normal este nivel de pedidos no terminados? ¿Hay un job de reconciliacion que los cierre o requiere intervencion manual? ¿Cual es el SLA para pasar de NUEVO a Despachado?
+> **TL;DR**: 100% de los 180 pedidos atascados tienen mas de 90 dias.
+> No hay atascos recientes — son histórico no purgado. Deuda operativa
+> de limpieza.
 
 ### P-10 — Caso `_LLR_CASO_#X_`
 
 `status: RESPONDIDA → respuestas-tanda-1.md`
 
-**Evidencia**: Casos secundarios `CASO_#X_LLR_CASO_#28_/29/31` aparecen en `trans_pe_det_log_reserva` como derivados de #20, #23, #24.
-
-**Pregunta**: ¿Que significa "LLR" exactamente — "Llamado Luego de Reserva", "Logica Lateral de Reserva", "Loop Logico de Reserva"? ¿Los casos #28, #29, #31 son ramas alternativas del motor que solo se ejecutan dentro del caso principal? ¿Tienen documentacion en el VB?
-
-> **TL;DR**: LLR = "Llamado Luego de Reserva" (recursion del motor). Mapeo
-> #20→#28, #23→#29, #24→#31. Se dispara cuando hay que reservar stock
-> modificado durante la reserva original (cajas→unidades, movimientos
-> internos). Sin documentacion adicional en VB.
+> **TL;DR**: LLR = "Llamado Luego de Reserva" (recursion del motor).
+> Mapeo #20→#28, #23→#29, #24→#31. Para stock modificado durante reserva.
 
 ### P-11 — Polizas en CEALSA (`control_poliza=SI`)
 
@@ -126,11 +117,12 @@
 
 ### P-12 — `trans_picking_ubic` (26k) vs `trans_picking_ubic_stock` (20k)
 
-`status: PENDIENTE [PRIORIDAD ALTA]`
+`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
 
-**Evidencia**: Diferencia de 6k filas. Hipotesis: una es sugerencia (motor calcula que ubicacion deberia tomarse), la otra es realidad (de donde se tomo realmente).
-
-**Pregunta**: ¿Se confirma la hipotesis? Si es asi, los 6k de diferencia ¿son sugerencias rechazadas (operador tomo de otra ubicacion)? ¿Hay log que explique cada divergencia? Esto es **critico** para el bridge porque mide la "inteligencia" del motor de reserva.
+> **TL;DR**: hipotesis confirmada. `trans_picking_ubic` = planificacion
+> (sugerencias). `trans_picking_ubic_stock` = ejecucion (stock real).
+> Diferencia 6k son sugerencias no ejecutadas (cancelados, dañados,
+> no encontrados, sustituciones).
 
 ### P-13 — Bypass del picker
 
@@ -142,11 +134,11 @@
 
 ### P-14 — `trans_picking_op` (5895) vs `trans_picking_enc` (1293)
 
-`status: PENDIENTE`
+`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
 
-**Evidencia**: Ratio ~4.5 operaciones por encabezado.
-
-**Pregunta**: ¿Que define una "operacion de picking" (1 fila en `op`)? ¿Es 1 por linea pickeada, 1 por movimiento entre ubicaciones, 1 por escaneo? ¿Hay tipo de operacion (tomar, dejar, mover)?
+> **TL;DR**: hipotesis incorrecta. `trans_picking_op` no es "operaciones",
+> es relacion muchos-a-muchos operador↔picking. Ratio 4.56 operadores
+> por sesion de picking. No es relevante para el bridge.
 
 ---
 
@@ -154,15 +146,17 @@
 
 ### P-15 — `trans_packing_enc` solo 13 filas
 
-`status: PENDIENTE [PRIORIDAD ALTA — relacionada con R-05 de tanda 1]`
+`status: PENDIENTE [resuelto parcial via PEND-01]`
 
 **Evidencia**: Solo 13 sesiones de packing en toda la historia productiva. Vs 4032 despachos.
 
-**Pregunta**: ¿La verificacion en packing es **opcional por configuracion** (algun flag de bodega o tipo de pedido)? ¿O esta tabla solo se llena para excepciones (ej. pedidos premium, reclamos)? ¿Hay un nivel de verificacion mas liviano que se hace en otra tabla?
+**Pregunta original**: ¿La verificacion en packing es **opcional por configuracion**? ¿O esta tabla solo se llena para excepciones?
 
-> **Contexto adicional desde tanda 1**: Erik confirmo en P-08 que Verificado
-> es opcional configurable por usuario o por tipo de pedido. Falta identificar
-> la columna concreta en `trans_pe_tipo` (PEND-01 del state-machine).
+> **Resuelto parcial (tanda 2)**: la columna que controla verificacion es
+> `trans_pe_tipo.Verificar` (bit). En Killios solo PE0003 la tiene en
+> true (y no se usa: 0 historicos). Por eso solo 13 packing — son los
+> casos manuales que se forzaron. **Falta confirmar con Erik**: ¿hay
+> tambien una "verificacion liviana" sin pasar por trans_packing_enc?
 
 ---
 
@@ -170,15 +164,16 @@
 
 ### P-16 — Discrepancia despacho vs estado
 
-`status: PENDIENTE [PRIORIDAD ALTA]`
+`status: REABIERTA como P-16b → respuestas-tanda-2.md (SQL)`
 
-**Evidencia**: `trans_despacho_enc` = 4,032 vs `trans_pe_enc.estado='Despachado'` = 3,989. Diferencia de 43.
+**Evidencia original**: `trans_despacho_enc` = 4,032 vs `trans_pe_enc.estado='Despachado'` = 3,989.
 
-**Pregunta**: ¿Los 43 son:
-- (a) Despachos sin pedido (ajustes manuales de salida).
-- (b) Pedidos despachados pero estado no actualizado (bug del legacy).
-- (c) Despachos cancelados que no rebajaron el estado.
-- (d) Otra cosa.
+> **TL;DR**: la pregunta estaba mal planteada. `trans_despacho_enc` agrupa
+> MULTIPLES pedidos (es la salida del camion, no del pedido). La
+> diferencia 4032 vs 3989 NO son huerfanos 1:1. Reabierta como **P-16b**:
+> ¿hay pedidos en `trans_despacho_det.IdPedidoEnc` cuyo `trans_pe_enc.estado`
+> NO sea Despachado? Es decir, ¿hay despachos completados que olvidaron
+> actualizar el estado del pedido?
 
 ### P-17 — Push automatico al ERP
 
@@ -188,6 +183,10 @@
 
 **Pregunta**: ¿Es un patron outbox (WMS escribe la transaccion, un job la pushea al ERP, marca exito/error)? ¿Hay reintentos automaticos en error? ¿Que tabla guarda la respuesta del ERP (ej. numero de documento generado)?
 
+> **Contexto adicional (tanda 2)**: ya confirmado que el outbox es
+> unificado (sirve para OC, recepciones, pedidos y despachos). Ver
+> `respuestas-tanda-2.md` P-21. Falta solo la cadencia/reintentos.
+
 ---
 
 ## Traslado
@@ -196,16 +195,9 @@
 
 `status: RESPONDIDA → respuestas-tanda-1.md (parcial + DEUDA-001)`
 
-**Evidencia**: `trans_pe_tipo` `TRAS_WMS` tiene `ReservaStock=NO` en Killios.
-
-**Pregunta**: Si TRAS_WMS no pasa por el motor de reserva, ¿como garantiza que el stock que se movera esta disponible (no reservado por otro pedido)? ¿Es un check ad-hoc en el SP o se asume que el operador HH valida visualmente?
-
-> **TL;DR**: La reserva ya se garantizo por proceso previo (manual,
-> discrecional o flujo upstream). **DEUDA-001 detectada**: la bandera
-> `ReservaStock=NO` no se valida explicitamente en el flujo. Vision
-> futura (no implementada): bolson/bucket de pedidos para abastecimiento
-> batch con politicas de prorrateo (ej. 50% CDs / 30% nuevos clientes /
-> 20% calidad y merma).
+> **TL;DR**: La reserva ya se garantizo por proceso previo. **DEUDA-001**:
+> la bandera `ReservaStock=NO` no se valida explicitamente. Vision
+> futura: bolson/bucket con politicas tipo 50/30/20.
 
 ---
 
@@ -233,11 +225,13 @@
 
 ### P-21 — Cadencia del outbox `i_nav_transacciones_out`
 
-`status: PENDIENTE`
+`status: RESPONDIDA PARCIAL → respuestas-tanda-2.md (SQL); P-21b reabierta`
 
 **Evidencia**: 24,193 filas vs 4,032 despachos. Es ~6x → no es 1:1 con despachos.
 
-**Pregunta**: ¿Que eventos generan filas en `i_nav_transacciones_out`? ¿Recepciones, ajustes, traslados, despachos, todos? ¿Cada cuanto corre el job que las pushea?
+> **TL;DR**: outbox unificado (OC + recepciones + pedidos + despachos).
+> Por eso 24k filas. **Reabierta como P-21b**: ¿cual es el job que
+> polea, con que cadencia, como marca exito vs error, y hay reintentos?
 
 ---
 
@@ -265,11 +259,12 @@
 
 ### P-24 — `trans_reabastecimiento_log` con datos en Killios
 
-`status: PENDIENTE`
+`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
 
-**Evidencia**: 1,218 registros aunque Killios no usa el modulo (BYB sí). `considerar_paletizado_en_reabasto=false` y `excluir_ubicaciones_reabasto=false` en Killios.
-
-**Pregunta**: ¿Que genera estos 1218 registros — un proceso latente, un SP que se quedo corriendo, una migracion historica de cuando se evaluo activar el modulo? ¿Es seguro asumir que el modulo de reabasto NO esta operativo en Killios o hay un uso parcial?
+> **TL;DR**: el modulo esta encendido a medias en Killios. Detecta
+> inexistencias automaticamente (mas reciente: 2025-06-16) pero no se
+> ejecuta el procesamiento (`Procesado_HH=false`, `Enviado=false`).
+> Las 1218 filas son cola que se acumula sin consumir.
 
 ---
 
@@ -277,23 +272,26 @@
 
 ### P-25 — `sis_tipo_tarea` (35 tipos)
 
-`status: PENDIENTE`
+`status: PARCIAL → respuestas-tanda-2.md (SQL)`
 
-**Evidencia**: 35 tipos de tarea posibles en HH. Mucho mas de lo esperado.
+**Evidencia**: 35 tipos de tarea posibles en HH.
 
-**Pregunta**: ¿Cuales son los **5-10 tipos de tarea mas usados en produccion** (los que cubren el 90% de los marcajes)? Esto define el alcance minimo del bridge para validar el handheld. Los otros 25 pueden ser obsoletos, raros o solo para casos de excepcion.
+> **TL;DR**: encontrada la tabla operativa real (`tarea_hh`, 18 cols).
+> Catalogo completo de los 35 tipos enumerado en respuestas-tanda-2.
+> Falta el TOP10 de uso real (query en proceso).
 
 ---
 
-## Bonus — Priorizacion para Erik
+## Bonus — Priorizacion para Erik (actualizado)
 
-Si el tiempo no alcanza para responder las 25, las **criticas para reserva-webapi** (target del bridge) son:
+Originalmente las criticas eran 6: P-04, P-08, P-10, P-12, P-16, P-17.
 
-1. **P-08** ~~(transiciones permitidas)~~ → **RESPONDIDA tanda 1**
-2. **P-10** ~~(`_LLR_CASO_#X_`)~~ → **RESPONDIDA tanda 1**
-3. **P-12** (sugerencia vs realidad de picking) → mide la "inteligencia" del motor.
-4. **P-04** (conversion decimales SAP) → reto principal de Killios.
-5. **P-16** (discrepancia despacho vs estado) → puede ser bug a corregir en webapi.
-6. **P-17** (outbox patron) → arquitectura de integracion.
+**Resueltas**: P-08 (tanda 1), P-10 (tanda 1), P-12 (SQL), P-16 (SQL → reabierta como P-16b).
 
-Quedan 4 criticas abiertas: **P-12, P-04, P-16, P-17**. Las demas pueden esperar a una pasada futura.
+**Aun necesitan a Erik**:
+
+1. **P-04** (decimales SAP) — la unica critica original abierta para Erik.
+2. **P-16b** (despachos completados sin pedido actualizado).
+3. **P-17 / P-21b** (cadencia y reintentos del outbox).
+
+Si tenes 5 minutos para P-04 dejamos cerrado el frente Killios.
