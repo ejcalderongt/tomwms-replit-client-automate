@@ -1,0 +1,454 @@
+{
+  "generatedAt": "2026-04-27T05:31:32.443Z",
+  "applicationName": "com.dts.base.appGlobals",
+  "permissions": [
+    "android.permission.WAKE_LOCK",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.BLUETOOTH",
+    "android.permission.BLUETOOTH_ADMIN",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.ACCESS_COARSE_LOCATION",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.BLUETOOTH_SCAN",
+    "android.permission.BLUETOOTH_CONNECT",
+    "android.permission.BLUETOOTH_ADVERTISE"
+  ],
+  "features": [
+    "android.hardware.camera"
+  ],
+  "totalActivitiesDeclared": 65,
+  "totalServices": 2,
+  "totalReceivers": 0,
+  "totalProviders": 1,
+  "exportedActivities": [
+    ".MainActivity"
+  ],
+  "launcherActivities": [
+    ".MainActivity"
+  ],
+  "activitiesByExportStatus": {
+    "exported_true": 1,
+    "exported_false": 3,
+    "exported_unset": 61
+  },
+  "allActivities": [
+    {
+      "name": ".Transacciones.Packing.frm_list_packing_cerrados",
+      "exported": "false",
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.ReubicarStockRes.frm_datos_stock_res",
+      "exported": "false",
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Reabastecimiento.frm_reabastecimiento_manual",
+      "exported": "false",
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Packing.frm_lista_packing_lp",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Packing.frm_lista_packing_lotes",
+      "exported": null,
+      "theme": "@android:style/Theme.Translucent.NoTitleBar",
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Packing.frm_preparacion_packing_bulto",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Packing.frm_preparacion_packing",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Packing.frm_lista_packing",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frm_rec_ftos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioCiclico.frm_inv_cic_guardar",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioCiclico.frm_inv_cic_nuevo",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioCiclico.frm_inv_cic_conteo",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioCiclico.frm_inv_cic_add",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Verificacion.frm_list_prod_reemplazados",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.Verificacion.list_adapt_reemplazos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_agrega_prd",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_nuevo_reg",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.list_adapt_tareas_inventario",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Inventario.frm_list_inventario",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.list_adapt_detalle_reemplazo_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.list_adapt_detalle_tareas_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.list_adapt_tareashh_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frmFirma",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frm_list_rec_prod_detalle",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "?",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frm_recepcion_datos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frm_list_rec_prod",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frm_detalle_ingresos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Recepcion.frm_lista_tareas_recepcion",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Packing.frm_Packing",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.ConsultaStock.frm_consulta_stock",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.ConsultaStock.frm_consulta_stock_detalleCI",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_ini_verificados",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_ini_verificacion",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_ini_contados",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_ini_conteo",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.InventarioInicial.frm_inv_ini_tramos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Verificacion.frm_danado_verificacion",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Verificacion.frm_verificacion_datos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Verificacion.frm_detalle_tareas_verificacion",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Picking.frm_list_prod_reemplazo_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Picking.frm_danado_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Picking.frm_picking_datos",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Picking.frm_detalle_tareas_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.CambioUbicacion.list_adapter_detalle_cambio_ubic",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": "com.dts.ladapt.CambioUbicacion.list_view_tareas_cambio_ubic",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.CambioUbicacion.frm_cambio_ubicacion_dirigida",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.CambioUbicacion.frm_cambio_ubicacion_ciega",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.CambioUbicacion.frm_detalle_cambio_ubicacion",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.CambioUbicacion.frm_tareas_cambio_ubicacion",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Verificacion.frm_list_prod_reemplazo_verif",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.ProcesaImagen.frm_imagenes",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.ProcesaImagen.frm_imagen_completa",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Picking.frm_editar_ubicacion_picking",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Verificacion.frm_verificacion_consolidada_detalle",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.ReubicarStockRes.frm_lista_stock_res",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.Reabastecimiento.frm_datos_reabastecimiento",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.RFID.frm_menu_rfid",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.RFID.frm_recepcion_rfid",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.RFID.frm_procesar_rfid",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.RFID.frm_guardar_rfid",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Transacciones.RFID.frm_inventario_rfid",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".MainActivity",
+      "exported": "true",
+      "theme": null,
+      "intentFilters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".PBase",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    },
+    {
+      "name": ".Mainmenu",
+      "exported": null,
+      "theme": null,
+      "intentFilters": []
+    }
+  ],
+  "allServices": [
+    {
+      "name": "com.dts.servicios.srvBaseJob",
+      "exported": "false"
+    },
+    {
+      "name": "com.dts.servicios.srvCantTareas",
+      "exported": "true"
+    }
+  ],
+  "allReceivers": [],
+  "allProviders": [
+    {
+      "name": "androidx.core.content.FileProvider"
+    }
+  ]
+}
