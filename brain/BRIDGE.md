@@ -26,6 +26,8 @@ propone. Un humano (o el agente Replit en sesion explicita) decide.
 
 ## 2. Tipos de evento
 
+### 2.0 Schema v1 (vigente desde el dia 1)
+
 | type               | cuando |
 |---|---|
 | `apply_succeeded`  | tras un `apply_bundle` OK del lado consumidor. |
@@ -34,6 +36,20 @@ propone. Un humano (o el agente Replit en sesion explicita) decide.
 | `directive`        | orden directa de Erik o del agente: "actualiza esto en el brain". |
 | `merge_completed`  | tras un merge a `dev_2028_merge` confirmado. |
 | `external_change`  | algo externo (BD, infraestructura, equipo) cambio. |
+
+### 2.1 Schema v2 — investigacion SQL al brain de la BD (desde 2026-04-27)
+
+| type                  | cuando                                                                       |
+|-----------------------|------------------------------------------------------------------------------|
+| `question_request`  | el cliente PS encola una pregunta SQL al brain de la BD (Q-001..Q-NNN).      |
+| `question_answer`   | el agente Replit produjo una answer card en respuesta a un `question_request`. |
+| `learning_proposed` | derivacion de varios eventos en una learning card consolidada.               |
+
+Bumpear el schema **es retrocompatible**: eventos schema 1 siguen siendo
+validos. Los tres tipos nuevos requieren `schema_version: "2"` o el
+bridge los rechaza en `notify`.
+
+Ver propuesta detallada en `wms-brain-client/EXTENSION-V2-PROPOSAL.md`.
 
 ---
 
@@ -61,11 +77,48 @@ propone. Un humano (o el agente Replit en sesion explicita) decide.
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending|analyzed|proposed|applied|skipped",
+  "status": "pending|analyzed|proposed|applied|skipped|answered",
   "decision": null,
   "history": [{"at": "...", "action": "notify"}]
 }
 ```
+
+---
+
+## 3.1 Estados — schema v1
+
+```
+pending -> analyzed -> proposed -> applied
+                                \-> skipped
+```
+
+| status      | significado                                                              |
+|-------------|--------------------------------------------------------------------------|
+| `pending` | recien encolado en `brain/_inbox/<id>.json`.                           |
+| `analyzed`| el bridge corrio la heuristica (candidatos en `analysis.candidate_files`). |
+| `proposed`| se genero `brain/_proposals/<id>.md` con la propuesta human-readable.  |
+| `applied` | el agente edito los .md del brain y movio el evento a `_processed/`.   |
+| `skipped` | se descarto con `--reason`; movido a `_processed/`.                  |
+
+## 3.2 Estados — schema v2 (desde 2026-04-27)
+
+Se agrega un estado terminal especifico para `question_request`:
+
+| status      | significado                                                              |
+|-------------|--------------------------------------------------------------------------|
+| `answered`| un `question_request` cuya `question_answer` ya fue producida (terminal antes de aplicar la doctrina). |
+
+Transiciones por type:
+
+```
+question_request:   pending -> proposed -> answered -> applied | skipped
+question_answer:    pending -> proposed -> applied | skipped
+learning_proposed:  pending -> proposed -> applied | skipped
+```
+
+El flip a `answered` se hace **automaticamente** cuando se procesa un
+`question_answer` cuyo `ref.answers_event_id` apunta a un
+`question_request` vivo. No requiere subcomando manual.
 
 ---
 
