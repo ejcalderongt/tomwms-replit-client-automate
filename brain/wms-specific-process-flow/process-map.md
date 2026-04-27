@@ -1,6 +1,7 @@
 # Mapa global de procesos WMS — observado
 
-> Snapshot 2026-04-27. Conteos reales de TOMWMS_KILLIOS_PRD.
+> **Version 2** (pasada 9). Snapshot 2026-04-27. Conteos reales de TOMWMS_KILLIOS_PRD.
+> Incorpora respuestas P-08 y P-18 de `respuestas-tanda-1.md`.
 
 ## Top 30 tablas por filas (TOMWMS_KILLIOS_PRD)
 
@@ -10,10 +11,10 @@
 | 81,641 | `trans_movimientos` | Movimiento — kardex |
 | 66,339 | `log_error_wms` | Errores generales |
 | 42,357 | `t_producto_bodega` | Catalogo prod x bodega |
-| 26,567 | `trans_picking_ubic` | Picking — pares pedido/ubicacion |
+| 26,567 | `trans_picking_ubic` | Picking — pares pedido/ubicacion sugeridos |
 | 24,193 | `i_nav_transacciones_out` | Push ERP (outbox?) |
-| 22,576 | `trans_pe_det_log_reserva` | Reserva — auditoria casos |
-| 20,437 | `trans_picking_ubic_stock` | Picking — pares ubic/stock |
+| 22,576 | `trans_pe_det_log_reserva` | Reserva — auditoria casos (incluye LLR) |
+| 20,437 | `trans_picking_ubic_stock` | Picking — pares ubic/stock realmente tomados |
 | 19,799 | `trans_despacho_det` | Despacho — lineas |
 | 19,225 | `stock_hist` | Stock — historial |
 | 14,953 | `i_nav_ped_traslado_det` | Inbound — interface NAV |
@@ -41,11 +42,11 @@
 
 | Tabla | Filas | Notas |
 |---|---:|---|
-| `producto_estado` | 18 | Estados del producto (disponible, cuarentena, etc.) |
+| `producto_estado` | 18 | Estados del producto (P-06 pendiente) |
 | `tipo_rotacion` | 4 | FIFO/LIFO/FEFO + 1 mas |
-| `trans_oc_estado` | 6 | Estados de orden compra |
+| `trans_oc_estado` | 6 | Estados de OC (P-03 pendiente) |
 | `trans_pe_tipo` | 6 | Tipos pedido (con flag ReservaStock) |
-| `sis_tipo_tarea` | 35 | Tipos de tarea handheld |
+| `sis_tipo_tarea` | 35 | Tipos de tarea handheld (P-25 pendiente) |
 | `sis_estado_tarea_hh` | 4 | Estados de tarea handheld |
 | `ajuste_tipo` | 6 | Tipos de ajuste |
 | `tipo_contenedor` | 5 | Contenedores |
@@ -82,15 +83,19 @@
 | `trans_picking_ubic_stock` | 20,437 | pares ubic/stock realmente tomados |
 | `trans_picking_prioridad` | 0 | prioridades — sin uso |
 | `trans_picking_img` | 0 | imagenes — sin uso |
-| `trans_packing_enc` | **13** | **MUY pocas — verificacion opcional?** |
+| `trans_packing_enc` | **13** | **MUY pocas — verificacion opcional (R-05 confirmado)** |
 | `trans_despacho_enc` | 4,032 | encabezado despacho |
 | `trans_despacho_det` | 19,799 | detalle despacho |
 
-**Discrepancia detectada**: `trans_pe_enc.estado='Despachado'` = 3,989 vs `trans_despacho_enc` = 4,032 → diferencia de 43. ¿Son despachos sin pedido o estado no actualizado?
+**Discrepancia detectada (P-16 abierta)**: `trans_pe_enc.estado='Despachado'` = 3,989 vs `trans_despacho_enc` = 4,032 → diferencia de 43. ¿Son despachos sin pedido o estado no actualizado?
 
-### Reserva (ya documentado)
+### Reserva
 
 `trans_pe_enc` (4,202) → `trans_pe_det` (14,819) → motor → `stock_res` + `trans_pe_det_log_reserva` (22,576).
+
+**Patron LLR confirmado en tanda 1** (P-10): el motor se llama recursivamente
+para los casos #20→#28, #23→#29, #24→#31 cuando el stock fue modificado
+durante la reserva original (conversion de unidades, movimientos internos).
 
 ### Interface ERP (SAP/NAV)
 
@@ -120,8 +125,68 @@
 |---|---:|
 | `trans_reabastecimiento_log` | 1,218 |
 
-(Killios no tiene el modulo activo segun config, pero hay 1218 registros — algo los genera.)
+(Killios no tiene el modulo activo segun config, pero hay 1218 registros — algo los genera. P-24 abierta.)
+
+### Traslado interno (TRAS_WMS) — ampliado en pasada 9
+
+**Definicion confirmada (P-18)**: TRAS_WMS es transferencia interna entre
+bodegas configuradas en WMS, donde el stock movido **ya fue reservado por
+proceso previo** (manual, discrecional o flujo upstream).
+
+**Hoy** — uso real:
+
+```
+   +--------------+      +--------------+
+   |  Bodega A    | ---> |  Bodega B    |
+   |  (origen)    |      |  (destino)   |
+   |  stock       |      |  stock       |
+   |  reservado   |      |  recibe      |
+   |  upstream    |      |  reserva     |
+   +--------------+      +--------------+
+            |                    ^
+            +-- TRAS_WMS --------+
+              (sin pasar por
+               motor de reserva)
+```
+
+**Deuda detectada (DEUDA-001)**: la bandera `trans_pe_tipo.ReservaStock=NO` en
+TRAS_WMS no se valida explicitamente. El flujo asume reserva previa por
+convencion. Riesgo: doble reserva si alguien crea TRAS_WMS sin reserva
+upstream verificada.
+
+**Vision futura (NO implementada — capacidad latente)**:
+
+```
+   +-----------------------------------------------------+
+   |  TRAS_WMS como bolson/bucket de pedidos             |
+   |  para abastecimiento batch                          |
+   |                                                     |
+   |  Politica configurable por cliente / bodega:        |
+   |    Producto X →                                     |
+   |      50% CDs (bodegas internas WMS)                 |
+   |      30% nuevos clientes                            |
+   |      20% calidad y merma                            |
+   |                                                     |
+   |  + Proyeccion de demanda en base a peticiones      |
+   |    historicas durante un periodo de tiempo         |
+   +-----------------------------------------------------+
+```
+
+Capacidades requeridas para activarlo (no implementadas):
+
+1. Configuracion de politica por cliente y/o bodega origen/destino.
+2. Job batch que procese el bolson aplicando la politica.
+3. Analytics de demanda historica.
+4. Validacion de capacidad disponible en bodegas destino.
 
 ### SP por proceso
 
 Los SPs no usan prefijos consistentes (`sp_recep%`, `sp_pedido%`, etc. devolvieron 0). El agrupamiento sera por exploracion individual en pasadas posteriores.
+
+---
+
+## Referencias cruzadas
+
+- Estados del pedido y transiciones: ver `state-machine-pedido.md` (v2).
+- Respuestas detalladas P-08, P-10, P-18: ver `respuestas-tanda-1.md`.
+- Status de las 25 preguntas: ver `preguntas-pasada-7.md`.
