@@ -1,0 +1,40 @@
+# RES-007: FEFO domina ubicación (variante con caja única en alm) — duplicado defectuoso del CASO 2
+id: RES-007
+version: 1
+category: reservation
+severity: high
+title: "FEFO domina ubicación (variante con caja única en alm) — duplicado defectuoso del CASO 2"
+summary: |
+  Misma intención que RES-006 pero el legacy describe "una caja en alm" cuando la cantidad sigue siendo 75 cajas. Documentado como duplicado del CASO 2 con redacción inconsistente. Mismo data set y mismo expected.
+
+requires_config:
+  - Control_vencimiento: true
+  - IdTipoRotacion: FEFO
+
+input:
+  requested_qty: 80
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 75, vence: "2026-01-01", um: "CJS" }
+    - { ubicacion: "PICKING", cantidad: 200, vence: "2026-01-02", um: "CJS" }
+
+expected:
+  1. Reserva 75 CJS desde ALMACENAMIENTO.
+  2. Reserva 5 CJS desde PICKING.
+  3. Pedido marcado completo.
+
+legacy_origin:
+  case: "CASO 3"
+  function: "Ejecuta_QA_CASO_3_IDEAL_20231002011128"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "13578-13806"
+
+notes: |
+  Marcado como duplicado del CASO 2 en el catálogo. Si el bridge implementa idempotencia de escenarios, RES-007 puede colapsarse en RES-006.
