@@ -1,0 +1,95 @@
+From e4d9ab08779e1d60553f2aa2fec3276e Mon Apr 27 18:00:00 2026 -0300
+From: Erik Calderon <erik@prograx24.com>
+Date: Mon Apr 27 18:00:00 2026 -0300
+Subject: [v23 1/1] frmAjusteStock.Eliminar_Ajuste_Si_Sin_Detalle: bloquear no-borrador y contar desde lista en memoria
+
+Tres guardas nuevas en Eliminar_Ajuste_Si_Sin_Detalle:
+
+- G1: bloquea si Not chkBorrador.Checked. Un ajuste finalizado no se
+  puede eliminar desde esta UI (afecta stock y trazabilidad).
+
+- G2: cuenta detalles desde lBeTransAjusteDetBorrador.Count (lista en
+  memoria mantenida por mnuDel_Click), no desde dgrid.Rows. El conteo
+  viejo (For Each row In dgrid.Rows If Not row.IsNewRow) inflaba el
+  contador con filas fantasma post-eliminacion (caso reportado:
+  filasGrid = 2 con la lista vacia, bloqueando la eliminacion del
+  ajuste).
+
+- G3: se mantiene defensa contra clsLnTrans_ajuste_det_borrador. Se
+  elimina la consulta a clsLnTrans_ajuste_det porque G1 ya bloqueo
+  todo lo no-borrador.
+
+Marcador: #FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (3 hits)
+Reemplaza la logica del marcador #FIX_v14_ELIMINAR_AJUSTE_2026-04-25 (H1).
+
+---
+diff --git a/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb b/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb
+index 339df34..f3e92bc 100644
+--- a/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb
++++ b/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb
+@@ -2882,35 +2882,52 @@ Public Class frmAjusteStock
+                     "No hay un ajuste cargado para eliminar.",
+                     Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                 Return
+             End If
+ 
+-            Dim filasGrid As Integer = 0
+-            For Each row As DataGridViewRow In dgrid.Rows
+-                If Not row.IsNewRow Then filasGrid += 1
+-            Next
+-            If filasGrid > 0 Then
++            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G1):
++            ' Solo se permite eliminar ajustes en estado borrador. Un ajuste ya
++            ' aplicado/finalizado no debe eliminarse desde esta UI: afecta stock
++            ' y trazabilidad y debe pasar por proceso de reverso, no por borrar.
++            If Not chkBorrador.Checked Then
+                 XtraMessageBox.Show(
+-                    "El ajuste tiene " & filasGrid & " fila(s) en el grid. Elimine los detalles antes de eliminar el ajuste.",
++                    "El ajuste #" & pBeTransAjustEnc.IdAjusteenc &
++                    " ya esta aplicado/finalizado y no puede eliminarse desde esta pantalla.",
+                     Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                 Return
+             End If
+ 
+-            Dim detalles As List(Of clsBeTrans_ajuste_det) =
+-                clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+-            If detalles IsNot Nothing AndAlso detalles.Count > 0 Then
++            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G2):
++            ' Contar detalles desde la lista en memoria del estado actual
++            ' (lBeTransAjusteDetBorrador para borrador), no desde dgrid.Rows.
++            ' Despues de mnuDel_Click el DataGridView puede quedar con filas
++            ' IsNewRow / fantasma que distorsionan el conteo (caso reportado:
++            ' filasGrid = 2 con la lista vacia, bloqueando la eliminacion del
++            ' ajuste). La lista se mantiene sincronizada con RemoveAt en
++            ' mnuDel_Click, asi que es la fuente de verdad.
++            Dim cantDetallesMem As Integer = 0
++            If lBeTransAjusteDetBorrador IsNot Nothing Then
++                cantDetallesMem = lBeTransAjusteDetBorrador.Count
++            End If
++            If cantDetallesMem > 0 Then
+                 XtraMessageBox.Show(
+-                    "El ajuste tiene " & detalles.Count & " detalle(s) persistido(s) en Trans_ajuste_det. Elimine los detalles antes de eliminar el ajuste.",
++                    "El ajuste tiene " & cantDetallesMem & " detalle(s) en memoria. Elimine los detalles antes de eliminar el ajuste.",
+                     Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                 Return
+             End If
+ 
++            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G3):
++            ' Defensa: validar contra la BD que efectivamente no quedaron filas
++            ' en trans_ajuste_det_borrador (por si la lista en memoria estuviera
++            ' desincronizada por algun camino atipico). trans_ajuste_det no se
++            ' chequea: G1 ya bloqueo todo lo no-borrador, asi que esa tabla no
++            ' deberia tener filas para este IdAjusteEnc.
+             Dim detallesBorr As List(Of clsBeTrans_ajuste_det_borrador) =
+                 clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+             If detallesBorr IsNot Nothing AndAlso detallesBorr.Count > 0 Then
+                 XtraMessageBox.Show(
+-                    "El ajuste tiene " & detallesBorr.Count & " detalle(s) en estado borrador. Elimine los detalles antes.",
++                    "El ajuste tiene " & detallesBorr.Count & " detalle(s) en BD trans_ajuste_det_borrador. Elimine los detalles antes.",
+                     Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                 Return
+             End If
+ 
+             Dim resp As DialogResult = XtraMessageBox.Show(
+-- 
+2.43.0
