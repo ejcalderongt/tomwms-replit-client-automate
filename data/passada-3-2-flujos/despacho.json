@@ -1,0 +1,60 @@
+{
+  "domain": "despacho",
+  "note": "Sin activity HH dedicada. WMs server-side despacho-relacionados (cubierto desde BOF/Web).",
+  "activitiesCount": 0,
+  "serverWMs": [
+    {
+      "wm": "Obtener_EPC_Con_Existencia_Para_Salida",
+      "ws": "TOMHHWS",
+      "bodyLines": 38,
+      "paramsRaw": "ByVal pListaCodigoBarraPallet As List(Of String)",
+      "returns": "String",
+      "clsLnUsed": [
+        "clsLnI_nav_barras_pallet",
+        "clsLnLog_error_wms"
+      ],
+      "tablesRead": [
+        "i_nav_barras_pallet",
+        "log_error_wms",
+        "usuario"
+      ],
+      "tablesWrite": [
+        "i_nav_barras_pallet",
+        "log_error_wms"
+      ]
+    }
+  ],
+  "uniqueWMsCalled": [
+    "Obtener_EPC_Con_Existencia_Para_Salida"
+  ],
+  "tablesWrittenByDomain": [
+    "i_nav_barras_pallet",
+    "log_error_wms"
+  ],
+  "tablesReadByDomain": [
+    "i_nav_barras_pallet",
+    "log_error_wms",
+    "usuario"
+  ],
+  "states": [
+    {
+      "table": "sis_estado_tarea_hh",
+      "rowCount": 4,
+      "sample": [
+        {
+          "IdEstado": 4,
+          "descripcion": "Finalizado"
+        },
+        {
+          "IdEstado": 3,
+          "descripcion": "Anulado"
+        },
+        {
+          "IdEstado": 2,
+          "descripcion": "Pendiente"
+        }
+      ]
+    }
+  ],
+  "typicalErrors": []
+}
