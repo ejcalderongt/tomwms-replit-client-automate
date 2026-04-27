@@ -1,0 +1,35 @@
+# RES-011: Stock únicamente en almacenamiento (sin picking)
+id: RES-011
+version: 1
+category: reservation
+severity: high
+title: "Stock únicamente en almacenamiento (sin picking)"
+summary: |
+  No hay inventario en picking. Todo el stock vive en almacenamiento. La reserva debe tomar exactamente la cantidad solicitada desde almacenamiento.
+
+requires_config:
+
+
+input:
+  requested_qty: 50
+  requested_um: "CJS"
+  product_code: "47022"      # legacy hardcode; parametrizable
+  owner: "01"                # legacy hardcode
+  doc_type: "Pedido_De_Cliente"
+  invocation: "Importar_Pedido_Cliente_A_Tabla_Intermedia"
+
+setup:
+  # Modelado de inventario inicial (estado de la bodega antes de la reserva).
+  inventory:
+    - { ubicacion: "ALMACENAMIENTO", cantidad: 50, vence: "2026-01-02", um: "CJS" }
+
+expected:
+  1. Reserva 50 CJS desde ALMACENAMIENTO.
+  2. Pedido completo. Sin uso de picking.
+
+legacy_origin:
+  case: "CASO 7"
+  function: "Ejecuta_QA_CASO_7_IDEAL_20231002011140"
+  file: "TOMIMSV4/DAL/Stock/clsLnStock_res_Partial.vb"
+  lines: "14512-14730"
+
