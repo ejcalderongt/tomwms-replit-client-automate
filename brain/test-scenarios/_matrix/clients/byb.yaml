@@ -5,20 +5,24 @@ learned_from:
   server: "52.41.114.122,1437"
   database: "IMS4MB_BYB_PRD"
   branch: dev_2023_merge_equivalent
-  when: "2026-04-27T14:56:31.611Z"
+  when: "2026-04-27T15:31:09.941Z"
   query: "SELECT c.*, b.nombre AS bodega_nombre, b.codigo AS bodega_codigo FROM i_nav_config_enc c LEFT JOIN bodega b ON b.idEmpresa=c.idempresa AND b.idBodega=c.idbodega WHERE c.idEmpresa=1"
 
 profile:
   erp: "Microsoft Dynamics NAV"
   rubro: "alimentos"
-  modelo_inventario: "2 bodegas con módulo activo de reabastecimiento de picking (zonas, tramos, min-max, reglas de rellenado)."
+  modelo_inventario: "2 bodegas con modulo activo de reabastecimiento de picking (zonas, tramos, min-max)"
+  modo_reserva: "estricto (rechazar_pedido_incompleto=1)"
   notas: |
-    Maneja producto en presentación Y unidades enteras (sin fraccionarios habituales). Aquí se estabilizaron muchos casos de reserva del legacy. Tablas exclusivas: zona_picking, zona_picking_tramo, producto_rellenado, operador_zona_picking_tramo.
+    Maneja producto en presentacion Y unidades enteras. Aqui se estabilizaron muchos casos del legacy.
+    Tablas exclusivas: zona_picking, zona_picking_tramo, producto_rellenado, operador_zona_picking_tramo.
+    Actividad reciente en log de reservas minima (706 registros 2023 con Caso NULL + 2 en 2025).
 
 bodegas:
   - id: 2
     codigo: "BA0002"
     nombre: "PRODUCTO TERMINADO"
+    tipo: operativa
     flags:
       control_vencimiento: null
       control_lote: null
@@ -56,6 +60,7 @@ bodegas:
   - id: 24
     codigo: "BA0024"
     nombre: "PRODUCTO TERMINADO DAÑADO"
+    tipo: operativa
     flags:
       control_vencimiento: null
       control_lote: null
@@ -90,3 +95,28 @@ bodegas:
       generar_recepcion_auto_bodega_destino: true
       dias_vida_defecto_perecederos: 0
       IdProductoEstado: 1
+
+tipos_pedido:
+  - id: 1
+    nombre: "PE0001"
+    reserva_stock: true
+  - id: 2
+    nombre: "PE0002"
+    reserva_stock: true
+  - id: 3
+    nombre: "PE0003"
+    reserva_stock: true
+  - id: 4
+    nombre: "PE0004"
+    reserva_stock: false
+  - id: 7
+    nombre: "Requisicion"
+    reserva_stock: true
+  - id: 9
+    nombre: "PDV_NAV"
+    reserva_stock: true
+
+casos_reserva_observados:
+  - caso: "CASO_#8_EJC202310090957"
+    conteo: 2
+    notas: "unica actividad reciente (2025)"
