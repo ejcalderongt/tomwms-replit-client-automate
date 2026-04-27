@@ -1,0 +1,32 @@
+{
+  "id": "20260427-1900-EJC",
+  "schema_version": "2",
+  "created_at": "2026-04-27T19:00:00-03:00",
+  "type": "question_request",
+  "source": "openclaw",
+  "host": "ERIK-DESK",
+  "ref": {
+    "question_id": "Q-003",
+    "question_card_path": "wms-brain-client/questions/Q-003-ingresos-byb-pendientes.md",
+    "rama_repo": "wms-brain-client",
+    "commit_sha": null
+  },
+  "context": {
+    "message": "Por que BB tiene 110k INGRESOS pendientes en outbox (PEND-12)",
+    "modules_touched": ["i_nav_transacciones_out", "outbox_processor", "NavSync"],
+    "tags": ["outbox", "navsync", "BB", "bandera-roja", "PEND-12"],
+    "targets": [{ "codename": "BB", "environment": "PRD" }],
+    "expected_outputs": [
+      "Distribucion temporal de los 110k INGRESOS pendientes",
+      "Conteo de INGRESOS que SI se enviaron alguna vez (107 esperados)",
+      "Comparacion con SALIDAS enviadas en el mismo rango"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    { "at": "2026-04-27T19:00:00-03:00", "action": "notify", "by": "EJC" }
+  ]
+}

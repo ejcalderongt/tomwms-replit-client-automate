@@ -1,0 +1,32 @@
+{
+  "id": "20260428-0930-EJC",
+  "schema_version": "2",
+  "created_at": "2026-04-28T09:30:00-03:00",
+  "type": "question_answer",
+  "source": "openclaw",
+  "host": "ERIK-DESK",
+  "ref": {
+    "answers_question_id": "Q-003",
+    "answers_event_id": "20260427-1900-EJC",
+    "answer_card_path": "wms-brain-client/answers/A-003-ingresos-byb-pendientes.md",
+    "evidence_paths": [
+      "wms-brain-client/answers/_evidence/A-003/q1-edad-ingresos-pendientes.csv",
+      "wms-brain-client/answers/_evidence/A-003/q2-ingresos-enviados-cuando.csv",
+      "wms-brain-client/answers/_evidence/A-003/q3-comparacion-salidas.csv"
+    ]
+  },
+  "context": {
+    "message": "Confirmado: 110,795 INGRESOS pendientes desde 2024-07. Solo 107 INGRESOS enviados alguna vez (todos antes de 2024-07). Hipotesis confirmada: NavSync.vbproj nunca tuvo flag activo para INGRESOS, fue diseñado solo para SALIDAS desde el rollout inicial. SALIDAS funcionan normalmente (277,310 enviadas en el mismo rango).",
+    "verdict": "confirmed",
+    "confidence": "high",
+    "modules_touched": ["NavSync.vbproj", "i_nav_transacciones_out"],
+    "tags": ["answer", "A-003", "Q-003", "BB", "navsync", "bandera-roja"]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    { "at": "2026-04-28T09:30:00-03:00", "action": "notify", "by": "EJC" }
+  ]
+}
