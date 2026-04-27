@@ -1,0 +1,1791 @@
+{
+  "generatedAt": "2026-04-27T04:48:55.998Z",
+  "totalTables": 345,
+  "buckets": {
+    "transaccional_trans": {
+      "count": 84,
+      "rows": "00021130825019799040320029423010025714540115305400715840000245816411907107800558600015131481922576204202006145850129305895026567204370004394018018105760057616441012180000006957714506830",
+      "tables": [
+        {
+          "name": "trans_acuerdoscomerciales_det",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:27:44.823"
+        },
+        {
+          "name": "trans_acuerdoscomerciales_enc",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:27:44.820"
+        },
+        {
+          "name": "trans_ajuste_det",
+          "rows": "2113",
+          "modifyDate": "2025-02-11T23:42:13.913"
+        },
+        {
+          "name": "trans_ajuste_det_doc",
+          "rows": "0",
+          "modifyDate": "2018-08-28T22:46:57.670"
+        },
+        {
+          "name": "trans_ajuste_enc",
+          "rows": "825",
+          "modifyDate": "2025-02-11T23:41:09.083"
+        },
+        {
+          "name": "trans_bodega_ubicaciones_excel",
+          "rows": "0",
+          "modifyDate": "2024-02-02T22:01:29.903"
+        },
+        {
+          "name": "trans_despacho_det",
+          "rows": "19799",
+          "modifyDate": "2025-02-11T23:43:50.497"
+        },
+        {
+          "name": "trans_despacho_det_lote_num",
+          "rows": "0",
+          "modifyDate": "2019-05-21T16:16:42.813"
+        },
+        {
+          "name": "trans_despacho_enc",
+          "rows": "4032",
+          "modifyDate": "2025-02-11T23:41:55.510"
+        },
+        {
+          "name": "trans_inv_ciclico",
+          "rows": "0",
+          "modifyDate": "2025-07-16T15:39:23.187"
+        },
+        {
+          "name": "trans_inv_ciclico_ubic",
+          "rows": "0",
+          "modifyDate": "2020-02-04T18:30:56.120"
+        },
+        {
+          "name": "trans_inv_detalle",
+          "rows": "2942",
+          "modifyDate": "2023-01-25T10:07:58.420"
+        },
+        {
+          "name": "trans_inv_enc",
+          "rows": "3",
+          "modifyDate": "2024-09-12T08:28:10.327"
+        },
+        {
+          "name": "trans_inv_enc_reconteo",
+          "rows": "0",
+          "modifyDate": "2018-10-03T22:00:53.243"
+        },
+        {
+          "name": "trans_inv_ne",
+          "rows": "1",
+          "modifyDate": "2019-04-08T09:40:07.443"
+        },
+        {
+          "name": "trans_inv_operador",
+          "rows": "0",
+          "modifyDate": "2021-12-01T14:38:52.120"
+        },
+        {
+          "name": "trans_inv_reconteo",
+          "rows": "0",
+          "modifyDate": "2019-09-02T09:35:45.583"
+        },
+        {
+          "name": "trans_inv_resumen",
+          "rows": "2571",
+          "modifyDate": "2024-09-12T08:30:50.483"
+        },
+        {
+          "name": "trans_inv_stock",
+          "rows": "4540",
+          "modifyDate": "2025-02-11T23:41:21.940"
+        },
+        {
+          "name": "trans_inv_stock_prod",
+          "rows": "1153",
+          "modifyDate": "2025-05-22T00:03:27.900"
+        },
+        {
+          "name": "trans_inv_teorico_erp",
+          "rows": "0",
+          "modifyDate": "2024-09-12T08:30:57.017"
+        },
+        {
+          "name": "trans_inv_tramo",
+          "rows": "54",
+          "modifyDate": "2023-08-21T09:18:17.103"
+        },
+        {
+          "name": "trans_inventario_det",
+          "rows": "0",
+          "modifyDate": "2020-02-14T11:42:55.647"
+        },
+        {
+          "name": "trans_inventario_enc",
+          "rows": "0",
+          "modifyDate": "2016-05-16T15:11:10.457"
+        },
+        {
+          "name": "trans_log_pedido_liberacion",
+          "rows": "715",
+          "modifyDate": "2023-02-09T06:25:35.523"
+        },
+        {
+          "name": "trans_log_reubic_stock_res",
+          "rows": "84",
+          "modifyDate": "2023-08-21T09:18:17.147"
+        },
+        {
+          "name": "trans_manufactura_det",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:22:17.500"
+        },
+        {
+          "name": "trans_manufactura_enc",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:22:17.500"
+        },
+        {
+          "name": "trans_manufactura_picking",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:22:17.507"
+        },
+        {
+          "name": "trans_manufactura_tipo",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:22:17.477"
+        },
+        {
+          "name": "trans_movimiento_pallet",
+          "rows": "245",
+          "modifyDate": "2023-08-21T09:18:16.943"
+        },
+        {
+          "name": "trans_movimientos",
+          "rows": "81641",
+          "modifyDate": "2024-07-02T12:30:47.473"
+        },
+        {
+          "name": "trans_oc_det",
+          "rows": "1907",
+          "modifyDate": "2024-07-02T12:24:53.387"
+        },
+        {
+          "name": "trans_oc_det_lote",
+          "rows": "1078",
+          "modifyDate": "2023-08-21T09:18:17.113"
+        },
+        {
+          "name": "trans_oc_docu_ref",
+          "rows": "0",
+          "modifyDate": "2021-09-08T00:26:38.017"
+        },
+        {
+          "name": "trans_oc_embarcador",
+          "rows": "0",
+          "modifyDate": "2022-03-07T15:06:31.853"
+        },
+        {
+          "name": "trans_oc_enc",
+          "rows": "558",
+          "modifyDate": "2025-05-05T19:05:40.333"
+        },
+        {
+          "name": "trans_oc_estado",
+          "rows": "6",
+          "modifyDate": "2018-04-12T12:13:16.813"
+        },
+        {
+          "name": "trans_oc_imagen",
+          "rows": "0",
+          "modifyDate": "2018-04-12T12:13:17.120"
+        },
+        {
+          "name": "trans_oc_pol",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:18:12.703"
+        },
+        {
+          "name": "trans_oc_servicios",
+          "rows": "0",
+          "modifyDate": "2021-08-25T09:30:07.967"
+        },
+        {
+          "name": "trans_oc_ti",
+          "rows": "15",
+          "modifyDate": "2025-04-01T10:21:38.163"
+        },
+        {
+          "name": "trans_packing_enc",
+          "rows": "13",
+          "modifyDate": "2025-07-16T15:39:09.283"
+        },
+        {
+          "name": "trans_pe_det",
+          "rows": "14819",
+          "modifyDate": "2024-07-02T12:22:17.500"
+        },
+        {
+          "name": "trans_pe_det_log_reserva",
+          "rows": "22576",
+          "modifyDate": "2024-02-01T14:19:39.697"
+        },
+        {
+          "name": "trans_pe_docu_ref",
+          "rows": "20",
+          "modifyDate": "2021-08-25T09:41:50.947"
+        },
+        {
+          "name": "trans_pe_enc",
+          "rows": "4202",
+          "modifyDate": "2025-06-11T07:34:55.330"
+        },
+        {
+          "name": "trans_pe_pol",
+          "rows": "0",
+          "modifyDate": "2024-10-01T20:58:44.960"
+        },
+        {
+          "name": "trans_pe_servicios",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:08:54.847"
+        },
+        {
+          "name": "trans_pe_tipo",
+          "rows": "6",
+          "modifyDate": "2025-08-01T11:53:48.137"
+        },
+        {
+          "name": "trans_picking_det",
+          "rows": "14585",
+          "modifyDate": "2023-10-30T05:18:25.450"
+        },
+        {
+          "name": "trans_picking_det_parametros",
+          "rows": "0",
+          "modifyDate": "2020-01-25T08:47:16.460"
+        },
+        {
+          "name": "trans_picking_enc",
+          "rows": "1293",
+          "modifyDate": "2025-06-25T14:09:33.087"
+        },
+        {
+          "name": "trans_picking_img",
+          "rows": "0",
+          "modifyDate": "2023-10-30T05:18:25.450"
+        },
+        {
+          "name": "trans_picking_op",
+          "rows": "5895",
+          "modifyDate": "2024-02-01T14:24:45.960"
+        },
+        {
+          "name": "trans_picking_prioridad",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:29:54.490"
+        },
+        {
+          "name": "trans_picking_ubic",
+          "rows": "26567",
+          "modifyDate": "2025-07-16T15:39:09.247"
+        },
+        {
+          "name": "trans_picking_ubic_stock",
+          "rows": "20437",
+          "modifyDate": "2025-04-21T18:31:00.680"
+        },
+        {
+          "name": "trans_prefactura_det",
+          "rows": "0",
+          "modifyDate": "2024-09-12T08:29:48.720"
+        },
+        {
+          "name": "trans_prefactura_enc",
+          "rows": "0",
+          "modifyDate": "2024-09-12T08:29:41.300"
+        },
+        {
+          "name": "trans_prefactura_mov",
+          "rows": "0",
+          "modifyDate": "2024-09-12T08:29:54.637"
+        },
+        {
+          "name": "trans_re_det",
+          "rows": "4394",
+          "modifyDate": "2024-10-15T23:41:00.113"
+        },
+        {
+          "name": "trans_re_det_infraccion",
+          "rows": "0",
+          "modifyDate": "2018-10-11T09:06:20.210"
+        },
+        {
+          "name": "trans_re_det_lote_num",
+          "rows": "180181",
+          "modifyDate": "2022-12-17T09:39:31.110"
+        },
+        {
+          "name": "trans_re_det_parametros",
+          "rows": "0",
+          "modifyDate": "2018-01-19T14:03:02.093"
+        },
+        {
+          "name": "trans_re_enc",
+          "rows": "576",
+          "modifyDate": "2024-02-01T14:26:36.217"
+        },
+        {
+          "name": "trans_re_fact",
+          "rows": "0",
+          "modifyDate": "2018-10-11T09:06:20.357"
+        },
+        {
+          "name": "trans_re_img",
+          "rows": "0",
+          "modifyDate": "2018-10-11T09:06:20.523"
+        },
+        {
+          "name": "trans_re_oc",
+          "rows": "576",
+          "modifyDate": "2023-08-21T09:18:17.020"
+        },
+        {
+          "name": "trans_re_op",
+          "rows": "1644",
+          "modifyDate": "2023-08-21T09:17:48.530"
+        },
+        {
+          "name": "trans_re_tr",
+          "rows": "10",
+          "modifyDate": "2018-10-11T09:06:19.440"
+        },
+        {
+          "name": "trans_reabastecimiento_log",
+          "rows": "1218",
+          "modifyDate": "2023-02-27T10:57:05.990"
+        },
+        {
+          "name": "trans_series_doc",
+          "rows": "0",
+          "modifyDate": "2022-07-02T15:04:39.400"
+        },
+        {
+          "name": "trans_servicio_det",
+          "rows": "0",
+          "modifyDate": "2021-08-25T09:33:26.680"
+        },
+        {
+          "name": "trans_servicio_enc",
+          "rows": "0",
+          "modifyDate": "2021-08-25T09:33:26.680"
+        },
+        {
+          "name": "trans_tras_det",
+          "rows": "0",
+          "modifyDate": "2018-01-11T12:12:36.270"
+        },
+        {
+          "name": "trans_tras_enc",
+          "rows": "0",
+          "modifyDate": "2016-07-12T18:10:23.973"
+        },
+        {
+          "name": "trans_tras_op",
+          "rows": "0",
+          "modifyDate": "2018-01-19T14:03:02.273"
+        },
+        {
+          "name": "trans_ubic_hh_det",
+          "rows": "695",
+          "modifyDate": "2024-07-02T12:21:36.820"
+        },
+        {
+          "name": "trans_ubic_hh_enc",
+          "rows": "77",
+          "modifyDate": "2026-02-11T16:20:37.060"
+        },
+        {
+          "name": "trans_ubic_hh_op",
+          "rows": "145",
+          "modifyDate": "2018-01-19T14:03:02.270"
+        },
+        {
+          "name": "trans_ubic_hh_se",
+          "rows": "0",
+          "modifyDate": "2016-07-11T15:16:42.080"
+        },
+        {
+          "name": "trans_ubic_hh_stock",
+          "rows": "683",
+          "modifyDate": "2023-08-21T09:18:16.833"
+        },
+        {
+          "name": "trans_ubic_tarima",
+          "rows": "0",
+          "modifyDate": "2016-07-20T13:34:52.007"
+        }
+      ]
+    },
+    "transaccional_log": {
+      "count": 2,
+      "rows": "0663390",
+      "tables": [
+        {
+          "name": "log_error_wms",
+          "rows": "66339",
+          "modifyDate": "2025-06-12T10:06:15.490"
+        },
+        {
+          "name": "log_importacion_excel",
+          "rows": "0",
+          "modifyDate": "2022-05-06T15:20:46.033"
+        }
+      ]
+    },
+    "transaccional_hist": {
+      "count": 5,
+      "rows": "01513202354119225267",
+      "tables": [
+        {
+          "name": "stock_20250515",
+          "rows": "151",
+          "modifyDate": "2025-05-15T10:10:07.737"
+        },
+        {
+          "name": "stock_20250606",
+          "rows": "3202",
+          "modifyDate": "2025-06-06T10:36:41.960"
+        },
+        {
+          "name": "stock_20250624",
+          "rows": "3541",
+          "modifyDate": "2025-06-24T07:35:39.337"
+        },
+        {
+          "name": "stock_hist",
+          "rows": "19225",
+          "modifyDate": "2021-06-03T00:02:37.263"
+        },
+        {
+          "name": "stock_res_20250624",
+          "rows": "267",
+          "modifyDate": "2025-06-24T07:35:51.927"
+        }
+      ]
+    },
+    "config_param": {
+      "count": 11,
+      "rows": "001014119006003",
+      "tables": [
+        {
+          "name": "configuracion_alias_campos",
+          "rows": "0",
+          "modifyDate": "2022-09-29T16:18:38.197"
+        },
+        {
+          "name": "configuracion_barra_pallet",
+          "rows": "1",
+          "modifyDate": "2019-03-28T16:18:52.230"
+        },
+        {
+          "name": "configuracion_qa",
+          "rows": "0",
+          "modifyDate": "2023-10-05T16:38:53.393"
+        },
+        {
+          "name": "configuracion_usuario_det",
+          "rows": "141",
+          "modifyDate": "2023-08-21T09:17:48.590"
+        },
+        {
+          "name": "configuracion_usuario_enc",
+          "rows": "19",
+          "modifyDate": "2022-09-11T22:45:11.120"
+        },
+        {
+          "name": "i_nav_config_area_bodega",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:23:36.747"
+        },
+        {
+          "name": "i_nav_config_det",
+          "rows": "0",
+          "modifyDate": "2017-09-22T16:41:28.133"
+        },
+        {
+          "name": "i_nav_config_enc",
+          "rows": "6",
+          "modifyDate": "2026-02-12T08:28:50.663"
+        },
+        {
+          "name": "i_nav_config_ent",
+          "rows": "0",
+          "modifyDate": "2017-09-19T16:05:42.937"
+        },
+        {
+          "name": "i_nav_config_producto_estado",
+          "rows": "0",
+          "modifyDate": "2023-10-16T18:16:42.760"
+        },
+        {
+          "name": "valores_fijos_reporte_mercancias",
+          "rows": "3",
+          "modifyDate": "2022-10-25T23:36:29.087"
+        }
+      ]
+    },
+    "catalogo_tipo": {
+      "count": 8,
+      "rows": "0356044110",
+      "tables": [
+        {
+          "name": "tipo_actualizacion_costo",
+          "rows": "3",
+          "modifyDate": "2016-04-05T11:19:41.990"
+        },
+        {
+          "name": "tipo_contenedor",
+          "rows": "5",
+          "modifyDate": "2016-07-12T18:58:10.880"
+        },
+        {
+          "name": "tipo_etiqueta",
+          "rows": "6",
+          "modifyDate": "2025-03-27T14:39:27.753"
+        },
+        {
+          "name": "tipo_etiqueta_detalle",
+          "rows": "0",
+          "modifyDate": "2025-03-27T14:39:27.750"
+        },
+        {
+          "name": "tipo_rack",
+          "rows": "4",
+          "modifyDate": "2018-03-16T10:04:45.030"
+        },
+        {
+          "name": "tipo_rotacion",
+          "rows": "4",
+          "modifyDate": "2018-06-03T13:36:11.840"
+        },
+        {
+          "name": "tipo_tarea_tiempos",
+          "rows": "1",
+          "modifyDate": "2019-07-29T10:21:33.003"
+        },
+        {
+          "name": "tipo_tarima",
+          "rows": "10",
+          "modifyDate": "2017-05-30T14:22:22.330"
+        }
+      ]
+    },
+    "maestro_dominio": {
+      "count": 63,
+      "rows": "0951045943400191413861083401319310295171153846963615828181818181612986666654322111111000000000000000000000",
+      "tables": [
+        {
+          "name": "bodega_ubicacion",
+          "rows": "9510",
+          "modifyDate": "2024-07-02T12:29:25.583"
+        },
+        {
+          "name": "proveedor_bodega",
+          "rows": "4594",
+          "modifyDate": "2024-02-01T14:25:38.973"
+        },
+        {
+          "name": "cliente_bodega",
+          "rows": "3400",
+          "modifyDate": "2024-09-12T08:29:35.977"
+        },
+        {
+          "name": "producto_bodega",
+          "rows": "1914",
+          "modifyDate": "2024-07-02T12:22:17.497"
+        },
+        {
+          "name": "proveedor",
+          "rows": "1386",
+          "modifyDate": "2025-06-09T21:46:46.963"
+        },
+        {
+          "name": "cliente",
+          "rows": "1083",
+          "modifyDate": "2025-09-04T12:46:26.027"
+        },
+        {
+          "name": "pais_municipio",
+          "rows": "401",
+          "modifyDate": "2023-08-21T09:18:16.973"
+        },
+        {
+          "name": "producto",
+          "rows": "319",
+          "modifyDate": "2025-05-13T10:20:31.953"
+        },
+        {
+          "name": "producto_codigos_barra",
+          "rows": "310",
+          "modifyDate": "2022-06-22T16:28:58.920"
+        },
+        {
+          "name": "producto_presentacion",
+          "rows": "295",
+          "modifyDate": "2025-02-11T23:41:27.580"
+        },
+        {
+          "name": "bodega_tramo",
+          "rows": "171",
+          "modifyDate": "2021-10-26T22:59:41.657"
+        },
+        {
+          "name": "bodega_sector",
+          "rows": "153",
+          "modifyDate": "2019-12-10T13:11:53.187"
+        },
+        {
+          "name": "operador_bodega",
+          "rows": "84",
+          "modifyDate": "2021-05-28T00:23:20.350"
+        },
+        {
+          "name": "pais_departamento",
+          "rows": "69",
+          "modifyDate": "2016-05-27T09:43:54.903"
+        },
+        {
+          "name": "usuario_bodega",
+          "rows": "63",
+          "modifyDate": "2016-04-25T10:59:50.603"
+        },
+        {
+          "name": "producto_pallet",
+          "rows": "61",
+          "modifyDate": "2023-02-14T10:31:51.337"
+        },
+        {
+          "name": "operador_jornada_laboral",
+          "rows": "58",
+          "modifyDate": "2023-05-18T22:36:14.997"
+        },
+        {
+          "name": "producto_clasificacion",
+          "rows": "28",
+          "modifyDate": "2024-02-01T14:26:06.990"
+        },
+        {
+          "name": "bodega_area",
+          "rows": "18",
+          "modifyDate": "2024-02-01T14:25:38.990"
+        },
+        {
+          "name": "empresa_transporte",
+          "rows": "18",
+          "modifyDate": "2021-05-28T00:08:59.830"
+        },
+        {
+          "name": "operador",
+          "rows": "18",
+          "modifyDate": "2024-02-01T14:27:44.770"
+        },
+        {
+          "name": "producto_estado",
+          "rows": "18",
+          "modifyDate": "2025-02-11T23:32:33.383"
+        },
+        {
+          "name": "producto_marca",
+          "rows": "16",
+          "modifyDate": "2024-07-02T12:25:21.527"
+        },
+        {
+          "name": "usuario",
+          "rows": "12",
+          "modifyDate": "2025-07-14T09:32:03.813"
+        },
+        {
+          "name": "producto_imagen",
+          "rows": "9",
+          "modifyDate": "2022-03-18T10:48:41.383"
+        },
+        {
+          "name": "bodega_muelles",
+          "rows": "8",
+          "modifyDate": "2024-07-02T12:29:25.603"
+        },
+        {
+          "name": "bodega",
+          "rows": "6",
+          "modifyDate": "2026-02-11T16:31:38.030"
+        },
+        {
+          "name": "bodega_parametros",
+          "rows": "6",
+          "modifyDate": "2017-05-04T09:33:17.417"
+        },
+        {
+          "name": "cliente_tipo",
+          "rows": "6",
+          "modifyDate": "2017-10-27T09:16:15.290"
+        },
+        {
+          "name": "pais_region",
+          "rows": "6",
+          "modifyDate": "2016-05-27T11:36:22.500"
+        },
+        {
+          "name": "propietario_bodega",
+          "rows": "6",
+          "modifyDate": "2024-09-12T08:29:35.970"
+        },
+        {
+          "name": "cliente_direccion",
+          "rows": "5",
+          "modifyDate": "2022-12-17T09:39:30.823"
+        },
+        {
+          "name": "bodega_orientacion_pos",
+          "rows": "4",
+          "modifyDate": "2018-02-06T15:14:18.900"
+        },
+        {
+          "name": "producto_subtarea_tipo",
+          "rows": "3",
+          "modifyDate": "2023-10-23T11:44:12.760"
+        },
+        {
+          "name": "producto_estado_ubic",
+          "rows": "2",
+          "modifyDate": "2019-11-20T08:25:43.380"
+        },
+        {
+          "name": "producto_tipo",
+          "rows": "2",
+          "modifyDate": "2022-12-17T09:39:33.190"
+        },
+        {
+          "name": "empresa",
+          "rows": "1",
+          "modifyDate": "2023-10-05T16:38:53.377"
+        },
+        {
+          "name": "empresa_transporte_pilotos",
+          "rows": "1",
+          "modifyDate": "2021-05-28T00:14:10.937"
+        },
+        {
+          "name": "producto_rellenado",
+          "rows": "1",
+          "modifyDate": "2021-11-19T17:00:43.520"
+        },
+        {
+          "name": "propietario_destinatario",
+          "rows": "1",
+          "modifyDate": "2016-07-25T08:35:57.673"
+        },
+        {
+          "name": "propietario_reglas_det",
+          "rows": "1",
+          "modifyDate": "2016-07-22T10:07:03.980"
+        },
+        {
+          "name": "propietario_reglas_enc",
+          "rows": "1",
+          "modifyDate": "2016-08-23T16:24:24.120"
+        },
+        {
+          "name": "area_estado",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:23:42.387"
+        },
+        {
+          "name": "bodega_monitor_parametro",
+          "rows": "0",
+          "modifyDate": "2016-08-01T15:10:11.133"
+        },
+        {
+          "name": "cliente_lotes",
+          "rows": "0",
+          "modifyDate": "2025-07-13T22:50:00.877"
+        },
+        {
+          "name": "cliente_tiempos",
+          "rows": "0",
+          "modifyDate": "2025-03-18T11:46:14.627"
+        },
+        {
+          "name": "empresa_transporte_bodega",
+          "rows": "0",
+          "modifyDate": "2016-02-08T10:47:53.157"
+        },
+        {
+          "name": "empresa_transporte_vehiculos",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:08:59.867"
+        },
+        {
+          "name": "operador_montacarga",
+          "rows": "0",
+          "modifyDate": "2022-06-13T22:41:11.280"
+        },
+        {
+          "name": "operador_zona_picking_tramo",
+          "rows": "0",
+          "modifyDate": "2022-06-13T15:25:43.213"
+        },
+        {
+          "name": "producto_clasificacion_etiqueta",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:18:48.290"
+        },
+        {
+          "name": "producto_familia",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:26:06.990"
+        },
+        {
+          "name": "producto_kit_composicion",
+          "rows": "0",
+          "modifyDate": "2020-10-07T22:22:15.987"
+        },
+        {
+          "name": "producto_pallet_rec",
+          "rows": "0",
+          "modifyDate": "2018-02-24T12:40:24.303"
+        },
+        {
+          "name": "producto_parametro_a",
+          "rows": "0",
+          "modifyDate": "2022-06-30T18:24:57.193"
+        },
+        {
+          "name": "producto_parametro_b",
+          "rows": "0",
+          "modifyDate": "2022-06-30T18:24:57.333"
+        },
+        {
+          "name": "producto_parametros",
+          "rows": "0",
+          "modifyDate": "2018-01-22T22:18:44.180"
+        },
+        {
+          "name": "producto_presentacion_tarima",
+          "rows": "0",
+          "modifyDate": "2017-05-30T14:24:54.737"
+        },
+        {
+          "name": "producto_presentaciones_conversiones",
+          "rows": "0",
+          "modifyDate": "2018-01-22T22:18:44.200"
+        },
+        {
+          "name": "producto_subtarea",
+          "rows": "0",
+          "modifyDate": "2023-10-23T11:44:12.767"
+        },
+        {
+          "name": "producto_sustituto",
+          "rows": "0",
+          "modifyDate": "2018-01-22T22:18:44.227"
+        },
+        {
+          "name": "producto_talla_color",
+          "rows": "0",
+          "modifyDate": "2025-05-13T10:20:31.960"
+        },
+        {
+          "name": "proveedor_tiempos",
+          "rows": "0",
+          "modifyDate": "2023-10-23T09:06:10.637"
+        }
+      ]
+    },
+    "i_nav_interface": {
+      "count": 25,
+      "rows": "0000105680040217762776000000149530423700112102419300",
+      "tables": [
+        {
+          "name": "i_nav_acuerdo",
+          "rows": "0",
+          "modifyDate": "2021-08-25T10:58:53.187"
+        },
+        {
+          "name": "i_nav_acuerdo_det",
+          "rows": "0",
+          "modifyDate": "2021-08-25T09:28:44.590"
+        },
+        {
+          "name": "i_nav_acuerdo_enc",
+          "rows": "0",
+          "modifyDate": "2021-08-25T10:58:54.667"
+        },
+        {
+          "name": "i_nav_barras_pallet",
+          "rows": "1056",
+          "modifyDate": "2025-05-05T19:01:50.413"
+        },
+        {
+          "name": "i_nav_bodega",
+          "rows": "8",
+          "modifyDate": "2017-10-27T09:13:22.863"
+        },
+        {
+          "name": "i_nav_cliente",
+          "rows": "0",
+          "modifyDate": "2021-08-25T10:58:53.193"
+        },
+        {
+          "name": "i_nav_conversion",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:24:57.943"
+        },
+        {
+          "name": "i_nav_ejecucion_det_error",
+          "rows": "4021",
+          "modifyDate": "2022-03-15T08:07:51.500"
+        },
+        {
+          "name": "i_nav_ejecucion_enc",
+          "rows": "7762",
+          "modifyDate": "2023-02-14T10:31:51.407"
+        },
+        {
+          "name": "i_nav_ejecucion_res",
+          "rows": "7760",
+          "modifyDate": "2023-02-14T10:31:51.380"
+        },
+        {
+          "name": "i_nav_ent",
+          "rows": "0",
+          "modifyDate": "2017-09-22T16:41:27.980"
+        },
+        {
+          "name": "i_nav_ent_filtros",
+          "rows": "0",
+          "modifyDate": "2021-09-23T17:15:21.680"
+        },
+        {
+          "name": "i_nav_ped_compra_det",
+          "rows": "0",
+          "modifyDate": "2023-08-21T09:17:51.267"
+        },
+        {
+          "name": "i_nav_ped_compra_det_lote",
+          "rows": "0",
+          "modifyDate": "2022-07-18T11:27:34.663"
+        },
+        {
+          "name": "i_nav_ped_compra_enc",
+          "rows": "0",
+          "modifyDate": "2024-09-12T08:31:25.727"
+        },
+        {
+          "name": "i_nav_ped_traslado_det",
+          "rows": "14953",
+          "modifyDate": "2025-03-18T11:46:28.290"
+        },
+        {
+          "name": "i_nav_ped_traslado_det_lote",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:21:26.490"
+        },
+        {
+          "name": "i_nav_ped_traslado_enc",
+          "rows": "4237",
+          "modifyDate": "2025-06-11T07:33:43.343"
+        },
+        {
+          "name": "i_nav_producto",
+          "rows": "0",
+          "modifyDate": "2025-08-26T08:57:16.110"
+        },
+        {
+          "name": "i_nav_producto_presentacion",
+          "rows": "0",
+          "modifyDate": "2024-07-02T12:24:36.523"
+        },
+        {
+          "name": "i_nav_proveedor",
+          "rows": "1121",
+          "modifyDate": "2024-01-24T17:21:56.920"
+        },
+        {
+          "name": "i_nav_servicio",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:07:17.640"
+        },
+        {
+          "name": "i_nav_transacciones_out",
+          "rows": "24193",
+          "modifyDate": "2024-09-18T14:44:23.963"
+        },
+        {
+          "name": "i_nav_transacciones_out_error",
+          "rows": "0",
+          "modifyDate": "2020-10-07T22:21:50.323"
+        },
+        {
+          "name": "i_nav_transacciones_push",
+          "rows": "0",
+          "modifyDate": "2022-01-25T18:12:07.207"
+        }
+      ]
+    },
+    "bk_snapshot": {
+      "count": 1,
+      "rows": "08630",
+      "tables": [
+        {
+          "name": "producto_presentacion_bk",
+          "rows": "8630",
+          "modifyDate": "2022-06-07T16:41:33.927"
+        }
+      ]
+    },
+    "sis_sistema": {
+      "count": 5,
+      "rows": "0434235",
+      "tables": [
+        {
+          "name": "sis_estado_tarea_hh",
+          "rows": "4",
+          "modifyDate": "2016-06-08T14:56:11.867"
+        },
+        {
+          "name": "sis_obs_log",
+          "rows": "3",
+          "modifyDate": "2016-07-06T12:12:24.137"
+        },
+        {
+          "name": "sis_prioridad_tarea_hh",
+          "rows": "4",
+          "modifyDate": "2016-06-08T14:56:11.990"
+        },
+        {
+          "name": "sis_tipo_accion",
+          "rows": "2",
+          "modifyDate": "2016-07-07T12:28:46.523"
+        },
+        {
+          "name": "sis_tipo_tarea",
+          "rows": "35",
+          "modifyDate": "2016-09-12T11:37:51.340"
+        }
+      ]
+    },
+    "otro": {
+      "count": 141,
+      "rows": "0423578144470343943701295124321817144811028634544004002892752702652442381876867655148383837352524231916141414131212121099998887766666544443322222111111111110000000000000000000000000000000000000000000000000000000000000",
+      "tables": [
+        {
+          "name": "t_producto_bodega",
+          "rows": "42357",
+          "modifyDate": "2019-05-21T16:17:48.567"
+        },
+        {
+          "name": "dh_ocupacion_bodega",
+          "rows": "8144",
+          "modifyDate": "2023-08-21T09:17:57.553"
+        },
+        {
+          "name": "stock",
+          "rows": "4703",
+          "modifyDate": "2024-09-12T08:37:13.890"
+        },
+        {
+          "name": "stock_rec",
+          "rows": "4394",
+          "modifyDate": "2023-08-21T09:17:55.827"
+        },
+        {
+          "name": "marcaje",
+          "rows": "3701",
+          "modifyDate": "2022-12-17T09:39:31.193"
+        },
+        {
+          "name": "tmp_picking",
+          "rows": "2951",
+          "modifyDate": "2023-01-10T12:19:30.660"
+        },
+        {
+          "name": "cod_barra_clc",
+          "rows": "2432",
+          "modifyDate": "2018-08-28T20:57:31.710"
+        },
+        {
+          "name": "tarea_hh",
+          "rows": "1817",
+          "modifyDate": "2025-02-11T23:41:39.210"
+        },
+        {
+          "name": "estructura_ubicacion",
+          "rows": "1448",
+          "modifyDate": "2019-09-02T09:33:03.973"
+        },
+        {
+          "name": "ubicaciones_por_regla",
+          "rows": "1102",
+          "modifyDate": "2018-01-19T14:03:02.273"
+        },
+        {
+          "name": "menu_rol",
+          "rows": "863",
+          "modifyDate": "2024-07-02T12:27:52.620"
+        },
+        {
+          "name": "stock_res",
+          "rows": "454",
+          "modifyDate": "2023-08-21T09:17:56.077"
+        },
+        {
+          "name": "tmp_estructura_ubicacion",
+          "rows": "400",
+          "modifyDate": "2018-11-12T19:15:48.823"
+        },
+        {
+          "name": "tmp_stock_res",
+          "rows": "400",
+          "modifyDate": "2018-10-08T19:14:54.217"
+        },
+        {
+          "name": "menu_sistema",
+          "rows": "289",
+          "modifyDate": "2023-08-21T09:18:17.083"
+        },
+        {
+          "name": "resultado_aplica_reservado",
+          "rows": "275",
+          "modifyDate": "2018-10-09T01:19:30.787"
+        },
+        {
+          "name": "stock_bodegas23",
+          "rows": "270",
+          "modifyDate": "2025-06-07T23:21:08.673"
+        },
+        {
+          "name": "Inv_SAP",
+          "rows": "265",
+          "modifyDate": "2025-06-02T22:48:34.107"
+        },
+        {
+          "name": "Inv_WMS",
+          "rows": "244",
+          "modifyDate": "2025-06-02T22:53:06.417"
+        },
+        {
+          "name": "estructura_grupo",
+          "rows": "238",
+          "modifyDate": "2023-08-21T09:18:16.817"
+        },
+        {
+          "name": "menu_rol_op",
+          "rows": "187",
+          "modifyDate": "2023-08-21T09:18:17.073"
+        },
+        {
+          "name": "estructura_tramo",
+          "rows": "68",
+          "modifyDate": "2023-08-21T09:18:16.847"
+        },
+        {
+          "name": "resolucion_lp_operador",
+          "rows": "67",
+          "modifyDate": "2021-05-28T00:29:58.277"
+        },
+        {
+          "name": "tmp_licencia_item",
+          "rows": "65",
+          "modifyDate": "2022-05-04T15:15:17.433"
+        },
+        {
+          "name": "horario_laboral_det",
+          "rows": "51",
+          "modifyDate": "2016-09-16T16:05:43.340"
+        },
+        {
+          "name": "version_wms_hh",
+          "rows": "48",
+          "modifyDate": "2021-08-26T08:58:20.487"
+        },
+        {
+          "name": "licencia_login",
+          "rows": "38",
+          "modifyDate": "2023-08-21T09:18:16.793"
+        },
+        {
+          "name": "stock_res_ped_164",
+          "rows": "38",
+          "modifyDate": "2022-01-13T01:41:49.603"
+        },
+        {
+          "name": "paises",
+          "rows": "37",
+          "modifyDate": "2016-05-27T09:43:53.857"
+        },
+        {
+          "name": "sysdiagrams",
+          "rows": "35",
+          "modifyDate": "2023-08-21T09:18:16.807"
+        },
+        {
+          "name": "motivo_anulacion_bodega",
+          "rows": "25",
+          "modifyDate": "2016-03-07T13:45:53.413"
+        },
+        {
+          "name": "resolucion_lp_usuario",
+          "rows": "24",
+          "modifyDate": "2024-07-02T12:25:09.230"
+        },
+        {
+          "name": "licencia_item",
+          "rows": "23",
+          "modifyDate": "2022-12-17T09:39:31.177"
+        },
+        {
+          "name": "menu_sistema_op",
+          "rows": "19",
+          "modifyDate": "2016-09-12T11:42:01.740"
+        },
+        {
+          "name": "motivo_anulacion",
+          "rows": "16",
+          "modifyDate": "2016-03-07T13:46:51.343"
+        },
+        {
+          "name": "rol_operador",
+          "rows": "14",
+          "modifyDate": "2016-09-12T11:42:01.743"
+        },
+        {
+          "name": "rol_usuario_estado",
+          "rows": "14",
+          "modifyDate": "2024-10-28T22:34:39.197"
+        },
+        {
+          "name": "stock_picking20250624",
+          "rows": "14",
+          "modifyDate": "2025-06-24T11:25:24.787"
+        },
+        {
+          "name": "impresora",
+          "rows": "13",
+          "modifyDate": "2025-03-27T14:39:47.320"
+        },
+        {
+          "name": "motivo_devolucion",
+          "rows": "12",
+          "modifyDate": "2018-04-12T12:13:16.813"
+        },
+        {
+          "name": "motivo_devolucion_bodega",
+          "rows": "12",
+          "modifyDate": "2016-06-10T10:57:29.993"
+        },
+        {
+          "name": "motivo_ubicacion",
+          "rows": "12",
+          "modifyDate": "2016-05-06T16:42:10.330"
+        },
+        {
+          "name": "mensaje_regla",
+          "rows": "10",
+          "modifyDate": "2016-07-22T10:06:59.247"
+        },
+        {
+          "name": "regla_ubic_prio_det",
+          "rows": "9",
+          "modifyDate": "2017-08-06T01:07:06.330"
+        },
+        {
+          "name": "regla_ubic_prio_param",
+          "rows": "9",
+          "modifyDate": "2017-08-06T00:07:51.640"
+        },
+        {
+          "name": "regla_ubic_sel_item",
+          "rows": "9",
+          "modifyDate": "2017-08-07T14:06:02.187"
+        },
+        {
+          "name": "simbologias_codigo_barra",
+          "rows": "9",
+          "modifyDate": "2018-01-11T12:12:35.993"
+        },
+        {
+          "name": "ajuste_motivo",
+          "rows": "8",
+          "modifyDate": "2018-08-28T15:22:19.830"
+        },
+        {
+          "name": "montacarga_bodega",
+          "rows": "8",
+          "modifyDate": "2016-04-25T11:11:15.537"
+        },
+        {
+          "name": "rol",
+          "rows": "8",
+          "modifyDate": "2018-01-19T15:47:13.870"
+        },
+        {
+          "name": "reglas_recepcion",
+          "rows": "7",
+          "modifyDate": "2016-07-28T14:48:02.890"
+        },
+        {
+          "name": "TempComparacionInventario",
+          "rows": "7",
+          "modifyDate": "2025-02-11T23:40:54.287"
+        },
+        {
+          "name": "ajuste_tipo",
+          "rows": "6",
+          "modifyDate": "2018-01-19T15:15:57.607"
+        },
+        {
+          "name": "horario_laboral_enc",
+          "rows": "6",
+          "modifyDate": "2016-09-16T16:05:43.340"
+        },
+        {
+          "name": "jornada_laboral",
+          "rows": "6",
+          "modifyDate": "2023-05-18T22:36:14.943"
+        },
+        {
+          "name": "stock_transito",
+          "rows": "6",
+          "modifyDate": "2022-12-17T09:39:30.923"
+        },
+        {
+          "name": "turno",
+          "rows": "6",
+          "modifyDate": "2016-09-16T16:04:33.457"
+        },
+        {
+          "name": "indice_rotacion",
+          "rows": "5",
+          "modifyDate": "2018-01-11T12:12:36.060"
+        },
+        {
+          "name": "impresion_productos_barras",
+          "rows": "4",
+          "modifyDate": "2019-11-18T16:23:59.853"
+        },
+        {
+          "name": "indicador_det",
+          "rows": "4",
+          "modifyDate": "2023-06-18T22:25:20.827"
+        },
+        {
+          "name": "indicador_enc",
+          "rows": "4",
+          "modifyDate": "2023-06-18T22:24:19.143"
+        },
+        {
+          "name": "tarimas",
+          "rows": "4",
+          "modifyDate": "2016-07-20T11:43:42.567"
+        },
+        {
+          "name": "arancel",
+          "rows": "3",
+          "modifyDate": "2018-01-11T12:12:36.050"
+        },
+        {
+          "name": "temp_licencia_llave",
+          "rows": "3",
+          "modifyDate": "2018-06-04T09:09:22.200"
+        },
+        {
+          "name": "camara",
+          "rows": "2",
+          "modifyDate": "2018-01-11T12:12:36"
+        },
+        {
+          "name": "montacarga",
+          "rows": "2",
+          "modifyDate": "2022-06-13T22:21:29.633"
+        },
+        {
+          "name": "montacarga_tipoFalla",
+          "rows": "2",
+          "modifyDate": "2016-05-03T09:23:29.487"
+        },
+        {
+          "name": "TipoConteo",
+          "rows": "2",
+          "modifyDate": "2018-01-22T23:15:28.910"
+        },
+        {
+          "name": "TipoInventario",
+          "rows": "2",
+          "modifyDate": "2018-01-22T23:15:05.187"
+        },
+        {
+          "name": "font_det",
+          "rows": "1",
+          "modifyDate": "2017-08-08T11:29:45.163"
+        },
+        {
+          "name": "font_enc",
+          "rows": "1",
+          "modifyDate": "2017-08-04T08:43:37.790"
+        },
+        {
+          "name": "Impresora_Lenguaje",
+          "rows": "1",
+          "modifyDate": "2024-07-02T12:19:42.543"
+        },
+        {
+          "name": "Impresora_Marca",
+          "rows": "1",
+          "modifyDate": "2024-07-02T12:19:35.467"
+        },
+        {
+          "name": "Impresora_Tipo_Conexion",
+          "rows": "1",
+          "modifyDate": "2024-07-02T12:19:49.447"
+        },
+        {
+          "name": "licencia_llave",
+          "rows": "1",
+          "modifyDate": "2017-10-31T14:11:54.150"
+        },
+        {
+          "name": "licencia_solic",
+          "rows": "1",
+          "modifyDate": "2022-01-21T00:57:50.843"
+        },
+        {
+          "name": "propietarios",
+          "rows": "1",
+          "modifyDate": "2025-08-01T11:58:02.650"
+        },
+        {
+          "name": "regla_ubic_prio_enc",
+          "rows": "1",
+          "modifyDate": "2017-08-05T23:27:46.517"
+        },
+        {
+          "name": "regla_ubic_prio_producto",
+          "rows": "1",
+          "modifyDate": "2017-08-07T15:28:37.617"
+        },
+        {
+          "name": "unidad_medida",
+          "rows": "1",
+          "modifyDate": "2024-02-01T14:26:36.230"
+        },
+        {
+          "name": "Appointments",
+          "rows": "0",
+          "modifyDate": "2016-05-18T14:21:22.280"
+        },
+        {
+          "name": "Auditoria",
+          "rows": "0",
+          "modifyDate": "2023-10-29T08:54:46.417"
+        },
+        {
+          "name": "campaña",
+          "rows": "0",
+          "modifyDate": "2025-05-13T10:20:31.950"
+        },
+        {
+          "name": "centro_costo",
+          "rows": "0",
+          "modifyDate": "2024-09-12T08:28:06.067"
+        },
+        {
+          "name": "color",
+          "rows": "0",
+          "modifyDate": "2025-05-13T10:20:31.957"
+        },
+        {
+          "name": "Contacto",
+          "rows": "0",
+          "modifyDate": "2023-10-29T08:54:46.413"
+        },
+        {
+          "name": "contenedor",
+          "rows": "0",
+          "modifyDate": "2016-07-12T20:29:32.417"
+        },
+        {
+          "name": "diferencias_movimientos",
+          "rows": "0",
+          "modifyDate": "2020-10-07T22:21:56.190"
+        },
+        {
+          "name": "estilo",
+          "rows": "0",
+          "modifyDate": "2025-05-13T10:20:31.937"
+        },
+        {
+          "name": "impresora_mensaje",
+          "rows": "0",
+          "modifyDate": "2025-03-27T14:39:47.323"
+        },
+        {
+          "name": "Infraestructura",
+          "rows": "0",
+          "modifyDate": "2023-10-29T08:54:46.407"
+        },
+        {
+          "name": "interface_enc",
+          "rows": "0",
+          "modifyDate": "2017-07-26T12:42:29.237"
+        },
+        {
+          "name": "jornada_sistema",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:13:56.327"
+        },
+        {
+          "name": "licencias_pendientes_retroactivo",
+          "rows": "0",
+          "modifyDate": "2023-04-17T20:05:00.057"
+        },
+        {
+          "name": "montacarga_servicio_enc",
+          "rows": "0",
+          "modifyDate": "2016-04-25T11:18:53.203"
+        },
+        {
+          "name": "Organizacion",
+          "rows": "0",
+          "modifyDate": "2023-10-29T08:54:46.410"
+        },
+        {
+          "name": "p_parametro",
+          "rows": "0",
+          "modifyDate": "2017-07-13T11:23:57.800"
+        },
+        {
+          "name": "perfil_serializado",
+          "rows": "0",
+          "modifyDate": "2018-01-11T12:12:35.990"
+        },
+        {
+          "name": "Propuesta",
+          "rows": "0",
+          "modifyDate": "2023-10-29T08:54:46.403"
+        },
+        {
+          "name": "Prospecto",
+          "rows": "0",
+          "modifyDate": "2023-10-29T08:54:46.417"
+        },
+        {
+          "name": "regimen_fiscal",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:07:44.430"
+        },
+        {
+          "name": "regla_ubic_det_ir",
+          "rows": "0",
+          "modifyDate": "2017-07-14T09:13:42.140"
+        },
+        {
+          "name": "regla_ubic_det_pe",
+          "rows": "0",
+          "modifyDate": "2017-07-13T11:36:31.017"
+        },
+        {
+          "name": "regla_ubic_det_pp",
+          "rows": "0",
+          "modifyDate": "2017-07-13T11:36:06.533"
+        },
+        {
+          "name": "regla_ubic_det_prop",
+          "rows": "0",
+          "modifyDate": "2017-07-13T11:35:49.463"
+        },
+        {
+          "name": "regla_ubic_det_tp",
+          "rows": "0",
+          "modifyDate": "2017-07-13T11:35:02.430"
+        },
+        {
+          "name": "regla_ubic_det_tr",
+          "rows": "0",
+          "modifyDate": "2017-07-14T08:57:33.030"
+        },
+        {
+          "name": "regla_ubic_enc",
+          "rows": "0",
+          "modifyDate": "2017-07-13T11:37:43.907"
+        },
+        {
+          "name": "regla_ubic_sel",
+          "rows": "0",
+          "modifyDate": "2017-08-07T14:05:30.687"
+        },
+        {
+          "name": "regla_ubic_sel_det",
+          "rows": "0",
+          "modifyDate": "2017-08-07T14:05:45.323"
+        },
+        {
+          "name": "regla_ubic_sel_enc",
+          "rows": "0",
+          "modifyDate": "2017-08-07T14:05:54.280"
+        },
+        {
+          "name": "regla_ubicacion",
+          "rows": "0",
+          "modifyDate": "2020-02-04T18:32:30.640"
+        },
+        {
+          "name": "regla_vencimiento",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:26:16.053"
+        },
+        {
+          "name": "reglas_vencimiento_contacto",
+          "rows": "0",
+          "modifyDate": "2024-02-01T14:26:16.050"
+        },
+        {
+          "name": "Resources",
+          "rows": "0",
+          "modifyDate": "2016-05-18T11:48:49.603"
+        },
+        {
+          "name": "road_p_vendedor",
+          "rows": "0",
+          "modifyDate": "2016-05-02T11:12:46.897"
+        },
+        {
+          "name": "road_ruta",
+          "rows": "0",
+          "modifyDate": "2016-10-26T14:40:53.477"
+        },
+        {
+          "name": "rol_bodega",
+          "rows": "0",
+          "modifyDate": "2016-04-25T10:54:53.910"
+        },
+        {
+          "name": "rol_menu",
+          "rows": "0",
+          "modifyDate": "2016-05-06T09:07:50.003"
+        },
+        {
+          "name": "stock_det",
+          "rows": "0",
+          "modifyDate": "2021-06-02T23:24:40.073"
+        },
+        {
+          "name": "stock_jornada",
+          "rows": "0",
+          "modifyDate": "2022-10-18T12:54:24.703"
+        },
+        {
+          "name": "stock_jornada_temporal",
+          "rows": "0",
+          "modifyDate": "2023-04-17T20:05:00.177"
+        },
+        {
+          "name": "stock_parametro",
+          "rows": "0",
+          "modifyDate": "2020-02-14T11:42:56.010"
+        },
+        {
+          "name": "stock_res_se",
+          "rows": "0",
+          "modifyDate": "2016-07-11T15:11:49.770"
+        },
+        {
+          "name": "stock_se",
+          "rows": "0",
+          "modifyDate": "2020-02-14T11:42:55.300"
+        },
+        {
+          "name": "stock_se_rec",
+          "rows": "0",
+          "modifyDate": "2022-12-17T04:15:31.193"
+        },
+        {
+          "name": "tablas_sync",
+          "rows": "0",
+          "modifyDate": "2016-08-10T15:34:35.637"
+        },
+        {
+          "name": "talla",
+          "rows": "0",
+          "modifyDate": "2025-05-13T10:20:31.957"
+        },
+        {
+          "name": "tarifa_tipo_transaccion",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:07:06.420"
+        },
+        {
+          "name": "tarifa_tipo_transaccion_det",
+          "rows": "0",
+          "modifyDate": "2021-05-28T00:07:09.877"
+        },
+        {
+          "name": "TempComparativoInventario",
+          "rows": "0",
+          "modifyDate": "2018-09-21T11:36:35.253"
+        },
+        {
+          "name": "tmp_bodega_ubicacion",
+          "rows": "0",
+          "modifyDate": "2019-09-02T18:07:52.803"
+        },
+        {
+          "name": "tmp_i_nav_transacciones_out",
+          "rows": "0",
+          "modifyDate": "2019-12-11T12:31:14.960"
+        },
+        {
+          "name": "tms_ticket",
+          "rows": "0",
+          "modifyDate": "2021-06-02T23:24:47.417"
+        },
+        {
+          "name": "tms_ticket_pol",
+          "rows": "0",
+          "modifyDate": "2022-03-24T17:21:50.337"
+        },
+        {
+          "name": "transacciones_log",
+          "rows": "0",
+          "modifyDate": "2019-09-02T09:35:10.150"
+        },
+        {
+          "name": "unidad_medida_conversion",
+          "rows": "0",
+          "modifyDate": "2017-11-16T14:56:07.367"
+        },
+        {
+          "name": "us_solic_det",
+          "rows": "0",
+          "modifyDate": "2020-10-07T22:21:35.877"
+        },
+        {
+          "name": "us_solic_enc",
+          "rows": "0",
+          "modifyDate": "2020-10-07T22:21:30.853"
+        },
+        {
+          "name": "zona_picking",
+          "rows": "0",
+          "modifyDate": "2022-05-26T08:49:51.250"
+        },
+        {
+          "name": "zona_picking_tramo",
+          "rows": "0",
+          "modifyDate": "2022-05-26T09:47:37.657"
+        }
+      ]
+    }
+  }
+}
