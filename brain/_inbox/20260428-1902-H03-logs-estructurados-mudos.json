@@ -1,0 +1,60 @@
+{
+  "id": "20260428-1902-H03-logs-estructurados-mudos",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:02:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "7",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-pasada-7.md",
+    "commit_origen": "eeefb02f00992be3eb2dfd73e7e14b15995f8dbc",
+    "preguntas_origen": [
+      "P-20"
+    ],
+    "respondedoras": [
+      "CKFK"
+    ],
+    "candidate_files": [
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-20)",
+      "brain/learnings/L-016-taxonomia-errores-pendiente.md (nuevo)",
+      "Repo BOF (fuera del brain) - vista de logs estructurados"
+    ],
+    "tags": [
+      "mejora-ux",
+      "errores",
+      "bof",
+      "taxonomia",
+      "observability"
+    ]
+  },
+  "context": {
+    "summary": "Logs estructurados por transaccion existen pero no se exponen al admin",
+    "message": "El WMS tiene logs estructurados por transaccion (i_nav_ejecucion_det_error, 4021 filas en Killios) pero no se muestran al admin. El admin sigue dependiendo de la tabla vieja log_error_wms (66339 filas, demasiado grande para ser util). Carol (CKFK) confirma: 'Actualmente lo tenemos mas estructurado por transaccion, pero no lo estamos mostrando'. ACCIONES: (1) exponer los logs estructurados en una vista del BOF, (2) definir taxonomia explicita recuperable/fatal antes de migrar a reserva-webapi. Sin clasificacion explicita de errores, el bridge no puede automatizar retry.",
+    "modules_touched": [
+      "i_nav_ejecucion_det_error",
+      "log_error_wms",
+      "BOF-UI",
+      "monitoreo"
+    ],
+    "tags": [
+      "mejora-ux",
+      "errores",
+      "bof",
+      "taxonomia",
+      "observability"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:02:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+    }
+  ]
+}

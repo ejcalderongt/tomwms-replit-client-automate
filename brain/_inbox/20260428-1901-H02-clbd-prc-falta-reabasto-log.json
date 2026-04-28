@@ -1,0 +1,59 @@
+{
+  "id": "20260428-1901-H02-clbd-prc-falta-reabasto-log",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:01:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "7",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-pasada-7.md",
+    "commit_origen": "eeefb02f00992be3eb2dfd73e7e14b15995f8dbc",
+    "preguntas_origen": [
+      "P-24"
+    ],
+    "respondedoras": [
+      "CKFK"
+    ],
+    "candidate_files": [
+      "Repo del SP CLBD_PRC (fuera del brain, en repo del WMS)",
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-24)",
+      "brain/learnings/L-015-clbd-prc-falta-tabla-reabasto.md (nuevo, opcional)"
+    ],
+    "tags": [
+      "bug-operativo",
+      "instalacion",
+      "sp-mantenimiento",
+      "killios",
+      "concrete-action"
+    ]
+  },
+  "context": {
+    "summary": "trans_reabastecimiento_log no se limpia al instalar cliente nuevo",
+    "message": "En Killios PRD hay 1218 registros en trans_reabastecimiento_log aunque el cliente NO usa el modulo de reabastecimiento. Carol (CKFK) responde literal: 'La tabla no se limpio al instalar ese cliente, debemos agregarla al SP CLBD_PRC'. Es un bug operativo concreto con dueno claro y accion atomica. ACCION: agregar trans_reabastecimiento_log a la lista de tablas que limpia el SP CLBD_PRC durante la instalacion de un cliente nuevo. DUENO: equipo de instalacion. EFECTO: previene falsos positivos en analisis SQL futuro y mantiene baseline limpio en clientes nuevos.",
+    "modules_touched": [
+      "SP CLBD_PRC",
+      "trans_reabastecimiento_log",
+      "proceso-instalacion"
+    ],
+    "tags": [
+      "bug-operativo",
+      "instalacion",
+      "sp-mantenimiento",
+      "killios",
+      "concrete-action"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:01:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+    }
+  ]
+}

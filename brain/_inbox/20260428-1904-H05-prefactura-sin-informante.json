@@ -1,0 +1,60 @@
+{
+  "id": "20260428-1904-H05-prefactura-sin-informante",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:04:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "7",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-pasada-7.md",
+    "commit_origen": "eeefb02f00992be3eb2dfd73e7e14b15995f8dbc",
+    "preguntas_origen": [
+      "P-23"
+    ],
+    "respondedoras": [
+      "CKFK (no conoce el proceso)"
+    ],
+    "candidate_files": [
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-23 + sub-Q de prefactura)",
+      "brain/_inbox/<futuro>-pasada-8-prefactura.json (cuando se identifique respondedor)",
+      "brain/replit.md (anotar gap de conocimiento)"
+    ],
+    "tags": [
+      "pregunta-abierta",
+      "prefactura",
+      "cealsa",
+      "3pl",
+      "scoping-pasada-8"
+    ]
+  },
+  "context": {
+    "summary": "Pasada 7 dejo P-23 (Prefactura CEALSA) sin respuesta - falta dueno funcional",
+    "message": "Carol (CKFK) respondio literal: 'Este proceso no lo conozco' a las 3 sub-preguntas de P-23 sobre prefactura (agregacion por cliente/periodo, servicios facturables, tarifas). El dominio Prefactura CEALSA queda sin informante en el brain. ACCION: identificar respondedor alternativo. Candidatos: alguien de finanzas/billing en CEALSA, un consultor previo del proyecto WMS-CEALSA, o derivar via SQL del agente brain (analisis de trans_prefactura_*). Reservar P-23 para ser re-preguntado en Pasada 8 con el respondedor correcto. Sin esta info, el bridge de tests del WebAPI para CEALSA cojea en el dominio billing.",
+    "modules_touched": [
+      "trans_prefactura_enc",
+      "trans_prefactura_det",
+      "trans_prefactura_mov",
+      "trans_pe_servicios"
+    ],
+    "tags": [
+      "pregunta-abierta",
+      "prefactura",
+      "cealsa",
+      "3pl",
+      "scoping-pasada-8"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:04:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+    }
+  ]
+}

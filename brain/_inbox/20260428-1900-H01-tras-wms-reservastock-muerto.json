@@ -1,0 +1,60 @@
+{
+  "id": "20260428-1900-H01-tras-wms-reservastock-muerto",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:00:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "7",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-pasada-7.md",
+    "commit_origen": "eeefb02f00992be3eb2dfd73e7e14b15995f8dbc",
+    "preguntas_origen": [
+      "P-18"
+    ],
+    "respondedoras": [
+      "CKFK",
+      "EJC"
+    ],
+    "candidate_files": [
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-18)",
+      "brain/learnings/L-014-tras-wms-reservastock-muerto.md (nuevo)",
+      "brain/architecture/adr/ADR-NNN-tras-wms-reservastock-decision.md (nuevo)"
+    ],
+    "tags": [
+      "bug-latente",
+      "tras-wms",
+      "reserva",
+      "schema-decision",
+      "webapi-design"
+    ]
+  },
+  "context": {
+    "summary": "TRAS_WMS.ReservaStock no se valida en el flujo actual",
+    "message": "La columna trans_pe_tipo.ReservaStock=false en TRAS_WMS es codigo muerto. Carol (CKFK) confirma: 'Actualmente no se utiliza esa bandera para reservar o no producto de un documento de salida'. Erik agrega contexto historico: la bandera estaba intencionada para soportar un flujo de bucket/abastecimiento batch policy-driven que nunca se implemento. RIESGO: si alguien activa la bandera esperando comportamiento, el motor no la respeta. DECISION REQUERIDA: (a) eliminar campo del schema reserva-webapi, (b) implementar el flujo bucket que EJC describe, (c) documentar como reservado-para-futuro. RECOMENDACION del agente brain: opcion (c) con marca explicita en la documentacion del schema.",
+    "modules_touched": [
+      "trans_pe_tipo",
+      "motor-reserva",
+      "reserva-webapi"
+    ],
+    "tags": [
+      "bug-latente",
+      "tras-wms",
+      "reserva",
+      "schema-decision",
+      "webapi-design"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:00:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+    }
+  ]
+}

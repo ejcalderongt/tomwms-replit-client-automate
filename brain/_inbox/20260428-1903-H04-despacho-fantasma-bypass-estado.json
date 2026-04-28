@@ -1,0 +1,61 @@
+{
+  "id": "20260428-1903-H04-despacho-fantasma-bypass-estado",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:03:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "7",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-pasada-7.md",
+    "commit_origen": "eeefb02f00992be3eb2dfd73e7e14b15995f8dbc",
+    "preguntas_origen": [
+      "P-16"
+    ],
+    "respondedoras": [
+      "CKFK"
+    ],
+    "candidate_files": [
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-16)",
+      "brain/wms-specific-process-flow/state-machine-pedido.md (existente, agregar excepcion documentada)",
+      "brain/architecture/adr/ADR-NNN-bypass-estado-despachado.md (nuevo)",
+      "brain/learnings/L-017-despacho-fantasma-legacy.md (nuevo)"
+    ],
+    "tags": [
+      "bug-vs-feature",
+      "estado-pedido",
+      "webapi-design",
+      "decision-de-producto",
+      "killios"
+    ]
+  },
+  "context": {
+    "summary": "WMS permite forzar estado Despachado sin disparar despacho fisico",
+    "message": "Hay 43 pedidos en Killios con estado='Despachado' pero sin fila correspondiente en trans_despacho_enc. Carol (CKFK) confirma que es opcion (d) del menu original: 'esto generalmente pasa porque se le cambia el estado al pedido a estado despachado, sin realmente despachar el producto, el WMS lo permite'. Es un bypass del flujo lineal Nuevo->Pendiente->Pickeado->Verificado->Despachado documentado en P-08. PREGUNTA ABIERTA: es feature (admin para corregir errores) o bug (cualquiera puede saltarse despacho)? DECISION REQUERIDA para reserva-webapi: (a) prohibir el cambio manual a Despachado, (b) requerir permiso especifico + razon + log de auditoria, (c) replicar el comportamiento legacy. Esta decision afecta el contract test del bridge y la matriz de transiciones del nuevo motor.",
+    "modules_touched": [
+      "trans_pe_enc",
+      "trans_despacho_enc",
+      "motor-estados-pedido",
+      "reserva-webapi"
+    ],
+    "tags": [
+      "bug-vs-feature",
+      "estado-pedido",
+      "webapi-design",
+      "decision-de-producto",
+      "killios"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:03:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+    }
+  ]
+}
