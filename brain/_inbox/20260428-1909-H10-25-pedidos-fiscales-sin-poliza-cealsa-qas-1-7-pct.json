@@ -1,0 +1,96 @@
+{
+  "id": "20260428-1909-H10",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:09:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "8a",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-tanda-3.md",
+    "commit_origen": "426a46f5",
+    "preguntas_origen": [
+      "Q-013"
+    ],
+    "respondedoras": [
+      "SQL-agente",
+      "schema-validator"
+    ],
+    "candidate_files": [
+      "brain/wms-specific-process-flow/respuestas-tanda-3.md",
+      "wms-brain-client/answers/Q-013/"
+    ],
+    "tags": [
+      "validated-via-live-sql",
+      "cealsa",
+      "poliza-fiscal",
+      "data-quality",
+      "refuerza-h04",
+      "q-013",
+      "concrete-action"
+    ],
+    "filename_slug": "20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.json"
+  },
+  "context": {
+    "summary": "C9-QAS: 25 de 1441 pedidos fiscales (1.7%) NO tienen registro en trans_pe_pol. Confirma H-04.",
+    "message": "Q-013 ejecutada contra IMS4MB_CEALSA_QAS (28-abr-2026): de 1441 pedidos cuyo tipo tiene control_poliza=1, solo 1416 tienen registro en trans_pe_pol (98.3%). 25 pedidos fiscales SIN poliza captada (1.7%). Esto VALIDA empiricamente H-04 (poliza fiscal con dual-state frontend-only): si la captura de poliza ocurre solo en UI sin commit transaccional al pedido, es esperable que ~1-2% se pierda. Implicaciones: (a) la nueva WebAPI debe emitir alerta cuando un pedido fiscal se cierra sin trans_pe_pol; (b) auditar esos 25 pedidos especificos para entender si fueron creados por el path de devolucion (donde la poliza no aplica) o si efectivamente se 'colaron' sin poliza; (c) reforzar la propuesta P3-FISCAL-LOCK con validacion server-side bloqueante.",
+    "modules_touched": [
+      "trans_pe_pol",
+      "trans_pe_enc",
+      "trans_pe_tipo",
+      "control_poliza",
+      "validacion-fiscal"
+    ],
+    "tags": [
+      "validated-via-live-sql",
+      "cealsa",
+      "poliza-fiscal",
+      "data-quality",
+      "refuerza-h04",
+      "q-013",
+      "concrete-action"
+    ]
+  },
+  "analysis": {
+    "analyzed_at": "2026-04-28T22:00:00-03:00",
+    "analyzed_by": "agente brain (sesion replit)",
+    "analyst_role": "main_agent_acting_as_bridge",
+    "method": "ejecucion live SQL Server (sa) contra EC2 52.41.114.122,1437 + cross-reference con consolidacion-pasada-7.md y wms-db-brain dump",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-8a.md",
+    "fuentes": [
+      "Ejecucion live SQL: TOMWMS_KILLIOS_PRD, IMS4MB_BYB_PRD, IMS4MB_CEALSA_QAS (28-abr-2026)",
+      "wms-brain-client/questions/ (Q-009..Q-014, commit 582da718)",
+      "wms-brain-client/answers/ (CSVs y drafts, este commit)",
+      "wms-brain/brain/wms-specific-process-flow/respuestas-tanda-3.md (commit 426a46f5)"
+    ]
+  },
+  "proposal": {
+    "proposal_path": "brain/_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
+    "adr_path": null,
+    "decision_provisional": "accepted_refuerza_p3_fiscal_lock_validated_via_live_sql",
+    "ratificacion_pendiente_de": "Erik Calderon",
+    "proposed_at": "2026-04-28T22:15:00-03:00"
+  },
+  "status": "proposed",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:09:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido tras cierre Pasada 8a via ejecucion live SQL"
+    },
+    {
+      "at": "2026-04-28T22:00:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "analizado contra consolidacion-pasada-7.md y wms-db-brain dump"
+    },
+    {
+      "at": "2026-04-28T22:15:00-03:00",
+      "action": "propose",
+      "by": "replit-agent",
+      "note": "proposal en brain/_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md"
+    }
+  ]
+}

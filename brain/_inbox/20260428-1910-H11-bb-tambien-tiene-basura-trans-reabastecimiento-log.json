@@ -1,0 +1,97 @@
+{
+  "id": "20260428-1910-H11",
+  "schema_version": "2",
+  "created_at": "2026-04-28T19:10:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "8a",
+    "doc_origen": "brain/wms-specific-process-flow/respuestas-tanda-3.md",
+    "commit_origen": "426a46f5",
+    "preguntas_origen": [
+      "P-24"
+    ],
+    "respondedoras": [
+      "CKFK-Carol"
+    ],
+    "candidate_files": [
+      "brain/wms-specific-process-flow/respuestas-tanda-3.md",
+      "wms-brain-client/answers/"
+    ],
+    "tags": [
+      "validated-via-live-sql",
+      "bug-operativo",
+      "instalacion",
+      "sp-mantenimiento",
+      "becofarma",
+      "killios",
+      "concrete-action",
+      "extiende-h02"
+    ],
+    "filename_slug": "20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.json"
+  },
+  "context": {
+    "summary": "Becofarma tambien acumulo basura en trans_reabastecimiento_log (755 filas) sin usar el modulo. Extender H-02.",
+    "message": "Verificacion durante Q-014 setup (28-abr-2026): trans_reabastecimiento_log en IMS4MB_BYB_PRD tiene 755 filas, en TOMWMS_KILLIOS_PRD tiene 1218 filas, en IMS4MB_CEALSA_QAS tiene 0 filas. Carol (P-24) habia identificado el problema solo en Killios. Ampliacion del alcance: el patron 'basura instalacion no limpiada por SP CLBD_PRC' afecta tambien a BB. Decisiones: (a) la accion atomica de H-02 (agregar trans_reabastecimiento_log al SP CLBD_PRC) es una mejora estructural del INSTALADOR, no un fix puntual de Killios; (b) hay que ejecutar TRUNCATE/DELETE FROM trans_reabastecimiento_log WHERE [criterios] tambien en BB; (c) auditar otras tablas de modulos no-usados que pudieron quedar pobladas (al menos: trans_inv_*, trans_devolucion_*, etc).",
+    "modules_touched": [
+      "SP CLBD_PRC",
+      "trans_reabastecimiento_log",
+      "proceso-instalacion",
+      "becofarma",
+      "killios"
+    ],
+    "tags": [
+      "validated-via-live-sql",
+      "bug-operativo",
+      "instalacion",
+      "sp-mantenimiento",
+      "becofarma",
+      "killios",
+      "concrete-action",
+      "extiende-h02"
+    ]
+  },
+  "analysis": {
+    "analyzed_at": "2026-04-28T22:00:00-03:00",
+    "analyzed_by": "agente brain (sesion replit)",
+    "analyst_role": "main_agent_acting_as_bridge",
+    "method": "ejecucion live SQL Server (sa) contra EC2 52.41.114.122,1437 + cross-reference con consolidacion-pasada-7.md y wms-db-brain dump",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-8a.md",
+    "fuentes": [
+      "Ejecucion live SQL: TOMWMS_KILLIOS_PRD, IMS4MB_BYB_PRD, IMS4MB_CEALSA_QAS (28-abr-2026)",
+      "wms-brain-client/questions/ (Q-009..Q-014, commit 582da718)",
+      "wms-brain-client/answers/ (CSVs y drafts, este commit)",
+      "wms-brain/brain/wms-specific-process-flow/respuestas-tanda-3.md (commit 426a46f5)"
+    ]
+  },
+  "proposal": {
+    "proposal_path": "brain/_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md",
+    "adr_path": null,
+    "decision_provisional": "accepted_atomic_action_extended_to_bb_validated_via_live_sql",
+    "ratificacion_pendiente_de": "Erik Calderon",
+    "proposed_at": "2026-04-28T22:15:00-03:00"
+  },
+  "status": "proposed",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T19:10:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "emitido tras cierre Pasada 8a via ejecucion live SQL"
+    },
+    {
+      "at": "2026-04-28T22:00:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "analizado contra consolidacion-pasada-7.md y wms-db-brain dump"
+    },
+    {
+      "at": "2026-04-28T22:15:00-03:00",
+      "action": "propose",
+      "by": "replit-agent",
+      "note": "proposal en brain/_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md"
+    }
+  ]
+}

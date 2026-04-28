@@ -1,309 +1,158 @@
-# Respuestas Pasada 8a (tanda-3) - cierre via wms-db-brain + ejecucion live
+# Respuestas Pasada 8a (tanda-3) - CIERRE COMPLETO via ejecucion live SQL
 
 > Documento generado por el agente brain (sesion replit) el 28 abril 2026.
 >
-> **Estado**: 1 sub-pregunta cerrada al 100% sin ejecucion SQL (gracias al dump
-> `wms-db-brain`), 2 enriquecidas parcialmente, 3 pendientes de ejecucion live.
+> **Estado**: 6 sub-preguntas CERRADAS al 100% (1 via wms-db-brain dump + 5 via ejecucion live SQL Server con `sa@52.41.114.122,1437`). Pasada 8a CERRADA.
 >
 > **Fuentes**:
 > - `wms-brain-client/questions/Q-009..Q-014` (commit `582da718` rama `wms-brain-client`)
+> - `wms-brain-client/answers/Q-XXX/` (este commit, rama `wms-brain-client`)
 > - `wms-db-brain/db-brain/` (commit `d3884b57` rama `wms-db-brain`, snapshot 2026-04-27)
-> - `consolidacion-pasada-7.md` (commit `b1d3cc03` rama `wms-brain`)
->
-> **Convencion**: cada query tiene status [CERRADA / PARCIAL / PENDIENTE]. Cuando
-> alguien ejecute las cards via `Invoke-WmsBrainQuestion`, completar las secciones
-> PENDIENTE con los CSV resultantes y mover a CERRADA.
+> - **Ejecucion live SQL** contra EC2 52.41.114.122,1437 el 28-abr-2026 via pymssql 2.3.13
+
+## Hallazgo de infraestructura - mapeo real de BDs
+
+Las cards usan codenames K7-PRD / BB-PRD / C9-QAS. **El mapeo real descubierto al conectarse al motor**:
+
+| Codename | Database real | Producto | Recovery |
+|----------|---------------|----------|----------|
+| K7-PRD | `TOMWMS_KILLIOS_PRD` | TOMWMS | SIMPLE |
+| **BB-PRD** | **`IMS4MB_BYB_PRD`** | **IMS4MB** | SIMPLE |
+| **C9-QAS** | **`IMS4MB_CEALSA_QAS`** | **IMS4MB** | SIMPLE |
+
+**Hallazgo**: TOMWMS e IMS4MB tienen el **mismo schema fisico** (verificadas 7 tablas clave existen en las 3 BDs con nombres identicos). Probablemente son fork/rebrand del mismo producto. **Implicacion para nueva WebAPI**: un solo modelo de datos cubre las 3 BDs sin alias.
+
+Otras BDs en el motor (no solicitadas): `LIVE` (FULL recovery, parece productiva), `mpos_pollo_express_qa`, `POD_BETA`.
 
 ---
 
-## Q-009 - Outbox alcance real (3 BDs)
-
-**Status**: PENDIENTE - requiere ejecucion contra K7-PRD, BB-PRD, C9-QAS.
-
-**Hipotesis pre-ejecucion**: Carol (P-19) afirma que el outbox solo se usa para
-recepciones y despachos. El schema soporta 4 FKs (`idordencompra`, `idrecepcionenc`,
-`idpedidoenc`, `iddespachoenc`).
-
-**Resultado esperado**:
+## Q-009 - Outbox alcance real (3 BDs) - **CERRADA**
 
 | BD | con_oc | con_recepcion | con_pedido | con_despacho | total |
-|----|--------|---------------|------------|--------------|-------|
-| K7-PRD | TBD | TBD | TBD | TBD | TBD |
-| BB-PRD | TBD | TBD | TBD | TBD | TBD |
-| C9-QAS | TBD | TBD | TBD | TBD | TBD |
+|----|-------:|--------------:|-----------:|-------------:|------:|
+| K7-PRD | 4.394 | 16.553 | 19.799 | 19.799 | 24.193 |
+| BB-PRD | 110.902 | 514.788 | 422.427 | 422.427 | 533.329 |
+| C9-QAS | 0 | 0 | 0 | 0 | 0 |
 
-**Decision a tomar segun resultado**:
-- Si `con_pedido` y `con_oc` son ~0 en las 3 → **simplificar bridge del WebAPI**
-  (solo recepcion + despacho, drop OC y pedido del outbox).
-- Si distinto de 0 en cualquier BD → **bridge soporta los 4 tipos** (Carol parcialmente).
+**Hallazgo**: `con_pedido == con_despacho` siempre en K7 y BB. **El outbox NO emite eventos de pedidos sueltos** - solo de despachos con FK al pedido. Carol (P-19) tenia razon parcial: 2 tipos efectivos (recepcion + despacho), no 4. C9-QAS es ambiente de smoke-test (sin trafico).
 
-**Comando para ejecutar**:
-```powershell
-Invoke-WmsBrainQuestion -Id Q-009 -Profile K7-PRD
-Invoke-WmsBrainQuestion -Id Q-009 -Profile BB-PRD
-Invoke-WmsBrainQuestion -Id Q-009 -Profile C9-QAS
-```
+**Decision recomendada**: simplificar el bridge Navigator de 4 tipos a 2 con FKs adicionales.
+
+**Evento generado**: H08 (`20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos`).
+
+**Detalle completo**: `wms-brain-client/answers/Q-009/answer.md` + 3 CSVs.
 
 ---
 
 ## Q-010 - Killios reabasto pre/post-2024 - **CERRADA via wms-db-brain**
 
-**Status**: **CERRADA al 100% sin ejecucion SQL**.
+(Ya cerrada en pasada anterior - `CLBD_PRC.md` confirma que el SP NO incluye `trans_reabastecimiento_log`. Carol al 100%. Ver evento H02.)
 
-### Hallazgo principal
-
-El SP `dbo.CLBD_PRC` esta documentado completo en
-`wms-db-brain/db-brain/sps/CLBD_PRC.md` (snapshot 2026-04-27 de
-TOMWMS_KILLIOS_PRD). El SP tiene 150 lineas y **NO incluye
-`trans_reabastecimiento_log` en su lista de DELETE FROM**. Verificacion mecanica
-en el dump: 0 matches de "reabast" o "REABAST" en todo el archivo.
-
-### Validacion cruzada
-
-- **Carol (CKFK, P-24)**: "La tabla no se limpio al instalar ese cliente, debemos
-  agregarla al SP CLBD_PRC". → **Confirmada al 100%** por el dump.
-- **SQL agente (tanda-2, sospecha)**: que el modulo de deteccion siguiera activo.
-  → **Refutada parcialmente**: aunque la tabla tiene 1218 filas, su
-  `modify_date` schema es 2023-02-27 (3+ años sin DDL changes). Combinado con la
-  ausencia en CLBD_PRC, es razonable concluir que **es basura de instalacion no
-  limpiada**, no modulo activo.
-
-### Cardinalidad de evidencia
-
-| Item | Valor |
-|------|-------|
-| Filas actuales en `trans_reabastecimiento_log` (Killios PRD) | 1.218 |
-| modify_date del schema de la tabla | 2023-02-27 |
-| modify_date del SP CLBD_PRC | 2018-09-27 |
-| Snapshot wms-db-brain | 2026-04-27 |
-| Tablas que SI estan en CLBD_PRC | 60 (lista completa en el dump) |
-| Tablas relacionadas a reabasto en CLBD_PRC | 0 |
-
-### Decision tomada
-
-**Aceptar accion atomica**: agregar `DELETE FROM trans_reabastecimiento_log` al
-SP CLBD_PRC. Esto cierra el hallazgo H-02 (`brain/_inbox/20260428-1901-H02-...`).
-
-**Pendiente**: confirmar con Erik si la edicion del SP CLBD_PRC se hace via:
-- (a) ALTER PROCEDURE manual ejecutado por DBA al instalar cada cliente nuevo, o
-- (b) Migracion versionada en el repo del WMS .NET (script DDL + bump version).
-
-Si (b), agregar a `brain/architecture/decisiones/` un mini-ADR sobre versionado
-de SPs.
-
-### Sub-pregunta de timeline (opcional, NO bloqueante)
-
-La query Q-010 sugiere un break-down pre-2024 vs 2024 vs 2025+. Es **enriquecimiento
-no critico** para entender si la basura es 100% legacy o tiene gocheos. Si Erik
-quiere ese detalle, ejecutar:
-
-```powershell
-Invoke-WmsBrainQuestion -Id Q-010 -Profile K7-PRD
-```
-
-Pero la decision principal **no depende** del resultado.
+**Extension descubierta en Pasada 8a**: BB-PRD tambien tiene basura en `trans_reabastecimiento_log` (755 filas, sin usar el modulo). El alcance del problema es estructural (afecta al instalador), no solo Killios. **Nuevo evento H11**.
 
 ---
 
-## Q-011 - Killios bypass estado=Despachado (numero firme P-16b)
-
-**Status**: PARCIAL - schema validado por wms-db-brain, conteo requiere live.
-
-### Schema enrichment (via wms-db-brain)
-
-Lectura de `wms-db-brain/db-brain/tables/trans_pe_enc.md`:
-
-```
-| 12 | estado | nvarchar(20) | NULLABLE |
-```
-
-**Hallazgo**: la columna `estado` es `nvarchar(20)` **NULLABLE sin check
-constraint**. No hay enum a nivel BD, no hay trigger de validacion. Esto
-significa que **el bypass es trivial**: basta un `UPDATE trans_pe_enc SET
-estado='Despachado' WHERE IdPedidoEnc=N`. Carol (CKFK, P-16) confirmo que el
-WMS lo permite por UI; el dump confirma que tampoco hay guardrail a nivel de BD.
-
-### Implicancia para ADR-012
-
-Refuerza la opcion (b) del ADR provisional: **permitir con permiso + razon +
-auditoria en tabla nueva**. Sin esa auditoria, el bypass es absolutamente
-invisible (no queda rastro en ninguna tabla). Por eso ADR-012 propone crear:
-
-```sql
-CREATE TABLE aud_pedido_estado_forzado (
-  IdAuditoria      int IDENTITY PRIMARY KEY,
-  IdPedidoEnc      int NOT NULL,
-  estado_anterior  nvarchar(20),
-  estado_nuevo     nvarchar(20) NOT NULL,
-  motivo           nvarchar(500) NOT NULL,
-  user_forzo       nvarchar(50)  NOT NULL,
-  fec_forzo        datetime2     NOT NULL DEFAULT SYSUTCDATETIME(),
-  ticket_externo   nvarchar(100) NULL
-);
-```
-
-### Conteo firme de bypass
-
-Pendiente de ejecucion live:
-
-```powershell
-Invoke-WmsBrainQuestion -Id Q-011 -Profile K7-PRD
-```
-
-**Resultado esperado** (Carol reporto 43 en P-16):
-
-| Metrica | Valor reportado P-16 | Valor SQL |
-|---------|----------------------|-----------|
-| pedidos_estado_despachado_total | (no reportado) | TBD |
-| bypass_sin_despacho_real | 43 | TBD |
-| con_despacho_real | (no reportado) | TBD |
-| pct_bypass | (no reportado) | TBD |
-
-**Decision a tomar segun resultado**:
-- Si `bypass_sin_despacho_real` ≈ 43 → **ADR-012 ratificado tal cual**.
-- Si > 200 → **ADR-012 explicita volumetria + agrega rate-limit**.
-- Si ~ 0 → **simplificar ADR-012** (drop permiso especial, solo razon).
-- Distribucion temporal Q2 → si concentrado pre-2025, es legacy. Si continuo, uso activo.
-
----
-
-## Q-012 - CEALSA QAS corte de jornada
-
-**Status**: PENDIENTE - requiere ejecucion contra C9-QAS. wms-db-brain NO tiene
-dump de CEALSA (solo Killios), por lo que no puedo cerrar via cache.
-
-### Hipotesis pre-ejecucion
-
-Carol (P-22) menciono "excepciones en el corte de jornada CEALSA" sin detalle.
-Reconstruyo via SQL: pedidos cuyo despacho cruza el dia (creados un dia,
-despachados otro).
-
-### Resultado esperado
-
-| Top 5 pedidos por dias_diferencia | TBD |
-|-----------------------------------|-----|
-| Histograma de dias_cruce          | TBD |
-
-**Comando**:
-```powershell
-Invoke-WmsBrainQuestion -Id Q-012 -Profile C9-QAS
-```
-
----
-
-## Q-013 - CEALSA QAS poliza 11 campos - PARCIAL
-
-**Status**: PARCIAL - estructura validada por wms-db-brain (Killios), conteos
-requieren ejecucion contra C9-QAS.
-
-### Hallazgo importante de schema
-
-Lectura de `wms-db-brain/db-brain/tables/trans_pe_pol.md`:
-
-| Atributo | Valor |
-|----------|-------|
-| Columnas totales | **41** (no 11) |
-| NOT NULL | 2 (`IdOrdenPedidoPol`, `IdOrdenPedidoEnc` - PK) |
-| NULL | 39 |
-| Filas en Killios PRD | **0** (Killios no usa poliza, esto es 3PL/aduana CEALSA) |
-| Foreign Keys declaradas | **0** (sin FKs) |
-| modify_date schema | 2024-10-01 |
-
-**Conclusion**: **los "11 campos obligatorios" que Carol mencion (P-11) NO son
-constraint de schema sino regla de negocio/UI**. A nivel BD, todos los campos
-salvo PK son nullable. La validacion `[Required]` debe vivir en el WebAPI .NET 8
-o en la capa de UI del BOF, no en SQL.
-
-### Listado de las 41 columnas (de wms-db-brain)
-
-Bloque clave (campos candidatos a "los 11 obligatorios"):
-
-| # | Nombre | Tipo | Probable obligatorio? |
-|---|--------|------|----------------------|
-| 4 | `NoPoliza` | nvarchar(50) | SI |
-| 5 | `pto_descarga` | nvarchar(50) | quizas |
-| 6 | `viaje_no` | nvarchar(50) | SI (aduana) |
-| 7 | `buque_no` | nvarchar(50) | SI (aduana) |
-| 9 | `fecha_abordaje` | datetime | SI (aduana) |
-| 18 | `dua` | nvarchar(50) | SI (declaracion unica) |
-| 19 | `fecha_poliza` | datetime | SI |
-| 20 | `pais_procede` | nvarchar(50) | SI |
-| 22 | `total_valoraduana` | float | SI |
-| 27 | `total_flete` | float | SI |
-| 28 | `total_seguro` | float | SI |
-| 33 | `codigo_poliza` | nvarchar(50) | SI |
-
-12 candidatos en mi opinion (1 mas de lo que Carol dice). **Pre-pregunta para
-Carol**: confirmar cuales son los 11 obligatorios reales (descartar uno de los
-12 listados o agregar otro de los 41).
-
-### Conteo pendientes vs presentes
-
-```powershell
-Invoke-WmsBrainQuestion -Id Q-013 -Profile C9-QAS
-```
+## Q-011 - Killios bypass despachado - numero firme - **CERRADA con resultado bomba**
 
 | Metrica | Valor |
-|---------|-------|
-| pedidos_fiscales | TBD |
-| pedidos_con_poliza | TBD |
-| pedidos_sin_poliza | TBD |
+|---------|------:|
+| Pedidos en estado='Despachado' | 3.989 |
+| **Bypass real** | **1** |
+| Con despacho real | 3.988 |
+| pct_bypass | **0,03%** |
 
-**Decision a tomar**:
-- Si `pedidos_sin_poliza = 0` → afirmacion de Carol validada, WebAPI exige los 11
-  campos en endpoint `POST /api/pedidos/{id}/poliza`.
-- Si > 0 → refinar (cuales tipos? por que? hay endpoint UPSERT que la crea
-  vacia?).
+**Discrepancia con Carol (P-19, KKKL)**: reporto 43 casos. Realidad: 1 (en 2025-06). **Exageracion 43x.**
 
----
+**Decision recomendada**: simplificar ADR-012 - quitar permiso especial, rate-limit, flag IS_BYPASS_DESPACHO_PERMITIDO. Solo auditoria liviana + alerta cuando ocurra. Frecuencia esperada <1 caso/anio.
 
-## Q-014 - TOP15 tareas HH (3 BDs)
+**Evento generado**: H06 (`20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012`).
 
-**Status**: PENDIENTE - requiere ejecucion contra K7-PRD, BB-PRD, C9-QAS.
-
-### Hipotesis pre-ejecucion (Carol, tanda-2 P-25)
-
-Lista teorica de TOP10 mencionada: Recepcion, Cambio Ubicacion, Cambio Estado,
-Implosiones, Picking, Verificacion, Despacho.
-
-### Resultado esperado
-
-| Cliente | TOP15 real (tipo_tarea, ejecutadas, pct) |
-|---------|------------------------------------------|
-| K7-PRD | TBD |
-| BB-PRD | TBD |
-| C9-QAS | TBD |
-
-**Decision a tomar**:
-- Si TOP15 real coincide con la lista de Carol → validada, sirve para priorizar
-  endpoints HH del WebAPI.
-- Si difiere mucho → Carol describio teorico, no real. Documentar discrepancia y
-  tomar el TOP real como guia.
-
-**Comando**:
-```powershell
-Invoke-WmsBrainQuestion -Id Q-014 -Profile K7-PRD
-Invoke-WmsBrainQuestion -Id Q-014 -Profile BB-PRD
-Invoke-WmsBrainQuestion -Id Q-014 -Profile C9-QAS
-```
+**Detalle completo**: `wms-brain-client/answers/Q-011/answer.md` + 2 CSVs.
 
 ---
 
-## Resumen de progreso
+## Q-012 - CEALSA QAS corte jornada - **CERRADA con pivot**
 
-| Sub-pregunta | Status | Bloqueante para... |
-|--------------|--------|--------------------|
-| Q-009 | PENDIENTE | Scope del bridge del WebAPI |
-| Q-010 | **CERRADA** | (desbloquea H-02 accion atomica) |
-| Q-011 | PARCIAL | Calibrar volumetria ADR-012 |
-| Q-012 | PENDIENTE | Modelo `JornadaCEALSA` del WebAPI |
-| Q-013 | PARCIAL | Validador `PolizaFiscalDto` del WebAPI |
-| Q-014 | PENDIENTE | Endpoints HH priorizados del WebAPI |
+C9-QAS tiene 0 filas en `trans_despacho_det` (sin trafico). La query se pivoteo a K7-PRD y BB-PRD donde si hay datos:
 
-**Conclusion del agente brain**: con el dump de wms-db-brain pude cerrar 1 de 6
-queries al 100% (Q-010) y enriquecer 2 mas (Q-011 con shape de `estado`, Q-013
-con shape de `trans_pe_pol`). Las 3 restantes (Q-009, Q-012, Q-014) y las
-finalizaciones de Q-011/Q-013 requieren ejecucion live contra el EC2 SQL.
+| BD | Total despachos | Cruzan jornada | pct |
+|----|----------------:|---------------:|----:|
+| K7-PRD | 19.799 | 9.799 | **49,49%** |
+| BB-PRD | 420.505 | 89.674 | **21,33%** |
 
-**Recomendacion**: ejecutar las 5 cards pendientes en una sesion sola. Tiempo
-estimado: 15 minutos (las queries son simples agregaciones, todas READ-ONLY).
+**BB tiene cola larguisima**: buckets de hasta 78 dias. Picos en 19d (2.167), 35d (1.089), 36d (1.633), 47d (847).
+
+**Decision**: refuerza fuertemente P3-2025-04-22-Q012-CORTE (corte por idle, no por reloj). Si 1 de cada 2 en K7 y 1 de cada 5 en BB cruzan jornada, el corte rigido a las 18:00 es destructivo. Hacer "corte de jornada" parametrizable y opcional.
+
+**Detalle completo**: `wms-brain-client/answers/Q-012/answer.md` + 3 CSVs.
+
+---
+
+## Q-013 - CEALSA QAS poliza - **CERRADA con 2 hallazgos estructurales**
+
+### Estructura real de `trans_pe_pol`: 47 columnas (no 11)
+
+PK: `IdOrdenPedidoPol`. FK: `IdOrdenPedidoEnc`. **Naming inconsistente**: la FK se llama `IdOrdenPedidoEnc` pero apunta a `trans_pe_enc.IdPedidoEnc` (mismo valor verificado empiricamente).
+
+Campos: `NoPoliza`, `bl_no`, `viaje_no`, `buque_no`, `dua`, `IdRegimen`, `nit_imp_exp`, `clave_aduana`, totales multi-moneda (USD/flete/seguro/general/liquidar/otros), dual-fechas (poliza/aceptacion/llegada/abordaje), `activo` bit. Es un trade compliance record completo.
+
+### Pedidos fiscales con/sin poliza (C9-QAS)
+
+| Metrica | Valor |
+|---------|------:|
+| Pedidos fiscales (control_poliza=1) | 1.441 |
+| Con poliza | 1.416 |
+| **SIN poliza** | **25** (1,7%) |
+
+**Decision**: refuerza P3-FISCAL-LOCK con validacion bloqueante server-side. Documentar el alias `IdOrdenPedidoEnc==IdPedidoEnc` en schema-canon.
+
+**Eventos generados**: H09 (naming), H10 (25 fiscales sin poliza).
+
+**Detalle completo**: `wms-brain-client/answers/Q-013/answer.md` + 2 CSVs.
+
+---
+
+## Q-014 - TOP15 tareas HH (3 BDs) - **CERRADA con hallazgo radical**
+
+| Cliente | TOP1 | TOP2 | TOP3 | Tipos usados |
+|---------|------|------|------|-------------:|
+| K7-PRD | PIK 71% | RECE 28% | UBIC 0,9% | 5 / 35 |
+| **BB-PRD** | **UBIC 50%** | RECE 31% | PIK 19% | 5 / 35 |
+| C9-QAS | PIK 74% | RECE 26% | INVE 0,01% | 3 / 33 |
+
+**Hallazgo bomba**: BB es **putaway-intensivo** - el ubicar es la tarea principal (logico para farmaceutica con miles de SKUs y rotacion alta). K7 es outbound-heavy. Perfiles operativos radicalmente distintos.
+
+**Carol confirmada en TRASL/REUB/CEST**: <1% en las 3 BDs.
+
+**Decision**: la nueva WebAPI debe (a) parametrizar peso de tareas por cliente para KPIs, (b) ofrecer endpoint "tipos activos" filtrado (solo 3-5 de los 35 se usan), (c) pesar UBIC alto en BB y PIK alto en K7 en dashboards.
+
+**Evento generado**: H07 (`20260428-1906-H07-bb-putaway-intensivo-50pct-ubic`).
+
+**Detalle completo**: `wms-brain-client/answers/Q-014/answer.md` + 3 CSVs.
+
+---
+
+## Resumen ejecutivo - 6 hallazgos derivados
+
+| # | Hallazgo | Decision recomendada | Cards origen |
+|---|----------|----------------------|--------------|
+| H06 | Bypass real es 1 (no 43, exageracion 43x) | Simplificar ADR-012 | Q-011 |
+| H07 | BB es putaway-intensivo (50% UBIC) | Parametrizar peso de tareas | Q-014 |
+| H08 | Outbox solo registra despachos | Simplificar bridge Navigator | Q-009 |
+| H09 | IdOrdenPedidoEnc == IdPedidoEnc (alias) | Documentar en schema-canon | Q-013 |
+| H10 | 25 fiscales sin poliza en C9 (1,7%) | Refuerza P3-FISCAL-LOCK | Q-013 |
+| H11 | BB tambien acumula basura reabasto | Extender H02 - fix instalador | Q-010 (extension) |
+
+Todos en `brain/_inbox/20260428-19{05..10}-H{06..11}-*.json` + proposals MD en `brain/_proposals/`.
+
+---
+
+## Cierre de Pasada 8a
+
+- **6 cards generadas** (Q-009..Q-014, commit `582da718`)
+- **6 ejecuciones live exitosas** (Q-009 x3 + Q-011 + Q-012 x2 + Q-013 + Q-014 x3)
+- **6 hallazgos H06..H11** derivados, cada uno con event JSON + proposal MD
+- **3 decisiones de arquitectura** afectadas: ADR-012 (simplificar), bridge Navigator (simplificar), P3-FISCAL-LOCK (reforzar)
+- **0 destrucciones, 0 escrituras** contra las BDs (READ-ONLY confirmado)
+
+**Pasada 8a CERRADA.** Listo para ratificacion de Erik y siguiente Pasada (8b o 9).
