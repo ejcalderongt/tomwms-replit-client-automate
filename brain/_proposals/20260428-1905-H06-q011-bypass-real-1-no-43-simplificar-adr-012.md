@@ -1,6 +1,6 @@
 # 20260428-1905-H06 - Q-011 valida que el proceso 'estado=Despachado sin trans_despacho_det' existe como camino real en TOMWMS_KILLIOS_PRD.
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras Ciclo 8a via ejecucion live SQL.
 
 ## Contexto
 
@@ -38,5 +38,5 @@ Erik Calderon (PrograX24)
 - Inbox event: `brain/_inbox/20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012.json`
 - Tags: `validated-via-live-sql`, `afinidad-procesos`, `killios`, `adr-revision`, `q-011`, `proceso-validado`
 - Preguntas origen: `P-19`, `Q-011`
-- Pasada: 8a
-- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`
+- Ciclo: 8a
+- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-8a.md`

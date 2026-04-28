@@ -1,6 +1,6 @@
 # BUG-001: Pedidos despachados que vuelven a estado Pendiente/Pickeado/Verificado
 
-> **Investigacion**: pasada 9b (autonoma SQL READ-ONLY).
+> **Investigacion**: ciclo 9b (autonoma SQL READ-ONLY).
 > **Reportado por**: usuarios de produccion via Erik (no reproducible en dev).
 > **Confirmado en datos**: SI — 116 pedidos afectados en Killios PRD.
 > **Severidad**: ALTA — afecta integridad operativa (pedidos cobrados como

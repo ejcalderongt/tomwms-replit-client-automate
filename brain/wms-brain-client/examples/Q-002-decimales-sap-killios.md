@@ -12,7 +12,7 @@ targets:
     environment: PRD
     minRows: 100
 relatedDocs:
-  - brain/wms-specific-process-flow/preguntas-pasada-7.md#P-04
+  - brain/wms-specific-process-flow/preguntas-ciclo-7.md#P-04
   - brain/wms-specific-process-flow/interfaces-erp-por-cliente.md
 suggestedQueries:
   - id: q1-cantidades-fraccional-vs-entera
@@ -71,7 +71,7 @@ estimatedTimeMinutes: 5
 
 ## Contexto
 
-P-04 viene desde la pasada 7: SAP B1 historicamente acepta cantidades con
+P-04 viene desde el ciclo 7: SAP B1 historicamente acepta cantidades con
 2 decimales en la mayoria de campos, pero algunos clientes (K7) manejan
 unidades fraccionables (kg, litros) en el WMS que pueden generar mas
 precision. Si SAPSYNCKILLIOS no normaliza, SAP puede truncar/redondear

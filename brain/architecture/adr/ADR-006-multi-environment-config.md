@@ -23,7 +23,7 @@ Adoptar archivo TOML `~/.wmsa/config.toml` con secciones `[servers.X]` y `[envs.
 
 ## Migracion
 
-Fase 1 (esta pasada): documentar el schema y el comportamiento esperado.
+Fase 1 (este ciclo): documentar el schema y el comportamiento esperado.
 Fase 2: implementar lectura del TOML en `Config.load()`.
 Fase 3: agregar comandos CLI nuevos.
 Fase 4: migrar uso interno y deprecar env vars sueltas.

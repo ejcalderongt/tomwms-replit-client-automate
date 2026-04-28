@@ -1,11 +1,11 @@
-# Preguntas para afinar el mapeo del flujo WMS — pasada 7
+# Preguntas para afinar el mapeo del flujo WMS — ciclo 7
 
 > **Status global**: 12/25 respondidas + 1 parcial + 0 reabiertas. Ver
-> respuestas consolidadas en `respuestas-tanda-1.md` (Erik) y
-> `respuestas-tanda-2.md` (SQL autonomo).
+> respuestas consolidadas en `respuestas-tarea-1.md` (Erik) y
+> `respuestas-tarea-2.md` (SQL autonomo).
 >
 > Las preguntas originales se mantienen literales (regla 6 del README:
-> las pasadas no se editan, se suceden). Lo unico que se agrega es el
+> los ciclos no se editan, se suceden). Lo unico que se agrega es el
 > badge de status arriba de cada pregunta y el link a la respuesta cuando
 > ya existe.
 
@@ -79,7 +79,7 @@
 
 ### P-08 — Transiciones permitidas
 
-`status: RESPONDIDA → respuestas-tanda-1.md`
+`status: RESPONDIDA → respuestas-tarea-1.md`
 
 **Evidencia**: Estados observados: NUEVO (14), Pendiente (73), Pickeado (86), Verificado (7), Despachado (3989), Anulado (33).
 
@@ -88,7 +88,7 @@
 
 ### P-09 — Pedidos atascados
 
-`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
+`status: RESPONDIDA → respuestas-tarea-2.md (SQL)`
 
 **Evidencia**: 86 `Pickeado` + 73 `Pendiente` = 159 pedidos no terminados de un total de 4202 (3.8%).
 
@@ -98,7 +98,7 @@
 
 ### P-10 — Caso `_LLR_CASO_#X_`
 
-`status: RESPONDIDA → respuestas-tanda-1.md`
+`status: RESPONDIDA → respuestas-tarea-1.md`
 
 > **TL;DR**: LLR = "Llamado Luego de Reserva" (recursion del motor).
 > Mapeo #20→#28, #23→#29, #24→#31. Para stock modificado durante reserva.
@@ -117,7 +117,7 @@
 
 ### P-12 — `trans_picking_ubic` (26k) vs `trans_picking_ubic_stock` (20k)
 
-`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
+`status: RESPONDIDA → respuestas-tarea-2.md (SQL)`
 
 > **TL;DR**: hipotesis confirmada. `trans_picking_ubic` = planificacion
 > (sugerencias). `trans_picking_ubic_stock` = ejecucion (stock real).
@@ -134,7 +134,7 @@
 
 ### P-14 — `trans_picking_op` (5895) vs `trans_picking_enc` (1293)
 
-`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
+`status: RESPONDIDA → respuestas-tarea-2.md (SQL)`
 
 > **TL;DR**: hipotesis incorrecta. `trans_picking_op` no es "operaciones",
 > es relacion muchos-a-muchos operador↔picking. Ratio 4.56 operadores
@@ -152,7 +152,7 @@
 
 **Pregunta original**: ¿La verificacion en packing es **opcional por configuracion**? ¿O esta tabla solo se llena para excepciones?
 
-> **Resuelto parcial (tanda 2)**: la columna que controla verificacion es
+> **Resuelto parcial (tarea 2)**: la columna que controla verificacion es
 > `trans_pe_tipo.Verificar` (bit). En Killios solo PE0003 la tiene en
 > true (y no se usa: 0 historicos). Por eso solo 13 packing — son los
 > casos manuales que se forzaron. **Falta confirmar con Erik**: ¿hay
@@ -164,7 +164,7 @@
 
 ### P-16 — Discrepancia despacho vs estado
 
-`status: REABIERTA como P-16b → respuestas-tanda-2.md (SQL)`
+`status: REABIERTA como P-16b → respuestas-tarea-2.md (SQL)`
 
 **Evidencia original**: `trans_despacho_enc` = 4,032 vs `trans_pe_enc.estado='Despachado'` = 3,989.
 
@@ -177,7 +177,7 @@
 
 ### P-17 — Push automatico al ERP
 
-`status: RESPONDIDA → interfaces-erp-por-cliente.md (Erik tanda 3)`
+`status: RESPONDIDA → interfaces-erp-por-cliente.md (Erik tarea 3)`
 
 > **TL;DR**: outbox polimorfico. Cada cliente tiene su interface dedicada
 > (MI3 WCF / NavSync push / SAPSYNC* / WebAPI MHS). El "patron" del
@@ -196,7 +196,7 @@
 
 ### P-18 — Traslado interno sin reserva (`TRAS_WMS`)
 
-`status: RESPONDIDA → respuestas-tanda-1.md (parcial + DEUDA-001)`
+`status: RESPONDIDA → respuestas-tarea-1.md (parcial + DEUDA-001)`
 
 > **TL;DR**: La reserva ya se garantizo por proceso previo. **DEUDA-001**:
 > la bandera `ReservaStock=NO` no se valida explicitamente. Vision
@@ -228,7 +228,7 @@
 
 ### P-21 — Cadencia del outbox `i_nav_transacciones_out`
 
-`status: RESPONDIDA → interfaces-erp-por-cliente.md (Erik tanda 3)`
+`status: RESPONDIDA → interfaces-erp-por-cliente.md (Erik tarea 3)`
 
 > **TL;DR**: la cadencia NO es responsabilidad del WMS — depende de la
 > modalidad de integracion del cliente. Idealsa (WCF): el ERP cliente
@@ -264,7 +264,7 @@
 
 ### P-24 — `trans_reabastecimiento_log` con datos en Killios
 
-`status: RESPONDIDA → respuestas-tanda-2.md (SQL)`
+`status: RESPONDIDA → respuestas-tarea-2.md (SQL)`
 
 > **TL;DR**: el modulo esta encendido a medias en Killios. Detecta
 > inexistencias automaticamente (mas reciente: 2025-06-16) pero no se
@@ -277,12 +277,12 @@
 
 ### P-25 — `sis_tipo_tarea` (35 tipos)
 
-`status: PARCIAL → respuestas-tanda-2.md (SQL)`
+`status: PARCIAL → respuestas-tarea-2.md (SQL)`
 
 **Evidencia**: 35 tipos de tarea posibles en HH.
 
 > **TL;DR**: encontrada la tabla operativa real (`tarea_hh`, 18 cols).
-> Catalogo completo de los 35 tipos enumerado en respuestas-tanda-2.
+> Catalogo completo de los 35 tipos enumerado en respuestas-tarea-2.
 > Falta el TOP10 de uso real (query en proceso).
 
 ---
@@ -291,14 +291,14 @@
 
 Originalmente las criticas eran 6: P-04, P-08, P-10, P-12, P-16, P-17.
 
-**Resueltas**: P-08 (tanda 1), P-10 (tanda 1), P-12 (SQL), P-16 (SQL → reabierta como P-16b).
+**Resueltas**: P-08 (tarea 1), P-10 (tarea 1), P-12 (SQL), P-16 (SQL → reabierta como P-16b).
 
 **Aun necesitan a Erik**:
 
 1. **P-04** (decimales SAP) — la unica critica original abierta para Erik.
 2. **P-16b** ya CONFIRMADO en datos (ver `bug-report-p16b.md`). Falta
    identificar el SP responsable (necesito pistas del nombre).
-3. **PEND-10 RESUELTA en tanda 4**: outbox usa `enviado=0/1` +
+3. **PEND-10 RESUELTA en tarea 4**: outbox usa `enviado=0/1` +
    `tipo_transaccion=INGRESO/SALIDA`. Ver `interfaces-erp-por-cliente.md`
    apendice "Marca de envio".
 4. **PEND-12 NUEVA**: BYB tiene 110,795 INGRESOS pendientes en outbox

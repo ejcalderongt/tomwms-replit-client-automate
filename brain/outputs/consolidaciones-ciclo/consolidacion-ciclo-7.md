@@ -1,24 +1,24 @@
 ---
-titulo: Consolidacion Pasada 7 - cross-reference de las 3 fuentes
+titulo: Consolidacion Ciclo 7 - cross-reference de las 3 fuentes
 fuentes_consolidadas:
-  - tanda-1: respuestas-tanda-1.md (Erik Calderon, pasada 9, 3 preguntas)
-  - tanda-2: respuestas-tanda-2.md (agente brain via SQL READ-ONLY, pasada 9b, 9 preguntas)
-  - pasada-7: respuestas-pasada-7.md (Carol Karina Flores Klee, 25 preguntas + addendum EJC)
+  - tarea-1: respuestas-tarea-1.md (Erik Calderon, ciclo 9, 3 preguntas)
+  - tarea-2: respuestas-tarea-2.md (agente brain via SQL READ-ONLY, ciclo 9b, 9 preguntas)
+  - ciclo-7: respuestas-ciclo-7.md (Carol Karina Flores Klee, 25 preguntas + addendum EJC)
 generado: 28 abril 2026
 generado_por: agente brain en sesion replit
 proposito: detectar contradicciones, complementariedades y vacios entre las 3 fuentes para que el lector encuentre la verdad consolidada en un solo lugar
-documento_origen_consolidacion: brain/wms-specific-process-flow/respuestas-pasada-7.md (commit eeefb02f)
+documento_origen_consolidacion: brain/wms-specific-process-flow/respuestas-ciclo-7.md (commit eeefb02f)
 ---
 
-# Consolidacion Pasada 7
+# Consolidacion Ciclo 7
 
-Las 25 preguntas de la Pasada 7 fueron respondidas en **3 momentos distintos por 3 fuentes distintas**, lo que genera potencial de contradiccion o redundancia. Este documento es el **cruce maestro**: para cada pregunta, que dijo cada fuente, donde coinciden, donde se contradicen, y cual es la verdad operativa que el bridge/webapi debe asumir.
+Las 25 preguntas de la Ciclo 7 fueron respondidas en **3 momentos distintos por 3 fuentes distintas**, lo que genera potencial de contradiccion o redundancia. Este documento es el **cruce maestro**: para cada pregunta, que dijo cada fuente, donde coinciden, donde se contradicen, y cual es la verdad operativa que el bridge/webapi debe asumir.
 
 **No reemplaza** a los documentos fuente — los sintetiza para acelerar lectura. Para evidencia detallada (citas literales, queries SQL, addendums), seguir los links.
 
 ## Tabla maestra: estado consolidado por pregunta
 
-| # | Pregunta | Erik (tanda-1) | SQL agente (tanda-2) | Carol (pasada-7) | Estado consolidado |
+| # | Pregunta | Erik (tarea-1) | SQL agente (tarea-2) | Carol (ciclo-7) | Estado consolidado |
 |---|---|:-:|:-:|:-:|---|
 | P-01 | Disparo de recepcion | — | — | RESP | ACLARACION (no son tablas matcheables) |
 | P-02 | trans_re_det_lote_num cardinalidad | — | — | RESP | RESUELTO (1 fila por recepcion HH) |
@@ -54,13 +54,13 @@ Las 25 preguntas de la Pasada 7 fueron respondidas en **3 momentos distintos por
 
 ### C-01 — Verificado: obligatorio (Carol) vs opcional (Erik)
 
-**Cita Erik (tanda-1):**
+**Cita Erik (tarea-1):**
 > Verificado es opcional. Puede ser habilitado por el usuario. Puede estar previamente definido en base al tipo de pedido.
 
-**Cita Carol (pasada-7):**
+**Cita Carol (ciclo-7):**
 > Verificado NO es opcional. Aplica a todos los pedidos que se pickean. Si un pedido no se verifica, no se puede despachar.
 
-**Resolucion via SQL (tanda-2 PEND-01):** la columna existe (`trans_pe_tipo.Verificar` bit). Configuracion observada:
+**Resolucion via SQL (tarea-2 PEND-01):** la columna existe (`trans_pe_tipo.Verificar` bit). Configuracion observada:
 
 | Cliente | Tipo | Verificar |
 |---|---|:-:|
@@ -82,10 +82,10 @@ Las 25 preguntas de la Pasada 7 fueron respondidas en **3 momentos distintos por
 
 ### C-02 — `trans_picking_op`: 1 op = 1 pickeo (Carol) vs muchos-a-muchos operador-picking (SQL)
 
-**Cita Carol (pasada-7):**
+**Cita Carol (ciclo-7):**
 > Es una por pickeo realizado, por ejemplo puedo tener un registro que indica que debo tomar 100 cajas, pero solo tomo 50 — se va a registrar **una operacion por 50**.
 
-**Hallazgo SQL (tanda-2 P-14):**
+**Hallazgo SQL (tarea-2 P-14):**
 > `trans_picking_op` solo tiene 7 columnas: `IdOperadorPicking`, `IdPickingEnc`, `IdOperadorBodega`, `user_agr`, `fec_agr`, `user_mod`, `fec_mod`. **No es una tabla de operaciones de picking**. Es una tabla muchos-a-muchos entre `trans_picking_enc` y `OperadorBodega`. Registra **que operadores trabajaron en cada picking_enc**.
 
 **Verdad consolidada:**
@@ -99,10 +99,10 @@ Las 25 preguntas de la Pasada 7 fueron respondidas en **3 momentos distintos por
 
 ### C-03 — Outbox: solo recepciones+despachos (Carol) vs unificado 4 tipos (SQL)
 
-**Cita Carol (pasada-7 P-21):**
+**Cita Carol (ciclo-7 P-21):**
 > Recepciones y despachos. (eventos que generan filas en `i_nav_transacciones_out`)
 
-**Hallazgo SQL (tanda-2 P-21):**
+**Hallazgo SQL (tarea-2 P-21):**
 > `i_nav_transacciones_out` es un outbox **unificado** que sirve para cualquier transaccion WMS→ERP. Tiene columnas para los 4 tipos: `idordencompra` (recepciones de OC), `idrecepcionenc` (recepciones generales), `idpedidoenc` (eventos de pedido), `iddespachoenc` (despachos cerrados). Cada fila viene poblada solo en el ID que corresponde.
 
 **Verdad consolidada:**
@@ -119,17 +119,17 @@ Las 25 preguntas de la Pasada 7 fueron respondidas en **3 momentos distintos por
 
 ### C-04 — Reabasto Killios: bug de instalacion (Carol) vs modulo activo a medias (SQL)
 
-**Cita Carol (pasada-7 P-24):**
+**Cita Carol (ciclo-7 P-24):**
 > La tabla no se limpio al instalar ese cliente, debemos agregarla al SP `CLBD_PRC`.
 
-**Hallazgo SQL (tanda-2 P-24):**
+**Hallazgo SQL (tarea-2 P-24):**
 > 1,218 filas en `trans_reabastecimiento_log`. Mas vieja: 2021-11-22. Mas reciente: **2025-06-16** → el modulo SIGUE generando filas activamente. Esta encendido a medias: deteccion automatica ON, procesamiento OFF.
 
 **Verdad consolidada:**
 
 - **Las dos versiones NO son mutuamente excluyentes.** Pueden coexistir:
   1. **Hay basura inicial NO LIMPIADA** (Carol) — la instalacion no purgo `trans_reabastecimiento_log`.
-  2. **El modulo de DETECCION sigue activo** (tanda-2) — el SP que detecta inexistencias en ubicaciones de picking sigue corriendo y agregando filas nuevas.
+  2. **El modulo de DETECCION sigue activo** (tarea-2) — el SP que detecta inexistencias en ubicaciones de picking sigue corriendo y agregando filas nuevas.
 - **El gap real:** el modulo de PROCESAMIENTO (que consume las filas para mover stock) esta apagado. Las filas se acumulan como cola sin consumidor.
 
 **Sub-pregunta abierta:** de las 1218 filas, cuantas son pre-2024 (basura instalacion) vs post-2024 (deteccion activa)? El analisis SQL podria responder esto sin nueva intervencion humana.
@@ -146,31 +146,31 @@ Estos son cruces donde las fuentes **se complementan** sin contradecirse — el 
 
 ### R-01 — P-08: matriz de transiciones de pedido
 
-**Erik (tanda-1)** documento la matriz canonica con casos especiales (`NUEVO → Pickeado` solo para WMS-inyectados). **Carol (pasada-7)** confirmo el flujo lineal canonico para humanos. **Tanda-2 PEND-03 (SQL)** mostro que solo 0.4% de los pedidos atraviesan la maquina en una transaccion (los WMS-inyectados de Erik), pero **siempre con `IdPickingEnc` ≠ 0** — es decir, no se SALTA el modelo, se SIMULA completo en milisegundos.
+**Erik (tarea-1)** documento la matriz canonica con casos especiales (`NUEVO → Pickeado` solo para WMS-inyectados). **Carol (ciclo-7)** confirmo el flujo lineal canonico para humanos. **Tarea-2 PEND-03 (SQL)** mostro que solo 0.4% de los pedidos atraviesan la maquina en una transaccion (los WMS-inyectados de Erik), pero **siempre con `IdPickingEnc` ≠ 0** — es decir, no se SALTA el modelo, se SIMULA completo en milisegundos.
 
 **Conclusion compuesta:** la matriz lineal de Carol es correcta como **especificacion**. El caso WMS-inyectado de Erik es correcto como **excepcion implementada via picking sintetico instantaneo** (no como bypass real del flujo). El bridge debe modelar los 6 estados aunque algunos pedidos los atraviesen en milisegundos.
 
 ### R-02 — P-10: LLR (Llamado Luego de Reserva)
 
-**Erik (tanda-1)** dio el nombre canonico ("Llamado Luego de Reserva") y la justificacion arquitectonica ("la forma mas facil para no generar mas codigo, una llamada recursiva"). **Carol (pasada-7)** confirmo la mecanica observada ("ocurre cuando no logro reservar completo y requiero llamado recursivo") sin saber el nombre.
+**Erik (tarea-1)** dio el nombre canonico ("Llamado Luego de Reserva") y la justificacion arquitectonica ("la forma mas facil para no generar mas codigo, una llamada recursiva"). **Carol (ciclo-7)** confirmo la mecanica observada ("ocurre cuando no logro reservar completo y requiero llamado recursivo") sin saber el nombre.
 
 **Conclusion compuesta:** ambos describen el mismo fenomeno. El mapeo `#20→#28, #23→#29, #24→#31` viene de Erik. El bridge debe portar el patron, pero el nuevo motor puede reemplazar la recursion por una cola de tareas pendientes — el bridge valida resultado, no implementacion. **Renombrar a `PostReservationProcessing` en webapi.**
 
 ### R-03 — P-12: planificacion vs ejecucion de picking
 
-**Carol (pasada-7)** confirmo la hipotesis basica (`trans_picking_ubic_stock` es lo realmente pickeado). **Tanda-2 P-12 (SQL)** enumero las 4 causas concretas de la diferencia 6,130: (1) pedidos cancelados, (2) sugerencias rechazadas con reemplazo, (3) stock no encontrado, (4) pallet dañado. Tambien aporto la query exacta para medir "inteligencia" del motor.
+**Carol (ciclo-7)** confirmo la hipotesis basica (`trans_picking_ubic_stock` es lo realmente pickeado). **Tarea-2 P-12 (SQL)** enumero las 4 causas concretas de la diferencia 6,130: (1) pedidos cancelados, (2) sugerencias rechazadas con reemplazo, (3) stock no encontrado, (4) pallet dañado. Tambien aporto la query exacta para medir "inteligencia" del motor.
 
 **Conclusion compuesta:** el bridge tiene una metrica clara (% sugerencias aceptadas sin cambio) y conoce las 4 causas de no-pick para clasificarlas en su reporte de regresion.
 
 ### R-04 — P-09: pedidos atascados (ruido historico, no flujo activo)
 
-**Carol (pasada-7)** dio el contexto operativo (manuales no migrados + facturados antes de pickearse). **Tanda-2 P-09 (SQL)** cuantifico: 100% de los 180 atascados tienen >90 dias, no hay atascos recientes.
+**Carol (ciclo-7)** dio el contexto operativo (manuales no migrados + facturados antes de pickearse). **Tarea-2 P-09 (SQL)** cuantifico: 100% de los 180 atascados tienen >90 dias, no hay atascos recientes.
 
 **Conclusion compuesta:** 3.8% atascado es **falso positivo** — son ruido historico, no problema activo. El bridge debe excluir pedidos `WHERE fec_agr < DATEADD(day, -90, GETDATE())` del comparativo.
 
 ### R-05 — P-18: TRAS_WMS, 3 fuentes coinciden
 
-**Erik (tanda-1)** documento la DEUDA-001 (bandera `ReservaStock` no se valida). **Tanda-2 PEND-01 (SQL)** confirmo que `trans_pe_tipo.ReservaStock=false` para TRAS_WMS en BD. **Carol (pasada-7)** repitio (con menos detalle) la misma observacion ("no se utiliza esa bandera"). El **addendum de Erik en pasada-7** repitio sustancialmente lo de tanda-1.
+**Erik (tarea-1)** documento la DEUDA-001 (bandera `ReservaStock` no se valida). **Tarea-2 PEND-01 (SQL)** confirmo que `trans_pe_tipo.ReservaStock=false` para TRAS_WMS en BD. **Carol (ciclo-7)** repitio (con menos detalle) la misma observacion ("no se utiliza esa bandera"). El **addendum de Erik en ciclo-7** repitio sustancialmente lo de tarea-1.
 
 **Conclusion compuesta:** triple confirmacion. La vision futura del bolson/bucket es exclusiva de Erik (Carol no la conoce — probablemente nunca se discutio formalmente). Esto ya quedo capturado como evento `learning_proposed` H-01 en `_inbox/`.
 
@@ -205,13 +205,13 @@ FROM i_nav_transacciones_out;
 
 Si `con_pedido` o `con_oc` son distintos de cero, Carol tiene una vision parcial y el bridge debe soportar todos los casos. Si son cero, su afirmacion se confirma y el bridge se simplifica.
 
-**Costo:** 1 query SQL READ-ONLY. Beneficio: cierra C-03 sin nueva pasada con humanos.
+**Costo:** 1 query SQL READ-ONLY. Beneficio: cierra C-03 sin nuevo ciclo con humanos.
 
 ### D-03 — P-16 ahora tiene DOS hallazgos en vez de uno
 
 Antes de la consolidacion, P-16 era "discrepancia 4032 vs 3989 = 43". Despues:
 
-1. **La discrepancia 4032 vs 3989 NO es huerfanos 1:1** (tanda-2): son tablas con cardinalidad distinta (despacho_enc agrupa multiples pedidos en un camion).
+1. **La discrepancia 4032 vs 3989 NO es huerfanos 1:1** (tarea-2): son tablas con cardinalidad distinta (despacho_enc agrupa multiples pedidos en un camion).
 2. **PERO ADEMAS, el WMS permite forzar estado=Despachado sin disparar despacho** (Carol): bypass del flujo confirmado.
 
 Estos son hallazgos diferentes que merecen tratamiento separado:
@@ -237,29 +237,29 @@ Detectado al cruzar P-04, P-08, P-25, C-01, C-04:
 | P-23 | Prefactura CEALSA: agregacion, servicios facturables, tarifas | original sin respuesta | NO Carol. Buscar respondedor en finanzas/billing CEALSA o consultor previo. |
 | C-03 sub-Q | Cuales columnas del outbox unificado estan realmente pobladas en produccion? | sub-Q derivada | SQL agente (READ-ONLY) — accion concreta D-02 |
 | C-04 sub-Q | De las 1218 filas en `trans_reabastecimiento_log` Killios, cuantas son pre-2024 vs post-2024? | sub-Q derivada | SQL agente (READ-ONLY) |
-| P-16 sub-Q | Hay pedidos en `trans_despacho_det` cuyo `trans_pe_enc.estado` NO sea Despachado? (la P-16b refinada que tanda-2 propuso, Carol no la respondio explicitamente) | sub-Q derivada | SQL agente o Erik |
+| P-16 sub-Q | Hay pedidos en `trans_despacho_det` cuyo `trans_pe_enc.estado` NO sea Despachado? (la P-16b refinada que tarea-2 propuso, Carol no la respondio explicitamente) | sub-Q derivada | SQL agente o Erik |
 | P-21b | Cuando se ejecuta el push manual del outbox? Cadencia humana? | reabierta | Carol o operadores reales |
-| sub-Q4 (de respuestas-pasada-7) | Cuales son los "procesos con excepciones" en el corte de jornada CEALSA? | sub-Q | Carol (re-pregunta) o SQL |
-| sub-Q5 (de respuestas-pasada-7) | Validar los 11 campos obligatorios de poliza contra `trans_pe_pol` en CEALSA QAS | sub-Q | SQL agente (READ-ONLY) |
+| sub-Q4 (de respuestas-ciclo-7) | Cuales son los "procesos con excepciones" en el corte de jornada CEALSA? | sub-Q | Carol (re-pregunta) o SQL |
+| sub-Q5 (de respuestas-ciclo-7) | Validar los 11 campos obligatorios de poliza contra `trans_pe_pol` en CEALSA QAS | sub-Q | SQL agente (READ-ONLY) |
 | P-25 TOP10 real | TOP10 real de tareas HH cruzando `tarea_hh.IdTipoTarea` con `sis_tipo_tarea` | parcial | SQL agente |
 
-**Resumen:** 8 sub-preguntas abiertas, de las cuales **5 son respondibles por el agente SQL READ-ONLY** sin nueva intervencion humana. Esas 5 son candidatas a una **Pasada 8a (autonoma SQL)** antes de la Pasada 8 con humanos.
+**Resumen:** 8 sub-preguntas abiertas, de las cuales **5 son respondibles por el agente SQL READ-ONLY** sin nueva intervencion humana. Esas 5 son candidatas a una **Ciclo 8a (autonoma SQL)** antes de la Ciclo 8 con humanos.
 
 ---
 
 ## Como se relaciona este documento con los demas
 
 ```
-preguntas-pasada-7.md         (input: 25 preguntas con evidencia SQL)
+preguntas-ciclo-7.md         (input: 25 preguntas con evidencia SQL)
         |
-        +---> respuestas-tanda-1.md       (Erik responde 3: P-08, P-10, P-18)
+        +---> respuestas-tarea-1.md       (Erik responde 3: P-08, P-10, P-18)
         |
-        +---> respuestas-tanda-2.md       (SQL agente responde/refina 9)
+        +---> respuestas-tarea-2.md       (SQL agente responde/refina 9)
         |
-        +---> respuestas-pasada-7.md      (Carol responde 25 + addendum EJC)
+        +---> respuestas-ciclo-7.md      (Carol responde 25 + addendum EJC)
                        |
                        v
-              consolidacion-pasada-7.md   (este doc: cross-reference de las 3)
+              consolidacion-ciclo-7.md   (este doc: cross-reference de las 3)
                        |
                        +---> _inbox/H-01..H-05.json   (5 hallazgos accionables)
                        |
@@ -272,8 +272,8 @@ preguntas-pasada-7.md         (input: 25 preguntas con evidencia SQL)
 
 **Para el implementador del WebAPI (P-16b):** prestar atencion especial a D-01 (Verificado por cliente), D-02 (outbox alcance), D-03 (P-16 dos hallazgos), D-04 (Killios como caso complejo).
 
-**Para la Pasada 8:** las 5 sub-preguntas SQL-respondibles son el siguiente trabajo autonomo del agente brain. La sub-Q de prefactura (P-23) requiere identificar nuevo respondedor humano.
+**Para la Ciclo 8:** las 5 sub-preguntas SQL-respondibles son el siguiente trabajo autonomo del agente brain. La sub-Q de prefactura (P-23) requiere identificar nuevo respondedor humano.
 
 ---
 
-— Brain TomWMS · Consolidacion Pasada 7 · Generado 28 abril 2026 —
+— Brain TomWMS · Consolidacion Ciclo 7 · Generado 28 abril 2026 —

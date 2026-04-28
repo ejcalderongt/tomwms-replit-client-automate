@@ -1,12 +1,12 @@
-# Consolidacion Pasada 8a - cierre via ejecucion live SQL
+# Consolidacion Ciclo 8a - cierre via ejecucion live SQL
 
 > Generado por agente brain (sesion replit) el 28 abril 2026.
 >
-> **Pasada 8a**: serie de queries Q-009..Q-014 derivadas del consolidacion-pasada-7 + dump wms-db-brain. Objetivo: cerrar las 6 sub-preguntas con datos firmes en su dimension de **afinidad de procesos**.
+> **Ciclo 8a**: serie de queries Q-009..Q-014 derivadas del consolidacion-ciclo-7 + dump wms-db-brain. Objetivo: cerrar las 6 sub-preguntas con datos firmes en su dimension de **afinidad de procesos**.
 
-## Principio operativo establecido en esta pasada
+## Principio operativo establecido en este ciclo
 
-**Afinidad de PROCESOS vs afinidad de DATOS** - separacion conceptual permanente para todas las pasadas futuras del brain:
+**Afinidad de PROCESOS vs afinidad de DATOS** - separacion conceptual permanente para todas los ciclos futuras del brain:
 
 - **Afinidad de procesos**: estructura del modelo, tablas, columnas, SPs, relaciones, flags, catalogos, caminos posibles. Confirmable desde nuestro snapshot del EC2.
 - **Afinidad de datos**: cantidades, distribuciones, ratios, cardinalidades absolutas. NO confirmable - las personas del cliente trabajan con backups recientes que NO son nuestros snapshots. Comparar es metodologicamente invalido.
@@ -17,11 +17,11 @@
 
 | Hito | Commit | Rama | Resumen |
 |------|--------|------|---------|
-| Genesis Pasada 8a | `12951651` | wms-brain | 13 archivos: 2 ADRs, 5 proposals, 5 events H01-H05, queries-pasada-8a.md |
+| Genesis Ciclo 8a | `12951651` | wms-brain | 13 archivos: 2 ADRs, 5 proposals, 5 events H01-H05, queries-ciclo-8a.md |
 | 6 cards Q-009..Q-014 | `582da718` | wms-brain-client | Cards protocolVersion:2 |
 | Cross-ref + comandos PS | `99b98ab6` | wms-brain | Tabla mapping + addendum |
-| Re-fabricacion eventos | `426a46f5` | wms-brain | IDs cortos validos al regex + respuestas-tanda-3.md skeleton (TBDs) |
-| Briefing SQL agente | `2691b229` | wms-brain | encargo-sql-agente-pasada-8a.md autocontenido |
+| Re-fabricacion eventos | `426a46f5` | wms-brain | IDs cortos validos al regex + respuestas-tarea-3.md skeleton (TBDs) |
+| Briefing SQL agente | `2691b229` | wms-brain | encargo-sql-agente-ciclo-8a.md autocontenido |
 | Cierre live SQL primera version | `35219b5` | wms-brain | 6 events + 6 proposals + respuestas (con framing incorrecto de afinidad-datos) |
 | **Reframing afinidad-procesos** | **(este)** | **wms-brain + wms-brain-client** | **Reescritura para separar procesos de datos, sin senalamientos a fuentes humanas** |
 
@@ -33,7 +33,7 @@ Erik decidio NO delegar al SQL agente externo. En su lugar:
 3. Ejecutaron 9 queries READ-ONLY contra el motor EC2.
 4. Genero 5 answer drafts MD + 11 CSVs en `wms-brain-client/answers/`.
 5. Genero 6 events H06-H11 + 6 proposals MD en `wms-brain/brain/_inbox/_proposals`.
-6. Actualizo `respuestas-tanda-3.md` con hallazgos firmes de PROCESO.
+6. Actualizo `respuestas-tarea-3.md` con hallazgos firmes de PROCESO.
 
 ## Hallazgo infraestructural
 
@@ -64,21 +64,21 @@ El motor SQL Server 2022 CU18 (Standard Edition) en `52.41.114.122,1437` aloja:
 ## Productividad
 
 - 9 invocaciones SQL planificadas, 9 ejecutadas, 9 con datos
-- 1 ejecucion fallo en 1ra pasada (Q-013 query2 por naming) - corregida en 2da
+- 1 ejecucion fallo en 1ra ciclo (Q-013 query2 por naming) - corregida en 2da
 - 1 ejecucion devolvio 0 (Q-012 contra C9-QAS por falta de datos) - pivoteada a K7+BB
 - 0 errores de driver, 0 errores de credenciales, 0 errores de red
 - Total tiempo de ejecucion live: <60 segundos
 
-## Pasada 8a CERRADA (afinidad de procesos)
+## Ciclo 8a CERRADA (afinidad de procesos)
 
 Quedan listos para ratificacion:
 - 6 events en `brain/_inbox/`
 - 6 proposals en `brain/_proposals/`
 - 5 answer drafts + 11 CSVs en `wms-brain-client/answers/`
-- 1 respuestas-tanda-3.md con principio "afinidad procesos vs datos"
-- 1 consolidacion-pasada-8a.md (este documento)
+- 1 respuestas-tarea-3.md con principio "afinidad procesos vs datos"
+- 1 consolidacion-ciclo-8a.md (este documento)
 
-**Proxima Pasada sugerida (8b o 9) - segmento afinidad-de-PROCESOS**:
+**Proxima Ciclo sugerida (8b o 9) - segmento afinidad-de-PROCESOS**:
 - Investigar las BDs `LIVE` y `POD_BETA` (no documentadas en el motor)
 - Auditar otras tablas de modulos no-usados que pudieron quedar pobladas (extension H11)
 - Recalibrar texto de ADR-012 segun H06 (definir como tratar el camino bypass)

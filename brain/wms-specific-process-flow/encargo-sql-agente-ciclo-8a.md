@@ -1,7 +1,7 @@
-# Encargo SQL Agente - Pasada 8a (5 cards)
+# Encargo SQL Agente - Ciclo 8a (5 cards)
 
 > **De**: Erik Calderon (PrograX24) via agente brain (sesion replit, 28 abril 2026)
-> **Para**: SQL Agente (mismo perfil que ejecuto tanda-2)
+> **Para**: SQL Agente (mismo perfil que ejecuto tarea-2)
 > **Plazo sugerido**: 1 sesion de trabajo (15-20 minutos efectivos)
 > **Bloqueo**: este encargo destraba **6 decisiones** del WebAPI .NET 8 nuevo
 > (P-16b) y la ratificacion firme de **ADR-012**.
@@ -13,7 +13,7 @@ los CSVs resultantes via commit a la rama `wms-brain-client`.
 
 ## Pre-requisitos del entorno
 
-Tu maquina ya los tiene si hiciste tanda-2. Re-confirmacion:
+Tu maquina ya los tiene si hiciste tarea-2. Re-confirmacion:
 
 1. **Modulo PowerShell `WmsBrainClient`** instalado y cargable
    (`Import-Module WmsBrainClient` debe funcionar).
@@ -53,7 +53,7 @@ Invoke-WmsBrainQuestion -Id Q-014 -Profile C9-QAS
 ```
 
 > **Nota Q-010**: ya cerrada al 100% via `wms-db-brain` dump del SP CLBD_PRC.
-> Ver `brain/wms-specific-process-flow/respuestas-tanda-3.md` seccion Q-010.
+> Ver `brain/wms-specific-process-flow/respuestas-tarea-3.md` seccion Q-010.
 > NO ejecutar contra K7-PRD, no aporta valor adicional.
 
 Cada invocacion genera, dentro del repo local:
@@ -78,7 +78,7 @@ El cliente PowerShell deja un draft. Vos sumas:
 - **Sanity checks**: si los conteos son anomalos (ej. 0 filas cuando esperabas
   miles, o un crecimiento abrupto en un mes), anotalo.
 - **Discrepancia con hipotesis pre-ejecucion** (si la hay): cada card en
-  `respuestas-tanda-3.md` tiene una "Decision a tomar segun resultado" -
+  `respuestas-tarea-3.md` tiene una "Decision a tomar segun resultado" -
   marcar cual disparo el resultado real.
 
 ### Paso 2 - Push a `wms-brain-client`
@@ -88,12 +88,12 @@ Una vez completados los 5 drafts, agregar las carpetas
 `wms-brain-client` con mensaje tipo:
 
 ```
-sql-agente@<tu-handle>: pasada 8a - resultados Q-009/Q-011/Q-012/Q-013/Q-014
+sql-agente@<tu-handle>: ciclo 8a - resultados Q-009/Q-011/Q-012/Q-013/Q-014
 
 Ejecucion contra EC2 SQL 52.41.114.122,1437 perfiles K7-PRD/BB-PRD/C9-QAS.
 10 invocaciones, todas READ-ONLY. CSVs + drafts completados.
 
-Encargo: brain/wms-specific-process-flow/encargo-sql-agente-pasada-8a.md (rama wms-brain)
+Encargo: brain/wms-specific-process-flow/encargo-sql-agente-ciclo-8a.md (rama wms-brain)
 ```
 
 ### Paso 3 - Avisar al brain
@@ -111,14 +111,14 @@ New-WmsBrainInboxEvent `
     branch = 'wms-brain-client'
   } `
   -Context @{
-    summary = 'Pasada 8a - 5 cards ejecutadas, drafts completados'
+    summary = 'Ciclo 8a - 5 cards ejecutadas, drafts completados'
     notes = 'Ver wms-brain-client/answers/Q-NNN/answer-draft.md para interpretacion por card'
   }
 ```
 
 Eso emite un event con id auto-generado al regex correcto, status='answered',
 schema_version='2'. El agente brain lo procesara en la proxima sesion para
-actualizar `respuestas-tanda-3.md` con los datos reales y avanzar Pasada 8b
+actualizar `respuestas-tarea-3.md` con los datos reales y avanzar Ciclo 8b
 (roadmap WebAPI .NET 8).
 
 ## Validacion / sanity checks por card
@@ -137,7 +137,7 @@ Antes de dar por buena cada card, mirale:
 
 - **Connection timeout**: confirmar que tu IP esta en el whitelist del EC2.
   Pedir a Erik el ssh tunnel si hace falta.
-- **Login failed**: las credenciales READ-ONLY son las mismas de tanda-2.
+- **Login failed**: las credenciales READ-ONLY son las mismas de tarea-2.
 - **Card no existe**: verificar `git pull` reciente en `wms-brain-client`.
 - **El cliente PowerShell tira error de schema_version**: el bridge en main del
   repo todavia es v1 pero las cards son v2. Por ahora ejecutarlas con flag
@@ -154,12 +154,12 @@ Antes de dar por buena cada card, mirale:
 | Q-013 | Donde poner los `[Required]` de `PolizaFiscalDto` (validacion de los 11 campos) |
 | Q-014 | Que endpoints HH del WebAPI armar primero (priorizacion por uso real) |
 
-Ver `brain/wms-specific-process-flow/respuestas-tanda-3.md` para detalle por card.
+Ver `brain/wms-specific-process-flow/respuestas-tarea-3.md` para detalle por card.
 
 ## Cierre
 
-Cuando termines y emitas el event `question_answer`, el bloqueo de Pasada 8a
-queda 100% cerrado y el agente brain puede arrancar Pasada 8b
+Cuando termines y emitas el event `question_answer`, el bloqueo de Ciclo 8a
+queda 100% cerrado y el agente brain puede arrancar Ciclo 8b
 (scaffold WebAPI .NET 8 con datos firmes, sin asumir).
 
 Gracias.

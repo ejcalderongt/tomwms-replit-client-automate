@@ -16,9 +16,9 @@ adrs_relacionados: ADR-010 (reserva-webapi vs wms-legacy)
 
 Triple confirmacion de que `trans_pe_tipo.ReservaStock=false` para TRAS_WMS no se valida en el motor de reserva actual:
 
-1. **Erik (tanda-1, P-18)**: "tienes razon, me parece que no se esta validando especificamente esa bandera". Documenta DEUDA-001.
-2. **Carol (pasada-7, P-18)**: "Actualmente no se utiliza esa bandera para reservar o no producto de un documento de salida".
-3. **SQL agente (tanda-2, PEND-01)**: confirma `trans_pe_tipo.ReservaStock=false` literal en BD para tipo TRAS_WMS.
+1. **Erik (tarea-1, P-18)**: "tienes razon, me parece que no se esta validando especificamente esa bandera". Documenta DEUDA-001.
+2. **Carol (ciclo-7, P-18)**: "Actualmente no se utiliza esa bandera para reservar o no producto de un documento de salida".
+3. **SQL agente (tarea-2, PEND-01)**: confirma `trans_pe_tipo.ReservaStock=false` literal en BD para tipo TRAS_WMS.
 
 Erik aporta el contexto historico de la intencion original (vision futura no implementada): la bandera estaba pensada para soportar un flujo de bucket/abastecimiento batch policy-driven, donde TRAS_WMS recibiria documentos como "bolson" para procesamiento posterior con politicas de prorrateo (ej. 50% CDs, 30% nuevos clientes, 20% calidad y merma).
 
@@ -94,8 +94,8 @@ Esta decision es **provisional**. Se aplica en el scaffold inicial del WebAPI. S
 ## Referencias
 
 - Hallazgo: `brain/_inbox/20260428-1900-H01-tras-wms-reservastock-muerto.json`
-- Pregunta origen: `brain/wms-specific-process-flow/preguntas-pasada-7.md` P-18
-- Respuesta Erik: `brain/wms-specific-process-flow/respuestas-tanda-1.md` P-18
-- Respuesta Carol: `brain/wms-specific-process-flow/respuestas-pasada-7.md` P-18
-- Confirmacion SQL: `brain/wms-specific-process-flow/respuestas-tanda-2.md` PEND-01
-- Consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-7.md` R-05
+- Pregunta origen: `brain/wms-specific-process-flow/preguntas-ciclo-7.md` P-18
+- Respuesta Erik: `brain/wms-specific-process-flow/respuestas-tarea-1.md` P-18
+- Respuesta Carol: `brain/wms-specific-process-flow/respuestas-ciclo-7.md` P-18
+- Confirmacion SQL: `brain/wms-specific-process-flow/respuestas-tarea-2.md` PEND-01
+- Consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-7.md` R-05

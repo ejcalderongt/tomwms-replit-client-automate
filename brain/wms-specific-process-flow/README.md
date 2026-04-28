@@ -1,7 +1,7 @@
 # wms-specific-process-flow
 
 > Tuning de la comprension del comportamiento de WMS basado en evidencia productiva.
-> Folder pedido por Erik (pasada 7+) para profundizar el mapeo de operaciones reales.
+> Folder pedido por Erik (ciclo 7+) para profundizar el mapeo de operaciones reales.
 
 ## Proposito
 
@@ -19,15 +19,15 @@ Aqui es donde se aterriza la **terminologia ADR-010** (reserva-webapi vs reserva
 | Archivo | Que es | Estado |
 |---|---|---|
 | `README.md` | este archivo | vivo |
-| `process-map.md` | mapa global de procesos del WMS con tablas activas, SPs y conteos productivos | v1 (pasada 7) |
-| `state-machine-pedido.md` | maquina de estados observada de `trans_pe_enc` con transiciones reales | v2 (pasada 9, actualizado por tanda-1) — pendiente refinar con consolidacion-pasada-7 (D-01, D-04) |
+| `process-map.md` | mapa global de procesos del WMS con tablas activas, SPs y conteos productivos | v1 (ciclo 7) |
+| `state-machine-pedido.md` | maquina de estados observada de `trans_pe_enc` con transiciones reales | v2 (ciclo 9, actualizado por tarea-1) — pendiente refinar con consolidacion-ciclo-7 (D-01, D-04) |
 | `interfaces-erp-por-cliente.md` | mapeo de interfaces ERP (NAV/SAP) por cliente, con direccion y cardinalidad de filas | v1 |
-| `bug-report-p16b.md` | reporte de bug refinado de la pregunta P-16 (despachos vs estado) | abierto — esperar D-03 de consolidacion-pasada-7 |
-| `preguntas-pasada-7.md` | 25 preguntas para Erik que afinan el mapeo. Marcadas como respondidas. | cerrado |
-| `respuestas-tanda-1.md` | Respuestas de Erik a P-08, P-10, P-18 (3 de 25), pasada 9 | cerrado |
-| `respuestas-tanda-2.md` | Respuestas del agente brain via SQL READ-ONLY a 9 preguntas (PEND-01..03 + P-09/12/14/16/21/24/25), pasada 9b | cerrado |
-| `respuestas-pasada-7.md` | Respuestas de Carol Karina Flores Klee (CKFK) a las 25 preguntas + addendum EJC en P-18, pasada 10 | cerrado |
-| `consolidacion-pasada-7.md` | Cross-reference de las 3 fuentes de respuesta. Detecta 4 contradicciones, 5 refinamientos consensuados, 4 hallazgos derivados, 8 sub-preguntas abiertas. | vivo (28 abril 2026) |
+| `bug-report-p16b.md` | reporte de bug refinado de la pregunta P-16 (despachos vs estado) | abierto — esperar D-03 de consolidacion-ciclo-7 |
+| `preguntas-ciclo-7.md` | 25 preguntas para Erik que afinan el mapeo. Marcadas como respondidas. | cerrado |
+| `respuestas-tarea-1.md` | Respuestas de Erik a P-08, P-10, P-18 (3 de 25), ciclo 9 | cerrado |
+| `respuestas-tarea-2.md` | Respuestas del agente brain via SQL READ-ONLY a 9 preguntas (PEND-01..03 + P-09/12/14/16/21/24/25), ciclo 9b | cerrado |
+| `respuestas-ciclo-7.md` | Respuestas de Carol Karina Flores Klee (CKFK) a las 25 preguntas + addendum EJC en P-18, ciclo 10 | cerrado |
+| `consolidacion-ciclo-7.md` | Cross-reference de las 3 fuentes de respuesta. Detecta 4 contradicciones, 5 refinamientos consensuados, 4 hallazgos derivados, 8 sub-preguntas abiertas. | vivo (28 abril 2026) |
 
 ## Procesos identificados (resumen)
 
@@ -60,21 +60,21 @@ Cada documento aqui debe:
 
 Las queries usadas estan en `/tmp/dbq/scripts/` del entorno del agente. Resultados materializados en `/tmp/dbq/out/`. Cuando una pregunta se responda, se actualiza el documento correspondiente y se cita el archivo JSON origen.
 
-## Linaje de la Pasada 7 (estado actual)
+## Linaje de la Ciclo 7 (estado actual)
 
 ```
-preguntas-pasada-7.md (25 Q)
+preguntas-ciclo-7.md (25 Q)
         |
-        +---> respuestas-tanda-1.md      (Erik responde 3: P-08, P-10, P-18)
-        +---> respuestas-tanda-2.md      (SQL agente responde/refina 9)
-        +---> respuestas-pasada-7.md     (Carol responde 25 + addendum EJC en P-18)
+        +---> respuestas-tarea-1.md      (Erik responde 3: P-08, P-10, P-18)
+        +---> respuestas-tarea-2.md      (SQL agente responde/refina 9)
+        +---> respuestas-ciclo-7.md     (Carol responde 25 + addendum EJC en P-18)
                        |
                        v
-              consolidacion-pasada-7.md  (cruce de las 3, sintesis maestra)
+              consolidacion-ciclo-7.md  (cruce de las 3, sintesis maestra)
                        |
                        +---> _inbox/H-01..H-05.json (5 hallazgos accionables al brain)
                        +---> state-machine-pedido.md (a actualizar con D-01, D-04)
                        +---> bug-report-p16b.md (a actualizar con D-03)
 ```
 
-**Resumen de avance:** 23/25 preguntas con respuesta consensuada. 1 vacio (P-23 Prefactura, sin informante). 4 contradicciones documentadas (C-01..C-04) con resolucion. 8 sub-preguntas abiertas, de las cuales 5 son respondibles por el agente SQL READ-ONLY (candidatas a Pasada 8a autonoma).
+**Resumen de avance:** 23/25 preguntas con respuesta consensuada. 1 vacio (P-23 Prefactura, sin informante). 4 contradicciones documentadas (C-01..C-04) con resolucion. 8 sub-preguntas abiertas, de las cuales 5 son respondibles por el agente SQL READ-ONLY (candidatas a Ciclo 8a autonoma).

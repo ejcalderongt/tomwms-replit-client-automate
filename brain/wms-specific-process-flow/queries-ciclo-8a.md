@@ -1,16 +1,16 @@
 ---
-titulo: Queries Pasada 8a - autonomas SQL READ-ONLY
+titulo: Queries Ciclo 8a - autonomas SQL READ-ONLY
 generado: 28 abril 2026
 generado_por: agente brain (sesion replit)
-proposito: cerrar 6 sub-preguntas abiertas de la consolidacion-pasada-7 sin nueva intervencion humana
+proposito: cerrar 6 sub-preguntas abiertas de la consolidacion-ciclo-7 sin nueva intervencion humana
 estado: pending_execution (el agente brain de la sesion replit no tiene acceso TCP al EC2 SQL desde su entorno)
 ejecutor_esperado: cliente PowerShell wms-brain-client (rama wms-brain-client) o ejecucion manual de Erik
-formato_resultado_esperado: respuestas-tanda-3.md en este mismo folder, con seccion por cada Q-PASADA-8A
+formato_resultado_esperado: respuestas-tarea-3.md en este mismo folder, con seccion por cada Q-CICLO-8A
 ---
 
-# Queries Pasada 8a (autonomas SQL READ-ONLY)
+# Queries Ciclo 8a (autonomas SQL READ-ONLY)
 
-Estas 6 queries cierran las sub-preguntas que la consolidacion-pasada-7 dejo abiertas y que **no requieren intervencion humana** - solo lectura de las 3 BDs productivas READ-ONLY.
+Estas 6 queries cierran las sub-preguntas que la consolidacion-ciclo-7 dejo abiertas y que **no requieren intervencion humana** - solo lectura de las 3 BDs productivas READ-ONLY.
 
 **Conexion esperada**: SQL Server `52.41.114.122,1437`. Credenciales en variable de entorno `WMS_KILLIOS_DB_PASSWORD` (no incluir literal en este doc).
 
@@ -23,9 +23,9 @@ Todas las queries son `SELECT` puras - ningun `INSERT/UPDATE/DELETE` ni DDL. **A
 
 ---
 
-## Q-PASADA-8A-01 - Outbox alcance real (cierra C-03 sub-Q de consolidacion-pasada-7)
+## Q-CICLO-8A-01 - Outbox alcance real (cierra C-03 sub-Q de consolidacion-ciclo-7)
 
-**Origen**: D-02 de consolidacion-pasada-7. Carol dice que el outbox solo se usa para recepciones y despachos. Schema soporta 4 tipos. Esta query confirma cual es la verdad.
+**Origen**: D-02 de consolidacion-ciclo-7. Carol dice que el outbox solo se usa para recepciones y despachos. Schema soporta 4 tipos. Esta query confirma cual es la verdad.
 
 **Base**: `K7_PRD`, `BB_PRD`, `C9_QAS` (las 3, comparar).
 
@@ -49,9 +49,9 @@ FROM dbo.i_nav_transacciones_out;
 
 ---
 
-## Q-PASADA-8A-02 - Reabasto Killios pre-2024 vs post-2024 (cierra C-04 sub-Q)
+## Q-CICLO-8A-02 - Reabasto Killios pre-2024 vs post-2024 (cierra C-04 sub-Q)
 
-**Origen**: D-02 de consolidacion-pasada-7. Carol dice que es basura no limpiada en instalacion. SQL agente dice que el modulo sigue activo. Esta query separa ambos casos.
+**Origen**: D-02 de consolidacion-ciclo-7. Carol dice que es basura no limpiada en instalacion. SQL agente dice que el modulo sigue activo. Esta query separa ambos casos.
 
 **Base**: `K7_PRD`.
 
@@ -84,9 +84,9 @@ ORDER BY periodo;
 
 ---
 
-## Q-PASADA-8A-03 - P-16b refinada (cierra D-03 de consolidacion-pasada-7)
+## Q-CICLO-8A-03 - P-16b refinada (cierra D-03 de consolidacion-ciclo-7)
 
-**Origen**: tanda-2 P-16 dejo P-16b abierta. La consolidacion la integra con D-03. Esta query confirma el numero exacto de bypasses para que ADR-012 tenga numero firme.
+**Origen**: tarea-2 P-16 dejo P-16b abierta. La consolidacion la integra con D-03. Esta query confirma el numero exacto de bypasses para que ADR-012 tenga numero firme.
 
 **Base**: `K7_PRD`.
 
@@ -120,7 +120,7 @@ LEFT JOIN pedidos_con_despacho_real dr ON dr.IdPedidoEnc = pm.IdPedidoEnc;
 
 ---
 
-## Q-PASADA-8A-04 - Excepciones del corte de jornada CEALSA (sub-Q4 de respuestas-pasada-7)
+## Q-CICLO-8A-04 - Excepciones del corte de jornada CEALSA (sub-Q4 de respuestas-ciclo-7)
 
 **Origen**: Carol mencion en P-22 que hay "procesos con excepciones" en el corte de jornada CEALSA pero no entro en detalle. Esta query intenta reconstruir esas excepciones via SQL.
 
@@ -164,7 +164,7 @@ ORDER BY dias_cruce;
 
 ---
 
-## Q-PASADA-8A-05 - Validar 11 campos obligatorios de poliza CEALSA (sub-Q5 de respuestas-pasada-7)
+## Q-CICLO-8A-05 - Validar 11 campos obligatorios de poliza CEALSA (sub-Q5 de respuestas-ciclo-7)
 
 **Origen**: Carol mencion en P-11 que los 11 campos de poliza son obligatorios para CEALSA. Esta query valida que ningun pedido fiscal este incompleto en la BD QAS.
 
@@ -204,9 +204,9 @@ WHERE t.control_poliza = 1;
 
 ---
 
-## Q-PASADA-8A-06 - TOP10 real de tareas HH (cierra P-25 parcial)
+## Q-CICLO-8A-06 - TOP10 real de tareas HH (cierra P-25 parcial)
 
-**Origen**: tanda-2 P-25 dejo este JOIN pendiente.
+**Origen**: tarea-2 P-25 dejo este JOIN pendiente.
 
 **Base**: `K7_PRD`, `BB_PRD`, `C9_QAS`.
 
@@ -240,16 +240,16 @@ ORDER BY ejecutadas DESC;
 
 **Donde guardar resultados**:
 
-Crear archivo `brain/wms-specific-process-flow/respuestas-tanda-3.md` con:
-- Por cada Q-PASADA-8A-NN: query ejecutada + resultado en tabla markdown + interpretacion.
-- Cierre de cada sub-pregunta apuntando al doc origen (consolidacion-pasada-7.md).
+Crear archivo `brain/wms-specific-process-flow/respuestas-tarea-3.md` con:
+- Por cada Q-CICLO-8A-NN: query ejecutada + resultado en tabla markdown + interpretacion.
+- Cierre de cada sub-pregunta apuntando al doc origen (consolidacion-ciclo-7.md).
 - Si alguna query revela hallazgo nuevo accionable, emitir nuevo evento `learning_proposed` al `_inbox/` siguiendo el patron de H-01..H-05.
 
 **Que pasa despues de ejecutar**:
 
-1. Refinar ADR-012 si Q-PASADA-8A-03 da un numero muy distinto a 43.
-2. Refinar el proposal de H-02 si Q-PASADA-8A-02 muestra que el modulo de deteccion sigue activo (decision adicional: apagar?).
-3. Cerrar formalmente las sub-preguntas en consolidacion-pasada-7.md (mover de "abiertas" a "cerradas").
+1. Refinar ADR-012 si Q-CICLO-8A-03 da un numero muy distinto a 43.
+2. Refinar el proposal de H-02 si Q-CICLO-8A-02 muestra que el modulo de deteccion sigue activo (decision adicional: apagar?).
+3. Cerrar formalmente las sub-preguntas en consolidacion-ciclo-7.md (mover de "abiertas" a "cerradas").
 4. Si todo cierra OK, P-16b WebAPI scaffold queda **desbloqueado** para arrancar.
 
 ---
@@ -262,11 +262,11 @@ Solo se incluyen las 6 que cumplen 3 criterios:
 2. **Cierran loops abiertos**: cada una resuelve una sub-pregunta documentada.
 3. **No requieren judgment humano**: el resultado es un numero o una lista, no una opinion.
 
-Las preguntas que requieren a Erik o a un experto humano (P-23 prefactura, decisiones arquitectonicas H-01/H-04, P-30 setup-agent) NO se incluyen aqui - son trabajo de la Pasada 8 con humanos.
+Las preguntas que requieren a Erik o a un experto humano (P-23 prefactura, decisiones arquitectonicas H-01/H-04, P-30 setup-agent) NO se incluyen aqui - son trabajo de la Ciclo 8 con humanos.
 
 ---
 
-— Brain TomWMS · Queries Pasada 8a · 28 abril 2026 —
+— Brain TomWMS · Queries Ciclo 8a · 28 abril 2026 —
 
 
 ---
@@ -277,14 +277,14 @@ Las 6 queries quedaron emitidas como **question cards en wms-brain-client/questi
 (rama `wms-brain-client`, commit `582da718`) en formato `protocolVersion: 2`. El cliente
 PowerShell ya las puede ejecutar directamente con `Invoke-WmsBrainQuestion`:
 
-| Pasada 8a | Question card | Profile(s) PowerShell | Cierra |
+| Ciclo 8a | Question card | Profile(s) PowerShell | Cierra |
 |-----------|---------------|------------------------|--------|
-| Q-PASADA-8A-01 | `Q-009-outbox-alcance-tipos.md` | `K7-PRD`, `BB-PRD`, `C9-QAS` | C-03 |
-| Q-PASADA-8A-02 | `Q-010-killios-reabasto-pre-post-2024.md` | `K7-PRD` | C-04 sub-Q |
-| Q-PASADA-8A-03 | `Q-011-killios-bypass-despachado-numero-firme.md` | `K7-PRD` | D-03 / P-16b |
-| Q-PASADA-8A-04 | `Q-012-cealsa-qas-corte-jornada-excepciones.md` | `C9-QAS` | sub-Q4 |
-| Q-PASADA-8A-05 | `Q-013-cealsa-qas-poliza-11-campos.md` | `C9-QAS` | sub-Q5 |
-| Q-PASADA-8A-06 | `Q-014-top15-tareas-hh-3-bds.md` | `K7-PRD`, `BB-PRD`, `C9-QAS` | P-25 |
+| Q-CICLO-8A-01 | `Q-009-outbox-alcance-tipos.md` | `K7-PRD`, `BB-PRD`, `C9-QAS` | C-03 |
+| Q-CICLO-8A-02 | `Q-010-killios-reabasto-pre-post-2024.md` | `K7-PRD` | C-04 sub-Q |
+| Q-CICLO-8A-03 | `Q-011-killios-bypass-despachado-numero-firme.md` | `K7-PRD` | D-03 / P-16b |
+| Q-CICLO-8A-04 | `Q-012-cealsa-qas-corte-jornada-excepciones.md` | `C9-QAS` | sub-Q4 |
+| Q-CICLO-8A-05 | `Q-013-cealsa-qas-poliza-11-campos.md` | `C9-QAS` | sub-Q5 |
+| Q-CICLO-8A-06 | `Q-014-top15-tareas-hh-3-bds.md` | `K7-PRD`, `BB-PRD`, `C9-QAS` | P-25 |
 
 Comando ejemplo (cualquier maquina con el modulo `WmsBrainClient` instalado y
 perfil configurado):
@@ -308,10 +308,10 @@ Invoke-WmsBrainQuestion -Id Q-014 -Profile C9-QAS
 
 Cada llamada genera CSVs en `wms-brain-client/answers/Q-NNN/` y un draft
 `answer-draft.md` para completar con interpretacion. Cuando esten todas
-listas, emitir `respuestas-tanda-3.md` en este folder cerrando formalmente
-las sub-preguntas en `consolidacion-pasada-7.md`.
+listas, emitir `respuestas-tarea-3.md` en este folder cerrando formalmente
+las sub-preguntas en `consolidacion-ciclo-7.md`.
 
-**Estado del bloqueo Pasada 8a**: las queries dejan de estar bloqueadas. La unica
+**Estado del bloqueo Ciclo 8a**: las queries dejan de estar bloqueadas. La unica
 restriccion es tener un host con conectividad TCP al EC2 SQL `52.41.114.122,1437` y
 el modulo PowerShell instalado. Erik o el agente brain en otra sesion con
 conectividad pueden ejecutar.

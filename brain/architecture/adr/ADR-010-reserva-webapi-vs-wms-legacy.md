@@ -63,4 +63,4 @@ Más combinaciones `CASO_#X_LLR_CASO_#Y` (probablemente "Llamado Luego de Reserv
 
 ## Estado
 
-Aceptada. Toda la documentación del brain se reformula con esta terminología desde la pasada 7 (2026-04-27T15:28:58.419Z).
+Aceptada. Toda la documentación del brain se reformula con esta terminología desde el ciclo 7 (2026-04-27T15:28:58.419Z).

@@ -1,6 +1,6 @@
 # 20260428-1910-H11 - Becofarma tambien acumulo basura en trans_reabastecimiento_log (755 filas) sin usar el modulo. Extender H-02.
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.
 
 ## Contexto
 
@@ -28,5 +28,5 @@ Erik Calderon (PrograX24)
 - Tags: `validated-via-live-sql`, `bug-operativo`, `instalacion`, `sp-mantenimiento`, `becofarma`, `killios`, `concrete-action`, `extiende-h02`
 - Preguntas origen: `P-24`
 - Respondedoras: `CKFK-Carol`
-- Pasada: 8a
-- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`
+- Ciclo: 8a
+- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-8a.md`

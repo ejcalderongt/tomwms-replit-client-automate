@@ -1,7 +1,7 @@
 # Maquina de estados de pedido — confirmada por Erik + SQL
 
-> **Version 3** (pasada 9b). Combina respuestas de Erik (tanda 1) +
-> hallazgos por SQL READ-ONLY (tanda 2). Pendientes derivados PEND-01 y
+> **Version 3** (ciclo 9b). Combina respuestas de Erik (tarea 1) +
+> hallazgos por SQL READ-ONLY (tarea 2). Pendientes derivados PEND-01 y
 > PEND-03 cerrados.
 >
 > Snapshot: Killios PRD, 4,202 pedidos en `trans_pe_enc`.
@@ -77,7 +77,7 @@
 
 ## Banderas de comportamiento por tipo (`trans_pe_tipo`)
 
-**RESUELTO en tanda 2 (PEND-01)**: las 3 banderas maestras son `Preparar`,
+**RESUELTO en tarea 2 (PEND-01)**: las 3 banderas maestras son `Preparar`,
 `Verificar`, `ReservaStock`.
 
 ### Killios PRD
@@ -100,7 +100,7 @@
 - `PE0001` (Transferencia Fiscal a General): `Verificar=true` + `control_poliza=true` (3PL fiscal).
 - `PE0002` (PEDIDO SIN PREPARACION Y SIN VERIFICACION): los 3 flags relevantes en false.
 
-## Reglas confirmadas (R-01..R-06 + R-07..R-09 nuevas de tanda 2)
+## Reglas confirmadas (R-01..R-06 + R-07..R-09 nuevas de tarea 2)
 
 ### R-01: Anulado NO es automatico (Erik P-08)
 
@@ -116,11 +116,11 @@ Cuando un pedido pasa a Anulado, las filas en `stock_res` deben liberarse. Si el
 
 ### R-04: WMS puede inyectar pedidos en cualquier estado (Erik P-08, refinado SQL)
 
-**Refinamiento de tanda 2**: la inyeccion WMS NO salta el modelo, lo SIMULA en una sola transaccion. Todos los PDV_NAV en estados intermedios tienen `IdPickingEnc` ≠ 0. Los 15 casos historicos de "inyeccion directa" tambien tienen IdPickingEnc poblado, solo que el proceso ocurre en milisegundos sin paso por HH.
+**Refinamiento de tarea 2**: la inyeccion WMS NO salta el modelo, lo SIMULA en una sola transaccion. Todos los PDV_NAV en estados intermedios tienen `IdPickingEnc` ≠ 0. Los 15 casos historicos de "inyeccion directa" tambien tienen IdPickingEnc poblado, solo que el proceso ocurre en milisegundos sin paso por HH.
 
 ### R-05: Verificado controlado por `trans_pe_tipo.Verificar` (Erik P-08, RESUELTO SQL)
 
-**Resuelto en tanda 2**: la columna existe y se llama exactamente `Verificar` (bit). NO es controlable por el usuario en runtime — es configuracion del catalogo de tipos. Lo que Erik llamo "habilitar por usuario" probablemente refiere al **administrador** que configura el tipo.
+**Resuelto en tarea 2**: la columna existe y se llama exactamente `Verificar` (bit). NO es controlable por el usuario en runtime — es configuracion del catalogo de tipos. Lo que Erik llamo "habilitar por usuario" probablemente refiere al **administrador** que configura el tipo.
 
 ### R-06: TRAS_WMS asume reserva previa, NO se valida (DEUDA-001, Erik P-18)
 
@@ -158,16 +158,16 @@ Aunque algunos pedidos atraviesan toda la maquina en milisegundos (caso WMS-inye
 | Aspecto | Fuente | Confianza |
 |---|---|---|
 | Lista de estados | Query `trans_pe_enc` (snapshot 2026-04-27) | Alta |
-| Significado de cada estado | Erik (tanda 1) | Canonica |
-| Transiciones permitidas | Erik (tanda 1) | Canonica |
-| WMS-inyectado salta Pendiente | Erik (tanda 1) + refinado SQL | Canonica |
-| Verificado opcional | Erik (tanda 1) + columna confirmada SQL | Canonica |
-| Rollback en Anulado | Erik (tanda 1) | Canonica |
-| Columna que activa Verificado | `trans_pe_tipo.Verificar` (SQL tanda 2) | **RESUELTO** |
-| Flag pedidos WMS-inyectados | `tipo + user_agr=6` (SQL tanda 2) | **RESUELTO PARCIAL** |
-| `NUEVO → Despachado` directo | 15 casos historicos PDV_NAV (SQL tanda 2) | **RESUELTO** |
-| Atascos > 90 dias = histórico | SQL tanda 2 | Alta |
-| Timeline real usa fec_agr/fec_mod | SQL tanda 2 | Alta |
+| Significado de cada estado | Erik (tarea 1) | Canonica |
+| Transiciones permitidas | Erik (tarea 1) | Canonica |
+| WMS-inyectado salta Pendiente | Erik (tarea 1) + refinado SQL | Canonica |
+| Verificado opcional | Erik (tarea 1) + columna confirmada SQL | Canonica |
+| Rollback en Anulado | Erik (tarea 1) | Canonica |
+| Columna que activa Verificado | `trans_pe_tipo.Verificar` (SQL tarea 2) | **RESUELTO** |
+| Flag pedidos WMS-inyectados | `tipo + user_agr=6` (SQL tarea 2) | **RESUELTO PARCIAL** |
+| `NUEVO → Despachado` directo | 15 casos historicos PDV_NAV (SQL tarea 2) | **RESUELTO** |
+| Atascos > 90 dias = histórico | SQL tarea 2 | Alta |
+| Timeline real usa fec_agr/fec_mod | SQL tarea 2 | Alta |
 
 ## Pendientes que sobreviven
 

@@ -45,7 +45,7 @@ targets:
     minRows: 100                         # cliente puede skipear si la BD esta vacia
 relatedDocs:
   - brain/wms-specific-process-flow/interfaces-erp-por-cliente.md
-  - brain/wms-specific-process-flow/preguntas-pasada-7.md#PEND-07
+  - brain/wms-specific-process-flow/preguntas-ciclo-7.md#PEND-07
 suggestedQueries:
   - id: q1
     description: Histograma de fec_agr de los enviados, agrupado por hora
@@ -81,7 +81,7 @@ allowFreeFormNotes: true
 
 ## Contexto
 
-En la pasada 9b detectamos que `BB.i_nav_transacciones_out` tiene
+En el ciclo 9b detectamos que `BB.i_nav_transacciones_out` tiene
 145,117 SALIDAS pendientes y 277,310 enviadas. Necesitamos entender
 **la cadencia real** del job que procesa esas SALIDAS para validar la
 hipotesis de que NavSync corre periodicamente.

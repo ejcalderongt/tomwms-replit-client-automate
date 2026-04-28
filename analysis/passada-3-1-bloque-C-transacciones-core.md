@@ -1,4 +1,4 @@
-# Pasada 3.1 — Bloque C: Transacciones core (escrituras del WMS)
+# Ciclo 3.1 — Bloque C: Transacciones core (escrituras del WMS)
 
 ## Estado
 - **Generado**: 2026-04-27T04:55:54.960Z
@@ -159,7 +159,7 @@ Inspeccioné los **38 archivos clsLn de configuración descargados** (bloque D) 
 
 **Resultado: 0 / 38 archivos llaman SPs.** Confirmado: ningún clsLn (89 + 24 = 113 archivos) llama a SPs. Solo SQL inline. Los 39 SPs son utilitarios/DBA.
 
-> Esta es la **confirmación arquitectónica más fuerte** de toda la pasada: el WMS hace **100% SQL inline** desde código .NET. No hay SPs de negocio, no hay triggers, no hay views materializadas. Toda la lógica vive en `clsLn*` y se ejecuta como queries ad-hoc.
+> Esta es la **confirmación arquitectónica más fuerte** de toda el ciclo: el WMS hace **100% SQL inline** desde código .NET. No hay SPs de negocio, no hay triggers, no hay views materializadas. Toda la lógica vive en `clsLn*` y se ejecuta como queries ad-hoc.
 
 ---
 
@@ -196,7 +196,7 @@ Inspeccioné los **38 archivos clsLn de configuración descargados** (bloque D) 
 
 1. **El Brain puede hablar con autoridad de transacciones del HH.** Solo 21 WMs mutan datos, y los 7-8 orquestadores principales están identificados. Cada uno se puede modelar como un "caso de uso" del Brain con precondiciones, mutaciones y postcondiciones.
 
-2. **Sin SPs ni triggers = consistencia frágil.** Brain debe alertar si una operación del HH no está envuelta en transacción .NET (riesgo de inconsistencia). Recomendación para futuras pasadas: detectar `Try`/`Catch` y `BeginTransaction` en cada WM mutador.
+2. **Sin SPs ni triggers = consistencia frágil.** Brain debe alertar si una operación del HH no está envuelta en transacción .NET (riesgo de inconsistencia). Recomendación para futuras ciclos: detectar `Try`/`Catch` y `BeginTransaction` en cada WM mutador.
 
 3. **`trans_movimientos` es el log atómico — ideal para auditoría.** Brain puede reconstruir el flujo de cualquier stock siguiendo `IdStock` en `trans_movimientos`.
 
@@ -204,7 +204,7 @@ Inspeccioné los **38 archivos clsLn de configuración descargados** (bloque D) 
 
 5. **`stock_res` es el lock distribuido del WMS.** Brain debe explicar bloqueos y conflictos consultando esta tabla.
 
-6. **Resolución de ambigüedad**: `trans_oc_estado` existe en Killios con 6 filas. La clase `clsLnTrans_oc_estado` (ambigua en pasada anterior) muy probablemente vive en `/TOMIMSV4/DAL/.../Trans_oc_estado/clsLnTrans_oc_estado.vb` — confirmar con búsqueda en Azure.
+6. **Resolución de ambigüedad**: `trans_oc_estado` existe en Killios con 6 filas. La clase `clsLnTrans_oc_estado` (ambigua en ciclo anterior) muy probablemente vive en `/TOMIMSV4/DAL/.../Trans_oc_estado/clsLnTrans_oc_estado.vb` — confirmar con búsqueda en Azure.
 
 ## Anexo: archivos generados por este bloque
 

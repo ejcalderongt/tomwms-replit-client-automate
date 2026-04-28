@@ -1,11 +1,11 @@
-# Pasada 3.2 D — Flujos end-to-end del HH (TOM WMS Killios)
+# Ciclo 3.2 D — Flujos end-to-end del HH (TOM WMS Killios)
 
 **Generado**: 2026-04-27T05:58:23.691Z  
-**Fuente**: derivado 100% de catálogos pasada 3.2 A (BOF), B (HH Android) y C (Killios deep) ya en `wms-brain`.
+**Fuente**: derivado 100% de catálogos ciclo 3.2 A (BOF), B (HH Android) y C (Killios deep) ya en `wms-brain`.
 
 ## Resumen ejecutivo
 
-Esta pasada reconstruye los **flujos end-to-end** del operador del Handheld Android para los 6 dominios operativos del WMS más 2 dominios server-only (ajuste y despacho), sin parsear código nuevo: solo navega y narra los catálogos previos.
+Este ciclo reconstruye los **flujos end-to-end** del operador del Handheld Android para los 6 dominios operativos del WMS más 2 dominios server-only (ajuste y despacho), sin parsear código nuevo: solo navega y narra los catálogos previos.
 
 | Dominio | Activities HH | WMs únicos | Tablas escritas | Tablas leídas | Errores log |
 |---|---:|---:|---:|---:|---:|
@@ -24,7 +24,7 @@ Esta pasada reconstruye los **flujos end-to-end** del operador del Handheld Andr
 
 ## Limitaciones del catálogo
 
-1. El catálogo BOF (`ws-sql-inline.json`) extrajo **0 tablas read/write directas en los WMs** (su `tablesWrite` está vacío para los 371 WMs). En esta pasada se resolvieron las tablas por **vía indirecta**: `WM.clsLnUsed → DAL.tables/verbs`. Esto puede infrarepresentar tablas tocadas por SQL inline en los WMs (no via DAL).
+1. El catálogo BOF (`ws-sql-inline.json`) extrajo **0 tablas read/write directas en los WMs** (su `tablesWrite` está vacío para los 371 WMs). En este ciclo se resolvieron las tablas por **vía indirecta**: `WM.clsLnUsed → DAL.tables/verbs`. Esto puede infrarepresentar tablas tocadas por SQL inline en los WMs (no via DAL).
 2. Las activities HH `despacho` y `ajuste` no aparecen como subpaquetes en `com.dts.tom.Transacciones` (la inspección reportó 0 matches por nombre directo). Se documentan como **dominios server-only**.
 3. Los errores se cruzan por palabras clave + WMs invocados. Para los dominios picking, packing, inventario y reabastecimiento la heurística textual no produjo matches en los top-30 errores — esto puede deberse a que los errores top son del log de `Aplica_Cambio_Estado_Ubic_HH` (reubicación) y de WMs genéricos (Get_*).
 
@@ -711,7 +711,7 @@ flowchart LR
 
 - `Aplica_Cambio_Estado_Ubic_HH` aparece en reubicación, recepción, picking y reabastecimiento → es el WM transversal de mutación de estado de ubicación.
 - `stock`, `stock_res`, `stock_hist`, `trans_movimientos` son tocadas por más de un dominio → son las tablas de "alta concurrencia" del WMS.
-- El catálogo `sis_estado_tarea_hh` (4 estados) gobierna el ciclo de vida de toda tarea HH (Pendiente, En curso, Finalizada, Anulada — confirmar valores exactos en pasada operativa).
+- El catálogo `sis_estado_tarea_hh` (4 estados) gobierna el ciclo de vida de toda tarea HH (Pendiente, En curso, Finalizada, Anulada — confirmar valores exactos en ciclo operativa).
 
 ## Capítulo 10 — Preguntas que el Brain ahora puede responder
 
@@ -723,5 +723,5 @@ Con los 8 JSONs y este reporte el Brain puede responder:
 4. **"¿Por qué `Aplica_Cambio_Estado_Ubic_HH` falla 1,800 veces?"** → cap. 2 + log-error-analysis: el error es estructural (rebote de transacciones), afecta principalmente reubicaciones y reabastecimientos.
 5. **"¿Cuándo el sistema libera una reserva de stock?"** → grafo: aristas `writes` desde WMs de finalización de packing/picking hacia `stock_res`.
 6. **"¿Qué pasos hace el operador para una verificación consolidada?"** → cap. 5 + activities ordenadas: `frm_inv_ini_verificacion` → `frm_detalle_tareas_verificacion` → `frm_verificacion_datos` → `frm_verificacion_consolidada_detalle`.
-7. **"¿Qué WMs se quedaron huérfanos sin DAL?"** → ya está en `cruce-extendido.json` de pasada A; este reporte muestra cuáles de esos WMs son críticos para qué dominio.
+7. **"¿Qué WMs se quedaron huérfanos sin DAL?"** → ya está en `cruce-extendido.json` de ciclo A; este reporte muestra cuáles de esos WMs son críticos para qué dominio.
 8. **"¿Qué dominios mutan la tabla X?"** → recorrer grafo: aristas `writes` con `to == tab:X` → `from` (WM) → `from` (activity) → `from` (domain).

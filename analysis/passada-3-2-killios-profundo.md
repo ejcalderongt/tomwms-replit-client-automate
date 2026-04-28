@@ -1,4 +1,4 @@
-# Pasada 3.2 C — Inspección profunda Killios + análisis logs
+# Ciclo 3.2 C — Inspección profunda Killios + análisis logs
 
 **Generado**: 2026-04-27T05:46:36.593Z
 **BD**: `TOMWMS_KILLIOS_PRD` (SQL Server 2022 CU18 sobre EC2 AWS, server <REDACTED>)
@@ -23,7 +23,7 @@
 | Mensajes únicos normalizados | 37,462 |
 | Filas analizadas en `stock_hist` | 19,225 |
 
-## 2. Cobertura objetos vs Pasada 3.1
+## 2. Cobertura objetos vs Ciclo 3.1
 
 | Objeto | Plan 3.2 C | Real medido | Match |
 |---|---|---|---|
@@ -34,7 +34,7 @@
 
 ## 3. Reclasificación de buckets (Rev 2)
 
-Comparativa antes/después. La pasada 3.1 dejó **141 tablas en bucket genérico `otro`**. Esta pasada las re-evalúa con criterios refinados:
+Comparativa antes/después. El ciclo 3.1 dejó **141 tablas en bucket genérico `otro`**. Este ciclo las re-evalúa con criterios refinados:
 
 | Bucket Rev 2 | # Tablas | Filas | Sin PK |
 |---|---|---|---|
@@ -56,7 +56,7 @@ Comparativa antes/después. La pasada 3.1 dejó **141 tablas en bucket genérico
 | inventario_externo | 1 | 244 | 1 |
 | trans_movimientos | 1 | 81,641 | 0 |
 
-### Cambios respecto a Pasada 3.1
+### Cambios respecto a Ciclo 3.1
 
 | Bucket previo (3.1) | Conteo | Bucket Rev 2 | Cambio |
 |---|---|---|---|
@@ -75,7 +75,7 @@ Comparativa antes/después. La pasada 3.1 dejó **141 tablas en bucket genérico
 
 ### Tablas aún sin clasificar (`otro`): 146
 
-Quedan 146 tablas en el bucket `otro` (vs 141 inicial). Reducción del -4%. Top 15 sin clasificar (candidatas a una pasada manual futura):
+Quedan 146 tablas en el bucket `otro` (vs 141 inicial). Reducción del -4%. Top 15 sin clasificar (candidatas a un ciclo manual futura):
 
 | Tabla | Filas | Cols | PK |
 |---|---|---|---|
@@ -651,13 +651,13 @@ Quedan 146 tablas en el bucket `otro` (vs 141 inicial). Reducción del -4%. Top 
 7. **Producto top `IdProductoBodega=391` con 725 cambios** — investigar si es producto rotativo legítimo o bug de duplicación.
 8. **148 tablas vacías** sin uso aparente — candidatas a deprecación tras confirmar con Erik.
 9. **Picos horarios en stock_hist** ofrecen ventana para maintenance: hora 20:00 UTC tiene mínima actividad (127 eventos).
-10. **146 tablas aún sin bucket claro** — pasada manual o consultar a Erik para nomenclatura desconocida.
+10. **146 tablas aún sin bucket claro** — ciclo manual o consultar a Erik para nomenclatura desconocida.
 
-## 14. Gaps reconocidos en esta pasada
+## 14. Gaps reconocidos en este ciclo
 
 | # | Gap | Mitigación |
 |---|---|---|
-| 1 | 220 vistas no analizadas a profundidad (solo conteo) | Pasada futura para vistas críticas (`VW_Stock_Res`) |
+| 1 | 220 vistas no analizadas a profundidad (solo conteo) | Ciclo futuro para vistas críticas (`VW_Stock_Res`) |
 | 2 | Triggers no enumerados (sys.triggers no consultado) | Adicionar query `sys.triggers` en próxima iteración |
 | 3 | Plan caché y stats no analizados (`sys.dm_exec_*`) | Requiere ventana de carga real para tener datos representativos |
 | 4 | log_error_wms agrupado por mensaje, no por root cause real | Heurística da indicios; análisis manual de los top 5 daría mapeo definitivo |
@@ -666,4 +666,4 @@ Quedan 146 tablas en el bucket `otro` (vs 141 inicial). Reducción del -4%. Top 
 
 ---
 
-**Fin Pasada 3.2 C.** Esto cierra el bloque de catalogación de fuentes (BOF, HH, Killios). La próxima pasada D combinará todo en flujos end-to-end: pantalla HH → WM invocado → SQL ejecutado en server → tablas mutadas en Killios → mensaje al operador.
+**Fin Ciclo 3.2 C.** Esto cierra el bloque de catalogación de fuentes (BOF, HH, Killios). La proximo ciclo D combinará todo en flujos end-to-end: pantalla HH → WM invocado → SQL ejecutado en server → tablas mutadas en Killios → mensaje al operador.

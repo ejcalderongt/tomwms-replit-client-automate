@@ -2,7 +2,7 @@
 
 > Esta carpeta es **el cerebro compartido**: doctrina, módulos del WMS,
 > decisiones arquitectónicas (ADRs), reglas duras, skills, esquemas y
-> análisis de las pasadas. Vive en la rama `wms-brain` del repo de
+> análisis de los ciclos. Vive en la rama `wms-brain` del repo de
 > intercambio (`tomwms-replit-client-automate`), separada como **orphan
 > branch** sin historia compartida con `main`.
 >
@@ -44,7 +44,7 @@ para no reinventar:
 
 Si el cerebro no tiene la respuesta, el agente la **busca** (en el código,
 en Killios, en chats previos), la **valida**, la **escribe acá** y luego la
-usa. Cada pasada de aprendizaje queda como artefacto durable.
+usa. Cada ciclo de aprendizaje queda como artefacto durable.
 
 ---
 
@@ -52,7 +52,7 @@ usa. Cada pasada de aprendizaje queda como artefacto durable.
 
 ```
 .
-├── analysis/                          <- 10 docs analíticos de pasadas previas
+├── analysis/                          <- 10 docs analíticos de ciclos previas
 │   ├── passada-2-bof-hh-killios.md           (8.6 KB)  bof + hh + killios overview
 │   ├── passada-3-1-bloque-A-config-infra.md  (7.5 KB)  config e infra base
 │   ├── passada-3-1-bloque-B-entidades-y-modelo.md      modelo de datos clasificado
@@ -175,17 +175,17 @@ usa. Cada pasada de aprendizaje queda como artefacto durable.
 
 ## Subcarpetas: qué es cada una y cuándo consultarla
 
-### `analysis/` — Pasadas analíticas
+### `analysis/` — Ciclos analíticas
 
-Documentos producto de pasadas de descubrimiento. Cada `passada-X-*.md` es
-**autocontenido** y narra qué se aprendió en esa pasada. Son lectura obligada
+Documentos producto de ciclos de descubrimiento. Cada `passada-X-*.md` es
+**autocontenido** y narra qué se aprendió en ese ciclo. Son lectura obligada
 si te metés en un módulo nuevo: te ahorran semanas.
 
-- **Pasada 2** (`passada-2-bof-hh-killios.md`): primer overview BOF + HH +
+- **Ciclo 2** (`passada-2-bof-hh-killios.md`): primer overview BOF + HH +
   Killios.
-- **Pasada 3.1** (bloques A–E): partición exhaustiva del WMS por capas
+- **Ciclo 3.1** (bloques A–E): partición exhaustiva del WMS por capas
   (config-infra, entidades, transacciones, parametrización, mapa profundo).
-- **Pasada 3.2**: pasadas profundas por subdominio (BOF completo, flujos
+- **Ciclo 3.2**: ciclos profundas por subdominio (BOF completo, flujos
   E2E, HH Android, Killios profundo).
 
 ### `brain/agent-context/` — Cómo opera el agente
@@ -323,11 +323,11 @@ Buzones del bridge (ver `BRIDGE.md`):
 
 ### `data/` — Artefactos crudos JSON
 
-JSONs producto de las pasadas de extracción. **NO se leen a mano**: son insumo
+JSONs producto de los ciclos de extracción. **NO se leen a mano**: son insumo
 para los `analysis/*.md`. Se versionan para reproducibilidad.
 
 Subcarpetas:
-- `passada-3-1-bloque-*`: JSONs de la pasada 3.1 por bloque (A..E).
+- `passada-3-1-bloque-*`: JSONs de el ciclo 3.1 por bloque (A..E).
 - `passada-3-2-bof/`: 8 JSONs del BOF (DAL completo, entity completo, UI
   BOF, modern API, WS-SQL inline, etc.).
 - `passada-3-2-flujos/`: 9 JSONs de flujos E2E (recepción, picking, packing,
@@ -375,7 +375,7 @@ brain-query.ps1 -Question "..."   --->   _inbox/<ulid>.json (push a wms-brain)
 5. **Cambios incrementales.** Ver `rule-11`. PRs pequeños, atómicos,
    reversibles.
 6. **El cerebro no es opcional.** Antes de generar un bundle, leer el
-   módulo correspondiente. Si falta documentación, pasada de descubrimiento
+   módulo correspondiente. Si falta documentación, ciclo de descubrimiento
    primero, bundle después.
 
 ---
@@ -398,7 +398,7 @@ brain-query.ps1 -Question "..."   --->   _inbox/<ulid>.json (push a wms-brain)
 - **brain/entities/rules/**: 13 reglas duras.
 - **brain/skills/**: 4 skills (2 wms-tomwms + 2 wms-tomhh2025).
 - **brain/sql-catalog/**: extractor + 1 DDL crítico (reservation-tables.md).
-- **analysis/**: 10 docs de pasadas (~190 KB).
+- **analysis/**: 10 docs de ciclos (~190 KB).
 - **data/**: 25+ JSONs de extracciones crudas (~9 MB).
 - **Última extracción Killios**: 2026-04-27T01:29Z (fresh).
 - **Último ADR**: 003-mi3-reescrito.md.

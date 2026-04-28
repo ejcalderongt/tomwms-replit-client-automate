@@ -74,7 +74,7 @@ PERMITIR adicionalmente cambio_ubicacion SI:
 
 **Ambiguedad a resolver con Carol**: ¿"A y B iguales C y D iguales" se refiere a coordenadas de ubicacion, atributos del lote, presentaciones del producto, o algo mas? Tres lecturas en `wms-brain-client/questions/Q-015/question.md`.
 
-## Pregunta abierta para investigar (otra pasada)
+## Pregunta abierta para investigar (otro ciclo)
 
 ¿El SP/codigo de cambio de ubicacion ACTUAL (BOF.NET y HH Android) realmente CONSULTA `regla_ubic_*` para enforcement, o el bloqueo es solo en UI? Si es solo UI, hay un gap server-side que la nueva WebAPI .NET 8 debe cerrar de origen.
 
@@ -84,7 +84,7 @@ PERMITIR adicionalmente cambio_ubicacion SI:
 
 Acciones inmediatas:
 1. Esperar aclaracion de Carol sobre E1 (sentido del operador) y E2 (significado de "A y B iguales C y D iguales").
-2. Verificar (proxima pasada via SQL live o code review): si los SPs/codigo actual hacen JOIN contra `regla_ubic_*` antes de aceptar el cambio.
+2. Verificar (proximo ciclo via SQL live o code review): si los SPs/codigo actual hacen JOIN contra `regla_ubic_*` antes de aceptar el cambio.
 3. Si Erik aprueba: emitir ADR-013-RELOC-RULE-STRICT con la regla formal en la nueva WebAPI - **sin override, sin permiso especial, mensaje siempre del catalogo `mensaje_regla`**.
 
 ## Ratificacion pendiente de

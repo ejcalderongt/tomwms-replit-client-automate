@@ -72,7 +72,7 @@ estimatedTimeMinutes: 8
 
 ## Contexto
 
-En la pasada 9b vimos que `BB.i_nav_transacciones_out` tiene **110,795
+En el ciclo 9b vimos que `BB.i_nav_transacciones_out` tiene **110,795
 INGRESOS con enviado=0** vs solo **107 enviados** (0.10% procesado),
 mientras las SALIDAS estan al 65.6%. Es bandera roja: o NavSync no
 maneja INGRESOS, o tiene un bug, o los INGRESOS van por otro canal.

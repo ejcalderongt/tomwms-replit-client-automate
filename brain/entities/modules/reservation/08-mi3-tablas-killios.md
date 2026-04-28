@@ -144,7 +144,7 @@
 | `user_mod`, `fec_mod`| varios         | Última modificación                              |
 | `host`              | nvarchar(50) NULL | Hostname del cliente (opcional)                |
 
-> **Nota importante**: `stock_res` **NO tiene** columnas como `Fecha_Commit`, `Fecha_Consumo`, `Fecha_Cancelacion`, `Motivo_Cancelacion` que documenté en `07-stock-res-ciclo-vida.md`. Esas transiciones se infieren cruzando con `trans_pe_enc.estado` y `trans_pe_enc.fec_mod`. **Hay que corregir el archivo 07 en la próxima pasada**.
+> **Nota importante**: `stock_res` **NO tiene** columnas como `Fecha_Commit`, `Fecha_Consumo`, `Fecha_Cancelacion`, `Motivo_Cancelacion` que documenté en `07-stock-res-ciclo-vida.md`. Esas transiciones se infieren cruzando con `trans_pe_enc.estado` y `trans_pe_enc.fec_mod`. **Hay que corregir el archivo 07 en la proximo ciclo**.
 > 
 > Tampoco existen las columnas `Usuario_Commit`, `Usuario_Consumo`, `Usuario_Cancelacion`. La auditoría histórica del cambio de estado se hace solo con `user_mod` + `fec_mod` (último cambio) y por correlación con el pedido.
 > 

@@ -1,6 +1,6 @@
 # 20260428-1908-H09 - trans_pe_pol usa IdOrdenPedidoEnc como FK, pero apunta al IdPedidoEnc de trans_pe_enc (mismo valor).
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.
 
 ## Contexto
 
@@ -28,5 +28,5 @@ Erik Calderon (PrograX24)
 - Tags: `validated-via-live-sql`, `schema-quirk`, `naming-debt`, `tech-debt`, `cealsa`, `q-013`
 - Preguntas origen: `Q-013`
 - Respondedoras: `SQL-agente`, `schema-validator`
-- Pasada: 8a
-- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`
+- Ciclo: 8a
+- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-8a.md`

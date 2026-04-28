@@ -24,13 +24,13 @@ Carol no conoce el proceso de prefactura CEALSA. Sin informante el dominio billi
 
 - Erik: identificar candidato respondedor entre: (a) finanzas/billing CEALSA, (b) consultor previo del proyecto WMS-CEALSA, (c) operaciones senior CEALSA.
 - Si en 2 semanas no hay respondedor humano, derivar via SQL del agente brain (analisis de estructura y patrones de uso de trans_prefactura_*).
-- Reservar P-23 para Pasada 8 con respondedor identificado.
+- Reservar P-23 para Ciclo 8 con respondedor identificado.
 - Hasta tener respuesta: el WebAPI no incluye endpoints de prefactura para CEALSA. El bridge marca el dominio billing CEALSA como out-of-scope explicito.
 
 ## Archivos a editar (candidatos)
 
 - `brain/replit.md (anotar gap de conocimiento billing CEALSA)`
-- `brain/_inbox/<futuro>-pasada-8-prefactura.json (cuando se identifique respondedor)`
+- `brain/_inbox/<futuro>-ciclo-8-prefactura.json (cuando se identifique respondedor)`
 - `brain/architecture/adr/ADR-009-cealsa-3pl-jornada-prefactura.md (existente, agregar caveat de prefactura sin informante)`
 
 ## Ratificacion

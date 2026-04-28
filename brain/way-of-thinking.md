@@ -1,6 +1,6 @@
 # Way of thinking — TomWMS Brain
 
-> Notas del autor (Erik) y principios operativos. Vivientes, se actualizan en cada pasada.
+> Notas del autor (Erik) y principios operativos. Vivientes, se actualizan en cada ciclo.
 
 ## Principios operativos
 

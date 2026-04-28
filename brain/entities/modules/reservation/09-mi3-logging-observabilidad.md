@@ -124,7 +124,7 @@ End Sub
 Función que persiste un INSERT puntual en `trans_pe_det_log_reserva` con:
 - `IdPedidoDet`, `IdStock`, `Cantidad`, `IdUbicacion`, `lote`, `lic_plate`, `UmBas`, `fec_agr`, `user_agr`.
 
-> Tabla `trans_pe_det_log_reserva` (no documentada en archivo 08 — agregar a `sql-catalog/reservation-tables.md` en próxima pasada). Es la **bitácora granular de reservas** y complementa `log_error_wms`. Permite reconstruir QUÉ stock se reservó para QUÉ línea de pedido en QUÉ momento, incluso si la reserva se canceló después.
+> Tabla `trans_pe_det_log_reserva` (no documentada en archivo 08 — agregar a `sql-catalog/reservation-tables.md` en proximo ciclo). Es la **bitácora granular de reservas** y complementa `log_error_wms`. Permite reconstruir QUÉ stock se reservó para QUÉ línea de pedido en QUÉ momento, incluso si la reserva se canceló después.
 
 ## 3. Vocabulario completo de checkpoints
 

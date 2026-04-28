@@ -1,4 +1,4 @@
-# Pasada 3.2 A — Catalogación completa TOMWMS_BOF
+# Ciclo 3.2 A — Catalogación completa TOMWMS_BOF
 
 **Generado**: 2026-04-27T05:19:08.949Z
 **Fuente**: Azure DevOps `ejcalderon0892/TOMWMS_BOF`, rama `dev_2028_merge`
@@ -8,7 +8,7 @@
 
 ## 1. Resumen ejecutivo
 
-Esta pasada cierra el barrido amplio del backend del WMS BOF iniciado en la pasada 3.1 (que muestreó 38 clsLn de configuración). Aquí se procesaron **todos** los archivos operacionales relevantes — entidades, DAL, WebServices, formularios de transacciones, y la capa moderna .NET Core. Los hallazgos principales:
+Este ciclo cierra el barrido amplio del backend del WMS BOF iniciado en el ciclo 3.1 (que muestreó 38 clsLn de configuración). Aquí se procesaron **todos** los archivos operacionales relevantes — entidades, DAL, WebServices, formularios de transacciones, y la capa moderna .NET Core. Los hallazgos principales:
 
 - **534 entidades** `clsBe*` con un total de 7,249 properties y 175 navegaciones tipadas (en archivos `_Partial`).
 - **634 clases DAL** `clsLn*` con **5,167 bloques SQL inline** y solo **2 llamadas EXEC a stored procedures** — confirma con autoridad que el BOF mantiene el patrón "SQL en código" casi universal (99.96% inline).
@@ -22,7 +22,7 @@ Esta pasada cierra el barrido amplio del backend del WMS BOF iniciado en la pasa
 | Item | Valor en `replit.md` | Valor real medido | Comentario |
 |---|---|---|---|
 | Entities (clsBe*) | 538 | 534 únicas | Marginal, 4 archivos resultaron ser `_Partial` que se merge con la base |
-| DAL (clsLn*) | ~120 | **634** | Subestimación 5×. La pasada 3.1 muestreó solo el 6% del DAL |
+| DAL (clsLn*) | ~120 | **634** | Subestimación 5×. El ciclo 3.1 muestreó solo el 6% del DAL |
 | Carpetas top-level esperadas | EntityCore, DALCore | **NO EXISTEN como repos raíz** | Capa moderna vive dentro de `/TOMIMSV4/TOMIMS_WCF` (117 archivos) y `/WMSWebAPI` (84 archivos) |
 | WS principales | WSHHRN, WSSAPSYNC | **TOMHHWS, srvSAPSync** | El nombre lógico es WSHHRN/WSSAPSYNC pero los archivos físicos se llaman así |
 | WS files (.asmx + .vb) | — | 2 `.asmx` + 18 `.vb` codebehind/helpers | TOMHHWS es 1 monolito `.asmx.vb`. Ver §6 |
@@ -42,7 +42,7 @@ Esta pasada cierra el barrido amplio del backend del WMS BOF iniciado en la pasa
   /TOMIMSV4 (proj)   1469          → forms + recursos (mayoría es .resx, excluido)
     /Mantenimientos  712           → forms config (excluidos por scope)
     /Reportes        433           → forms reportes (excluidos por scope)
-  /Transacciones     258           → forms operacionales BOF (incluidos en pasada)
+  /Transacciones     258           → forms operacionales BOF (incluidos en ciclo)
   /TOMIMS_WCF        117           → capa WCF/Modern (parcial)
 /WSHHRN              292 (38 vb)   → TOMHHWS.asmx.vb es el monolito principal
 /WSSAPSYNC           18 (14 vb)    → srvSAPSync.asmx.vb
@@ -370,7 +370,7 @@ Esta pasada cierra el barrido amplio del backend del WMS BOF iniciado en la pasa
 
 `_servicio, _servicio_logistico, _vw_ajustes, ajustesmi3, bodega_area_partial, bodega_partial, bodega_tramo_partial, bodega_tramo_seleccion, bodega_ubicacion_partial, bodega_ubicacion_seleccion, bodegaseleccion, cealsa_acuerdoscomerciales, cealsa_acuerdoscomerciales_partial, cealsa_clientes, cealsa_detacuerdoscomerciales, cealsa_duca_enc, cliente_bodega_partial, cliente_direccion_partial, cliente_partial, cuadrilla_det_montacarga_partial, cuadrilla_det_operador_partial, cuadrilla_enc_partial, detallepedidoaverificar, dms_log_sincronizacion_fallos, dms_log_sincronizacion_nube, empresaand, font_det_partial, font_enc_partial, horario_laboral_det_partial, i_nav_acuerdo_enc_partial`…
 
-## 20. Resolución de ambigüedades pendientes (pasada 3.1)
+## 20. Resolución de ambigüedades pendientes (ciclo 3.1)
 
 ### 20.1 `clsLnTrans_oc_estado`
 
@@ -394,24 +394,24 @@ Esta pasada cierra el barrido amplio del backend del WMS BOF iniciado en la pasa
 
 ## 21. Capa de Interfaces (DAL/Interface — 64 archivos)
 
-Sub-carpeta `/TOMIMSV4/DAL/Interface/` con 64 archivos representa la integración con sistemas externos (SAP, NAV, DMS, Cealsa, AWS). No es parte del flujo HH/BOF directo pero define la "frontera externa" del WMS. **Acción**: en pasada futura, generar un catálogo dedicado de interfaces.
+Sub-carpeta `/TOMIMSV4/DAL/Interface/` con 64 archivos representa la integración con sistemas externos (SAP, NAV, DMS, Cealsa, AWS). No es parte del flujo HH/BOF directo pero define la "frontera externa" del WMS. **Acción**: en ciclo futuro, generar un catálogo dedicado de interfaces.
 
 ## 22. Datasets tipados (.xsd) — 73 archivos
 
-Excluidos del parseo en esta pasada por ser esquemas declarativos (no código). La mayoría definen tablas auxiliares para reportes WinForms. **Acción**: en pasada futura, parsear los `.xsd` para obtener un mapping XML → SQL Server alternativo al de las clsBe.
+Excluidos del parseo en este ciclo por ser esquemas declarativos (no código). La mayoría definen tablas auxiliares para reportes WinForms. **Acción**: en ciclo futuro, parsear los `.xsd` para obtener un mapping XML → SQL Server alternativo al de las clsBe.
 
-## 23. Gaps reconocidos en esta pasada
+## 23. Gaps reconocidos en este ciclo
 
-| # | Gap | Mitigación / Próxima pasada |
+| # | Gap | Mitigación / Próxima ciclo |
 |---|---|---|
-| 1 | Forms de `/TOMIMSV4/TOMIMSV4/Mantenimientos/` (712 archivos) NO catalogados | Pasada 3.3 dedicada a config UI |
-| 2 | Forms de `/TOMIMSV4/TOMIMSV4/Reportes/` (433 archivos) NO catalogados | Pasada de reportería |
+| 1 | Forms de `/TOMIMSV4/TOMIMSV4/Mantenimientos/` (712 archivos) NO catalogados | Ciclo 3.3 dedicada a config UI |
+| 2 | Forms de `/TOMIMSV4/TOMIMSV4/Reportes/` (433 archivos) NO catalogados | Ciclo de reportería |
 | 3 | `Designer.vb` excluidos (no muestran controles UI) | Si se necesita topología de controles, parsear bajo demanda |
-| 4 | DAL/Interface (64 archivos) parseados pero no analizados por integración externa | Pasada de interfaces |
+| 4 | DAL/Interface (64 archivos) parseados pero no analizados por integración externa | Ciclo de interfaces |
 | 5 | DAL/Inventario, DAL/Road, DAL/QuickTag (44 archivos) parseados sin desglose por dominio | Análisis específico cuando se modele esos flujos |
-| 6 | `.xsd` DataSets (73 archivos) sin parsear | Pasada de modelo de datos extendido |
-| 7 | 354 clsLn marcados como huérfanos pueden estar siendo usados desde Mantenimientos/Reportes | Recalcular tras pasada 3.3 |
-| 8 | TOMHHWS.asmx.vb es un monolito de ~1.5MB y 364 WMs — ningún WM individualmente analizado a profundidad | Pasada D (flujos end-to-end) lo cubrirá |
+| 6 | `.xsd` DataSets (73 archivos) sin parsear | Ciclo de modelo de datos extendido |
+| 7 | 354 clsLn marcados como huérfanos pueden estar siendo usados desde Mantenimientos/Reportes | Recalcular tras ciclo 3.3 |
+| 8 | TOMHHWS.asmx.vb es un monolito de ~1.5MB y 364 WMs — ningún WM individualmente analizado a profundidad | Ciclo D (flujos end-to-end) lo cubrirá |
 
 ## 24. Top 10 hallazgos accionables para Erik
 
@@ -424,7 +424,7 @@ Excluidos del parseo en esta pasada por ser esquemas declarativos (no código). 
 7. **TOMHHWS** es un monolito gigante de 364 WMs en un solo archivo `.asmx.vb` — refactor priority alto cuando se modernice la HH.
 8. **Cobertura entity ↔ tabla**: 534 entities mapean a 534 tablas (1:1). Las **222 tablas adicionales** referenciadas son típicamente vistas, tablas dinámicas (Inv_*) o tablas legacy sin entity.
 9. **Modern API DbContexts** (1): hacer auditoría de cuáles tablas tienen ya su EF Core mapping vs cuáles falta.
-10. **Capa Interface** (64 archivos en /DAL/Interface/) es la frontera externa del WMS — pasada dedicada cuando se documente la integración SAP/NAV.
+10. **Capa Interface** (64 archivos en /DAL/Interface/) es la frontera externa del WMS — ciclo dedicada cuando se documente la integración SAP/NAV.
 
 ## 25. Manifiesto de archivos generados
 
@@ -445,4 +445,4 @@ Todos en `data/passada-3-2-bof/` del repo `ejcalderongt/tomwms-replit-client-aut
 
 ---
 
-**Fin Pasada 3.2 A.** Próxima en pipeline: **Pasada 3.2 B — Catalogación TOMHH2025 (Android)**, que cruzará contra los 371 WMs aquí catalogados para detectar WMs huérfanos (declarados en server, no consumidos por HH) y zombies (llamados por HH, removidos del server).
+**Fin Ciclo 3.2 A.** Próxima en pipeline: **Ciclo 3.2 B — Catalogación TOMHH2025 (Android)**, que cruzará contra los 371 WMs aquí catalogados para detectar WMs huérfanos (declarados en server, no consumidos por HH) y zombies (llamados por HH, removidos del server).

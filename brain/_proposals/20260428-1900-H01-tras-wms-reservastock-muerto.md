@@ -18,7 +18,7 @@ Aplicar ADR-011 (opcion c).
 
 ## Razonamiento
 
-Triple confirmacion (Erik tanda-1, Carol pasada-7, SQL agente tanda-2) de que la bandera no se valida hoy. Eliminarla quemaria la vision arquitectonica futura del bucket/abastecimiento policy-driven que Erik documento. La opcion mas conservadora y compatible con el patron historico de Erik ("dejar el codigo extensible") es documentar como reservado-para-futuro y rechazar el campo cuando alguien intente poblarlo en TRAS_WMS hoy.
+Triple confirmacion (Erik tarea-1, Carol ciclo-7, SQL agente tarea-2) de que la bandera no se valida hoy. Eliminarla quemaria la vision arquitectonica futura del bucket/abastecimiento policy-driven que Erik documento. La opcion mas conservadora y compatible con el patron historico de Erik ("dejar el codigo extensible") es documentar como reservado-para-futuro y rechazar el campo cuando alguien intente poblarlo en TRAS_WMS hoy.
 
 ## Acciones propuestas
 
@@ -31,7 +31,7 @@ Triple confirmacion (Erik tanda-1, Carol pasada-7, SQL agente tanda-2) de que la
 
 - `brain/architecture/adr/ADR-011-tras-wms-reservastock-decision.md (creado)`
 - `Repo del WebAPI nuevo cuando exista (post P-16b)`
-- `brain/wms-specific-process-flow/respuestas-pasada-7.md (agregar nota de cierre en P-18 apuntando a ADR-011)`
+- `brain/wms-specific-process-flow/respuestas-ciclo-7.md (agregar nota de cierre en P-18 apuntando a ADR-011)`
 
 ## Ratificacion
 

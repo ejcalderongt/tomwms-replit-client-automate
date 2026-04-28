@@ -58,7 +58,7 @@ Ver `reference/casos-reserva-observados.md` para conteos. Los 12 sin evidencia s
 
 ## Flags productivos importantes que el legacy doc no consideraba
 
-Aparecen en datos reales y se agregaron al brain en pasada 7:
+Aparecen en datos reales y se agregaron al brain en ciclo 7:
 
 - `convertir_decimales_a_umbas` (Killios+SAP)
 - `interface_sap` y la familia `sap_control_*`

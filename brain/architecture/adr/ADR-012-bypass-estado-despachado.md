@@ -16,11 +16,11 @@ adrs_relacionados: ADR-010 (reserva-webapi vs wms-legacy), ADR-011 (decisiones d
 
 43 pedidos en Killios PRD (1.1% del trafico) tienen `trans_pe_enc.estado='Despachado'` sin fila correspondiente en `trans_despacho_enc`. Es decir, el flujo lineal Nuevo→Pendiente→Pickeado→(Verificado)→Despachado fue **bypaseado** para esos pedidos.
 
-**Carol (pasada-7, P-16)** confirma literal: *"esto generalmente pasa porque se le cambia el estado al pedido a estado despachado, sin realmente despachar el producto, el WMS lo permite"*. Es una capacidad legacy intencional, no un bug accidental.
+**Carol (ciclo-7, P-16)** confirma literal: *"esto generalmente pasa porque se le cambia el estado al pedido a estado despachado, sin realmente despachar el producto, el WMS lo permite"*. Es una capacidad legacy intencional, no un bug accidental.
 
-**Erik (tanda-1, P-08)** documenta un caso analogo (NUEVO → Pickeado directo para pedidos que el WMS inyecta automaticamente entre bodegas virtuales) que justifica la flexibilidad de saltarse el flujo lineal en escenarios controlados.
+**Erik (tarea-1, P-08)** documenta un caso analogo (NUEVO → Pickeado directo para pedidos que el WMS inyecta automaticamente entre bodegas virtuales) que justifica la flexibilidad de saltarse el flujo lineal en escenarios controlados.
 
-**SQL agente (tanda-2, P-16)** confirma que la matematica de "discrepancia 4032 vs 3989" no era huerfanos 1:1 (despacho_enc agrupa multiples pedidos), pero **dejo abierta** la sub-pregunta P-16b refinada: cuantos pedidos en `trans_despacho_det` tienen `trans_pe_enc.estado` distinto de Despachado? Si la respuesta es cero, el bypass de Carol es la unica fuente de divergencia.
+**SQL agente (tarea-2, P-16)** confirma que la matematica de "discrepancia 4032 vs 3989" no era huerfanos 1:1 (despacho_enc agrupa multiples pedidos), pero **dejo abierta** la sub-pregunta P-16b refinada: cuantos pedidos en `trans_despacho_det` tienen `trans_pe_enc.estado` distinto de Despachado? Si la respuesta es cero, el bypass de Carol es la unica fuente de divergencia.
 
 ## Decision
 
@@ -107,15 +107,15 @@ El bridge (skill `wms-test-bridge`) debe:
 
 ### Mitigacion
 
-1. La tabla `aud_pedido_estado_forzado` se puede crear en Pasada 9 antes del primer release del WebAPI. No bloquea el scaffold inicial.
+1. La tabla `aud_pedido_estado_forzado` se puede crear en Ciclo 9 antes del primer release del WebAPI. No bloquea el scaffold inicial.
 2. El BOF puede mostrar el form en una iteracion siguiente; mientras tanto el endpoint del WebAPI exige el campo razon en el JSON request.
 3. El permiso se puede default-deny y exigir habilitacion explicita por admin.
 
-## Sub-pregunta abierta para Pasada 8a
+## Sub-pregunta abierta para Ciclo 8a
 
 Antes de aplicar, **cerrar la P-16b refinada con SQL READ-ONLY**: ¿cuantos pedidos en Killios PRD tienen `trans_pe_enc.estado='Despachado'` sin fila en `trans_despacho_enc`? ¿Coincide con los 43 reportados por Carol? Si el numero es muy diferente, recalibrar.
 
-Query incluida en `brain/wms-specific-process-flow/queries-pasada-8a.md` (sub-Q P-16b).
+Query incluida en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (sub-Q P-16b).
 
 ## Ratificacion
 
@@ -124,8 +124,8 @@ Esta decision es **provisional**. Se aplica en el scaffold inicial del WebAPI. S
 ## Referencias
 
 - Hallazgo: `brain/_inbox/20260428-1903-H04-despacho-fantasma-bypass-estado.json`
-- Pregunta origen: `brain/wms-specific-process-flow/preguntas-pasada-7.md` P-16
-- Respuesta Carol: `brain/wms-specific-process-flow/respuestas-pasada-7.md` P-16
-- Refinamiento SQL: `brain/wms-specific-process-flow/respuestas-tanda-2.md` P-16
-- Consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-7.md` D-03
+- Pregunta origen: `brain/wms-specific-process-flow/preguntas-ciclo-7.md` P-16
+- Respuesta Carol: `brain/wms-specific-process-flow/respuestas-ciclo-7.md` P-16
+- Refinamiento SQL: `brain/wms-specific-process-flow/respuestas-tarea-2.md` P-16
+- Consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-7.md` D-03
 - Bug report relacionado: `brain/wms-specific-process-flow/bug-report-p16b.md`

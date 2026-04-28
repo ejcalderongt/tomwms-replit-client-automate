@@ -22,16 +22,16 @@ El WMS ya tiene logs estructurados por transaccion (i_nav_ejecucion_det_error, 4
 
 ## Acciones propuestas
 
-- Roadmap pasada 8: definir taxonomia formal recuperable/fatal/no-recuperable con codigos numericos. Diseño en brain/architecture/error-taxonomy.md (a crear).
+- Roadmap ciclo 8: definir taxonomia formal recuperable/fatal/no-recuperable con codigos numericos. Diseño en brain/architecture/error-taxonomy.md (a crear).
 - BOF: agregar vista que pivote i_nav_ejecucion_det_error con filtros por transaccion, severidad, fecha. (No bloquea reserva-webapi - puede ir en paralelo.)
 - reserva-webapi: cuando se implemente, escribir errores a i_nav_ejecucion_det_error con la nueva taxonomia. El bridge debe trackear que la categorizacion sea consistente entre legacy y nuevo motor.
 
 ## Archivos a editar (candidatos)
 
-- `brain/architecture/error-taxonomy.md (a crear en pasada 8)`
+- `brain/architecture/error-taxonomy.md (a crear en ciclo 8)`
 - `Repo BOF (fuera del brain)`
 - `Repo del WebAPI cuando exista`
-- `brain/wms-specific-process-flow/respuestas-pasada-7.md (agregar nota de cierre en P-20)`
+- `brain/wms-specific-process-flow/respuestas-ciclo-7.md (agregar nota de cierre en P-20)`
 
 ## Ratificacion
 

@@ -1,4 +1,4 @@
-# Pasada #3.1 Bloque E — Mapa profundo HH↔BOF↔Killios (WebMethod → clsLn → Tabla)
+# Ciclo #3.1 Bloque E — Mapa profundo HH↔BOF↔Killios (WebMethod → clsLn → Tabla)
 
 **Generado**: 2026-04-27T03:47:34.360Z
 **Alcance**: las 89 clases Logic (.vb) invocadas por el WSHHRN (TOMHHWS.asmx).

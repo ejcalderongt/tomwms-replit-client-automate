@@ -67,7 +67,7 @@ Volumen K7: 66,339 filas en 4 meses (May-Sep 2025), pico junio-julio
 - Documentar la convencion de prefijos en `interfaces-erp-por-cliente.md`
   o en un nuevo `log_error_wms_convention.md`.
 - Considerar agregar columna `Severidad nvarchar(8)` en una
-  pasada futura (bumping schema_version).
+  ciclo futuro (bumping schema_version).
 
 ## Acciones propuestas
 

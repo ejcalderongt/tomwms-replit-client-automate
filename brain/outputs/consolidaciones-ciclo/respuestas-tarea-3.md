@@ -1,8 +1,8 @@
-# Respuestas Pasada 8a (tanda-3) - CIERRE COMPLETO via ejecucion live SQL
+# Respuestas Ciclo 8a (tarea-3) - CIERRE COMPLETO via ejecucion live SQL
 
 > Documento generado por el agente brain (sesion replit) el 28 abril 2026.
 >
-> **Estado**: 6 sub-preguntas CERRADAS al 100% en su dimension de **afinidad de procesos** (1 via wms-db-brain dump + 5 via ejecucion live SQL Server con `sa@52.41.114.122,1437`). Pasada 8a CERRADA.
+> **Estado**: 6 sub-preguntas CERRADAS al 100% en su dimension de **afinidad de procesos** (1 via wms-db-brain dump + 5 via ejecucion live SQL Server con `sa@52.41.114.122,1437`). Ciclo 8a CERRADA.
 >
 > **Fuentes**:
 > - `wms-brain-client/questions/Q-009..Q-014` (commit `582da718` rama `wms-brain-client`)
@@ -21,7 +21,7 @@ Las respuestas previas de las personas del cliente (P-XX, CKFK, KKKL, etc.) prov
 | **Afinidad de PROCESOS** | Que tablas existen, sus columnas, sus tipos, los SPs, las relaciones, los flags de configuracion (`trans_pe_tipo.control_poliza`, etc.), los catalogos (`sis_tipo_tarea`), los caminos posibles (estado='Despachado' sin trans_despacho_det) | **SI** - este es el segmento que estamos cerrando |
 | **Afinidad de DATOS** | Cantidad exacta de bypass, distribucion mensual real, totales monetarios, ratios de uso, cardinalidades absolutas | **NO** - distintos snapshots dan distintos numeros y la comparacion es metodologicamente invalida |
 
-**Politica adoptada en Pasada 8a**: cuando una pregunta toca afinidad de datos, se reporta el dato OBSERVADO en nuestro snapshot SIN compararlo con el dato reportado por las personas del cliente. La sincronizacion de backups y la comparacion cuantitativa quedan diferidas a un segmento de trabajo dedicado a "afinidad de datos".
+**Politica adoptada en Ciclo 8a**: cuando una pregunta toca afinidad de datos, se reporta el dato OBSERVADO en nuestro snapshot SIN compararlo con el dato reportado por las personas del cliente. La sincronizacion de backups y la comparacion cuantitativa quedan diferidas a un segmento de trabajo dedicado a "afinidad de datos".
 
 ---
 
@@ -67,9 +67,9 @@ Simplificar el bridge Navigator de 4 tipos a 2 (recepcion + despacho con FKs adi
 
 ## Q-010 - Killios reabasto pre/post-2024 - **CERRADA (proceso) via wms-db-brain**
 
-(Ya cerrada en pasada anterior - `CLBD_PRC.md` confirma que el SP NO incluye `trans_reabastecimiento_log`. Ver evento H02.)
+(Ya cerrada en ciclo anterior - `CLBD_PRC.md` confirma que el SP NO incluye `trans_reabastecimiento_log`. Ver evento H02.)
 
-**Extension descubierta en Pasada 8a (proceso)**: la tabla existe en las 3 BDs, K7=1218 filas, BB=755, C9=0. El alcance del problema es **estructural** del instalador, no de una BD especifica. **Nuevo evento H11**.
+**Extension descubierta en Ciclo 8a (proceso)**: la tabla existe en las 3 BDs, K7=1218 filas, BB=755, C9=0. El alcance del problema es **estructural** del instalador, no de una BD especifica. **Nuevo evento H11**.
 
 ---
 
@@ -194,7 +194,7 @@ Todos en `brain/_inbox/20260428-19{05..10}-H{06..11}-*.json` + proposals MD en `
 
 ---
 
-## Cierre de Pasada 8a
+## Cierre de Ciclo 8a
 
 - **6 cards generadas** (Q-009..Q-014, commit `582da718`)
 - **6 ejecuciones live exitosas** (Q-009 x3 + Q-011 + Q-012 x2 + Q-013 + Q-014 x3)
@@ -203,4 +203,4 @@ Todos en `brain/_inbox/20260428-19{05..10}-H{06..11}-*.json` + proposals MD en `
 - **0 destrucciones, 0 escrituras** contra las BDs (READ-ONLY confirmado)
 - **0 comparaciones cuantitativas** con backups de las personas (politica de afinidad-procesos)
 
-**Pasada 8a CERRADA en su dimension de afinidad de procesos.** Listo para ratificacion de Erik. Las cuestiones cuantitativas que requieran comparacion con backups del cliente quedan diferidas a un segmento futuro de "afinidad de datos".
+**Ciclo 8a CERRADA en su dimension de afinidad de procesos.** Listo para ratificacion de Erik. Las cuestiones cuantitativas que requieran comparacion con backups del cliente quedan diferidas a un segmento futuro de "afinidad de datos".

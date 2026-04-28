@@ -59,5 +59,5 @@ Invoke-WmsBrainAnalysis -Suite outbox-health -Profile K7-PRD -OnlyQueries O2,O3,
 
 Esta suite es la portacion del script ad-hoc
 `/tmp/dbq/scripts/14-outbox-marca-envio.cjs` usado por el agente brain
-en la pasada 9b (abr 2026). Se promovio a suite reutilizable porque las
+en el ciclo 9b (abr 2026). Se promovio a suite reutilizable porque las
 mismas 6 queries respondieron PEND-10 y abrieron PEND-12.

@@ -1,9 +1,9 @@
-# Pasada #2 — Reporte de validación BOF↔HH↔Killios (v2 con clsLn ubicado + Wiki verificada)
+# Ciclo #2 — Reporte de validación BOF↔HH↔Killios (v2 con clsLn ubicado + Wiki verificada)
 
 **Generado**: 2026-04-27T03:32:50.078Z
 **Branch fuente Azure DevOps**: `dev_2028_merge` (TOMWMS_BOF + TOMHH2025).
 **Acceso**: API REST Azure DevOps con PAT (Erik), sin clone full (376 MB BOF).
-**Estado**: pasada #2 cerrada, lista para iniciar #3.1 (D+E+A).
+**Estado**: ciclo #2 cerrada, lista para iniciar #3.1 (D+E+A).
 
 ## 1. Topología confirmada
 

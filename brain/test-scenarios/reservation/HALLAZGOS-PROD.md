@@ -44,7 +44,7 @@ Los siguientes nombres NO existen en `i_nav_config_enc`. Se inferian del codigo 
 - Politica_Asignacion_Ubicacion
 - Reserva_Por_Pedido / Por_Linea
 
-**Accion**: en proxima pasada, buscar estos comportamientos en otras tablas (`i_nav_producto`, `producto_estado`, `i_nav_ubicaciones`) o confirmar que solo viven en codigo.
+**Accion**: en proximo ciclo, buscar estos comportamientos en otras tablas (`i_nav_producto`, `producto_estado`, `i_nav_ubicaciones`) o confirmar que solo viven en codigo.
 
 ## Flags productivos importantes que NO estaban en el legacy doc
 

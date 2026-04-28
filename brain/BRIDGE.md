@@ -324,7 +324,7 @@ Cualquier cambio al bridge debe:
 
 ### 10.1 Changelog
 
-#### v2 — 2026-04-27 (pasada-11)
+#### v2 — 2026-04-27 (ciclo-11)
 
 **Motivo**: el cliente PowerShell `WmsBrainClient` (rama `wms-brain-client`)
 necesita emitir eventos de investigacion SQL al brain de la BD productiva

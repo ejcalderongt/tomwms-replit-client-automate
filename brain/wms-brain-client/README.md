@@ -202,10 +202,10 @@ Submit-WmsBrainAnswer -Id Q-001 -Verdict confirmed -Confidence high
 ## Quien lo hizo
 
 Erik Calderon (`ejc`) y un agente que hizo demasiadas preguntas durante
-una pasada de 9 horas que termino con 12 de 25 preguntas respondidas, 1
+un ciclo de 9 horas que termino con 12 de 25 preguntas respondidas, 1
 bug confirmado en datos reales, 3 patrones de integracion ERP mapeados, y
 una bandera roja sobre 110,795 INGRESOS olvidados en BB. La herramienta
-nacio para que la pasada 10 sea mas corta y la 20 no haga falta.
+nacio para que el ciclo 10 sea mas corta y la 20 no haga falta.
 
 ## Licencia
 

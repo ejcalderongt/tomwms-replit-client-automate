@@ -26,7 +26,7 @@
 
 [![rama](https://img.shields.io/badge/rama-wms--brain-1F4E79?style=flat-square)](#)
 [![bds](https://img.shields.io/badge/SQL_Server-3_BDs_PRD_(READ_ONLY)-C5504B?style=flat-square)](#)
-[![pasadas](https://img.shields.io/badge/pasadas-8_y_contando-595959?style=flat-square)](#)
+[![ciclos](https://img.shields.io/badge/ciclos-8_y_contando-595959?style=flat-square)](#)
 [![drizzle](https://img.shields.io/badge/Drizzle-NUNCA_JAMAS-000000?style=flat-square)](#)
 [![emojis](https://img.shields.io/badge/emojis-prohibidos-000000?style=flat-square)](#)
 
@@ -37,7 +37,7 @@
 1. [Que es esto y por que existe](#1-que-es-esto-y-por-que-existe)
 2. [Arquitectura del brain (en ASCII, como debe ser)](#2-arquitectura-del-brain-en-ascii-como-debe-ser)
 3. [Tour del repo carpeta por carpeta](#3-tour-del-repo-carpeta-por-carpeta)
-4. [Las 8 pasadas — historia condensada del aprendizaje](#4-las-8-pasadas--historia-condensada-del-aprendizaje)
+4. [Las 8 ciclos — historia condensada del aprendizaje](#4-las-8-ciclos--historia-condensada-del-aprendizaje)
 5. [Las reglas sagradas (no son opcionales)](#5-las-reglas-sagradas-no-son-opcionales)
 6. [Glosario (medio en serio, medio no)](#6-glosario-medio-en-serio-medio-no)
 7. [Estado actual del aprendizaje (numeros reales)](#7-estado-actual-del-aprendizaje-numeros-reales)
@@ -69,8 +69,8 @@ camiones todos los dias**, y que para hacerlo necesitas saber:
 
 Bueno, **este repo es la respuesta a esas preguntas**.
 
-No es codigo. No corre. **Es un cerebro de papel** que se llena, pasada por
-pasada, con evidencia productiva citada — no con suposiciones, no con cosas
+No es codigo. No corre. **Es un cerebro de papel** que se llena, ciclo por
+ciclo, con evidencia productiva citada — no con suposiciones, no con cosas
 que "le parecen al agente", no con valores hardcodeados que mañana van a
 fallar.
 
@@ -92,7 +92,7 @@ fallar.
 ```
 
 Si el dia que reserva-webapi sale a produccion, el bridge de tests no encuentra
-ninguna sorpresa, el merito no es del agente: es de cada pasada que dejo
+ninguna sorpresa, el merito no es del agente: es de cada ciclo que dejo
 asentado un caso, una regla y una contradiccion encontrada.
 
 ---
@@ -125,7 +125,7 @@ asentado un caso, una regla y una contradiccion encontrada.
                            v
                   +-------------------+
                   | wms-specific-     |
-                  | process-flow/     |   <-- folder nuevo (pasada 8)
+                  | process-flow/     |   <-- folder nuevo (ciclo 8)
                   |  - process-map    |
                   |  - state-machine  |
                   |  - 25 preguntas   |
@@ -211,30 +211,30 @@ brain/
 |                                potenciales, y "esto el legacy lo hacia
 |                                pero nadie sabe por que".
 |
-`-- wms-specific-process-flow/   <-- AGREGADO EN PASADA 8
+`-- wms-specific-process-flow/   <-- AGREGADO EN CICLO 8
     |--- README.md                Tuning del comportamiento de WMS basado
     |--- process-map.md           en evidencia productiva. 4 archivos hoy.
     |--- state-machine-pedido.md  La maquina de estados real del pedido,
-    `--- preguntas-pasada-7.md    no la teorica. Y 25 preguntas que esperan
+    `--- preguntas-ciclo-7.md    no la teorica. Y 25 preguntas que esperan
                                   respuesta de Erik para crecer mas.
 ```
 
 ---
 
-## 4. Las 8 pasadas — historia condensada del aprendizaje
+## 4. Las 8 ciclos — historia condensada del aprendizaje
 
-Cada **pasada** es una sesion completa de aprendizaje contra las BDs
-productivas. No se editan retroactivamente: una pasada vieja queda como esta,
+Cada **ciclo** es una sesion completa de aprendizaje contra las BDs
+productivas. No se editan retroactivamente: un ciclo vieja queda como esta,
 y la siguiente la corrige o la profundiza. Asi se puede auditar el camino.
 
-### Pasada 1 — "Hola SQL Server, somos amigos?"
+### Ciclo 1 — "Hola SQL Server, somos amigos?"
 
 Conexion inicial al EC2 compartido, descubrimiento de las 3 BDs, primer
 inventario de tablas. Se confirma que SQL Server **se ofende** si la sesion
 intenta SET parametros que no le gustan, y que el usuario `sa` tiene permiso
 de DENY EXECUTE en algunos SPs. Lo que parecia hostil resulto ser proteccion.
 
-### Pasada 2 — "Donde diablos esta el codigo del motor"
+### Ciclo 2 — "Donde diablos esta el codigo del motor"
 
 Spoiler: en `dbo.SP_RESERVAR_*` y en `trans_pe_det_log_reserva.Caso_Reserva`.
 Se mapea el ciclo `pedido → reserva → picking → despacho → push ERP`. Se
@@ -242,7 +242,7 @@ detecta que cada cliente tiene su propio set de tipos de pedido (PE0001..PE0006
 no significan lo mismo en Killios que en CEALSA — mala noticia para quien
 quiera generalizar).
 
-### Pasada 3 — "Casos, todos los casos"
+### Ciclo 3 — "Casos, todos los casos"
 
 Se levantan los 31 casos del motor de reserva con conteos productivos. Caso
 #24 lidera por amplia ventaja. Se documentan los LLR (#28, #29, #31) como
@@ -250,14 +250,14 @@ ramas laterales, no como casos independientes. Aparece el sufijo
 `_EJC202310090957` en los logs — Erik los marco a mano hace dos años para
 poder filtrarlos despues. Bendito sea.
 
-### Pasada 4 — "Killios y BOD7, el caso Amazon"
+### Ciclo 4 — "Killios y BOD7, el caso Amazon"
 
 Se descubre la **bodega virtual de facturacion BOD7** en Killios. La interfaz
 Amazon decia que no existia; SQL la mostraba con stock activo y movimientos
 diarios. Se aprendio para siempre: **la fuente de verdad son los datos, no
 la documentacion de configuracion**. Se actualiza ADR sobre esto.
 
-### Pasada 5 — "CEALSA es 3PL, no es lo mismo"
+### Ciclo 5 — "CEALSA es 3PL, no es lo mismo"
 
 Se confirma que CEALSA opera bajo logica 3PL fiscal: el motor de reserva
 **no se invoca por default** (cero filas en `trans_pe_det_log_reserva` para
@@ -265,7 +265,7 @@ la mayoria de tipos de pedido). Solo se invoca si `trans_pe_tipo.ReservaStock=1`
 y eso aplica solo a un subconjunto de tipos. Esto cambia radicalmente como
 disena los tests del bridge para CEALSA.
 
-### Pasada 6 — "Los flags y sus mentiras"
+### Ciclo 6 — "Los flags y sus mentiras"
 
 Catalogacion de los flags de configuracion que **no hacen lo que dicen**.
 `explosion_automatica_nivel_max` aparece dos veces, con y sin parametro `n` —
@@ -273,7 +273,7 @@ solo la version con parametro es la fuente de verdad; la otra es el residuo
 de un ALTER mal ejecutado en 2019 que nadie revierte por miedo. Documentado
 en `sql-quirks.md` para que el proximo no caiga.
 
-### Pasada 7 — "Pulido fino y deuda nombrada"
+### Ciclo 7 — "Pulido fino y deuda nombrada"
 
 14 archivos actualizados: `way-of-thinking` v2, `config-flags` v2 con
 explicaciones por flag, `sql-quirks` v2, `reserva-tables` con conteos
@@ -281,16 +281,16 @@ refrescados, ADR-010 que define la terminologia "reserva-WMS" vs
 "reserva-webapi", clientes en md+yaml v2, matrix v3, y el documento
 `HALLAZGOS-WEBAPI-VS-WMS.md` con las diferencias verificadas.
 
-### Pasada 8 — "El folder de procesos y las 25 preguntas"
+### Ciclo 8 — "El folder de procesos y las 25 preguntas"
 
 Se crea `brain/wms-specific-process-flow/` con 4 archivos: README,
 process-map (top 30 tablas y catalogos por proceso), state-machine del
 pedido (NUEVO → Pendiente → Pickeado → Verificado → Despachado, con
 Anulado como hoyo negro), y un documento de 25 preguntas estructuradas
-que esperan respuesta de Erik para alimentar las siguientes pasadas.
+que esperan respuesta de Erik para alimentar las siguientes ciclos.
 
 ```
-   pasadas      profundidad del entendimiento
+   ciclos      profundidad del entendimiento
      1   ##
      2   #####
      3   ##########
@@ -350,7 +350,7 @@ la que ignorarias a alguien que te ofrece reescribirte el cerebro a martillazos.
   alguien tiene que poder cambiarlo desde un yaml; si no, es bug.
 - **Sin suposiciones**: cada afirmacion del brain cita la query, el conteo
   o el archivo del legacy que la respalda. Si no hay cita, es opinion,
-  y la opinion va en el log de pasada, no en el documento canonico.
+  y la opinion va en el log de ciclo, no en el documento canonico.
 
 ### Regla 4 — Nada de "publish/deploy" desde aca
 
@@ -365,10 +365,10 @@ en FastAPI, mockup-sandbox en Vite). **No son del brain**. No los reinicies,
 no los uses, no los trates como referencia. Si fallaron, es asunto de otro
 proyecto.
 
-### Regla 6 — Las pasadas no se editan, se suceden
+### Regla 6 — Los ciclos no se editan, se suceden
 
-Si una pasada vieja dijo "el flag X hace Y" y la pasada nueva descubre que
-hace Z, la pasada nueva crea un documento corregido. La vieja queda. **Asi
+Si un ciclo vieja dijo "el flag X hace Y" y el ciclo nueva descubre que
+hace Z, el ciclo nueva crea un documento corregido. La vieja queda. **Asi
 se puede auditar como aprendio el agente** y, cuando el dia de pasado
 mañana alguien pregunte "esto cuando se supo?", hay respuesta.
 
@@ -388,13 +388,13 @@ mañana alguien pregunte "esto cuando se supo?", hay respuesta.
 | **3PL fiscal** | Modelo de CEALSA: cobran por servicio (almacenaje, picking, recepcion), no facturan ventas. | Hotel para mercaderia. Cobran por noche. |
 | **outbox NAV/SAP** | Patron de `i_nav_transacciones_out`: el WMS escribe la transaccion y un job la pushea al ERP. | El buzon de salida. Cada tanto pasa el cartero. |
 | **dual-head** | Arquitectura del WMS legacy: una cabeza es el BackOffice VB en una PC; la otra es el HandHeld Android. | Dos manos del mismo cuerpo, ambas necesarias. |
-| **pasada** | Una sesion completa de aprendizaje. Se cuentan desde 1. | Un capitulo. Tiene principio, medio y commit. |
+| **ciclo** | Una sesion completa de aprendizaje. Se cuentan desde 1. | Un capitulo. Tiene principio, medio y commit. |
 
 ---
 
 ## 7. Estado actual del aprendizaje (numeros reales)
 
-Snapshot al cierre de la pasada 8.
+Snapshot al cierre de el ciclo 8.
 
 ```
    AREA                          | OBSERVADO       | DOCUMENTADO | CONFIANZA
@@ -410,7 +410,7 @@ Snapshot al cierre de la pasada 8.
    Clientes documentados (md+yaml)| 3              | 3/3         | alta
    ADRs firmados                 | 10              | 10/10       | alta
 
-   * = preguntas en preguntas-pasada-7.md, esperan respuesta de Erik
+   * = preguntas en preguntas-ciclo-7.md, esperan respuesta de Erik
 ```
 
 **Volumen productivo observado** (Killios PRD, top 6):
@@ -450,12 +450,12 @@ Si sos un agente futuro o un humano con cafe:
    `reserva-webapi`. Si los confundis, todo lo que escribas estara mal.
 3. **Conecta a las 3 BDs solo con SELECT.** El usuario `sa` tiene poder
    de hacer dano; no abuses de el.
-4. **Si encontras algo nuevo**, abrilo como pasada N+1 con su propio
-   commit. No edites pasadas viejas.
+4. **Si encontras algo nuevo**, abrilo como ciclo N+1 con su propio
+   commit. No edites ciclos viejas.
 5. **Si una afirmacion vieja resulta falsa**, escribi el contradoc en
-   la pasada nueva, citando la query que demuestra la contradiccion.
-6. **Si tenes dudas, escribi una pregunta en la pasada actual y mandasela
-   a Erik.** Las preguntas valen oro: cada una destrabba una pasada
+   el ciclo nueva, citando la query que demuestra la contradiccion.
+6. **Si tenes dudas, escribi una pregunta en el ciclo actual y mandasela
+   a Erik.** Las preguntas valen oro: cada una destrabba un ciclo
    completa de futuro aprendizaje.
 7. **Subi los cambios con commits descriptivos**. El historial git es
    el segundo cerebro del brain.
@@ -474,7 +474,7 @@ Si sos un agente futuro o un humano con cafe:
             +---------+---------+
             v                   v
           merge              rechazo
-        (gracias)        (volve a pasada)
+        (gracias)        (volve a ciclo)
 ```
 
 ---
@@ -488,7 +488,7 @@ constante revision, escrito en castellano rioplatense, sin emojis,
 con la conviccion profunda de que **los sistemas se entienden observando,
 no opinando**.
 
-Si en alguna pasada futura el brain se contradice, no es un bug:
+Si en algun ciclo futura el brain se contradice, no es un bug:
 **es la prueba de que esta aprendiendo**. La unica falla seria
 escribir algo y no citar la evidencia que lo respalda.
 
@@ -510,7 +510,7 @@ Erik Calderon — PrograX24 — TomWMS
 
 ---
 
-> Este README fue generado en la pasada 8, contra evidencia productiva
+> Este README fue generado en el ciclo 8, contra evidencia productiva
 > verificada, sin emojis y con la conviccion que merece el motor de
 > reserva mas testarudo del Cono Sur. Si lo lees y te reis, mision cumplida.
 > Si lo lees y aprendes, mision triple cumplida.

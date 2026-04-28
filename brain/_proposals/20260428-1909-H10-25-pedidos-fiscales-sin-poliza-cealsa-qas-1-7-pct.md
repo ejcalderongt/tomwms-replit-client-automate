@@ -1,6 +1,6 @@
 # 20260428-1909-H10 - C9-QAS: 25 de 1441 pedidos fiscales (1.7%) NO tienen registro en trans_pe_pol. Confirma H-04.
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.
 
 ## Contexto
 
@@ -28,5 +28,5 @@ Erik Calderon (PrograX24)
 - Tags: `validated-via-live-sql`, `cealsa`, `poliza-fiscal`, `data-quality`, `refuerza-h04`, `q-013`, `concrete-action`
 - Preguntas origen: `Q-013`
 - Respondedoras: `SQL-agente`, `schema-validator`
-- Pasada: 8a
-- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`
+- Ciclo: 8a
+- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-8a.md`

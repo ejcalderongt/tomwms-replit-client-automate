@@ -1,4 +1,4 @@
-# Pasada 3.1 — Bloque A: Configuración a nivel infraestructura (App.config / Web.config / AndroidManifest)
+# Ciclo 3.1 — Bloque A: Configuración a nivel infraestructura (App.config / Web.config / AndroidManifest)
 
 ## Estado
 - **Generado**: 2026-04-27T04:32:46.715Z
@@ -143,7 +143,7 @@ Archivo: `/app/src/main/AndroidManifest.xml` (9604B)
 
 3. **Permisos del HH revelan capacidades.** El Brain sabe que el HH puede: imprimir BT, escanear cámara, persistir local, geolocalizar (¿para qué? — pendiente).
 
-4. **64 activities = oportunidad de mapeo.** En una pasada futura conviene listar las activities del manifest y emparejar cada una con los WMs que invoca, lo que daría el grafo `pantalla HH → WebMethod → clsLn → tabla`.
+4. **64 activities = oportunidad de mapeo.** En un ciclo futura conviene listar las activities del manifest y emparejar cada una con los WMs que invoca, lo que daría el grafo `pantalla HH → WebMethod → clsLn → tabla`.
 
 ## Anexo: archivos generados por este bloque
 

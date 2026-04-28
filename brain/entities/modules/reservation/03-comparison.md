@@ -35,7 +35,7 @@
 | Conversión de cantidad a unidades      | `Split_Decimal` + lookup `clsBeProducto_Presentacion.Factor`           | `EntityLoadingStep.ConvertQuantityToUnits` (usa `QuantityConverter`)                     |
 | Restar reservas pendientes del stock   | `Procesar_Y_Restar_Stock_Reservado` (3 invocaciones, 59 L)             | `StockQueryStep.SubtractPendingReservations` (incluido en 354 L)                        |
 | Detección de stock vencido             | inline (`s.Fecha_vence < Now`) en cada loop                           | `StockQueryStep.FilterExpiredStock` → emite `ALL_STOCK_EXPIRED`                          |
-| Cálculo de fecha mínima FEFO           | `Get_Fecha_Vence_Minima_Stock_Reserva_MI3` (3 invocaciones)            | `DateCalculationStep.Execute` (85 L) — calcula 4 fechas mínimas en una pasada           |
+| Cálculo de fecha mínima FEFO           | `Get_Fecha_Vence_Minima_Stock_Reserva_MI3` (3 invocaciones)            | `DateCalculationStep.Execute` (85 L) — calcula 4 fechas mínimas en un ciclo           |
 | Decisión modo explosión / UMBas        | `Stock_Requiere_Explosion` + bloque tras anchor `EXPLOSIONAR_PRODUCTO` | `ReservationLoopStep.TryEnableExplosionFallback` + `TryEnableUMBasFallback`             |
 | Reserva pallets COMPLETOS no-picking   | Anchor `INICIAR_EN_1` (L1273-L1903)                                    | `CompletePackagesHandler` (CASO_1, 144 L)                                                |
 | Reserva pallets INCOMPLETOS no-picking | Anchor `INICIAR_EN_2` (L1904-L2711)                                    | `IncompletePackagesHandler` (CASO_2, 139 L)                                              |
@@ -152,7 +152,7 @@
 2. **`ListaEstadosDeProceso` como guard de re-entry**: eliminada. El pipeline secuencial sin GoTo no requiere guards.
 3. **Variable polimórfica `lBeStockExistente`**: eliminada. Hay 3 listas explícitas distintas, sin reasignación.
 4. **Tres llamadas independientes a `clsLnStock.lStock`** con flags distintos: consolidadas en una única consulta + particionado en memoria (`StockQueryStep`).
-5. **Tres llamadas independientes a `Get_Fecha_Vence_Minima_Stock_Reserva_MI3`** con duplicación de I/O: consolidadas en una única pasada de `DateCalculationStep` que calcula las 4 fechas mínimas con LINQ sobre las listas ya en memoria.
+5. **Tres llamadas independientes a `Get_Fecha_Vence_Minima_Stock_Reserva_MI3`** con duplicación de I/O: consolidadas en una única ciclo de `DateCalculationStep` que calcula las 4 fechas mínimas con LINQ sobre las listas ya en memoria.
 6. **`XtraMessageBox.Show` desde DAL**: eliminado.
 7. **Mutación de `pStockResSolicitud`**: eliminada.
 8. **Persistencia parcial pre-recursión**: eliminada.

@@ -1,11 +1,11 @@
-# Respuestas — Tanda 1
+# Respuestas — Tarea 1
 
-> Respondio: Erik Calderon  ·  Fecha: 27 abril 2026  ·  Pasada: 9
+> Respondio: Erik Calderon  ·  Fecha: 27 abril 2026  ·  Ciclo: 9
 > Preguntas respondidas: P-08, P-10, P-18 (3 de 25)
 
 Convencion: cada respuesta incluye **(a)** la cita literal de Erik y **(b)** las
 notas tecnicas derivadas (consecuencias para reserva-webapi, deuda detectada,
-proximos pasos). Las preguntas originales viven en `preguntas-pasada-7.md` y
+proximos pasos). Las preguntas originales viven en `preguntas-ciclo-7.md` y
 ahora estan marcadas como respondidas con link a este documento.
 
 ---
@@ -285,7 +285,7 @@ pero que TRAS_WMS habilita conceptualmente:
 
 ---
 
-## Resumen de la tanda
+## Resumen de la tarea
 
 | Pregunta | Estado | Hallazgo principal |
 |---|---|---|
@@ -293,11 +293,11 @@ pero que TRAS_WMS habilita conceptualmente:
 | **P-10** | Canonica | LLR = Llamado Luego de Reserva (recursion del motor). Mapeo: #20→#28, #23→#29, #24→#31. Patron a portar pero permitido reimplementar sin recursion en webapi. |
 | **P-18** | Parcial + Deuda | TRAS_WMS asume reserva previa pero **no valida la bandera** (DEUDA-001). Vision futura: bolson/bucket con politicas de prorrateo (no implementado). |
 
-### Documentos actualizados en esta pasada
+### Documentos actualizados en este ciclo
 
 - `state-machine-pedido.md` → version 2 con matriz de transiciones confirmada.
 - `process-map.md` → seccion "Traslado interno" ampliada con vision futura TRAS_WMS.
-- `preguntas-pasada-7.md` → marcadas P-08, P-10, P-18 como respondidas.
+- `preguntas-ciclo-7.md` → marcadas P-08, P-10, P-18 como respondidas.
 
 ### Siguientes preguntas con prioridad alta (esperan respuesta)
 

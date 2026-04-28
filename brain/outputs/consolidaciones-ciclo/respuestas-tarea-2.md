@@ -1,9 +1,9 @@
-# Respuestas — Tanda 2 (resueltas por exploracion SQL)
+# Respuestas — Tarea 2 (resueltas por exploracion SQL)
 
 > Respondio: agente brain por exploracion SQL READ-ONLY de las 3 BDs.
-> Fecha: 27 abril 2026  ·  Pasada: 9b (autonoma, sin intervencion de Erik).
-> Preguntas resueltas/refinadas: PEND-01, PEND-02, PEND-03 (derivados tanda 1)
-> + P-09, P-12, P-14, P-16, P-21, P-24, P-25 (originales pasada 7).
+> Fecha: 27 abril 2026  ·  Ciclo: 9b (autonoma, sin intervencion de Erik).
+> Preguntas resueltas/refinadas: PEND-01, PEND-02, PEND-03 (derivados tarea 1)
+> + P-09, P-12, P-14, P-16, P-21, P-24, P-25 (originales ciclo 7).
 
 Convencion: cada respuesta marca **(a)** los hallazgos en SQL,
 **(b)** que refinaron o cambiaron sobre la hipotesis previa, **(c)** que
@@ -110,7 +110,7 @@ Con `fec_agr` y `fec_mod` (mas confiables que `Fecha_Pedido`/`hora_fin` que esta
 
 - La transicion `NUEVO → Despachado` directa **es muy rara** (15 de 4040 PDV_NAV = 0.4%).
 - Cuando ocurre, **el pedido SI tiene IdPickingEnc** — el picking es virtual/sintetico, no se salta el modelo.
-- Esto refina R-04 de tanda 1: **WMS no salta el modelo, lo simula completo en una sola transaccion**.
+- Esto refina R-04 de tarea 1: **WMS no salta el modelo, lo simula completo en una sola transaccion**.
 
 **TL;DR**: la maquina de estados completa siempre se respeta, pero algunos casos especiales la atraviesan en milisegundos sin pasar por handheld humano. El bridge **debe** modelar los 6 estados aunque algunos pedidos los recorran instantaneamente.
 
@@ -322,7 +322,7 @@ Falta hacer `JOIN tarea_hh.IdTipoTarea` con `sis_tipo_tarea` para sacar el TOP10
 
 ---
 
-## Resumen de la tanda 2
+## Resumen de la tarea 2
 
 | Pregunta | Estado | Hallazgo principal |
 |---|---|---|
@@ -339,8 +339,8 @@ Falta hacer `JOIN tarea_hh.IdTipoTarea` con `sis_tipo_tarea` para sacar el TOP10
 
 ### Total acumulado de las 25 preguntas
 
-- **Tanda 1 (Erik)**: P-08, P-10, P-18 → 3 respondidas
-- **Tanda 2 (SQL)**: P-09, P-12, P-14, P-21, P-24, P-25 → 6 respondidas + 2 reabiertas (P-16b, P-21b) + 1 parcial (P-25)
+- **Tarea 1 (Erik)**: P-08, P-10, P-18 → 3 respondidas
+- **Tarea 2 (SQL)**: P-09, P-12, P-14, P-21, P-24, P-25 → 6 respondidas + 2 reabiertas (P-16b, P-21b) + 1 parcial (P-25)
 
 **9/25 respondidas, 1 parcial, 2 reabiertas. Quedan 14 originales abiertas.**
 

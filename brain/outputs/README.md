@@ -8,7 +8,7 @@ Carpeta raiz para entregables formateados producidos por el agente brain.
 |---|---|---|
 | `guias-implementacion/` | Guias tecnicas con SQL, codigo, contratos. Sufijo de version `-V0`, `-V1`. | Programador / equipo de desarrollo |
 | `respuestas-cliente/` | Documentos cara al cliente (Carol, etc.) con saludos y tono didactico. | Usuario funcional / cliente |
-| `consolidaciones-pasada/` | Cierre de cada pasada de analisis: hallazgos, decisiones, anexos. | Erik + equipo (interno) |
+| `consolidaciones-ciclo/` | Cierre de cada ciclo de analisis: hallazgos, decisiones, anexos. | Erik + equipo (interno) |
 | `drafts-respuestas/` | Borradores de respuestas a personas o casos especificos antes de enviar. | Interno |
 | `reportes-datos/` | Cuando se haga afinidad de datos: CSV/MD con stats por cliente. | Erik + cliente segun caso |
 
@@ -22,4 +22,4 @@ Carpeta raiz para entregables formateados producidos por el agente brain.
 
 ## Diferencia con `wms-specific-process-flow/`
 
-`wms-specific-process-flow/` queda como zona de notas raw, mapas, hipotesis, queries de pasada y bug reports - material de trabajo. `outputs/` es solo material PRODUCIDO Y ENTREGABLE.
+`wms-specific-process-flow/` queda como zona de notas raw, mapas, hipotesis, queries de ciclo y bug reports - material de trabajo. `outputs/` es solo material PRODUCIDO Y ENTREGABLE.

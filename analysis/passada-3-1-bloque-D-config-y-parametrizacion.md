@@ -1,4 +1,4 @@
-# Pasada 3.1 — Bloque D: Configuración y Parametrización (BOF + HH)
+# Ciclo 3.1 — Bloque D: Configuración y Parametrización (BOF + HH)
 
 ## Estado
 - **Generado**: 2026-04-27T04:32:46.710Z
@@ -115,7 +115,7 @@ Total 6 configuraciones, una por combinación empresa+bodega+interface. Estos so
 
 - Cada tabla de config tiene par `clsLn<X>.vb` (auto-generado por DevExpress XPO/CRUD) + `clsLn<X>_Partial.vb` (extensiones a mano).
 - Los `_partial` aportan típicamente 2-5 métodos custom (lookups por host, validaciones, helpers).
-- 24 clases lógicas, 275 métodos públicos, 28 tablas distintas en queries SQL inline (consistente con hallazgo de pasada 3.1: WMS NO usa SPs).
+- 24 clases lógicas, 275 métodos públicos, 28 tablas distintas en queries SQL inline (consistente con hallazgo de ciclo 3.1: WMS NO usa SPs).
 
 ---
 

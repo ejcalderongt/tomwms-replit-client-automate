@@ -162,7 +162,7 @@ WMS productivo de manera reproducible y auditable.
 - `brain/learnings/` — destilado long-lived (L-NNN) con
   implicancias y acciones.
 
-### Tanda 1 ejecutada (2026-04-27)
+### Tarea 1 ejecutada (2026-04-27)
 
 Respondidas 8 questions (Q-001..Q-008 → A-001..A-008) ejecutando
 queries read-only contra K7-PRD y BB-PRD. Resumen de veredictos:
@@ -186,7 +186,7 @@ queries read-only contra K7-PRD y BB-PRD. Resumen de veredictos:
 - **L-012** NavSync de BB hoy procesa solo SALIDAs tipo_doc=3 (writer consistente con externo, no exhaustivamente probado)
 - **L-013** Outbox WMS es por linea de detalle (1 outbox = 1 RecepcionDet/DespachoDet)
 
-### Questions abiertas tanda 2 (`brain/wms-brain-client/questions/`)
+### Questions abiertas tarea 2 (`brain/wms-brain-client/questions/`)
 
 - **Q-009** Identificar binario y host del NavSync de BB (esta corriendo?)
 - **Q-010** BB tiene 145k SALIDAs `IdTipoDocumento=1` y 30k tipo=4 sin procesar — son devoluciones?

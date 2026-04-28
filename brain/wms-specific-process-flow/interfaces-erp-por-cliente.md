@@ -1,6 +1,6 @@
 # Interfaces de integracion ERP por cliente — patron polimorfico del outbox
 
-> Respondio: Erik (pasada 9b).
+> Respondio: Erik (ciclo 9b).
 > Doc generado a partir de P-21b explicada por Erik.
 > Critico para entender el contrato del bridge nuevo (reserva-webapi).
 
@@ -179,7 +179,7 @@ necesita reemplazarlas — coexiste.
 
 ---
 
-## Apendice — Marca de envio y patrones reales en datos (Erik tanda 4)
+## Apendice — Marca de envio y patrones reales en datos (Erik tarea 4)
 
 ### Mecanismo de marca
 

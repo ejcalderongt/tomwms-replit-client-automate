@@ -1,4 +1,4 @@
-# Pasada 3.1 — Bloque B: Entidades y Modelo de Datos
+# Ciclo 3.1 — Bloque B: Entidades y Modelo de Datos
 
 ## Estado
 - **Generado**: 2026-04-27T04:55:54.939Z
@@ -67,7 +67,7 @@ Sobre las **345 tablas** del catálogo Killios, las clasifiqué heurísticamente
 
 | Bucket | Tablas | Filas totales | Descripción |
 |---|---:|---:|---|
-| Sin clasificar — requiere segunda pasada (incluye stock, marcaje, etc.) | 141 | 77,741 | |
+| Sin clasificar — requiere segunda ciclo (incluye stock, marcaje, etc.) | 141 | 77,741 | |
 | Transaccional `trans_*` — operaciones del WMS | 84 | 424,894 | |
 | Maestros de dominio (cliente, producto, bodega, etc.) | 63 | 24,068 | |
 | Interfaces de integración (i_nav_*) | 25 | 65,111 | |
@@ -118,7 +118,7 @@ Sobre las **345 tablas** del catálogo Killios, las clasifiqué heurísticamente
 | `tmp_stock_res` | 400 | (pendiente clasificar) |
 | `menu_sistema` | 289 | (pendiente clasificar) |
 
-> **Hallazgo importante**: el núcleo operativo del WMS (stock, stock_res, tarea_hh, marcaje) **NO usa prefijo `trans_`**. Estas tablas son tan o más críticas que las `trans_*`. Una segunda pasada del clasificador debería crear un bucket `nucleo_operativo` para ellas.
+> **Hallazgo importante**: el núcleo operativo del WMS (stock, stock_res, tarea_hh, marcaje) **NO usa prefijo `trans_`**. Estas tablas son tan o más críticas que las `trans_*`. Una segunda ciclo del clasificador debería crear un bucket `nucleo_operativo` para ellas.
 
 ---
 
@@ -130,7 +130,7 @@ Sobre las **345 tablas** del catálogo Killios, las clasifiqué heurísticamente
 
 3. **Las navegaciones en `_Partial` son las relaciones del modelo.** Brain debe extraerlas para conocer joins implícitos (ej. `clsBeStock.ProductoEstado → producto_estado`).
 
-4. **Bucket `otro` (141 tablas) es el riesgo mayor de modelo incompleto.** Las críticas (stock, marcaje, tarea_hh) están ahí. Conviene segunda pasada heurística.
+4. **Bucket `otro` (141 tablas) es el riesgo mayor de modelo incompleto.** Las críticas (stock, marcaje, tarea_hh) están ahí. Conviene segunda ciclo heurística.
 
 5. **"FixTheBug" requiere decisión.** Hay 6 clases bajo `/Entity/FixTheBug/` — preguntar si es legacy a deprecar o parche vigente.
 

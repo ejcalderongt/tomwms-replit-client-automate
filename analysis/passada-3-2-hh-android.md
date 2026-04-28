@@ -1,4 +1,4 @@
-# Pasada 3.2 B — Catalogación TOMHH2025 (Android Handheld)
+# Ciclo 3.2 B — Catalogación TOMHH2025 (Android Handheld)
 
 **Generado**: 2026-04-27T05:34:37.321Z
 **Fuente**: Azure DevOps `ejcalderon0892/TOMHH2025`, rama `dev_2028_merge`
@@ -8,7 +8,7 @@
 
 ## 1. Resumen ejecutivo
 
-Esta pasada catalogó la app Android del Handheld y la cruzó contra el catálogo de WMs del WSHHRN producido en la Pasada 3.2 A. Hallazgos centrales:
+Este ciclo catalogó la app Android del Handheld y la cruzó contra el catálogo de WMs del WSHHRN producido en la Ciclo 3.2 A. Hallazgos centrales:
 
 - **60 activities** detectadas (vs **65 declaradas** en el AndroidManifest — delta de 5 declaraciones huérfanas o de adapters).
 - **403 invocaciones a WebMethods** desde el HH, repartidas en **240 WMs únicos**.
@@ -143,7 +143,7 @@ public class frm_recepcion_datos extends PBase {
 | WMs únicos llamados desde HH | 240 | (de los cuales 0 zombies) |
 | **Zombies** (HH llama, server no tiene) | **0** | **0%** ✓ |
 
-> **Hallazgo clave**: con cero zombies confirmamos que el catálogo BOF de la Pasada 3.2 A está completo y el HH nunca apunta a métodos inexistentes. La calidad del contrato HH↔WSHHRN es excelente.
+> **Hallazgo clave**: con cero zombies confirmamos que el catálogo BOF de la Ciclo 3.2 A está completo y el HH nunca apunta a métodos inexistentes. La calidad del contrato HH↔WSHHRN es excelente.
 
 ## 8. Top 30 WMs más invocados por el HH (consumidos)
 
@@ -309,7 +309,7 @@ Estos WMs están declarados en TOMHHWS o srvSAPSync con SQL inline real, pero **
 ### Implicaciones
 
 1. Si un cliente futuro pide multi-idioma (inglés, portugués), requiere extracción masiva de strings hardcoded → `strings.xml` antes de poder hacer `values-en/`, `values-pt/`.
-2. **El Brain WMS no podrá reconstruir el texto exacto que ve el operador** simplemente leyendo `strings.xml` — necesita parsear los string literales del código Java. Esto es viable como pasada futura.
+2. **El Brain WMS no podrá reconstruir el texto exacto que ve el operador** simplemente leyendo `strings.xml` — necesita parsear los string literales del código Java. Esto es viable como ciclo futuro.
 
 ## 14. Top 20 activities por número de WM calls
 
@@ -348,7 +348,7 @@ Listado: `PBase`, `PrintReceiverActivity`, `frm_lista_packing_lotes`, `frm_lista
 
 ## 16. Top 10 hallazgos accionables para Erik
 
-1. **129 WMs huérfanos en server** son candidatos a auditoría: si nadie los llama desde HH, ni desde BOF directamente, ni desde la capa moderna, son dead code. Cruzar con catálogo de Pasada 3.2 A para confirmar.
+1. **129 WMs huérfanos en server** son candidatos a auditoría: si nadie los llama desde HH, ni desde BOF directamente, ni desde la capa moderna, son dead code. Cruzar con catálogo de Ciclo 3.2 A para confirmar.
 2. **Migración XML→JSON al 9.9%**: ritmo bajo pero consistente. Si queremos acelerar, los **0 WMs en transición** son el target obvio (eliminar el call SOAP que ya tiene su versión JSON).
 3. **0 zombies** confirma calidad del contrato HH↔WSHHRN: ningún call apunta a método inexistente en server.
 4. **Multi-idioma no soportado**: si un cliente futuro lo pide, requiere extracción masiva de hardcoded strings primero.
@@ -375,18 +375,18 @@ Todos en `data/passada-3-2-hh-android/` del repo `ejcalderongt/tomwms-replit-cli
 
 **Total**: 542 KB de catálogo + el reporte markdown.
 
-## 18. Gaps reconocidos en esta pasada
+## 18. Gaps reconocidos en este ciclo
 
 | # | Gap | Mitigación |
 |---|---|---|
-| 1 | Strings hardcoded en código Java NO catalogadas | Pasada futura: extraer literales en español dentro de `.java` |
-| 2 | Métodos llamados via reflection / nombre dinámico no detectados | Detección manual cuando aparezcan en pasada D (flujos end-to-end) |
+| 1 | Strings hardcoded en código Java NO catalogadas | Ciclo futuro: extraer literales en español dentro de `.java` |
+| 2 | Métodos llamados via reflection / nombre dinámico no detectados | Detección manual cuando aparezcan en ciclo D (flujos end-to-end) |
 | 3 | `com.dts.classes.*` (250 entities/DAL espejo) parseados pero no analizados a profundidad | Si el Brain necesita modelar el espejo HH del modelo backend, parsear más a fondo |
-| 4 | Layouts XML solo extraídos para `@string` refs — no se mapeó controles UI a campos | Pasada futura si se necesita topología visual exacta |
-| 5 | DataBindings y ViewBindings no analizados | Pasada futura si se moderniza la UI |
+| 4 | Layouts XML solo extraídos para `@string` refs — no se mapeó controles UI a campos | Ciclo futuro si se necesita topología visual exacta |
+| 5 | DataBindings y ViewBindings no analizados | Ciclo futuro si se moderniza la UI |
 | 6 | El proyecto no usa ProGuard/R8 visiblemente — verificar release builds | Auditoría de build config (build.gradle) |
 | 7 | No detectada librería de tracking/analytics (Firebase, Crashlytics) | Si se requiere telemetría del operador, gap a llenar |
 
 ---
 
-**Fin Pasada 3.2 B.** Próxima en pipeline: **Pasada 3.2 D — Flujos end-to-end del HH**, que combinará este catálogo de pantallas + WMs consumidos + DAL del BOF (Pasada 3.2 A) + tablas reales de Killios (Pasada 3.2 C) para reconstruir flujos completos: por ejemplo "Recepción de mercadería" desde la activity `frm_recepcion_datos` → WMs invocados → SQL ejecutado en server → tablas `trans_re_*` mutadas en Killios → UI confirmation strings que ve el operador.
+**Fin Ciclo 3.2 B.** Próxima en pipeline: **Ciclo 3.2 D — Flujos end-to-end del HH**, que combinará este catálogo de pantallas + WMs consumidos + DAL del BOF (Ciclo 3.2 A) + tablas reales de Killios (Ciclo 3.2 C) para reconstruir flujos completos: por ejemplo "Recepción de mercadería" desde la activity `frm_recepcion_datos` → WMs invocados → SQL ejecutado en server → tablas `trans_re_*` mutadas en Killios → UI confirmation strings que ve el operador.

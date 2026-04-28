@@ -1,7 +1,7 @@
 # Mapa global de procesos WMS — observado
 
-> **Version 2** (pasada 9). Snapshot 2026-04-27. Conteos reales de TOMWMS_KILLIOS_PRD.
-> Incorpora respuestas P-08 y P-18 de `respuestas-tanda-1.md`.
+> **Version 2** (ciclo 9). Snapshot 2026-04-27. Conteos reales de TOMWMS_KILLIOS_PRD.
+> Incorpora respuestas P-08 y P-18 de `respuestas-tarea-1.md`.
 
 ## Top 30 tablas por filas (TOMWMS_KILLIOS_PRD)
 
@@ -93,7 +93,7 @@
 
 `trans_pe_enc` (4,202) → `trans_pe_det` (14,819) → motor → `stock_res` + `trans_pe_det_log_reserva` (22,576).
 
-**Patron LLR confirmado en tanda 1** (P-10): el motor se llama recursivamente
+**Patron LLR confirmado en tarea 1** (P-10): el motor se llama recursivamente
 para los casos #20→#28, #23→#29, #24→#31 cuando el stock fue modificado
 durante la reserva original (conversion de unidades, movimientos internos).
 
@@ -127,7 +127,7 @@ durante la reserva original (conversion de unidades, movimientos internos).
 
 (Killios no tiene el modulo activo segun config, pero hay 1218 registros — algo los genera. P-24 abierta.)
 
-### Traslado interno (TRAS_WMS) — ampliado en pasada 9
+### Traslado interno (TRAS_WMS) — ampliado en ciclo 9
 
 **Definicion confirmada (P-18)**: TRAS_WMS es transferencia interna entre
 bodegas configuradas en WMS, donde el stock movido **ya fue reservado por
@@ -181,12 +181,12 @@ Capacidades requeridas para activarlo (no implementadas):
 
 ### SP por proceso
 
-Los SPs no usan prefijos consistentes (`sp_recep%`, `sp_pedido%`, etc. devolvieron 0). El agrupamiento sera por exploracion individual en pasadas posteriores.
+Los SPs no usan prefijos consistentes (`sp_recep%`, `sp_pedido%`, etc. devolvieron 0). El agrupamiento sera por exploracion individual en ciclos posteriores.
 
 ---
 
 ## Referencias cruzadas
 
 - Estados del pedido y transiciones: ver `state-machine-pedido.md` (v2).
-- Respuestas detalladas P-08, P-10, P-18: ver `respuestas-tanda-1.md`.
-- Status de las 25 preguntas: ver `preguntas-pasada-7.md`.
+- Respuestas detalladas P-08, P-10, P-18: ver `respuestas-tarea-1.md`.
+- Status de las 25 preguntas: ver `preguntas-ciclo-7.md`.

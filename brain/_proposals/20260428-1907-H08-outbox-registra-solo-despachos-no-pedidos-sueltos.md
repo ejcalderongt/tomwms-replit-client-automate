@@ -1,6 +1,6 @@
 # 20260428-1907-H08 - i_nav_transacciones_out NO registra pedidos sueltos: 100% de filas con idpedidoenc tienen iddespachoenc.
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.
 
 ## Contexto
 
@@ -26,5 +26,5 @@ Erik Calderon (PrograX24)
 - Tags: `validated-via-live-sql`, `outbox-semantica`, `navigator`, `simplificacion-webapi`, `q-009`, `concrete-action`
 - Preguntas origen: `P-19`, `Q-009`
 - Respondedoras: `KKKL-Carol`
-- Pasada: 8a
-- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`
+- Ciclo: 8a
+- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-8a.md`

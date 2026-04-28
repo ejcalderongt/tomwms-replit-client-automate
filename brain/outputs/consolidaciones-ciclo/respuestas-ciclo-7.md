@@ -1,5 +1,5 @@
 ---
-titulo: Respuestas Pasada 7 - Comportamiento WMS
+titulo: Respuestas Ciclo 7 - Comportamiento WMS
 respondedora: Carol Karina Flores Klee (CKFK)
 contribuidor: Erik Calderon (PrograX24) addendum P-18
 recibido: 27 abril 2026
@@ -8,15 +8,15 @@ fuentes_originales:
   - TOMWMS_KILLIOS_PRD
   - IMS4MB_BYB_PRD
   - IMS4MB_CEALSA_QAS
-documento_origen: attached_assets/preguntas-wms-pasada-7_CKFK_1777340806630.docx
+documento_origen: attached_assets/preguntas-wms-ciclo-7_CKFK_1777340806630.docx
 relacionado:
   - brain/protocol/BRAIN-PROTOCOL.md
   - ADR-010 (motor reserva legacy vs webapi)
 ---
 
-# Respuestas Pasada 7: Tuning del comportamiento WMS
+# Respuestas Ciclo 7: Tuning del comportamiento WMS
 
-Las 25 preguntas de la Pasada 7 fueron generadas a partir del mapeo SQL de las tres bases productivas en el EC2 compartido. Carol Karina (CKFK), responsable funcional del WMS, contesto las 25. Erik agrego una addendum de contexto historico en P-18.
+Las 25 preguntas de la Ciclo 7 fueron generadas a partir del mapeo SQL de las tres bases productivas en el EC2 compartido. Carol Karina (CKFK), responsable funcional del WMS, contesto las 25. Erik agrego una addendum de contexto historico en P-18.
 
 Este documento es la fuente de verdad para el folder `brain/wms-specific-process-flow/`. Las respuestas se transcriben **literales** (sin parafraseo) precedidas por `R_CKFK/` o `R_EJC/`. La interpretacion y los hallazgos accionables van al final, claramente separados del input crudo.
 
@@ -412,7 +412,7 @@ Por ejemplo, en el futuro se podria querer que de X producto se priorice 50% par
 
 **R_CKFK/** **Este proceso no lo conozco.**
 
-> **Lectura para el brain:** Carol no es la informante para prefactura. Necesitamos identificar al dueno funcional (probablemente alguien de finanzas/billing en CEALSA o un consultor previo). **Tarea de pasada futura: encontrar respondedor para P-23.**
+> **Lectura para el brain:** Carol no es la informante para prefactura. Necesitamos identificar al dueno funcional (probablemente alguien de finanzas/billing en CEALSA o un consultor previo). **Tarea de ciclo futuro: encontrar respondedor para P-23.**
 
 ---
 
@@ -462,7 +462,7 @@ Estos no son input al brain — son **tareas concretas** detectadas a partir de 
 | **H-02** | `trans_reabastecimiento_log` no se limpia al instalar cliente nuevo. Genera 1218 filas basura en Killios. | P-24 (CKFK) | Agregar la tabla al SP `CLBD_PRC` que se ejecuta en instalacion. | Equipo instalacion |
 | **H-03** | Logs estructurados por transaccion existen en el WMS pero no se muestran al admin. Usuario sigue dependiendo de la tabla vieja `log_error_wms` (66k filas). | P-20 (CKFK) | Exponer logs estructurados en una vista del BOF + definir taxonomia recuperable/fatal. | Equipo BOF |
 | **H-04** | WMS permite forzar estado "Despachado" sin disparar despacho fisico. 43 pedidos en discrepancia en Killios. | P-16 (CKFK) | Decision de producto: el `reserva-webapi` prohibe el bypass, lo permite con permiso explicito, o lo replica tal cual. | Erik + producto |
-| **H-05** | Pasada 7 dejo P-23 (Prefactura CEALSA) sin respuesta. CKFK no conoce el proceso. | P-23 | Identificar respondedor alternativo (finanzas CEALSA o consultor previo) y reservar para Pasada 8. | Erik |
+| **H-05** | Ciclo 7 dejo P-23 (Prefactura CEALSA) sin respuesta. CKFK no conoce el proceso. | P-23 | Identificar respondedor alternativo (finanzas CEALSA o consultor previo) y reservar para Ciclo 8. | Erik |
 
 ---
 
@@ -486,8 +486,8 @@ Estas no son hallazgos accionables sino sub-preguntas que surgieron durante la l
 - **Para el bridge de tests:** las "Lecturas para el brain" en cada pregunta son los puntos a codificar como expected en los contract tests del `reserva-webapi`.
 - **Para el WebAPI nuevo:** los hallazgos H-01, H-04 y la preguntas sub-Q3, sub-Q6 son decisiones de diseno previas a P-16b (scaffold).
 - **Para la documentacion del flujo:** distribuir en archivos tematicos del folder `brain/wms-specific-process-flow/` cuando se confirme la estructura.
-- **Para la planificacion de pasadas:** los hallazgos H-02, H-03, H-05 y las sub-Q1..6 son inputs para la Pasada 8.
+- **Para la planificacion de ciclos:** los hallazgos H-02, H-03, H-05 y las sub-Q1..6 son inputs para la Ciclo 8.
 
 ---
 
-— Brain TomWMS · Pasada 7 · Recibido 27 abril 2026 · Incorporado 28 abril 2026 —
+— Brain TomWMS · Ciclo 7 · Recibido 27 abril 2026 · Incorporado 28 abril 2026 —

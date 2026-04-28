@@ -233,8 +233,8 @@ brain/
     state-machine-pedido.md
     interfaces-erp-por-cliente.md
     bug-report-p16b.md
-    preguntas-pasada-7.md
-    respuestas-tanda-2.md
+    preguntas-ciclo-7.md
+    respuestas-tarea-2.md
     ...
   wms-brain-client/                       # documentacion del cliente
     SPEC.md                               # este archivo

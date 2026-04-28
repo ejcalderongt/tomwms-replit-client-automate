@@ -1,6 +1,6 @@
 # 20260428-1906-H07 - Becofarma tiene distribucion de tareas HH muy distinta a Killios: 50% UBIC vs 71% PIK.
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras Ciclo 8a via ejecucion live SQL.
 
 ## Contexto
 
@@ -24,5 +24,5 @@ Erik Calderon (PrograX24)
 ## Cross-references
 
 - Inbox event: `brain/_inbox/20260428-1906-H07-bb-putaway-intensivo-50pct-ubic.json`
-- Pasada: 8a
-- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`
+- Ciclo: 8a
+- Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-ciclo-8a.md`
