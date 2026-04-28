@@ -267,3 +267,51 @@ Las preguntas que requieren a Erik o a un experto humano (P-23 prefactura, decis
 ---
 
 — Brain TomWMS · Queries Pasada 8a · 28 abril 2026 —
+
+
+---
+
+## Addendum 28 abr 2026 (post commit) - mapping a question cards
+
+Las 6 queries quedaron emitidas como **question cards en wms-brain-client/questions/**
+(rama `wms-brain-client`, commit `582da718`) en formato `protocolVersion: 2`. El cliente
+PowerShell ya las puede ejecutar directamente con `Invoke-WmsBrainQuestion`:
+
+| Pasada 8a | Question card | Profile(s) PowerShell | Cierra |
+|-----------|---------------|------------------------|--------|
+| Q-PASADA-8A-01 | `Q-009-outbox-alcance-tipos.md` | `K7-PRD`, `BB-PRD`, `C9-QAS` | C-03 |
+| Q-PASADA-8A-02 | `Q-010-killios-reabasto-pre-post-2024.md` | `K7-PRD` | C-04 sub-Q |
+| Q-PASADA-8A-03 | `Q-011-killios-bypass-despachado-numero-firme.md` | `K7-PRD` | D-03 / P-16b |
+| Q-PASADA-8A-04 | `Q-012-cealsa-qas-corte-jornada-excepciones.md` | `C9-QAS` | sub-Q4 |
+| Q-PASADA-8A-05 | `Q-013-cealsa-qas-poliza-11-campos.md` | `C9-QAS` | sub-Q5 |
+| Q-PASADA-8A-06 | `Q-014-top15-tareas-hh-3-bds.md` | `K7-PRD`, `BB-PRD`, `C9-QAS` | P-25 |
+
+Comando ejemplo (cualquier maquina con el modulo `WmsBrainClient` instalado y
+perfil configurado):
+
+```powershell
+# Ejecutar las 6 cards en orden de prioridad (high primero)
+Invoke-WmsBrainQuestion -Id Q-009 -Profile K7-PRD
+Invoke-WmsBrainQuestion -Id Q-009 -Profile BB-PRD
+Invoke-WmsBrainQuestion -Id Q-009 -Profile C9-QAS
+
+Invoke-WmsBrainQuestion -Id Q-011 -Profile K7-PRD
+
+Invoke-WmsBrainQuestion -Id Q-010 -Profile K7-PRD
+Invoke-WmsBrainQuestion -Id Q-012 -Profile C9-QAS
+Invoke-WmsBrainQuestion -Id Q-013 -Profile C9-QAS
+
+Invoke-WmsBrainQuestion -Id Q-014 -Profile K7-PRD
+Invoke-WmsBrainQuestion -Id Q-014 -Profile BB-PRD
+Invoke-WmsBrainQuestion -Id Q-014 -Profile C9-QAS
+```
+
+Cada llamada genera CSVs en `wms-brain-client/answers/Q-NNN/` y un draft
+`answer-draft.md` para completar con interpretacion. Cuando esten todas
+listas, emitir `respuestas-tanda-3.md` en este folder cerrando formalmente
+las sub-preguntas en `consolidacion-pasada-7.md`.
+
+**Estado del bloqueo Pasada 8a**: las queries dejan de estar bloqueadas. La unica
+restriccion es tener un host con conectividad TCP al EC2 SQL `52.41.114.122,1437` y
+el modulo PowerShell instalado. Erik o el agente brain en otra sesion con
+conectividad pueden ejecutar.
