@@ -6,14 +6,14 @@ createdBy: agent-replit
 createdAt: 2026-04-28T20:30:00-03:00
 priority: medium
 status: pending
-tags: [cealsa, poliza, trans_pe_pol, fiscal, pasada-8a, sub-Q5]
+tags: [cealsa, poliza, trans_pe_pol, fiscal, ciclo-8a, sub-Q5]
 targets:
   - codename: C9
     environment: QAS
     minRows: 0
 relatedDocs:
-  - brain/wms-specific-process-flow/queries-pasada-8a.md
-  - brain/wms-specific-process-flow/respuestas-pasada-7.md
+  - brain/wms-specific-process-flow/queries-ciclo-8a.md
+  - brain/wms-specific-process-flow/respuestas-ciclo-7.md
 expectedOutputs:
   - Estructura confirma cuales son los 11 campos obligatorios reales (vs los que Carol describio).
   - Si pedidos_sin_poliza = 0, afirmacion validada. Si > 0, refinar sub-Q (cuales y por que).
@@ -52,8 +52,8 @@ Carol mencion en P-11 que los 11 campos de poliza son obligatorios para CEALSA. 
 
 ## Documentos relacionados
 
-- `brain/wms-specific-process-flow/queries-pasada-8a.md`
-- `brain/wms-specific-process-flow/respuestas-pasada-7.md`
+- `brain/wms-specific-process-flow/queries-ciclo-8a.md`
+- `brain/wms-specific-process-flow/respuestas-ciclo-7.md`
 
 ## Queries sugeridas (READ-ONLY)
 
@@ -101,4 +101,4 @@ Genera CSVs en `answers/Q-013/` y un draft `answer-draft.md` para revisar/comple
 
 ## Origen
 
-Esta card forma parte de la **Pasada 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-pasada-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-pasada-7.md sin requerir nueva intervencion humana.
+Esta card forma parte de la **Ciclo 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-ciclo-7.md sin requerir nueva intervencion humana.

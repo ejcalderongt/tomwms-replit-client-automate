@@ -277,7 +277,7 @@ switch (event.type) {
 
 ## 7. Estado de esta propuesta
 
-- [x] **2026-04-27**: redactada por agente Replit en pasada de cliente PS.
+- [x] **2026-04-27**: redactada por agente Replit en ciclo de cliente PS.
 - [ ] **PENDIENTE**: revisión Erik.
 - [ ] **PENDIENTE**: sign-off / changelog en `replit.md` de `wms-brain`.
 - [ ] **PENDIENTE**: implementación en `brain_bridge.mjs`.

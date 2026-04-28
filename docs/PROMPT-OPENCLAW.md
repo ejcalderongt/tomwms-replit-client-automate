@@ -324,7 +324,7 @@ Resultado esperado:
 
 ## 4. Versionado de este prompt
 
-- **2026-04-27**: redactado por agente Replit en pasada-10. Alineado al
+- **2026-04-27**: redactado por agente Replit en ciclo-10. Alineado al
   bridge real (`SCHEMA_VERSION="1"`). Asume 4 ramas orphan
   (`main`/`wms-brain`/`wms-brain-client`/`wms-db-brain`).
 - Si bumpea el `SCHEMA_VERSION` del bridge (post `EXTENSION-V2-PROPOSAL`),

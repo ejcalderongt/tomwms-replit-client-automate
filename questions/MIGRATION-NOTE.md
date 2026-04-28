@@ -6,10 +6,10 @@
 
 ## Por qué
 
-Cuando se redactaron (pasada-7 a pasada-9b), el bridge real
+Cuando se redactaron (ciclo-7 a ciclo-9b), el bridge real
 (`scripts/brain_bridge.mjs` en rama `main`, `SCHEMA_VERSION="1"`) ya
 existía pero **no tenía un type apropiado** para investigación SQL al
-brain de la BD. La pasada-10 reconcilió:
+brain de la BD. El ciclo-10 reconcilió:
 
 1. **El bridge** sigue con `SCHEMA_VERSION="1"` y 6 tipos `apply_*` /
    `skill_update` / `directive` / `merge_completed` / `external_change`.

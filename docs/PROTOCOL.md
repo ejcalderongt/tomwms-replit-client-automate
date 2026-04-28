@@ -10,7 +10,7 @@
 
 ## 0. Por qué este doc fue reescrito
 
-La pasada inicial del cliente PowerShell asumió que no existía un bridge
+El ciclo inicial del cliente PowerShell asumió que no existía un bridge
 funcional y propuso un protocolo propio (`protocolVersion: 1`, eventos
 con `kind: question`, paths inventados). **Estaba equivocada.** El
 ecosistema ya tiene:

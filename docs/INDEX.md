@@ -49,7 +49,7 @@ un mismo origin pero **nunca se mergean entre sí**.
 
 ## Contrato versionado
 
-| Componente             | Versión esperada (esta pasada)              |
+| Componente             | Versión esperada (este ciclo)              |
 |------------------------|---------------------------------------------|
 | `WmsBrainClient`       | `0.2.0`                                     |
 | `brain_bridge.mjs`     | `SCHEMA_VERSION="1"` (eventos schema 1)     |
@@ -62,7 +62,7 @@ cliente refusa emitir eventos y avisa para upgrade coordinado.
 
 ---
 
-## Cambios importantes vs primera pasada (0.1.0)
+## Cambios importantes vs primera ciclo (0.1.0)
 
 1. **Bridge real reconocido**: ya no se asume "no hay bridge"; se delega.
 2. **Schema unificado**: adoptado `SCHEMA_VERSION="1"` del bridge.

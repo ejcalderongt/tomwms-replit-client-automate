@@ -13,7 +13,7 @@ targets:
     minRows: 1000
 relatedDocs:
   - brain/wms-specific-process-flow/interfaces-erp-por-cliente.md
-  - brain/wms-specific-process-flow/preguntas-pasada-7.md
+  - brain/wms-specific-process-flow/preguntas-ciclo-7.md
 suggestedQueries:
   - id: q1-histograma-hora
     description: Distribucion horaria de fec_agr en filas enviadas
@@ -104,7 +104,7 @@ allowFreeFormNotes: true
 
 ## Contexto
 
-En la pasada 9b detectamos que `BB.i_nav_transacciones_out` tiene
+En el ciclo 9b detectamos que `BB.i_nav_transacciones_out` tiene
 **145,117 SALIDAS pendientes** y **277,310 enviadas** (65.6% procesado),
 mientras que en K7 esta al 100%. Ademas hay **110,795 INGRESOS pendientes**
 en BB con casi 0% procesado, lo cual sugiere que NavSync para INGRESOS

@@ -6,14 +6,14 @@ createdBy: agent-replit
 createdAt: 2026-04-28T20:30:00-03:00
 priority: medium
 status: pending
-tags: [cealsa, corte-jornada, trans_pe_enc, trans_despacho_enc, pasada-8a, sub-Q4]
+tags: [cealsa, corte-jornada, trans_pe_enc, trans_despacho_enc, ciclo-8a, sub-Q4]
 targets:
   - codename: C9
     environment: QAS
     minRows: 0
 relatedDocs:
-  - brain/wms-specific-process-flow/queries-pasada-8a.md
-  - brain/wms-specific-process-flow/respuestas-pasada-7.md
+  - brain/wms-specific-process-flow/queries-ciclo-8a.md
+  - brain/wms-specific-process-flow/respuestas-ciclo-7.md
 expectedOutputs:
   - Lista de pedidos que cruzaron jornada (las 'excepciones' que Carol mencion).
   - Distribucion: si la mayoria es 0-1 dias, normal. Si hay 3+ dias, son las excepciones reales.
@@ -56,8 +56,8 @@ Carol mencion en P-22 que hay procesos con excepciones en el corte de jornada CE
 
 ## Documentos relacionados
 
-- `brain/wms-specific-process-flow/queries-pasada-8a.md`
-- `brain/wms-specific-process-flow/respuestas-pasada-7.md`
+- `brain/wms-specific-process-flow/queries-ciclo-8a.md`
+- `brain/wms-specific-process-flow/respuestas-ciclo-7.md`
 
 ## Queries sugeridas (READ-ONLY)
 
@@ -109,4 +109,4 @@ Genera CSVs en `answers/Q-012/` y un draft `answer-draft.md` para revisar/comple
 
 ## Origen
 
-Esta card forma parte de la **Pasada 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-pasada-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-pasada-7.md sin requerir nueva intervencion humana.
+Esta card forma parte de la **Ciclo 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-ciclo-7.md sin requerir nueva intervencion humana.

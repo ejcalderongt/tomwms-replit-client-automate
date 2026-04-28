@@ -6,13 +6,13 @@ createdBy: agent-replit
 createdAt: 2026-04-28T20:30:00-03:00
 priority: high
 status: pending
-tags: [bypass, trans_pe_enc, trans_despacho_det, killios, ADR-012, pasada-8a, D-03]
+tags: [bypass, trans_pe_enc, trans_despacho_det, killios, ADR-012, ciclo-8a, D-03]
 targets:
   - codename: K7
     environment: PRD
     minRows: 0
 relatedDocs:
-  - brain/wms-specific-process-flow/queries-pasada-8a.md
+  - brain/wms-specific-process-flow/queries-ciclo-8a.md
   - brain/architecture/adr/ADR-012-bypass-estado-despachado.md
   - brain/_inbox/20260428-1903-H04-despacho-fantasma-bypass-estado.json
 expectedOutputs:
@@ -73,7 +73,7 @@ Carol reporto 43 pedidos con estado=Despachado sin fila en trans_despacho_enc (P
 
 ## Documentos relacionados
 
-- `brain/wms-specific-process-flow/queries-pasada-8a.md`
+- `brain/wms-specific-process-flow/queries-ciclo-8a.md`
 - `brain/architecture/adr/ADR-012-bypass-estado-despachado.md`
 - `brain/_inbox/20260428-1903-H04-despacho-fantasma-bypass-estado.json`
 
@@ -143,4 +143,4 @@ Genera CSVs en `answers/Q-011/` y un draft `answer-draft.md` para revisar/comple
 
 ## Origen
 
-Esta card forma parte de la **Pasada 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-pasada-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-pasada-7.md sin requerir nueva intervencion humana.
+Esta card forma parte de la **Ciclo 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-ciclo-7.md sin requerir nueva intervencion humana.

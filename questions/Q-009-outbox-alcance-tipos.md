@@ -6,7 +6,7 @@ createdBy: agent-replit
 createdAt: 2026-04-28T20:30:00-03:00
 priority: high
 status: pending
-tags: [outbox, i_nav_transacciones_out, schema-confirmation, pasada-8a, C-03]
+tags: [outbox, i_nav_transacciones_out, schema-confirmation, ciclo-8a, C-03]
 targets:
   - codename: K7
     environment: PRD
@@ -18,8 +18,8 @@ targets:
     environment: QAS
     minRows: 0
 relatedDocs:
-  - brain/wms-specific-process-flow/queries-pasada-8a.md
-  - brain/wms-specific-process-flow/consolidacion-pasada-7.md
+  - brain/wms-specific-process-flow/queries-ciclo-8a.md
+  - brain/wms-specific-process-flow/consolidacion-ciclo-7.md
   - brain/_inbox/20260428-1903-H04-despacho-fantasma-bypass-estado.json
 expectedOutputs:
   - Si con_pedido y con_oc son cero o casi cero en las 3 BDs, Carol confirma. Bridge se simplifica.
@@ -41,12 +41,12 @@ suggestedQueries:
 
 ## Contexto
 
-Carol (pasada-7, P-19) afirma que el outbox solo se usa para recepciones y despachos. El schema soporta 4 tipos (idordencompra, idrecepcionenc, idpedidoenc, iddespachoenc). Esta query confirma cuales se usan realmente en cada cliente. Resultado define el alcance del bridge del WebAPI nuevo (puede simplificarse si Carol tiene razon).
+Carol (ciclo-7, P-19) afirma que el outbox solo se usa para recepciones y despachos. El schema soporta 4 tipos (idordencompra, idrecepcionenc, idpedidoenc, iddespachoenc). Esta query confirma cuales se usan realmente en cada cliente. Resultado define el alcance del bridge del WebAPI nuevo (puede simplificarse si Carol tiene razon).
 
 ## Documentos relacionados
 
-- `brain/wms-specific-process-flow/queries-pasada-8a.md`
-- `brain/wms-specific-process-flow/consolidacion-pasada-7.md`
+- `brain/wms-specific-process-flow/queries-ciclo-8a.md`
+- `brain/wms-specific-process-flow/consolidacion-ciclo-7.md`
 - `brain/_inbox/20260428-1903-H04-despacho-fantasma-bypass-estado.json`
 
 ## Queries sugeridas (READ-ONLY)
@@ -81,4 +81,4 @@ Genera CSVs en `answers/Q-009/` y un draft `answer-draft.md` para revisar/comple
 
 ## Origen
 
-Esta card forma parte de la **Pasada 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-pasada-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-pasada-7.md sin requerir nueva intervencion humana.
+Esta card forma parte de la **Ciclo 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-ciclo-7.md sin requerir nueva intervencion humana.

@@ -13,7 +13,7 @@
 |------------------|----------------------------------------------------------------------|
 | Nombre del módulo| `WmsBrainClient`                                                     |
 | Prefijo cmdlets  | `Wms` o `WmsBrain` (ver ALIASES.md)                                  |
-| Versión          | `0.2.0` (esta pasada — alineada al bridge)                           |
+| Versión          | `0.2.0` (este ciclo — alineada al bridge)                           |
 | Autor            | Erik Calderón (PrograX24, init `EJC`)                                |
 | Plataforma       | PowerShell 5.1+ (Windows) y PowerShell 7+ (cross-platform).          |
 | Idioma de logs   | Español rioplatense, sin emojis.                                     |
@@ -222,14 +222,14 @@ Todos los errores van a stderr en el formato:
 
 ## 10. Roadmap
 
-- **0.2.0** (esta pasada): cliente alineado al bridge real, propuesta v2.
+- **0.2.0** (este ciclo): cliente alineado al bridge real, propuesta v2.
 - **0.3.0**: aceptación de `SCHEMA_VERSION="2"` + tipos extendidos.
 - **0.4.0**: integración con WikiHub (notificación humana de eventos applied).
 - **0.5.0**: GUI `Show-WmsBrainQueue` (terminal-based, `Out-GridView`).
 
 ---
 
-## 11. Cambios respecto a la pasada anterior (0.1.0)
+## 11. Cambios respecto a el ciclo anterior (0.1.0)
 
 - **Bridge real reconocido**: ya no se asume "no hay bridge"; se delega.
 - **Schema unificado**: se adopta `id`/`schema_version`/`type`/`source`/`ref`/`context`/`status`/`history` del bridge.

@@ -6,7 +6,7 @@ createdBy: agent-replit
 createdAt: 2026-04-28T20:30:00-03:00
 priority: low
 status: pending
-tags: [tareas-hh, tarea_hh, sis_tipo_tarea, ranking, pasada-8a, P-25]
+tags: [tareas-hh, tarea_hh, sis_tipo_tarea, ranking, ciclo-8a, P-25]
 targets:
   - codename: K7
     environment: PRD
@@ -18,8 +18,8 @@ targets:
     environment: QAS
     minRows: 0
 relatedDocs:
-  - brain/wms-specific-process-flow/queries-pasada-8a.md
-  - brain/wms-specific-process-flow/respuestas-tanda-2.md
+  - brain/wms-specific-process-flow/queries-ciclo-8a.md
+  - brain/wms-specific-process-flow/respuestas-tarea-2.md
 expectedOutputs:
   - TOP15 real por BD. Si coincide con la lista de Carol, validado.
   - Si difiere mucho, Carol describio teorico no real. Documentar discrepancia.
@@ -43,12 +43,12 @@ suggestedQueries:
 
 ## Contexto
 
-Tanda-2 P-25 dejo este JOIN pendiente. Carol describio el TOP10 teorico (Recepcion, Cambio Ubicacion, Cambio Estado, Implosiones, Picking, Verificacion, Despacho). Esta query confirma o refuta el TOP real ejecutado en las 3 BDs.
+Tarea-2 P-25 dejo este JOIN pendiente. Carol describio el TOP10 teorico (Recepcion, Cambio Ubicacion, Cambio Estado, Implosiones, Picking, Verificacion, Despacho). Esta query confirma o refuta el TOP real ejecutado en las 3 BDs.
 
 ## Documentos relacionados
 
-- `brain/wms-specific-process-flow/queries-pasada-8a.md`
-- `brain/wms-specific-process-flow/respuestas-tanda-2.md`
+- `brain/wms-specific-process-flow/queries-ciclo-8a.md`
+- `brain/wms-specific-process-flow/respuestas-tarea-2.md`
 
 ## Queries sugeridas (READ-ONLY)
 
@@ -85,4 +85,4 @@ Genera CSVs en `answers/Q-014/` y un draft `answer-draft.md` para revisar/comple
 
 ## Origen
 
-Esta card forma parte de la **Pasada 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-pasada-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-pasada-7.md sin requerir nueva intervencion humana.
+Esta card forma parte de la **Ciclo 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-ciclo-7.md sin requerir nueva intervencion humana.

@@ -6,13 +6,13 @@ createdBy: agent-replit
 createdAt: 2026-04-28T20:30:00-03:00
 priority: medium
 status: pending
-tags: [reabasto, trans_reabastecimiento_log, killios, limpieza-instalacion, pasada-8a, C-04]
+tags: [reabasto, trans_reabastecimiento_log, killios, limpieza-instalacion, ciclo-8a, C-04]
 targets:
   - codename: K7
     environment: PRD
     minRows: 1218
 relatedDocs:
-  - brain/wms-specific-process-flow/queries-pasada-8a.md
+  - brain/wms-specific-process-flow/queries-ciclo-8a.md
   - brain/_inbox/20260428-1901-H02-clbd-prc-falta-reabasto-log.json
 expectedOutputs:
   - Si todo es pre-2024, Carol gana. SP CLBD_PRC arregla el caso.
@@ -46,11 +46,11 @@ suggestedQueries:
 
 ## Contexto
 
-Killios tiene 1218 filas en trans_reabastecimiento_log aunque NO usa el modulo. Carol (P-24) dice que es basura no limpiada en instalacion. SQL agente (tanda-2) sospecha que el modulo de deteccion sigue activo. Esta query separa pre-2024 (basura instalacion) de post-2024 (modulo activo). Define si la accion atomica del SP CLBD_PRC alcanza, o si hay que apagar el modulo.
+Killios tiene 1218 filas en trans_reabastecimiento_log aunque NO usa el modulo. Carol (P-24) dice que es basura no limpiada en instalacion. SQL agente (tarea-2) sospecha que el modulo de deteccion sigue activo. Esta query separa pre-2024 (basura instalacion) de post-2024 (modulo activo). Define si la accion atomica del SP CLBD_PRC alcanza, o si hay que apagar el modulo.
 
 ## Documentos relacionados
 
-- `brain/wms-specific-process-flow/queries-pasada-8a.md`
+- `brain/wms-specific-process-flow/queries-ciclo-8a.md`
 - `brain/_inbox/20260428-1901-H02-clbd-prc-falta-reabasto-log.json`
 
 ## Queries sugeridas (READ-ONLY)
@@ -95,4 +95,4 @@ Genera CSVs en `answers/Q-010/` y un draft `answer-draft.md` para revisar/comple
 
 ## Origen
 
-Esta card forma parte de la **Pasada 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-pasada-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-pasada-7.md sin requerir nueva intervencion humana.
+Esta card forma parte de la **Ciclo 8a SQL READ-ONLY autonoma** documentada en `brain/wms-specific-process-flow/queries-ciclo-8a.md` (rama `wms-brain`). Generada por el agente brain en sesion replit (28 abril 2026) para destrabar las sub-preguntas abiertas de la consolidacion-ciclo-7.md sin requerir nueva intervencion humana.
