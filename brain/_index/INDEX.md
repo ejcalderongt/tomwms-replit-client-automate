@@ -279,3 +279,84 @@ G. ESPECIFICOS DE CLIENTE
 | BYB | NAV | PRODUCT-CENTRIC NULL | HALF | preparado | 255912 | parado 2024 |
 | CEALSA | propio | PRODUCT-CENTRIC heterogeneo | OFF | OFF | 0 (vacio) | QAS sin trafico |
 
+
+---
+
+## Actualizacion 28-abr-2026 (sesion cross-cliente Wave 4)
+
+### Folder nuevo: `brain/heat-map-params/cross-cliente/`
+4 archivos con matriz exhaustiva flag x cliente para los 5 clientes:
+- `README.md` — indice + conteos macro.
+- `01-i_nav_config_enc.md` — 78 cols union, schema drift severo, taxonomia
+  ERP corregida.
+- `02-bodega.md` — 123 cols union, flags por bodega y matriz capabilities.
+- `03-tipos-documento.md` — `trans_oc_ti` y `trans_pe_tipo` cross-cliente.
+
+### Hallazgos brutales aplicados
+- **Taxonomia ERP corregida**: 3 clientes son SAP B1 (BECOFARMA, K7, MAMPA),
+  no 2. Solo BYB es NAV. CEALSA es PREFACTURA dedicada. Esto invalida
+  presunciones previas sobre NAV mayoritario.
+- **MAMPA tiene 31.397 productos activos** (catalogo masivo por talla x color).
+- **CEALSA tiene 3.200 estados de producto** (vs 10-24 en el resto) — pendiente
+  Q-CEALSA-3200-ESTADOS.
+- **NINGUN cliente usa propietarios** (no hay 3PL en TOM hoy).
+- **K7 tiene case-mismatch + typo + duplicados** en `i_nav_config_enc`:
+  `Codigo_Bodega_ERP_NC` (Camel) vs `codigo_bodega_erp_nc` (BYB lower),
+  `codigo_bodega_nc_erp` (reordered), `lote_defecto_nc` (variante adicional),
+  `explosio_automatica_nivel_max` (typo le falta "n").
+- **K7 case-mismatch en bodega**: `PERMITIR_BUEN_ESTADO_EN_REEMPLAZO` (BYB
+  upper) vs `permitir_buen_estado_en_reemplazo` (K7 lower), `TIPO_PANTALLA_PICKING`
+  vs `tipo_pantalla_picking`, `Control_Talla_Color` vs `control_talla_color`.
+- **CEALSA tiene typo propio**: `liberar_stock_depachos_parciales` (le falta
+  una "s" — debería ser "despachos").
+- **MAMPA usa pick por voz + control talla/color en TODAS sus 33 bodegas**.
+- **K7 usa ML para sugerencia de ubicacion en TODAS sus 6 bodegas** — capability
+  `recommend-location-ml` exclusiva K7 (BYB la tiene parcial).
+- **CEALSA es la implementacion mas austera**: sin voz, sin ML, sin verificacion
+  consolidada, sin pallet mixto. Pero con la unica `bodega fiscal` (B02).
+- **BECOFARMA bod 1**: pick por voz + interface SAP + despacho automatico HH +
+  operador picking realiza verificacion (mismo operador hace pick + veri).
+
+### Hipotesis nuevas abiertas
+- **Q-K7-DUPLICADOS-CONFIG**: 4 variantes del mismo campo en K7
+  (`codigo_bodega_erp_nc` lower / Camel / reordered / `lote_defecto_nc`).
+- **Q-K7-TYPO-EXPLOSION**: typo `explosio_automatica_nivel_max` en K7.
+- **Q-CASE-NAME-K7**: WebAPI debe normalizar case en K7 bodega.
+- **Q-CEALSA-TYPO-DESPACHOS**: confirmar typo `liberar_stock_depachos_parciales`.
+- **Q-BECO-AJUSTE-BYB**: por que BECOFARMA tiene `bodega_cliente_ajuste_byb`.
+- **Q-K7-ML-MODELO**: que modelo de ML usa K7 para sugerir ubicacion.
+- **Q-K7-BOD5-AMATITLAN-NOSAP**: por que BOD5 NO tiene `interface_SAP=True`.
+- **Q-CEALSA-3200-ESTADOS**: por que tantos estados de producto en CEALSA.
+- **Q-CEALSA-AUSENTES-7**: validar las 7 cols ausentes en `trans_pe_tipo`.
+- **Q-BECO-PRODUCCION**: BECOFARMA tiene tipo `Orden de Produccion` activo.
+- **Q-MAMPA-IDPRODESTADO-3**: por que default es 3 y no 1.
+- **Q-MAMPA-IDINDICE-4**: significado de `IdIndiceRotacion=4` en MAMPA.
+- **Q-CEALSA-IDACUERDO-1**: cruzar con `cealsa_vwacuerdocomercialenc`.
+- **Q-MAMPA-BOD23-FALTANTES**: confirmar bodega 23 para faltantes.
+- **Q-K7-BOD7-FACTURACION**: existe bod7 fisica o es virtual.
+- **Q-VERIFICACION-CONSOL**: logica K7+BYB de verificacion consolidada.
+
+### Deprecation confirmada
+- `industria_motriz` (bodega) y `IDPRODUCTOPARAMETROA/B` (producto) son
+  DEPRECATED. Diseñados para una venta unica de repuestos automotriz
+  que nunca llego a operar. Reflejado en `02-bodega/README.md` y
+  `04-producto/README.md`. NO priorizar en WebAPI, mantener por compatibilidad
+  schema solamente.
+
+### Capabilities nuevas identificadas
+- `picking-by-voice` — BECOFARMA, K7 (parcial 4/6 bodegas), MAMPA (33/33).
+- `recommend-location-ml` — K7 (6/6 bodegas), BYB (1/2 bodegas).
+- `same-operator-pick-and-verify` — BECOFARMA (1/1), CEALSA (2/2).
+- `verify-with-photo` (en pedido) — BECOFARMA, MAMPA.
+- `assign-all-operators` — solo MAMPA.
+- `fiscal-warehouse-segregated` — solo CEALSA.
+- `dispatch-auto-from-hh` — solo BECOFARMA.
+- `verify-consolidated` — K7 (5/6), BYB (2/2).
+- `confirm-code-in-picking` — MAMPA bod 1, CEALSA (2/2).
+- `dispatch-by-pallet-mixed` — solo MAMPA bod 1.
+
+### Proximo: code-deep-flow
+Una vez completados los flags (queda capa 4 producto + producto_estado),
+arrancar el code-deep-flow: dado un parametro X, mapear como viaja por el
+backend / BOF (VB.NET) / HH (Android) y que tablas afecta. Cruce de codigo
++ DB. Erik confirmo este orden el 28-abr-2026.

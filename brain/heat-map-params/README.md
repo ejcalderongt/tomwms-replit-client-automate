@@ -50,14 +50,33 @@ Cada `0X-<capa>/README.md` tiene secciones:
    comportamiento del sistema, mapeado al graph-EQL del sendero.
 5. **Pendientes**: que valores faltan, que hipotesis quedan abiertas.
 
+## Cross-cliente exhaustivo
+
+El folder [`cross-cliente/`](cross-cliente/) contiene la matriz completa
+`flag x cliente` con datos REALES de los 5 clientes en EC2. Cada archivo
+documenta una capa con: schema drift, valores reales por cliente, y lecturas
+operativas. Se construyo en abril 2026 como insumo para el code-deep-flow
+posterior.
+
+- [`cross-cliente/README.md`](cross-cliente/README.md) — Indice + conteos
+  macro por cliente.
+- [`cross-cliente/01-i_nav_config_enc.md`](cross-cliente/01-i_nav_config_enc.md)
+  — 78 cols union, taxonomia ERP corregida (3 clientes son SAP_BO, no NAV).
+- [`cross-cliente/02-bodega.md`](cross-cliente/02-bodega.md) — 123 cols union,
+  flags por bodega y matriz capabilities.
+- [`cross-cliente/03-tipos-documento.md`](cross-cliente/03-tipos-documento.md)
+  — `trans_oc_ti` y `trans_pe_tipo` cross-cliente.
+
 ## Pendientes
 
-- Capa 1 y 2: cargadas con catalogo + sample BYB. Cross-cliente
-  exhaustivo proximo.
-- Capa 3: definir taxonomia de interfaces (NAV/SAP/SAP-B1/PREFACTURA/
-  SIN_INTERFACE) + cliente -> interface.
-- Capa 4: producto y producto_bodega: cargar catalogo + cruce de uso
-  real con conteo.
-- Capa 5: tipos de documento ya parcialmente cargados (5 tipos en BYB
-  cada uno). Cross-cliente listo para procesar.
-- Capa 6: armar primero ESTANDAR de cada proceso, luego variantes.
+- Capa 4 cross-cliente: producto y producto_bodega exhaustivos.
+- Investigar tabla `producto_estado` (CEALSA tiene 3.200 estados ?!).
+- Capa 6: archivos dedicados por proceso (recepcion.md, picking.md, etc),
+  primero ESTANDAR, luego variantes.
+- Capa 3: investigar inbox tables (`i_nav_*`, `cealsa_vw*`) para preparar
+  el code-deep-flow.
+- Confirmar caso CLAVAUD (cliente futuro o legacy).
+- Confirmar uso de `marcar_registros_enviados_mi3` (que es MI3).
+- Capturar trans_oc_ti K7 (faltante en barrido cross-cliente).
+- Profundizar IDPRODUCTOPARAMETROA/B + industria_motriz: confirmados como
+  DEPRECATED por Erik (29-abr-2026), reflejado en 02-bodega y 04-producto.

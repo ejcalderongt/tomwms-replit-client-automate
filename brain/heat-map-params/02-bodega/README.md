@@ -60,7 +60,7 @@ Cada bodega responde a un set de preguntas que determinan su sendero:
 | `es_bodega_fiscal` | Bodega fiscal |
 | `es_devolucion` | Bodega para devoluciones |
 | `empaque_tarima` | Hace packing |
-| `industria_motriz` | Especifico de cliente automotriz (a confirmar) |
+| `industria_motriz` | DEPRECATED. Diseñado para una venta unica de repuestos automotriz que nunca llego a operar productivamente. Va junto con `IDPRODUCTOPARAMETROA/B` (catalogo producto) que tampoco se usa. Mantener por compatibilidad pero NO priorizar en WebAPI. |
 | `materia_prima` | Bodega de materia prima |
 | `kit` | Bodega para kits |
 | `control_poliza` | Maneja polizas |

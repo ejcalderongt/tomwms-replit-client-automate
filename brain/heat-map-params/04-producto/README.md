@@ -62,8 +62,11 @@
 
 ### Misc
 - `imagen` (image)
-- `IDPRODUCTOPARAMETROA`, `IDPRODUCTOPARAMETROB` (parametros genericos
-  con uso desconocido — investigar)
+- `IDPRODUCTOPARAMETROA`, `IDPRODUCTOPARAMETROB` — **DEPRECATED**.
+  Diseñados para una venta unica de repuestos del rubro automotriz que
+  nunca llego a operar productivamente. Acompañan al flag `industria_motriz`
+  de bodega (tambien deprecated). NO priorizar en WebAPI nuevo. Mantener
+  por compatibilidad de schema solamente. Sin clientes activos que los usen.
 - `margen_impresion`
 
 ### Auditoria
