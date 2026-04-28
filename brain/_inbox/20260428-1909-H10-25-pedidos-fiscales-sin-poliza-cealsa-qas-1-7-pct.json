@@ -22,9 +22,9 @@
     ],
     "tags": [
       "validated-via-live-sql",
+      "afinidad-procesos",
       "cealsa",
       "poliza-fiscal",
-      "data-quality",
       "refuerza-h04",
       "q-013",
       "concrete-action"
@@ -33,7 +33,7 @@
   },
   "context": {
     "summary": "C9-QAS: 25 de 1441 pedidos fiscales (1.7%) NO tienen registro en trans_pe_pol. Confirma H-04.",
-    "message": "Q-013 ejecutada contra IMS4MB_CEALSA_QAS (28-abr-2026): de 1441 pedidos cuyo tipo tiene control_poliza=1, solo 1416 tienen registro en trans_pe_pol (98.3%). 25 pedidos fiscales SIN poliza captada (1.7%). Esto VALIDA empiricamente H-04 (poliza fiscal con dual-state frontend-only): si la captura de poliza ocurre solo en UI sin commit transaccional al pedido, es esperable que ~1-2% se pierda. Implicaciones: (a) la nueva WebAPI debe emitir alerta cuando un pedido fiscal se cierra sin trans_pe_pol; (b) auditar esos 25 pedidos especificos para entender si fueron creados por el path de devolucion (donde la poliza no aplica) o si efectivamente se 'colaron' sin poliza; (c) reforzar la propuesta P3-FISCAL-LOCK con validacion server-side bloqueante.",
+    "message": "Q-013 ejecutada contra IMS4MB_CEALSA_QAS (28-abr-2026): de 1441 pedidos cuyo tipo tiene control_poliza=1, 1416 tienen registro en trans_pe_pol y 25 NO. HALLAZGO DE PROCESO: el modelo permite que un pedido fiscal se cierre sin tener registro asociado en trans_pe_pol. NO hay constraint server-side que lo prevenga. Esto es coherente con H-04 (proceso de captura de poliza puede ocurrir en frontend con dual-state que falla en commitear si la transaccion se interrumpe). Implicaciones: (a) la nueva WebAPI debe emitir alerta cuando un pedido fiscal se cierra sin trans_pe_pol; (b) reforzar la propuesta P3-FISCAL-LOCK con validacion server-side bloqueante; (c) auditar los 25 pedidos especificos en C9-QAS queda diferido al segmento de afinidad-de-datos (saber si fueron devoluciones donde la poliza no aplica o gaps reales). El cuanto exacto en otras BDs no se compara - es snapshot dependiente.",
     "modules_touched": [
       "trans_pe_pol",
       "trans_pe_enc",
@@ -43,9 +43,9 @@
     ],
     "tags": [
       "validated-via-live-sql",
+      "afinidad-procesos",
       "cealsa",
       "poliza-fiscal",
-      "data-quality",
       "refuerza-h04",
       "q-013",
       "concrete-action"

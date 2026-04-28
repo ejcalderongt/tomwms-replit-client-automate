@@ -21,11 +21,10 @@
     ],
     "tags": [
       "validated-via-live-sql",
+      "afinidad-procesos",
       "bug-operativo",
       "instalacion",
       "sp-mantenimiento",
-      "becofarma",
-      "killios",
       "concrete-action",
       "extiende-h02"
     ],
@@ -33,7 +32,7 @@
   },
   "context": {
     "summary": "Becofarma tambien acumulo basura en trans_reabastecimiento_log (755 filas) sin usar el modulo. Extender H-02.",
-    "message": "Verificacion durante Q-014 setup (28-abr-2026): trans_reabastecimiento_log en IMS4MB_BYB_PRD tiene 755 filas, en TOMWMS_KILLIOS_PRD tiene 1218 filas, en IMS4MB_CEALSA_QAS tiene 0 filas. Carol (P-24) habia identificado el problema solo en Killios. Ampliacion del alcance: el patron 'basura instalacion no limpiada por SP CLBD_PRC' afecta tambien a BB. Decisiones: (a) la accion atomica de H-02 (agregar trans_reabastecimiento_log al SP CLBD_PRC) es una mejora estructural del INSTALADOR, no un fix puntual de Killios; (b) hay que ejecutar TRUNCATE/DELETE FROM trans_reabastecimiento_log WHERE [criterios] tambien en BB; (c) auditar otras tablas de modulos no-usados que pudieron quedar pobladas (al menos: trans_inv_*, trans_devolucion_*, etc).",
+    "message": "Verificacion durante Q-014 setup (28-abr-2026): trans_reabastecimiento_log existe en las 3 BDs con la misma estructura. K7=1218 filas, BB=755 filas, C9=0 filas. HALLAZGO DE PROCESO: el SP CLBD_PRC (validado en wms-db-brain dump 2026-04-27) NO incluye esta tabla en su lista de DELETE FROM. Esto significa que en cualquier deployment donde el modulo de reabasto no se use, la tabla queda como tech-debt residual del instalador. Decisiones: (a) la accion atomica de H-02 (agregar trans_reabastecimiento_log al SP CLBD_PRC) es una mejora estructural del INSTALADOR, no un fix puntual de una BD; (b) el alcance es estructural: el fix corre una vez en el SP y aplica a todos los futuros deploys; (c) auditar otras tablas de modulos no-usados que pudieron quedar pobladas queda diferido al segmento de afinidad-de-datos.",
     "modules_touched": [
       "SP CLBD_PRC",
       "trans_reabastecimiento_log",
@@ -43,11 +42,10 @@
     ],
     "tags": [
       "validated-via-live-sql",
+      "afinidad-procesos",
       "bug-operativo",
       "instalacion",
       "sp-mantenimiento",
-      "becofarma",
-      "killios",
       "concrete-action",
       "extiende-h02"
     ]

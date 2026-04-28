@@ -1,10 +1,10 @@
-# 20260428-1905-H06 - Q-011 cerrada: bypass real es 1 pedido (no 43 reportados por Carol). ADR-012 sobre-dimensionado.
+# 20260428-1905-H06 - Q-011 valida que el proceso 'estado=Despachado sin trans_despacho_det' existe como camino real en TOMWMS_KILLIOS_PRD.
 
-> Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Pasada 8a via ejecucion live SQL.
+> Generado por agente brain (sesion replit) el 28 abril 2026 tras Pasada 8a via ejecucion live SQL.
 
 ## Contexto
 
-Ejecucion live contra TOMWMS_KILLIOS_PRD (sa, 28-abr-2026): de 3989 pedidos en estado='Despachado', solo 1 tiene 0 filas en trans_despacho_det. pct_bypass=0.03%. Carol (P-19, KKKL) reporto 43 casos. Discrepancia: 43x. El bypass es un evento RARISIMO, no un patron. Accion: simplificar ADR-012 - quitar permiso especial, quitar rate-limit, quitar IS_BYPASS_DESPACHO_PERMITIDO. Mantener solo: registro de auditoria liviano cuando ocurre + alerta. Frecuencia esperada <1 caso/anio.
+Ejecucion live contra TOMWMS_KILLIOS_PRD (28-abr-2026, snapshot del EC2 al que tenemos acceso): de 3989 pedidos en estado='Despachado', 1 caso (2025-06) tiene 0 filas en trans_despacho_det. Esto VALIDA EMPIRICAMENTE que el proceso de bypass (P-19) existe como camino tecnicamente posible en el WMS - el estado se puede mover a 'Despachado' sin que se materialice el detalle. **Aclaracion metodologica importante**: la frecuencia observada en este snapshot NO es comparable con la frecuencia reportada por las personas del cliente, porque ellas trabajan sobre backups mas recientes y nosotros sobre el snapshot del EC2. Validamos AFINIDAD DE PROCESOS (que el camino existe, que las tablas se relacionan asi); la AFINIDAD DE DATOS (cuantos casos exactos hay, distribucion mensual real) requiere otro segmento de trabajo con backups sincronizados. Por lo tanto, la decision sobre ADR-012 NO se ajusta con base a frecuencia observada en este snapshot - se sostiene en el HALLAZGO DE PROCESO de que el bypass es tecnicamente posible.
 
 ## Modulos tocados
 
@@ -12,10 +12,22 @@ Ejecucion live contra TOMWMS_KILLIOS_PRD (sa, 28-abr-2026): de 3989 pedidos en e
 - `trans_despacho_det`
 - `trans_pe_enc`
 - `estado-despachado`
+- `proceso-bypass`
+
+## Hallazgo de PROCESO (validado)
+
+El camino tecnico "estado='Despachado' sin filas en trans_despacho_det" existe en el modelo y se ejerce
+al menos ocasionalmente. NO requiere validacion server-side bloqueante para ocurrir.
+
+## Hallazgo de DATOS (diferido)
+
+La frecuencia observada en este snapshot (1 caso) NO es comparable con la frecuencia reportada por las
+personas del cliente (otro snapshot). La comparacion queda diferida a un segmento de "afinidad de
+datos" que requeriria sincronizacion de backups.
 
 ## Decision provisional
 
-`accepted_simplify_adr_012_validated_via_live_sql`
+`accepted_proceso_bypass_validado_frecuencia_diferida_a_afinidad_datos`
 
 ## Ratificacion pendiente de
 
@@ -24,8 +36,7 @@ Erik Calderon (PrograX24)
 ## Cross-references
 
 - Inbox event: `brain/_inbox/20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012.json`
-- Tags: `validated-via-live-sql`, `recalibrar-decision`, `killios`, `adr-revision`, `concrete-action`, `q-011`
+- Tags: `validated-via-live-sql`, `afinidad-procesos`, `killios`, `adr-revision`, `q-011`, `proceso-validado`
 - Preguntas origen: `P-19`, `Q-011`
-- Respondedoras: `KKKL-Carol`
 - Pasada: 8a
 - Doc consolidacion: `brain/wms-specific-process-flow/consolidacion-pasada-8a.md`

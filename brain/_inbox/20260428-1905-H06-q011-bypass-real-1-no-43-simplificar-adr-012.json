@@ -22,30 +22,31 @@
     ],
     "tags": [
       "validated-via-live-sql",
-      "recalibrar-decision",
+      "afinidad-procesos",
       "killios",
       "adr-revision",
-      "concrete-action",
-      "q-011"
+      "q-011",
+      "proceso-validado"
     ],
     "filename_slug": "20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012.json"
   },
   "context": {
-    "summary": "Q-011 cerrada: bypass real es 1 pedido (no 43 reportados por Carol). ADR-012 sobre-dimensionado.",
-    "message": "Ejecucion live contra TOMWMS_KILLIOS_PRD (sa, 28-abr-2026): de 3989 pedidos en estado='Despachado', solo 1 tiene 0 filas en trans_despacho_det. pct_bypass=0.03%. Carol (P-19, KKKL) reporto 43 casos. Discrepancia: 43x. El bypass es un evento RARISIMO, no un patron. Accion: simplificar ADR-012 - quitar permiso especial, quitar rate-limit, quitar IS_BYPASS_DESPACHO_PERMITIDO. Mantener solo: registro de auditoria liviano cuando ocurre + alerta. Frecuencia esperada <1 caso/anio.",
+    "summary": "Q-011 valida que el proceso 'estado=Despachado sin trans_despacho_det' existe como camino real en TOMWMS_KILLIOS_PRD.",
+    "message": "Ejecucion live contra TOMWMS_KILLIOS_PRD (28-abr-2026, snapshot del EC2 al que tenemos acceso): de 3989 pedidos en estado='Despachado', 1 caso (2025-06) tiene 0 filas en trans_despacho_det. Esto VALIDA EMPIRICAMENTE que el proceso de bypass (P-19) existe como camino tecnicamente posible en el WMS - el estado se puede mover a 'Despachado' sin que se materialice el detalle. **Aclaracion metodologica importante**: la frecuencia observada en este snapshot NO es comparable con la frecuencia reportada por las personas del cliente, porque ellas trabajan sobre backups mas recientes y nosotros sobre el snapshot del EC2. Validamos AFINIDAD DE PROCESOS (que el camino existe, que las tablas se relacionan asi); la AFINIDAD DE DATOS (cuantos casos exactos hay, distribucion mensual real) requiere otro segmento de trabajo con backups sincronizados. Por lo tanto, la decision sobre ADR-012 NO se ajusta con base a frecuencia observada en este snapshot - se sostiene en el HALLAZGO DE PROCESO de que el bypass es tecnicamente posible.",
     "modules_touched": [
       "ADR-012",
       "trans_despacho_det",
       "trans_pe_enc",
-      "estado-despachado"
+      "estado-despachado",
+      "proceso-bypass"
     ],
     "tags": [
       "validated-via-live-sql",
-      "recalibrar-decision",
+      "afinidad-procesos",
       "killios",
       "adr-revision",
-      "concrete-action",
-      "q-011"
+      "q-011",
+      "proceso-validado"
     ]
   },
   "analysis": {
@@ -64,7 +65,7 @@
   "proposal": {
     "proposal_path": "brain/_proposals/20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012.md",
     "adr_path": null,
-    "decision_provisional": "accepted_simplify_adr_012_validated_via_live_sql",
+    "decision_provisional": "accepted_proceso_bypass_validado_frecuencia_diferida_a_afinidad_datos",
     "ratificacion_pendiente_de": "Erik Calderon",
     "proposed_at": "2026-04-28T22:15:00-03:00"
   },

@@ -22,6 +22,7 @@
     ],
     "tags": [
       "validated-via-live-sql",
+      "afinidad-procesos",
       "outbox-semantica",
       "navigator",
       "simplificacion-webapi",
@@ -32,7 +33,7 @@
   },
   "context": {
     "summary": "i_nav_transacciones_out NO registra pedidos sueltos: 100% de filas con idpedidoenc tienen iddespachoenc.",
-    "message": "Q-009 ejecutada contra 3 BDs (28-abr-2026). K7-PRD: 24193 filas total, con_pedido=19799, con_despacho=19799 (IDENTICOS). BB-PRD: 533329 total, con_pedido=422427, con_despacho=422427 (IDENTICOS). C9-QAS: 0 filas (entorno QAS sin trafico). Lectura: el outbox NO emite eventos de 'pedido creado/modificado' - solo emite cuando hay despacho que arrastra el IdPedidoEnc. Implicaciones: (a) Navigator NO ve pedidos hasta despachados; (b) la nueva WebAPI puede simplificar el bridge - 4 tipos colapsa a 2 efectivos (recepcion + despacho con FKs adicionales); (c) Carol (P-19) tenia razon parcialmente: dijo 'recepciones y despachos' - confirmado que esos 2 dominan, OC y pedido viajan de polizon en eventos de recepcion/despacho.",
+    "message": "Q-009 ejecutada contra 3 BDs (28-abr-2026). K7-PRD: 24193 filas total, con_pedido=19799, con_despacho=19799 (IDENTICOS). BB-PRD: 533329 total, con_pedido=422427, con_despacho=422427 (IDENTICOS). C9-QAS: 0 filas (entorno QAS sin trafico). HALLAZGO DE PROCESO: el outbox `i_nav_transacciones_out` NO emite eventos de 'pedido creado/modificado' como evento independiente - solo emite cuando hay despacho que arrastra el IdPedidoEnc. Implicaciones: (a) Navigator NO ve pedidos hasta despachados; (b) la nueva WebAPI puede simplificar el bridge - los 4 tipos colapsan a 2 efectivos (recepcion + despacho con FKs adicionales OC y pedido); (c) confirma el modelo de outbox como confirmacion-de-despacho, no como event-source de cambios de pedido.",
     "modules_touched": [
       "i_nav_transacciones_out",
       "navigator-bridge",
@@ -40,6 +41,7 @@
     ],
     "tags": [
       "validated-via-live-sql",
+      "afinidad-procesos",
       "outbox-semantica",
       "navigator",
       "simplificacion-webapi",
