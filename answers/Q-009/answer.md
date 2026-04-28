@@ -6,17 +6,24 @@ answeredAt: 2026-04-28T22:30:00-03:00
 executedVia: live-sql-pymssql-2.3.13
 executedBy: sa@52.41.114.122,1437
 status: answered
+dimension: afinidad-de-procesos
 ---
 
 # Q-009 - Outbox alcance real (3 BDs)
 
-> Respondida por agente brain (sesion replit) el 28 abril 2026 via ejecucion live SQL Server (sa) contra EC2 52.41.114.122,1437.
+> Respondida por agente brain (sesion replit) el 28 abril 2026 via ejecucion live SQL Server contra EC2 52.41.114.122,1437.
+>
+> **Dimension**: esta respuesta es de **afinidad de procesos**. Los numeros observados en nuestro snapshot NO se comparan con los reportados por las personas del cliente (que trabajan con backups recientes propios). La comparacion cuantitativa queda diferida a un segmento futuro de afinidad-de-datos.
 >
 > **BDs reales descubiertas**: K7-PRD = `TOMWMS_KILLIOS_PRD`, BB-PRD = `IMS4MB_BYB_PRD`, C9-QAS = `IMS4MB_CEALSA_QAS`. Las 3 comparten schema (TOMWMS y IMS4MB son aparentemente forks del mismo modelo).
 
-## Resultado
+## Hallazgo de PROCESO
 
-**CERRADA**. Ejecutada contra las 3 BDs:
+El outbox `i_nav_transacciones_out` tiene 4 FKs (`idordencompra`, `idrecepcionenc`, `idpedidoenc`, `iddespachoenc`). En nuestro snapshot, en las 2 BDs con datos (K7 y BB), el conteo de `con_pedido` es **identico** al de `con_despacho` (no aparece ningun caso de pedido sin despacho). Esto indica que el outbox **emite cuando hay despacho** y arrastra el IdPedidoEnc como FK, no que emita eventos de pedido sueltos.
+
+Es un patron de **confirmacion-de-despacho**, no event-source de cambios de pedido.
+
+## Datos observados en nuestro snapshot (no comparables)
 
 | BD | con_oc | con_recepcion | con_pedido | con_despacho | total |
 |----|-------:|--------------:|-----------:|-------------:|------:|
@@ -24,20 +31,15 @@ status: answered
 | BB-PRD | 110.902 | 514.788 | 422.427 | 422.427 | 533.329 |
 | C9-QAS | 0 | 0 | 0 | 0 | 0 |
 
-**Patron clave**: `con_pedido == con_despacho` SIEMPRE en K7 y BB. NO hay eventos de "pedido suelto" en el outbox.
-
 ## Datos crudos
 
 - `q1-outbox-counts-K7-PRD.csv`
 - `q1-outbox-counts-BB-PRD.csv`
 - `q1-outbox-counts-C9-QAS.csv` (vacio - QAS sin trafico)
 
-## Hallazgos derivados
+## Decision recomendada
 
-1. **El outbox SOLO emite eventos de despacho**, no de creacion/modificacion de pedidos. El IdPedidoEnc viaja como FK del despacho.
-2. **Carol (P-19) tenia razon parcial**: dijo "recepciones y despachos". Confirmado: esos 2 dominan; OC y pedido son metadata de polizon.
-3. **BB usa el outbox masivamente** (533k filas) vs K7 (24k). Ratio 22x consistente con cardinalidades operativas (BB ~10x mas grande).
-4. **Decision para nueva WebAPI**: el bridge Navigator puede simplificarse - definir 2 tipos primarios (recepcion, despacho) con FKs adicionales en lugar de 4 tipos independientes.
+Simplificar el bridge Navigator de 4 tipos a 2 (recepcion + despacho con FKs adicionales OC y pedido).
 
 ## Eventos generados en _inbox
 

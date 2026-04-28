@@ -6,25 +6,32 @@ answeredAt: 2026-04-28T22:30:00-03:00
 executedVia: live-sql-pymssql-2.3.13
 executedBy: sa@52.41.114.122,1437
 status: answered-pivot
+dimension: afinidad-de-procesos
 ---
 
-# Q-012 - CEALSA QAS corte jornada - excepciones
+# Q-012 - CEALSA QAS corte jornada (pivot a K7+BB)
 
-> Respondida por agente brain (sesion replit) el 28 abril 2026 via ejecucion live SQL Server (sa) contra EC2 52.41.114.122,1437.
+> Respondida por agente brain (sesion replit) el 28 abril 2026 via ejecucion live SQL Server contra EC2 52.41.114.122,1437.
+>
+> **Dimension**: esta respuesta es de **afinidad de procesos**. Los numeros observados en nuestro snapshot NO se comparan con los reportados por las personas del cliente (que trabajan con backups recientes propios). La comparacion cuantitativa queda diferida a un segmento futuro de afinidad-de-datos.
 >
 > **BDs reales descubiertas**: K7-PRD = `TOMWMS_KILLIOS_PRD`, BB-PRD = `IMS4MB_BYB_PRD`, C9-QAS = `IMS4MB_CEALSA_QAS`. Las 3 comparten schema (TOMWMS y IMS4MB son aparentemente forks del mismo modelo).
 
-## Resultado
+## Hallazgo de PROCESO
 
-**CERRADA con pivot**. C9-QAS tiene 0 filas en `trans_despacho_det` (entorno QAS sin trafico productivo), asi que la query se re-ejecuto contra K7-PRD y BB-PRD para obtener evidencia significativa:
+El modelo `(trans_pe_enc.fec_agr, trans_despacho_enc.fec_agr)` **permite** que un despacho se cierre dias o semanas despues de la creacion del pedido. NO hay constraint que fuerce despacho-en-jornada. El "corte de jornada" es politica operativa, no constraint del modelo.
 
-| BD | Total despachos | Cruzan jornada (>0 dias) | pct |
-|----|----------------:|-------------------------:|----:|
-| K7-PRD | 19.799 | 9.799 | **49,49%** |
-| BB-PRD | 420.505 | 89.674 | **21,33%** |
-| C9-QAS | 0 | 0 | N/A |
+C9-QAS tiene 0 filas en `trans_despacho_det` (entorno smoke-test sin trafico productivo), por eso la query se pivoteo a K7-PRD y BB-PRD donde el camino se ejerce.
 
-**Distribucion BB-PRD**: cola larguisima - hay buckets de hasta 78 dias entre creacion y despacho. La mayor concentracion: 0d (330k), 1d (51k), 2d (10k), pero hay picos en 19d (2167), 35d (1089), 36d (1633), 47d (847).
+## Datos observados en nuestro snapshot (no comparables)
+
+| BD | Total despachos | Con dias_diferencia > 0 |
+|----|----------------:|------------------------:|
+| K7-PRD | 19.799 | 9.799 |
+| BB-PRD | 420.505 | 89.674 |
+| C9-QAS | 0 | 0 |
+
+BB tiene cola larga - buckets observados de hasta 78 dias entre creacion y despacho.
 
 ## Datos crudos
 
@@ -32,12 +39,9 @@ status: answered-pivot
 - `q2-distribucion-dias-cruce-BB-PRD.csv` (40 buckets)
 - `q1-cruzan-jornada-detalle.csv` (vacio - C9-QAS sin datos)
 
-## Hallazgos derivados
+## Decision recomendada
 
-1. **Refuerza fuertemente P3-2025-04-22-Q012-CORTE** (corte por idle, no por reloj): si **1 de cada 2** pedidos en K7 y **1 de cada 5** en BB cruzan jornada, el "corte rigido a las 18:00" lastima brutalmente esos casos.
-2. **BB tiene patron operativo distinto**: la cola larga de despachos sugiere pedidos que esperan stock, transporte programado o ventanas comerciales. No son anomalias - son operacion normal.
-3. **C9-QAS confirmado como entorno-test estable**: 0 despachos = es ambiente de smoke-test, no UAT continuo.
-4. **Decision para nueva WebAPI**: el "corte de jornada" debe ser parametro por cliente y ademas opcional - puede ser "no cortar nunca" para clientes con cola larga como BB.
+Refuerza P3-2025-04-22-Q012-CORTE: el corte por idle-de-tarea es mas afin al modelo que el corte por reloj. La nueva WebAPI debe ofrecer el corte como parametro por cliente y opcional.
 
 ## Eventos generados en _inbox
 
