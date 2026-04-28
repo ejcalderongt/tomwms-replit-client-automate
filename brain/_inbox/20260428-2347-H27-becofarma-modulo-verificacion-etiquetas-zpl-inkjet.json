@@ -1,0 +1,37 @@
+{
+  "id": "20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet",
+  "schema_version": "2",
+  "created_at": "2026-04-28T23:45:00-03:00",
+  "type": "question_request",
+  "source": "agente-brain-replit",
+  "host": "replit-workspace",
+  "ref": {
+    "question_id": "H-027",
+    "cliente": "BECOFARMA-PRD"
+  },
+  "context": {
+    "message": "BECOFARMA tiene modulo exclusivo de verificacion de etiquetas: tablas `tipo_etiqueta` (3 tipos, cols `dpi`, `codigo_zpl`, `es_inkjet`), `tipo_etiqueta_detalle` (3), `producto_clasificacion_etiqueta` (3), `verificacion_estado` (2), `trans_verificacion_etiqueta`, `log_verificacion_bof`. Soporta ZPL (Zebra) e inkjet, layouts por clasificacion de producto. Pregunta: ¿este modulo es solo de BECOFARMA por requisito regulatorio farmaceutico, o esta destinado a generalizarse? Para la WebAPI .NET 10: ¿exponer endpoint `/api/clients/{id}/label-templates` solo para clientes con capability `usa_verificacion_etiquetas`?",
+    "tags": [
+      "becofarma",
+      "verificacion-etiquetas",
+      "ZPL",
+      "capability-flag",
+      "webapi-design"
+    ],
+    "modules_touched": [
+      "tipo_etiqueta",
+      "trans_verificacion_etiqueta"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T23:45:00-03:00",
+      "action": "notify",
+      "by": "agente-brain"
+    }
+  ]
+}

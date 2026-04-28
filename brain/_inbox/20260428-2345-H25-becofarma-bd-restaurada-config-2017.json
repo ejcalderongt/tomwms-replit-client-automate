@@ -1,0 +1,33 @@
+{
+  "id": "20260428-2345-H25-becofarma-bd-restaurada-config-2017",
+  "schema_version": "2",
+  "created_at": "2026-04-28T23:45:00-03:00",
+  "type": "question_request",
+  "source": "agente-brain-replit",
+  "host": "replit-workspace",
+  "ref": {
+    "question_id": "H-025",
+    "cliente": "BECOFARMA-PRD"
+  },
+  "context": {
+    "message": "BECOFARMA `IMS4MB_BECOFARMA_PRD` aparecio el 28-abr-2026 08:32 en SQL pero su `i_nav_config_enc.fec_agr` es 2017-09-11. Es BD restaurada/migrada de instancia previa, no cliente nuevo. Necesito que Erik confirme: (a) produccion migrada, (b) copia diagnostica, (c) sandbox para nuevo desarrollo. Esto cambia que tan en serio tomar los hallazgos H17 (backlog 85%) y H21 (Pickeado 44% terminal).",
+    "tags": [
+      "becofarma",
+      "migracion",
+      "restore",
+      "clarification-needed"
+    ],
+    "modules_touched": []
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T23:45:00-03:00",
+      "action": "notify",
+      "by": "agente-brain"
+    }
+  ]
+}

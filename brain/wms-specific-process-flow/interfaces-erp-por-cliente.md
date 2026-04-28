@@ -42,7 +42,7 @@ pasa via parametros/args lo que tiene que sincronizar. La interface:
 Para cada cliente SAP B1 hay un **`.vbproj` dedicado**. El esqueleto es
 similar al modelo NAV pero adaptado al cliente:
 
-- `SAPSYNC.vbproj` — Becofarma (el primero / generico)
+- `SAPSYNC.vbproj` / **`SAPBOSync.exe`** — Becofarma (el primero / generico). El binario corriente segun `i_nav_config_enc.nombre_ejecutable` es **`SAPBOSync.exe`**; aclarar si es el `.exe` compilado del `.vbproj` o un componente distinto
 - `SAPSYNCKILLIOS.vbproj` — Killios
 - `SAPSYNCMAMPA.vbproj` — Mampa
 - `SAPSYNCCUMBRE.vbproj` — La Cumbre
@@ -69,7 +69,7 @@ implementa el consumidor.
 | **Inelac** | (mismo grupo, posiblemente Aurora) | WCF (pull desde ERP) | `MI3.vbproj` |
 | **BYB** | NAV (Microsoft Dynamics) | Push programado + ajustes en demanda | `NavSync.vbproj` |
 | **MHS** (Molinos Harineros Sula) | (no especificado) | WebAPI moderno (lee y escribe) | nueva API REST |
-| **Becofarma** | SAP B1 | Push dedicado por cliente | `SAPSYNC.vbproj` |
+| **Becofarma** | SAP B1 | Push dedicado por cliente | `SAPBOSync.exe` (corregido 28-abr-2026 desde `nombre_ejecutable`; ver `clients/becofarma.md`) |
 | **Killios** | SAP B1 | Push dedicado por cliente | `SAPSYNCKILLIOS.vbproj` |
 | **Mampa** | SAP B1 | Push dedicado por cliente | `SAPSYNCMAMPA.vbproj` |
 | **La Cumbre** | SAP B1 | Push dedicado por cliente | `SAPSYNCCUMBRE.vbproj` |
@@ -273,3 +273,25 @@ propias de cada interface (`SAPSYNC*` etc).
 
 > CEALSA es 3PL con esquema diferente. Probablemente usa otro mecanismo
 > de integracion (no `i_nav_transacciones_out`).
+#### Becofarma (IMS4MB_BECOFARMA_PRD) — backlog masivo, BD migrada el 28-abr-2026
+
+| tipo_transaccion | enviado | filas | % |
+|---|---:|---:|---:|
+| SALIDA | 0 (pendiente) | (medir) | mayoritario |
+| SALIDA | 1 (enviado) | (medir) | minoritario |
+| INGRESO | 0 (pendiente) | (medir) | |
+| INGRESO | 1 (enviado) | (medir) | |
+| **TOTAL** | | **36,576** | |
+
+Agregados (sin partir por estado):
+- SALIDA total: 31,486 (86%)
+- INGRESO total: 5,090 (14%)
+- enviados (`enviado=1`): 5,313 (**14.5%**)
+- pendientes (`enviado=0`): 31,263 (**85.5%**)
+
+> **Hallazgo H28/H30**: BECOFARMA exhibe dos patrones distintos a K7/BB:
+> 1. **85% del outbox esta pendiente** — coherente con BD migrada/restaurada hoy 28-abr-2026 (probable `SAPBOSync.exe` no arrancado tras restore).
+> 2. **El 100% de las filas tienen TODAS las FKs pobladas** (`idpedidoenc`, `iddespachoenc`, `idrecepcionenc`, `idordencompra`). Esto **invalida parcialmente H08** (que decia que el outbox solo se simplifica a 2 tipos efectivos por cliente). En BECOFARMA el outbox usa **patron de copia universal** — cada fila trae el contexto completo. La WebAPI debe diferenciar el patron por cliente al consumir el outbox.
+>
+> Detalles en `clients/becofarma.md` y `wms-specific-process-flow/becofarma-mapping.md`.
+

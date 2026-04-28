@@ -1,0 +1,37 @@
+{
+  "id": "20260428-2348-H28-becofarma-outbox-85pct-pendiente",
+  "schema_version": "2",
+  "created_at": "2026-04-28T23:45:00-03:00",
+  "type": "question_request",
+  "source": "agente-brain-replit",
+  "host": "replit-workspace",
+  "ref": {
+    "question_id": "H-028",
+    "cliente": "BECOFARMA-PRD"
+  },
+  "context": {
+    "message": "BECOFARMA `i_nav_transacciones_out` tiene 36,576 filas, **85.5% pendiente de envio** (31,263 con `enviado=0`, 5,313 con `enviado=1`). Distribucion: SALIDA 86%, INGRESO 14%. La config dice `nombre_ejecutable=SAPBOSync.exe` y `Ejecutar_En_Despacho_Automaticamente=true`. Hipotesis: (a) `SAPBOSync.exe` no esta corriendo en el server productivo tras la migracion del 28-abr-2026, (b) backlog historico previo que nunca se resolvio, (c) el filtro de envio que usa SAPBOSync excluye estas filas por algun campo adicional. Pregunta a Erik: ¿esta corriendo SAPBOSync.exe en el server donde quedo restaurada esta BD? ¿Cuando fue la ultima fila enviada (`MAX(fec_mod) WHERE enviado=1`)?",
+    "tags": [
+      "becofarma",
+      "outbox",
+      "SAPBOSync",
+      "operativo-critico",
+      "sap-b1"
+    ],
+    "modules_touched": [
+      "i_nav_transacciones_out",
+      "SAPBOSync.exe"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T23:45:00-03:00",
+      "action": "notify",
+      "by": "agente-brain"
+    }
+  ]
+}

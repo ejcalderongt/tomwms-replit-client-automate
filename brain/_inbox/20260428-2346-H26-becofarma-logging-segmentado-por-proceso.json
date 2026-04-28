@@ -1,0 +1,35 @@
+{
+  "id": "20260428-2346-H26-becofarma-logging-segmentado-por-proceso",
+  "schema_version": "2",
+  "created_at": "2026-04-28T23:45:00-03:00",
+  "type": "question_request",
+  "source": "agente-brain-replit",
+  "host": "replit-workspace",
+  "ref": {
+    "question_id": "H-026",
+    "cliente": "BECOFARMA-PRD"
+  },
+  "context": {
+    "message": "BECOFARMA es la unica BD con tablas `log_error_wms_pe`(7K), `log_error_wms_rec`(6.9K), `log_error_wms_reab`(6.5K), `log_error_wms_ubic`(6.4K), `log_error_wms_pick`(5.7K) ademas del `log_error_wms`(52K). Las otras 3 BDs solo tienen `log_error_wms`. Pregunta: (a) ¿es una mejora reciente que se esta probando solo en BECOFARMA?, (b) ¿es legacy de una version vieja que las demas BDs ya no usan?, (c) ¿es un quirk de migracion 2017 que persistio? Recomendacion: si es mejora, la WebAPI .NET 10 deberia adoptar el patron segmentado para todos los clientes.",
+    "tags": [
+      "becofarma",
+      "logging",
+      "tech-debt",
+      "webapi-design"
+    ],
+    "modules_touched": [
+      "log_error_wms_*"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T23:45:00-03:00",
+      "action": "notify",
+      "by": "agente-brain"
+    }
+  ]
+}

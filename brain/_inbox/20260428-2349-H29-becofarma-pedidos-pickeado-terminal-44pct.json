@@ -1,0 +1,37 @@
+{
+  "id": "20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct",
+  "schema_version": "2",
+  "created_at": "2026-04-28T23:45:00-03:00",
+  "type": "question_request",
+  "source": "agente-brain-replit",
+  "host": "replit-workspace",
+  "ref": {
+    "question_id": "H-029",
+    "cliente": "BECOFARMA-PRD"
+  },
+  "context": {
+    "message": "BECOFARMA tiene 44.3% de los pedidos en estado `Pickeado` (3,802 de 8,539) que aparenta ser estado **terminal** (no transitan a Despachado). Distribucion completa: Despachado 51.4%, Pickeado 44.3%, Pendiente 3.3%, Anulado 0.3%, NUEVO 0.2%, Verificado 0.0%. Hipotesis: (a) workflow de verificacion (modulo H14) bloquea la transicion Pickeado→Despachado pendiente de revision humana, (b) el backlog del outbox (H17) impide cerrar el despacho hasta que SAP confirma, (c) bug operativo: SP que mueve a Despachado se ejecuta poco. Pregunta a Erik: ¿es esperable este patron en BECOFARMA por su workflow farmaceutico, o es un sintoma de problema operativo?",
+    "tags": [
+      "becofarma",
+      "state-machine",
+      "Pickeado",
+      "verificacion-etiquetas",
+      "operativo"
+    ],
+    "modules_touched": [
+      "trans_pe_enc",
+      "trans_verificacion_etiqueta"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T23:45:00-03:00",
+      "action": "notify",
+      "by": "agente-brain"
+    }
+  ]
+}

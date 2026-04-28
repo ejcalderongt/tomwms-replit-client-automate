@@ -1,0 +1,36 @@
+{
+  "id": "20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08",
+  "schema_version": "2",
+  "created_at": "2026-04-28T23:45:00-03:00",
+  "type": "question_request",
+  "source": "agente-brain-replit",
+  "host": "replit-workspace",
+  "ref": {
+    "question_id": "H-030",
+    "cliente": "BECOFARMA-PRD"
+  },
+  "context": {
+    "message": "BECOFARMA `i_nav_transacciones_out`: las 36,576 filas tienen TODAS las FKs pobladas (`idpedidoenc`, `iddespachoenc`, `idrecepcionenc`, `idordencompra` = 100% en cada una). Esto **invalida parcialmente H08** que decia que el outbox solo se simplifica a 2 tipos efectivos (con_pedido==con_despacho, recepcion/OC selectivas). En BECOFARMA el patron es **copia universal**: cada fila trae el contexto completo. Hipotesis: (a) SAPBOSync.exe (o el SP que escribe en outbox) usa logica de copia universal porque SAP B1 requiere todo el contexto de una transaccion, (b) las cols extras se rellenan con valores no significativos (FK validas pero semanticamente N/A). Pregunta: ¿la WebAPI .NET 10 debe implementar dos modos de lectura del outbox (`selective_fks` para K7/BB, `universal_fks` para BECOFARMA), o se puede unificar?",
+    "tags": [
+      "becofarma",
+      "outbox",
+      "H08-invalidacion",
+      "webapi-design",
+      "multi-tenant"
+    ],
+    "modules_touched": [
+      "i_nav_transacciones_out"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T23:45:00-03:00",
+      "action": "notify",
+      "by": "agente-brain"
+    }
+  ]
+}
