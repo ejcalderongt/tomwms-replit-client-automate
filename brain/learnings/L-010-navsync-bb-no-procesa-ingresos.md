@@ -14,7 +14,7 @@ relatedDocs:
   - brain/wms-brain-client/answers/A-003-ingresos-byb-pendientes.md
 status: open
 priority: high
-tags: [outbox, navsync, BB, bandera-roja, PEND-12]
+tags: [i_nav_transacciones_out (outbox), navsync, BB, bandera-roja, PEND-12]
 ---
 
 ## Que aprendimos
@@ -57,7 +57,7 @@ SALIDA  IdTipoDocumento=3  enviado=0 cnt=28      enviado=1 cnt=277309 (99.99% li
 
 ### Para el codigo
 
-- El bridge **no puede asumir que outbox cubre INGRESOS BB**.
+- El bridge **no puede asumir que i_nav_transacciones_out cubre INGRESOS BB**.
   Hoy de hecho no los cubre.
 - Cualquier metrica de "% procesado" en BB debe filtrar por
   `tipo_transaccion='SALIDA' AND IdTipoDocumento=3` para tener
@@ -81,7 +81,7 @@ SALIDA  IdTipoDocumento=3  enviado=0 cnt=28      enviado=1 cnt=277309 (99.99% li
   **BB.NavSync** procesa hoy **solo SALIDA tipo_doc=3**, y que
   INGRESOs estuvieron parcialmente cubiertos en 2022-23 pero
   el flujo esta inactivo.
-- Definir politica de purga / archivado de outbox `enviado=0`
+- Definir politica de purga / archivado de i_nav_transacciones_out `enviado=0`
   con antiguedad > 12 meses.
 
 ## Acciones propuestas
@@ -90,11 +90,11 @@ SALIDA  IdTipoDocumento=3  enviado=0 cnt=28      enviado=1 cnt=277309 (99.99% li
       por que dejo de procesar INGRESOs en 2023-09.
 - [ ] Validar con BB: ¿INGRESOs al ERP llegan por otro canal hoy
       (modulo de compras nativo)? Si sí, deprecar formalmente
-      el flujo de INGRESOs en outbox.
-- [ ] Definir politica de purga del outbox (criterios y job).
+      el flujo de INGRESOs en i_nav_transacciones_out.
+- [ ] Definir politica de purga del i_nav_transacciones_out (criterios y job).
 - [ ] Excluir tipos nunca-procesados (`IdTipoDocumento` ∈ {1, 12}
       para INGRESO; {1, 4} para SALIDA) de los dashboards de
-      "outbox pendiente" o etiquetarlos como "no reclamado".
+      "i_nav_transacciones_out pendiente" o etiquetarlos como "no reclamado".
 
 ## Como se cierra esta learning
 

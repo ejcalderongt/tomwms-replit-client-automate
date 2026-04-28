@@ -19,13 +19,13 @@ tags: [sap, decimales, K7, SAPSYNCKILLIOS]
 
 ## Que aprendimos
 
-Las 24,190 filas historicas del outbox K7 son **100% cantidades
+Las 24,190 filas historicas del i_nav_transacciones_out (outbox) K7 son **100% cantidades
 enteras**. La unidad dominante es `UN` (unidades sueltas) y la
 "presentacion" comercial se transmite por separado en
 `codigo_variante` (`Caja12`, `Caja24`, `Caja6`...). Esto significa
 que el SAPSYNCKILLIOS **no requiere logica de redondeo ni
 truncado**: el WMS ya hizo la conversion a unidad base antes del
-insert al outbox.
+insert al i_nav_transacciones_out.
 
 ## Evidencia
 

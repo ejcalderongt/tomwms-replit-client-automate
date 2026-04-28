@@ -20,10 +20,10 @@ Esta BD `IMS4MB_BECOFARMA_PRD` en EC2 `52.41.114.122,1437` es una **copia/snapsh
 restaurada por Erik el 28-abr-2026 para entrenamiento y documentacion del agente**.
 
 **NO es la productiva del cliente BECOFARMA**. La productiva real corre en otro
-server donde `SAPBOSync.exe` procesa el outbox normalmente (ver L-015).
+server donde `SAPBOSync.exe` procesa el i_nav_transacciones_out (outbox) normalmente (ver L-015).
 
 Implicancias:
-- El **85% pendiente del outbox** (H-028) es snapshot historico congelado, NO indica
+- El **85% pendiente del i_nav_transacciones_out** (H-028) es snapshot historico congelado, NO indica
   caida de la interface. La productiva real puede tener otro % completamente.
 - El **44% en estado Pickeado** (H-029) tampoco se puede leer como disfuncion
   operativa — esta congelado en el momento del backup.
@@ -61,7 +61,7 @@ y `brain/_processed/20260428-2345-H25-*.json`.
 | `i_nav_config_enc.fec_agr` | 2017-09-11 | Config existe desde hace 9 anios |
 | `i_nav_config_enc.fec_mod` | 2024-08-23 | Ultima edicion hace 8 meses |
 | `nombre_ejecutable` | `SAPBOSync.exe` | Binario distinto al `SAPSYNC.vbproj` documentado |
-| `i_nav_transacciones_out` (outbox) | 36,576 filas, 85% pendiente | Backlog masivo previo a la migracion |
+| `i_nav_transacciones_out` (i_nav_transacciones_out) | 36,576 filas, 85% pendiente | Backlog masivo previo a la migracion |
 
 **Conclusion**: la BD fue **restaurada hoy** desde una instancia productiva previa. Hay que confirmar con Erik si esto se hizo (a) como movimiento de produccion (cliente activo migrado de hosting), (b) como copia para diagnostico, o (c) como sandbox para algo nuevo.
 
@@ -126,7 +126,7 @@ Distribucion `trans_pe_enc.estado` en BECOFARMA:
 
 **Hallazgo H29**: BECOFARMA acumula casi la mitad de los pedidos en estado **`Pickeado`** como estado terminal de hecho (no transitan a Despachado). Esto es un patron distinto a K7/BB/CEALSA donde la transicion `Pickeado → Despachado` es atomica. Posibles hipotesis:
 - (a) Hay un workflow de **verificacion previa al despacho** en BECOFARMA que bloquea la transicion (compatible con la presencia de estado `Verificado` y modulo `trans_verificacion_etiqueta`).
-- (b) El backlog del outbox SAP (85% pendiente) impide cerrar el despacho hasta que SAP confirma.
+- (b) El backlog del i_nav_transacciones_out SAP (85% pendiente) impide cerrar el despacho hasta que SAP confirma.
 - (c) Bug operativo: el SP que mueve a Despachado se ejecuta con baja frecuencia.
 
 ## Modulos exclusivos / particularidades tecnicas
@@ -222,8 +222,8 @@ Estado del bridge SAP en BECOFARMA:
 | con `idordencompra` | 36,576 (100%) |
 
 **HALLAZGOS**:
-- **H28**: 85% del outbox esta pendiente. SAPBOSync.exe puede estar caido / nunca arrancado tras la migracion / sin scheduler configurado en el server nuevo.
-- **H30**: el 100% de las filas tienen TODAS las FKs (pedido + despacho + recepcion + OC) pobladas. Esto es **distinto** al patron observado en K7/BB donde con_pedido==con_despacho pero recepcion y OC son selectivas. Hipotesis: SAPBOSync.exe (o el SP que escribe en el outbox) usa una logica de "copia universal" que rellena todos los IDs con valores asociados aunque no apliquen al evento. Esto **invalida parcialmente H08** para el caso BECOFARMA: el outbox NO se simplifica a 2 tipos efectivos en BECOFARMA, porque cada fila trae los 4 IDs.
+- **H28**: 85% del i_nav_transacciones_out esta pendiente. SAPBOSync.exe puede estar caido / nunca arrancado tras la migracion / sin scheduler configurado en el server nuevo.
+- **H30**: el 100% de las filas tienen TODAS las FKs (pedido + despacho + recepcion + OC) pobladas. Esto es **distinto** al patron observado en K7/BB donde con_pedido==con_despacho pero recepcion y OC son selectivas. Hipotesis: SAPBOSync.exe (o el SP que escribe en el i_nav_transacciones_out) usa una logica de "copia universal" que rellena todos los IDs con valores asociados aunque no apliquen al evento. Esto **invalida parcialmente H08** para el caso BECOFARMA: el i_nav_transacciones_out NO se simplifica a 2 tipos efectivos en BECOFARMA, porque cada fila trae los 4 IDs.
 - **Naming inconsistencia (H15-naming)**: BECOFARMA usa **snake_case** SOLO en `i_nav_transacciones_out` (`idpedidoenc`, `iddespachoenc`, `idordencompra`). El resto de las tablas trans_* usan PascalCase (`IdPedidoEnc`, `IdDespachoEnc`, `IdOrdenCompraEnc`). Inconsistencia intra-BD.
 
 ### Catalogo de tareas: 30 tipos (vs 33-35 en otras) (H18)
@@ -262,11 +262,11 @@ Para BECOFARMA el modelo de KPIs debe enfatizar **picking productivity** (98% de
 
 ### IMP-BECOFARMA-02: validar el cumplimiento de H08 por cliente
 
-H08 (outbox simplificable a 2 tipos efectivos) **NO se cumple** en BECOFARMA porque el 100% de las filas tienen todas las FKs. La WebAPI debe diferenciar el patron por cliente al consumir el outbox: K7/BB usan FKs selectivas, BECOFARMA usa FKs universales.
+H08 (i_nav_transacciones_out simplificable a 2 tipos efectivos) **NO se cumple** en BECOFARMA porque el 100% de las filas tienen todas las FKs. La WebAPI debe diferenciar el patron por cliente al consumir el i_nav_transacciones_out: K7/BB usan FKs selectivas, BECOFARMA usa FKs universales.
 
-### IMP-BECOFARMA-03: backlog del outbox debe ser KPI publicado
+### IMP-BECOFARMA-03: backlog del i_nav_transacciones_out debe ser KPI publicado
 
-Con 85% pendiente, BECOFARMA tiene un riesgo operativo serio si la WebAPI no expone "outbox health" (% pendiente > N dias) como KPI de monitoreo.
+Con 85% pendiente, BECOFARMA tiene un riesgo operativo serio si la WebAPI no expone "i_nav_transacciones_out health" (% pendiente > N dias) como KPI de monitoreo.
 
 ### IMP-BECOFARMA-04: corregir nombre del binario de sync en interfaces-erp-por-cliente.md
 

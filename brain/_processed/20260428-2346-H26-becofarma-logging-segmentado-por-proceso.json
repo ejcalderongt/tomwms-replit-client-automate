@@ -23,13 +23,26 @@
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending",
-  "decision": null,
+  "status": "applied-with-followup",
+  "decision": {
+    "decision": "applied-with-followup",
+    "by": "EJC",
+    "answer": "Es mejora reciente, no legacy. Las tablas log_error_wms_pe/rec/reab/ubic/pick fueron introducidas para mitigar colisiones por MAX(id) en una unica tabla log_error_wms sin IDENTITY usada por miles de procesos. Ya migro a IDENTITY y esta evaluando si revertir al modelo unico o mantener segmentacion. Decision pendiente.",
+    "learning_card": "L-016-log-error-wms-segmentacion-fue-mejora-decision-pendiente.md",
+    "followup": "Diseño de log_error en WebAPI .NET 10 depende de esta decision. Recomendacion del agente: modelo unificado con discriminador `proceso` + correlation_id (ver L-016 §Recomendacion).",
+    "at": "2026-04-29T00:40:00-03:00"
+  },
   "history": [
     {
       "at": "2026-04-28T23:45:00-03:00",
       "action": "notify",
       "by": "agente-brain"
+    },
+    {
+      "at": "2026-04-29T00:40:00-03:00",
+      "action": "applied-with-followup",
+      "by": "agente-replit",
+      "note": "Cerrado. Learning: L-016-log-error-wms-segmentacion-fue-mejora-decision-pendiente.md"
     }
   ]
 }

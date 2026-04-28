@@ -15,7 +15,7 @@ relatedDocs:
   - brain/wms-brain-client/answers/A-003-ingresos-byb-pendientes.md
 status: open
 priority: high
-tags: [outbox, navsync, BB, cadencia, PEND-07, arquitectura]
+tags: [i_nav_transacciones_out (outbox), navsync, BB, cadencia, PEND-07, arquitectura]
 ---
 
 ## Que aprendimos
@@ -80,7 +80,7 @@ SQL Agent jobs activos: solo syspolicy_purge_history
 
 ### Para la operacion
 
-- Si NavSync se cae, el outbox crece sin alerta automatica
+- Si NavSync se cae, el i_nav_transacciones_out crece sin alerta automatica
   (no hay scheduler en SQL Server que vigile). Necesario
   monitoreo externo (ej. % procesado por hora).
 - La latencia 0-seg es **excelente** cuando funciona — no hay
@@ -96,7 +96,7 @@ SQL Agent jobs activos: solo syspolicy_purge_history
 ## Acciones propuestas
 
 - [ ] Identificar binario y host del NavSync de BB (Q-009)
-- [ ] Implementar alerta de "outbox SALIDA tipo_doc=3 con
+- [ ] Implementar alerta de "i_nav_transacciones_out SALIDA tipo_doc=3 con
       `enviado=0` y `fec_agr` > 1 hora"
 - [ ] Confirmar si el cero-actividad de los ultimos 30 dias en
       BB es real o ventana de consulta

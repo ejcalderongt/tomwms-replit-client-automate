@@ -12,7 +12,7 @@
 | 66,339 | `log_error_wms` | Errores generales |
 | 42,357 | `t_producto_bodega` | Catalogo prod x bodega |
 | 26,567 | `trans_picking_ubic` | Picking — pares pedido/ubicacion sugeridos |
-| 24,193 | `i_nav_transacciones_out` | Push ERP (outbox?) |
+| 24,193 | `i_nav_transacciones_out (outbox)` | Push ERP (i_nav_transacciones_out?) |
 | 22,576 | `trans_pe_det_log_reserva` | Reserva — auditoria casos (incluye LLR) |
 | 20,437 | `trans_picking_ubic_stock` | Picking — pares ubic/stock realmente tomados |
 | 19,799 | `trans_despacho_det` | Despacho — lineas |

@@ -39,7 +39,7 @@
         +-----+-----+                      +-----+-----+
               |                                   |
               |  cancela usuario                  | despacho confirmado
-              v                                   v   + outbox NAV/SAP OK
+              v                                   v   + i_nav_transacciones_out (outbox) NAV/SAP OK
         +-----------+                       +-----------+
         |  Anulado  |<----- desde * --------|Despachado |
         |   (33)    |  con rollback         |  (3989)   |

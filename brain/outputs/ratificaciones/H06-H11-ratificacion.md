@@ -57,16 +57,16 @@ ratificacion_pendiente_de: Erik Calderon (PrograX24)
 
 ---
 
-## H08 - i_nav_transacciones_out NO emite eventos de "pedido creado/modificado" (solo de despacho que arrastra IdPedidoEnc)
+## H08 - i_nav_transacciones_out (outbox) NO emite eventos de "pedido creado/modificado" (solo de despacho que arrastra IdPedidoEnc)
 
 | Campo | Valor |
 |---|---|
-| **Hallazgo** | En K7-PRD y BB-PRD, el 100% de filas del outbox que tienen `IdPedidoEnc` tambien tienen `IdDespachoEnc` (con_pedido = con_despacho exactos). El outbox NO emite eventos de "pedido creado/modificado" - solo de despacho. |
-| **Tipo** | Hallazgo de semantica del outbox (afinidad de procesos validada) |
+| **Hallazgo** | En K7-PRD y BB-PRD, el 100% de filas del i_nav_transacciones_out que tienen `IdPedidoEnc` tambien tienen `IdDespachoEnc` (con_pedido = con_despacho exactos). El i_nav_transacciones_out NO emite eventos de "pedido creado/modificado" - solo de despacho. |
+| **Tipo** | Hallazgo de semantica del i_nav_transacciones_out (afinidad de procesos validada) |
 | **Validacion** | Q-009 ejecutada contra las 3 BDs (28-abr-2026). C9-QAS tiene 0 filas (entorno sin trafico). |
 | **Implicaciones** | (a) Navigator NO ve pedidos hasta que estan despachados. (b) El bridge se simplifica: 4 tipos colapsa a 2 efectivos (recepcion + despacho con FKs adicionales: `IdPedidoEnc` y `IdOcEnc` viajan de polizon). (c) Confirma parcialmente lo que dijo Carol en P-19. |
 | **Accion concreta** | Diseniar el bridge brain<->WMS (.NET 8) con 2 tipos de evento principales (RECEPCION, DESPACHO) y FKs opcionales (`IdPedidoEnc`, `IdOcEnc`, `IdProveedor`). Eliminar el plumbing de los otros 2 tipos no usados. |
-| **ADR sugerido si se acepta** | ADR-015-bridge-outbox-2-tipos-efectivos |
+| **ADR sugerido si se acepta** | ADR-015-bridge-i_nav_transacciones_out-2-tipos-efectivos |
 | **Decision** | ☐ Aceptar  ☐ Rechazar  ☐ Diferir |
 | **Notas** | _(libre)_ |
 

@@ -32,7 +32,7 @@ Server compartido EC2: `52.41.114.122,1437` (SQL Server, mixed auth).
 **Afinidad de procesos confirmable, afinidad de datos diferida**:
 
 - Lo que SI se puede inferir de cualquier BD (productiva o diagnostica): schema, modulos exclusivos, naming, catalogos, relaciones, configuracion (`i_nav_config_enc`).
-- Lo que SOLO se puede inferir de BDs productivas vivas: KPIs operativos (% outbox pendiente, throughput, latencia, errores activos).
+- Lo que SOLO se puede inferir de BDs productivas vivas: KPIs operativos (% i_nav_transacciones_out (outbox) pendiente, throughput, latencia, errores activos).
 - BECOFARMA aqui sirve para el primer grupo, NO para el segundo.
 
 ## Documentacion relacionada

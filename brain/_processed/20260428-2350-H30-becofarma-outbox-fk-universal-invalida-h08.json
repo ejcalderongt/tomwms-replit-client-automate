@@ -24,13 +24,26 @@
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending",
-  "decision": null,
+  "status": "invalidated",
+  "decision": {
+    "decision": "invalidated",
+    "by": "agente-replit (autocorreccion via query directa)",
+    "answer": "La observacion inicial confundio 'FK NOT NULL' con 'FK valida'. En realidad i_nav_transacciones_out usa 0 (cero) como sentinela cuando la FK no aplica al tipo_transaccion. Universal en K7/BB/BECOFARMA: SALIDA tiene pedido+despacho reales (recepcion mixto) y ordenCompra=0; INGRESO tiene recepcion+oc reales y pedido+despacho=0. H-008 queda VALIDADO Y REFORZADO, no invalidado.",
+    "learning_card": "L-017-i-nav-transacciones-out-fks-sentinela-cero.md",
+    "evidencia": "Query 28-abr-2026 en las 3 BDs. Ver L-017 §Patrones reales medidos.",
+    "at": "2026-04-29T00:40:00-03:00"
+  },
   "history": [
     {
       "at": "2026-04-28T23:45:00-03:00",
       "action": "notify",
       "by": "agente-brain"
+    },
+    {
+      "at": "2026-04-29T00:40:00-03:00",
+      "action": "invalidated",
+      "by": "agente-replit",
+      "note": "Cerrado. Learning: L-017-i-nav-transacciones-out-fks-sentinela-cero.md"
     }
   ]
 }

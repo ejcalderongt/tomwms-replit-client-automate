@@ -1,7 +1,7 @@
 ---
 protocolVersion: 1
 id: L-013
-title: Outbox WMS es por linea de detalle (1 outbox row = 1 RecepcionDet/DespachoDet)
+title: Outbox WMS es por linea de detalle (1 i_nav_transacciones_out (outbox) row = 1 RecepcionDet/DespachoDet)
 operator: agent-replit
 operatorRole: developer
 createdAt: 2026-04-27T15:00:00Z
@@ -14,16 +14,16 @@ relatedDocs:
   - brain/wms-brain-client/answers/A-008-devoluciones-frente-nuevo.md
 status: open
 priority: medium
-tags: [outbox, recepcion, despacho, granularidad, K7, PEND-09]
+tags: [i_nav_transacciones_out, recepcion, despacho, granularidad, K7, PEND-09]
 ---
 
 ## Que aprendimos
 
-La granularidad del outbox K7 es **siempre por linea de detalle**:
+La granularidad del i_nav_transacciones_out K7 es **siempre por linea de detalle**:
 el 100% de los INGRESOS (4,394) tienen `IdRecepcionDet>0` y el
 100% de las SALIDAs (19,799) tienen `IdDespachoDet>0`. **No hay
 filas sin detalle ni con ambos**. Cada linea WMS produce
-exactamente una fila outbox; un encabezado puede generar 30-105
+exactamente una fila i_nav_transacciones_out; un encabezado puede generar 30-105
 filas (visto top: idencabezado=3 con 105 lineas).
 
 Los campos `cantidad_enviada`/`cantidad_pendiente` existen pero
@@ -32,7 +32,7 @@ modelo asume envio atomico por linea.
 
 Las columnas de devolucion (`IdPedidoEncDevol`,
 `no_documento_salida_ref_devol`) tambien existen pero estan 100%
-en NULL/vacio en K7 y BB → **outbox no maneja devoluciones**
+en NULL/vacio en K7 y BB → **i_nav_transacciones_out no maneja devoluciones**
 hoy.
 
 ## Evidencia
@@ -57,12 +57,12 @@ clase=devolucion: 0 filas (K7 y BB)
 - **No usar** `cantidad_enviada`/`cantidad_pendiente` para
   estimar avance — siempre son iguales o cero.
 - Para soportar devoluciones en el futuro: requiere extender SPs
-  que insertan al outbox (los campos ya estan), no requiere
+  que insertan al i_nav_transacciones_out (los campos ya estan), no requiere
   cambio de schema.
 
 ### Para la operacion
 
-- Un solo despacho grande puede generar 100+ rows en outbox →
+- Un solo despacho grande puede generar 100+ rows en i_nav_transacciones_out →
   el monitoreo debe usar `COUNT(DISTINCT iddespachoenc)`, no
   `COUNT(*)`, para "cuantos despachos pendientes".
 
@@ -76,7 +76,7 @@ clase=devolucion: 0 filas (K7 y BB)
 ## Acciones propuestas
 
 - [ ] Agregar nota en SPEC del bridge sobre granularidad por linea
-- [ ] Decidir politica para devoluciones (¿extender outbox o
+- [ ] Decidir politica para devoluciones (¿extender i_nav_transacciones_out o
       tabla aparte?) — input para Q-010
 - [ ] Auditar columnas no usadas para limpieza futura
 

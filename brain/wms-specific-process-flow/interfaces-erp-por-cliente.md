@@ -1,61 +1,3 @@
-# Interfaces de integracion ERP por cliente — patron polimorfico del outbox
-
-> Respondio: Erik (ciclo 9b).
-> Doc generado a partir de P-21b explicada por Erik.
-> Critico para entender el contrato del bridge nuevo (reserva-webapi).
-
-## TL;DR
-
-El outbox `i_nav_transacciones_out` es **polimorfico**: la misma tabla
-sirve a cualquier patron de integracion. Por cada cliente nuevo el equipo
-PrograX24 disena (historicamente) una interface dedicada. La estrategia
-moderna es **estandarizar via WebAPI** (modelo MHS) para que clientes con
-equipo de desarrollo no necesiten codigo nuevo del lado WMS.
-
-## Modelo de despliegue: ClickOnce + dispatch dinamico (L-015)
-
-> Confirmado por Erik el 28-abr-2026.
-
-El WMS se distribuye via **ClickOnce** desde el publisher de PrograX24.
-En cada instalacion ClickOnce **viajan TODAS las interfaces** del catalogo
-(MI3, NavSync, SAPBOSync, SAPSYNCKILLIOS, SAPSYNCMAMPA, SAPSYNCCUMBRE...
-y la WebAPI cuando se sume).
-
-El cliente NO tiene "una interface instalada y las demas no" — **tiene
-todas instaladas**. Lo que cambia entre clientes es **cual ejecutable
-invoca el WMS en runtime**, decidido por la columna
-`i_nav_config_enc.nombre_ejecutable`.
-
-### Convivencia .vbproj (fuente) vs .exe (binario)
-
-- `SAPSYNC.vbproj`, `NavSync.vbproj`, `MI3.vbproj`, etc. son los
-  **proyectos VB.NET fuente** en el repo del WMS.
-- `SAPBOSync.exe`, `NavSync.exe`, `MI3.exe`, etc. son los **binarios
-  compilados** que viajan en el ClickOnce.
-- El nombre del binario puede diferir del nombre del proyecto. Ejemplo
-  confirmado: `SAPSYNC.vbproj` -> `SAPBOSync.exe` (Becofarma).
-- **Fuente de verdad runtime**: `i_nav_config_enc.nombre_ejecutable`.
-- **Fuente de verdad del codigo**: el `.vbproj`.
-
-### Diagnostico cross-cliente
-
-```sql
-SELECT (cliente_o_db_name), nombre_ejecutable
-  FROM i_nav_config_enc
-```
-
-ejecutado en cada BD productiva permite mapear la matriz cliente↔binario
-sin depender de los nombres de proyecto.
-
-### Implicancia para la migracion a la WebAPI nueva (.NET 10)
-
-Sumar la WebAPI al modelo es trivial: incluir el binario en el
-ClickOnce y, para cada cliente que migre, apuntar
-`i_nav_config_enc.nombre_ejecutable` al nuevo binario (o un valor
-sentinela como `webapi:`/null que el dispatch interprete como "usar
-WebAPI"). **Migracion incremental por cliente, sin breaking change
-para los que se quedan en interface clasica**.
-
 ---
 
 ## Modalidades del patron
@@ -75,9 +17,9 @@ fuertemente tipada que **consume** esos metodos cuando lo necesita.
 
 WMS ejecuta otro `.exe` propio de interface (ej. **`NavSync.vbproj`**) y le
 pasa via parametros/args lo que tiene que sincronizar. La interface:
-1. Lee las tablas WMS (incluyendo el outbox).
+1. Lee las tablas WMS (incluyendo el i_nav_transacciones_out).
 2. Consume los webservices del ERP del cliente (NAV en este caso).
-3. Envia los registros (ingresos o salidas) que WMS interpreta para el outbox.
+3. Envia los registros (ingresos o salidas) que WMS interpreta para el i_nav_transacciones_out.
 
 - Los **ajustes** NO siguen este flujo en este modelo: son **en demanda**
   (cuando se hace el despacho se dispara la interface indicando documento,
@@ -112,7 +54,22 @@ implementa el consumidor.
 > de despliegue ClickOnce + dispatch dinamico" arriba.
 
 | Cliente | ERP | Modalidad | Componente WMS |
-|---|---|---|---|
+|---
+
+## Convencion terminologica
+
+En este brain me refiero a la **tabla `i_nav_transacciones_out`** como su
+nombre real. El termino arquitectonico generico para este tipo de tablas
+es "outbox" (patron Outbox para integracion asincrona ERP-WMS), pero en
+TOMWMS la tabla concreta se llama `i_nav_transacciones_out`. Donde antes
+decia "outbox" ahora digo `i_nav_transacciones_out`. Quien venga del
+mundo arquitectonico generico puede asumir que aplican las mismas
+propiedades (write-once, append-only, consumida por interface externa
+con flag de envio).
+
+---
+
+|---|---|---|
 | **Idealsa** | Aurora (homemade SQL Server) | WCF (pull desde ERP) | `MI3.vbproj` |
 | **Merhonsa** | (mismo grupo, posiblemente Aurora) | WCF (pull desde ERP) | `MI3.vbproj` |
 | **Mercosal** | (mismo grupo, posiblemente Aurora) | WCF (pull desde ERP) | `MI3.vbproj` |
@@ -127,7 +84,7 @@ implementa el consumidor.
 
 ## Implicaciones para reserva-webapi (bridge)
 
-### IMP-01: el outbox debe seguir siendo polimorfico
+### IMP-01: el i_nav_transacciones_out debe seguir siendo polimorfico
 
 Cuando reserva-webapi escriba en `i_nav_transacciones_out` desde el motor
 nuevo, las transacciones deben respetar el formato actual sin asumir un
@@ -140,17 +97,17 @@ reserva-webapi es la siguiente generacion del modelo MHS. Es coherente con
 la direccion estrategica del producto. Nuevos clientes con equipo de
 desarrollo apuntaran a este modelo en vez de heredar un .vbproj.
 
-### IMP-03: ajustes de inventario NO pasan por el outbox (modalidades 1 y 2)
+### IMP-03: ajustes de inventario NO pasan por el i_nav_transacciones_out (modalidades 1 y 2)
 
 Para Idealsa (modalidad 1): los ajustes se obtienen via WCF, no se
 escriben en `i_nav_transacciones_out`.
 
 Para BYB (modalidad 2): los ajustes son en demanda (al despachar), no
-pasan por el outbox como parte del flujo programado.
+pasan por el i_nav_transacciones_out como parte del flujo programado.
 
 → Esto explica por que `i_nav_transacciones_out` no tiene una columna
 `tipo_ajuste` o algo similar — los ajustes no son ciudadanos de primera
-clase del outbox.
+clase del i_nav_transacciones_out.
 
 ### IMP-04: cadencia y reintentos NO son responsabilidad del WMS sino de cada interface
 
@@ -159,7 +116,7 @@ clase del outbox.
 - En modalidad 3 (SAPSYNC*): igual, cada SAPSYNC* lo agenda quien corresponda.
 - En modalidad 4 (WebAPI): el cliente decide cuando consultar/escribir.
 
-Por eso los 24,193 registros del outbox no tienen un patron uniforme de
+Por eso los 24,193 registros del i_nav_transacciones_out no tienen un patron uniforme de
 "procesado/error" — depende de la modalidad. **El bridge debe escribir
 sabiendo que el cleanup NO es su responsabilidad**.
 
@@ -183,35 +140,35 @@ manual el operador del ERP, dispara la consulta a WMS)?
 
 ¿Cual es la cadencia tipica?
 
-### PEND-08 — Reintentos: por interface o por outbox?
+### PEND-08 — Reintentos: por interface o por i_nav_transacciones_out?
 
 Si NavSync envia una transaccion y NAV devuelve error, ¿NavSync
 **reintenta automaticamente** (con backoff)? ¿O marca como fallida en
-algun campo del outbox y deja que el siguiente run la levante?
+algun campo del i_nav_transacciones_out y deja que el siguiente run la levante?
 
 ¿Hay un campo en `i_nav_transacciones_out` que marque "ya procesada con
 exito" vs "pendiente" vs "error N veces"?
 
-### PEND-09 — Limpieza/purga del outbox
+### PEND-09 — Limpieza/purga del i_nav_transacciones_out
 
-¿Las 24,193 filas del outbox son **acumulado historico** (incluso las
+¿Las 24,193 filas del i_nav_transacciones_out son **acumulado historico** (incluso las
 procesadas) o solo las pendientes? ¿Hay job de limpieza que purga las
 procesadas?
 
 ### PEND-10 — Marca de exito en cada modalidad
 
 ¿Como sabe cada interface (MI3/NavSync/SAPSYNC*) que una fila ya fue
-procesada exitosamente? ¿Por una columna especifica del outbox, por una
+procesada exitosamente? ¿Por una columna especifica del i_nav_transacciones_out, por una
 tabla paralela, o por una respuesta del ERP que se loggea aparte?
 
 ### PEND-11 — Ajustes "en demanda" (BYB)
 
 Cuando se hace el despacho en BYB y se dispara la interface en demanda,
 ¿el orden es:
-- (a) WMS escribe en outbox → dispara NavSync con args → NavSync lee la
+- (a) WMS escribe en i_nav_transacciones_out → dispara NavSync con args → NavSync lee la
   fila recien insertada y la procesa, o
 - (b) WMS dispara directamente NavSync con los datos del despacho como
-  args (sin pasar por el outbox)?
+  args (sin pasar por el i_nav_transacciones_out)?
 
 ## Para el bridge nuevo: contrato minimo
 
@@ -234,7 +191,7 @@ necesita reemplazarlas — coexiste.
 
 ### Mecanismo de marca
 
-El outbox `i_nav_transacciones_out` usa **dos columnas clave** para que cada
+El i_nav_transacciones_out `i_nav_transacciones_out` usa **dos columnas clave** para que cada
 interface (MI3 / NavSync / SAPSYNC* / WebAPI) sepa que enviar:
 
 ```sql
@@ -251,19 +208,19 @@ WHERE enviado = 0
 
 Esto cierra **PEND-10** (marca de exito).
 
-### Lo que NO esta en el outbox
+### Lo que NO esta en el i_nav_transacciones_out
 
 Verifique todas las cols. **NO existen** las siguientes columnas que serian
-naturales para un patron outbox completo:
+naturales para un patron i_nav_transacciones_out completo:
 
 - `fecha_envio` / `fec_envio` — no se sabe **cuando** se envio (solo `fec_mod`).
 - `intentos` / `reintentos` — no hay contador de reintentos.
-- `mensaje_error` — no se guarda el error del ERP en el outbox.
+- `mensaje_error` — no se guarda el error del ERP en el i_nav_transacciones_out.
 - `docnum_respuesta` — el numero de documento generado por el ERP no vuelve
-  al outbox (vive en `log_error_wms` segun lo visto en P-16b).
+  al i_nav_transacciones_out (vive en `log_error_wms` segun lo visto en P-16b).
 
 → Implicacion: **la logica de error/reintento la maneja cada interface por
-fuera del outbox**, probablemente loggeando en `log_error_wms` o tablas
+fuera del i_nav_transacciones_out**, probablemente loggeando en `log_error_wms` o tablas
 propias de cada interface (`SAPSYNC*` etc).
 
 ### Cols nuevas detectadas (no documentadas en pases previos)
@@ -278,7 +235,7 @@ propias de cada interface (`SAPSYNC*` etc).
 | `IdPedidoEncDevol` | `int` | manejo de **devoluciones** (PEND nuevo) |
 | `no_documento_salida_ref_devol` | `nvarchar` | doc de salida original (devoluciones) |
 
-### Estado real del outbox por BD (snapshot 27/abr/2026)
+### Estado real del i_nav_transacciones_out por BD (snapshot 27/abr/2026)
 
 #### Killios (TOMWMS_KILLIOS_PRD) — saludable
 
@@ -305,7 +262,7 @@ propias de cada interface (`SAPSYNC*` etc).
 | **TOTAL** | | **533,329** | |
 
 > **Hallazgo critico**: los INGRESOS de BYB **practicamente no se procesan
-> via outbox** (110k pendientes vs 107 enviados). Las SALIDAS si pero con
+> via i_nav_transacciones_out** (110k pendientes vs 107 enviados). Las SALIDAS si pero con
 > backlog importante. Hipotesis posibles:
 > 1. NavSync solo se ocupa de SALIDAS y los INGRESOS se manejan por otro
 >    canal (WCF directo, manual, batch nightly).
@@ -316,7 +273,7 @@ propias de cada interface (`SAPSYNC*` etc).
 > **Pregunta nueva PEND-12**: ¿que pasa con esos 110k INGRESOS pendientes
 > en BYB?
 
-#### CEALSA (IMS4MB_CEALSA_QAS) — outbox vacio
+#### CEALSA (IMS4MB_CEALSA_QAS) — i_nav_transacciones_out vacio
 
 | tipo_transaccion | enviado | filas |
 |---|---:|---:|
@@ -341,8 +298,8 @@ Agregados (sin partir por estado):
 - pendientes (`enviado=0`): 31,263 (**85.5%**)
 
 > **Hallazgo H28/H30**: BECOFARMA exhibe dos patrones distintos a K7/BB:
-> 1. **85% del outbox esta pendiente** — coherente con BD migrada/restaurada hoy 28-abr-2026 (probable `SAPBOSync.exe` no arrancado tras restore).
-> 2. **El 100% de las filas tienen TODAS las FKs pobladas** (`idpedidoenc`, `iddespachoenc`, `idrecepcionenc`, `idordencompra`). Esto **invalida parcialmente H08** (que decia que el outbox solo se simplifica a 2 tipos efectivos por cliente). En BECOFARMA el outbox usa **patron de copia universal** — cada fila trae el contexto completo. La WebAPI debe diferenciar el patron por cliente al consumir el outbox.
+> 1. **85% del i_nav_transacciones_out esta pendiente** — coherente con BD migrada/restaurada hoy 28-abr-2026 (probable `SAPBOSync.exe` no arrancado tras restore).
+> 2. **El 100% de las filas tienen TODAS las FKs pobladas** (`idpedidoenc`, `iddespachoenc`, `idrecepcionenc`, `idordencompra`). Esto **invalida parcialmente H08** (que decia que el i_nav_transacciones_out solo se simplifica a 2 tipos efectivos por cliente). En BECOFARMA el i_nav_transacciones_out usa **patron de copia universal** — cada fila trae el contexto completo. La WebAPI debe diferenciar el patron por cliente al consumir el i_nav_transacciones_out.
 >
 > Detalles en `clients/becofarma.md` y `wms-specific-process-flow/becofarma-mapping.md`.
 

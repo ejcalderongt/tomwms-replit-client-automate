@@ -16,8 +16,8 @@ Tras la respuesta de Erik el 28-abr-2026 (ver L-014 y L-015 en `brain/learnings/
 
 - Esta BD es un **snapshot diagnostico restaurado para entrenamiento del agente**, NO la productiva.
 - Los hallazgos de **schema, modulos, naming, catalogos, configuracion** (H-025 hasta H-027, H-030, mas H15/16/18/19/20/23/24 documentados sin evento) **siguen siendo validos** — afinidad-procesos confirmable.
-- Los hallazgos de **salud operativa** que dependian de medir flujo vivo — especialmente **H-028 (outbox 85% pendiente)** y **H-029 (44% Pickeado terminal)** — **NO se pueden interpretar como sintomas operativos**. Son la foto congelada del momento del backup.
-- En la productiva real `SAPBOSync.exe` **si corre** (Erik confirmado) y procesa el outbox con normalidad. El %  pendiente real puede ser muy distinto al de esta copia.
+- Los hallazgos de **salud operativa** que dependian de medir flujo vivo — especialmente **H-028 (i_nav_transacciones_out (outbox) 85% pendiente)** y **H-029 (44% Pickeado terminal)** — **NO se pueden interpretar como sintomas operativos**. Son la foto congelada del momento del backup.
+- En la productiva real `SAPBOSync.exe` **si corre** (Erik confirmado) y procesa el i_nav_transacciones_out con normalidad. El %  pendiente real puede ser muy distinto al de esta copia.
 
 Los datos numericos del documento se conservan tal cual estan medidos en esta copia. Lo que se ajusta son las **inferencias operativas** que se intentaron derivar de ellos.
 
@@ -186,7 +186,7 @@ Verificacion empirica de las primeras cols de tablas representativas:
 
 ## 7. Q-009 / Q-011 / Q-013 / Q-014 replicadas en BECOFARMA (afinidad-procesos)
 
-### Q-009 (outbox shape) — CRITICO
+### Q-009 (i_nav_transacciones_out shape) — CRITICO
 
 ```
 total           = 36,576
@@ -203,7 +203,7 @@ tipo_transaccion:
   INGRESO       =  5,090 (14%)
 ```
 
-**H22 (NUEVO)**: en BECOFARMA TODAS las filas tienen TODAS las FKs pobladas. **Invalida parcialmente H08** (que decia que el outbox solo se simplifica a 2 tipos efectivos). Para BECOFARMA hay que respetar la lectura nativa: cada fila trae el contexto completo.
+**H22 (NUEVO)**: en BECOFARMA TODAS las filas tienen TODAS las FKs pobladas. **Invalida parcialmente H08** (que decia que el i_nav_transacciones_out solo se simplifica a 2 tipos efectivos). Para BECOFARMA hay que respetar la lectura nativa: cada fila trae el contexto completo.
 
 **Comparativa cross-cliente Q-009**:
 
@@ -308,8 +308,8 @@ temp_licencia_llave  -- temporal
 | H25 | BECOFARMA es BD restaurada/migrada el 28-abr-2026 (config 2017) | Hecho | Confirmar con Erik el motivo |
 | H26 | Logs segmentados por proceso son patron exclusivo de BECOFARMA | Patron | Considerar adoptar en otras BDs / WebAPI |
 | H27 | Modulo de verificacion de etiquetas exclusivo (ZPL+inkjet) | Modulo | Documentar como capability flag |
-| H15 | Naming inconsistente intra-BD (snake_case en outbox, PascalCase en trans_*, SAP-naming en i_nav_ped_*) | Tech debt | Mapear con [Column] en EF Core |
-| H28 | Backlog del outbox: 85% pendiente | Operativo critico | Validar SAPBOSync.exe esta corriendo |
+| H15 | Naming inconsistente intra-BD (snake_case en i_nav_transacciones_out, PascalCase en trans_*, SAP-naming en i_nav_ped_*) | Tech debt | Mapear con [Column] en EF Core |
+| H28 | Backlog del i_nav_transacciones_out: 85% pendiente | Operativo critico | Validar SAPBOSync.exe esta corriendo |
 | H18 | Catalogo sis_tipo_tarea congelado: faltan AJ*NI/PI y ANUL_PICK | Tech debt | Sincronizar catalogo con K7/BB |
 | H19 | PIK (id=8) y PICK (id=10) co-existen, solo PIK se usa | Tech debt | Decidir codigo canonico, deprecar el otro |
 | H20 | SP MantenimientoBaseDeDatos usa DBCC SHRINKDATABASE (controvertido) | Operativo | Revisar y posiblemente eliminar SHRINK |
