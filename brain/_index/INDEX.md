@@ -484,3 +484,89 @@ Drift medido. Hipotesis abiertas registradas. **Listo para arrancar
 code-deep-flow (Wave 6+)**: dado un parametro X, mapear como viaja por
 backend / BOF VB.NET / HH Android y que tablas afecta. Cruce de codigo
 + DB. Erik confirmo el orden A1 -> B el 28-abr-2026.
+
+---
+
+## Wave 6 init — code-deep-flow bootstrap (28-abr-2026)
+
+Erik confirmo arrancar B (code-deep-flow) tras cerrar A1 (capa producto).
+Aprobacion del approach holistico → micro: WMS tiene los mismos
+parametros para todas las empresas; el inventario debe partir del flujo
+GENERAL y bajar a variantes por empresa solo donde haya divergencia
+real.
+
+### Acceso confirmado a fuentes de codigo (28-abr-2026)
+- Azure DevOps `ejcalderon0892`:
+  - Repo `TOMWMS_BOF` (376 MB) rama `dev_2028_merge` ← BOF + WSHHRN +
+    WMSWebAPI + Syncs + Portal + DAL/Entity Core
+  - Repo `TOMHH2025` (14 MB) rama `dev_2028_merge` ← HH Android Java
+- API REST preferida sobre clone (PAT en `AZURE_DEVOPS_PAT`).
+- Detalle en `agent-context/AZURE_ACCESS.md`.
+
+### Nuevo folder: `brain/code-deep-flow/`
+- `README.md` — metodo holistico → micro, plantilla de cada
+  `traza-NNN-<param>.md` con 9 secciones (Resumen, BOF, WSHHRN,
+  WMSWebAPI, HH, DB, ERP, Variantes por empresa, Q-* abiertas, Lecturas
+  WebAPI nuevo).
+- `00-mapa-de-cajas.md` — diagrama macro de toda la arquitectura como
+  insumo previo a cualquier traza. Cubre repos, modulos
+  (TOMIMSV4/WSHHRN/WMSWebAPI/etc), sub-topologia BOF y HH, relaciones
+  cross-capa, hipotesis Q-* a nivel arquitectura.
+
+### Hallazgos brutales del scan inicial de codigo
+
+1. **WSHHRN no es solo el WebService de la HH, es ademas un router
+   proxy a ERPs externos**. `TOMHHWS.asmx` es el unico endpoint SOAP
+   para la HH, pero ademas hay 11 Web References cliente a ERPs:
+   WSDevolucionVentaNAV, WSLotePedidoCompra, WSPaginaLotes,
+   WSPedidosCompraNAV, WSRecepAlm, WSTransferenciaEnvio, wWSPicking,
+   wsBYBNavCUWMS, wsBYBNavMovProd, wsBYBNavUInternas,
+   wsBYBNavUbicarAlmacen, wsTransferenciaIngresoNAV. Las 4 wsBYBNav*
+   son BYB-specific (NAV en linea, NO via sync).
+
+2. **WMSWebAPI tiene 25 Controllers identificados** en .NET moderno
+   con AutoMapper y JWT. Maestros (15), operativo (6), sync (2),
+   auth (2). Convivencia activa con WSHHRN: la migracion REST esta
+   en marcha pero parcial.
+
+3. **HH tiene DOS clientes HTTP en paralelo**: `WebService.java`
+   (SOAP a WSHHRN, legacy) y `ApiService.java` + `RetrofitClient.java`
+   (REST a WMSWebAPI, nuevo). Cada pantalla puede usar uno u otro.
+   Estado de migracion debe verificarse caso por caso en cada traza.
+
+4. **TOMWMS_BOF es mono-solution con muchos modulos historicos**:
+   ademas de los 3 grandes (TOMIMSV4, WSHHRN, WMSWebAPI) hay TMS,
+   MES, MI3, IAService, GoCloud, GoCloudy, Perceptron, PlotWH,
+   3 PrintServices, 2 versiones StockReservation (v2 y v3 conviven),
+   DAL/Entity Core paralelo a AppGlobal legacy, etc. Cada uno
+   pendiente de identificacion de uso real.
+
+5. **Conn.ini por cliente en WSHHRN**: Conn.ini default,
+   Conn_Becofarma.ini, Conn - Cumbre.ini. Confirmar si la conexion
+   por cliente realmente vive en .ini o en config DB / WMSWebAPI
+   appsettings.
+
+### Hipotesis Q-* nuevas a nivel arquitectura
+
+- Q-WSHHRN-AS-PROXY-BYB (4 Web References NAV en linea para BYB)
+- Q-WMSWEBAPI-MIGRACION-MAPA (% migrado de SOAP a REST)
+- Q-PERCEPTRON-USO-REAL (deployado en 5 clientes pero solo 2 lo prenden)
+- Q-MI3-QUE-ES (recurrente en MI3 / CEALSAMI3 / SAPMI3PC / TestMI3)
+- Q-WMS-EXE-CONFIG-EN-WSHHRN (BOF.config dentro de carpeta WebService)
+- Q-CHATGPT-SERVICE (ChatGPTService.vb en WSHHRN — feature o experimento)
+- Q-3-PRINT-SERVICES (PrintService / PrintsService / ServicioImpresion)
+- Q-STOCK-RESERVATION-2-VS-3 (cual usa cada cliente)
+- Q-TOMWMSUX-VS-WMSPORTAL (dos webs distintas)
+- Q-DALCORE-VS-DAL-LEGACY (WebAPI usa Core, WSHHRN usa legacy, misma DB?)
+
+### Pendiente eleccion Erik para `traza-001`
+
+Candidatos top-pick segun criterio de mayor cobertura cross-capa +
+drift conocido:
+- A) `notificacion_voz` (bodega) — toca BOF + WSHHRN + HH (commands voz)
+  + DB. Variantes claras: BECO 1/1, K7 4/6, MAMPA 33/33, BYB 0/2, CEALSA 0/2.
+- B) `verificacion_consolidada` (bodega) — flujo packing critico K7+BYB.
+- C) `genera_lp` vs `genera_lp_old` — modelo dual bodega+producto, BYB
+  drift 78% en `genera_lp_old`, perfecto para validar approach.
+- D) `control_lote` (producto) — drift TOTAL: MAMPA 0%, BECO 97%,
+  CEALSA 45%. Caso simple para arrancar.
