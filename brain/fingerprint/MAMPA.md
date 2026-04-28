@@ -144,3 +144,71 @@ Q-MAMPA-CEDIS-PANTALLA-LEGACY.
 5. **MAMPA usa modelo de log segmentado** (igual que BECOFARMA).
    Refuerza L-016: el modelo segmentado se esta adoptando como
    estandar en clientes nuevos.
+
+---
+
+## ANEXO 29-abr-2026 (segunda pasada): cierre de Q-MAMPA-* y datos i_nav_config_enc
+
+### A. ERP confirmado: SAP B1 (Q-MAMPA-ERP CERRADA)
+
+- `i_nav_config_enc.interface_sap = True`
+- `i_nav_config_enc.nombre_ejecutable = 'SAPBOSyncMampa.exe'`
+- Refuerza L-015 (cada cliente tiene SU PROPIO `SAPBOSync<Cliente>.exe`).
+- La presencia de `i_nav_acuerdo_productos` y `i_nav_unidad_medida` no
+  era indicador de NAV — son tablas genericas del WMS que tambien
+  llevan prefijo `i_nav_*`.
+
+### B. 33 configuraciones en `i_nav_config_enc`
+
+MAMPA tiene 33 filas en `i_nav_config_enc` (mas que las 18 bodegas
+activas). Hay configuracion para bodegas adicionales (21=CEDIS,
+30=Prorrateo, 31=TMK, etc) que no aparecen en `bodega` pero si tienen
+config completa.
+
+### C. Bodega 21 (CEDIS) — sub-perfil documentado
+
+Q-MAMPA-CEDIS-PANTALLA-LEGACY parcialmente cerrada. CEDIS tiene:
+- `control_lote = False`
+- `control_vencimiento = False`
+- `control_peso = False`
+- `genera_lp = True`
+- `valida_solo_codigo = True` ← **clave: pantalla simplificada**
+- `requerir_centro_costo_obligatorio = True`
+- `cantidad_en_presentacion_transacciones_out = True` ← MAMPA-only flag
+- `bodega_prorrateo = '30'`, `bodega_faltante = '23'`
+
+→ **Conclusion**: CEDIS NO es legacy, es UN MODELO DE OPERACION
+DISTINTO: validacion solo por codigo (sin lote ni vencimiento, porque
+calzado no es perecedero), con centro de costo obligatorio (control
+contable mas estricto), y prorrateo a bodega 30 + faltantes a bodega
+23. Es un CEDIS de distribucion, no una tienda.
+
+### D. Modelo de configuracion MAMPA: BODEGA-CENTRIC
+
+MAMPA `producto`:
+- genera_lote = 0%
+- control_vencimiento = 0%
+- control_lote = 0%
+- control_peso = 0%
+- genera_lp_old = **100%**
+- IdTipoEtiqueta poblado = **100%**
+
+Es decir: MAMPA NO usa los flags producto.control_*, todo se controla
+a nivel `i_nav_config_enc` (bodega). Esto es **diferente** a K7 (mixto)
+y a BECOFARMA (product-centric). Ver L-020 nuevo.
+
+### E. Verificacion etiqueta — flag NO unitario
+
+Q-CAPABILITY-FLAG-VERIF cerrada parcialmente. La activacion de
+verificacion NO es un solo flag, son al menos 9 columnas coordinadas:
+- `bodega.tipo_pantalla_verificacion` (tipo de pantalla, NO ON/OFF)
+- `bodega.IdTipoEtiquetaVerificacion`
+- `bodega.impresion_verificacion`
+- `bodega.operador_picking_realiza_verificacion`
+- `bodega.permitir_reemplazo_verificacion`
+- `bodega.Permitir_Verificacion_Consolidada`
+- `bodega.verificacion_consolidada`
+- `operador.verifica`
+- `cuadrilla_tipo.es_verificacion`
+
+Ver L-021 nuevo para el modelo coordinado completo.

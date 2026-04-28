@@ -172,3 +172,44 @@ Ejemplos de preguntas y la respuesta esperada:
 - **"Hay diagnosticos operativos sin resolver?"**
   → arbol > B. DIAGNOSTICOS > entradas no APPLIED
   → H29 (corte despacho marzo BECOFARMA, esperando cliente)
+
+---
+
+## Actualizacion 29-abr-2026 (sesion fingerprints cross-cliente)
+
+### Nuevos learnings APPLIED
+- `L-019_PARAM_CONFIG-ENC-FUENTE-MAESTRA` — `i_nav_config_enc` es la fuente maestra de capability flags por bodega.
+- `L-020_DATA_MODELOS-CONFIG-PRODUCTO-VS-BODEGA` — 3 modelos: BODEGA-CENTRIC (MAMPA) / PRODUCT-CENTRIC (BECOFARMA) / MIXTO (K7).
+- `L-021_FEAT_VERIF-FLAGS-COORDINADOS` — verificacion etiqueta NO es un flag unico, es coordinado entre bodega+operador+cuadrilla.
+
+### Nuevos fingerprints APPLIED
+- `KILLIOS_CLIENT_GASTRONOMICO-SAP-B1` — 6 bodegas con prorrateo, modelo MIXTO, EC2 desfase 8 meses.
+- `BECOFARMA_CLIENT_FARMA-SAP-B1-PRODUCT-CENTRIC` — 1 bodega, modelo PRODUCT-CENTRIC, cuello despacho confirmado (3802 Pickeado + 31263 outbox sin enviar).
+
+### Hipotesis CERRADAS (movidas a _processed/)
+- Q-MAMPA-ERP → SAP B1 con `SAPBOSyncMampa.exe`.
+- Q-MAMPA-CEDIS-PANTALLA-LEGACY → CEDIS NO es legacy, es modelo de operacion distinto (`valida_solo_codigo=True`, sin lote/vence/peso, prorrateo a b30, faltantes a b23).
+- Q-MAMPA-VOLUMEN-OUTBOX → 158-443/mes feb-abr-2026, periodo corto (QA reciente).
+- Q-PRODUCTO-GENERA-LP-NUEVO → `genera_lp` (sin _old) existe a nivel `i_nav_config_enc` (bodega), no en producto. Modelo dual.
+
+### Hipotesis PARCIALMENTE cerradas
+- Q-CAPABILITY-FLAG-VERIF → resuelto via L-021 (no es flag unico).
+
+### Refuerzos cruzados
+- L-014 (EC2 copia parcial) reforzado: K7 outbox solo hasta ago-2025, 8 meses de desfase. BECOFARMA al dia (abr-2026). MAMPA QA datos cortos. Confirma asimetria.
+- L-015 (ClickOnce dispatch) reforzado: confirmados `SAPBOSyncKillios.exe`, `SAPBOSync.exe` (BECOFARMA), `SAPBOSyncMampa.exe`. Patron `SAPBOSync<Cliente>.exe`.
+- L-016 (log segmentado) reforzado: BECOFARMA y MAMPA usan modelo segmentado, K7 NO (solo log_error_wms unificado).
+- H29 (despacho roto BECOFARMA) reforzado con datos: 3,802 pedidos en `Pickeado` + 31,263 outbox `enviado=0` desde enero. Es real, masivo, confirmado en BD.
+
+### Estado actualizado del arbol G. ESPECIFICOS DE CLIENTE
+```
+G. ESPECIFICOS DE CLIENTE
+├── MAMPA       APPLIED  (zapateria, talla y color, BODEGA-CENTRIC, SAP B1)
+├── KILLIOS     APPLIED  (gastronomico, prorrateo, MIXTO, SAP B1)
+├── BECOFARMA   APPLIED  (farma, 1 bodega, PRODUCT-CENTRIC, SAP B1, cuello despacho)
+├── BYB         DEF_PEND (no analizado todavia)
+├── CEALSA      DEF_PEND (QAS, no analizado)
+├── CUMBRE      DEF_PEND
+├── IDEALSA     DEF_PEND
+└── INELAC      DEF_PEND
+```

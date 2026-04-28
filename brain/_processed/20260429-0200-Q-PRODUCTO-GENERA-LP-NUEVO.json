@@ -9,7 +9,7 @@
     "codename": "tomwms-arquitectura",
     "environment": "MAMPA-QA"
   },
-  "status": "open",
+  "status": "closed",
   "priority": "medium",
   "tags": [
     "fingerprint",
@@ -28,6 +28,13 @@
       "action": "open",
       "by": "agente-replit",
       "note": "Levantada durante fingerprint MAMPA 29-abr-2026"
+    },
+    {
+      "at": "2026-04-29T03:00:00-03:00",
+      "action": "close",
+      "by": "agente-replit",
+      "note": "Cerrada en sesion de fingerprints cross-cliente. Ver L-019/L-020/L-021 y fingerprints actualizados."
     }
-  ]
+  ],
+  "closedAt": "2026-04-29T03:00:00-03:00"
 }

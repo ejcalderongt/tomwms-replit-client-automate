@@ -13,8 +13,8 @@ es la del INDEX.
 - [x] `P01_META_INDEX-HUMAN-READABLE` — convencion + arbol maestro (HECHO 29-abr)
 - [x] `P02_DATA_DDL-FUNCIONAL-PRODUCTO-BODEGA` — diccionario funcional inicial (HECHO 29-abr)
 - [x] `P03_CLIENT_FINGERPRINT-MAMPA` — fingerprint completo MAMPA (HECHO 29-abr)
-- [ ] `P04_CLIENT_FINGERPRINT-KILLIOS` — fingerprint K7 con la misma plantilla
-- [ ] `P05_CLIENT_FINGERPRINT-BECOFARMA` — fingerprint BECOFARMA (incluye H29)
+- [x] `P04_CLIENT_FINGERPRINT-KILLIOS` — fingerprint K7 con la misma plantilla
+- [x] `P05_CLIENT_FINGERPRINT-BECOFARMA` — fingerprint BECOFARMA (incluye H29)
 - [ ] `P06_CLIENT_FINGERPRINT-BYB` — fingerprint B&B
 - [ ] `P07_CLIENT_FINGERPRINT-CEALSA` — fingerprint CEALSA-QAS
 
@@ -33,7 +33,7 @@ es la del INDEX.
 
 - [ ] `P11_ARCH_ADR-001-WEBAPI-MODELO-A` — armar ADR completo si Erik
       confirma Modelo A (consumidor de outbox).
-- [ ] `P12_PARAM_INVENTARIO-CAPABILITY-FLAGS` — extraer todos los
+- [~] `P12_PARAM_INVENTARIO-CAPABILITY-FLAGS` (parcial: K7/BECOFARMA/MAMPA hechos en L-019) — extraer todos los
       capability flags por cliente desde `i_nav_config_enc` y similares.
 - [ ] `P13_DATA_SEED-CLIENTE-LIMPIO` — diseñar seed base limpia para
       bootstrap de clientes nuevos. Plantilla: tablas a vaciar +
