@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-PRODUCTO-GENERA-LP-NUEVO",
+  "title": "Existe un campo 'genera_lp' (sin _old) que reemplace a genera_lp_old?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T02:00:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "MAMPA-QA"
+  },
+  "status": "open",
+  "priority": "medium",
+  "tags": [
+    "fingerprint",
+    "mampa",
+    "talla-color"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Tabla producto en MAMPA tiene genera_lp_old (bit). El sufijo sugiere migracion en curso. Buscar columna genera_lp o IdTipoEtiqueta como reemplazo. Importante para diccionario funcional producto."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T02:00:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada durante fingerprint MAMPA 29-abr-2026"
+    }
+  ]
+}
