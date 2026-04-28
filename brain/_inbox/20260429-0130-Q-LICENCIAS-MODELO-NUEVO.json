@@ -1,0 +1,32 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-LICENCIAS-MODELO-NUEVO",
+  "title": "Las tablas Licencias/LIcencias2/licencia_pendientes son migracion en curso o features adicionales?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T01:30:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "cross-cliente"
+  },
+  "status": "open",
+  "priority": "low",
+  "tags": [
+    "brain-map",
+    "diagnostica"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Solo presentes en BECOFARMA y CEALSA (no K7 ni BB). PascalCase sugiere convencion mas nueva. ¿Son el modelo nuevo que reemplazara al core (licencia_item, etc), o features extra del modulo extendido de verificacion?"
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T01:30:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada desde brain-map/funcionalidades-por-cliente.md"
+    }
+  ]
+}

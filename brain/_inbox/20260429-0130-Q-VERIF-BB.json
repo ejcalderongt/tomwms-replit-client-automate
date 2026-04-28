@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-VERIF-BB",
+  "title": "BB (B&B) tiene modulo de verificacion etiquetas ON o OFF?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T01:30:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "cross-cliente"
+  },
+  "status": "open",
+  "priority": "low",
+  "tags": [
+    "brain-map",
+    "verificacion-etiqueta",
+    "capability-flag"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "EC2 dice no existe, pero EC2 es copia parcial. Sin evidencia confiable. Confirmar con productiva real."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T01:30:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada desde brain-map/funcionalidades-por-cliente.md"
+    }
+  ]
+}

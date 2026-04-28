@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-CAPABILITY-FLAG-VERIF",
+  "title": "Donde vive el capability flag de 'verificacion_etiqueta_activa' por cliente?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T01:30:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "cross-cliente"
+  },
+  "status": "open",
+  "priority": "medium",
+  "tags": [
+    "brain-map",
+    "verificacion-etiqueta",
+    "capability-flag"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Probable: i_nav_config_enc o tabla similar. Crucial para que la WebAPI .NET 10 sepa que endpoints exponer y que validaciones aplicar segun cliente."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T01:30:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada desde brain-map/funcionalidades-por-cliente.md"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-VERIF-K7-PERIODOS",
+  "title": "K7 tiene modulo verificacion etiquetas SIEMPRE ON o hay periodos OFF?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T01:30:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "cross-cliente"
+  },
+  "status": "open",
+  "priority": "low",
+  "tags": [
+    "brain-map",
+    "verificacion-etiqueta",
+    "capability-flag"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Screenshot 29-abr-2026 muestra trans_verificacion_etiqueta con datos en TOMWMS_KILLIOS_PRD. Brain-map asume ON permanente. Confirmar."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T01:30:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada desde brain-map/funcionalidades-por-cliente.md"
+    }
+  ]
+}

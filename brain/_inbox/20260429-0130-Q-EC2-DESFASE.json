@@ -1,0 +1,32 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-EC2-DESFASE",
+  "title": "Que tan desfasadas estan las BDs del EC2 respecto a productivas reales?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T01:30:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "cross-cliente"
+  },
+  "status": "open",
+  "priority": "medium",
+  "tags": [
+    "brain-map",
+    "diagnostica"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Tras descubrir que K7 productiva tiene trans_verificacion_etiqueta y EC2 no, queda claro que EC2 es copia parcial/desfasada. Necesario calendario de sincronizacion o documentar fechas de snapshot por BD para no inducir conclusiones erroneas."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T01:30:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada desde brain-map/funcionalidades-por-cliente.md"
+    }
+  ]
+}

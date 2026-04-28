@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-VERIF-C9",
+  "title": "CEALSA-QAS tiene modulo de verificacion etiquetas ON o OFF?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T01:30:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "cross-cliente"
+  },
+  "status": "open",
+  "priority": "low",
+  "tags": [
+    "brain-map",
+    "verificacion-etiqueta",
+    "capability-flag"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Mismo razonamiento que Q-VERIF-BB. Es ambiente QAS sin trafico, pero la presencia de tabla es independiente del trafico."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T01:30:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada desde brain-map/funcionalidades-por-cliente.md"
+    }
+  ]
+}

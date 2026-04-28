@@ -13,9 +13,41 @@ relatedDocs:
   - brain/wms-specific-process-flow/becofarma-mapping.md
   - brain/learnings/L-017-i-nav-transacciones-out-fks-sentinela-cero.md
   - brain/outputs/explicaciones/H29-becofarma-pickeado-corte-marzo-2026.md
-status: closed
+status: closed-with-correction
 priority: high
 tags: [verificacion-etiqueta, license-plate, lic_plate, HH, capability-flag, core-wms, parametrizable]
+---
+
+## CORRECCION 29-abr-2026 (post-screenshot K7)
+
+Erik aporto evidencia visual el 29-abr-2026: `SELECT * FROM
+trans_verificacion_etiqueta` ejecutado contra `TOMWMS_KILLIOS_PRD` (en
+su laptop local `LAPTOP-5GDJFUCN\PROGRAX`) devuelve **9 filas con
+datos reales** (lic_plate F7000079-F7000083, FU05242, FU05020; lotes
+E5F7245, 1405C, 24249; verificaciones de enero 2026; user_agr=46).
+
+Esto **invalida la afirmacion previa** del L-018 de que "K7 tiene el
+modulo apagado". K7 productiva real **SI tiene** modulo de verificacion
+de etiquetas activo. La conclusion incorrecta vino de basarse en la
+copia EC2 (`52.41.114.122,1437`) donde la tabla aparece como "no existe"
+o esta vacia.
+
+### Aprendizaje meta-arquitectonico
+
+Las BDs en EC2 son **copias parciales o desfasadas** de las productivas
+reales. La fuente de verdad sobre que tablas/modulos existen en cada
+cliente es:
+1. Productiva real (laptop de Erik o servidor del cliente).
+2. Confirmacion directa de Erik.
+
+EC2 sirve para queries diagnosticas pero **NO es referencia confiable
+para presencia/ausencia de tablas o features**. Toda conclusion del
+brain basada solo en EC2 debe marcarse `(?ec2)` y considerarse
+provisional.
+
+Ver `brain/brain-map/funcionalidades-por-cliente.md` para la matriz
+actualizada de presencia/ausencia con discriminacion de evidencia.
+
 ---
 
 ## Que aprendimos (de Erik, 29-abr-2026)
