@@ -5511,6 +5511,32 @@ Public Class frmMenu
             MessageBoxIcon.Exclamation)
         End Try
     End Sub
+
+    Private Sub mnuInventarioRFID_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuInventarioRFID.ItemClick
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmInventarioRFID_Lista)
+
+            With frmInventarioRFID_Lista
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
     'Private Sub mnuLayoutCorreo_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuLayoutsCorreo.ItemClick
     '    Try
     '        For Each f As Form In Me.MdiChildren
