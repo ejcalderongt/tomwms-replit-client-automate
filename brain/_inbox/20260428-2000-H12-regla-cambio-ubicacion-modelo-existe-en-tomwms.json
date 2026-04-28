@@ -1,0 +1,102 @@
+{
+  "id": "20260428-2000-H12",
+  "schema_version": "2",
+  "created_at": "2026-04-28T20:00:00-03:00",
+  "type": "learning_proposed",
+  "source": "replit",
+  "host": "REPLIT-AGENT",
+  "ref": {
+    "pasada": "8a-extension",
+    "doc_origen": "consulta-test-de-carol-reenviada-por-erik",
+    "preguntas_origen": [
+      "Q-015"
+    ],
+    "respondedoras": [
+      "CKFK-Carol"
+    ],
+    "candidate_files": [
+      "wms-brain-client/questions/Q-015/question.md",
+      "brain/_proposals/P3-2026-04-28-RELOC-RULE-STRICT.md",
+      "brain/wms-specific-process-flow/consulta-carol-reubicacion.md"
+    ],
+    "tags": [
+      "validated-via-wms-db-brain",
+      "afinidad-procesos",
+      "regla-ubicacion",
+      "cambio-ubicacion",
+      "carol-test",
+      "modelo-formal-existe"
+    ],
+    "filename_slug": "20260428-2000-H12-regla-cambio-ubicacion-modelo-existe-en-tomwms.json"
+  },
+  "context": {
+    "summary": "Modelo de reglas de ubicacion de TOMWMS es completo y formal. La regla restrictiva que pide Carol es directamente expresable en el schema actual.",
+    "message": "HALLAZGO DE PROCESO derivado del wms-db-brain dump (snapshot 2026-04-27). TOMWMS ya tiene un modelo formalizado y completo para reglas de ubicacion: (a) `regla_ubic_enc` cabecera de regla por bodega/empresa; (b) `regla_ubicacion` tabla puente ubicacion<->regla (PK compuesta IdUbicacion+IdReglaUbicacionEnc); (c) 6 tablas detalle multi-criterio: `regla_ubic_det_ir` (indice rotacion), `regla_ubic_det_pe` (estado producto), `regla_ubic_det_pp` (presentacion), `regla_ubic_det_prop` (propietario), `regla_ubic_det_tp` (tipo producto), `regla_ubic_det_tr` (tipo rotacion); (d) 4 tablas `regla_ubic_prio_*` para priorizacion; (e) 4 tablas `regla_ubic_sel_*` para seleccion; (f) `mensaje_regla` para textos al usuario; (g) `ubicaciones_por_regla` lookup. ADEMAS: `producto` tiene IdIndiceRotacion+IdTipoRotacion (FK col 11 y 9), `bodega_ubicacion`+`estructura_ubicacion` tienen los mismos campos, e `indice_rotacion` tiene 5 filas con columna `IndicePrioridad` int (numericamente comparable). Y CRUCIAL: existe `dbo.VW_Stock_CambioUbic` (vista de 73 columnas, modify 2024-02-01) con `IdUbicacion_anterior` + `IdUbicacion` + `IdIndiceRotacion` ya proyectados - es decir, el flujo de cambio de ubicacion ya esta soportado a nivel vista. CONCLUSION DE PROCESO: la regla de Carol es expresable 100% con el modelo existente; lo que falta verificar (en otra pasada) es si el SP/codigo de cambio de ubicacion realmente CONSULTA estas tablas para enforcement o si el bloqueo es solo UI.",
+    "modules_touched": [
+      "regla_ubic_enc",
+      "regla_ubicacion",
+      "regla_ubic_det_ir",
+      "regla_ubic_det_tr",
+      "indice_rotacion",
+      "tipo_rotacion",
+      "producto",
+      "bodega_ubicacion",
+      "estructura_ubicacion",
+      "VW_Stock_CambioUbic",
+      "mensaje_regla",
+      "cambio-ubicacion-BOF",
+      "cambio-ubicacion-HH"
+    ],
+    "tags": [
+      "validated-via-wms-db-brain",
+      "afinidad-procesos",
+      "regla-ubicacion",
+      "cambio-ubicacion",
+      "carol-test",
+      "modelo-formal-existe"
+    ]
+  },
+  "analysis": {
+    "analyzed_at": "2026-04-28T20:15:00-03:00",
+    "analyzed_by": "agente brain (sesion replit)",
+    "analyst_role": "main_agent_acting_as_bridge",
+    "method": "consulta a wms-db-brain dump (snapshot 2026-04-27) cruzada con la consulta de Carol",
+    "consolidation_doc": "brain/wms-specific-process-flow/consulta-carol-reubicacion.md",
+    "fuentes": [
+      "wms-db-brain/db-brain/tables/regla_ubic_*.md (18 tablas)",
+      "wms-db-brain/db-brain/tables/indice_rotacion.md (5 filas, IndicePrioridad)",
+      "wms-db-brain/db-brain/tables/producto.md (IdIndiceRotacion col 11)",
+      "wms-db-brain/db-brain/tables/bodega_ubicacion.md (IdIndiceRotacion + IdTipoRotacion)",
+      "wms-db-brain/db-brain/views/VW_Stock_CambioUbic.md (73 cols, modify 2024-02-01)"
+    ]
+  },
+  "proposal": {
+    "proposal_path": "brain/_proposals/P3-2026-04-28-RELOC-RULE-STRICT.md",
+    "adr_path": "brain/_decisions/ADR-013-RELOC-RULE-STRICT.md (si Erik ratifica)",
+    "decision_provisional": "accepted_modelo_existe_falta_confirmar_enforcement_y_ambiguedades_e1_e2",
+    "ratificacion_pendiente_de": "Erik Calderon + aclaracion de Carol sobre E1 y E2",
+    "proposed_at": "2026-04-28T20:15:00-03:00"
+  },
+  "status": "proposed",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-04-28T20:00:00-03:00",
+      "action": "notify",
+      "by": "replit-agent",
+      "note": "Carol envia consulta para probar al brain"
+    },
+    {
+      "at": "2026-04-28T20:10:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "consulta a wms-db-brain dump"
+    },
+    {
+      "at": "2026-04-28T20:15:00-03:00",
+      "action": "propose",
+      "by": "replit-agent",
+      "note": "P3-2026-04-28-RELOC-RULE-STRICT con ambiguedades a resolver"
+    }
+  ]
+}
