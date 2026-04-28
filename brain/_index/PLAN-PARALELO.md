@@ -15,8 +15,8 @@ es la del INDEX.
 - [x] `P03_CLIENT_FINGERPRINT-MAMPA` — fingerprint completo MAMPA (HECHO 29-abr)
 - [x] `P04_CLIENT_FINGERPRINT-KILLIOS` — fingerprint K7 con la misma plantilla
 - [x] `P05_CLIENT_FINGERPRINT-BECOFARMA` — fingerprint BECOFARMA (incluye H29)
-- [ ] `P06_CLIENT_FINGERPRINT-BYB` — fingerprint B&B
-- [ ] `P07_CLIENT_FINGERPRINT-CEALSA` — fingerprint CEALSA-QAS
+- [x] `P06_CLIENT_FINGERPRINT-BYB` — fingerprint B&B
+- [x] `P07_CLIENT_FINGERPRINT-CEALSA` — fingerprint CEALSA-QAS
 
 ## Wave 2 — depende del fingerprint completo
 

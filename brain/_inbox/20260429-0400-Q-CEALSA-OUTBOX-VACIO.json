@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-CEALSA-OUTBOX-VACIO",
+  "title": "CEALSA outbox completamente vacio (0 filas) pero 3707 pedidos Despachado",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T04:00:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "EC2"
+  },
+  "status": "open",
+  "priority": "medium",
+  "tags": [
+    "fingerprint",
+    "wave1",
+    "cealsa"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "Posibilidades: (a) ambiente QAS poblado por SP directos, (b) outbox se purga, (c) CEALSASync.exe usa otra tabla. Confirmar con Erik que ambiente/datos hay en CEALSA productivo real."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T04:00:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada durante fingerprint Wave 1 cierre P06+P07"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-CEALSA-CEALSASYNC-ERP",
+  "title": "Que ERP destino tiene CEALSASync.exe? No es SAP ni NAV identificable",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T04:00:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "EC2"
+  },
+  "status": "open",
+  "priority": "medium",
+  "tags": [
+    "fingerprint",
+    "wave1",
+    "cealsa"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "interface_sap=False, crear_recepcion_de_*_nav=False, nombre_ejecutable=CEALSASync.exe. Hipotesis: ERP propio del cliente, BC custom, Oracle, etc. Necesario para WebAPI saber si necesitamos un adaptador especial."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T04:00:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada durante fingerprint Wave 1 cierre P06+P07"
+    }
+  ]
+}

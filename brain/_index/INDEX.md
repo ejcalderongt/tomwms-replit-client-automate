@@ -213,3 +213,69 @@ G. ESPECIFICOS DE CLIENTE
 ├── IDEALSA     DEF_PEND
 └── INELAC      DEF_PEND
 ```
+
+---
+
+## Actualizacion 29-abr-2026 (sesion P06+P07: cierre Wave 1)
+
+### Nuevos fingerprints APPLIED
+- `BYB_CLIENT_NAV-OPERACION-PARADA-2024` — 2 bodegas (PT + PT-DAÑADO),
+  PRIMER CLIENTE NAV, modelo PRODUCT-CENTRIC con flags conservadores,
+  verificacion HALF-IMPLEMENTED, talla y color preparado pero vacio,
+  OPERACION COLAPSADA en 2024.
+- `CEALSA_CLIENT_QAS-CEALSASYNC-PROPIO` — ambiente QAS, ERP propio
+  con `CEALSASync.exe`, modelo PRODUCT-CENTRIC heterogeneo,
+  modulo Polizas y Kits exclusivos, outbox vacio, sin verificacion.
+
+### Nuevos learnings APPLIED
+- `L-022_INTEG_NAMING-SYNC-EXE` — patron de naming del binario
+  sincronizador por ERP: `SAPBOSync<Cliente>.exe` (SAP),
+  `NavSync.exe` (NAV), `<Cliente>Sync.exe` (propio).
+- `L-023_DIAG_BYB-CORTE-OPERATIVO-2024` — BYB outbox parado entre
+  dic-2023 y oct-2025. Caso de estudio para detectar problemas
+  similares en otros clientes.
+- `L-024_FEAT_VERIF-HALF-IMPLEMENTED-BYB` — anomalia: BYB tiene
+  pedidos `Verificado` pero sin tablas de soporte. Predicado nuevo
+  `modulo_completo(c, modulo)` para chequear coherencia.
+
+### Hipotesis NUEVAS abiertas
+- Q-BYB-CORTE-2024 (high) — BYB sigue activo?
+- Q-BYB-VERIF-INCOMPLETA (medium) — como se setearon los 8 Verificado?
+- Q-CEALSA-OUTBOX-VACIO (medium) — por que outbox=0?
+- Q-CEALSA-CEALSASYNC-ERP (medium) — que ERP destino?
+
+### Estado FINAL del arbol G. ESPECIFICOS DE CLIENTE (Wave 1 cerrada)
+```
+G. ESPECIFICOS DE CLIENTE
+├── MAMPA       APPLIED  (zapateria, talla y color, BODEGA-CENTRIC, SAP B1)
+├── KILLIOS     APPLIED  (gastronomico, prorrateo, MIXTO, SAP B1)
+├── BECOFARMA   APPLIED  (farma, 1 bodega, PRODUCT-CENTRIC, SAP B1, cuello despacho H29)
+├── BYB         APPLIED  (PT+dañado, PRODUCT-CENTRIC, NAV, OPERACION PARADA 2024)
+├── CEALSA      APPLIED  (QAS, PRODUCT-CENTRIC heterogeneo, ERP propio CEALSASync.exe)
+├── CUMBRE      DEF_PEND (no analizado todavia, pendiente Wave 1+ o Wave 2)
+├── IDEALSA     DEF_PEND (no analizado)
+└── INELAC      DEF_PEND (no analizado)
+```
+
+### Refuerzos cruzados Wave 1
+- L-009 (SAP B1 solo enteros) confirmado para K7.
+- L-010 (NAV no procesa ingresos) reforzado dramaticamente con BYB:
+  no solo no procesa, el sync esta ROTO desde 2024.
+- L-014 (EC2 copia parcial) confirmado: BYB EC2 hasta oct-2025, K7
+  hasta ago-2025, BECOFARMA al dia, MAMPA QA reciente, CEALSA QAS.
+- L-015 (ClickOnce dispatch) ampliado y movido a L-022.
+- L-016 (log segmentado) MATIZADO: CEALSA y BYB usan unificado.
+  Adopcion segmentado: BECOFARMA + MAMPA. Adopcion unificado:
+  K7 + BYB + CEALSA. Empate 2-2 (sin contar K7 que es el mayor).
+  Esto cambia la recomendacion previa para WebAPI.
+
+### MATRIZ COMPLETA (5 clientes)
+
+| Cliente | ERP | Modelo Config | Verif | Talla/Color | Outbox enviado=0 | Estado operativo |
+|---|---|---|---|---|---|---|
+| MAMPA | SAP B1 | BODEGA-CENTRIC | ON | ON | (a medir) | QA reciente |
+| KILLIOS | SAP B1 | MIXTO | ON | OFF | 3 (sano) | EC2 8 meses desfase |
+| BECOFARMA | SAP B1 | PRODUCT-CENTRIC | ON bajo | OFF | 31263 (CRITICO) | cuello despacho H29 |
+| BYB | NAV | PRODUCT-CENTRIC NULL | HALF | preparado | 255912 | parado 2024 |
+| CEALSA | propio | PRODUCT-CENTRIC heterogeneo | OFF | OFF | 0 (vacio) | QAS sin trafico |
+

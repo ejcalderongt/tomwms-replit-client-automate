@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-BYB-CORTE-2024",
+  "title": "BYB outbox dejo de operar entre dic-2023 y oct-2025. Cliente sigue activo?",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T04:00:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "EC2"
+  },
+  "status": "open",
+  "priority": "high",
+  "tags": [
+    "fingerprint",
+    "wave1",
+    "byb"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "BYB tuvo 32K-44K outbox/mes durante 2023, despues 0 filas hasta jun-2024 (1), luego silencio hasta sep-oct-2025 (6+13 residuales). Confirmar con Erik si BYB sigue activo, si la productiva real esta al dia, o si dejaron el servicio."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T04:00:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada durante fingerprint Wave 1 cierre P06+P07"
+    }
+  ]
+}

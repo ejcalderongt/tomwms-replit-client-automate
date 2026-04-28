@@ -1,0 +1,33 @@
+{
+  "protocolVersion": 1,
+  "id": "Q-BYB-VERIF-INCOMPLETA",
+  "title": "BYB tiene 8 pedidos Verificado pero las 3 tablas de soporte no existen",
+  "operator": "agente-replit",
+  "operatorRole": "developer",
+  "createdAt": "2026-04-29T04:00:00-03:00",
+  "target": {
+    "codename": "tomwms-arquitectura",
+    "environment": "EC2"
+  },
+  "status": "open",
+  "priority": "medium",
+  "tags": [
+    "fingerprint",
+    "wave1",
+    "byb"
+  ],
+  "evidence": [
+    {
+      "type": "context",
+      "message": "trans_verificacion_etiqueta, verificacion_estado, log_verificacion_bof NO existen en IMS4MB_BYB_PRD. Pero hay 8 pedidos en estado Verificado. Hay que rastrear como se setearon (UPDATE manual? bug?) y si el modulo esta half-implemented o se borraron las tablas."
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-04-29T04:00:00-03:00",
+      "action": "open",
+      "by": "agente-replit",
+      "note": "Levantada durante fingerprint Wave 1 cierre P06+P07"
+    }
+  ]
+}
