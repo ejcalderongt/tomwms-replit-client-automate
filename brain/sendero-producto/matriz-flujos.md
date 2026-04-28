@@ -69,7 +69,7 @@
 | **P-RETAIL-REABASTO** | K7 | Reabasto automatico intensivo (REEMP_BE_PICK ≈ 70% del PIK), multi-source picking, presentaciones activas, prorrateo a 5 bodegas downstream. |
 | **P-RETAIL-MULTITIENDA** | MAMPA | TRAS entre 31 bodegas, bodegas-como-estados (CAMBIOS, IMPARES, SEGUNDAS), sin lote, LP por unidad. |
 | **P-DISTRIBUCION-MASIVA** | BYB | Distribucion 1-lote-a-N-ubicaciones, EXPLOSION + REABMAN + CEST + PACK, REEMP_*_PICK con 3 estados (BE/ME/NE), 24 estados en catalogo. |
-| **P-QAS-TRUNCADO** | CEALSA | Solo RECE, sin estado, sin salida. NO operacion productiva. |
+| **P-PREFACTURA-SIN-INTERFACE-STOCK** | CEALSA | Solo RECE, sin estado, sin salida. NO operacion productiva. |
 
 ## Tabla 6 — Mapeo cliente → patron (preliminar)
 
@@ -79,7 +79,7 @@
 | KILLIOS (K7) | P-RETAIL-REABASTO | — | benchmark sano de retail |
 | MAMPA | P-RETAIL-MULTITIENDA | — | unico con TRAS dominante |
 | BYB | P-DISTRIBUCION-MASIVA | — | parado dic-2023 |
-| CEALSA | P-QAS-TRUNCADO | — | excluir de validacion productiva |
+| CEALSA | P-PREFACTURA-SIN-INTERFACE-STOCK | — | excluir de validacion productiva |
 
 ## Tabla 7 — Presentacion vs no-presentacion (eje cruzado)
 
@@ -102,7 +102,7 @@
 >
 > 1. **5 patrones canonicos** capturan la diversidad de los 5 clientes
 >    actuales (P-FARMA-CUARENTENA, P-RETAIL-REABASTO, P-RETAIL-MULTITIENDA,
->    P-DISTRIBUCION-MASIVA, P-QAS-TRUNCADO).
+>    P-DISTRIBUCION-MASIVA, P-PREFACTURA-SIN-INTERFACE-STOCK).
 > 2. **Cada patron tiene aristas distintivas** (REEMP_BE_PICK, TRAS,
 >    EXPLOSION+CEST+PACK, etc) que la WebAPI .NET 10 implementa como
 >    capabilities.
@@ -144,7 +144,7 @@
 
 - Validar con Erik los 5 patrones canonicos (P-FARMA-CUARENTENA,
   P-RETAIL-REABASTO, P-RETAIL-MULTITIENDA, P-DISTRIBUCION-MASIVA,
-  P-QAS-TRUNCADO).
+  P-PREFACTURA-SIN-INTERFACE-STOCK).
 - Decidir si CEALSA se mantiene en el set o se excluye.
 - Revisar si INELAC (mencionado por Erik) cae en P-FARMA-CUARENTENA o
   requiere un patron P-PRODUCCION distinto (recibe de produccion, no

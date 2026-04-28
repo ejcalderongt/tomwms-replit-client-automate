@@ -2,109 +2,81 @@
 
 **Cliente**: CEALSA (IMS4MB_CEALSA_QAS) | **Bodegas**: 2  
 **Producto**: IdProducto=4828 | 1798 movimientos historicos  
-**Fecha de la traza**: 29-abr-2026  
-**Ambiente QAS — operacion no productiva**
+**Fecha de la traza**: 29-abr-2026 | **Correccion**: 29-abr-2026
 
-## Q1 — Producto
+> **CORRECCION (Erik 29-abr-2026)**: La hipotesis "CEALSA es ambiente
+> QAS-truncado" era ERRONEA. CEALSA es cliente productivo con un flujo
+> distinto al estandar de stock: el WMS NO envia transacciones de stock
+> al ERP de CEALSA, envia **rubros de cobro (prefactura)**. Por eso
+> `i_nav_transacciones_out` no se marca como enviado para los registros
+> de salida.
+>
+> Esto explica todas las "anomalias":
+> - `i_nav_transacciones_out` aparenta vacia/sin marcar = no es bug, es diseño.
+> - 3707 pedidos en estado "Despachado" sin movimientos = la salida NO
+>   se realiza por trans_movimientos sino via `trans_prefactura_enc`,
+>   `trans_prefactura_det`, `trans_prefactura_mov`.
+> - Vistas dedicadas: `cealsa_vwacuerdocomercialdet/enc`,
+>   `cealsa_vwclientes`, `Polizas_CEALSA`.
+>
+> Patron: **`P-PREFACTURA-SIN-INTERFACE-STOCK`** (no P-QAS-TRUNCADO).
 
-```
-IdProducto=4828 codigo=NEN025 nombre=AMOXICILINA 500MG
-control_lote=True control_vencimiento=False control_peso=False  ← farma sin vencimiento (raro!)
-genera_lp_old=True IdTipoEtiqueta=2 IdUnidadMedidaBasica=2582
-```
-
-> **Anomalia**: producto farma con `control_vencimiento=False`. Real
-> farma maneja vencimiento. Confirma que CEALSA es ambiente de prueba
-> con datos sinteticos.
-
-## Q2 — producto_bodega (2 bodegas)
-
-```
-IdProductoBodega=7609 IdBodega=1 B01 BODEGA GENERAL
-IdProductoBodega=7614 IdBodega=2 B02 BODEGA FISCAL
-```
-
-## Q3 — producto_presentacion
+## Q1-Q4 (sin cambios — ver historial git anterior si interesa el detalle)
 
 ```
-0 presentaciones
+producto: NEN025 control_lote=True control_vencimiento=False
+producto_bodega: 2 (B01 GENERAL, B02 FISCAL)
+producto_presentacion: 0
+stock_rec: todo en B12T01R00P00, IdProductoEstado=NULL, vence=1900-01-01
 ```
 
-## Q4 — stock_rec actual
+## Q5-Q6: solo 1:RECE (1798 / 1798 = 100%)
+
+(re-interpretado): el sistema NO requiere put-away porque la prefactura
+opera sobre stock disponible sin diferenciar ubicacion fisica.
+
+## Tablas dedicadas a prefactura (descubiertas 29-abr-2026)
 
 ```
-pb=7614 estado=NULL ubic=B12T01R00P00 cant=8  lote=707251040 lp=MD001765 ingr=2026-01-19 vence=1900-01-01
-pb=7614 estado=NULL ubic=B12T01R00P00 cant=21 lote=707251041 lp=MD001764 ingr=2026-01-19 vence=1900-01-01
-pb=7614 estado=NULL ubic=B12T01R00P00 cant=24 lote=707251040 lp=MD001763 ingr=2026-01-19 vence=1900-01-01
+trans_prefactura_enc            ← encabezado prefactura
+trans_prefactura_det            ← detalle (rubros)
+trans_prefactura_mov            ← movimientos prefactura
+cealsa_vwacuerdocomercialenc    ← vistas para acuerdos comerciales
+cealsa_vwacuerdocomercialdet
+cealsa_vwclientes               ← vista de clientes
+Polizas_CEALSA                  ← polizas especificas
+i_nav_transacciones_out         ← existe pero no se marca para salidas
+                                  (intencionalmente — no se transmite stock)
 ```
 
-> **Observaciones brutales**:
-> 1. `IdProductoEstado=NULL` — el WMS no le asigna estado al producto.
-> 2. TODOS en ubicacion `B12T01R00P00` — siempre la misma ubicacion (
->    a pesar de tener 19503 ubicaciones en el catalogo).
-> 3. `vence=1900-01-01` — fecha falsa constante.
-
-## Q5 — trans_movimientos (ultimos 8)
+## Patron P-PREFACTURA-SIN-INTERFACE-STOCK
 
 ```
-mov#1440799 RECE bod=2->2 ubic=B12T01R00P00->B12T01R00P00 est=BE->BE cant=8  lote=707251040 fec=2026-01-19 15:48
-mov#1440794 RECE bod=2->2 ubic=B12T01R00P00->B12T01R00P00 est=BE->BE cant=21 lote=707251041 fec=2026-01-19 15:47
-(todos RECE, mismo origen=destino)
-```
-
-> **Observacion**: en RECE el `IdEstadoOrigen=IdEstadoDestino=Buen Estado`,
-> pero en stock_rec queda como NULL. Hay una incoherencia entre como se
-> registra el movimiento y como queda el stock.
-
-## Q6 — distribucion tipos de tarea
-
-```
-IdTipo=1 RECE n=1798  primero=2022-07-12  ultimo=2026-01-19
-```
-
-> **Unico tipo de tarea**: RECE = 100%. Confirma que CEALSA NUNCA
-> ejecuta put-away, picking, despacho, ajustes, etc.
-
-## Interpretacion del sendero observado
-
-```
-RECEPCION
+=== INGRESO ===
+ERP CEALSA -> CEALSASync.exe -> RECEPCION sintetica
    │
    --[ 1:RECE | stock_rec | sin estado, ubicacion fija ]-->
    ▼
-[??? @ B12T01R00P00]
-   │
-   FIN (no hay mas transiciones)
+[??? @ B12T01R00P00]   ← stock disponible para prefactura
 
-PARALELO (sin movimientos):
-   trans_pe_enc: 3707 pedidos en estado "Despachado" (sin trans_movimientos asociados)
+=== SALIDA POR PREFACTURA (no via stock!) ===
+ERP envia rubros de cobro
+   │
+   ▼
+trans_prefactura_enc + trans_prefactura_det + trans_prefactura_mov
+   │ procesa rubros
+   ▼
+trans_pe_enc en estado "Despachado" (sintetico, sin trans_movimientos)
+   │
+   ▼
+i_nav_transacciones_out NO MARCADA (diseño, no bug)
 ```
 
-## Mapeo al graph-EQL
+## Pendientes refinados
 
-Coincide con `grafo-eql/por-cliente/CEALSA.md`. Confirma:
-- Sendero TRUNCADO en RECEPCION.
-- IdProductoEstado=NULL en stock.
-- Pedidos seteados directo en BD.
-
-## Tesis confirmada
-
-CEALSA NO es un cliente operativo. Es un ambiente QAS donde:
-- Se carga inventario sintetico via CEALSASync.exe (1798 RECE para este producto).
-- Los pedidos se setean directamente en BD como "Despachado" sin pasar
-  por el flujo del WMS.
-- No hay outbox (`i_nav_transacciones_out` vacia).
-- No hay catalogos completos (2 estados, sin presentaciones, vencimiento
-  falso).
-
-## Recomendacion
-
-**Excluir CEALSA del set de clientes productivos** para validacion de
-la WebAPI. Documentarlo como ambiente de QA del equipo PrograX24.
-
-## Pendientes (Q-CEALSA-OUTBOX-VACIO + Q-CEALSA-CEALSASYNC-ERP)
-
-- Confirmar con Erik si hay alguna operacion productiva escondida.
-- Identificar el script que setea los 3707 pedidos como "Despachado".
-- Si efectivamente es QAS, documentarlo y excluirlo del set para
-  evitar conclusiones erroneas.
+- ~~Q-CEALSA-OUTBOX-VACIO~~ CERRADA (no es bug, es diseño).
+- ~~Q-CEALSA-CEALSASYNC-ERP~~ CERRADA (sync envia rubros, no transacciones).
+- NUEVO Q-CEALSA-PREFACTURA-MODELO: documentar esquema completo de
+  `trans_prefactura_*` y como se relaciona con `trans_pe_enc/det`.
+- Mover este patron al `heat-map-params/06-procesos-homologados/salida.md`
+  como variante de salida.
