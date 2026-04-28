@@ -1,11 +1,18 @@
 # Catalogo de clientes
 
+## BDs productivas
+
 | Cliente | DB | ERP | Bodegas | Modo reserva | Modulo distintivo |
 |---|---|---|---|---|---|
 | KILLIOS | TOMWMS_KILLIOS_PRD | SAP B1 (DI-API) | 6 oper + 1 virtual (BOD7) | **estricto** | Conversion cajas/decimales SAP |
 | BYB | IMS4MB_BYB_PRD | NAV Dynamics | 2 | estricto | Reabastecimiento de picking activo |
 | CEALSA | IMS4MB_CEALSA_QAS | (sin ERP integrado) | 2 (1 general + 1 fiscal) | **discrecional** (3PL, no se invoca por defecto) | Stock jornada + prefacturacion + polizas |
-| **BECOFARMA** | **IMS4MB_BECOFARMA_PRD** | **SAP B1 (DI-API, `SAPBOSync.exe`)** | **1 (GENERAL)** | (a confirmar — control_lote+vencimiento on) | **Verificacion etiquetas + reglas vencimiento + logging segmentado + 98% PIK** |
+
+## BDs diagnosticas (snapshots para entrenamiento del agente)
+
+| Cliente | DB | Origen | Estado | Comentario |
+|---|---|---|---|---|
+| **BECOFARMA** | **IMS4MB_BECOFARMA_PRD** | Restaurada 28-abr-2026 desde productiva | **NO-PRODUCTIVA, snapshot diagnostico** | Sin SAPBOSync corriendo contra esta copia. Hechos de schema/modulos/catalogos son validos; metricas de salud operativa NO. Ver L-014. |
 
 Server compartido EC2: `52.41.114.122,1437` (SQL Server, mixed auth).
 
@@ -16,16 +23,17 @@ Server compartido EC2: `52.41.114.122,1437` (SQL Server, mixed auth).
 
 ## Politica de conexion
 
-- Killios, BYB y BECOFARMA son **PRODUCTIVAS**. CEALSA es QAS pero con datos reales del cliente.
-- TODA la operacion del agente es `SELECT`/`EXEC` de SPs de lectura. Cero modificaciones.
+- Killios y BYB son **PRODUCTIVAS**. CEALSA es QAS pero con datos reales del cliente. BECOFARMA es **diagnostica** (snapshot).
+- TODA la operacion del agente es `SELECT`/`EXEC` de SPs de lectura. Cero modificaciones en cualquier BD (incluida BECOFARMA: la copia se podria refrescar y cualquier edit local se perderia).
 - Whitelist de prefijos en `brain/wms-agent/wmsa/killios.py`: `SELECT, WITH, EXEC, EXECUTE, SET, DECLARE, PRINT`.
 
-## Aparicion del cliente BECOFARMA (28-abr-2026)
+## Principio operativo
 
-La BD `IMS4MB_BECOFARMA_PRD` aparecio en el server hoy 28-abr-2026 a las 08:32. Sin embargo, su `i_nav_config_enc.fec_agr` es de **2017-09-11**, lo que indica que es una **migracion/restore de una instancia previa**, no un cliente nuevo. Detalles completos:
+**Afinidad de procesos confirmable, afinidad de datos diferida**:
 
-- `clients/becofarma.md` — perfil cliente.
-- `wms-specific-process-flow/becofarma-mapping.md` — mapeo profundo (351 lineas).
+- Lo que SI se puede inferir de cualquier BD (productiva o diagnostica): schema, modulos exclusivos, naming, catalogos, relaciones, configuracion (`i_nav_config_enc`).
+- Lo que SOLO se puede inferir de BDs productivas vivas: KPIs operativos (% outbox pendiente, throughput, latencia, errores activos).
+- BECOFARMA aqui sirve para el primer grupo, NO para el segundo.
 
 ## Documentacion relacionada
 
@@ -39,4 +47,6 @@ La BD `IMS4MB_BECOFARMA_PRD` aparecio en el server hoy 28-abr-2026 a las 08:32. 
 - `adr/ADR-008` — BYB modulo reabasto.
 - `adr/ADR-009` — CEALSA 3PL jornada/prefactura.
 - `adr/ADR-010` — terminologia reserva-webapi vs reserva-WMS legacy.
+- `learnings/L-014` — BECOFARMA es BD diagnostica, no productiva.
+- `learnings/L-015` — modelo ClickOnce + dispatch dinamico via nombre_ejecutable.
 - `way-of-thinking.md` — principios operativos y nota del autor.

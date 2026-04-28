@@ -21,13 +21,25 @@
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending",
-  "decision": null,
+  "status": "applied",
+  "decision": {
+    "decision": "applied",
+    "by": "EJC",
+    "answer": "BD restaurada para entrenamiento y documentacion del agente. NO es la productiva.",
+    "learning_card": "L-014-becofarma-prd-es-bd-diagnostica-no-productiva.md",
+    "at": "2026-04-29T00:05:00-03:00"
+  },
   "history": [
     {
       "at": "2026-04-28T23:45:00-03:00",
       "action": "notify",
       "by": "agente-brain"
+    },
+    {
+      "at": "2026-04-29T00:05:00-03:00",
+      "action": "applied",
+      "by": "agente-replit",
+      "note": "Cerrado con respuesta de Erik. Learning: L-014-becofarma-prd-es-bd-diagnostica-no-productiva.md"
     }
   ]
 }

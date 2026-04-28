@@ -25,13 +25,26 @@
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending",
-  "decision": null,
+  "status": "applied",
+  "decision": {
+    "decision": "applied-with-revised-interpretation",
+    "by": "EJC",
+    "answer": "SAPBOSync.exe SI funciona y SI esta en el server productivo del cliente BECOFARMA. WMS se distribuye por ClickOnce con todas las interfaces empaquetadas; dispatch runtime via i_nav_config_enc.nombre_ejecutable. El 85% pendiente que veo es snapshot historico congelado de la productiva al momento del backup; NO indica caida de la interface. Esta BD aqui no recibe procesamiento de SAPBOSync.",
+    "learning_card": "L-015-wms-clickonce-empaqueta-todas-interfaces-dispatch-dinamico.md",
+    "related_learning": "L-014",
+    "at": "2026-04-29T00:05:00-03:00"
+  },
   "history": [
     {
       "at": "2026-04-28T23:45:00-03:00",
       "action": "notify",
       "by": "agente-brain"
+    },
+    {
+      "at": "2026-04-29T00:05:00-03:00",
+      "action": "applied",
+      "by": "agente-replit",
+      "note": "Cerrado con respuesta de Erik. Learning: L-015-wms-clickonce-empaqueta-todas-interfaces-dispatch-dinamico.md"
     }
   ]
 }

@@ -6,13 +6,36 @@ rubro: Farmacia / distribucion farmaceutica
 authored_by: agente-brain
 authored_at: 2026-04-28T23:00:00-03:00
 version: V1
-status: ratificado-tecnico-pendiente-validacion-erik
+status: BD-DIAGNOSTICA-NO-PRODUCTIVA (ratificado por Erik 28-abr-2026, ver L-014)
 fuente_principal: SQL live READ-ONLY 28-abr-2026
 ---
 
 # Cliente BECOFARMA
 
 > Distribuidora farmaceutica integrada a SAP B1 via DI-API. Operacion **extremo outbound** (98% PIK), bodega unica, FEFO obligatorio con control de lote y vencimiento. **BD restaurada/migrada hoy 28-abr-2026 desde una instancia previa cuya configuracion data del 11-sep-2017** (no es cliente nuevo).
+
+## ⚠ ATENCION: BD DIAGNOSTICA, NO PRODUCTIVA
+
+Esta BD `IMS4MB_BECOFARMA_PRD` en EC2 `52.41.114.122,1437` es una **copia/snapshot
+restaurada por Erik el 28-abr-2026 para entrenamiento y documentacion del agente**.
+
+**NO es la productiva del cliente BECOFARMA**. La productiva real corre en otro
+server donde `SAPBOSync.exe` procesa el outbox normalmente (ver L-015).
+
+Implicancias:
+- El **85% pendiente del outbox** (H-028) es snapshot historico congelado, NO indica
+  caida de la interface. La productiva real puede tener otro % completamente.
+- El **44% en estado Pickeado** (H-029) tampoco se puede leer como disfuncion
+  operativa — esta congelado en el momento del backup.
+- TODOS los hechos sobre **schema, modulos, naming, catalogos** SI son validos y
+  reflejan la productiva (afinidad-procesos confirmable).
+- TODAS las inferencias de **salud operativa, volumen, frecuencia** NO se pueden
+  inferir desde aqui (afinidad-datos diferida).
+
+Cierre formal: ver `brain/learnings/L-014-becofarma-prd-es-bd-diagnostica-no-productiva.md`
+y `brain/_processed/20260428-2345-H25-*.json`.
+
+---
 
 ## Identificacion
 

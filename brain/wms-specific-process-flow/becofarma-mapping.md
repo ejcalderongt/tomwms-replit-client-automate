@@ -10,6 +10,19 @@ status: ratificado-tecnico-pendiente-validacion-erik
 relacionado_con: clients/becofarma.md
 ---
 
+## ⚠ Reinterpretacion post-Erik (29-abr-2026): BD diagnostica, no productiva
+
+Tras la respuesta de Erik el 28-abr-2026 (ver L-014 y L-015 en `brain/learnings/`):
+
+- Esta BD es un **snapshot diagnostico restaurado para entrenamiento del agente**, NO la productiva.
+- Los hallazgos de **schema, modulos, naming, catalogos, configuracion** (H-025 hasta H-027, H-030, mas H15/16/18/19/20/23/24 documentados sin evento) **siguen siendo validos** — afinidad-procesos confirmable.
+- Los hallazgos de **salud operativa** que dependian de medir flujo vivo — especialmente **H-028 (outbox 85% pendiente)** y **H-029 (44% Pickeado terminal)** — **NO se pueden interpretar como sintomas operativos**. Son la foto congelada del momento del backup.
+- En la productiva real `SAPBOSync.exe` **si corre** (Erik confirmado) y procesa el outbox con normalidad. El %  pendiente real puede ser muy distinto al de esta copia.
+
+Los datos numericos del documento se conservan tal cual estan medidos en esta copia. Lo que se ajusta son las **inferencias operativas** que se intentaron derivar de ellos.
+
+---
+
 # Mapeo profundo de IMS4MB_BECOFARMA_PRD
 
 > Sesion fuera-de-ciclo: la BD aparecio el 28-abr-2026 a las 08:32 (creada en SQL hoy). Erik la asignio para enriquecer el brain. Este documento es el INVENTARIO EXHAUSTIVO; los hallazgos accionables se elevan via `_inbox/` para ratificacion.

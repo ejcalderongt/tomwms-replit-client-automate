@@ -12,6 +12,52 @@ PrograX24 disena (historicamente) una interface dedicada. La estrategia
 moderna es **estandarizar via WebAPI** (modelo MHS) para que clientes con
 equipo de desarrollo no necesiten codigo nuevo del lado WMS.
 
+## Modelo de despliegue: ClickOnce + dispatch dinamico (L-015)
+
+> Confirmado por Erik el 28-abr-2026.
+
+El WMS se distribuye via **ClickOnce** desde el publisher de PrograX24.
+En cada instalacion ClickOnce **viajan TODAS las interfaces** del catalogo
+(MI3, NavSync, SAPBOSync, SAPSYNCKILLIOS, SAPSYNCMAMPA, SAPSYNCCUMBRE...
+y la WebAPI cuando se sume).
+
+El cliente NO tiene "una interface instalada y las demas no" — **tiene
+todas instaladas**. Lo que cambia entre clientes es **cual ejecutable
+invoca el WMS en runtime**, decidido por la columna
+`i_nav_config_enc.nombre_ejecutable`.
+
+### Convivencia .vbproj (fuente) vs .exe (binario)
+
+- `SAPSYNC.vbproj`, `NavSync.vbproj`, `MI3.vbproj`, etc. son los
+  **proyectos VB.NET fuente** en el repo del WMS.
+- `SAPBOSync.exe`, `NavSync.exe`, `MI3.exe`, etc. son los **binarios
+  compilados** que viajan en el ClickOnce.
+- El nombre del binario puede diferir del nombre del proyecto. Ejemplo
+  confirmado: `SAPSYNC.vbproj` -> `SAPBOSync.exe` (Becofarma).
+- **Fuente de verdad runtime**: `i_nav_config_enc.nombre_ejecutable`.
+- **Fuente de verdad del codigo**: el `.vbproj`.
+
+### Diagnostico cross-cliente
+
+```sql
+SELECT (cliente_o_db_name), nombre_ejecutable
+  FROM i_nav_config_enc
+```
+
+ejecutado en cada BD productiva permite mapear la matriz cliente↔binario
+sin depender de los nombres de proyecto.
+
+### Implicancia para la migracion a la WebAPI nueva (.NET 10)
+
+Sumar la WebAPI al modelo es trivial: incluir el binario en el
+ClickOnce y, para cada cliente que migre, apuntar
+`i_nav_config_enc.nombre_ejecutable` al nuevo binario (o un valor
+sentinela como `webapi:`/null que el dispatch interprete como "usar
+WebAPI"). **Migracion incremental por cliente, sin breaking change
+para los que se quedan en interface clasica**.
+
+---
+
 ## Modalidades del patron
 
 ### Modalidad 1 — WCF expuesto por WMS (cliente hace pull)
@@ -59,6 +105,11 @@ implementa el consumidor.
   modelo porque simplifica y optimiza el proceso.
 
 ## Mapeo cliente → interface (lo que tengo de Erik)
+
+> Nota (L-015): la columna "Componente WMS" lista el `.vbproj` (proyecto fuente).
+> El binario corriente en runtime puede tener nombre distinto y se determina por
+> `i_nav_config_enc.nombre_ejecutable` en la BD del cliente. Ver seccion "Modelo
+> de despliegue ClickOnce + dispatch dinamico" arriba.
 
 | Cliente | ERP | Modalidad | Componente WMS |
 |---|---|---|---|
