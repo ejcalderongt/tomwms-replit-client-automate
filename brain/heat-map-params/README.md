@@ -66,17 +66,29 @@ posterior.
   flags por bodega y matriz capabilities.
 - [`cross-cliente/03-tipos-documento.md`](cross-cliente/03-tipos-documento.md)
   — `trans_oc_ti` y `trans_pe_tipo` cross-cliente.
+- [`cross-cliente/04-producto.md`](cross-cliente/04-producto.md) —
+  `producto`, `producto_bodega`, `producto_estado`, `producto_estado_ubic`
+  con distribuciones reales. Cierra el inventario de las 4 capas
+  fundamentales y resuelve el caso CEALSA 3.200 estados (scaffolding
+  ruido por propietarios).
 
 ## Pendientes
 
-- Capa 4 cross-cliente: producto y producto_bodega exhaustivos.
-- Investigar tabla `producto_estado` (CEALSA tiene 3.200 estados ?!).
 - Capa 6: archivos dedicados por proceso (recepcion.md, picking.md, etc),
-  primero ESTANDAR, luego variantes.
-- Capa 3: investigar inbox tables (`i_nav_*`, `cealsa_vw*`) para preparar
-  el code-deep-flow.
+  primero ESTANDAR, luego variantes — esto se va llenando durante el
+  code-deep-flow.
+- Capa 3: investigar inbox tables (`i_nav_*`, `cealsa_vw*`) — primer
+  insumo del code-deep-flow.
 - Confirmar caso CLAVAUD (cliente futuro o legacy).
 - Confirmar uso de `marcar_registros_enviados_mi3` (que es MI3).
 - Capturar trans_oc_ti K7 (faltante en barrido cross-cliente).
-- Profundizar IDPRODUCTOPARAMETROA/B + industria_motriz: confirmados como
-  DEPRECATED por Erik (29-abr-2026), reflejado en 02-bodega y 04-producto.
+- IDPRODUCTOPARAMETROA/B + industria_motriz: confirmados DEPRECATED por
+  Erik (28-abr-2026), reflejado en 02-bodega y 04-producto.
+
+## Estado del inventario
+
+Las 4 capas fundamentales (config, bodega, tipos doc, producto) estan
+cubiertas con datos REALES de los 5 clientes. Drift medido. Hipotesis
+Q-* registradas. Listo para arrancar **code-deep-flow** (Wave 6+):
+dado un parametro, mapear como viaja por el backend / BOF VB.NET / HH
+Android y que tablas afecta.

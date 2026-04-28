@@ -360,3 +360,127 @@ Una vez completados los flags (queda capa 4 producto + producto_estado),
 arrancar el code-deep-flow: dado un parametro X, mapear como viaja por el
 backend / BOF (VB.NET) / HH (Android) y que tablas afecta. Cruce de codigo
 + DB. Erik confirmo este orden el 28-abr-2026.
+
+---
+
+## Actualizacion 28-abr-2026 (Wave 5: cierre capa 4 producto)
+
+### Nuevo archivo: `brain/heat-map-params/cross-cliente/04-producto.md`
+Cierra el inventario de las 4 capas fundamentales con distribuciones
+REALES de flags por cliente para `producto`, `producto_bodega`,
+`producto_estado`, `producto_estado_ubic`.
+
+### Hallazgos brutales nuevos
+
+1. **Schema producto practicamente sin drift**: 60 cols en TODOS menos
+   CEALSA con 59 (le falta `margen_impresion`). Es la tabla MAS
+   estandarizada de las 4 capas que vimos.
+
+2. **producto_bodega es pure join N:M sin parametros**: 9 cols identicas
+   en los 5 clientes. NO tiene flags funcionales. WebAPI puede tratarlo
+   como pure relation.
+
+3. **MAMPA tiene 1.036.101 filas en producto_bodega**: 33 bodegas x
+   31.397 productos = caso de presion para WebAPI. Endpoints deben
+   tener paginacion agresiva.
+
+4. **CASO CEALSA 3.200 ESTADOS RESUELTO**: 3.197 filas son scaffolding
+   ruido — patron automatico que crea "Buen Estado" por cada
+   IdPropietario nuevo. Insertadas entre 2022-01-27 y 2025-04-15 por
+   user_agr=6. Solo 4 estados utiles (Buen Estado, Mal Estado, RH, HR).
+   `propietario` ni siquiera existe como tabla — solo tablas relacionadas
+   (`propietario_destinatario`, `propietario_reglas_enc`, etc).
+   `producto.IdPropietario` distinct: 1 en 4 clientes, 3 en CEALSA.
+   Filtrar siempre `producto_estado` por IdPropietario presente en
+   producto. **Q-CEALSA-ORIGEN-PROP-3197**: investigar trigger / job en
+   code-deep-flow.
+
+5. **CAPABILITIES NUNCA IMPLEMENTADAS EN TOM** (False/0/NULL en TODOS
+   los 5 clientes): `serializado`, `kit`, `materia_prima`,
+   `temperatura_recepcion`, `temperatura_despacho`, `capturar_aniada`,
+   `captura_arancel`, `es_hardware`, `tolerancia=0`, `ciclo_vida=0`,
+   `IdCamara`, `IdPerfilSerializado`, `IdUnidadMedidaCobro`, `IdArancel`.
+   Schema preparado para futuro que TOM nunca prendio. WebAPI puede
+   ignorarlas en MVP, mantener nullable.
+
+6. **MAMPA NO usa lote ni vencimiento en NINGUN producto**:
+   `control_lote=False` y `control_vencimiento=False` en los 31.397.
+   Coherente con zapateria. Modelo de inventario completamente distinto
+   al resto. `IdTipoRotacion=1` (FIFO puro) en 99.6% — el resto FEFO.
+
+7. **CEALSA practicamente NO controla vencimiento**: solo 24 productos
+   (1.4%) con `control_vencimiento=True`. `control_lote=True` mixto
+   (45%). Operacion seca distribuidor general.
+
+8. **CEALSA es el UNICO con productos por peso**: 6 productos exactos
+   con `control_peso=True` + `peso_recepcion=True` + `peso_despacho=True`
+   (los 3 flags juntos). Probable carnes / quesos al peso.
+
+9. **CEALSA es el UNICO con soft delete real**: 79 productos con
+   `activo=False` (4.6%). Resto: 100% activo=True. WebAPI debe soportar
+   el flag.
+
+10. **CEALSA tiene IdSimbologia (codigo de barras) poblado en 47%**
+    (798/1714) — el resto residual (5% o menos). MAMPA cero (usa
+    etiqueta interna `IdTipoEtiqueta=12`).
+
+11. **Cada cliente tiene IdTipoEtiqueta dedicado**: BECO=8, K7=10,
+    MAMPA=12, BYB=2, CEALSA=2. NO hay default universal. WebAPI debe
+    permitir custom templates por cliente.
+
+12. **IdTipoRotacion=3 (FEFO) dominante** en BECO/K7/BYB. MAMPA=1 (FIFO).
+    CEALSA=NULL en todos. Confirma que CEALSA delega rotacion al sistema.
+
+13. **`genera_lp_old=True` en TODOS menos BYB**: BYB es el unico con
+    drift (487 False / 136 True = 78% False). El resto: 100% True.
+    Confirma modelo dual `genera_lp` (bodega) vs `genera_lp_old`
+    (producto, legacy). Posible deprecation futura.
+
+14. **Catalogo de estados con drift**:
+    - BECO 10 estados, mapeo 1:1 a bodega ERP NAV
+    - K7 18 estados granulares de calidad
+    - MAMPA 19 estados de perecederos (carne / abarrotes / refri)
+    - BYB 24 estados industriales con NO_DISPONIBLE_NAV / NAV_BD
+    - CEALSA 4 estados utiles (catalogo MUY pobre)
+    - `reservar_en_umbas` flag adicional ausente en K7 y CEALSA.
+
+15. **producto_estado_ubic practicamente vacio en TODOS** (1-20 filas).
+    NO es feature critica para WebAPI MVP.
+
+### Nuevas hipotesis Q-* (capa producto)
+- Q-RESERVAR-EN-UMBAS (significado UMBA y por que solo 3 clientes)
+- Q-CEALSA-ORIGEN-PROP-3197 (trigger / job que crea Buen Estado)
+- Q-CEALSA-RH-HR (significado de estados RH / HR en CEALSA)
+- Q-CEALSA-IDTIPO-NULL (por que NULL para todos los productos)
+- Q-BYB-NO-DISPONIBLE-NAV-BD (diferencia NAV vs NAV_BD)
+- Q-MAMPA-MERMA-CARNE-FLUJO (estados 20 y 21 como flujo)
+- Q-GENERA-LP-OLD-LEGADO (confirmar deprecation)
+
+### Lecturas para WebAPI
+1. Endpoints `/producto` con paginacion agresiva (caso MAMPA 31k).
+2. Capability flags expanded en DTO para evitar consultas N+1 desde HH.
+3. `producto_bodega` como pure relation, sin endpoint propio.
+4. `producto_estado` con catalogo libre por cliente, NO estandarizar.
+5. NO exponer DEPRECATED (`IDPRODUCTOPARAMETROA/B`, `industria_motriz`,
+   `genera_lp_old` a confirmar).
+6. Filtrar CEALSA `producto_estado` por IdPropietario presente en producto.
+7. Soft delete via `activo` requerido (caso CEALSA).
+8. Perfiles de operacion alterno: "calzado/talla-color" (MAMPA) y
+   "distribuidor general" (CEALSA) ademas del estandar farma/gastro.
+
+### Estado actualizado del arbol del brain
+```
+brain/heat-map-params/cross-cliente/
+├── README.md                       APPLIED  (indice + conteos macro)
+├── 01-i_nav_config_enc.md          APPLIED  (78 cols, taxonomia ERP)
+├── 02-bodega.md                    APPLIED  (123 cols, capabilities)
+├── 03-tipos-documento.md           APPLIED  (trans_oc_ti + trans_pe_tipo)
+└── 04-producto.md                  APPLIED  (60 cols + estados resueltos)
+```
+
+### Inventario CERRADO
+Las 4 capas fundamentales del nucleo de configuracion estan cubiertas.
+Drift medido. Hipotesis abiertas registradas. **Listo para arrancar
+code-deep-flow (Wave 6+)**: dado un parametro X, mapear como viaja por
+backend / BOF VB.NET / HH Android y que tablas afecta. Cruce de codigo
++ DB. Erik confirmo el orden A1 -> B el 28-abr-2026.
