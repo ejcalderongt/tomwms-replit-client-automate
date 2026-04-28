@@ -45,9 +45,21 @@
       "observability"
     ]
   },
-  "analysis": null,
-  "proposal": null,
-  "status": "pending",
+  "analysis": {
+    "analyzed_at": "2026-04-28T19:30:00-03:00",
+    "analyzed_by": "agente brain (sesion replit)",
+    "analyst_role": "main_agent_acting_as_bridge",
+    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md"
+  },
+  "proposal": {
+    "proposal_path": "brain/_proposals/20260428-1902-H03-logs-estructurados-mudos.md",
+    "adr_path": null,
+    "decision_provisional": "queued_for_pasada_8_roadmap_no_immediate_decision",
+    "ratificacion_pendiente_de": "Erik Calderon",
+    "proposed_at": "2026-04-28T19:47:00-03:00"
+  },
+  "status": "proposed",
   "decision": null,
   "history": [
     {
@@ -55,6 +67,18 @@
       "action": "notify",
       "by": "replit-agent",
       "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+    },
+    {
+      "at": "2026-04-28T19:30:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "analizado via consolidacion-pasada-7.md (commit b1d3cc03)"
+    },
+    {
+      "at": "2026-04-28T19:47:00-03:00",
+      "action": "propose",
+      "by": "replit-agent",
+      "note": "proposal generado en brain/_proposals/20260428-1902-H03-logs-estructurados-mudos.md; sin ADR (decision atomica/operativa o bloqueada)"
     }
   ]
 }
