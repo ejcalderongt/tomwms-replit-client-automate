@@ -11,6 +11,7 @@ Carpeta raiz para entregables formateados producidos por el agente brain.
 | `consolidaciones-ciclo/` | Cierre de cada ciclo de analisis: hallazgos, decisiones, anexos. | Erik + equipo (interno) |
 | `drafts-respuestas/` | Borradores de respuestas a personas o casos especificos antes de enviar. | Interno |
 | `reportes-datos/` | Cuando se haga afinidad de datos: CSV/MD con stats por cliente. | Erik + cliente segun caso |
+| `ratificaciones/` | Documentos para que Erik decida (Aceptar/Rechazar/Diferir) sobre hallazgos en bloque. | Erik (decisor) |
 
 ## Convenciones
 
