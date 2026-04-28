@@ -77,6 +77,15 @@ Sustituye al termino antiguo "tanda" (deprecado el 2026-04-28).
 - "Tanda" tenia connotacion mas de batch industrial / cervecero, no de unidad de trabajo en un sistema.
 - La metafora del procesador (ciclos + tareas + delegacion a cores) modela mejor como el agente realmente opera: planifica, divide, ejecuta en bloques, consolida.
 
+
+## Excepciones documentadas (artefactos legacy)
+
+Los archivos en `analysis/passada-*.md` y `data/passada-*.json` (con doble S, typo historico) NO se renombran. Son artefactos de un analisis anterior del WMS y se conservan tal como estan por dos razones:
+1. Estan fuera de la carpeta `brain/` y no son producidos por el agente brain actual.
+2. Renombrarlos rompe referencias en scripts externos que los leen por nombre.
+
+Si se referencian desde docs nuevos del agente, se citan textualmente con su nombre original entre comillas, dejando claro que es legacy: por ejemplo "ver `analysis/passada-3-1-bloque-A` (legacy)".
+
 ## Vigencia
 
 Esta convencion es retroactiva: se aplico rename masivo en commit del 2026-04-28 sobre todo el contenido y los nombres de archivo de los repos `wms-brain` y `wms-brain-client`. Los terminos "pasada" y "tanda" no deben aparecer mas en documentos nuevos del agente.
