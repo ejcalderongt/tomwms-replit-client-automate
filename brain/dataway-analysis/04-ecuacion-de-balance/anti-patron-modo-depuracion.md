@@ -6,7 +6,7 @@
 
 | Aspecto | Valor |
 |---|---|
-| Archivo | `TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb` |
+| Archivo | `TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb` (canónico estándar) — **wave 13-8 expande la familia a 3 archivos**: `Reportes/Fiscales/frmMovimiento_Reporte.vb` y `Reportes/Analítica/frmAnaliticaA.vb` también mutan con el mismo bloque. Ver `case-pointers/08-tres-reportes-marker-ejcajustedesfase.md`. |
 | Función | `Llena_Grid` |
 | Activación | Tecla `Ctrl+D` desde el formulario abierto (línea 981-987) |
 | Aviso al usuario | `MsgBox("Modo depuración activado, tenga cuidado...")` |

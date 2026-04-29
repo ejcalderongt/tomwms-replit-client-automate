@@ -1,0 +1,124 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/08-tres-reportes-marker-ejcajustedesfase
+title: CP-008 Tres reportes con marker EJCAJUSTEDESFASE
+public: machine-structure
+version: 1
+created_in_wave: wave-13-8
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-008
+  full_id: CP-008-tres-reportes-marker-ejcajustedesfase
+  tipo: hardcode_persistente_BD_replicado_x3
+  estado: documentado_efecto_persistente_produccion
+  severidad_estimada: alta
+  bug_enlazado: V-DATAWAY-001
+  efecto: expande_alcance_V-DATAWAY-001_de_1_a_3_reportes
+  detectado_via: rg 'Serie\s*=\s*"#[A-Za-z]'
+
+ocurrencias:
+  - reporte_tipo: estandar
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+    linea_marker: 425
+    linea_bug_diferencia: 419
+    case_pointer_predecesor: CP-007
+  - reporte_tipo: fiscal_poliza
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+    linea_marker: 487
+    linea_bug_diferencia: 481
+    nuevo_descubrimiento_wave: wave-13-8
+  - reporte_tipo: analitica
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Analítica/frmAnaliticaA.vb
+    linea_marker: 624
+    linea_bug_diferencia: 618
+    nuevo_descubrimiento_wave: wave-13-8
+    no_estaba_en_capa_04: true
+
+bloque_copy_pasted:
+  caracter: identico_los_3_reportes
+  diferencias_unicas:
+    - contexto_envolvente
+    - guards_previos
+    - lblPrg_text_posterior
+    - numero_de_linea
+  codigo_canonico: |
+    If M.Cantidad >= Math.Abs(Diferencia) Then
+        M.Cantidad += Diferencia
+        Diferencia += 1
+    Else
+        M.Cantidad = 0
+        Diferencia += M.Cantidad
+    End If
+
+    M.Serie = "#EJCAJUSTEDESFASE"
+
+    If M.Cantidad = 0 Then
+        clsLnTrans_movimientos.Eliminar(M)
+    Else
+        clsLnTrans_movimientos.Actualizar(M)
+    End If
+
+mapa_familia_modo_depuracion:
+  total_reportes_con_propiedad_declarada: 15
+  reportes_mutadores_con_marker: 3
+  reportes_activadores_sin_mutador_localizable: 4
+  reportes_declarativos_puros: 8
+
+  mutadores_con_marker:
+    - frmStockEnUnaFecha
+    - frmAnaliticaA
+    - frmMovimiento_Reporte
+
+  activadores_sin_mutador_localizable:
+    - FrmStock_Fiscal
+    - frmLogErrorWMS
+    - frmDocPeConDiferencias
+    - frmDocConDiferencias
+    requiere_investigacion: true
+
+  declarativos_puros:
+    - frmMovimientosporLote
+    - frmStockResJornadaMerca
+    - frmStockResJornada
+    - frmResumenPorCliente
+    - frmResumenHistorico
+    - frmCtasOrden
+    - frmCtaOrdenPoliza
+    - frmMovimientos_Retroactivo
+    - frmMercaVencida
+    nota: scaffolding inerte heredado por convencion
+
+frmAnaliticaA_caracterizacion:
+  carpeta: TOMIMSV4/TOMIMSV4/Reportes/Analítica
+  tamano_lineas: 1250
+  tipo: WinForms_DevExpress
+  proposito_aparente: reporte analitico de stock en una fecha
+  vecinos:
+    - frmAnalitica1
+    - frmDistribucionPorTramo
+    - frmIndicadores
+    - Dashboard1
+    - frmDashView1
+  modo_depuracion_declarado_linea: 16
+  modo_depuracion_activado_linea: 1242
+  bloques_mutador_lineas: [600, 648]
+
+implicaciones_severidad:
+  - tres_mutadores_no_uno
+  - bug_aritmetico_replicado_x3_correccion_no_propaga
+  - clientes_con_poliza_pueden_tener_marca_de_2_o_3_fuentes
+  - query_06_mide_efecto_agregado_no_de_un_solo_reporte
+  - V-DATAWAY-001_promovible_a_critica_post_query_06
+
+acciones_propuestas_no_esta_wave:
+  - implementar_query_06_con_distincion_por_reporte_si_posible
+  - investigar_los_4_activadores_sin_mutador_localizable
+  - confirmar_si_frmAnaliticaA_aparece_en_menu_de_clientes_reales
+  - refactor_extraer_helper_clsAjusteDesfase_AplicarA
+  - promover_V-DATAWAY-001_a_critica_post_evidencia_BD
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.md
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/07-stockfecha-marker-ejcajustedesfase.md
+  - brain/debuged-cases/CP-008.md
+  - tools/case-seed/queries/data-discrepancy/06_movimientos_ejcajustedesfase.sql

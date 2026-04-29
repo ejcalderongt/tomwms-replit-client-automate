@@ -45,9 +45,14 @@ CP-NNN-<contexto>-<hint>
 | `CP-004` | **documentado** | `frmMovimiento_Reporte.vb` | 87 | `Dim TheGoalDate As Date = New Date(2019, 8, 30)` (trinity) | media | [`CP-004`](../../../debuged-cases/CP-004.md) |
 | `CP-005` | **documentado** | `frmMovimiento_Reporte.vb` | 95-97 | `If Fecha_Vence = TheGoalDate Then Debug.Print("Wait a second!")` (trinity, panorámica) | media | [`CP-005`](../../../debuged-cases/CP-005.md) |
 | `CP-006` | **documentado** | `frmMovimiento_Reporte.vb` | 99-101 | Triple TheGoalDate + EstadoOrigen=SIN REGISTRO + TipoTarea=DESP (espejo idéntico de CP-001) | alta | [`CP-006`](../../../debuged-cases/CP-006.md) |
-| `CP-007` | **documentado** | `frmStockEnUnaFecha.vb` | 401-435 (Llena_Grid) | Marker `Serie = "#EJCAJUSTEDESFASE"` (auto-confirmable por query 06) | alta | [`CP-007`](../../../debuged-cases/CP-007.md) |
+| `CP-007` | **documentado** | `frmStockEnUnaFecha.vb` | 401-435 (Llena_Grid) | Marker `Serie = "#EJCAJUSTEDESFASE"` (auto-confirmable por query 06) — predecesor de CP-008 | alta | [`CP-007`](../../../debuged-cases/CP-007.md) |
+| `CP-008` | **documentado** | 3 reportes (StockEnUnaFecha + MovimientoReporte + AnaliticaA) | L425 / L487 / L624 | Marker `#EJCAJUSTEDESFASE` copy-pasted en 3 reportes (expande V-DATAWAY-001 a familia) | alta | [`CP-008`](../../../debuged-cases/CP-008.md) |
+| `CP-009` | **documentado** | `frmRegularizarInventario.vb` | 526 | Triple hardcode `01007121 / 01007011 / IdStock=4427` con Debug.Print comentado (Congelado) | media | [`CP-009`](../../../debuged-cases/CP-009.md) |
+| `CP-010` | **documentado** | `clsLnStock_res_Partial.vb` | 20947 | Breakpoint `Codigo "00190454"` + `Debug.Print("Aqui")` activo (zona picking) | baja | [`CP-010`](../../../debuged-cases/CP-010.md) |
+| `CP-011` | **documentado** | `clsLnStock_res_Partial.vb` | 27264 | Breakpoint `Codigo "00091035"` + `Debug.Write("Espera")` activo | baja | [`CP-011`](../../../debuged-cases/CP-011.md) |
+| `CP-012` | **documentado** | `frmExistenciasConReserva.vb` | 283 | Breakpoint `Codigo "01008076"` + `Debug.Print("Espera")` + 2 guards no-op | baja | [`CP-012`](../../../debuged-cases/CP-012.md) |
 
-**Total documentados**: 7 / 7 identificados (wave 13-7 cierra el barrido inicial).
+**Total documentados**: 12 / 12 identificados (wave 13-8 cierra el barrido forense de las 6 búsquedas heurísticas).
 
 ## Agrupaciones
 
@@ -61,18 +66,29 @@ Tres case-pointers en `frmMovimiento_Reporte.vb` que se sostienen entre sí:
 
 Limpieza: si se decide eliminar, los tres se eliminan juntos.
 
-### Espejos entre los dos reportes
+### Espejos entre los reportes con `ModoDepuracion`
 
-- **CP-001** ↔ **CP-006** — mismo caso histórico debugueado en los dos reportes (estándar y fiscal). Si era cliente con control de póliza, CP-006 es el más cercano al caso original.
+- **CP-001** ↔ **CP-006** — mismo caso histórico debugueado en los reportes estándar y fiscal. Si era cliente con control de póliza, CP-006 es el más cercano al caso original.
 
 ### Pareja fix-bug (mismo bloque)
 
 - **CP-002** (bug introducido por JP)
 - **CP-003** (intento de fix por EJC, **comentado** — no se ejecuta)
 
-### Único con efecto persistente en BD (auto-confirmable)
+### Familia con efecto persistente en BD (auto-confirmables)
 
-- **CP-007** — `Serie = "#EJCAJUSTEDESFASE"` se escribe a `trans_movimientos`. La query 06 puede confirmar/refutar el impacto sin entrevistar a nadie.
+- **CP-007** — caso original `frmStockEnUnaFecha`. La query 06 puede confirmar/refutar el impacto sin entrevistar a nadie.
+- **CP-008** — extensión a tres reportes. La query 06 mide el agregado de los tres mutadores, no de uno. CP-008 **expande** a CP-007, no lo reemplaza (CP-007 sigue siendo el caso singular del reporte estándar).
+
+### Instancias del pattern P-001 (breakpoint arqueológico con código hardcoded)
+
+- **CP-001** — `030772033524` (frmStockEnUnaFecha)
+- **CP-009** — triple `01007121 / 01007011 / IdStock=4427` (frmRegularizarInventario)
+- **CP-010** — `00190454` (clsLnStock_res_Partial L20947)
+- **CP-011** — `00091035` (clsLnStock_res_Partial L27264)
+- **CP-012** — `01008076` (frmExistenciasConReserva)
+
+Ver `case-pointers/patterns/breakpoint-arqueologico-codigo-hardcoded.md` para el pattern formal.
 
 ## Bitácoras vivas
 
@@ -80,31 +96,44 @@ Cada case-pointer tiene su bitácora de debug en `brain/debuged-cases/CP-NNN.md`
 
 Ver [`brain/debuged-cases/00-INDEX.md`](../../../debuged-cases/00-INDEX.md).
 
-## Heurística de búsqueda (para sub-waves siguientes)
+## Patterns
 
-Para barrido sistemático del código legacy:
+Los case-pointers que comparten una forma común se promueven a `patterns/`. Ver:
+
+- [`patterns/00-INDEX.md`](./patterns/00-INDEX.md)
+- `P-001`: breakpoint arqueológico con código hardcoded (instancias: CP-001, CP-009, CP-010, CP-011, CP-012)
+
+## Heurística de búsqueda (corrida en wave 13-8)
 
 ```bash
-# Búsqueda 1: hardcodes de Codigo de producto
-rg -n 'Codigo\s*=\s*"[0-9]{8,}"' /tmp/repos/TOMWMS_BOF/
+# B1: comments con nombres propios o "magia/cagada/bug"  -> CP-002, CP-003 (ya documentados)
+rg -n -i "magia|cagada|hack|workaround|fix\s+by|por\s+error|JP|EJC|MA\b|GT\b" /tmp/repos/TOMWMS_BOF/ --type vb
 
-# Búsqueda 2: fechas hardcodeadas
-rg -n 'New Date\(\s*\d{4}\s*,\s*\d+\s*,\s*\d+\s*\)' /tmp/repos/TOMWMS_BOF/
-
-# Búsqueda 3: Debug.Print con texto específico (no genérico)
-rg -n 'Debug\.Print\s*\(\s*"[^"]+"\s*\)' /tmp/repos/TOMWMS_BOF/ \
+# B2: Debug.Print con texto específico no genérico  -> CP-010, CP-011 (ya documentados)
+rg -n 'Debug\.Print\s*\(\s*"[^"]+"\s*\)' /tmp/repos/TOMWMS_BOF/ --type vb \
    | grep -v -E 'Debug\.Print\("(Wait|Espera|Step|Iteracion|Linea)\b'
 
-# Búsqueda 4: comments con nombres propios o "magia/cagada/bug"
-rg -n -i "magia|cagada|hack|workaround|fix\s+by|por\s+error|JP|EJC|MA\b|GT\b" /tmp/repos/TOMWMS_BOF/ \
-   --type vb
+# B3: fechas hardcodeadas New Date(YYYY,M,D)  -> trinity TheGoalDate ya cubierta, no aparecieron nuevas
+rg -n 'New Date\(\s*\d{4}\s*,\s*\d+\s*,\s*\d+\s*\)' /tmp/repos/TOMWMS_BOF/ --type vb
 
-# Búsqueda 5: IdStock hardcodeado
-rg -n 'IdStock\s*=\s*\d{4,}' /tmp/repos/TOMWMS_BOF/
+# B4: marker series fijas  -> CP-008 (3 reportes)
+rg -n 'Serie\s*=\s*"#[A-Za-z]' /tmp/repos/TOMWMS_BOF/ --type vb
 
-# Búsqueda 6: marker series fijas
-rg -n 'Serie\s*=\s*"[#@]' /tmp/repos/TOMWMS_BOF/
+# B5: hardcodes de Codigo de producto  -> CP-009, CP-010, CP-011, CP-012
+rg -n 'Codigo\s*=\s*"[0-9]{8,}"' /tmp/repos/TOMWMS_BOF/ --type vb
+
+# B6: IdStock hardcodeado  -> CP-009 (triple, ya cubierto)
+rg -n 'IdStock\s*=\s*\d{4,}' /tmp/repos/TOMWMS_BOF/ --type vb
 ```
+
+Las 6 búsquedas se corrieron en wave 13-8. Los hallazgos se cerraron con CP-002..CP-012.
+
+## Búsquedas pendientes para próximas waves
+
+- **B7**: comments firmados `'#EJC<YYYYMMDD>...:` cerca de bloques sospechosos (3270 totales en repo, top en `clsLnStock_res_Partial.vb` con 343). Filtrar los firmados en bloques con hardcode/breakpoint dentro de N líneas.
+- **B8**: lotes específicos (`Lote = "..."`) hardcodeados.
+- **B9**: nombres de funciones tipo `Resuelve_Caso_X`, `Hack_Y`, `Workaround_Z`.
+- **B10**: tagged labels GoTo `<INICIALES>_<TIMESTAMP>_<DESCRIPCION>` (CP-010 reveló el ejemplo `EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:`).
 
 ## Promoción de case-pointer a learnings/
 
@@ -117,8 +146,9 @@ Cuando un case-pointer:
 
 ## Cross-refs
 
-- `dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.md` — origen de `CP-007`
-- `dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.md` — origen de `CP-002`, `CP-003`, `CP-006`
+- `dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.md` — origen de `CP-007`/`CP-008`
+- `dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.md` — origen de `CP-002`, `CP-003`, `CP-006`; expandido en wave 13-8 con `frmAnaliticaA`
 - `dataway-analysis/04-ecuacion-de-balance/granularidad-y-keys.md` — referencia al bug histórico de JP
+- `brain/conventions/comments-firmados-EJC.md` — formaliza la convención `'#EJC<YYYYMMDD>...:` que aparece 3270 veces en el repo
 - `brain/scan-comments-tree-map/` — herramienta complementaria que escanea comentarios firmados (Wave 9 followup)
 - `tools/case-seed/` — herramienta para extraer evidencia de cada case-pointer desde BD productiva

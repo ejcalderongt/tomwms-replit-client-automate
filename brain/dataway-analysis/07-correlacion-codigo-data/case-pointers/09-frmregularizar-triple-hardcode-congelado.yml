@@ -1,0 +1,63 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/09-frmregularizar-triple-hardcode-congelado
+title: CP-009 frmRegularizarInventario triple hardcode Congelado
+public: machine-structure
+version: 1
+created_in_wave: wave-13-8
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-009
+  full_id: CP-009-frmregularizar-triple-hardcode-congelado
+  tipo: breakpoint_arqueologico_multi_objeto
+  estado: documentado_sin_efecto_produccion
+  severidad_estimada: media
+  pattern: P-001-breakpoint-arqueologico-codigo-hardcoded
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.vb
+  linea: 526
+  bloque_envolvente: For Each BeVWStockRes In Congelado
+  proposito_flujo: ajuste por fecha de vencimiento de stock congelado
+
+clon:
+  archivo: TOMWMS_BOF/reservastockfrommi3/vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb
+  linea: 526
+  origen_probable: archivo temporal de merge / conflict resolution
+  candidato_limpieza: true
+
+cita_textual:
+  guard: |
+    If Producto.Codigo = "01007121" OrElse Producto.Codigo = "01007011" OrElse BeVWStockRes.IdStock = 4427 Then
+        'Debug.Print("Espera")
+    End If
+  cuerpo_comentado: true
+
+elementos_hardcodeados:
+  - tipo: producto_codigo
+    valor: "01007121"
+    hipotesis: producto especifico investigado
+  - tipo: producto_codigo
+    valor: "01007011"
+    hipotesis: producto similar (codigo consecutivo, posible familia)
+  - tipo: idstock_concreto
+    valor: 4427
+    hipotesis: fila puntual de stock con problema no explicable por codigo
+    advertencia: IdStock no estable - valor probablemente ya no existe
+
+contexto_flujo:
+  iteracion_sobre: lista de stock congelado (estado bloqueado)
+  proposito_inmediato: detectar diferencia Fecha_vence inventario vs stock real
+  efecto_si_diferencia: genera linea de ajuste en clsBeTrans_ajuste_det
+  pregunta_arqueologica: que caso estabas investigando para los 3 elementos juntos
+
+acciones_propuestas:
+  esta_wave: medicion-only
+  proximas:
+    - confirmar_autoria_probable_EJC
+    - query_11_sobre_killios_prd_para_los_2_productos
+    - revisar_si_carpeta_reservastockfrommi3_es_codigo_muerto
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/patterns/breakpoint-arqueologico-codigo-hardcoded.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/01-stockfecha-codigo-030772033524.md
+  - brain/debuged-cases/CP-009.md

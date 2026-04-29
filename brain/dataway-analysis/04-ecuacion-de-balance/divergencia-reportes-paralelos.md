@@ -2,7 +2,9 @@
 
 > **Erratum (wave 13-7)**: una versión previa de este documento describía a `frmMovimiento_Reporte` como "clon experimental abandonado a medio camino" del reporte canónico. Esa lectura era incorrecta. Los dos reportes son **especializaciones legítimas** para dos formas distintas de llevar el cardex en la base de clientes de TOMWMS: el estándar y el con control de póliza. La deuda técnica del reporte fiscal sigue siendo deuda técnica, pero el marco no es "clon olvidado" sino "reporte especializado mantenido con menos frecuencia que el principal".
 
-> **Bug `V-DATAWAY-002` (severidad alta)**: existen al menos dos reportes que calculan balance teórico — `frmStockEnUnaFecha` (estándar, base mayoritaria de clientes) y `frmMovimiento_Reporte` (fiscal con control de póliza, para clientes como Cealsa, Idealsa, Cumbre). Ambos son legítimos en su nicho, pero divergen en lógica de matching, en guards y en aritmética. Si un mismo cliente corriera los dos contra los mismos datos, los resultados serían distintos. Lo más relevante es que el reporte fiscal arrastra **deuda técnica acumulada** (cascada incompleta, guards comentados, bug de `Salidas`).
+> **Erratum (wave 13-8)**: el modelo de "dos reportes paralelos" se queda corto. La búsqueda forense de wave 13-8 reveló un **tercer reporte**: `frmAnaliticaA.vb` (en `Reportes/Analítica/`, 1250 líneas). Este reporte tiene `ModoDepuracion` declarado (línea 16), activado (línea 1242), y muta `trans_movimientos` con el mismo bloque copy-pasted que los otros dos, incluyendo el marker `M.Serie = "#EJCAJUSTEDESFASE"` (línea 624). En total son **tres reportes** que calculan balance teórico y pueden mutar BD. Ver `case-pointers/08-tres-reportes-marker-ejcajustedesfase.md`.
+
+> **Bug `V-DATAWAY-002` (severidad alta)**: existen al menos **tres reportes** que calculan balance teórico — `frmStockEnUnaFecha` (estándar, base mayoritaria de clientes), `frmMovimiento_Reporte` (fiscal con control de póliza, para clientes como Cealsa, Idealsa, Cumbre) y `frmAnaliticaA` (analítica con orientación dashboard, no estaba en el modelo previo). Los tres son legítimos en su nicho, pero divergen en lógica de matching, en guards y en aritmética. Si un mismo cliente corriera los tres contra los mismos datos, los resultados serían distintos. Lo más relevante es que el reporte fiscal arrastra **deuda técnica acumulada** (cascada incompleta, guards comentados, bug de `Salidas`); y los reportes estándar + analítica + fiscal arrastran un **bloque mutador copy-pasted con bug aritmético `Diferencia += 1`** replicado tres veces.
 
 ## TL;DR
 
@@ -18,9 +20,9 @@
 | Cantidad de líneas | ~1111 | ~705 |
 | Comments con firma personal | "Wait a second!" + marker `#EJCAJUSTEDESFASE` | "Magia por EJC para corregir cagada" + "(Por error en el cambio de ubicación fecha_vence = now -> JP)" |
 
-## Por qué existen dos reportes
+## Por qué existen dos reportes (y un tercero analítico)
 
-**No es accidente ni clon olvidado**. Es decisión arquitectónica derivada del modelo de negocio de cada cliente:
+**No es accidente ni clon olvidado**. Es decisión arquitectónica derivada del modelo de negocio de cada cliente. Para los dos primeros (estándar y fiscal):
 
 ### Cliente sin control de póliza (mayoría)
 
@@ -36,6 +38,14 @@ El cardex tiene **un eje adicional de trazabilidad: la póliza** (probable refer
 
 Por eso existe un segundo reporte. La cascada de matching de 4 niveles del reporte fiscal es **necesaria para reconciliar variaciones de granularidad introducidas por la póliza**, no es deuda — es funcionalidad.
 
+### El tercer reporte: `frmAnaliticaA` (descubierto wave 13-8)
+
+`frmAnaliticaA.vb` vive en `Reportes/Analítica/` junto a `frmAnalitica1`, `frmDistribucionPorTramo`, `frmIndicadores`, `Dashboard1` y `frmDashView1`. Tamaño 1250 líneas. Tiene `ModoDepuracion` declarado en línea 16, activado en línea 1242, y dos bloques `If ModoDepuracion Then` mutadores (líneas 600 y 648), uno de los cuales escribe `M.Serie = "#EJCAJUSTEDESFASE"` en línea 624.
+
+A diferencia del estándar y el fiscal, **no está claro para qué cliente o caso de negocio fue creado** — su carpeta sugiere uso analítico/dashboard. Acción pendiente: verificar si `frmAnaliticaA` aparece en el menú principal de algún cliente real, o si quedó como herramienta de back-office no expuesta. Si está oculto, el impacto en BD puede ser pequeño; si es visible, el impacto se suma al de los otros dos.
+
+Ver `case-pointers/08-tres-reportes-marker-ejcajustedesfase.md` y bitácora `CP-008.md`.
+
 ### Lo que sí es deuda técnica del reporte fiscal
 
 - El guard `IdMovimiento` comentado (probable intento de fix abandonado sin documentar).
@@ -43,6 +53,12 @@ Por eso existe un segundo reporte. La cascada de matching de 4 niveles del repor
 - Los hardcodes `TheGoalDate` + `Wait a second!` + `Magia por EJC` que quedaron del último debug.
 
 Son tres cosas distintas. Las trato como tales.
+
+### Lo que es deuda técnica compartida por los tres mutadores
+
+- El bloque `M.Cantidad += Diferencia / Diferencia += 1 / M.Serie = "#EJCAJUSTEDESFASE" / Eliminar/Actualizar` está copy-pasted **idéntico** en los tres reportes (`frmStockEnUnaFecha:425`, `frmMovimiento_Reporte:487`, `frmAnaliticaA:624`).
+- El bug aritmético `Diferencia += 1` (cuando debería ser `Diferencia += M.Cantidad` o similar) está triplicado.
+- Cualquier intento de corrección debe aplicarse a los tres sitios. Refactor candidato: extraer helper `clsAjusteDesfase.AplicarA(lMovimientos, Diferencia)`.
 
 ## Las 4 divergencias concretas
 
@@ -203,3 +219,4 @@ Documentados en sub-wave 13-7, pendientes de confirmación con casos reales del 
 - `07-correlacion-codigo-data/case-pointers/04-frmmovreporte-thegoaldate-declaracion.md` — CP-004
 - `07-correlacion-codigo-data/case-pointers/05-frmmovreporte-breakpoint-fecha.md` — CP-005
 - `07-correlacion-codigo-data/case-pointers/06-frmmovreporte-breakpoint-triple.md` — CP-006
+- `07-correlacion-codigo-data/case-pointers/08-tres-reportes-marker-ejcajustedesfase.md` — CP-008 (familia expandida)

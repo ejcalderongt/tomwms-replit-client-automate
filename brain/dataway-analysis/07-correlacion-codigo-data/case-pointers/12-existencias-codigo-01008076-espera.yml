@@ -1,0 +1,65 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/12-existencias-codigo-01008076-espera
+title: CP-012 frmExistenciasConReserva breakpoint Codigo 01008076
+public: machine-structure
+version: 1
+created_in_wave: wave-13-8
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-012
+  full_id: CP-012-existencias-codigo-01008076-espera
+  tipo: breakpoint_arqueologico_codigo_hardcoded_mas_intenciones_abandonadas
+  estado: documentado_debug_activo
+  severidad_estimada: baja
+  pattern: P-001-breakpoint-arqueologico-codigo-hardcoded
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Resumen_Stock/frmExistenciasConReserva.vb
+  linea: 283
+  bloque_envolvente: For Each P In DsExistenciasConReserva.Detalle
+
+cita_textual: |
+  For Each P In DsExistenciasConReserva.Detalle()
+
+      ChangeLabelMsg("Actualizando_Reservas: " & P.Codigo)
+
+      If P.Codigo = "01008076" Then
+          Debug.Print("Espera")
+      End If
+
+      'If P.Cant_Presentacion = 0 Then
+      '    P.Cant_Presentacion = 0
+      'End If
+
+      If P.Cant_UMBas = 0 Then
+          P.Cant_UMBas = 0
+      End If
+
+elementos_hardcodeados:
+  - tipo: producto_codigo
+    valor: "01008076"
+    hipotesis: SKU especifico con problema en calculo de reservas
+
+elementos_secundarios_relevantes:
+  guard_comentado_muerto_muerto:
+    descripcion: If P.Cant_Presentacion = 0 Then P.Cant_Presentacion = 0
+    naturaleza: no-op asignar a si mismo
+    interpretacion: placeholder abandonado de intencion no implementada
+  guard_activo_no_op:
+    descripcion: If P.Cant_UMBas = 0 Then P.Cant_UMBas = 0
+    naturaleza: no-op asignar a si mismo
+    interpretacion: misma intencion abandonada pero quedo activa
+
+debug_activo: true
+afecta_BD: false
+
+acciones_propuestas:
+  esta_wave: medicion-only
+  proximas:
+    - confirmar_autoria
+    - query_14_killios_prd_para_codigo_01008076
+    - candidato_limpieza_triple_breakpoint_y_2_guards_no_op
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/patterns/breakpoint-arqueologico-codigo-hardcoded.md
+  - brain/debuged-cases/CP-012.md

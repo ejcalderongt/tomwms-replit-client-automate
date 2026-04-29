@@ -223,6 +223,55 @@ Es la vista que el código consume para "saber qué hay disponible para reservar
 ### considerar_paletizado_en_reabasto
 **Definición**: config booleano que activa consideración de paletizado en el reabasto. Descubierto en `From_MI3` (Wave 12C-1).
 
+## Terminología de catálogo forense (case-pointers, patterns, conventions)
+
+### case-pointer (auto-confirmable)
+**Definición**: case-pointer cuya verificación no requiere entrevistar a un actor humano ni reproducir el bug — basta con correr una query SQL contra producción para confirmar o refutar el impacto.
+
+**Ejemplo**: `CP-007` y `CP-008` (marker `Serie = "#EJCAJUSTEDESFASE"`). La query 06 cuenta movimientos con esa `Serie` y responde sola: "esto pasó / no pasó / pasó N veces".
+
+**No confundir con**: case-pointer que requiere entrevista (mayoría) o reproducción manual.
+
+### bitácora viva
+**Definición**: archivo en `brain/debuged-cases/CP-NNN.md` con frontmatter YAML + bitácora append-only. Rastrea status (`open` → `reproducing` → `confirmed` → `solved`/`wont-fix`/`obsolete`), avances datados, queries corridas, decisiones condicionales.
+
+**Característica clave**: **append-only**. Nunca se borra historia. Cualquier cambio se documenta como entrada nueva.
+
+### espejo (entre case-pointers)
+**Definición**: dos o más case-pointers que apuntan al **mismo caso histórico** vivido en archivos distintos (típicamente reportes paralelos especializados por tipo de cliente).
+
+**Ejemplo**: `CP-001` (en `frmStockEnUnaFecha`) ↔ `CP-006` (en `frmMovimiento_Reporte`) — ambos investigan el caso del producto `030772033524` con `Fecha 2019-08-30`, pero en los dos reportes paralelos.
+
+### trinity (en case-pointers)
+**Definición**: grupo de tres case-pointers que se sostienen entre sí (uno declara, otro consume amplio, otro consume preciso) — la limpieza de uno requiere limpiar los tres.
+
+**Ejemplo**: trinity TheGoalDate = `CP-004` (declara `Dim TheGoalDate As Date = New Date(2019, 8, 30)`) + `CP-005` (consume amplio: `If Fecha_Vence = TheGoalDate Then ...`) + `CP-006` (consume preciso: triple condición).
+
+### marker persistente (en BD)
+**Definición**: string hardcodeado en código fuente que se asigna a un campo persistente de BD (típicamente `Serie`, `Comentario`, `Observaciones`) para dejar **huella en producción** de que un registro pasó por una herramienta o un flujo específico.
+
+**Ejemplo**: `M.Serie = "#EJCAJUSTEDESFASE"` en los 3 reportes con `ModoDepuracion`. Cualquier auditoría de BD puede contar registros con esa `Serie` y medir el impacto histórico de la herramienta.
+
+**Por qué importa**: convierte un case-pointer común (sin efecto en datos) en un case-pointer **auto-confirmable** (la BD responde sola).
+
+### breakpoint arqueológico (P-001)
+**Definición**: bloque `If <Producto>.Codigo = "<SKU>" Then Debug.Print/Write("<TEXTO_CORTO>") End If` dejado en código fuente como bypass de debug para parar el debugger solo en el caso problemático sin tener que hacer step-through de los casos sanos previos. Cuando el bug se "resuelve" (típicamente ad-hoc en producción), el `If` queda como fósil.
+
+**Pattern formal**: `P-001` en `dataway-analysis/07-correlacion-codigo-data/case-pointers/patterns/breakpoint-arqueologico-codigo-hardcoded.md`.
+
+**Instancias documentadas**: `CP-001`, `CP-009`, `CP-010`, `CP-011`, `CP-012`.
+
+### convention de comments firmados (C-001)
+**Definición**: convención personal de Erik para firmar cambios en código con comments del estilo `'#EJC<YYYYMMDD>[<sufijo>]: <body>`. Aparece **3270 veces** en `TOMWMS_BOF`. Documentado formalmente en `brain/conventions/comments-firmados-EJC.md`.
+
+**Diferencia con marker `#EJCAJUSTEDESFASE`**: comparten iniciales `EJC` pero son cosas distintas (uno es comment de bitácora inline, el otro es string asignado a campo de BD).
+
+### pattern (catálogo)
+**Definición**: forma estructural repetida en el código (no contenido). Cuando dos o más case-pointers comparten forma, se promueven a pattern. Vive en `dataway-analysis/07-correlacion-codigo-data/case-pointers/patterns/`. Naming: `P-NNN`.
+
+### convention (catálogo)
+**Definición**: acuerdo (explícito o implícito) que sigue el equipo. Distinto de pattern (que es forma observada en código sin importar si fue intencional). Vive en `brain/conventions/`. Naming: `C-NNN`.
+
 ## Notas
 
 - Cuando aparezca un término nuevo en cualquier documento del brain, agregarlo aquí con definición + ejemplo.

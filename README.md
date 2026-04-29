@@ -400,6 +400,11 @@ Snapshot al cierre de el ciclo 8.
    AREA                          | OBSERVADO       | DOCUMENTADO | CONFIANZA
    ------------------------------+-----------------+-------------+----------
    Casos del motor de reserva    | 25 + 3 LLR      | 11/28       | media
+   Case-pointers (hardcodes)     | 12 documentados | 12/12       | alta
+   Patterns en case-pointers     | 1 (P-001)       | 1/1         | alta
+   Conventions de codigo         | 1 (C-001 #EJC)  | 1/1         | alta
+   Reportes con ModoDepuracion   | 15 declarados   | 15/15       | alta
+   Reportes que mutan + marker   | 3 mutadores     | 3/3         | alta
    Estados de pedido             | 6 distintos     | 6/6         | alta
    Estados de OC                 | 6 distintos     | 0/6         | NULA *
    Estados de producto           | 18 distintos    | 0/18        | NULA *
