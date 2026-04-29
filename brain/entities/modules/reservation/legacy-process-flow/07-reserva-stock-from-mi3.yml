@@ -1,0 +1,576 @@
+id: "07-reserva-stock-from-mi3"
+title: "Reserva_Stock_From_MI3"
+file: "TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb"
+line_range: "L18192-L26337"
+size_lines: 8146
+classification: "ENTRY POINT alternativo / motor de reserva con state machine GoTo"
+documented_in: "Wave 12 sub-wave 12C-1, 2026-04-29 (panoramico estructurado)"
+arquitectura: |
+  La funcion mas grande del archivo y la unica que esta REFACTORIZADA con helpers
+  extraidos (a diferencia de Reabasto que es flat). Implementa un MOTOR DE RESERVA
+  CON STATE MACHINE basada en GoTo + Select Case. Tiene 7 puntos de auto-recursion
+  (vs 3 en Reabasto), 9 configs respetados, sistema de auditoria con casos numerados
+  in-memory (_LLR_CASO_#28_ a #31_), y log estructurado externo via
+  clsLnTrans_pe_det_log_reserva. Es la funcion mas activamente mantenida del modulo
+  (4 fixes en 2024-2025 incluyendo #CKFK20250924).
+
+signature_identica_a_reabasto: true
+signature:
+  language: "VB.NET"
+  declaration: |
+    Public Shared Function Reserva_Stock_From_MI3(
+        ByRef pStockResSolicitud As clsBeStock_res,
+        ByVal DiasVencimiento As Double,
+        ByVal MaquinaQueSolicita As String,
+        ByVal pBeConfigEnc As clsBeI_nav_config_enc,
+        ByRef pCantidadDisponibleStock As Double,
+        ByVal pIdPropietarioBodega As Integer,
+        ByRef pListStockResOUT As List(Of clsBeStock_res),
+        ByRef lConnection As SqlConnection,
+        ByRef ltransaction As SqlTransaction,
+        Optional No_Linea As Integer = 0,
+        Optional pTarea_Reabasto As Boolean = False,
+        Optional ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det = Nothing
+    ) As Boolean
+
+cambio_de_nombre_de_parametro:
+  observacion: |
+    El primer parametro se llama pStockResSolicitud (vs pStockRes en Reabasto).
+    Es un cambio puramente cosmetico pero indica que MI3 fue escrita pensando en
+    el rol semantico ('solicitud') en lugar de la entidad ('stock_res').
+
+helpers_extraidos:
+  observacion: |
+    MI3 es la UNICA funcion del pipeline que esta refactorizada con helpers extraidos.
+    Esto sugiere que fue revisada/modernizada despues que las demas. Los helpers
+    viven en el mismo archivo (L26340-L26679) entre From_MI3 y From_SAP.
+  helpers:
+    - name: "Procesar_Y_Restar_Stock_Reservado"
+      line: 26340
+      visibility: "Public Shared Sub"
+      uso_en_mi3: "3 llamadas iniciales sobre 3 listas distintas (lBeStockExistente, lBeStockExistenteZonasNoPicking, lBeStockExistenteZonaPicking)"
+      observacion: "Reemplaza el inline 'Restar_Stock_Reservado_EJC' que Reabasto usa"
+      pendiente_documentar: true
+
+    - name: "Procesar_Logica_Presentacion_Stock"
+      line: 26399
+      visibility: "Public Shared Sub"
+      uso_en_mi3: "0 llamadas DIRECTAS desde MI3 (usado desde otra parte del codebase, posiblemente otras funciones del archivo o desde fuera)"
+      observacion: "Helper aparentemente preparatorio, no consumido por MI3 misma"
+      pendiente_documentar: true
+
+    - name: "Get_Objetos_Producto"
+      line: 26443
+      visibility: "Private Shared Sub"
+      uso_en_mi3: "1 llamada inicial"
+      observacion: "Resuelve producto + presentacion por defecto. En Reabasto la logica equivalente esta inline."
+      pendiente_documentar: true
+
+    - name: "Tiene_Cantidad_Suficiente"
+      line: 26500
+      visibility: "Public Shared Function"
+      observacion: "Validador puro, util potencialmente para otros consumidores"
+      pendiente_documentar: true
+
+    - name: "Get_Fecha_Vence_Minima_Stock_Reserva_MI3"
+      line: 26524
+      visibility: "Private Shared Function"
+      uso_en_mi3: "46 llamadas (uso intensivo)"
+      observacion: "Helper FEFO especifico de MI3 (sufijo _MI3 lo declara). Calcula la fecha minima de vencimiento que se puede reservar dado el contexto de zona/presentacion."
+      pendiente_documentar: true
+      severity_pendiente: "ALTA — 46 llamadas en una funcion son MUCHISIMAS. Su comportamiento define gran parte del FEFO de MI3."
+
+    - name: "Get_All_By_IdBodega"
+      line: 26648
+      visibility: "Public Shared Function"
+      observacion: "Helper generico de lookup, no parece especifico de MI3"
+      pendiente_documentar: false
+      nota: "Probablemente reusable, prioridad baja"
+
+helpers_externos_llamados:
+  - name: "Cargar_Bodega_Y_Linea_Pedido"
+    uso_en_mi3: "1 llamada inicial"
+    nota: "No esta en clsLnStock_res_Partial.vb, viene de otro modulo. Carga BeBodega y BePedidoDet."
+
+  - name: "Obtener_Listas_De_Stock"
+    uso_en_mi3: "1 llamada que devuelve un TUPLE/AnonymousType con 3 listas (lBeStockExistente, lBeStockExistenteZonasNoPicking, lBeStockExistenteZonaPicking)"
+    nota: "Helper externo crucial. Su implementacion define que stock se considera 'disponible' en cada zona."
+    pendiente_localizar: true
+
+state_machine_con_goto:
+  descripcion: |
+    MI3 implementa un control de flujo no-estructurado con labels GoTo + Select Case.
+    Esto es un anti-patron de codigo moderno pero esta usado deliberadamente para
+    permitir REANUDACION del proceso desde un punto arbitrario (Iniciar_En = 1, 2, 3).
+  variables_de_estado:
+    - "Iniciar_En As Integer = 0 (init en variables)"
+    - "ListaEstadosDeProceso As List(Of Integer) — codigos opacos 100, 101, 102, 103"
+    - "vNombreCasoReservaInternoWMS As String — acumula markers _LLR_CASO_#XX_"
+  labels:
+    - label: "INICIAR_CON_NUEVO_LSTOCK"
+      proposito: "Reinicia el flujo desde la carga de listas de stock (despues de un cambio de contexto)"
+    - label: "INICIAR_EN_1"
+      proposito: "Tomar pallets completos lBeStockConPalletsCompletosClavaud"
+    - label: "INICIAR_EN_2"
+      proposito: "Tomar pallets incompletos lBeStockConPalletsInCompletosClavaud"
+    - label: "INICIAR_EN_3"
+      proposito: "Tomar producto de la zona de picking"
+    - label: "EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING"
+      proposito: "Branch a reserva en zona picking (label fechado, sugiere fix del 2023-08-08)"
+    - label: "EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1"
+      proposito: "Primer pase de reserva en zona no-picking"
+    - label: "EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING"
+      proposito: "Segundo pase de reserva en zona no-picking (sin sufijo '1')"
+      bug_potencial: "Nombre casi-identico al anterior. Riesgo alto de error de mantenimiento."
+    - label: "EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA"
+      proposito: "Fallback final: reservar de la lista como la devolvio lStock"
+    - label: "EXPLOSIONAR_PRODUCTO"
+      proposito: "Salto a la rutina de explosion por multiplo"
+    - label: "ANALIZAR_FECHAS_DE_VENCIMIENTO"
+      proposito: "Target compartido por multiples GoTos despues de validacion de fecha"
+  select_case:
+    line: 19453
+    variable: "Iniciar_En"
+    casos: ["Case 1 → INICIAR_EN_1", "Case 2 → INICIAR_EN_2", "Case 3 → INICIAR_EN_3", "Case Else → EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA"]
+
+bloques_principales:
+  - id: "B1"
+    line_range: "L18192-L18311"
+    nombre: "Firma + #Region Variables (50+ Dim)"
+
+  - id: "B2"
+    line_range: "L18312-L18365"
+    nombre: "Setup inicial: tipo pedido, devolucion, BeBodega, BePedidoDet, Get_Objetos_Producto, Obtener_Listas_De_Stock"
+    descripcion: |
+      Detecta si es devolucion (vIdTipoPedido = Devolucion_Proveedor), llama
+      Cargar_Bodega_Y_Linea_Pedido, Get_Objetos_Producto, Obtener_Listas_De_Stock.
+      Termina con label INICIAR_CON_NUEVO_LSTOCK (target de reanudacion).
+
+  - id: "B3"
+    line_range: "L18367-L18410"
+    nombre: "#Region RESTAR_STOCK_RESERVADO"
+    descripcion: |
+      3 llamadas a Procesar_Y_Restar_Stock_Reservado sobre lBeStockExistente,
+      lBeStockExistenteZonasNoPicking, lBeStockExistenteZonaPicking.
+      Helper extraido (vs inline en Reabasto).
+
+  - id: "B4"
+    line_range: "L18412-L18433"
+    nombre: "#Region OBTENER_FECHA_MINIMA_DE_INVENTARIO"
+    descripcion: "Calcula FechaMinimaVenceStock con Get_Fecha_Vence_Minima_Stock_Reserva_MI3 (uno de los 46 calls)"
+
+  - id: "B5"
+    line_range: "L18434-L19060"
+    nombre: "Validaciones + Select Case Iniciar_En + GoTos"
+    descripcion: |
+      Logica de control: arma ListaEstadosDeProceso, ejecuta Select Case Iniciar_En
+      en L19453 que dispara los GoTo INICIAR_EN_1/2/3 segun el estado de reanudacion.
+
+  - id: "B6"
+    line_range: "L19061-L19123"
+    nombre: "#Region Recalcular stocks y fechas de vencimiento"
+    descripcion: "Recalculo de FEFO con multiples llamadas a Get_Fecha_Vence_Minima_Stock_Reserva_MI3"
+
+  - id: "B7"
+    line_range: "L19124-L20942"
+    nombre: "Loop Clavaud Pallets Completos + Pallets Incompletos (gap sin region explicita)"
+    descripcion: "Es el loop principal Clavaud, sin #Region pero ~1.800 lineas que cubren INICIAR_EN_1 e INICIAR_EN_2"
+
+  - id: "B8"
+    line_range: "L20943-L21323"
+    nombre: "#Region Reservar stock de zona de picking (loop INICIAR_EN_3)"
+    descripcion: |
+      For Each vStockOrigen In lBeStockZonaPicking.
+      Usa ListaEstadosDeProceso.Add(102) para tracking. GoTo a EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1
+      cuando la presentacion = 0 y hay zona no-picking disponible.
+
+  - id: "B9"
+    line_range: "L21324-L21392"
+    nombre: "#Region Explosion por multiplo (anidada dentro de zona picking)"
+    descripcion: "Algoritmo de explosion fisica de pallets cuando la cantidad solicitada es multiplo de la presentacion"
+
+  - id: "B10"
+    line_range: "L22111-L22836"
+    nombre: "#Region Reserverar stock de zona NO Picking (PASE 1)"
+    descripcion: |
+      TYPO en el nombre: 'Reserverar' (con doble 'r'). Activado por GoTo
+      EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1. Usa ListaEstadosDeProceso.Add(103)
+      con Exit For agresivo (sale del loop al primer match).
+
+  - id: "B11"
+    line_range: "L22845-L23874"
+    nombre: "#Region Reservar stock de zona NO Picking (PASE 2 - typo corregido)"
+    descripcion: |
+      Activado por GoTo EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING (sin sufijo 1).
+      Es el SEGUNDO pase, probablemente despues de explosion o como fallback.
+      Bug potencial V-MI3-XXX: nombres de label casi-identicos.
+
+  - id: "B12"
+    line_range: "L24395-L24463"
+    nombre: "#Region Explosion por multiplo (en zona NO picking)"
+    descripcion: "Segunda implementacion de explosion, especifica para zona no-picking"
+
+  - id: "B13"
+    line_range: "L24464-L25599"
+    nombre: "Bloque sin region: ultimo pase + EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA"
+    descripcion: "Reserva de la lista como la devolvio lStock (fallback final del Select Case)"
+
+  - id: "B14"
+    line_range: "L25600-L26337"
+    nombre: "Cierre: 7 recursiones + INSERT principal + Catch"
+    descripcion: |
+      Concentra los 7 puntos de Reserva_Stock_From_MI3(self) y los 3 INSERT principales
+      via Inserta_Stock_Reservado. Termina con Catch que sigue patron de Reabasto
+      (Throw ex perdiendo stack trace).
+
+las_7_recursiones:
+  patron: "Degradacion gradual con 2 modos: UMBas (igual que Reabasto) y PresFaltante (NUEVO)"
+  guard_anti_loop: |
+    Todas las recursiones tienen guard 'If BeStockResUMBas.No_bulto = 0 Then ...
+    No_bulto = 1965 ... recurse'. MI3 NO tiene el bug latente V-FROMR-008 de Reabasto
+    (todas sus recursiones tienen guard).
+  log_pre_recursion: |
+    Cada recursion se precede de:
+      1. Append a vNombreCasoReservaInternoWMS (ej '_LLR_CASO_#28_')
+      2. Construccion de vMensajeReserva con contexto rico (FechaMinima, DiasVencimiento,
+         FechaMinimaVenceZonaPicking, FechaMinimaVenceZonaALM, Lote, Ubicacion)
+      3. Persistencia en BD via clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva
+    Esto da observabilidad rica que Reabasto NO tiene.
+  puntos:
+    - line: 25661
+      caso: "_LLR_CASO_#28_"
+      contexto: "Zona NO picking, stock en UMBas (sin presentacion equivalente)"
+      acumulador: "vlBeStockAReservarUMBas"
+      fix_historico: "#CKFK20240116: cambio de ExcluirUbicacionesPicking por pTareaReabasto"
+
+    - line: 25749
+      caso: "_LLR_CASO_#29_ (inferido)"
+      contexto: "Solicitud con presentacion, mantener presentacion en recursion"
+      acumulador: "vlBeStockAReservarUMBas"
+      fix_historico: "#EJC20231031: mantener presentacion. ANTES la recursion la perdia (bug latente entre 2018-2023 hasta este fix)"
+
+    - line: 25814
+      caso: "_LLR_CASO_#30_ (inferido)"
+      contexto: "Branch alternativo presentacion + decimal"
+
+    - line: 25900
+      caso: "_LLR_CASO_#31_ (inferido)"
+      contexto: "PresFaltante — stock disponible en presentacion DISTINTA a la solicitada"
+      acumulador: "vlBeStockAReservarPresFaltante"
+      severity: "NOVEDAD ARQUITECTONICA — caso ausente en Reabasto. Permite usar stock con presentacion incorrecta como fallback."
+      pendiente_validacion: "¿Que campo distingue 'presentacion faltante' vs 'presentacion correcta'? Hay que leer L25800-L25900 con detalle para ver el filtro."
+
+    - line: 26132
+      caso: "(sin marker explicito, dentro de zona NO picking)"
+      contexto: "Recursion en zona NO picking despues de un INSERT exitoso"
+      fix_historico: "#CKFK20250924: 'Agregar al log' (fix muy reciente, 2 meses antes de hoy)"
+
+    - line: 26272
+      caso: "(sin marker explicito)"
+      contexto: "Branch fallback final: pStockResSolicitud sin presentacion + hay stock + Explosion_Automatica"
+      acumulador: "vlBeStockAReservarUMBas"
+
+sistema_de_casos_auditables:
+  descripcion: |
+    MI3 acumula in-memory el path ejecutado en vNombreCasoReservaInternoWMS y lo
+    persiste a la tabla i_nav_trans_pe_det_log_reserva via Agregar_Log_Reserva.
+    Esto permite a operaciones reconstruir QUE camino tomo la funcion para una
+    reserva especifica. Es la unica funcion del pipeline con esta capacidad.
+  casos_descubiertos:
+    - "_LLR_CASO_#28_"
+    - "_LLR_CASO_#29_"
+    - "_LLR_CASO_#30_"
+    - "_LLR_CASO_#31_"
+    - "_CASO_#30_ (sin LLR — variante alterna)"
+    - "_CASO_#31_ (sin LLR — variante alterna)"
+  acronimo_LLR_pendiente: "Pendiente confirmacion de Erik: ¿LLR = Lista_Local_Reserva? ¿Logica_Local_Reabasto?"
+  cross_ref: "tabla i_nav_trans_pe_det_log_reserva — schema y consumidores pendientes"
+
+regla_de_negocio:
+  - id: "R-MI3-001"
+    description: "Detecta tipo de pedido. Si es Devolucion_Proveedor, propaga pEs_Devolucion=True a Obtener_Listas_De_Stock (cambia que stock es 'disponible' para devolucion)."
+    line: 18321
+
+  - id: "R-MI3-002"
+    description: "State machine reanudable: Iniciar_En = 1/2/3 → Select Case → GoTo INICIAR_EN_X. Permite invocar MI3 desde un estado parcial."
+    line: 19453
+    severity: "ANTI-PATRON pero intencional"
+
+  - id: "R-MI3-003"
+    description: "Algoritmo Clavaud aplicado siempre que pBeConfigEnc.Conservar_Zona_Picking_Clavaud=True (igual que Reabasto, NO hardcoded)."
+    config: "Conservar_Zona_Picking_Clavaud"
+
+  - id: "R-MI3-004"
+    description: "Respeta considerar_paletizado_en_reabasto (config ausente en otras funciones del pipeline)."
+    config: "considerar_paletizado_en_reabasto"
+    novedad: true
+
+  - id: "R-MI3-005"
+    description: "Respeta Interface_SAP — sugiere que MI3 discrimina behavior cuando el ERP es SAP."
+    config: "Interface_SAP"
+    novedad: true
+    pendiente_validacion: "¿Que cambia exactamente cuando Interface_SAP=True? Hay que rg para ver las ramas."
+
+  - id: "R-MI3-006"
+    description: "Respeta Despachar_existencia_parcial (consistente con Lista_Result y Reabasto)."
+    config: "Despachar_existencia_parcial"
+
+  - id: "R-MI3-007"
+    description: "Respeta Rechazar_pedido_incompleto (consistente con Reabasto)."
+    config: "Rechazar_pedido_incompleto"
+
+  - id: "R-MI3-008"
+    description: "Respeta Explosion_Automatica + Explosion_Automatica_Desde_Ubicacion_Picking + Explosion_Automatica_Nivel_Max (igual que Reabasto)."
+
+  - id: "R-MI3-009"
+    description: "Audita cada path elegido en vNombreCasoReservaInternoWMS y persiste a i_nav_trans_pe_det_log_reserva via Agregar_Log_Reserva. Capacidad UNICA de MI3."
+
+  - id: "R-MI3-010"
+    description: "Recursion PresFaltante (L25900): si hay stock pero en presentacion distinta a la solicitada, recursa con BeStockResPresFalt para usarlo como fallback."
+
+  - id: "R-MI3-011"
+    description: "Recursion con presentacion mantenida: si la solicitud original tenia presentacion, la recursion preserva IdPresentacion (fix #EJC20231031)."
+
+violaciones_y_bugs:
+  - id: "V-MI3-001"
+    description: |
+      Debug code hardcoded en produccion:
+      'If pStockResSolicitud.IdProductoBodega = 616 Then Debug.Print("Aqui " & DiasVencimiento)'.
+      Equivalente al V-FROMR-001 pero con IdProductoBodega = 616 en vez de 183/82.
+    line: 18313
+    severity: "BAJA"
+
+  - id: "V-MI3-002"
+    description: |
+      Uso intensivo de GoTo + labels (10+ labels distintas). Anti-patron de programacion
+      estructurada moderna. Aunque permite reanudacion del proceso (intencional),
+      vuelve el control de flujo extremadamente dificil de seguir. Cualquier refactor
+      a .NET 8 con C#/F# debera usar metodos separados o state pattern explicito.
+    severity: "ALTA — riesgo de mantenimiento"
+    cross_ref: "no aparece en ninguna otra funcion del pipeline; MI3 es la unica con GoTo"
+
+  - id: "V-MI3-003"
+    description: |
+      Magic numbers en ListaEstadosDeProceso: 100, 101, 102, 103. Sin enum o constante
+      que documente que significan. Codigos opacos que dificultan debugging y trace.
+    severity: "MEDIA"
+
+  - id: "V-MI3-004"
+    description: |
+      Nombres de label CASI-IDENTICOS:
+        EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1
+        EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING
+      Diferenciados solo por sufijo '1'. Riesgo alto de error de mantenimiento (un dev
+      futuro podria GoTo al equivocado y disparar bug logico). Tambien typo en el
+      nombre de #Region: 'Reserverar' (doble 'r') en la 1ra iteracion vs 'Reservar'
+      en la 2da.
+    severity: "MEDIA"
+
+  - id: "V-MI3-005"
+    description: |
+      BUG GRAVE en L26283:
+        vMensajeNoExplosionEnZonasNoPicking = vMensajeNoExplosionEnZonasNoPicking = String.Format(...)
+      Doble '=' — el segundo es comparacion (devuelve Boolean), el primero asigna ese
+      Boolean a la variable. La intencion era CONCATENAR ('+=' o '&=' en VB.NET).
+      Resultado: el mensaje de error nunca se concatena bien en este path, queda como
+      String "True" o "False" segun comparison.
+    line: 26283
+    severity: "ALTA — bug funcional confirmado"
+    sugerencia: "Cambiar a 'vMensajeNoExplosionEnZonasNoPicking &= String.Format(...)' o '+= ...'"
+
+  - id: "V-MI3-006"
+    description: |
+      Catch generico (heredado de Reabasto): 'Catch ex As Exception | Throw ex | End Try'.
+      Pierde stack trace original. NO agrega contexto via clsLnLog_error_wms.Agregar_Error
+      como hacen las funciones del pipeline pre-Reabasto.
+    line: 26336
+    severity: "MEDIA"
+    cross_ref: "V-FROMR-004"
+
+  - id: "V-MI3-007"
+    description: |
+      Hardcode Indicador='PED' (estimado, requiere lectura puntual de cada Indicador-set).
+      23 ocurrencias detectadas en sweep de anchors.
+    severity: "MEDIA"
+    cross_ref: "V-001 piloto, V-FROMR-002, V-OV1-001, V-OV2-001"
+    pendiente_validacion: "Confirmar que las 23 son hardcode 'PED' (probable) o si hay alguna que use enum/variable."
+
+  - id: "V-MI3-008"
+    description: |
+      Estado='UNCOMMITED' (typo persistente, magic string sin enum).
+      29 ocurrencias detectadas en sweep.
+    severity: "BAJA"
+    cross_ref: "V-002 piloto, V-FROMR-009, V-OV1-002, V-OV2-002"
+
+  - id: "V-MI3-009"
+    description: |
+      Acronimo opaco LLR en markers _LLR_CASO_#XX_. Sin documentacion en codigo.
+      Dificulta interpretar logs de auditoria sin conocimiento tribal.
+    severity: "BAJA"
+    pendiente: "Q-MI3-02 (que significa LLR)"
+
+mutaciones_de_estado:
+  - tabla: "stock"
+    operacion: "INSERT/UPDATE/DELETE — split fisico estimado (similar a Reabasto)"
+    pendiente_confirmar: "Hay 49 STOCK-CALL detectados pero no auditadas individualmente. Probable que MI3 haga split fisico igual que Reabasto en branches similares."
+
+  - tabla: "stock_res"
+    operacion: "INSERT batch via Inserta_Stock_Reservado (3 puntos principales)"
+
+  - tabla: "i_nav_trans_pe_det_log_reserva"
+    operacion: "INSERT (audit log)"
+    via: "clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva"
+    severity: "NOVEDAD — solo MI3 escribe a esta tabla"
+    cross_ref: "schema y consumidores pendientes en brain/entities/audit-trail/"
+
+  - tabla: "i_nav_ped_traslado_det"
+    operacion: "UPDATE Quantity_Reserved_WMS (igual que Reabasto, condicional a pBeTrasladoDet)"
+
+  - parametro: "pStockResSolicitud (ByRef)"
+    operacion: "Pendiente confirmar si tambien se MUTA al final como Reabasto (V-FROMR-006)"
+    pendiente_validacion: true
+
+  - parametro: "pListStockResOUT (ByRef)"
+    operacion: "Pendiente confirmar semantica (append/replace) — INSERT-RES count = 30 sugiere multiples puntos de assign"
+    pendiente_validacion: true
+
+  - parametro: "pCantidadDisponibleStock (ByRef)"
+    operacion: "ASIGNA cuando dispara error S0002/S0004/S0005/S0006"
+
+callees_outbound:
+  helpers_propios_de_mi3:
+    - "Procesar_Y_Restar_Stock_Reservado (3x)"
+    - "Get_Objetos_Producto (1x)"
+    - "Get_Fecha_Vence_Minima_Stock_Reserva_MI3 (46x — uso intensivo)"
+    - "Restar_Stock_Reservado (55x — variante sin _EJC)"
+  helpers_externos_no_documentados:
+    - "Cargar_Bodega_Y_Linea_Pedido (1x) — fuera del archivo"
+    - "Obtener_Listas_De_Stock (1x) — fuera del archivo, devuelve TUPLE"
+  modulo_propio:
+    - "clsLnStock.Insertar/Actualizar/Eliminar/lStock/Get_Single_By_IdStock (49 calls totales)"
+    - "Inserta_Stock_Reservado (3x — INSERT batch)"
+    - "Reserva_Stock_From_MI3 (SELF, 6 puntos de recursion)"
+  otros_modulos:
+    - "clsLnTrans_pe_enc.Get_IdTipoPedido_By_IdPedidoEnc"
+    - "clsLnPropietarios.Get_IdPropietario"
+    - "clsLnProducto.* (multiple)"
+    - "clsLnProducto_presentacion.*"
+    - "clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega"
+    - "clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS"
+    - "clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva (NOVEDAD MI3)"
+    - "clsPublic.CopyObject (multiple — clones in-memory)"
+
+configs_consultadas:
+  - "pBeConfigEnc.Conservar_Zona_Picking_Clavaud"
+  - "pBeConfigEnc.considerar_paletizado_en_reabasto (NOVEDAD vs Reabasto)"
+  - "pBeConfigEnc.Despachar_existencia_parcial"
+  - "pBeConfigEnc.Explosion_Automatica"
+  - "pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking"
+  - "pBeConfigEnc.Explosion_Automatica_Nivel_Max"
+  - "pBeConfigEnc.Idbodega"
+  - "pBeConfigEnc.Interface_SAP (NOVEDAD vs Reabasto)"
+  - "pBeConfigEnc.Rechazar_pedido_incompleto"
+  resumen: "9 configs distintos — la funcion mas configurable del pipeline (Reabasto: 7)"
+
+codigos_de_error:
+  resumen_throws: "54 throws totales, 22 son S0002 (sin existencia), 9 Error_202212140140D (heredado), 2 S0005 (NUEVO), 1 S0006 (NUEVO), 1 ERROR_20250615 (RECIENTE)"
+  novedades:
+    - "S0005 — pendiente identificar significado"
+    - "S0006 — pendiente identificar significado"
+    - "ERROR_202309120159 (6 ocurrencias)"
+    - "ERROR_202310312158 (7 ocurrencias)"
+    - "Error20230306 (6 ocurrencias)"
+    - "ERROR_202401291007 (2 ocurrencias)"
+    - "ERROR_20250615 (1 ocurrencia, fix reciente)"
+
+callers:
+  pending_inventory: true
+  hipothesis: |
+    Por nombre 'From_MI3' y por la presencia de Interface_SAP, MI3 se invoca desde el
+    flujo de reserva donde el origen del pedido es la interfaz MI3 (probablemente un
+    sistema de planificacion o un ERP especifico). La presencia de pBeTrasladoDet
+    sugiere que tambien se usa desde traslados NAV ERP.
+
+cross_refs:
+  - "01-reserva-stock-core.{yml,md} — entry point principal del modulo (no llama directamente a MI3)"
+  - "06-reserva-stock-from-reabasto.{yml,md} — gemelo arquitectonico de MI3 con menos refactor"
+  - "brain/entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md — el algoritmo Clavaud (MI3 lo implementa con el mecanismo de zonas particionadas)"
+  - "tabla i_nav_trans_pe_det_log_reserva — sistema de audit log de reservas (UNICO consumidor: MI3)"
+  - "GAP-12-001-byb-codigo-1060315-no-replicado-en-net8.md — MI3 tampoco tiene hardcode 1060315"
+
+open_questions:
+  - id: "Q-MI3-01"
+    severity: "ALTA"
+    question: "¿Cuales son los principales callers de From_MI3? ¿Lo invoca el motor desde algun flujo SAP especifico (dado Interface_SAP)?"
+    expected_resolution: "rg sobre callers + Erik confirma use cases"
+
+  - id: "Q-MI3-02"
+    severity: "MEDIA"
+    question: "¿Que significa el acronimo LLR en los markers _LLR_CASO_#XX_?"
+    expected_resolution: "Erik confirma o rg sobre LLR en otros archivos"
+
+  - id: "Q-MI3-03"
+    severity: "ALTA"
+    question: |
+      ¿Que cambia exactamente Interface_SAP cuando es True? ¿MI3 omite ramas, llama
+      callees distintos, escribe a tablas diferentes?
+    expected_resolution: "rg 'Interface_SAP' en MI3 + revisar las ramas afectadas"
+
+  - id: "Q-MI3-04"
+    severity: "MEDIA"
+    question: "¿Que significan los codigos S0005 y S0006 (nuevos en MI3)?"
+    expected_resolution: "rg 'S0005|S0006' en codebase + revisar mensaje del Throw"
+
+  - id: "Q-MI3-05"
+    severity: "ALTA"
+    question: |
+      Recursion PresFaltante (L25900): ¿que diferencia tecnica distingue 'presentacion
+      faltante' de 'presentacion correcta'? ¿Es un campo de stock_res, de stock, o un
+      flag in-memory?
+    expected_resolution: "leer L25800-L25900 con detalle"
+
+  - id: "Q-MI3-06"
+    severity: "ALTA"
+    question: |
+      ¿Cual es la SEMANTICA EXACTA de los codigos 100, 101, 102, 103 en
+      ListaEstadosDeProceso? Sin entender estos magic numbers no se puede mantener
+      la state machine.
+    expected_resolution: "rg 'ListaEstadosDeProceso.Add' + analizar contextos de cada Add"
+
+  - id: "Q-MI3-07"
+    severity: "ALTA"
+    question: |
+      ¿La tabla i_nav_trans_pe_det_log_reserva esta consumida por algun reporte o
+      dashboard operativo? ¿Su retention policy? ¿Cuantas filas tiene ya en BD?
+    expected_resolution: "SELECT count(*), MIN(fecha), MAX(fecha) FROM i_nav_trans_pe_det_log_reserva (read-only)"
+
+  - id: "Q-MI3-08"
+    severity: "MEDIA"
+    question: |
+      ¿Las 6 funciones helper extraidas (Procesar_Y_Restar_Stock_Reservado, etc) se
+      usan SOLO desde MI3 o tambien desde otras partes del codebase? Si son
+      reusables, hay que documentarlas con contexto compartido.
+    expected_resolution: "rg sobre cada nombre"
+
+  - id: "Q-MI3-09"
+    severity: "ALTA"
+    question: |
+      V-MI3-005 (bug doble '=' en L26283): ¿este bug afecta a algun mensaje critico
+      visible al usuario o solo a un log? ¿Esta documentado en algun ticket?
+    expected_resolution: "leer el contexto completo L26270-L26310 + Erik confirma criticidad"
+
+  - id: "Q-MI3-10"
+    severity: "MEDIA"
+    question: |
+      ¿pStockResSolicitud y pListStockResOUT tambien se mutan en MI3 como en Reabasto
+      (V-FROMR-006/007)? Si si, la inconsistencia se propaga; si no, MI3 tiene
+      semantica de interfaz mas limpia.
+    expected_resolution: "lectura puntual de los puntos de exit del flujo (pre-Catch)"
+
+  - id: "Q-MI3-11"
+    severity: "ALTA"
+    question: |
+      MI3 hace MUCHAS mutaciones a tabla stock (49 STOCK-CALL). ¿Sigue el mismo
+      patron de split fisico de Reabasto (No_bulto=1989 + INSERT/UPDATE/DELETE)?
+      Hay que confirmar para entender si comparte la misma capacidad y mismos riesgos.
+    expected_resolution: "rg sobre clsLnStock.Insertar y clsLnStock.Eliminar dentro del rango"
