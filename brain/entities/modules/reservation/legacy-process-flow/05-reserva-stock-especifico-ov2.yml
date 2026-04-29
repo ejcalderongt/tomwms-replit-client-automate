@@ -1,0 +1,214 @@
+id: "05-reserva-stock-especifico-ov2"
+title: "Reserva_Stock_Especifico (overload 2)"
+file: "TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb"
+line_range: "L1612-L1797"
+size_lines: 186
+classification: "ENTRY POINT — variante con out-list y soporte de peso"
+relationship_to_ov1: "DELTA — 3 cambios sobre 04-reserva-stock-especifico-ov1, comparte ~85% del cuerpo"
+
+signature:
+  language: "VB.NET"
+  declaration: |
+    Public Shared Function Reserva_Stock_Especifico(
+        ByRef pStockRes As clsBeStock_res,
+        ByVal DiasVencimiento As Double,
+        ByVal MaquinaQueSolicita As String,
+        ByRef pListStockResOUT As List(Of clsBeStock_res),
+        ByRef pBeStockEspecifico As clsBeStock,
+        ByRef lConnection As SqlConnection,
+        ByRef ltransaction As SqlTransaction
+    ) As Boolean
+
+deltas_vs_ov1:
+  - id: "DELTA-OV2-001"
+    where: "firma + L1781"
+    description: |
+      OV2 agrega un parametro extra ByRef `pListStockResOUT As List(Of clsBeStock_res)`
+      (4to lugar, antes de pBeStockEspecifico). Al final escribe en ese parametro la
+      lista de stock_res insertados. OV1 no devuelve la lista — solo retorna True/False.
+    impact: "El caller que llama OV2 puede auditar/loguear/post-procesar exactamente que IdStockRes se crearon."
+
+  - id: "DELTA-OV2-002"
+    where: "L1633 vs L1481 (OV1)"
+    description: |
+      OV2 llama `Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock(IdStock, False, vCantidadReservada, vPesoReservado, ...)`
+      — devuelve cantidad Y peso reservado, en UMBas, con un flag boolean cuya semantica
+      es desconocida (Q-OV2-02).
+      OV1 llama `Get_Cantidad_Reservada_By_IdStock(IdStock, ...)` — solo cantidad.
+    impact: "OV2 mantiene contabilidad de peso reservado en paralelo a cantidad."
+
+  - id: "DELTA-OV2-003"
+    where: "todo el bloque calculo + bloque matching + L1761"
+    description: |
+      OV2 declara y propaga variables paralelas para peso (vPesoStock, vPesoPendiente,
+      vPesoSolicitadoPedido, vPesoAReservarPorIdStock) en cada bifurcacion donde OV1
+      solo maneja cantidad. Al final escribe `BeStockRes.Peso = Math.Round(vPesoAReservarPorIdStock, 6)`.
+      OV1 no asigna BeStockRes.Peso (queda en el valor que herede de CopyObject).
+    impact: |
+      OV2 garantiza que el stock_res creado tiene peso "fraccional" coherente con la
+      cantidad reservada. OV1 hereda peso del stock origen completo via CopyObject —
+      lo que puede dejar peso INCONSISTENTE con la cantidad parcial reservada.
+
+regla_de_negocio:
+  - id: "R-OV2-001"
+    description: "Acepta presentacion opcional (`pStockRes.IdPresentacion = 0` => UMBas direct)."
+    line: 1654
+    same_as_ov1: true
+
+  - id: "R-OV2-002"
+    description: "Convierte presentacion pallet a UMBas via Factor*CajasPorCama*CamasPorTarima; throw si denominador = 0."
+    line: 1660
+    same_as_ov1: true
+
+  - id: "R-OV2-003"
+    description: "Convierte presentacion no-pallet via Factor; redondea a entero si producto NO tiene control por peso, a 6 decimales si SI."
+    line: 1672
+    same_as_ov1: true
+
+  - id: "R-OV2-004"
+    description: "Tres ramas de matching cantidad pendiente vs stock disponible: ==, <, >."
+    line: 1709
+    same_as_ov1: true
+
+  - id: "R-OV2-005"
+    description: "Si `vCantidadPendiente > vCantidadStock`, reserva CANTIDAD DISPONIBLE (no la pendiente) y SIGUE retornando True. Reserva parcial silenciosa."
+    line: 1719
+    same_as_ov1: true
+    severity: "ALTA"
+    cross_ref: "V-OV1-003 en 04-reserva-stock-especifico-ov1"
+
+  - id: "R-OV2-006"
+    description: "Mantiene peso reservado en paralelo a cantidad reservada y lo propaga al stock_res final."
+    line: 1761
+    same_as_ov1: false
+    novedad: "exclusivo de OV2"
+
+  - id: "R-OV2-007"
+    description: "Devuelve la lista de stock_res insertados al caller via parametro ByRef pListStockResOUT."
+    line: 1781
+    same_as_ov1: false
+    novedad: "exclusivo de OV2"
+
+violaciones_y_bugs:
+  - id: "V-OV2-001"
+    description: "Hardcode `BeStockRes.Indicador = \"PED\"` — viola L-035 (no codificar tipo de transaccion)."
+    line: 1703
+    severity: "MEDIA"
+    same_as_ov1: true
+    cross_ref: "V-001 piloto, V-001 NAV_BYB, V-001 Lista_Result, V-OV1-001"
+
+  - id: "V-OV2-002"
+    description: "Hardcode `BeStockRes.Estado = \"UNCOMMITED\"` — typo persistente (deberia ser UNCOMMITTED), magic string sin enum."
+    line: 1744
+    severity: "BAJA"
+    same_as_ov1: true
+    cross_ref: "V-002 piloto"
+
+  - id: "V-OV2-003"
+    description: |
+      Reserva parcial silenciosa: cuando vCantidadPendiente > vCantidadStock, asigna
+      vCantidadAReservarPorIdStock = vCantidadStock, decrementa vCantidadPendiente,
+      sale del bloque y retorna True con `Reserva_Stock_Especifico = True`. El residuo
+      no reservado (vCantidadPendiente final > 0) se descarta SIN log y SIN excepcion.
+      El caller cree que se reservo todo.
+    line: 1719
+    severity: "ALTA"
+    same_as_ov1: true
+    cross_ref: "V-OV1-003 en 04-reserva-stock-especifico-ov1"
+
+  - id: "V-OV2-004"
+    description: |
+      `clsPublic.CopyObject(pBeStockEspecifico, BeStockRes)` (L1726) sobrescribe los
+      seteos manuales hechos en L1701-1707 (Indicador, IdBodega, IdStock,
+      IdPropietarioBodega, IdProductoBodega). Si la implementacion de CopyObject copia
+      "todos los campos comunes", sobrescribe Indicador="PED" con cualquier cosa que
+      tenga el stock origen (probablemente vacio o "STOCK"). Comportamiento dependiente
+      de la implementacion exacta de CopyObject — fragil.
+    line: 1726
+    severity: "ALTA"
+    same_as_ov1: true
+    cross_ref: "V-OV1-002"
+    open_question: "Q-OV2-05"
+
+  - id: "V-OV2-005"
+    description: |
+      Muta `pBeStockEspecifico.Cantidad` IN-PLACE (L1638) restandole vCantidadReservada.
+      pBeStockEspecifico se pasa ByRef — el caller recibe el objeto MUTADO. Efecto
+      secundario silencioso sobre parametro de entrada.
+    line: 1638
+    severity: "MEDIA"
+    same_as_ov1: true
+
+  - id: "V-OV2-006"
+    description: |
+      No consulta ni respeta `Despachar_existencia_parcial` de la configuracion del
+      propietario. La politica de "siempre tomar parcial" esta hardcoded en el flujo,
+      ignorando lo que diga el flag de config (que SI consulta Reserva_Stock_Lista_Result
+      en R009). Inconsistencia de politica entre flujos.
+    line: 1719
+    severity: "MEDIA"
+    same_as_ov1: true
+
+mutaciones_de_estado:
+  - tabla: "stock_res"
+    operacion: "INSERT (1 fila siempre)"
+    via: "Inserta_Stock_Reservado(lBeStockAReservar, lConnection, ltransaction) at L1780"
+    cantidad_filas: "exactamente 1"
+
+  - tabla: "stock"
+    operacion: "ninguna"
+    nota: "OV2 no muta stock fisico — a diferencia de Reserva_Stock_Lista_Result que sí lo hace (V-002, V-003 de 03-lista-result)."
+
+  - parametro: "pBeStockEspecifico (ByRef)"
+    operacion: "MUTA Cantidad in-place"
+    line: 1638
+    severity: "side-effect documentado en V-OV2-005"
+
+  - parametro: "pListStockResOUT (ByRef)"
+    operacion: "ASIGNA lista de stock_res insertados"
+    line: 1781
+    severity: "comportamiento intencional, R-OV2-007"
+
+callers:
+  pending_inventory: true
+  hipothesis: |
+    OV2 (con out-list + peso) probablemente la usan flujos que necesitan auditar
+    exactamente que IdStockRes se crearon, o que manejan productos con control por
+    peso. Posibles candidatos:
+      - Picking confirmation flows que necesitan referenciar el IdStockRes para luego
+        actualizar Estado="COMMITTED"
+      - Despacho confirmation flows
+      - Reabasto manual con auditoria
+    OV1 (sin out-list) probablemente la usan flujos legacy o batch que solo necesitan
+    saber si funciono o no.
+
+open_questions:
+  - id: "Q-OV2-01"
+    question: "¿Quien llama OV2 vs OV1? ¿Hay convencion?"
+    expected_resolution: "rg sobre la base de codigo + Erik confirma casos de uso"
+
+  - id: "Q-OV2-02"
+    question: |
+      Semantica del segundo parametro `False` en
+      `Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock(IdStock, False, ...)`.
+      ¿Es "incluir reservas pendientes" / "incluir reservas confirmadas" /
+      "incluir reservas pickeadas"?
+    expected_resolution: "leer firma de Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock"
+
+  - id: "Q-OV2-03"
+    question: "¿Por que OV2 maneja peso pero OV1 no? ¿OV2 reemplaza a OV1 (deprecacion implicita)?"
+    expected_resolution: "Erik confirma historia o git blame sobre fechas de creacion"
+
+  - id: "Q-OV2-04"
+    question: "¿La diferencia OV1/OV2 esta documentada en algun lado?"
+    expected_resolution: "buscar comments en cabecera de funcion o en docs externos"
+
+  - id: "Q-OV2-05"
+    question: "¿Que copia exactamente clsPublic.CopyObject? ¿Por reflexion o por lista hardcoded?"
+    expected_resolution: "leer implementacion de clsPublic.CopyObject"
+    severity: "ALTA — afecta interpretacion de V-OV2-004"
+
+cross_refs:
+  - "04-reserva-stock-especifico-ov1.{yml,md}: version base, comparte ~85% del cuerpo"
+  - "01-reserva-stock-core.{yml,md}: punto de entrada general que NO llama esta funcion (ojo: Especifico es entry point alternativo)"
+  - "GAP-12-001: violacion V-001 hardcode 1060315 NO aparece en esta funcion (no hay rama BYB en Especifico)"
