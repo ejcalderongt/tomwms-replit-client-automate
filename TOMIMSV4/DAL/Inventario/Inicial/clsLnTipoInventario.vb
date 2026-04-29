@@ -8,6 +8,7 @@ Public Class clsLnTipoInventario
             With oBeTipoInventario
                 .IdTipoInv = IIf(IsDBNull(dr.Item("IdTipoInv")), 0, dr.Item("IdTipoInv"))
                 .Descripcion = IIf(IsDBNull(dr.Item("Descripcion")), "", dr.Item("Descripcion"))
+                .Es_RFID = IIf(IsDBNull(dr.Item("Es_RFID")), False, dr.Item("Es_RFID"))
             End With
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))

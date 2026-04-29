@@ -5945,7 +5945,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp)
+            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp, True)
 
         Catch ex As Exception
 
@@ -18954,13 +18954,13 @@ Public Class TOMHHWS
 
     '#GT07042026: cargar stock para la HH
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer) As List(Of clsBeI_nav_barras_rfid_enc)
+    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
 
         Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
 
         Try
 
-            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina)
+            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina, pBusqueda, pCriterioBusqueda)
 
         Catch ex As Exception
 

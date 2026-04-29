@@ -196,7 +196,6 @@ Public Class frmImpresion_OC_RFID
         Try
             cmdImpresion.Enabled = False
 
-            ' Impresora USB (cola instalada en Windows)
             Dim ps As New PrinterSettings()
             Dim printerName As String = Convert.ToString(cmbImpresora.EditValue)
 

@@ -2439,7 +2439,8 @@ Partial Public Class clsLnBodega
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
 
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    UbicacionesVacias = lReturnValue
+                    'UbicacionesVacias = lReturnValue
+                    UbicacionesVacias = Convert.ToInt32(lReturnValue)
                 Else
                     UbicacionesVacias = 0
                 End If
@@ -2459,7 +2460,8 @@ Partial Public Class clsLnBodega
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
 
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    UbicacionesOcupadas = lReturnValue
+                    'UbicacionesOcupadas = lReturnValue
+                    UbicacionesOcupadas = Convert.ToInt32(lReturnValue)
                 Else
                     UbicacionesOcupadas = 0
                 End If
@@ -2468,9 +2470,11 @@ Partial Public Class clsLnBodega
 
             lTransaction.Commit()
 
+            Get_Indicadores_Ocupacion_By_IdBodega = True
+
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+            Throw
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
