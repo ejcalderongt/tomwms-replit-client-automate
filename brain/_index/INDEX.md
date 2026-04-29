@@ -892,3 +892,50 @@ drift conocido:
 2. Inspeccionar `dsUbicSug.xsd` para entender el algoritmo de ubicación sugerida
 3. Mapear las 13+ funciones de `clsLnStock_res_Partial.vb` (matriz: cuándo se usa cada una, por cliente)
 4. Algo que Erik priorice
+
+---
+
+## Wave 9 (2026-04-29) — Casos naturales de reserva + nuevo diario `naked-erik-anatomy`
+
+**Detonante**: Erik pidió mapear matriz "función de reserva × cliente × caso de uso" después de mencionar que **los 4 módulos más complejos del WMS son**: algoritmo de reserva, ubicación sugerida, reemplazo en HH durante picking, verificación. Reveló además 5 parámetros operativos nuevos. Pidió crear un **diario `naked-erik-anatomy`** versionado con tono técnico-poético-sarcástico.
+
+**Nuevos folders del brain**:
+- 🆕 `wms-test-natural-cases/` — 7 docs creados (00-INDEX + casos 01-07)
+- 🆕 `naked-erik-anatomy/` — 2 docs (000-prólogo + 001 primer entry)
+
+**Hallazgos brutales**:
+- 🔥 **`clsLnStock_res_Partial.vb` tiene >26.680 líneas** (no 4.374 como estimaba). Tres adapters específicos por canal: `Reserva_Stock_From_Reabasto` (línea 9856), `Reserva_Stock_From_MI3` (línea 18192), `Reserva_Stock_From_SAP` (línea 26680).
+- 🔥 **`producto_estado` tiene 14 estados granulares** (Conforme, Cuarentena, No Encontrado, Avería de Importación, No conforme, etc) con flags `utilizable` + `dañado` + `tolerancia_dias_vencimiento`.
+- 🔥 **`cliente` tabla tiene 9 flags operativos** (no estaban mapeados): `IdUbicacionAbastecerCon`, `IdUbicacionManufactura`, `realiza_manufactura`, `despachar_lotes_completos`, `control_ultimo_lote`, `control_calidad`, `es_bodega_recepcion`, `es_bodega_traslado`, `es_proveedor`.
+- 🔥 **`cliente_tiempos` es N×N×N** (cliente × familia × clasificación → días tolerados). Tiene `Dias_Local` y `Dias_Exterior` distintos.
+- 🔥 **MERHONSA tiene typo histórico**: dos columnas `explosion_automatica_nivel_max` y `explosio_automatica_nivel_max` (sin 'n') conviven en schema. Deuda técnica visible.
+- 🔥 **`Reemplazo_Automatico` NO es WMS-driven**: siempre se llama desde HH (TOMHHWS.asmx + frmCantidadreemplazo). Es operador-driven con asistencia automática.
+- 🔥 **`Lote_Numerico` aparece en 5 tablas** (recepción + despacho + barras pallet + interfaces NAV) — sistema completo de lote correlativo transversal.
+
+**Q-* RESUELTAS en Wave 9 (5)**:
+- ✅ **Q-EXPLOSION-EXISTE** — confirmado: `explosion_automatica` + `explosion_automatica_desde_ubicacion_picking` + `explosion_automatica_nivel_max` en `i_nav_config_enc`
+- ✅ **Q-RESTRICCION-UBICACION-CLIENTE** — `cliente.IdUbicacionAbastecerCon` (existe en código y schema)
+- ✅ **Q-LOTE-NUM-EXISTE** — confirmado: `cliente.control_ultimo_lote` + `trans_re_det_lote_num` + `trans_despacho_det_lote_num`
+- ✅ **Q-TOLERANCIA-MULTI-NIVEL** — confirmada cascada: `cliente_tiempos` > `producto.tolerancia` > `producto_estado.tolerancia_dias_vencimiento` > `i_nav_config_enc.dias_vida_defecto_perecederos`
+- ✅ **Q-FROM-CHANNEL-FUNCTIONS** — 3 adapters confirmados: `From_MI3`, `From_SAP`, `From_Reabasto`
+
+**Q-* nuevas (+10)** — (sin renumerar el cuestionario formal aún, pendiente próxima wave):
+- Q-CLAVAUD-FALLBACK, Q-EXPLOSION-NIVEL-MAX-DEFAULT, Q-MERHONSA-DOBLE-COLUMNA-EXPLOSION
+- Q-RESTRICCION-FALLBACK, Q-LOTE-NUM-SALTO, Q-LOTE-NUM-MTIPO
+- Q-TOLERANCIA-PRECEDENCIA, Q-TOLERANCIA-DIAS-LOCAL-VS-EXTERIOR, Q-DAÑADO-SE-DESPACHA
+- Q-FROM-MI3-DIFF, Q-FROM-SAP-DIFF, Q-FROM-REABASTO-DIFF
+- Q-NAV-BYB-WHY, Q-REEMPLAZO-WHO-DECIDES
+
+**Métricas post-Wave 9**:
+- Q-* totales: ~115 (+13)
+- Q-* resueltas: 21/115 (18.3%) — Wave 6.1: 1, 6.2: 7, 7: 4, 8: 4, 9: 5
+- Q-* alta prioridad abiertas: ~18
+- Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK, sin cambio)
+- Líneas brain total: ~6.500 (+2.300 por casos naturales + diario)
+- Archivos brain: **19** (10 antes + 7 casos naturales + 2 diario)
+
+**Próximo recomendado**:
+1. Inspeccionar el cuerpo de `Reserva_Stock_From_MI3`, `_From_SAP`, `_From_Reabasto` (entender qué los hace distintos del core)
+2. Mapear `dsUbicSug.xsd` (motor de ubicación sugerida CEALSAMI3) — Erik dice que es uno de los 4 módulos más complejos
+3. Caso 10 — reemplazo en HH durante picking (flujo end-to-end con `frmCantidadreemplazo`)
+4. Otra anécdota nueva de Erik para nuevo entry del diario

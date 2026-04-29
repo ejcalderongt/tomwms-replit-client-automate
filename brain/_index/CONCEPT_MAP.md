@@ -522,3 +522,32 @@ Dado el concept-map, mi sugerencia ranqueada:
 - Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK)
 - Líneas brain: ~4.180
 - Archivos brain: 10
+
+
+---
+
+## Update Wave 9 (2026-04-29) — Casos naturales + naked-erik-anatomy
+
+### Q-* resueltas en Wave 9 (5)
+- ✅ Q-EXPLOSION-EXISTE — `i_nav_config_enc` tiene 3 cols + `nivel_max`
+- ✅ Q-RESTRICCION-UBICACION-CLIENTE — `cliente.IdUbicacionAbastecerCon`
+- ✅ Q-LOTE-NUM-EXISTE — `cliente.control_ultimo_lote` + 5 tablas
+- ✅ Q-TOLERANCIA-MULTI-NIVEL — cascada de 4 niveles confirmada
+- ✅ Q-FROM-CHANNEL-FUNCTIONS — 3 adapters (`From_MI3`, `From_SAP`, `From_Reabasto`)
+
+### Q-* nuevas Wave 9 (+13)
+- Q-CLAVAUD-FALLBACK, Q-EXPLOSION-NIVEL-MAX-DEFAULT, Q-MERHONSA-DOBLE-COLUMNA-EXPLOSION
+- Q-RESTRICCION-FALLBACK, Q-LOTE-NUM-SALTO, Q-LOTE-NUM-MTIPO
+- Q-TOLERANCIA-PRECEDENCIA, Q-TOLERANCIA-DIAS-LOCAL-VS-EXTERIOR, Q-DAÑADO-SE-DESPACHA
+- Q-FROM-MI3-DIFF, Q-FROM-SAP-DIFF, Q-FROM-REABASTO-DIFF
+- Q-NAV-BYB-WHY, Q-REEMPLAZO-WHO-DECIDES
+
+### Folders nuevos del brain
+- `wms-test-natural-cases/` (7 docs, ~2000 líneas)
+- `naked-erik-anatomy/` (2 docs, ~400 líneas)
+
+### Métricas Wave 9
+- Q-* totales: ~115 (+13)
+- Q-* resueltas: 21 acum (18.3%)
+- Líneas brain: ~6.500
+- Archivos: 19
