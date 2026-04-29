@@ -195,6 +195,15 @@ Public Class frmAjusteStock
             Dim tipoajuste As Integer = 0
 
             If chkBorrador.Checked Then
+
+                '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3):
+                'Validar que las reservas en stock_res asociadas al borrador sigan vivas.
+                'Si algún IdStock fue consumido o liberado por terceros entre sesiones,
+                'recrear la reserva. Si no se puede recrear (stock agotado), advertir
+                'al operador antes de aplicar.
+                Validar_Reservas_Borrador_Al_Cargar(lBeTransAjusteDetBorrador,
+                                                    pBeTransAjustEnc.IdAjusteenc)
+
                 If lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0 Then
                     tipoajuste = lBeTransAjusteDetBorrador.FirstOrDefault().idtipoajuste
                 End If
@@ -270,16 +279,37 @@ Public Class frmAjusteStock
 
                     vBeAjustDet.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vBeAjustDet.IdUnidadMedida, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+                    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: si el detalle ya tiene
+                    ' proveedor persistido (idproveedor / codigo_proveedor / nombre_proveedor
+                    ' provenientes de trans_ajuste_det), usarlo directo y evitar el lookup
+                    ' por IdStock (que puede haber cambiado luego del cierre del lote).
+                    ' Si NO hay proveedor persistido, hacer el lookup y guardarlo en el BE
+                    ' para que el próximo guardado lo deje en BD.
+                    If vBeAjustDet.IdProveedor > 0 _
+                       OrElse Not String.IsNullOrWhiteSpace(vBeAjustDet.Codigo_Proveedor) _
+                       OrElse Not String.IsNullOrWhiteSpace(vBeAjustDet.Nombre_Proveedor) Then
 
-                    If vProveedor IsNot Nothing Then
-                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
-                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        If Not String.IsNullOrWhiteSpace(vBeAjustDet.Codigo_Proveedor) Then
+                            sProveedorTexto = $"{vBeAjustDet.Codigo_Proveedor} - {vBeAjustDet.Nombre_Proveedor}"
                         Else
-                            sProveedorTexto = vProveedor.Nombre
+                            sProveedorTexto = If(vBeAjustDet.Nombre_Proveedor, "")
                         End If
                     Else
-                        Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                        vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        If vProveedor IsNot Nothing Then
+                            vBeAjustDet.IdProveedor = vProveedor.IdProveedor
+                            vBeAjustDet.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                            vBeAjustDet.Nombre_Proveedor = If(vProveedor.Nombre, "")
+
+                            If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                                sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                            Else
+                                sProveedorTexto = If(vProveedor.Nombre, "")
+                            End If
+                        Else
+                            Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                        End If
                     End If
 
                     ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Aunque aquí
@@ -295,7 +325,7 @@ Public Class frmAjusteStock
                     ' #EJCRP 21042026: (consolida #ProveedorFix previo) ColProveedor está al
                     ' final del grid; se asigna por nombre para no caer en 'motivoajuste'
                     ' por el orden posicional. sProveedorTexto se calcula líneas arriba.
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(vBeAjustDet)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
@@ -306,21 +336,17 @@ Public Class frmAjusteStock
                     Llenar_Talla(rc, -1)
                     Llenar_Color(rc, -1)
 
-                    If vBeAjustDet.Idtipoajuste = 3 Then
+                    '#FIX_v22_AJUSTE_EXIST_FROM_BD_2026-04-25:
+                    'Eliminar refresh "live" desde Stock; usar siempre la
+                    'Cantidad_original persistida en BD como fuente de verdad
+                    'para CantidadP / Existencia. (Se mantiene v21.G2 en ColCantidad).
+                    If vBeAjustDet.Idtipoajuste = 3 OrElse vBeAjustDet.Idtipoajuste = 5 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
                             dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = Math.Abs(vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
                         Else
                             dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original
-                        End If
-                    ElseIf vBeAjustDet.Idtipoajuste = 5 Then
-                        If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva) / vBeAjustDet.Factor
-                        Else
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = Math.Abs(vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original)
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 1 Then 'Ajuste Lote
                         '#EJC20180726: Desplegar lote anterior y nuevo lote
@@ -440,6 +466,48 @@ Public Class frmAjusteStock
         Catch
             Return ""
         End Try
+    End Function
+
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    ' Resuelve el proveedor por IdStock, lo persiste en el BE de detalle (IdProveedor /
+    ' Codigo_Proveedor / Nombre_Proveedor) y devuelve el texto formateado para mostrar
+    ' en la columna ColProveedor de la grilla. Si el lookup falla devuelve "".
+    Private Function Resolver_Proveedor_Y_Persistir(ByVal oBe As clsBeTrans_ajuste_det) As String
+        Try
+            If oBe Is Nothing Then Return ""
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(oBe.IdStock)
+            If be IsNot Nothing Then
+                oBe.IdProveedor = be.IdProveedor
+                oBe.Codigo_Proveedor = If(be.Codigo, "")
+                oBe.Nombre_Proveedor = If(be.Nombre, "")
+                If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                    Return $"{be.Nombre}"
+                End If
+                Return If(be.Nombre, "")
+            End If
+        Catch
+        End Try
+        Return ""
+    End Function
+
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    ' Sobrecarga para clsBeTrans_ajuste_det_borrador.
+    Private Function Resolver_Proveedor_Y_Persistir(ByVal oBe As clsBeTrans_ajuste_det_borrador) As String
+        Try
+            If oBe Is Nothing Then Return ""
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(oBe.IdStock)
+            If be IsNot Nothing Then
+                oBe.IdProveedor = be.IdProveedor
+                oBe.Codigo_Proveedor = If(be.Codigo, "")
+                oBe.Nombre_Proveedor = If(be.Nombre, "")
+                If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                    Return $"{be.Nombre}"
+                End If
+                Return If(be.Nombre, "")
+            End If
+        Catch
+        End Try
+        Return ""
     End Function
 
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
@@ -591,8 +659,9 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
-                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta desde borrador).
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
+                    ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar
+                    ' Proveedor en grilla y persistirlo en el BE borrador para guardado.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(BeAjusteDetBorrador)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -733,8 +802,9 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
-                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta directa).
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
+                    ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar
+                    ' Proveedor en grilla y persistirlo en el BE de detalle para guardado.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(BeAjusteDet)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -913,7 +983,14 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
-            dgrid.Rows(rc).Cells("ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistir IdProveedor / Codigo /
+            ' Nombre en el BE; si el lookup por IdStock falla, fallback al texto que ya
+            ' venía precargado en stockEspecificoSeleccionado.Proveedor.
+            Dim sProveedorTextoSE As String = Resolver_Proveedor_Y_Persistir(BeAjusteDet)
+            If String.IsNullOrWhiteSpace(sProveedorTextoSE) Then
+                sProveedorTextoSE = stockEspecificoSeleccionado.Proveedor
+            End If
+            dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTextoSE
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
@@ -1218,6 +1295,99 @@ Public Class frmAjusteStock
 
     End Sub
 
+    '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3):
+    'Helper invocado al cargar un ajuste borrador existente. Verifica que cada
+    'detalle tenga su correspondiente reserva en stock_res; si no, intenta
+    'recrearla. Devuelve la cantidad de detalles que NO se pudieron re-reservar
+    '(stock agotado/eliminado por terceros).
+    '
+    'Implementación: usa clsLnStock_res.Get_All_By_IdStock(IdStock) que SÍ existe
+    '(DAL clsLnStock_res_Partial.vb línea 5149) y filtra in-memory por
+    'IdTransaccion + Indicador. Más lento que un SP dedicado pero evita agregar
+    'función nueva al DAL.
+    Private Function Validar_Reservas_Borrador_Al_Cargar(
+            ByVal lDetallesBorrador As List(Of clsBeTrans_ajuste_det_borrador),
+            ByVal pIdAjusteEnc As Integer) As Integer
+
+        Dim cntFaltantes As Integer = 0
+        Dim cntRecreados As Integer = 0
+        Dim warnings As New System.Text.StringBuilder()
+
+        Try
+            If lDetallesBorrador Is Nothing OrElse lDetallesBorrador.Count = 0 Then Return 0
+
+            For Each det As clsBeTrans_ajuste_det_borrador In lDetallesBorrador
+                If det.IdStock <= 0 Then Continue For
+
+                Dim reservasDelStock As List(Of clsBeStock_res) =
+                    clsLnStock_res.Get_All_By_IdStock(det.IdStock)
+
+                Dim tieneReservaPropia As Boolean = False
+                If reservasDelStock IsNot Nothing Then
+                    For Each rsv In reservasDelStock
+                        If rsv.IdTransaccion = pIdAjusteEnc AndAlso
+                           rsv.Indicador = "ajuste_stock" Then
+                            tieneReservaPropia = True
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                If tieneReservaPropia Then Continue For
+
+                'Reserva faltante: intentar recrear
+                Dim ok As Boolean = Reservar_Stock_Borrador_Standalone(det.IdStock, pIdAjusteEnc)
+                If ok Then
+                    cntRecreados += 1
+                Else
+                    cntFaltantes += 1
+                    warnings.AppendLine(String.Format(
+                        "  - IdStock {0}, lote {1}, producto {2}: stock no disponible.",
+                        det.IdStock, det.lote_original, det.codigo_producto))
+                End If
+            Next
+
+            If cntFaltantes > 0 Then
+                XtraMessageBox.Show(
+                    String.Format(
+                        "Se reanudó el borrador pero {0} detalle(s) tienen stock " &
+                        "consumido por otros procesos:" & vbCrLf & vbCrLf & "{1}" & vbCrLf &
+                        "Revise estos detalles antes de aplicar el ajuste.",
+                        cntFaltantes, warnings.ToString()),
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(
+                "Validar_Reservas_Borrador_Al_Cargar: " & ex.Message)
+        End Try
+
+        Return cntFaltantes
+    End Function
+
+    '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3 helper):
+    'Wrap defensivo de Reservar_Stock_Para_Borrador_Standalone con su propia tx,
+    'devuelve True/False sin mostrar MessageBox individual (el agregado lo hace
+    'Validar_Reservas_Borrador_Al_Cargar).
+    Private Function Reservar_Stock_Borrador_Standalone(ByVal idstock As Integer,
+                                                         ByVal pIdAjusteEnc As Integer) As Boolean
+        Dim ct As New clsTransaccion()
+        Try
+            ct.Begin_Transaction()
+            Dim ok = clsLnTrans_ajuste_enc.Reservar_Stock_Para_Borrador_Standalone(
+                idstock, pIdAjusteEnc, AP.HostName, AP.UsuarioAp.IdUsuario,
+                ct.lConnection, ct.lTransaction)
+            ct.Commit_Transaction()
+            Return ok
+        Catch ex As Exception
+            ct.RollBack_Transaction()
+            clsLnLog_error_wms.Agregar_Error("Reservar_Stock_Borrador_Standalone: " & ex.Message)
+            Return False
+        Finally
+            ct.Close_Conection()
+        End Try
+    End Function
+
     Private Sub Llenar_Tipo(ByVal pIndex As Integer, Optional pidtipo As Integer = 0,
                               Optional ByVal lConnection As SqlConnection = Nothing,
                               Optional ByVal lTransaction As SqlTransaction = Nothing)
@@ -1233,6 +1403,32 @@ Public Class frmAjusteStock
             'If pidtipo = 3 Then --se cumple cuando del grid cmbTipoAjuste esta seleccionado el +/', pero cuando se selecciona del grid
             'entonces deja de ser 3 y podria ser 5 (3 y 5 son los ajustes por cantidad).
             '#GT10062022_1640
+
+            '#FIX_v19_LLENAR_TIPO_PRIMERA_FILA_2026-04-25 (E1):
+            'Sincronizar IdTipoAjuste (campo de form) con cmbTipoAjuste.EditValue
+            'cuando aun no fue inicializado. Causa raiz del bug: en Form_Load se hace
+            '"cmbTipoAjuste.EditValue = 3" pero cmbTipoAjuste_EditValueChanged hace
+            '"If IsLoading Then Exit Sub", por lo cual IdTipoAjuste queda en 0 hasta
+            'que el handler dispare por accion del usuario. La PRIMERA fila agregada
+            'al grid llamaba Llenar_Tipo con IdTipoAjuste=0, caia al ELSE branch
+            '(GetAll + ReadOnly=True + Value=pidtipo) y dejaba el combo bloqueado en
+            'Positivo. La SEGUNDA fila ya tenia IdTipoAjuste sincronizado por la
+            'asignacion de la linea 1421 dentro del ELSE, asi que entraba al IF
+            'branch (Get_by_Cantidad + ReadOnly=False) y mostraba ambas opciones.
+            If IdTipoAjuste <> 3 AndAlso IdTipoAjuste <> 5 Then
+                Try
+                    Dim vEditValueEnc As Object = cmbTipoAjuste.EditValue
+                    If vEditValueEnc IsNot Nothing AndAlso IsNumeric(vEditValueEnc) Then
+                        Dim vIdTipoAjusteEnc As Integer = CInt(vEditValueEnc)
+                        If vIdTipoAjusteEnc = 3 OrElse vIdTipoAjusteEnc = 5 Then
+                            IdTipoAjuste = vIdTipoAjusteEnc
+                        End If
+                    End If
+                Catch
+                    'Si el combo del enc aun no esta inicializado, dejar IdTipoAjuste
+                    'como esta y caer al ELSE branch original (comportamiento previo).
+                End Try
+            End If
 
             If IdTipoAjuste = 3 OrElse IdTipoAjuste = 5 Then
 
@@ -1276,7 +1472,7 @@ Public Class frmAjusteStock
                         dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = False
                         Valor_Tipo_Ajuste(pIndex)
 
-                        If pidtipo = 3 Then
+                        If pidtipo = 3 OrElse pidtipo = 5 Then
                             DgComboTipo.Value = pidtipo
                         End If
 
@@ -1862,7 +2058,9 @@ Public Class frmAjusteStock
 
         Try
             sr = dgrid.SelectedRows(0).Index
-            If MessageBox.Show("Eliminar registro ?", "", MessageBoxButtons.YesNo) <> DialogResult.Yes Then Return
+            If XtraMessageBox.Show("¿Eliminar registro?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then
+                Return
+            End If
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1876,12 +2074,49 @@ Public Class frmAjusteStock
                 stocklink = lBeTransAjusteDetBorrador(sr).idstocklink
 
                 If stocklink = 0 Then
+
+                    '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
+                    'Eliminar Stock_res reservado al quitar la fila en modo borrador.
+                    'Causa raiz: en alta de fila desde frmStockList se llama
+                    'Reservar_Stock incondicionalmente (linea 539, antes del
+                    'IF chkBorrador.Checked), por lo cual la fila borrador tambien
+                    'tiene un IdStockRes valido. La rama no-borrador (debajo) ya
+                    'eliminaba el stock_res; faltaba replicar la limpieza aca para
+                    'no dejar reservas huerfanas que bloqueen la disponibilidad.
+                    str.IdStockRes = lBeTransAjusteDetBorrador(sr).idstockres
+                    If str.IdStockRes > 0 Then
+                        clsLnStock_res.Eliminar(str)
+                    End If
+
+                    clsLnTrans_ajuste_det_borrador.Eliminar_Por_IdAjusteEnc_And_IdAjusteDet(lBeTransAjusteDetBorrador(sr).idajusteenc, lBeTransAjusteDetBorrador(sr).IdAjusteDetBorrador)
+
                     lBeTransAjusteDetBorrador.RemoveAt(sr)
+
                     dgrid.Rows.RemoveAt(sr)
+
                 Else
+                    '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
+                    'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDetBorrador.Count - 1 To 0 Step -1
-                        lBeTransAjusteDetBorrador.RemoveAt(ii)
-                        dgrid.Rows.RemoveAt(ii)
+                        If lBeTransAjusteDetBorrador(ii).idstocklink = stocklink Then
+                            '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
+                            'Eliminar Stock_res tambien para cada hermana del
+                            'mismo idstocklink antes de quitarla de la lista.
+                            'Espejo de la rama no-borrador (lineas 2030-2032)
+                            'que hace clsLnStock_res.Eliminar para cada idstockres
+                            'de las filas hermanas. Aca no aplicamos el filtro
+                            '"Not esnuevolink" porque en borrador todas las filas
+                            'son nuevas reservas locales que deben liberarse.
+                            str.IdStockRes = lBeTransAjusteDetBorrador(ii).idstockres
+                            If str.IdStockRes > 0 Then
+                                clsLnStock_res.Eliminar(str)
+                            End If
+
+                            lBeTransAjusteDetBorrador.RemoveAt(ii)
+                            If ii < dgrid.Rows.Count Then
+                                dgrid.Rows.RemoveAt(ii)
+                            End If
+                        End If
                     Next
                 End If
 
@@ -1896,15 +2131,23 @@ Public Class frmAjusteStock
                     lBeTransAjusteDet.RemoveAt(sr)
                     dgrid.Rows.RemoveAt(sr)
                 Else
+                    '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
+                    'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDet.Count - 1 To 0 Step -1
 
-                        If Not lBeTransAjusteDet(ii).esnuevolink Then
-                            str.IdStockRes = lBeTransAjusteDet(ii).idstockres
-                            clsLnStock_res.Eliminar(str)
-                        End If
+                        If lBeTransAjusteDet(ii).idstocklink = stocklink Then
 
-                        lBeTransAjusteDet.RemoveAt(ii)
-                        dgrid.Rows.RemoveAt(ii)
+                            If Not lBeTransAjusteDet(ii).esnuevolink Then
+                                str.IdStockRes = lBeTransAjusteDet(ii).idstockres
+                                clsLnStock_res.Eliminar(str)
+                            End If
+
+                            lBeTransAjusteDet.RemoveAt(ii)
+                            If ii < dgrid.Rows.Count Then
+                                dgrid.Rows.RemoveAt(ii)
+                            End If
+
+                        End If
                     Next
                 End If
 
@@ -2025,9 +2268,10 @@ Public Class frmAjusteStock
             dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
             dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
-            ' #EJCRP 21042026: poblar Proveedor para el detalle del link de quiebre de lote.
+            ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar Proveedor
+            ' para el detalle del link de quiebre de lote y persistirlo en el BE.
             ' Item.IdStock representa el stock origen del nuevo link.
-            dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
+            dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(Item)
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
             Llenar_Tipo(rc, Item.Idtipoajuste)
@@ -2370,7 +2614,22 @@ Public Class frmAjusteStock
                 If Not Validar_Datos() Then Return
 
                 '#GT27112024: ajuste normal debe entrar por aca
-                If Not Es_Ajuste_Positivo_Sin_Stock Then
+                '#FIX_v8_2026-04-25: defensa contra bug duplicado ajuste positivo.
+                'La bandera Es_Ajuste_Positivo_Sin_Stock se prendÃ­a indebidamente desde
+                'cmbTipoAjuste_EditValueChanged (linea 4795) al elegir IdTipoAjuste=3,
+                'incluso cuando todos los detalles tenÃ­an stock previo (IdStock > 0).
+                'Resultado: el flujo entraba en Guardar_Ajuste_Positivo_Sin_Stock que
+                'usa Guardar_Stock_Ajuste_Positivo (DAL 16375) que SOLO hace INSERT,
+                'creando un IdStock nuevo en lugar de actualizar el origen.
+                '
+                'Defensa: Ruta B (Guardar_Ajuste_Positivo_Sin_Stock) solo si REALMENTE
+                'hay al menos un detalle SIN stock previo (IdStock = 0). En caso
+                'contrario forzar Ruta A para que Procesar_Ajuste actualice el origen.
+                Dim hayDetalleSinStockPrevio As Boolean =
+                    lBeTransAjusteDet IsNot Nothing AndAlso
+                    lBeTransAjusteDet.Any(Function(d) d.IdStock = 0)
+
+                If Not Es_Ajuste_Positivo_Sin_Stock OrElse Not hayDetalleSinStockPrevio Then
 
                     If pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
                         Actualizar_Ajuste()
@@ -2730,6 +2989,90 @@ Public Class frmAjusteStock
 
     End Function
 
+    '#FIX_v14_ELIMINAR_AJUSTE_2026-04-25 (H1):
+    'Elimina el ajuste actual solo si no tiene detalle.
+    Public Sub Eliminar_Ajuste_Si_Sin_Detalle()
+        Try
+            If pBeTransAjustEnc Is Nothing OrElse
+               pBeTransAjustEnc.IdAjusteenc <= 0 Then
+                XtraMessageBox.Show(
+                    "No hay un ajuste cargado para eliminar.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G1):
+            ' Solo se permite eliminar ajustes en estado borrador. Un ajuste ya
+            ' aplicado/finalizado no debe eliminarse desde esta UI: afecta stock
+            ' y trazabilidad y debe pasar por proceso de reverso, no por borrar.
+            If Not chkBorrador.Checked Then
+                XtraMessageBox.Show(
+                    "El ajuste #" & pBeTransAjustEnc.IdAjusteenc &
+                    " ya esta aplicado/finalizado y no puede eliminarse desde esta pantalla.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G2):
+            ' Contar detalles desde la lista en memoria del estado actual
+            ' (lBeTransAjusteDetBorrador para borrador), no desde dgrid.Rows.
+            ' Despues de mnuDel_Click el DataGridView puede quedar con filas
+            ' IsNewRow / fantasma que distorsionan el conteo (caso reportado:
+            ' filasGrid = 2 con la lista vacia, bloqueando la eliminacion del
+            ' ajuste). La lista se mantiene sincronizada con RemoveAt en
+            ' mnuDel_Click, asi que es la fuente de verdad.
+            Dim cantDetallesMem As Integer = 0
+            If lBeTransAjusteDetBorrador IsNot Nothing Then
+                cantDetallesMem = lBeTransAjusteDetBorrador.Count
+            End If
+            If cantDetallesMem > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & cantDetallesMem & " detalle(s) en memoria. Elimine los detalles antes de eliminar el ajuste.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G3):
+            ' Defensa: validar contra la BD que efectivamente no quedaron filas
+            ' en trans_ajuste_det_borrador (por si la lista en memoria estuviera
+            ' desincronizada por algun camino atipico). trans_ajuste_det no se
+            ' chequea: G1 ya bloqueo todo lo no-borrador, asi que esa tabla no
+            ' deberia tener filas para este IdAjusteEnc.
+            Dim detallesBorr As List(Of clsBeTrans_ajuste_det_borrador) =
+                clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+            If detallesBorr IsNot Nothing AndAlso detallesBorr.Count > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & detallesBorr.Count & " detalle(s) en BD trans_ajuste_det_borrador. Elimine los detalles antes.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            Dim resp As DialogResult = XtraMessageBox.Show(
+                "Confirma eliminar el ajuste #" & pBeTransAjustEnc.IdAjusteenc &
+                "?" & vbCrLf & vbCrLf & "Esta operación es irreversible.",
+                "Eliminar ajuste sin detalle",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2)
+            If resp <> DialogResult.Yes Then Return
+
+            clsLnTrans_ajuste_enc.RollBackStockRes(pBeTransAjustEnc)
+
+            XtraMessageBox.Show(
+                "Ajuste eliminado correctamente.",
+                Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            Guardado = True
+            Me.Close()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text,
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            clsLnLog_error_wms.Agregar_Error(
+                "Eliminar_Ajuste_Si_Sin_Detalle: " & ex.Message)
+        End Try
+    End Sub
+
     Private Sub Guardar_Ajuste()
 
         Dim cc, ic As Integer
@@ -2805,9 +3148,42 @@ Public Class frmAjusteStock
 
             End If
 
+            '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2):
+            'Reconciliar lista vs grid antes de iterar por índice.
+            Sincronizar_Lista_Con_Grid()
+
             If lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0 Then
                 Throw New Exception("No hay registros para guardar.")
             End If
+
+            '#FIX_v15_RECUPERAR_PRODUCTO_2026-04-25 (I2): completar código/nombre faltantes.
+            For Each detItem As clsBeTrans_ajuste_det In lBeTransAjusteDet
+                If String.IsNullOrWhiteSpace(detItem.Codigo_producto) OrElse
+                   String.IsNullOrWhiteSpace(detItem.Nombre_producto) Then
+                    Try
+                        If detItem.IdProductoBodega > 0 Then
+                            Dim idProd As Integer =
+                                clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(
+                                    detItem.IdProductoBodega)
+                            If idProd > 0 Then
+                                Dim prod = clsLnProducto.Get_Single_By_IdProducto(idProd)
+                                If prod IsNot Nothing Then
+                                    If String.IsNullOrWhiteSpace(detItem.Codigo_producto) Then
+                                        detItem.Codigo_producto = prod.Codigo
+                                    End If
+                                    If String.IsNullOrWhiteSpace(detItem.Nombre_producto) Then
+                                        detItem.Nombre_producto = prod.Nombre
+                                    End If
+                                End If
+                            End If
+                        End If
+                    Catch ex As Exception
+                        clsLnLog_error_wms.Agregar_Error(
+                            "v15.I2 Recuperar producto IdProductoBodega=" &
+                            detItem.IdProductoBodega & ": " & ex.Message)
+                    End Try
+                End If
+            Next
 
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
@@ -2841,8 +3217,9 @@ Public Class frmAjusteStock
                 If lBeTransAjusteDet(i).Peso_original <> lBeTransAjusteDet(i).Peso_nuevo Then ic += 1
                 If ic > 0 Then cc += 1
 
-                '#EJC20180924: Asignación de bodega de ERP.                
-                DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
+                '#EJC20180924: Asignación de bodega de ERP.
+                '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G3): usar la fila del bucle.
+                DgComboBodega = TryCast(dgrid.Rows(i).Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
                 If BeBodega.Bodega_Cliente_Ajuste_ByB Then
                     IdBodegaERP = cmbBodegaERP.EditValue
@@ -2939,7 +3316,8 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             If Not EsBorrador Then
-                Llenar_DS_Rep()
+                'Llenar_DS_Rep()
+                Imprimir_Detalle_Ajuste_RC2026()
             End If
 
             If EsBorrador Then Close()
@@ -3094,6 +3472,102 @@ Public Class frmAjusteStock
             clsTransaccion.Close_Conection()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2 helper) — REWRITE v16:
+    'Reconstruye lBeTransAjusteDet para que refleje exactamente el grid.
+    Private Sub Sincronizar_Lista_Con_Grid()
+        Dim lNueva As New List(Of clsBeTrans_ajuste_det)
+        Dim lOriginal As List(Of clsBeTrans_ajuste_det) =
+            If(lBeTransAjusteDet, New List(Of clsBeTrans_ajuste_det))
+
+        Dim filasGrid As New List(Of DataGridViewRow)
+        For iRow As Integer = 0 To dgrid.Rows.Count - 1
+            If Not dgrid.Rows(iRow).IsNewRow Then filasGrid.Add(dgrid.Rows(iRow))
+        Next
+
+        Dim modoPosicional As Boolean = (filasGrid.Count = lOriginal.Count)
+
+        For i As Integer = 0 To filasGrid.Count - 1
+
+            Dim row As DataGridViewRow = filasGrid(i)
+
+            Dim Codigo As String = If(
+                IsDBNull(row.Cells("ColCodigoProducto").Value),
+                "", CStr(row.Cells("ColCodigoProducto").Value))
+            Dim Lote As String = If(
+                IsDBNull(row.Cells("ColLote").Value),
+                "", CStr(row.Cells("ColLote").Value))
+            Dim IdAjusteDet As Integer = If(
+                IsDBNull(row.Cells("ColIdAjusteDEt").Value),
+                0, CInt(row.Cells("ColIdAjusteDEt").Value))
+
+            Dim found As clsBeTrans_ajuste_det = Nothing
+
+            '1) Match nominal en lista principal
+            found = lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
+                                    AndAlso x.Lote_nuevo = Lote _
+                                    AndAlso x.IdAjusteDet = IdAjusteDet)
+
+            '2) Fallback nominal en borrador
+            If found Is Nothing AndAlso
+               lBeTransAjusteDetBorrador IsNot Nothing Then
+                Dim foundBorr As clsBeTrans_ajuste_det_borrador =
+                    lBeTransAjusteDetBorrador.Find(
+                        Function(x) x.codigo_producto = Codigo _
+                          AndAlso x.lote_nuevo = Lote _
+                          AndAlso x.idajustedet = IdAjusteDet)
+                If foundBorr IsNot Nothing Then
+                    found = Convertir_Borrador_A_Detalle(foundBorr)
+                End If
+            End If
+
+            '3) FIX_v16_J1: fallback posicional + backfill de campos vacíos
+            If found Is Nothing AndAlso modoPosicional AndAlso i < lOriginal.Count Then
+                found = lOriginal(i)
+
+                If String.IsNullOrWhiteSpace(found.Codigo_producto) Then
+                    found.Codigo_producto = Codigo
+                End If
+
+                Try
+                    Dim nombreGrid As String = If(
+                        IsDBNull(row.Cells("ColNombreProducto").Value),
+                        "", CStr(row.Cells("ColNombreProducto").Value))
+                    If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
+                       Not String.IsNullOrWhiteSpace(nombreGrid) Then
+                        found.Nombre_producto = nombreGrid
+                    End If
+                Catch
+                End Try
+
+                If String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
+                   Not String.IsNullOrWhiteSpace(Lote) Then
+                    found.Lote_nuevo = Lote
+                End If
+            End If
+
+            If found IsNot Nothing Then
+                lNueva.Add(found)
+            Else
+                Throw New Exception(String.Format(
+                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
+                    i + 1, Codigo, Lote, IdAjusteDet))
+            End If
+        Next
+
+        lBeTransAjusteDet = lNueva
+
+        'FIX_v16_J2: usar mapeo explícito al espejo borrador
+        If chkBorrador.Checked AndAlso lBeTransAjusteDetBorrador IsNot Nothing Then
+            Dim lNuevoBorr As New List(Of clsBeTrans_ajuste_det_borrador)
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
+            For Each d As clsBeTrans_ajuste_det In lNueva
+                lNuevoBorr.Add(MapearDetalleABorrador(d, fechaActual, usuarioActual))
+            Next
+            lBeTransAjusteDetBorrador = lNuevoBorr
+        End If
     End Sub
 
     Private Sub Guardar_Ajuste_Positivo(ByRef lConnection As SqlConnection, ByRef lTransaction As SqlTransaction)
@@ -4792,7 +5266,12 @@ Public Class frmAjusteStock
 
             If IdTipoAjuste = 3 Then
                 mnuAjustePositivo.Enabled = True
-                Es_Ajuste_Positivo_Sin_Stock = True
+                '#FIX_v8_2026-04-25: NO prender la bandera acÃ¡. La bandera
+                'Es_Ajuste_Positivo_Sin_Stock SOLO debe activarse cuando el operador
+                'usa explÃ­citamente mnuAjustePositivo_Click (agregar producto SIN stock previo).
+                'Antes: Es_Ajuste_Positivo_Sin_Stock = True
+                'Esa lÃ­nea provocaba que ajustes positivos masivos vÃ­a Excel (con IdStock previo)
+                'crearan un IdStock nuevo en lugar de actualizar el origen.
             Else
                 mnuAjustePositivo.Enabled = False
                 Es_Ajuste_Positivo_Sin_Stock = False
@@ -5032,6 +5511,8 @@ Public Class frmAjusteStock
 
             'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
             IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
+
+            cmbTipoAjuste.EditValue = 3
 
             '#GT29082025: mostrar u ocultar las columnas de talla/color
             Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
@@ -5274,6 +5755,38 @@ Public Class frmAjusteStock
         Return oDet
 
     End Function
+
+    '#FIX_v12_HASH_EXCEL_2026-04-25 (F1):
+    'HashSet de hashes SHA-256 de los lotes ya importados en la sesión actual.
+    Private pHashesExcelImportadosSesion As New HashSet(Of String)
+
+    '#FIX_v12_HASH_EXCEL_2026-04-25 (F1 helper):
+    Private Function CalcularHashImportacion(
+            ByVal lote As List(Of clsBeTrans_ajuste_det)) As String
+        If lote Is Nothing OrElse lote.Count = 0 Then Return ""
+        Try
+            Dim sb As New System.Text.StringBuilder()
+            Dim ordenado = lote.OrderBy(Function(x) x.Codigo_producto) _
+                               .ThenBy(Function(x) x.Lote_original) _
+                               .ThenBy(Function(x) x.IdStock)
+            For Each d As clsBeTrans_ajuste_det In ordenado
+                sb.Append(If(d.Codigo_producto, "")).Append("|"c)
+                sb.Append(If(d.Lote_original, "")).Append("|"c)
+                sb.Append(d.IdStock).Append("|"c)
+                sb.Append(d.Cantidad_original.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Cantidad_nueva.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Idtipoajuste).Append(";"c)
+            Next
+            Using sha As System.Security.Cryptography.SHA256 = System.Security.Cryptography.SHA256.Create()
+                Dim bytes() As Byte = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(sb.ToString()))
+                Return BitConverter.ToString(bytes).Replace("-", "")
+            End Using
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("CalcularHashImportacion: " & ex.Message)
+            Return ""
+        End Try
+    End Function
+
     Private Sub btnImportarExcel_Click(sender As Object, e As EventArgs) Handles btnImportarExcel.ItemClick
         Try
             ' El tipo de ajuste es obligatorio antes de importar
@@ -5287,10 +5800,28 @@ Public Class frmAjusteStock
 
             Using frm As New frmImportarAjusteExcel(AP.IdBodega,
                                                     cmbPropietarioBodega.EditValue,
-                                                    idTipoSel)
+                                                    idTipoSel,
+                                                    BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color)
                 frm.ShowDialog(Me)
 
                 If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
+
+                '#FIX_v12_HASH_EXCEL_2026-04-25 (F1): evitar doble import accidental.
+                Dim hashLote As String = CalcularHashImportacion(frm.AjustesParaCargar)
+                If Not String.IsNullOrEmpty(hashLote) Then
+                    If pHashesExcelImportadosSesion.Contains(hashLote) Then
+                        Dim resp As DialogResult = XtraMessageBox.Show(
+                            "El archivo Excel que está intentando importar coincide exactamente con uno ya importado en esta sesión del ajuste." & vbCrLf & vbCrLf &
+                            "¿Desea importarlo de todas formas? Continuar generará filas duplicadas en el grid.",
+                            "Archivo duplicado",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning,
+                            MessageBoxDefaultButton.Button2)
+                        If resp <> DialogResult.Yes Then Return
+                    Else
+                        pHashesExcelImportadosSesion.Add(hashLote)
+                    End If
+                End If
 
                 Dim BeAjusteDetBorrador As clsBeTrans_ajuste_det_borrador = Nothing
 
@@ -5299,9 +5830,10 @@ Public Class frmAjusteStock
 
                     det.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
 
+                    '#FIX_v15_IMPORTER_BORRADOR_2026-04-25 (I1): mapeo explícito al borrador.
                     If chkBorrador.Checked Then
-                        BeAjusteDetBorrador = New clsBeTrans_ajuste_det_borrador
-                        clsPublic.CopyObject(det, BeAjusteDetBorrador)
+                        BeAjusteDetBorrador = MapearDetalleABorrador(
+                            det, Now, AP.UsuarioAp.IdUsuario.ToString())
                         lBeTransAjusteDetBorrador.Add(BeAjusteDetBorrador)
                     Else
                         lBeTransAjusteDet.Add(det)
@@ -5317,6 +5849,20 @@ Public Class frmAjusteStock
                     vProveedor = clsLnProveedor.Get_Single_By_IdStock(det.IdStock)
 
                     If vProveedor IsNot Nothing Then
+                        '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistir proveedor en el
+                        ' BE de detalle (det) para que el guardado deje las columnas en
+                        ' trans_ajuste_det. Si la fila se mapeó a borrador, propagar también
+                        ' al BeAjusteDetBorrador correspondiente (mismo det).
+                        det.IdProveedor = vProveedor.IdProveedor
+                        det.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                        det.Nombre_Proveedor = If(vProveedor.Nombre, "")
+
+                        If chkBorrador.Checked AndAlso BeAjusteDetBorrador IsNot Nothing Then
+                            BeAjusteDetBorrador.IdProveedor = vProveedor.IdProveedor
+                            BeAjusteDetBorrador.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                            BeAjusteDetBorrador.Nombre_Proveedor = If(vProveedor.Nombre, "")
+                        End If
+
                         If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
                             sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
                         Else
@@ -5326,13 +5872,47 @@ Public Class frmAjusteStock
                         Debug.WriteLine($"No se encontró proveedor para IdStock: {det.IdStock}")
                     End If
 
+                    '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1): asignación nominal de proveedor.
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
-                                                       ubic, sProveedorTexto)
+                                                       ubic)
 
                     Llenar_Motivo(rc, det.IdMotivoAjuste)
                     Llenar_Tipo(rc, det.Idtipoajuste)
+
+                    ' Cinturón defensivo: forzar el valor del combo aunque
+                    ' Llenar_Tipo no lo haya seteado (el fix raíz va en
+                    ' Llenar_Tipo, branch Case TipoTrans.Nuevo).
+                    Try
+                        dgrid.Rows(rc).Cells("tipoajuste").Value = det.Idtipoajuste
+                    Catch
+                    End Try
+
+                    ' Talla/Color: solo cuando la bodega controla. El importador
+                    ' resolvió IdProductoTallaColor desde el IdStock; aquí se
+                    ' propaga al dgrid usando el patrón canónico (líneas 921-934
+                    ' del flujo manual: Llenar_Talla/Color cargan los DataSource).
+                    If BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color _
+                       AndAlso det.IdProductoTallaColor_origen > 0 Then
+                        Try
+                            Llenar_Talla(rc, -1)
+                            Llenar_Color(rc, -1)
+                            dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = det.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = det.Talla_origen
+                            dgrid.Rows(rc).Cells("colColor").Value = det.Color_origen
+                            dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                            dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+                        Catch ex As Exception
+                            ' No bloquea la importación si el lookup falla.
+                            clsLnLog_error_wms.Agregar_Error(
+                                "btnImportarExcel_Click talla/color row " & rc & ": " & ex.Message)
+                        End Try
+                    End If
+
                     Llena_Bodegas_ERP_Grid(rc, -1)
+
+                    '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1):
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(det)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
@@ -5611,6 +6191,10 @@ Public Class frmAjusteStock
             Catch
             End Try
         End Try
+    End Sub
+
+    Private Sub mnuEliminarAjusteBorrador_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEliminarAjusteBorrador.ItemClick
+        Eliminar_Ajuste_Si_Sin_Detalle()
     End Sub
 
     Private Sub dgrid_AnyChange_RC2026(sender As Object, e As EventArgs)
