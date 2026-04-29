@@ -1,0 +1,154 @@
+function:
+  name: Reserva_Stock_Especifico
+  alias: especifico-ov1-puntual
+  overload_index: 1
+  file: TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb
+  line_start: 1459
+  line_end: 1611
+  size_lines: 153
+  visibility: Public Shared
+  return_type: Boolean
+  scanned_at: 2026-04-29
+  source_commit: pending_capture
+  one_liner: >
+    Reserva forzada sobre UN UNICO stock especifico provisto por el caller
+    (pBeStockEspecifico). NO consulta lStock, NO itera, NO tiene recursion.
+    Caso de uso tipico: handheld escanea LP/ubicacion y el operador decide
+    reservar de ese stock puntualmente. La funcion mas chica del archivo y la
+    mas simple. Sirve como template minimo de reserva.
+
+signature:
+  parameters:
+    - { name: pStockRes, type: clsBeStock_res, mode: ByRef, optional: false, purpose: "solicitud de reserva" }
+    - { name: DiasVencimiento, type: Double, mode: ByVal, optional: false, purpose: "recibido pero NO usado en esta funcion (parametro inertia)" }
+    - { name: MaquinaQueSolicita, type: String, mode: ByVal, optional: false, purpose: "host PC auditoria" }
+    - { name: pBeStockEspecifico, type: clsBeStock, mode: ByRef, optional: false, purpose: "el stock unico provisto por el caller (LP/ubicacion ya identificado)" }
+    - { name: lConnection, type: SqlConnection, mode: ByRef, optional: false }
+    - { name: ltransaction, type: SqlTransaction, mode: ByRef, optional: false }
+
+local_variables:
+  - { name: lBeStockAReservar, type: List(Of clsBeStock_res), purpose: "lista de UN solo elemento; existe solo para reusar Inserta_Stock_Reservado" }
+  - { name: BeProducto, type: clsBeProducto, purpose: "instancia declarada NUNCA usada (vestigio del template)" }
+  - { name: BeStockRes, type: clsBeStock_res, purpose: "el unico stock_res a persistir" }
+  - { name: vCantidadReservada, type: Double, purpose: "cantidad ya reservada del stock especifico" }
+  - { name: StockOrdenado, type: Object = Nothing, purpose: "DECLARADA NUNCA USADA (vestigio claro)" }
+  - { name: vCantidadCompletada, type: Boolean, purpose: "flag asignado pero NO usado para Exit For (no hay loop)" }
+  - { name: vCantidadStock, type: Double }
+  - { name: vCantidadPendiente, type: Double }
+  - { name: vCantidadSolicitadaPedido, type: Double }
+  - { name: vValorEnteroCantidadSolicitadaPedido, type: Integer }
+  - { name: vCantidadAReservarPorIdStock, type: Double }
+
+dead_variables:
+  - { name: BeProducto, reason: "declarada pero nunca leida ni usada" }
+  - { name: StockOrdenado, reason: "declarada como Object=Nothing y nunca tocada" }
+  - { name: vCantidadCompletada, reason: "asignada al final pero nunca consultada (no hay loop ni Exit)" }
+  - { name: DiasVencimiento, reason: "parametro recibido pero nunca usado dentro de la funcion" }
+
+global_state_used: []
+
+callees:
+  - { target: Get_Cantidad_Reservada_By_IdStock, type: db_read, location: B003, table: stock_res, note: "DIFERENTE al core: usa la version sin sufijo UMBas. Q-ESP1-01: que diferencia hay?" }
+  - { target: clsLnProducto_presentacion.GetSingle, type: db_read, location: B005, table: producto_presentacion, note: "lectura DIRECTA sin cache (a diferencia del core que usa lPresentaciones)" }
+  - { target: clsLnProducto.Tiene_Control_Por_Peso_By_IdProductoBodega, type: db_read, location: B005 }
+  - { target: clsPublic.CopyObject, type: util, location: B007, note: "copia pBeStockEspecifico a BeStockRes" }
+  - { target: Inserta_Stock_Reservado, type: db_write, location: B008, table: stock_res }
+  - { target: clsLnLog_error_wms.Agregar_Error, type: db_write, location: B010 }
+
+blocks:
+  - { id: B001, lines: "1466", type: init, summary: "Reserva_Stock_Especifico=False" }
+  - { id: B002, lines: "1468-end", type: try_catch, summary: "Wrapper try/catch" }
+  - { id: B003, lines: "1477-1483", type: db_read, summary: "Get_Cantidad_Reservada_By_IdStock (NO UMBas-only); resta de pBeStockEspecifico.Cantidad" }
+  - id: B005
+    lines: "1494-1534"
+    type: branch + math + db_read
+    summary: "Normalizacion cantidad (sin Explosion_Automatica gating; siempre multiplica por Factor)"
+    sub_branches:
+      - { condition: "IdPresentacion = 0", on_true: "vCantidadSolicitadaPedido = pStockRes.Cantidad" }
+      - { condition: "IdPresentacion <> 0 AND BePres.EsPallet", on_true: "Factor*CajasPorCama*CamasPorTarima" }
+      - condition: "IdPresentacion <> 0 AND NOT EsPallet"
+        on_true: "vCantidadSolicitadaPedido = pStockRes.Cantidad * BePres.Factor (sin Split_Decimal, sin Explosion_Automatica)"
+        sub_sub_branches:
+          - { condition: "NOT Tiene_Control_Por_Peso", on_true: "TryParse o Truncate" }
+          - { condition: "Tiene_Control_Por_Peso", on_true: "Round(.., 6)" }
+  - { id: B006, lines: "1536-1538", type: assign, summary: "vCantidadPendiente=solicitado; vCantidadStock=pBeStockEspecifico.Cantidad" }
+  - id: B007
+    lines: "1540-1591"
+    type: branch + assign
+    summary: "Construccion de UN solo BeStockRes; sin loop, sin iteracion"
+    sub_branches:
+      - { condition: "vCantidadPendiente = vCantidadStock", on_true: "vCantidadAReservarPorIdStock = vCantidadStock; vCantidadPendiente = 0" }
+      - { condition: "vCantidadPendiente < vCantidadStock", on_true: "vCantidadAReservarPorIdStock = vCantidadPendiente; vCantidadPendiente = 0" }
+      - { condition: "vCantidadPendiente > vCantidadStock", on_true: "vCantidadAReservarPorIdStock = vCantidadStock; vCantidadPendiente = (solicitado - stock) (queda residuo SIN reservar y SIN throw, no hay quien continue)" }
+    side_effects:
+      - "CopyObject(pBeStockEspecifico, BeStockRes) (copia campos de stock origen a reserva)"
+      - "Indicador HARDCODED 'PED'"
+      - "Estado='UNCOMMITED'"
+      - "IdPicking=0, IdDespacho=0"
+      - "NO propaga Color/Talla/IdProductoTallaColor"
+  - id: B008
+    lines: "1593-1603"
+    type: branch + db_write
+    summary: "Persistencia"
+    sub_branches:
+      - { condition: "lBeStockAReservar.Count > 0 (siempre true porque B007 siempre Add)", on_true: "Inserta_Stock_Reservado", dead_else: true }
+      - { condition: "Inserta_Stock_Reservado retorna False", on_throw: "ErrorS0006" }
+  - { id: B010, lines: "1605-1608", type: catch, summary: "Log + re-throw" }
+
+extracted_rules:
+  - { id: R001, rule: "Opera sobre un UNICO IdStock provisto por el caller; NO consulta lStock", depends_on: [pBeStockEspecifico], legacy_anchor: signature, parity_status: unknown }
+  - { id: R002, rule: "Resta de reservas usa Get_Cantidad_Reservada_By_IdStock (sin sufijo UMBas, distinta del core)", depends_on: [], legacy_anchor: "L1477-1479" }
+  - { id: R003, rule: "NO usa Explosion_Automatica; siempre multiplica directo por Factor", depends_on: [], legacy_anchor: L1515 }
+  - { id: R004, rule: "NO usa Split_Decimal; no separa entera/fraccion", depends_on: [], legacy_anchor: ausencia }
+  - { id: R005, rule: "NO tiene recursion por fraccion decimal", depends_on: [], legacy_anchor: ausencia }
+  - { id: R006, rule: "NO cachea presentacion (lectura directa cada llamada)", depends_on: [], legacy_anchor: L1499 }
+  - { id: R007, rule: "Si solicitado > stock disponible, NO throw: simplemente reserva todo el stock disponible y deja vCantidadPendiente residual SIN propagar al caller", depends_on: [], legacy_anchor: "L1554-1557", note: "DIVERGENCIA SEMANTICA grave vs core que tira ErrorS0002. Aqui el caller NO se entera." }
+  - { id: R008, rule: "Indicador hardcoded 'PED' (igual que NAV_BYB y Lista_Result, distinto al core)", depends_on: [], legacy_anchor: L1542 }
+  - { id: R009, rule: "Estado='UNCOMMITED' (mismo typo)", depends_on: [], legacy_anchor: L1569 }
+  - { id: R010, rule: "DiasVencimiento es parametro de la firma pero NUNCA se usa", depends_on: [], legacy_anchor: signature, note: "puede inducir al caller a creer que filtra por vencimiento" }
+  - { id: R011, rule: "NO propaga Color/Talla/IdProductoTallaColor (igual que NAV_BYB y Lista_Result)", depends_on: [], legacy_anchor: ausencia }
+
+logging_checkpoints:
+  - { prefix: "(MethodBase.GetCurrentMethod.Name() sin timestamp)", location: L1606, meaning: "log generico" }
+
+errors_thrown:
+  - { code: "clsDalEx.ErrorS0006", location: L1598, condition: "Inserta_Stock_Reservado retorna False" }
+  - { code: "clsDalEx.ErrorS0005", location: L1602, condition: "lBeStockAReservar.Count = 0 (UNREACHABLE: B007 siempre hace Add)", semantics: "branch defensive imposible" }
+  - { code: "ad-hoc", location: L1510, condition: "EsPallet AND vFactorPallet <= 0", semantics: "factores invalidos" }
+
+recursion: { exists: false }
+
+gotos: []
+
+dead_code:
+  - { description: "Variable BeProducto declarada nunca usada", location: L1471 }
+  - { description: "Variable StockOrdenado As Object = Nothing nunca tocada", location: L1485 }
+  - { description: "Variable vCantidadCompletada asignada nunca leida (no hay loop con Exit)", location: L1487 }
+  - { description: "Parametro DiasVencimiento NUNCA usado dentro de la funcion", location: signature }
+  - { description: "Branch defensive Else ErrorS0005 inalcanzable (B007 siempre hace lBeStockAReservar.Add)", location: "L1601-1603" }
+  - { description: "BeStockRes.IdRecepcion asignado dos veces (igual patron que core)", location: "L1576, L1585" }
+  - { description: "Comentario 'pStockRes.Cantidad = vCantidadReservada' (codigo en comentario, basura)", location: L1590 }
+
+bugs_latent:
+  - { id: "B-ESP1-01", description: "Si solicitado > stock_especifico.Cantidad, reserva parcial silenciosa (NO throw, caller no se entera)", severity: critica, anchor: "L1554-1557 (rama vCantidadPendiente > vCantidadStock)", impact: "el caller asume que reservo todo lo solicitado y puede generar inconsistencia downstream" }
+
+open_questions:
+  - { id: "Q-ESP1-01", text: "Get_Cantidad_Reservada_By_IdStock (sin UMBas) vs Get_Cantidad_ReservadaUMBas_By_IdStock (con UMBas) que usa el core. Cual es la diferencia funcional?", severity: alta }
+  - { id: "Q-ESP1-02", text: "DiasVencimiento es parametro pero no se usa. Esta firma fue copy-paste y nunca se ajusto?", severity: media }
+  - { id: "Q-ESP1-03", text: "Reserva parcial silenciosa (B-ESP1-01): es bug o feature? Caso de uso real: que pasa cuando handheld escanea un LP con menos stock del solicitado?", severity: critica }
+  - { id: "Q-ESP1-04", text: "Esta funcion convive con el OVERLOAD 2 (L1612, 8242 lineas). Por que dos overloads tan asimetricos? Q5,Q6 del cuestionario.", severity: alta }
+  - { id: "Q-ESP1-05", text: "Caso de uso confirmado: handheld escanea LP/ubicacion especifica? Confirmar con Erik.", severity: media }
+
+callers:
+  pending_inventory: true
+  hipothesis: "llamada desde handheld (TOMHH2025) o flujos donde el operador escanea/elige stock especifico antes de pedirle a WMS que lo reserve"
+
+net8_equivalent:
+  facade_method: "?"
+  hipothesis: "podria ser StockReservationFacade.ReserveSpecific(stock, quantity) o un Step ForceReserveSpecificStockStep"
+  parity_status: unknown_pending_wave13
+  gaps_to_verify_in_wave13:
+    - "el motor nuevo expone una API para reservar contra un IdStock especifico?"
+    - "el comportamiento de 'reserva parcial silenciosa' fue corregido a throw o se mantiene?"
+    - "DiasVencimiento se elimino de la firma o sigue inerte?"
+    - "Color/Talla agregados al flow especifico?"

@@ -1,0 +1,211 @@
+function:
+  name: Reserva_Stock_NAV_BYB
+  alias: byb-adapter
+  file: TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb
+  line_start: 442
+  line_end: 855
+  size_lines: 414
+  visibility: Public Shared
+  return_type: Boolean
+  scanned_at: 2026-04-29
+  source_commit: pending_capture
+  introduced_at: "2022-05-23 (#EJC20220523)"
+  client_specific: true
+  client_id_marker: "BYB (deducido de la sigla y del Codigo_proveedor_produccion=1060315)"
+  one_liner: >
+    Adapter especifico para el cliente BYB. Opera con i_nav_config_enc resuelta por
+    (IdBodega, IdEmpresa) en vez de (IdBodega, IdPropietario). Maneja Peso ademas de
+    Cantidad (reserva proporcional de peso). Tiene logica de Explosion_Automatica y un
+    hotfix HARDCODED para el Codigo_proveedor_produccion='1060315' que evita reservas
+    parciales en presentaciones que generan fracciones decimales.
+
+critical_violations:
+  - id: V-001
+    severity: critica
+    rule_violated: "L-035 (no codificar por cliente; parametrizar via Bodega/Producto/i_nav_config_enc)"
+    location: L708
+    evidence: 'If pBeConfigEnc.Codigo_proveedor_produccion = "1060315" Then'
+    impact: "el comportamiento de reserva por fracciones decimales esta atado al string '1060315' embedido en el codigo fuente; un cliente nuevo con la misma necesidad obliga a recompilar el WMS"
+    proposed_fix: "exponer el comportamiento como flag boolean en i_nav_config_enc (ej. Reserva_Solo_Cantidad_Entera_En_Presentacion) y migrar la condicion a leer ese flag"
+
+signature:
+  parameters:
+    - { name: pStockRes, type: clsBeStock_res, mode: ByRef, optional: false, purpose: "solicitud de reserva (entrada y mutacion)" }
+    - { name: DiasVencimiento, type: Double, mode: ByVal, optional: false, purpose: "dias para filtrar fecha vencimiento" }
+    - { name: MaquinaQueSolicita, type: String, mode: ByVal, optional: false, purpose: "host PC auditoria" }
+    - { name: pListStockResOUT, type: List(Of clsBeStock_res), mode: ByRef, optional: false, purpose: "OUT: lista de reservas creadas devuelta al caller (asignada en B010)" }
+    - { name: pIdEmpresa, type: Integer, mode: ByVal, optional: false, purpose: "empresa contable (clave para Get_Single_By_IdBodega_And_IdEmpresa, NO IdPropietario)" }
+    - { name: pIdBodega, type: Integer, mode: ByVal, optional: false, purpose: "bodega target (separado del pStockRes.IdBodega; potencial inconsistencia)" }
+    - { name: pIdPropietario, type: Integer, mode: ByVal, optional: false, purpose: "propietario contable (no usado para resolver config en este adapter, solo se inicializa BeConfigEnc.IdPropietario)" }
+    - { name: lConnection, type: SqlConnection, mode: ByRef, optional: false, purpose: "conexion SQL ambiente" }
+    - { name: ltransaction, type: SqlTransaction, mode: ByRef, optional: false, purpose: "transaccion ambiente" }
+
+local_variables:
+  - { name: lBeStockExistente, type: List(Of clsBeStock), purpose: "candidatos retornados por lStock" }
+  - { name: lBeStockAReservar, type: List(Of clsBeStock_res), purpose: "acumulador de reservas a persistir" }
+  - { name: BeProducto, type: clsBeProducto, purpose: "instancia llenada ByRef por lStock" }
+  - { name: BeStockRes, type: clsBeStock_res, purpose: "acumulador iterativo" }
+  - { name: vIdPresentacion, type: Integer, purpose: "alias de pStockRes.IdPresentacion" }
+  - { name: BeConfigEnc, type: clsBeI_nav_config_enc, purpose: "config inicial con IdPropietario; sobreescrita despues por config por IdEmpresa" }
+  - { name: pBeConfigEnc, type: clsBeI_nav_config_enc, purpose: "config encabezado real obtenida por IdEmpresa (B008)" }
+  - { name: vCantidadReservada, type: Double, purpose: "cantidad ya reservada UMBas (resta inicial)" }
+  - { name: vPesoReservado, type: Double, purpose: "peso ya reservado UMBas (resta inicial)" }
+  - { name: vCantidadStock, type: Double, purpose: "cantidad disponible iterativa" }
+  - { name: vPesoStock, type: Double, purpose: "peso disponible iterativo" }
+  - { name: vCantidadStockEnPres, type: Double, purpose: "cantidad disponible expresada en unidades de presentacion (Stock/Factor)" }
+  - { name: vPesoSolicitadoPedido, type: Double, purpose: "peso solicitado normalizado" }
+  - { name: vCantidadAReservarPorIdStock, type: Double }
+  - { name: vPesoAReservarPorIdStock, type: Double }
+  - { name: vCantidadEnteraPres, type: Double, purpose: "parte entera del Split_Decimal" }
+  - { name: vCantidadDecimalUMBas, type: Double, purpose: "parte decimal x Factor (trigger de recursion)" }
+  - { name: vCantidadEnteraStockPres, type: Double, purpose: "parte entera del stock disponible expresado en presentacion (B009 hotfix BYB)" }
+  - { name: vCantidadDecimalStockUMBas, type: Double }
+  - { name: vPesoEnteroPres, type: Double }
+  - { name: vPesoDecimalUMBas, type: Double }
+  - { name: vPesoEnteroPresStock, type: Double }
+  - { name: vPesoDecimalStockUMBas, type: Double }
+  - { name: vCantidadSolicitadaPedidoEnPres, type: Double }
+  - { name: vCantidadEnStockEnPres, type: Double }
+
+dead_variables: []
+
+global_state_used:
+  - { name: lPresentaciones, type: cache, purpose: "cache module-level de clsBeProducto_Presentacion" }
+
+callees:
+  - { target: clsLnStock.lStock, type: db_read, location: B004, table: stock, note: "no pasa pExcluirUbicacionPicking" }
+  - { target: Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock, type: db_read, location: B005, table: stock_res, note: "interna del archivo; retorna cantidad Y peso (vs core que solo retorna cantidad)" }
+  - { target: clsLnProducto_presentacion.GetSingle, type: db_read, location: B008, table: producto_presentacion }
+  - { target: clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa, type: db_read, location: B008, table: i_nav_config_enc, note: "DIFERENTE al core: usa IdEmpresa, no IdPropietario" }
+  - { target: Split_Decimal, type: math, location: B008 }
+  - { target: clsLnProducto.Tiene_Control_Por_Peso_By_IdProductoBodega, type: db_read, location: B008 }
+  - { target: Inserta_Stock_Reservado, type: db_write, location: B010, table: stock_res }
+  - { target: Reserva_Stock_NAV_BYB, type: recursion, location: B010, note: "auto-llamada para fraccion decimal con IdPresentacion=0" }
+  - { target: clsLnLog_error_wms.Agregar_Error, type: db_write, location: B011 }
+
+blocks:
+  - { id: B001, lines: "452-456", type: init, summary: "Reserva_Stock_NAV_BYB=False; pListStockResOUT=Nothing; vIdxConfig=-1 (dead var)" }
+  - { id: B002, lines: "458-853", type: try_catch, summary: "Wrapper Try/Catch principal" }
+  - { id: B003, lines: "468", type: init, summary: "BeConfigEnc inicializado con Idnavconfigenc=1, IdPropietario=pIdPropietario (placeholder, sobreescrito en B008)" }
+  - { id: B004, lines: "470-475", type: db_read, summary: "lStock SIN pExcluirUbicacionPicking (siempre incluye picking)" }
+  - { id: B005, lines: "481-497", type: loop + db_read, summary: "Restar reservas UMBas pendientes (cantidad Y peso)" }
+  - { id: B006, lines: "499", type: branch, summary: "Si lBeStockExistente.Count = 0 -> ErrorS0004 (B011 implicito)" }
+  - id: B007
+    lines: "532-618"
+    type: branch + math
+    summary: "Normalizacion cantidad/peso solicitado por presentacion"
+    sub_branches:
+      - { condition: "IdPresentacion = 0", on_true: "vCantidadSolicitadaPedido = Math.Round(pStockRes.Cantidad,6); vPesoSolicitadoPedido = Math.Round(pStockRes.Peso,6)" }
+      - { condition: "IdPresentacion <> 0 AND BePres.EsPallet", on_true: "multiplicar por Factor*CajasPorCama*CamasPorTarima", on_throw: "factor pallet <= 0" }
+      - condition: "IdPresentacion <> 0 AND NOT EsPallet"
+        on_true: "lookup pBeConfigEnc por (IdBodega, IdEmpresa); si Explosion_Automatica entonces Split_Decimal y separar entera/fraccion; sino multiplicar directo por Factor"
+        sub_sub_branches:
+          - { condition: "Explosion_Automatica AND vCantidadEnteraPres > 0", on_true: "vCantidadSolicitadaPedido = vCantidadEnteraPres * BePres.Factor" }
+          - { condition: "Explosion_Automatica AND vCantidadEnteraPres = 0", on_true: "vCantidadSolicitadaPedido = vCantidadDecimalUMBas (la fraccion entera)" }
+          - { condition: "NOT Tiene_Control_Por_Peso", on_true: "Integer.TryParse o Math.Truncate (siempre entero)" }
+          - { condition: "Tiene_Control_Por_Peso", on_true: "Math.Round(.., 6)" }
+  - id: B008
+    lines: "636-676"
+    type: branch
+    summary: "Validacion stock suficiente segun Explosion_Automatica"
+    sub_branches:
+      - condition: "Explosion_Automatica AND IdPresentacion = 0"
+        on_true: "comparar UMBas vs UMBas; throw ErrorS0002 si insuficiente"
+      - condition: "Explosion_Automatica AND IdPresentacion <> 0"
+        on_true: "convertir Stock y Solicitado a unidades de presentacion (/Factor); throw ErrorS0002A si insuficiente en presentacion"
+      - condition: "NOT Explosion_Automatica"
+        on_true: "comparar UMBas vs UMBas directo; throw ErrorS0002 si insuficiente"
+  - id: B009
+    lines: "681-808"
+    type: loop + branch
+    summary: "Iteracion de stock candidato armando clsBeStock_res; HOTFIX BYB hardcoded"
+    inner_loop_per_iteration:
+      - "redondear cantidad y peso a 6 decimales"
+      - "if Cantidad > 0 -> construir BeStockRes copiando de pStockRes y vStock"
+      - "branch cantidad pendiente vs cantidad stock (3 ramas: =, <, >)"
+      - "rama vCantidadPendiente > vCantidadStock: HOTFIX BYB (Codigo_proveedor_produccion=1060315) evita reservas parciales fraccionales; si no hay parte entera -> Continue For (skip stock)"
+      - "Estado='UNCOMMITED' (mismo typo del core)"
+      - "Indicador HARDCODED='PED' (vs core que respeta pStockRes.Indicador)"
+      - "NO propaga Color/Talla/IdProductoTallaColor (core si lo hace post #GT09012025)"
+  - id: B010
+    lines: "812-843"
+    type: db_write + recursion
+    summary: "Persistencia + recursion por fraccion decimal (gated por Explosion_Automatica)"
+    sub_branches:
+      - { condition: "lBeStockAReservar.Count > 0", on_true: "Inserta_Stock_Reservado", on_throw_else: "ErrorS0005" }
+      - { condition: "Explosion_Automatica AND vCantidadDecimalUMBas > 0", on_true: "RECURSION: Reserva_Stock_NAV_BYB(BeStockRes con fraccion, IdPresentacion=0, ..)" }
+      - { condition: "Inserta_Stock_Reservado retorna False", on_throw: "ErrorS0006" }
+      - on_success: "pListStockResOUT = lBeStockAReservar; return True"
+  - { id: B011, lines: "849-852", type: catch, summary: "Log via clsLnLog_error_wms.Agregar_Error sin prefijo timestamp; re-throw" }
+
+extracted_rules:
+  - { id: R001, rule: "Config encabezado se resuelve por (IdBodega, IdEmpresa), NO por (IdBodega, IdPropietario)", depends_on: [bodega, empresa], legacy_anchor: "L564", net8_equivalent: "?", parity_status: unknown, divergence_from_core: "el core usa IdPropietario; este adapter usa IdEmpresa" }
+  - { id: R002, rule: "lStock NO recibe pExcluirUbicacionPicking; el adapter SIEMPRE considera ubicaciones picking", depends_on: [], legacy_anchor: "L470-475", parity_status: unknown }
+  - { id: R003, rule: "Restar reservas pendientes incluye cantidad Y peso (no solo cantidad)", depends_on: [stock_res existente], legacy_anchor: "L483-493", parity_status: unknown }
+  - { id: R004, rule: "Si Explosion_Automatica=True: la cantidad solicitada se separa en parte entera (en presentacion) y fraccion decimal; la fraccion se reserva en UMBas via recursion", depends_on: [config.Explosion_Automatica, presentacion.Factor], legacy_anchor: "L568-585", parity_status: unknown }
+  - { id: R005, rule: "Si Explosion_Automatica=False: la cantidad solicitada se multiplica directamente por Factor (sin split)", depends_on: [config.Explosion_Automatica], legacy_anchor: "L587-598", parity_status: unknown }
+  - { id: R006, rule: "Validacion de stock suficiente se hace en unidades de PRESENTACION cuando IdPresentacion<>0 y Explosion_Automatica=True (no en UMBas)", depends_on: [presentacion, config.Explosion_Automatica], legacy_anchor: "L647-665", note: "tira ErrorS0002A (variante 0002+A) en este caso", parity_status: unknown }
+  - { id: R007, rule: "HOTFIX BYB (Codigo_proveedor_produccion='1060315'): cuando vCantidadPendiente > vCantidadStock y vStock tiene fraccion decimal, NO reservar parcial; saltar al siguiente stock", depends_on: [config.Codigo_proveedor_produccion (HARDCODED)], legacy_anchor: "L708-757", note: "VIOLACION L-035; deberia ser flag de config", parity_status: unknown }
+  - { id: R008, rule: "Indicador en stock_res HARDCODED a 'PED' (no respeta pStockRes.Indicador)", depends_on: [], legacy_anchor: "L692", parity_status: unknown, divergence_from_core: "core respeta pStockRes.Indicador post #CKFK20210221" }
+  - { id: R009, rule: "Estado inicial = 'UNCOMMITED' (mismo typo del core)", depends_on: [], legacy_anchor: "L776", parity_status: unknown }
+  - { id: R010, rule: "Color/Talla/IdProductoTallaColor NO se propagan en este adapter", depends_on: [], legacy_anchor: "ausencia en B009", parity_status: missing_in_adapter, note: "el core post #GT09012025 si los propaga; gap entre adapters" }
+  - { id: R011, rule: "Peso se reserva proporcional al stock asignado; #EJC20220303 marca esto como specific de Cealsa pero esta en el adapter BYB", depends_on: [], legacy_anchor: "L793", parity_status: unknown, note: "comentario fuera de lugar; verificar si Cealsa usa este adapter o si fue copy-paste" }
+  - { id: R012, rule: "La recursion por fraccion solo ocurre si Explosion_Automatica=True (gating extra vs core)", depends_on: [config.Explosion_Automatica], legacy_anchor: "L817-831", parity_status: unknown }
+
+logging_checkpoints:
+  - { prefix: "(none, solo MethodBase.GetCurrentMethod.Name())", location: L850, meaning: "log generico sin prefijo timestamp como en el core" }
+
+errors_thrown:
+  - { code: "clsDalEx.ErrorS0002", location: "L641, L670", condition: "stock UMBas insuficiente", semantics: "no hay stock total suficiente", accepts_partial: false }
+  - { code: "clsDalEx.ErrorS0002A", location: L658, condition: "stock en presentacion insuficiente (Explosion_Automatica + IdPresentacion<>0)", semantics: "variante de ErrorS0002 expresado en presentacion", accepts_partial: false }
+  - { code: "clsDalEx.ErrorS0004", location: L846, condition: "lBeStockExistente.Count = 0", semantics: "sin stock disponible" }
+  - { code: "clsDalEx.ErrorS0005", location: L842, condition: "lBeStockAReservar.Count = 0", semantics: "lista vacia post-loop" }
+  - { code: "clsDalEx.ErrorS0006", location: L838, condition: "Inserta_Stock_Reservado retorna False", semantics: "fallo persistencia" }
+  - { code: "ad-hoc", location: L559, condition: "EsPallet AND vFactorPallet <= 0", semantics: "factores invalidos" }
+
+recursion:
+  exists: true
+  trigger: "Explosion_Automatica = True AND vCantidadDecimalUMBas > 0"
+  marker_used: false
+  marker_note: "no usa No_bulto=1965 (eso es solo MI3); pero las inserciones de stock NO ocurren aqui, solo en stock_res"
+  return_value_captured: false
+  parameters_passed: [BeStockRes_modificado, DiasVencimiento, MaquinaQueSolicita, pListStockResOUT, pIdEmpresa, pIdBodega, pIdPropietario, lConnection, ltransaction]
+  parameters_lost: []
+  bug_warnings:
+    - "no captura return value (mismo bug que el core)"
+    - "pListStockResOUT se sobreescribe en la llamada recursiva (la llamada padre pierde su lista parcial?)"
+
+gotos: []
+
+dead_code:
+  - { description: "Variable vIdxConfig declarada y nunca usada (no hay branch dependiente)", location: L456 }
+  - { description: "Comentario L621-627 muestra logica deshabilitada de filtrar por presentacion", location: "L621-627" }
+  - { description: "BeStockRes.IdRecepcion asignado dos veces", location: "L783, L794" }
+
+open_questions:
+  - { id: "Q-NAVBYB-01", text: "Sigla BYB = ? (cliente especifico, hipotesis: 'Beneficio y Bienestar' o similar GT). Confirmar con Erik.", severity: alta }
+  - { id: "Q-NAVBYB-02", text: "Codigo_proveedor_produccion='1060315' es HARDCODE puro. Cuantos otros lugares del codebase referencian este string? (rg sugerido).", severity: critica }
+  - { id: "Q-NAVBYB-03", text: "lStock se llama SIN pExcluirUbicacionPicking. BYB nunca necesita excluir picking? Es por diseno o por olvido del refactor?", severity: media, blocks_block: B004 }
+  - { id: "Q-NAVBYB-04", text: "Indicador HARDCODED a 'PED' (vs core que respeta pStockRes.Indicador). BYB solo opera con PED? O olvido del refactor #CKFK20210221?", severity: media, blocks_block: B009 }
+  - { id: "Q-NAVBYB-05", text: "Color/Talla/IdProductoTallaColor no se propagan. BYB no maneja productos con talla? O olvido del agregado #GT09012025?", severity: alta, blocks_block: B009 }
+  - { id: "Q-NAVBYB-06", text: "pIdPropietario se recibe pero no se usa para resolver config (se usa IdEmpresa). Es legacy de cuando se usaba IdPropietario?", severity: baja }
+  - { id: "Q-NAVBYB-07", text: "ErrorS0002A es una variante 0002+A. Cuantas variantes 'X+letra' existen en clsDalEx? Documentar familia completa.", severity: media }
+  - { id: "Q-NAVBYB-08", text: "El comentario L792 #EJC20220303 dice 'Cealsa, reservar peso proporcional' dentro del adapter BYB. Cealsa usa este adapter o fue copy-paste accidental?", severity: alta }
+  - { id: "Q-NAVBYB-09", text: "La recursion sobrescribe pListStockResOUT con la lista de la fraccion. La llamada padre pierde su lista parcial?", severity: alta, blocks_block: B010 }
+
+callers:
+  pending_inventory: true
+  hipothesis: "llamado desde flujos de pedido NAV/Killios para clientes que tienen marcador BYB; no debe ser invocado por SAP ni handheld manual"
+
+net8_equivalent:
+  facade_method: "?"
+  pipeline_steps_inferred:
+    - "no esta claro si el motor nuevo .NET 8 conserva el adapter BYB como handler separado, lo absorbe en el core, o asume que el flag Codigo_proveedor_produccion deberia migrar a una columna dedicada en i_nav_config_enc"
+  parity_status: unknown_pending_wave13
+  gaps_to_verify_in_wave13:
+    - "existe handler BYB en .NET 8?"
+    - "existe gestion de Peso reservado proporcional?"
+    - "el flag Codigo_proveedor_produccion=1060315 quedo como flag dedicado o sigue hardcoded?"
+    - "lookup config por IdEmpresa esta soportado o solo IdPropietario?"
+    - "ErrorS0002A migrado a un error de dominio o se perdio?"
+    - "Color/Talla/TallaColor disponibles en este flujo?"

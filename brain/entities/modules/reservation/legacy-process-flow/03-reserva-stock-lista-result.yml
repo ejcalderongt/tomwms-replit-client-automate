@@ -1,0 +1,211 @@
+function:
+  name: Reserva_Stock_Lista_Result
+  alias: traslado-adapter
+  file: TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb
+  line_start: 858
+  line_end: 1458
+  size_lines: 601
+  visibility: Public Shared
+  return_type: List(Of clsBeStock_res)
+  scanned_at: 2026-04-29
+  source_commit: pending_capture
+  client_specific: true
+  client_id_marker: "BYB hardcoded (Codigo_proveedor_produccion='1060315') Y dependencia de pBeTrasladoDet (flujo TRASLADO)"
+  one_liner: >
+    Adapter para el flujo de TRASLADOS internos (bodega-a-bodega). Devuelve la lista de
+    reservas (no boolean) y modifica pBeTrasladoDet.Is_Partially_Processed segun el
+    flag Despachar_existencia_parcial. MUTA la tabla stock (Insertar/Actualizar_Cantidad/
+    Eliminar) cuando hay fraccion decimal: parte cajas en cantidad UMBas separada con
+    marker No_bulto=1989. Vuelve a llamar lStock una segunda vez si Explosion_Automatica
+    y la primera lectura volvio vacia.
+
+critical_violations:
+  - id: V-002
+    severity: critica
+    rule_violated: "L-035 (no codificar por cliente)"
+    location: "L1133, L1236"
+    evidence: 'If pBeConfigEnc.Codigo_proveedor_produccion = "1060315" Then'
+    impact: "mismo literal '1060315' que en NAV_BYB; la logica de splitear stock fisico esta atada al string del cliente"
+    proposed_fix: "migrar a flag dedicado en i_nav_config_enc (ej. Permite_Split_Stock_Por_Fraccion)"
+  - id: V-003
+    severity: alta
+    rule_violated: "single responsibility (la funcion modifica stock fisico ademas de stock_res)"
+    location: "L1175, L1181, L1183, L1262, L1268, L1270"
+    evidence: "clsLnStock.Insertar / Actualizar_Cantidad / Eliminar_By_IdStock dentro del flujo de reserva"
+    impact: "una funcion supuesta de 'reservar' tambien REPARTE stock fisico (split de cajas a unidades), efecto colateral no obvio para el caller"
+
+module_level_state:
+  - { name: vRecursionSolicitud, type: "Private Shared Integer", initial: 0, location: L857, purpose: "contador de recursion (no parece estar usado activamente, posible vestigio)" }
+
+signature:
+  parameters:
+    - { name: pStockRes, type: clsBeStock_res, mode: ByRef, optional: false, purpose: "solicitud de reserva" }
+    - { name: DiasVencimiento, type: Double, mode: ByVal, optional: false }
+    - { name: MaquinaQueSolicita, type: String, mode: ByVal, optional: false }
+    - { name: pBeConfigEnc, type: clsBeI_nav_config_enc, mode: ByVal, optional: false, purpose: "config recibida del caller; Codigo_proveedor_produccion y Despachar_existencia_parcial son los flags relevantes" }
+    - { name: pBeTrasladoDet, type: clsBeI_nav_ped_traslado_det, mode: ByRef, optional: false, purpose: "OUT: detalle del traslado; se actualiza Is_Partially_Processed y Qty_to_Receive" }
+    - { name: pIdPropietario, type: Integer, mode: ByVal, optional: false }
+    - { name: Conmutar_Umbas_A_Presentacion, type: Boolean, mode: ByVal, optional: false, purpose: "flag para lStock: cuando true, agrupa stock UMBas a unidades de presentacion" }
+    - { name: lConnection, type: SqlConnection, mode: ByRef, optional: false }
+    - { name: ltransaction, type: SqlTransaction, mode: ByRef, optional: false }
+
+global_state_used:
+  - { name: lBeConfigInMemory, type: cache, purpose: "cache module-level de configs i_nav_config_enc" }
+  - { name: lPresentaciones, type: cache, purpose: "cache module-level de presentaciones" }
+
+callees:
+  - { target: clsLnI_nav_config_enc.GetSingle_By_IdBodega_And_IdPropietario, type: db_read, location: B003, table: i_nav_config_enc }
+  - { target: clsLnStock.lStock, type: db_read, location: B004, table: stock, note: "se llama hasta DOS veces: primero con Conmutar_Umbas_A_Presentacion del caller, segunda vez con true si la primera fue vacia y Explosion_Automatica" }
+  - { target: Get_Cantidad_ReservadaUMBas_By_IdStock, type: db_read, location: B005, table: stock_res }
+  - { target: clsLnProducto_presentacion.GetSingle, type: db_read, location: "B005, B007", table: producto_presentacion }
+  - { target: Split_Decimal, type: math, location: "B007, B009" }
+  - { target: clsLnProducto.Tiene_Control_Por_Peso_By_IdProductoBodega, type: db_read, location: B007 }
+  - { target: clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega, type: db_read, location: B009, table: producto_bodega }
+  - { target: clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto, type: db_read, location: B009, table: producto_presentacion }
+  - { target: clsLnStock.Insertar, type: db_write, location: B009, table: stock, note: "MUTA stock fisico: inserta nuevo registro con marker No_bulto=1989 cuando se splittea fraccion decimal" }
+  - { target: clsLnStock.Actualizar_Cantidad, type: db_write, location: B009, table: stock, note: "decrementa cantidad del stock origen tras split" }
+  - { target: clsLnStock.Eliminar_By_IdStock, type: db_write, location: B009, table: stock, note: "elimina stock origen si la cantidad post-split queda en 0" }
+  - { target: clsLnI_nav_ped_traslado_det.Actualizar_Partially_Processed, type: db_write, location: B008, table: i_nav_ped_traslado_det }
+  - { target: clsPublic.CopyObject, type: util, location: B009, note: "copia stock origen -> destino" }
+  - { target: Inserta_Stock_Reservado, type: db_write, location: B010, table: stock_res }
+  - { target: clsLnLog_error_wms.Agregar_Error, type: db_write, location: B011 }
+
+blocks:
+  - { id: B001, lines: "868", type: init, summary: "Reserva_Stock_Lista_Result = Nothing (default return)" }
+  - { id: B002, lines: "870-end", type: try_catch, summary: "Wrapper Try/Catch principal" }
+  - { id: B003, lines: "885-896", type: branch + db_read, summary: "Resolucion BeConfigEnc por (IdBodega, IdPropietario); usa cache lBeConfigInMemory; misma rama dead que el core (vIdxConfig=-1 siempre)" }
+  - id: B004
+    lines: "898-920"
+    type: db_read + retry
+    summary: "lStock con dos modos: si la primera lectura retorna vacio Y NOT Conmutar Y Explosion_Automatica, segunda lectura con Conmutar=True"
+    sub_branches:
+      - { condition: "primera lStock retorna lista vacia AND NOT Conmutar_Umbas_A_Presentacion AND Explosion_Automatica", on_true: "segunda llamada a lStock con Conmutar=True" }
+  - id: B005
+    lines: "925-961"
+    type: loop + db_read
+    summary: "Restar reservas UMBas pendientes; cuando IdPresentacion<>0 lookup BePres en cache (lectura del comentario CKFK20220321 indica que se decidio NO multiplicar por Factor porque lo reservado se obtiene en UMBas)"
+  - id: B006
+    lines: "963, 845-847"
+    type: branch
+    summary: "Si lBeStockExistente.Count = 0 -> ErrorS0004"
+  - id: B007
+    lines: "979-1057"
+    type: branch + math
+    summary: "Normalizacion cantidad solicitada (similar al core pero usa pBeConfigEnc.Explosion_Automatica del caller, no relectura)"
+    sub_branches:
+      - { condition: "IdPresentacion = 0", on_true: "vCantidadSolicitadaPedido = pStockRes.Cantidad" }
+      - { condition: "IdPresentacion <> 0 AND BePres.EsPallet", on_true: "Factor*CajasPorCama*CamasPorTarima" }
+      - condition: "IdPresentacion <> 0 AND NOT EsPallet"
+        sub_sub_branches:
+          - { condition: "Explosion_Automatica", on_true: "Split_Decimal; if entero>0 use entero*Factor, else use vCantidadDecimalUMBas" }
+          - { condition: "NOT Explosion_Automatica", on_true: "vCantidadSolicitadaPedido = pStockRes.Cantidad * BePres.Factor" }
+          - { condition: "NOT Tiene_Control_Por_Peso", on_true: "TryParse o Truncate" }
+          - { condition: "Tiene_Control_Por_Peso", on_true: "Round(.., 6)" }
+  - id: B008
+    lines: "1064-1087"
+    type: branch + db_write
+    summary: "Validacion stock suficiente con politica Despachar_existencia_parcial"
+    sub_branches:
+      - condition: "vCantidadSolicitadaPedido > vCantidadDispStock AND Despachar_existencia_parcial = No"
+        on_true: "throw ErrorS0002"
+      - condition: "vCantidadSolicitadaPedido > vCantidadDispStock AND Despachar_existencia_parcial <> No"
+        on_true: "actualizar pBeTrasladoDet (Qty_to_Receive=disp, Is_Partially_Processed=True); SI continua reserva parcial"
+        side_effect: "clsLnI_nav_ped_traslado_det.Actualizar_Partially_Processed"
+      - condition: "vCantidadSolicitadaPedido <= vCantidadDispStock"
+        on_true: "pBeTrasladoDet.Is_Partially_Processed = False (explicito)"
+  - id: B009
+    lines: "1099-end_loop"
+    type: loop + branch + db_write
+    summary: "Iteracion: para cada vStockOrigen, copia a BeStockDestino; valida cantidad >=0 (tira ERROR_202302061300D si negativa); si es presentacion + hardcode BYB y hay fraccion decimal: SPLITTEA stock fisico (inserta nuevo IdStock con marker No_bulto=1989, actualiza/elimina origen); arma BeStockRes; aplica Color/Talla NO documentado aqui"
+    inner_loop_per_iteration:
+      - "CopyObject(vStockOrigen, BeStockDestino)"
+      - "if Cantidad < 0 -> throw ERROR_202302061300D"
+      - "if Cantidad > 0 -> construir BeStockRes con Indicador hardcoded 'PED'"
+      - "branch cantidad pendiente vs cantidad disponible (3 ramas)"
+      - "rama < (cantidad alcanza): si Codigo_proveedor_produccion='1060315' AND IdPresentacion stock<>0 -> SPLIT FISICO de stock con marker No_bulto=1989; sino: tomar pendiente directo"
+      - "rama > (cantidad insuficiente): mismo split fisico para BYB; sino: tomar todo el stock disponible"
+      - "Estado='UNCOMMITED'"
+      - "asignar campos clsBeStock_res; SIN Color/Talla/IdProductoTallaColor"
+      - "vCantidadCompletada = (vCantidadPendiente = 0); Exit For si true"
+  - id: B010
+    lines: "post_loop_end"
+    type: db_write
+    summary: "Persistencia via Inserta_Stock_Reservado y return de la lista"
+  - { id: B011, lines: "post_catch", type: catch, summary: "Log + re-throw" }
+
+extracted_rules:
+  - { id: R001, rule: "Devuelve List(Of clsBeStock_res) en vez de Boolean (caller obtiene la lista directamente)", depends_on: [], legacy_anchor: "L866, return", parity_status: unknown }
+  - { id: R002, rule: "Resuelve config por (IdBodega, IdPropietario) (igual que core, distinto que NAV_BYB que usa IdEmpresa)", depends_on: [bodega, propietario], legacy_anchor: "L887-890" }
+  - { id: R003, rule: "lStock se llama hasta dos veces: primera con Conmutar del caller, segunda con Conmutar=True como fallback si primera dio vacio y Explosion_Automatica", depends_on: [config.Explosion_Automatica, primer_resultado_lStock], legacy_anchor: "L909-920", note: "esta logica de fallback NO existe en el core" }
+  - { id: R004, rule: "Resta de reservas: solo UMBas; cuando stock tiene presentacion, NO multiplica por Factor (CKFK20220321 documenta esta decision)", depends_on: [], legacy_anchor: "L935-957" }
+  - { id: R005, rule: "Cantidad disponible negativa tira ERROR_202302061300D (caso defensive de inconsistencia de BD)", depends_on: [], legacy_anchor: "L1112-1114" }
+  - { id: R006, rule: "Politica de reserva parcial: si Despachar_existencia_parcial=No -> throw; si <>No -> reserva parcial Y actualiza i_nav_ped_traslado_det.Is_Partially_Processed=True con Qty_to_Receive=disponible", depends_on: [config.Despachar_existencia_parcial], legacy_anchor: "L1064-1081" }
+  - { id: R007, rule: "Despachar_existencia_parcial es enum tDespacharExistenciaParcial (.No es valor explicito)", depends_on: [enum tDespacharExistenciaParcial], legacy_anchor: "L1067" }
+  - { id: R008, rule: "HOTFIX BYB hardcode: si Codigo_proveedor_produccion='1060315' y stock origen tiene fraccion decimal en presentacion, SPLITTEA el stock fisico: inserta nuevo IdStock con cantidad UMBas (marker No_bulto=1989), decrementa o elimina el stock origen", depends_on: [config.Codigo_proveedor_produccion (HARDCODED)], legacy_anchor: "L1133-1225, L1236-1300", note: "VIOLACION L-035 + side-effect grave: una reserva muta stock fisico" }
+  - { id: R009, rule: "Marker No_bulto=1989 distingue stocks creados por split fraccional de este adapter (vs No_bulto=1965 del MI3)", depends_on: [], legacy_anchor: "L1174, L1261", parity_status: unknown }
+  - { id: R010, rule: "Si pStockRes.IdPresentacion=0 (caller pidio UMBas) y stock tiene presentacion, busca presentacion default del producto via Get_Presentacion_Defecto_By_IdProducto", depends_on: [producto.presentacion_defecto], legacy_anchor: "L1137-1147" }
+  - { id: R011, rule: "Indicador hardcoded 'PED' (igual que NAV_BYB, distinto al core)", depends_on: [], legacy_anchor: "L1121", parity_status: unknown }
+  - { id: R012, rule: "Estado='UNCOMMITED' (mismo typo)", depends_on: [], legacy_anchor: "L776-equiv (BeStockRes.Estado en B009)" }
+  - { id: R013, rule: "NO propaga Color/Talla/IdProductoTallaColor (igual que NAV_BYB, distinto al core post-#GT09012025)", depends_on: [], legacy_anchor: "ausencia en B009" }
+  - { id: R014, rule: "vRecursionSolicitud (private shared) declarada pero no se usa para gobernar nada visible; posible vestigio de control de recursion antiguo", depends_on: [], legacy_anchor: L857 }
+
+logging_checkpoints:
+  - { prefix: "ERROR_202302061300D", location: L1113, meaning: "stock disponible reflejo cantidad negativa (defensive contra inconsistencia de BD)" }
+  - { prefix: "(MethodBase.GetCurrentMethod.Name())", location: "post_catch", meaning: "log generico" }
+  - { prefix: "Debug.Write inline", location: L1108, meaning: "trap de IdStock=3612 hardcoded ('Espera que el factor es 0.') -- bug ahijado de debug abandonado" }
+  - { prefix: "Debug.Write inline", location: L1197, meaning: "'#EJC20220510: something is missing but still I dont know what it is.' -- TODO sin resolver" }
+
+errors_thrown:
+  - { code: "clsDalEx.ErrorS0002", location: L1068, condition: "stock insuficiente con Despachar_existencia_parcial=No", semantics: "stock insuficiente sin politica parcial", accepts_partial: false }
+  - { code: "clsDalEx.ErrorS0004", location: "implicito en B006", condition: "lBeStockExistente.Count = 0" }
+  - { code: "ad-hoc", location: L1004, condition: "EsPallet AND vFactorPallet <= 0", semantics: "factores invalidos" }
+  - { code: "ad-hoc", location: L1113, condition: "vStockOrigen.Cantidad < 0 post-resta", semantics: "cantidad disponible negativa (inconsistencia BD)" }
+
+recursion:
+  exists: false
+  note: "esta funcion NO se llama a si misma; el control vRecursionSolicitud existe pero no se incrementa visiblemente (posible vestigio)"
+
+side_effects_on_stock:
+  description: "esta funcion MUTA la tabla stock fisico, no solo stock_res"
+  operations:
+    - { op: "INSERT INTO stock", trigger: "Codigo_proveedor_produccion='1060315' AND fraccion decimal en presentacion", marker: "No_bulto=1989", purpose: "crear stock UMBas separado a partir del split de cajas" }
+    - { op: "UPDATE stock SET Cantidad", trigger: "post-split, vStockOrigen.Cantidad > 0", purpose: "decrementar cantidad del stock origen" }
+    - { op: "DELETE FROM stock", trigger: "post-split, vStockOrigen.Cantidad <= 0", purpose: "eliminar stock origen vacio" }
+
+side_effects_on_traslado:
+  - { op: "UPDATE i_nav_ped_traslado_det.Is_Partially_Processed=True, Qty_to_Receive=disponible", trigger: "Despachar_existencia_parcial<>No AND solicitado>disponible" }
+  - { op: "in-memory pBeTrasladoDet.Is_Partially_Processed=False", trigger: "solicitado<=disponible (no escribe BD, solo asigna)" }
+
+dead_code:
+  - { description: "vIdxConfig=-1 nunca cambia (mismo dead branch que core)", location: L877 }
+  - { description: "Trap Debug.Write 'Espera que el factor es 0.' para IdStock hardcoded 3612", location: "L1108-1110" }
+  - { description: "Debug.Write '#EJC20220510: something is missing but still I dont know what it is.'", location: L1197 }
+  - { description: "vRecursionSolicitud declarada nunca incrementada", location: L857 }
+  - { description: "Comentario L1011: 'If pBeConfigEnc.Explosion_Automatica' anidado dentro de un If con la misma condicion (always true al llegar)", location: "L1009-1011" }
+
+open_questions:
+  - { id: "Q-LR-01", text: "vRecursionSolicitud declarada Private Shared sin uso visible. Vestigio o usado en otro overload del archivo?", severity: media }
+  - { id: "Q-LR-02", text: "Marker No_bulto=1989 vs No_bulto=1965 (MI3). Origen de los numeros y semantica?", severity: media }
+  - { id: "Q-LR-03", text: "El split fisico de stock dentro de una funcion 'reserva' viola single responsibility. El motor nuevo separa 'split de stock' de 'reservar'?", severity: alta }
+  - { id: "Q-LR-04", text: "Codigo_proveedor_produccion='1060315' aparece tambien aqui. Total apariciones en TOMWMS_BOF?", severity: critica }
+  - { id: "Q-LR-05", text: "Trap Debug.Write IdStock=3612 'Espera que el factor es 0.' Es algun stock real que rompe el motor o un trap antiguo?", severity: media }
+  - { id: "Q-LR-06", text: "Debug.Write 'something is missing but still I dont know what it is' es un TODO sin resolver del 2022. Sigue siendo bug?", severity: alta }
+  - { id: "Q-LR-07", text: "Despachar_existencia_parcial es un enum tDespacharExistenciaParcial. Cuales son los valores posibles ademas de .No?", severity: media }
+  - { id: "Q-LR-08", text: "Get_Presentacion_Defecto_By_IdProducto se usa solo en este adapter. Producto puede tener presentacion default y eso modifica como se rebana el stock?", severity: alta }
+  - { id: "Q-LR-09", text: "ERROR_202302061300D defensive contra cantidad negativa. Hubo casos reales en BD que generaron negativos? Buscar en log_error_wms.", severity: alta }
+  - { id: "Q-LR-10", text: "Conmutar_Umbas_A_Presentacion: que decide al caller usar true o false? Documentar policy.", severity: media }
+
+callers:
+  pending_inventory: true
+  hipothesis: "llamado desde flujos de TRASLADO (bodega-a-bodega) por la presencia de pBeTrasladoDet; posiblemente desde clsLnTraslado o flujos similares"
+
+net8_equivalent:
+  facade_method: "?"
+  parity_status: unknown_pending_wave13
+  gaps_to_verify_in_wave13:
+    - "el motor nuevo separa SPLIT FISICO de RESERVA?"
+    - "marker No_bulto=1989 sobrevivio en el modelo nuevo?"
+    - "Despachar_existencia_parcial enum esta soportado?"
+    - "logica de retry-lStock-con-Conmutar=True esta replicada?"
+    - "ERROR_202302061300D defensive sigue?"
+    - "TODO L1197 fue resuelto en el reescrito?"
