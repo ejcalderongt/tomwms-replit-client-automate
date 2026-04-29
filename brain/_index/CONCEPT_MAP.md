@@ -454,3 +454,43 @@ Dado el concept-map, mi sugerencia ranqueada:
 - **Q-* críticas abiertas**: 1 (Q-SEC-OPENAI-KEY-LEAK)
 - **Líneas brain total**: 2.624 (incluyendo este concept-map)
 - **Archivos brain**: 5 principales
+
+
+---
+
+## Update Wave 7 (2026-04-29) — Resoluciones y reformulaciones
+
+### Q-* resueltas en Wave 7
+- ✅ **Q-LP-WHEN-DESTROYED** — RESUELTA en `code-deep-flow/03-implosion-y-merge-lp.md` (5 caminos identificados)
+- ✅ **Q-LP-MERGE-EN-DESTINO** — RESUELTA: 2028 unifica via `frmCambioUbicacion.vb` reescrito + flag `implosion_automatica`
+- ✅ **Q-CAPABILITY-FLAG** — RESUELTA: la tabla maestra es `i_nav_config_enc` con 50+ flags (no estaba mapeada antes)
+- ✅ **Q-CONTROL-LOTE-TABLA** — DESCARTADA: no es tabla, es columna `bit` en `i_nav_config_enc`
+
+### Q-* nuevas derivadas Wave 7
+**Holding IDEALSA**:
+- Q-IDEALSA-MASTER-DATA — ¿hay sync de master entre filiales?
+- Q-IDEALSA-OTROS-PAISES — ¿más filiales (GT, SV, CR)?
+- Q-MERHONSA-PARADOJA-LP — implosión sin generar LP propio
+- Q-SCHEMA-PRODUCTOS-MERHONSA — en qué schema viven `productos`, `bodegas`, `empresas`
+- Q-COCINERO-ROLE-PANAMA — qué hace el rol cocinero
+- Q-STOCK-RES-PED-164-SUFIJO — qué significa el `_164`
+- Q-DIFERENCIAS-MOVIMIENTOS-USO — populación y uso de la tabla
+- Q-OPERADOR-MONTACARGA — control por turno/jornada
+
+**Implosión/merge LP**:
+- Q-MERGE-LP-LOG-PATRON — patrón del log f(y)→f(z) en `trans_movimientos`
+- Q-IMPLOSION-BOF-VISIBILIDAD — `frmImplosion.vb` ¿oculto via permisos?
+- Q-CLAVAUD-MEANING — qué es "Clavaud" en `conservar_zona_picking_clavaud`
+
+**Capabilities/integraciones**:
+- Q-SAP-CLIENTES — qué clientes tienen `interface_sap=True`
+- Q-UMB-CONCEPT — significado exacto de UMB (¿unidad mínima básica?)
+- Q-LP-ZOMBIE — política de purga LPs con cantidad=0
+
+### Métricas Wave 7
+- **Q-* totales**: ~95 (+10)
+- **Q-* resueltas**: 12 acum (1.4% → 12.6%)
+- **Q-* alta prioridad abiertas**: ~10
+- **Q-* críticas abiertas**: 1 (Q-SEC-OPENAI-KEY-LEAK)
+- **Líneas brain total**: ~3.700
+- **Archivos brain**: 9 principales (5 antes + 2 Wave 6.2 + 2 Wave 7)

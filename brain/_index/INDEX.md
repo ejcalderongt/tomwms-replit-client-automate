@@ -797,3 +797,46 @@ drift conocido:
 - Q-* netas abiertas: ~82
 - Brain en proyecto Replit (movido de /tmp/wms-brain a ./wms-brain): persistente para Carolina
 
+
+---
+
+## Wave 7 (2026-04-29) — Holding IDEALSA + implosión + capabilities flag
+
+**Detonante**: Erik conectó dos BDs nuevas en EC2 (`IMS4MB_MERHONSA_PRD` y `IMS4MB_MERCOPAN_PRD`) — ambas filiales del holding IDEALSA (Honduras + Panamá). Pidió recorrido paralelo + detección de gaps. Adicionalmente reveló la lógica de **implosión / merge LP en cambio de ubicación 2028**.
+
+**Docs nuevos**:
+- `agent-context/HOLDING_IDEALSA.md` (~280 líneas) — análisis paralelo MERHONSA vs MERCOPAN, schema diff, capabilities `i_nav_config_enc`
+- `code-deep-flow/03-implosion-y-merge-lp.md` (~410 líneas) — traza profunda de las 3 capas de implosión (BOF, HH, parámetro auto) + merge LP 2028 + ciclo de vida completo del LP
+
+**Q-* RESUELTAS en esta wave (4 importantes)**:
+- ✅ **Q-LP-WHEN-DESTROYED** — un LP "muere" en 5 caminos: despacho completo, implosión BOF manual, implosión HH Cumbre, cambio ubicación 2028 con LP destino preexistente (auto si flag ON), anulación de recepción. Persiste histórico en `trans_movimientos.lic_plate`.
+- ✅ **Q-LP-MERGE-EN-DESTINO** — 2028 unifica el flujo via `frmCambioUbicacion.vb` reescrito (+113% líneas). Detecta LP destino existente y mergea automáticamente si `i_nav_config_enc.implosion_automatica=True`.
+- ✅ **Q-CAPABILITY-FLAG** — la tabla maestra de capabilities **ES** `i_nav_config_enc`. Tiene 50+ flags por bodega/propietario que controlan: generación de LP, implosión auto, explosión auto, control_lote, control_vencimiento, integración NAV, integración SAP, políticas de despacho, reabasto, NC, bonificaciones.
+- ✅ **Q-CONTROL-LOTE-TABLA** — descartada: `control_lote` y `control_vencimiento` NO son tablas, son columnas (bit) en `i_nav_config_enc`.
+
+**Hallazgos brutales nuevos**:
+- 🔥 **WMS soporta NAV + SAP simultáneamente como ERPs** (`interface_sap` flag). Antes asumido NAV-only.
+- 🔥 **`frmImplosion.vb` SÍ existe en BOF** (1332 líneas, sin cambios entre 2023 y 2028). Erik creía que no. Hipótesis: oculto por permisos en clientes nuevos, visible en Cumbre.
+- 🔥 **MERCOPAN tiene rol "cocinero"** (`StockCocinero`, `stock_BK_Cocinero`) — sugiere preparación de mezclas/comidas en almacén. Único entre los clientes mapeados.
+- 🔥 **Holding IDEALSA confirmado**: 98% schema común MERHONSA↔MERCOPAN (315 de ~320 tablas). Diferencias menores tienen patrón identificable (regulatorio Panamá, recovery Honduras).
+- 🔥 **MERCOPAN ya tiene 323K movimientos** (en producción), MERHONSA solo 0 movimientos pero ya 16K detalles de tareas HH (arranque operativo en curso).
+
+**Q-* nuevas derivadas (+10)** — agregadas a `CUESTIONARIO_CAROLINA.md` bloque 11:
+- Q-MERGE-LP-LOG-PATRON, Q-IMPLOSION-BOF-VISIBILIDAD, Q-CLAVAUD-MEANING
+- Q-SAP-CLIENTES, Q-UMB-CONCEPT, Q-LP-ZOMBIE
+- Q-IDEALSA-MASTER-DATA, Q-IDEALSA-OTROS-PAISES, Q-MERHONSA-PARADOJA-LP
+- Q-COCINERO-ROLE-PANAMA, Q-SCHEMA-PRODUCTOS-MERHONSA
+
+**Métricas post-Wave 7**:
+- Q-* totales: ~95 (+10)
+- Q-* resueltas: 12/95 (Wave 6.1: 1, Wave 6.2: 7, Wave 7: 4)
+- Q-* alta prioridad abiertas: ~10
+- Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK, sin cambio)
+- Líneas brain total: ~3.700
+- Archivos brain: 9 principales
+
+**Próximo recomendado**:
+1. Resolver Q-SCHEMA-PRODUCTOS-MERHONSA (descubrir schema real, < 30 min)
+2. Pattern del log f(y)→f(z) en MERCOPAN (tiene los 323K movimientos para hacer estadística)
+3. Traza-002 control_lote+control_vencimiento ahora con la realidad de que son flags por bodega
+4. Mapa completo de los 50 flags de `i_nav_config_enc` con interpretación cliente-por-cliente
