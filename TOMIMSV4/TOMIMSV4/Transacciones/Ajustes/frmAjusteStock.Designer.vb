@@ -67,6 +67,7 @@ Partial Class frmAjusteStock
         Me.chkBorrador = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.btnImportarExcel = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuImprimirResumen = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEliminarAjusteBorrador = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -102,24 +103,6 @@ Partial Class frmAjusteStock
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
         Me.dgrid = New System.Windows.Forms.DataGridView()
-        Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
-        Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
-        Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
-        Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
-        Me.Fec_agrDateEdit = New DevExpress.XtraEditors.DateEdit()
-        Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
-        Me.tabDetalleAjuste = New DevExpress.XtraTab.XtraTabPage()
-        Me.tabDocumentosAsociados = New DevExpress.XtraTab.XtraTabPage()
-        Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
-        Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
-        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.tabResumenAjuste = New DevExpress.XtraTab.XtraTabPage()
-        Me.dgridProductosConsolidados = New DevExpress.XtraGrid.GridControl()
-        Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.mnuEliminarAjusteBorrador = New DevExpress.XtraBars.BarButtonItem()
         Me.ColCodigoProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colNombreProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.UmBas = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -141,6 +124,23 @@ Partial Class frmAjusteStock
         Me.colColor = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colProveedor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
+        Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
+        Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
+        Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
+        Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
+        Me.Fec_agrDateEdit = New DevExpress.XtraEditors.DateEdit()
+        Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
+        Me.tabDetalleAjuste = New DevExpress.XtraTab.XtraTabPage()
+        Me.tabDocumentosAsociados = New DevExpress.XtraTab.XtraTabPage()
+        Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
+        Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
+        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.tabResumenAjuste = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridProductosConsolidados = New DevExpress.XtraGrid.GridControl()
+        Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -499,6 +499,13 @@ Partial Class frmAjusteStock
         Me.mnuImprimirResumen.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimirResumen.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuImprimirResumen.Name = "mnuImprimirResumen"
         '
+        'mnuEliminarAjusteBorrador
+        '
+        Me.mnuEliminarAjusteBorrador.Caption = "Eliminar"
+        Me.mnuEliminarAjusteBorrador.Id = 19
+        Me.mnuEliminarAjusteBorrador.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarAjusteBorrador.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEliminarAjusteBorrador.Name = "mnuEliminarAjusteBorrador"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -608,7 +615,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -617,7 +624,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(155, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(155, 28)
         Me.cmdAdd.Text = "Ajuste sobre Stock"
         Me.cmdAdd.ToolTipText = "Se modificara stock existente"
         '
@@ -626,7 +633,7 @@ Partial Class frmAjusteStock
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 24)
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 28)
         Me.mnuAjustePositivo.Text = "Ajuste Sin Stock"
         Me.mnuAjustePositivo.ToolTipText = "Se agrega existencia sin stock previa"
         '
@@ -635,7 +642,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
         Me.mnuDel.Text = "Eliminar"
         Me.mnuDel.ToolTipText = "Eliminar Linea Seleccionada"
         '
@@ -644,7 +651,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -924,7 +931,7 @@ Partial Class frmAjusteStock
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 55)
+        Me.dgrid.Location = New System.Drawing.Point(2, 59)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
@@ -945,193 +952,6 @@ Partial Class frmAjusteStock
         Me.dgrid.ShowRowErrors = False
         Me.dgrid.Size = New System.Drawing.Size(1478, 316)
         Me.dgrid.TabIndex = 3
-        '
-        'DockManager1
-        '
-        Me.DockManager1.AutoHideContainers.AddRange(New DevExpress.XtraBars.Docking.AutoHideContainer() {Me.AutoHideContainer2})
-        Me.DockManager1.Form = Me
-        Me.DockManager1.TopZIndexControls.AddRange(New String() {"DevExpress.XtraBars.BarDockControl", "DevExpress.XtraBars.StandaloneBarDockControl", "System.Windows.Forms.StatusBar", "System.Windows.Forms.MenuStrip", "System.Windows.Forms.StatusStrip", "DevExpress.XtraBars.Ribbon.RibbonStatusBar", "DevExpress.XtraBars.Ribbon.RibbonControl", "DevExpress.XtraBars.Navigation.OfficeNavigationBar", "DevExpress.XtraBars.Navigation.TileNavPane", "DevExpress.XtraBars.TabFormControl"})
-        '
-        'AutoHideContainer2
-        '
-        Me.AutoHideContainer2.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        Me.AutoHideContainer2.Controls.Add(Me.DockPanel1)
-        Me.AutoHideContainer2.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.AutoHideContainer2.Location = New System.Drawing.Point(0, 753)
-        Me.AutoHideContainer2.Margin = New System.Windows.Forms.Padding(4)
-        Me.AutoHideContainer2.Name = "AutoHideContainer2"
-        Me.AutoHideContainer2.Size = New System.Drawing.Size(1484, 26)
-        '
-        'DockPanel1
-        '
-        Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
-        Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
-        Me.DockPanel1.ID = New System.Guid("9883a1ef-faca-4a54-a7cf-192ced1b291e")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
-        Me.DockPanel1.Name = "DockPanel1"
-        Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 118)
-        Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
-        Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1420, 145)
-        Me.DockPanel1.Text = "Bitácora"
-        Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
-        '
-        'DockPanel1_Container
-        '
-        Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
-        Me.DockPanel1_Container.Controls.Add(Label2)
-        Me.DockPanel1_Container.Controls.Add(Me.Fec_agrDateEdit)
-        Me.DockPanel1_Container.Controls.Add(Fec_agrLabel)
-        Me.DockPanel1_Container.Controls.Add(Me.User_modTextEdit)
-        Me.DockPanel1_Container.Controls.Add(User_modLabel)
-        Me.DockPanel1_Container.Controls.Add(Me.User_agrTextEdit)
-        Me.DockPanel1_Container.Controls.Add(User_agrLabel)
-        Me.DockPanel1_Container.Location = New System.Drawing.Point(5, 30)
-        Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
-        Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1410, 111)
-        Me.DockPanel1_Container.TabIndex = 0
-        '
-        'Fec_modDateEdit
-        '
-        Me.Fec_modDateEdit.EditValue = Nothing
-        Me.Fec_modDateEdit.Enabled = False
-        Me.Fec_modDateEdit.Location = New System.Drawing.Point(519, 59)
-        Me.Fec_modDateEdit.Margin = New System.Windows.Forms.Padding(4)
-        Me.Fec_modDateEdit.MenuManager = Me.RibbonControl
-        Me.Fec_modDateEdit.Name = "Fec_modDateEdit"
-        Me.Fec_modDateEdit.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.Fec_modDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.Fec_modDateEdit.Size = New System.Drawing.Size(175, 22)
-        Me.Fec_modDateEdit.TabIndex = 21
-        '
-        'Fec_agrDateEdit
-        '
-        Me.Fec_agrDateEdit.EditValue = Nothing
-        Me.Fec_agrDateEdit.Enabled = False
-        Me.Fec_agrDateEdit.Location = New System.Drawing.Point(149, 57)
-        Me.Fec_agrDateEdit.Margin = New System.Windows.Forms.Padding(4)
-        Me.Fec_agrDateEdit.MenuManager = Me.RibbonControl
-        Me.Fec_agrDateEdit.Name = "Fec_agrDateEdit"
-        Me.Fec_agrDateEdit.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.Fec_agrDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.Fec_agrDateEdit.Size = New System.Drawing.Size(175, 22)
-        Me.Fec_agrDateEdit.TabIndex = 19
-        '
-        'User_modTextEdit
-        '
-        Me.User_modTextEdit.Enabled = False
-        Me.User_modTextEdit.Location = New System.Drawing.Point(519, 20)
-        Me.User_modTextEdit.Margin = New System.Windows.Forms.Padding(4)
-        Me.User_modTextEdit.MenuManager = Me.RibbonControl
-        Me.User_modTextEdit.Name = "User_modTextEdit"
-        Me.User_modTextEdit.Size = New System.Drawing.Size(175, 22)
-        Me.User_modTextEdit.TabIndex = 17
-        '
-        'User_agrTextEdit
-        '
-        Me.User_agrTextEdit.Enabled = False
-        Me.User_agrTextEdit.Location = New System.Drawing.Point(149, 17)
-        Me.User_agrTextEdit.Margin = New System.Windows.Forms.Padding(4)
-        Me.User_agrTextEdit.MenuManager = Me.RibbonControl
-        Me.User_agrTextEdit.Name = "User_agrTextEdit"
-        Me.User_agrTextEdit.Size = New System.Drawing.Size(175, 22)
-        Me.User_agrTextEdit.TabIndex = 10
-        '
-        'XtraTabControl1
-        '
-        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.XtraTabControl1.Location = New System.Drawing.Point(0, 193)
-        Me.XtraTabControl1.Margin = New System.Windows.Forms.Padding(4)
-        Me.XtraTabControl1.Name = "XtraTabControl1"
-        Me.XtraTabControl1.SelectedTabPage = Me.tabDetalleAjuste
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1484, 560)
-        Me.XtraTabControl1.TabIndex = 34
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDetalleAjuste, Me.tabDocumentosAsociados, Me.tabResumenAjuste})
-        '
-        'tabDetalleAjuste
-        '
-        Me.tabDetalleAjuste.Controls.Add(Me.GroupControl4)
-        Me.tabDetalleAjuste.Controls.Add(Me.GroupControl2)
-        Me.tabDetalleAjuste.Margin = New System.Windows.Forms.Padding(4)
-        Me.tabDetalleAjuste.Name = "tabDetalleAjuste"
-        Me.tabDetalleAjuste.Size = New System.Drawing.Size(1482, 530)
-        Me.tabDetalleAjuste.Text = "Detalle ajuste"
-        '
-        'tabDocumentosAsociados
-        '
-        Me.tabDocumentosAsociados.Controls.Add(Me.PanelControl1)
-        Me.tabDocumentosAsociados.Margin = New System.Windows.Forms.Padding(4)
-        Me.tabDocumentosAsociados.Name = "tabDocumentosAsociados"
-        Me.tabDocumentosAsociados.Size = New System.Drawing.Size(1482, 530)
-        Me.tabDocumentosAsociados.Text = "Documentos asociados"
-        '
-        'PanelControl1
-        '
-        Me.PanelControl1.Controls.Add(Me.grdDocsAsociados)
-        Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PanelControl1.Location = New System.Drawing.Point(0, 0)
-        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4)
-        Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1482, 530)
-        Me.PanelControl1.TabIndex = 0
-        '
-        'grdDocsAsociados
-        '
-        Me.grdDocsAsociados.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdDocsAsociados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.grdDocsAsociados.Location = New System.Drawing.Point(2, 2)
-        Me.grdDocsAsociados.MainView = Me.GridView1
-        Me.grdDocsAsociados.Margin = New System.Windows.Forms.Padding(4)
-        Me.grdDocsAsociados.MenuManager = Me.RibbonControl
-        Me.grdDocsAsociados.Name = "grdDocsAsociados"
-        Me.grdDocsAsociados.Size = New System.Drawing.Size(1478, 526)
-        Me.grdDocsAsociados.TabIndex = 0
-        Me.grdDocsAsociados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
-        '
-        'GridView1
-        '
-        Me.GridView1.DetailHeight = 431
-        Me.GridView1.GridControl = Me.grdDocsAsociados
-        Me.GridView1.Name = "GridView1"
-        Me.GridView1.OptionsBehavior.ReadOnly = True
-        Me.GridView1.OptionsFind.AlwaysVisible = True
-        '
-        'tabResumenAjuste
-        '
-        Me.tabResumenAjuste.Controls.Add(Me.dgridProductosConsolidados)
-        Me.tabResumenAjuste.Name = "tabResumenAjuste"
-        Me.tabResumenAjuste.Size = New System.Drawing.Size(1482, 530)
-        Me.tabResumenAjuste.Text = "Resumen de ajuste"
-        '
-        'dgridProductosConsolidados
-        '
-        Me.dgridProductosConsolidados.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridProductosConsolidados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridProductosConsolidados.Location = New System.Drawing.Point(0, 0)
-        Me.dgridProductosConsolidados.MainView = Me.GridView3
-        Me.dgridProductosConsolidados.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridProductosConsolidados.MenuManager = Me.RibbonControl
-        Me.dgridProductosConsolidados.Name = "dgridProductosConsolidados"
-        Me.dgridProductosConsolidados.Size = New System.Drawing.Size(1482, 530)
-        Me.dgridProductosConsolidados.TabIndex = 1
-        Me.dgridProductosConsolidados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView3})
-        '
-        'GridView3
-        '
-        Me.GridView3.DetailHeight = 431
-        Me.GridView3.GridControl = Me.dgridProductosConsolidados
-        Me.GridView3.Name = "GridView3"
-        Me.GridView3.OptionsBehavior.ReadOnly = True
-        Me.GridView3.OptionsFind.AlwaysVisible = True
-        '
-        'mnuEliminarAjusteBorrador
-        '
-        Me.mnuEliminarAjusteBorrador.Caption = "Eliminar"
-        Me.mnuEliminarAjusteBorrador.Id = 19
-        Me.mnuEliminarAjusteBorrador.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarAjusteBorrador.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuEliminarAjusteBorrador.Name = "mnuEliminarAjusteBorrador"
         '
         'ColCodigoProducto
         '
@@ -1319,6 +1139,186 @@ Partial Class frmAjusteStock
         Me.colProveedor.Name = "colProveedor"
         Me.colProveedor.ReadOnly = True
         Me.colProveedor.Width = 125
+        '
+        'DockManager1
+        '
+        Me.DockManager1.AutoHideContainers.AddRange(New DevExpress.XtraBars.Docking.AutoHideContainer() {Me.AutoHideContainer2})
+        Me.DockManager1.Form = Me
+        Me.DockManager1.TopZIndexControls.AddRange(New String() {"DevExpress.XtraBars.BarDockControl", "DevExpress.XtraBars.StandaloneBarDockControl", "System.Windows.Forms.StatusBar", "System.Windows.Forms.MenuStrip", "System.Windows.Forms.StatusStrip", "DevExpress.XtraBars.Ribbon.RibbonStatusBar", "DevExpress.XtraBars.Ribbon.RibbonControl", "DevExpress.XtraBars.Navigation.OfficeNavigationBar", "DevExpress.XtraBars.Navigation.TileNavPane", "DevExpress.XtraBars.TabFormControl"})
+        '
+        'AutoHideContainer2
+        '
+        Me.AutoHideContainer2.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.AutoHideContainer2.Controls.Add(Me.DockPanel1)
+        Me.AutoHideContainer2.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.AutoHideContainer2.Location = New System.Drawing.Point(0, 753)
+        Me.AutoHideContainer2.Margin = New System.Windows.Forms.Padding(4)
+        Me.AutoHideContainer2.Name = "AutoHideContainer2"
+        Me.AutoHideContainer2.Size = New System.Drawing.Size(1484, 26)
+        '
+        'DockPanel1
+        '
+        Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
+        Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
+        Me.DockPanel1.ID = New System.Guid("9883a1ef-faca-4a54-a7cf-192ced1b291e")
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
+        Me.DockPanel1.Name = "DockPanel1"
+        Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 118)
+        Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
+        Me.DockPanel1.SavedIndex = 0
+        Me.DockPanel1.Size = New System.Drawing.Size(1420, 145)
+        Me.DockPanel1.Text = "Bitácora"
+        Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
+        '
+        'DockPanel1_Container
+        '
+        Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
+        Me.DockPanel1_Container.Controls.Add(Label2)
+        Me.DockPanel1_Container.Controls.Add(Me.Fec_agrDateEdit)
+        Me.DockPanel1_Container.Controls.Add(Fec_agrLabel)
+        Me.DockPanel1_Container.Controls.Add(Me.User_modTextEdit)
+        Me.DockPanel1_Container.Controls.Add(User_modLabel)
+        Me.DockPanel1_Container.Controls.Add(Me.User_agrTextEdit)
+        Me.DockPanel1_Container.Controls.Add(User_agrLabel)
+        Me.DockPanel1_Container.Location = New System.Drawing.Point(5, 30)
+        Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
+        Me.DockPanel1_Container.Name = "DockPanel1_Container"
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1410, 111)
+        Me.DockPanel1_Container.TabIndex = 0
+        '
+        'Fec_modDateEdit
+        '
+        Me.Fec_modDateEdit.EditValue = Nothing
+        Me.Fec_modDateEdit.Enabled = False
+        Me.Fec_modDateEdit.Location = New System.Drawing.Point(519, 59)
+        Me.Fec_modDateEdit.Margin = New System.Windows.Forms.Padding(4)
+        Me.Fec_modDateEdit.MenuManager = Me.RibbonControl
+        Me.Fec_modDateEdit.Name = "Fec_modDateEdit"
+        Me.Fec_modDateEdit.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.Fec_modDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.Fec_modDateEdit.Size = New System.Drawing.Size(175, 22)
+        Me.Fec_modDateEdit.TabIndex = 21
+        '
+        'Fec_agrDateEdit
+        '
+        Me.Fec_agrDateEdit.EditValue = Nothing
+        Me.Fec_agrDateEdit.Enabled = False
+        Me.Fec_agrDateEdit.Location = New System.Drawing.Point(149, 57)
+        Me.Fec_agrDateEdit.Margin = New System.Windows.Forms.Padding(4)
+        Me.Fec_agrDateEdit.MenuManager = Me.RibbonControl
+        Me.Fec_agrDateEdit.Name = "Fec_agrDateEdit"
+        Me.Fec_agrDateEdit.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.Fec_agrDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.Fec_agrDateEdit.Size = New System.Drawing.Size(175, 22)
+        Me.Fec_agrDateEdit.TabIndex = 19
+        '
+        'User_modTextEdit
+        '
+        Me.User_modTextEdit.Enabled = False
+        Me.User_modTextEdit.Location = New System.Drawing.Point(519, 20)
+        Me.User_modTextEdit.Margin = New System.Windows.Forms.Padding(4)
+        Me.User_modTextEdit.MenuManager = Me.RibbonControl
+        Me.User_modTextEdit.Name = "User_modTextEdit"
+        Me.User_modTextEdit.Size = New System.Drawing.Size(175, 22)
+        Me.User_modTextEdit.TabIndex = 17
+        '
+        'User_agrTextEdit
+        '
+        Me.User_agrTextEdit.Enabled = False
+        Me.User_agrTextEdit.Location = New System.Drawing.Point(149, 17)
+        Me.User_agrTextEdit.Margin = New System.Windows.Forms.Padding(4)
+        Me.User_agrTextEdit.MenuManager = Me.RibbonControl
+        Me.User_agrTextEdit.Name = "User_agrTextEdit"
+        Me.User_agrTextEdit.Size = New System.Drawing.Size(175, 22)
+        Me.User_agrTextEdit.TabIndex = 10
+        '
+        'XtraTabControl1
+        '
+        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.XtraTabControl1.Location = New System.Drawing.Point(0, 193)
+        Me.XtraTabControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.XtraTabControl1.Name = "XtraTabControl1"
+        Me.XtraTabControl1.SelectedTabPage = Me.tabDetalleAjuste
+        Me.XtraTabControl1.Size = New System.Drawing.Size(1484, 560)
+        Me.XtraTabControl1.TabIndex = 34
+        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDetalleAjuste, Me.tabDocumentosAsociados, Me.tabResumenAjuste})
+        '
+        'tabDetalleAjuste
+        '
+        Me.tabDetalleAjuste.Controls.Add(Me.GroupControl4)
+        Me.tabDetalleAjuste.Controls.Add(Me.GroupControl2)
+        Me.tabDetalleAjuste.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabDetalleAjuste.Name = "tabDetalleAjuste"
+        Me.tabDetalleAjuste.Size = New System.Drawing.Size(1482, 530)
+        Me.tabDetalleAjuste.Text = "Detalle ajuste"
+        '
+        'tabDocumentosAsociados
+        '
+        Me.tabDocumentosAsociados.Controls.Add(Me.PanelControl1)
+        Me.tabDocumentosAsociados.Margin = New System.Windows.Forms.Padding(4)
+        Me.tabDocumentosAsociados.Name = "tabDocumentosAsociados"
+        Me.tabDocumentosAsociados.Size = New System.Drawing.Size(1482, 530)
+        Me.tabDocumentosAsociados.Text = "Documentos asociados"
+        '
+        'PanelControl1
+        '
+        Me.PanelControl1.Controls.Add(Me.grdDocsAsociados)
+        Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.PanelControl1.Location = New System.Drawing.Point(0, 0)
+        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.PanelControl1.Name = "PanelControl1"
+        Me.PanelControl1.Size = New System.Drawing.Size(1482, 530)
+        Me.PanelControl1.TabIndex = 0
+        '
+        'grdDocsAsociados
+        '
+        Me.grdDocsAsociados.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grdDocsAsociados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdDocsAsociados.Location = New System.Drawing.Point(2, 2)
+        Me.grdDocsAsociados.MainView = Me.GridView1
+        Me.grdDocsAsociados.Margin = New System.Windows.Forms.Padding(4)
+        Me.grdDocsAsociados.MenuManager = Me.RibbonControl
+        Me.grdDocsAsociados.Name = "grdDocsAsociados"
+        Me.grdDocsAsociados.Size = New System.Drawing.Size(1478, 526)
+        Me.grdDocsAsociados.TabIndex = 0
+        Me.grdDocsAsociados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
+        '
+        'GridView1
+        '
+        Me.GridView1.DetailHeight = 431
+        Me.GridView1.GridControl = Me.grdDocsAsociados
+        Me.GridView1.Name = "GridView1"
+        Me.GridView1.OptionsBehavior.ReadOnly = True
+        Me.GridView1.OptionsFind.AlwaysVisible = True
+        '
+        'tabResumenAjuste
+        '
+        Me.tabResumenAjuste.Controls.Add(Me.dgridProductosConsolidados)
+        Me.tabResumenAjuste.Name = "tabResumenAjuste"
+        Me.tabResumenAjuste.Size = New System.Drawing.Size(1482, 530)
+        Me.tabResumenAjuste.Text = "Resumen de ajuste"
+        '
+        'dgridProductosConsolidados
+        '
+        Me.dgridProductosConsolidados.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridProductosConsolidados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridProductosConsolidados.Location = New System.Drawing.Point(0, 0)
+        Me.dgridProductosConsolidados.MainView = Me.GridView3
+        Me.dgridProductosConsolidados.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridProductosConsolidados.MenuManager = Me.RibbonControl
+        Me.dgridProductosConsolidados.Name = "dgridProductosConsolidados"
+        Me.dgridProductosConsolidados.Size = New System.Drawing.Size(1482, 530)
+        Me.dgridProductosConsolidados.TabIndex = 1
+        Me.dgridProductosConsolidados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView3})
+        '
+        'GridView3
+        '
+        Me.GridView3.DetailHeight = 431
+        Me.GridView3.GridControl = Me.dgridProductosConsolidados
+        Me.GridView3.Name = "GridView3"
+        Me.GridView3.OptionsBehavior.ReadOnly = True
+        Me.GridView3.OptionsFind.AlwaysVisible = True
         '
         'frmAjusteStock
         '
