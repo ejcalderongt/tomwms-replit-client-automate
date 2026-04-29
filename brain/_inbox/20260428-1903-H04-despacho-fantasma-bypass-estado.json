@@ -1,5 +1,5 @@
 {
-  "id": "20260428-1903-H04-despacho-fantasma-bypass-estado",
+  "id": "20260428-1903-H04",
   "schema_version": "2",
   "created_at": "2026-04-28T19:03:00-03:00",
   "type": "learning_proposed",
@@ -17,21 +17,23 @@
     ],
     "candidate_files": [
       "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-16)",
-      "brain/wms-specific-process-flow/state-machine-pedido.md (existente, agregar excepcion documentada)",
-      "brain/architecture/adr/ADR-NNN-bypass-estado-despachado.md (nuevo)",
-      "brain/learnings/L-017-despacho-fantasma-legacy.md (nuevo)"
+      "brain/wms-specific-process-flow/state-machine-pedido.md (existente, agregar excepcion)",
+      "brain/architecture/adr/ADR-012-bypass-estado-despachado.md (creado)",
+      "wms-db-brain/db-brain/tables/trans_pe_enc.md (referencia para shape del estado)"
     ],
     "tags": [
       "bug-vs-feature",
       "estado-pedido",
       "webapi-design",
       "decision-de-producto",
-      "killios"
-    ]
+      "killios",
+      "schema-validated"
+    ],
+    "filename_slug": "20260428-1903-H04-despacho-fantasma-bypass-estado.json"
   },
   "context": {
     "summary": "WMS permite forzar estado Despachado sin disparar despacho fisico",
-    "message": "Hay 43 pedidos en Killios con estado='Despachado' pero sin fila correspondiente en trans_despacho_enc. Carol (CKFK) confirma que es opcion (d) del menu original: 'esto generalmente pasa porque se le cambia el estado al pedido a estado despachado, sin realmente despachar el producto, el WMS lo permite'. Es un bypass del flujo lineal Nuevo->Pendiente->Pickeado->Verificado->Despachado documentado en P-08. PREGUNTA ABIERTA: es feature (admin para corregir errores) o bug (cualquiera puede saltarse despacho)? DECISION REQUERIDA para reserva-webapi: (a) prohibir el cambio manual a Despachado, (b) requerir permiso especifico + razon + log de auditoria, (c) replicar el comportamiento legacy. Esta decision afecta el contract test del bridge y la matriz de transiciones del nuevo motor.",
+    "message": "43 pedidos en Killios con estado='Despachado' sin fila en trans_despacho_enc. Carol (CKFK) confirma feature: 'el WMS lo permite'. ENRIQUECIDO por wms-db-brain (commit d3884b57): trans_pe_enc.estado es nvarchar(20) NULL SIN check constraint - el bypass es trivial (basta un UPDATE). Refuerza ADR-012: sin auditoria el bypass es invisible, justifica la tabla aud_pedido_estado_forzado nueva. ADR-012 propone opcion (b) permitir con permiso+razon+auditoria.",
     "modules_touched": [
       "trans_pe_enc",
       "trans_despacho_enc",
@@ -43,22 +45,29 @@
       "estado-pedido",
       "webapi-design",
       "decision-de-producto",
-      "killios"
+      "killios",
+      "schema-validated"
     ]
   },
   "analysis": {
     "analyzed_at": "2026-04-28T19:30:00-03:00",
     "analyzed_by": "agente brain (sesion replit)",
     "analyst_role": "main_agent_acting_as_bridge",
-    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge",
-    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md"
+    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge + wms-db-brain dump validation (commit d3884b57)",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md",
+    "fuentes": [
+      "brain/wms-specific-process-flow/respuestas-tanda-1.md (EJC)",
+      "brain/wms-specific-process-flow/respuestas-tanda-2.md (SQL agente)",
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (CKFK)",
+      "wms-db-brain/db-brain/ (schema dump TOMWMS_KILLIOS_PRD 2026-04-27)"
+    ]
   },
   "proposal": {
     "proposal_path": "brain/_proposals/20260428-1903-H04-despacho-fantasma-bypass-estado.md",
     "adr_path": "brain/architecture/adr/ADR-012-bypass-estado-despachado.md",
     "decision_provisional": "accepted_provisional_via_ADR-012",
     "ratificacion_pendiente_de": "Erik Calderon",
-    "proposed_at": "2026-04-28T19:48:00-03:00"
+    "proposed_at": "2026-04-28T19:45:00-03:00"
   },
   "status": "proposed",
   "decision": null,
@@ -67,7 +76,7 @@
       "at": "2026-04-28T19:03:00-03:00",
       "action": "notify",
       "by": "replit-agent",
-      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+      "note": "emitido como parte de P-26"
     },
     {
       "at": "2026-04-28T19:30:00-03:00",
@@ -76,10 +85,16 @@
       "note": "analizado via consolidacion-pasada-7.md (commit b1d3cc03)"
     },
     {
-      "at": "2026-04-28T19:48:00-03:00",
+      "at": "2026-04-28T19:45:00-03:00",
       "action": "propose",
       "by": "replit-agent",
-      "note": "proposal generado en brain/_proposals/20260428-1903-H04-despacho-fantasma-bypass-estado.md; ADR provisional en brain/architecture/adr/ADR-012-bypass-estado-despachado.md"
+      "note": "proposal en brain/_proposals/20260428-1903-H04-despacho-fantasma-bypass-estado.md; ADR provisional en brain/architecture/adr/ADR-012-bypass-estado-despachado.md"
+    },
+    {
+      "at": "2026-04-28T21:00:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "enriquecido con wms-db-brain dump (rama wms-db-brain commit d3884b57); id corregido al regex del schema validator"
     }
   ]
 }

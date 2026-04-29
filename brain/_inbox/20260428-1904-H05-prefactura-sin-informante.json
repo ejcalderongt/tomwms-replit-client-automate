@@ -1,5 +1,5 @@
 {
-  "id": "20260428-1904-H05-prefactura-sin-informante",
+  "id": "20260428-1904-H05",
   "schema_version": "2",
   "created_at": "2026-04-28T19:04:00-03:00",
   "type": "learning_proposed",
@@ -16,9 +16,8 @@
       "CKFK (no conoce el proceso)"
     ],
     "candidate_files": [
-      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-23 + sub-Q de prefactura)",
-      "brain/_inbox/<futuro>-pasada-8-prefactura.json (cuando se identifique respondedor)",
-      "brain/replit.md (anotar gap de conocimiento)"
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-23)",
+      "brain/replit.md (anotar gap de conocimiento billing CEALSA)"
     ],
     "tags": [
       "pregunta-abierta",
@@ -26,11 +25,12 @@
       "cealsa",
       "3pl",
       "scoping-pasada-8"
-    ]
+    ],
+    "filename_slug": "20260428-1904-H05-prefactura-sin-informante.json"
   },
   "context": {
     "summary": "Pasada 7 dejo P-23 (Prefactura CEALSA) sin respuesta - falta dueno funcional",
-    "message": "Carol (CKFK) respondio literal: 'Este proceso no lo conozco' a las 3 sub-preguntas de P-23 sobre prefactura (agregacion por cliente/periodo, servicios facturables, tarifas). El dominio Prefactura CEALSA queda sin informante en el brain. ACCION: identificar respondedor alternativo. Candidatos: alguien de finanzas/billing en CEALSA, un consultor previo del proyecto WMS-CEALSA, o derivar via SQL del agente brain (analisis de trans_prefactura_*). Reservar P-23 para ser re-preguntado en Pasada 8 con el respondedor correcto. Sin esta info, el bridge de tests del WebAPI para CEALSA cojea en el dominio billing.",
+    "message": "Carol (CKFK): 'Este proceso no lo conozco' a las 3 sub-preguntas de P-23 sobre prefactura. Dominio Prefactura CEALSA queda sin informante. Accion: identificar respondedor alternativo. Hasta tener respuesta, el WebAPI no incluye endpoints de prefactura para CEALSA.",
     "modules_touched": [
       "trans_prefactura_enc",
       "trans_prefactura_det",
@@ -49,15 +49,21 @@
     "analyzed_at": "2026-04-28T19:30:00-03:00",
     "analyzed_by": "agente brain (sesion replit)",
     "analyst_role": "main_agent_acting_as_bridge",
-    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge",
-    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md"
+    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge + wms-db-brain dump validation (commit d3884b57)",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md",
+    "fuentes": [
+      "brain/wms-specific-process-flow/respuestas-tanda-1.md (EJC)",
+      "brain/wms-specific-process-flow/respuestas-tanda-2.md (SQL agente)",
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (CKFK)",
+      "wms-db-brain/db-brain/ (schema dump TOMWMS_KILLIOS_PRD 2026-04-27)"
+    ]
   },
   "proposal": {
     "proposal_path": "brain/_proposals/20260428-1904-H05-prefactura-sin-informante.md",
     "adr_path": null,
-    "decision_provisional": "blocked_pending_human_informant_identification",
+    "decision_provisional": "blocked_pending_human_informant",
     "ratificacion_pendiente_de": "Erik Calderon",
-    "proposed_at": "2026-04-28T19:49:00-03:00"
+    "proposed_at": "2026-04-28T19:45:00-03:00"
   },
   "status": "proposed",
   "decision": null,
@@ -66,7 +72,7 @@
       "at": "2026-04-28T19:04:00-03:00",
       "action": "notify",
       "by": "replit-agent",
-      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+      "note": "emitido como parte de P-26"
     },
     {
       "at": "2026-04-28T19:30:00-03:00",
@@ -75,10 +81,16 @@
       "note": "analizado via consolidacion-pasada-7.md (commit b1d3cc03)"
     },
     {
-      "at": "2026-04-28T19:49:00-03:00",
+      "at": "2026-04-28T19:45:00-03:00",
       "action": "propose",
       "by": "replit-agent",
-      "note": "proposal generado en brain/_proposals/20260428-1904-H05-prefactura-sin-informante.md; sin ADR (decision atomica/operativa o bloqueada)"
+      "note": "proposal en brain/_proposals/20260428-1904-H05-prefactura-sin-informante.md; sin ADR"
+    },
+    {
+      "at": "2026-04-28T21:00:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "enriquecido con wms-db-brain dump (rama wms-db-brain commit d3884b57); id corregido al regex del schema validator"
     }
   ]
 }

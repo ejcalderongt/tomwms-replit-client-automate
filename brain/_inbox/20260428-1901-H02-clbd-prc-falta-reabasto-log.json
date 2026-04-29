@@ -1,5 +1,5 @@
 {
-  "id": "20260428-1901-H02-clbd-prc-falta-reabasto-log",
+  "id": "20260428-1901-H02",
   "schema_version": "2",
   "created_at": "2026-04-28T19:01:00-03:00",
   "type": "learning_proposed",
@@ -17,20 +17,21 @@
     ],
     "candidate_files": [
       "Repo del SP CLBD_PRC (fuera del brain, en repo del WMS)",
-      "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-24)",
-      "brain/learnings/L-015-clbd-prc-falta-tabla-reabasto.md (nuevo, opcional)"
+      "wms-db-brain/db-brain/sps/CLBD_PRC.md (referencia validada)"
     ],
     "tags": [
       "bug-operativo",
       "instalacion",
       "sp-mantenimiento",
       "killios",
-      "concrete-action"
-    ]
+      "concrete-action",
+      "validated-via-db-brain"
+    ],
+    "filename_slug": "20260428-1901-H02-clbd-prc-falta-reabasto-log.json"
   },
   "context": {
     "summary": "trans_reabastecimiento_log no se limpia al instalar cliente nuevo",
-    "message": "En Killios PRD hay 1218 registros en trans_reabastecimiento_log aunque el cliente NO usa el modulo de reabastecimiento. Carol (CKFK) responde literal: 'La tabla no se limpio al instalar ese cliente, debemos agregarla al SP CLBD_PRC'. Es un bug operativo concreto con dueno claro y accion atomica. ACCION: agregar trans_reabastecimiento_log a la lista de tablas que limpia el SP CLBD_PRC durante la instalacion de un cliente nuevo. DUENO: equipo de instalacion. EFECTO: previene falsos positivos en analisis SQL futuro y mantiene baseline limpio en clientes nuevos.",
+    "message": "Killios PRD tiene 1218 registros en trans_reabastecimiento_log aunque NO usa el modulo. Carol (CKFK): 'La tabla no se limpio al instalar ese cliente, debemos agregarla al SP CLBD_PRC'. VALIDADO por wms-db-brain dump del 2026-04-27 (commit d3884b57): el SP CLBD_PRC.md de 150 lineas NO incluye trans_reabastecimiento_log en su lista de DELETE FROM. Carol confirmada al 100%. Accion: agregar trans_reabastecimiento_log al SP CLBD_PRC.",
     "modules_touched": [
       "SP CLBD_PRC",
       "trans_reabastecimiento_log",
@@ -41,22 +42,29 @@
       "instalacion",
       "sp-mantenimiento",
       "killios",
-      "concrete-action"
+      "concrete-action",
+      "validated-via-db-brain"
     ]
   },
   "analysis": {
     "analyzed_at": "2026-04-28T19:30:00-03:00",
     "analyzed_by": "agente brain (sesion replit)",
     "analyst_role": "main_agent_acting_as_bridge",
-    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge",
-    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md"
+    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge + wms-db-brain dump validation (commit d3884b57)",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md",
+    "fuentes": [
+      "brain/wms-specific-process-flow/respuestas-tanda-1.md (EJC)",
+      "brain/wms-specific-process-flow/respuestas-tanda-2.md (SQL agente)",
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (CKFK)",
+      "wms-db-brain/db-brain/ (schema dump TOMWMS_KILLIOS_PRD 2026-04-27)"
+    ]
   },
   "proposal": {
     "proposal_path": "brain/_proposals/20260428-1901-H02-clbd-prc-falta-reabasto-log.md",
     "adr_path": null,
-    "decision_provisional": "accepted_atomic_action_no_ADR_required",
+    "decision_provisional": "accepted_atomic_action_validated_via_db_brain",
     "ratificacion_pendiente_de": "Erik Calderon",
-    "proposed_at": "2026-04-28T19:46:00-03:00"
+    "proposed_at": "2026-04-28T19:45:00-03:00"
   },
   "status": "proposed",
   "decision": null,
@@ -65,7 +73,7 @@
       "at": "2026-04-28T19:01:00-03:00",
       "action": "notify",
       "by": "replit-agent",
-      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+      "note": "emitido como parte de P-26"
     },
     {
       "at": "2026-04-28T19:30:00-03:00",
@@ -74,10 +82,16 @@
       "note": "analizado via consolidacion-pasada-7.md (commit b1d3cc03)"
     },
     {
-      "at": "2026-04-28T19:46:00-03:00",
+      "at": "2026-04-28T19:45:00-03:00",
       "action": "propose",
       "by": "replit-agent",
-      "note": "proposal generado en brain/_proposals/20260428-1901-H02-clbd-prc-falta-reabasto-log.md; sin ADR (decision atomica/operativa o bloqueada)"
+      "note": "proposal en brain/_proposals/20260428-1901-H02-clbd-prc-falta-reabasto-log.md; sin ADR"
+    },
+    {
+      "at": "2026-04-28T21:00:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "enriquecido con wms-db-brain dump (rama wms-db-brain commit d3884b57); id corregido al regex del schema validator"
     }
   ]
 }

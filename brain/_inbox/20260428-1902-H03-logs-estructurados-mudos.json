@@ -1,5 +1,5 @@
 {
-  "id": "20260428-1902-H03-logs-estructurados-mudos",
+  "id": "20260428-1902-H03",
   "schema_version": "2",
   "created_at": "2026-04-28T19:02:00-03:00",
   "type": "learning_proposed",
@@ -17,7 +17,7 @@
     ],
     "candidate_files": [
       "brain/wms-specific-process-flow/respuestas-pasada-7.md (existente, seccion P-20)",
-      "brain/learnings/L-016-taxonomia-errores-pendiente.md (nuevo)",
+      "brain/architecture/error-taxonomy.md (a crear en pasada 8)",
       "Repo BOF (fuera del brain) - vista de logs estructurados"
     ],
     "tags": [
@@ -26,11 +26,12 @@
       "bof",
       "taxonomia",
       "observability"
-    ]
+    ],
+    "filename_slug": "20260428-1902-H03-logs-estructurados-mudos.json"
   },
   "context": {
     "summary": "Logs estructurados por transaccion existen pero no se exponen al admin",
-    "message": "El WMS tiene logs estructurados por transaccion (i_nav_ejecucion_det_error, 4021 filas en Killios) pero no se muestran al admin. El admin sigue dependiendo de la tabla vieja log_error_wms (66339 filas, demasiado grande para ser util). Carol (CKFK) confirma: 'Actualmente lo tenemos mas estructurado por transaccion, pero no lo estamos mostrando'. ACCIONES: (1) exponer los logs estructurados en una vista del BOF, (2) definir taxonomia explicita recuperable/fatal antes de migrar a reserva-webapi. Sin clasificacion explicita de errores, el bridge no puede automatizar retry.",
+    "message": "WMS tiene logs estructurados (i_nav_ejecucion_det_error, 4021 filas en Killios) pero no se muestran al admin. Sin clasificacion explicita recuperable/fatal el bridge no puede automatizar retry. Acciones: (1) exponer logs en BOF, (2) definir taxonomia formal recuperable/fatal/no-recuperable.",
     "modules_touched": [
       "i_nav_ejecucion_det_error",
       "log_error_wms",
@@ -49,15 +50,21 @@
     "analyzed_at": "2026-04-28T19:30:00-03:00",
     "analyzed_by": "agente brain (sesion replit)",
     "analyst_role": "main_agent_acting_as_bridge",
-    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge",
-    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md"
+    "method": "consolidacion-pasada-7.md cross-reference + brain knowledge + wms-db-brain dump validation (commit d3884b57)",
+    "consolidation_doc": "brain/wms-specific-process-flow/consolidacion-pasada-7.md",
+    "fuentes": [
+      "brain/wms-specific-process-flow/respuestas-tanda-1.md (EJC)",
+      "brain/wms-specific-process-flow/respuestas-tanda-2.md (SQL agente)",
+      "brain/wms-specific-process-flow/respuestas-pasada-7.md (CKFK)",
+      "wms-db-brain/db-brain/ (schema dump TOMWMS_KILLIOS_PRD 2026-04-27)"
+    ]
   },
   "proposal": {
     "proposal_path": "brain/_proposals/20260428-1902-H03-logs-estructurados-mudos.md",
     "adr_path": null,
-    "decision_provisional": "queued_for_pasada_8_roadmap_no_immediate_decision",
+    "decision_provisional": "queued_for_pasada_8_roadmap",
     "ratificacion_pendiente_de": "Erik Calderon",
-    "proposed_at": "2026-04-28T19:47:00-03:00"
+    "proposed_at": "2026-04-28T19:45:00-03:00"
   },
   "status": "proposed",
   "decision": null,
@@ -66,7 +73,7 @@
       "at": "2026-04-28T19:02:00-03:00",
       "action": "notify",
       "by": "replit-agent",
-      "note": "emitido como parte de P-26 procesamiento de respuestas Carol pasada 7"
+      "note": "emitido como parte de P-26"
     },
     {
       "at": "2026-04-28T19:30:00-03:00",
@@ -75,10 +82,16 @@
       "note": "analizado via consolidacion-pasada-7.md (commit b1d3cc03)"
     },
     {
-      "at": "2026-04-28T19:47:00-03:00",
+      "at": "2026-04-28T19:45:00-03:00",
       "action": "propose",
       "by": "replit-agent",
-      "note": "proposal generado en brain/_proposals/20260428-1902-H03-logs-estructurados-mudos.md; sin ADR (decision atomica/operativa o bloqueada)"
+      "note": "proposal en brain/_proposals/20260428-1902-H03-logs-estructurados-mudos.md; sin ADR"
+    },
+    {
+      "at": "2026-04-28T21:00:00-03:00",
+      "action": "analyze",
+      "by": "replit-agent",
+      "note": "enriquecido con wms-db-brain dump (rama wms-db-brain commit d3884b57); id corregido al regex del schema validator"
     }
   ]
 }
