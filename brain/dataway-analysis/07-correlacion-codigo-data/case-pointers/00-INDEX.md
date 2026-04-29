@@ -51,8 +51,9 @@ CP-NNN-<contexto>-<hint>
 | `CP-010` | **documentado** | `clsLnStock_res_Partial.vb` | 20947 | Breakpoint `Codigo "00190454"` + `Debug.Print("Aqui")` activo (zona picking) | baja | [`CP-010`](../../../debuged-cases/CP-010.md) |
 | `CP-011` | **documentado** | `clsLnStock_res_Partial.vb` | 27264 | Breakpoint `Codigo "00091035"` + `Debug.Write("Espera")` activo | baja | [`CP-011`](../../../debuged-cases/CP-011.md) |
 | `CP-012` | **documentado** | `frmExistenciasConReserva.vb` | 283 | Breakpoint `Codigo "01008076"` + `Debug.Print("Espera")` + 2 guards no-op | baja | [`CP-012`](../../../debuged-cases/CP-012.md) |
+| `CP-013` | **confirmado** | (caso de campo Killios — sin hardcode origen) | — | Killios WMS164: stock partido en 2 filas con misma llave natural (CEST sin merge); 919 filas / 18.7% del stock activo afectado | alta | [`CP-013`](../../../debuged-cases/CP-013.md) |
 
-**Total documentados**: 12 / 12 identificados (wave 13-8 cierra el barrido forense de las 6 búsquedas heurísticas).
+**Total documentados**: 13 / 13 (wave 13-9 abre nueva categoría: "casos de campo confirmados con datos reales", primer ejemplar CP-013).
 
 ## Agrupaciones
 
@@ -89,6 +90,14 @@ Limpieza: si se decide eliminar, los tres se eliminan juntos.
 - **CP-012** — `01008076` (frmExistenciasConReserva)
 
 Ver `case-pointers/patterns/breakpoint-arqueologico-codigo-hardcoded.md` para el pattern formal.
+
+### Casos de campo (auto-confirmables sin entrevista) — categoría nueva en wave 13-9
+
+Distinta a las dos anteriores (breakpoint arqueológico y marker persistente). **No nacen de un hardcode encontrado en código fuente** — nacen de tickets de operación reproducidos contra BD productiva con queries READ-ONLY. Confirman un anti-patrón sistémico **antes** de que se localice el código bugueado.
+
+- **CP-013** — Killios WMS164: stock partido en 2 filas con misma llave natural (CEST sin merge). Anti-patrón sistémico medido: 469 combos / 919 filas / 18.7% del stock activo de Killios / 183.375 UN involucradas. **Bug raíz inferido**: `V-DATAWAY-004` (ver `dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge.md`). Refuta categóricamente la hipótesis ModoDepuracion (V-DATAWAY-001) — query 11 confirma `0` ocurrencias del marker `#EJCAJUSTEDESFASE` en Killios.
+
+**Candidato a pattern P-002**: "INSERT sin merge contra llave natural" (a formalizar cuando aparezcan más instancias).
 
 ## Bitácoras vivas
 

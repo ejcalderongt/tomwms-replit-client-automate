@@ -1,0 +1,98 @@
+id: dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge
+title: Anti-patron INSERT a stock sin merge contra llave natural V-DATAWAY-004
+public: machine-structure
+version: 1
+created_in_wave: wave-13-9
+last_updated: 2026-04-29
+
+bug:
+  id: V-DATAWAY-004
+  nombre: insert-stock-sin-merge-en-path-CEST
+  severidad: alta
+  estado: confirmado_con_datos_pendiente_trace_codigo
+  caso_fundacional: CP-013
+  ticket_origen: WMS164
+  cliente_origen: Killios
+  fecha_deteccion: 2026-04-29
+
+tabla_afectada: stock
+path_inculpado_confirmado:
+  - tipo_tarea: CEST
+    descripcion: cambio_de_estado
+paths_bajo_sospecha_no_confirmados:
+  - UBIC
+  - RECE
+  - AJUS
+  - IMPL
+
+llave_natural_stock:
+  enforced_en_BD: false
+  enforced_en_codigo: parcialmente_y_con_bug
+  componentes:
+    - IdProductoBodega
+    - IdUbicacion
+    - IdProductoEstado
+    - Lote
+    - lic_plate
+
+sintoma_observable:
+  descripcion: dos_o_mas_filas_stock_misma_llave_natural_diferente_IdStock
+  query_deteccion: |
+    SELECT IdProductoBodega, IdUbicacion, IdProductoEstado, Lote, lic_plate, COUNT(*)
+    FROM stock WHERE Cantidad > 0
+    GROUP BY IdProductoBodega, IdUbicacion, IdProductoEstado, Lote, lic_plate
+    HAVING COUNT(*) > 1
+
+alcance_medido_killios:
+  total_filas_stock_activo: 4914
+  combos_duplicados: 469
+  filas_redundantes: 919
+  porcentaje: 18.7
+  un_involucradas: 183375
+
+hipotesis_bug_raiz:
+  - id: H1
+    descripcion: lic_plate_vacio_rompe_el_comparador_NULL_vs_vacio
+    probabilidad: alta
+  - id: H2
+    descripcion: concurrencia_inter_segundo_dos_hilos_CEST_sin_lock
+    probabilidad: media
+  - id: H3
+    descripcion: CEST_por_lote_partido_HH_permite_dos_eventos_separados
+    probabilidad: media
+
+contraste_v_dataway_001:
+  v001_modo_depuracion:
+    tabla: trans_movimientos
+    activacion: manual_Ctrl_D
+    marker_BD: "#EJCAJUSTEDESFASE"
+    confirmado_en_killios: false
+  v004_insert_sin_merge:
+    tabla: stock
+    activacion: automatica_flujo_normal
+    marker_BD: ninguno
+    confirmado_en_killios: true_919_filas
+    operativamente_mas_peligroso: true
+
+recomendaciones:
+  - id: R1
+    descripcion: unique_index_llave_natural_defensivo_post_consolidacion
+  - id: R2
+    descripcion: trace_y_fix_path_CEST_en_TOMWMS_BOF
+  - id: R3
+    descripcion: script_consolidacion_batch_one_shot_solo_post_R2
+  - id: R4
+    descripcion: query_continua_deteccion_en_tools_case_seed
+
+acciones_inmediatas:
+  - autorizar_query_12_en_BYB_y_CEALSA_para_medir_cross_cliente
+  - wave_13_10_trace_codigo_CEST_VB_NET
+  - NO_ejecutar_R3_sin_antes_R2
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/13-stock-insert-no-consolida-killios-wms164.md
+  - brain/debuged-cases/CP-013.md
+  - brain/debuged-cases/CP-013-killios-wms164/REPORTE.md
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.md
+  - dataway-analysis/00-modelo-identidad-idstock.md
+  - brain/agent-context/glossary.md

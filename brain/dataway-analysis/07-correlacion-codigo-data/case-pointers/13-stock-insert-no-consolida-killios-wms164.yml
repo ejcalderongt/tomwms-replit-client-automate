@@ -1,0 +1,193 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/13-stock-insert-no-consolida-killios-wms164
+title: CP-013 Killios WMS164 stock partido CEST sin merge
+public: machine-structure
+version: 1
+created_in_wave: wave-13-9
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-013
+  full_id: CP-013-stock-insert-no-consolida-killios-wms164
+  tipo: caso_de_campo_confirmado_con_datos_reales
+  categoria: data_discrepancy_anti_patron_persistencia
+  estado: confirmado
+  severidad_estimada: alta
+  pattern: candidato_P-002_insert_sin_merge_contra_llave_natural
+  primer_ejemplar_categoria: true
+
+origen_caso:
+  ticket: WMS164
+  cliente: Killios
+  fecha_reporte: 2026-04-23
+  fecha_trace: 2026-04-29
+  reportado_por: operacion_killios
+  bd_productiva: TOMWMS_KILLIOS_PRD_2026
+  servidor: 52.41.114.122,1437
+  modo_acceso: READ-ONLY via pymssql
+
+identidad_caso:
+  IdProducto: 77
+  IdProductoBodega: 381
+  IdBodega: 1
+  bodega_nombre: BOD1
+  IdPropietario: 1
+  propietario_codigo: "01"
+  propietario_nombre: KILIO-GARESA
+  IdRecepcion: 2179
+
+cronologia_5_movimientos:
+  fecha: 2026-04-23
+  ventana_segundos: 75
+  IdUsuario: 31
+  movimientos:
+    - id: M1
+      hora: "10:32:18"
+      tipo: UBIC
+      origen_ubic: 307
+      destino_ubic: 308
+      cantidad: 40
+      estado: 1
+      IdStock_destino: 134175
+    - id: M2
+      hora: "10:32:42"
+      tipo: UBIC
+      origen_ubic: 307
+      destino_ubic: 308
+      cantidad: 95
+      estado: 1
+      IdStock_destino: 134175
+    - id: M3
+      hora: "10:33:01"
+      tipo: CEST
+      origen_ubic: 307
+      destino_ubic: 22
+      cantidad: 40
+      estado_origen: 1
+      estado_destino: 16
+      IdStock_destino: 134176
+      observacion: split_1_consolida_OK
+    - id: M4
+      hora: "10:33:14"
+      tipo: CEST
+      origen_ubic: 307
+      destino_ubic: 22
+      cantidad: 30
+      estado_origen: 1
+      estado_destino: 16
+      IdStock_destino: 134177
+      observacion: split_2_NO_consolida_contra_134176_BUG
+    - id: M5
+      hora: "10:33:33"
+      tipo: UBIC
+      origen_ubic: 307
+      destino_ubic: 308
+      cantidad: 65
+      estado: 1
+      IdStock_destino: 134178
+  suma_total_un: 270
+  balance_cuadra: true
+
+estado_final_stock:
+  filas_activas_no_cero:
+    - IdStock: 134176
+      IdUbicacion: 22
+      IdProductoEstado: 16
+      Cantidad: 40
+      lic_plate: ""
+    - IdStock: 134177
+      IdUbicacion: 22
+      IdProductoEstado: 16
+      Cantidad: 30
+      lic_plate: ""
+      observacion: gemela_natural_de_134176_debio_ser_merge
+    - IdStock: 134178
+      IdUbicacion: 308
+      IdProductoEstado: 1
+      Cantidad: 65
+      lic_plate: ""
+
+llave_natural_stock:
+  componentes:
+    - IdProductoBodega
+    - IdUbicacion
+    - IdProductoEstado
+    - Lote
+    - lic_plate
+  observacion: 134176_y_134177_tienen_identica_llave_natural
+
+refutacion_modo_depuracion:
+  query_corrida: q11_final.py
+  resultado: marker_EJCAJUSTEDESFASE_ocurrencias_en_killios = 0
+  conclusion: NO_es_CP-007_ni_CP-008
+  bug_independiente: true
+
+alcance_sistemico:
+  query_corrida: q12_alcance.py
+  total_filas_stock_activo: 4914
+  combos_con_mas_de_1_fila: 469
+  filas_redundantes: 919
+  porcentaje_stock_afectado: 18.7
+  un_involucradas: 183375
+  top_productos_afectados:
+    - codigo: WMS167
+      filas_duplicadas: 14
+    - codigo: WMS384
+      filas_duplicadas: 12
+    - codigo: WMS056
+      filas_duplicadas: 12
+    - codigo: WMS089
+      filas_duplicadas: 12
+    - codigo: WMS221
+      filas_duplicadas: 11
+
+hipotesis_bug_raiz:
+  ordenadas_por_probabilidad:
+    - id: H1
+      descripcion: lic_plate_vacio_rompe_la_llave_natural_en_el_comparador
+    - id: H2
+      descripcion: concurrencia_inter_segundo_dos_hilos_CEST_concurrentes
+    - id: H3
+      descripcion: CEST_por_lote_partido_HH_permite_dos_eventos_separados
+
+bug_raiz_id: V-DATAWAY-004
+nombre_anti_patron: insert-stock-sin-merge-en-path-CEST
+
+debug_activo: false
+afecta_BD: true
+es_caso_de_campo: true
+es_hardcode_codigo: false
+
+queries_reproducibles:
+  carpeta: brain/debuged-cases/CP-013-killios-wms164/queries/
+  archivos:
+    - q01_producto_y_posicion.py
+    - q02_schema.py
+    - q03_schema_v2.py
+    - q04_localizar.py
+    - q05_locate.py
+    - q06_stock_actual.py
+    - q07_stock.py
+    - q08_movimientos.py
+    - q09_origen.py
+    - q10_balance.py
+    - q11_final.py
+    - q12_alcance.py
+  outputs_raw:
+    - outputs/q11_final.out
+    - outputs/q12_alcance.out
+
+acciones_propuestas:
+  esta_wave: medicion-only-y-promocion-a-brain
+  proximas:
+    - wave_13_10_localizar_en_VB_NET_path_CEST_INSERT_vs_UPDATE
+    - wave_13_11_confirmar_H1_H2_o_H3_con_caso_prueba
+    - wave_13_12_abrir_V-DATAWAY-004_formal_con_cita_archivo_y_linea
+    - investigacion_cross_cliente_BYB_y_CEALSA_si_erik_autoriza
+    - remediacion_script_consolidacion_batch_y_o_fix_codigo_CEST
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge.md
+  - brain/debuged-cases/CP-013.md
+  - brain/debuged-cases/CP-013-killios-wms164/REPORTE.md
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.md
+  - brain/agent-context/glossary.md

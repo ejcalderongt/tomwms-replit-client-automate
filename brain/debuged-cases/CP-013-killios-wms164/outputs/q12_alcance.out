@@ -1,0 +1,40 @@
+$ python q12_alcance.py
+[2026-04-29 — TOMWMS_KILLIOS_PRD_2026]
+
+=== total stock activo ===
+{'cnt': 4914, 'un_total': Decimal('982648.500')}
+
+=== combos duplicados (top 20 por cantidad de filas) ===
+WMS167   IdProductoBodega=...  Ubic=...  Estado=...  Lote=...  cnt=14  total=...
+WMS384   ...                                                    cnt=12  ...
+WMS056   ...                                                    cnt=12  ...
+WMS089   ...                                                    cnt=12  ...
+WMS221   ...                                                    cnt=11  ...
+WMS164   IdProductoBodega=381  Ubic=22   Estado=16              cnt= 2  total=70
+... (resto de filas hasta 20)
+
+=== resumen agregado ===
+{
+  'combos_duplicados':       469,
+  'filas_totales_en_combos': 1388,
+  'filas_redundantes':        919,
+  'un_involucradas':       Decimal('183375.000')
+}
+
+INTERPRETACION:
+  - 469 combos (ProductoBodega + Ubicacion + Estado + Lote + LicPlate)
+    tienen mas de una fila de stock activo.
+  - 919 filas son REDUNDANTES (deberian haberse consolidado por merge).
+  - 18.7% del stock activo de Killios sufre el patron.
+  - 183.375 UN de mercaderia estan en stocks fragmentados.
+  - El caso reportado (WMS164) es una entre 469 instancias del mismo
+    anti-patron sistemico.
+
+  Top 5 SKUs:
+    WMS167  -> 14 filas con misma llave natural
+    WMS384  -> 12
+    WMS056  -> 12
+    WMS089  -> 12
+    WMS221  -> 11
+
+  Severidad real del bug: ALTA, no MEDIA. No es un caso aislado.

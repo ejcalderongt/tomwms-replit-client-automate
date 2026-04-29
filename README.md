@@ -394,14 +394,16 @@ mañana alguien pregunte "esto cuando se supo?", hay respuesta.
 
 ## 7. Estado actual del aprendizaje (numeros reales)
 
-Snapshot al cierre de el ciclo 8.
+Snapshot al cierre de wave 13-9 (ciclo 8 + 9 waves de barrido forense + caso campo CP-013).
 
 ```
    AREA                          | OBSERVADO       | DOCUMENTADO | CONFIANZA
    ------------------------------+-----------------+-------------+----------
    Casos del motor de reserva    | 25 + 3 LLR      | 11/28       | media
    Case-pointers (hardcodes)     | 12 documentados | 12/12       | alta
-   Patterns en case-pointers     | 1 (P-001)       | 1/1         | alta
+   Casos de campo confirmados    | 1 (CP-013)      | 1/1         | alta
+   Patterns en case-pointers     | 1 + 1 candidato | 1/1 + P-002 | alta
+   Anti-patrones formalizados    | 4 (V-DATAWAY-001..004) | 4/4 | alta
    Conventions de codigo         | 1 (C-001 #EJC)  | 1/1         | alta
    Reportes con ModoDepuracion   | 15 declarados   | 15/15       | alta
    Reportes que mutan + marker   | 3 mutadores     | 3/3         | alta

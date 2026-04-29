@@ -1,0 +1,16 @@
+$ python q11_final.py
+[2026-04-29 — TOMWMS_KILLIOS_PRD_2026]
+
+{'cnt': 0}
+
+INTERPRETACION:
+  El marker '#EJCAJUSTEDESFASE' tiene CERO ocurrencias en
+  trans_movimientos de Killios. Esto refuta categoricamente
+  la hipotesis de que el caso WMS164 sea una mutacion del
+  path ModoDepuracion (CP-007 / CP-008 / V-DATAWAY-001).
+
+  Killios nunca corrio ninguno de los 3 reportes mutadores
+  con ModoDepuracion=True. El bug es INDEPENDIENTE.
+
+  Bug raiz inferido: V-DATAWAY-004 (anti-patron insert-stock-sin-merge
+  en path CEST).

@@ -113,7 +113,12 @@ Existencia_Teorica = Inventario_Inicial
 | `AJCANTNI` | Ajuste cantidad negativa (inverso) | `Ajustes_Negativos` |
 | `DESP` | Despacho / salida | `Salidas` |
 | `UBIC` | Cambio de ubicación | **NEUTRO** (excluido del balance) |
+| `CEST` | Cambio de estado (típicamente entre estados de calidad, ej: `1` BUEN ESTADO ↔ `16` MAL ESTADO) | **NEUTRO** (excluido del balance) — pero ver `V-DATAWAY-004`: el path CEST es el sospechoso del anti-patrón insert-stock-sin-merge |
+| `VERI` | Verificación pre-despacho | NEUTRO |
+| `AJUS` | Ajuste genérico | depende del subtipo |
 | (otros) | — | **silenciosamente ignorado** (`V-DATAWAY-003`) |
+
+**IDs numéricos en Killios** (`sis_tipo_tarea`): `1=RECE`, `2=UBIC`, `3=CEST`, `5=DESP`, `6=INVE`, `7=AJUS`, `11=VERI`. Esquema lowercase, NO existe `tipo_tarea` (es `sis_tipo_tarea`).
 
 Ver: `dataway-analysis/04-ecuacion-de-balance/tipos-tarea-relevantes.md`
 
