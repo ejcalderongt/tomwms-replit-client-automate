@@ -1,0 +1,37 @@
+# Iniciales conocidas del equipo WMS PrograX24
+# Fuente inicial: brain/agent-context/AGENTS.md sección Equipo
+# Si el scanner emite unknown_authors > 5%, agregar las siglas nuevas que
+# aparezcan en outputs/<timestamp>/by-author.md
+
+EJC:
+  name: Erik Calderón
+  rol: Lead / Arquitecto
+  alias: ["EJC", "ejc", "ejcalderon"]
+
+GT:
+  name: GT (rol pendiente confirmar con Erik)
+  rol: dev backend
+
+AG:
+  name: AG (rol pendiente confirmar)
+  rol: dev
+
+MA:
+  name: MA (rol pendiente confirmar)
+  rol: dev HH
+
+AT:
+  name: AT (rol pendiente confirmar)
+  rol: dev
+
+MECR:
+  name: MECR (rol pendiente confirmar)
+  rol: dev DBA / SQL
+
+CF:
+  name: CF (rol pendiente confirmar)
+  rol: dev
+
+# Nota: a medida que aparezcan firmas nuevas en los escaneos, agregarlas
+# acá. Q-EQUIPO-INICIALES queda abierta hasta que Erik confirme nombre +
+# rol completos de cada uno.

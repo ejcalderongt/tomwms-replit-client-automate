@@ -1,0 +1,152 @@
+# Palabras que SUBEN el score de un comentario firmado.
+# Cada categoría tiene un peso (ver SCORING.md).
+# Ajustar acá ANTES de tocar scan.py.
+
+# Clientes activos del WMS (nombres conocidos al 2026-04-29).
+# +3 puntos cada match (cap 6).
+clients:
+  - BYB
+  - BB
+  - BECO
+  - BECOFARMA
+  - MAMPA
+  - K7
+  - KILLIOS
+  - CEALSA
+  - CUMBRE
+  - IDEALSA
+  - MERHONSA
+  - MERCOPAN
+  - INELAC
+  - MHS
+
+# ERPs y canales de integración.
+# +2 puntos cada match (cap 4).
+erps:
+  - NAV
+  - SAP
+  - SAPB1
+  - SAP_B1
+  - MI3
+  - CEALSAMI3
+  - CEALSASync
+  - NavSync
+  - SAPBOSync
+  - SAPBOSyncKillios
+  - SAPBOSyncMampa
+
+# Palabras que indican regla de negocio o invariante.
+# +2 puntos cada match (cap 4).
+rule_keywords:
+  - porque
+  - regla
+  - siempre
+  - nunca
+  - "no eliminar"
+  - "no tocar"
+  - "no quitar"
+  - "no cambiar"
+  - cuidado
+  - ojo
+  - obligatorio
+  - debe
+  - requiere
+  - importante
+  - crítico
+  - critico
+  - mantener
+  - preservar
+  - validar
+
+# Palabras que indican fix/bug con justificación.
+# +1 cada match (cap 2).
+fix_keywords:
+  - corrección
+  - correccion
+  - fix
+  - bug
+  - issue
+  - ticket
+  - hotfix
+  - patch
+  - "error de"
+  - "falla de"
+  - "falla en"
+  - workaround
+  - parche
+
+# Palabras de condición específica.
+# +1 cada match (cap 2).
+condition_keywords:
+  - si
+  - cuando
+  - solo
+  - únicamente
+  - unicamente
+  - excepto
+  - salvo
+  - "en caso de"
+  - mientras
+  - "hasta que"
+  - "a menos que"
+
+# Tablas críticas del WMS — mencionarlas sube señal.
+# +2 cada match (cap 4).
+wms_tables:
+  - stock
+  - stock_res
+  - stock_jornada
+  - stock_rec
+  - trans_pe_enc
+  - trans_pe_det
+  - trans_oc_enc
+  - trans_oc_det
+  - trans_re_enc
+  - trans_re_det
+  - trans_movimientos
+  - trans_movimiento_pallet
+  - trans_picking_enc
+  - trans_picking_det
+  - trans_despacho_enc
+  - trans_despacho_det
+  - i_nav_config_enc
+  - i_nav_transacciones_out
+  - i_nav_ped_traslado_det
+  - producto
+  - producto_estado
+  - producto_bodega
+  - producto_presentacion
+  - bodega
+  - bodega_ubicacion
+  - log_error_wms
+  - propietarios
+  - propietario_bodega
+  - cliente
+  - cliente_tiempos
+  - faltantes
+  - barras_pallet
+
+# Funciones / SPs / endpoints conocidos del WMS.
+# +2 cada match (cap 4).
+wms_functions:
+  - Reserva_Stock
+  - Reserva_Stock_From_MI3
+  - Reserva_Stock_From_SAP
+  - Reserva_Stock_From_Reabasto
+  - Reserva_Stock_NAV_BYB
+  - Insertar_Stock_Res_MI3
+  - Push_To_NAV
+  - Get_Nuevo_Correlativo_LicensePlate
+  - Registrar_Pedido_Compra_To_NAV_For_BYB
+  - Finalizar_Recepcion_By_IdRecepcionEnc
+  - Existe_Lp_By_Licencia_And_IdBodega
+  - Reemplazo_Automatico
+  - frmCambioUbicacion
+  - frmImplosion
+  - frmCantidadreemplazo
+  - dsUbicSug
+  - clsLnStock_res_Partial
+  - clsLnTrans_picking_det_Partial
+  - TOMHHWS
+  - WMSWebAPI
+  - WSHHRN

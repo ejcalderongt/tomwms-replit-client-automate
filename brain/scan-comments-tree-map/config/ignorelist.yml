@@ -1,0 +1,54 @@
+# Palabras que MANDAN A NOISE el comentario (force score=0).
+# Se aplican si el body es CASI IGUAL al keyword (mismo contenido o el
+# keyword + máximo 15 chars adicionales). No se aplican si están dentro
+# de un body más largo y contextualizado.
+#
+# Ajustar con cuidado: una palabra muy genérica acá puede matar señal
+# real. Cuando dudes, NO agregues acá; en su lugar, NO sumes points en
+# boost-keywords.yml.
+
+noise_keywords:
+  - TODO
+  - FIX
+  - FIXME
+  - XXX
+  - HACK
+  - prueba
+  - pruebas
+  - probando
+  - test
+  - testing
+  - debug
+  - debugging
+  - console
+  - print
+  - log
+  - borrar
+  - quitar
+  - eliminar luego
+  - descomentar
+  - comentar
+  - "ver con erik"
+  - "hablar con erik"
+  - "preguntar a erik"
+  - "consultar con"
+  - "ver con cliente"
+  - revisar
+  - chequear
+  - "no sé"
+  - "no se"
+  - "n/a"
+  - na
+  - tbd
+  - pendiente
+  - "ojo!"
+  - "!"
+  - "?"
+  - "??"
+  - asd
+  - asdf
+  - jaja
+  - test1
+  - test2
+  - "hola mundo"
+  - "hello world"

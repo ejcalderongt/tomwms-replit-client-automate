@@ -1,0 +1,7 @@
+# Las corridas reales del scanner van acá en subcarpetas
+# outputs/<YYYYMMDD-HHMMSS>/ con los 5 archivos generados.
+# Este .gitkeep mantiene el directorio versionado pero los outputs reales
+# son por-corrida y NO deben commitearse al brain (son ruido en historial).
+#
+# Si querés versionar una corrida específica como referencia, copiala a
+# brain/_index/ con nombre explícito (ej: SCAN-2026-04-29-BOF-baseline.md).
