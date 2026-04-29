@@ -267,3 +267,82 @@ Estas 7 preguntas surgieron al destrabar la **estrategia Clavaud** y el **proyec
 - Q-* alta prioridad bloqueantes: ~16 (de 61)
 - Q-* críticas: 1 (Q15 ChatGPT-Service / OpenAI key leak)
 - **Q-* RESUELTAS en Wave 8** (con tu anécdota Clavaud + MI3): 4 (Q-CLAVAUD-MEANING, Q-MI3-IDENTIDAD, Q-UMB-CONCEPT, Q-PROPIETARIO-AGNOSTICO)
+
+---
+
+## Bloque 13 — NUEVO (post Wave 9, 2026-04-29)
+
+Estas 13 preguntas surgieron al construir la **matriz reservas × cliente × canal** (`brain/wms-test-natural-cases/`). Erik destrabó cinco mecanismos nuevos en una conversación: política de ubicación específica por cliente, control de lote permitido, tolerancia de vida útil multi-nivel, lotes numéricos correlativos N+1, y explosión bajo demanda con tope de niveles. Al escribir cada caso natural aparecieron huecos finos que solo vos podés cerrar.
+
+### Adapters `_From_<CANAL>` (Wave 9 reveló que existen 3 dedicados)
+
+62. **Q-FROM-MI3-DIFF** (alta) — `Reserva_Stock_From_MI3` está en línea 18.192 de `clsLnStock_res_Partial.vb`. ¿Qué hace distinto del core `Reserva_Stock`? Hipótesis: convierte códigos de bodega/producto del ERP NAV a IDs WMS, normaliza unidades, y deja una bandera "origen=MI3" en algún campo de auditoría. ¿Cuál es la diferencia real?
+
+63. **Q-FROM-SAP-DIFF** (alta) — `Reserva_Stock_From_SAP` está en línea 26.680 (la última función del archivo). ¿Maneja `sap_control_draft_*` para emparejar la reserva contra un draft SAP que todavía no se confirmó? ¿Hay clientes en producción con `interface_sap=True` o todavía es código en preparación?
+
+64. **Q-FROM-REABASTO-DIFF** (alta) — `Reserva_Stock_From_Reabasto` (línea 9.856) se llama desde `clsLnTrans_reabastecimiento_log_partial.vb:729`. ¿Re-reserva el mismo stock que acaba de moverse a la zona de picking, marcando origen reabasto? ¿O dispara una nueva reserva contra el stock recién depositado en picking?
+
+65. **Q-FROM-NAV-FALTA** (media) — Hay `_From_MI3`, `_From_SAP`, `_From_Reabasto` pero **no existe** `Reserva_Stock_From_NAV`. ¿Por qué? Hipótesis: NAV BYB usa `Reserva_Stock_NAV_BYB` que no es un adapter genérico sino una variante con lógica de LP largo correlativo NAV. ¿Otros clientes con NAV (no-BYB) caen al core directamente sin adapter?
+
+### Restricción de ubicación por cliente (caso 05)
+
+66. **Q-UBICACION-RESTRINGIDA-FALLBACK** (alta) — Si `cliente.IdUbicacionAbastecerCon=42` y la ubicación 42 se queda sin stock del producto pedido, ¿el WMS falla con error duro (lo que pseudocodeé) o degrada graciosamente a "buscar en otras ubicaciones con flag de excepción"? Si falla duro: ¿quién resuelve operativamente — supervisor con override manual, o se rebota el pedido al cliente?
+
+67. **Q-UBICACION-RESTRINGIDA-REABASTO** (media) — El reabasto automático que mueve stock de granel a picking, ¿respeta `IdUbicacionAbastecerCon` cuando decide a qué ubicación de picking llevar el stock? ¿O el reabasto opera sin conocer al cliente final y la restricción se aplica solo al reservar?
+
+### Lote numérico correlativo (caso 06)
+
+68. **Q-LOTE-NUM-GAP** (alta) — Si por algún motivo el correlativo se rompe (ej: se recibió N=5, después N=7 sin pasar por N=6), ¿cómo reacciona la regla N+1 al despachar? ¿Bloquea hasta que aparezca el N=6, o el "último despachado" se mueve al máximo recibido y sigue desde ahí?
+
+69. **Q-LOTE-NUM-RESET** (media) — El correlativo `Lote_Numerico` ¿es global por producto, o se segmenta por (producto × bodega), (producto × cliente), o (producto × propietario)? Importa para clientes 3PL donde un mismo producto puede tener correlativos paralelos por dueño.
+
+### Tolerancia de vencimiento (caso 07)
+
+70. **Q-TOLERANCIA-PRECEDENCIA** (alta) — Hay 4 niveles de configuración de tolerancia: `cliente_tiempos` (cliente × familia × clasificacion), `producto_estado.tolerancia_dias_vencimiento`, `producto.tolerancia`, `i_nav_config_enc.dias_vida_defecto_perecederos`. ¿Cuál es el orden real de precedencia? Hipótesis: cliente_tiempos > producto_estado > producto > config bodega (más específico gana). ¿Confirmás? ¿O hay alguna combinación (suma, max, min) en vez de override?
+
+71. **Q-CLIENTE-TIEMPOS-NXNXN** (media) — La tabla `cliente_tiempos` parece ser un cubo N×N×N (cliente × familia × clasificacion) con dos columnas `Dias_Local` y `Dias_Exterior`. ¿La distinción local/exterior se refiere al origen del producto (importado vs nacional) o al destino del despacho (mercado interno vs exportación)?
+
+### Explosión bajo demanda (caso 04)
+
+72. **Q-EXPLOSION-NIVEL-MAX-COMPORTAMIENTO** (media) — `nivel_max_explosion` (en `producto` o `i_nav_config_enc`) limita cuántas veces se puede explotar una caja → unidades → sub-unidades. Cuando se llega al tope: ¿el WMS rechaza la siguiente explosión, sugiere otra ubicación, o pide confirmación al operador HH?
+
+73. **Q-MERHONSA-TYPO-COLUMNA** (baja) — En MERHONSA detecté **dos columnas separadas** en la misma tabla con casi el mismo nombre: `explosion_automatica_nivel_max` y `explosio_automatica_nivel_max` (la segunda **sin la 'n'**). ¿Es bug histórico (typo en una migración + columna nueva agregada con nombre correcto y la vieja quedó), o las dos columnas se usan con propósitos distintos? Si es typo, ¿cuál es la "buena"?
+
+### Reemplazo (caso transversal)
+
+74. **Q-REEMPLAZO-PATH-BOF** (media) — Detecté que TODAS las funciones `Reemplazo_*` se invocan desde `WSHHRN/TOMHHWS.asmx.vb` (handheld) o desde `frmCantidadreemplazo.vb` (form BOF que abre el operador, no automático). ¿Existe algún flujo donde el WMS dispare un reemplazo SIN intervención humana — por ejemplo, batch nocturno que reasigna reservas vencidas o stock bloqueado? ¿O el reemplazo es 100% operador-driven (HH en piso o supervisor en BOF)?
+
+### Estados del producto
+
+75. **Q-PRODUCTO-ESTADO-RESERVABLE** (alta) — La tabla `producto_estado` tiene 14 estados (Conforme, Cuarentena, Avería, Vencido, Bloqueado, etc — la lista completa ya está en Wave 8). De esos 14: ¿cuáles habilitan reserva (entran al universo de candidatos), cuáles la bloquean explícitamente, y cuáles requieren autorización supervisor para reservar (ej: Cuarentena con liberación parcial)?
+
+### Mantenibilidad del código
+
+76. **Q-CLSLNSTOCK-RES-DESCOMPOSICION** (baja) — El archivo `clsLnStock_res_Partial.vb` tiene **26.680 líneas** y **18+ funciones**. Las funciones `_From_<CANAL>` están físicamente dispersas (línea 9.856, 18.192, 26.680). ¿Hay plan a futuro de descomponer este archivo en partials por canal (`clsLnStock_res_From_MI3.vb`, `clsLnStock_res_From_SAP.vb`, etc) o queda monolítico para no romper el generador de código?
+
+---
+
+## Resumen actualizado Wave 9
+
+- Total preguntas: **76** (61 antes + 15 nuevas Wave 9 — se renumeró 75 a 76 al separar producto_estado y mantenibilidad)
+- 13 bloques temáticos
+- Q-* alta prioridad bloqueantes: ~24 (de 76)
+- Q-* críticas: 1 (Q15 ChatGPT-Service / OpenAI key leak)
+- **Q-* RESUELTAS en Wave 9** (con la conversación de casos naturales con Erik): **5**
+  - `Q-EXPLOSION-EXISTE` → sí, vía flag `Explosion_Automatica` + `nivel_max_explosion`, disparada desde `clsSyncNavEnvioAlm.vb:1194,2750`
+  - `Q-RESTRICCION-UBICACION-CLIENTE` → sí, vía `cliente.IdUbicacionAbastecerCon` (filtro forzado al reservar)
+  - `Q-LOTE-NUM-EXISTE` → sí, vía `cliente.control_ultimo_lote` + tabla `trans_re_det_lote_num.Lote_Numerico` correlativo
+  - `Q-TOLERANCIA-MULTI-NIVEL` → sí, cascada de 4 niveles (cliente_tiempos × producto_estado × producto × config)
+  - `Q-FROM-CHANNEL-FUNCTIONS` → sí, existen `_From_MI3`, `_From_SAP`, `_From_Reabasto` como adapters formales en el mismo archivo monolítico
+
+### Documentos nuevos del brain en Wave 9
+
+- `brain/wms-test-natural-cases/00-INDEX.md` — índice de casos
+- `brain/wms-test-natural-cases/01-matriz-funcion-cliente-canal.md` — matriz maestra
+- `brain/wms-test-natural-cases/03-caso-clavaud-conservar-picking.md`
+- `brain/wms-test-natural-cases/04-caso-explosion-cajas-a-unidades.md`
+- `brain/wms-test-natural-cases/05-caso-restriccion-ubicacion-por-cliente.md`
+- `brain/wms-test-natural-cases/06-caso-lote-numerico-correlativo.md`
+- `brain/wms-test-natural-cases/07-caso-tolerancia-vencimiento.md`
+- `brain/naked-erik-anatomy/000-prologo.md` — diario técnico-poético-sarcástico (rationale)
+- `brain/naked-erik-anatomy/001-2026-04-29-clavaud-mi3-y-el-rio-desviado.md` — primera entrada

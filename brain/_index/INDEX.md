@@ -919,20 +919,24 @@ drift conocido:
 - ✅ **Q-TOLERANCIA-MULTI-NIVEL** — confirmada cascada: `cliente_tiempos` > `producto.tolerancia` > `producto_estado.tolerancia_dias_vencimiento` > `i_nav_config_enc.dias_vida_defecto_perecederos`
 - ✅ **Q-FROM-CHANNEL-FUNCTIONS** — 3 adapters confirmados: `From_MI3`, `From_SAP`, `From_Reabasto`
 
-**Q-* nuevas (+10)** — (sin renumerar el cuestionario formal aún, pendiente próxima wave):
-- Q-CLAVAUD-FALLBACK, Q-EXPLOSION-NIVEL-MAX-DEFAULT, Q-MERHONSA-DOBLE-COLUMNA-EXPLOSION
-- Q-RESTRICCION-FALLBACK, Q-LOTE-NUM-SALTO, Q-LOTE-NUM-MTIPO
-- Q-TOLERANCIA-PRECEDENCIA, Q-TOLERANCIA-DIAS-LOCAL-VS-EXTERIOR, Q-DAÑADO-SE-DESPACHA
-- Q-FROM-MI3-DIFF, Q-FROM-SAP-DIFF, Q-FROM-REABASTO-DIFF
-- Q-NAV-BYB-WHY, Q-REEMPLAZO-WHO-DECIDES
+**Q-* nuevas formalizadas (+15)** — bloque 13 del cuestionario, numeradas 62-76:
+- 62-65: Adapters `_From_<CANAL>` — Q-FROM-MI3-DIFF, Q-FROM-SAP-DIFF, Q-FROM-REABASTO-DIFF, Q-FROM-NAV-FALTA
+- 66-67: Restricción ubicación — Q-UBICACION-RESTRINGIDA-FALLBACK, Q-UBICACION-RESTRINGIDA-REABASTO
+- 68-69: Lote correlativo — Q-LOTE-NUM-GAP, Q-LOTE-NUM-RESET
+- 70-71: Tolerancia vencimiento — Q-TOLERANCIA-PRECEDENCIA, Q-CLIENTE-TIEMPOS-NXNXN
+- 72-73: Explosión — Q-EXPLOSION-NIVEL-MAX-COMPORTAMIENTO, Q-MERHONSA-TYPO-COLUMNA
+- 74: Reemplazo — Q-REEMPLAZO-PATH-BOF
+- 75: Estados — Q-PRODUCTO-ESTADO-RESERVABLE
+- 76: Mantenibilidad — Q-CLSLNSTOCK-RES-DESCOMPOSICION
 
 **Métricas post-Wave 9**:
-- Q-* totales: ~115 (+13)
-- Q-* resueltas: 21/115 (18.3%) — Wave 6.1: 1, 6.2: 7, 7: 4, 8: 4, 9: 5
-- Q-* alta prioridad abiertas: ~18
+- Q-* totales formales en cuestionario: **76** (61 antes + 15 nuevas Wave 9)
+- Q-* resueltas: ~21 (Wave 6.1: 1, 6.2: 7, 7: 4, 8: 4, 9: 5)
+- Q-* alta prioridad abiertas: ~24 (~de 76)
 - Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK, sin cambio)
-- Líneas brain total: ~6.500 (+2.300 por casos naturales + diario)
+- Líneas brain total: ~6.800 (+2.600 por casos naturales + diario + bloque 13)
 - Archivos brain: **19** (10 antes + 7 casos naturales + 2 diario)
+- Bloques temáticos del cuestionario: **13** (12 antes + 1 nuevo Wave 9)
 
 **Próximo recomendado**:
 1. Inspeccionar el cuerpo de `Reserva_Stock_From_MI3`, `_From_SAP`, `_From_Reabasto` (entender qué los hace distintos del core)
