@@ -1,0 +1,3 @@
+IdMovimiento,IdTransaccion,IdUbicacionOrigen,IdUbicacionDestino,IdEstadoOrigen,IdEstadoDestino,IdPresentacion,IdUnidadMedida,cantidad,lic_plate,fecha
+310008,2144,716,716,1,1,225,1,336.0,,2026-02-06 12:11:50.377000
+310031,2144,716,716,1,1,225,1,384.0,,2026-02-06 12:15:20.773000

@@ -23,7 +23,10 @@ def conn():
 
 def q(sql, params=None):
     with conn() as c, c.cursor() as cur:
-        cur.execute(sql, params or ())
+        if params is None:
+            cur.execute(sql)
+        else:
+            cur.execute(sql, params)
         try:
             return cur.fetchall()
         except Exception:
