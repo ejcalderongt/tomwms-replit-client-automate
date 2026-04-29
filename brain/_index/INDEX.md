@@ -570,3 +570,230 @@ drift conocido:
   drift 78% en `genera_lp_old`, perfecto para validar approach.
 - D) `control_lote` (producto) — drift TOTAL: MAMPA 0%, BECO 97%,
   CEALSA 45%. Caso simple para arrancar.
+
+---
+
+## Wave 6 — code-deep-flow — traza-001 License Plate (2026-04-28)
+
+**Archivo**: `brain/code-deep-flow/traza-001-license-plate.md` (~600 líneas, 9 secciones)
+
+### Hallazgos brutales
+
+1. **WMSWebAPI no migra LP**. 25 controllers + 16 services REST cubren maestros, KPI, sync ERP, auth — **0 endpoints LP/picking/recepcion HH**. WMSWebAPI es backend del portal web, no reemplazo de WSHHRN.
+2. **WSHHRN tiene 374 funciones públicas en un solo .asmx.vb (19.492 líneas)**. 21 son LP-específicas. Cuello de botella crítico para migración a .NET 10.
+3. **El LP no es entidad propia en DB**. Es `nvarchar(100)` que viaja como `lic_plate` en stock/stock_rec/stock_res/stock_jornada/faltantes/trans_movimientos/trans_re_det + `lp_origen`/`lp_destino` en trans_movimiento_pallet + `barra_pallet` en trans_movimientos. Naming inconsistente.
+4. **Modelo triple confirmado**: `i_nav_config_enc.genera_lp` (bodega) + `producto.genera_lp_old` (producto) + `producto_presentacion.genera_lp_auto` (presentación). El DAL Core trata `serializado`+`genera_lote`+`genera_lp_old`+`control_vencimiento` siempre como bloque consecutivo.
+5. **Invariante de coherencia NO enforced en DB**. K7 tiene 25% del stock sin `lic_plate` poblado aunque `genera_lp=True` para todos. Drift histórico (stock viejo + ajustes manuales). El WebAPI nuevo debe enforzar el invariante en capa de servicios.
+6. **BYB único drift cross-cliente**: 78% de productos con `genera_lp_old=False` aunque bodega tiene `genera_lp=True`. Único cliente con esta política.
+7. **NAV expone correlativo LP**: `DynamicsNavInterface/WebReference` incluye `Get_Nuevo_Correlativo_LicensePlate(_S)` como operations consumidas DE NAV. Algunos clientes pueden obtener correlativo de NAV en línea, no de tabla local.
+8. **Configuración de LP idéntica cross-cliente**: `configuracion_barra_pallet` tiene LongLP=7 en los 5, pero datos reales muestran LP de 16 chars en K7/BYB. Inconsistencia config vs realidad.
+9. **HH muestra/oculta UI según los 3 flags**: `frm_recepcion_datos.java` línea 247 declara variables locales `PGenera_lp`, `PTiene_Ctrl_Peso`, `PTiene_Ctrl_Temp`, `PTiene_PorSeries`, `PTiene_Pres` — la matriz completa de capabilities. Cada `P*` controla un campo opcional.
+10. **Convivencia código muerto**: `frm_recepcion_datos_original.java` junto al `frm_recepcion_datos.java` actual; `producto_presentacion1` junto a `producto_presentacion`; tres `srvProducto*` en TestMI3.
+
+### Issues de seguridad descubiertos durante el pase (no parte del flujo LP)
+
+- **Q-SEC-OPENAI-KEY-LEAK**: `WSHHRN/ChatGPTService.vb` línea 9 — API key OpenAI **hardcodeada en código fuente**, comprometida desde push a Azure DevOps. Acción: rotar key + mover a appsettings con secret manager + auditar git history para purgar.
+- **Q-SEC-CONNINI-CREDS**: `WSHHRN/Conn.ini`, `Conn_Becofarma.ini`, `Conn - Cumbre.ini` almacenan credenciales SQL Server con usuario `sa` y password en claro, pusheado al repo. Acción: mover a Azure Key Vault o variables de entorno por host, eliminar de git history.
+
+### Q-* arquitectura abiertas (17 total — ver traza para tabla completa)
+
+- Q-LP-OPERADOR-VS-USUARIO, Q-LP-LONG-DEFAULT, Q-LP-LONG-VS-DATOS-REALES, Q-LP-S-VARIANTE
+- Q-LP-CORRELATIVO-NAV, Q-LP-EN-K7-DRIFT-25PCT, Q-LP-BYB-PRODS-SIN-LP
+- Q-PRESENTACION1-MUERTA, Q-RECEPCION-BOF-FLUJO, Q-HH-RECEPCION-DOS-VERSIONES
+- Q-MI3-QUE-ES, Q-WMSWEBAPI-MIGRACION-MAPA, Q-CONNINI-SELECCION
+- Q-LP-NAMING-DB, Q-LP-FALTANTES-PARA-QUE
+- Q-SEC-OPENAI-KEY-LEAK, Q-SEC-CONNINI-CREDS
+
+### Próximos pasos
+
+- Erik resuelve las Q-* críticas (sobre todo Q-LP-LONG-VS-DATOS-REALES, Q-LP-BYB-PRODS-SIN-LP, Q-WMSWEBAPI-MIGRACION-MAPA).
+- traza-002 control_lote + control_vencimiento (siguiente acordada).
+- Issues de seguridad: Erik decide rotación de credenciales y plan de purga del git history.
+
+### Wave 6.1 update (2026-04-28) — Erik resuelve 2 Q-* + nuevas
+
+**Q-* resueltas**:
+- ~~Q-LP-EN-K7-DRIFT-25PCT~~ → **resuelta parcial**. Erik: explosión consume LP. Datos: 269/1186 stocks sin LP tienen IdPresentacion=NULL (consistente con explosión a unidad básica). 917/1186 tienen presentación con genera_lp_auto=True pero sin LP (drift residual real).
+- ~~Q-LP-CORRELATIVO-NAV~~ → **resuelta**. NAV-en-línea es BYB-only. WSHHRN actúa como puente porque NAV expone web services. Resto de clientes usa interfaces ad-hoc por ERP. WMSWebAPI Sync/* es la capa de generalización emergente.
+
+**Q-* nuevas derivadas**:
+- Q-LP-EXPLOSION-COMO-OPERA: ¿qué SP/función ejecuta la explosión y limpia lic_plate?
+- Q-LP-917-DRIFT-RESIDUAL: origen de los 917 stocks K7 con drift legítimo
+- Q-LP-CICLO-VIDA: modelar formalmente Active → Consumed → Voided del LP
+
+**Principios de dominio confirmados**:
+1. LP = identificador efímero atado a estado físico de agrupación. Explosión/despacho/desconsolidación lo consumen.
+2. No hay "integración ERP universal". Cada cliente tiene adaptador ad-hoc. WMSWebAPI Sync/* es la abstracción emergente.
+3. Invariante de coherencia es responsabilidad de capa de servicios, no del modelo de datos.
+4. Modelo dual `genera_lp` (bodega) + `genera_lp_old` (producto) = migración interrupta histórica. WebAPI nuevo puede unificar en `RequiresLP = bod AND prod`.
+5. NAV-en-línea via SOAP es puente BYB-específico, forzado por arquitectura de NAV.
+
+**Arquitectura objetivo WebAPI .NET 10** (sketch):
+- Domain universal (LicensePlate con ciclo de vida, Stock, Producto, Capabilities)
+- Application Services con lógica común (LpIssuance, LpConsumption, StockMovement con invariante)
+- ERP Integration pluggable: IErpAdapter + NavErpAdapter (BYB) + SapErpAdapter (K7) + Ims4mb (BECO/BYB-sec/CEALSA) + Mampa + Cumbre
+
+---
+
+## DISCLAIMER GLOBAL DE RAMAS (Wave 6.1 — 2026-04-28)
+
+**El brain documenta `dev_2028_merge` (BOF + HH) salvo indicación explícita.**
+
+| Cliente | Rama producción | Estado |
+|---|---|---|
+| BECO, K7, BYB, CEALSA | `dev_2023_estable` | Producción estable |
+| MAMPA | `dev_2028_merge` | Pruebas integrales |
+| Cumbre | `dev_2028_Cumbre` (HH) | Rama dedicada |
+| MHS | (B2B vía WMSWebAPI) | Nuevo cliente con dev propio |
+
+**Diferencias 2023 vs 2028 confirmadas (BOF)**:
+- **Solo 2028**: `WMS.DALCore`, `WMS.EntityCore`, `WMS.AppGlobalCore`, `WMS.StockReservation2/3`, `reservastockfrommi3`, `GoCloud`, `GoCloudy`, `InstallerSW`, `.github`, `.cursorrules`, meta-docs (`AGENTS.md`, `CLAUDE.md`, `CONVENTIONS.md`, `PARCHES_APLICADOS.md`)
+- **Existen en ambas, hashes distintos**: `WMSWebAPI` (NO greenfield 2028 — está desde 2023), `WSHHRN/TOMHHWS.asmx.vb` (340 funciones en 2023 → 369 en 2028, +29 públicas, +1 LP endpoint), `WSHHRN/ChatGPTService.vb` (issue OpenAI key existe en 2023 también — severidad sube)
+
+**Diferencias 2023 vs 2028 confirmadas (HH)**:
+- Estructura top-level **idéntica**
+- `clsBeProducto.java` con `Genera_lp` = **idéntico** ambas
+- `ApiService.java` REST = **idéntico** (la capa REST de HH no es feature 2028)
+- `frm_recepcion_datos.java`: 10448 → 11481 líneas (+1033, refactor interno)
+
+**Endpoint LP único nuevo en 2028 BOF**:
+- `Existe_Lp_By_Licencia_And_IdBodega_JSON(pLic_Plate, pIdBodega)` ← versión JSON del endpoint SOAP existente. **Patrón emergente 2028: SOAP → JSON.**
+
+**Detalle completo**: ver `agent-context/RAMAS_Y_CLIENTES.md`
+
+**Q-* derivadas (Wave 6.1)**:
+- Q-MIGRACION-2023-A-2028: orden, cronograma, breaking changes, scripts de migración DB
+- Q-DALCORE-PROPOSITO: ¿reemplaza WMS.DAL legacy? ¿coexiste? ¿lo invoca WSHHRN o WebAPI?
+- Q-MHS-COMO-CLIENTE: scope WebAPI con MHS, fecha go-live, qué maestros escribe, qué transacciones lee
+- Q-WMS5-VACIO: ¿qué fue/iba a ser TOMWMS5? Repo existe pero vacío
+- Q-HH-RAMAS-25: política de ramas HH — consolidación, qué ramas por cliente siguen activas
+- Q-MERCOPAN-MERCOSAL: ramas con nombres de cliente fuera de la lista activa — ¿clientes históricos? ¿prospectos?
+- Q-CUMBRE-RAMA-DEDICADA: ¿por qué Cumbre tiene rama HH propia y no comparte `dev_2028_merge`?
+- Q-DEV2025-PROPOSITO: ¿qué contiene `dev_2025`? ¿paso intermedio entre 2023 y 2028?
+- Q-MASTER-PROPOSITO: `master` es default en ambos repos — ¿en qué difiere de `dev_2023_estable`?
+- Q-SOAP-A-JSON-2028: ¿es política consciente convertir SOAP → JSON en 2028? ¿se planea convertir los 340+ endpoints?
+- Q-SEC-OPENAI-KEY-LEAK: severidad sube — el archivo está en 2023 también (más tiempo expuesto). **Rotar de inmediato**.
+
+
+---
+
+## Wave 6.1 update 2 (2026-04-28) — Erik resuelve Q-DALCORE-PROPOSITO con historia completa
+
+**Q-DALCORE-PROPOSITO** → **resuelta**. Documento dedicado: `code-deep-flow/02-portal-y-dms.md` (~340 líneas).
+
+**TL;DR de la resolución**:
+- DALCore + EntityCore + AppGlobalCore son **duplicación obligada** de WMS.DAL/WMS.Entity legacy porque las DLLs VB.NET Framework no son compatibles con .NET Core.
+- La duplicación se justifica como **oportunidad de reingeniería gradual** (cleanup en el port).
+- Consumidores principales: **WMSWebAPI** (canal B2B-only, MHS = primer caso) + **DMS** (probable, pendiente verificar) + futuros desarrollos web.
+- **NO reemplaza** a WMS.DAL legacy — coexisten. WSHHRN, BOF WinForms, MI3 siguen con la capa legacy.
+- **Visión a futuro** (Erik): "el siguiente paso es llevar a la web lo que hoy se ejecuta en Windows Forms" — DALCore es preparación para esto.
+
+**Hallazgos colaterales documentados en `02-portal-y-dms.md`**:
+
+1. **DMS = "Data Management System"** — herramienta server-side de Efren. Está en `TOMWMS_BOF/DMS/`. EXE parametrizado (horario/días/frecuencia) que aprovecha la infra del license-server. Replica data on-prem → cloud fila por fila (NO bulk insert) por principio Erik de "control total para debug".
+
+2. **Portal CEALSA** — origen del DMS. CEALSA = 3PL guatemalteco regulado por SAT/SIB/aseguradora. Necesidad: exponer inventario de propietarios "pagantes" (~10 de N) a internet sin replicar 10+ GB. Solución: filtrar por propietario (reducción 80x) + replicar transaccional manteniendo estructura ("como arriba es abajo").
+
+3. **Generador de código (Efren / Erik)** — la "primera automatización" del WMS. Se pega a la BD y genera por cada tabla: `clsBe<Tabla>` (Entity autogen 100%) + `clsLn<Tabla>` (CRUD base autogen) + `clsLn<Tabla>.partial` (negocio adhoc manual). Patrón universal del WMS. Erik admite drift: hay clases LN con código manual en el archivo "autogenerado".
+
+4. **Modelo multi-tenant 3PL** — propietarios. Estados aceptables varían por propietario ("tropicalización"). 6 tablas validadas en CEALSA QAS: `propietarios`, `propietario_bodega`, `propietario_destinatario`, `propietario_reglas_enc/det`, `producto_estado`, `producto_estado_ubic`.
+
+5. **stock_jornada validado por SQL** — tabla con 25+ columnas que replica TODA la traza transaccional del stock (incluye `IdRecepcionEnc/Det`, `IdPedidoEnc`, `IdPickingEnc`, `IdDespachoEnc`, `lote`, `lic_plate`, `serial`, `IdPropietarioBodega`, `fecha_vence`). Materializa el principio "como arriba es abajo". **Activo en CEALSA y MAMPA (21.883 filas)**. Inactivo (tabla existe vacía) en BECO/K7/BYB. ¿Por qué MAMPA? — abierta.
+
+6. **CEALSAMI3** = módulo de sync CEALSA con su ERP. Ubicación: `TOMWMS_BOF/CEALSAMI3/CEALSASYNC.sln`. **Anomalía detectada**: clases con prefijo `Nav` (`clsSyncNavProducto`, `clsSyncNavCategoriasProducto`, `clsSyncNavGruposProducto`, `clsSyncNavTablaConversion`) — contradice "NAV es solo BYB". Hipótesis principal: copy-paste de un BYBSync original sin renombrar. Q-NAV-PREFIJO-CEALSA abierta.
+
+7. **TOMWeb** — repo separado en Azure DevOps. Es **ASP.NET clásico + PHP** (xampp, .htaccess, login, en/es). Distinto al portal CEALSA. Probablemente portal corporativo / tienda de licencias. Q-TOMWEB-PROPOSITO abierta.
+
+8. **CEALSA repo en Azure DevOps**: existe pero **vacío** (0 MB, sin ramas) — igual que `TOMWMS5`. ¿Iba a ser el portal? ¿el DMS específico? ¿se canceló? Q-CEALSA-REPO abierta.
+
+**Q-* nuevas abiertas en `02-portal-y-dms.md` (15)**:
+- DMS: Q-DMS-USA-DALCORE, Q-DMS-DESTINO-CLOUD, Q-DMS-PROPIETARIO-FILTER
+- Portal: Q-PORTAL-STACK, Q-PORTAL-AUTH, Q-PORTAL-MULTITENANCY-DECISION
+- Generador: Q-GENERADOR-UBICACION, Q-GENERADOR-INPUTS, Q-LN-DRIFT-AUDIT
+- DALCore: Q-DALCORE-PARIDAD, Q-DALCORE-CONSUMERS, Q-DALCORE-COMPORTAMIENTO
+- stock_jornada: Q-STOCK-JORNADA-PROCESO, Q-STOCK-JORNADA-CONSUMER, Q-STOCK-JORNADA-DESFASE, Q-STOCK-JORNADA-MAMPA
+- Web migration: Q-WEB-BOF-STACK, Q-WEB-BOF-TIMELINE, Q-GENERADOR-WEB-VARIANTE
+- Otros: Q-NAV-PREFIJO-CEALSA, Q-TOMWEB-PROPOSITO, Q-CEALSA-REPO, Q-PROPIETARIO-ESTADO-MODELO, Q-PROPIETARIO-AGNOSTICO
+
+**Principios Erik confirmados (consolidados)**:
+1. Control total > performance (no bulk insert, no ORM, fila por fila debuggeable)
+2. "Como es arriba es abajo" (replicación estructural en cloud-target, no flat)
+3. Duplicación obligada como oportunidad (cleanup en el port .NET Framework → .NET Core)
+4. Generación de código como base de mantenibilidad (patrón BE + LN-base + LN-partial)
+5. Tropicalización por propietario (multi-tenant 3PL via reglas + estados-por-propietario)
+6. Reingeniería gradual con coexistencia (DAL legacy + DALCore conviven)
+7. Infra existente como apalancamiento (DMS aprovecha license-server)
+
+
+---
+
+## Wave 6.1 update 3 (2026-04-28) — CONCEPT_MAP creado
+
+**NUEVO**: `_index/CONCEPT_MAP.md` (~430 líneas) — vista temática de las ~85 Q-* abiertas agrupadas en 15 dominios, con prioridad, método de resolución y dependencias entre dominios.
+
+**Resumen agrupado**:
+- A. WMS Core (LP, lote, vencimiento, peso, serializado, IdTipoRotacion) — 15 Q-*
+- B. Ramas y migración 2023→2028 — 8 Q-*
+- C. DALCore/EntityCore/AppGlobalCore — 5 Q-* (1 resuelta)
+- D. Portal CEALSA / DMS / replicación cloud — 10 Q-*
+- E. Multi-tenancy 3PL — 12 Q-*
+- F. stock_jornada (regulatorio) — 4 Q-*
+- G. Integraciones (MI3, NAV, MercaERP, WSHHRN, WMSWebAPI) — 11 Q-*
+- H. Generador de código — 4 Q-*
+- I. Verificación / capabilities — 9 Q-*
+- J. Reservas (Reservation 2 vs 3) — 2 Q-*
+- K. Recepción/pedido/despacho/ciclo — 4 Q-*
+- L. Cliente-específicas (BECO/BYB/K7/MAMPA) — 22 Q-* agrupadas
+- M. Web BOF (futuro) — 2 Q-*
+- N. Seguridad (TRANSVERSAL CRÍTICA) — 3 Q-* (1 crítica)
+- O. Otros técnicos — 3 Q-*
+
+**Mapa de dependencias** entre dominios documentado en CONCEPT_MAP.md.
+
+**Candidatos a próxima traza evaluados** (5 opciones):
+1. control_lote + control_vencimiento (recomendada)
+2. stock_jornada cierre regulatorio
+3. cealsasync + NAV-prefijo-mystery
+4. capability-flags por cliente
+5. Wave de seguridad (no-traza, ACCIÓN)
+
+**Wave 6.2 quick-wins propuesta** — 8 Q-* baratas resolubles en 1-2 turnos solo con SQL/GREP.
+
+**Métricas brain Wave 6.1 cierre**:
+- Q-* totales: ~85 (sin placeholders)
+- Q-* resueltas: 1
+- Q-* alta prioridad abiertas: 11
+- Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK)
+- Líneas brain total: ~2.620
+- Archivos: 5 principales
+
+
+---
+
+## Wave 6.2 (2026-04-28) — Quick wins cerrada (7 Q-* resueltas, +5 Q-* derivadas)
+
+**Doc**: `_index/WAVE-6.2-QUICK-WINS.md` (~250 lineas)
+
+**Resueltas**:
+- Q-LP-LONG-VS-DATOS-REALES → BYB avg 19 chars (NAV correlativo); resto 6-9 chars
+- Q-CEALSA-AUSENTES-7 → en realidad **37** propietarios huerfanos (no 7) de 3.197 totales
+- Q-DALCORE-PARIDAD → DALCore al **22%** del legacy (256/1162 archivos)
+- Q-DEV2025-PROPOSITO + Q-MASTER-PROPOSITO → alias de `dev_2023_estable` (mismo commit `1f5cc2c4`)
+- Q-LN-DRIFT-AUDIT → convencion es `_partial.vb` (underscore), no `.partial.vb`. Solo **10% de las LN tienen partial** -> drift 90%
+- Q-PROPIETARIO-AGNOSTICO → no-3PL usan **1 propietario default**; CEALSA unico 3PL real (3.197 prop)
+
+**Reformulada**:
+- Q-LP-LONG-DEFAULT → no hay columna especifica en `producto_parametros`. Limite es por `varchar(N)` del schema o convencion cliente
+
+**Q-* nuevas derivadas** (+5):
+1. Q-GENERADOR-ABANDONO (alta) - 90% drift en clases base
+2. Q-LP-CORRELATIVO-NAV-FORMATO (media) - estructura LP BYB
+3. Q-PORTAL-AUTH-CREDENCIALES-EN-PROPIETARIOS (alta) - cols `codigo_acceso` + `clave_acceso` en `propietarios`
+4. Q-LP-DATA-DIRTY-MIN (baja) - 8 filas BECO LP="0"
+5. Q-RAMA-MASTER-DEV2025-DUPLICADAS (baja) - politica de alias
+
+**Metricas post-wave**:
+- Q-* resueltas: 8/85 (9.4%)
+- Q-* netas abiertas: ~82
+- Brain en proyecto Replit (movido de /tmp/wms-brain a ./wms-brain): persistente para Carolina
+
