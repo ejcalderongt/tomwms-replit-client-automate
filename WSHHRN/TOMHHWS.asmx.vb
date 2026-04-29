@@ -5945,7 +5945,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp)
+            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp, True)
 
         Catch ex As Exception
 
