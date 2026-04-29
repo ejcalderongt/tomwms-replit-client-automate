@@ -3,12 +3,55 @@ id: pedido-extraccion-hh-cest
 tipo: contrato_extraccion_consumidor
 caso: CP-013
 wave_origen: wave-13-10
-wave_destino: wave-13-11
+wave_destino: wave-13-12 (replanteado, era wave-13-11)
 autor: "@agent"
 fecha: 2026-04-29
+fecha_actualizacion: 2026-04-29
 estado: pendiente_de_emision_bundle
 destinatario: erik_consumidor_via_VS_TOMHH2025
+alcance_revisado_wave_13_11: true
 ---
+
+# Contrato de extracción — HH Android, path UPDATE stock (era: path CEST)
+
+## Update Wave 13-11 — Alcance ampliado a multi-tipo de tarea
+
+**Cambio importante**: las mediciones live de wave 13-11 (q22 sobre `trans_movimientos`) demostraron que **el bug NO es exclusivo del path CEST**. Movimientos sobre lotes duplicados se reparten así:
+
+```
+VERI 15.259 | PIK 15.257 | DESP 14.908 | UBIC 5.291 | RECE 1.750
+CEST 869 (1.7%) | REEMP_BE_PICK 678 | INVE 386 | PACK 304 | EXPLOSION 90
+```
+
+Hipótesis nueva H5: hay una **función UPDATE stock compartida** (probable nombre tipo `LnStock.MoverCantidad`, `StockService.upsertStock`, `clsLnStock.Mover`, `consolidarStock`) llamada desde múltiples handlers HH. El bug vive en esa función, no en cada handler.
+
+**Por lo tanto, el bundle ya no es solo el handler CEST**. Hay que extraer:
+
+1. **El handler CEST** (como estaba previsto).
+2. **Los handlers UBIC, PIK, DESP, INVE** (al menos uno de cada para confirmar que llaman al mismo método compartido).
+3. **La capa común de stock**: clase tipo `StockService` / `StockRepository` / `LnStock` / `clsLnStock` con todos sus métodos públicos relacionados con cantidad. Especial foco en métodos que hagan `UPDATE stock SET Cantidad = ...` o `INSERT INTO stock`.
+4. **DAO/SQL layer**: archivos con SQL embebido `INSERT INTO stock` y `UPDATE stock`. Si hay SPs, también extraerlos.
+
+H1 también está **refutada en su forma fuerte** por wave 13-11 (cero combos con NULL/vacío). Sigue vigente la **variante H1.5** (sentinel `lic_plate = '0'`): si el código compara `lic_plate = '0' OR lic_plate IS NULL` cuando debería normalizar primero, eso explica el 25% de los duplicados. **Marcar también este patrón en el bundle**.
+
+### Hipótesis a confirmar/refutar — actualizadas Wave 13-11
+
+| ID | Hipótesis | Qué buscar en el código |
+|---|---|---|
+| H4 | Fallback INSERT cuando `UPDATE Cantidad=0` rechazado por check | `try/catch` alrededor del UPDATE de stock origen + branch INSERT en el catch. **PRIORIDAD ALTA**. |
+| H5 | Función UPDATE stock compartida llamada desde multi-tipo | Métodos comunes en `StockService`/`LnStock` invocados desde CEST, UBIC, PIK, DESP. **PRIORIDAD ALTA**. |
+| H1.5 | Sentinel `lic_plate = '0'` rompe comparador | si el `WHERE` del lookup compara `lic_plate = '0'` literal o normaliza con `CASE WHEN lic_plate IN ('','0') THEN NULL ELSE lic_plate END` |
+| H2 | Concurrencia inter-segundo, dos hilos sin lock | si el `SELECT` del lookup tiene `WITH (UPDLOCK, HOLDLOCK)` o equivalente |
+| H1 | ~~`lic_plate` NULL/vacío rompe comparador~~ | **REFUTADA** wave 13-11 (q19) |
+| H3 | ~~CEST por lote partido HH~~ | **probabilidad baja** wave 13-11 (incompatible con multi-tipo) |
+
+### Pista temporal adicional
+
+La tasa de duplicados saltó de 5-12 filas/mes (mayo-octubre 2025) a 152-341 filas/mes (noviembre 2025 en adelante). Pico **2025-11-29 con 210 filas duplicadas en un día**. **Erik puede correlacionar esto con el git log del repo TOMHH2025**: `git log --since=2025-09-01 --until=2025-12-01 --grep="Stock\|Update\|Insert\|Consolidar\|Mover" --pretty=format:"%h %ad %s" --date=short` puede destapar el commit que introdujo el bug.
+
+---
+
+## Contenido original (wave 13-10) — mantenido por trazabilidad
 
 # Contrato de extracción — HH Android, path CEST
 

@@ -1,0 +1,118 @@
+
+=== A1_tablas_usuario ===
+  name
+  configuracion_usuario_det
+  configuracion_usuario_enc
+  resolucion_lp_usuario
+  rol_usuario_estado
+  usuario
+  usuario_bodega
+
+=== A2_columnas_producto ===
+  COLUMN_NAME | DATA_TYPE
+  IdProducto | int
+  IdPropietario | int
+  IdClasificacion | int
+  IdFamilia | int
+  IdMarca | int
+  IdTipoProducto | int
+  IdUnidadMedidaBasica | int
+  IdCamara | int
+  IdTipoRotacion | int
+  IdPerfilSerializado | int
+  IdIndiceRotacion | int
+  IdSimbologia | int
+  IdArancel | int
+  codigo | nvarchar
+  nombre | nvarchar
+  codigo_barra | nvarchar
+  precio | float
+  existencia_min | float
+  existencia_max | float
+  costo | float
+  peso_referencia | float
+  peso_tolerancia | float
+  temperatura_referencia | float
+  temperatura_tolerancia | float
+  activo | bit
+  serializado | bit
+  genera_lote | bit
+  genera_lp_old | bit
+  control_vencimiento | bit
+  control_lote | bit
+  peso_recepcion | bit
+  peso_despacho | bit
+  temperatura_recepcion | bit
+  temperatura_despacho | bit
+  materia_prima | bit
+  kit | bit
+  tolerancia | int
+  ciclo_vida | int
+  user_agr | nvarchar
+  fec_agr | datetime
+  user_mod | nvarchar
+  fec_mod | datetime
+  imagen | image
+  noserie | nvarchar
+  noparte | nvarchar
+  fechamanufactura | bit
+  capturar_aniada | bit
+  control_peso | bit
+  captura_arancel | bit
+  es_hardware | bit
+  ... +10
+
+=== A3_columnas_trans_mov_idstock ===
+  COLUMN_NAME
+  lote
+
+=== B1_movs_sobre_134176_134177 ===
+  FAIL: (207, b"Invalid column name 'IdStockOrigen'.DB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\nDB-Lib error message 20018, severity 16:\nGeneral SQL Server error: Check messages from the SQL Server\n")
+
+=== C1_tasa_full_history ===
+  dia | filas_dup
+  2025-11-29 | 210
+  2025-11-28 | 131
+  2025-12-05 | 29
+  2026-03-04 | 28
+  2026-03-13 | 27
+  2026-03-26 | 27
+  2026-01-07 | 26
+  2026-02-06 | 25
+  2026-03-18 | 25
+  2025-12-26 | 23
+  2026-04-16 | 23
+  2026-04-23 | 23
+  2025-12-18 | 22
+  2026-03-12 | 22
+  2026-04-21 | 22
+  2026-03-03 | 21
+  2026-03-25 | 21
+  2026-04-14 | 21
+  2026-01-27 | 20
+  2026-02-12 | 20
+  2026-02-19 | 20
+  2026-02-24 | 20
+  2026-04-09 | 20
+  2026-02-05 | 19
+  2026-02-27 | 19
+  2026-04-15 | 18
+  2026-01-22 | 17
+  2026-01-29 | 17
+  2026-04-10 | 17
+  2026-01-13 | 15
+
+=== D1_dup_por_mes ===
+  y | m | filas
+  2026 | 4 | 185
+  2026 | 3 | 260
+  2026 | 2 | 243
+  2026 | 1 | 152
+  2025 | 12 | 162
+  2025 | 11 | 341
+  2025 | 10 | 5
+  2025 | 9 | 10
+  2025 | 8 | 9
+  2025 | 7 | 5
+  2025 | 6 | 4
+  2025 | 5 | 12

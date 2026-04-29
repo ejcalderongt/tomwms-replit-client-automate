@@ -1,0 +1,6 @@
+-- q13_caso_fundacional_wms164
+-- 2026-04-29 22:18:00.970201Z
+
+IdStock	IdProductoBodega	IdUbicacion	IdProductoEstado	Lote	lic_plate	Cantidad	fecha_ingreso
+134176	381	22	16	BG2512	FU06688	40.0	2026-02-09 10:52:55.187000
+134177	381	22	16	BG2512	FU06688	30.0	2026-02-09 10:52:55.187000

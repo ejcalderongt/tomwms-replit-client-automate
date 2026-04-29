@@ -1,0 +1,5 @@
+-- q14_stocks_nuevos_desde_snapshot
+-- 2026-04-29 22:18:01.041350Z
+
+stocks_nuevos_desde_snapshot	primera_fecha	ultima_fecha	rango_horas	dias_distintos
+56	2026-04-27 10:28:14.803000	2026-04-29 07:56:22.357000	45	3

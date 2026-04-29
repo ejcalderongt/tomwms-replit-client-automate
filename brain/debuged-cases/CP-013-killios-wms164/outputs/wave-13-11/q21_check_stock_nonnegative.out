@@ -1,0 +1,5 @@
+-- q21_check_stock_nonnegative
+-- 2026-04-29 22:18:02.328084Z
+
+name	definition	is_disabled
+Stock_NonNegative_20200115_EJC	([Cantidad]>(0))	False

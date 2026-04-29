@@ -214,6 +214,77 @@ ORDER BY cnt DESC, total DESC;
    - Detener el sangrado (fix del path bugueado)
    - Sino, los 919 duplicados se reproducen de inmediato.
 
+## Update Wave 13-11 (re-medición live, 2026-04-29)
+
+Re-corrida de las queries críticas contra `TOMWMS_KILLIOS_PRD_2026` con firewall AWS restablecido. **Cambios sustanciales en el modelo del bug**:
+
+### Cronicidad confirmada: 11 meses de bug activo
+
+Rango temporal de filas duplicadas en `stock`: **2025-05-28 → 2026-04-24 (331 días)**. Distribución mensual:
+
+```
+2025-05 |  12     2025-08 |   9     2025-11 | 341 ***
+2025-06 |   4     2025-09 |  10     2025-12 | 162
+2025-07 |   5     2025-10 |   5     2026-01 | 152
+                                    2026-02 | 243
+                                    2026-03 | 260
+                                    2026-04 | 185 (parcial)
+```
+
+**Inflexión clarísima en noviembre 2025**: pasa de 5-12 filas/mes a 152-341. Pico histórico **2025-11-29 con 210 filas duplicadas creadas en un único día**. Sugiere **release del HH Android entre octubre y noviembre 2025** que cambió el comportamiento del UPDATE de stock.
+
+### H1 refutada en su forma fuerte
+
+Distribución de `lic_plate` sobre los 469 combos duplicados:
+
+```
+estado    | combos | filas
+CON_VALOR |    349 | 1.012   (74.4%)
+CERO ('0')|    120 |   376   (25.6%)
+NULL      |      0 |     0
+VACIO     |      0 |     0
+```
+
+**Cero combos con `lic_plate IS NULL` o `lic_plate = ''`**. La hipótesis H1 ("NULL/vacío rompe el comparador") queda **REFUTADA**. Aparece variante débil **H1.5** (sentinel `lic_plate = '0'`) que explica solo el 25%.
+
+### H5 nueva: el bug NO es exclusivo del path CEST
+
+Tipos de tarea con movimientos sobre lotes duplicados (desde mayo 2025):
+
+```
+VERI           15.259    UBIC            5.291
+PIK            15.257    RECE            1.750
+DESP           14.908    CEST              869   <-- solo 1.7%
+                         REEMP_BE_PICK     678
+                         INVE              386
+                         PACK              304
+```
+
+**El CEST aporta solo el 1.7% de los movimientos sobre lotes duplicados**. Los flujos dominantes son VERI/PIK/DESP/UBIC. Esto **REFUTA** la asunción central de waves 13-9 y 13-10 ("bug exclusivo del CEST"). Hipótesis nueva **H5**: el bug está en una **función UPDATE stock compartida** que se llama desde múltiples handlers HH (CEST, UBIC, PIK, DESP, INVE).
+
+### Reinterpretación del WMS164
+
+Filas fundacionales `IdStock` 134176 y 134177 tienen `fecha_ingreso = 2026-02-09 10:52:55`. **Las filas duplicadas ya existían 2.5 meses antes del ticket del 23-abr**. Los movimientos M1..M5 reconstruidos en wave 13-9 NO crearon el bug, sólo tocaron stocks ya duplicados desde febrero. Y `lic_plate = 'FU06688'` en ambas filas (CON_VALOR): el WMS164 nunca fue caso de NULL/vacío.
+
+### Modelo actualizado del bug raíz
+
+| ID | Hipótesis | Probabilidad post Wave 13-11 |
+|---|---|---|
+| H1 | `lic_plate` NULL/vacío rompe comparador | **REFUTADA** |
+| H1.5 | sentinel `lic_plate = '0'` rompe comparador | media (explica 25%) |
+| H2 | Concurrencia inter-segundo, dos hilos sin lock | media |
+| H3 | CEST por lote partido HH | baja (incompatible con multi-tipo) |
+| H4 | UPDATE rechazado por check `Cantidad>0` → fallback INSERT | **muy alta** (explica 74.4% restante) |
+| H5 | Función UPDATE stock compartida, multi-tipo de tarea | **alta** (q22 evidencia) |
+
+**Hipótesis dominante combinada (H4 + H5)**: una **función compartida de movimiento de stock**, llamada desde múltiples handlers HH, tiene un fallback INSERT cuando un UPDATE falla por el check `Stock_NonNegative`. Esa función no consolida correctamente la fila destino.
+
+### Implicación: alcance ampliado del bundle de extracción
+
+El contrato de extracción para wave 13-12 ya no es solo el handler del CEST — es **toda la capa de mutación de stock en HH Android**. Ver `brain/debuged-cases/CP-013-killios-wms164/pedido-extraccion-hh-cest.md` (sección "Update Wave 13-11").
+
+Reporte completo: `brain/debuged-cases/CP-013-killios-wms164/REPORTE-wave-13-11.md`.
+
 ## Cross-refs
 
 - `dataway-analysis/07-correlacion-codigo-data/case-pointers/13-stock-insert-no-consolida-killios-wms164.md` — case-pointer formal
