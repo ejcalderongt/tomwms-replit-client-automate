@@ -8,8 +8,9 @@
 |---|---|
 | Bug ID | `V-DATAWAY-004` |
 | Severidad | Alta |
-| Estado | **Confirmado con datos** (CP-013) — pendiente trace de código (Wave 13-10) |
-| Path inculpado | `CEST` (Cambio de Estado) en flujo HH/BOF — confirmado en M3/M4 del trace WMS164 |
+| Estado | **Confirmado con datos** (CP-013) — análisis estructural completado (Wave 13-10), pendiente bundle HH Android (Wave 13-11) |
+| Path inculpado | `CEST` (Cambio de Estado) en flujo **HH Android** (confirmado por FK `FK_trans_movimientos_sis_tipo_tarea_hh`, no BOF VB.NET) — confirmado en M3/M4 del trace WMS164 |
+| Anti-patrón estructural asociado | `V-DATAWAY-005` (causal-permisivo): la tabla `stock` no tiene UNIQUE INDEX sobre la llave natural, lo que permite que V-004 deje huella en BD silenciosamente |
 | Path bajo sospecha (no confirmados) | `UBIC` (Cambio de Ubicación), `RECE` (Recepción), `AJUS` (Ajuste) |
 | Síntoma observable | dos o más filas en `stock` con misma `(IdProductoBodega, IdUbicacion, IdProductoEstado, Lote, lic_plate)` y `IdStock` distinto |
 | Detección | query simple `GROUP BY` + `HAVING COUNT(*) > 1` (ver query 12 en CP-013) |
@@ -51,27 +52,80 @@ llave_natural_stock = (
 
 Cualquier path que mute stock — RECE, UBIC, CEST, AJUS, IMPL (implosión) — debe respetar este contrato. Si **un sólo** path lo viola, aparece el patrón.
 
-## Las 3 hipótesis del bug raíz (ordenadas por probabilidad)
+## Las 4 hipótesis del bug raíz (ordenadas por probabilidad post Wave 13-10)
 
-### H1: `lic_plate` vacío rompe el comparador
+### H1: `lic_plate` vacío/NULL rompe el comparador (probabilidad ALTA)
 
-Si el comparador que decide consolidar trata `lic_plate=''` como NULL (o no normaliza vacío vs NULL), dos filas con `lic_plate=''` no se consideran iguales y el merge nunca ocurre.
+Si el comparador que decide consolidar usa `WHERE lic_plate = @lp` directo, y `@lp` viene NULL (o el cliente envía `''` y el SP lo convierte a NULL al asignar al parámetro), el lookup retorna 0 filas porque en SQL Server `NULL = NULL` evalúa a `UNKNOWN`. El código entra al branch INSERT y el merge nunca ocurre.
 
-**Evidencia indirecta**: en el caso WMS164, las 5 filas de `trans_movimientos` tienen `lic_plate=''` (vacío) en los CEST y UBIC. Esto es ya una grieta de trazabilidad propia (no se sabe sobre qué tarima física se hizo cada CEST), y sospechosamente coincide con el sitio del bug.
+**Evidencia (Wave 13-10)**: schema de `dbo.stock` confirma columna 16 `lic_plate nvarchar(50) NULL`. Semántica de SQL Server confirma `NULL = NULL → UNKNOWN`. Sube de "hipótesis posible" a **"hipótesis con respaldo de schema"**.
 
-**Cómo verificar**: query SQL contando combos duplicados pero filtrando por `lic_plate=''`.
+**Evidencia indirecta del caso**: las 5 filas de `trans_movimientos` del WMS164 tienen `lic_plate=''` en CEST y UBIC.
 
-### H2: concurrencia inter-segundo
+**Cómo verificar**: leer el método del CEST en HH Android (Wave 13-11) y confirmar si el `WHERE` del lookup hace `lic_plate = @lp` directo (vulnerable) o `ISNULL(lic_plate,'') = ISNULL(@lp,'')` (defensivo).
+
+### H4: UPDATE rechazado por check `Cantidad > 0` → fallback INSERT (probabilidad ALTA, NUEVA en Wave 13-10)
+
+Constraint declarado en BD: `Stock_NonNegative_20200115_EJC : ([Cantidad]>(0))`.
+
+Si el código del CEST hace `UPDATE stock SET Cantidad = Cantidad - @cantidad` sobre el origen y el resultado da 0 o negativo, el constraint **rechaza** el UPDATE con error de SQL Server. Si el código tiene `try/catch` con fallback a INSERT para no romper la operación, eso explica exacto la cronología del WMS164:
+
+```
+M3 (CEST 40 UN): UPDATE origen Cantidad = 40 OK   -> INSERT IdStock 134176 con 40   -> consolida OK
+M4 (CEST 30 UN): UPDATE origen Cantidad = 0 RECHAZADO -> catch -> INSERT IdStock 134177 con 30 -> NO consolida
+```
+
+**Por qué la probabilidad es alta**:
+- Calza con los números exactos del WMS164 (M3 deja 40, M4 vacía a 0).
+- Calza con el patrón de "el último CEST de un lote es el que falla" (consume el residual completo).
+- Es consistente con que el bug afecte 18.7% del stock activo: cualquier CEST que vacía el origen al 100% activa el path bugueado.
+
+**H4 es independiente de H1** — pueden coexistir o ser causa única alternativa.
+
+**Cómo verificar**: leer el método del CEST en HH Android (Wave 13-11) y buscar `try/catch` alrededor del UPDATE de stock origen + branch INSERT en el catch.
+
+**Forma defensiva** (que el código probablemente NO tiene):
+```vb
+If cantidad_resultante = 0 Then
+    DELETE stock WHERE IdStock = @stock_origen
+Else
+    UPDATE stock SET Cantidad = cantidad_resultante WHERE IdStock = @stock_origen
+End If
+```
+
+### H2: concurrencia inter-segundo (probabilidad MEDIA)
 
 M3 y M4 están a 13 segundos. Si el flujo del CEST permite que dos hilos disparen la mutación concurrentemente (por ej. la HH dispara un job y mientras tanto el operador escanea otra etiqueta), ambos hilos hacen `SELECT count(*) FROM stock WHERE llave_natural=...` antes de que el primero haya commiteado. Ambos ven `count = 0` y deciden hacer `INSERT`. Race condition clásica de upsert sin lock.
 
 **Cómo verificar**: ver si el código del CEST tiene `SELECT ... WITH (UPDLOCK, HOLDLOCK)` o lock equivalente en el comparador.
 
-### H3: CEST por lote partido (HH permite dos eventos separados)
+### H3: CEST por lote partido HH permite dos eventos separados (probabilidad MEDIA)
 
 La HH puede haber permitido al operador confirmar el CEST en dos eventos separados (40 y luego 30) sobre la misma posición destino. El flujo interpreta "dos eventos = dos filas" en lugar de "un destino = un merge".
 
 **Cómo verificar**: ver si el código del CEST tiene branch tipo `IF cant_total_lote = cant_a_mover THEN UPDATE ELSE INSERT`.
+
+## Hipótesis refutadas (Wave 13-10)
+
+### Refutada: `SP_STOCK_JORNADA_DESFASE` es el SP del bug
+
+Sospechoso por nombre (eco del marker `#EJCAJUSTEDESFASE` de CP-007/008). Inspección de `db-brain/sps/SP_STOCK_JORNADA_DESFASE.md`:
+
+- Autor: Carolina Fuentes, 17-oct-2022.
+- Naturaleza: SP de **detección, no de mutación**. Detecta huecos en `stock_jornada` por lic_plate-fecha consecutiva (DROP+INSERT a tablas temporales `stock_jornada_consecutivo`, `stock_jornada_fecha_consecutiva`, `stock_jornada_desfase`).
+- **No toca `stock` principal**. Independiente de V-DATAWAY-004.
+
+**Refutado** — no perder tiempo en próximas waves.
+
+### Refutada: `stock_res_ped_164` está relacionado con WMS164
+
+Sospechoso por número (eco de WMS164). Inspección de `db-brain/tables/stock_res_ped_164.md`:
+
+- 38 filas, schema modify_date 2022-01-13.
+- Sin FKs (entrantes ni salientes). Sin referencias desde SPs/vistas/funciones.
+- Es snapshot viejo del pedido número interno 164 (debug/respaldo de 2022).
+
+**Refutado** — el "164" coincidió por casualidad.
 
 ## Por qué este anti-patrón es sistémico
 

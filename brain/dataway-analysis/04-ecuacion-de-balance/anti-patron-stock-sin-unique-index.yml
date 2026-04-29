@@ -1,0 +1,95 @@
+id: dataway-analysis/04-ecuacion-de-balance/anti-patron-stock-sin-unique-index
+title: Anti-patron stock sin UNIQUE INDEX sobre llave natural V-DATAWAY-005
+public: machine-structure
+version: 1
+created_in_wave: wave-13-10
+last_updated: 2026-04-29
+
+bug:
+  id: V-DATAWAY-005
+  nombre: stock-sin-unique-index-llave-natural
+  tipo: anti_patron_estructural_de_BD
+  severidad: alta
+  estado: confirmado_por_inspeccion_schema
+  caso_fundacional: CP-014
+  detectado_en_wave: wave-13-10
+  detectado_via: inspeccion_offline_wms_db_brain_snapshot_2026_04_27
+  acceso_bd_productiva_durante_deteccion: bloqueado_firewall_killios
+
+tabla_afectada: dbo.stock
+
+evidencia:
+  fuente: db-brain/tables/stock.md
+  total_indices: 14
+  indices_unique: 0
+  pk_clustered: IdStock
+  llave_natural_componentes:
+    - IdProductoBodega
+    - IdUbicacion
+    - IdProductoEstado
+    - lote
+    - lic_plate
+  llave_natural_enforced: false
+  llave_natural_observable_en_indices: true
+  observacion_indices: las_4_columnas_de_llave_natural_aparecen_en_casi_todos_los_NCLI_pero_ninguno_es_UNIQUE
+
+constraints_existentes:
+  - nombre: Stock_NonNegative_20200115_EJC
+    tipo: check
+    expresion: "([Cantidad]>(0))"
+    impacto_secundario: agrava_V-DATAWAY-004_via_hipotesis_H4_fallback_INSERT_por_UPDATE_rechazado
+
+relacion_con_v_dataway_004:
+  tipo: causal_permisivo
+  descripcion: |
+    V-005 es la condicion que permite que V-004 deje huella en BD.
+    Sin V-005 (es decir, con UNIQUE INDEX activo), V-004 fallaria con
+    Violation of UNIQUE KEY constraint y seria visible inmediatamente
+    en log_error_wms en lugar de acumularse silenciosamente.
+  independencia_de_fix:
+    fix_v004_sin_v005: deja_puerta_abierta_a_futuros_paths_de_mutacion_buggueados
+    fix_v005_sin_v004: rompe_operacion_con_errores_constraint_en_tiempo_de_uso
+    estrategia: aplicar_ambos_en_orden_consolidacion_batch_fix_codigo_unique_index
+
+hipotesis_por_que_no_se_aplico_originalmente:
+  - id: HC1
+    descripcion: migracion_riesgosa_si_ya_existian_duplicados_al_momento
+  - id: HC2
+    descripcion: nadie_habia_hecho_group_by_having_para_detectar_duplicados
+  - id: HC3
+    descripcion: lic_plate_nullable_complica_el_unique_constraint_en_sql_server
+  - id: HC4
+    descripcion: convencion_cultural_WMS_los_invariantes_los_protege_el_codigo
+
+recomendaciones:
+  - id: R1
+    descripcion: unique_index_filtrado_post_consolidacion_y_normalizacion_lic_plate
+    pre_requisitos:
+      - ejecutar_script_consolidacion_batch_R3_de_V_DATAWAY_004
+      - normalizar_lic_plate_NULL_a_vacio_y_alterar_columna_NOT_NULL
+    ddl_objetivo: |
+      CREATE UNIQUE INDEX UX_stock_llave_natural
+      ON stock (IdProductoBodega, IdUbicacion, IdProductoEstado, lote, lic_plate)
+      WHERE Cantidad > 0;
+  - id: R2
+    descripcion: query_deteccion_continua_en_tools_case_seed_data_discrepancy_15
+  - id: R3
+    descripcion: revisar_otras_tablas_dominio_stock_stock_res_stock_se_stock_transito_stock_jornada
+
+generalizacion_potencial:
+  si_R3_confirma_pattern_en_otras_tablas: dominio_stock_confiado_al_codigo_sin_defensa_de_BD
+  promocion_a_conventions_si_decision_cultural: convencion_obsoleta_a_deprecar
+
+auto_confirmable: true
+query_auto_confirmacion: |
+  SELECT name, type_desc, is_unique
+  FROM sys.indexes
+  WHERE object_id = OBJECT_ID('dbo.stock')
+  ORDER BY name
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/14-stock-sin-unique-index-llave-natural.md
+  - brain/debuged-cases/CP-013.md
+  - brain/debuged-cases/CP-013-killios-wms164/REPORTE-wave-13-10.md
+  - db-brain/tables/stock.md

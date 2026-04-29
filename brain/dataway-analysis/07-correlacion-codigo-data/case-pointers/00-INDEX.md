@@ -52,8 +52,9 @@ CP-NNN-<contexto>-<hint>
 | `CP-011` | **documentado** | `clsLnStock_res_Partial.vb` | 27264 | Breakpoint `Codigo "00091035"` + `Debug.Write("Espera")` activo | baja | [`CP-011`](../../../debuged-cases/CP-011.md) |
 | `CP-012` | **documentado** | `frmExistenciasConReserva.vb` | 283 | Breakpoint `Codigo "01008076"` + `Debug.Print("Espera")` + 2 guards no-op | baja | [`CP-012`](../../../debuged-cases/CP-012.md) |
 | `CP-013` | **confirmado** | (caso de campo Killios — sin hardcode origen) | — | Killios WMS164: stock partido en 2 filas con misma llave natural (CEST sin merge); 919 filas / 18.7% del stock activo afectado | alta | [`CP-013`](../../../debuged-cases/CP-013.md) |
+| `CP-014` | **confirmado** | (caso estructural Killios — schema de BD) | — | `dbo.stock` sin UNIQUE INDEX sobre llave natural (14 índices NCLI, ninguno UNIQUE); causa permisiva que convierte cualquier bug aplicativo de path-de-mutación en daño persistente y silencioso | alta | (sin bitácora aún) |
 
-**Total documentados**: 13 / 13 (wave 13-9 abre nueva categoría: "casos de campo confirmados con datos reales", primer ejemplar CP-013).
+**Total documentados**: 14 / 14 (wave 13-9 abre categoría "casos de campo confirmados con datos reales" con CP-013; wave 13-10 abre categoría "casos estructurales / anti-patrones de DDL/schema" con CP-014).
 
 ## Agrupaciones
 
@@ -95,9 +96,17 @@ Ver `case-pointers/patterns/breakpoint-arqueologico-codigo-hardcoded.md` para el
 
 Distinta a las dos anteriores (breakpoint arqueológico y marker persistente). **No nacen de un hardcode encontrado en código fuente** — nacen de tickets de operación reproducidos contra BD productiva con queries READ-ONLY. Confirman un anti-patrón sistémico **antes** de que se localice el código bugueado.
 
-- **CP-013** — Killios WMS164: stock partido en 2 filas con misma llave natural (CEST sin merge). Anti-patrón sistémico medido: 469 combos / 919 filas / 18.7% del stock activo de Killios / 183.375 UN involucradas. **Bug raíz inferido**: `V-DATAWAY-004` (ver `dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge.md`). Refuta categóricamente la hipótesis ModoDepuracion (V-DATAWAY-001) — query 11 confirma `0` ocurrencias del marker `#EJCAJUSTEDESFASE` en Killios.
+- **CP-013** — Killios WMS164: stock partido en 2 filas con misma llave natural (CEST sin merge). Anti-patrón sistémico medido: 469 combos / 919 filas / 18.7% del stock activo de Killios / 183.375 UN involucradas. **Bug raíz inferido**: `V-DATAWAY-004` (ver `dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge.md`). Refuta categóricamente la hipótesis ModoDepuracion (V-DATAWAY-001) — query 11 confirma `0` ocurrencias del marker `#EJCAJUSTEDESFASE` en Killios. Wave 13-10 actualiza hipótesis: H1 sube a alta + nueva H4 (UPDATE rechazado por check `Cantidad>0` → fallback INSERT) también en alta.
 
 **Candidato a pattern P-002**: "INSERT sin merge contra llave natural" (a formalizar cuando aparezcan más instancias).
+
+### Casos estructurales (anti-patrones de DDL/schema, auto-confirmables por inspección de catálogo) — categoría nueva en wave 13-10
+
+Distinta a todas las anteriores. **No nacen de hardcode en código fuente, ni de tickets de operación** — nacen de la **inspección del catálogo SQL** (DDL, índices, constraints). La "fila ofensora" es una **ausencia**: la falta de un constraint que debería existir según el invariante de dominio.
+
+- **CP-014** — Killios `dbo.stock` sin UNIQUE INDEX sobre llave natural. 14 índices NCLI declarados, ninguno UNIQUE. Las 4 columnas de la llave natural (`IdProductoBodega`, `IdUbicacion`, `IdProductoEstado`, `lote`, `lic_plate`) aparecen en casi todos los NCLI — la llave natural **se reconoce implícitamente** para acelerar lookups, pero **nunca se enforza** como restricción. **Bug raíz inferido**: `V-DATAWAY-005` (ver `dataway-analysis/04-ecuacion-de-balance/anti-patron-stock-sin-unique-index.md`). **Relación con CP-013**: causal-permisiva — sin CP-014, CP-013 hubiera fallado inmediato con `Violation of UNIQUE KEY constraint` y sería visible. Con CP-014, CP-013 acumula daño en silencio.
+
+**Candidato a pattern P-003**: "invariante de dominio confiado al código sin defensa de BD" (a formalizar cuando aparezca segunda instancia, posiblemente al revisar `stock_res`, `stock_se`, `stock_transito`, `stock_jornada`).
 
 ## Bitácoras vivas
 

@@ -18,7 +18,8 @@
 | CP-010 | [`CP-010.md`](./CP-010.md) | open | baja | 2026-04-29 | clsLnStock_res_Partial breakpoint `00190454` + Debug.Print("Aqui") activo |
 | CP-011 | [`CP-011.md`](./CP-011.md) | open | baja | 2026-04-29 | clsLnStock_res_Partial breakpoint `00091035` + Debug.Write("Espera") activo |
 | CP-012 | [`CP-012.md`](./CP-012.md) | open | baja | 2026-04-29 | frmExistenciasConReserva breakpoint `01008076` + 2 guards no-op |
-| CP-013 | [`CP-013.md`](./CP-013.md) | **confirmed** | **alta** | 2026-04-29 | **Killios WMS164**: stock partido en 2 filas con misma llave natural (CEST sin merge). 919 filas afectadas (18.7%). Bug raíz `V-DATAWAY-004`. Refuta hipótesis ModoDepuracion |
+| CP-013 | [`CP-013.md`](./CP-013.md) | **confirmed** | **alta** | 2026-04-29 | **Killios WMS164**: stock partido en 2 filas con misma llave natural (CEST sin merge). 919 filas afectadas (18.7%). Bug raíz `V-DATAWAY-004`. Refuta hipótesis ModoDepuracion. Wave 13-10: análisis estructural offline + nueva H4 + path origen confirmado HH Android (no BOF) |
+| CP-014 | (sin bitácora aún) | **confirmed** | **alta** | 2026-04-29 | **Killios estructural**: `dbo.stock` sin UNIQUE INDEX sobre llave natural (14 NCLI, 0 UNIQUE). Bug raíz `V-DATAWAY-005`. Causal-permisivo de CP-013: convierte el bug aplicativo en daño persistente silencioso |
 
 ## Agrupaciones
 
@@ -52,7 +53,11 @@
 
 ### Casos de campo confirmados con datos reales (categoría nueva en wave 13-9)
 
-- CP-013 — Killios WMS164: stock partido por CEST sin merge. Status=`confirmed` desde apertura, severidad alta, 919 filas activas afectadas (18.7%), bug raíz `V-DATAWAY-004`. Subcarpeta con queries reproducibles + outputs raw + REPORTE.md en `CP-013-killios-wms164/`.
+- CP-013 — Killios WMS164: stock partido por CEST sin merge. Status=`confirmed` desde apertura, severidad alta, 919 filas activas afectadas (18.7%), bug raíz `V-DATAWAY-004`. Subcarpeta con queries reproducibles + outputs raw + REPORTE.md en `CP-013-killios-wms164/`. Wave 13-10 agrega `REPORTE-wave-13-10.md` (análisis estructural offline) + `pedido-extraccion-hh-cest.md` (contrato Wave 13-11).
+
+### Casos estructurales / anti-patrones de DDL/schema (categoría nueva en wave 13-10)
+
+- CP-014 — Killios `dbo.stock` sin UNIQUE INDEX sobre llave natural. Status=`confirmed` desde apertura, severidad alta, descubierto **sin BD viva** mediante inspección offline del catálogo `wms-db-brain` (snapshot 2026-04-27). Bug raíz `V-DATAWAY-005`. Causal-permisivo de CP-013/V-DATAWAY-004 — convierte el bug aplicativo de path CEST en daño persistente silencioso. Sin bitácora propia (toda la documentación vive en el case-pointer y el anti-patrón).
 
 ## Auto-confirmables (no requieren entrevista a Erik)
 
@@ -71,11 +76,16 @@
 - [ ] Verificar si `frmAnaliticaA` aparece en menú de clientes reales (CP-008)
 - [ ] Verificar si carpeta `reservastockfrommi3/` es código muerto (clon CP-009)
 - [ ] Búsquedas heurísticas pendientes B7-B10 (ver `case-pointers/00-INDEX.md`)
-- [ ] **CP-013**: confirmar autorización para correr query 12 sobre `IMS4MB_BYB_PRD` y `IMS4MB_CEALSA_QAS` (medir cross-cliente)
-- [ ] **CP-013 / Wave 13-10**: localizar en `TOMWMS_BOF` el flujo del CEST y leer su path INSERT vs UPDATE
-- [ ] **CP-013 / Wave 13-11**: confirmar H1 (lic_plate vacío rompe comparador) / H2 (concurrencia inter-segundo) / H3 (CEST por lote partido) con caso de prueba
-- [ ] **CP-013 / Wave 13-12**: si bug raíz se confirma, abrir `V-DATAWAY-004.md` formal
+- [ ] **CP-013**: restablecer firewall Killios (TCP timeout puro a `52.41.114.122:1437` desde IP saliente sandbox `35.227.125.212`); pendiente AWS Security Group + Windows Firewall + NACL + tcpdump
+- [ ] **CP-013**: re-correr q01..q12 cuando se restablezca firewall y archivar los 12 outputs raw para auditoría línea por línea
+- [ ] **CP-013**: confirmar autorización para correr query 12 sobre `IMS4MB_BYB_PRD` y `IMS4MB_CEALSA_QAS` (medir cross-cliente) cuando se restablezca firewall
+- [x] ~~**CP-013 / Wave 13-10**: localizar en `TOMWMS_BOF` el flujo del CEST~~ — **redirigido**: Wave 13-10 confirmó que el path CEST se origina en HH Android (FK `_sis_tipo_tarea_hh`), no en BOF. Análisis estructural hecho via `wms-db-brain` (4 hallazgos + V-DATAWAY-005 + CP-014)
+- [ ] **CP-013 / Wave 13-11**: Erik extrae bundle del HH Android (TOMHH2025) según contrato `CP-013-killios-wms164/pedido-extraccion-hh-cest.md` y empuja al repo de intercambio
+- [ ] **CP-013 / Wave 13-12**: leer el bundle, confirmar H1 (lic_plate NULL rompe comparador) y/o H4 (UPDATE rechazado por check `Cantidad>0` → fallback INSERT) con cita archivo + línea
+- [ ] **CP-013 / Wave 13-13**: si V-DATAWAY-004 confirmado, abrir `V-DATAWAY-004.md` formal y proponer DDL completo de R1 de V-DATAWAY-005 (consolidación batch + normalización lic_plate + UNIQUE INDEX filtrado)
+- [ ] **CP-014 / Wave 13-14**: revisar si `stock_res`, `stock_se`, `stock_transito`, `stock_jornada` también carecen de UNIQUE INDEX (R3 de V-DATAWAY-005). Si confirma, formalizar pattern P-003 "invariante de dominio confiado al código sin defensa de BD"
 - [ ] Promover candidato pattern P-002 ("INSERT sin merge contra llave natural") cuando aparezca segunda instancia
+- [ ] Promover candidato pattern P-003 ("invariante de dominio confiado al código sin defensa de BD") cuando CP-014 + Wave 13-14 confirme segunda instancia en otra tabla del dominio stock
 
 ## Convención de archivos
 

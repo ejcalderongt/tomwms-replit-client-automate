@@ -1,24 +1,33 @@
 id: dataway-analysis/04-ecuacion-de-balance/anti-patron-insert-stock-sin-merge
 title: Anti-patron INSERT a stock sin merge contra llave natural V-DATAWAY-004
 public: machine-structure
-version: 1
+version: 2
 created_in_wave: wave-13-9
 last_updated: 2026-04-29
+updated_in_wave: wave-13-10
 
 bug:
   id: V-DATAWAY-004
   nombre: insert-stock-sin-merge-en-path-CEST
   severidad: alta
-  estado: confirmado_con_datos_pendiente_trace_codigo
+  estado: confirmado_con_datos_analisis_estructural_completo_pendiente_bundle_HH_Android
   caso_fundacional: CP-013
   ticket_origen: WMS164
   cliente_origen: Killios
   fecha_deteccion: 2026-04-29
 
+anti_patron_estructural_asociado:
+  id: V-DATAWAY-005
+  relacion: causal_permisivo
+  descripcion: la_ausencia_de_UNIQUE_INDEX_en_stock_permite_que_V-004_deje_huella_silenciosa_en_BD
+
 tabla_afectada: stock
 path_inculpado_confirmado:
   - tipo_tarea: CEST
     descripcion: cambio_de_estado
+    cabeza_origen_codigo: HH_Android_TOMHH2025
+    evidencia_cabeza: FK_trans_movimientos_sis_tipo_tarea_hh_sufijo_explicito
+    descartado_anteriormente: BOF_VB_NET_TOMWMS_BOF
 paths_bajo_sospecha_no_confirmados:
   - UBIC
   - RECE
@@ -53,13 +62,34 @@ alcance_medido_killios:
 hipotesis_bug_raiz:
   - id: H1
     descripcion: lic_plate_vacio_rompe_el_comparador_NULL_vs_vacio
-    probabilidad: alta
+    probabilidad_pre_wave_13_10: media
+    probabilidad_post_wave_13_10: alta
+    evidencia_agregada_wave_13_10: schema_lic_plate_nvarchar50_NULL_y_semantica_SQLServer_NULL_eq_NULL_UNKNOWN
+  - id: H4
+    descripcion: UPDATE_rechazado_por_check_Cantidad_mayor_0_fallback_INSERT_en_catch
+    probabilidad_pre_wave_13_10: no_existia
+    probabilidad_post_wave_13_10: alta
+    nueva_en_wave_13_10: true
+    evidencia: check_constraint_Stock_NonNegative_20200115_EJC_existe_y_calza_exacto_con_cronologia_WMS164
+    independiente_de_H1: true
   - id: H2
     descripcion: concurrencia_inter_segundo_dos_hilos_CEST_sin_lock
-    probabilidad: media
+    probabilidad_pre_wave_13_10: media
+    probabilidad_post_wave_13_10: media
   - id: H3
     descripcion: CEST_por_lote_partido_HH_permite_dos_eventos_separados
-    probabilidad: media
+    probabilidad_pre_wave_13_10: media
+    probabilidad_post_wave_13_10: media
+
+hipotesis_refutadas_wave_13_10:
+  - sospechoso: SP_STOCK_JORNADA_DESFASE
+    razon_sospecha: nombre_eco_marker_EJCAJUSTEDESFASE
+    evidencia_refutacion: SP_de_deteccion_no_mutacion_autor_Carolina_Fuentes_2022_no_toca_stock_principal
+    fuente: db-brain/sps/SP_STOCK_JORNADA_DESFASE.md
+  - sospechoso: stock_res_ped_164
+    razon_sospecha: numero_eco_WMS164
+    evidencia_refutacion: snapshot_2022_pedido_interno_164_sin_FKs_sin_referencias
+    fuente: db-brain/tables/stock_res_ped_164.md
 
 contraste_v_dataway_001:
   v001_modo_depuracion:
