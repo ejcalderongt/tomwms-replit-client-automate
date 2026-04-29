@@ -160,3 +160,28 @@ Cuando respondas, podés:
   - `code-deep-flow/traza-001-license-plate.md` — primera traza de invariante (LP)
 - Próxima traza prevista: `traza-002-control_lote_y_vencimiento.md` (después de Wave 6.2 quick-wins).
 - Hay 1 issue de seguridad CRÍTICA: `Q-SEC-OPENAI-KEY-LEAK` — la API key de OpenAI está hardcoded en `WSHHRN/ChatGPTService.vb` y existe en `dev_2023_estable` y `dev_2028_merge`. Tu respuesta a la pregunta 15 ayuda a definir el plan de remediación.
+
+---
+
+## Bloque 10 — NUEVO (post Wave 6.2 quick wins, 2026-04-28)
+
+Estas 5 preguntas surgieron al cerrar la Wave 6.2 con SQL/GREP. Agregadas después de tu primera vuelta — si ya respondiste el resto, contestá estas como bonus.
+
+39. **Q-PORTAL-AUTH-CREDENCIALES-EN-PROPIETARIOS** (alta) — La tabla `propietarios` de CEALSA tiene dos columnas: `codigo_acceso` (nvarchar 100) y `clave_acceso` (nvarchar 100). ¿Son las credenciales del portal del propietario? Si sí: ¿`clave_acceso` está hasheada o en claro? ¿Quién las administra (CEALSA-side admin, self-service del propietario, ambos)? ¿Hay tabla de tokens/sesiones aparte o el portal hace login básico contra estas dos cols?
+
+40. **Q-GENERADOR-ABANDONO** (alta) — Conté 626 archivos `clsLn*.vb` en el repo BOF, pero solo **57 tienen `clsLn*_partial.vb`** asociado. Es decir: el 90% de las clases base están sin partial y se editan in-place (con código de negocio adentro: `Imports DevExpress`, lógica async, etc). ¿El generador se usa hoy o quedó abandonado? Si se usa, ¿por qué no se respeta la convención partial? ¿Se planea un refactor masivo para mover el custom code de las bases a `_partial`, o ya el generador sirve solo para casos nuevos?
+
+41. **Q-LP-CORRELATIVO-NAV-FORMATO** (media) — En BYB los LPs largos tienen formato tipo `BA00020002040400072334`. Parece: `BA` (prefijo) + `0002` (¿bodega?) + `0002` (¿propietario?) + `040400072334` (correlativo NAV). ¿Cuál es la descomposición exacta de la estructura? ¿Quién genera el LP — la HH, el WMS o NAV?
+
+42. **Q-RAMA-MASTER-DEV2025-DUPLICADAS** (baja) — En el repo BOF, las ramas `master`, `dev_2023_estable` y `dev_2025` apuntan al **mismo commit** (`1f5cc2c4`). Son alias. ¿Por qué se mantienen las 3 vs borrar `master` y `dev_2025`? ¿`dev_2025` tuvo vida propia en algún momento del pasado y luego se sincronizó? ¿Hay convención de nombrado interna (master = release oficial, dev_2023_estable = trabajo activo, dev_2025 = checkpoint anual)?
+
+43. **Q-LP-DATA-DIRTY-MIN** (baja) — En BECO hay 8 filas de stock con `lic_plate = "0"`. ¿Sabes si es data sucia de una migración antigua? ¿Se puede limpiar (UPDATE a NULL o borrar)? ¿O hay algún caso de negocio donde un LP "0" tenga sentido?
+
+---
+
+## Resumen actualizado
+
+- Total preguntas: **43** (38 originales + 5 nuevas Wave 6.2)
+- 9 bloques temáticos + 1 bonus
+- Q-* alta prioridad bloqueantes: 13 (de 43)
+- Q-* críticas: 1 (Q15 ChatGPT-Service / OpenAI key leak)
