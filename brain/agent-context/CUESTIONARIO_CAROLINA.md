@@ -229,3 +229,41 @@ Estas 11 preguntas surgieron al mapear las dos BDs nuevas del holding IDEALSA (M
 - Q-* alta prioridad bloqueantes: ~16 (de 54)
 - Q-* críticas: 1 (Q15 ChatGPT-Service / OpenAI key leak)
 - **Q-* RESUELTAS en Wave 7** (sin tu input): 4 (Q-LP-WHEN-DESTROYED, Q-LP-MERGE-EN-DESTINO, Q-CAPABILITY-FLAG, Q-CONTROL-LOTE-TABLA)
+
+---
+
+## Bloque 12 — NUEVO (post Wave 8, 2026-04-29)
+
+Estas 7 preguntas surgieron al destrabar la **estrategia Clavaud** y el **proyecto MI3** (gracias a la anécdota Marcelo Clavaud + revelación MI3 de Erik). Cubren los huecos del algoritmo de reserva 2028.
+
+### Algoritmo de rotación
+
+55. **Q-UPSR-MEANING** (media) — La tabla `tipo_rotacion` tiene 4 valores: 1=FIFO, 2=LIFO, 3=FEFO, **4=UPSR**. Los primeros 3 son convenciones logísticas estándar. ¿Qué significa UPSR? ¿Es un acrónimo (Ubicación Por Sistema de Rotación, Unidad Por Selección Random, Último Por Stock Recibido)? ¿En qué casos se usa y cómo ordena?
+
+56. **Q-ROTACION-PRECEDENCIA** (media) — `IdTipoRotacion` vive en 3 tablas: `producto`, `bodega_ubicacion` e `i_nav_config_enc`. ¿Cuál tiene precedencia cuando los 3 tienen valor? Hipótesis: producto > ubicación > config bodega. ¿Confirmás? ¿O es al revés?
+
+### Estrategia Clavaud — operativa
+
+57. **Q-CLAVAUD-THRESHOLD** (alta) — El flag `conservar_zona_picking_clavaud` activa la estrategia de excluir picking cuando el pedido equivale a 1+ pallet completo. ¿El umbral es exacto (>= 1 pallet) o tiene margen (ej: >= 80% del pallet, o un valor configurable)? ¿Hay un parámetro `pallet_threshold_clavaud` por bodega o es código duro?
+
+### MI3 (Módulo de Integración con Terceros)
+
+58. **Q-MI3-VS-CEALSAMI3** (media) — Detecté DOS proyectos en el repo BOF: `MI3/` (WCF/SOAP services genéricos) y `CEALSAMI3/` (app de sync standalone específica para CEALSA). ¿CEALSA usa ambos o solo CEALSAMI3 reemplazó MI3? ¿Otros clientes tienen un `<CLIENTE>MI3/` propio (BECOMI3, BYBMI3, MAMPAMI3) o todos usan el MI3 genérico?
+
+59. **Q-DSUBICSUG-ALGORITMO** (alta) — En `CEALSAMI3/DAL/Transacciones/Movimiento/dsUbicSug.xsd` hay un dataset llamado **"Ubicación Sugerida"**. Esto huele a motor de decisión "dónde colocar X producto al recepcionar". ¿Cuál es el algoritmo? ¿Considera proximidad, rotación, espacio disponible, perfil de movimiento? ¿Es exclusivo de CEALSA o se generalizó al resto?
+
+### Variantes del algoritmo de reserva
+
+60. **Q-RESERVA-MULTIPLE-VARIANTES** (media) — `clsLnStock_res_Partial.vb` tiene 13+ funciones de reserva con nombres muy específicos: `Reserva_Stock`, `Reserva_Stock_NAV_BYB`, `Reserva_Stock_Lista_Result`, `Reserva_Stock_Especifico` (×2 overloads), `Reservar_Stock_By_IdStock` (×3 overloads), `Reservar_Stock_By_Stock_Reem`, `Reemplazo_Automatico`, `Reemplazo_Automatico_Conso`, `ReemplazarAuto_IdStock_By_Stock`, `Reservar_Y_Reemplazar_Stock_By_IdStock`. ¿Cuándo se usa cada una? ¿Hay una matriz mental de "para tal cliente / tal caso de uso, llamar tal función"?
+
+61. **Q-REEMPLAZO-AUTO** (alta) — Las funciones `Reemplazo_Automatico*` sugieren que el WMS puede REEMPLAZAR un stock ya reservado por otro distinto. ¿Cuándo dispara este flujo? Hipótesis: cuando llega stock más fresco después de la reserva, o cuando el stock reservado quedó dañado/bloqueado, el sistema busca alternativa automáticamente. ¿Es así? ¿Es transparente al operador o requiere confirmación?
+
+---
+
+## Resumen actualizado Wave 8
+
+- Total preguntas: **61** (54 antes + 7 nuevas Wave 8)
+- 12 bloques temáticos
+- Q-* alta prioridad bloqueantes: ~16 (de 61)
+- Q-* críticas: 1 (Q15 ChatGPT-Service / OpenAI key leak)
+- **Q-* RESUELTAS en Wave 8** (con tu anécdota Clavaud + MI3): 4 (Q-CLAVAUD-MEANING, Q-MI3-IDENTIDAD, Q-UMB-CONCEPT, Q-PROPIETARIO-AGNOSTICO)

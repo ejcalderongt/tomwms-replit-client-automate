@@ -840,3 +840,55 @@ drift conocido:
 2. Pattern del log f(y)→f(z) en MERCOPAN (tiene los 323K movimientos para hacer estadística)
 3. Traza-002 control_lote+control_vencimiento ahora con la realidad de que son flags por bodega
 4. Mapa completo de los 50 flags de `i_nav_config_enc` con interpretación cliente-por-cliente
+
+---
+
+## Wave 8 (2026-04-29) — Estrategia Clavaud + MI3 + algoritmo de reserva 2028
+
+**Detonante**: Erik contó la anécdota de Marcelo Clavaud (gerente logística IDEALSA Panamá) y reveló que **MI3 = Módulo de Integración con Terceros** (eufemismo interno para la interface). Esto destrabó 3 Q-* y permitió mapear el algoritmo de reserva completo.
+
+**Doc nuevo**:
+- `code-deep-flow/04-mi3-y-reserva-clavaud.md` (~480 líneas) — 7 capas: caso negocio, flag y parámetro, modelo de datos, algoritmo `Reserva_Stock`, ranking LINQ, patrón 3PL, proyecto MI3 + CEALSAMI3
+
+**Q-* RESUELTAS (4)**:
+- ✅ **Q-CLAVAUD-MEANING** — apellido del gerente de logística cliente IDEALSA Panamá. Estrategia anti-vaciamiento de picking codificada como flag `i_nav_config_enc.conservar_zona_picking_clavaud` (bit, default 0, migration 2022-11-07 commit `EJC202211071706`).
+- ✅ **Q-MI3-IDENTIDAD** — MI3 es un proyecto WCF/SOAP completo en `MI3/` con services para Bodega, Cliente, Direcciones, Documentos, Barras_Pallet. Es el endpoint que expone el WMS al ERP.
+- ✅ **Q-UMB-CONCEPT** — UMB = Unidad de Medida Básica. Confirmado en código: `vCantidadSolicitadaUMBas = pBePedidoDet.Cantidad * BePres.Factor`.
+- ✅ **Q-PROPIETARIO-AGNOSTICO** (refinada) — branching por `empresas.Operador_logistico`. 3PL (CEALSA): config por (IdBodega, IdEmpresa). 1PL/2PL: config por (IdBodega, IdPropietario).
+
+**Hallazgos brutales nuevos**:
+- 🔥 **El algoritmo de reserva 2028 está completamente reescrito**. `clsLnStock_res_Partial.vb` pasó de ~600 a **4374 líneas**. Tiene **13+ funciones de reserva** (con variantes para NAV+BYB, lista, específico, reemplazo automático, consolidado).
+- 🔥 **El ranking se hace en MEMORIA con LINQ**, no en SQL. Líneas 4564-4736 tienen el `Select Case` por `IdTipoRotacion`.
+- 🔥 **`IdTipoRotacion` vive en 3 tablas** (cascada de precedencia probable): `producto.IdTipoRotacion`, `bodega_ubicacion.IdTipoRotacion`, `i_nav_config_enc.IdTipoRotacion`.
+- 🔥 **`tipo_rotacion` tiene 4 valores**: 1=FIFO, 2=LIFO, 3=FEFO, **4=UPSR** (acrónimo aún sin definir — Q-* abierta).
+- 🔥 **Existe función `Reserva_Stock_NAV_BYB`** específica para BECO+NAV (la única función de reserva nombrada por cliente).
+- 🔥 **Existe carpeta `CEALSAMI3/`** — variante específica de MI3 para CEALSA (app de sync standalone, no WCF). Contiene `dsUbicSug` (motor de ubicación sugerida).
+- 🔥 **`clsLnTrans_picking_det_Partial.vb` 1925 líneas modificadas en 2028** — algoritmo de picking también reescrito masivamente.
+
+**Modelo de datos confirmado**:
+- `bodega_ubicacion`: 38 cols, MERCOPAN tiene 2.903 ubicaciones en 7 niveles (0-6), nivel 0=muelle, nivel 1=picking
+- `producto_presentacion`: cols `factor`, `EsPallet`, `IdPresentacionPallet`, `CamasPorTarima`, `CajasPorCama` permiten calcular Z pallets desde N cajas
+- `tipo_rotacion`: catálogo {FIFO, LIFO, FEFO, UPSR}
+
+**Q-* nuevas derivadas (+7)** — agregadas a `CUESTIONARIO_CAROLINA.md` bloque 12:
+- Q-UPSR-MEANING (media)
+- Q-ROTACION-PRECEDENCIA (media)
+- Q-CLAVAUD-THRESHOLD (alta)
+- Q-MI3-VS-CEALSAMI3 (media)
+- Q-DSUBICSUG-ALGORITMO (alta)
+- Q-RESERVA-MULTIPLE-VARIANTES (media)
+- Q-REEMPLAZO-AUTO (alta)
+
+**Métricas post-Wave 8**:
+- Q-* totales: ~102 (+7)
+- Q-* resueltas: 16/102 (15.7%) — Wave 6.1: 1, Wave 6.2: 7, Wave 7: 4, Wave 8: 4
+- Q-* alta prioridad abiertas: ~12
+- Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK, sin cambio)
+- Líneas brain total: ~4.180
+- Archivos brain: 10 principales
+
+**Próximo recomendado**:
+1. Resolver Q-UPSR-MEANING + Q-ROTACION-PRECEDENCIA con un grep + lectura puntual (< 30 min)
+2. Inspeccionar `dsUbicSug.xsd` para entender el algoritmo de ubicación sugerida
+3. Mapear las 13+ funciones de `clsLnStock_res_Partial.vb` (matriz: cuándo se usa cada una, por cliente)
+4. Algo que Erik priorice

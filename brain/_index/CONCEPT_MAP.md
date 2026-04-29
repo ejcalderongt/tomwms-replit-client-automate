@@ -494,3 +494,31 @@ Dado el concept-map, mi sugerencia ranqueada:
 - **Q-* críticas abiertas**: 1 (Q-SEC-OPENAI-KEY-LEAK)
 - **Líneas brain total**: ~3.700
 - **Archivos brain**: 9 principales (5 antes + 2 Wave 6.2 + 2 Wave 7)
+
+
+---
+
+## Update Wave 8 (2026-04-29) — Clavaud + MI3 + algoritmo de reserva
+
+### Q-* resueltas en Wave 8
+- ✅ **Q-CLAVAUD-MEANING** — Marcelo Clavaud, gerente logística IDEALSA Panamá. Estrategia anti-vaciamiento de picking.
+- ✅ **Q-MI3-IDENTIDAD** — Módulo de Integración con Terceros, proyecto WCF en `MI3/`. Eufemismo interno.
+- ✅ **Q-UMB-CONCEPT** — Unidad de Medida Básica. Factor convierte presentación → UMB.
+- ✅ **Q-PROPIETARIO-AGNOSTICO** — branching por `empresas.Operador_logistico`. 3PL: por IdEmpresa. 1PL/2PL: por IdPropietario.
+
+### Q-* nuevas Wave 8
+- Q-UPSR-MEANING — qué significa UPSR (4to tipo de rotación)
+- Q-ROTACION-PRECEDENCIA — orden producto/ubicación/config bodega
+- Q-CLAVAUD-THRESHOLD — corte exacto pedido >= 1 pallet
+- Q-MI3-VS-CEALSAMI3 — ¿CEALSA usa ambos? ¿Otros clientes tienen propio MI3?
+- Q-DSUBICSUG-ALGORITMO — motor de ubicación sugerida
+- Q-RESERVA-MULTIPLE-VARIANTES — cuándo cada una de las 13+ funciones
+- Q-REEMPLAZO-AUTO — cuándo dispara reemplazo de stock ya reservado
+
+### Métricas Wave 8
+- Q-* totales: ~102 (+7)
+- Q-* resueltas: 16 acum (15.7%)
+- Q-* alta prioridad abiertas: ~12
+- Q-* críticas: 1 (Q-SEC-OPENAI-KEY-LEAK)
+- Líneas brain: ~4.180
+- Archivos brain: 10
