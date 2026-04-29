@@ -1,0 +1,161 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/01-stockfecha-codigo-030772033524
+title: CP-001 frmStockEnUnaFecha hardcode Codigo 030772033524
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-001
+  full_id: CP-001-stockfecha-codigo-030772033524
+  estado: documentado_sintoma_pendiente_confirmar_bug_raiz
+  severidad_estimada: media
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+  lineas_principales: 137-145
+  declaracion_thegoaldate:
+    linea: 92
+    cita: |
+      Dim TheGoalDate As Date = New Date(2019, 8, 30)
+
+caso_real:
+  producto:
+    codigo: "030772033524"
+    formato_probable: EAN-13
+    cliente_probable: Killios u otro de primera generacion 2019
+  fecha_vence_objetivo: 2019-08-30
+  estado_origen: SIN REGISTRO
+  tipo_tarea: DESP
+
+cita_textual:
+  lineas: 137-145
+  codigo: |
+    If ObjM.Codigo = "030772033524" Then
+        Debug.Print("Wait a second!")
+    End If
+
+    If ObjM.Fecha_Vence = TheGoalDate Then
+        Debug.Print("Wait a second!")
+    End If
+
+    If ObjM.Fecha_Vence = TheGoalDate AndAlso ObjM.EstadoOrigen = "SIN REGISTRO" AndAlso ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
+        Debug.Print("Wait a second!")
+    End If
+
+reconstruccion_caso:
+  hipotesis_bug_raiz:
+    - id: hipotesis_a
+      titulo: recepcion_incompleta
+      descripcion: |
+        Mercaderia recibida con SIN REGISTRO temporal, despachada antes
+        de clasificarse el estado.
+    - id: hipotesis_b
+      titulo: estado_borrado
+      descripcion: |
+        Bug en cambio de estado HH borro el estado quedando como SIN REGISTRO.
+    - id: hipotesis_c
+      titulo: importacion_legacy
+      descripcion: |
+        Datos importados de sistema previo sin control de estado.
+
+  por_que_se_hardcodeo:
+    - reporte detecta gap de balance
+    - producto despachado desde SIN REGISTRO probablemente generaba gap
+    - desarrollador puso If para parar debugger en ese punto especifico
+    - sin tener que hacer step-through de casos sanos previos
+
+queries_propuestas:
+  - id: query_07
+    titulo: detectar otros productos con DESP desde SIN REGISTRO
+    target_archivo: tools/case-seed/queries/data-discrepancy/07_movimientos_sin_registro_desp.sql
+    sql: |
+      SELECT TOP 100
+          M.Fecha,
+          M.IdMovimiento,
+          P.Codigo,
+          P.Producto,
+          M.IdEstadoOrigen,
+          EO.Descripcion AS EstadoOrigenDesc,
+          M.Cantidad,
+          M.Salidas,
+          M.Fecha_Vence,
+          M.IdStock
+      FROM trans_movimientos M
+      INNER JOIN producto P ON P.IdProducto = M.IdProducto
+      LEFT JOIN producto_estado EO ON EO.IdEstado = M.IdEstadoOrigen
+      WHERE M.TipoTarea = 'DESP'
+        AND EO.Descripcion = 'SIN REGISTRO'
+        AND M.Fecha BETWEEN @From AND @To
+      ORDER BY M.Fecha DESC
+    read_only: true
+    parametros: [From, To]
+    pendiente_implementar: true
+    nota: ajustar nombre de columna Descripcion segun schema cliente
+
+  - id: query_08
+    titulo: verificacion especifica del caso historico
+    target_archivo: tools/case-seed/queries/data-discrepancy/08_caso_cp001_codigo_030772033524.sql
+    sql: |
+      SELECT
+          M.Fecha,
+          M.IdMovimiento,
+          M.TipoTarea,
+          M.Cantidad,
+          M.Salidas,
+          M.Fecha_Vence,
+          M.IdStock,
+          M.IdEstadoOrigen,
+          M.Lote
+      FROM trans_movimientos M
+      INNER JOIN producto P ON P.IdProducto = M.IdProducto
+      WHERE P.Codigo = '030772033524'
+        AND M.Fecha_Vence = '2019-08-30'
+      ORDER BY M.Fecha
+    read_only: true
+    parametros: []
+    pendiente_implementar: true
+
+confirmacion:
+  metodo: ejecutar query 08 en cliente original (probable Killios)
+  resultados_posibles:
+    - condicion: query retorna filas
+      interpretacion: caso historico aun tiene rastro en BD
+      accion: analizar contexto (resuelto? gap permanente?)
+    - condicion: query no retorna filas
+      interpretacion: caso fue migrado o limpiado
+      accion: hardcode es deuda muerta, candidato a limpieza
+
+limpieza_recomendada:
+  si_bug_resuelto:
+    - borrar 3 condiciones If con Debug.Print Wait a second
+    - borrar declaracion Dim TheGoalDate
+    - documentar limpieza en learnings/L-DATAWAY-NNN-cleanup-cp001.md
+  si_bug_aun_ocurre:
+    - mantener hardcodes con comment CP-001 para proximo lector
+    - implementar fix real (validacion que prohiba DESP desde SIN REGISTRO)
+    - promover a learnings/L-DATAWAY-NNN-bug-desp-sin-registro.md
+
+pendientes:
+  - id: pend_01
+    titulo: confirmar con Erik si recuerda este caso
+    pendiente_user_input: true
+  - id: pend_02
+    titulo: identificar cliente donde aparecio
+    hipotesis: Killios primera generacion 2019
+  - id: pend_03
+    titulo: ejecutar query 07 y 08 en BD productiva via tools/case-seed
+  - id: pend_04
+    titulo: decidir si limpiar o mantener
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/00-INDEX.md
+  - dataway-analysis/04-ecuacion-de-balance/tipos-tarea-relevantes.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - tools/case-seed/queries/data-discrepancy/
+
+bugs_relacionados: []
+case_pointers_relacionados:
+  - CP-004 (TheGoalDate en frmMovimiento_Reporte L87)
+  - CP-005 (If TheGoalDate Debug.Print en frmMovimiento_Reporte L95)
+  - CP-006 (combinacion TheGoalDate + SIN REGISTRO + DESP en frmMovimiento_Reporte L99)

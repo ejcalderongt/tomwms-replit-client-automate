@@ -1,0 +1,167 @@
+id: dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos
+title: Divergencia entre reportes paralelos del balance
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+bug:
+  id: V-DATAWAY-002
+  severidad: alta
+  estado: pendiente_investigacion
+  titulo: frmStockEnUnaFecha y frmMovimiento_Reporte calculan el mismo balance con logica divergente
+
+reportes:
+  canonico:
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+    proposito_declarado: inventario teorico al cierre
+    lineas_aproximadas: 1111
+    matching_logica: exacto_3_keys
+    guard_idmovimiento: ausente
+    modo_depuracion: presente (V-DATAWAY-001)
+    bug_aritmetico_salidas: no
+  
+  experimental:
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+    proposito_declarado: reporte fiscal de movimientos
+    lineas_aproximadas: 705
+    matching_logica: cascada_4_niveles
+    guard_idmovimiento: comentado_abandonado
+    modo_depuracion: ausente
+    bug_aritmetico_salidas: V-DATAWAY-004 (linea 201)
+
+hipotesis_cronologica:
+  - t0: nace frmStockEnUnaFecha como reporte canonico
+  - t1: necesidad de reporte fiscal -> clonado en frmMovimiento_Reporte
+  - t2: bug JP fecha_vence=now -> cascada introducida en frmMovimiento_Reporte
+  - t3: alguien intenta agregar guard IdMovimiento -> abandonado sin documentar
+  - t4: bug nuevo en linea 201 (suma ObjM.Salidas en cero)
+  - t5_hoy: ambos reportes coexisten con resultados distintos
+
+divergencias:
+  - id: divergencia_1
+    titulo: logica de matching
+    canonico:
+      tipo: matching_exacto
+      keys: [Codigo, IdEstadoOrigen, Fecha_Vence]
+      lineas: 113-117
+    experimental:
+      tipo: cascada_4_niveles
+      keys_variables: true
+      lineas: 113-148
+      magia_comment: |
+        'Magia por EJC para corregir cagada
+    implicacion: |
+      Mismos datos pueden agruparse en conjuntos distintos de puntos del balance.
+      Diferencia con Existencia_Actual aparece en filas distintas segun reporte.
+  
+  - id: divergencia_2
+    titulo: guard IdMovimiento abandonado
+    canonico:
+      estado: nunca_existio
+    experimental:
+      estado: comentado
+      lineas:
+        - linea: 178
+          cita: |
+            'ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.RECE And BeStockEnFecha.IdMovimiento <> ObjM.IdMovimiento Then
+        - linea: 200
+          cita: |
+            'ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP And BeStockEnFecha.IdMovimiento <> ObjM.IdMovimiento Then
+    proposito_original: anti_doble_conteo
+    pregunta_abierta: por_que_se_abandono
+    hipotesis:
+      - hipotesis_a: IdMovimiento cambio de semantica (PK movimiento -> PK lote)
+      - hipotesis_b: VW_Movimientos genera varias filas con mismo IdMovimiento legitimamente
+      - hipotesis_c: Get_Lista_Movimientos ya hacia DISTINCT
+  
+  - id: divergencia_3
+    titulo: bug aritmetico V-DATAWAY-004
+    bug:
+      id: V-DATAWAY-004
+      severidad: alta
+      ubicacion:
+        archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+        linea: 201
+      cita: |
+        ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
+            BeStockEnFecha.Salidas += ObjM.Salidas
+      a_primera_vista: identico al canonico
+      diferencia_real: |
+        En canonico ObjM viene de Get_Lista_Movimientos que consume VW_Movimientos
+        (vista pre-calcula campo Salidas para DESP). En experimental, fuente puede
+        ser distinta (VW_Movimientos_Poliza, VW_MovimientosRetroactivo, o tabla
+        raw trans_movimientos donde Salidas viene null/0).
+      pendiente_confirmar: localizar Get_Lista_Movimientos en cada archivo
+      consecuencia_si_confirmado: |
+        Salidas nunca acumulan en frmMovimiento_Reporte. Balance teorico siempre
+        artificialmente alto. Analistas atribuyen a robo/merma lo que es un campo
+        no leido.
+  
+  - id: divergencia_4
+    titulo: ModoDepuracion ausente en experimental
+    canonico:
+      modo_depuracion: presente
+      bug_relacionado: V-DATAWAY-001
+    experimental:
+      modo_depuracion: ausente
+      ventaja: reporte puro de lectura, sin riesgo de mutacion accidental
+      desventaja: no compensa por las divergencias 1, 2 y 3
+
+case_pointer_pendiente:
+  id: CP-002-fecha-vence-now-jp-bug
+  comment_textual:
+    archivo: frmMovimiento_Reporte.vb
+    lineas: 118-120
+    cita: |
+      '(Por error en el cambio de ubicación fecha_vence = now -> JP.)
+  target_archivo: dataway-analysis/07-correlacion-codigo-data/case-pointers/02-fecha-vence-now-jp-bug.{yml,md}
+  pendiente: true
+
+recomendaciones:
+  - id: R1
+    titulo: deprecar reporte experimental
+    plazo: medio
+    pasos:
+      - confirmar uso actual con equipo
+      - si nadie usa: marcar obsoleto, redirigir a canonico
+      - si alguien usa: extraer Group By fiscal a nuevo reporte sin clonar calculo
+  
+  - id: R2
+    titulo: extraer logica de calculo a clase unica
+    plazo: largo
+    propuesta: |
+      Clase clsCalculadorBalance con metodo:
+      Calcular(ListaMovimientos, FechaCorte) As List(Of clsBeBalancePunto)
+      Ambos reportes consumen y se diferencian solo en presentacion.
+  
+  - id: R3
+    titulo: confirmar V-DATAWAY-004 con datos reales
+    plazo: corto
+    accion: ejecutar reporte fiscal sobre cliente con despachos conocidos
+    query_propuesta:
+      sql: |
+        SELECT Fecha, TipoTarea, Cantidad, Salidas, IdMovimiento
+        FROM VW_Movimientos
+        WHERE IdProducto = @IdProducto
+          AND TipoTarea = 'DESP'
+          AND Fecha BETWEEN @From AND @To
+        ORDER BY Fecha
+      verificar: si Salidas viene poblado para DESP
+  
+  - id: R4
+    titulo: documentar JP bug como case-pointer
+    plazo: corto
+    target: CP-002-fecha-vence-now-jp-bug
+
+bugs_relacionados:
+  - V-DATAWAY-002
+  - V-DATAWAY-004
+  - V-DATAWAY-001 (solo en canonico)
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/modelo-conceptual.yml
+  - dataway-analysis/04-ecuacion-de-balance/granularidad-y-keys.yml
+  - dataway-analysis/04-ecuacion-de-balance/tipos-tarea-relevantes.yml
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.yml
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/

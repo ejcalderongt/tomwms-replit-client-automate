@@ -1,0 +1,162 @@
+id: dataway-analysis/04-ecuacion-de-balance/granularidad-y-keys
+title: Granularidad y keys del balance
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+tesis: |
+  La ecuacion de balance no opera sobre el producto entero ni sobre el idstock.
+  Opera sobre un agregado intermedio definido por una tupla de keys. La eleccion
+  de esa tupla es donde se rompe la coherencia entre reportes paralelos.
+
+reportes:
+  frmStockEnUnaFecha:
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+    matching_durante_iteracion:
+      lineas: 113-117
+      tipo: matching_exacto_3_keys
+      keys:
+        - Codigo
+        - IdEstadoOrigen
+        - Fecha_Vence
+      cita: |
+        Idx = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
+                                          AndAlso x.IdEstadoOrigen = BeStockEnFecha.IdEstadoOrigen _
+                                          AndAlso x.Fecha_Vence = BeStockEnFecha.Fecha_Vence)
+    group_by_visualizacion:
+      lineas: 276-285
+      tipo: group_by_10_keys
+      keys:
+        - IdProductoBodega
+        - Codigo
+        - Producto
+        - UMBas
+        - EstadoOrigen
+        - IdEstadoOrigen
+        - IdPresentacion
+        - IdUnidadMedida
+        - Lote
+        - Fecha_Vence
+    incoherencia:
+      problema: |
+        Matching usa 3 keys pero Group By final usa 10 keys.
+        Dos movimientos con mismo (Codigo, IdEstadoOrigen, Fecha_Vence) se acumulan
+        en el mismo punto durante la iteracion aunque tengan distinto Lote, distinta
+        IdPresentacion o distinta IdUnidadMedida.
+      hipotesis_de_fix: usar la misma key de 10 componentes en FindIndex
+      por_que_no_se_hizo: probable complejidad del matching cascada (ver frmMovimiento_Reporte)
+      estado: hipotesis_no_confirmada
+      requiere_test: producto multi-lote dentro del mismo (Codigo, IdEstadoOrigen, Fecha_Vence)
+  
+  frmMovimiento_Reporte:
+    archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+    matching_durante_iteracion:
+      lineas: 113-148
+      tipo: cascada_4_niveles_variable
+      cascada:
+        nivel_1:
+          keys: [Codigo, IdEstadoOrigen, Fecha_Vence]
+          si_encuentra: refinar_por_lote (nivel 1.1)
+          si_no_encuentra: ir_a_nivel_2
+        nivel_1_1:
+          keys: [Codigo, Lote, Fecha_Vence]
+          si_encuentra: usar Idx original
+          si_no_encuentra:
+            condicion: BeStockEnFecha.Lote == ""
+            entonces: ir_a_nivel_1_1_1
+        nivel_1_1_1:
+          keys: [Codigo, Fecha_Vence]
+          si_no_encuentra: descartar_match
+          si_encuentra: refinar_con_idestado (nivel 1.1.1.1)
+        nivel_1_1_1_1:
+          keys: [Codigo, Fecha_Vence, IdEstadoOrigen]
+        nivel_2:
+          keys: [Codigo, Fecha_Vence]
+          si_encuentra: matching_debil
+          comment_codigo: "Magia por EJC para corregir cagada"
+    no_determinismo:
+      tipo: dependiente_del_orden
+      explicacion: |
+        El conjunto de keys que define un punto varia segun los datos previos
+        procesados (RepMovEnUnaFecha se llena incrementalmente). Dos corridas
+        sobre los mismos datos producen mismo resultado, pero la cascada que
+        eligio cada match no es trivial de reconstruir.
+    bug_v_dataway_004:
+      id: V-DATAWAY-004
+      severidad: alta
+      linea: 201
+      cita_codigo: |
+        ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
+            BeStockEnFecha.Salidas += ObjM.Salidas
+      problema: |
+        Suma ObjM.Salidas (campo derivado) en vez de ObjM.Cantidad (bruta).
+        Si ObjM.Salidas viene en cero, frmMovimiento_Reporte nunca acumula
+        salidas correctamente.
+      contraste_con_canonico: |
+        En frmStockEnUnaFecha.vb:184-186 hace lo mismo (suma .Salidas), pero ahi
+        es estable porque ObjM.Salidas viene de la vista VW_Movimientos pre-calculada.
+        En frmMovimiento_Reporte la fuente puede ser diferente y el campo Salidas
+        no esta garantizado.
+      pendiente_verificar: confirmar de donde viene Get_Lista_Movimientos en frmMovimiento_Reporte
+                           vs el de frmStockEnUnaFecha
+
+bug_historico_fecha_vence_now_jp:
+  id: CP-002-fecha-vence-now-jp-bug
+  estado: case_pointer_pendiente_documentar
+  ubicacion_target: dataway-analysis/07-correlacion-codigo-data/case-pointers/02-fecha-vence-now-jp-bug.{yml,md}
+  comment_textual:
+    archivo: frmMovimiento_Reporte.vb
+    lineas: 118-120
+    cita: |
+      If Idx1 = -1 Then 'No coincide la fecha de vencimiento para el mismo lote en el mismo movimiento
+          '(Por error en el cambio de ubicación fecha_vence = now -> JP.)
+          Debug.Print("Espera")
+  interpretacion: |
+    En algun momento, una operacion de cambio de ubicacion (probable HH) seteaba
+    Fecha_Vence = Now en lugar de respetar la fecha original del producto. Esto
+    generaba filas en trans_movimientos con fecha incorrecta y matching exacto fallaba.
+  pregunta_abierta: |
+    Confirmar con Erik si el bug de JP se arreglo en el codigo fuente que generaba
+    esos movimientos. Si no, la magia de frmMovimiento_Reporte es necesaria para
+    clientes con datos legacy. Si si, es deuda muerta.
+
+recomendaciones_forenses:
+  - id: rec_01
+    titulo: Verificar producto multi-lote en (Codigo, IdEstadoOrigen, Fecha_Vence)
+    cuando: gap inexplicable + producto con varios lotes en mismo dia
+    accion: aplicar caveat de matching 3 keys vs Group By 10 keys
+  - id: rec_02
+    titulo: Verificar movimientos UBIC con Fecha_Vence == Fecha
+    query_propuesta:
+      file: tools/case-seed/queries/data-discrepancy/05_ubic_fecha_vence_now.sql
+      sql: |
+        SELECT TOP 100 *
+        FROM trans_movimientos
+        WHERE TipoTarea = 'UBIC'
+          AND CAST(Fecha_Vence AS DATE) = CAST(Fecha AS DATE)
+          AND IdProducto = @IdProducto
+          AND Fecha BETWEEN @From AND @To
+        ORDER BY Fecha
+      read_only: true
+      pendiente_implementar: true
+  - id: rec_03
+    titulo: Detectar TipoTarea no listado en If/ElseIf
+    query_propuesta:
+      sql: |
+        SELECT TipoTarea, COUNT(*) cnt
+        FROM trans_movimientos
+        WHERE IdProducto = @IdProducto
+          AND Fecha BETWEEN @From AND @To
+          AND TipoTarea NOT IN ('INVE','RECE','AJCANTP','AJCANTPI','AJCANTN','AJCANTNI','DESP','UBIC')
+        GROUP BY TipoTarea
+      read_only: true
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/modelo-conceptual.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/
+
+bugs_relacionados:
+  - V-DATAWAY-002
+  - V-DATAWAY-004

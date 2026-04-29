@@ -1,0 +1,138 @@
+id: dataway-analysis/00-modelo-identidad-idstock
+title: Modelo de identidad del IdStock
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+tesis:
+  enunciado: |
+    El IdStock no es una identidad estable. Es un identificador efímero que
+    se destruye y se recrea en cada operacion significativa.
+  consecuencia: |
+    Reconstruir el linaje (idstock N -> M -> P) no es posible con el modelo
+    actual sin conocimiento tribal de que operacion pudo haber generado
+    cada split.
+
+patron_maestro:
+  nombre: DELETE_INSERT
+  pasos:
+    - leer fila stock(idstock = N)
+    - construir fila nueva stock(idstock = M) = N + cambios
+    - INSERT stock(idstock = M)
+    - DELETE stock(idstock = N)
+    - insertar trans_movimientos con TipoTarea correspondiente
+    - re-puntear stock_res previas (de N a M) si existen
+  evidencia_textual:
+    fuente: chat con Erik 2026-04-29
+    cita: |
+      cuando N se mueve o cambia de ubicacion, en realidad la HH lo que
+      hace via webservice es eliminar el idstock N e insertar un idstock
+      que sea una copia del origen mas los cambios aplicados (ubicacion
+      diferente, pej, estado), este proceso ocurre tanto para el cambio
+      de ubicacion como para el cambio de estado, ergo el idstock deja de
+      ser el mismo.
+
+operaciones_que_mutan_idstock:
+  - id: 01-recepcion-creacion-inicial
+    trigger: operador HH escanea OC y confirma recepcion
+    patron: INSERT_ONLY
+    particiona_licencia: false
+    documentado: pendiente
+  - id: 02-cambio-ubicacion-hh
+    trigger: operador HH escanea licencia + ubicacion destino
+    patron: DELETE_INSERT
+    via: webservice HH
+    particiona_licencia: false
+    documentado: pendiente
+  - id: 03-cambio-estado-hh
+    trigger: operador HH cambia estado producto
+    patron: DELETE_INSERT
+    via: webservice HH
+    particiona_licencia: false
+    documentado: pendiente
+  - id: 04-ubic-parcial-hh
+    trigger: operador HH confirma posicionamiento parcial de licencia
+    patron: DELETE_INSERT_x2
+    particiona_licencia: true
+    documentado: pendiente
+    ejemplo: 100 cajas -> UBIC 50 -> {idstock M=50 pos A, idstock O=50 PENDIENTE}
+  - id: 05-implosion
+    trigger: descomposicion de presentacion
+    patron: DELETE_INSERT_xN
+    particiona_licencia: posible
+    documentado: pendiente
+  - id: 06-ajuste-positivo
+    trigger: operador BOF/HH agrega cantidad
+    patron: INSERT_O_UPDATE
+    particiona_licencia: false
+    documentado: pendiente
+    pendiente_confirmar: si es INSERT puro o UPDATE
+  - id: 07-ajuste-negativo
+    trigger: operador BOF/HH resta cantidad
+    patron: DELETE_O_UPDATE
+    particiona_licencia: false
+    documentado: pendiente
+    pendiente_confirmar: si es DELETE cuando llega 0 o solo UPDATE
+  - id: 08-reubicacion-parcial-bof
+    trigger: mover parte del idstock a otra ubicacion
+    patron: DELETE_INSERT_x2
+    particiona_licencia: true
+    documentado: pendiente
+  - id: 09-split-fisico-reabasto
+    trigger: algoritmo de reserva detecta necesidad de reservar parte
+    patron: INSERT_con_marker
+    marker: No_bulto = 1989
+    particiona_licencia: true
+    particionado: virtual
+    documentado: parcial
+    cross_ref: brain/entities/modules/reservation/legacy-process-flow/06-reserva-stock-from-reabasto.md
+    bug_relacionado: V-FROMR-005
+  - id: 10-split-fisico-mi3
+    trigger: algoritmo de reserva MI3
+    patron: pendiente_confirmar
+    documentado: pendiente
+    cross_ref: cuestionario CAROLINA Q-MI3-11
+  - id: 11-picking
+    trigger: operador picka contra una reserva
+    patron: DELETE_INSERT
+    particiona_licencia: false
+    movimiento_generado: DESP
+    documentado: pendiente
+  - id: 12-despacho
+    trigger: operador BOF cierra el despacho
+    patron: DELETE_O_UPDATE
+    particiona_licencia: false
+    documentado: pendiente
+
+caracteristicas_perdidas:
+  - linaje_explicito: false
+  - parent_idstock_columna: no_existe
+  - reconstruccion_via: trans_movimientos
+  - costo_reconstruccion: alto (requiere conocimiento tribal)
+  - indice_optimizado: no
+
+blockchain_deseado:
+  estado: propuesta_pendiente
+  documentacion_target: dataway-analysis/06-blockchain-deseado/
+  opciones_a_evaluar:
+    - parent_idstock_column
+    - tabla_stock_lineage
+    - event_sourcing_stock_events
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/modelo-conceptual.yml
+  - brain/agent-context/glossary.md (entrada IdStock, licencia, puntero)
+  - brain/entities/modules/reservation/legacy-process-flow/06-reserva-stock-from-reabasto.md
+  - brain/agent-context/CUESTIONARIO_CAROLINA.md (Q-MI3-11)
+
+bugs_relacionados:
+  - id: V-FROMR-005
+    severidad: media
+    descripcion: split fisico con No_bulto=1989 en From_Reabasto
+
+pendientes_investigacion:
+  - localizar webservice HH endpoint que recibe DELETE_INSERT (ubicacion probable: TOMWMS_BOF/MI3/Servicios/ o TOMWMS_BOF/WMSWebAPI/Controllers/)
+  - confirmar campos IdStockOrigen + IdStockDestino en trans_movimientos
+  - mapear que tipo de movimiento genera cada operacion (matriz operacion x TipoTarea)
+  - verificar si stock_res se re-puntea automaticamente al hacer DELETE_INSERT del idstock asociado

@@ -1,0 +1,146 @@
+id: dataway-analysis/04-ecuacion-de-balance/tipos-tarea-relevantes
+title: TipoTarea relevantes para el balance
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+catalogo:
+  - tipo_tarea: INVE
+    significado: inventario inicial / conteo
+    reconocido: true
+    suma_a: Inventario_Inicial
+    campo_acumulado: ObjM.Cantidad
+    guard:
+      condicion: BeStockEnFecha.Cantidad == 0
+      explicacion: solo suma el primer INVE para cada punto
+      hipotesis_diseno: |
+        En corrida de inventario inicial deberia haber un solo INVE por
+        (Codigo, Estado, Lote, Fecha_Vence). Si llegan multiples son re-conteos.
+      riesgo: |
+        Cliente con inventarios ciclicos (recontar periodicamente) tendria
+        el segundo INVE ignorado silenciosamente. Posible explicacion de gap.
+      pendiente_validar: comportamiento en cliente con inventarios ciclicos
+
+  - tipo_tarea: RECE
+    significado: recepcion / ingreso
+    reconocido: true
+    suma_a: Ingresos
+    campo_acumulado: ObjM.Cantidad
+    guard_abandonado:
+      en_archivo: frmMovimiento_Reporte.vb
+      linea: 178
+      cita: |
+        'ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.RECE And BeStockEnFecha.IdMovimiento <> ObjM.IdMovimiento Then
+      proposito_original: anti_doble_conteo
+      por_que_se_abandono: pendiente_confirmar
+      hipotesis: IdMovimiento cambio de semantica (de PK del movimiento a PK del lote)
+
+  - tipo_tarea: AJCANTP
+    significado: ajuste cantidad positiva
+    reconocido: true
+    suma_a: Ajustes_Positivos
+    campo_acumulado: ObjM.Cantidad
+
+  - tipo_tarea: AJCANTPI
+    significado: ajuste cantidad positiva inverso
+    reconocido: true
+    suma_a: Ajustes_Positivos
+    campo_acumulado: ObjM.Cantidad
+    pregunta_abierta: por_que_inverso_suma_positivo
+    hipotesis: revertir un ajuste negativo previo equivale a sumar
+
+  - tipo_tarea: AJCANTN
+    significado: ajuste cantidad negativa
+    reconocido: true
+    suma_a: Ajustes_Negativos
+    campo_acumulado: ObjM.Cantidad
+
+  - tipo_tarea: AJCANTNI
+    significado: ajuste cantidad negativa inverso
+    reconocido: true
+    suma_a: Ajustes_Negativos
+    campo_acumulado: ObjM.Cantidad
+
+  - tipo_tarea: DESP
+    significado: despacho / salida
+    reconocido: true
+    suma_a: Salidas
+    campo_acumulado: ObjM.Salidas
+    nota_critica: NO_es_ObjM_Cantidad
+    guard_abandonado:
+      en_archivo: frmMovimiento_Reporte.vb
+      linea: 200
+      cita: |
+        'ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP And BeStockEnFecha.IdMovimiento <> ObjM.IdMovimiento Then
+      proposito_original: anti_doble_conteo
+    bug_v_dataway_004:
+      severidad: alta
+      linea: 201
+      explicacion: |
+        En frmMovimiento_Reporte: BeStockEnFecha.Salidas += ObjM.Salidas.
+        Si ObjM.Salidas viene en cero, nunca acumula salidas.
+
+  - tipo_tarea: UBIC
+    significado: cambio de ubicacion
+    reconocido: false
+    comportamiento: silenciosamente_ignorado
+    es_correcto_que_no_sume: true
+    razon_neutralidad: cambio interno no genera ingreso ni salida
+    problema: |
+      Por construccion del If/ElseIf, cae en el Else con Debug.Print.
+      No se distingue de TipoTarea desconocido. Sugerir agregar branch explicito.
+
+  - tipo_tarea: otros_no_listados
+    reconocido: false
+    comportamiento: silenciosamente_ignorado
+    bug: V-DATAWAY-003
+    riesgo: si se introduce nuevo TipoTarea balance lo subestima sin alertar
+
+cita_textual_switch:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+  lineas: 173-189
+  codigo: |
+    If ObjM.TipoTarea = clsDataContractDI.tTipoTarea.INVE Then
+        If BeStockEnFecha.Codigo = ObjM.Codigo And BeStockEnFecha.Cantidad = 0 Then
+            BeStockEnFecha.Inventario_Inicial += ObjM.Cantidad
+        End If
+    ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.RECE Then
+        BeStockEnFecha.Ingresos += ObjM.Cantidad
+    ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.AJCANTP OrElse ObjM.TipoTarea = clsDataContractDI.tTipoTarea.AJCANTPI Then
+        BeStockEnFecha.Ajuste_Positivo += ObjM.Cantidad
+    ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.AJCANTN OrElse ObjM.TipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI Then
+        BeStockEnFecha.Ajuste_Negativo += ObjM.Cantidad
+    ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
+        BeStockEnFecha.Salidas += ObjM.Salidas
+    Else
+        Debug.Print(ObjM.TipoTarea)
+    End If
+
+pendiente_extraer:
+  catalogo_completo_enum:
+    target_archivo: TOMWMS_BOF/TOMIMSV4/Entity/clsDataContractDI.vb
+    busqueda_alternativa: TOMWMS_BOF/TOMIMSV4/DataContract/
+    accion: |
+      rg "tTipoTarea\s+As\s+Enum|Public\s+Enum\s+tTipoTarea"
+      catalogar todos los valores y marcar para cada uno:
+        - esta_en_switch_balance
+        - es_neutro_deliberadamente
+        - es_candidato_a_futuro_bug
+
+recomendaciones_forenses:
+  - escenario: gap_negativo (faltan unidades)
+    accion: verificar TipoTarea no en switch que sumaria a Salidas
+  - escenario: gap_positivo (sobran unidades)
+    accion: verificar si frmMovimiento_Reporte esta siendo usado y hay duplicados
+  - escenario: cliente con inventarios ciclicos
+    accion: validar guard de INVE (multiples INVE para mismo punto se ignoran)
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/modelo-conceptual.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - tools/case-seed/queries/data-discrepancy/
+
+bugs_relacionados:
+  - V-DATAWAY-003
+  - V-DATAWAY-004

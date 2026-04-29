@@ -1,0 +1,192 @@
+id: dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion
+title: Anti-patron ModoDepuracion muta historia
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+bug:
+  id: V-DATAWAY-001
+  severidad: alta
+  estado: pendiente_investigacion
+  titulo: ModoDepuracion en frmStockEnUnaFecha muta trans_movimientos y borra Diferencias_movimientos
+
+archivo:
+  path: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+  funcion: Llena_Grid
+
+property:
+  declaracion:
+    linea: 16
+    cita: |
+      Public Property ModoDepuracion As Boolean = False
+  default: false
+
+activacion:
+  metodo: KeyDown handler
+  trigger: Ctrl + D
+  linea: 981-987
+  cita: |
+    Private Sub frmStockEnUnaFecha_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.Control AndAlso e.KeyCode = Keys.D Then
+            ModoDepuracion = True
+            MsgBox("Modo depuración activado, tenga cuidado...", MsgBoxStyle.Information, Text)
+        End If
+    End Sub
+  desactivacion: solo al cerrar el formulario
+  persistencia_entre_sesiones: false
+
+mutaciones:
+  - id: mutacion_1_borrar_diferencias
+    linea: 315-321
+    cita: |
+      If ModoDepuracion Then
+          vIdDiferencia = clsLnDiferencias_movimientos.MaxID() + 1
+          clsLnDiferencias_movimientos.EliminarTodos()
+      End If
+    target_tabla: Diferencias_movimientos
+    operacion: DELETE_ALL (sin filtro)
+    consecuencia: |
+      Diferencias_movimientos no es historica. Cualquier registro de gap
+      detectado en corrida previa se pierde.
+
+  - id: mutacion_2_insertar_diferencias
+    linea: 449-471
+    target_tabla: Diferencias_movimientos
+    operacion: INSERT
+    condicion: Diferencia <> 0 AndAlso ModoDepuracion
+    campos_insertados:
+      - IdDiferencia
+      - IdProductoBodega
+      - Codigo
+      - Nombre
+      - Lote
+      - IdProductoEstado
+      - Estado
+      - FechaVence
+      - InventarioInicial
+      - Ingresos
+      - AjustesPositivos
+      - AjustesNegativos
+      - Salidas
+      - ExistenciaAl
+      - ExistenciaActual
+      - ExistenciaSinEstado
+      - Diferencia
+    aspecto_positivo: no destructivo
+    aspecto_negativo:
+      - sin IdUsuario
+      - sin FechaAuditoria
+      - sin MotivoAjuste
+      - sin sesion
+
+  - id: mutacion_3_trans_movimientos
+    linea: 401-435
+    target_tabla: trans_movimientos
+    operacion: UPDATE_o_DELETE
+    condicion_entrada: |
+      Diferencia <> 0
+      AndAlso ModoDepuracion
+      AndAlso ExistenciasAl < 0
+      AndAlso ExistenciaActualConFechaYEstado = 0
+    fuente_movimientos: clsLnTrans_movimientos.Get_Movimiento_Despacho_By_Stock(pBeStock)
+    loop_logica:
+      por_movimiento_DESP:
+        si_M_Cantidad_mayor_o_igual_diferencia:
+          accion: M.Cantidad += Diferencia
+          bug_aritmetico: Diferencia += 1 (sospechoso, deberia ser += M.Cantidad consumido)
+          bug_id: V-DATAWAY-001a
+        si_M_Cantidad_menor_diferencia:
+          accion: M.Cantidad = 0
+          siguiente: Diferencia += M.Cantidad (que ya es 0, no suma)
+        marker: M.Serie = "#EJCAJUSTEDESFASE"
+        persistencia:
+          si_M_Cantidad_es_0: clsLnTrans_movimientos.Eliminar(M)
+          si_no: clsLnTrans_movimientos.Actualizar(M)
+    cita: |
+      For Each M In lMovimientos
+          If Diferencia <> 0 Then
+              Debug.Print("IdMovimiento: " & M.IdMovimiento & " " & M.Cantidad)
+              If M.Cantidad >= Math.Abs(Diferencia) Then
+                  M.Cantidad += Diferencia
+                  Diferencia += 1
+              Else
+                  M.Cantidad = 0
+                  Diferencia += M.Cantidad
+              End If
+              M.Serie = "#EJCAJUSTEDESFASE"
+              If M.Cantidad = 0 Then
+                  clsLnTrans_movimientos.Eliminar(M)
+              Else
+                  clsLnTrans_movimientos.Actualizar(M)
+              End If
+          End If
+      Next
+
+marker_personal:
+  string: "#EJCAJUSTEDESFASE"
+  iniciales: EJC
+  significado: Erik Jose Calderon
+  interpretacion: |
+    Hardcode personal que sobrevivio. Sugiere herramienta construida por Erik
+    para resolver caso especifico, sin necesariamente ser politica aprobada.
+
+por_que_es_anti_patron:
+  - rompe inmutabilidad del cardex (trans_movimientos deberia ser append-only)
+  - sin auditoria de quien y cuando (solo marker en Serie)
+  - marker es hardcode con iniciales personales
+  - condicion de entrada muy estrecha (solo cubre escenario muy especifico)
+  - loop puede mutar multiples movimientos por un solo gap
+
+recomendaciones:
+  - id: R1
+    titulo: deprecar ModoDepuracion
+    plazo: corto
+    accion: comentar bloque, exigir AJCANTP/AJCANTN movimientos nuevos auditables
+  
+  - id: R2
+    titulo: si se mantiene, agregar tabla auditoria
+    plazo: medio
+    accion: insertar a clsBeAuditoriaAjuste con IdMovimientoOriginal, CantidadOriginal, IdUsuario, FechaAuditoria, Motivo
+  
+  - id: R3
+    titulo: cambiar DELETE por soft-delete
+    plazo: medio
+    accion: marcar M.Anulado = True en vez de Eliminar(M)
+  
+  - id: R4
+    titulo: NO borrar Diferencias_movimientos en EliminarTodos
+    plazo: corto
+    accion: filtrar por sesion o fecha
+  
+  - id: R5
+    titulo: fix bug aritmetico Diferencia += 1
+    plazo: corto
+    bug_id: V-DATAWAY-001a
+    accion: |
+      Reemplazar Diferencia += 1 por Diferencia += consumido
+      donde consumido = Math.Min(M.Cantidad_original, Math.Abs(Diferencia))
+
+acciones_inmediatas:
+  - id: A1
+    titulo: confirmar con Erik si ModoDepuracion aun se usa
+    pendiente_user_input: true
+  - id: A2
+    titulo: auditar tabla trans_movimientos para detectar registros con marker
+    query_propuesta:
+      sql: |
+        SELECT COUNT(*) cnt, MIN(Fecha) primer, MAX(Fecha) ultimo
+        FROM trans_movimientos
+        WHERE Serie = '#EJCAJUSTEDESFASE'
+      read_only: true
+      target_archivo: tools/case-seed/queries/data-discrepancy/06_movimientos_ejcajustedesfase.sql
+
+bugs_relacionados:
+  - V-DATAWAY-001
+  - V-DATAWAY-001a (sub-bug aritmetico)
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/modelo-conceptual.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - dataway-analysis/00-modelo-identidad-idstock.yml
+  - tools/case-seed/queries/data-discrepancy/

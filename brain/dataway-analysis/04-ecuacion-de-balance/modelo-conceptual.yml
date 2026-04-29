@@ -1,0 +1,141 @@
+id: dataway-analysis/04-ecuacion-de-balance/modelo-conceptual
+title: Modelo conceptual de la ecuacion de balance
+public: machine-structure
+version: 1
+created_in_wave: wave-13-1
+last_updated: 2026-04-29
+
+formula:
+  pseudocodigo: |
+    Existencia_Teorica(t) = Inventario_Inicial(t)
+                          + Ingresos(t)
+                          + Ajustes_Positivos(t)
+                          - Ajustes_Negativos(t)
+                          - Salidas(t)
+  comparacion_con_real: |
+    Diferencia(t) = Existencia_Teorica(t) - Existencia_Actual(t)
+  
+implementacion_canonica:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+  funcion: Llena_Grid
+  linea: 329
+  cita_textual: |
+    ExistenciasAl = ((Obj.Inventario_Inicial + Obj.Ingresos + Obj.AjustePositivo) - (Obj.AjusteNegativo + Obj.Salidas))
+  variables:
+    Obj: instancia de clsBeStockEnUnaFecha (un punto de la grilla)
+    ExistenciasAl: resultado de la ecuacion (Existencia_Teorica)
+
+por_que_es_canonica:
+  - es el unico reporte que muta Diferencias_movimientos cuando detecta gap
+  - es el reporte mas usado por soporte cuando hay desfase
+  - tiene la logica mas simple (sin guards experimentales)
+  contraste:
+    archivo_no_canonico: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+    razon: divergencia genetica con guards abandonados y bug nuevo en linea 201
+    ver: dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+
+componentes:
+  inventario_inicial:
+    tipos_tarea: [INVE]
+    campo_acumulado: ObjM.Cantidad
+    linea_codigo: 173-176
+    cita: |
+      If ObjM.TipoTarea = clsDataContractDI.tTipoTarea.INVE Then
+          BeStockEnFecha.Inventario_Inicial += ObjM.Cantidad
+      End If
+    guard_adicional: ninguno
+  
+  ingresos:
+    tipos_tarea: [RECE]
+    campo_acumulado: ObjM.Cantidad
+    linea_codigo: 177-179
+    cita: |
+      ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.RECE Then
+          BeStockEnFecha.Ingresos += ObjM.Cantidad
+    guard_adicional: ninguno
+    nota_guard_abandonado: |
+      Linea 178 (en la version cuasi-clon frmMovimiento_Reporte) tiene COMENTADO
+      'ElseIf RECE And BeStockEnFecha.IdMovimiento <> ObjM.IdMovimiento Then
+      Ver divergencia-reportes-paralelos.yml para analisis del guard.
+  
+  ajustes_positivos:
+    tipos_tarea: [AJCANTP, AJCANTPI]
+    campo_acumulado: ObjM.Cantidad
+    linea_codigo: 180-181
+  
+  ajustes_negativos:
+    tipos_tarea: [AJCANTN, AJCANTNI]
+    campo_acumulado: ObjM.Cantidad
+    linea_codigo: 182-183
+  
+  salidas:
+    tipos_tarea: [DESP]
+    campo_acumulado: ObjM.Salidas
+    nota_critica: |
+      Suma ObjM.Salidas, no ObjM.Cantidad.
+      En frmStockEnUnaFecha es estable porque Salidas viene de la vista VW_Movimientos.
+      En frmMovimiento_Reporte la misma linea es V-DATAWAY-004 (suma campo derivado en cero).
+    linea_codigo: 184-186
+  
+  no_reconocido:
+    comportamiento: silenciosamente_ignorado
+    linea_codigo: 187-189
+    cita: |
+      Else
+          Debug.Print(ObjM.TipoTarea)
+      End If
+    bug: V-DATAWAY-003
+
+bug_v_dataway_003:
+  id: V-DATAWAY-003
+  severidad: media
+  estado: abierto
+  descripcion: |
+    TipoTarea no reconocido cae en Else con Debug.Print (visible solo en IDE,
+    no en log de produccion). Si en futuro se introduce nuevo TipoTarea
+    (ej: TRANS para transferencia entre bodegas), el balance lo subestima
+    silenciosamente.
+  mitigacion_propuesta:
+    opcion_1: lanzar excepcion explicita
+    opcion_2: loggear a clsLog en produccion
+    no_implementado: true
+
+ubic_caso_especial:
+  comportamiento_actual: cae_en_else (silencio)
+  comportamiento_correcto: neutro_explicito
+  fix_propuesto: |
+    ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.UBIC Then
+        ' neutro: no afecta balance
+    Else
+        ' alertar TipoTarea desconocida
+    End If
+
+iteracion_logica:
+  pseudocodigo: |
+    Para cada ObjM en ListaMovimientos (ordenado por EstadoOrigen):
+        1. Localizar punto BeStockEnFecha en RepMovEnUnaFecha matching:
+           Codigo + IdEstadoOrigen + Fecha_Vence
+        2. Si no existe -> Add nuevo
+           Si existe -> tomar referencia (puntero, ver glossary)
+        3. Acumular ObjM.Cantidad/Salidas en campo segun TipoTarea
+        4. Continuar
+  comentario_puntero:
+    archivo: frmStockEnUnaFecha.vb
+    linea: 172
+    cita: |
+      BeStockEnFecha = RepMovEnUnaFecha(Idx)  'Puntero =>
+    interpretacion: el autor del reporte tenia la analogia C++ desde el inicio
+
+cross_refs:
+  - dataway-analysis/04-ecuacion-de-balance/granularidad-y-keys.yml
+  - dataway-analysis/04-ecuacion-de-balance/tipos-tarea-relevantes.yml
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - dataway-analysis/00-modelo-identidad-idstock.yml
+  - tools/case-seed/queries/data-discrepancy/02_movements_window.sql
+
+bugs_relacionados:
+  - V-DATAWAY-001
+  - V-DATAWAY-002
+  - V-DATAWAY-003
+  - V-DATAWAY-004
