@@ -1,0 +1,332 @@
+function:
+  name: Reserva_Stock
+  alias: core
+  file: TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb
+  line_start: 138
+  line_end: 427
+  size_lines: 290
+  visibility: Public Shared
+  return_type: Boolean
+  scanned_at: 2026-04-29
+  source_commit: pending_capture
+  one_liner: >
+    Núcleo de reserva de stock genérico. Recibe un clsBeStock_res, consulta stock disponible vía
+    clsLnStock.lStock, resta reservas pendientes, normaliza la cantidad solicitada según presentación
+    (Pallet vs UMBas vs control-por-peso), recorre el stock disponible asignando reservas y persiste
+    vía Inserta_Stock_Reservado. Si queda fracción decimal, se auto-llama recursivamente en UMBas.
+
+signature:
+  parameters:
+    - name: pStockRes
+      type: clsBeStock_res
+      mode: ByRef
+      optional: false
+      purpose: solicitud de reserva (entrada y mutación; campos relevantes IdBodega, IdProductoBodega, IdPresentacion, Cantidad, Indicador, IdPedido, IdPedidoDet, IdTransaccion, Color, Talla, IdProductoTallaColor)
+    - name: pIdPropietario
+      type: Integer
+      mode: ByVal
+      optional: false
+      purpose: propietario contable que solicita la reserva (alimenta lookup de i_nav_config_enc)
+    - name: DiasVencimiento
+      type: Double
+      mode: ByVal
+      optional: false
+      purpose: días para considerar fecha vencimiento al filtrar stock (pasado a clsLnStock.lStock)
+    - name: MaquinaQueSolicita
+      type: String
+      mode: ByVal
+      optional: false
+      purpose: hostname de la PC que dispara la reserva (auditoría, va a stock_res.Host)
+    - name: lConnection
+      type: SqlConnection
+      mode: ByRef
+      optional: false
+      purpose: conexión SQL ambiente (transaccional)
+    - name: ltransaction
+      type: SqlTransaction
+      mode: ByRef
+      optional: false
+      purpose: transacción ambiente
+    - name: pExcluirUbicacionPicking
+      type: Boolean
+      mode: ByVal
+      optional: true
+      default: false
+      purpose: si true, clsLnStock.lStock excluye ubicaciones zona-picking (caso traslado/reabasto)
+    - name: BeConfigEnc
+      type: clsBeI_nav_config_enc
+      mode: ByVal
+      optional: true
+      default: Nothing
+      purpose: config encabezado i_nav_config_enc opcional (si no se pasa, se busca en cache o BD)
+
+local_variables:
+  - { name: lBeStockExistente, type: List(Of clsBeStock), purpose: candidatos retornados por lStock }
+  - { name: lBeStockAReservar, type: List(Of clsBeStock_res), purpose: acumulador de reservas a persistir }
+  - { name: BeProducto, type: clsBeProducto, purpose: instancia llenada ByRef por lStock }
+  - { name: BeStockRes, type: clsBeStock_res, purpose: acumulador iterativo dentro del For Each }
+  - { name: vIdxConfig, type: Integer, initial_value: -1, purpose: índice de cache de config (DEAD, nunca se setea) }
+  - { name: vCantidadCompletada, type: Boolean, purpose: flag exit del loop de reserva }
+  - { name: vCantidadStock, type: Double, purpose: cantidad disponible iterativa por IdStock }
+  - { name: vCantidadPendiente, type: Double, purpose: cantidad aún por reservar (decremental) }
+  - { name: vCantidadSolicitadaPedido, type: Double, purpose: cantidad solicitada normalizada en UMBas }
+  - { name: vValorEnteroCantidadSolicitadaPedido, type: Integer, purpose: parseo entero de la cantidad }
+  - { name: vCantidadAReservarPorIdStock, type: Double, purpose: cantidad a reservar en el IdStock actual }
+  - { name: vCantidadEnteraPres, type: Integer, purpose: parte entera del Split_Decimal }
+  - { name: vCantidadDecimalUMBas, type: Double, purpose: parte decimal del Split_Decimal multiplicada por Factor (trigger de recursión) }
+  - { name: vIdxPresentacion, type: Integer, initial_value: -1, purpose: índice de cache de presentación }
+
+dead_variables:
+  - vCantidadPresentacionAUbicar: declarada L166, nunca leída ni asignada
+  - BePresentacion: declarada L167, nunca usada (existe BePres dentro del else)
+  - vCantidadTarima: declarada L168, nunca usada
+
+global_state_used:
+  - name: lBeConfigInMemory
+    type: cache
+    purpose: cache module-level de configs i_nav_config_enc (acumulativa, sin invalidación visible)
+  - name: lPresentaciones
+    type: cache
+    purpose: cache module-level de clsBeProducto_Presentacion
+
+callees:
+  - { target: clsLnI_nav_config_enc.GetSingle_By_IdBodega_And_IdPropietario, type: db_read, location: B003, table: i_nav_config_enc }
+  - { target: clsLnStock.lStock, type: db_read, location: B004, table: stock + joins, note: "función central de query stock; recibe pExcluirUbicacionPicking; llena BeProducto ByRef" }
+  - { target: Get_Cantidad_ReservadaUMBas_By_IdStock, type: db_read, location: B005, table: stock_res, note: "interna del archivo; segundo arg=False" }
+  - { target: clsLnProducto_presentacion.GetSingle, type: db_read, location: B008, table: producto_presentacion }
+  - { target: Split_Decimal, type: math, location: B008, note: "interna del archivo L120, separa entero y decimal" }
+  - { target: clsLnProducto.Tiene_Control_Por_Peso_By_IdProductoBodega, type: db_read, location: B008, table: producto_bodega }
+  - { target: Inserta_Stock_Reservado, type: db_write, location: B010, table: stock_res, note: "interna del archivo L4778, persiste lote completo" }
+  - { target: Reserva_Stock, type: recursion, location: B010, note: "se llama a sí misma con fracción decimal en UMBas" }
+  - { target: clsLnLog_error_wms.Agregar_Error, type: db_write, location: B011, table: log_error_wms }
+
+blocks:
+  - { id: B001, lines: "147", type: init, summary: "Default return = False", next: B002 }
+  - { id: B002, lines: "150-425", type: try_catch, summary: "Wrapper Try/Catch principal", catch_block: B011, next: B003 }
+  - id: B003
+    lines: "170-199"
+    type: branch + db_read
+    summary: "Resolución BeConfigEnc por (IdBodega, IdPropietario)"
+    sub_branches:
+      - condition: "vIdxConfig = -1 (siempre true, nunca se asigna otro valor)"
+        on_true: "evaluar BeConfigEnc Is Nothing"
+        on_false: "leer BeConfigEnc desde cache lBeConfigInMemory(vIdxConfig)"
+        dead_else: true
+      - condition: "BeConfigEnc Is Nothing"
+        on_true: "leer de BD vía GetSingle_By_IdBodega_And_IdPropietario; cachear en lBeConfigInMemory"
+        on_false: "usar BeConfigEnc recibido"
+      - condition: "BeConfigEnc Is Nothing post-lookup"
+        on_true: "throw ERROR_202210182024"
+    next: B004
+  - { id: B004, lines: "201-207", type: db_read, summary: "Query stock disponible vía clsLnStock.lStock; pasa pExcluirUbicacionPicking; llena BeProducto ByRef", next: B005 }
+  - id: B005
+    lines: "210-224"
+    type: loop + db_read
+    summary: "Para cada stock candidato, restar reservas UMBas pendientes del propio stock"
+    note: "solo resta UMBas (Get_Cantidad_ReservadaUMBas_By_IdStock con segundo arg=False); NO resta reservas en otras unidades"
+    next: B006
+  - { id: B006, lines: "226", type: filter, summary: "Filtrar lBeStockExistente.Where(x.Cantidad > 0)", next: B007 }
+  - id: B007
+    lines: "228, 417-419"
+    type: branch
+    summary: "Branch principal: lBeStockExistente.Count > 0"
+    sub_branches:
+      - condition: "Count > 0"
+        on_true: "continuar a B008"
+      - condition: "Count = 0"
+        on_true: "throw ERROR clsDalEx.ErrorS0004"
+    next: B008
+  - id: B008
+    lines: "230-288"
+    type: branch + math + cache + db_read
+    summary: "Normalización de la cantidad solicitada según presentación (UMBas vs Pallet vs control-por-peso)"
+    sub_branches:
+      - condition: "pStockRes.IdPresentacion = 0"
+        on_true: "vCantidadSolicitadaPedido = pStockRes.Cantidad (UMBas directa)"
+        note: "comentario L232-233 admite escenario UMBas no probado"
+      - condition: "pStockRes.IdPresentacion <> 0"
+        on_true: "buscar BePres en cache lPresentaciones, si miss leer de BD vía GetSingle"
+        sub_sub_branches:
+          - condition: "BePres.EsPallet"
+            on_true: "vCantidadSolicitadaPedido = pStockRes.Cantidad * (Factor * CajasPorCama * CamasPorTarima)"
+            on_throw: "si vFactorPallet <= 0 → throw 'denominador 0'"
+          - condition: "NOT BePres.EsPallet"
+            on_true: "Split_Decimal + Math.Ceiling de la fracción × Factor; si entero > 0 usa entero, sino usa decimal"
+            sub_sub_sub_branches:
+              - condition: "NOT producto.Tiene_Control_Por_Peso"
+                on_true: "Integer.TryParse o Math.Truncate"
+              - condition: "producto.Tiene_Control_Por_Peso"
+                on_true: "Math.Round(vCantidadSolicitadaPedido, 6)"
+    next: B009
+  - id: B009
+    lines: "290-389"
+    type: loop + branch
+    summary: "Iteración del stock candidato armando los clsBeStock_res a reservar"
+    sub_branches:
+      - condition: "lBeStockExistente Is Nothing (defensive post-Count>0, redundante)"
+        on_true: "throw ERROR clsDalEx.ErrorS0005"
+        dead_branch: true
+      - condition: "vCantidadSolicitadaPedido > vCantidadStock total"
+        on_true: "throw ERROR clsDalEx.ErrorS0002 (stock insuficiente, NO acepta parcial)"
+    inner_loop:
+      iterates_over: lBeStockExistente
+      per_iteration:
+        - "redondear vStock.Cantidad a 6 decimales"
+        - "if Cantidad = 0 → Debug.Print (no continue ni skip)"
+        - "if Cantidad > 0 → construir BeStockRes copiando campos de pStockRes y vStock"
+        - "branch cantidad pendiente vs cantidad stock (3 ramas: =, <, >)"
+        - "asignar Estado = 'UNCOMMITED' (typo? falta una T)"
+        - "asignar Color, Talla, IdProductoTallaColor (#GT09012025 reciente)"
+        - "asignar Host = MaquinaQueSolicita"
+        - "Add a lBeStockAReservar"
+        - "if vCantidadCompletada → Exit For"
+    next: B010
+  - id: B010
+    lines: "391-415"
+    type: db_write + recursion
+    summary: "Persistencia + recursión por fracción decimal sobrante"
+    sub_branches:
+      - condition: "lBeStockAReservar.Count > 0"
+        on_true: "Inserta_Stock_Reservado(...)"
+        on_false: "(retorna False sin throw — caso edge no validado)"
+      - condition: "Inserta_Stock_Reservado retorna True"
+        on_true:
+          - "if vCantidadDecimalUMBas > 0 → RECURSIÓN: Reserva_Stock(BeStockRes con Cantidad=fracción, IdPresentacion=0, ...)"
+          - "Reserva_Stock = True"
+        on_throw: "si retorna False → throw ERROR clsDalEx.ErrorS0006"
+    next: end_function
+  - id: B011
+    lines: "421-425"
+    type: catch
+    summary: "Catch genérico: log via clsLnLog_error_wms.Agregar_Error con prefix ERROR_20220825_1417, re-throw"
+    next: end_function
+
+control_flow:
+  diagram_path: "legacy-process-flow/diagrams/01-reserva-stock-core.mmd"
+  pending_diagram: true
+
+extracted_rules:
+  - id: R001
+    rule: "BeConfigEnc se obtiene por la clave (IdBodega, IdPropietario), no por usuario ni canal"
+    depends_on: [bodega, propietario]
+    legacy_anchor: "L183-186"
+    net8_equivalent: "ConfigResolverStep (inferido)"
+    parity_status: unknown_pending_verification
+  - id: R002
+    rule: "Stock disponible = stock - cantidad ya reservada UMBas (NO resta reservas en otras unidades)"
+    depends_on: [stock_res existente del mismo IdStock]
+    legacy_anchor: "L210-224"
+    net8_equivalent: "SubtractExistingReservationsStep (inferido)"
+    parity_status: unknown_pending_verification
+    risk: "asimetría UMBas vs presentación; posible doble-reserva si hay reservas activas en otras unidades"
+  - id: R003
+    rule: "Si IdPresentacion = 0 la cantidad se interpreta como UMBas y NO se transforma"
+    depends_on: [presentacion]
+    legacy_anchor: "L230-233"
+    parity_status: unknown
+  - id: R004
+    rule: "Si BePres.EsPallet la cantidad se multiplica por (Factor * CajasPorCama * CamasPorTarima)"
+    depends_on: [presentacion.EsPallet, factores de pallet]
+    legacy_anchor: "L251-260"
+    parity_status: unknown
+  - id: R005
+    rule: "Si producto NO tiene control por peso → cantidad se trunca/parsea a entero; si sí tiene → se redondea a 6 decimales"
+    depends_on: [producto.Tiene_Control_Por_Peso]
+    legacy_anchor: "L276-284"
+    parity_status: unknown
+  - id: R006
+    rule: "Stock se reserva en el orden que retorna lStock; el FEFO viene heredado de esa función, no se ordena dentro de Reserva_Stock"
+    depends_on: [orden de retorno de lStock]
+    legacy_anchor: "L301-387"
+    parity_status: unknown
+  - id: R007
+    rule: "La fracción decimal sobrante se reserva por separado en UMBas vía recursión"
+    depends_on: [presentacion, fracción decimal de la cantidad]
+    legacy_anchor: "L396-405"
+    note: "la recursión NO captura return value y NO propaga pExcluirUbicacionPicking ni BeConfigEnc"
+    parity_status: unknown
+  - id: R008
+    rule: "Estado inicial de stock_res = 'UNCOMMITED' (literal, con typo de la doble T)"
+    depends_on: []
+    legacy_anchor: "L351"
+    parity_status: unknown
+  - id: R009
+    rule: "Stock insuficiente NO permite reserva parcial: tira ErrorS0002 si solicitado > disponible total"
+    depends_on: []
+    legacy_anchor: "L295-297"
+    parity_status: unknown
+  - id: R010
+    rule: "Color, Talla e IdProductoTallaColor se propagan desde pStockRes al BeStockRes (no se validan)"
+    depends_on: [color, talla, talla_color]
+    legacy_anchor: "L375-377"
+    note: "agregado #GT09012025 (reciente, posterior al refactor MI3)"
+    parity_status: unknown_likely_missing_in_net8
+
+logging_checkpoints:
+  - { prefix: "ERROR_202210182024", location: L193, meaning: "config faltante para combinación IdBodega+IdPropietario" }
+  - { prefix: "ERROR_20220825_1417", location: L422, meaning: "catch genérico de la función" }
+
+errors_thrown:
+  - { code: "clsDalEx.ErrorS0002", location: L296, condition: "vCantidadSolicitadaPedido > vCantidadStock total", semantics: "stock insuficiente", accepts_partial: false }
+  - { code: "clsDalEx.ErrorS0004", location: L418, condition: "lBeStockExistente.Count = 0 después de filtrar Cantidad > 0", semantics: "no hay stock disponible para el producto" }
+  - { code: "clsDalEx.ErrorS0005", location: L414, condition: "lBeStockExistente Is Nothing post-cálculo (defensive, dead branch porque B007 ya validó Count > 0)", semantics: "lista stock vacía defensive" }
+  - { code: "clsDalEx.ErrorS0006", location: L410, condition: "Inserta_Stock_Reservado retorna False", semantics: "fallo de persistencia" }
+  - { code: "ad-hoc", location: L193, condition: "BeConfigEnc Is Nothing post-lookup en BD", semantics: "config crítica no encontrada" }
+  - { code: "ad-hoc", location: L258, condition: "BePres.EsPallet con vFactorPallet <= 0", semantics: "factores de conversión de pallet inválidos" }
+
+recursion:
+  exists: true
+  trigger: "vCantidadDecimalUMBas > 0 después de Inserta_Stock_Reservado exitoso"
+  marker_used: false
+  marker_note: "NO usa No_bulto = 1965 (ese marker es exclusivo del adapter MI3)"
+  return_value_captured: false
+  parameters_passed: [BeStockRes, pIdPropietario, DiasVencimiento, MaquinaQueSolicita, lConnection, ltransaction]
+  parameters_lost:
+    - pExcluirUbicacionPicking: "vuelve a False default → posible inconsistencia si la llamada original era True"
+    - BeConfigEnc: "vuelve a Nothing → relectura de BD innecesaria"
+  bug_warnings:
+    - "no captura return value: si la fracción falla, se pierde silenciosamente"
+    - "no propaga config → relectura redundante de BD"
+    - "no propaga ExcluirUbicacionPicking → posible reserva en zona prohibida"
+
+gotos: []
+
+dead_code:
+  - { description: "Else branch porque vIdxConfig nunca cambia de -1", location: "L196-199" }
+  - { description: "Variable vCantidadPresentacionAUbicar declarada nunca usada", location: "L166" }
+  - { description: "Variable BePresentacion declarada nunca usada", location: "L167" }
+  - { description: "Variable vCantidadTarima declarada nunca usada", location: "L168" }
+  - { description: "BeStockRes.IdRecepcion asignado dos veces (segunda asignación redundante, mismo valor)", location: "L358 y L367" }
+  - { description: "Branch defensive lBeStockExistente Is Nothing imposible alcanzar (B007 ya validó Count > 0)", location: "L290 vs L413" }
+
+open_questions:
+  - { id: "Q-CORE-01", text: "¿Es intencional que vIdxConfig nunca cambie de -1? El else de B003 nunca se ejecuta.", blocks_block: B003, severity: media }
+  - { id: "Q-CORE-02", text: "La recursión por fracción decimal NO captura return value. ¿Es bug latente o se asume que siempre va a funcionar?", blocks_block: B010, severity: alta }
+  - { id: "Q-CORE-03", text: "¿Por qué reservar la fracción decimal por separado en UMBas en vez de un solo set? Hipótesis: trazabilidad ERP / unidad básica del producto.", blocks_block: B010, severity: media }
+  - { id: "Q-CORE-04", text: "Estado = 'UNCOMMITED' tiene un typo (debería ser UNCOMMITTED). ¿Está así también en BD y en el resto del codebase? Si sí, es contrato.", blocks_block: B009, severity: baja }
+  - { id: "Q-CORE-05", text: "Si lBeStockAReservar.Count = 0 después del loop (caso edge), retorna False sin throw. ¿Es esperado?", blocks_block: B010, severity: media }
+  - { id: "Q-CORE-06", text: "Get_Cantidad_ReservadaUMBas_By_IdStock solo resta UMBas; ¿qué pasa si hay reservas activas en otra presentación del mismo IdStock? Posible doble-reserva.", blocks_block: B005, severity: alta }
+  - { id: "Q-CORE-07", text: "La recursión NO propaga pExcluirUbicacionPicking ni BeConfigEnc. ¿Bug o feature? Si la llamada original excluía picking, la recursión sí podría reservar en picking.", blocks_block: B010, severity: alta }
+  - { id: "Q-CORE-08", text: "Color, Talla, IdProductoTallaColor (agregados #GT09012025) son recientes. ¿Existen en el motor nuevo .NET 8?", blocks_block: B009, severity: alta }
+
+callers:
+  pending_inventory: true
+  note: "Wave 13 enumerará todos los call-sites externos a Reserva_Stock; conocidos hasta ahora: WMS.DALCore/Pedido/clsLnTrans_pe_det.cs L1294 (motor nuevo facade), y los 7 sobrecargas adapters del mismo archivo (NAV_BYB, Lista_Result, Especifico ov1/ov2, From_Reabasto, From_MI3, From_SAP) que en su mayoría replican lógica en vez de delegar al core"
+
+net8_equivalent:
+  facade_method: "StockReservationFacade.Reserva_Stock"
+  pipeline_steps_inferred:
+    - { step: ConfigResolverStep, maps_to_block: B003 }
+    - { step: StockQueryStep, maps_to_block: B004 }
+    - { step: SubtractExistingReservationsStep, maps_to_block: B005 }
+    - { step: QuantityNormalizationStep, maps_to_block: B008 }
+    - { step: StockSplitStep, maps_to_block: B009 }
+    - { step: PersistStep, maps_to_block: B010 }
+    - { step: FractionalUMBasFallbackStep, maps_to_block: "B010 (recursión)" }
+  parity_status: unknown_pending_wave13
+  gaps_to_verify_in_wave13:
+    - "¿FractionalUMBasFallbackStep propaga ExcluirPicking y Config?"
+    - "¿SubtractExistingReservationsStep es UMBas-only o cubre todas las presentaciones?"
+    - "¿Color/Talla/TallaColor están en el contrato de stock_res del nuevo?"
+    - "¿Estado inicial es 'UNCOMMITED' o 'UNCOMMITTED'?"
+    - "¿Reserva parcial es soportada (R009) o el nuevo cambió la semántica?"
