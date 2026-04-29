@@ -1,0 +1,547 @@
+id: "06-reserva-stock-from-reabasto"
+title: "Reserva_Stock_From_Reabasto"
+file: "TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb"
+line_range: "L9856-L13108"
+size_lines: 3253
+classification: "ENTRY POINT alternativo / CALLEE recursivo — flujo de reserva durante reabasto"
+documented_in: "Wave 12 sub-wave 12B-2, 2026-04-29 (deep mode)"
+arquitectura: |
+  Funcion mas grande y mas compleja del pipeline de reserva. Implementa explicitamente
+  el ALGORITMO CLAVAUD con tres listas separadas (pallets completos, pallets en zona
+  picking, resto), respeta granularmente la configuracion del propietario, ejecuta
+  SPLIT FISICO de stock con markers de auditoria, y se llama a si misma 3 veces como
+  fallback de degradacion gradual a unidades de medida basica.
+
+signature:
+  language: "VB.NET"
+  declaration: |
+    Public Shared Function Reserva_Stock_From_Reabasto(
+        ByRef pStockRes As clsBeStock_res,
+        ByVal DiasVencimiento As Double,
+        ByVal MaquinaQueSolicita As String,
+        ByVal pBeConfigEnc As clsBeI_nav_config_enc,
+        ByRef pCantidadDisponibleStock As Double,
+        ByVal pIdPropietarioBodega As Integer,
+        ByRef pListStockResOUT As List(Of clsBeStock_res),
+        ByRef lConnection As SqlConnection,
+        ByRef ltransaction As SqlTransaction,
+        Optional No_Linea As Integer = 0,
+        Optional pTarea_Reabasto As Boolean = False,
+        Optional ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det = Nothing
+    ) As Boolean
+
+novedades_de_firma_vs_pipeline_anterior:
+  - param: "pBeConfigEnc"
+    novedad: "Recibe la config COMPLETA del propietario (no solo IdPropietario). Habilita lectura granular de flags."
+  - param: "pCantidadDisponibleStock ByRef"
+    novedad: "OUT parameter — devuelve cantidad disponible al caller cuando dispara error S0002 (para mensajes de error contextualizados)."
+  - param: "No_Linea (Optional)"
+    novedad: "Parametro CKFK20221019 'para poder enviar la linea para B&B'. Si > 0, se almacena en BeStockRes.Serial. Referencia a BYB pero NO es hardcode 1060315."
+  - param: "pTarea_Reabasto (Optional)"
+    novedad: "Flag que se propaga al call clsLnStock.lStock cambiando su comportamiento de busqueda."
+  - param: "pBeTrasladoDet (Optional)"
+    novedad: "Si esta presente, despues del INSERT actualiza Quantity_Reserved_WMS en el detalle del pedido traslado NAV ERP."
+
+bloques:
+  - id: "B1"
+    line_range: "L9856-L9879"
+    nombre: "Firma + init"
+    descripcion: "Declara 50+ variables locales (cantidad, peso, presentacion, ubicacion, listas, flags). Init Reserva_Stock_From_Reabasto = False."
+
+  - id: "B2"
+    line_range: "L9880-L9945"
+    nombre: "Lookup IdPropietario + DEBUG CODE EN PRODUCCION"
+    descripcion: |
+      Resuelve IdPropietario via clsLnPropietarios.Get_IdPropietario.
+      ADVERTENCIA: contiene debug code hardcoded:
+        If pStockRes.IdProductoBodega = 183 Then Debug.Print("Hola")  ' L9943
+      Es V-FROMR-001 (debug muerto en produccion).
+
+  - id: "B3"
+    line_range: "L9947-L9988"
+    nombre: "Carga lista inicial de stock + filtros tempranos"
+    descripcion: |
+      Llama clsLnStock.lStock (la funcion central que devuelve stock disponible).
+      Llama Restar_Stock_Reservado_EJC para descontar reservas existentes.
+      Filtra cantidades = 0. Setea vEncontroExistenciaEnPresentacion si encontro.
+
+  - id: "B4"
+    line_range: "L9990-L10025"
+    nombre: "Calcula cantidad de tarimas completas Clavaud (zona picking)"
+    descripcion: |
+      Marker EJC202211081012: 'Buscar cantidad de tarimas por conservar zona de picking
+      merhonsa clavaud'. Usa BePresentacionStock.CajasPorCama * CamasPorTarima para saber
+      cuantas tarimas COMPLETAS pediria el pedido. Esto se usa despues para no fragmentar
+      pallets innecesariamente.
+
+  - id: "B5"
+    line_range: "L10029-L10192"
+    nombre: "Branch EXPLOSION AUTOMATICA (vSimplificado)"
+    descripcion: |
+      Si Explosion_Automatica O Explosion_Automatica_Desde_Ubicacion_Picking estan ON
+      Y (no hay stock O pedido sin presentacion):
+        - Carga producto y presentacion por defecto
+        - Si no hay stock y pidio en unidades: marca para buscar de nuevo en presentacion
+        - Si pidio en presentacion y no encontro: respeta Rechazar_pedido_incompleto
+        - Re-llama clsLnStock.lStock con flag de explosion (parametro 8 = True)
+        - Setea vRestoInventarioEnUmBas = True
+      Multiples Throw Error_202302021127, Error_202212140140D, Error_202302021128.
+
+  - id: "B6"
+    line_range: "L10194-L10421"
+    nombre: "Calculo cantidad solicitada segun presentacion + validacion exceso"
+    descripcion: |
+      Paralelo a Especifico ov1/ov2 pero MUCHO mas complejo:
+        - Si IdPresentacion = 0: cantidad directa en UMBas
+        - Si EsPallet: cantidad * (Factor * CajasPorCama * CamasPorTarima)
+        - Si Explosion_Automatica ON: usa Split_Decimal y multiplica decimal por Factor
+        - Sino: cantidad * Factor (con redondeos por control por peso)
+      Despues valida: si solicitado > stock disponible, respeta Rechazar_pedido_incompleto
+      o ajusta vCantidadSolicitadaPedido = vDisponibleStockEnPres (degradacion silenciosa).
+
+  - id: "B7"
+    line_range: "L10423-L10446"
+    nombre: "Setup ALGORITMO CLAVAUD"
+    descripcion: |
+      Calcula vCantidadDispStock total. Setea vCantidadPendiente = vCantidadSolicitadaPedido.
+      Si Conservar_Zona_Picking_Clavaud ON, particiona lBeStockExistente en dos sub-listas:
+        lBeStockConPalletsCompletosClavaud = stocks con Pallet_Completo=True AND UbicacionPicking=False
+        lBeStockConPalletsInCompletosClavaud = stocks con UbicacionPicking=True
+      Esta es la implementacion EXPLICITA del algoritmo Clavaud en codigo.
+
+  - id: "B8"
+    line_range: "L10448-L11156"
+    nombre: "LOOP 1 — Pallets Completos Clavaud (~709 lineas)"
+    descripcion: |
+      For Each vStockOrigen In lBeStockConPalletsCompletosClavaud.
+      Cuerpo: validacion ubicacion + Continue For si supera Explosion_Automatica_Nivel_Max,
+      luego CASO_#1 (cant pendiente == disp), CASO_#2B (decimal pres = 0 = multiplo exacto),
+      CASO_#2 ELSE (split fisico de 1 caja a UMBas, INSERT nuevo stock con No_bulto=1989,
+      decremento o eliminacion del stock origen, 2 stock_res creados con markers
+      Uds_lic_plate=20220525 y =20220526).
+      Termina con Exit For si vCantidadPendiente = 0.
+
+  - id: "B9"
+    line_range: "L11160-L11965"
+    nombre: "LOOP 2 — Pallets Incompletos Clavaud (~785 lineas)"
+    descripcion: |
+      Estructura paralela a Loop 1 pero sobre lBeStockConPalletsInCompletosClavaud
+      (los que ya estan en zona de picking). Mismos casos #1, #2B, #2 ELSE.
+      Throw Error_202303101448E,F,G,H y Error_202302061305A,B con codigos diferenciados.
+
+  - id: "B10"
+    line_range: "L11982-L12725"
+    nombre: "LOOP 3 — Stock Existente general (~740 lineas)"
+    descripcion: |
+      Estructura paralela. Recorre lBeStockExistente entero (no particionado).
+      Es el fallback si Conservar_Zona_Picking_Clavaud esta OFF, o si los Loops 1-2
+      no completaron la cantidad.
+
+  - id: "B11"
+    line_range: "L12729-L12823"
+    nombre: "INSERT principal + RECURSION C (UMBas si quedo decimal)"
+    descripcion: |
+      Inserta_Stock_Reservado(lBeStockAReservar). Si Explosion_Automatica ON Y queda
+      vCantidadDecimalUMBas > 0:
+        - Crea BeStockResUMBas clonando BeStockRes
+        - Llamada RECURSIVA a Reserva_Stock_From_Reabasto con BeStockResUMBas
+        - Acumula resultado en vlBeStockAReservarUMBas
+      pStockRes = BeStockRes (V-FROMR-006: muta el parametro de entrada por completo).
+      pListStockResOUT = lBeStockAReservar (REPLACE — V-FROMR-007 inconsistencia).
+      Reserva_Stock_From_Reabasto = True.
+
+  - id: "B12"
+    line_range: "L12825-L12985"
+    nombre: "Branch alternativo + RECURSION B (cantidad pendiente con presentacion)"
+    descripcion: |
+      Si pStockRes.IdPresentacion <> 0 Y Explosion_Automatica Y vCantidadDecimalUMBas > 0:
+        - Marca BeStockResUMBas con No_bulto = 1965 ('Identificacion para solicitud recursiva')
+        - GUARD: solo si BeStockResUMBas.No_bulto = 0 antes (previene recursion infinita)
+        - Llamada RECURSIVA
+      Misma logica de pStockRes = BeStockRes / pListStockResOUT replace.
+
+  - id: "B13"
+    line_range: "L12987-L13007"
+    nombre: "Validacion Despachar_existencia_parcial"
+    descripcion: |
+      Si Despachar_existencia_parcial = No: Throw S0004 con mensaje contextualizado
+      (variante 'Sin pres' o con presentacion).
+
+  - id: "B14"
+    line_range: "L13008-L13099"
+    nombre: "Branch fallback + RECURSION A (sin presentacion, hay que explosionar)"
+    descripcion: |
+      Si Explosion_Automatica ON Y pStockRes.IdPresentacion = 0 Y hay stock:
+        - Marca BeStockResUMBas con No_bulto = 1965
+        - GUARD: solo si BeStockResUMBas.No_bulto = 0 antes
+        - Llamada RECURSIVA
+
+  - id: "B15"
+    line_range: "L13103-L13108"
+    nombre: "Catch + End Try"
+    descripcion: |
+      Catch ex As Exception
+          'Throw ex
+          Throw ex
+      End Try
+      V-FROMR-004: Throw ex (vs Throw) PIERDE STACK TRACE original. Y NO agrega
+      contexto de funcion como hacen otras funciones del pipeline.
+
+algoritmo_clavaud:
+  descripcion: |
+    Conservar_Zona_Picking_Clavaud es una politica de ALMACENAMIENTO que dice:
+    los pallets completos en zona DE ALMACENAMIENTO no deben fragmentarse mientras
+    haya stock equivalente en zona DE PICKING. Esto preserva:
+      - Eficiencia operativa (montacargas no debe romper pallets sellados)
+      - Trazabilidad (pallet completo = lote unico, lote unico = sello del proveedor)
+      - Ergonomia (zona picking diseñada para extraccion fragmentada)
+  prioridad_legacy:
+    - "1ro: Loop 1 sobre lBeStockConPalletsCompletosClavaud (Pallet_Completo=True AND NOT UbicacionPicking)"
+    - "2do: Loop 2 sobre lBeStockConPalletsInCompletosClavaud (UbicacionPicking=True)"
+    - "3ro: Loop 3 sobre lBeStockExistente entero (fallback general)"
+  cross_ref: "ya documentado en brain/entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md (modulo MI3) — Reabasto y MI3 comparten estrategia"
+
+recursividad:
+  cantidad: 3
+  patron: "Degradacion gradual a unidades de medida basica (UMBas) cuando la presentacion no completa la cantidad pedida"
+  guard_anti_loop: |
+    Las recursiones B y A usan marker No_bulto = 1965 para identificarse.
+    GUARD pre-recursion: 'If BeStockResUMBas.No_bulto = 0 Then ... mark = 1965 ... recurse'
+    Si la recursion entrante ya viene marcada con 1965, NO recursiona mas.
+    BUG ARQUITECTONICO: la recursion C (L12765, despues del INSERT principal) NO usa
+    marker 1965 — usa vlBeStockAReservarUMBas como acumulador. Si esa recursion
+    interna dispara recursion ulterior, no hay guard.
+  puntos:
+    - id: "RECURSION_A"
+      line: 13041
+      contexto: "Branch fallback: pStockRes vino sin presentacion y hay que explosionar"
+      marker: "No_bulto = 1965"
+    - id: "RECURSION_B"
+      line: 12899
+      contexto: "Branch alternativo: pStockRes con presentacion y queda decimal pendiente"
+      marker: "No_bulto = 1965"
+    - id: "RECURSION_C"
+      line: 12765
+      contexto: "Despues del INSERT principal exitoso: queda vCantidadDecimalUMBas > 0"
+      marker: "ninguno (usa vlBeStockAReservarUMBas como acumulador)"
+      bug: "Sin guard anti-loop"
+
+split_fisico_de_stock:
+  descripcion: "Igual patron que Reserva_Stock_Lista_Result (V-002 + V-003 ahi documentadas), pero generalizado a cualquier cliente"
+  marcador_stock_creado: "No_bulto = 1989 (mismo marcador que Lista_Result BYB)"
+  marcadores_stock_res_creados:
+    - "Uds_lic_plate = 20220525 — 'tomado a partir de una caja explosionada'"
+    - "Uds_lic_plate = 20220526 — 'tomado a partir de cajas de una solicitud en unidades'"
+  pasos_dentro_loop_1_caso_2_else:
+    - "1. Crear BeStockDestino con cantidad = (1 * Factor) UMBas, IdPresentacion = 0, No_bulto = 1989"
+    - "2. Math.Abs(... - Fix(...)) check: validacion paranoica que cantidad sea entera"
+    - "3. clsLnStock.Insertar(BeStockDestino) — crea fisicamente el nuevo IdStock"
+    - "4. vStockOrigen.Cantidad = BeStockOriginal.Cantidad - (1 * Factor)"
+    - "5. Si vStockOrigen.Cantidad > 0: clsLnStock.Actualizar_Cantidad — UPDATE"
+    - "6. Si vStockOrigen.Cantidad <= 0: clsLnStock.Eliminar_By_IdStock — DELETE"
+    - "7. Insertar(BeStockRes) — primer stock_res con marker Uds_lic_plate=20220525"
+    - "8. Crear segundo BeStockRes para las cajas restantes (marker Uds_lic_plate=20220526)"
+    - "9. Acumular ambos en lBeStockAReservar"
+  hallazgo_clave: |
+    Esto demuestra que el patron 'split fisico de stock dentro de funcion de RESERVA'
+    NO es exclusivo del cliente BYB (como sugeria V-002 de Lista_Result). Es un patron
+    SISTEMICO del modulo. La diferencia es que Reabasto lo activa por config
+    (Explosion_Automatica + Conservar_Zona_Picking_Clavaud), mientras que Lista_Result
+    lo activa por hardcode 1060315 (GAP-12-001).
+
+regla_de_negocio:
+  - id: "R-FROMR-001"
+    description: "Si Explosion_Automatica ON y stock vacio o pidio sin presentacion, intenta cargar presentacion por defecto del producto y re-buscar en presentacion."
+    line: 10029
+
+  - id: "R-FROMR-002"
+    description: "Respeta Rechazar_pedido_incompleto: si SI, throw; si NO, ajusta cantidad solicitada a lo disponible (degradacion silenciosa)."
+    line: 10077
+    config: "tRechazarPedidoIncompleto"
+
+  - id: "R-FROMR-003"
+    description: "Algoritmo Clavaud: si Conservar_Zona_Picking_Clavaud ON, particiona stock en pallets-completos-fuera-picking VS pallets-en-picking VS resto, y los procesa en ese orden."
+    line: 10437
+    config: "Conservar_Zona_Picking_Clavaud"
+
+  - id: "R-FROMR-004"
+    description: "Si pidio en unidades pero el stock esta en presentacion, calcula equivalente en presentacion y aplica algoritmo de explosion (split fisico)."
+    line: 10524
+
+  - id: "R-FROMR-005"
+    description: "CASO_#1: cant pendiente == disp → tomar todo el stock disponible."
+    line: 10580
+
+  - id: "R-FROMR-006"
+    description: "CASO_#2B: si la cantidad pendiente convertida a presentacion es multiplo exacto (decimal=0), reservar en cajas sin split."
+    line: 10602
+
+  - id: "R-FROMR-007"
+    description: "CASO_#2 ELSE: si hay fraccion, ejecutar split fisico de 1 caja a UMBas + reserva del residuo en cajas + reserva de las cajas restantes."
+    line: 10611
+
+  - id: "R-FROMR-008"
+    description: "Si pBeTrasladoDet presente (traslado NAV ERP), actualiza Quantity_Reserved_WMS en el detalle despues del INSERT."
+    line: 10713
+
+  - id: "R-FROMR-009"
+    description: "Despues del INSERT principal, si queda decimal pendiente y Explosion_Automatica ON, recursiona en UMBas (Recursion C)."
+    line: 12765
+
+  - id: "R-FROMR-010"
+    description: "Branch alternativo: si pStockRes con presentacion y decimal pendiente, recursiona en UMBas marcando No_bulto=1965 (Recursion B)."
+    line: 12899
+
+  - id: "R-FROMR-011"
+    description: "Branch fallback: si pStockRes sin presentacion y hay stock, recursiona en UMBas marcando No_bulto=1965 (Recursion A)."
+    line: 13041
+
+  - id: "R-FROMR-012"
+    description: "Respeta Despachar_existencia_parcial: si NO, throw S0004 (sin existencia)."
+    line: 12989
+    config: "tDespacharExistenciaParcial"
+    cross_ref: "consistente con Lista_Result R-LR-09; INCONSISTENTE con Especifico ov1/ov2 que la ignoran (V-OV2-006)"
+
+  - id: "R-FROMR-013"
+    description: "pStockRes (parametro ByRef) se MUTA al objeto BeStockRes reservado al final del flujo exitoso. Caller recibe el objeto reservado, no la solicitud original."
+    line: 12804
+    severity: "side-effect documentado en V-FROMR-006"
+
+violaciones_y_bugs:
+  - id: "V-FROMR-001"
+    description: "Debug code hardcoded en produccion: If IdProductoBodega = 183 Then Debug.Print('Hola'). Tambien con = 82."
+    lines: [9943, 9968]
+    severity: "BAJA"
+    nota: "Inofensivo en produccion (Debug.Print no aparece en Release) pero indica falta de cleanup."
+
+  - id: "V-FROMR-002"
+    description: |
+      Hardcode Indicador='PED' con patron defensive null check:
+      'If BeStockRes.Indicador = '' Then BeStockRes.Indicador = 'PED''.
+      Variante de la violacion V-001 piloto. Mismo efecto: viola L-035.
+    lines: [10570, 10736]
+    severity: "MEDIA"
+    cross_ref: "V-001 piloto, V-OV1-001, V-OV2-001"
+
+  - id: "V-FROMR-003"
+    description: |
+      Validacion oscura Math.Abs(CantidadStockDestino - Fix(CantidadStockDestino))
+      en multiples lugares como condicion de Throw. Si != 0 (tiene decimal), throw.
+      Funcionalmente correcto pero expresion criptica. Refactor sugerido:
+      'If CantidadStockDestino <> Math.Floor(CantidadStockDestino) Then Throw'.
+    lines: [10635, 10699, 10780, 10895, 11118, 11394, 11459, 11553, 11671, 11914, 12178, 12248, 12332, 12444, 12682]
+    severity: "BAJA"
+    nota: "Codigo defensivo legitimo pero mal escrito."
+
+  - id: "V-FROMR-004"
+    description: |
+      Catch genericooo: 'Catch ex As Exception | Throw ex | End Try'.
+      'Throw ex' (vs 'Throw' a secas) PIERDE el stack trace original — el caller
+      no puede ver donde fallo realmente. Ademas NO agrega el contexto de funcion
+      como hacen las otras funciones del pipeline (que usan
+      clsLnLog_error_wms.Agregar_Error con MethodBase.GetCurrentMethod.Name).
+      Inconsistencia con resto del pipeline.
+    line: 13105
+    severity: "MEDIA"
+    cross_ref: "patron correcto en piloto Catch L431, NAV_BYB Catch L856, Lista_Result Catch L1456, Especifico ov1/ov2"
+
+  - id: "V-FROMR-005"
+    description: "Typo en marker: '#EJC30220525' (year 3022) en vez de '#EJC20220525'. Ruido para grep/audits."
+    line: 10594
+    severity: "TRIVIAL"
+
+  - id: "V-FROMR-006"
+    description: |
+      Muta pStockRes ByRef reemplazandolo por BeStockRes al final del flujo exitoso:
+      'pStockRes = BeStockRes' (multiples puntos). El caller pierde su solicitud
+      original — recibe el objeto reservado. Comportamiento intencional pero MUY
+      oculto. Comment lo confirma: '#EJC20210707: Igualar el stock reservador con
+      la solicitud.'
+    lines: [12804, 12954, 13075]
+    severity: "ALTA"
+    nota: "Si el caller mantiene una referencia a la solicitud original esperando que persista, perdera info. Patron similar al V-OV2-005 pero mas drastico (replace vs decrement)."
+
+  - id: "V-FROMR-007"
+    description: |
+      pListStockResOUT se asigna con SEMANTICAS DISTINTAS segun el path de exito:
+        L12735: pListStockResOUT.AddRange(lBeStockAReservar)  ' APPEND
+        L12813: pListStockResOUT = lBeStockAReservar          ' REPLACE
+        L12940: pListStockResOUT = lBeStockAReservar          ' REPLACE
+        L12963: pListStockResOUT = lBeStockAReservar          ' REPLACE
+        L13084: pListStockResOUT = lBeStockAReservar          ' REPLACE
+      Si el caller pre-llena pListStockResOUT, recibe append en algunos paths y
+      replace en otros — comportamiento NO determinista para sus expectativas.
+    severity: "ALTA"
+    sugerencia: "Estandarizar a una sola semantica (probablemente AddRange para preservar inputs del caller)."
+
+  - id: "V-FROMR-008"
+    description: |
+      Recursion C (L12765, post-INSERT principal) NO usa marker No_bulto=1965 a
+      diferencia de las otras dos (A y B). Si la recursion interna disparase
+      ulterior recursion (cosa improbable pero posible), no hay guard anti-loop.
+    line: 12765
+    severity: "MEDIA"
+    nota: "Bug latente, depende de paths que actualmente no se ejecutan."
+
+  - id: "V-FROMR-009"
+    description: |
+      Setea Estado='UNCOMMITED' (typo persistente, deberia ser UNCOMMITTED).
+      Hardcode magic string sin enum.
+    lines: [10680, 10756]
+    severity: "BAJA"
+    cross_ref: "V-002 piloto, V-OV1-002, V-OV2-002"
+
+mutaciones_de_estado:
+  - tabla: "stock"
+    operacion: "INSERT"
+    via: "clsLnStock.Insertar(BeStockDestino) en CASO_#2 ELSE de cada loop"
+    cantidad_filas_por_call: "1 fila (split fisico de 1 caja a UMBas)"
+    severity: "ALTA — mismo patron que V-002 de Lista_Result, generalizado a todos los clientes"
+
+  - tabla: "stock"
+    operacion: "UPDATE"
+    via: "clsLnStock.Actualizar_Cantidad(vStockOrigen)"
+    descripcion: "Decrementa cantidad del stock origen post-split"
+
+  - tabla: "stock"
+    operacion: "DELETE"
+    via: "clsLnStock.Eliminar_By_IdStock(vStockOrigen.IdStock)"
+    descripcion: "Elimina stock origen si quedo cantidad 0 post-split"
+    severity: "ALTA — eliminar IdStock dentro de funcion 'Reservar' es contraintuitivo"
+
+  - tabla: "stock_res"
+    operacion: "INSERT (multiple via Insertar y Inserta_Stock_Reservado)"
+    via: "Insertar(BeStockRes) directo + Inserta_Stock_Reservado(lBeStockAReservar) batch"
+    cantidad_filas_por_call: "variable, dependiendo de cuantas iteraciones Clavaud completaron"
+
+  - tabla: "i_nav_ped_traslado_det"
+    operacion: "UPDATE Quantity_Reserved_WMS"
+    via: "clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS"
+    condicion: "solo si pBeTrasladoDet presente (traslado NAV ERP)"
+
+  - parametro: "pStockRes (ByRef)"
+    operacion: "REPLACE — pStockRes = BeStockRes al final"
+    line: 12804
+    severity: "documentado en V-FROMR-006"
+
+  - parametro: "pListStockResOUT (ByRef)"
+    operacion: "MIX — append en algunos paths, replace en otros"
+    severity: "documentado en V-FROMR-007"
+
+  - parametro: "pCantidadDisponibleStock (ByRef)"
+    operacion: "ASIGNA cuando dispara error S0002 (out parameter para mensajes contextualizados)"
+
+callees_outbound:
+  modulo_propio:
+    - "clsLnStock.lStock — funcion central que devuelve stock disponible"
+    - "Restar_Stock_Reservado_EJC — descuenta reservas existentes de la lista"
+    - "clsLnStock.Insertar — INSERT fisico nuevo IdStock (split)"
+    - "clsLnStock.Actualizar_Cantidad — UPDATE stock origen (decremento)"
+    - "clsLnStock.Eliminar_By_IdStock — DELETE stock origen (si queda 0)"
+    - "clsLnStock.Get_Single_By_IdStock — GET stock original pre-split"
+    - "Inserta_Stock_Reservado — INSERT batch stock_res (helper privado del modulo)"
+    - "Insertar — INSERT individual stock_res (helper privado del modulo)"
+    - "Reserva_Stock_From_Reabasto — SELF (3 puntos de recursion)"
+    - "Split_Decimal — helper para separar parte entera y decimal"
+  otros_modulos:
+    - "clsLnPropietarios.Get_IdPropietario"
+    - "clsLnProducto_presentacion.GetSingle / Get_Presentacion_Defecto_By_IdProducto"
+    - "clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega"
+    - "clsLnProducto.Get_BeProducto_By_IdProductoBodega"
+    - "clsLnProducto.Tiene_Control_Por_Peso_By_IdProductoBodega"
+    - "clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega"
+    - "clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS"
+  cache_in_memory:
+    - "lPresentaciones — cache de clsBeProducto_Presentacion (lookup-or-fetch-and-add)"
+    - "lUbicaciones — cache de clsBeBodega_ubicacion (lookup-or-fetch-and-add)"
+
+callers:
+  pending_inventory: true
+  hipothesis: |
+    Por el nombre 'From_Reabasto' y el parametro pTarea_Reabasto, los principales
+    callers serian:
+      - Tareas de reabasto generadas por el motor (cuando hay reorder de zona picking)
+      - Pedidos de traslado NAV ERP (por presencia de pBeTrasladoDet)
+      - Posibles flujos manuales de re-aprovisionamiento desde HH
+    Pendiente confirmacion de Erik para sustituir hipothesis con use cases reales.
+    Nota: la self-recursion implica que la propia funcion es uno de sus principales
+    callers (3 puntos).
+
+configs_consultadas:
+  - "pBeConfigEnc.Explosion_Automatica"
+  - "pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking"
+  - "pBeConfigEnc.Explosion_Automatica_Nivel_Max (numerica)"
+  - "pBeConfigEnc.Conservar_Zona_Picking_Clavaud"
+  - "pBeConfigEnc.Despachar_existencia_parcial (enum tDespacharExistenciaParcial)"
+  - "pBeConfigEnc.Rechazar_pedido_incompleto (enum tRechazarPedidoIncompleto)"
+  - "pBeConfigEnc.Idbodega"
+  - "pStockRes.IdUbicacionAbastecerCon (no es config, pero se propaga a recursiones)"
+
+markers_de_auditoria_descubiertos:
+  - "No_bulto = 1989 → stock fisico recien creado por split de 1 caja explosionada (ya conocido de Lista_Result)"
+  - "No_bulto = 1965 → stock_res generado por solicitud recursiva (UMBas fallback). Tambien usado en MI3 (ya conocido)"
+  - "Uds_lic_plate = 20220525 → stock_res tomado de una caja explosionada (NUEVO, no aparecia antes)"
+  - "Uds_lic_plate = 20220526 → stock_res tomado de cajas de una solicitud en unidades (NUEVO)"
+
+referencias_a_casos_qa:
+  - line: 10848
+    marker: "EJC202210182124_CASO#4"
+    contexto: "Loop 1, dentro de CASO_#2 ELSE despues del split"
+  - line: 11615
+    marker: "EJC202210182124_CASO#4"
+    contexto: "Loop 2, mismo punto estructural"
+  - line: 12405
+    marker: "EJC202210182124_CASO#4"
+    contexto: "Loop 3, mismo punto estructural"
+  observacion: |
+    Las 3 referencias a CASO#4 sugieren que el algoritmo Clavaud + split fisico
+    fue introducido o validado contra el caso QA Ejecuta_QA_CASO_4_IDEAL_*.
+    Cuando se documenten las 20 funciones QA (decision pendiente Wave 12), el
+    caso 4 tiene prioridad de revision para confirmar que documenta este flujo.
+
+open_questions:
+  - id: "Q-FROMR-01"
+    question: "¿Cuales son los principales callers reales de From_Reabasto?"
+    expected_resolution: "rg sobre callers + Erik confirma use cases"
+
+  - id: "Q-FROMR-02"
+    question: "¿pTarea_Reabasto cambia el comportamiento de clsLnStock.lStock como? ¿Que es 'tarea reabasto' vs 'reserva de pedido'?"
+    expected_resolution: "leer firma y body de clsLnStock.lStock"
+
+  - id: "Q-FROMR-03"
+    question: "¿La inconsistencia de pListStockResOUT (V-FROMR-007) afecta a algun caller real?"
+    expected_resolution: "Q-FROMR-01 + analisis de uso del out"
+
+  - id: "Q-FROMR-04"
+    question: "¿pBeConfigEnc.Conservar_Zona_Picking_Clavaud esta activo en BYB? ¿En que clientes esta TRUE actualmente?"
+    expected_resolution: "SELECT IdEmpresa, Conservar_Zona_Picking_Clavaud FROM i_nav_config_enc"
+    severity: "MEDIA — afecta interpretacion del algoritmo Clavaud"
+
+  - id: "Q-FROMR-05"
+    question: "Recursion C sin guard (V-FROMR-008): ¿hay algun path conocido que la dispare anidada?"
+    expected_resolution: "analisis estatico + tests con casos extremos"
+    severity: "MEDIA"
+
+  - id: "Q-FROMR-06"
+    question: |
+      ¿Que diferencia funcional implica el marker EJC202210182124_CASO#4 en las 3
+      referencias? ¿Es debug del algoritmo o es marcacion de regression test?
+    expected_resolution: "leer Ejecuta_QA_CASO_4_IDEAL_20231002011132 cuando se inventarie"
+
+  - id: "Q-FROMR-07"
+    question: |
+      Esta funcion implementa SPLIT FISICO sistemico (V-002 generalizado). Si BYB tiene
+      Conservar_Zona_Picking_Clavaud y Explosion_Automatica ON, este flujo le hace lo
+      mismo que el hardcode 1060315 hace en Lista_Result. ¿BYB usa este flujo? Si si,
+      el GAP-12-001 podria ser parcialmente cubierto por este flujo (pero solo en
+      reabasto, no en reserva primaria de pedido).
+    expected_resolution: "auditoria de uso de Reabasto en BYB + cross-ref con GAP-12-001"
+    severity: "ALTA — relevante para validar GAP-12-001"
+
+cross_refs:
+  - "01-reserva-stock-core.{yml,md}: punto de entrada principal del modulo (no llama directamente a Reabasto, pero si From_Reabasto a traves del flujo de pedido normal)"
+  - "03-reserva-stock-lista-result.{yml,md}: V-002 (split fisico) — Reabasto generaliza este patron"
+  - "04-reserva-stock-especifico-ov1.{yml,md} y 05-...-ov2.{yml,md}: NO comparten codigo con Reabasto"
+  - "GAP-12-001-byb-codigo-1060315-no-replicado-en-net8.md: Q-FROMR-07 conecta este flujo con el gap"
+  - "brain/entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md: el algoritmo Clavaud — Reabasto es la otra implementacion legacy del mismo algoritmo (junto con MI3)"
+  - "brain/entities/modules/reservation/07-stock-res-ciclo-vida.md: estado UNCOMMITED (V-FROMR-009)"
