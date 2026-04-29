@@ -1,0 +1,89 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/04-frmmovreporte-thegoaldate-declaracion
+title: CP-004 frmMovimiento_Reporte declaracion TheGoalDate
+public: machine-structure
+version: 1
+created_in_wave: wave-13-7
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-004
+  full_id: CP-004-frmmovreporte-thegoaldate-declaracion
+  tipo: hardcode_declaracion_constante
+  estado: documentado_pertenece_a_trinity
+  severidad_estimada: media
+  accion_propuesta_esta_wave: medicion-only-this-wave
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+  linea: 87
+  scope: dentro del If del loop principal de Generar_Reporte
+  scope_lifetime: se reasigna en cada corrida del reporte (no es global ni estatico)
+
+cita_textual:
+  linea: 87
+  codigo: |
+    Dim TheGoalDate As Date = New Date(2019, 8, 30)
+  contexto:
+    lineas: 80-92
+    cita: |
+      prg.Properties.Step = 1
+      prg.Properties.PercentView = True
+      prg.Properties.Maximum = ListaMovimientos.Count
+      prg.Properties.Minimum = 0
+
+      If Not ListaMovimientos Is Nothing Then
+
+          Dim TheGoalDate As Date = New Date(2019, 8, 30)
+
+          For Each ObjM In ListaMovimientos.OrderBy(Function(x) x.EstadoOrigen)
+
+valor:
+  fecha_hardcoded: 2019-08-30
+  origen_probable: caso real historico que se debugueaba en 2019
+  no_es_configuracion_cliente: true
+  proposito_unico: alimentar If de CP-005 y CP-006
+
+trinity:
+  miembros:
+    - id: CP-004
+      linea: 87
+      rol: declara TheGoalDate = 2019-08-30
+    - id: CP-005
+      linea: 95
+      rol: breakpoint amplio (cualquier producto con esa Fecha_Vence)
+    - id: CP-006
+      linea: 99
+      rol: breakpoint preciso (TheGoalDate + SIN REGISTRO + DESP)
+  limpieza_atomica: true
+  nota: si se decide limpiar, los tres se limpian juntos
+
+espejo_otro_archivo:
+  archivo: frmStockEnUnaFecha.vb
+  linea: 92
+  case_pointer_espejo: CP-001 (triple condicion)
+  implicacion: |
+    Mismo caso historico debugueado en los dos reportes. Cliente afectado
+    probablemente corria ambos reportes, o caso se estudio desde dos angulos.
+
+introduce_bug: false
+nota: |
+  Si los If que la consumen se borraran, esta declaracion seria deuda muerta inmediata.
+
+acciones_forenses:
+  inseparable_de: [CP-005, CP-006]
+  ver: bitacora y forensia en CP-005, CP-006
+
+bitacora: brain/debuged-cases/CP-004.md
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/00-INDEX.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/05-frmmovreporte-breakpoint-fecha.yml
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/06-frmmovreporte-breakpoint-triple.yml
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/01-stockfecha-codigo-030772033524.yml
+  - debuged-cases/CP-004.md
+
+bugs_relacionados: []
+case_pointers_relacionados:
+  - CP-005 (consumidor)
+  - CP-006 (consumidor)
+  - CP-001 (espejo en frmStockEnUnaFecha)

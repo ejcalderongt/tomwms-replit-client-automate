@@ -1,0 +1,121 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/07-stockfecha-marker-ejcajustedesfase
+title: CP-007 frmStockEnUnaFecha marker EJCAJUSTEDESFASE
+public: machine-structure
+version: 1
+created_in_wave: wave-13-7
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-007
+  full_id: CP-007-stockfecha-marker-ejcajustedesfase
+  tipo: hardcode_string_persistente_BD
+  estado: documentado_efecto_persistente_produccion
+  severidad_estimada: alta
+  accion_propuesta_esta_wave: medicion-only-this-wave
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Stock_En_Una_Fecha/frmStockEnUnaFecha.vb
+  bloque: Llena_Grid (dentro de If Diferencia <> 0 AndAlso ModoDepuracion)
+  lineas_aproximadas: 401-435
+
+cita_textual:
+  contexto: bloque mutacion_3 del anti-patron ModoDepuracion
+  codigo: |
+    For Each M In lMovimientos
+        If Diferencia <> 0 Then
+            Debug.Print("IdMovimiento: " & M.IdMovimiento & " " & M.Cantidad)
+            If M.Cantidad >= Math.Abs(Diferencia) Then
+                M.Cantidad += Diferencia
+                Diferencia += 1
+            Else
+                M.Cantidad = 0
+                Diferencia += M.Cantidad
+            End If
+            M.Serie = "#EJCAJUSTEDESFASE"
+            If M.Cantidad = 0 Then
+                clsLnTrans_movimientos.Eliminar(M)
+            Else
+                clsLnTrans_movimientos.Actualizar(M)
+            End If
+        End If
+    Next
+
+estructura_marker:
+  string: "#EJCAJUSTEDESFASE"
+  componentes:
+    prefijo:
+      simbolo: "#"
+      proposito_probable: convencion para tags de sistema
+    iniciales:
+      string: EJC
+      significado: Erik Jose Calderon
+    sufijo:
+      string: AJUSTEDESFASE
+      significado: ajuste de desfase (compensacion de gap)
+
+caracter_especial: |
+  A diferencia de CP-001..CP-006 (viven en codigo, no afectan datos),
+  CP-007 deja huella persistente en trans_movimientos. Cualquier auditoria
+  de BD puede encontrar todos los movimientos que pasaron por ModoDepuracion.
+
+categoria:
+  - case_pointer_auto_confirmable
+  - metrica_impacto_historico
+  - trail_auditoria_informal
+
+bug_enlazado: V-DATAWAY-001
+
+queries_propuestas:
+  - id: query_06
+    titulo: contar movimientos con marker EJCAJUSTEDESFASE
+    target_archivo: tools/case-seed/queries/data-discrepancy/06_movimientos_ejcajustedesfase.sql
+    sql: |
+      SELECT
+          L.NombreLicencia,
+          COUNT(*) AS CantidadMovimientos,
+          MIN(M.Fecha) AS PrimerUso,
+          MAX(M.Fecha) AS UltimoUso,
+          SUM(ABS(M.Cantidad)) AS TotalCantidadAfectada
+      FROM trans_movimientos M
+      INNER JOIN licencia L ON L.IdLicencia = M.IdLicencia
+      WHERE M.Serie = '#EJCAJUSTEDESFASE'
+      GROUP BY L.NombreLicencia
+      ORDER BY UltimoUso DESC
+    read_only: true
+    pendiente_implementar: true
+    responde:
+      - en que clientes se uso?
+      - cuando fue la ultima vez?
+      - cual es la magnitud del impacto?
+
+  - id: query_aux_buscar_otros_marker
+    titulo: comparar con otros prefijos numeral en el sistema
+    comando: rg -n 'Serie\s*=\s*"#[A-Z]' /tmp/repos/TOMWMS_BOF/ --type vb
+    si_aparecen_otros: CP-007 es parte de sistema mas amplio de tags
+    si_es_unico: exclusivo de esta herramienta
+
+decision_a_tomar:
+  - condicion: herramienta_aun_se_usa (ultima fecha reciente)
+    accion: deprecacion urgente + auditoria real (R1 de anti-patron-modo-depuracion)
+  - condicion: no_se_uso_en_anos
+    accion: |
+      borrar codigo del ModoDepuracion + dejar Serie='#EJCAJUSTEDESFASE' como
+      marker historico de auditoria (no borrar de BD, es evidencia)
+  - condicion: se_uso_pero_hace_tiempo
+    accion: documentar como se usaba para que no vuelva, sin urgencia
+
+bitacora: brain/debuged-cases/CP-007.md
+nota_bitacora: bitacora mas cerca de evidencia dura (query 06 puede confirmar/refutar sin entrevistar)
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/00-INDEX.md
+  - dataway-analysis/04-ecuacion-de-balance/anti-patron-modo-depuracion.yml
+  - dataway-analysis/00-modelo-identidad-idstock.yml
+  - tools/case-seed/queries/data-discrepancy/06_movimientos_ejcajustedesfase.sql
+  - debuged-cases/CP-007.md
+
+bugs_relacionados:
+  - V-DATAWAY-001 (anti-patron ModoDepuracion)
+  - V-DATAWAY-001a (bug aritmetico Diferencia += 1)
+
+case_pointers_relacionados: []

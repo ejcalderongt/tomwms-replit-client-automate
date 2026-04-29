@@ -1,0 +1,71 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/05-frmmovreporte-breakpoint-fecha
+title: CP-005 frmMovimiento_Reporte breakpoint amplio Fecha_Vence TheGoalDate
+public: machine-structure
+version: 1
+created_in_wave: wave-13-7
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-005
+  full_id: CP-005-frmmovreporte-breakpoint-fecha
+  tipo: hardcode_If_DebugPrint
+  estado: documentado_pertenece_a_trinity
+  severidad_estimada: media
+  accion_propuesta_esta_wave: medicion-only-this-wave
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+  lineas: 95-97
+
+cita_textual:
+  lineas: 95-97
+  codigo: |
+    If ObjM.Fecha_Vence = TheGoalDate Then
+        Debug.Print("Wait a second!")
+    End If
+
+depende_de:
+  - CP-004 (declara TheGoalDate)
+
+rol_en_trinity:
+  vista: panoramica
+  precision: amplia (cualquier producto, estado, tipotarea con esa Fecha_Vence)
+  proposito: ancla para debugger en primer movimiento de interes
+
+impacto_produccion:
+  funcional: ninguno
+  performance: insignificante
+  cosmetico: |
+    consola debug se llena si hay productos con la fecha objetivo y debugger
+    conectado. Invisible si nadie usa debugger en produccion.
+
+espejo_otro_archivo:
+  archivo: frmStockEnUnaFecha.vb
+  case_pointer_espejo: CP-001 (segundo If del triple)
+
+acciones_forenses:
+  - id: af_01
+    titulo: buscar otros Wait a second en el repo
+    comando: |
+      rg -n 'Debug\.Print\("Wait a second!"\)' /tmp/repos/TOMWMS_BOF/ --type vb
+    si_aparecen: candidatos a CP-008+
+  - id: af_02
+    titulo: buscar otras fechas hardcodeadas
+    comando: |
+      rg -n 'New Date\(\s*\d{4}\s*,\s*\d+\s*,\s*\d+\s*\)' /tmp/repos/TOMWMS_BOF/ --type vb
+    si_aparecen: potenciales hermanos de trinity TheGoalDate
+
+bitacora: brain/debuged-cases/CP-005.md
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/00-INDEX.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/04-frmmovreporte-thegoaldate-declaracion.yml
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/06-frmmovreporte-breakpoint-triple.yml
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/01-stockfecha-codigo-030772033524.yml
+  - debuged-cases/CP-005.md
+
+bugs_relacionados: []
+case_pointers_relacionados:
+  - CP-004 (proveedor de la fecha)
+  - CP-006 (vista precisa de la trinity)
+  - CP-001 (espejo en estandar, segundo If)

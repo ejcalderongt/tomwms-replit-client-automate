@@ -37,17 +37,48 @@ CP-NNN-<contexto>-<hint>
 
 ## Inventario actual
 
-| ID | Estado | Archivo | Línea | Hint | Severidad estimada |
-|---|---|---|---|---|---|
-| `CP-001` | **documentado** | `frmStockEnUnaFecha.vb` | 137-145 | Codigo `030772033524` + Fecha 2019-08-30 + SIN REGISTRO + DESP | media |
-| `CP-002` | pendiente | `frmMovimiento_Reporte.vb` | 118-120 | "Por error en el cambio de ubicación fecha_vence = now -> JP" | alta |
-| `CP-003` | pendiente | `frmMovimiento_Reporte.vb` | 138 | "Magia por EJC para corregir cagada" | media |
-| `CP-004` | pendiente | `frmMovimiento_Reporte.vb` | 87 | `Dim TheGoalDate As Date = New Date(2019, 8, 30)` | media |
-| `CP-005` | pendiente | `frmMovimiento_Reporte.vb` | 95 | `If ObjM.Fecha_Vence = TheGoalDate Then Debug.Print("Wait a second!")` | media |
-| `CP-006` | pendiente | `frmMovimiento_Reporte.vb` | 99 | Combinación TheGoalDate + EstadoOrigen=SIN REGISTRO + TipoTarea=DESP | alta |
-| `CP-007` | pendiente | `frmStockEnUnaFecha.vb` | (varias) | Marker `"#EJCAJUSTEDESFASE"` en mutación Modo Depuracion | alta |
+| ID | Estado | Archivo | Línea | Hint | Severidad | Bitácora |
+|---|---|---|---|---|---|---|
+| `CP-001` | **documentado** | `frmStockEnUnaFecha.vb` | 137-145 | Codigo `030772033524` + Fecha 2019-08-30 + SIN REGISTRO + DESP | alta | [`CP-001`](../../../debuged-cases/CP-001.md) |
+| `CP-002` | **documentado** | `frmMovimiento_Reporte.vb` | 126 | "(Por error en el cambio de ubicación fecha_vence = now -> JP.)" | media | [`CP-002`](../../../debuged-cases/CP-002.md) |
+| `CP-003` | **documentado** | `frmMovimiento_Reporte.vb` | 125 + 128 (fix comentado) | "Magia por EJC para corregir cagada" | media | [`CP-003`](../../../debuged-cases/CP-003.md) |
+| `CP-004` | **documentado** | `frmMovimiento_Reporte.vb` | 87 | `Dim TheGoalDate As Date = New Date(2019, 8, 30)` (trinity) | media | [`CP-004`](../../../debuged-cases/CP-004.md) |
+| `CP-005` | **documentado** | `frmMovimiento_Reporte.vb` | 95-97 | `If Fecha_Vence = TheGoalDate Then Debug.Print("Wait a second!")` (trinity, panorámica) | media | [`CP-005`](../../../debuged-cases/CP-005.md) |
+| `CP-006` | **documentado** | `frmMovimiento_Reporte.vb` | 99-101 | Triple TheGoalDate + EstadoOrigen=SIN REGISTRO + TipoTarea=DESP (espejo idéntico de CP-001) | alta | [`CP-006`](../../../debuged-cases/CP-006.md) |
+| `CP-007` | **documentado** | `frmStockEnUnaFecha.vb` | 401-435 (Llena_Grid) | Marker `Serie = "#EJCAJUSTEDESFASE"` (auto-confirmable por query 06) | alta | [`CP-007`](../../../debuged-cases/CP-007.md) |
 
-**Total documentados**: 1 / 7+ identificados. Resto pendiente para sub-waves siguientes.
+**Total documentados**: 7 / 7 identificados (wave 13-7 cierra el barrido inicial).
+
+## Agrupaciones
+
+### Trinity TheGoalDate (limpieza atómica)
+
+Tres case-pointers en `frmMovimiento_Reporte.vb` que se sostienen entre sí:
+
+- **CP-004** (línea 87) declara `TheGoalDate = 2019-08-30`
+- **CP-005** (línea 95) consume amplio: cualquier producto con esa `Fecha_Vence`
+- **CP-006** (línea 99) consume preciso: triple condición
+
+Limpieza: si se decide eliminar, los tres se eliminan juntos.
+
+### Espejos entre los dos reportes
+
+- **CP-001** ↔ **CP-006** — mismo caso histórico debugueado en los dos reportes (estándar y fiscal). Si era cliente con control de póliza, CP-006 es el más cercano al caso original.
+
+### Pareja fix-bug (mismo bloque)
+
+- **CP-002** (bug introducido por JP)
+- **CP-003** (intento de fix por EJC, **comentado** — no se ejecuta)
+
+### Único con efecto persistente en BD (auto-confirmable)
+
+- **CP-007** — `Serie = "#EJCAJUSTEDESFASE"` se escribe a `trans_movimientos`. La query 06 puede confirmar/refutar el impacto sin entrevistar a nadie.
+
+## Bitácoras vivas
+
+Cada case-pointer tiene su bitácora de debug en `brain/debuged-cases/CP-NNN.md`. Las bitácoras son **append-only** y rastrean status (`open` → `reproducing` → `confirmed` → `solved`/`wont-fix`/`obsolete`), avances, queries corridas y observaciones.
+
+Ver [`brain/debuged-cases/00-INDEX.md`](../../../debuged-cases/00-INDEX.md).
 
 ## Heurística de búsqueda (para sub-waves siguientes)
 

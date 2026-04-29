@@ -1,0 +1,91 @@
+id: brain/debuged-cases/CONVENCION
+title: Convencion para bitacoras vivas de case-pointers
+public: machine-structure
+version: 1
+created_in_wave: wave-13-7
+last_updated: 2026-04-29
+
+contrato_archivo:
+  nombre: CP-NNN.md (NNN cero-padded a 3 digitos)
+  ubicacion: brain/debuged-cases/CP-NNN.md
+  estructura:
+    - frontmatter_yaml (entre --- ... ---)
+    - cuerpo_markdown_append_only
+
+frontmatter_campos:
+  obligatorios:
+    - id              # CP-NNN
+    - case_pointer    # full path al case-pointer formal
+    - status          # ver enum mas abajo
+    - severidad_actual  # baja | media | alta | critica
+    - fecha_apertura  # ISO date YYYY-MM-DD
+    - fecha_ultimo_avance  # ISO date YYYY-MM-DD
+  opcionales:
+    - asignado_a      # @erik | @agent | unassigned
+    - bugs_confirmados   # lista de IDs V-DATAWAY-NNN
+    - bugs_refutados     # lista de IDs V-DATAWAY-NNN
+    - queries_corridas   # lista de archivos sql con resultados
+    - blockers           # lista de strings descriptivos
+
+status_enum:
+  - id: open
+    significado: Case-pointer documentado, debug no iniciado
+  - id: reproducing
+    significado: Estamos intentando reproducir el caso (corriendo queries, leyendo datos)
+  - id: confirmed
+    significado: Caso reproducido / evidencia clara, sabemos que pasa
+  - id: solved
+    significado: Bug raiz arreglado en codigo, pendiente verificacion post-deploy
+  - id: wont-fix
+    significado: Decision consciente de no arreglar (con razon documentada)
+  - id: obsolete
+    significado: El case-pointer ya no aplica (refactor, deprecacion, etc.)
+
+cuerpo_append_only:
+  regla_oro: |
+    Una vez agregada una entrada de avance, NO se reescribe ni se borra.
+    Solo se appendean nuevas entradas al final.
+  formato_entrada:
+    - encabezado: "### YYYY-MM-DD HH:MM (autor)"
+    - cuerpo: markdown libre (observaciones, queries, decisiones)
+    - autor_validos: ["@erik", "@agent"]
+
+frontmatter_overrides:
+  campos_que_si_se_pueden_sobreescribir:
+    - status
+    - severidad_actual
+    - fecha_ultimo_avance
+    - asignado_a
+    - bugs_confirmados
+    - bugs_refutados
+  campos_inmutables:
+    - id
+    - case_pointer
+    - fecha_apertura
+
+cross_link_obligatorio:
+  - case_pointer_formal: dataway-analysis/07-correlacion-codigo-data/case-pointers/NN-...md
+  - bugs_relacionados: dataway-analysis/04-ecuacion-de-balance/V-DATAWAY-NNN.md (si aplica)
+
+flujo_tipico:
+  - paso_1: wave detecta hardcode/comment/marker
+  - paso_2: se crea CP-NNN.md + .yml en case-pointers/
+  - paso_3: se crea bitacora brain/debuged-cases/CP-NNN.md con status=open
+  - paso_4: se corren queries / Erik aporta contexto
+  - paso_5: se appendean entradas
+  - paso_6: cambio de status editando frontmatter
+  - paso_7: cierre con entrada final
+
+prohibiciones:
+  - editar entradas pasadas
+  - borrar entradas
+  - mover bitacoras a otro folder sin actualizar 00-INDEX.md
+  - crear case-pointers sin bitacora correspondiente
+
+excepciones:
+  errata_ortografica:
+    permitida: true
+    requiere: nota al final de la entrada corregida indicando que se corrigio (ej. "(typo corregido)")
+  redaccion_factica_incorrecta:
+    permitida: false
+    alternativa: appendear nueva entrada que clarifica/corrige

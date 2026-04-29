@@ -1,37 +1,48 @@
-# Capa 04 / Divergencia entre reportes paralelos
+# Capa 04 / Divergencia entre reportes especializados por cliente
 
-> **Bug `V-DATAWAY-002` (severidad alta)**: existen al menos dos reportes que pretenden calcular el mismo balance teórico — `frmStockEnUnaFecha` (canónico) y `frmMovimiento_Reporte` (cuasi-clon experimental). Tienen lógica divergente. Si el equipo de soporte usa uno o el otro según preferencia personal, el resultado puede ser distinto para el mismo caso.
+> **Erratum (wave 13-7)**: una versión previa de este documento describía a `frmMovimiento_Reporte` como "clon experimental abandonado a medio camino" del reporte canónico. Esa lectura era incorrecta. Los dos reportes son **especializaciones legítimas** para dos formas distintas de llevar el cardex en la base de clientes de TOMWMS: el estándar y el con control de póliza. La deuda técnica del reporte fiscal sigue siendo deuda técnica, pero el marco no es "clon olvidado" sino "reporte especializado mantenido con menos frecuencia que el principal".
+
+> **Bug `V-DATAWAY-002` (severidad alta)**: existen al menos dos reportes que calculan balance teórico — `frmStockEnUnaFecha` (estándar, base mayoritaria de clientes) y `frmMovimiento_Reporte` (fiscal con control de póliza, para clientes como Cealsa, Idealsa, Cumbre). Ambos son legítimos en su nicho, pero divergen en lógica de matching, en guards y en aritmética. Si un mismo cliente corriera los dos contra los mismos datos, los resultados serían distintos. Lo más relevante es que el reporte fiscal arrastra **deuda técnica acumulada** (cascada incompleta, guards comentados, bug de `Salidas`).
 
 ## TL;DR
 
-| Aspecto | `frmStockEnUnaFecha.vb` | `frmMovimiento_Reporte.vb` |
+| Aspecto | `frmStockEnUnaFecha.vb` (estándar) | `frmMovimiento_Reporte.vb` (fiscal/póliza) |
 |---|---|---|
 | Ubicación | `Reportes/Stock_En_Una_Fecha/` | `Reportes/Fiscales/` |
-| Propósito declarado | Inventario teórico al cierre | Reporte fiscal de movimientos |
+| Propósito | Inventario teórico al cierre | Reporte fiscal de movimientos con trazabilidad de póliza |
+| Audiencia | Mayoría de clientes | Clientes con requisito fiscal de control de póliza (Cealsa, Idealsa, Cumbre — pendiente confirmar lista completa con Erik) |
 | Lógica de matching | Exacto 3 keys | Cascada 1-4 niveles |
-| Guard `IdMovimiento` (anti-doble-conteo) | Ausente (nunca existió) | **Comentado** (existió y se abandonó) |
+| Guard `IdMovimiento` (anti-doble-conteo) | Ausente | **Comentado** (existió y se abandonó) |
 | ModoDepuracion (muta historia) | Sí (`V-DATAWAY-001`) | No |
-| Bug aritmético en suma de Salidas | No (suma `ObjM.Salidas` desde vista) | **Sí (`V-DATAWAY-004`)** suma `ObjM.Salidas` que puede venir en 0 |
+| Bug aritmético en suma de Salidas | No | **Sí (`V-DATAWAY-004`)** |
 | Cantidad de líneas | ~1111 | ~705 |
-| Cita textual de "magia" | No | "Magia por EJC para corregir cagada" |
+| Comments con firma personal | "Wait a second!" + marker `#EJCAJUSTEDESFASE` | "Magia por EJC para corregir cagada" + "(Por error en el cambio de ubicación fecha_vence = now -> JP)" |
 
-## La pregunta de fondo
+## Por qué existen dos reportes
 
-¿Cómo aparecieron dos reportes que calculan lo mismo?
+**No es accidente ni clon olvidado**. Es decisión arquitectónica derivada del modelo de negocio de cada cliente:
 
-**Hipótesis cronológica**:
+### Cliente sin control de póliza (mayoría)
 
-1. **T0**: nace `frmStockEnUnaFecha` como reporte canónico de inventario teórico. Lógica simple: matching exacto + acumulación lineal por TipoTarea.
+El cardex se lleva agrupando por `Codigo + EstadoOrigen + Fecha_Vence`. La identidad de un "punto del balance" es esa terna. Movimientos de RECE/DESP/AJ\* se acumulan ahí. El reporte canónico (`frmStockEnUnaFecha`) cubre este caso con matching exacto y suma lineal.
 
-2. **T1**: aparece la necesidad de un reporte **fiscal** (más estricto en granularidad y agrupación, para presentación regulatoria). Se clona `frmStockEnUnaFecha.Generar_Reporte` en `frmMovimiento_Reporte.Generar_Reporte`. La línea 105 del `frmStockEnUnaFecha` parece referenciar un loop muy similar al del `frmMovimiento_Reporte`.
+### Cliente con control de póliza (Cealsa, Idealsa, Cumbre, etc.)
 
-3. **T2**: aparecen casos en producción donde el matching exacto falla (ej: bug de JP, cambio de ubicación con `Fecha_Vence = Now`). En **frmMovimiento_Reporte** se introduce la cascada con fallback ("Magia por EJC para corregir cagada"). En **frmStockEnUnaFecha** no se toca — sigue con matching exacto.
+El cardex tiene **un eje adicional de trazabilidad: la póliza** (probable referencia a póliza aduanera, póliza de importación, o póliza fiscal regulatoria — pendiente caracterizar formalmente en sub-wave dedicada). Este eje:
 
-4. **T3**: alguien intenta agregar el guard `IdMovimiento` (anti-doble-conteo) en `frmMovimiento_Reporte`. Se prueba, no funciona como esperado, se comenta. **No se documenta el por qué del abandono**.
+- Cambia la granularidad real del balance (un mismo Código + Lote puede tener stocks distintos según póliza de ingreso).
+- Introduce eventos donde la fecha de vencimiento se setea o se reasigna (de ahí el bug histórico de JP — ver `CP-002`).
+- Requiere agregaciones específicas para presentación fiscal.
 
-5. **T4**: se introduce un bug nuevo en línea 201 de `frmMovimiento_Reporte` (suma `ObjM.Salidas` cuando la fuente probablemente lo trae en 0). Pasa desapercibido porque el reporte se usa poco.
+Por eso existe un segundo reporte. La cascada de matching de 4 niveles del reporte fiscal es **necesaria para reconciliar variaciones de granularidad introducidas por la póliza**, no es deuda — es funcionalidad.
 
-6. **T5 (hoy)**: ambos reportes coexisten. `frmStockEnUnaFecha` es el "default" pero `frmMovimiento_Reporte` está disponible y produce números distintos.
+### Lo que sí es deuda técnica del reporte fiscal
+
+- El guard `IdMovimiento` comentado (probable intento de fix abandonado sin documentar).
+- El bug aritmético `BeStockEnFecha.Salidas += ObjM.Salidas` con campo posiblemente en cero según fuente de `Get_Lista_Movimientos`.
+- Los hardcodes `TheGoalDate` + `Wait a second!` + `Magia por EJC` que quedaron del último debug.
+
+Son tres cosas distintas. Las trato como tales.
 
 ## Las 4 divergencias concretas
 
@@ -49,7 +60,7 @@ Else
 End If
 ```
 
-`frmMovimiento_Reporte.vb:113-148` (cascada 4 niveles):
+`frmMovimiento_Reporte.vb:113-148` (cascada 4 niveles, **legítima por póliza**):
 ```vb
 Idx = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
                                   AndAlso x.IdEstadoOrigen = BeStockEnFecha.IdEstadoOrigen _
@@ -63,7 +74,11 @@ If Idx <> -1 Then 'Lo encontró por lote.
     If Idx1 = -1 Then 'No coincide la fecha de vencimiento para el mismo lote en el mismo movimiento
         '(Por error en el cambio de ubicación fecha_vence = now -> JP.)
         Debug.Print("Espera")
-        ' [...lógica de re-matching cascada...]
+        'Magia por EJC para corregir cagada.
+        If RepMovEnUnaFecha(Idx).Fecha_Vence.Date > BeStockEnFecha.Fecha_Vence.Date Then
+            'BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
+            Debug.Print(BeStockEnFecha.Codigo)
+        End If
     End If
 
     'Si no tiene control por lote...
@@ -74,15 +89,13 @@ If Idx <> -1 Then 'Lo encontró por lote.
 Else
     Idx = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
                                      AndAlso x.Fecha_Vence = BeStockEnFecha.Fecha_Vence)
-
-    If Idx <> -1 Then 'Lo encontró por FechaVence.
-        Debug.Print(BeStockEnFecha.Codigo)
-        ' [matching débil con comment "Magia por EJC para corregir cagada"]
-    End If
+    ' [matching débil con comment Magia por EJC]
 End If
 ```
 
-**Implicación**: para el mismo set de movimientos, los dos reportes pueden agrupar los datos en **conjuntos distintos de "puntos"** del balance. Resultado: la suma `Inventario_Inicial + Ingresos + Ajustes` puede repartirse de forma diferente entre las filas finales de la grilla, y la diferencia con `Existencia_Actual` puede aparecer en una fila u otra.
+**Lectura corregida**: la cascada **no es bug, es feature** — necesaria para casos donde el control de póliza introduce variaciones de Lote y Fecha_Vence. Lo que sí es bug:
+
+- El re-matching que comenta `'BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date` está **inactivo** (comentado). Es decir, detecta el caso pero no corrige nada — solo escribe `Debug.Print(BeStockEnFecha.Codigo)`. Caso típico de "lo dejé a medias".
 
 ### Divergencia 2: guard `IdMovimiento` abandonado
 
@@ -100,16 +113,16 @@ ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
     BeStockEnFecha.Salidas += ObjM.Salidas
 ```
 
-**Lectura**: alguien intentó evitar contar dos veces el mismo `IdMovimiento` para el mismo punto. Se comentó. `frmStockEnUnaFecha` **nunca tuvo este guard** (no aparece ni comentado).
+**Lectura**: alguien intentó evitar contar dos veces el mismo `IdMovimiento` para el mismo punto. Se comentó. `frmStockEnUnaFecha` **nunca tuvo este guard**.
 
-**Implicación**: si por algún motivo `Get_Lista_Movimientos` retorna duplicados de RECE/DESP (mismo IdMovimiento, dos filas), **ninguno de los dos reportes lo evita**. La diferencia es que `frmMovimiento_Reporte` tiene el remanente del intento de fix.
-
-**Pregunta abierta**: ¿por qué se abandonó? Hipótesis:
-- (a) El `IdMovimiento` cambió de semántica (de PK del movimiento a PK del Lote o del Despacho).
-- (b) La vista `VW_Movimientos` empezó a generar varias filas con el mismo `IdMovimiento` legítimamente (por presentación, por ubicación) y el guard rompía el conteo correcto.
+**Hipótesis del por qué se abandonó (sin confirmar)**:
+- (a) `IdMovimiento` cambió de semántica (de PK del movimiento a PK del Lote o del Despacho).
+- (b) `VW_Movimientos` empezó a generar varias filas con el mismo `IdMovimiento` legítimamente (presentación, ubicación, póliza) y el guard rompía conteo correcto.
 - (c) Se descubrió que era duplicado falso (el `Get_Lista_Movimientos` ya hacía DISTINCT).
 
-### Divergencia 3: `V-DATAWAY-004` — suma `ObjM.Salidas` en frmMovimiento_Reporte
+**Acción**: necesita arqueología. Si Erik recuerda quién lo introdujo y por qué, agregar a `learnings/`.
+
+### Divergencia 3: `V-DATAWAY-004` — suma `ObjM.Salidas`
 
 `frmMovimiento_Reporte.vb:201`:
 ```vb
@@ -117,73 +130,76 @@ ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
     BeStockEnFecha.Salidas += ObjM.Salidas
 ```
 
-**vs `frmStockEnUnaFecha.vb:184-186`**:
-```vb
-ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
-    BeStockEnFecha.Salidas += ObjM.Salidas
-```
+**Diferencia con el canónico**: a primera vista son idénticos, pero la diferencia está en **de dónde viene `ObjM`**. Si en el reporte fiscal `Get_Lista_Movimientos` no consume `VW_Movimientos` (que pre-calcula `Salidas` para DESP), sino una variante distinta (por ej, una vista específica para fiscal/póliza, o tabla raw `trans_movimientos` donde `Salidas` viene null/0), el campo viene en cero y las salidas nunca se acumulan.
 
-**A primera vista son idénticos**. Pero la diferencia está en **de dónde viene `ObjM`**:
+**Severidad alta** porque el efecto silencioso sería: balance teórico fiscal **artificialmente alto**, los analistas atribuyen a "robo" o "merma" lo que es **un campo no leído**.
 
-- En `frmStockEnUnaFecha`: `ObjM` viene de `Get_Lista_Movimientos` que **probablemente** consume la vista `VW_Movimientos`. La vista pre-calcula el campo `Salidas` desde `Cantidad` para movimientos DESP. Por eso `ObjM.Salidas` siempre tiene valor coherente para DESP.
-
-- En `frmMovimiento_Reporte`: `ObjM` también viene de `Get_Lista_Movimientos`, **pero pendiente confirmar si es la misma fuente**. Si `frmMovimiento_Reporte` consume una variante distinta (`VW_Movimientos_Poliza` por ej, o directamente la tabla raw `trans_movimientos`), el campo `Salidas` puede venir nulo o en 0.
-
-**Acción para confirmar**:
-```bash
-# Localizar Get_Lista_Movimientos en cada archivo y ver de qué fuente lee
-rg "Get_Lista_Movimientos|Get_All_Movimientos" /tmp/repos/TOMWMS_BOF/TOMIMSV4/
-```
-(Pendiente sub-wave siguiente.)
-
-**Severidad alta** porque: si `ObjM.Salidas = 0` en frmMovimiento_Reporte, **las salidas nunca se acumulan** y el balance teórico será siempre `Inventario_Inicial + Ingresos + Ajustes_Positivos − Ajustes_Negativos − 0`, que es **artificialmente alto**. Resultado: el reporte fiscal mostraría existencia teórica > existencia real para todo despacho, y los analistas atribuirían a "robo" o "merma" lo que en realidad es **un campo no leído**.
+**Pendiente confirmar**: localizar `Get_Lista_Movimientos` en cada archivo y comparar fuente.
 
 ### Divergencia 4: ModoDepuracion ausente
 
 `frmMovimiento_Reporte` **no tiene** `ModoDepuracion`. No muta `trans_movimientos`. No borra `Diferencias_movimientos`. No tiene Ctrl+D. Es un reporte **puro de lectura**.
 
-**Implicación**: el riesgo del `V-DATAWAY-001` (anti-patrón ModoDepuracion) está confinado a `frmStockEnUnaFecha`. Si se quisiera usar un reporte sin riesgo de mutación accidental, `frmMovimiento_Reporte` sería más seguro — **pero introduce las divergencias 1, 2 y 3**.
+**Lectura** (corregida): no es virtud, es **diferencia de origen funcional**. El reporte fiscal nunca debió mutar (un reporte fiscal escribiendo a `trans_movimientos` violaría el requisito regulatorio). El canónico sí lo permitió porque históricamente sirvió también como herramienta operativa.
 
-## Recomendaciones
+## Recomendaciones (corregidas)
 
-### R1: deprecar el reporte experimental
+### R1 — caracterizar formalmente "control de póliza" como capa del modelo
 
-`frmMovimiento_Reporte` parece ser un experimento abandonado a medio camino. Deprecar con:
+Antes de cualquier limpieza de los reportes, entender qué es póliza en el modelo de datos:
+- ¿Es un campo en `trans_movimientos`?
+- ¿Es una tabla aparte que se joinea por `IdPoliza`?
+- ¿Es un eje de particionamiento implícito por cliente (algunos lo usan, otros no)?
+- ¿Quién lo escribe, quién lo lee?
 
-1. Confirmar con el equipo si alguien lo usa hoy.
-2. Si nadie lo usa: marcar como obsoleto en el menú, redirigir al canónico.
-3. Si alguien lo usa para reporte fiscal: extraer la lógica de Group By fiscal específica a un nuevo reporte, **sin clonar el cuerpo del cálculo**.
+Sub-wave dedicada (`02-particionamiento-licencia/` y/o nuevo `08-control-poliza/`).
 
-### R2: extraer la lógica de cálculo a una clase única
+### R2 — extraer la lógica de cálculo a una clase única, **parametrizada por dimensión póliza**
 
-Hoy el cálculo del balance vive **clonado** en dos archivos. Si se arregla un bug en uno, el otro queda con el bug.
+Hoy el cálculo del balance vive **clonado** en dos archivos. La parte que es genuinamente común (acumulación por TipoTarea, fórmula de balance) debería vivir en una clase única. La parte que difiere (matching cascada para clientes con póliza) debería ser una estrategia inyectada.
 
-Proponer: clase `clsCalculadorBalance` con método `Calcular(ListaMovimientos, FechaCorte) As List(Of clsBeBalancePunto)`. Ambos reportes consumen esta clase y se diferencian solo en cómo presentan el resultado.
+Propuesta:
+```vb
+Public Interface IEstrategiaMatching
+    Function Encontrar(Repos As List(Of clsBeStockEnUnaFecha), Obj As clsBeMovimiento) As Integer
+End Interface
 
-### R3: confirmar `V-DATAWAY-004` con datos reales
+Public Class clsCalculadorBalance
+    Public Function Calcular(ListaMovimientos As List(Of clsBeMovimiento), _
+                             EstrategiaMatching As IEstrategiaMatching) As List(Of clsBeStockEnUnaFecha)
+End Class
+```
 
-Antes de marcar como bug confirmado, ejecutar el reporte fiscal sobre un cliente con despachos conocidos y verificar si las salidas suman correctamente. Si suman → el campo `ObjM.Salidas` viene poblado y el bug es teórico. Si no suman → bug confirmado.
+Implementaciones: `clsMatchingExacto` (estándar), `clsMatchingCascadaPoliza` (fiscal). Ambos reportes consumen `clsCalculadorBalance` y se diferencian solo en qué estrategia inyectan.
 
-Query de verificación (sub-wave siguiente):
+### R3 — confirmar `V-DATAWAY-004` con datos reales
+
+Antes de marcar como bug confirmado, ejecutar el reporte fiscal sobre un cliente con póliza y despachos conocidos. Verificar si las salidas suman.
+
+Query de verificación:
 ```sql
--- Para un IdProducto y rango con despachos conocidos
 SELECT Fecha, TipoTarea, Cantidad, Salidas, IdMovimiento
-FROM VW_Movimientos
+FROM VW_Movimientos          -- o la vista que use el reporte fiscal
 WHERE IdProducto = @IdProducto
   AND TipoTarea = 'DESP'
   AND Fecha BETWEEN @From AND @To
 ORDER BY Fecha
 ```
-Verificar si `Salidas` viene poblado para DESP.
 
-### R4: documentar como case-pointer
+Si `Salidas` viene poblado para DESP en la vista que consume el fiscal, el bug es teórico. Si viene en cero, es real.
 
-El comment "(Por error en el cambio de ubicación fecha_vence = now -> JP)" merece un case-pointer dedicado: `CP-002-fecha-vence-now-jp-bug` (sub-wave siguiente).
+### R4 — case-pointers `CP-002`, `CP-003` (reporte fiscal)
+
+Documentados en sub-wave 13-7, pendientes de confirmación con casos reales del cliente afectado.
 
 ## Cross-refs
 
-- `modelo-conceptual.md` — fórmula canónica (basada en frmStockEnUnaFecha)
-- `granularidad-y-keys.md` — detalle de la cascada de matching de frmMovimiento_Reporte
+- `modelo-conceptual.md` — fórmula canónica del balance
+- `granularidad-y-keys.md` — detalle de la cascada de matching del reporte fiscal
 - `tipos-tarea-relevantes.md` — switch de TipoTarea con guards comentados
-- `anti-patron-modo-depuracion.md` — `V-DATAWAY-001` (solo frmStockEnUnaFecha)
-- `07-correlacion-codigo-data/case-pointers/` — pendiente `CP-002-fecha-vence-now-jp-bug`
+- `anti-patron-modo-depuracion.md` — `V-DATAWAY-001` (solo en estándar)
+- `07-correlacion-codigo-data/case-pointers/02-frmmovreporte-fecha-vence-now-jp.md` — CP-002
+- `07-correlacion-codigo-data/case-pointers/03-frmmovreporte-magia-ejc.md` — CP-003
+- `07-correlacion-codigo-data/case-pointers/04-frmmovreporte-thegoaldate-declaracion.md` — CP-004
+- `07-correlacion-codigo-data/case-pointers/05-frmmovreporte-breakpoint-fecha.md` — CP-005
+- `07-correlacion-codigo-data/case-pointers/06-frmmovreporte-breakpoint-triple.md` — CP-006

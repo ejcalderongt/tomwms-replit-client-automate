@@ -1,0 +1,103 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/03-frmmovreporte-magia-ejc
+title: CP-003 frmMovimiento_Reporte comment Magia por EJC
+public: machine-structure
+version: 1
+created_in_wave: wave-13-7
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-003
+  full_id: CP-003-frmmovreporte-magia-ejc
+  tipo: comment-pointer + codigo fix comentado
+  estado: documentado_fix_nunca_activado
+  severidad_estimada: media
+  accion_propuesta_esta_wave: medicion-only-this-wave
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+  linea_comment: 125
+  lineas_codigo_fix_comentado: 128-130
+
+cita_textual:
+  lineas: 122-131
+  codigo: |
+    If Idx1 = -1 Then 'No coincide la fecha de vencimiento para el mismo lote en el mismo movimiento
+        '(Por error en el cambio de ubicación fecha_vence = now -> JP.)
+        Debug.Print("Espera")
+        'Magia por EJC para corregir cagada.
+        If RepMovEnUnaFecha(Idx).Fecha_Vence.Date > BeStockEnFecha.Fecha_Vence.Date Then
+            'BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
+            Debug.Print(BeStockEnFecha.Codigo)
+        End If
+    End If
+
+persona_referenciada:
+  iniciales: EJC
+  identificada: Erik Jose Calderon
+  primer_case_pointer_firmado_por_erik: true
+
+estado_del_fix:
+  linea_fix:
+    numero: 128
+    contenido: BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
+    estado: comentado (prefijo ' al inicio)
+  ejecuta_en_produccion: false
+  unico_efecto_activo: Debug.Print(BeStockEnFecha.Codigo)
+
+logica_intentada:
+  premisa: |
+    Si en RepMovEnUnaFecha ya hay un punto con Fecha_Vence posterior al movimiento actual,
+    asumir que la posterior es la real (porque el bug de JP la sobreescribio con Now()
+    que tiende a ser posterior a la fecha real de vencimiento).
+  accion_intentada: copiar Fecha_Vence acumulada al BeStockEnFecha actual
+  status: nunca_activado
+
+hipotesis_por_que_se_comento:
+  - id: hip_a
+    titulo: riesgo_regulatorio
+    descripcion: |
+      En reporte fiscal, modificar Fecha_Vence aunque sea en memoria puede inducir
+      numeros fiscales incorrectos. Erik decidio no tomar la responsabilidad.
+  - id: hip_b
+    titulo: criterio_no_robusto
+    descripcion: |
+      "Fecha mas posterior gana" podria ser falso para casos legitimos donde
+      mismo lote tiene movimientos cruzados con dos fechas reales distintas.
+  - id: hip_c
+    titulo: probo_y_dio_resultados_raros
+    descripcion: |
+      Erik dejo comentado para no perder la logica pero sin activarla, esperando
+      datos reales para validar.
+  - id: hip_d
+    titulo: ataque_al_bug_raiz_no_completado
+    descripcion: |
+      Se decidio atacar la operacion de cambio de ubicacion en lugar de parchear
+      en el reporte. Pero el parche del raiz nunca se completo, quedando esto como
+      evidencia.
+
+acciones_forenses:
+  - id: af_01
+    titulo: confirmar autoria con Erik
+    pendiente_user_input: true
+    preguntas:
+      - recordas haber escrito este bloque?
+      - por que comentaste la linea de fix?
+      - el bug de JP se resolvio en otra parte del sistema o sigue vigente?
+      - hay otras "magias EJC" en otros archivos del repo?
+  - id: af_02
+    titulo: buscar otras magias EJC en el repo
+    comando: |
+      rg -n -i "magia.*EJC|EJC.*magia|Magia por" /tmp/repos/TOMWMS_BOF/ --type vb
+    si_aparecen: documentar como CP-008+
+
+bitacora: brain/debuged-cases/CP-003.md
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/00-INDEX.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/02-frmmovreporte-fecha-vence-now-jp.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - debuged-cases/CP-003.md
+
+bugs_relacionados: []
+case_pointers_relacionados:
+  - CP-002 (mismo bloque, bug que esta magia intenta corregir)

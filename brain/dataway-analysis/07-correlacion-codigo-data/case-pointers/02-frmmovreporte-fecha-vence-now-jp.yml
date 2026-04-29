@@ -1,0 +1,113 @@
+id: dataway-analysis/07-correlacion-codigo-data/case-pointers/02-frmmovreporte-fecha-vence-now-jp
+title: CP-002 frmMovimiento_Reporte comment fecha_vence=now bug JP
+public: machine-structure
+version: 1
+created_in_wave: wave-13-7
+last_updated: 2026-04-29
+
+case_pointer:
+  id: CP-002
+  full_id: CP-002-frmmovreporte-fecha-vence-now-jp
+  tipo: comment-pointer
+  estado: documentado_sintoma_pendiente_confirmar_bug_raiz
+  severidad_estimada: alta
+  accion_propuesta_esta_wave: medicion-only-this-wave
+
+ubicacion:
+  archivo: TOMWMS_BOF/TOMIMSV4/TOMIMSV4/Reportes/Fiscales/frmMovimiento_Reporte.vb
+  linea: 126
+  bloque_padre:
+    tipo: cascada_matching
+    lineas: 113-148
+
+cita_textual:
+  lineas: 122-131
+  codigo: |
+    If Idx1 = -1 Then 'No coincide la fecha de vencimiento para el mismo lote en el mismo movimiento
+        '(Por error en el cambio de ubicación fecha_vence = now -> JP.)
+        Debug.Print("Espera")
+        'Magia por EJC para corregir cagada.
+        If RepMovEnUnaFecha(Idx).Fecha_Vence.Date > BeStockEnFecha.Fecha_Vence.Date Then
+            'BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
+            Debug.Print(BeStockEnFecha.Codigo)
+        End If
+    End If
+
+persona_referenciada:
+  iniciales: JP
+  pendiente_identificar: true
+
+reconstruccion_bug:
+  operacion_involucrada: cambio de ubicacion (probable HH Android UBIC)
+  bug_descripto:
+    sintoma: Fecha_Vence del registro destino queda en Now() en vez de heredarse del origen
+    consecuencia_data: |
+      trans_movimientos tiene registros para mismo IdProducto+IdLote con
+      Fecha_Vence distintas (la real y la Now() del cambio de ubicacion).
+      Cardex queda fragmentado en dos puntos del balance.
+    consecuencia_reporte: |
+      Cascada de matching del fiscal detecta dos entradas para mismo
+      Codigo+IdEstadoOrigen+Lote con Fecha_Vence distintas. Bloque de fix
+      L128-130 esta comentado. Solo escribe Debug.Print y sigue.
+
+queries_propuestas:
+  - id: query_09
+    titulo: detectar lotes con Fecha_Vence sospechosamente igual a Fecha movimiento
+    target_archivo: tools/case-seed/queries/data-discrepancy/09_fecha_vence_now_jp_bug.sql
+    sql: |
+      SELECT TOP 100
+          M.IdProducto,
+          P.Codigo,
+          M.IdLote,
+          M.Fecha,
+          M.Fecha_Vence,
+          DATEDIFF(SECOND, M.Fecha, M.Fecha_Vence) AS DeltaSegundos,
+          M.TipoTarea,
+          M.IdMovimiento
+      FROM trans_movimientos M
+      INNER JOIN producto P ON P.IdProducto = M.IdProducto
+      WHERE ABS(DATEDIFF(SECOND, M.Fecha, M.Fecha_Vence)) < 60
+        AND M.TipoTarea IN ('UBIC', 'UBIC1', 'UBIC2')
+      ORDER BY M.Fecha DESC
+    read_only: true
+    parametros: []
+    pendiente_implementar: true
+    nota: ajustar valores TipoTarea segun enum real tTipoTarea del cliente
+
+importancia: |
+  Unico rastro documentado del bug en codigo fuente. Sin este comment, el bug seria
+  invisible. Datos en trans_movimientos individualmente parecen coherentes; solo la
+  lectura agregada del reporte fiscal lo expone.
+
+afecta_a:
+  - reportes_que_agrupan_por_codigo_lote_fechavence
+  - control_poliza (Fecha_Vence es eje de identidad del lote para clientes con poliza)
+  - balance_teorico_fiscal (gaps falsos derivados de fragmentacion)
+
+pendientes:
+  - id: pend_01
+    titulo: identificar quien es JP (iniciales)
+    pendiente_user_input: true
+  - id: pend_02
+    titulo: localizar funcion backend de cambio de ubicacion
+    accion: rg "Cambio.*Ubicac|Cambiar.*Ubicac" en TOMWMS_BOF/TOMIMSV4/
+  - id: pend_03
+    titulo: ejecutar query 09 en BD productiva via tools/case-seed
+  - id: pend_04
+    titulo: decidir fix
+    opciones:
+      - des-comentar linea de fix BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
+      - atacar bug raiz en operacion de cambio de ubicacion
+
+bitacora: brain/debuged-cases/CP-002.md
+
+cross_refs:
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/00-INDEX.md
+  - dataway-analysis/07-correlacion-codigo-data/case-pointers/03-frmmovreporte-magia-ejc.yml
+  - dataway-analysis/04-ecuacion-de-balance/granularidad-y-keys.yml
+  - dataway-analysis/04-ecuacion-de-balance/divergencia-reportes-paralelos.yml
+  - debuged-cases/CP-002.md
+
+bugs_relacionados: []
+case_pointers_relacionados:
+  - CP-003 (mismo bloque, "Magia por EJC" es respuesta intentada al bug de JP)
