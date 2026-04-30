@@ -81,13 +81,19 @@ Si se necesitan, bajar via API REST GitHub (ver `agent-context/GITHUB_SYNC.md`).
 
 ## Proximas acciones encoladas
 
-1. Cerrar los Q-* abiertos en la traza-002 seccion 7 (6 colas).
+1. Cerrar los Q-* abiertos en la traza-002 seccion 7 (6 colas C-006 a C-011).
 2. Aislar 5-10 casos HH para ver si el webservice deshace los movimientos
    (heredado del CP-014).
 3. Confirmar con cliente Killios estado actual de MERCOPAN y BYB.
-4. Ejecutar PLAYBOOK-FIX de CP-013 en QA Killios — atencion: aplicar a
-   `dev_2023_estable`, no a `dev_2028_merge`.
-5. Validar con replay de casos del ultimo mes Killios.
+4. Ejecutar PLAYBOOK-FIX de CP-013 segun estrategia §H del playbook:
+   - **Target principal**: terminar el fix parcial existente en
+     `dev_2028_merge` (rama de estabilizacion). Validar en MAMPA QA con
+     los 6 casos golden definidos en §G.4 del playbook.
+   - **Target secundario / hotfix**: cherry-pick a
+     `dev_2023_estable_hotfix_danado` SOLO si Killios no aguanta esperar
+     al release general de 2028. Criterios en §H.3 del playbook.
+5. Validar con replay de casos del ultimo mes Killios contra los casos
+   golden GOLD-01 a GOLD-06 de §G.4.
 
 ## Cross-refs
 
