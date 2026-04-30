@@ -82,3 +82,61 @@ python3 audit-linea-tiempo-producto.py --db TOMWMS_KILLIOS_PRD_2026 --codigo WMS
 ---
 
 (Mover entradas cerradas a `debuged-cases/` o eliminar. Crear nuevas con id incremental C-NNN.)
+
+## C-006 — Identificar Form BOF que dispara `Dañado_picking=True` desde stock reservado
+
+**Origen:** `code-deep-flow/traza-002-danado-picking.md` §1.4 + §7
+**Pregunta:** la búsqueda Azure DevOps por `Danado_picking` capitalizado en BOF dio 0 hits. ¿Qué Form (`frm*.vb`) llama a `clsLnStock_res_Partial.UpdateXxx_Dañado` o equivalente?
+**Plan:** descargar listado de Forms `TOMIMSV4/Forms/Picking/*.vb` y `Stock/*.vb`, grep por `Dañado_picking` (con Ñ, mayúscula y minúscula).
+**Salida esperada:** path exacto del Form + nombre del control UI que dispara, agregado a §1.4 de la traza-002.
+
+---
+
+## C-007 — Identificar `frm_*.java` HH que setea `Danado_picking=true`
+
+**Origen:** `code-deep-flow/traza-002-danado-picking.md` §2.2
+**Pregunta:** la búsqueda Azure DevOps en TOMHH2025 dio solo 1 hit (la entity). ¿En qué activity Android el operador toca el botón "Marcar dañado"?
+**Plan:** descargar `app/src/main/java/com/dts/activities/frm_picking_*.java` y buscar `setDanado_picking(true)`.
+**Salida esperada:** path exacto del frm + flujo UI documentado, agregado a §2.2 de la traza-002.
+
+---
+
+## C-008 — Confirmar constraint `CHECK (Cantidad > 0)` que dispara hipótesis A
+
+**Origen:** `CP-013-killios-wms164/INFORME-EJECUTIVO.md` §4 hipótesis A + traza-002 §3.4
+**Pregunta:** ¿existe en `producto_bodega_stock` o `stock` un constraint que falle cuando un UPDATE deja la fila en cero, y un try/catch que ante el error inserte fila nueva en lugar de manejarlo?
+**Plan:**
+1. Query Killios: `SELECT * FROM sys.check_constraints WHERE definition LIKE '%cantidad%' AND parent_object_id IN (OBJECT_ID('producto_bodega_stock'), OBJECT_ID('stock'))`.
+2. Buscar en BOF `clsLnStock_*.vb` patrón `Try ... Catch ex As SqlException ... Insert`.
+**Salida esperada:** confirmación o refutación de hipótesis A, agregado a CP-013 y traza-002.
+
+---
+
+## C-009 — Por qué BYB tiene 21% de marcaciones via HH (vs 1-3% del resto)
+
+**Origen:** `code-deep-flow/traza-002-danado-picking.md` §6 BYB
+**Pregunta:** ¿es configuración del cliente (BYB usa más HH para esta operación), o es una variante de código en el proyecto Android?
+**Plan:**
+1. Revisar `parametros_sistema` en BD BYB (IMS4MB_BYB_PRD).
+2. Ver si TOMHH2025 tiene variantes en ramas `byb` / `240byb` (existen según RAMAS_Y_CLIENTES.md §1.2).
+**Salida esperada:** razón documentada, eventual entrada en `clients/byb.md`.
+
+---
+
+## C-010 — Git blame del fix parcial 2028 (líneas comentadas en clsLnStock_res_Partial.vb)
+
+**Origen:** `code-deep-flow/traza-002-danado-picking.md` §1.1.B + §0.4
+**Pregunta:** ¿quién comentó las líneas 1998-2008 de `clsLnStock_res_Partial.vb` en rama `dev_2028_merge`, en qué commit, con qué mensaje?
+**Plan:** API Azure DevOps git blame (`/_apis/git/repositories/TOMWMS_BOF/items?path=...&versionDescriptor.version=dev_2028_merge&includeContent=false&latestProcessedChange=true`) para obtener el commit ID, después fetch del commit para ver autor y mensaje.
+**Salida esperada:** identidad del autor + intención original, agregado a §0.4 de la traza-002. Probable lleva al técnico que primero detectó el bug.
+
+---
+
+## C-011 — Migración del default NULL en `dañado_picking`
+
+**Origen:** `code-deep-flow/traza-002-danado-picking.md` §3.1
+**Pregunta:** ¿por qué la migración que agregó `dañado_picking` (pos 41) puso default NULL, mientras que `dañado_verificacion` (pos 27) tiene default ((0))? ¿Vale la pena un ALTER de homogeneización?
+**Plan:**
+1. Buscar en `WSHHRN/Update_BD_WMS.sql` (140 KB) la línea exacta que agregó la columna.
+2. Decidir si el ALTER `ALTER TABLE trans_picking_ubic ADD CONSTRAINT DF_trans_picking_ubic_dañado_picking DEFAULT 0 FOR dañado_picking` se aplica como parte del PLAYBOOK-FIX o se deja como está.
+**Salida esperada:** decisión documentada en `CP-013/PLAYBOOK-FIX.md` y traza-002 §3.1.
