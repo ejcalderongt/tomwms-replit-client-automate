@@ -394,43 +394,12 @@ mañana alguien pregunte "esto cuando se supo?", hay respuesta.
 
 ## 7. Estado actual del aprendizaje (numeros reales)
 
-Snapshot al cierre de wave 13-11 (ciclo 8 + 11 waves de barrido forense + caso campo CP-013 + caso estructural CP-014 + re-medicion live post-firewall).
-
-### Wave 13-11 (2026-04-29): re-medicion live de CP-013
-
-```
-   METRICA                              | VALOR
-   -------------------------------------+---------------------
-   Stock activo total (Killios PRD)     | 4.914 filas (+211 en 63h)
-   Combos con duplicados (V-DATAWAY-004)|   469 combos
-   Filas redundantes acumuladas         |   919 filas (18.7%)
-   UN comprometidas en duplicacion      |   183.375
-   Cronicidad confirmada                |   331 dias (28-may-25 -> 24-abr-26)
-   Pico historico                       |   2025-11-29: 210 filas en un dia
-   Combo degenerado top                 |   13 filas en un solo combo (PB 1261)
-   Dias sin nueva creacion de duplicados|   3 (post 2026-04-24)
-
-   HIPOTESIS H1 (lic_plate NULL/vacio)  |   REFUTADA (0/469 combos)
-   HIPOTESIS H1.5 (sentinel '0')        |   media (120/469 = 25.6%)
-   HIPOTESIS H4 (fallback INSERT)       |   muy alta (explica 74.4%)
-   HIPOTESIS H5 (multi-tipo de tarea)   |   alta NUEVA — refuta "exclusivo CEST"
-
-   Tipos de tarea sobre lotes dup       |   VERI 15259, PIK 15257, DESP 14908,
-                                        |   UBIC 5291, RECE 1750, CEST solo 869
-```
+Snapshot al cierre de el ciclo 8.
 
 ```
    AREA                          | OBSERVADO       | DOCUMENTADO | CONFIANZA
    ------------------------------+-----------------+-------------+----------
    Casos del motor de reserva    | 25 + 3 LLR      | 11/28       | media
-   Case-pointers (hardcodes)     | 12 documentados | 12/12       | alta
-   Casos de campo confirmados    | 1 (CP-013)      | 1/1         | alta
-   Casos estructurales BD        | 1 (CP-014)      | 1/1         | alta
-   Patterns en case-pointers     | 1 + 2 candidatos| 1/1 + P-002 + P-003 | alta
-   Anti-patrones formalizados    | 5 (V-DATAWAY-001..005) | 5/5 | alta
-   Conventions de codigo         | 1 (C-001 #EJC)  | 1/1         | alta
-   Reportes con ModoDepuracion   | 15 declarados   | 15/15       | alta
-   Reportes que mutan + marker   | 3 mutadores     | 3/3         | alta
    Estados de pedido             | 6 distintos     | 6/6         | alta
    Estados de OC                 | 6 distintos     | 0/6         | NULA *
    Estados de producto           | 18 distintos    | 0/18        | NULA *
