@@ -1,4 +1,12 @@
-# CP-016 — Feature #AG29042026: validacion previa de implosion + orquestador unificado cambio estado/ubicacion HH
+# FEAT-001 — Feature #AG29042026: validacion previa de implosion + orquestador unificado cambio estado/ubicacion HH
+
+> **Renombrado 2026-04-30**: este archivo nacio como `CP-016` en
+> `debuged-cases/`. Con la taxonomia nueva (ver `agent-context/TAXONOMIA.md`),
+> los features incorporados pendientes de validacion cross-cliente viven
+> en `wms-incorporated-features/`. Se renombro a **FEAT-001** y se
+> conservo el contenido tal cual. La carpeta vieja
+> `debuged-cases/CP-016-feature-AG29042026-validacion-implosion-rack/`
+> queda vacia en GitHub.
 
 **Tipo**: Feature INCORPORADO en `dev_2028_merge`, requiere VALIDACION CROSS-CLIENTE antes de promover a PRD.
 

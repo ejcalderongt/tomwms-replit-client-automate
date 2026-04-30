@@ -1,5 +1,32 @@
 # brain/debuged-cases — Índice
 
+> **REORGANIZACION 2026-04-30**: esta carpeta `debuged-cases/` esta siendo
+> migrada a la nueva taxonomia documentada en `agent-context/TAXONOMIA.md`.
+> Las nuevas carpetas son:
+>
+> - `customer-open-cases/` — casos por cliente, ABIERTOS
+> - `customer-closed-cases/` — casos por cliente, CERRADOS (Definition of Done cumplido)
+> - `wms-known-issues/` — bugs del producto (prefijo `BUG-NNN`, primer fine-tune issue de Erik)
+> - `wms-incorporated-features/` — features incorporados pendientes de validacion (`FEAT-NNN`)
+>
+> **Status de la migracion al 2026-04-30**:
+> - **CP-013** movido a `customer-open-cases/CP-013-killios-wms164/` (sigue OPEN, ancla del BUG-001).
+> - **CP-014** (deprecado historico, solo en GitHub) — sigue aca como referencia.
+> - **CP-015** DEPRECADO, absorbido por `wms-known-issues/BUG-001-danado-picking-no-resta-inventario/`. Mantiene su carpeta con header DEPRECATED.
+> - **CP-016** renombrado a `wms-incorporated-features/FEAT-001-validacion-implosion-rack/` (carpeta vieja en GitHub queda vacia tras el delete del INDEX).
+> - **CP-001 a CP-012** PENDIENTES de revision uno por uno (probablemente la mayoria a `customer-closed-cases/`).
+> - **CP-013.md** (archivo plano) sigue aca como duplicado historico del CP-013 carpeta.
+>
+> **Nuevos IDs**:
+> - **BUG-001** — `wms-known-issues/BUG-001-danado-picking-no-resta-inventario/` (primer bug del producto formalizado por Erik como Director de Desarrollo)
+> - **FEAT-001** — `wms-incorporated-features/FEAT-001-validacion-implosion-rack/` (feature `#AG29042026` colaborativo Erik+Marcela+Abigail)
+>
+> Lo que sigue debajo es la tabla historica original. Los CPs marcados
+> como `confirmed` o `open` siguen vigentes; cuando se revisen se
+> reclasifican uno a uno.
+
+---
+
 > Bitácora viva por case-pointer. Estado actual de cada caso en debug.
 
 ## Tabla de bitácoras
