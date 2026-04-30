@@ -76,9 +76,11 @@ El flag `dañado_picking` se setea desde 3 puntos de código (HH cambio de estad
             - Codigo en 2028 tiene un fix PARCIAL comentado (lineas comentadas
               en clsLnStock_res_Partial.vb 1998-2008 SOLO en 2028)
             - 2028 elimino 4 queries de filtrado en clsLnTrans_picking_ubic_Partial.vb
-            - Killios PRD corre 2023 -> NO recibe el fix parcial
-            - El fix completo NUNCA fue implementado, esta solo en
-              CP-013/PLAYBOOK-FIX.md como propuesta
+            - Killios PRD corre 2023 -> sigue sangrando hoy
+            - El fix completo NUNCA fue implementado; esta propuesto en
+              CP-013/PLAYBOOK-FIX.md (incluye §G guia de codigo y §H
+              estrategia de ramas: 2028 primero, hotfix a 2023 solo si
+              Killios no aguanta esperar al release de 2028)
 ```
 
 ---
@@ -382,13 +384,15 @@ Snapshots locales (ephemerals, en `/tmp/wms-azure-snippets/` del workspace Repli
 
 1. **Cerrar los Q-***: descargar Forms BOF y `frm_*.java` HH para localizar UI (C-006, C-007).
 2. **Confirmar el constraint** que dispara la hipótesis A del INFORME-EJECUTIVO (C-008).
-3. **Hacer git blame** del fix parcial en 2028 (C-010) → llevará a la persona que detectó el bug originalmente.
-4. **Ejecutar el PLAYBOOK-FIX de CP-013** en QA Killios (rama dev_2023_estable, no 2028).
-5. **Validar contra los 5-10 casos golden** que CP-014 sugirió aislar (HH webservice deshace movimientos? — sigue abierto).
-6. **Reconciliar las 919 filas duplicadas** según receta de PLAYBOOK-FIX sección B.
+3. **Hacer git blame** del fix parcial en 2028 (C-010) → llevará a la persona que detectó el bug originalmente. Este paso es bloqueante antes de tocar las líneas comentadas: puede haber contexto que cambie el plan.
+4. **Ejecutar el PLAYBOOK-FIX de CP-013** según la estrategia §H:
+   - **Target principal**: terminar el fix parcial en `dev_2028_merge`, validar en MAMPA QA con los 6 casos golden de §G.4.
+   - **Target secundario**: cherry-pick a `dev_2023_estable_hotfix_danado` solo si Killios no aguanta esperar al release general de 2028. Roll-out gradual según §G.5.
+5. **Validar contra los 5-10 casos golden** definidos en §G.4 del PLAYBOOK (incluye caso negativo "bodega sin MERMA configurada", idempotencia, AJCANTN, reconciliación).
+6. **Reconciliar las 919 filas duplicadas** según receta de PLAYBOOK-FIX §B.
 
 ---
 
 ## Resumen de una línea para Erik
 
-El flag `dañado_picking` es un drenaje de stock silencioso de 4 años, conocido por el equipo (alguien intentó parchar en 2028 y dejó comentarios), nunca terminado, en producción para Killios + BYB + Mercopan, con 24% de líneas marcadas en Killios y ~320k UM fantasma — el fix técnico ya está escrito en `CP-013/PLAYBOOK-FIX.md`, falta implementarlo en `dev_2023_estable` (no en 2028 como intentó alguien) y ejecutar la reconciliación física.
+El flag `dañado_picking` es un drenaje de stock silencioso de 4 años, conocido por el equipo (alguien intentó parchar en 2028 y dejó código comentado sin terminar), en producción para Killios + BYB + Mercopan, con 24% de líneas marcadas en Killios y ~320k UM fantasma — el fix técnico está completo en `CP-013/PLAYBOOK-FIX.md` con guía de código línea por línea (§G) y estrategia de ramas (§H, 2028 primero como continuación del trabajo iniciado, hotfix puntual a 2023 solo si la urgencia operativa lo justifica).
