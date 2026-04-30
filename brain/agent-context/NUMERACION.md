@@ -13,7 +13,7 @@ que vayas a crear un ID nuevo (no asumir que esta tabla esta al dia).
 | Prefijo | Para que | Donde vive | Siguiente libre (al 2026-04-30) | Como verificar |
 |---|---|---|---|---|
 | `ADR-NNN` | Architecture Decision Records | `brain/decisions/NNN-*.md` | **006** | `ls brain/decisions/` |
-| `CP-NNN` | Casos Practicos debuggeados (bug encontrado + reproducido + cita evidencia) | `brain/debuged-cases/CP-NNN-*/` | **001** | `ls brain/debuged-cases/` |
+| `CP-NNN` | Casos Practicos debuggeados (bug encontrado + reproducido + cita evidencia) | `brain/debuged-cases/CP-NNN-*/` o `brain/debuged-cases/CP-NNN.md` | **016** | `ls brain/debuged-cases/` (en GitHub rama wms-brain, NO en workspace local) |
 | `C-NNN` | Colas de investigacion pendientes (preguntas operativas, no del WMS) | `brain/colas-pendientes.md` (lista plana, no archivos) | **001** | leer el archivo |
 | `Q-NOMBRE` | Preguntas abiertas al WMS / cliente (no numericas, naming descriptivo) | `RAMAS_Y_CLIENTES.md` y otros | n/a (naming libre) | `rg "^- \*\*Q-" brain/` |
 | `H##` (`HNN`) | Hallazgos / hipotesis del agente (con timestamp) | `brain/_proposals/YYYYMMDD-HHMM-HNN-*.md` | siguiente libre del dia | `ls brain/_proposals/ \| tail` |
@@ -37,13 +37,21 @@ que vayas a crear un ID nuevo (no asumir que esta tabla esta al dia).
 
 ### 2.2 CP-NNN
 
-- Formato: subcarpeta `CP-NNN-bug-titulo-corto/` con al menos:
-  - `README.md` (descripcion del caso)
-  - `EVIDENCIA.md` (queries, conteos, citas del log)
-  - `REPRODUCIR.md` (pasos exactos)
-  - `FIX-PROPUESTO.md` (si aplica)
-- Ejemplo: `CP-001-stock-negativo-tras-ajuste-ciclico/`.
+- **Dos formatos validos**:
+  - **Archivo plano** `CP-NNN.md` para casos chicos. Asi son CP-001 a CP-012.
+  - **Subcarpeta** `CP-NNN-bug-titulo-corto/` con al menos:
+    - `INDEX.md` (descripcion del caso, vinculos)
+    - `EVIDENCIA*.md` (queries, conteos, citas del log)
+    - `REPORTE*.md` (reporte tecnico o ejecutivo)
+    - `PLAYBOOK-FIX.md` (si aplica)
+    Asi son CP-013 (`CP-013-killios-wms164/`) y CP-015
+    (`CP-015-bug-danado-picking-transversal/`).
+- Ejemplo carpeta: `CP-013-killios-wms164/`.
+- Ejemplo archivo plano: `CP-005.md`.
 - **Numerar de corrido** independientemente de cliente o severidad.
+- **No reusar numeros**: si CP-014 esta deprecated/incorporado en otro,
+  marcar el viejo con prefijo `[DEPRECATED]` en su INDEX y referencia al
+  reemplazo, no eliminar el numero.
 
 ### 2.3 C-NNN
 
@@ -117,19 +125,28 @@ que vayas a crear un ID nuevo (no asumir que esta tabla esta al dia).
 ## 4. Estado de numeracion al 2026-04-30 (snapshot)
 
 ```
-ADR libres:    ADR-001, 002, 006+   (existen 003, 004, 005)
-CP libres:     CP-001+              (debuged-cases vacio en workspace local;
-                                     en /tmp habia un intento CP-014 que se
-                                     descarto por mala numeracion. Ver
-                                     DRIFT_DETECTADO.md.)
-C libres:      depende del estado actual de colas-pendientes.md (no en
-               workspace local todavia, esta solo en GitHub rama wms-brain)
+ADR libres:    ADR-006+         (existen 003, 004, 005 - ver brain/decisions/)
+CP libres:     CP-016+          (existen CP-001.md a CP-014/, CP-015/ creado este turno)
+C libres:      C-012+           (existian C-001 a C-005 en GitHub; agregadas C-006 a C-011 en traza-002 seccion 7)
 H libres:      por dia. Para hoy 2026-04-30: H01+
-Wave libre:    Wave 7 (Wave 6.2 fue la ultima)
+Wave libre:    Wave 7+          (Wave 6.2 fue la ultima)
 ```
 
-> Nota CP-014: el numero **no es valido**. La numeracion de CP arranca en
-> CP-001. El "CP-014" del trabajo en `/tmp/wms-brain-fresh/` fue un error de
-> mi parte (agente Replit) — pense que la numeracion ya iba alta, sin
-> verificar. Cuando se traiga ese caso al brain canonico, se renumera a
-> `CP-001-bug-danado-picking-transversal/`.
+### Snapshot CP en GitHub rama wms-brain (al 2026-04-30)
+
+Archivos planos: `CP-001.md` ... `CP-012.md`, `CP-013.md` (este ademas tiene
+carpeta de evidencia abajo).
+
+Carpetas:
+- `CP-013-killios-wms164/` (caso Killios WMS164, 16 archivos + 2 subdirs)
+- `CP-014-bug-danado-picking-transversal/` (3 archivos, RENOMBRADO en
+  workspace local a CP-015 — ver siguiente bullet)
+- `CP-015-bug-danado-picking-transversal/` (NUEVO al 2026-04-30, en
+  workspace local; reemplaza CP-014 con trace de codigo agregado)
+
+> **Nota historica CP-014 -> CP-015**: el caso fue creado el 2026-04-30 con
+> numero CP-014 sin verificar la lista de CPs existentes en GitHub (donde
+> CP-013 ya estaba ocupado por el caso WMS164). Al traer al workspace y
+> agregar el trace de codigo (`code-deep-flow/traza-002-danado-picking.md`),
+> se renumera a CP-015 (siguiente libre real). El CP-014 viejo en GitHub
+> queda como historico hasta que se consolide en proximo sync.
