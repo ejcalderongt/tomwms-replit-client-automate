@@ -1,0 +1,3 @@
+IdOrdenCompraEnc,IdPropietarioBodega,IdProveedorBodega,IdTipoIngresoOC,IdEstadoOC,IdMotivoDevolucion,Fecha_Creacion,No_Documento,User_Agr,Procedencia,Referencia,Observacion,Fecha_Recepcion,no_documento_recepcion_erp,Codigo_Empresa_ERP
+1480,1,47,1,4,,2025-12-03 10:47:21.010000,10524,6,"GP00033 INDUSTRIAS TREVISO, S.A.",11350,,2025-12-17 08:30:05.007000,7500,Garesa
+2061,1,3672,2,4,,2026-02-09 10:44:49.283000,3335,6,"GC002587 IMAGINOVA,SOCIEDAD ANONIMA",3335,DEVOLUCION DE IMAGINOVA QUE NO SE FACTURO SOLO SE REALIZA ENTREGA 10737,2026-02-09 10:50:29.233000,698,Garesa
