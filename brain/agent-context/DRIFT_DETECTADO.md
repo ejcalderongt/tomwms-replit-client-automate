@@ -75,20 +75,29 @@ dos archivos de `agent-context/`:
 
 ---
 
-## 4. Numeracion CP-014 incorrecta
+## 4. [RESUELTO 2026-04-30] Numeracion CP-014 corregida a CP-015
 
-El trabajo en `/tmp/wms-brain-fresh/brain/debuged-cases/CP-014-bug-danado-picking-transversal/`
-fue creado por mi (agente Replit) con numeracion **incorrecta**: salte de
-CP-001 (que no existia todavia) directo a CP-014.
+**Sintoma original**: el trabajo en `/tmp/wms-brain-fresh/brain/debuged-cases/CP-014-bug-danado-picking-transversal/`
+fue creado por mi (agente Replit) sin verificar la lista de CPs existentes.
 
-**Causa**: confundi la numeracion de IDs con la numeracion de "ciclos" del
-brain (que va por Wave-N). La numeracion CP arranca en 001.
+**Causa real (descubierta el 2026-04-30 al hacer trace de codigo)**:
+- NO era que CP arrancara en CP-001 (mi suposicion del primer borrador
+  de NUMERACION.md).
+- En GitHub rama wms-brain ya existian CP-001.md a CP-013.md como
+  archivos planos, mas la carpeta CP-013-killios-wms164/ y CP-014/.
+- CP-014 ya estaba ocupado, el siguiente libre era CP-015.
 
-**Resolucion al traer al workspace**: renumerar a `CP-001`. La carpeta
-contiene:
-- `REPORTE-MULTI-BD.md` (bug `danado_picking` confirmado en 4/7 BDs)
-- `INDEX.md`
-- `DATOS-COMPARATIVOS.md`
+**Resolucion aplicada el 2026-04-30**:
+- Carpeta local renombrada a `CP-015-bug-danado-picking-transversal/`.
+- INDEX.md del CP-015 reescrito con nota de renumeracion bidireccional.
+- `NUMERACION.md` corregido: CP libre ahora dice **CP-016+** y documenta
+  el snapshot real de CPs en GitHub al 2026-04-30.
+- `CP-014/` en GitHub queda como historico hasta consolidar en proximo
+  sync (decidir: borrar, marcar [DEPRECATED], o dejar como esta).
+
+**Pendiente residual**: decidir que hacer con la carpeta `CP-014/` en
+GitHub (Erik debe definir). Mientras tanto, ambos numeros (014 y 015)
+apuntan al mismo caso.
 
 ---
 
