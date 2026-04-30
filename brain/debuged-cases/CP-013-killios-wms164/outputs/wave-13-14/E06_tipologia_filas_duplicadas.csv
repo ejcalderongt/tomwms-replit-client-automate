@@ -1,0 +1,7 @@
+origen,pres,lp,filas,cant_total,avg_cant
+RECEPCION,sin_pres,con_lp,660,8230.0,12.469696969696969
+RECEPCION,con_pres,con_lp,352,123130.0,349.8011363636364
+SIN_REF,sin_pres,sin_lp,273,2477.0,9.073260073260073
+SIN_REF,con_pres,sin_lp,80,47866.0,598.325
+RECEPCION,sin_pres,sin_lp,18,116.0,6.444444444444445
+RECEPCION,con_pres,sin_lp,5,1556.0,311.2
