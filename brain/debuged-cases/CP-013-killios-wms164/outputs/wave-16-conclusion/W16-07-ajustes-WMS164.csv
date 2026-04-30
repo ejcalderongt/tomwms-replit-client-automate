@@ -1,0 +1,4 @@
+idajustedet,idajusteenc,fecha,idusuario,referencia,ajuste_por_inventario,lote_original,lote_nuevo,cantidad_original,cantidad_nueva,IdStock,IdProductoEstado,IdUbicacion,idtipoajuste,idmotivoajuste,observacion
+2326,1020,2026-04-10,13,,0,BM2511,BM2511,6.0,0.0,124669,16,22,5,7,
+2327,1020,2026-04-10,13,,0,BM2601,BM2601,5.0,0.0,124673,16,22,5,7,
+2328,1020,2026-04-10,13,,0,BM2601,BM2601,4.0,0.0,124671,16,22,5,7,

@@ -1,0 +1,7 @@
+IdOperador,codigo,nombres,apellidos,IdRolOperador,activo,recibe,ubica,transporta,pickea,verifica
+13,13,(usuario backoffice no operador HH),,,,,,,,
+18,18,Francisco,Us,8,True,,,,,
+20,20,Carlos,España,1,True,,,,,
+30,30,Guillermo,Morales,5,True,,,,,
+31,31,Josué,Garcia,5,True,,,,,
+124,124,(NO EXISTE EN OPERADOR),,,,,,,,

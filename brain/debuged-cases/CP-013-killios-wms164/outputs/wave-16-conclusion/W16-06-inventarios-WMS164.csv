@@ -1,0 +1,2 @@
+IdInventarioEnc,fecha,lote,IdStock,cant_sistema,conteo
+# ZERO ROWS — evidencia de ausencia. NUNCA se ha hecho inventario fisico formal sobre WMS164 (IdProducto=77) en toda la historia. Verificado wave 16, query: SELECT * FROM trans_inventario_det id INNER JOIN trans_inventario_enc ie ON ie.IdInventarioEnc=id.IdInventarioEnc WHERE id.IdProducto=77

@@ -1,33 +1,20 @@
-"""
-Helper de conexion READ-ONLY a TOMWMS_KILLIOS_PRD_2026.
-
-Requisitos:
-  - pip install pymssql
-  - env: WMS_DB_USER, WMS_KILLIOS_DB_PASSWORD
-
-Uso:
-  from _db import q
-  rows = q("SELECT TOP 1 IdProducto, Codigo FROM producto")
-"""
 import os, pymssql
 
-SERVER   = "52.41.114.122"
-PORT     = 1437
-DATABASE = "TOMWMS_KILLIOS_PRD_2026"
-USER     = os.environ["WMS_DB_USER"]
-PASSWD   = os.environ["WMS_KILLIOS_DB_PASSWORD"]
-
 def conn():
-    return pymssql.connect(server=SERVER, port=PORT, user=USER,
-                           password=PASSWD, database=DATABASE, as_dict=True)
+    return pymssql.connect(
+        server="52.41.114.122", port=1437,
+        user=os.environ['WMS_DB_USER'],
+        password=os.environ['WMS_KILLIOS_DB_PASSWORD'],
+        database='TOMWMS_KILLIOS_PRD_2026',
+        as_dict=True, tds_version='7.4', charset='UTF-8',
+        timeout=60, login_timeout=30
+    )
 
-def q(sql, params=None):
-    with conn() as c, c.cursor() as cur:
-        if params is None:
-            cur.execute(sql)
-        else:
-            cur.execute(sql, params)
-        try:
-            return cur.fetchall()
-        except Exception:
-            return None
+def q(sql):
+    c = conn()
+    try:
+        cur = c.cursor()
+        cur.execute(sql)
+        return cur.fetchall()
+    finally:
+        c.close()
