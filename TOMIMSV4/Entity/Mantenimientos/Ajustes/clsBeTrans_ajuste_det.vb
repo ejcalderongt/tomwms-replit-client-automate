@@ -162,6 +162,12 @@ Public Class clsBeTrans_ajuste_det
     Public Property Color_destino As String = ""
     Public Property IdProductoTallaColor_destino As Integer = 0
 
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistencia de proveedor en detalle de ajuste
+    ' (columnas trans_ajuste_det.idproveedor / codigo_proveedor / nombre_proveedor).
+    Public Property IdProveedor() As Integer = 0
+    Public Property Codigo_Proveedor() As String = ""
+    Public Property Nombre_Proveedor() As String = ""
+
     Sub New()
     End Sub
     ''' <summary>

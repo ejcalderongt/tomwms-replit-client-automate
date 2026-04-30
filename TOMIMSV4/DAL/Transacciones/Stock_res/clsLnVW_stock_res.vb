@@ -1275,7 +1275,7 @@ Public Class clsLnVW_stock_res
                               WHERE Lic_Plate = @Lic_Plate
                                 AND IdUbicacion = @IdUbicacion
                                 AND IdBodega = @IdBodega
-                              ORDER BY Codigo, IdProductoEstado, IdPresentacion"
+                              ORDER BY IdStock"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
                 lDTA.SelectCommand.CommandType = CommandType.Text
@@ -1298,6 +1298,69 @@ Public Class clsLnVW_stock_res
             End Using
 
             Return lReturnList
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Stock_Implosion_By_LicPlate(ByVal pLicPlate As String,
+                                                       ByVal pIdBodega As Integer,
+                                                       ByVal lConnection As SqlConnection,
+                                                       ByVal lTransaction As SqlTransaction) As clsBeVW_stock_res
+
+        Try
+
+            Dim vSQL As String = "SELECT TOP 1 " &
+                                 "Lic_Plate, IdUbicacion, Nombre_Completo, IdProductoEstado, NomEstado " &
+                                 "FROM VW_Stock_Res " &
+                                 "WHERE IdBodega = @IdBodega " &
+                                 "AND Lic_Plate = @LicPlate " &
+                                 "AND Activo = 1 " &
+                                 "AND ISNULL(Bloqueada, 0) = 0 " &
+                                 "AND ISNULL(Disponible_UMBas, 0) > 0 "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                lDTA.SelectCommand.Parameters.AddWithValue("@LicPlate", pLicPlate)
+
+                Dim lDataTable As New DataTable()
+                lDTA.Fill(lDataTable)
+
+                If lDataTable Is Nothing OrElse lDataTable.Rows.Count = 0 Then
+                    Return Nothing
+                End If
+
+                Dim lRow As DataRow = lDataTable.Rows(0)
+                Dim obj As New clsBeVW_stock_res()
+
+                If lRow("Lic_Plate") IsNot DBNull.Value Then
+                    obj.Lic_plate = lRow("Lic_Plate").ToString()
+                End If
+
+                If lRow("IdUbicacion") IsNot DBNull.Value Then
+                    obj.IdUbicacion = CInt(lRow("IdUbicacion"))
+                End If
+
+                If lRow("Nombre_Completo") IsNot DBNull.Value Then
+                    obj.Nombre_Completo = lRow("Nombre_Completo").ToString()
+                End If
+
+                If lRow("IdProductoEstado") IsNot DBNull.Value Then
+                    obj.IdProductoEstado = CInt(lRow("IdProductoEstado"))
+                End If
+
+                If lRow("NomEstado") IsNot DBNull.Value Then
+                    obj.NomEstado = lRow("NomEstado").ToString()
+                End If
+
+                Return obj
+
+            End Using
 
         Catch ex As Exception
             Throw

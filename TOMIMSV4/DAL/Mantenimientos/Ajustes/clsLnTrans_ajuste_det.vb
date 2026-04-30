@@ -42,6 +42,11 @@ Public Class clsLnTrans_ajuste_det
                 .Talla_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
                 .Color_destino = IIf(IsDBNull(dr.Item("Color_destino")), "", dr.Item("Color_destino"))
 
+                '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+                .IdProveedor = IIf(IsDBNull(dr.Item("idproveedor")), 0, dr.Item("idproveedor"))
+                .Codigo_Proveedor = IIf(IsDBNull(dr.Item("codigo_proveedor")), "", dr.Item("codigo_proveedor"))
+                .Nombre_Proveedor = IIf(IsDBNull(dr.Item("nombre_proveedor")), "", dr.Item("nombre_proveedor"))
+
             End With
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -85,6 +90,11 @@ Public Class clsLnTrans_ajuste_det
             Ins.Add("lic_plate", "@lic_plate", DataType.Parametro)
             Ins.Add("referencia_ajuste_erp", "@referencia_ajuste_erp", DataType.Parametro)
             Ins.Add("estado_ajuste_erp", "@estado_ajuste_erp", DataType.Parametro)
+
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            Ins.Add("idproveedor", "@idproveedor", DataType.Parametro)
+            Ins.Add("codigo_proveedor", "@codigo_proveedor", DataType.Parametro)
+            Ins.Add("nombre_proveedor", "@nombre_proveedor", DataType.Parametro)
 
             If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
                 Ins.Add("IdProductoTallaColor_origen", "@IdProductoTallaColor_origen", DataType.Parametro)
@@ -139,6 +149,11 @@ Public Class clsLnTrans_ajuste_det
             cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_ajuste_det.lic_plate))
             cmd.Parameters.Add(New SqlParameter("@REFERENCIA_AJUSTE_ERP", oBeTrans_ajuste_det.referencia_ajuste_erp))
             cmd.Parameters.Add(New SqlParameter("@ESTADO_AJUSTE_ERP", oBeTrans_ajuste_det.estado_ajuste_erp))
+
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeTrans_ajuste_det.IdProveedor))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_PROVEEDOR", IIf(oBeTrans_ajuste_det.Codigo_Proveedor Is Nothing, "", oBeTrans_ajuste_det.Codigo_Proveedor)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROVEEDOR", IIf(oBeTrans_ajuste_det.Nombre_Proveedor Is Nothing, "", oBeTrans_ajuste_det.Nombre_Proveedor)))
 
             If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
                 cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_origen", oBeTrans_ajuste_det.IdProductoTallaColor_origen))
@@ -208,6 +223,11 @@ Public Class clsLnTrans_ajuste_det
             Upd.Add("referencia_ajuste_erp", "@referencia_ajuste_erp", DataType.Parametro)
             Upd.Add("estado_ajuste_erp", "@estado_ajuste_erp", DataType.Parametro)
 
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            Upd.Add("idproveedor", "@idproveedor", DataType.Parametro)
+            Upd.Add("codigo_proveedor", "@codigo_proveedor", DataType.Parametro)
+            Upd.Add("nombre_proveedor", "@nombre_proveedor", DataType.Parametro)
+
             If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
                 Upd.Add("IdProductoTallaColor_origen", "@IdProductoTallaColor_origen", DataType.Parametro)
                 Upd.Add("talla_origen", "@talla_origen", DataType.Parametro)
@@ -263,6 +283,11 @@ Public Class clsLnTrans_ajuste_det
             cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_ajuste_det.lic_plate))
             cmd.Parameters.Add(New SqlParameter("@REFERENCIA_AJUSTE_ERP", oBeTrans_ajuste_det.referencia_ajuste_erp))
             cmd.Parameters.Add(New SqlParameter("@ESTADO_AJUSTE_ERP", oBeTrans_ajuste_det.estado_ajuste_erp))
+
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeTrans_ajuste_det.IdProveedor))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_PROVEEDOR", IIf(oBeTrans_ajuste_det.Codigo_Proveedor Is Nothing, "", oBeTrans_ajuste_det.Codigo_Proveedor)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROVEEDOR", IIf(oBeTrans_ajuste_det.Nombre_Proveedor Is Nothing, "", oBeTrans_ajuste_det.Nombre_Proveedor)))
 
             If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
                 cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_origen", oBeTrans_ajuste_det.IdProductoTallaColor_origen))

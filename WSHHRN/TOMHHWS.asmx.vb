@@ -5945,7 +5945,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp)
+            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp, True)
 
         Catch ex As Exception
 
@@ -18954,13 +18954,13 @@ Public Class TOMHHWS
 
     '#GT07042026: cargar stock para la HH
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer) As List(Of clsBeI_nav_barras_rfid_enc)
+    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
 
         Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
 
         Try
 
-            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina)
+            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina, pBusqueda, pCriterioBusqueda)
 
         Catch ex As Exception
 
@@ -19429,6 +19429,8 @@ Public Class TOMHHWS
             'La composición real de la licencia se reconstruye en BD.
             Dim primeraLinea As clsBeVW_stock_res = pStockResList(0)
 
+            Dim EsCambioEstado As Boolean = (pStockResList.FirstOrDefault.Movimiento.IdEstadoOrigen <> pStockResList.FirstOrDefault.Movimiento.IdEstadoDestino)
+
             If primeraLinea.Movimiento Is Nothing Then
                 Throw New Exception("La línea no contiene información de movimiento.")
             End If
@@ -19446,6 +19448,7 @@ Public Class TOMHHWS
                                              primeraLinea.Movimiento.IdOperadorBodega &
                                              " licencia: " & primeraLinea.Lic_plate)
 
+
             Dim exito As Boolean =
                 clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_HH_LicenciaCompleta_ConValidacionRack(primeraLinea.Movimiento,
                                                                                                        primeraLinea.Lic_plate,
@@ -19453,7 +19456,8 @@ Public Class TOMHHWS
                                                                                                        primeraLinea.Movimiento.IdUbicacionDestino,
                                                                                                        idStock,
                                                                                                        idMov,
-                                                                                                       0)
+                                                                                                       0,
+                                                                                                       EsCambioEstado)
 
             If Not exito Then Return False
 
@@ -19484,7 +19488,6 @@ Public Class TOMHHWS
                 End If
             End If
         End Try
-
     End Function
 
 End Class

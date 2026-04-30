@@ -66,6 +66,8 @@ Partial Class frmAjusteStock
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.chkBorrador = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.btnImportarExcel = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuImprimirResumen = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEliminarAjusteBorrador = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -139,9 +141,6 @@ Partial Class frmAjusteStock
         Me.tabResumenAjuste = New DevExpress.XtraTab.XtraTabPage()
         Me.dgridProductosConsolidados = New DevExpress.XtraGrid.GridControl()
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.tabDetalleAjusteNuevo = New DevExpress.XtraTab.XtraTabPage()
-        Me.dgridNuevo = New DevExpress.XtraGrid.GridControl()
-        Me.GridView4 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -218,9 +217,6 @@ Partial Class frmAjusteStock
         Me.tabResumenAjuste.SuspendLayout()
         CType(Me.dgridProductosConsolidados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.tabDetalleAjusteNuevo.SuspendLayout()
-        CType(Me.dgridNuevo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.GridView4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -439,10 +435,10 @@ Partial Class frmAjusteStock
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel, Me.mnuImprimirResumen, Me.mnuEliminarAjusteBorrador})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 18
+        Me.RibbonControl.MaxItemId = 20
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -451,7 +447,7 @@ Partial Class frmAjusteStock
         '
         'mnuImprimir1
         '
-        Me.mnuImprimir1.Caption = "Imprimir"
+        Me.mnuImprimir1.Caption = "Detalle"
         Me.mnuImprimir1.Id = 6
         Me.mnuImprimir1.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimir1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuImprimir1.Name = "mnuImprimir1"
@@ -496,6 +492,20 @@ Partial Class frmAjusteStock
         Me.btnImportarExcel.ImageOptions.SvgImage = CType(resources.GetObject("btnImportarExcel.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.btnImportarExcel.Name = "btnImportarExcel"
         '
+        'mnuImprimirResumen
+        '
+        Me.mnuImprimirResumen.Caption = "Resumen"
+        Me.mnuImprimirResumen.Id = 18
+        Me.mnuImprimirResumen.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimirResumen.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuImprimirResumen.Name = "mnuImprimirResumen"
+        '
+        'mnuEliminarAjusteBorrador
+        '
+        Me.mnuEliminarAjusteBorrador.Caption = "Eliminar"
+        Me.mnuEliminarAjusteBorrador.Id = 19
+        Me.mnuEliminarAjusteBorrador.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarAjusteBorrador.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEliminarAjusteBorrador.Name = "mnuEliminarAjusteBorrador"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -506,11 +516,13 @@ Partial Class frmAjusteStock
         '
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuGuardar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImprimir1)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImprimirResumen)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEstadoEnviadoAERP)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuReimpresionEtiquetas)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAuditado)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkBorrador)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.btnImportarExcel)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarAjusteBorrador, True)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -603,7 +615,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -612,7 +624,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(155, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(155, 28)
         Me.cmdAdd.Text = "Ajuste sobre Stock"
         Me.cmdAdd.ToolTipText = "Se modificara stock existente"
         '
@@ -621,7 +633,7 @@ Partial Class frmAjusteStock
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 24)
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 28)
         Me.mnuAjustePositivo.Text = "Ajuste Sin Stock"
         Me.mnuAjustePositivo.ToolTipText = "Se agrega existencia sin stock previa"
         '
@@ -630,7 +642,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
         Me.mnuDel.Text = "Eliminar"
         Me.mnuDel.ToolTipText = "Eliminar Linea Seleccionada"
         '
@@ -639,7 +651,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -919,7 +931,7 @@ Partial Class frmAjusteStock
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 55)
+        Me.dgrid.Location = New System.Drawing.Point(2, 59)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
@@ -1125,6 +1137,7 @@ Partial Class frmAjusteStock
         Me.colProveedor.HeaderText = "Proveedor"
         Me.colProveedor.MinimumWidth = 6
         Me.colProveedor.Name = "colProveedor"
+        Me.colProveedor.ReadOnly = True
         Me.colProveedor.Width = 125
         '
         'DockManager1
@@ -1229,7 +1242,7 @@ Partial Class frmAjusteStock
         Me.XtraTabControl1.SelectedTabPage = Me.tabDetalleAjuste
         Me.XtraTabControl1.Size = New System.Drawing.Size(1484, 560)
         Me.XtraTabControl1.TabIndex = 34
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDetalleAjuste, Me.tabDocumentosAsociados, Me.tabResumenAjuste, Me.tabDetalleAjusteNuevo})
+        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDetalleAjuste, Me.tabDocumentosAsociados, Me.tabResumenAjuste})
         '
         'tabDetalleAjuste
         '
@@ -1306,34 +1319,6 @@ Partial Class frmAjusteStock
         Me.GridView3.Name = "GridView3"
         Me.GridView3.OptionsBehavior.ReadOnly = True
         Me.GridView3.OptionsFind.AlwaysVisible = True
-        '
-        'tabDetalleAjusteNuevo
-        '
-        Me.tabDetalleAjusteNuevo.Controls.Add(Me.dgridNuevo)
-        Me.tabDetalleAjusteNuevo.Name = "tabDetalleAjusteNuevo"
-        Me.tabDetalleAjusteNuevo.Size = New System.Drawing.Size(1482, 530)
-        Me.tabDetalleAjusteNuevo.Text = "Detalle Ajuste"
-        '
-        'dgridNuevo
-        '
-        Me.dgridNuevo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridNuevo.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridNuevo.Location = New System.Drawing.Point(0, 0)
-        Me.dgridNuevo.MainView = Me.GridView4
-        Me.dgridNuevo.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridNuevo.MenuManager = Me.RibbonControl
-        Me.dgridNuevo.Name = "dgridNuevo"
-        Me.dgridNuevo.Size = New System.Drawing.Size(1482, 530)
-        Me.dgridNuevo.TabIndex = 2
-        Me.dgridNuevo.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView4})
-        '
-        'GridView4
-        '
-        Me.GridView4.DetailHeight = 431
-        Me.GridView4.GridControl = Me.dgridNuevo
-        Me.GridView4.Name = "GridView4"
-        Me.GridView4.OptionsBehavior.ReadOnly = True
-        Me.GridView4.OptionsFind.AlwaysVisible = True
         '
         'frmAjusteStock
         '
@@ -1414,9 +1399,6 @@ Partial Class frmAjusteStock
         Me.tabResumenAjuste.ResumeLayout(False)
         CType(Me.dgridProductosConsolidados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.tabDetalleAjusteNuevo.ResumeLayout(False)
-        CType(Me.dgridNuevo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.GridView4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1478,6 +1460,15 @@ Partial Class frmAjusteStock
     Friend WithEvents txtCentroCostoERP As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCentroCostoDirERP As DevExpress.XtraEditors.TextEdit
     Friend WithEvents gcCentroCosto As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents lblCentroCosto As Label
+    Friend WithEvents chkBorrador As DevExpress.XtraBars.BarToggleSwitchItem
+    Friend WithEvents btnImportarExcel As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents txtNoAjuste As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents tabResumenAjuste As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents dgridProductosConsolidados As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView3 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents mnuImprimirResumen As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuEliminarAjusteBorrador As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents ColCodigoProducto As DataGridViewTextBoxColumn
     Friend WithEvents colNombreProducto As DataGridViewTextBoxColumn
     Friend WithEvents UmBas As DataGridViewTextBoxColumn
@@ -1498,15 +1489,5 @@ Partial Class frmAjusteStock
     Friend WithEvents colTalla As DataGridViewComboBoxColumn
     Friend WithEvents colColor As DataGridViewComboBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
-    Friend WithEvents lblCentroCosto As Label
-    Friend WithEvents chkBorrador As DevExpress.XtraBars.BarToggleSwitchItem
-    Friend WithEvents btnImportarExcel As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents txtNoAjuste As DevExpress.XtraEditors.TextEdit
     Friend WithEvents colProveedor As DataGridViewTextBoxColumn
-    Friend WithEvents tabResumenAjuste As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents dgridProductosConsolidados As DevExpress.XtraGrid.GridControl
-    Friend WithEvents GridView3 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents tabDetalleAjusteNuevo As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents dgridNuevo As DevExpress.XtraGrid.GridControl
-    Friend WithEvents GridView4 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

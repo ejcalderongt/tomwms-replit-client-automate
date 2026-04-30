@@ -3,7 +3,7 @@ Imports System.Reflection
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 
-Public Class frmStockRFID
+Public Class frmExistenciasRFID
 
     Private listaIngresoRFID As New List(Of clsBeI_nav_barras_rfid_enc)
     Private BeIngresoRFID As New clsBeI_nav_barras_rfid_enc

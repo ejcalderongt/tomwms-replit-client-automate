@@ -137,6 +137,7 @@ Partial Class frmCliente
         Me.GridViewTiempo = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GrpClienteBodega = New DevExpress.XtraEditors.GroupControl()
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
+        Me.tsSeleccionarClientes = New DevExpress.XtraEditors.ToggleSwitch()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DsCliente = New TOMWMS.DsCliente()
@@ -207,7 +208,6 @@ Partial Class frmCliente
         Me.grpLotesBloqueados = New DevExpress.XtraEditors.GroupControl()
         Me.DgridLotesBloqueados = New DevExpress.XtraGrid.GridControl()
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.tsSeleccionarClientes = New DevExpress.XtraEditors.ToggleSwitch()
         IdEmpresaLabel = New System.Windows.Forms.Label()
         CodigoLabel = New System.Windows.Forms.Label()
         Nombre_comercialLabel = New System.Windows.Forms.Label()
@@ -308,6 +308,7 @@ Partial Class frmCliente
         Me.GrpClienteBodega.SuspendLayout()
         CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl3.SuspendLayout()
+        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsCliente, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -370,7 +371,6 @@ Partial Class frmCliente
         Me.grpLotesBloqueados.SuspendLayout()
         CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdEmpresaLabel
@@ -1679,6 +1679,16 @@ Partial Class frmCliente
         Me.GroupControl3.TabIndex = 0
         Me.GroupControl3.Text = "Selección de Bodega"
         '
+        'tsSeleccionarClientes
+        '
+        Me.tsSeleccionarClientes.Location = New System.Drawing.Point(472, 3)
+        Me.tsSeleccionarClientes.MenuManager = Me.RibbonControl
+        Me.tsSeleccionarClientes.Name = "tsSeleccionarClientes"
+        Me.tsSeleccionarClientes.Properties.OffText = "Ninguno"
+        Me.tsSeleccionarClientes.Properties.OnText = "Todos"
+        Me.tsSeleccionarClientes.Size = New System.Drawing.Size(115, 24)
+        Me.tsSeleccionarClientes.TabIndex = 97
+        '
         'Grid
         '
         Me.Grid.Cursor = System.Windows.Forms.Cursors.Default
@@ -2436,16 +2446,6 @@ Partial Class frmCliente
         Me.GridView3.OptionsView.ShowGroupPanel = False
         Me.GridView3.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.[True]
         '
-        'tsSeleccionarClientes
-        '
-        Me.tsSeleccionarClientes.Location = New System.Drawing.Point(472, 3)
-        Me.tsSeleccionarClientes.MenuManager = Me.RibbonControl
-        Me.tsSeleccionarClientes.Name = "tsSeleccionarClientes"
-        Me.tsSeleccionarClientes.Properties.OffText = "Ninguno"
-        Me.tsSeleccionarClientes.Properties.OnText = "Todos"
-        Me.tsSeleccionarClientes.Size = New System.Drawing.Size(115, 24)
-        Me.tsSeleccionarClientes.TabIndex = 97
-        '
         'frmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -2512,6 +2512,7 @@ Partial Class frmCliente
         Me.GrpClienteBodega.ResumeLayout(False)
         CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl3.ResumeLayout(False)
+        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsCliente, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2580,7 +2581,6 @@ Partial Class frmCliente
         Me.grpLotesBloqueados.ResumeLayout(False)
         CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

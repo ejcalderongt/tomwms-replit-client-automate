@@ -43,6 +43,18 @@ Public Class frmDocSalidaRFID_List
                     GridView1.OptionsView.ColumnAutoWidth = False
                     GridView1.BestFitColumns()
 
+                    If GridView1.Columns("fec_agr") IsNot Nothing Then
+                        GridView1.Columns("fec_agr").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+                        GridView1.Columns("fec_agr").DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss"
+                    End If
+
+                    If GridView1.Columns("fec_mod") IsNot Nothing Then
+                        GridView1.Columns("fec_mod").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+                        GridView1.Columns("fec_mod").DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss"
+                    End If
+
+                    GridView1.OptionsView.ColumnAutoWidth = False
+                    GridView1.BestFitColumns()
                     lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
 
                 End If

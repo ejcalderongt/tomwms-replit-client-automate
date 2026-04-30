@@ -130,15 +130,21 @@ Public Class frmPicking
         cmdImprimir.Enabled = True
         mnuProcesar.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuProcesarLinea.Enabled = BePickingEnc.Estado <> "Despachado"
-        mnuPendientePicking.Enabled = (BePickingEnc.Estado <> "Nuevo" AndAlso BePickingEnc.Estado <> "Pendiente")
-        mnuPendientePacking.Enabled = BePickingEnc.Requiere_Preparacion
+        mnuPendientePicking.Enabled = (BePickingEnc.Estado <> "Nuevo" AndAlso BePickingEnc.Estado <> "Pendiente" AndAlso BePickingEnc.Estado <> "Despachado")
+        mnuPendientePacking.Enabled = BePickingEnc.Requiere_Preparacion AndAlso BePickingEnc.Estado <> "Despachado"
         mnuActualizarPicking.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdNoPickeado.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdNoVerificado.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdVerificarNuevamente.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuDespachado.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuVerificarPickeados.Enabled = BePickingEnc.Estado <> "Despachado"
-
+        mnuReemplazo.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
+        lnkAgregarPedido.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
+        cmdNoPickeado.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuEliminarLayoutGrid.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuReemplazo.Enabled = BePickingEnc.Estado <> "Despachado"
     End Sub
 
     Public Sub SetDatataTable()
@@ -1992,8 +1998,8 @@ Public Class frmPicking
                 If BePedido IsNot Nothing Then
                     If BePedido.TipoPedido.Verificar_con_imagen Then
                         BloquearControles_Por_VerificacionBOF(False)
-                    Else
-                        BloquearControles_Por_VerificacionBOF(True)
+                        'Else
+                        '    BloquearControles_Por_VerificacionBOF(True)
                     End If
                 End If
 
