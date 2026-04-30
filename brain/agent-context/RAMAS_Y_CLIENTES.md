@@ -1,3 +1,11 @@
+---
+id: RAMAS_Y_CLIENTES
+tipo: agent-context
+estado: vigente
+clientes: [killios, mercopan, byb, becofarma, cealsa, mampa, idealsa, merhonsa]
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [agent-context/clientes, agent-context/ramas]
+---
 # Ramas y clientes — TOMWMS BOF + HH
 
 **Fecha**: 2026-04-28  

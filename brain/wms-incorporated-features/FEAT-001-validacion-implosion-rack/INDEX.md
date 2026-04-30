@@ -1,3 +1,14 @@
+---
+id: FEAT-001
+tipo: feat
+estado: pendiente-validacion
+autores: [erik, marcela, abigail]
+modulo: trans_ubic_hh
+ramas_afectadas: [dev_2028_merge]
+incorporado: 2026-04-29
+clientes_destino: [idealsa, merhonsa, mercopan, killios, byb, becofarma, cealsa, mampa]
+tags: [feat/picking, modulo/hh, modulo/bof-vbnet, autor/colaborativo]
+---
 # FEAT-001 — Feature #AG29042026: validacion previa de implosion + orquestador unificado cambio estado/ubicacion HH
 
 > **Renombrado 2026-04-30**: este archivo nacio como `CP-016` en

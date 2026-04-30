@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>brain graph — TOMWMS</title>
+  <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+  <script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
+  <script src="https://unpkg.com/cytoscape-cose-bilkent@4.1.0/cytoscape-cose-bilkent.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #14161a; color: #e8e8e8; }
+    #cy { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; background: #14161a; }
+    #ui {
+      position: absolute; top: 12px; left: 12px; z-index: 10;
+      background: rgba(20, 22, 26, 0.92); padding: 14px; border-radius: 6px;
+      max-width: 340px; border: 1px solid #333;
+      backdrop-filter: blur(6px);
+    }
+    #info {
+      position: absolute; bottom: 12px; left: 12px; z-index: 10;
+      background: rgba(20, 22, 26, 0.95); padding: 14px; border-radius: 6px;
+      max-width: 480px; max-height: 50vh; overflow: auto; display: none;
+      border: 1px solid #333; backdrop-filter: blur(6px); font-size: 13px;
+    }
+    h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; }
+    h4 { margin: 12px 0 6px; font-size: 12px; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
+    input[type="text"] {
+      width: 100%; padding: 7px 10px; background: #1f2228; color: #e8e8e8;
+      border: 1px solid #444; border-radius: 4px; font-size: 13px;
+    }
+    input[type="text"]:focus { outline: none; border-color: #6aa9ff; }
+    .legend, .tag-cloud { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .legend span, .tag-cloud span {
+      padding: 3px 8px; border-radius: 3px; font-size: 11px;
+      cursor: pointer; user-select: none; transition: opacity 0.15s;
+    }
+    .legend span:hover, .tag-cloud span:hover { opacity: 0.8; }
+    .tag-cloud span { background: #2a2f38; color: #ccc; }
+    #stats { margin-top: 10px; font-size: 11px; color: #888; line-height: 1.5; }
+    button {
+      background: #2a2f38; color: #e8e8e8; border: 1px solid #444;
+      padding: 5px 10px; border-radius: 3px; font-size: 11px; cursor: pointer;
+    }
+    button:hover { background: #353b46; }
+    .btn-row { display: flex; gap: 6px; margin-top: 8px; }
+    a { color: #6aa9ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .info-key { color: #888; }
+    .info-val { color: #e8e8e8; }
+    pre { background: #0d0e10; padding: 6px; border-radius: 3px; overflow: auto; font-size: 11px; }
+    #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; }
+  </style>
+</head>
+<body>
+  <div id="loading">cargando grafo...</div>
+  <div id="ui" style="display: none;">
+    <h3>brain graph — TOMWMS</h3>
+    <input type="text" id="search" placeholder="buscar (id, label, tag, cliente)">
+    <h4>tipos</h4>
+    <div class="legend" id="legend"></div>
+    <h4>tags top</h4>
+    <div class="tag-cloud" id="tag-cloud"></div>
+    <div class="btn-row">
+      <button id="btn-reset">limpiar filtros</button>
+      <button id="btn-fit">centrar</button>
+      <button id="btn-relayout">re-layout</button>
+    </div>
+    <div id="stats"></div>
+  </div>
+  <div id="cy"></div>
+  <div id="info"></div>
+
+  <script>
+    const COLORS = {
+      bug:            '#e63946',
+      feat:           '#2a9d8f',
+      'cp-open':      '#f4a261',
+      'cp-closed':    '#7c9885',
+      'cp-legacy':    '#9b9b9b',
+      adr:            '#9b5de5',
+      proposal:       '#fcbf49',
+      processed:      '#5a6068',
+      trace:          '#118ab2',
+      learning:       '#06d6a0',
+      'agent-context':'#ef476f',
+      'data-strategy':'#ffd166',
+      'wms-flow':     '#80b918',
+      'caso-reserva': '#3a86ff',
+      client:         '#ff006e',
+      'db-brain':     '#8338ec',
+      index:          '#fb5607',
+      inbox:          '#bdbdbd',
+      other:          '#6c757d',
+    };
+
+    function colorOf(t) { return COLORS[t] || COLORS.other; }
+
+    fetch('graph.json?t=' + Date.now())
+      .then(r => {
+        if (!r.ok) throw new Error('graph.json no encontrado. Corre build_graph.py primero.');
+        return r.json();
+      })
+      .then(data => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('ui').style.display = 'block';
+
+        const elements = [];
+        const nodeIds = new Set(data.nodes.map(n => n.id));
+        data.nodes.forEach(n => {
+          const deg = (n.in_degree || 0) + (n.out_degree || 0);
+          elements.push({
+            data: {
+              id: n.id,
+              label: n.label,
+              tipo: n.tipo,
+              tags: (n.tags || []).join(' '),
+              clientes: (n.clientes || []).join(' '),
+              estado: n.estado || '',
+              severidad: n.severidad || '',
+              in_degree: n.in_degree,
+              out_degree: n.out_degree,
+              size: Math.max(8, Math.min(70, 8 + Math.sqrt(deg) * 7)),
+              color: colorOf(n.tipo),
+              size_bytes: n.size_bytes,
+            }
+          });
+        });
+        data.edges.forEach((e, i) => {
+          if (!nodeIds.has(e.source) || !nodeIds.has(e.target)) return;
+          elements.push({
+            data: {
+              id: 'e' + i,
+              source: e.source,
+              target: e.target,
+              label: e.label || '',
+              kind: e.kind || 'md-link',
+            }
+          });
+        });
+
+        const cy = cytoscape({
+          container: document.getElementById('cy'),
+          elements,
+          wheelSensitivity: 0.2,
+          minZoom: 0.05,
+          maxZoom: 4,
+          style: [
+            { selector: 'node', style: {
+                'background-color': 'data(color)',
+                'width': 'data(size)',
+                'height': 'data(size)',
+                'label': 'data(label)',
+                'color': '#bbb',
+                'font-size': 7,
+                'text-valign': 'bottom',
+                'text-halign': 'center',
+                'text-margin-y': 3,
+                'text-outline-color': '#000',
+                'text-outline-width': 1.5,
+                'border-width': 0,
+                'min-zoomed-font-size': 5,
+            }},
+            { selector: 'edge', style: {
+                'width': 0.6,
+                'line-color': '#3a3f48',
+                'curve-style': 'haystack',
+                'opacity': 0.55,
+                'haystack-radius': 0.5,
+            }},
+            { selector: 'edge[kind = "wiki-link"]', style: {
+                'line-color': '#6aa9ff',
+                'opacity': 0.8,
+            }},
+            { selector: 'node:selected', style: {
+                'border-width': 3,
+                'border-color': '#fff',
+                'color': '#fff',
+                'font-size': 10,
+                'z-index': 999,
+            }},
+            { selector: '.faded', style: {
+                'opacity': 0.08,
+                'text-opacity': 0,
+            }},
+            { selector: '.highlight', style: {
+                'border-width': 2,
+                'border-color': '#fff',
+                'color': '#fff',
+                'font-size': 9,
+                'z-index': 99,
+            }},
+          ],
+          layout: {
+            name: 'cose-bilkent',
+            idealEdgeLength: 70,
+            nodeRepulsion: 4500,
+            edgeElasticity: 0.45,
+            gravity: 0.25,
+            numIter: 2500,
+            tile: true,
+            animate: false,
+            randomize: true,
+            fit: true,
+            padding: 30,
+          }
+        });
+
+        // Leyenda con conteo
+        const legendDiv = document.getElementById('legend');
+        Object.entries(data.meta.type_counts)
+          .sort((a, b) => b[1] - a[1])
+          .forEach(([t, n]) => {
+            const span = document.createElement('span');
+            span.style.background = colorOf(t);
+            span.style.color = '#000';
+            span.textContent = `${t} (${n})`;
+            span.title = `mostrar solo nodos tipo "${t}"`;
+            span.onclick = () => {
+              cy.elements().removeClass('faded');
+              cy.nodes().filter(node => node.data('tipo') !== t).addClass('faded');
+              cy.edges().forEach(e => {
+                const s = e.source().data('tipo');
+                const tg = e.target().data('tipo');
+                if (s !== t && tg !== t) e.addClass('faded');
+              });
+            };
+            legendDiv.appendChild(span);
+          });
+
+        // Tag cloud (top 15)
+        const tagCloud = document.getElementById('tag-cloud');
+        (data.meta.top_tags || []).slice(0, 15).forEach(([tag, n]) => {
+          const span = document.createElement('span');
+          span.textContent = `#${tag} (${n})`;
+          span.title = `filtrar por #${tag}`;
+          span.onclick = () => {
+            cy.elements().removeClass('faded');
+            cy.nodes().filter(node => !(node.data('tags') || '').split(' ').includes(tag)).addClass('faded');
+            cy.edges().forEach(e => {
+              if (e.source().hasClass('faded') && e.target().hasClass('faded')) e.addClass('faded');
+            });
+          };
+          tagCloud.appendChild(span);
+        });
+
+        // Stats
+        document.getElementById('stats').innerHTML = `
+          ${data.meta.total_nodes} nodos / ${data.meta.total_edges} aristas<br>
+          ${data.meta.orphan_count} huerfanos / ${data.meta.broken_link_count} links rotos<br>
+          generado: ${data.meta.generated_at.replace('T', ' ').replace('+00:00', ' UTC')}<br>
+          <span style="color: #666;">click leyenda/tag = filtra. click nodo = vecinos</span>
+        `;
+
+        // Botones
+        document.getElementById('btn-reset').onclick = () => {
+          cy.elements().removeClass('faded');
+          document.getElementById('search').value = '';
+          document.getElementById('info').style.display = 'none';
+        };
+        document.getElementById('btn-fit').onclick = () => cy.fit(undefined, 30);
+        document.getElementById('btn-relayout').onclick = () => {
+          cy.layout({
+            name: 'cose-bilkent',
+            idealEdgeLength: 70,
+            nodeRepulsion: 4500,
+            animate: false,
+            fit: true,
+            padding: 30,
+          }).run();
+        };
+
+        // Click en nodo: mostrar info + highlight vecinos
+        cy.on('tap', 'node', (e) => {
+          const n = e.target.data();
+          const info = document.getElementById('info');
+          info.style.display = 'block';
+          const neighborsCount = e.target.neighborhood('node').length;
+          info.innerHTML = `
+            <strong style="color: ${n.color}; font-size: 14px;">${n.label}</strong><br>
+            <small style="color: #888;">${n.id}</small>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 8px 0;">
+            <div><span class="info-key">tipo:</span> <span class="info-val" style="color:${n.color}">${n.tipo}</span></div>
+            <div><span class="info-key">in / out / total:</span> <span class="info-val">${n.in_degree} / ${n.out_degree} / ${n.in_degree + n.out_degree}</span></div>
+            <div><span class="info-key">vecinos:</span> <span class="info-val">${neighborsCount}</span></div>
+            ${n.estado ? `<div><span class="info-key">estado:</span> <span class="info-val">${n.estado}</span></div>` : ''}
+            ${n.severidad ? `<div><span class="info-key">severidad:</span> <span class="info-val">${n.severidad}</span></div>` : ''}
+            ${n.clientes ? `<div><span class="info-key">clientes:</span> <span class="info-val">${n.clientes}</span></div>` : ''}
+            ${n.tags ? `<div><span class="info-key">tags:</span> <span class="info-val">${n.tags.split(' ').map(t => '#'+t).join(' ')}</span></div>` : ''}
+            <div><span class="info-key">size:</span> <span class="info-val">${(n.size_bytes/1024).toFixed(1)} KB</span></div>
+          `;
+          cy.elements().addClass('faded');
+          e.target.removeClass('faded');
+          e.target.neighborhood().removeClass('faded');
+        });
+
+        cy.on('tap', (e) => {
+          if (e.target === cy) {
+            cy.elements().removeClass('faded');
+            document.getElementById('info').style.display = 'none';
+          }
+        });
+
+        // Buscador
+        document.getElementById('search').addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          if (!q) {
+            cy.elements().removeClass('faded');
+            return;
+          }
+          cy.elements().addClass('faded');
+          const matches = cy.nodes().filter(n =>
+            (n.data('id') || '').toLowerCase().includes(q) ||
+            (n.data('label') || '').toLowerCase().includes(q) ||
+            (n.data('tags') || '').toLowerCase().includes(q) ||
+            (n.data('clientes') || '').toLowerCase().includes(q) ||
+            (n.data('tipo') || '').toLowerCase().includes(q)
+          );
+          matches.removeClass('faded');
+          matches.neighborhood().removeClass('faded');
+        });
+      })
+      .catch(err => {
+        document.getElementById('loading').innerHTML =
+          '<strong>error:</strong> ' + err.message +
+          '<br><br><code>cd wms-brain/tools/brain-graph && python3 build_graph.py</code>';
+      });
+  </script>
+</body>
+</html>

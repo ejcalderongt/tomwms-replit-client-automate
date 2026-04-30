@@ -1,3 +1,10 @@
+---
+id: TAXONOMIA
+tipo: agent-context
+estado: vigente
+relacionado_con: [NUMERACION, RAMAS_Y_CLIENTES]
+tags: [agent-context/convencion, agent-context/taxonomia]
+---
 # TAXONOMIA — Donde vive cada cosa en el brain
 
 > **Ultima actualizacion**: 2026-04-30 — creacion inicial post acuerdo con Erik

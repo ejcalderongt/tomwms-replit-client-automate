@@ -1,3 +1,13 @@
+---
+id: traza-002
+tipo: trace
+relacionado_con: [BUG-001, CP-013]
+materializa_bug: BUG-001
+ramas: [dev_2023_estable, dev_2028_merge]
+modulo: trans_picking_ubic
+archivos_analizados: 10
+tags: [trace/picking, modulo/bof-vbnet, bug/critico]
+---
 # Traza 002 — Dañado_picking (flag huérfano que sangra stock)
 
 **Parámetro fuente**: `trans_picking_ubic.dañado_picking` (bit, NULL, default NULL)

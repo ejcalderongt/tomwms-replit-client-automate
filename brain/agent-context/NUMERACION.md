@@ -1,3 +1,10 @@
+---
+id: NUMERACION
+tipo: agent-context
+estado: vigente
+relacionado_con: [TAXONOMIA, RAMAS_Y_CLIENTES]
+tags: [agent-context/convencion, agent-context/numeracion]
+---
 # NUMERACION.md — Prefijos de IDs en el brain
 
 > Que prefijo usar para que tipo de cosa, cual es el numero que sigue, y

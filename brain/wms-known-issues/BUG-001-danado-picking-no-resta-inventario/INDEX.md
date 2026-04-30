@@ -1,3 +1,17 @@
+---
+id: BUG-001
+tipo: bug
+estado: open
+severidad: critica
+prioridad: alta
+modulo: trans_picking_ubic
+clientes: [killios, mercopan, byb]
+ramas_afectadas: [dev_2023_estable, dev_2028_merge]
+casos_relacionados: [CP-013]
+trazas_relacionadas: [traza-002]
+descubierto: 2026-04-30
+tags: [bug/picking, bug/critico, modulo/inventario, modulo/bof-vbnet]
+---
 # BUG-001 — Killios WMS164 — Producto dañado que no se resta de inventario
 
 > **Primer fine-tune issue de Erik como Director de Desarrollo de TOMWMS.**
