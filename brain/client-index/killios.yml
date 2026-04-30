@@ -1,0 +1,231 @@
+cliente: Killios
+slug: killios
+
+bd:
+  host_env: WMS_DB_HOST
+  user_env: WMS_DB_USER
+  password_env: WMS_KILLIOS_DB_PASSWORD
+  database_env: WMS_KILLIOS_DB_NAME
+  database_actual: TOMWMS_KILLIOS_PRD_2026
+  driver: pymssql
+  read_only: true
+  notas:
+    - "Killios entrega cuenta sa para análisis. _db.py bloquea DML por seguridad."
+    - "BD productiva — usar WITH (NOLOCK) en queries sobre tablas vivas."
+
+modulos:
+  stock_jornada: false
+  hh_android: true
+  bof_vbnet: true
+  notas:
+    - "Killios NO usa stock_jornada (parámetro=false, tabla vacía). Usar stock_hist o reconstruir desde trans_movimientos."
+    - "Operadores hacen pickings desde HH; supervisores/admin manejan dañados desde BOF. IdOperadorBodega_Pickeo=0 indica origen BOF."
+
+mapeos_custom:
+  tipos_tarea:
+    1: RECE
+    2: UBIC
+    3: CEST
+    5: DESP
+    6: INVE
+    8: PIK
+    11: VERI
+    17: AJCANTN
+    20: EXPLOSION
+    25: REEMP_BE_PICK
+  tipos_ajuste:
+    3: "Ajuste Positivo"
+    5: "Ajuste Negativo"
+    6: "Ajuste de Estado (introducido dic-2024)"
+  motivos_ajuste:
+    1: "Error en digitación"
+    2: "Falla de sistema"
+    7: "Ajuste contra fisico"
+    8: "Error recepción"
+    custom_observados:
+      - "Despacho Licencia (105 ajustes negativos en CP-013, síntoma del bug crónico)"
+  roles_usuario:
+    18: "Auditoría (genera escrituras automáticas en stock_hist)"
+
+usuarios_relevantes:
+  - id: 10
+    nombre: "(pendiente identificar)"
+    rol: "Operador BOF — top productor de dañados (142,509 UM)"
+  - id: 12
+    nombre: "(pendiente identificar)"
+    rol: "Operador BOF (31,709 UM dañadas)"
+  - id: 13
+    nombre: "Mario Santizo"
+    rol: "Operador BOF — autor del ajuste enc=1020 sobre WMS164 (10-abr-2026)"
+  - id: 18
+    nombre: "Auditoría"
+    rol: "Cuenta automática que escribe stock_hist"
+  - id: 20
+    nombre: "Heidi López"
+    rol: "BOF — autora de las 12 líneas dañadas BG2512 (88,848 UM total)"
+  - id: 28
+    nombre: "(pendiente identificar)"
+    rol: "Operador BOF (5,682 UM dañadas)"
+
+factores_default:
+  caja_um_promedio_estimado: "5 a 12 según producto"
+  presentaciones_comunes_observadas:
+    - { producto_ejemplo: WMS164, nombre: Caja5, factor: 5 }
+  notas:
+    - "Confirmar SIEMPRE el factor caja con producto_presentacion antes de convertir UM <-> cajas."
+    - "Si el cliente reporta cantidades en cajas, validar que use la misma presentación que el sistema."
+
+periodos_clave:
+  inicio_operacion: 2025-11-30
+  rango_total_ajustes: { desde: 2017-11-20, hasta: 2026-04-28, rows: 986 }
+  gaps_conocidos:
+    - tabla: trans_ajuste_enc
+      desde: 2017-12-01
+      hasta: 2018-09-01
+      meses: 10
+      descripcion: "Gap inicial post-arranque, tabla recién implementada."
+    - tabla: trans_ajuste_enc
+      desde: 2018-11-01
+      hasta: 2019-08-01
+      meses: 10
+      descripcion: "Segundo gap largo, sin actividad de ajustes."
+    - tabla: trans_ajuste_enc
+      desde: 2021-09-01
+      hasta: 2021-10-01
+      meses: 2
+    - tabla: trans_ajuste_enc
+      desde: 2022-04-01
+      hasta: 2022-04-01
+      meses: 1
+    - tabla: trans_ajuste_enc
+      desde: 2022-08-01
+      hasta: 2022-11-01
+      meses: 4
+    - tabla: trans_ajuste_enc
+      desde: 2023-05-01
+      hasta: 2025-10-01
+      meses: 30
+      descripcion: "EL GRANDE: 2.5 años sin ajustes. Hipótesis: cambio de versión WMS o ausencia de auditoría. Sin confirmar."
+  reactivacion_ajustes:
+    fecha: 2025-11-01
+    descripcion: "Reactivación con 96% ajustes negativos (5 pos / 122 neg en 5 meses). Indica que el equipo está compensando manualmente el bug dañado_picking sin descuento."
+
+outliers_conocidos:
+  - tabla: trans_ajuste_det
+    pk: { idajustedet: 638 }
+    valor: 4804442747532
+    fecha: 2021-05-13
+    observacion: "sa"
+    descripcion: "4.8B UM ajustadas a 0. Probablemente test mal hecho dejado en producción. EXCLUIR de cualquier agregado de cantidad_original."
+
+bugs_documentados:
+  - id: BUG-DANADO-PICKING-SIN-DESCUENTO
+    severidad: critica
+    descripcion: |
+      Cuando se marca dañado_picking=1 desde el BOF VB.NET, el flujo:
+      - Pone dañado_picking=1, cantidad_verificada=0, cantidad_despachada=0, encontrado=True, activo=1
+      - NO genera movimiento AJCANTN (IdTipoTarea=17)
+      - NO mueve la mercadería a ubicación MERMA
+      - NO descuenta de stock viva
+      Resultado: stock fantasma. Impacto cuantificado: >320,000 UM en 25 usuarios y 10 meses.
+    cronicidad:
+      desde_estimado: 2019
+      evidencia: "trans_ajuste_enc/det muestra 1,653 ajustes manuales históricos compensando el patrón. 925 negativos en período 2019-2023 + 122 negativos recientes."
+    caso_de_estudio: CP-013-killios-wms164
+
+revisiones:
+  - fecha: 2026-04-30
+    caso: CP-013-killios-wms164
+    rama_brain: brain/debuged-cases/CP-013-killios-wms164/
+    sintoma_original_cliente: "El stock entre fisico y wms no es el mismo y el wms tiene mas de lo que en realidad hay"
+    hallazgos:
+      - "Bug dañado_picking sin descuento (>320k UM fantasma transversales, 25 usuarios)"
+      - "Cronicidad >5 años (1653 ajustes manuales históricos, gap 2.5 años entre 2023-04 y 2025-11)"
+      - "Reactivación reciente: 96% ajustes negativos en últimos 5 meses (compensación manual del bug)"
+      - "Outlier corrupto idajustedet=638 (4.8B UM, mayo-2021, obs 'sa')"
+      - "WMS164/BG2512: BD sobra 14 cajas EXACTAS vs físico (factor caja=5 confirmado)"
+      - "WMS164 ya tiene ajuste enc=1020 (Mario Santizo, 10-abr-2026, -15 UM en BM2511/BM2601, NO tocó BG2512)"
+    waves:
+      - { id: 18, descripcion: "Trazabilidad full WMS164: picking_ubic, trans_movimientos, stock_hist" }
+      - { id: 19, descripcion: "Cuantificación dañados Killios completo (W19-F operadores, W19-G top productos)" }
+      - { id: 20, descripcion: "Desglose stock real BG2512 + factor caja confirmado=5" }
+      - { id: 21, descripcion: "Cruce histórico ajustes manuales (W21-05 motivos, W21-06 mensual signo)" }
+    documentos_vigentes:
+      - REPORTE-CONCLUSION-V3.md
+      - EVIDENCIAS-CRONICIDAD-V6.md
+      - PLAYBOOK-FIX.md
+
+queries_replicables:
+  smoke_test:
+    descripcion: "Conectividad básica + versión + número de tablas"
+    sql: "SELECT @@VERSION v"
+  cuadre_lote:
+    descripcion: "Receta A — recepciones, despachos, ajustes y stock activo de un lote"
+    parametros: [IdProductoBodega, lote]
+    referencia_doc: data-seek-strategy/03-flujos-investigacion.md#receta-a
+  danados_kill_completo:
+    descripcion: "Receta B generalizada — cuenta UM fantasma del bug"
+    referencia_template: data-seek-strategy/templates/audit-danados-sin-ajuste.py
+  ajustes_historicos:
+    descripcion: "Receta D — distribución por mes y signo + top motivos"
+    referencia_doc: data-seek-strategy/03-flujos-investigacion.md#receta-d
+  saldo_neto:
+    descripcion: "Receta E — productos con neto<0"
+    referencia_template: data-seek-strategy/templates/audit-saldo-neto.py
+  gaps_temporales:
+    descripcion: "Detección de huecos mensuales en actividad"
+    referencia_template: data-seek-strategy/templates/audit-gaps-temporales.py
+
+revalidaciones:
+  - fecha: 2026-04-30
+    contexto: "Re-ejecución de templates audit-* después de crear data-seek-strategy/ y client-index/"
+    cifras_bug_danado:
+      lineas_afectadas: 10565
+      um_fantasma: 318191
+      productos_afectados: 262
+      lotes_afectados: 688
+      usuarios_involucrados: 25
+      rango: { desde: 2025-06-09, hasta: 2026-04-28 }
+      casos_sin_ajcantn_asociado: 50
+    confirma_caso: CP-013-killios-wms164
+    nota: "Cifras crecen +50k UM vs Wave 19 (265k → 318k). El bug sigue activo y acumulando en producción."
+
+colas_pendientes:
+  - id: COLA-AJCANTN-RECONCILIACION-MASIVA
+    prioridad: alta
+    descripcion: |
+      Generar masivamente AJCANTN (IdTipoTarea=17) en trans_movimientos para los 10,565
+      pickings con dañado_picking=1 sin movimiento asociado, descontando las 318k UM
+      fantasma de stock. Requiere:
+      - Script SQL que itere sobre danados-sin-ajcantn-asociado.csv
+      - Insertar en trans_movimientos con cantidad negativa, IdTipoTarea=17, referencia trazable
+      - Insertar paralelo en trans_ajuste_enc/det con motivo='Conciliación dañado_picking masiva'
+      - Validar con audit-saldo-neto.py post-ejecución (debe seguir en 0 negativos)
+      - Ejecutar fuera de horario operativo, transacción por bloques de 500
+      - Backup previo de trans_movimientos + stock + producto_bodega_stock
+    bloqueante_de: ["patch BOF .NET (sino el bug sigue acumulando)"]
+    referencia_caso: CP-013-killios-wms164
+  - id: COLA-PATCH-FUNCIONAL-BOF-VBNET
+    prioridad: critica
+    descripcion: |
+      Modificar el flujo VB.NET del BOF que marca dañado_picking=1 para que:
+      1. Genere AJCANTN automático (IdTipoTarea=17) en trans_movimientos con cantidad negativa = cantidad_solicitada
+      2. Inserte en trans_ajuste_enc/det con motivo predeterminado 'Producto dañado en picking'
+      3. Mueva la mercadería a ubicación lógica MERMA (IdUbicacion según config cliente)
+      4. Descuente de stock viva (UPDATE stock SET cantidad = cantidad - X WHERE IdStock=...)
+      5. Loggee en stock_hist el snapshot post-descuento
+      Requiere acceso al fork del BOF .NET y testing en QA antes de prod.
+      Bug crónico desde 2019 (1,653 ajustes manuales históricos compensándolo).
+    referencia_caso: CP-013-killios-wms164
+    referencia_doc: brain/debuged-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md
+  - id: COLA-INVENTARIOS-CICLICOS
+    prioridad: media
+    descripcion: |
+      Implementar plan de inventarios cíclicos (no esperar al inventario anual) que:
+      - Identifique productos con mayor rotación + mayor gap stock teórico vs físico
+      - Audite mensualmente top-N productos (sugerido N=50)
+      - Compare conteo físico vs producto_bodega_stock
+      - Genere ajustes formales (ajuste_por_inventario=1) en lugar de manuales
+      Killios actualmente NO los hace (cero registros con ajuste_por_inventario=1 entre 2023-2025).
+      Beneficio: detección temprana de bugs como CP-013 antes de que acumulen 6 meses sin descubrir.
+    referencia_caso: CP-013-killios-wms164
