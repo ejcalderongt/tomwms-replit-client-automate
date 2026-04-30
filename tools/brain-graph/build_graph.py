@@ -260,6 +260,9 @@ def main():
         elif isinstance(fm_cli, str):
             clientes = [c.strip() for c in fm_cli.split(",") if c.strip()]
 
+        # id del nodo: frontmatter `id`, o alias `client_id`, o nombre basename
+        id_fm = fm.get("id") or fm.get("client_id") or ""
+
         nodes[rel] = {
             "id": rel,
             "label": f.stem,
@@ -270,7 +273,7 @@ def main():
             "frontmatter_keys": sorted(fm.keys()),
             "estado": fm.get("estado", ""),
             "severidad": fm.get("severidad", ""),
-            "id_fm": fm.get("id", ""),
+            "id_fm": id_fm,
             "frontmatter": fm,
             "_body": body,
             "_path": f,
@@ -330,11 +333,14 @@ def main():
         "trazas_relacionadas": "trace",
         "traza_relacionada": "trace",
         "adrs_relacionados": "adr",
+        "filiales": "filial",
+        "clientes_destino": "cliente-destino",
     }
     fm_virtual_keys = {
         # frontmatter key -> kind del nodo virtual
         "cliente": "cliente",
         "clientes": "cliente",
+        "client_id": "cliente",
         "modulo": "modulo",
         "modulos": "modulo",
         "rama": "rama",
@@ -342,6 +348,10 @@ def main():
         "ramas_afectadas": "rama",
         "autor": "autor",
         "autores": "autor",
+        "holding": "holding",
+        "country": "pais",
+        "country_holding": "pais",
+        "erp": "erp",
     }
 
     for rel, n in nodes.items():

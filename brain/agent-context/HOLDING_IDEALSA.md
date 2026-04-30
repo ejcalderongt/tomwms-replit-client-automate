@@ -1,8 +1,24 @@
-# Holding IDEALSA — MERHONSA + MERCOPAN
+---
+id: HOLDING_IDEALSA
+tipo: agent-context
+estado: vigente
+holding: idealsa
+clientes: [mercopan, merhonsa, idealsa]
+filiales: [mercopan, merhonsa]
+implementaciones_directas: [idealsa-escuintla-gt]
+country_holding: GT
+country_filiales: [PA, HN]
+relacionado_con: [RAMAS_Y_CLIENTES, mercopan, merhonsa, idealsa]
+tags: [holding/idealsa, cliente/mercopan, cliente/merhonsa, pais/GT, pais/PA, pais/HN]
+---
+
+# Holding IDEALSA — MERHONSA + MERCOPAN + CD Escuintla GT
 
 > **Wave 7 — análisis paralelo de las dos BDs nuevas**
 > Fuente: descubrimiento EC2 2026-04-29 + revelación verbal Erik sobre estructura corporativa.
 > Estado: confirmado holding por similitud de schema (98%+); pendientes datos productivos en MERHONSA.
+> **Actualizado 2026-04-30**: Erik confirmó que IDEALSA opera además un
+> CD propio en Escuintla (Guatemala), sin BD específica todavía en EC2.
 
 ---
 
@@ -153,13 +169,68 @@ La casa matriz IDEALSA probablemente:
 4. **Análisis profundo de `trans_movimientos` MERCOPAN** (323K filas, masa para detectar patrón merge LP — ver `03-implosion-y-merge-lp.md`)
 5. **Comparar `i_nav_config_enc` entre TODAS las bodegas** (no solo el TOP 1) para entender heterogeneidad por bodega dentro de la misma empresa
 6. **Preguntar a Erik** sobre las paradojas detectadas: MERHONSA implosión sin generar LP, qué es Clavaud, qué es UMB
+7. **Localizar BD productiva del CD IDEALSA Escuintla GT** (Q-IDEALSA-DB-ESCUINTLA-GT). Si está en otro EC2, agregar credenciales al brain. Si está embebida en otra BD del grupo, identificar el `propietario_id` o tenant correspondiente.
+
+---
+
+## CD Escuintla (Guatemala) — operación directa del holding
+
+> Confirmado por Erik 2026-04-30.
+
+IDEALSA, además de poseer las filiales MERCOPAN (PA) y MERHONSA (HN),
+**opera un CD propio en Escuintla, Guatemala**. Esto convierte a IDEALSA
+en cliente *directo* del WMS (no solo holding pasivo).
+
+### Lo que se sabe
+- Implementación confirmada en GT.
+- Ubicación: Escuintla.
+- Sede del holding: Guatemala (consistente con la operación directa).
+
+### Lo que NO se sabe (pendiente Erik)
+- **BD productiva**: NO está creada en `52.41.114.122,1437`. Hipótesis:
+  - (a) Corre en otro EC2 que el agente no tiene mapeado todavía.
+  - (b) Está embebida en otra BD del grupo IDEALSA con un `propietario_id`
+    distinto (multi-tenancy a nivel de fila — el WMS soporta `propietarios`
+    y `empresas` que pueden particionar dentro de una BD).
+  - (c) Aún no migró del sistema previo.
+- **Rama BOF**: pendiente confirmar.
+- **ERP integrado**: pendiente confirmar.
+- **Comparación de schema** con MERCOPAN/MERHONSA: imposible mientras no
+  haya BD accesible.
+
+### Implicación para el brain
+- Cuando aparezcan transacciones de IDEALSA Escuintla en el contexto
+  (logs, tickets, menciones de Erik), buscar primero **a qué BD del EC2
+  apuntan** (puede ser una de las dos del holding usando un `propietario_id`
+  distinto). Si no aparece en ninguna, escalar como
+  `Q-IDEALSA-DB-ESCUINTLA-GT`.
+- El nodo `idealsa` en el grafo del brain debe representarse como
+  **cliente directo** además de holding (doble rol).
+
+---
+
+## BDs en EC2 fuera del contexto WMS (no usar para análisis WMS)
+
+El mismo server EC2 `52.41.114.122,1437` hospeda BDs **ajenas al WMS**
+de la otra línea de productos POS/Road. Erik confirmó 2026-04-30:
+
+| BD | Sistema | Comentario |
+|---|---|---|
+| `LIVE` | (otro sistema) | Fuera del scope WMS |
+| `mpos_pollo_express_qa` | mPos (POS/restaurantes) | Línea POS, no WMS |
+| `POD_BETA` | Proof-of-Delivery beta | Probable línea Road/POD |
+
+→ Para queries READ-ONLY del agente: **whitelist de BDs WMS** =
+`TOMWMS_*`, `IMS4MB_*` (con la salvedad de excluir copias diagnósticas
+no productivas como BECOFARMA — ver `clients/README.md`).
 
 ---
 
 ## Q-* nuevas generadas en este análisis
 
 - `Q-IDEALSA-MASTER-DATA` — ¿sync de master entre filiales?
-- `Q-IDEALSA-OTROS-PAISES` — ¿hay más filiales?
+- `Q-IDEALSA-OTROS-PAISES` — ¿hay más filiales? **PARCIALMENTE RESPONDIDA 2026-04-30**: Erik confirmó que IDEALSA tiene operación directa en Guatemala (CD Escuintla), pero esa instalación NO tiene BD propia en el EC2 actual.
+- `Q-IDEALSA-DB-ESCUINTLA-GT` — **NUEVA 2026-04-30**: ¿dónde corre la BD productiva del CD GT? Posibilidades: (a) EC2 distinto, (b) embebida en otra BD del grupo con `propietario_id` distinto (multi-tenancy a nivel de fila), (c) aún no migró del sistema previo.
 - `Q-MERHONSA-PARADOJA-LP` — implosión sin generar LP propio
 - `Q-SCHEMA-PRODUCTOS-MERHONSA` — schema real de productos/bodegas
 - `Q-COCINERO-ROLE-PANAMA` — qué hace exactamente el rol "cocinero" en MERCOPAN

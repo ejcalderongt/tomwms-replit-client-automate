@@ -16,15 +16,24 @@ tags: [agent-context/clientes, agent-context/ramas]
 
 ## 0. TL;DR — qué rama corre cada cliente HOY
 
-| Cliente | Rama producción HOY | Estado | DB |
-|---|---|---|---|
-| **BECO** | `dev_2023_estable` | Producción estable | `IMS4MB_BECOFARMA_PRD` |
-| **K7** | `dev_2023_estable` | Producción estable | `TOMWMS_KILLIOS_PRD` |
-| **BYB** | `dev_2023_estable` | Producción estable | `IMS4MB_BYB_PRD` |
-| **CEALSA** | `dev_2023_estable` | Producción estable | `IMS4MB_CEALSA_QAS` |
-| **MAMPA** | `dev_2028_merge` | **Pruebas integrales en curso** | `TOMWMS_MAMPA_QA` |
-| **Cumbre** | `dev_2028_Cumbre` (HH) | Rama dedicada | (pendiente confirmar DB) |
-| **MHS** | (no aplica HH) | **Nuevo cliente B2B vía WMSWebAPI** | (no en EC2 — su propio entorno) |
+| Cliente | Holding | País | Rama producción HOY | Estado | DB |
+|---|---|---|---|---|---|
+| **BECO** | — | GT | `dev_2023_estable` | Producción estable | `IMS4MB_BECOFARMA_PRD` (snapshot diagnóstico, no productiva real) |
+| **K7** | — | GT | `dev_2023_estable` | Producción estable | `TOMWMS_KILLIOS_PRD` + `TOMWMS_KILLIOS_PRD_2026` |
+| **BYB** | — | GT | `dev_2023_estable` | Producción estable | `IMS4MB_BYB_PRD` |
+| **CEALSA** | — | GT | `dev_2023_estable` | Producción estable | `IMS4MB_CEALSA_QAS` |
+| **MAMPA** | — | GT | `dev_2028_merge` | **Pruebas integrales en curso** | `TOMWMS_MAMPA_QA` |
+| **Cumbre** | — | GT | `dev_2028_Cumbre` (HH) | Rama dedicada | (pendiente confirmar DB) |
+| **MHS** | — | (pendiente) | (no aplica HH) | **Nuevo cliente B2B vía WMSWebAPI** | (no en EC2 — su propio entorno) |
+| **MERCOPAN** | **IDEALSA** | PA | (pendiente, probable `dev_2028_merge`) | Productiva (323 K mov al 2026-04-29) | `IMS4MB_MERCOPAN_PRD` |
+| **MERHONSA** | **IDEALSA** | HN | (pendiente, probable `dev_2028_merge`) | Pre-productiva (3 stock, 0 mov, tareas HH iniciadas) | `IMS4MB_MERHONSA_PRD` |
+| **IDEALSA Escuintla CD** | **IDEALSA** (es el holding) | GT | (pendiente) | Operación directa del holding (confirmado 2026-04-30) | **No existe BD propia en este EC2 — ver Q-IDEALSA-DB-ESCUINTLA-GT** |
+
+**Holdings reconocidos**:
+- **IDEALSA** (sede GT) → casa matriz de MERCOPAN, MERHONSA, y opera directamente CD Escuintla GT. Ver [`HOLDING_IDEALSA.md`](./HOLDING_IDEALSA.md) y [`clients/idealsa.md`](../clients/idealsa.md).
+
+**BDs en EC2 fuera de contexto WMS** (no usar para análisis WMS, son de la otra línea POS/Road):
+- `LIVE`, `mpos_pollo_express_qa`, `POD_BETA` — confirmado por Erik 2026-04-30.
 
 **Implicación crítica para todo el brain**: el scan exhaustivo de Wave 1-6 fue sobre `dev_2028_merge` en ambos repos. Esto significa que **lo que documenté hasta ahora corresponde a la versión FUTURA** que solo está en producción para MAMPA (y aún en pruebas). Para los 4 clientes restantes (BECO/K7/BYB/CEALSA), el código real difiere — ver §3 abajo para qué se diferencia.
 
@@ -210,6 +219,44 @@ Tamaño repo: 14 MB.
   - **Escribe datos maestros** vía WebAPI (`POST/PUT` a controllers de Producto, Bodega, etc.)
   - **Lee transacciones** de entrada, salida y ajuste vía WebAPI (`GET` a controllers Sync)
 - Sin HH en línea con WSHHRN — la integración es 100% asincrónica vía WebAPI
+
+### 4.8 Holding IDEALSA — MERCOPAN + MERHONSA + CD Escuintla GT
+- **Sede del holding**: Guatemala.
+- **Filiales con BD propia en EC2** (confirmadas 2026-04-29):
+  - **MERCOPAN** (Panamá) — `IMS4MB_MERCOPAN_PRD`. Productiva. 323 K
+    movimientos. Particularidades: rol "cocinero", control regulatorio
+    panameño (`stock_jornada_*`).
+  - **MERHONSA** (Honduras) — `IMS4MB_MERHONSA_PRD`. Pre-productiva
+    (3 stock, 0 mov, tareas HH ya iniciadas). Particularidades:
+    implosión + explosión automáticas pero NO genera LPs propios
+    (paradoja documentada en `Q-MERHONSA-PARADOJA-LP`).
+- **Operación directa del holding** (confirmado 2026-04-30):
+  - **CD Escuintla, Guatemala**. SIN BD propia en este EC2 todavía.
+    Ver `Q-IDEALSA-DB-ESCUINTLA-GT`.
+- **Patrón corporativo**: schema `IMS4MB_*` replicado por filial con
+  98 % de tablas comunes; personalización por país (regulatorio,
+  productos perecederos como aceite + detergentes).
+- **Documentación detallada**:
+  - [`HOLDING_IDEALSA.md`](./HOLDING_IDEALSA.md) — análisis schema-level.
+  - [`clients/idealsa.md`](../clients/idealsa.md) — ficha del holding.
+  - [`clients/mercopan.md`](../clients/mercopan.md) — ficha filial PA.
+  - [`clients/merhonsa.md`](../clients/merhonsa.md) — ficha filial HN.
+
+### 4.9 BDs en EC2 fuera del contexto WMS
+
+El server compartido `52.41.114.122,1437` hospeda BDs de **otras líneas
+de productos** de la empresa (POS, Road). NO usar para análisis WMS.
+Confirmado por Erik 2026-04-30:
+
+| BD | Sistema | Acción |
+|---|---|---|
+| `LIVE` | otro sistema | Excluir de queries WMS |
+| `mpos_pollo_express_qa` | mPos / POS | Excluir de queries WMS |
+| `POD_BETA` | Proof-of-Delivery / Road | Excluir de queries WMS |
+
+**Whitelist efectiva de BDs WMS para el agente**:
+`TOMWMS_*` + `IMS4MB_*` (con la salvedad de excluir BECOFARMA si solo
+se quiere data viva — es un snapshot diagnóstico, ver `clients/README.md`).
 
 ---
 

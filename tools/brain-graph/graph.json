@@ -244,7 +244,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 0,
+      "in_degree": 1,
       "out_degree": 0
     },
     {
@@ -475,15 +475,38 @@
       "id": "agent-context/HOLDING_IDEALSA.md",
       "label": "HOLDING_IDEALSA",
       "tipo": "agent-context",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 9543,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/mercopan",
+        "cliente/merhonsa",
+        "holding/idealsa",
+        "pais/GT",
+        "pais/HN",
+        "pais/PA"
+      ],
+      "clientes": [
+        "mercopan",
+        "merhonsa",
+        "idealsa"
+      ],
+      "size_bytes": 12967,
+      "frontmatter_keys": [
+        "clientes",
+        "country_filiales",
+        "country_holding",
+        "estado",
+        "filiales",
+        "holding",
+        "id",
+        "implementaciones_directas",
+        "relacionado_con",
+        "tags",
+        "tipo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
-      "in_degree": 0,
-      "out_degree": 0
+      "id_fm": "HOLDING_IDEALSA",
+      "in_degree": 10,
+      "out_degree": 11
     },
     {
       "id": "agent-context/NUMERACION.md",
@@ -526,7 +549,7 @@
         "idealsa",
         "merhonsa"
       ],
-      "size_bytes": 11317,
+      "size_bytes": 14342,
       "frontmatter_keys": [
         "clientes",
         "estado",
@@ -538,8 +561,8 @@
       "estado": "vigente",
       "severidad": "",
       "id_fm": "RAMAS_Y_CLIENTES",
-      "in_degree": 2,
-      "out_degree": 10
+      "in_degree": 7,
+      "out_degree": 16
     },
     {
       "id": "agent-context/REPLIT_AGENT.md",
@@ -617,7 +640,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 4,
+      "in_degree": 5,
       "out_degree": 0
     },
     {
@@ -631,7 +654,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 1,
+      "in_degree": 2,
       "out_degree": 0
     },
     {
@@ -772,13 +795,13 @@
       "tipo": "client",
       "tags": [],
       "clientes": [],
-      "size_bytes": 3358,
+      "size_bytes": 4713,
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
       "id_fm": "",
       "in_degree": 0,
-      "out_degree": 5
+      "out_degree": 7
     },
     {
       "id": "clients/becofarma.md",
@@ -800,9 +823,9 @@
       ],
       "estado": "",
       "severidad": "",
-      "id_fm": "",
-      "in_degree": 1,
-      "out_degree": 0
+      "id_fm": "becofarma",
+      "in_degree": 2,
+      "out_degree": 2
     },
     {
       "id": "clients/byb.md",
@@ -833,6 +856,42 @@
       "out_degree": 0
     },
     {
+      "id": "clients/idealsa.md",
+      "label": "idealsa",
+      "tipo": "client",
+      "tags": [
+        "cliente/idealsa",
+        "holding/idealsa",
+        "pais/GT",
+        "pais/HN",
+        "pais/PA"
+      ],
+      "clientes": [],
+      "size_bytes": 3637,
+      "frontmatter_keys": [
+        "authored_at",
+        "authored_by",
+        "client_id",
+        "country_filiales",
+        "country_holding",
+        "db_propia",
+        "es_holding",
+        "filiales",
+        "fuente_principal",
+        "holding",
+        "id",
+        "implementaciones_directas",
+        "relacionado_con",
+        "status",
+        "tags"
+      ],
+      "estado": "",
+      "severidad": "",
+      "id_fm": "idealsa",
+      "in_degree": 14,
+      "out_degree": 16
+    },
+    {
       "id": "clients/killios.md",
       "label": "killios",
       "tipo": "client",
@@ -845,6 +904,70 @@
       "id_fm": "",
       "in_degree": 0,
       "out_degree": 2
+    },
+    {
+      "id": "clients/mercopan.md",
+      "label": "mercopan",
+      "tipo": "client",
+      "tags": [
+        "cliente/mercopan",
+        "holding/idealsa",
+        "pais/PA"
+      ],
+      "clientes": [],
+      "size_bytes": 2844,
+      "frontmatter_keys": [
+        "authored_at",
+        "authored_by",
+        "client_id",
+        "country",
+        "db_name",
+        "erp",
+        "fuente_principal",
+        "holding",
+        "id",
+        "relacionado_con",
+        "rubro",
+        "status",
+        "tags"
+      ],
+      "estado": "",
+      "severidad": "",
+      "id_fm": "mercopan",
+      "in_degree": 10,
+      "out_degree": 21
+    },
+    {
+      "id": "clients/merhonsa.md",
+      "label": "merhonsa",
+      "tipo": "client",
+      "tags": [
+        "cliente/merhonsa",
+        "holding/idealsa",
+        "pais/HN"
+      ],
+      "clientes": [],
+      "size_bytes": 3151,
+      "frontmatter_keys": [
+        "authored_at",
+        "authored_by",
+        "client_id",
+        "country",
+        "db_name",
+        "erp",
+        "fuente_principal",
+        "holding",
+        "id",
+        "relacionado_con",
+        "rubro",
+        "status",
+        "tags"
+      ],
+      "estado": "",
+      "severidad": "",
+      "id_fm": "merhonsa",
+      "in_degree": 10,
+      "out_degree": 14
     },
     {
       "id": "code-deep-flow/00-mapa-de-cajas.md",
@@ -2048,7 +2171,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 0,
+      "in_degree": 1,
       "out_degree": 0
     },
     {
@@ -5385,7 +5508,7 @@
       "severidad": "",
       "id_fm": "FEAT-001",
       "in_degree": 24,
-      "out_degree": 15
+      "out_degree": 23
     },
     {
       "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
@@ -5398,7 +5521,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 0,
+      "in_degree": 1,
       "out_degree": 25
     },
     {
@@ -5448,7 +5571,7 @@
       "estado": "open",
       "severidad": "critica",
       "id_fm": "BUG-001",
-      "in_degree": 50,
+      "in_degree": 57,
       "out_degree": 22
     },
     {
@@ -5699,8 +5822,23 @@
       "out_degree": 0
     },
     {
-      "id": "_virtual/cliente/killios",
-      "label": "killios",
+      "id": "_virtual/cliente/mercopan",
+      "label": "mercopan",
+      "tipo": "v-cliente",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 4,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "cliente"
+    },
+    {
+      "id": "_virtual/cliente/merhonsa",
+      "label": "merhonsa",
       "tipo": "v-cliente",
       "tags": [],
       "clientes": [],
@@ -5714,8 +5852,8 @@
       "virtual_kind": "cliente"
     },
     {
-      "id": "_virtual/cliente/mercopan",
-      "label": "mercopan",
+      "id": "_virtual/cliente/idealsa",
+      "label": "idealsa",
       "tipo": "v-cliente",
       "tags": [],
       "clientes": [],
@@ -5723,7 +5861,52 @@
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
+      "in_degree": 3,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "cliente"
+    },
+    {
+      "id": "_virtual/holding/idealsa",
+      "label": "idealsa",
+      "tipo": "v-holding",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 4,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "holding"
+    },
+    {
+      "id": "_virtual/pais/gt",
+      "label": "GT",
+      "tipo": "v-pais",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
       "in_degree": 2,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "pais"
+    },
+    {
+      "id": "_virtual/cliente/killios",
+      "label": "killios",
+      "tipo": "v-cliente",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 3,
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "cliente"
@@ -5753,7 +5936,7 @@
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
-      "in_degree": 1,
+      "in_degree": 2,
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "cliente"
@@ -5776,36 +5959,6 @@
     {
       "id": "_virtual/cliente/mampa",
       "label": "mampa",
-      "tipo": "v-cliente",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 1,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "cliente"
-    },
-    {
-      "id": "_virtual/cliente/idealsa",
-      "label": "idealsa",
-      "tipo": "v-cliente",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 1,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "cliente"
-    },
-    {
-      "id": "_virtual/cliente/merhonsa",
-      "label": "merhonsa",
       "tipo": "v-cliente",
       "tags": [],
       "clientes": [],
@@ -5847,6 +6000,66 @@
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "rama"
+    },
+    {
+      "id": "_virtual/erp/sap-b1-di-api",
+      "label": "SAP B1 (DI-API)",
+      "tipo": "v-erp",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 1,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "erp"
+    },
+    {
+      "id": "_virtual/pais/pa",
+      "label": "PA",
+      "tipo": "v-pais",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 1,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "pais"
+    },
+    {
+      "id": "_virtual/erp/pendiente-confirmar",
+      "label": "pendiente-confirmar",
+      "tipo": "v-erp",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 2,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "erp"
+    },
+    {
+      "id": "_virtual/pais/hn",
+      "label": "HN",
+      "tipo": "v-pais",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 1,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "pais"
     },
     {
       "id": "_virtual/modulo/trans-picking-ubic",
@@ -5940,6 +6153,186 @@
     }
   ],
   "edges": [
+    {
+      "source": "agent-context/RAMAS_Y_CLIENTES.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "agent-context/RAMAS_Y_CLIENTES.md",
+      "target": "clients/idealsa.md",
+      "label": "clients/idealsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "agent-context/RAMAS_Y_CLIENTES.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "agent-context/RAMAS_Y_CLIENTES.md",
+      "target": "clients/idealsa.md",
+      "label": "clients/idealsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "agent-context/RAMAS_Y_CLIENTES.md",
+      "target": "clients/mercopan.md",
+      "label": "clients/mercopan.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "agent-context/RAMAS_Y_CLIENTES.md",
+      "target": "clients/merhonsa.md",
+      "label": "clients/merhonsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/README.md",
+      "target": "clients/idealsa.md",
+      "label": "IDEALSA",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/README.md",
+      "target": "clients/idealsa.md",
+      "label": "IDEALSA",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/mercopan.md",
+      "label": "mercopan.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/merhonsa.md",
+      "label": "merhonsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "agent-context/HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "agent-context/RAMAS_Y_CLIENTES.md",
+      "label": "RAMAS_Y_CLIENTES.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/mercopan.md",
+      "label": "mercopan.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/merhonsa.md",
+      "label": "merhonsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "clients/idealsa.md",
+      "label": "IDEALSA",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "clients/idealsa.md",
+      "label": "IDEALSA",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
+      "label": "BUG-001/CASOS-RELACIONADOS.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "clients/idealsa.md",
+      "label": "idealsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "agent-context/HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "clients/merhonsa.md",
+      "label": "merhonsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "agent-context/RAMAS_Y_CLIENTES.md",
+      "label": "RAMAS_Y_CLIENTES.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "clients/idealsa.md",
+      "label": "IDEALSA",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "clients/idealsa.md",
+      "label": "IDEALSA",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "clients/idealsa.md",
+      "label": "idealsa.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "agent-context/HOLDING_IDEALSA.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "clients/mercopan.md",
+      "label": "mercopan.md",
+      "kind": "md-link"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "agent-context/RAMAS_Y_CLIENTES.md",
+      "label": "RAMAS_Y_CLIENTES.md",
+      "kind": "md-link"
+    },
     {
       "source": "customer-open-cases/CP-013-killios-wms164/INDEX.md",
       "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
@@ -6145,6 +6538,72 @@
       "kind": "md-link"
     },
     {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "agent-context/RAMAS_Y_CLIENTES.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "clients/mercopan.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "clients/merhonsa.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "clients/idealsa.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "clients/mercopan.md",
+      "label": "filiales",
+      "kind": "fm-filial"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "clients/merhonsa.md",
+      "label": "filiales",
+      "kind": "fm-filial"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "_virtual/cliente/mercopan",
+      "label": "clientes:mercopan",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "_virtual/cliente/merhonsa",
+      "label": "clientes:merhonsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "_virtual/holding/idealsa",
+      "label": "holding:idealsa",
+      "kind": "v-holding"
+    },
+    {
+      "source": "agent-context/HOLDING_IDEALSA.md",
+      "target": "_virtual/pais/gt",
+      "label": "country_holding:GT",
+      "kind": "v-pais"
+    },
+    {
       "source": "agent-context/NUMERACION.md",
       "target": "agent-context/TAXONOMIA.md",
       "label": "relacionado_con",
@@ -6227,6 +6686,156 @@
       "target": "agent-context/RAMAS_Y_CLIENTES.md",
       "label": "relacionado_con",
       "kind": "fm-rel"
+    },
+    {
+      "source": "clients/becofarma.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "client_id:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "clients/becofarma.md",
+      "target": "_virtual/erp/sap-b1-di-api",
+      "label": "erp:SAP B1 (DI-API)",
+      "kind": "v-erp"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "agent-context/RAMAS_Y_CLIENTES.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/mercopan.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/merhonsa.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/mercopan.md",
+      "label": "filiales",
+      "kind": "fm-filial"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "clients/merhonsa.md",
+      "label": "filiales",
+      "kind": "fm-filial"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "client_id:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "_virtual/holding/idealsa",
+      "label": "holding:idealsa",
+      "kind": "v-holding"
+    },
+    {
+      "source": "clients/idealsa.md",
+      "target": "_virtual/pais/gt",
+      "label": "country_holding:GT",
+      "kind": "v-pais"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "clients/idealsa.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "clients/merhonsa.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "_virtual/cliente/mercopan",
+      "label": "client_id:mercopan",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "_virtual/holding/idealsa",
+      "label": "holding:idealsa",
+      "kind": "v-holding"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "_virtual/pais/pa",
+      "label": "country:PA",
+      "kind": "v-pais"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "_virtual/erp/pendiente-confirmar",
+      "label": "erp:pendiente-confirmar",
+      "kind": "v-erp"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "agent-context/HOLDING_IDEALSA.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "clients/idealsa.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "clients/mercopan.md",
+      "label": "relacionado_con",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "_virtual/cliente/merhonsa",
+      "label": "client_id:merhonsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "_virtual/holding/idealsa",
+      "label": "holding:idealsa",
+      "kind": "v-holding"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "_virtual/pais/hn",
+      "label": "country:HN",
+      "kind": "v-pais"
+    },
+    {
+      "source": "clients/merhonsa.md",
+      "target": "_virtual/erp/pendiente-confirmar",
+      "label": "erp:pendiente-confirmar",
+      "kind": "v-erp"
     },
     {
       "source": "code-deep-flow/traza-002-danado-picking.md",
@@ -6323,6 +6932,54 @@
       "target": "entities/cases/case-2026-04-importar-lotes-cliente.md",
       "label": "casos_relacionados",
       "kind": "fm-case"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "clients/idealsa.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "clients/merhonsa.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "clients/mercopan.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "architecture/adr/ADR-007-killios-sap-b1-integration.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "architecture/adr/ADR-008-byb-replenishment-module.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "clients/becofarma.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
+    },
+    {
+      "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
+      "target": "fingerprint/MAMPA.md",
+      "label": "clientes_destino",
+      "kind": "fm-cliente-destino"
     },
     {
       "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
@@ -6868,6 +7525,42 @@
       "source": "clients/killios.md",
       "target": "architecture/adr/ADR-010-reserva-webapi-vs-wms-legacy.md",
       "label": "ADR-010",
+      "kind": "body-mention"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "body-mention"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "body-mention"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "body-mention"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "body-mention"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "body-mention"
+    },
+    {
+      "source": "clients/mercopan.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
       "kind": "body-mention"
     },
     {
@@ -7982,16 +8675,16 @@
     }
   ],
   "meta": {
-    "generated_at": "2026-04-30T16:08:14+00:00",
+    "generated_at": "2026-04-30T16:34:41+00:00",
     "brain_root": "/home/runner/workspace/wms-brain/brain",
-    "total_nodes": 341,
-    "total_edges": 340,
+    "total_nodes": 350,
+    "total_edges": 420,
     "type_counts": {
       "other": 80,
       "index": 4,
       "proposal": 18,
       "agent-context": 13,
-      "client": 10,
+      "client": 13,
       "trace": 7,
       "cp-open": 6,
       "cp-legacy": 3,
@@ -8009,21 +8702,29 @@
       "bug": 3,
       "wms-flow": 9,
       "v-cliente": 8,
+      "v-holding": 1,
+      "v-pais": 3,
       "v-rama": 2,
+      "v-erp": 2,
       "v-modulo": 2,
       "v-autor": 4
     },
     "edge_kind_counts": {
-      "md-link": 34,
-      "fm-rel": 7,
-      "v-cliente": 12,
+      "md-link": 64,
+      "fm-rel": 21,
+      "fm-filial": 4,
+      "v-cliente": 19,
+      "v-holding": 4,
+      "v-pais": 4,
       "v-rama": 8,
+      "v-erp": 3,
       "fm-bug": 2,
       "v-modulo": 4,
       "fm-trace": 2,
       "fm-case": 5,
       "v-autor": 4,
-      "body-mention": 262
+      "fm-cliente-destino": 8,
+      "body-mention": 268
     },
     "top20_by_degree": [
       {
@@ -8038,17 +8739,17 @@
         "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
         "label": "INDEX",
         "tipo": "bug",
-        "in": 50,
+        "in": 57,
         "out": 22,
-        "total": 72
+        "total": 79
       },
       {
         "id": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
         "label": "INDEX",
         "tipo": "feat",
         "in": 24,
-        "out": 15,
-        "total": 39
+        "out": 23,
+        "total": 47
       },
       {
         "id": "agent-context/NUMERACION.md",
@@ -8067,6 +8768,22 @@
         "total": 36
       },
       {
+        "id": "clients/mercopan.md",
+        "label": "mercopan",
+        "tipo": "client",
+        "in": 10,
+        "out": 21,
+        "total": 31
+      },
+      {
+        "id": "clients/idealsa.md",
+        "label": "idealsa",
+        "tipo": "client",
+        "in": 14,
+        "out": 16,
+        "total": 30
+      },
+      {
         "id": "debuged-cases/00-INDEX.md",
         "label": "00-INDEX",
         "tipo": "other",
@@ -8078,9 +8795,9 @@
         "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
         "label": "CASOS-RELACIONADOS",
         "tipo": "bug",
-        "in": 0,
+        "in": 1,
         "out": 25,
-        "total": 25
+        "total": 26
       },
       {
         "id": "architecture/adr/ADR-012-bypass-estado-despachado.md",
@@ -8091,12 +8808,36 @@
         "total": 24
       },
       {
+        "id": "clients/merhonsa.md",
+        "label": "merhonsa",
+        "tipo": "client",
+        "in": 10,
+        "out": 14,
+        "total": 24
+      },
+      {
+        "id": "agent-context/RAMAS_Y_CLIENTES.md",
+        "label": "RAMAS_Y_CLIENTES",
+        "tipo": "agent-context",
+        "in": 7,
+        "out": 16,
+        "total": 23
+      },
+      {
         "id": "agent-context/TAXONOMIA.md",
         "label": "TAXONOMIA",
         "tipo": "agent-context",
         "in": 2,
         "out": 20,
         "total": 22
+      },
+      {
+        "id": "agent-context/HOLDING_IDEALSA.md",
+        "label": "HOLDING_IDEALSA",
+        "tipo": "agent-context",
+        "in": 10,
+        "out": 11,
+        "total": 21
       },
       {
         "id": "code-deep-flow/traza-002-danado-picking.md",
@@ -8113,14 +8854,6 @@
         "in": 1,
         "out": 18,
         "total": 19
-      },
-      {
-        "id": "agent-context/RAMAS_Y_CLIENTES.md",
-        "label": "RAMAS_Y_CLIENTES",
-        "tipo": "agent-context",
-        "in": 2,
-        "out": 10,
-        "total": 12
       },
       {
         "id": "colas-pendientes.md",
@@ -8147,50 +8880,18 @@
         "total": 8
       },
       {
-        "id": "wms-brain-client/README.md",
+        "id": "clients/README.md",
         "label": "README",
-        "tipo": "brain-client",
+        "tipo": "client",
         "in": 0,
         "out": 7,
         "total": 7
-      },
-      {
-        "id": "wms-specific-process-flow/queries-ciclo-8a.md",
-        "label": "queries-ciclo-8a",
-        "tipo": "wms-flow",
-        "in": 0,
-        "out": 7,
-        "total": 7
-      },
-      {
-        "id": "agent-context/DRIFT_DETECTADO.md",
-        "label": "DRIFT_DETECTADO",
-        "tipo": "agent-context",
-        "in": 0,
-        "out": 6,
-        "total": 6
-      },
-      {
-        "id": "architecture/adr/ADR-011-tras-wms-reservastock-decision.md",
-        "label": "ADR-011-tras-wms-reservastock-decision",
-        "tipo": "other",
-        "in": 6,
-        "out": 0,
-        "total": 6
-      },
-      {
-        "id": "heat-map-params/README.md",
-        "label": "README",
-        "tipo": "heat-map",
-        "in": 0,
-        "out": 6,
-        "total": 6
       }
     ],
-    "orphan_count": 250,
+    "orphan_count": 247,
     "broken_link_count": 18,
-    "virtual_node_count": 16,
-    "body_mention_edges": 262,
+    "virtual_node_count": 22,
+    "body_mention_edges": 268,
     "top_tags": [
       [
         "K7",
@@ -8217,6 +8918,10 @@
         5
       ],
       [
+        "holding/idealsa",
+        4
+      ],
+      [
         "bandera-roja",
         4
       ],
@@ -8239,6 +8944,14 @@
       [
         "cadencia",
         4
+      ],
+      [
+        "pais/HN",
+        3
+      ],
+      [
+        "pais/PA",
+        3
       ],
       [
         "bug/critico",
@@ -8299,18 +9012,6 @@
       [
         "IN",
         3
-      ],
-      [
-        "MC",
-        3
-      ],
-      [
-        "MH",
-        3
-      ],
-      [
-        "MP",
-        3
       ]
     ]
   },
@@ -8328,7 +9029,6 @@
       "_proposals/20260428-1906-H07-bb-putaway-intensivo-50pct-ubic.md",
       "_proposals/20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos.md",
       "_proposals/20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc.md",
-      "_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
       "_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md",
       "_proposals/20260428-2345-H25-becofarma-bd-restaurada-config-2017.md",
       "_proposals/20260428-2346-H26-becofarma-logging-segmentado-por-proceso.md",
@@ -8344,7 +9044,6 @@
       "agent-context/CONVIVENCIA_FORMATOS.md",
       "agent-context/CUESTIONARIO_CAROLINA.md",
       "agent-context/GITHUB_SYNC.md",
-      "agent-context/HOLDING_IDEALSA.md",
       "agent-context/REPLIT_AGENT.md",
       "brain-map/README.md",
       "brain-map/funcionalidades-por-cliente.md",
@@ -8402,7 +9101,6 @@
       "fingerprint/BYB.md",
       "fingerprint/CEALSA.md",
       "fingerprint/KILLIOS.md",
-      "fingerprint/MAMPA.md",
       "fingerprint/README.md",
       "heat-map-params/01-empresa/README.md",
       "heat-map-params/02-bodega/README.md",

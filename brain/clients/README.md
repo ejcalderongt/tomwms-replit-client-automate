@@ -2,11 +2,16 @@
 
 ## BDs productivas
 
-| Cliente | DB | ERP | Bodegas | Modo reserva | Modulo distintivo |
-|---|---|---|---|---|---|
-| KILLIOS | TOMWMS_KILLIOS_PRD | SAP B1 (DI-API) | 6 oper + 1 virtual (BOD7) | **estricto** | Conversion cajas/decimales SAP |
-| BYB | IMS4MB_BYB_PRD | NAV Dynamics | 2 | estricto | Reabastecimiento de picking activo |
-| CEALSA | IMS4MB_CEALSA_QAS | (sin ERP integrado) | 2 (1 general + 1 fiscal) | **discrecional** (3PL, no se invoca por defecto) | Stock jornada + prefacturacion + polizas |
+| Cliente | DB | Holding | País | ERP | Bodegas | Modo reserva | Modulo distintivo |
+|---|---|---|---|---|---|---|---|
+| KILLIOS | TOMWMS_KILLIOS_PRD | — | GT | SAP B1 (DI-API) | 6 oper + 1 virtual (BOD7) | **estricto** | Conversion cajas/decimales SAP |
+| KILLIOS_2026 | TOMWMS_KILLIOS_PRD_2026 | — | GT | SAP B1 (DI-API) | (BD nueva 2026) | estricto | (variante 2026 — pendiente caracterizar) |
+| BYB | IMS4MB_BYB_PRD | — | GT | NAV Dynamics | 2 | estricto | Reabastecimiento de picking activo |
+| CEALSA | IMS4MB_CEALSA_QAS | — | GT | (sin ERP integrado) | 2 (1 general + 1 fiscal) | **discrecional** (3PL, no se invoca por defecto) | Stock jornada + prefacturacion + polizas |
+| **MERCOPAN** | IMS4MB_MERCOPAN_PRD | [IDEALSA](./idealsa.md) | PA | pendiente | (pendiente) | (pendiente) | Stock cocinero + jornada consecutiva PA |
+| **MERHONSA** | IMS4MB_MERHONSA_PRD | [IDEALSA](./idealsa.md) | HN | pendiente | (pendiente) | (pendiente) | Implosion + explosion auto, hereda LPs del ERP |
+| **IDEALSA** | (sin BD propia confirmada) | (es el holding) | GT (Escuintla CD) | pendiente | (pendiente) | (pendiente) | **Holding** dueño de MERCOPAN+MERHONSA. CD propio en Escuintla. |
+| MAMPA | TOMWMS_MAMPA_QA | — | GT | pendiente | (pendiente) | (pendiente) | Primer cliente migrado a `dev_2028_merge` |
 
 ## BDs diagnosticas (snapshots para entrenamiento del agente)
 
@@ -15,6 +20,19 @@
 | **BECOFARMA** | **IMS4MB_BECOFARMA_PRD** | Restaurada 28-abr-2026 desde productiva | **NO-PRODUCTIVA, snapshot diagnostico** | Sin SAPBOSync corriendo contra esta copia. Hechos de schema/modulos/catalogos son validos; metricas de salud operativa NO. Ver L-014. |
 
 Server compartido EC2: `52.41.114.122,1437` (SQL Server, mixed auth).
+
+## BDs en EC2 fuera del contexto WMS
+
+El mismo server EC2 hospeda otras BDs **ajenas al WMS** (de la otra línea
+de productos POS/Road de la empresa). Erik confirmó 2026-04-30 que NO
+deben usarse como referencia para análisis del WMS:
+
+- `LIVE` — fuera del scope WMS.
+- `mpos_pollo_express_qa` — sistema POS/mPos.
+- `POD_BETA` — Proof-of-Delivery beta (probablemente línea Road/POD).
+
+→ Para queries READ-ONLY del agente, **filtrar siempre por las BDs de
+la tabla anterior**. Nunca consultar las de esta sección.
 
 ## Modo de reserva
 
