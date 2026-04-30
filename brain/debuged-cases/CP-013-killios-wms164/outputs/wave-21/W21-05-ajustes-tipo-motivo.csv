@@ -1,0 +1,29 @@
+tipo,motivo,n,delta_um_neto
+Ajuste Negativo,Error en digitación,780,-4804448648388.313
+Ajuste Vencimiento,Error en digitación,350,0.0
+Ajuste Positivo,Falla de sistema,297,24964133.32
+Ajuste Positivo,Error en digitación,247,109016.0
+Ajuste Negativo,Ajuste contra fisico,105,-6745.0
+Ajuste Negativo,Despacho Licencia,105,-91123.0
+Ajuste Lote.,Error en recepción,63,0.0
+Ajuste Lote.,Error en digitación,50,0.0
+Ajuste Positivo,Ajuste contra fisico,34,3119097.0
+Ajuste Lote.,Ajuste contra fisico,33,0.0
+Ajuste Negativo,Error en recepción,33,-4172.0
+Ajuste Vencimiento,Ajuste contra fisico,29,0.0
+Ajuste Negativo,Falla de sistema,20,-1815052.0
+Ajuste Positivo,Refacturacion,18,40075.0
+Ajuste Lote.,Falla de sistema,14,0.0
+,Error en digitación,9,-81.0
+Ajuste Vencimiento,Error en recepción,5,0.0
+Ajuste Negativo,,4,-39312.0
+Ajuste Estado,Producto Vencido,3,0.0
+Ajuste Negativo,Refacturacion,3,-1512.0
+Ajuste Positivo,Error en recepción,2,5299.0
+Ajuste Positivo,Producto Vencido,2,607848.0
+Ajuste Negativo,a,1,-72.0
+,Falla de sistema,1,-624.0
+Ajuste Vencimiento,Falla de sistema,1,0.0
+Ajuste Negativo,Producto Vencido,1,-840.0
+Ajuste Positivo,,1,9000.0
+,,1,-2.0

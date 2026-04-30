@@ -1,0 +1,4 @@
+idajustedet,idajusteenc,fecha,idtipoajuste,idmotivoajuste,motivo,lic_plate,lote_original,cantidad_original,cantidad_nueva,delta,observacion,referencia,ajuste_por_inventario
+2326,1020,2026-04-10,5,7,Ajuste contra fisico,JG000006,BM2511,6.0,0.0,-6.0,,,0
+2327,1020,2026-04-10,5,7,Ajuste contra fisico,FU06505,BM2601,5.0,0.0,-5.0,,,0
+2328,1020,2026-04-10,5,7,Ajuste contra fisico,JG000013,BM2601,4.0,0.0,-4.0,,,0
