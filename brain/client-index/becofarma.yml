@@ -1,0 +1,38 @@
+cliente: BECOFARMA
+slug: becofarma
+genealogia: IMS4MB
+estado: PRODUCTIVO  # rango activo 2026-Q1, parece estar operando
+
+bd:
+  server: 52.41.114.122,1437
+  nombre: IMS4MB_BECOFARMA_PRD
+  acceso: read-only via pymssql
+
+estructura:
+  tablas: 354
+  trans_picking_ubic: SI
+  trans_movimientos: SI
+  trans_ajuste_enc: SI
+  flag_danado_picking: SI
+  col_IdOperadorBodega_Pickeo: SI
+
+operativa:
+  rango_picking: "2026-01-06 → 2026-04-27"
+  total_lineas_picking: 57325
+  ajustes_AJCANTN_totales: 591  # MUY activo en ajustes, sin uso de danado
+
+bugs_conocidos: []  # NO tiene el bug CP-014 — porque no usa la feature
+
+caracteristica_unica:
+  - "BECOFARMA NO usa danado_picking ni danado_verificacion ni no_encontrado (cero registros)"
+  - "Compensa con AJCANTN intensivo: 591 ajustes en 3 meses"
+  - "Hipotesis: su flujo operativo es ajustar ANTES de picking, no durante"
+  - "Util como REFERENCIA para comparar contra clientes con bug"
+
+preguntas_abiertas:
+  - "Como reportan mercaderia danada en picking sin usar la flag?"
+  - "Quien dispara los AJCANTN (operador, supervisor, sistema externo)?"
+  - "Es viable replicar este flujo en Killios para mitigar el bug mientras se hace fix de codigo?"
+
+referencias:
+  - debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md  # seccion 4

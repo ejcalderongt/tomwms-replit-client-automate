@@ -1,0 +1,49 @@
+cliente: BYB
+slug: byb
+genealogia: IMS4MB
+estado: HISTORICO  # backup en EC2, ultima fecha 2025-11-04. Confirmar si operando.
+
+bd:
+  server: 52.41.114.122,1437
+  nombre: IMS4MB_BYB_PRD
+  acceso: read-only via pymssql
+
+estructura:
+  tablas: 348
+  trans_picking_ubic: SI
+  trans_movimientos: SI
+  trans_ajuste_enc: SI
+  flag_danado_picking: SI
+  col_IdOperadorBodega_Pickeo: SI
+
+operativa:
+  rango_picking: "2022-05-09 → 2025-11-04"
+  total_lineas_picking: 420909  # mas grande de las restauradas
+  ajustes_AJCANTN_totales: 49
+
+bugs_conocidos:
+  - id: CP-014
+    descripcion: "danado_picking sin descuento"
+    severidad: MEDIA  # volumen menor pero presente
+    metricas:
+      lineas_afectadas: 484
+      um_fantasma: 10266
+      productos: 75
+      usuarios: 12
+      periodo: "2023-02 a 2023-12 (11 meses, ya cerrado en backup)"
+      pct_origen_BOF: 79.1   # OUTLIER: mayor proporcion HH que el resto
+      pct_origen_HH: 20.9
+      pct_sin_AJCANTN: 100
+
+caracteristica_unica:
+  - "BYB es el cliente con mayor proporcion de bug originada en HH (21%)"
+  - "Resto de clientes con bug: 1-3% HH"
+  - "Sugiere version distinta de codigo HH o flujo operativo diferente"
+
+acciones_pendientes:
+  - investigar_codigo_HH_byb: "ver si difiere del HH de Killios/MERCOPAN"
+  - confirmar_estado_operativo: "preguntar al equipo si BYB sigue operando"
+  - posible_caso_aislado_HH: "estudiar 5-10 casos HH para entender hipotesis HH vs BOF"
+
+referencias:
+  - debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md

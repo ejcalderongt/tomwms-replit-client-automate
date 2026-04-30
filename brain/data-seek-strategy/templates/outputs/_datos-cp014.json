@@ -1,0 +1,534 @@
+{
+  "TOMWMS_KILLIOS_PRD": {
+    "cronologia": [
+      {
+        "mes": "2025-06",
+        "lineas": 1853,
+        "um": 23788.0
+      },
+      {
+        "mes": "2025-07",
+        "lineas": 3004,
+        "um": 39937.0
+      },
+      {
+        "mes": "2025-08",
+        "lineas": 1642,
+        "um": 22699.0
+      }
+    ],
+    "top_productos": [
+      {
+        "codigo": "WMS167",
+        "nombre": "MELOCOTON MIGUELS MITADES 12/820GR 29OZ",
+        "lineas": 512,
+        "um": 4943.0
+      },
+      {
+        "codigo": "WMS92",
+        "nombre": "MELOCOTON MIGUELS MITADES 6/2650GR 93.5OZ GALON",
+        "lineas": 510,
+        "um": 5585.0
+      },
+      {
+        "codigo": "WMS56",
+        "nombre": "MAIZ DULCE MIGUELS 24/425GR 15OZ",
+        "lineas": 314,
+        "um": 2589.0
+      },
+      {
+        "codigo": "WMS62",
+        "nombre": "MAIZ DULCE MIGUELS GALON 6/2900g",
+        "lineas": 243,
+        "um": 1524.0
+      },
+      {
+        "codigo": "WMS66",
+        "nombre": "MAIZ DULCE KILLIOS 24/425 GRS 15OZ",
+        "lineas": 220,
+        "um": 2761.0
+      }
+    ],
+    "top_usuarios": [
+      {
+        "user_id": "12",
+        "usuario": "Carlos Espana",
+        "lineas": 3871,
+        "um": 39141.0
+      },
+      {
+        "user_id": "13",
+        "usuario": "Mario Santizo",
+        "lineas": 1097,
+        "um": 8662.0
+      },
+      {
+        "user_id": "11",
+        "usuario": "Francisco Us",
+        "lineas": 486,
+        "um": 7177.0
+      },
+      {
+        "user_id": "10",
+        "usuario": "Kevin Ramos",
+        "lineas": 452,
+        "um": 23292.0
+      },
+      {
+        "user_id": "27",
+        "usuario": "",
+        "lineas": 116,
+        "um": 941.0
+      }
+    ]
+  },
+  "TOMWMS_KILLIOS_PRD_2026": {
+    "cronologia": [
+      {
+        "mes": "2025-06",
+        "lineas": 193,
+        "um": 7855.0
+      },
+      {
+        "mes": "2025-07",
+        "lineas": 276,
+        "um": 13076.0
+      },
+      {
+        "mes": "2025-08",
+        "lineas": 195,
+        "um": 10625.0
+      },
+      {
+        "mes": "2025-09",
+        "lineas": 1199,
+        "um": 51424.0
+      },
+      {
+        "mes": "2025-10",
+        "lineas": 828,
+        "um": 31172.0
+      },
+      {
+        "mes": "2025-11",
+        "lineas": 556,
+        "um": 16800.0
+      },
+      {
+        "mes": "2025-12",
+        "lineas": 1716,
+        "um": 48067.0
+      },
+      {
+        "mes": "2026-01",
+        "lineas": 1550,
+        "um": 39802.0
+      },
+      {
+        "mes": "2026-02",
+        "lineas": 1413,
+        "um": 31831.0
+      },
+      {
+        "mes": "2026-03",
+        "lineas": 1438,
+        "um": 35981.0
+      },
+      {
+        "mes": "2026-04",
+        "lineas": 1201,
+        "um": 31558.0
+      }
+    ],
+    "top_productos": [
+      {
+        "codigo": "WMS92",
+        "nombre": "MELOCOTON MIGUELS MITADES 6/2650GR 93.5OZ GALON",
+        "lineas": 600,
+        "um": 5231.0
+      },
+      {
+        "codigo": "WMS92",
+        "nombre": "MELOCOTON MIGUELS MITADES 6/2650GR 93.5OZ GALON",
+        "lineas": 586,
+        "um": 21421.0
+      },
+      {
+        "codigo": "WMS167",
+        "nombre": "MELOCOTON MIGUELS MITADES 12/820GR 29OZ",
+        "lineas": 542,
+        "um": 24580.0
+      },
+      {
+        "codigo": "WMS61",
+        "nombre": "MELOCOTON DE LA CIMA MITADES 12/820 GRS 29OZ",
+        "lineas": 414,
+        "um": 18978.0
+      },
+      {
+        "codigo": "WMS56",
+        "nombre": "MAIZ DULCE MIGUELS 24/425GR 15OZ",
+        "lineas": 371,
+        "um": 13535.0
+      }
+    ],
+    "top_usuarios": [
+      {
+        "user_id": "20",
+        "usuario": "Heidi Lopez",
+        "lineas": 4036,
+        "um": 88848.0
+      },
+      {
+        "user_id": "10",
+        "usuario": "Kevin Ramos",
+        "lineas": 3426,
+        "um": 142509.0
+      },
+      {
+        "user_id": "13",
+        "usuario": "Mario Santizo",
+        "lineas": 1332,
+        "um": 41618.0
+      },
+      {
+        "user_id": "12",
+        "usuario": "Carlos Espana",
+        "lineas": 1153,
+        "um": 31709.0
+      },
+      {
+        "user_id": "28",
+        "usuario": "",
+        "lineas": 217,
+        "um": 5682.0
+      }
+    ]
+  },
+  "IMS4MB_BYB_PRD": {
+    "cronologia": [
+      {
+        "mes": "2023-02",
+        "lineas": 13,
+        "um": 19.0
+      },
+      {
+        "mes": "2023-03",
+        "lineas": 141,
+        "um": 2388.0
+      },
+      {
+        "mes": "2023-04",
+        "lineas": 67,
+        "um": 590.0
+      },
+      {
+        "mes": "2023-05",
+        "lineas": 10,
+        "um": 272.0
+      },
+      {
+        "mes": "2023-06",
+        "lineas": 21,
+        "um": 184.0
+      },
+      {
+        "mes": "2023-07",
+        "lineas": 12,
+        "um": 94.0
+      },
+      {
+        "mes": "2023-08",
+        "lineas": 104,
+        "um": 3235.0
+      },
+      {
+        "mes": "2023-09",
+        "lineas": 45,
+        "um": 881.0
+      },
+      {
+        "mes": "2023-10",
+        "lineas": 35,
+        "um": 1678.0
+      },
+      {
+        "mes": "2023-11",
+        "lineas": 31,
+        "um": 839.0
+      },
+      {
+        "mes": "2023-12",
+        "lineas": 5,
+        "um": 86.0
+      }
+    ],
+    "top_productos": [
+      {
+        "codigo": "00191651",
+        "nombre": "SALSA DE TOMATE DULCE 32/400 g BOLSA WM. - ",
+        "lineas": 80,
+        "um": 3240.0
+      },
+      {
+        "codigo": "00101605",
+        "nombre": "MAYONESA 32/375 g BOLSA WM - ",
+        "lineas": 64,
+        "um": 1920.0
+      },
+      {
+        "codigo": "00170440",
+        "nombre": "SALSA PICAMAS VERDE 48/100 g PLAST - ",
+        "lineas": 21,
+        "um": 355.0
+      },
+      {
+        "codigo": "00101601",
+        "nombre": "MAYONESA 32/380 g BOLSA - ",
+        "lineas": 19,
+        "um": 203.0
+      },
+      {
+        "codigo": "00100801",
+        "nombre": "MAYONESA 48/200 g BOLSA - ",
+        "lineas": 18,
+        "um": 81.0
+      }
+    ],
+    "top_usuarios": [
+      {
+        "user_id": "10",
+        "usuario": "Deny Godoy",
+        "lineas": 319,
+        "um": 7767.0
+      },
+      {
+        "user_id": "22",
+        "usuario": "Juan Jose Manzo",
+        "lineas": 142,
+        "um": 2206.0
+      },
+      {
+        "user_id": "17",
+        "usuario": "Jason Jose  Macario Vargas",
+        "lineas": 6,
+        "um": 6.0
+      },
+      {
+        "user_id": "24",
+        "usuario": "Esteban Paramo Mena",
+        "lineas": 4,
+        "um": 122.0
+      },
+      {
+        "user_id": "16",
+        "usuario": "Jerson Geovany  Rodas Garcia",
+        "lineas": 3,
+        "um": 6.0
+      }
+    ]
+  },
+  "IMS4MB_MERCOPAN_PRD": {
+    "cronologia": [
+      {
+        "mes": "2022-02",
+        "lineas": 14,
+        "um": 192.0
+      },
+      {
+        "mes": "2022-04",
+        "lineas": 3,
+        "um": 119.0
+      },
+      {
+        "mes": "2022-07",
+        "lineas": 7,
+        "um": 200.0
+      },
+      {
+        "mes": "2022-08",
+        "lineas": 178,
+        "um": 8040.0
+      },
+      {
+        "mes": "2022-09",
+        "lineas": 194,
+        "um": 7542.0
+      },
+      {
+        "mes": "2022-10",
+        "lineas": 74,
+        "um": 3174.0
+      },
+      {
+        "mes": "2022-11",
+        "lineas": 55,
+        "um": 2208.0
+      },
+      {
+        "mes": "2022-12",
+        "lineas": 292,
+        "um": 8686.0
+      },
+      {
+        "mes": "2023-01",
+        "lineas": 293,
+        "um": 10064.0
+      },
+      {
+        "mes": "2023-02",
+        "lineas": 349,
+        "um": 12984.0
+      },
+      {
+        "mes": "2023-03",
+        "lineas": 534,
+        "um": 21145.0
+      },
+      {
+        "mes": "2023-04",
+        "lineas": 631,
+        "um": 27290.0
+      },
+      {
+        "mes": "2023-05",
+        "lineas": 470,
+        "um": 17728.0
+      },
+      {
+        "mes": "2023-06",
+        "lineas": 411,
+        "um": 15123.0
+      },
+      {
+        "mes": "2023-07",
+        "lineas": 526,
+        "um": 25785.0
+      },
+      {
+        "mes": "2023-08",
+        "lineas": 921,
+        "um": 39694.0
+      },
+      {
+        "mes": "2023-09",
+        "lineas": 981,
+        "um": 33455.0
+      },
+      {
+        "mes": "2023-10",
+        "lineas": 588,
+        "um": 14626.0
+      },
+      {
+        "mes": "2023-11",
+        "lineas": 1101,
+        "um": 24022.0
+      },
+      {
+        "mes": "2023-12",
+        "lineas": 1442,
+        "um": 52036.0
+      },
+      {
+        "mes": "2024-01",
+        "lineas": 1611,
+        "um": 41774.0
+      },
+      {
+        "mes": "2024-02",
+        "lineas": 1281,
+        "um": 37284.0
+      },
+      {
+        "mes": "2024-03",
+        "lineas": 1484,
+        "um": 32909.0
+      },
+      {
+        "mes": "2024-04",
+        "lineas": 1113,
+        "um": 25818.0
+      },
+      {
+        "mes": "2024-05",
+        "lineas": 1599,
+        "um": 38234.0
+      },
+      {
+        "mes": "2024-06",
+        "lineas": 1578,
+        "um": 32382.0
+      },
+      {
+        "mes": "2024-07",
+        "lineas": 1868,
+        "um": 41641.0
+      }
+    ],
+    "top_productos": [
+      {
+        "codigo": "440292",
+        "nombre": "0.410 L.ACEITE PURELA 100 SOYA CJ-24",
+        "lineas": 1380,
+        "um": 76716.0
+      },
+      {
+        "codigo": "40292",
+        "nombre": "0430 L ACEITE PURELA 100 OYA",
+        "lineas": 1158,
+        "um": 68118.0
+      },
+      {
+        "codigo": "265725",
+        "nombre": "1 KG LAVAPLATOS KLINPIAX LIMN  CJ12",
+        "lineas": 1067,
+        "um": 20777.0
+      },
+      {
+        "codigo": "212040M11",
+        "nombre": "25 KG ULTRAKLIN F NATURAL",
+        "lineas": 723,
+        "um": 17939.0
+      },
+      {
+        "codigo": "212040M01",
+        "nombre": "1 KGDETERP ULTRAKLIN FUERZA NATURAL CJ10",
+        "lineas": 596,
+        "um": 12030.0
+      }
+    ],
+    "top_usuarios": [
+      {
+        "user_id": "10",
+        "usuario": "Felix Mariscal",
+        "lineas": 8840,
+        "um": 259574.0
+      },
+      {
+        "user_id": "8",
+        "usuario": "Abel Castillo",
+        "lineas": 8450,
+        "um": 265009.0
+      },
+      {
+        "user_id": "9",
+        "usuario": "Felix Ramirez",
+        "lineas": 1881,
+        "um": 33739.0
+      },
+      {
+        "user_id": "7",
+        "usuario": "Marcelo Clavaud",
+        "lineas": 279,
+        "um": 11722.0
+      },
+      {
+        "user_id": "4",
+        "usuario": "",
+        "lineas": 125,
+        "um": 3879.0
+      }
+    ]
+  }
+}

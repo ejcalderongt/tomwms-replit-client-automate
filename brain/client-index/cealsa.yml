@@ -1,0 +1,37 @@
+cliente: CEALSA
+slug: cealsa
+genealogia: IMS4MB
+estado: QAS  # nombre de BD termina en QAS — entorno de calidad, posiblemente sin operacion real
+
+bd:
+  server: 52.41.114.122,1437
+  nombre: IMS4MB_CEALSA_QAS
+  acceso: read-only via pymssql
+
+estructura:
+  tablas: 351
+  trans_picking_ubic: SI
+  trans_movimientos: SI
+  trans_ajuste_enc: SI
+  flag_danado_picking: SI
+  col_IdOperadorBodega_Pickeo: SI
+
+operativa:
+  rango_picking: "2022-06-29 → 2026-02-05"
+  total_lineas_picking: 44737
+  ajustes_AJCANTN_totales: 0  # NUNCA ajustan
+
+bugs_conocidos: []
+
+caracteristica_unica:
+  - "NO usa danado_picking (cero registros)"
+  - "NO usa AJCANTN (cero ajustes)"
+  - "Posible QA escueto: alguien hace pickings pero nadie ajusta nada"
+  - "No util como referencia operativa"
+
+preguntas_abiertas:
+  - "Es entorno real de cliente o instancia de pruebas internas?"
+  - "Si es QA, podria servir para REPRODUCIR el bug en testing controlado?"
+
+referencias:
+  - debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md  # seccion 4

@@ -121,6 +121,8 @@ outliers_conocidos:
 bugs_documentados:
   - id: BUG-DANADO-PICKING-SIN-DESCUENTO
     severidad: critica
+    transversal: true  # confirmado en MERCOPAN, BYB tambien — ver CP-014
+    referencia_cruzada: debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md
     descripcion: |
       Cuando se marca dañado_picking=1 desde el BOF VB.NET, el flujo:
       - Pone dañado_picking=1, cantidad_verificada=0, cantidad_despachada=0, encontrado=True, activo=1

@@ -1,0 +1,82 @@
+{
+  "TOMWMS_KILLIOS_PRD": {
+    "tabs": 345,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 26567,
+    "rango": "2025-06-02 -> 2025-08-19"
+  },
+  "TOMWMS_KILLIOS_PRD_2026": {
+    "tabs": 360,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 58301,
+    "rango": "2025-06-05 -> 2026-04-29"
+  },
+  "TOMWMS_MAMPA_QA": {
+    "tabs": 356,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 437,
+    "rango": "2026-02-17 -> 2026-04-16"
+  },
+  "IMS4MB_BECOFARMA_PRD": {
+    "tabs": 354,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 57325,
+    "rango": "2026-01-06 -> 2026-04-27"
+  },
+  "IMS4MB_BYB_PRD": {
+    "tabs": 348,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 420909,
+    "rango": "2022-05-09 -> 2025-11-04"
+  },
+  "IMS4MB_CEALSA_QAS": {
+    "tabs": 351,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 44737,
+    "rango": "2022-06-29 -> 2026-02-05"
+  },
+  "IMS4MB_MERCOPAN_PRD": {
+    "tabs": 322,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 125472,
+    "rango": "2021-12-09 -> 2024-07-31"
+  },
+  "IMS4MB_MERHONSA_PRD": {
+    "tabs": 319,
+    "tpu": 1,
+    "tm": 1,
+    "taj": 1,
+    "col_dn": "SI",
+    "col_op": "SI",
+    "rows": 0,
+    "rango": "vacia"
+  }
+}

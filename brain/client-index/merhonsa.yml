@@ -1,0 +1,27 @@
+cliente: MERHONSA
+slug: merhonsa
+genealogia: IMS4MB
+estado: VACIO  # backup restaurado pero sin datos
+
+bd:
+  server: 52.41.114.122,1437
+  nombre: IMS4MB_MERHONSA_PRD
+  acceso: read-only via pymssql
+
+estructura:
+  tablas: 319
+  trans_picking_ubic: SI (vacia)
+  trans_movimientos: SI
+  trans_ajuste_enc: SI
+  flag_danado_picking: SI
+
+operativa:
+  total_lineas_picking: 0
+  observacion: "BD existe con esquema completo pero trans_picking_ubic tiene 0 filas"
+
+util_para:
+  - "Confirmar esquema canonico IMS4MB sin ruido de datos"
+  - "Posible target para pruebas de migracion"
+
+referencias:
+  - debuged-cases/CP-014-bug-danado-picking-transversal/DATOS-COMPARATIVOS.md

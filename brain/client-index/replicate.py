@@ -3,6 +3,8 @@
 replicate.py — Carga el yml de un cliente y permite re-correr hallazgos.
 
 Uso:
+    python replicate.py --all                            # lista TODOS los clientes registrados
+    python replicate.py <slug> --profile                 # ficha completa del cliente
     python replicate.py <slug> --list                    # lista revisiones
     python replicate.py <slug> --smoke                   # smoke test conexión
     python replicate.py <slug> --caso <case_id>          # info del caso
@@ -12,7 +14,9 @@ Uso:
 
 Requiere PyYAML.
 
-El yml vive en el mismo directorio que este script.
+El yml vive en el mismo directorio que este script. Yml mínimos (sin
+'revisiones' ni 'queries_replicables') son válidos: representan un perfil
+de cliente registrado pero sin investigación todavía.
 """
 import argparse
 import os
@@ -135,9 +139,40 @@ def cmd_outliers(cli: dict):
         print(f"  Descripción: {o['descripcion']}")
 
 
+def cmd_all():
+    """Lista TODOS los clientes registrados en client-index/."""
+    print("== Clientes registrados ==")
+    files = sorted(f for f in os.listdir(HERE) if f.endswith('.yml'))
+    if not files:
+        print("  (ninguno)")
+        return
+    print(f"  {'slug':<14} {'cliente':<14} {'estado':<12} {'BD activa':<28} bugs")
+    print('  ' + '-' * 100)
+    for fn in files:
+        slug = fn[:-4]
+        try:
+            with open(os.path.join(HERE, fn), encoding='utf-8') as f:
+                cli = yaml.safe_load(f)
+            estado = str(cli.get('estado', '-'))
+            bd = str(cli.get('bd', {}).get('database_actual') or cli.get('bd', {}).get('nombre', '-'))
+            n_bugs = len(cli.get('bugs_documentados') or cli.get('bugs_conocidos', []))
+            print(f"  {slug:<14} {cli.get('cliente','-'):<14} {estado:<12} {bd:<28} {n_bugs}")
+        except Exception as e:
+            print(f"  {slug:<14} <ERROR: {e}>")
+
+
+def cmd_profile(cli: dict):
+    """Imprime perfil completo del cliente sin formato. Útil para yml mínimos."""
+    import pprint
+    print(f"== Perfil completo: {cli['cliente']} ({cli['slug']}) ==\n")
+    pprint.pprint(cli, sort_dicts=False, width=100)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('slug', help='slug del cliente (ej: killios)')
+    ap.add_argument('slug', nargs='?', help='slug del cliente (ej: killios). Omitir si usás --all.')
+    ap.add_argument('--all', action='store_true', help='lista TODOS los clientes registrados')
+    ap.add_argument('--profile', action='store_true', help='ficha completa del cliente')
     ap.add_argument('--list', action='store_true', help='lista revisiones')
     ap.add_argument('--smoke', action='store_true', help='smoke test conexión')
     ap.add_argument('--caso', help='info de un caso registrado')
@@ -146,9 +181,18 @@ def main():
     ap.add_argument('--outliers', action='store_true', help='lista outliers conocidos')
     args = ap.parse_args()
 
+    if args.all:
+        cmd_all()
+        return
+
+    if not args.slug:
+        ap.error('falta el slug (o usá --all)')
+
     cli = load(args.slug)
 
-    if args.list:
+    if args.profile:
+        cmd_profile(cli)
+    elif args.list:
         cmd_list(cli)
     elif args.smoke:
         cmd_smoke(cli)
@@ -161,7 +205,11 @@ def main():
     elif args.outliers:
         cmd_outliers(cli)
     else:
-        cmd_list(cli)
+        # Sin sub-comando: si no tiene revisiones, mostrar perfil; sino, listar revisiones.
+        if cli.get('revisiones'):
+            cmd_list(cli)
+        else:
+            cmd_profile(cli)
 
 
 if __name__ == '__main__':

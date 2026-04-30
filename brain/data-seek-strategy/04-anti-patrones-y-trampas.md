@@ -169,4 +169,42 @@ Aplicalo SIEMPRE que cruces strings entre tablas distintas. No daña nada en tab
 
 ---
 
+## T15. `producto_bodega` es tabla puente (solo IDs)
+
+**Síntoma:** queries que esperan `pb.codigo` o `pb.nombre` fallan con `Invalid column name`.
+
+**Causa:** `producto_bodega` solo tiene `IdProductoBodega`, `IdProducto`, `IdBodega`, flags y auditoría. Es la tabla puente entre `producto` (catálogo global con `codigo`/`nombre`/`codigo_barra`/`precio`) y la bodega operativa.
+
+**Patrón correcto:**
+```sql
+SELECT p.codigo, p.nombre, pb.IdBodega
+FROM trans_picking_ubic pu
+LEFT JOIN producto_bodega pb ON pb.IdProductoBodega = pu.IdProductoBodega
+LEFT JOIN producto p ON p.IdProducto = pb.IdProducto
+```
+
+**Bonus:** un mismo `IdProducto` puede tener múltiples `IdProductoBodega` por bodega o por presentación. En CP-014 se observó WMS92 con dos `IdProductoBodega` distintos para el mismo código. Si agrupás por código sin tener en cuenta la presentación podés ocultar diferencias reales.
+
+---
+
+## T16. `SUM(NULL)` rompe `f-string` formatting en Python
+
+**Síntoma:** script Python con `f'{r["um"]:,.0f}'` lanza `unsupported format string passed to NoneType.__format__` en algunas BDs.
+
+**Causa:** SQL Server devuelve `NULL` cuando agregás `SUM(col)` sobre cero filas. Eso vuelve a Python como `None`. Cualquier intento de formatear `None` con `:,.0f` o `:>10` revienta.
+
+**Solución:** envolver siempre con `ISNULL(SUM(...),0)` en SQL, o `(r["um"] or 0)` en Python antes de formatear. Vale para `MIN`, `MAX`, `COUNT(DISTINCT col)` con cero filas también.
+
+```sql
+SELECT ISNULL(SUM(cantidad),0) AS um FROM trans_picking_ubic WHERE 1=0;
+```
+
+```python
+print(f'{(r["um"] or 0):,.0f}')
+```
+
+**Origen:** detectado en CP-014 al iterar 7 BDs simultáneamente. 3 de las 7 lanzaron el error en queries que en Killios funcionaban porque siempre tenía datos.
+
+---
+
 (Agregar nuevas trampas a medida que aparezcan. Cada caso cerrado debe revisar este doc.)

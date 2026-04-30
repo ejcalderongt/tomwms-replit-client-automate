@@ -1,0 +1,32 @@
+cliente: MAMPA
+slug: mampa
+genealogia: TOMWMS  # nombre IDs sugiere instalacion mas reciente que IMS4MB
+estado: QA  # rango muy reciente y poco volumen, parece QA fresco
+
+bd:
+  server: 52.41.114.122,1437
+  nombre: TOMWMS_MAMPA_QA
+  acceso: read-only via pymssql
+
+estructura:
+  tablas: 356
+  trans_picking_ubic: SI
+  trans_movimientos: SI
+  trans_ajuste_enc: SI
+  flag_danado_picking: SI
+  col_IdOperadorBodega_Pickeo: SI
+
+operativa:
+  rango_picking: "2026-02-17 → 2026-04-16"
+  total_lineas_picking: 437  # MUY poco — instalacion reciente
+  ajustes_AJCANTN_totales: 8
+
+bugs_conocidos: []  # cero registros con danado_picking, no han disparado el bug
+
+caracteristica_unica:
+  - "Instalacion fresca con 437 lineas en 2 meses"
+  - "NO usa danado_picking aun"
+  - "Util para PRE-INSTALACION del fix BOF antes de subir a produccion"
+
+referencias:
+  - debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md  # seccion 4

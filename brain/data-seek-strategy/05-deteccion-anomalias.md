@@ -120,7 +120,67 @@ Ver Receta B en `03-flujos-investigacion.md`. Template: `audit-danados-sin-ajust
 
 ---
 
-## H. CESTs sin operador HH
+## H. "BD sin uso de feature ≠ bug ausente" — análisis cross-cliente
+
+**Qué buscamos:** validar si un bug presente en un cliente es del software o de su configuración, comparando contra todas las BDs disponibles del mismo server.
+
+**Trampa frecuente:** mirar dos clientes, ver que en uno ocurre y en otro no, y concluir "es config del cliente afectado". Esa conclusión es falsa si el cliente "no afectado" simplemente NO USA la feature que dispara el bug.
+
+**Caso real:** CP-014 (bug `dañado_picking` sin descuento). Investigación cruzando 7 BDs:
+
+| BD                  | Líneas con `dañado_picking=1` | Líneas con bug | Conclusión inicial errónea |
+|:--------------------|------------------------------:|---------------:|:---------------------------|
+| KILLIOS_PRD_2026    |                        10,565 |         10,565 | "tiene bug"                |
+| MERCOPAN_PRD        |                        19,607 |         19,598 | "tiene bug"                |
+| BECOFARMA_PRD       |                             0 |              0 | "no tiene bug"             |
+| CEALSA_QAS          |                             0 |              0 | "no tiene bug"             |
+
+La trampa: BECOFARMA y CEALSA no tienen el bug porque **nunca disparan la flag**, no porque su código sea distinto.
+
+**Procedimiento robusto:**
+
+1. **Métrica de uso primero, bug después.** Antes de medir el bug en una BD, medí si esa BD USA la feature.
+2. **Si no la usa, marcala "no comparable"**, no "no afectado".
+3. **Solo agrupás "afectado / no afectado" entre las que sí usan la feature.**
+
+**Query base (ejemplo bug CP-014):**
+
+```sql
+SELECT
+  ISNULL(SUM(CASE WHEN [dañado_picking]=1 THEN 1 ELSE 0 END),0) AS usos_feature,
+  ISNULL(SUM(CASE WHEN [dañado_picking]=1
+                   AND activo=1
+                   AND cantidad_verificada=0
+                   AND cantidad_despachada=0 THEN 1 ELSE 0 END),0) AS bug_lineas
+FROM trans_picking_ubic WITH (NOLOCK)
+```
+
+Si `usos_feature = 0` → marca como "no usa la feature, no comparable".
+Si `usos_feature > 0 AND bug_lineas / usos_feature > 0.5` → bug confirmado.
+Si `usos_feature > 0 AND bug_lineas = 0` → confirmá fix aplicado o flujo sano.
+
+**Template:** `templates/audit-bug-danado-multi-bd.py` (parametrizable a cualquier conjunto de BDs).
+
+---
+
+## I. Línea de tiempo completa de un producto
+
+**Qué buscamos:** entender CUÁNDO un producto dejó de cuadrar y QUÉ EVENTO lo rompió. Útil cuando el cliente reporta "el saldo de X no me cuadra" sin más datos.
+
+**Estrategia:**
+1. Reunir TODOS los eventos del `IdProductoBodega` (movimientos, pickings, ajustes) en orden cronológico.
+2. Marcar cada evento con su tipo (RECE, DESP, AJCANTN, DANADO_PICK, REEMP, etc.).
+3. Buscar el primer evento donde el saldo esperado deja de coincidir con el reportado.
+
+**Template:** `templates/audit-linea-tiempo-producto.py`.
+
+```bash
+python3 audit-linea-tiempo-producto.py --db TOMWMS_KILLIOS_PRD_2026 --codigo WMS164 --desde 2025-11-01
+```
+
+---
+
+## J. CESTs sin operador HH
 
 **Qué buscamos:** cambios de estado masivos hechos desde BOF (operador 0). Pueden indicar que el equipo está usando el BOF para limpiar problemas que deberían resolverse en flujo HH normal.
 
@@ -134,7 +194,7 @@ GROUP BY user_agr ORDER BY n DESC;
 
 ---
 
-## I. Productos con velocidad inconsistente
+## K. Productos con velocidad inconsistente
 
 **Qué buscamos:** un producto que recibe 100 UM/día y de pronto pasa 30 días sin movimiento. Puede indicar que el sistema dejó de descontar o stock se quedó "pegado".
 

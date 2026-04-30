@@ -1,0 +1,75 @@
+{
+  "TOMWMS_KILLIOS_PRD": {
+    "lineas_bug": 6499,
+    "um_fantasma": 86424.0,
+    "productos": 238,
+    "lotes": 576,
+    "usuarios": 19,
+    "desde": "2025-06-02 16:27:02.527000",
+    "hasta": "2025-08-19 07:45:50.163000",
+    "lineas_bof": 6411,
+    "lineas_hh": 88,
+    "um_bof": 85763.0,
+    "um_hh": 661.0,
+    "total_danados_general": 6500,
+    "con_ajcantn_asociado": 0,
+    "sin_ajcantn": 6499
+  },
+  "TOMWMS_KILLIOS_PRD_2026": {
+    "lineas_bug": 10565,
+    "um_fantasma": 318191.0,
+    "productos": 262,
+    "lotes": 688,
+    "usuarios": 25,
+    "desde": "2025-06-09 08:37:23.413000",
+    "hasta": "2026-04-28 12:59:21.690000",
+    "lineas_bof": 10493,
+    "lineas_hh": 72,
+    "um_bof": 317614.0,
+    "um_hh": 577.0,
+    "total_danados_general": 10565,
+    "con_ajcantn_asociado": 0,
+    "sin_ajcantn": 10565
+  },
+  "TOMWMS_MAMPA_QA": {
+    "lineas_bug": 0
+  },
+  "IMS4MB_BECOFARMA_PRD": {
+    "lineas_bug": 0
+  },
+  "IMS4MB_BYB_PRD": {
+    "lineas_bug": 484,
+    "um_fantasma": 10266.0,
+    "productos": 75,
+    "lotes": 217,
+    "usuarios": 12,
+    "desde": "2023-02-16 09:34:37.393000",
+    "hasta": "2023-12-13 16:50:01.397000",
+    "lineas_bof": 383,
+    "lineas_hh": 101,
+    "um_bof": 8883.0,
+    "um_hh": 1383.0,
+    "total_danados_general": 495,
+    "con_ajcantn_asociado": 0,
+    "sin_ajcantn": 484
+  },
+  "IMS4MB_CEALSA_QAS": {
+    "lineas_bug": 0
+  },
+  "IMS4MB_MERCOPAN_PRD": {
+    "lineas_bug": 19598,
+    "um_fantasma": 574155.0,
+    "productos": 184,
+    "lotes": 1219,
+    "usuarios": 8,
+    "desde": "2022-02-01 07:13:46.340000",
+    "hasta": "2024-07-30 14:53:34.380000",
+    "lineas_bof": 19181,
+    "lineas_hh": 417,
+    "um_bof": 566822.0,
+    "um_hh": 7333.0,
+    "total_danados_general": 19607,
+    "con_ajcantn_asociado": 0,
+    "sin_ajcantn": 19598
+  }
+}

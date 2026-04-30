@@ -1,0 +1,58 @@
+cliente: MERCOPAN
+slug: mercopan
+genealogia: IMS4MB (Inventory Mgmt System Multi-Bodega → renombrado a TOMWMS)
+estado: HISTORICO  # backup en EC2, ultima fecha 2024-07-31. Confirmar si sigue operando.
+
+bd:
+  server: 52.41.114.122,1437
+  nombre: IMS4MB_MERCOPAN_PRD
+  acceso: read-only via pymssql con WMS_DB_USER + WMS_KILLIOS_DB_PASSWORD
+
+estructura:
+  tablas: 322
+  trans_picking_ubic: SI
+  trans_movimientos: SI
+  trans_ajuste_enc: SI
+  flag_danado_picking: SI
+  flag_danado_verificacion: SI
+  col_IdOperadorBodega_Pickeo: SI
+
+operativa:
+  rango_picking: "2021-12-09 → 2024-07-31"
+  total_lineas_picking: 125472
+  ajustes_AJCANTN_totales: 3094  # MUY activo, compensan el bug manualmente
+
+bugs_conocidos:
+  - id: CP-014
+    descripcion: "danado_picking sin descuento (transversal multi-cliente)"
+    severidad: CRITICA
+    metricas:
+      lineas_afectadas: 19598
+      um_fantasma: 574155
+      productos: 184
+      usuarios: 8
+      periodo: "2022-02 a 2024-07 (29 meses)"
+      pct_origen_BOF: 97.9
+      pct_origen_HH: 2.1
+      pct_sin_AJCANTN: 100
+    top_usuarios:
+      - {id: 10, nombre: "Felix Mariscal", lineas: 8840, um: 259574}
+      - {id: 8,  nombre: "Abel Castillo",  lineas: 8450, um: 265009}
+      - {id: 9,  nombre: "Felix Ramirez",  lineas: 1881, um: 33739}
+    top_productos:
+      - {codigo: "440292",    nombre: "0.410 L ACEITE PURELA 100 SOYA",       lineas: 1380, um: 76716}
+      - {codigo: "40292",     nombre: "0.430 L ACEITE PURELA 100 SOYA",       lineas: 1158, um: 68118}
+      - {codigo: "265725",    nombre: "1 KG LAVAPLATOS KLINPIAX LIMON CJ12",  lineas: 1067, um: 20777}
+
+cruces_otros_clientes:
+  - killios: mismo bug, menor escala (10,565 lineas / 318k UM)
+  - byb: mismo bug, escala menor (484 lineas / 10k UM, 21% HH como outlier)
+
+acciones_pendientes:
+  - confirmar_estado_operativo: "preguntar al equipo si MERCOPAN sigue operando hoy 2026"
+  - reflashear_backup_si_activo: "obtener backup actualizado para validar bug actual"
+  - reconciliacion_AJCANTN: "si activo, ejecutar reconciliacion masiva (574k UM)"
+
+referencias:
+  - debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md
+  - debuged-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md
