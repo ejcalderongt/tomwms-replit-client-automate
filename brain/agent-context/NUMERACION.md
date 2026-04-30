@@ -3,8 +3,9 @@
 > Que prefijo usar para que tipo de cosa, cual es el numero que sigue, y
 > donde mirar para no chocar.
 
-**Ultima actualizacion**: 2026-04-30. Validar el "siguiente libre" cada vez
-que vayas a crear un ID nuevo (no asumir que esta tabla esta al dia).
+**Ultima actualizacion**: 2026-04-30 (post CP-016 #AG29042026). Validar el
+"siguiente libre" cada vez que vayas a crear un ID nuevo (no asumir que
+esta tabla esta al dia).
 
 ---
 
@@ -13,8 +14,8 @@ que vayas a crear un ID nuevo (no asumir que esta tabla esta al dia).
 | Prefijo | Para que | Donde vive | Siguiente libre (al 2026-04-30) | Como verificar |
 |---|---|---|---|---|
 | `ADR-NNN` | Architecture Decision Records | `brain/decisions/NNN-*.md` | **006** | `ls brain/decisions/` |
-| `CP-NNN` | Casos Practicos debuggeados (bug encontrado + reproducido + cita evidencia) | `brain/debuged-cases/CP-NNN-*/` o `brain/debuged-cases/CP-NNN.md` | **016** | `ls brain/debuged-cases/` (en GitHub rama wms-brain, NO en workspace local) |
-| `C-NNN` | Colas de investigacion pendientes (preguntas operativas, no del WMS) | `brain/colas-pendientes.md` (lista plana, no archivos) | **001** | leer el archivo |
+| `CP-NNN` | Casos Practicos debuggeados (bug encontrado + reproducido + cita evidencia) — tambien admite features incorporados que requieren validacion cross-cliente | `brain/debuged-cases/CP-NNN-*/` o `brain/debuged-cases/CP-NNN.md` | **017** | `ls brain/debuged-cases/` (en GitHub rama wms-brain, NO en workspace local) |
+| `C-NNN` | Colas de investigacion pendientes (preguntas operativas, no del WMS) | `brain/colas-pendientes.md` (lista plana, no archivos) | **020** | leer el archivo |
 | `Q-NOMBRE` | Preguntas abiertas al WMS / cliente (no numericas, naming descriptivo) | `RAMAS_Y_CLIENTES.md` y otros | n/a (naming libre) | `rg "^- \*\*Q-" brain/` |
 | `H##` (`HNN`) | Hallazgos / hipotesis del agente (con timestamp) | `brain/_proposals/YYYYMMDD-HHMM-HNN-*.md` | siguiente libre del dia | `ls brain/_proposals/ \| tail` |
 | `P-NN` | Preguntas estructuradas dentro de un ciclo / wave | `brain/wms-specific-process-flow/preguntas-ciclo-N.md` | depende del ciclo | leer el archivo |
@@ -126,8 +127,8 @@ que vayas a crear un ID nuevo (no asumir que esta tabla esta al dia).
 
 ```
 ADR libres:    ADR-006+         (existen 003, 004, 005 - ver brain/decisions/)
-CP libres:     CP-016+          (existen CP-001.md a CP-014/, CP-015/ creado este turno)
-C libres:      C-012+           (existian C-001 a C-005 en GitHub; agregadas C-006 a C-011 en traza-002 seccion 7)
+CP libres:     CP-017+          (existen CP-001.md a CP-014/, CP-015/ y CP-016/ creados este turno)
+C libres:      C-020+           (C-001 a C-005 en GitHub; C-006 a C-011 agregadas con traza-002; C-012 a C-019 agregadas con CP-016)
 H libres:      por dia. Para hoy 2026-04-30: H01+
 Wave libre:    Wave 7+          (Wave 6.2 fue la ultima)
 ```
@@ -140,9 +141,12 @@ carpeta de evidencia abajo).
 Carpetas:
 - `CP-013-killios-wms164/` (caso Killios WMS164, 16 archivos + 2 subdirs)
 - `CP-014-bug-danado-picking-transversal/` (3 archivos, RENOMBRADO en
-  workspace local a CP-015 — ver siguiente bullet)
-- `CP-015-bug-danado-picking-transversal/` (NUEVO al 2026-04-30, en
-  workspace local; reemplaza CP-014 con trace de codigo agregado)
+  workspace local a CP-015 — ver bullet abajo)
+- `CP-015-bug-danado-picking-transversal/` (NUEVO 2026-04-30 turno previo;
+  reemplaza CP-014 con trace de codigo agregado)
+- `CP-016-feature-AG29042026-validacion-implosion-rack/` (NUEVO 2026-04-30
+  este turno; feature COLABORATIVO Erik+Marcela+Abigail incorporado en
+  `dev_2028_merge`, requiere validacion cross-cliente antes de PRD)
 
 > **Nota historica CP-014 -> CP-015**: el caso fue creado el 2026-04-30 con
 > numero CP-014 sin verificar la lista de CPs existentes en GitHub (donde
@@ -150,3 +154,11 @@ Carpetas:
 > agregar el trace de codigo (`code-deep-flow/traza-002-danado-picking.md`),
 > se renumera a CP-015 (siguiente libre real). El CP-014 viejo en GitHub
 > queda como historico hasta que se consolide en proximo sync.
+
+> **Nota CP-016 (este turno 2026-04-30)**: incorpora el feature
+> `#AG29042026` (validacion previa de implosion + orquestador unificado
+> cambio estado/ubicacion HH). Aclarando: no es un BUG sino un FEATURE ya
+> incorporado en codigo (`dev_2028_merge`) que requiere VALIDACION
+> cross-cliente. Se documenta en `debuged-cases/` porque no hay todavia
+> una carpeta `incorporated-features/` y el flujo (analisis -> documentacion
+> -> casos golden -> roll-out) es identico al de un debug case.
