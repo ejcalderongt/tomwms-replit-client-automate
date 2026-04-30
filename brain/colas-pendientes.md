@@ -140,3 +140,97 @@ python3 audit-linea-tiempo-producto.py --db TOMWMS_KILLIOS_PRD_2026 --codigo WMS
 1. Buscar en `WSHHRN/Update_BD_WMS.sql` (140 KB) la línea exacta que agregó la columna.
 2. Decidir si el ALTER `ALTER TABLE trans_picking_ubic ADD CONSTRAINT DF_trans_picking_ubic_dañado_picking DEFAULT 0 FOR dañado_picking` se aplica como parte del PLAYBOOK-FIX o se deja como está.
 **Salida esperada:** decisión documentada en `CP-013/PLAYBOOK-FIX.md` y traza-002 §3.1.
+
+---
+
+## C-012 — Pre-flight `es_rack` en 8 BDs (CP-016 §4.1)
+
+**Origen:** `CP-016-feature-AG29042026-validacion-implosion-rack/INDEX.md` §4.1
+**Pregunta:** ¿la columna `bodega_ubicacion.es_rack` existe y está populada en cada cliente? Si está NULL en alguna BD, el feature AG lanza `InvalidCastException` (`CBool(NULL)`).
+**Plan:**
+1. Correr en read-only en las 8 BDs (KILLIOS PRD, BYB, BECO, CEALSA, MERCOPAN, MAMPA QA, IDEALSA si existe, MERHONSA si existe):
+   ```sql
+   SELECT '<DBNAME>' AS db,
+          CASE WHEN EXISTS (SELECT 1 FROM sys.columns
+                            WHERE object_id=OBJECT_ID('bodega_ubicacion') AND name='es_rack')
+          THEN 'EXISTE' ELSE 'FALTA' END AS estado,
+          (SELECT COUNT(*) FROM bodega_ubicacion WHERE es_rack IS NULL) AS nulls;
+   ```
+2. Si alguna devuelve `FALTA` → bloquea promoción 2028 a esa PRD hasta agregar la columna.
+3. Si devuelve `EXISTE` con NULLs > 0 → ejecutar `UPDATE bodega_ubicacion SET es_rack=0 WHERE es_rack IS NULL` con backup previo.
+
+**Salida esperada:** matriz de estado por BD, agregada a CP-016 §4.7.
+
+---
+
+## C-013 — Documentar asimetría EsCambioEstado HH vs server (CP-016 §3.4)
+
+**Origen:** `CP-016/INDEX.md` §3.4
+**Pregunta:** el wrapper unitario `Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack` recibe `EsCambioEstado` del HH explícitamente, pero el wrapper de licencia completa lo CALCULA en el server (`IdEstadoOrigen <> IdEstadoDestino`). ¿Es asimetría intencional o bug latente?
+**Plan:** preguntar a Erik/Marcela el motivo. Documentar en `CP-016 §3.4` y eventualmente en un ADR si es decisión arquitectónica.
+**Salida esperada:** nota explicativa en `CP-016 §3.4` o ADR-007.
+
+---
+
+## C-014 — Plan de extracción quirúrgica del feature AG desde commit mamut
+
+**Origen:** `CP-016/INDEX.md` §1.1
+**Pregunta:** si Killios necesita el feature como hotfix a 2023 (caso urgencia), ¿cómo se extrae el feature del commit `b8ae38a5` (84 changes) sin arrastrar RFID, frmCliente, frmPicking, etc.?
+**Plan:**
+1. Listar los archivos relevantes al feature (12: ver §3 del CP-016).
+2. Crear rama `dev_2023_estable_feature_implosion` desde `dev_2023_estable`.
+3. Para cada archivo: `git show b8ae38a5:<path> > <local_path>` y commitear individualmente con mensaje descriptivo.
+4. Validar compilación + casos golden GOLD-AG-01..07.
+**Salida esperada:** script reproducible o procedimiento manual documentado, agregado a CP-016 §H (si Erik decide hotfix).
+
+---
+
+## C-015 — Auditar valores válidos de `gl.modo_cambio` en HH (CP-016 §3.5)
+
+**Origen:** `CP-016/INDEX.md` §3.5
+**Pregunta:** el HH manda `gl.modo_cambio == 2` como `EsCambioEstado=true`. ¿Qué otros valores usa `modo_cambio`? ¿1 = ubicación? ¿0 = libre? ¿Hay valores no documentados que el server interprete erróneamente?
+**Plan:** descargar `appGlobals.java` de TOMHH2025 rama `dev_2028_merge` y grep `modo_cambio`. Documentar enum.
+**Salida esperada:** tabla de valores en CP-016 §3.5.
+
+---
+
+## C-016 — Verificar compatibilidad método antiguo `Aplica_Cambio_Estado_Ubic_HH` (CP-016 §4.4)
+
+**Origen:** `CP-016/INDEX.md` §4.4
+**Pregunta:** ¿el método antiguo (sin `_ConValidacionRack`) sigue existiendo en `WSHHRN/TOMHHWS.asmx.vb` para apks viejas, o se eliminó (rompiendo retrocompatibilidad)?
+**Plan:**
+```bash
+rg -n "Public Function Aplica_Cambio_Estado_Ubic_HH\b" /tmp/wms-azure-snippets/AG29042026/BOF_TOMHHWS.asmx.vb
+```
+Si NO aparece sin `_ConValidacionRack` → contrato roto. Identificar versiones apk en producción y planear forced upgrade antes de promover 2028.
+**Salida esperada:** decisión documentada en CP-016 §4.4 (mantener antiguo deprecated o forced upgrade).
+
+---
+
+## C-017 — Diff `frmPicking.vb` entre 2023 y 2028 (CP-016 §4.5)
+
+**Origen:** `CP-016/INDEX.md` §4.5
+**Pregunta:** el commit AG modificó `frmPicking.vb` (272 KB) sin documentación. ¿Qué cambió? ¿Hay regresión latente en el flujo principal de picking de Killios/BYB/CEALSA?
+**Plan:**
+1. Bajar `frmPicking.vb` rama `dev_2023_estable` y rama `dev_2028_merge`.
+2. `diff -u` y revisar líneas modificadas.
+3. Categorizar: feature relacionado / feature ortogonal / regresión potencial.
+**Salida esperada:** sección nueva en CP-016 con conclusión por categoría.
+
+---
+
+## C-018 — Agregar entrada AG29042026 a `PARCHES_APLICADOS.md`
+
+**Origen:** `CP-016/INDEX.md` §4.6
+**Pregunta:** la bitácora de Erik no tiene entrada para el feature. Es trabajo en su archivo del repo TOMWMS_BOF, no del brain. Lo hace Erik directamente.
+**Plan:** Erik agrega línea al final de `PARCHES_APLICADOS.md` con formato existente.
+**Salida esperada:** commit posterior al feature con la entrada bitácora.
+
+---
+
+## C-019 — Validar interacción CP-013 fix vs feature AG cuando se implemente CP-013
+
+**Origen:** `CP-016/INDEX.md` §6
+**Pregunta:** cuando se descomente el bloque del fix CP-013 en `clsLnStock_res_Partial.vb` (líneas 1998-2008) y se agregue la generación de `trans_movimientos` compensatorio, ¿interfiere con el orquestador AG? ¿El movimiento compensatorio se duplica con el del PASO 2 implosión del orquestador?
+**Plan:** trace estático del call chain `Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack` → `Aplica_Cambio_Estado_Ubic` → `clsLnStock_res.Update_*` → confirmar si llega a los setters de `Dañado_picking`. Si sí, validar que la generación de movimiento del fix CP-013 no se duplica.
+**Salida esperada:** sección en `CP-013/PLAYBOOK-FIX.md` §G (nota sobre interacción AG).
