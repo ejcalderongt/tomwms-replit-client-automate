@@ -1,3 +1,12 @@
+---
+id: 04-mi3-config-propietario
+tipo: entity
+estado: vigente
+titulo: "04 · Matriz de configuración del motor MI3 (tabla `i_nav_config_enc`)"
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 04 · Matriz de configuración del motor MI3 (tabla `i_nav_config_enc`)
 
 > **CORRECCIÓN respecto a la versión anterior**: la versión 1 de este documento ubicaba erróneamente los flags del motor MI3 en la tabla `propietarios`. Tras consulta READ-ONLY a Killios productivo (`52.41.114.122,1437`, BD `TOMWMS_KILLIOS_PRD`), se confirmó que:

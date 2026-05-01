@@ -1,3 +1,11 @@
+---
+id: traza-001-license-plate
+tipo: code-deep-flow
+estado: vigente
+titulo: Traza 001 — License Plate (LP)
+tags: [code-deep-flow]
+---
+
 # Traza 001 — License Plate (LP)
 
 **Parámetro fuente**: `i_nav_config_enc.genera_lp` + `producto.genera_lp_old` + `producto.genera_lote` + `producto_presentacion.genera_lp_auto`.

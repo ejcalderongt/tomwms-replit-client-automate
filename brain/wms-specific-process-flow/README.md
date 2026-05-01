@@ -1,3 +1,12 @@
+---
+id: README
+tipo: process-flow
+estado: vigente
+titulo: wms-specific-process-flow
+ramas: [dev_2028_merge]
+tags: [process-flow]
+---
+
 # wms-specific-process-flow
 
 > Tuning de la comprension del comportamiento de WMS basado en evidencia productiva.

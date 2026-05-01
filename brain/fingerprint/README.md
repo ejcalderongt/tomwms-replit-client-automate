@@ -1,3 +1,11 @@
+---
+id: README
+tipo: fingerprint
+estado: vigente
+titulo: fingerprint/ — fingerprint funcional por cliente
+tags: [fingerprint]
+---
+
 # fingerprint/ — fingerprint funcional por cliente
 
 > Macro-perfil de cada cliente: que features tiene activas, que volumen

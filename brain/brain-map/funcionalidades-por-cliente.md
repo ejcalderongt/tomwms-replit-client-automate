@@ -1,3 +1,11 @@
+---
+id: funcionalidades-por-cliente
+tipo: brain-map
+estado: vigente
+titulo: Matriz funcionalidad × cliente — TOMWMS
+tags: [brain-map]
+---
+
 # Matriz funcionalidad × cliente — TOMWMS
 
 > Ultima actualizacion: 29-abr-2026

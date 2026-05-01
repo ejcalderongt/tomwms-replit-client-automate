@@ -1,3 +1,11 @@
+---
+id: parametros-por-cliente
+tipo: brain-map
+estado: vigente
+titulo: Parametros y capability flags por cliente
+tags: [brain-map]
+---
+
 # Parametros y capability flags por cliente
 
 > Conocidos hasta hoy: pocos. Esta hoja crece a medida que Erik aclara

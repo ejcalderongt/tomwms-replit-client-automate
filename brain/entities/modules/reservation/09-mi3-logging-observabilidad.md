@@ -1,3 +1,12 @@
+---
+id: 09-mi3-logging-observabilidad
+tipo: entity
+estado: vigente
+titulo: 09 · Logging y observabilidad del motor MI3
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 09 · Logging y observabilidad del motor MI3
 
 > **Propósito**: documentar el contrato `IReservationLogger`, los handlers de logging tanto del motor nuevo como del legacy, el formato de los checkpoints, cómo se persisten en `log_error_wms` (15 cols) y queries SQL para reconstruir el flujo completo de un pedido a partir de los logs.

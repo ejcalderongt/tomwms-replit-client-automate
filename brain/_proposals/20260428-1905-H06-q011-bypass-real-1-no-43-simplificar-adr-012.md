@@ -1,3 +1,11 @@
+---
+id: 20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012
+tipo: proposal
+estado: vigente
+titulo: "20260428-1905-H06 - Q-011 valida que el proceso 'estado=Despachado sin trans_despacho_det' existe como camino real en TOMWMS_KILLIOS_PRD."
+tags: [proposal]
+---
+
 # 20260428-1905-H06 - Q-011 valida que el proceso 'estado=Despachado sin trans_despacho_det' existe como camino real en TOMWMS_KILLIOS_PRD.
 
 > Generado por agente brain (sesion replit) el 28 abril 2026 tras Ciclo 8a via ejecucion live SQL.

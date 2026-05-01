@@ -1,3 +1,12 @@
+---
+id: PLAYBOOK-FIX
+tipo: cp-open
+estado: vigente
+titulo: PLAYBOOK-FIX CP-013 — Remediacion bug dañado_picking sin descuento
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [cp-open]
+---
+
 # PLAYBOOK-FIX CP-013 — Remediacion bug dañado_picking sin descuento
 
 ## Severidad: CRITICA (sistemica, multi-cliente potencial)

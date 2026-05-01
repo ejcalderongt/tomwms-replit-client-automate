@@ -1,3 +1,12 @@
+---
+id: 20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log
+tipo: proposal
+estado: vigente
+titulo: 20260428-1910-H11 - Becofarma tambien acumulo basura en trans_reabastecimiento_log (755 filas) sin usar el modulo. Extender H-02.
+clientes: [byb]
+tags: [proposal, cliente/byb]
+---
+
 # 20260428-1910-H11 - Becofarma tambien acumulo basura en trans_reabastecimiento_log (755 filas) sin usar el modulo. Extender H-02.
 
 > Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.

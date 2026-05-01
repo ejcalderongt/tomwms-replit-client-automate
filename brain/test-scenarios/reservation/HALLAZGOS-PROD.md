@@ -1,3 +1,12 @@
+---
+id: HALLAZGOS-PROD
+tipo: test-scenario
+estado: vigente
+titulo: Hallazgos productivos vs escenarios del legacy
+modulo: [reservation]
+tags: [test-scenario, modulo/reservation]
+---
+
 # Hallazgos productivos vs escenarios del legacy
 
 > Generado tras aprender configs reales de Killios/BYB/CEALSA (2026-04-27T14:56:31.611Z).

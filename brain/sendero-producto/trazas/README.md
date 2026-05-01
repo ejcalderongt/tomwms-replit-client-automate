@@ -1,3 +1,11 @@
+---
+id: README
+tipo: sendero-producto
+estado: vigente
+titulo: Trazas — Protocolo
+tags: [sendero-producto]
+---
+
 # Trazas — Protocolo
 
 > Cada traza documenta el sendero REAL de un producto representativo

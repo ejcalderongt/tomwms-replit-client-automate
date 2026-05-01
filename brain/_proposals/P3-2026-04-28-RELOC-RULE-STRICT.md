@@ -1,3 +1,11 @@
+---
+id: P3-2026-04-28-RELOC-RULE-STRICT
+tipo: proposal
+estado: vigente
+titulo: "P3-2026-04-28-RELOC-RULE-STRICT - Cambio de ubicacion 100% restrictivo en BOF y HH"
+tags: [proposal]
+---
+
 # P3-2026-04-28-RELOC-RULE-STRICT - Cambio de ubicacion 100% restrictivo en BOF y HH
 
 > Generado por agente brain (sesion replit) el 28 abril 2026 tras consulta de Carol (Q-015).

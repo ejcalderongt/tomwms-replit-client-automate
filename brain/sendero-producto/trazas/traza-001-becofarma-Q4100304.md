@@ -1,3 +1,12 @@
+---
+id: traza-001-becofarma-Q4100304
+tipo: sendero-producto
+estado: vigente
+titulo: Traza 001 — BECOFARMA Q4100304 (AMBIARE 2MG-0.25MG CAJA 10 CAP)
+clientes: [becofarma]
+tags: [sendero-producto, cliente/becofarma]
+---
+
 # Traza 001 — BECOFARMA Q4100304 (AMBIARE 2MG-0.25MG CAJA 10 CAP)
 
 **Cliente**: BECOFARMA (IMS4MB_BECOFARMA_PRD) | **Bodega**: 1=GENERAL  

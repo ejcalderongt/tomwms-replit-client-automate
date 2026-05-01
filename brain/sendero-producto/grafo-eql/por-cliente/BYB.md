@@ -1,3 +1,12 @@
+---
+id: BYB
+tipo: sendero-producto
+estado: vigente
+titulo: Graph-EQL — BYB
+clientes: [byb]
+tags: [sendero-producto, cliente/byb]
+---
+
 # Graph-EQL — BYB
 
 **Caracter**: distribucion masiva (salsas/condimentos), 7537 ubicaciones, 24 estados,

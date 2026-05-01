@@ -1,3 +1,11 @@
+---
+id: 04-transiciones-internas
+tipo: sendero-producto
+estado: vigente
+titulo: Modelo del sendero — Transiciones internas
+tags: [sendero-producto]
+---
+
 # Modelo del sendero — Transiciones internas
 
 ## Concepto Erik

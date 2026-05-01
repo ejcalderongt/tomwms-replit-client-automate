@@ -1,3 +1,12 @@
+---
+id: CASOS-RELACIONADOS
+tipo: known-issue
+estado: vigente
+titulo: BUG-001 — Casos relacionados
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [known-issue]
+---
+
 # BUG-001 — Casos relacionados
 
 > Esta tabla mantiene la trazabilidad entre el BUG (raiz en el producto) y

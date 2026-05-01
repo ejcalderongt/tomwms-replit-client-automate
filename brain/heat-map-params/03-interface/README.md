@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: Capa 3 — Parametros de INTERFACE con ERP
+tags: [heat-map-params]
+---
+
 # Capa 3 — Parametros de INTERFACE con ERP
 
 > Define que ERP (o sistema externo) se conecta con el WMS y como.

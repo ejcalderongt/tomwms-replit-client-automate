@@ -1,3 +1,12 @@
+---
+id: 20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct
+tipo: proposal
+estado: vigente
+titulo: Propuesta para evento 20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct
+clientes: [becofarma]
+tags: [proposal, cliente/becofarma]
+---
+
 # Propuesta para evento 20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct
 
 > Hallazgo H-029: 44% de pedidos BECOFARMA en estado Pickeado terminal

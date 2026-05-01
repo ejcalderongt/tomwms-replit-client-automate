@@ -1,3 +1,11 @@
+---
+id: 03-caso-clavaud-conservar-picking
+tipo: wms-test-natural-case
+estado: vigente
+titulo: CASO 03 — Estrategia Clavaud (conservar zona picking)
+tags: [wms-test-natural-case]
+---
+
 # CASO 03 — Estrategia Clavaud (conservar zona picking)
 
 ## Trigger (cuándo se dispara)

@@ -1,3 +1,11 @@
+---
+id: 05-puntos-de-salida
+tipo: sendero-producto
+estado: vigente
+titulo: Modelo del sendero — Puntos de salida
+tags: [sendero-producto]
+---
+
 # Modelo del sendero — Puntos de salida
 
 ## Concepto

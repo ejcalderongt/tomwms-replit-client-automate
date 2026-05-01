@@ -1,3 +1,11 @@
+---
+id: state-machine-pedido
+tipo: process-flow
+estado: vigente
+titulo: Maquina de estados de pedido — confirmada por Erik + SQL
+tags: [process-flow]
+---
+
 # Maquina de estados de pedido — confirmada por Erik + SQL
 
 > **Version 3** (ciclo 9b). Combina respuestas de Erik (tarea 1) +

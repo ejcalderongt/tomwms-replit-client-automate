@@ -1,3 +1,11 @@
+---
+id: 01-puntos-de-entrada
+tipo: sendero-producto
+estado: vigente
+titulo: Modelo del sendero — Punto de entrada
+tags: [sendero-producto]
+---
+
 # Modelo del sendero — Punto de entrada
 
 ## Concepto Erik (textual)

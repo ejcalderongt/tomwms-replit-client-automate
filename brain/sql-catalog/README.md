@@ -1,3 +1,11 @@
+---
+id: README
+tipo: sql-catalog
+estado: vigente
+titulo: brain/sql-catalog
+tags: [sql-catalog]
+---
+
 # brain/sql-catalog
 
 Extractores y herramientas para el catálogo SQL del WMS.

@@ -1,3 +1,12 @@
+---
+id: README
+tipo: test-scenario
+estado: vigente
+titulo: Catálogo de escenarios de RESERVA
+modulo: [reservation]
+tags: [test-scenario, modulo/reservation]
+---
+
 # Catálogo de escenarios de RESERVA
 
 Carpeta: `brain/test-scenarios/reservation/`

@@ -1,3 +1,12 @@
+---
+id: 20260428-2346-H26-becofarma-logging-segmentado-por-proceso
+tipo: proposal
+estado: vigente
+titulo: Propuesta para evento 20260428-2346-H26-becofarma-logging-segmentado-por-proceso
+clientes: [becofarma]
+tags: [proposal, cliente/becofarma]
+---
+
 # Propuesta para evento 20260428-2346-H26-becofarma-logging-segmentado-por-proceso
 
 > Hallazgo H-026: Logging segmentado por proceso (exclusivo BECOFARMA)

@@ -1,3 +1,12 @@
+---
+id: 11-mi3-tests
+tipo: entity
+estado: vigente
+titulo: 11 · Estrategia de testing del motor MI3
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 11 · Estrategia de testing del motor MI3
 
 > **Propósito**: definir la estrategia de testing del motor MI3 reescrito (.NET 8) para garantizar paridad funcional con el legacy VB.NET (8K líneas) antes de habilitarlo en producción. Cubre niveles unit/integration/E2E, fixtures, datasets canary, criterios de paso y plan de rollout.

@@ -1,3 +1,11 @@
+---
+id: 20260428-1902-H03-logs-estructurados-mudos
+tipo: proposal
+estado: vigente
+titulo: Proposal 20260428-1902-H03-logs-estructurados-mudos
+tags: [proposal]
+---
+
 # Proposal 20260428-1902-H03-logs-estructurados-mudos
 
 **Status**: proposed

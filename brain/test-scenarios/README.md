@@ -1,3 +1,11 @@
+---
+id: README
+tipo: test-scenario
+estado: vigente
+titulo: Catálogo de escenarios de prueba — TOM WMS
+tags: [test-scenario]
+---
+
 # Catálogo de escenarios de prueba — TOM WMS
 
 Este directorio contiene los **escenarios de prueba canónicos** que el Brain

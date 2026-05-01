@@ -1,3 +1,11 @@
+---
+id: 004-bridge-wms-test-automation
+tipo: decision
+estado: vigente
+titulo: ADR 004 — Bridge WMS ↔ Brain para automatización de pruebas
+tags: [decision]
+---
+
 # ADR 004 — Bridge WMS ↔ Brain para automatización de pruebas
 
 - **Estado**: Propuesto.

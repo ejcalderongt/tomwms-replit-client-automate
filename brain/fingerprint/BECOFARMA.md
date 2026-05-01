@@ -1,3 +1,12 @@
+---
+id: BECOFARMA
+tipo: fingerprint
+estado: vigente
+titulo: Fingerprint BECOFARMA
+clientes: [becofarma]
+tags: [fingerprint, cliente/becofarma]
+---
+
 # Fingerprint BECOFARMA
 
 > Etiqueta human-readable: `BECOFARMA_CLIENT_FARMA-SAP-B1-PRODUCT-CENTRIC_APPLIED`

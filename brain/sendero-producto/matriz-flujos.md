@@ -1,3 +1,11 @@
+---
+id: matriz-flujos
+tipo: sendero-producto
+estado: vigente
+titulo: Matriz cross-cliente del sendero — el fingerprint DINAMICO
+tags: [sendero-producto]
+---
+
 # Matriz cross-cliente del sendero — el fingerprint DINAMICO
 
 > Esta es la sintesis de las 5 trazas. Captura las divergencias del

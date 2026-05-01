@@ -1,3 +1,12 @@
+---
+id: KILLIOS
+tipo: fingerprint
+estado: vigente
+titulo: Fingerprint KILLIOS (K7)
+clientes: [killios]
+tags: [fingerprint, cliente/killios]
+---
+
 # Fingerprint KILLIOS (K7)
 
 > Etiqueta human-readable: `KILLIOS_CLIENT_GASTRONOMICO-SAP-B1_APPLIED`

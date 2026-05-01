@@ -1,3 +1,11 @@
+---
+id: producto
+tipo: ddl-funcional
+estado: vigente
+titulo: ddl-funcional/producto.md — flags funcionales del producto
+tags: [ddl-funcional]
+---
+
 # ddl-funcional/producto.md — flags funcionales del producto
 
 > Tabla `producto` tiene 60 columnas. Aca documento solo las que

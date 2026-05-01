@@ -1,3 +1,12 @@
+---
+id: CUESTIONARIO_CAROLINA
+tipo: agent-context
+estado: vigente
+titulo: Cuestionario para Carolina — onboarding al brain WMS
+ramas: [240Cealsa, 240byb, dev_2023_estable, dev_2025, dev_2028_merge]
+tags: [agent-context]
+---
+
 # Cuestionario para Carolina — onboarding al brain WMS
 
 **Fecha**: 2026-04-28  

@@ -1,3 +1,11 @@
+---
+id: REPORTE
+tipo: cp-open
+estado: vigente
+titulo: CP-013 — Reporte de trazabilidad caso WMS164 (Killios PRD)
+tags: [cp-open]
+---
+
 # CP-013 — Reporte de trazabilidad caso WMS164 (Killios PRD)
 
 > Caso de campo. Recepción ingresada el 9-feb-2026 que el 23-abr-2026 quedó con stock partido en dos filas con la misma llave natural (ProductoBodega + Ubicación + Estado + Lote + Licencia). El bug no es de cálculo: es de **persistencia** — un INSERT a `stock` que debió consolidar contra una fila preexistente y, en su lugar, creó una fila nueva.

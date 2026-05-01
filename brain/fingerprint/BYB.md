@@ -1,3 +1,12 @@
+---
+id: BYB
+tipo: fingerprint
+estado: vigente
+titulo: Fingerprint BYB
+clientes: [byb]
+tags: [fingerprint, cliente/byb]
+---
+
 # Fingerprint BYB
 
 > Etiqueta human-readable: `BYB_CLIENT_NAV-OPERACION-PARADA-2024_APPLIED`

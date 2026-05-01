@@ -1,3 +1,11 @@
+---
+id: 06-caso-lote-numerico-correlativo
+tipo: wms-test-natural-case
+estado: vigente
+titulo: "CASO 06 — Lote numérico correlativo (`control_ultimo_lote`)"
+tags: [wms-test-natural-case]
+---
+
 # CASO 06 — Lote numérico correlativo (`control_ultimo_lote`)
 
 ## Trigger

@@ -1,3 +1,11 @@
+---
+id: INFORME-EJECUTIVO
+tipo: cp-open
+estado: vigente
+titulo: Informe ejecutivo — Caso WMS164 (Killios) y bug sistémico de stock duplicado
+tags: [cp-open]
+---
+
 # Informe ejecutivo — Caso WMS164 (Killios) y bug sistémico de stock duplicado
 
 **Para**: Erik Calderón (PrograX24) y Carol

@@ -3,30 +3,48 @@
     {
       "id": "BRIDGE.md",
       "label": "BRIDGE",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "documentation",
+      "tags": [
+        "documentation"
+      ],
       "clientes": [],
-      "size_bytes": 14488,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 14646,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "BRIDGE",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "documentation",
+      "tags": [
+        "documentation"
+      ],
       "clientes": [],
-      "size_bytes": 22500,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 22684,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_conventions/nomenclatura.md",
@@ -52,44 +70,97 @@
       "out_degree": 0
     },
     {
+      "id": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "label": "2026-04-30-progreso-deep-dive-F1-F3",
+      "tipo": "inbox",
+      "tags": [
+        "atlas",
+        "deep-dive",
+        "progreso"
+      ],
+      "clientes": [],
+      "size_bytes": 5494,
+      "frontmatter_keys": [
+        "autores",
+        "estado",
+        "fecha",
+        "id",
+        "ramas",
+        "relacionados",
+        "tags",
+        "tipo"
+      ],
+      "estado": "vigente",
+      "severidad": "",
+      "id_fm": "PROG-2026-04-30-DEEP-DIVE-F1-F3",
+      "in_degree": 0,
+      "out_degree": 7
+    },
+    {
       "id": "_index/CONCEPT_MAP.md",
       "label": "CONCEPT_MAP",
       "tipo": "index",
-      "tags": [],
+      "tags": [
+        "index"
+      ],
       "clientes": [],
-      "size_bytes": 28707,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 28887,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CONCEPT_MAP",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "_index/INDEX.md",
       "label": "INDEX",
       "tipo": "index",
-      "tags": [],
+      "tags": [
+        "index"
+      ],
       "clientes": [],
-      "size_bytes": 57946,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 58094,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "INDEX",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_index/PLAN-PARALELO.md",
       "label": "PLAN-PARALELO",
       "tipo": "index",
-      "tags": [],
+      "tags": [
+        "index"
+      ],
       "clientes": [],
-      "size_bytes": 2829,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2955,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "PLAN-PARALELO",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -97,27 +168,44 @@
       "id": "_index/WAVE-6.2-QUICK-WINS.md",
       "label": "WAVE-6.2-QUICK-WINS",
       "tipo": "index",
-      "tags": [],
+      "tags": [
+        "index"
+      ],
       "clientes": [],
-      "size_bytes": 11175,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 11375,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "WAVE-6.2-QUICK-WINS",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "_proposals/20260428-1900-H01-tras-wms-reservastock-muerto.md",
       "label": "20260428-1900-H01-tras-wms-reservastock-muerto",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 2299,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2471,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1900-H01-tras-wms-reservastock-muerto",
       "in_degree": 0,
       "out_degree": 5
     },
@@ -125,13 +213,21 @@
       "id": "_proposals/20260428-1901-H02-clbd-prc-falta-reabasto-log.md",
       "label": "20260428-1901-H02-clbd-prc-falta-reabasto-log",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 2244,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2414,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1901-H02-clbd-prc-falta-reabasto-log",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -139,13 +235,21 @@
       "id": "_proposals/20260428-1902-H03-logs-estructurados-mudos.md",
       "label": "20260428-1902-H03-logs-estructurados-mudos",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 2364,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2528,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1902-H03-logs-estructurados-mudos",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -153,13 +257,21 @@
       "id": "_proposals/20260428-1903-H04-despacho-fantasma-bypass-estado.md",
       "label": "20260428-1903-H04-despacho-fantasma-bypass-estado",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 2544,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2722,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1903-H04-despacho-fantasma-bypass-estado",
       "in_degree": 0,
       "out_degree": 4
     },
@@ -167,13 +279,21 @@
       "id": "_proposals/20260428-1904-H05-prefactura-sin-informante.md",
       "label": "20260428-1904-H05-prefactura-sin-informante",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 2350,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2516,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1904-H05-prefactura-sin-informante",
       "in_degree": 0,
       "out_degree": 1
     },
@@ -181,13 +301,21 @@
       "id": "_proposals/20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012.md",
       "label": "20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 2420,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2692,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012",
       "in_degree": 0,
       "out_degree": 2
     },
@@ -195,27 +323,47 @@
       "id": "_proposals/20260428-1906-H07-bb-putaway-intensivo-50pct-ubic.md",
       "label": "20260428-1906-H07-bb-putaway-intensivo-50pct-ubic",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 1405,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/byb",
+        "proposal"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 1662,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1906-H07-bb-putaway-intensivo-50pct-ubic",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos.md",
       "label": "20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 1596,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1860,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -223,13 +371,21 @@
       "id": "_proposals/20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc.md",
       "label": "20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 1619,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1880,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -237,125 +393,229 @@
       "id": "_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
       "label": "20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 1657,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/cealsa",
+        "proposal"
+      ],
+      "clientes": [
+        "cealsa"
+      ],
+      "size_bytes": 1945,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
-      "in_degree": 1,
-      "out_degree": 0
+      "id_fm": "20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct",
+      "in_degree": 0,
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md",
       "label": "20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 1681,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/byb",
+        "proposal"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 1978,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-2345-H25-becofarma-bd-restaurada-config-2017.md",
       "label": "20260428-2345-H25-becofarma-bd-restaurada-config-2017",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 819,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/becofarma",
+        "proposal"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 1059,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-2345-H25-becofarma-bd-restaurada-config-2017",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-2346-H26-becofarma-logging-segmentado-por-proceso.md",
       "label": "20260428-2346-H26-becofarma-logging-segmentado-por-proceso",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 761,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/becofarma",
+        "proposal"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 1011,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-2346-H26-becofarma-logging-segmentado-por-proceso",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet.md",
       "label": "20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 796,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/becofarma",
+        "proposal"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 1066,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-2348-H28-becofarma-outbox-85pct-pendiente.md",
       "label": "20260428-2348-H28-becofarma-outbox-85pct-pendiente",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 847,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/becofarma",
+        "proposal"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 1081,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-2348-H28-becofarma-outbox-85pct-pendiente",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct.md",
       "label": "20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 761,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/becofarma",
+        "proposal"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 1013,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08.md",
       "label": "20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08",
       "tipo": "proposal",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 841,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/becofarma",
+        "proposal"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 1095,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "_proposals/P3-2026-04-28-RELOC-RULE-STRICT.md",
       "label": "P3-2026-04-28-RELOC-RULE-STRICT",
       "tipo": "proposal",
-      "tags": [],
+      "tags": [
+        "proposal"
+      ],
       "clientes": [],
-      "size_bytes": 5138,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5324,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "P3-2026-04-28-RELOC-RULE-STRICT",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -363,55 +623,90 @@
       "id": "agent-context/00-START-HERE.md",
       "label": "00-START-HERE",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 6049,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6202,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "00-START-HERE",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "agent-context/AGENTS.md",
       "label": "AGENTS",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 8915,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9086,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "AGENTS",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "agent-context/AZURE_ACCESS.md",
       "label": "AZURE_ACCESS",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 10649,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 10806,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "AZURE_ACCESS",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "agent-context/CASE_INTAKE_TEMPLATE.md",
       "label": "CASE_INTAKE_TEMPLATE",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 4828,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4968,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASE_INTAKE_TEMPLATE",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -419,41 +714,67 @@
       "id": "agent-context/CONVIVENCIA_FORMATOS.md",
       "label": "CONVIVENCIA_FORMATOS",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 4738,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4957,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CONVIVENCIA_FORMATOS",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "agent-context/CUESTIONARIO_CAROLINA.md",
       "label": "CUESTIONARIO_CAROLINA",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 30505,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 30732,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CUESTIONARIO_CAROLINA",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 5
     },
     {
       "id": "agent-context/DRIFT_DETECTADO.md",
       "label": "DRIFT_DETECTADO",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 6313,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6454,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "DRIFT_DETECTADO",
       "in_degree": 0,
       "out_degree": 6
     },
@@ -461,13 +782,21 @@
       "id": "agent-context/GITHUB_SYNC.md",
       "label": "GITHUB_SYNC",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 6982,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7130,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "GITHUB_SYNC",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -568,13 +897,21 @@
       "id": "agent-context/REPLIT_AGENT.md",
       "label": "REPLIT_AGENT",
       "tipo": "agent-context",
-      "tags": [],
+      "tags": [
+        "agent-context"
+      ],
       "clientes": [],
-      "size_bytes": 8902,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9044,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "REPLIT_AGENT",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -640,7 +977,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 5,
+      "in_degree": 4,
       "out_degree": 0
     },
     {
@@ -654,7 +991,7 @@
       "estado": "",
       "severidad": "",
       "id_fm": "",
-      "in_degree": 2,
+      "in_degree": 1,
       "out_degree": 0
     },
     {
@@ -736,56 +1073,88 @@
     {
       "id": "brain-map/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "brain-map",
+      "tags": [
+        "brain-map"
+      ],
       "clientes": [],
-      "size_bytes": 1797,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1941,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "brain-map/funcionalidades-por-cliente.md",
       "label": "funcionalidades-por-cliente",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "brain-map",
+      "tags": [
+        "brain-map"
+      ],
       "clientes": [],
-      "size_bytes": 8577,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 8719,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "funcionalidades-por-cliente",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "brain-map/parametros-por-cliente.md",
       "label": "parametros-por-cliente",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "brain-map",
+      "tags": [
+        "brain-map"
+      ],
       "clientes": [],
-      "size_bytes": 1843,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1979,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "parametros-por-cliente",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "brain-map/tablas-por-funcionalidad.md",
       "label": "tablas-por-funcionalidad",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "brain-map",
+      "tags": [
+        "brain-map"
+      ],
       "clientes": [],
-      "size_bytes": 4871,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5026,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "tablas-por-funcionalidad",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -793,15 +1162,24 @@
       "id": "clients/README.md",
       "label": "README",
       "tipo": "client",
-      "tags": [],
+      "tags": [
+        "client"
+      ],
       "clientes": [],
-      "size_bytes": 4713,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4830,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
-      "out_degree": 7
+      "out_degree": 8
     },
     {
       "id": "clients/becofarma.md",
@@ -831,29 +1209,53 @@
       "id": "clients/byb.md",
       "label": "byb",
       "tipo": "client",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 5777,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "client",
+        "cliente/byb"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 5887,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
-      "in_degree": 0,
-      "out_degree": 0
+      "id_fm": "byb",
+      "in_degree": 1,
+      "out_degree": 1
     },
     {
       "id": "clients/cealsa.md",
       "label": "cealsa",
       "tipo": "client",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3690,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "client",
+        "cliente/cealsa"
+      ],
+      "clientes": [
+        "cealsa"
+      ],
+      "size_bytes": 3812,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
-      "in_degree": 0,
-      "out_degree": 0
+      "id_fm": "cealsa",
+      "in_degree": 1,
+      "out_degree": 1
     },
     {
       "id": "clients/idealsa.md",
@@ -895,15 +1297,27 @@
       "id": "clients/killios.md",
       "label": "killios",
       "tipo": "client",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 6376,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "client",
+        "cliente/killios"
+      ],
+      "clientes": [
+        "killios"
+      ],
+      "size_bytes": 6502,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
-      "in_degree": 0,
-      "out_degree": 2
+      "id_fm": "killios",
+      "in_degree": 1,
+      "out_degree": 3
     },
     {
       "id": "clients/mercopan.md",
@@ -972,84 +1386,205 @@
     {
       "id": "code-deep-flow/00-mapa-de-cajas.md",
       "label": "00-mapa-de-cajas",
-      "tipo": "trace",
-      "tags": [],
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow"
+      ],
       "clientes": [],
-      "size_bytes": 15201,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 15360,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "00-mapa-de-cajas",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "code-deep-flow/02-portal-y-dms.md",
       "label": "02-portal-y-dms",
-      "tipo": "trace",
-      "tags": [],
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow"
+      ],
       "clientes": [],
-      "size_bytes": 21829,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 22063,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "02-portal-y-dms",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "code-deep-flow/03-implosion-y-merge-lp.md",
       "label": "03-implosion-y-merge-lp",
-      "tipo": "trace",
-      "tags": [],
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow"
+      ],
       "clientes": [],
-      "size_bytes": 18606,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 18809,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "03-implosion-y-merge-lp",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "code-deep-flow/04-mi3-y-reserva-clavaud.md",
       "label": "04-mi3-y-reserva-clavaud",
-      "tipo": "trace",
-      "tags": [],
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow"
+      ],
       "clientes": [],
-      "size_bytes": 21905,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 22098,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "04-mi3-y-reserva-clavaud",
       "in_degree": 0,
+      "out_degree": 1
+    },
+    {
+      "id": "code-deep-flow/DIFF-BOF-2023-VS-2028.md",
+      "label": "DIFF-BOF-2023-VS-2028",
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow/diff",
+        "repo/bof"
+      ],
+      "clientes": [],
+      "size_bytes": 13263,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo"
+      ],
+      "estado": "vigente",
+      "severidad": "",
+      "id_fm": "DIFF-BOF-2023-VS-2028",
+      "in_degree": 1,
+      "out_degree": 2
+    },
+    {
+      "id": "code-deep-flow/DIFF-HH-2023-VS-2028.md",
+      "label": "DIFF-HH-2023-VS-2028",
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow/diff",
+        "repo/hh"
+      ],
+      "clientes": [],
+      "size_bytes": 11404,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo"
+      ],
+      "estado": "vigente",
+      "severidad": "",
+      "id_fm": "DIFF-HH-2023-VS-2028",
+      "in_degree": 1,
+      "out_degree": 2
+    },
+    {
+      "id": "code-deep-flow/FLAGS-CALLSITES.md",
+      "label": "FLAGS-CALLSITES",
+      "tipo": "reference",
+      "tags": [
+        "code-deep-flow/callsites",
+        "code-deep-flow/flags"
+      ],
+      "clientes": [],
+      "size_bytes": 42343,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo"
+      ],
+      "estado": "vigente",
+      "severidad": "",
+      "id_fm": "FLAGS-CALLSITES",
+      "in_degree": 1,
       "out_degree": 0
     },
     {
       "id": "code-deep-flow/README.md",
       "label": "README",
-      "tipo": "trace",
-      "tags": [],
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow"
+      ],
       "clientes": [],
-      "size_bytes": 5945,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6106,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "code-deep-flow/traza-001-license-plate.md",
       "label": "traza-001-license-plate",
-      "tipo": "trace",
-      "tags": [],
+      "tipo": "code-deep-flow",
+      "tags": [
+        "code-deep-flow"
+      ],
       "clientes": [],
-      "size_bytes": 44671,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 44809,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "traza-001-license-plate",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -1083,28 +1618,45 @@
     {
       "id": "colas-pendientes.md",
       "label": "colas-pendientes",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "documentation",
+      "tags": [
+        "documentation"
+      ],
       "clientes": [],
-      "size_bytes": 13074,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 13271,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "colas-pendientes",
       "in_degree": 0,
-      "out_degree": 11
+      "out_degree": 14
     },
     {
       "id": "customer-open-cases/CP-013-killios-wms164/EVIDENCIAS-CRONICIDAD.md",
       "label": "EVIDENCIAS-CRONICIDAD",
       "tipo": "cp-open",
-      "tags": [],
+      "tags": [
+        "cp-open"
+      ],
       "clientes": [],
-      "size_bytes": 16972,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 17126,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "EVIDENCIAS-CRONICIDAD",
       "in_degree": 0,
       "out_degree": 4
     },
@@ -1146,13 +1698,21 @@
       "id": "customer-open-cases/CP-013-killios-wms164/INFORME-EJECUTIVO.md",
       "label": "INFORME-EJECUTIVO",
       "tipo": "cp-open",
-      "tags": [],
+      "tags": [
+        "cp-open"
+      ],
       "clientes": [],
-      "size_bytes": 11948,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 12113,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "INFORME-EJECUTIVO",
       "in_degree": 0,
       "out_degree": 5
     },
@@ -1160,27 +1720,44 @@
       "id": "customer-open-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md",
       "label": "PLAYBOOK-FIX",
       "tipo": "cp-open",
-      "tags": [],
+      "tags": [
+        "cp-open"
+      ],
       "clientes": [],
-      "size_bytes": 24689,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 24881,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "PLAYBOOK-FIX",
       "in_degree": 0,
-      "out_degree": 8
+      "out_degree": 10
     },
     {
       "id": "customer-open-cases/CP-013-killios-wms164/REPORTE-CONCLUSION-V3.md",
       "label": "REPORTE-CONCLUSION-V3",
       "tipo": "cp-open",
-      "tags": [],
+      "tags": [
+        "cp-open"
+      ],
       "clientes": [],
-      "size_bytes": 12011,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 12159,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "REPORTE-CONCLUSION-V3",
       "in_degree": 0,
       "out_degree": 1
     },
@@ -1188,167 +1765,265 @@
       "id": "customer-open-cases/CP-013-killios-wms164/REPORTE.md",
       "label": "REPORTE",
       "tipo": "cp-open",
-      "tags": [],
+      "tags": [
+        "cp-open"
+      ],
       "clientes": [],
-      "size_bytes": 9482,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9618,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "REPORTE",
       "in_degree": 0,
       "out_degree": 2
     },
     {
       "id": "ddl-funcional/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "ddl-funcional",
+      "tags": [
+        "ddl-funcional"
+      ],
       "clientes": [],
-      "size_bytes": 1843,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1978,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "ddl-funcional/bodega.md",
       "label": "bodega",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "ddl-funcional",
+      "tags": [
+        "ddl-funcional"
+      ],
       "clientes": [],
-      "size_bytes": 1379,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1521,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "bodega",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "ddl-funcional/predicados.md",
       "label": "predicados",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "ddl-funcional",
+      "tags": [
+        "ddl-funcional"
+      ],
       "clientes": [],
-      "size_bytes": 4529,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4681,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "predicados",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "ddl-funcional/producto.md",
       "label": "producto",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "ddl-funcional",
+      "tags": [
+        "ddl-funcional"
+      ],
       "clientes": [],
-      "size_bytes": 3284,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 3433,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "producto",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "debuged-cases/00-INDEX.md",
       "label": "00-INDEX",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "debuged-case",
+      "tags": [
+        "debuged-case"
+      ],
       "clientes": [],
-      "size_bytes": 9772,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9890,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "00-INDEX",
       "in_degree": 0,
       "out_degree": 29
     },
     {
       "id": "debuged-cases/CP-015-bug-danado-picking-transversal/DATOS-COMPARATIVOS.md",
       "label": "DATOS-COMPARATIVOS",
-      "tipo": "cp-legacy",
-      "tags": [],
+      "tipo": "debuged-case",
+      "tags": [
+        "debuged-case"
+      ],
       "clientes": [],
-      "size_bytes": 7900,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 8033,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "DATOS-COMPARATIVOS",
       "in_degree": 36,
       "out_degree": 0
     },
     {
       "id": "debuged-cases/CP-015-bug-danado-picking-transversal/INDEX.md",
       "label": "INDEX",
-      "tipo": "cp-legacy",
-      "tags": [],
+      "tipo": "debuged-case",
+      "tags": [
+        "debuged-case"
+      ],
       "clientes": [],
-      "size_bytes": 4533,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4752,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "INDEX",
       "in_degree": 1,
-      "out_degree": 18
+      "out_degree": 19
     },
     {
       "id": "debuged-cases/CP-015-bug-danado-picking-transversal/REPORTE-MULTI-BD.md",
       "label": "REPORTE-MULTI-BD",
-      "tipo": "cp-legacy",
-      "tags": [],
+      "tipo": "debuged-case",
+      "tags": [
+        "debuged-case"
+      ],
       "clientes": [],
-      "size_bytes": 11925,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 12093,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "REPORTE-MULTI-BD",
       "in_degree": 0,
       "out_degree": 5
     },
     {
       "id": "decisions/003-mi3-reescrito.md",
       "label": "003-mi3-reescrito",
-      "tipo": "adr",
-      "tags": [],
+      "tipo": "decision",
+      "tags": [
+        "decision"
+      ],
       "clientes": [],
-      "size_bytes": 15693,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 15887,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "003-mi3-reescrito",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "decisions/004-bridge-wms-test-automation.md",
       "label": "004-bridge-wms-test-automation",
-      "tipo": "adr",
-      "tags": [],
+      "tipo": "decision",
+      "tags": [
+        "decision"
+      ],
       "clientes": [],
-      "size_bytes": 13136,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 13301,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "004-bridge-wms-test-automation",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "decisions/005-bridge-schema-v2-bump.md",
       "label": "005-bridge-schema-v2-bump",
-      "tipo": "adr",
-      "tags": [],
+      "tipo": "decision",
+      "tags": [
+        "decision"
+      ],
       "clientes": [],
-      "size_bytes": 2693,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2843,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "005-bridge-schema-v2-bump",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -1628,190 +2303,325 @@
     {
       "id": "entities/modules/reservation/01-mi3-motor-nuevo-net8.md",
       "label": "01-mi3-motor-nuevo-net8",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 32103,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 32310,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "01-mi3-motor-nuevo-net8",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "entities/modules/reservation/02-mi3-motor-legacy-vb.md",
       "label": "02-mi3-motor-legacy-vb",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 35006,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 35225,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "02-mi3-motor-legacy-vb",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "entities/modules/reservation/03-comparison.md",
       "label": "03-comparison",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 22115,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 22308,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "03-comparison",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/04-mi3-config-propietario.md",
       "label": "04-mi3-config-propietario",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 19000,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 19207,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "04-mi3-config-propietario",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md",
       "label": "05-mi3-algoritmo-fefo-clavaud",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 18091,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 18293,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "05-mi3-algoritmo-fefo-clavaud",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/06-mi3-handlers-detalle.md",
       "label": "06-mi3-handlers-detalle",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 15370,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 15538,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "06-mi3-handlers-detalle",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/07-stock-res-ciclo-vida.md",
       "label": "07-stock-res-ciclo-vida",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 15877,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 16067,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "07-stock-res-ciclo-vida",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/08-mi3-tablas-killios.md",
       "label": "08-mi3-tablas-killios",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 30177,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "entity",
+      "tags": [
+        "cliente/killios",
+        "entity",
+        "modulo/reservation"
+      ],
+      "clientes": [
+        "killios"
+      ],
+      "size_bytes": 30403,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "08-mi3-tablas-killios",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "entities/modules/reservation/09-mi3-logging-observabilidad.md",
       "label": "09-mi3-logging-observabilidad",
-      "tipo": "other",
+      "tipo": "entity",
       "tags": [
         "CASO_4_",
         "CASO_6_",
         "FALLBACK_",
         "RECURSION_1965",
-        "STEP_FINAL"
+        "STEP_FINAL",
+        "entity",
+        "modulo/reservation"
       ],
       "clientes": [],
-      "size_bytes": 22033,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 22215,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "09-mi3-logging-observabilidad",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/10-mi3-errores-troubleshooting.md",
       "label": "10-mi3-errores-troubleshooting",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 17934,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 18131,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "10-mi3-errores-troubleshooting",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/11-mi3-tests.md",
       "label": "11-mi3-tests",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 19833,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 19995,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "11-mi3-tests",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/12-mi3-todos-roadmap.md",
       "label": "12-mi3-todos-roadmap",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 16054,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 16236,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "12-mi3-todos-roadmap",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/modules/reservation/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "entity",
+      "tags": [
+        "entity",
+        "modulo/reservation"
+      ],
       "clientes": [],
-      "size_bytes": 8682,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 8849,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "entities/rules/rule-01-no-push-automatico-wms.md",
@@ -2107,266 +2917,439 @@
     {
       "id": "fingerprint/BECOFARMA.md",
       "label": "BECOFARMA",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 5514,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "fingerprint",
+      "tags": [
+        "cliente/becofarma",
+        "fingerprint"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 5662,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "BECOFARMA",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "fingerprint/BYB.md",
       "label": "BYB",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 8031,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "fingerprint",
+      "tags": [
+        "cliente/byb",
+        "fingerprint"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 8155,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "BYB",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "fingerprint/CEALSA.md",
       "label": "CEALSA",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 7634,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "fingerprint",
+      "tags": [
+        "cliente/cealsa",
+        "fingerprint"
+      ],
+      "clientes": [
+        "cealsa"
+      ],
+      "size_bytes": 7770,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CEALSA",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "fingerprint/KILLIOS.md",
       "label": "KILLIOS",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 5932,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "fingerprint",
+      "tags": [
+        "cliente/killios",
+        "fingerprint"
+      ],
+      "clientes": [
+        "killios"
+      ],
+      "size_bytes": 6077,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "KILLIOS",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "fingerprint/MAMPA.md",
       "label": "MAMPA",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 8690,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "fingerprint",
+      "tags": [
+        "cliente/mampa",
+        "fingerprint"
+      ],
+      "clientes": [
+        "mampa"
+      ],
+      "size_bytes": 8848,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "MAMPA",
       "in_degree": 1,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "fingerprint/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "fingerprint",
+      "tags": [
+        "fingerprint"
+      ],
       "clientes": [],
-      "size_bytes": 1839,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 1972,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/01-empresa/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 7428,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7556,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/02-bodega/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 7643,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7770,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/03-interface/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 4176,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4309,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/04-producto/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 4334,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4463,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/05-tipo-documento/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 8550,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 8684,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/06-procesos-homologados/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 5036,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5158,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 4946,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5092,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 6
     },
     {
       "id": "heat-map-params/cross-cliente/01-i_nav_config_enc.md",
       "label": "01-i_nav_config_enc",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 8040,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 8179,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "01-i_nav_config_enc",
       "in_degree": 2,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/cross-cliente/02-bodega.md",
       "label": "02-bodega",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 9672,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9791,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "02-bodega",
       "in_degree": 2,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/cross-cliente/03-tipos-documento.md",
       "label": "03-tipos-documento",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 8630,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 8802,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "03-tipos-documento",
       "in_degree": 2,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/cross-cliente/04-producto.md",
       "label": "04-producto",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 21123,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 21317,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "04-producto",
       "in_degree": 3,
       "out_degree": 0
     },
     {
       "id": "heat-map-params/cross-cliente/README.md",
       "label": "README",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 4218,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4361,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 1,
       "out_degree": 5
     },
     {
       "id": "heat-map-params/sintesis.md",
       "label": "sintesis",
-      "tipo": "heat-map",
-      "tags": [],
+      "tipo": "heat-map-params",
+      "tags": [
+        "heat-map-params"
+      ],
       "clientes": [],
-      "size_bytes": 6479,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6618,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "sintesis",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -2794,28 +3777,44 @@
     {
       "id": "naked-erik-anatomy/000-prologo.md",
       "label": "000-prologo",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "naked-erik",
+      "tags": [
+        "naked-erik"
+      ],
       "clientes": [],
-      "size_bytes": 2526,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2643,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "000-prologo",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "naked-erik-anatomy/001-2026-04-29-clavaud-mi3-y-el-rio-desviado.md",
       "label": "001-2026-04-29-clavaud-mi3-y-el-rio-desviado",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "naked-erik",
+      "tags": [
+        "naked-erik"
+      ],
       "clientes": [],
-      "size_bytes": 12588,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 12761,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "001-2026-04-29-clavaud-mi3-y-el-rio-desviado",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -3055,296 +4054,505 @@
     {
       "id": "replit.md",
       "label": "replit",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "documentation",
+      "tags": [
+        "documentation"
+      ],
       "clientes": [],
-      "size_bytes": 16005,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 16150,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "replit",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 4458,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4582,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/grafo-eql/grafo-base.md",
       "label": "grafo-base",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 9662,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9794,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "grafo-base",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/grafo-eql/notacion.md",
       "label": "notacion",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 4977,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5111,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "notacion",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/grafo-eql/por-cliente/BECOFARMA.md",
       "label": "BECOFARMA",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2537,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/becofarma",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 2697,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "BECOFARMA",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/grafo-eql/por-cliente/BYB.md",
       "label": "BYB",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 4502,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/byb",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 4638,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "BYB",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/grafo-eql/por-cliente/CEALSA.md",
       "label": "CEALSA",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 1964,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/cealsa",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "cealsa"
+      ],
+      "size_bytes": 2136,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CEALSA",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/grafo-eql/por-cliente/K7.md",
       "label": "K7",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3589,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/killios",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "killios"
+      ],
+      "size_bytes": 3741,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "K7",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/grafo-eql/por-cliente/MAMPA.md",
       "label": "MAMPA",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3989,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/mampa",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "mampa"
+      ],
+      "size_bytes": 4133,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "MAMPA",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/matriz-flujos.md",
       "label": "matriz-flujos",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 7555,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7715,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "matriz-flujos",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/modelo/01-puntos-de-entrada.md",
       "label": "01-puntos-de-entrada",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 5991,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6137,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "01-puntos-de-entrada",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/modelo/02-mapeo-tablas.md",
       "label": "02-mapeo-tablas",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 10178,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 10325,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "02-mapeo-tablas",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/modelo/03-tipos-tarea.md",
       "label": "03-tipos-tarea",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 5682,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5832,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "03-tipos-tarea",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/modelo/04-transiciones-internas.md",
       "label": "04-transiciones-internas",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 5369,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5524,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "04-transiciones-internas",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/modelo/05-puntos-de-salida.md",
       "label": "05-puntos-de-salida",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 4498,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4643,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "05-puntos-de-salida",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/trazas/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sendero-producto",
+      "tags": [
+        "sendero-producto"
+      ],
       "clientes": [],
-      "size_bytes": 3004,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 3117,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sendero-producto/trazas/traza-001-becofarma-Q4100304.md",
       "label": "traza-001-becofarma-Q4100304",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 4815,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/becofarma",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "becofarma"
+      ],
+      "size_bytes": 5036,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "traza-001-becofarma-Q4100304",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/trazas/traza-002-k7-WMS167.md",
       "label": "traza-002-k7-WMS167",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 4119,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/killios",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "killios"
+      ],
+      "size_bytes": 4327,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "traza-002-k7-WMS167",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/trazas/traza-003-mampa-AG00030021.md",
       "label": "traza-003-mampa-AG00030021",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 4588,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/mampa",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "mampa"
+      ],
+      "size_bytes": 4789,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "traza-003-mampa-AG00030021",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/trazas/traza-004-byb-00170440.md",
       "label": "traza-004-byb-00170440",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 5526,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/byb",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 5727,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "traza-004-byb-00170440",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "sendero-producto/trazas/traza-005-cealsa-NEN025.md",
       "label": "traza-005-cealsa-NEN025",
-      "tipo": "other",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3138,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tipo": "sendero-producto",
+      "tags": [
+        "cliente/cealsa",
+        "sendero-producto"
+      ],
+      "clientes": [
+        "cealsa"
+      ],
+      "size_bytes": 3330,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "traza-005-cealsa-NEN025",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "skills/wms-test-bridge/SKILL.md",
@@ -3511,28 +4719,44 @@
     {
       "id": "sql-catalog/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sql-catalog",
+      "tags": [
+        "sql-catalog"
+      ],
       "clientes": [],
-      "size_bytes": 2201,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2301,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "sql-catalog/reservation-tables.md",
       "label": "reservation-tables",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "sql-catalog",
+      "tags": [
+        "sql-catalog"
+      ],
       "clientes": [],
-      "size_bytes": 30197,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 30340,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "reservation-tables",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -3570,13 +4794,21 @@
       "id": "test-scenarios/README.md",
       "label": "README",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 6238,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6370,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -3584,13 +4816,21 @@
       "id": "test-scenarios/_matrix/README.md",
       "label": "README",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 3861,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 3993,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -3668,15 +4908,24 @@
       "id": "test-scenarios/_matrix/compatibility.md",
       "label": "compatibility",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 2923,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 3093,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "compatibility",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "test-scenarios/ajustes/INV-001-ajuste-positivo-modifica-vencimiento.yaml",
@@ -3724,43 +4973,74 @@
       "id": "test-scenarios/reservation/HALLAZGOS-PROD.md",
       "label": "HALLAZGOS-PROD",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "modulo/reservation",
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 3178,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 3361,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "HALLAZGOS-PROD",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "test-scenarios/reservation/HALLAZGOS-WEBAPI-VS-WMS.md",
       "label": "HALLAZGOS-WEBAPI-VS-WMS",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "modulo/reservation",
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 4881,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5146,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "HALLAZGOS-WEBAPI-VS-WMS",
       "in_degree": 0,
-      "out_degree": 1
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/README.md",
       "label": "README",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "modulo/reservation",
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 3922,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4085,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "test-scenarios/reservation/RES-001-fefo-simple.yaml",
@@ -4116,349 +5396,702 @@
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-1_IDEAL_20231002011101.md",
       "label": "CASO-01-1_IDEAL_20231002011101",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2601,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2894,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-01-1_IDEAL_20231002011101",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-IDEAL_20231002011101.md",
       "label": "CASO-01-IDEAL_20231002011101",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 12995,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 13215,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-01-IDEAL_20231002011101",
       "in_degree": 0,
-      "out_degree": 4
+      "out_degree": 6
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-02-2_IDEAL_20231002011120.md",
       "label": "CASO-02-2_IDEAL_20231002011120",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2804,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3091,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-02-2_IDEAL_20231002011120",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-03-3_IDEAL_20231002011128.md",
       "label": "CASO-03-3_IDEAL_20231002011128",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2803,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3086,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-03-3_IDEAL_20231002011128",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-04-4_IDEAL_20231002011132.md",
       "label": "CASO-04-4_IDEAL_20231002011132",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2816,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3088,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-04-4_IDEAL_20231002011132",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-05-5_IDEAL_20231002011134.md",
       "label": "CASO-05-5_IDEAL_20231002011134",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2847,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3140,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-05-5_IDEAL_20231002011134",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-06-6_IDEAL_20231002011136.md",
       "label": "CASO-06-6_IDEAL_20231002011136",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2848,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3132,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-06-6_IDEAL_20231002011136",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-07-7_IDEAL_20231002011140.md",
       "label": "CASO-07-7_IDEAL_20231002011140",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2526,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2810,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-07-7_IDEAL_20231002011140",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-08-8_IDEAL_20231002011140.md",
       "label": "CASO-08-8_IDEAL_20231002011140",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2649,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2958,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-08-8_IDEAL_20231002011140",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-09-9_IDEAL_20231002011144.md",
       "label": "CASO-09-9_IDEAL_20231002011144",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2675,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2970,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-09-9_IDEAL_20231002011144",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-10-10_IDEAL_20231002011146.md",
       "label": "CASO-10-10_IDEAL_20231002011146",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2720,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3007,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-10-10_IDEAL_20231002011146",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-11-11_IDEAL_20231002011153.md",
       "label": "CASO-11-11_IDEAL_20231002011153",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2689,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2975,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-11-11_IDEAL_20231002011153",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-12-12_IDEAL_20231002011159.md",
       "label": "CASO-12-12_IDEAL_20231002011159",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2700,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2985,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-12-12_IDEAL_20231002011159",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-13-13_IDEAL_20231002011201.md",
       "label": "CASO-13-13_IDEAL_20231002011201",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3003,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3300,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-13-13_IDEAL_20231002011201",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-14-14_IDEAL_20231002011201.md",
       "label": "CASO-14-14_IDEAL_20231002011201",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3103,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3400,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-14-14_IDEAL_20231002011201",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-15-15_IDEAL_20231018130000.md",
       "label": "CASO-15-15_IDEAL_20231018130000",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3338,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3626,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-15-15_IDEAL_20231018130000",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-16-16_IDEAL_202310200156.md",
       "label": "CASO-16-16_IDEAL_202310200156",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 3078,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 3358,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-16-16_IDEAL_202310200156",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-17-17_IDEAL_202311040904.md",
       "label": "CASO-17-17_IDEAL_202311040904",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2593,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/idealsa",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "idealsa"
+      ],
+      "size_bytes": 2886,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-17-17_IDEAL_202311040904",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-18-18_BYB_202311141034.md",
       "label": "CASO-18-18_BYB_202311141034",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2117,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/byb",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 2382,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-18-18_BYB_202311141034",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-19-19_BYB_202311162103.md",
       "label": "CASO-19-19_BYB_202311162103",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2121,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/byb",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 2386,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-19-19_BYB_202311162103",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-20-20_BYB_202311171219.md",
       "label": "CASO-20-20_BYB_202311171219",
       "tipo": "test-scenario",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 2120,
-      "frontmatter_keys": [],
-      "estado": "",
+      "tags": [
+        "cliente/byb",
+        "modulo/reservation",
+        "test-scenario"
+      ],
+      "clientes": [
+        "byb"
+      ],
+      "size_bytes": 2388,
+      "frontmatter_keys": [
+        "clientes",
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-20-20_BYB_202311171219",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 3
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-DINAMICO.md",
       "label": "CASO-DINAMICO",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "modulo/reservation",
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 2004,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 2239,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASO-DINAMICO",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "test-scenarios/reservation/legacy-clsLnStock_res/README.md",
       "label": "README",
       "tipo": "test-scenario",
-      "tags": [],
+      "tags": [
+        "modulo/reservation",
+        "test-scenario"
+      ],
       "clientes": [],
-      "size_bytes": 5707,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5896,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "modulo",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 1,
-      "out_degree": 0
+      "out_degree": 2
     },
     {
       "id": "way-of-thinking.md",
       "label": "way-of-thinking",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "documentation",
+      "tags": [
+        "documentation"
+      ],
       "clientes": [],
-      "size_bytes": 4062,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4214,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "way-of-thinking",
       "in_degree": 0,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "wms-agent/README.md",
       "label": "README",
-      "tipo": "other",
-      "tags": [],
+      "tipo": "wms-agent",
+      "tags": [
+        "wms-agent"
+      ],
       "clientes": [],
-      "size_bytes": 3965,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4064,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -5513,30 +7146,48 @@
     {
       "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
       "label": "CASOS-RELACIONADOS",
-      "tipo": "bug",
-      "tags": [],
+      "tipo": "known-issue",
+      "tags": [
+        "known-issue"
+      ],
       "clientes": [],
-      "size_bytes": 5492,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5659,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CASOS-RELACIONADOS",
       "in_degree": 1,
-      "out_degree": 25
+      "out_degree": 27
     },
     {
       "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CLIENTES-AFECTADOS.md",
       "label": "CLIENTES-AFECTADOS",
-      "tipo": "bug",
-      "tags": [],
+      "tipo": "known-issue",
+      "tags": [
+        "known-issue"
+      ],
       "clientes": [],
-      "size_bytes": 9124,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9301,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "CLIENTES-AFECTADOS",
       "in_degree": 0,
-      "out_degree": 3
+      "out_degree": 5
     },
     {
       "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
@@ -5571,22 +7222,31 @@
       "estado": "open",
       "severidad": "critica",
       "id_fm": "BUG-001",
-      "in_degree": 57,
+      "in_degree": 58,
       "out_degree": 22
     },
     {
       "id": "wms-specific-process-flow/README.md",
       "label": "README",
-      "tipo": "wms-flow",
-      "tags": [],
+      "tipo": "process-flow",
+      "tags": [
+        "process-flow"
+      ],
       "clientes": [],
-      "size_bytes": 4655,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 4789,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "README",
       "in_degree": 0,
-      "out_degree": 1
+      "out_degree": 2
     },
     {
       "id": "wms-specific-process-flow/becofarma-mapping.md",
@@ -5615,28 +7275,44 @@
     {
       "id": "wms-specific-process-flow/bug-report-p16b.md",
       "label": "bug-report-p16b",
-      "tipo": "wms-flow",
-      "tags": [],
+      "tipo": "process-flow",
+      "tags": [
+        "process-flow"
+      ],
       "clientes": [],
-      "size_bytes": 7616,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7791,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "bug-report-p16b",
       "in_degree": 0,
       "out_degree": 1
     },
     {
       "id": "wms-specific-process-flow/encargo-sql-agente-ciclo-8a.md",
       "label": "encargo-sql-agente-ciclo-8a",
-      "tipo": "wms-flow",
-      "tags": [],
+      "tipo": "process-flow",
+      "tags": [
+        "process-flow"
+      ],
       "clientes": [],
-      "size_bytes": 6798,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6943,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "encargo-sql-agente-ciclo-8a",
       "in_degree": 0,
       "out_degree": 2
     },
@@ -5662,28 +7338,44 @@
     {
       "id": "wms-specific-process-flow/preguntas-ciclo-7.md",
       "label": "preguntas-ciclo-7",
-      "tipo": "wms-flow",
-      "tags": [],
+      "tipo": "process-flow",
+      "tags": [
+        "process-flow"
+      ],
       "clientes": [],
-      "size_bytes": 12530,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 12682,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "preguntas-ciclo-7",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "wms-specific-process-flow/process-map.md",
       "label": "process-map",
-      "tipo": "wms-flow",
-      "tags": [],
+      "tipo": "process-flow",
+      "tags": [
+        "process-flow"
+      ],
       "clientes": [],
-      "size_bytes": 7834,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7965,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "process-map",
       "in_degree": 0,
       "out_degree": 0
     },
@@ -5712,114 +7404,315 @@
     {
       "id": "wms-specific-process-flow/state-machine-pedido.md",
       "label": "state-machine-pedido",
-      "tipo": "wms-flow",
-      "tags": [],
+      "tipo": "process-flow",
+      "tags": [
+        "process-flow"
+      ],
       "clientes": [],
-      "size_bytes": 9275,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 9432,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "state-machine-pedido",
       "in_degree": 0,
       "out_degree": 0
     },
     {
       "id": "wms-test-natural-cases/00-INDEX.md",
       "label": "00-INDEX",
-      "tipo": "test-scenario",
-      "tags": [],
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
       "clientes": [],
-      "size_bytes": 3676,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 3839,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "00-INDEX",
       "in_degree": 0,
-      "out_degree": 6
+      "out_degree": 7
     },
     {
       "id": "wms-test-natural-cases/01-matriz-funcion-cliente-canal.md",
       "label": "01-matriz-funcion-cliente-canal",
-      "tipo": "test-scenario",
-      "tags": [],
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
       "clientes": [],
-      "size_bytes": 6496,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6707,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "ramas",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "01-matriz-funcion-cliente-canal",
       "in_degree": 1,
-      "out_degree": 0
+      "out_degree": 1
     },
     {
       "id": "wms-test-natural-cases/03-caso-clavaud-conservar-picking.md",
       "label": "03-caso-clavaud-conservar-picking",
-      "tipo": "test-scenario",
-      "tags": [],
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
       "clientes": [],
-      "size_bytes": 6597,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 6782,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "03-caso-clavaud-conservar-picking",
       "in_degree": 1,
       "out_degree": 0
     },
     {
       "id": "wms-test-natural-cases/04-caso-explosion-cajas-a-unidades.md",
       "label": "04-caso-explosion-cajas-a-unidades",
-      "tipo": "test-scenario",
-      "tags": [],
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
       "clientes": [],
-      "size_bytes": 7489,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7675,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "04-caso-explosion-cajas-a-unidades",
       "in_degree": 1,
       "out_degree": 0
     },
     {
       "id": "wms-test-natural-cases/05-caso-restriccion-ubicacion-por-cliente.md",
       "label": "05-caso-restriccion-ubicacion-por-cliente",
-      "tipo": "test-scenario",
-      "tags": [],
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
       "clientes": [],
-      "size_bytes": 5129,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 5347,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "05-caso-restriccion-ubicacion-por-cliente",
       "in_degree": 1,
       "out_degree": 0
     },
     {
       "id": "wms-test-natural-cases/06-caso-lote-numerico-correlativo.md",
       "label": "06-caso-lote-numerico-correlativo",
-      "tipo": "test-scenario",
-      "tags": [],
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
       "clientes": [],
-      "size_bytes": 7701,
-      "frontmatter_keys": [],
-      "estado": "",
+      "size_bytes": 7895,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
       "severidad": "",
-      "id_fm": "",
+      "id_fm": "06-caso-lote-numerico-correlativo",
       "in_degree": 1,
       "out_degree": 0
     },
     {
       "id": "wms-test-natural-cases/07-caso-tolerancia-vencimiento.md",
       "label": "07-caso-tolerancia-vencimiento",
-      "tipo": "test-scenario",
+      "tipo": "wms-test-natural-case",
+      "tags": [
+        "wms-test-natural-case"
+      ],
+      "clientes": [],
+      "size_bytes": 7449,
+      "frontmatter_keys": [
+        "estado",
+        "id",
+        "tags",
+        "tipo",
+        "titulo"
+      ],
+      "estado": "vigente",
+      "severidad": "",
+      "id_fm": "07-caso-tolerancia-vencimiento",
+      "in_degree": 1,
+      "out_degree": 0
+    },
+    {
+      "id": "_virtual/rama/dev-2028-merge",
+      "label": "dev_2028_merge",
+      "tipo": "v-rama",
       "tags": [],
       "clientes": [],
-      "size_bytes": 7258,
+      "size_bytes": 0,
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
-      "id_fm": "",
+      "in_degree": 60,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "rama"
+    },
+    {
+      "id": "_virtual/rama/dev-2023-estable",
+      "label": "dev_2023_estable",
+      "tipo": "v-rama",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 19,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "rama"
+    },
+    {
+      "id": "_virtual/autor/agent",
+      "label": "agent",
+      "tipo": "v-autor",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
       "in_degree": 1,
-      "out_degree": 0
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "autor"
+    },
+    {
+      "id": "_virtual/rama/dev-2025",
+      "label": "dev_2025",
+      "tipo": "v-rama",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 3,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "rama"
+    },
+    {
+      "id": "_virtual/cliente/byb",
+      "label": "byb",
+      "tipo": "v-cliente",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 11,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "cliente"
+    },
+    {
+      "id": "_virtual/cliente/cealsa",
+      "label": "cealsa",
+      "tipo": "v-cliente",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 6,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "cliente"
+    },
+    {
+      "id": "_virtual/cliente/becofarma",
+      "label": "becofarma",
+      "tipo": "v-cliente",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 11,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "cliente"
+    },
+    {
+      "id": "_virtual/rama/240cealsa",
+      "label": "240Cealsa",
+      "tipo": "v-rama",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 1,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "rama"
+    },
+    {
+      "id": "_virtual/rama/240byb",
+      "label": "240byb",
+      "tipo": "v-rama",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 2,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "rama"
     },
     {
       "id": "_virtual/cliente/mercopan",
@@ -5861,7 +7754,7 @@
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
-      "in_degree": 3,
+      "in_degree": 21,
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "cliente"
@@ -5906,52 +7799,7 @@
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
-      "in_degree": 3,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "cliente"
-    },
-    {
-      "id": "_virtual/cliente/byb",
-      "label": "byb",
-      "tipo": "v-cliente",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 2,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "cliente"
-    },
-    {
-      "id": "_virtual/cliente/becofarma",
-      "label": "becofarma",
-      "tipo": "v-cliente",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 2,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "cliente"
-    },
-    {
-      "id": "_virtual/cliente/cealsa",
-      "label": "cealsa",
-      "tipo": "v-cliente",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 1,
+      "in_degree": 8,
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "cliente"
@@ -5966,40 +7814,10 @@
       "frontmatter_keys": [],
       "estado": "",
       "severidad": "",
-      "in_degree": 1,
+      "in_degree": 4,
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "cliente"
-    },
-    {
-      "id": "_virtual/rama/dev-2023-estable",
-      "label": "dev_2023_estable",
-      "tipo": "v-rama",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 4,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "rama"
-    },
-    {
-      "id": "_virtual/rama/dev-2028-merge",
-      "label": "dev_2028_merge",
-      "tipo": "v-rama",
-      "tags": [],
-      "clientes": [],
-      "size_bytes": 0,
-      "frontmatter_keys": [],
-      "estado": "",
-      "severidad": "",
-      "in_degree": 4,
-      "out_degree": 0,
-      "is_virtual": true,
-      "virtual_kind": "rama"
     },
     {
       "id": "_virtual/erp/sap-b1-di-api",
@@ -6090,6 +7908,21 @@
       "out_degree": 0,
       "is_virtual": true,
       "virtual_kind": "autor"
+    },
+    {
+      "id": "_virtual/modulo/reservation",
+      "label": "reservation",
+      "tipo": "v-modulo",
+      "tags": [],
+      "clientes": [],
+      "size_bytes": 0,
+      "frontmatter_keys": [],
+      "estado": "",
+      "severidad": "",
+      "in_degree": 39,
+      "out_degree": 0,
+      "is_virtual": true,
+      "virtual_kind": "modulo"
     },
     {
       "id": "_virtual/modulo/trans-ubic-hh",
@@ -6538,6 +8371,216 @@
       "kind": "md-link"
     },
     {
+      "source": "BRIDGE.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "README.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "code-deep-flow/DIFF-BOF-2023-VS-2028.md",
+      "label": "relacionados",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "code-deep-flow/DIFF-HH-2023-VS-2028.md",
+      "label": "relacionados",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "code-deep-flow/FLAGS-CALLSITES.md",
+      "label": "relacionados",
+      "kind": "fm-rel"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "_virtual/autor/agent",
+      "label": "autores:agent",
+      "kind": "v-autor"
+    },
+    {
+      "source": "_index/CONCEPT_MAP.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_index/CONCEPT_MAP.md",
+      "target": "_virtual/rama/dev-2025",
+      "label": "ramas:dev_2025",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_index/CONCEPT_MAP.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_index/INDEX.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_index/WAVE-6.2-QUICK-WINS.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_index/WAVE-6.2-QUICK-WINS.md",
+      "target": "_virtual/rama/dev-2025",
+      "label": "ramas:dev_2025",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_index/WAVE-6.2-QUICK-WINS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_proposals/20260428-1906-H07-bb-putaway-intensivo-50pct-ubic.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
+      "target": "_virtual/cliente/cealsa",
+      "label": "clientes:cealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-2345-H25-becofarma-bd-restaurada-config-2017.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-2346-H26-becofarma-logging-segmentado-por-proceso.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-2348-H28-becofarma-outbox-85pct-pendiente.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "_proposals/20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "agent-context/00-START-HERE.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/00-START-HERE.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/AGENTS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/AZURE_ACCESS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CONVIVENCIA_FORMATOS.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CONVIVENCIA_FORMATOS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CUESTIONARIO_CAROLINA.md",
+      "target": "_virtual/rama/240cealsa",
+      "label": "ramas:240Cealsa",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CUESTIONARIO_CAROLINA.md",
+      "target": "_virtual/rama/240byb",
+      "label": "ramas:240byb",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CUESTIONARIO_CAROLINA.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CUESTIONARIO_CAROLINA.md",
+      "target": "_virtual/rama/dev-2025",
+      "label": "ramas:dev_2025",
+      "kind": "v-rama"
+    },
+    {
+      "source": "agent-context/CUESTIONARIO_CAROLINA.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
       "source": "agent-context/HOLDING_IDEALSA.md",
       "target": "agent-context/RAMAS_Y_CLIENTES.md",
       "label": "relacionado_con",
@@ -6688,6 +8731,12 @@
       "kind": "fm-rel"
     },
     {
+      "source": "clients/README.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
       "source": "clients/becofarma.md",
       "target": "_virtual/cliente/becofarma",
       "label": "client_id:becofarma",
@@ -6698,6 +8747,18 @@
       "target": "_virtual/erp/sap-b1-di-api",
       "label": "erp:SAP B1 (DI-API)",
       "kind": "v-erp"
+    },
+    {
+      "source": "clients/byb.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "clients/cealsa.md",
+      "target": "_virtual/cliente/cealsa",
+      "label": "clientes:cealsa",
+      "kind": "v-cliente"
     },
     {
       "source": "clients/idealsa.md",
@@ -6752,6 +8813,12 @@
       "target": "_virtual/pais/gt",
       "label": "country_holding:GT",
       "kind": "v-pais"
+    },
+    {
+      "source": "clients/killios.md",
+      "target": "_virtual/cliente/killios",
+      "label": "clientes:killios",
+      "kind": "v-cliente"
     },
     {
       "source": "clients/mercopan.md",
@@ -6838,6 +8905,72 @@
       "kind": "v-erp"
     },
     {
+      "source": "code-deep-flow/00-mapa-de-cajas.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/02-portal-y-dms.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/02-portal-y-dms.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/03-implosion-y-merge-lp.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/03-implosion-y-merge-lp.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/04-mi3-y-reserva-clavaud.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/DIFF-BOF-2023-VS-2028.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/DIFF-BOF-2023-VS-2028.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/DIFF-HH-2023-VS-2028.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/DIFF-HH-2023-VS-2028.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "code-deep-flow/README.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
       "source": "code-deep-flow/traza-002-danado-picking.md",
       "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
       "label": "materializa_bug",
@@ -6874,6 +9007,24 @@
       "kind": "v-rama"
     },
     {
+      "source": "colas-pendientes.md",
+      "target": "_virtual/rama/240byb",
+      "label": "ramas:240byb",
+      "kind": "v-rama"
+    },
+    {
+      "source": "colas-pendientes.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "colas-pendientes.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
       "source": "customer-open-cases/CP-013-killios-wms164/INDEX.md",
       "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
       "label": "materializa_bug",
@@ -6904,6 +9055,30 @@
       "kind": "v-rama"
     },
     {
+      "source": "customer-open-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "customer-open-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "debuged-cases/CP-015-bug-danado-picking-transversal/INDEX.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "decisions/003-mi3-reescrito.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
       "source": "entities/decisions/dec-2026-04-killios-acceso-replit.md",
       "target": "entities/cases/case-2026-04-importar-lotes-cliente.md",
       "label": "casos_relacionados",
@@ -6928,10 +9103,640 @@
       "kind": "fm-case"
     },
     {
+      "source": "entities/modules/reservation/01-mi3-motor-nuevo-net8.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/01-mi3-motor-nuevo-net8.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "entities/modules/reservation/02-mi3-motor-legacy-vb.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/02-mi3-motor-legacy-vb.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "entities/modules/reservation/03-comparison.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/04-mi3-config-propietario.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/06-mi3-handlers-detalle.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/07-stock-res-ciclo-vida.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/08-mi3-tablas-killios.md",
+      "target": "_virtual/cliente/killios",
+      "label": "clientes:killios",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "entities/modules/reservation/08-mi3-tablas-killios.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/09-mi3-logging-observabilidad.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/10-mi3-errores-troubleshooting.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/11-mi3-tests.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/12-mi3-todos-roadmap.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "entities/modules/reservation/README.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
       "source": "entities/rules/rule-no-fk-en-trans.md",
       "target": "entities/cases/case-2026-04-importar-lotes-cliente.md",
       "label": "casos_relacionados",
       "kind": "fm-case"
+    },
+    {
+      "source": "fingerprint/BECOFARMA.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "fingerprint/BYB.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "fingerprint/CEALSA.md",
+      "target": "_virtual/cliente/cealsa",
+      "label": "clientes:cealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "fingerprint/KILLIOS.md",
+      "target": "_virtual/cliente/killios",
+      "label": "clientes:killios",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "fingerprint/MAMPA.md",
+      "target": "_virtual/cliente/mampa",
+      "label": "clientes:mampa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "fingerprint/MAMPA.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "replit.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "sendero-producto/grafo-eql/por-cliente/BECOFARMA.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/grafo-eql/por-cliente/BYB.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/grafo-eql/por-cliente/CEALSA.md",
+      "target": "_virtual/cliente/cealsa",
+      "label": "clientes:cealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/grafo-eql/por-cliente/K7.md",
+      "target": "_virtual/cliente/killios",
+      "label": "clientes:killios",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/grafo-eql/por-cliente/MAMPA.md",
+      "target": "_virtual/cliente/mampa",
+      "label": "clientes:mampa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/trazas/traza-001-becofarma-Q4100304.md",
+      "target": "_virtual/cliente/becofarma",
+      "label": "clientes:becofarma",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/trazas/traza-002-k7-WMS167.md",
+      "target": "_virtual/cliente/killios",
+      "label": "clientes:killios",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/trazas/traza-003-mampa-AG00030021.md",
+      "target": "_virtual/cliente/mampa",
+      "label": "clientes:mampa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/trazas/traza-004-byb-00170440.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "sendero-producto/trazas/traza-005-cealsa-NEN025.md",
+      "target": "_virtual/cliente/cealsa",
+      "label": "clientes:cealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/_matrix/compatibility.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/HALLAZGOS-PROD.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/HALLAZGOS-WEBAPI-VS-WMS.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/HALLAZGOS-WEBAPI-VS-WMS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/README.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-1_IDEAL_20231002011101.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-1_IDEAL_20231002011101.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-1_IDEAL_20231002011101.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-IDEAL_20231002011101.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-IDEAL_20231002011101.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-02-2_IDEAL_20231002011120.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-02-2_IDEAL_20231002011120.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-02-2_IDEAL_20231002011120.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-03-3_IDEAL_20231002011128.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-03-3_IDEAL_20231002011128.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-03-3_IDEAL_20231002011128.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-04-4_IDEAL_20231002011132.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-04-4_IDEAL_20231002011132.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-04-4_IDEAL_20231002011132.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-05-5_IDEAL_20231002011134.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-05-5_IDEAL_20231002011134.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-05-5_IDEAL_20231002011134.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-06-6_IDEAL_20231002011136.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-06-6_IDEAL_20231002011136.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-06-6_IDEAL_20231002011136.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-07-7_IDEAL_20231002011140.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-07-7_IDEAL_20231002011140.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-07-7_IDEAL_20231002011140.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-08-8_IDEAL_20231002011140.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-08-8_IDEAL_20231002011140.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-08-8_IDEAL_20231002011140.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-09-9_IDEAL_20231002011144.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-09-9_IDEAL_20231002011144.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-09-9_IDEAL_20231002011144.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-10-10_IDEAL_20231002011146.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-10-10_IDEAL_20231002011146.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-10-10_IDEAL_20231002011146.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-11-11_IDEAL_20231002011153.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-11-11_IDEAL_20231002011153.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-11-11_IDEAL_20231002011153.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-12-12_IDEAL_20231002011159.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-12-12_IDEAL_20231002011159.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-12-12_IDEAL_20231002011159.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-13-13_IDEAL_20231002011201.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-13-13_IDEAL_20231002011201.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-13-13_IDEAL_20231002011201.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-14-14_IDEAL_20231002011201.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-14-14_IDEAL_20231002011201.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-14-14_IDEAL_20231002011201.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-15-15_IDEAL_20231018130000.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-15-15_IDEAL_20231018130000.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-15-15_IDEAL_20231018130000.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-16-16_IDEAL_202310200156.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-16-16_IDEAL_202310200156.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-16-16_IDEAL_202310200156.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-17-17_IDEAL_202311040904.md",
+      "target": "_virtual/cliente/idealsa",
+      "label": "clientes:idealsa",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-17-17_IDEAL_202311040904.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-17-17_IDEAL_202311040904.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-18-18_BYB_202311141034.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-18-18_BYB_202311141034.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-18-18_BYB_202311141034.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-19-19_BYB_202311162103.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-19-19_BYB_202311162103.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-19-19_BYB_202311162103.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-20-20_BYB_202311171219.md",
+      "target": "_virtual/cliente/byb",
+      "label": "clientes:byb",
+      "kind": "v-cliente"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-20-20_BYB_202311171219.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-20-20_BYB_202311171219.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-DINAMICO.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-DINAMICO.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/README.md",
+      "target": "_virtual/modulo/reservation",
+      "label": "modulo:reservation",
+      "kind": "v-modulo"
+    },
+    {
+      "source": "test-scenarios/reservation/legacy-clsLnStock_res/README.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "way-of-thinking.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
     },
     {
       "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
@@ -6953,13 +9758,13 @@
     },
     {
       "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
-      "target": "architecture/adr/ADR-007-killios-sap-b1-integration.md",
+      "target": "clients/killios.md",
       "label": "clientes_destino",
       "kind": "fm-cliente-destino"
     },
     {
       "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
-      "target": "architecture/adr/ADR-008-byb-replenishment-module.md",
+      "target": "clients/byb.md",
       "label": "clientes_destino",
       "kind": "fm-cliente-destino"
     },
@@ -6971,7 +9776,7 @@
     },
     {
       "source": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
-      "target": "_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
+      "target": "clients/cealsa.md",
       "label": "clientes_destino",
       "kind": "fm-cliente-destino"
     },
@@ -7010,6 +9815,30 @@
       "target": "_virtual/autor/abigail",
       "label": "autores:abigail",
       "kind": "v-autor"
+    },
+    {
+      "source": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CLIENTES-AFECTADOS.md",
+      "target": "_virtual/rama/dev-2023-estable",
+      "label": "ramas:dev_2023_estable",
+      "kind": "v-rama"
+    },
+    {
+      "source": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CLIENTES-AFECTADOS.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
     },
     {
       "source": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
@@ -7060,10 +9889,34 @@
       "kind": "v-rama"
     },
     {
+      "source": "wms-specific-process-flow/README.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
       "source": "wms-specific-process-flow/becofarma-mapping.md",
       "target": "clients/becofarma.md",
       "label": "relacionado_con",
       "kind": "fm-rel"
+    },
+    {
+      "source": "wms-test-natural-cases/00-INDEX.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "wms-test-natural-cases/01-matriz-funcion-cliente-canal.md",
+      "target": "_virtual/rama/dev-2028-merge",
+      "label": "ramas:dev_2028_merge",
+      "kind": "v-rama"
+    },
+    {
+      "source": "_inbox/2026-04-30-progreso-deep-dive-F1-F3.md",
+      "target": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
+      "label": "BUG-001",
+      "kind": "body-mention"
     },
     {
       "source": "_proposals/20260428-1900-H01-tras-wms-reservastock-muerto.md",
@@ -8675,56 +11528,70 @@
     }
   ],
   "meta": {
-    "generated_at": "2026-04-30T16:34:41+00:00",
+    "generated_at": "2026-05-01T14:08:31+00:00",
     "brain_root": "/home/runner/workspace/wms-brain/brain",
-    "total_nodes": 350,
-    "total_edges": 420,
+    "total_nodes": 359,
+    "total_edges": 590,
     "type_counts": {
-      "other": 80,
+      "documentation": 5,
+      "other": 22,
+      "inbox": 1,
       "index": 4,
       "proposal": 18,
       "agent-context": 13,
+      "brain-map": 4,
       "client": 13,
-      "trace": 7,
+      "code-deep-flow": 8,
+      "reference": 1,
+      "trace": 1,
       "cp-open": 6,
-      "cp-legacy": 3,
-      "adr": 3,
+      "ddl-funcional": 4,
+      "debuged-case": 4,
+      "decision": 5,
       "case": 1,
-      "decision": 2,
       "module": 9,
+      "entity": 13,
       "rule": 13,
-      "heat-map": 13,
+      "fingerprint": 6,
+      "heat-map-params": 13,
       "learning": 16,
+      "naked-erik": 2,
       "output": 13,
-      "test-scenario": 64,
+      "sendero-producto": 20,
+      "sql-catalog": 2,
+      "test-scenario": 57,
+      "wms-agent": 1,
       "brain-client": 37,
       "feat": 1,
-      "bug": 3,
-      "wms-flow": 9,
+      "known-issue": 2,
+      "bug": 1,
+      "process-flow": 6,
+      "wms-flow": 3,
+      "wms-test-natural-case": 7,
+      "v-rama": 5,
+      "v-autor": 5,
       "v-cliente": 8,
       "v-holding": 1,
       "v-pais": 3,
-      "v-rama": 2,
       "v-erp": 2,
-      "v-modulo": 2,
-      "v-autor": 4
+      "v-modulo": 3
     },
     "edge_kind_counts": {
       "md-link": 64,
-      "fm-rel": 21,
+      "v-rama": 85,
+      "fm-rel": 24,
+      "v-autor": 5,
+      "v-cliente": 68,
       "fm-filial": 4,
-      "v-cliente": 19,
       "v-holding": 4,
       "v-pais": 4,
-      "v-rama": 8,
       "v-erp": 3,
       "fm-bug": 2,
-      "v-modulo": 4,
+      "v-modulo": 43,
       "fm-trace": 2,
       "fm-case": 5,
-      "v-autor": 4,
       "fm-cliente-destino": 8,
-      "body-mention": 268
+      "body-mention": 269
     },
     "top20_by_degree": [
       {
@@ -8739,9 +11606,17 @@
         "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md",
         "label": "INDEX",
         "tipo": "bug",
-        "in": 57,
+        "in": 58,
         "out": 22,
-        "total": 79
+        "total": 80
+      },
+      {
+        "id": "_virtual/rama/dev-2028-merge",
+        "label": "dev_2028_merge",
+        "tipo": "v-rama",
+        "in": 60,
+        "out": 0,
+        "total": 60
       },
       {
         "id": "wms-incorporated-features/FEAT-001-validacion-implosion-rack/INDEX.md",
@@ -8750,6 +11625,14 @@
         "in": 24,
         "out": 23,
         "total": 47
+      },
+      {
+        "id": "_virtual/modulo/reservation",
+        "label": "reservation",
+        "tipo": "v-modulo",
+        "in": 39,
+        "out": 0,
+        "total": 39
       },
       {
         "id": "agent-context/NUMERACION.md",
@@ -8762,7 +11645,7 @@
       {
         "id": "debuged-cases/CP-015-bug-danado-picking-transversal/DATOS-COMPARATIVOS.md",
         "label": "DATOS-COMPARATIVOS",
-        "tipo": "cp-legacy",
+        "tipo": "debuged-case",
         "in": 36,
         "out": 0,
         "total": 36
@@ -8786,7 +11669,7 @@
       {
         "id": "debuged-cases/00-INDEX.md",
         "label": "00-INDEX",
-        "tipo": "other",
+        "tipo": "debuged-case",
         "in": 0,
         "out": 29,
         "total": 29
@@ -8794,10 +11677,10 @@
       {
         "id": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
         "label": "CASOS-RELACIONADOS",
-        "tipo": "bug",
+        "tipo": "known-issue",
         "in": 1,
-        "out": 25,
-        "total": 26
+        "out": 27,
+        "total": 28
       },
       {
         "id": "architecture/adr/ADR-012-bypass-estado-despachado.md",
@@ -8848,51 +11731,55 @@
         "total": 21
       },
       {
+        "id": "_virtual/cliente/idealsa",
+        "label": "idealsa",
+        "tipo": "v-cliente",
+        "in": 21,
+        "out": 0,
+        "total": 21
+      },
+      {
         "id": "debuged-cases/CP-015-bug-danado-picking-transversal/INDEX.md",
         "label": "INDEX",
-        "tipo": "cp-legacy",
+        "tipo": "debuged-case",
         "in": 1,
-        "out": 18,
-        "total": 19
+        "out": 19,
+        "total": 20
       },
       {
-        "id": "colas-pendientes.md",
-        "label": "colas-pendientes",
-        "tipo": "other",
-        "in": 0,
-        "out": 11,
-        "total": 11
-      },
-      {
-        "id": "architecture/adr/ADR-010-reserva-webapi-vs-wms-legacy.md",
-        "label": "ADR-010-reserva-webapi-vs-wms-legacy",
-        "tipo": "other",
-        "in": 9,
+        "id": "_virtual/rama/dev-2023-estable",
+        "label": "dev_2023_estable",
+        "tipo": "v-rama",
+        "in": 19,
         "out": 0,
-        "total": 9
-      },
-      {
-        "id": "customer-open-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md",
-        "label": "PLAYBOOK-FIX",
-        "tipo": "cp-open",
-        "in": 0,
-        "out": 8,
-        "total": 8
-      },
-      {
-        "id": "clients/README.md",
-        "label": "README",
-        "tipo": "client",
-        "in": 0,
-        "out": 7,
-        "total": 7
+        "total": 19
       }
     ],
-    "orphan_count": 247,
+    "orphan_count": 168,
     "broken_link_count": 18,
-    "virtual_node_count": 22,
-    "body_mention_edges": 268,
+    "virtual_node_count": 27,
+    "body_mention_edges": 269,
     "top_tags": [
+      [
+        "modulo/reservation",
+        39
+      ],
+      [
+        "test-scenario",
+        29
+      ],
+      [
+        "sendero-producto",
+        20
+      ],
+      [
+        "cliente/idealsa",
+        19
+      ],
+      [
+        "proposal",
+        18
+      ],
       [
         "K7",
         15
@@ -8902,166 +11789,120 @@
         14
       ],
       [
+        "entity",
+        13
+      ],
+      [
+        "heat-map-params",
+        13
+      ],
+      [
         "outbox",
         10
+      ],
+      [
+        "cliente/byb",
+        9
+      ],
+      [
+        "cliente/becofarma",
+        9
+      ],
+      [
+        "agent-context",
+        9
       ],
       [
         "navsync",
         8
       ],
       [
+        "wms-test-natural-case",
+        7
+      ],
+      [
+        "cliente/killios",
+        6
+      ],
+      [
+        "code-deep-flow",
+        6
+      ],
+      [
+        "fingerprint",
+        6
+      ],
+      [
         "sap",
         6
+      ],
+      [
+        "process-flow",
+        6
+      ],
+      [
+        "documentation",
+        5
+      ],
+      [
+        "cliente/cealsa",
+        5
+      ],
+      [
+        "cp-open",
+        5
       ],
       [
         "PEND-07",
         5
       ],
       [
+        "index",
+        4
+      ],
+      [
         "holding/idealsa",
         4
       ],
       [
-        "bandera-roja",
+        "brain-map",
         4
       ],
       [
-        "PEND-11",
+        "client",
         4
       ],
       [
-        "errores",
+        "ddl-funcional",
         4
       ],
       [
-        "log",
+        "debuged-case",
         4
-      ],
-      [
-        "arquitectura",
-        4
-      ],
-      [
-        "cadencia",
-        4
-      ],
-      [
-        "pais/HN",
-        3
-      ],
-      [
-        "pais/PA",
-        3
-      ],
-      [
-        "bug/critico",
-        3
-      ],
-      [
-        "modulo/bof-vbnet",
-        3
-      ],
-      [
-        "SAPSYNCKILLIOS",
-        3
-      ],
-      [
-        "decimales",
-        3
-      ],
-      [
-        "PEND-12",
-        3
-      ],
-      [
-        "PEND-09",
-        3
-      ],
-      [
-        "despacho",
-        3
-      ],
-      [
-        "granularidad",
-        3
-      ],
-      [
-        "recepcion",
-        3
-      ],
-      [
-        "BF",
-        3
-      ],
-      [
-        "LC",
-        3
-      ],
-      [
-        "MM",
-        3
-      ],
-      [
-        "sapsync",
-        3
-      ],
-      [
-        "ID",
-        3
-      ],
-      [
-        "IN",
-        3
       ]
     ]
   },
   "diagnostics": {
     "orphans": [
-      "BRIDGE.md",
-      "README.md",
       "_conventions/nomenclatura.md",
-      "_index/CONCEPT_MAP.md",
-      "_index/INDEX.md",
       "_index/PLAN-PARALELO.md",
-      "_index/WAVE-6.2-QUICK-WINS.md",
       "_proposals/20260428-1901-H02-clbd-prc-falta-reabasto-log.md",
       "_proposals/20260428-1902-H03-logs-estructurados-mudos.md",
-      "_proposals/20260428-1906-H07-bb-putaway-intensivo-50pct-ubic.md",
       "_proposals/20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos.md",
       "_proposals/20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc.md",
-      "_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md",
-      "_proposals/20260428-2345-H25-becofarma-bd-restaurada-config-2017.md",
-      "_proposals/20260428-2346-H26-becofarma-logging-segmentado-por-proceso.md",
-      "_proposals/20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet.md",
-      "_proposals/20260428-2348-H28-becofarma-outbox-85pct-pendiente.md",
-      "_proposals/20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct.md",
-      "_proposals/20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08.md",
       "_proposals/P3-2026-04-28-RELOC-RULE-STRICT.md",
-      "agent-context/00-START-HERE.md",
-      "agent-context/AGENTS.md",
-      "agent-context/AZURE_ACCESS.md",
       "agent-context/CASE_INTAKE_TEMPLATE.md",
-      "agent-context/CONVIVENCIA_FORMATOS.md",
-      "agent-context/CUESTIONARIO_CAROLINA.md",
       "agent-context/GITHUB_SYNC.md",
       "agent-context/REPLIT_AGENT.md",
       "brain-map/README.md",
       "brain-map/funcionalidades-por-cliente.md",
       "brain-map/parametros-por-cliente.md",
       "brain-map/tablas-por-funcionalidad.md",
-      "clients/byb.md",
-      "clients/cealsa.md",
-      "code-deep-flow/00-mapa-de-cajas.md",
-      "code-deep-flow/02-portal-y-dms.md",
-      "code-deep-flow/03-implosion-y-merge-lp.md",
-      "code-deep-flow/04-mi3-y-reserva-clavaud.md",
-      "code-deep-flow/README.md",
       "code-deep-flow/traza-001-license-plate.md",
       "ddl-funcional/README.md",
       "ddl-funcional/bodega.md",
       "ddl-funcional/predicados.md",
       "ddl-funcional/producto.md",
-      "decisions/003-mi3-reescrito.md",
       "decisions/004-bridge-wms-test-automation.md",
       "decisions/005-bridge-schema-v2-bump.md",
       "entities/decisions/dec-formato-commits.md",
@@ -9072,19 +11913,6 @@
       "entities/modules/mod-repo-tomhh2025.md",
       "entities/modules/mod-repo-tomwms-bof.md",
       "entities/modules/mod-stack-tecnologico.md",
-      "entities/modules/reservation/01-mi3-motor-nuevo-net8.md",
-      "entities/modules/reservation/02-mi3-motor-legacy-vb.md",
-      "entities/modules/reservation/03-comparison.md",
-      "entities/modules/reservation/04-mi3-config-propietario.md",
-      "entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md",
-      "entities/modules/reservation/06-mi3-handlers-detalle.md",
-      "entities/modules/reservation/07-stock-res-ciclo-vida.md",
-      "entities/modules/reservation/08-mi3-tablas-killios.md",
-      "entities/modules/reservation/09-mi3-logging-observabilidad.md",
-      "entities/modules/reservation/10-mi3-errores-troubleshooting.md",
-      "entities/modules/reservation/11-mi3-tests.md",
-      "entities/modules/reservation/12-mi3-todos-roadmap.md",
-      "entities/modules/reservation/README.md",
       "entities/rules/rule-01-no-push-automatico-wms.md",
       "entities/rules/rule-02-no-mezclar-hh-backend.md",
       "entities/rules/rule-03-no-tocar-reference-vb.md",
@@ -9097,10 +11925,6 @@
       "entities/rules/rule-10-hello-sync-antes-de-operar.md",
       "entities/rules/rule-11-cambios-incrementales.md",
       "entities/rules/rule-12-no-romper-compatibilidad.md",
-      "fingerprint/BECOFARMA.md",
-      "fingerprint/BYB.md",
-      "fingerprint/CEALSA.md",
-      "fingerprint/KILLIOS.md",
       "fingerprint/README.md",
       "heat-map-params/01-empresa/README.md",
       "heat-map-params/02-bodega/README.md",
@@ -9137,15 +11961,9 @@
       "outputs/guias-implementacion/cambio-ubicacion-idealsa-V0.md",
       "outputs/guias-implementacion/cambio-ubicacion-idealsa-V1.md",
       "outputs/respuestas-cliente/consulta-carol-reubicacion.md",
-      "replit.md",
       "sendero-producto/README.md",
       "sendero-producto/grafo-eql/grafo-base.md",
       "sendero-producto/grafo-eql/notacion.md",
-      "sendero-producto/grafo-eql/por-cliente/BECOFARMA.md",
-      "sendero-producto/grafo-eql/por-cliente/BYB.md",
-      "sendero-producto/grafo-eql/por-cliente/CEALSA.md",
-      "sendero-producto/grafo-eql/por-cliente/K7.md",
-      "sendero-producto/grafo-eql/por-cliente/MAMPA.md",
       "sendero-producto/matriz-flujos.md",
       "sendero-producto/modelo/01-puntos-de-entrada.md",
       "sendero-producto/modelo/02-mapeo-tablas.md",
@@ -9153,11 +11971,6 @@
       "sendero-producto/modelo/04-transiciones-internas.md",
       "sendero-producto/modelo/05-puntos-de-salida.md",
       "sendero-producto/trazas/README.md",
-      "sendero-producto/trazas/traza-001-becofarma-Q4100304.md",
-      "sendero-producto/trazas/traza-002-k7-WMS167.md",
-      "sendero-producto/trazas/traza-003-mampa-AG00030021.md",
-      "sendero-producto/trazas/traza-004-byb-00170440.md",
-      "sendero-producto/trazas/traza-005-cealsa-NEN025.md",
       "skills/wms-test-bridge/SKILL.md",
       "skills/wms-test-bridge/reference/casos-reserva-observados.md",
       "skills/wms-test-bridge/reference/multi-env-config.md",
@@ -9177,12 +11990,9 @@
       "test-scenarios/_matrix/clients/cealsa.yaml",
       "test-scenarios/_matrix/clients/idealsa.yaml",
       "test-scenarios/_matrix/clients/la-cumbre.yaml",
-      "test-scenarios/_matrix/compatibility.md",
       "test-scenarios/ajustes/INV-001-ajuste-positivo-modifica-vencimiento.yaml",
       "test-scenarios/despacho/DES-001-verificacion-obligatoria.yaml",
       "test-scenarios/picking/PIC-001-pedido-reservado-zona-picking.yaml",
-      "test-scenarios/reservation/HALLAZGOS-PROD.md",
-      "test-scenarios/reservation/README.md",
       "test-scenarios/reservation/RES-002-paquete-completo-zona-picking.yaml",
       "test-scenarios/reservation/RES-003-explosion-automatica.yaml",
       "test-scenarios/reservation/RES-004-stock-insuficiente-parcial.yaml",
@@ -9207,28 +12017,6 @@
       "test-scenarios/reservation/RES-023.yaml",
       "test-scenarios/reservation/RES-024.yaml",
       "test-scenarios/reservation/RES-DIN.yaml",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-1_IDEAL_20231002011101.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-02-2_IDEAL_20231002011120.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-03-3_IDEAL_20231002011128.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-04-4_IDEAL_20231002011132.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-05-5_IDEAL_20231002011134.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-06-6_IDEAL_20231002011136.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-07-7_IDEAL_20231002011140.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-08-8_IDEAL_20231002011140.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-09-9_IDEAL_20231002011144.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-10-10_IDEAL_20231002011146.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-11-11_IDEAL_20231002011153.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-12-12_IDEAL_20231002011159.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-13-13_IDEAL_20231002011201.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-14-14_IDEAL_20231002011201.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-15-15_IDEAL_20231018130000.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-16-16_IDEAL_202310200156.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-17-17_IDEAL_202311040904.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-18-18_BYB_202311141034.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-19-19_BYB_202311162103.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-20-20_BYB_202311171219.md",
-      "test-scenarios/reservation/legacy-clsLnStock_res/CASO-DINAMICO.md",
-      "way-of-thinking.md",
       "wms-agent/README.md",
       "wms-brain-client/answers/A-001-cadencia-navsync.md",
       "wms-brain-client/answers/A-002-decimales-sap-killios.md",

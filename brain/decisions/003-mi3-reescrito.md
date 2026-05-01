@@ -1,3 +1,12 @@
+---
+id: 003-mi3-reescrito
+tipo: decision
+estado: vigente
+titulo: Decisión 003 — Reescritura del motor MI3 de VB.NET monolítico a .NET 8 modular
+ramas: [dev_2028_merge]
+tags: [decision]
+---
+
 # Decisión 003 — Reescritura del motor MI3 de VB.NET monolítico a .NET 8 modular
 
 > **Estado**: ACEPTADA · Implementada en `WMS.DALCore/Reserva_Stock/` (rama `dev_2028_merge`)  

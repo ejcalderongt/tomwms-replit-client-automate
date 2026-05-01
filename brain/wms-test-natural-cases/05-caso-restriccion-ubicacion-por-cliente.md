@@ -1,3 +1,11 @@
+---
+id: 05-caso-restriccion-ubicacion-por-cliente
+tipo: wms-test-natural-case
+estado: vigente
+titulo: "CASO 05 — Restricción de ubicación por cliente (`IdUbicacionAbastecerCon`)"
+tags: [wms-test-natural-case]
+---
+
 # CASO 05 — Restricción de ubicación por cliente (`IdUbicacionAbastecerCon`)
 
 ## Trigger

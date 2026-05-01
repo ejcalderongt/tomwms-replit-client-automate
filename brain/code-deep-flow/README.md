@@ -1,3 +1,12 @@
+---
+id: README
+tipo: code-deep-flow
+estado: vigente
+titulo: code-deep-flow — el embudo holistico → micro
+ramas: [dev_2028_merge]
+tags: [code-deep-flow]
+---
+
 # code-deep-flow — el embudo holistico → micro
 
 > Wave 6+ del brain. Inicia 28-abr-2026 despues de cerrar el inventario

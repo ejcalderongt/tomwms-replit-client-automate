@@ -1,3 +1,12 @@
+---
+id: 00-INDEX
+tipo: wms-test-natural-case
+estado: vigente
+titulo: wms-test-natural-cases — Índice
+ramas: [dev_2028_merge]
+tags: [wms-test-natural-case]
+---
+
 # wms-test-natural-cases — Índice
 
 > **Wave 9 (2026-04-29)** — Casos de uso reales del algoritmo de reserva del WMS, mapeados desde código + revelaciones operativas de Erik.

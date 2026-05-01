@@ -1,3 +1,11 @@
+---
+id: notacion
+tipo: sendero-producto
+estado: vigente
+titulo: Graph-EQL — Notacion (propuesta Erik)
+tags: [sendero-producto]
+---
+
 # Graph-EQL — Notacion (propuesta Erik)
 
 > "Haz un graph-eql (de Erik jaja), de como es el flujo de un producto

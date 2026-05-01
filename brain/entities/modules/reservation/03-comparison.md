@@ -1,3 +1,12 @@
+---
+id: 03-comparison
+tipo: entity
+estado: vigente
+titulo: 03 · Reserva de Stock MI3 — Comparación Motor Nuevo vs Motor Legacy
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 03 · Reserva de Stock MI3 — Comparación Motor Nuevo vs Motor Legacy
 
 > **Propósito**: matriz de paridad funcional entre `WMS.DALCore/Reserva_Stock/` (.NET 8, motor nuevo) y `clsLnStock_res_Partial.vb` (~8 145 L, motor legacy). Sirve para:

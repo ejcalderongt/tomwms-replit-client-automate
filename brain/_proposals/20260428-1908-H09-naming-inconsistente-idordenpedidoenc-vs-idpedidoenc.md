@@ -1,3 +1,11 @@
+---
+id: 20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc
+tipo: proposal
+estado: vigente
+titulo: 20260428-1908-H09 - trans_pe_pol usa IdOrdenPedidoEnc como FK, pero apunta al IdPedidoEnc de trans_pe_enc (mismo valor).
+tags: [proposal]
+---
+
 # 20260428-1908-H09 - trans_pe_pol usa IdOrdenPedidoEnc como FK, pero apunta al IdPedidoEnc de trans_pe_enc (mismo valor).
 
 > Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.

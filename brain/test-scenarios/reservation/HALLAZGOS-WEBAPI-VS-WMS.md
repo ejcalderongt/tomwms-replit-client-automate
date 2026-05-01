@@ -1,3 +1,13 @@
+---
+id: HALLAZGOS-WEBAPI-VS-WMS
+tipo: test-scenario
+estado: vigente
+titulo: Diferencias entre reserva-webapi (esperado, dev_2028) y reserva-WMS (observado, legacy en prod)
+ramas: [dev_2028_merge]
+modulo: [reservation]
+tags: [test-scenario, modulo/reservation]
+---
+
 # Diferencias entre reserva-webapi (esperado, dev_2028) y reserva-WMS (observado, legacy en prod)
 
 > Generado tras aprender configs y log de auditoria de Killios/BYB/CEALSA (2026-04-27T15:31:09.941Z).

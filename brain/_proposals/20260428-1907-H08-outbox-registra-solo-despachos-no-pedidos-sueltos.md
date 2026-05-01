@@ -1,3 +1,11 @@
+---
+id: 20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos
+tipo: proposal
+estado: vigente
+titulo: "20260428-1907-H08 - i_nav_transacciones_out NO registra pedidos sueltos: 100% de filas con idpedidoenc tienen iddespachoenc."
+tags: [proposal]
+---
+
 # 20260428-1907-H08 - i_nav_transacciones_out NO registra pedidos sueltos: 100% de filas con idpedidoenc tienen iddespachoenc.
 
 > Generado por agente brain (sesion replit) el 28 abril 2026 tras cierre Ciclo 8a via ejecucion live SQL.

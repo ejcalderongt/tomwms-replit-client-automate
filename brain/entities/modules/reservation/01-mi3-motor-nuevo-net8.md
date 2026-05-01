@@ -1,3 +1,13 @@
+---
+id: 01-mi3-motor-nuevo-net8
+tipo: entity
+estado: vigente
+titulo: 01 · Reserva de Stock MI3 — Motor Nuevo (.NET 8)
+ramas: [dev_2028_merge]
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 01 · Reserva de Stock MI3 — Motor Nuevo (.NET 8)
 
 > **Fuente primaria**: `TOMWMS_BOF/WMS.DALCore/Reserva_Stock/` (27 archivos, 3833 líneas).  

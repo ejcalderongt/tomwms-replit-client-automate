@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: "Cross-cliente: matriz exhaustiva de flags por capa"
+tags: [heat-map-params]
+---
+
 # Cross-cliente: matriz exhaustiva de flags por capa
 
 Este folder contiene la matriz `flag x cliente` con datos REALES extraídos

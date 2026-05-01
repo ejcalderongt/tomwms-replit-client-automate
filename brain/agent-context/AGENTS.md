@@ -1,3 +1,12 @@
+---
+id: AGENTS
+tipo: agent-context
+estado: vigente
+titulo: AGENTS.md — Contexto del proyecto WMS para agentes locales
+ramas: [dev_2028_merge]
+tags: [agent-context]
+---
+
 # AGENTS.md — Contexto del proyecto WMS para agentes locales
 
 > **Cómo usar este archivo**: copialo (o symlinkealo) a la raíz del repo donde

@@ -1,3 +1,12 @@
+---
+id: 20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet
+tipo: proposal
+estado: vigente
+titulo: Propuesta para evento 20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet
+clientes: [becofarma]
+tags: [proposal, cliente/becofarma]
+---
+
 # Propuesta para evento 20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet
 
 > Hallazgo H-027: Modulo verificacion etiquetas (ZPL+inkjet) exclusivo BECOFARMA

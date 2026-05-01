@@ -1,3 +1,12 @@
+---
+id: CEALSA
+tipo: sendero-producto
+estado: vigente
+titulo: Graph-EQL — CEALSA (CORREGIDO 29-abr-2026)
+clientes: [cealsa]
+tags: [sendero-producto, cliente/cealsa]
+---
+
 # Graph-EQL — CEALSA (CORREGIDO 29-abr-2026)
 
 > **CORRECCION**: La hipotesis "QAS-TRUNCADO" era erronea. CEALSA es

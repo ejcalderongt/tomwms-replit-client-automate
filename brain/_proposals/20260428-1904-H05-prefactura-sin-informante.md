@@ -1,3 +1,11 @@
+---
+id: 20260428-1904-H05-prefactura-sin-informante
+tipo: proposal
+estado: vigente
+titulo: Proposal 20260428-1904-H05-prefactura-sin-informante
+tags: [proposal]
+---
+
 # Proposal 20260428-1904-H05-prefactura-sin-informante
 
 **Status**: proposed

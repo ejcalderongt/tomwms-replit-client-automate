@@ -1,3 +1,11 @@
+---
+id: 000-prologo
+tipo: naked-erik
+estado: vigente
+titulo: Naked Erik Anatomy — Prólogo
+tags: [naked-erik]
+---
+
 # Naked Erik Anatomy — Prólogo
 
 > Este folder es la **bitácora del hombre detrás del software**.

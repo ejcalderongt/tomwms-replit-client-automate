@@ -1,3 +1,12 @@
+---
+id: 04-mi3-y-reserva-clavaud
+tipo: code-deep-flow
+estado: vigente
+titulo: 04 — MI3, Estrategia Clavaud y Algoritmo de Reserva de Stock
+ramas: [dev_2028_merge]
+tags: [code-deep-flow]
+---
+
 # 04 — MI3, Estrategia Clavaud y Algoritmo de Reserva de Stock
 
 > **Wave 8 (2026-04-29) — Resolución de Q-CLAVAUD-MEANING + descubrimiento del módulo MI3 + traza completa del algoritmo de reserva**

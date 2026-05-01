@@ -1,3 +1,12 @@
+---
+id: colas-pendientes
+tipo: documentation
+estado: vigente
+titulo: Colas pendientes — investigaciones a profundizar
+ramas: [240byb, dev_2023_estable, dev_2028_merge]
+tags: [documentation]
+---
+
 # Colas pendientes — investigaciones a profundizar
 
 Cada cola es una pregunta abierta o tarea encolada. Cuando se cierra, mover a `debuged-cases/` o eliminar.

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: wms-agent
+estado: vigente
+titulo: "wms-agent (`wmsa`)"
+tags: [wms-agent]
+---
+
 # wms-agent (`wmsa`)
 
 CLI swiss-army local para el proyecto WMS de Erik Calderón. Pensado para

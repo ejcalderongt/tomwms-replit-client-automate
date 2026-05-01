@@ -1,3 +1,12 @@
+---
+id: 07-stock-res-ciclo-vida
+tipo: entity
+estado: vigente
+titulo: "07 · Ciclo de vida de `stock_res` y máquina de estados"
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 07 · Ciclo de vida de `stock_res` y máquina de estados
 
 > **CORRECCIÓN respecto a la versión anterior**: la versión 1 de este documento atribuía a `stock_res` columnas de auditoría como `Fecha_Commit`, `Fecha_Consumo`, `Fecha_Cancelacion`, `Motivo_Cancelacion`, `Usuario_Commit`, `Usuario_Consumo`, `Usuario_Cancelacion`, `EsExplosion`, `EsUMBas`, `EsZonaPicking`, `IdPresentacionOriginal`. **NINGUNA de esas columnas existe** en `stock_res`. La tabla real tiene 35 columnas validadas live contra Killios productivo (ver `08-mi3-tablas-killios.md` §2).

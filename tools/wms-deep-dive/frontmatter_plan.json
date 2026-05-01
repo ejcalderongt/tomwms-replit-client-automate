@@ -1,0 +1,2670 @@
+{
+  "candidates": 167,
+  "excluded": 88,
+  "by_tipo": {
+    "documentation": 5,
+    "index": 4,
+    "proposal": 18,
+    "agent-context": 9,
+    "brain-map": 4,
+    "client": 4,
+    "code-deep-flow": 6,
+    "cp-open": 5,
+    "ddl-funcional": 4,
+    "debuged-case": 4,
+    "decision": 3,
+    "entity": 13,
+    "fingerprint": 6,
+    "heat-map-params": 13,
+    "naked-erik": 2,
+    "sendero-producto": 20,
+    "sql-catalog": 2,
+    "test-scenario": 29,
+    "wms-agent": 1,
+    "known-issue": 2,
+    "process-flow": 6,
+    "wms-test-natural-case": 7
+  },
+  "by_clientes": {
+    "byb": 9,
+    "cealsa": 5,
+    "becofarma": 9,
+    "killios": 5,
+    "mampa": 3,
+    "idealsa": 18
+  },
+  "by_ramas": {
+    "dev_2028_merge": 53,
+    "dev_2023_estable": 12,
+    "dev_2025": 3,
+    "240Cealsa": 1,
+    "240byb": 2
+  },
+  "plan": [
+    {
+      "path": "BRIDGE.md",
+      "fm": {
+        "id": "BRIDGE",
+        "tipo": "documentation",
+        "estado": "vigente",
+        "titulo": "BRIDGE — mecanismo de actualizacion del brain",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "documentation"
+        ]
+      }
+    },
+    {
+      "path": "README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "documentation",
+        "estado": "vigente",
+        "titulo": "brain — Cerebro del agente Replit que mantiene el WMS de Erik Calderón",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "documentation"
+        ]
+      }
+    },
+    {
+      "path": "_index/CONCEPT_MAP.md",
+      "fm": {
+        "id": "CONCEPT_MAP",
+        "tipo": "index",
+        "estado": "vigente",
+        "titulo": "CONCEPT MAP — vista temática del brain (Wave 6.1)",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2025",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "index"
+        ]
+      }
+    },
+    {
+      "path": "_index/INDEX.md",
+      "fm": {
+        "id": "INDEX",
+        "tipo": "index",
+        "estado": "vigente",
+        "titulo": "INDEX maestro del brain — vista arbol human-readable",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "index"
+        ]
+      }
+    },
+    {
+      "path": "_index/PLAN-PARALELO.md",
+      "fm": {
+        "id": "PLAN-PARALELO",
+        "tipo": "index",
+        "estado": "vigente",
+        "titulo": "Plan de ejecucion paralela — proximas sesiones",
+        "tags": [
+          "index"
+        ]
+      }
+    },
+    {
+      "path": "_index/WAVE-6.2-QUICK-WINS.md",
+      "fm": {
+        "id": "WAVE-6.2-QUICK-WINS",
+        "tipo": "index",
+        "estado": "vigente",
+        "titulo": "Wave 6.2 — Quick wins (8 Q-* baratas resueltas con SQL/GREP)",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2025",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "index"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1900-H01-tras-wms-reservastock-muerto.md",
+      "fm": {
+        "id": "20260428-1900-H01-tras-wms-reservastock-muerto",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Proposal 20260428-1900-H01-tras-wms-reservastock-muerto",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1901-H02-clbd-prc-falta-reabasto-log.md",
+      "fm": {
+        "id": "20260428-1901-H02-clbd-prc-falta-reabasto-log",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Proposal 20260428-1901-H02-clbd-prc-falta-reabasto-log",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1902-H03-logs-estructurados-mudos.md",
+      "fm": {
+        "id": "20260428-1902-H03-logs-estructurados-mudos",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Proposal 20260428-1902-H03-logs-estructurados-mudos",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1903-H04-despacho-fantasma-bypass-estado.md",
+      "fm": {
+        "id": "20260428-1903-H04-despacho-fantasma-bypass-estado",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Proposal 20260428-1903-H04-despacho-fantasma-bypass-estado",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1904-H05-prefactura-sin-informante.md",
+      "fm": {
+        "id": "20260428-1904-H05-prefactura-sin-informante",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Proposal 20260428-1904-H05-prefactura-sin-informante",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012.md",
+      "fm": {
+        "id": "20260428-1905-H06-q011-bypass-real-1-no-43-simplificar-adr-012",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "20260428-1905-H06 - Q-011 valida que el proceso 'estado=Despachado sin trans_despacho_det' existe como camino real en TOMWMS_KILLIOS_PRD.",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1906-H07-bb-putaway-intensivo-50pct-ubic.md",
+      "fm": {
+        "id": "20260428-1906-H07-bb-putaway-intensivo-50pct-ubic",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "20260428-1906-H07 - Becofarma tiene distribucion de tareas HH muy distinta a Killios: 50% UBIC vs 71% PIK.",
+        "clientes": [
+          "byb"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/byb"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos.md",
+      "fm": {
+        "id": "20260428-1907-H08-outbox-registra-solo-despachos-no-pedidos-sueltos",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "20260428-1907-H08 - i_nav_transacciones_out NO registra pedidos sueltos: 100% de filas con idpedidoenc tienen iddespachoenc.",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc.md",
+      "fm": {
+        "id": "20260428-1908-H09-naming-inconsistente-idordenpedidoenc-vs-idpedidoenc",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "20260428-1908-H09 - trans_pe_pol usa IdOrdenPedidoEnc como FK, pero apunta al IdPedidoEnc de trans_pe_enc (mismo valor).",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct.md",
+      "fm": {
+        "id": "20260428-1909-H10-25-pedidos-fiscales-sin-poliza-cealsa-qas-1-7-pct",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "20260428-1909-H10 - C9-QAS: 25 de 1441 pedidos fiscales (1.7%) NO tienen registro en trans_pe_pol. Confirma H-04.",
+        "clientes": [
+          "cealsa"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/cealsa"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log.md",
+      "fm": {
+        "id": "20260428-1910-H11-bb-tambien-tiene-basura-trans-reabastecimiento-log",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "20260428-1910-H11 - Becofarma tambien acumulo basura en trans_reabastecimiento_log (755 filas) sin usar el modulo. Extender H-02.",
+        "clientes": [
+          "byb"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/byb"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-2345-H25-becofarma-bd-restaurada-config-2017.md",
+      "fm": {
+        "id": "20260428-2345-H25-becofarma-bd-restaurada-config-2017",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Propuesta para evento 20260428-2345-H25-becofarma-bd-restaurada-config-2017",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-2346-H26-becofarma-logging-segmentado-por-proceso.md",
+      "fm": {
+        "id": "20260428-2346-H26-becofarma-logging-segmentado-por-proceso",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Propuesta para evento 20260428-2346-H26-becofarma-logging-segmentado-por-proceso",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet.md",
+      "fm": {
+        "id": "20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Propuesta para evento 20260428-2347-H27-becofarma-modulo-verificacion-etiquetas-zpl-inkjet",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-2348-H28-becofarma-outbox-85pct-pendiente.md",
+      "fm": {
+        "id": "20260428-2348-H28-becofarma-outbox-85pct-pendiente",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Propuesta para evento 20260428-2348-H28-becofarma-outbox-85pct-pendiente",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct.md",
+      "fm": {
+        "id": "20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Propuesta para evento 20260428-2349-H29-becofarma-pedidos-pickeado-terminal-44pct",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08.md",
+      "fm": {
+        "id": "20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "Propuesta para evento 20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "proposal",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "_proposals/P3-2026-04-28-RELOC-RULE-STRICT.md",
+      "fm": {
+        "id": "P3-2026-04-28-RELOC-RULE-STRICT",
+        "tipo": "proposal",
+        "estado": "vigente",
+        "titulo": "P3-2026-04-28-RELOC-RULE-STRICT - Cambio de ubicacion 100% restrictivo en BOF y HH",
+        "tags": [
+          "proposal"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/00-START-HERE.md",
+      "fm": {
+        "id": "00-START-HERE",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "00 — START HERE",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/AGENTS.md",
+      "fm": {
+        "id": "AGENTS",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "AGENTS.md — Contexto del proyecto WMS para agentes locales",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/AZURE_ACCESS.md",
+      "fm": {
+        "id": "AZURE_ACCESS",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "Azure DevOps Access — Productor Replit",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/CASE_INTAKE_TEMPLATE.md",
+      "fm": {
+        "id": "CASE_INTAKE_TEMPLATE",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "Plantilla de intake de casos — TOMWMS",
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/CONVIVENCIA_FORMATOS.md",
+      "fm": {
+        "id": "CONVIVENCIA_FORMATOS",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "CONVIVENCIA_FORMATOS.md — Por que clients/*.md y clients/*.yaml conviven",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/CUESTIONARIO_CAROLINA.md",
+      "fm": {
+        "id": "CUESTIONARIO_CAROLINA",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "Cuestionario para Carolina — onboarding al brain WMS",
+        "ramas": [
+          "240Cealsa",
+          "240byb",
+          "dev_2023_estable",
+          "dev_2025",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/DRIFT_DETECTADO.md",
+      "fm": {
+        "id": "DRIFT_DETECTADO",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "DRIFT_DETECTADO.md — Housekeeping pendiente",
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/GITHUB_SYNC.md",
+      "fm": {
+        "id": "GITHUB_SYNC",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "GITHUB_SYNC.md — Sincronizar el brain a GitHub via API",
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "agent-context/REPLIT_AGENT.md",
+      "fm": {
+        "id": "REPLIT_AGENT",
+        "tipo": "agent-context",
+        "estado": "vigente",
+        "titulo": "REPLIT_AGENT.md — Conventions del agente Replit",
+        "tags": [
+          "agent-context"
+        ]
+      }
+    },
+    {
+      "path": "brain-map/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "brain-map",
+        "estado": "vigente",
+        "titulo": "brain-map/ — mapeo cliente × tabla × proceso × funcionalidad",
+        "tags": [
+          "brain-map"
+        ]
+      }
+    },
+    {
+      "path": "brain-map/funcionalidades-por-cliente.md",
+      "fm": {
+        "id": "funcionalidades-por-cliente",
+        "tipo": "brain-map",
+        "estado": "vigente",
+        "titulo": "Matriz funcionalidad × cliente — TOMWMS",
+        "tags": [
+          "brain-map"
+        ]
+      }
+    },
+    {
+      "path": "brain-map/parametros-por-cliente.md",
+      "fm": {
+        "id": "parametros-por-cliente",
+        "tipo": "brain-map",
+        "estado": "vigente",
+        "titulo": "Parametros y capability flags por cliente",
+        "tags": [
+          "brain-map"
+        ]
+      }
+    },
+    {
+      "path": "brain-map/tablas-por-funcionalidad.md",
+      "fm": {
+        "id": "tablas-por-funcionalidad",
+        "tipo": "brain-map",
+        "estado": "vigente",
+        "titulo": "Tablas por funcionalidad — vista invertida del brain-map",
+        "tags": [
+          "brain-map"
+        ]
+      }
+    },
+    {
+      "path": "clients/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "client",
+        "estado": "vigente",
+        "titulo": "Catalogo de clientes",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "client"
+        ]
+      }
+    },
+    {
+      "path": "clients/byb.md",
+      "fm": {
+        "id": "byb",
+        "tipo": "client",
+        "estado": "vigente",
+        "titulo": "Cliente BYB",
+        "clientes": [
+          "byb"
+        ],
+        "tags": [
+          "client",
+          "cliente/byb"
+        ]
+      }
+    },
+    {
+      "path": "clients/cealsa.md",
+      "fm": {
+        "id": "cealsa",
+        "tipo": "client",
+        "estado": "vigente",
+        "titulo": "Cliente CEALSA",
+        "clientes": [
+          "cealsa"
+        ],
+        "tags": [
+          "client",
+          "cliente/cealsa"
+        ]
+      }
+    },
+    {
+      "path": "clients/killios.md",
+      "fm": {
+        "id": "killios",
+        "tipo": "client",
+        "estado": "vigente",
+        "titulo": "Cliente KILLIOS",
+        "clientes": [
+          "killios"
+        ],
+        "tags": [
+          "client",
+          "cliente/killios"
+        ]
+      }
+    },
+    {
+      "path": "code-deep-flow/00-mapa-de-cajas.md",
+      "fm": {
+        "id": "00-mapa-de-cajas",
+        "tipo": "code-deep-flow",
+        "estado": "vigente",
+        "titulo": "00 — Mapa de cajas macro de TOMWMS",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "code-deep-flow"
+        ]
+      }
+    },
+    {
+      "path": "code-deep-flow/02-portal-y-dms.md",
+      "fm": {
+        "id": "02-portal-y-dms",
+        "tipo": "code-deep-flow",
+        "estado": "vigente",
+        "titulo": "02 — Portal CEALSA, DMS, generador de código y la trinidad DALCore/EntityCore/AppGlobalCore",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "code-deep-flow"
+        ]
+      }
+    },
+    {
+      "path": "code-deep-flow/03-implosion-y-merge-lp.md",
+      "fm": {
+        "id": "03-implosion-y-merge-lp",
+        "tipo": "code-deep-flow",
+        "estado": "vigente",
+        "titulo": "03 - Implosión, Cambio de Ubicación y Merge LP (2028)",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "code-deep-flow"
+        ]
+      }
+    },
+    {
+      "path": "code-deep-flow/04-mi3-y-reserva-clavaud.md",
+      "fm": {
+        "id": "04-mi3-y-reserva-clavaud",
+        "tipo": "code-deep-flow",
+        "estado": "vigente",
+        "titulo": "04 — MI3, Estrategia Clavaud y Algoritmo de Reserva de Stock",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "code-deep-flow"
+        ]
+      }
+    },
+    {
+      "path": "code-deep-flow/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "code-deep-flow",
+        "estado": "vigente",
+        "titulo": "code-deep-flow — el embudo holistico → micro",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "code-deep-flow"
+        ]
+      }
+    },
+    {
+      "path": "code-deep-flow/traza-001-license-plate.md",
+      "fm": {
+        "id": "traza-001-license-plate",
+        "tipo": "code-deep-flow",
+        "estado": "vigente",
+        "titulo": "Traza 001 — License Plate (LP)",
+        "tags": [
+          "code-deep-flow"
+        ]
+      }
+    },
+    {
+      "path": "colas-pendientes.md",
+      "fm": {
+        "id": "colas-pendientes",
+        "tipo": "documentation",
+        "estado": "vigente",
+        "titulo": "Colas pendientes — investigaciones a profundizar",
+        "ramas": [
+          "240byb",
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "documentation"
+        ]
+      }
+    },
+    {
+      "path": "customer-open-cases/CP-013-killios-wms164/EVIDENCIAS-CRONICIDAD.md",
+      "fm": {
+        "id": "EVIDENCIAS-CRONICIDAD",
+        "tipo": "cp-open",
+        "estado": "vigente",
+        "titulo": "Evidencias del hallazgo de cronicidad — CP-013 / V-DATAWAY-004",
+        "tags": [
+          "cp-open"
+        ]
+      }
+    },
+    {
+      "path": "customer-open-cases/CP-013-killios-wms164/INFORME-EJECUTIVO.md",
+      "fm": {
+        "id": "INFORME-EJECUTIVO",
+        "tipo": "cp-open",
+        "estado": "vigente",
+        "titulo": "Informe ejecutivo — Caso WMS164 (Killios) y bug sistémico de stock duplicado",
+        "tags": [
+          "cp-open"
+        ]
+      }
+    },
+    {
+      "path": "customer-open-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md",
+      "fm": {
+        "id": "PLAYBOOK-FIX",
+        "tipo": "cp-open",
+        "estado": "vigente",
+        "titulo": "PLAYBOOK-FIX CP-013 — Remediacion bug dañado_picking sin descuento",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "cp-open"
+        ]
+      }
+    },
+    {
+      "path": "customer-open-cases/CP-013-killios-wms164/REPORTE-CONCLUSION-V3.md",
+      "fm": {
+        "id": "REPORTE-CONCLUSION-V3",
+        "tipo": "cp-open",
+        "estado": "vigente",
+        "titulo": "CP-013 KILLIOS WMS164 — Reporte Conclusión V3 (vigente)",
+        "tags": [
+          "cp-open"
+        ]
+      }
+    },
+    {
+      "path": "customer-open-cases/CP-013-killios-wms164/REPORTE.md",
+      "fm": {
+        "id": "REPORTE",
+        "tipo": "cp-open",
+        "estado": "vigente",
+        "titulo": "CP-013 — Reporte de trazabilidad caso WMS164 (Killios PRD)",
+        "tags": [
+          "cp-open"
+        ]
+      }
+    },
+    {
+      "path": "ddl-funcional/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "ddl-funcional",
+        "estado": "vigente",
+        "titulo": "ddl-funcional/ — diccionario funcional del WMS",
+        "tags": [
+          "ddl-funcional"
+        ]
+      }
+    },
+    {
+      "path": "ddl-funcional/bodega.md",
+      "fm": {
+        "id": "bodega",
+        "tipo": "ddl-funcional",
+        "estado": "vigente",
+        "titulo": "ddl-funcional/bodega.md — capability flags por bodega",
+        "tags": [
+          "ddl-funcional"
+        ]
+      }
+    },
+    {
+      "path": "ddl-funcional/predicados.md",
+      "fm": {
+        "id": "predicados",
+        "tipo": "ddl-funcional",
+        "estado": "vigente",
+        "titulo": "ddl-funcional/predicados.md — lenguaje interno (eufemismos)",
+        "tags": [
+          "ddl-funcional"
+        ]
+      }
+    },
+    {
+      "path": "ddl-funcional/producto.md",
+      "fm": {
+        "id": "producto",
+        "tipo": "ddl-funcional",
+        "estado": "vigente",
+        "titulo": "ddl-funcional/producto.md — flags funcionales del producto",
+        "tags": [
+          "ddl-funcional"
+        ]
+      }
+    },
+    {
+      "path": "debuged-cases/00-INDEX.md",
+      "fm": {
+        "id": "00-INDEX",
+        "tipo": "debuged-case",
+        "estado": "vigente",
+        "titulo": "brain/debuged-cases — Índice",
+        "tags": [
+          "debuged-case"
+        ]
+      }
+    },
+    {
+      "path": "debuged-cases/CP-015-bug-danado-picking-transversal/DATOS-COMPARATIVOS.md",
+      "fm": {
+        "id": "DATOS-COMPARATIVOS",
+        "tipo": "debuged-case",
+        "estado": "vigente",
+        "titulo": "CP-014 — Datos comparativos crudos",
+        "tags": [
+          "debuged-case"
+        ]
+      }
+    },
+    {
+      "path": "debuged-cases/CP-015-bug-danado-picking-transversal/INDEX.md",
+      "fm": {
+        "id": "INDEX",
+        "tipo": "debuged-case",
+        "estado": "vigente",
+        "titulo": "CP-015 — [DEPRECATED 2026-04-30] Bug `dañado_picking` sin descuento de stock — TRANSVERSAL multi-cliente",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "debuged-case"
+        ]
+      }
+    },
+    {
+      "path": "debuged-cases/CP-015-bug-danado-picking-transversal/REPORTE-MULTI-BD.md",
+      "fm": {
+        "id": "REPORTE-MULTI-BD",
+        "tipo": "debuged-case",
+        "estado": "vigente",
+        "titulo": "CP-014 — Bug `dañado_picking` sin descuento de stock — TRANSVERSAL",
+        "tags": [
+          "debuged-case"
+        ]
+      }
+    },
+    {
+      "path": "decisions/003-mi3-reescrito.md",
+      "fm": {
+        "id": "003-mi3-reescrito",
+        "tipo": "decision",
+        "estado": "vigente",
+        "titulo": "Decisión 003 — Reescritura del motor MI3 de VB.NET monolítico a .NET 8 modular",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "decision"
+        ]
+      }
+    },
+    {
+      "path": "decisions/004-bridge-wms-test-automation.md",
+      "fm": {
+        "id": "004-bridge-wms-test-automation",
+        "tipo": "decision",
+        "estado": "vigente",
+        "titulo": "ADR 004 — Bridge WMS ↔ Brain para automatización de pruebas",
+        "tags": [
+          "decision"
+        ]
+      }
+    },
+    {
+      "path": "decisions/005-bridge-schema-v2-bump.md",
+      "fm": {
+        "id": "005-bridge-schema-v2-bump",
+        "tipo": "decision",
+        "estado": "vigente",
+        "titulo": "005 — Bump del brain bridge a SCHEMA_VERSION=\"2\"",
+        "tags": [
+          "decision"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/01-mi3-motor-nuevo-net8.md",
+      "fm": {
+        "id": "01-mi3-motor-nuevo-net8",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "01 · Reserva de Stock MI3 — Motor Nuevo (.NET 8)",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/02-mi3-motor-legacy-vb.md",
+      "fm": {
+        "id": "02-mi3-motor-legacy-vb",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "02 · Reserva de Stock MI3 — Motor Legacy (VB.NET monolítico)",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/03-comparison.md",
+      "fm": {
+        "id": "03-comparison",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "03 · Reserva de Stock MI3 — Comparación Motor Nuevo vs Motor Legacy",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/04-mi3-config-propietario.md",
+      "fm": {
+        "id": "04-mi3-config-propietario",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "04 · Matriz de configuración del motor MI3 (tabla `i_nav_config_enc`)",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/05-mi3-algoritmo-fefo-clavaud.md",
+      "fm": {
+        "id": "05-mi3-algoritmo-fefo-clavaud",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "05 · Algoritmo FEFO + Clavaud dinámico + degradación a CASO_3",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/06-mi3-handlers-detalle.md",
+      "fm": {
+        "id": "06-mi3-handlers-detalle",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "06 · Handlers de reserva en detalle",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/07-stock-res-ciclo-vida.md",
+      "fm": {
+        "id": "07-stock-res-ciclo-vida",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "07 · Ciclo de vida de `stock_res` y máquina de estados",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/08-mi3-tablas-killios.md",
+      "fm": {
+        "id": "08-mi3-tablas-killios",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "08 · Schema completo de las tablas críticas del motor MI3",
+        "clientes": [
+          "killios"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "cliente/killios",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/09-mi3-logging-observabilidad.md",
+      "fm": {
+        "id": "09-mi3-logging-observabilidad",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "09 · Logging y observabilidad del motor MI3",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/10-mi3-errores-troubleshooting.md",
+      "fm": {
+        "id": "10-mi3-errores-troubleshooting",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "10 · Catálogo de errores y troubleshooting del motor MI3",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/11-mi3-tests.md",
+      "fm": {
+        "id": "11-mi3-tests",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "11 · Estrategia de testing del motor MI3",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/12-mi3-todos-roadmap.md",
+      "fm": {
+        "id": "12-mi3-todos-roadmap",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "12 · TODOs, riesgos abiertos y roadmap del motor MI3",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "entities/modules/reservation/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "entity",
+        "estado": "vigente",
+        "titulo": "Módulo `reservation` · Motor MI3 de reservas WMS",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "entity",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "fingerprint/BECOFARMA.md",
+      "fm": {
+        "id": "BECOFARMA",
+        "tipo": "fingerprint",
+        "estado": "vigente",
+        "titulo": "Fingerprint BECOFARMA",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "fingerprint",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "fingerprint/BYB.md",
+      "fm": {
+        "id": "BYB",
+        "tipo": "fingerprint",
+        "estado": "vigente",
+        "titulo": "Fingerprint BYB",
+        "clientes": [
+          "byb"
+        ],
+        "tags": [
+          "fingerprint",
+          "cliente/byb"
+        ]
+      }
+    },
+    {
+      "path": "fingerprint/CEALSA.md",
+      "fm": {
+        "id": "CEALSA",
+        "tipo": "fingerprint",
+        "estado": "vigente",
+        "titulo": "Fingerprint CEALSA",
+        "clientes": [
+          "cealsa"
+        ],
+        "tags": [
+          "fingerprint",
+          "cliente/cealsa"
+        ]
+      }
+    },
+    {
+      "path": "fingerprint/KILLIOS.md",
+      "fm": {
+        "id": "KILLIOS",
+        "tipo": "fingerprint",
+        "estado": "vigente",
+        "titulo": "Fingerprint KILLIOS (K7)",
+        "clientes": [
+          "killios"
+        ],
+        "tags": [
+          "fingerprint",
+          "cliente/killios"
+        ]
+      }
+    },
+    {
+      "path": "fingerprint/MAMPA.md",
+      "fm": {
+        "id": "MAMPA",
+        "tipo": "fingerprint",
+        "estado": "vigente",
+        "titulo": "Fingerprint MAMPA",
+        "clientes": [
+          "mampa"
+        ],
+        "ramas": [
+          "dev_2023_estable"
+        ],
+        "tags": [
+          "fingerprint",
+          "cliente/mampa"
+        ]
+      }
+    },
+    {
+      "path": "fingerprint/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "fingerprint",
+        "estado": "vigente",
+        "titulo": "fingerprint/ — fingerprint funcional por cliente",
+        "tags": [
+          "fingerprint"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/01-empresa/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Capa 1 — Parametros a nivel EMPRESA",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/02-bodega/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Capa 2 — Parametros a nivel BODEGA",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/03-interface/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Capa 3 — Parametros de INTERFACE con ERP",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/04-producto/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Capa 4 — Parametros a nivel PRODUCTO",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/05-tipo-documento/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Capa 5 — Parametros por TIPO DE DOCUMENTO",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/06-procesos-homologados/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Capa 6 — PROCESOS HOMOLOGADOS",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "heat-map-params — Mapa de calor de parametros del WMS",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/cross-cliente/01-i_nav_config_enc.md",
+      "fm": {
+        "id": "01-i_nav_config_enc",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Cross-cliente: `i_nav_config_enc`",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/cross-cliente/02-bodega.md",
+      "fm": {
+        "id": "02-bodega",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Cross-cliente: `bodega`",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/cross-cliente/03-tipos-documento.md",
+      "fm": {
+        "id": "03-tipos-documento",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Cross-cliente: tipos de documento (`trans_oc_ti` + `trans_pe_tipo`)",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/cross-cliente/04-producto.md",
+      "fm": {
+        "id": "04-producto",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "cross-cliente/04 — `producto` + `producto_bodega` + `producto_estado` + `producto_estado_ubic`",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/cross-cliente/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Cross-cliente: matriz exhaustiva de flags por capa",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "heat-map-params/sintesis.md",
+      "fm": {
+        "id": "sintesis",
+        "tipo": "heat-map-params",
+        "estado": "vigente",
+        "titulo": "Sintesis — Matriz visual del heat-map-params",
+        "tags": [
+          "heat-map-params"
+        ]
+      }
+    },
+    {
+      "path": "naked-erik-anatomy/000-prologo.md",
+      "fm": {
+        "id": "000-prologo",
+        "tipo": "naked-erik",
+        "estado": "vigente",
+        "titulo": "Naked Erik Anatomy — Prólogo",
+        "tags": [
+          "naked-erik"
+        ]
+      }
+    },
+    {
+      "path": "naked-erik-anatomy/001-2026-04-29-clavaud-mi3-y-el-rio-desviado.md",
+      "fm": {
+        "id": "001-2026-04-29-clavaud-mi3-y-el-rio-desviado",
+        "tipo": "naked-erik",
+        "estado": "vigente",
+        "titulo": "001 — Clavaud, MI3 y el río que tuvimos que desviar",
+        "tags": [
+          "naked-erik"
+        ]
+      }
+    },
+    {
+      "path": "replit.md",
+      "fm": {
+        "id": "replit",
+        "tipo": "documentation",
+        "estado": "vigente",
+        "titulo": "TOM WMS — Replit Agent Workspace",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "documentation"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Sendero del producto — TomWMS",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/grafo-base.md",
+      "fm": {
+        "id": "grafo-base",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — Grafo base (canonico)",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/notacion.md",
+      "fm": {
+        "id": "notacion",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — Notacion (propuesta Erik)",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/por-cliente/BECOFARMA.md",
+      "fm": {
+        "id": "BECOFARMA",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — BECOFARMA",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/por-cliente/BYB.md",
+      "fm": {
+        "id": "BYB",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — BYB",
+        "clientes": [
+          "byb"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/byb"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/por-cliente/CEALSA.md",
+      "fm": {
+        "id": "CEALSA",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — CEALSA (CORREGIDO 29-abr-2026)",
+        "clientes": [
+          "cealsa"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/cealsa"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/por-cliente/K7.md",
+      "fm": {
+        "id": "K7",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — K7 (KILLIOS)",
+        "clientes": [
+          "killios"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/killios"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/grafo-eql/por-cliente/MAMPA.md",
+      "fm": {
+        "id": "MAMPA",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Graph-EQL — MAMPA",
+        "clientes": [
+          "mampa"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/mampa"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/matriz-flujos.md",
+      "fm": {
+        "id": "matriz-flujos",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Matriz cross-cliente del sendero — el fingerprint DINAMICO",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/modelo/01-puntos-de-entrada.md",
+      "fm": {
+        "id": "01-puntos-de-entrada",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Modelo del sendero — Punto de entrada",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/modelo/02-mapeo-tablas.md",
+      "fm": {
+        "id": "02-mapeo-tablas",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Modelo del sendero — Mapeo de tablas reales",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/modelo/03-tipos-tarea.md",
+      "fm": {
+        "id": "03-tipos-tarea",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Modelo del sendero — Catalogo de tipos de tarea",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/modelo/04-transiciones-internas.md",
+      "fm": {
+        "id": "04-transiciones-internas",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Modelo del sendero — Transiciones internas",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/modelo/05-puntos-de-salida.md",
+      "fm": {
+        "id": "05-puntos-de-salida",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Modelo del sendero — Puntos de salida",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/trazas/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Trazas — Protocolo",
+        "tags": [
+          "sendero-producto"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/trazas/traza-001-becofarma-Q4100304.md",
+      "fm": {
+        "id": "traza-001-becofarma-Q4100304",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Traza 001 — BECOFARMA Q4100304 (AMBIARE 2MG-0.25MG CAJA 10 CAP)",
+        "clientes": [
+          "becofarma"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/becofarma"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/trazas/traza-002-k7-WMS167.md",
+      "fm": {
+        "id": "traza-002-k7-WMS167",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Traza 002 — K7 WMS167 (MELOCOTON MIGUELS MITADES 12/820GR 29OZ)",
+        "clientes": [
+          "killios"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/killios"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/trazas/traza-003-mampa-AG00030021.md",
+      "fm": {
+        "id": "traza-003-mampa-AG00030021",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Traza 003 — MAMPA AG00030021 (Dama bajo tenis urbano)",
+        "clientes": [
+          "mampa"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/mampa"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/trazas/traza-004-byb-00170440.md",
+      "fm": {
+        "id": "traza-004-byb-00170440",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Traza 004 — BYB 00170440 (SALSA PICAMAS VERDE 48/100 g PLAST)",
+        "clientes": [
+          "byb"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/byb"
+        ]
+      }
+    },
+    {
+      "path": "sendero-producto/trazas/traza-005-cealsa-NEN025.md",
+      "fm": {
+        "id": "traza-005-cealsa-NEN025",
+        "tipo": "sendero-producto",
+        "estado": "vigente",
+        "titulo": "Traza 005 — CEALSA NEN025 (AMOXICILINA 500MG)",
+        "clientes": [
+          "cealsa"
+        ],
+        "tags": [
+          "sendero-producto",
+          "cliente/cealsa"
+        ]
+      }
+    },
+    {
+      "path": "sql-catalog/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "sql-catalog",
+        "estado": "vigente",
+        "titulo": "brain/sql-catalog",
+        "tags": [
+          "sql-catalog"
+        ]
+      }
+    },
+    {
+      "path": "sql-catalog/reservation-tables.md",
+      "fm": {
+        "id": "reservation-tables",
+        "tipo": "sql-catalog",
+        "estado": "vigente",
+        "titulo": "SQL Catalog · Reservation tables (DDL completo)",
+        "tags": [
+          "sql-catalog"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Catálogo de escenarios de prueba — TOM WMS",
+        "tags": [
+          "test-scenario"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/_matrix/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Matriz cliente × configuración × escenario",
+        "tags": [
+          "test-scenario"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/_matrix/compatibility.md",
+      "fm": {
+        "id": "compatibility",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Matriz de compatibilidad escenario × cliente — v3",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "test-scenario"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/HALLAZGOS-PROD.md",
+      "fm": {
+        "id": "HALLAZGOS-PROD",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Hallazgos productivos vs escenarios del legacy",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/HALLAZGOS-WEBAPI-VS-WMS.md",
+      "fm": {
+        "id": "HALLAZGOS-WEBAPI-VS-WMS",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Diferencias entre reserva-webapi (esperado, dev_2028) y reserva-WMS (observado, legacy en prod)",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Catálogo de escenarios de RESERVA",
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-1_IDEAL_20231002011101.md",
+      "fm": {
+        "id": "CASO-01-1_IDEAL_20231002011101",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 1 — FEFO simple desde almacenamiento (ALM más corta que picking)",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-01-IDEAL_20231002011101.md",
+      "fm": {
+        "id": "CASO-01-IDEAL_20231002011101",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "CASO 01 — IDEAL_20231002011101",
+        "clientes": [
+          "idealsa"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-02-2_IDEAL_20231002011120.md",
+      "fm": {
+        "id": "CASO-02-2_IDEAL_20231002011120",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 2 — FEFO ALM corto + completar con picking (sin explosión)",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-03-3_IDEAL_20231002011128.md",
+      "fm": {
+        "id": "CASO-03-3_IDEAL_20231002011128",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 3 — FEFO ALM corto + completar con picking (variante 3)",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-04-4_IDEAL_20231002011132.md",
+      "fm": {
+        "id": "CASO-04-4_IDEAL_20231002011132",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 4 — Reserva en zigzag ALM-PICK-ALM por fecha",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-05-5_IDEAL_20231002011134.md",
+      "fm": {
+        "id": "CASO-05-5_IDEAL_20231002011134",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 5 — Reserva en zigzag PICK-ALM-PICK (fecha más corta en picking)",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-06-6_IDEAL_20231002011136.md",
+      "fm": {
+        "id": "CASO-06-6_IDEAL_20231002011136",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 6 — FEFO ALM corto + ida y vuelta a picking (variante 6)",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-07-7_IDEAL_20231002011140.md",
+      "fm": {
+        "id": "CASO-07-7_IDEAL_20231002011140",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 7 — Sin inventario en picking, todo desde almacenamiento",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-08-8_IDEAL_20231002011140.md",
+      "fm": {
+        "id": "CASO-08-8_IDEAL_20231002011140",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 8 — Pedido incompleto (sin picking, ALM insuficiente) → rechazar si flag activa",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-09-9_IDEAL_20231002011144.md",
+      "fm": {
+        "id": "CASO-09-9_IDEAL_20231002011144",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 9 — ALM insuficiente → explosionar caja en picking para completar",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-10-10_IDEAL_20231002011146.md",
+      "fm": {
+        "id": "CASO-10-10_IDEAL_20231002011146",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 10 — ALM insuficiente + explosión + faltante → rechazar",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-11-11_IDEAL_20231002011153.md",
+      "fm": {
+        "id": "CASO-11-11_IDEAL_20231002011153",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 11 — Múltiples posiciones de ALM más cortas que picking",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-12-12_IDEAL_20231002011159.md",
+      "fm": {
+        "id": "CASO-12-12_IDEAL_20231002011159",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 12 — Múltiples posiciones ALM más cortas (variante 12)",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-13-13_IDEAL_20231002011201.md",
+      "fm": {
+        "id": "CASO-13-13_IDEAL_20231002011201",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 13 — No hay picking explosionable + faltante → rechazar incompleto",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-14-14_IDEAL_20231002011201.md",
+      "fm": {
+        "id": "CASO-14-14_IDEAL_20231002011201",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 14 — Picking corto + complementar sin re-explosionar lo ya reservado",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-15-15_IDEAL_20231018130000.md",
+      "fm": {
+        "id": "CASO-15-15_IDEAL_20231018130000",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 15 — Mezcla UDS+CJS en picking y almacén con FEFO estricto",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-16-16_IDEAL_202310200156.md",
+      "fm": {
+        "id": "CASO-16-16_IDEAL_202310200156",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 16 — Mezcla UDS+CJS + explosión final desde almacén",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-17-17_IDEAL_202311040904.md",
+      "fm": {
+        "id": "CASO-17-17_IDEAL_202311040904",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 17 — Misma fecha vencimiento en ALM-CJ y ALM-UDS → priorizar UDS",
+        "clientes": [
+          "idealsa"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/idealsa",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-18-18_BYB_202311141034.md",
+      "fm": {
+        "id": "CASO-18-18_BYB_202311141034",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 18 — BYB - variante 18 (fechas mixtas, lote BYB)",
+        "clientes": [
+          "byb"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/byb",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-19-19_BYB_202311162103.md",
+      "fm": {
+        "id": "CASO-19-19_BYB_202311162103",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 19 — BYB - variante 19 (fechas mixtas, lote BYB)",
+        "clientes": [
+          "byb"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/byb",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-20-20_BYB_202311171219.md",
+      "fm": {
+        "id": "CASO-20-20_BYB_202311171219",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO 20 — BYB - variante 20 (fechas mixtas + 1900-01-01)",
+        "clientes": [
+          "byb"
+        ],
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "cliente/byb",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/CASO-DINAMICO.md",
+      "fm": {
+        "id": "CASO-DINAMICO",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Legacy CASO Dinamico — Caso dinámico (input desde clsBeConfiguracion_qa)",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "test-scenarios/reservation/legacy-clsLnStock_res/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "test-scenario",
+        "estado": "vigente",
+        "titulo": "Inventario `clsLnStock_res` legacy",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "modulo": [
+          "reservation"
+        ],
+        "tags": [
+          "test-scenario",
+          "modulo/reservation"
+        ]
+      }
+    },
+    {
+      "path": "way-of-thinking.md",
+      "fm": {
+        "id": "way-of-thinking",
+        "tipo": "documentation",
+        "estado": "vigente",
+        "titulo": "Way of thinking — TomWMS Brain",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "documentation"
+        ]
+      }
+    },
+    {
+      "path": "wms-agent/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "wms-agent",
+        "estado": "vigente",
+        "titulo": "wms-agent (`wmsa`)",
+        "tags": [
+          "wms-agent"
+        ]
+      }
+    },
+    {
+      "path": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md",
+      "fm": {
+        "id": "CASOS-RELACIONADOS",
+        "tipo": "known-issue",
+        "estado": "vigente",
+        "titulo": "BUG-001 — Casos relacionados",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "known-issue"
+        ]
+      }
+    },
+    {
+      "path": "wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CLIENTES-AFECTADOS.md",
+      "fm": {
+        "id": "CLIENTES-AFECTADOS",
+        "tipo": "known-issue",
+        "estado": "vigente",
+        "titulo": "BUG-001 — Matriz de clientes afectados",
+        "ramas": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "known-issue"
+        ]
+      }
+    },
+    {
+      "path": "wms-specific-process-flow/README.md",
+      "fm": {
+        "id": "README",
+        "tipo": "process-flow",
+        "estado": "vigente",
+        "titulo": "wms-specific-process-flow",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "process-flow"
+        ]
+      }
+    },
+    {
+      "path": "wms-specific-process-flow/bug-report-p16b.md",
+      "fm": {
+        "id": "bug-report-p16b",
+        "tipo": "process-flow",
+        "estado": "vigente",
+        "titulo": "BUG-001: Pedidos despachados que vuelven a estado Pendiente/Pickeado/Verificado",
+        "tags": [
+          "process-flow"
+        ]
+      }
+    },
+    {
+      "path": "wms-specific-process-flow/encargo-sql-agente-ciclo-8a.md",
+      "fm": {
+        "id": "encargo-sql-agente-ciclo-8a",
+        "tipo": "process-flow",
+        "estado": "vigente",
+        "titulo": "Encargo SQL Agente - Ciclo 8a (5 cards)",
+        "tags": [
+          "process-flow"
+        ]
+      }
+    },
+    {
+      "path": "wms-specific-process-flow/preguntas-ciclo-7.md",
+      "fm": {
+        "id": "preguntas-ciclo-7",
+        "tipo": "process-flow",
+        "estado": "vigente",
+        "titulo": "Preguntas para afinar el mapeo del flujo WMS — ciclo 7",
+        "tags": [
+          "process-flow"
+        ]
+      }
+    },
+    {
+      "path": "wms-specific-process-flow/process-map.md",
+      "fm": {
+        "id": "process-map",
+        "tipo": "process-flow",
+        "estado": "vigente",
+        "titulo": "Mapa global de procesos WMS — observado",
+        "tags": [
+          "process-flow"
+        ]
+      }
+    },
+    {
+      "path": "wms-specific-process-flow/state-machine-pedido.md",
+      "fm": {
+        "id": "state-machine-pedido",
+        "tipo": "process-flow",
+        "estado": "vigente",
+        "titulo": "Maquina de estados de pedido — confirmada por Erik + SQL",
+        "tags": [
+          "process-flow"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/00-INDEX.md",
+      "fm": {
+        "id": "00-INDEX",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "wms-test-natural-cases — Índice",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/01-matriz-funcion-cliente-canal.md",
+      "fm": {
+        "id": "01-matriz-funcion-cliente-canal",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "01 — Matriz \"función de reserva × canal × cliente\"",
+        "ramas": [
+          "dev_2028_merge"
+        ],
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/03-caso-clavaud-conservar-picking.md",
+      "fm": {
+        "id": "03-caso-clavaud-conservar-picking",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "CASO 03 — Estrategia Clavaud (conservar zona picking)",
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/04-caso-explosion-cajas-a-unidades.md",
+      "fm": {
+        "id": "04-caso-explosion-cajas-a-unidades",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "CASO 04 — Explosión automática (cajas → unidades)",
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/05-caso-restriccion-ubicacion-por-cliente.md",
+      "fm": {
+        "id": "05-caso-restriccion-ubicacion-por-cliente",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "CASO 05 — Restricción de ubicación por cliente (`IdUbicacionAbastecerCon`)",
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/06-caso-lote-numerico-correlativo.md",
+      "fm": {
+        "id": "06-caso-lote-numerico-correlativo",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "CASO 06 — Lote numérico correlativo (`control_ultimo_lote`)",
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    },
+    {
+      "path": "wms-test-natural-cases/07-caso-tolerancia-vencimiento.md",
+      "fm": {
+        "id": "07-caso-tolerancia-vencimiento",
+        "tipo": "wms-test-natural-case",
+        "estado": "vigente",
+        "titulo": "CASO 07 — Tolerancia de vencimiento por familia/clasificación",
+        "tags": [
+          "wms-test-natural-case"
+        ]
+      }
+    }
+  ],
+  "excluded_files": [
+    "_conventions/nomenclatura.md",
+    "architecture/adr/ADR-005-identity-migration.md",
+    "architecture/adr/ADR-006-multi-environment-config.md",
+    "architecture/adr/ADR-007-killios-sap-b1-integration.md",
+    "architecture/adr/ADR-008-byb-replenishment-module.md",
+    "architecture/adr/ADR-009-cealsa-3pl-jornada-prefactura.md",
+    "architecture/adr/ADR-010-reserva-webapi-vs-wms-legacy.md",
+    "architecture/adr/ADR-011-tras-wms-reservastock-decision.md",
+    "architecture/adr/ADR-012-bypass-estado-despachado.md",
+    "learnings/L-009-sapsync-killios-solo-enteros.md",
+    "learnings/L-010-navsync-bb-no-procesa-ingresos.md",
+    "learnings/L-011-log-error-wms-es-bitacora.md",
+    "learnings/L-012-navsync-solo-procesa-salidas.md",
+    "learnings/L-013-outbox-granularidad-por-linea.md",
+    "learnings/L-014-becofarma-prd-es-bd-diagnostica-no-productiva.md",
+    "learnings/L-015-wms-clickonce-empaqueta-todas-interfaces-dispatch-dinamico.md",
+    "learnings/L-016-log-error-wms-segmentacion-fue-mejora-decision-pendiente.md",
+    "learnings/L-017-i-nav-transacciones-out-fks-sentinela-cero.md",
+    "learnings/L-018-verificacion-etiquetas-y-license-plate.md",
+    "learnings/L-019-i-nav-config-enc-fuente-maestra.md",
+    "learnings/L-020-tres-modelos-configuracion.md",
+    "learnings/L-021-verificacion-etiqueta-flags-coordinados.md",
+    "learnings/L-022-patron-naming-sincronizador.md",
+    "learnings/L-023-byb-corte-operativo-2024.md",
+    "learnings/L-024-byb-verificacion-half-implemented.md",
+    "outputs/README.md",
+    "outputs/consolidaciones-ciclo/consolidacion-ciclo-7.md",
+    "outputs/consolidaciones-ciclo/consolidacion-ciclo-8a.md",
+    "outputs/consolidaciones-ciclo/respuestas-ciclo-7.md",
+    "outputs/consolidaciones-ciclo/respuestas-tarea-1.md",
+    "outputs/consolidaciones-ciclo/respuestas-tarea-2.md",
+    "outputs/consolidaciones-ciclo/respuestas-tarea-3.md",
+    "outputs/explicaciones/H29-becofarma-pickeado-corte-marzo-2026.md",
+    "outputs/explicaciones/rol-arquitectonico-webapi-net10.md",
+    "outputs/guias-implementacion/cambio-ubicacion-idealsa-V0.md",
+    "outputs/guias-implementacion/cambio-ubicacion-idealsa-V1.md",
+    "outputs/ratificaciones/H06-H11-ratificacion.md",
+    "outputs/respuestas-cliente/consulta-carol-reubicacion.md",
+    "skills/wms-test-bridge/SKILL.md",
+    "skills/wms-test-bridge/reference/casos-reserva-observados.md",
+    "skills/wms-test-bridge/reference/config-flags.md",
+    "skills/wms-test-bridge/reference/multi-env-config.md",
+    "skills/wms-test-bridge/reference/reserva-tables.md",
+    "skills/wms-test-bridge/reference/sql-schema-quirks.md",
+    "skills/wms-test-bridge/scripts/README.md",
+    "skills/wms-tomhh2025/SKILL.md",
+    "skills/wms-tomhh2025/conventions.md",
+    "skills/wms-tomwms/SKILL.md",
+    "skills/wms-tomwms/conventions.md",
+    "tasks-historicas/task-1.md",
+    "tasks-historicas/validar-idstock-duplicado-excel.md",
+    "wms-brain-client/ALIASES.md",
+    "wms-brain-client/CMDLETS.md",
+    "wms-brain-client/PROMPT-OPENCLAW.md",
+    "wms-brain-client/PROTOCOL.md",
+    "wms-brain-client/README.md",
+    "wms-brain-client/SPEC.md",
+    "wms-brain-client/answers/A-001-cadencia-navsync.md",
+    "wms-brain-client/answers/A-002-decimales-sap-killios.md",
+    "wms-brain-client/answers/A-003-ingresos-byb-pendientes.md",
+    "wms-brain-client/answers/A-004-log-error-wms.md",
+    "wms-brain-client/answers/A-005-sapsync-dedicado-por-cliente.md",
+    "wms-brain-client/answers/A-006-mi3-cadencia-trigger.md",
+    "wms-brain-client/answers/A-007-granularidad-recepcion-despacho.md",
+    "wms-brain-client/answers/A-008-devoluciones-frente-nuevo.md",
+    "wms-brain-client/answers/_evidence/A-001/README.md",
+    "wms-brain-client/answers/_evidence/A-002/README.md",
+    "wms-brain-client/answers/_evidence/A-003/README.md",
+    "wms-brain-client/answers/_evidence/A-004/README.md",
+    "wms-brain-client/answers/_evidence/A-005/README.md",
+    "wms-brain-client/answers/_evidence/A-006/README.md",
+    "wms-brain-client/answers/_evidence/A-007/README.md",
+    "wms-brain-client/answers/_evidence/A-008/README.md",
+    "wms-brain-client/examples/Q-001-cadencia-navsync.md",
+    "wms-brain-client/examples/Q-002-decimales-sap-killios.md",
+    "wms-brain-client/examples/Q-003-ingresos-byb-pendientes.md",
+    "wms-brain-client/examples/Q-004-log-error-wms.md",
+    "wms-brain-client/examples/Q-005-sapsync-dedicado-por-cliente.md",
+    "wms-brain-client/examples/Q-006-mi3-cadencia-trigger.md",
+    "wms-brain-client/examples/Q-007-granularidad-recepcion-despacho.md",
+    "wms-brain-client/examples/Q-008-devoluciones-frente-nuevo.md",
+    "wms-brain-client/questions/Q-009-navsync-bb-binario-y-host.md",
+    "wms-brain-client/questions/Q-010-bb-salidas-tipo1-y-tipo4-pendientes.md",
+    "wms-brain-client/questions/Q-011-sapsync-killios-cadencia-y-caller.md",
+    "wms-brain-client/questions/Q-012-log-error-wms-convencion-severidad.md",
+    "wms-brain-client/questions/Q-013-acceso-aurora-y-otros-clientes.md",
+    "wms-brain-client/templates/answer-card.template.md",
+    "wms-brain-client/templates/learning-card.template.md"
+  ]
+}

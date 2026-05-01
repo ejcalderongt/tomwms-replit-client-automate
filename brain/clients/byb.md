@@ -1,3 +1,12 @@
+---
+id: byb
+tipo: client
+estado: vigente
+titulo: Cliente BYB
+clientes: [byb]
+tags: [client, cliente/byb]
+---
+
 # Cliente BYB
 
 > Cliente de alimentos con módulo activo de reabastecimiento de picking, ERP NAV Dynamics

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: Capa 4 — Parametros a nivel PRODUCTO
+tags: [heat-map-params]
+---
+
 # Capa 4 — Parametros a nivel PRODUCTO
 
 > El producto tiene 60 cols en `producto`. La relacion `producto_bodega`

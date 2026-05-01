@@ -1,3 +1,12 @@
+---
+id: MAMPA
+tipo: sendero-producto
+estado: vigente
+titulo: Graph-EQL — MAMPA
+clientes: [mampa]
+tags: [sendero-producto, cliente/mampa]
+---
+
 # Graph-EQL — MAMPA
 
 **Caracter**: retail multi-tienda de calzado, **31 bodegas** (TIENDA CENTRAL + 6 puntos de

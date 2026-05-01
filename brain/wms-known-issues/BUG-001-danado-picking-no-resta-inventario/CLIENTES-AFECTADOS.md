@@ -1,3 +1,12 @@
+---
+id: CLIENTES-AFECTADOS
+tipo: known-issue
+estado: vigente
+titulo: BUG-001 — Matriz de clientes afectados
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [known-issue]
+---
+
 # BUG-001 — Matriz de clientes afectados
 
 > Fuente original de los datos: `debuged-cases/CP-015-bug-danado-picking-transversal/DATOS-COMPARATIVOS.md` (DEPRECATED, ahora consolidado aqui).

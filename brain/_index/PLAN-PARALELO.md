@@ -1,3 +1,11 @@
+---
+id: PLAN-PARALELO
+tipo: index
+estado: vigente
+titulo: Plan de ejecucion paralela — proximas sesiones
+tags: [index]
+---
+
 # Plan de ejecucion paralela — proximas sesiones
 
 > Objetivo: ejecutar tareas independientes en paralelo (en distintas

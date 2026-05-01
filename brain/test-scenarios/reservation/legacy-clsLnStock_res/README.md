@@ -1,3 +1,13 @@
+---
+id: README
+tipo: test-scenario
+estado: vigente
+titulo: "Inventario `clsLnStock_res` legacy"
+ramas: [dev_2028_merge]
+modulo: [reservation]
+tags: [test-scenario, modulo/reservation]
+---
+
 # Inventario `clsLnStock_res` legacy
 
 Archivo fuente único:

@@ -1,3 +1,12 @@
+---
+id: INDEX
+tipo: debuged-case
+estado: vigente
+titulo: "CP-015 — [DEPRECATED 2026-04-30] Bug `dañado_picking` sin descuento de stock — TRANSVERSAL multi-cliente"
+ramas: [dev_2028_merge]
+tags: [debuged-case]
+---
+
 # CP-015 — [DEPRECATED 2026-04-30] Bug `dañado_picking` sin descuento de stock — TRANSVERSAL multi-cliente
 
 > **DEPRECATED 2026-04-30**: este caso transversal fue absorbido por

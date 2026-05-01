@@ -1,3 +1,12 @@
+---
+id: traza-005-cealsa-NEN025
+tipo: sendero-producto
+estado: vigente
+titulo: Traza 005 — CEALSA NEN025 (AMOXICILINA 500MG)
+clientes: [cealsa]
+tags: [sendero-producto, cliente/cealsa]
+---
+
 # Traza 005 — CEALSA NEN025 (AMOXICILINA 500MG)
 
 **Cliente**: CEALSA (IMS4MB_CEALSA_QAS) | **Bodegas**: 2  

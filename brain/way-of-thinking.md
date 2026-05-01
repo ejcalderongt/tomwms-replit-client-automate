@@ -1,3 +1,12 @@
+---
+id: way-of-thinking
+tipo: documentation
+estado: vigente
+titulo: Way of thinking — TomWMS Brain
+ramas: [dev_2028_merge]
+tags: [documentation]
+---
+
 # Way of thinking — TomWMS Brain
 
 > Notas del autor (Erik) y principios operativos. Vivientes, se actualizan en cada ciclo.

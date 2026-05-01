@@ -1,3 +1,11 @@
+---
+id: 03-tipos-tarea
+tipo: sendero-producto
+estado: vigente
+titulo: Modelo del sendero — Catalogo de tipos de tarea
+tags: [sendero-producto]
+---
+
 # Modelo del sendero — Catalogo de tipos de tarea
 
 > `sis_tipo_tarea` define las **aristas** del grafo de movimientos. Cada

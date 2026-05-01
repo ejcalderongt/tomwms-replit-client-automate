@@ -1,3 +1,12 @@
+---
+id: compatibility
+tipo: test-scenario
+estado: vigente
+titulo: Matriz de compatibilidad escenario × cliente — v3
+ramas: [dev_2028_merge]
+tags: [test-scenario]
+---
+
 # Matriz de compatibilidad escenario × cliente — v3
 
 > Generada 2026-04-27T15:31:09.941Z. Basada en flags reales aprendidos de `i_nav_config_enc` y log observado en `trans_pe_det_log_reserva`.

@@ -1,3 +1,11 @@
+---
+id: reservation-tables
+tipo: sql-catalog
+estado: vigente
+titulo: SQL Catalog · Reservation tables (DDL completo)
+tags: [sql-catalog]
+---
+
 # SQL Catalog · Reservation tables (DDL completo)
 
 > **Propósito**: catálogo SQL DDL canónico de las 9 tablas del módulo `reservation` (8 tablas críticas + tabla auxiliar `trans_pe_det_log_reserva`). Schemas validados live contra Killios productivo (`52.41.114.122,1437`, BD `TOMWMS_KILLIOS_PRD`) el 2026-04-27.

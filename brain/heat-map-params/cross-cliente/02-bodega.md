@@ -1,3 +1,11 @@
+---
+id: 02-bodega
+tipo: heat-map-params
+estado: vigente
+titulo: "Cross-cliente: `bodega`"
+tags: [heat-map-params]
+---
+
 # Cross-cliente: `bodega`
 
 Tabla más grande del modelo de configuración. La fila bodega gobierna casi

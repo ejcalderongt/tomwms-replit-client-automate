@@ -1,3 +1,12 @@
+---
+id: INDEX
+tipo: index
+estado: vigente
+titulo: INDEX maestro del brain — vista arbol human-readable
+ramas: [dev_2028_merge]
+tags: [index]
+---
+
 # INDEX maestro del brain — vista arbol human-readable
 
 > Ultima actualizacion: 29-abr-2026

@@ -1,3 +1,11 @@
+---
+id: 04-producto
+tipo: heat-map-params
+estado: vigente
+titulo: "cross-cliente/04 — `producto` + `producto_bodega` + `producto_estado` + `producto_estado_ubic`"
+tags: [heat-map-params]
+---
+
 # cross-cliente/04 — `producto` + `producto_bodega` + `producto_estado` + `producto_estado_ubic`
 
 > Capa 4 de la matriz cross-cliente. Cierra el inventario exhaustivo de

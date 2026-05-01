@@ -1,3 +1,12 @@
+---
+id: CONCEPT_MAP
+tipo: index
+estado: vigente
+titulo: CONCEPT MAP — vista temática del brain (Wave 6.1)
+ramas: [dev_2023_estable, dev_2025, dev_2028_merge]
+tags: [index]
+---
+
 # CONCEPT MAP — vista temática del brain (Wave 6.1)
 
 **Fecha**: 2026-04-28  

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: test-scenario
+estado: vigente
+titulo: Matriz cliente × configuración × escenario
+tags: [test-scenario]
+---
+
 # Matriz cliente × configuración × escenario
 
 Este directorio describe **el modelo formal** que usamos para responder dos preguntas:

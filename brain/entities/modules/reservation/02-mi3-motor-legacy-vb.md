@@ -1,3 +1,13 @@
+---
+id: 02-mi3-motor-legacy-vb
+tipo: entity
+estado: vigente
+titulo: 02 · Reserva de Stock MI3 — Motor Legacy (VB.NET monolítico)
+ramas: [dev_2028_merge]
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 02 · Reserva de Stock MI3 — Motor Legacy (VB.NET monolítico)
 
 > **Fuente primaria**: `TOMWMS_BOF/TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb`, anchors **L18192-L26337** (~8 145 líneas dentro de un único método `Reserva_Stock_From_MI3`).  

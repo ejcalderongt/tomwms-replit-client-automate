@@ -1,3 +1,12 @@
+---
+id: 20260428-2348-H28-becofarma-outbox-85pct-pendiente
+tipo: proposal
+estado: vigente
+titulo: Propuesta para evento 20260428-2348-H28-becofarma-outbox-85pct-pendiente
+clientes: [becofarma]
+tags: [proposal, cliente/becofarma]
+---
+
 # Propuesta para evento 20260428-2348-H28-becofarma-outbox-85pct-pendiente
 
 > Hallazgo H-028: Outbox BECOFARMA 85% pendiente — SAPBOSync.exe puede no estar corriendo

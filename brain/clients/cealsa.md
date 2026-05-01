@@ -1,3 +1,12 @@
+---
+id: cealsa
+tipo: client
+estado: vigente
+titulo: Cliente CEALSA
+clientes: [cealsa]
+tags: [client, cliente/cealsa]
+---
+
 # Cliente CEALSA
 
 > 3PL multi-cliente. **El motor de reserva del WMS NO se ejecuta por defecto**. Solo se invoca si la configuracion (`ReservaStock` por tipo de pedido) o el operador lo solicita explicitamente.

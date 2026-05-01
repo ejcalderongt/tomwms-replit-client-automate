@@ -1,3 +1,11 @@
+---
+id: 20260428-1903-H04-despacho-fantasma-bypass-estado
+tipo: proposal
+estado: vigente
+titulo: Proposal 20260428-1903-H04-despacho-fantasma-bypass-estado
+tags: [proposal]
+---
+
 # Proposal 20260428-1903-H04-despacho-fantasma-bypass-estado
 
 **Status**: proposed

@@ -1,3 +1,11 @@
+---
+id: preguntas-ciclo-7
+tipo: process-flow
+estado: vigente
+titulo: Preguntas para afinar el mapeo del flujo WMS — ciclo 7
+tags: [process-flow]
+---
+
 # Preguntas para afinar el mapeo del flujo WMS — ciclo 7
 
 > **Status global**: 12/25 respondidas + 1 parcial + 0 reabiertas. Ver

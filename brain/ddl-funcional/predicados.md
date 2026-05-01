@@ -1,3 +1,11 @@
+---
+id: predicados
+tipo: ddl-funcional
+estado: vigente
+titulo: ddl-funcional/predicados.md — lenguaje interno (eufemismos)
+tags: [ddl-funcional]
+---
+
 # ddl-funcional/predicados.md — lenguaje interno (eufemismos)
 
 > Cada predicado encapsula un proceso operativo del WMS y se expande

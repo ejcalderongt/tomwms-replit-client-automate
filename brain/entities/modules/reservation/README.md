@@ -1,3 +1,12 @@
+---
+id: README
+tipo: entity
+estado: vigente
+titulo: "Módulo `reservation` · Motor MI3 de reservas WMS"
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # Módulo `reservation` · Motor MI3 de reservas WMS
 
 > **Propósito**: documentar exhaustivamente el motor MI3 (Insertar_Stock_Res_MI3) que reserva inventario en TOMWMS. Cubre el motor legacy VB.NET (8K líneas) y el motor nuevo .NET 8 (en construcción), con foco en paridad funcional para una transición segura.

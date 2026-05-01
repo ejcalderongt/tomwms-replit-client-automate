@@ -1,3 +1,12 @@
+---
+id: 20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08
+tipo: proposal
+estado: vigente
+titulo: Propuesta para evento 20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08
+clientes: [becofarma]
+tags: [proposal, cliente/becofarma]
+---
+
 # Propuesta para evento 20260428-2350-H30-becofarma-outbox-fk-universal-invalida-h08
 
 > Hallazgo H-030: Outbox BECOFARMA tiene FKs universales — invalida parcialmente H08

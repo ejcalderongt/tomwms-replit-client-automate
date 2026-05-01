@@ -1,3 +1,12 @@
+---
+id: 05-mi3-algoritmo-fefo-clavaud
+tipo: entity
+estado: vigente
+titulo: 05 · Algoritmo FEFO + Clavaud dinámico + degradación a CASO_3
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 05 · Algoritmo FEFO + Clavaud dinámico + degradación a CASO_3
 
 > **Propósito**: documentar el algoritmo central de selección de stock que el motor MI3 aplica para escoger qué unidades reservar y en qué orden. Cubre FEFO, tie-breakers, evaluación dinámica de Clavaud (que es la novedad arquitectónica más importante del motor nuevo respecto al legacy) y la lógica de degradación a CASO_3 cuando reservar pallets enteros no tiene sentido.

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: ddl-funcional
+estado: vigente
+titulo: ddl-funcional/ — diccionario funcional del WMS
+tags: [ddl-funcional]
+---
+
 # ddl-funcional/ — diccionario funcional del WMS
 
 > No es un diccionario estructural (eso lo da `sys.columns`). Es un

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: Capa 1 — Parametros a nivel EMPRESA
+tags: [heat-map-params]
+---
+
 # Capa 1 — Parametros a nivel EMPRESA
 
 > Granularidad logica: empresa. La tabla fisica `i_nav_config_enc`

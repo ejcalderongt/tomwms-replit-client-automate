@@ -1,3 +1,11 @@
+---
+id: 20260428-1900-H01-tras-wms-reservastock-muerto
+tipo: proposal
+estado: vigente
+titulo: Proposal 20260428-1900-H01-tras-wms-reservastock-muerto
+tags: [proposal]
+---
+
 # Proposal 20260428-1900-H01-tras-wms-reservastock-muerto
 
 **Status**: proposed

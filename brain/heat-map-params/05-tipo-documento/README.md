@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: Capa 5 — Parametros por TIPO DE DOCUMENTO
+tags: [heat-map-params]
+---
+
 # Capa 5 — Parametros por TIPO DE DOCUMENTO
 
 > Tipos de documento gobiernan que pasa al recibir (`trans_oc_ti`) y al

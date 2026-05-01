@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: Capa 2 — Parametros a nivel BODEGA
+tags: [heat-map-params]
+---
+
 # Capa 2 — Parametros a nivel BODEGA
 
 > La bodega es la entidad MAS RICA en parametros (101 cols en BYB).

@@ -1,3 +1,11 @@
+---
+id: 07-caso-tolerancia-vencimiento
+tipo: wms-test-natural-case
+estado: vigente
+titulo: CASO 07 — Tolerancia de vencimiento por familia/clasificación
+tags: [wms-test-natural-case]
+---
+
 # CASO 07 — Tolerancia de vencimiento por familia/clasificación
 
 ## Trigger

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: brain-map
+estado: vigente
+titulo: brain-map/ — mapeo cliente × tabla × proceso × funcionalidad
+tags: [brain-map]
+---
+
 # brain-map/ — mapeo cliente × tabla × proceso × funcionalidad
 
 > Proposito: dar respuesta directa y univoca a preguntas tipo

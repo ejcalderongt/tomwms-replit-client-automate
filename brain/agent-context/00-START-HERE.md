@@ -1,3 +1,12 @@
+---
+id: 00-START-HERE
+tipo: agent-context
+estado: vigente
+titulo: 00 — START HERE
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [agent-context]
+---
+
 # 00 — START HERE
 
 > Punto unico de entrada para cualquier agente o humano que abra este brain por

@@ -1,3 +1,11 @@
+---
+id: README
+tipo: sendero-producto
+estado: vigente
+titulo: Sendero del producto — TomWMS
+tags: [sendero-producto]
+---
+
 # Sendero del producto — TomWMS
 
 > **Concepto Erik (29-abr-2026)**: el sendero del producto end-to-end

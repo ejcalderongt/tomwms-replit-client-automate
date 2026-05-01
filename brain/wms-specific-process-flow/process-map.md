@@ -1,3 +1,11 @@
+---
+id: process-map
+tipo: process-flow
+estado: vigente
+titulo: Mapa global de procesos WMS — observado
+tags: [process-flow]
+---
+
 # Mapa global de procesos WMS — observado
 
 > **Version 2** (ciclo 9). Snapshot 2026-04-27. Conteos reales de TOMWMS_KILLIOS_PRD.

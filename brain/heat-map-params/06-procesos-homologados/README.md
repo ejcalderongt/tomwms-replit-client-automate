@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: Capa 6 — PROCESOS HOMOLOGADOS
+tags: [heat-map-params]
+---
+
 # Capa 6 — PROCESOS HOMOLOGADOS
 
 > El producto final del heat-map-params: para cada PROCESO operativo

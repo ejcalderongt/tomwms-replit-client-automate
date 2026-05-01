@@ -1,3 +1,12 @@
+---
+id: CONVIVENCIA_FORMATOS
+tipo: agent-context
+estado: vigente
+titulo: "CONVIVENCIA_FORMATOS.md — Por que clients/*.md y clients/*.yaml conviven"
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [agent-context]
+---
+
 # CONVIVENCIA_FORMATOS.md — Por que clients/*.md y clients/*.yaml conviven
 
 > Decision provisional aceptada al 2026-04-30, pendiente de un ADR formal.

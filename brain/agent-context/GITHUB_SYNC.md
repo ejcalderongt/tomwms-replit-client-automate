@@ -1,3 +1,11 @@
+---
+id: GITHUB_SYNC
+tipo: agent-context
+estado: vigente
+titulo: GITHUB_SYNC.md — Sincronizar el brain a GitHub via API
+tags: [agent-context]
+---
+
 # GITHUB_SYNC.md — Sincronizar el brain a GitHub via API
 
 > Patron canonico para sincronizar `/home/runner/workspace/wms-brain/` a la

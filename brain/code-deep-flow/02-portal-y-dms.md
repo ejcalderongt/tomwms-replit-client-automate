@@ -1,3 +1,12 @@
+---
+id: 02-portal-y-dms
+tipo: code-deep-flow
+estado: vigente
+titulo: 02 — Portal CEALSA, DMS, generador de código y la trinidad DALCore/EntityCore/AppGlobalCore
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [code-deep-flow]
+---
+
 # 02 — Portal CEALSA, DMS, generador de código y la trinidad DALCore/EntityCore/AppGlobalCore
 
 **Tipo de doc**: Arquitectura macro (no traza de invariante)  

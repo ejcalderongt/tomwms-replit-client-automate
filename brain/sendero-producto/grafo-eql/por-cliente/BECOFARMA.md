@@ -1,3 +1,12 @@
+---
+id: BECOFARMA
+tipo: sendero-producto
+estado: vigente
+titulo: Graph-EQL — BECOFARMA
+clientes: [becofarma]
+tags: [sendero-producto, cliente/becofarma]
+---
+
 # Graph-EQL — BECOFARMA
 
 **Caracter**: farma con cuarentena, 1 bodega, 0 presentaciones,

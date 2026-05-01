@@ -1,3 +1,11 @@
+---
+id: 005-bridge-schema-v2-bump
+tipo: decision
+estado: vigente
+titulo: "005 — Bump del brain bridge a SCHEMA_VERSION=\"2\""
+tags: [decision]
+---
+
 # 005 — Bump del brain bridge a SCHEMA_VERSION="2"
 
 **Fecha**: 2026-04-27

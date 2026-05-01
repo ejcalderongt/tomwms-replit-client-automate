@@ -1,3 +1,11 @@
+---
+id: 01-i_nav_config_enc
+tipo: heat-map-params
+estado: vigente
+titulo: "Cross-cliente: `i_nav_config_enc`"
+tags: [heat-map-params]
+---
+
 # Cross-cliente: `i_nav_config_enc`
 
 Tabla nominalmente del módulo NAV pero que en la práctica rige TODA la

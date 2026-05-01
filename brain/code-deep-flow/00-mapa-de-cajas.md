@@ -1,3 +1,12 @@
+---
+id: 00-mapa-de-cajas
+tipo: code-deep-flow
+estado: vigente
+titulo: 00 — Mapa de cajas macro de TOMWMS
+ramas: [dev_2028_merge]
+tags: [code-deep-flow]
+---
+
 # 00 — Mapa de cajas macro de TOMWMS
 
 > Vista holistica de toda la arquitectura del WMS (estado 28-abr-2026,

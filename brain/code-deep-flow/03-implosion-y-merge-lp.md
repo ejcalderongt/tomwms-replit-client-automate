@@ -1,3 +1,12 @@
+---
+id: 03-implosion-y-merge-lp
+tipo: code-deep-flow
+estado: vigente
+titulo: 03 - Implosión, Cambio de Ubicación y Merge LP (2028)
+ramas: [dev_2023_estable, dev_2028_merge]
+tags: [code-deep-flow]
+---
+
 # 03 - Implosión, Cambio de Ubicación y Merge LP (2028)
 
 > **Wave 7 — Resolución de Q-LP-WHEN-DESTROYED + Q-LP-MERGE-EN-DESTINO + Q-CAPABILITY-FLAG**

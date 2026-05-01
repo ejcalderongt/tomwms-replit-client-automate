@@ -1,3 +1,11 @@
+---
+id: grafo-base
+tipo: sendero-producto
+estado: vigente
+titulo: Graph-EQL — Grafo base (canonico)
+tags: [sendero-producto]
+---
+
 # Graph-EQL — Grafo base (canonico)
 
 > El grafo base representa el sendero MAXIMAL: todas las transiciones

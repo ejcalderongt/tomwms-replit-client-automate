@@ -1,3 +1,13 @@
+---
+id: 08-mi3-tablas-killios
+tipo: entity
+estado: vigente
+titulo: 08 · Schema completo de las tablas críticas del motor MI3
+clientes: [killios]
+modulo: [reservation]
+tags: [entity, cliente/killios, modulo/reservation]
+---
+
 # 08 · Schema completo de las tablas críticas del motor MI3
 
 > **Propósito**: documentar el schema validado de las 6 tablas que el motor MI3 lee/escribe directamente, más las 2 tablas de configuración referenciadas en `04-mi3-config-propietario.md`. Todos los schemas fueron extraídos vía consulta READ-ONLY a Killios productivo (`52.41.114.122,1437`, BD `TOMWMS_KILLIOS_PRD`) el 2026-04-27.

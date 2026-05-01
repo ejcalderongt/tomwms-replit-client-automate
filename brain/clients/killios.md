@@ -1,3 +1,12 @@
+---
+id: killios
+tipo: client
+estado: vigente
+titulo: Cliente KILLIOS
+clientes: [killios]
+tags: [client, cliente/killios]
+---
+
 # Cliente KILLIOS
 
 > Centro de abastecimiento de alimentos en Amatitlan, sucursal en Z17. ERP SAP Business One. **Modo estricto de reserva**.

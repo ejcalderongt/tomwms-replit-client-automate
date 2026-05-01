@@ -1,3 +1,12 @@
+---
+id: WAVE-6.2-QUICK-WINS
+tipo: index
+estado: vigente
+titulo: "Wave 6.2 — Quick wins (8 Q-* baratas resueltas con SQL/GREP)"
+ramas: [dev_2023_estable, dev_2025, dev_2028_merge]
+tags: [index]
+---
+
 # Wave 6.2 — Quick wins (8 Q-* baratas resueltas con SQL/GREP)
 
 **Fecha**: 2026-04-28  

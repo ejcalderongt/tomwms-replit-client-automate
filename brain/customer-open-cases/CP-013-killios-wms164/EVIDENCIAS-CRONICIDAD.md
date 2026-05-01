@@ -1,3 +1,11 @@
+---
+id: EVIDENCIAS-CRONICIDAD
+tipo: cp-open
+estado: vigente
+titulo: Evidencias del hallazgo de cronicidad — CP-013 / V-DATAWAY-004
+tags: [cp-open]
+---
+
 # Evidencias del hallazgo de cronicidad — CP-013 / V-DATAWAY-004
 
 **Para**: Erik Calderón y Carol

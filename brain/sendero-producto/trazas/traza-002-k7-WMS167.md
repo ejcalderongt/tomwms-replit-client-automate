@@ -1,3 +1,12 @@
+---
+id: traza-002-k7-WMS167
+tipo: sendero-producto
+estado: vigente
+titulo: Traza 002 — K7 WMS167 (MELOCOTON MIGUELS MITADES 12/820GR 29OZ)
+clientes: [killios]
+tags: [sendero-producto, cliente/killios]
+---
+
 # Traza 002 — K7 WMS167 (MELOCOTON MIGUELS MITADES 12/820GR 29OZ)
 
 **Cliente**: K7 (TOMWMS_KILLIOS_PRD) | **Bodegas**: 6  

@@ -1,3 +1,11 @@
+---
+id: CASE_INTAKE_TEMPLATE
+tipo: agent-context
+estado: vigente
+titulo: Plantilla de intake de casos — TOMWMS
+tags: [agent-context]
+---
+
 # Plantilla de intake de casos — TOMWMS
 
 > Copiá este bloque, llenalo, y pegámelo en el chat de Replit cuando abras un

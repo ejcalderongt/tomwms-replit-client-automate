@@ -1,3 +1,12 @@
+---
+id: AZURE_ACCESS
+tipo: agent-context
+estado: vigente
+titulo: Azure DevOps Access — Productor Replit
+ramas: [dev_2028_merge]
+tags: [agent-context]
+---
+
 # Azure DevOps Access — Productor Replit
 
 **Estado**: validado 2026-04-26 desde container Replit.

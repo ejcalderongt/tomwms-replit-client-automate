@@ -1,3 +1,11 @@
+---
+id: 04-caso-explosion-cajas-a-unidades
+tipo: wms-test-natural-case
+estado: vigente
+titulo: CASO 04 — Explosión automática (cajas → unidades)
+tags: [wms-test-natural-case]
+---
+
 # CASO 04 — Explosión automática (cajas → unidades)
 
 ## Trigger

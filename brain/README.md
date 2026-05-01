@@ -1,3 +1,12 @@
+---
+id: README
+tipo: documentation
+estado: vigente
+titulo: brain — Cerebro del agente Replit que mantiene el WMS de Erik Calderón
+ramas: [dev_2028_merge]
+tags: [documentation]
+---
+
 # brain — Cerebro del agente Replit que mantiene el WMS de Erik Calderón
 
 > Esta carpeta es **el cerebro compartido**: doctrina, módulos del WMS,

@@ -1,3 +1,11 @@
+---
+id: REPLIT_AGENT
+tipo: agent-context
+estado: vigente
+titulo: REPLIT_AGENT.md — Conventions del agente Replit
+tags: [agent-context]
+---
+
 # REPLIT_AGENT.md — Conventions del agente Replit
 
 > Aplica al agente que corre **dentro del workspace Replit**

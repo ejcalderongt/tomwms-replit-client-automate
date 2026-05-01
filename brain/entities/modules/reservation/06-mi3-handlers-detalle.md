@@ -1,3 +1,12 @@
+---
+id: 06-mi3-handlers-detalle
+tipo: entity
+estado: vigente
+titulo: 06 · Handlers de reserva en detalle
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 06 · Handlers de reserva en detalle
 
 > **Propósito**: documentar cada uno de los 5 handlers concretos del motor MI3 (Chain of Responsibility) con su contrato `CanProcess`, su lógica de `Process`, los flags del contexto que mutan y los checkpoints que emiten al logger.

@@ -1,3 +1,12 @@
+---
+id: 01-matriz-funcion-cliente-canal
+tipo: wms-test-natural-case
+estado: vigente
+titulo: "01 — Matriz \"función de reserva × canal × cliente\""
+ramas: [dev_2028_merge]
+tags: [wms-test-natural-case]
+---
+
 # 01 — Matriz "función de reserva × canal × cliente"
 
 > **Mapa maestro**. Permite saber, dado un canal de entrada (BOF, HH, NAV, SAP, MI3, Reabasto), qué función de reserva se invoca y bajo qué condiciones.

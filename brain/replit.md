@@ -1,3 +1,12 @@
+---
+id: replit
+tipo: documentation
+estado: vigente
+titulo: TOM WMS — Replit Agent Workspace
+ramas: [dev_2028_merge]
+tags: [documentation]
+---
+
 # TOM WMS — Replit Agent Workspace
 
 Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS** (Warehouse Management System) del usuario Erik Calderón (PrograX24). El agente actúa como ingeniero senior permanente con conocimiento del WMS entre sesiones.

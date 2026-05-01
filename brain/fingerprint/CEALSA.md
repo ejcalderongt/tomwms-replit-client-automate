@@ -1,3 +1,12 @@
+---
+id: CEALSA
+tipo: fingerprint
+estado: vigente
+titulo: Fingerprint CEALSA
+clientes: [cealsa]
+tags: [fingerprint, cliente/cealsa]
+---
+
 # Fingerprint CEALSA
 
 > Etiqueta human-readable: `CEALSA_CLIENT_QAS-CEALSASYNC-PROPIO_APPLIED`

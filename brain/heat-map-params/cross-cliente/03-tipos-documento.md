@@ -1,3 +1,11 @@
+---
+id: 03-tipos-documento
+tipo: heat-map-params
+estado: vigente
+titulo: "Cross-cliente: tipos de documento (`trans_oc_ti` + `trans_pe_tipo`)"
+tags: [heat-map-params]
+---
+
 # Cross-cliente: tipos de documento (`trans_oc_ti` + `trans_pe_tipo`)
 
 Estas dos tablas catalogan los tipos de movimiento que el WMS sabe procesar.

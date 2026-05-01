@@ -1,3 +1,12 @@
+---
+id: 20260428-1906-H07-bb-putaway-intensivo-50pct-ubic
+tipo: proposal
+estado: vigente
+titulo: "20260428-1906-H07 - Becofarma tiene distribucion de tareas HH muy distinta a Killios: 50% UBIC vs 71% PIK."
+clientes: [byb]
+tags: [proposal, cliente/byb]
+---
+
 # 20260428-1906-H07 - Becofarma tiene distribucion de tareas HH muy distinta a Killios: 50% UBIC vs 71% PIK.
 
 > Generado por agente brain (sesion replit) el 28 abril 2026 tras Ciclo 8a via ejecucion live SQL.

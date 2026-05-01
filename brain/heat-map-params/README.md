@@ -1,3 +1,11 @@
+---
+id: README
+tipo: heat-map-params
+estado: vigente
+titulo: heat-map-params — Mapa de calor de parametros del WMS
+tags: [heat-map-params]
+---
+
 # heat-map-params — Mapa de calor de parametros del WMS
 
 > **Concepto Erik (29-abr-2026)**: subir un nivel de abstraccion sobre

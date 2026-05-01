@@ -1,3 +1,11 @@
+---
+id: encargo-sql-agente-ciclo-8a
+tipo: process-flow
+estado: vigente
+titulo: Encargo SQL Agente - Ciclo 8a (5 cards)
+tags: [process-flow]
+---
+
 # Encargo SQL Agente - Ciclo 8a (5 cards)
 
 > **De**: Erik Calderon (PrograX24) via agente brain (sesion replit, 28 abril 2026)

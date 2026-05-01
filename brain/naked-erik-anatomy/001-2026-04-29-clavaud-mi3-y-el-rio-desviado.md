@@ -1,3 +1,11 @@
+---
+id: 001-2026-04-29-clavaud-mi3-y-el-rio-desviado
+tipo: naked-erik
+estado: vigente
+titulo: 001 — Clavaud, MI3 y el río que tuvimos que desviar
+tags: [naked-erik]
+---
+
 # 001 — Clavaud, MI3 y el río que tuvimos que desviar
 
 > **Fecha**: 2026-04-29

@@ -1,3 +1,11 @@
+---
+id: DRIFT_DETECTADO
+tipo: agent-context
+estado: vigente
+titulo: DRIFT_DETECTADO.md — Housekeeping pendiente
+tags: [agent-context]
+---
+
 # DRIFT_DETECTADO.md — Housekeeping pendiente
 
 > Cosas que estan inconsistentes en el brain hoy y que vale la pena limpiar

@@ -1,3 +1,11 @@
+---
+id: bug-report-p16b
+tipo: process-flow
+estado: vigente
+titulo: "BUG-001: Pedidos despachados que vuelven a estado Pendiente/Pickeado/Verificado"
+tags: [process-flow]
+---
+
 # BUG-001: Pedidos despachados que vuelven a estado Pendiente/Pickeado/Verificado
 
 > **Investigacion**: ciclo 9b (autonoma SQL READ-ONLY).

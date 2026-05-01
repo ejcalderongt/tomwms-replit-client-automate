@@ -1,3 +1,13 @@
+---
+id: CASO-DINAMICO
+tipo: test-scenario
+estado: vigente
+titulo: Legacy CASO Dinamico — Caso dinámico (input desde clsBeConfiguracion_qa)
+ramas: [dev_2028_merge]
+modulo: [reservation]
+tags: [test-scenario, modulo/reservation]
+---
+
 # Legacy CASO Dinamico — Caso dinámico (input desde clsBeConfiguracion_qa)
 
 > Origen: `TOMWMS_BOF` rama `dev_2028_merge` archivo `/TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb` funcion `Ejecuta_QA_CASO_Dinamico` líneas 17232-17372.

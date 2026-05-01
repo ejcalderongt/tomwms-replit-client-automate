@@ -1,3 +1,11 @@
+---
+id: REPORTE-CONCLUSION-V3
+tipo: cp-open
+estado: vigente
+titulo: CP-013 KILLIOS WMS164 — Reporte Conclusión V3 (vigente)
+tags: [cp-open]
+---
+
 # CP-013 KILLIOS WMS164 — Reporte Conclusión V3 (vigente)
 
 > Reemplaza V2. V2 quedó obsoleto por dos razones: (1) factor caja era pregunta abierta, ahora confirmado = 5 UM/caja (presentación única "Caja5"); (2) faltaba el cruce histórico con AJUSTES manuales que confirma cronicidad >5 años. V2 también arrastraba contaminación textual al final del archivo, removida acá.

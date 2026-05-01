@@ -1,3 +1,11 @@
+---
+id: sintesis
+tipo: heat-map-params
+estado: vigente
+titulo: Sintesis — Matriz visual del heat-map-params
+tags: [heat-map-params]
+---
+
 # Sintesis — Matriz visual del heat-map-params
 
 > Vista condensada de cada capa para responder rapido: "donde puedo

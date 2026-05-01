@@ -1,3 +1,11 @@
+---
+id: 20260428-1901-H02-clbd-prc-falta-reabasto-log
+tipo: proposal
+estado: vigente
+titulo: Proposal 20260428-1901-H02-clbd-prc-falta-reabasto-log
+tags: [proposal]
+---
+
 # Proposal 20260428-1901-H02-clbd-prc-falta-reabasto-log
 
 **Status**: proposed

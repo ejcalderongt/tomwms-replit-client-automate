@@ -1,3 +1,12 @@
+---
+id: traza-003-mampa-AG00030021
+tipo: sendero-producto
+estado: vigente
+titulo: Traza 003 — MAMPA AG00030021 (Dama bajo tenis urbano)
+clientes: [mampa]
+tags: [sendero-producto, cliente/mampa]
+---
+
 # Traza 003 — MAMPA AG00030021 (Dama bajo tenis urbano)
 
 **Cliente**: MAMPA (TOMWMS_MAMPA_QA) | **Bodegas**: 31  

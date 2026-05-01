@@ -1,3 +1,12 @@
+---
+id: 10-mi3-errores-troubleshooting
+tipo: entity
+estado: vigente
+titulo: 10 · Catálogo de errores y troubleshooting del motor MI3
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 10 · Catálogo de errores y troubleshooting del motor MI3
 
 > **Propósito**: catálogo accionable de los errores que el motor MI3 puede producir (legacy y nuevo), su causa raíz, cómo identificarlos en `log_error_wms`, y procedimientos paso a paso para diagnosticar y resolver. Pensado para uso operativo en guardia.

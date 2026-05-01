@@ -1,3 +1,12 @@
+---
+id: 12-mi3-todos-roadmap
+tipo: entity
+estado: vigente
+titulo: 12 · TODOs, riesgos abiertos y roadmap del motor MI3
+modulo: [reservation]
+tags: [entity, modulo/reservation]
+---
+
 # 12 · TODOs, riesgos abiertos y roadmap del motor MI3
 
 > **Propósito**: consolidar todos los TODOs, riesgos abiertos y trabajo pendiente identificados en los archivos 01-11 del módulo `reservation`. Sirve como checklist accionable para terminar el motor MI3 nuevo y desplegarlo en producción con confianza.

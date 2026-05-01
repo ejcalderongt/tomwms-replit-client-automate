@@ -1,3 +1,11 @@
+---
+id: bodega
+tipo: ddl-funcional
+estado: vigente
+titulo: ddl-funcional/bodega.md — capability flags por bodega
+tags: [ddl-funcional]
+---
+
 # ddl-funcional/bodega.md — capability flags por bodega
 
 > En MAMPA detectamos que la bodega tiene flags propios que sobre-escriben

@@ -1,3 +1,13 @@
+---
+id: MAMPA
+tipo: fingerprint
+estado: vigente
+titulo: Fingerprint MAMPA
+clientes: [mampa]
+ramas: [dev_2023_estable]
+tags: [fingerprint, cliente/mampa]
+---
+
 # Fingerprint MAMPA
 
 > Etiqueta human-readable: `MAMPA_CLIENT_TALLA-COLOR-ZAPATERIA_APPLIED`

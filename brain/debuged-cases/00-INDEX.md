@@ -1,3 +1,11 @@
+---
+id: 00-INDEX
+tipo: debuged-case
+estado: vigente
+titulo: brain/debuged-cases — Índice
+tags: [debuged-case]
+---
+
 # brain/debuged-cases — Índice
 
 > **REORGANIZACION 2026-04-30**: esta carpeta `debuged-cases/` esta siendo

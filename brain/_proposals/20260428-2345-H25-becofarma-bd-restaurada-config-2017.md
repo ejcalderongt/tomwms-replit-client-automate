@@ -1,3 +1,12 @@
+---
+id: 20260428-2345-H25-becofarma-bd-restaurada-config-2017
+tipo: proposal
+estado: vigente
+titulo: Propuesta para evento 20260428-2345-H25-becofarma-bd-restaurada-config-2017
+clientes: [becofarma]
+tags: [proposal, cliente/becofarma]
+---
+
 # Propuesta para evento 20260428-2345-H25-becofarma-bd-restaurada-config-2017
 
 > Hallazgo H-025: BECOFARMA: BD restaurada/migrada el 28-abr-2026 (config 2017)

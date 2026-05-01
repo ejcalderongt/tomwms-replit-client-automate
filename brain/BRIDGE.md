@@ -1,3 +1,12 @@
+---
+id: BRIDGE
+tipo: documentation
+estado: vigente
+titulo: BRIDGE — mecanismo de actualizacion del brain
+ramas: [dev_2028_merge]
+tags: [documentation]
+---
+
 # BRIDGE — mecanismo de actualizacion del brain
 
 Este documento describe **como un cambio operativo en el WMS llega al brain**.

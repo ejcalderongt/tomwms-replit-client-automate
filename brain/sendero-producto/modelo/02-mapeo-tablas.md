@@ -1,3 +1,11 @@
+---
+id: 02-mapeo-tablas
+tipo: sendero-producto
+estado: vigente
+titulo: Modelo del sendero — Mapeo de tablas reales
+tags: [sendero-producto]
+---
+
 # Modelo del sendero — Mapeo de tablas reales
 
 > Catalogo de las tablas que componen el sendero del producto, con

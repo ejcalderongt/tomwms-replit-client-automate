@@ -1,3 +1,11 @@
+---
+id: tablas-por-funcionalidad
+tipo: brain-map
+estado: vigente
+titulo: Tablas por funcionalidad — vista invertida del brain-map
+tags: [brain-map]
+---
+
 # Tablas por funcionalidad — vista invertida del brain-map
 
 > Para cada funcionalidad, lista de tablas que la respaldan, con

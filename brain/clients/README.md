@@ -1,3 +1,12 @@
+---
+id: README
+tipo: client
+estado: vigente
+titulo: Catalogo de clientes
+ramas: [dev_2028_merge]
+tags: [client]
+---
+
 # Catalogo de clientes
 
 ## BDs productivas
