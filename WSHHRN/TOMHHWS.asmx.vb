@@ -18954,7 +18954,6 @@ Public Class TOMHHWS
 
     '#GT07042026: cargar stock para la HH
     <WebMethod(), SoapHeader("mArch")>
-    <WebMethod(), SoapHeader("mArch")>
     Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
 
 
