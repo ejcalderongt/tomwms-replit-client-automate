@@ -2646,7 +2646,11 @@ Partial Public Class clsLnTrans_inv_enc
             Dim vSQL As String = "SELECT t.codigo, t.Producto as Nombre, SUM(t.Inventario) AS Inv , 
                                      SUM(t.Stock) AS Stock, 
                                      SUM(t.Inventario) - SUM(t.Stock) AS Dif, t.lote AS Lote, t.fecha_vence AS Fecha_Vence,t.ubicacion,
-                                     t.UMBas,t.Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
+                                     Case
+                                                WHEN t.Presentacion IS NULL OR t.Presentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.Presentacion
+                                                END AS Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
                                      IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia, t.Codigo_Talla, t.Codigo_Color
                                      FROM (
                                      SELECT idinventarioenc AS IdInventario,producto.codigo,producto.IdProducto,  
@@ -2699,7 +2703,11 @@ Partial Public Class clsLnTrans_inv_enc
                         trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.idubicacion,
                         trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor,trans_inv_stock_prod.Lic_Plate, 
                         trans_inv_stock_prod.codigo_talla, trans_inv_stock_prod.codigo_color) AS T                                     
-                        GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion,t.factor, t.Licencia, t.Codigo_Talla, t.Codigo_Color
+                        GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, Case
+                                                WHEN t.Presentacion IS NULL OR t.Presentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.Presentacion
+                                                END,t.factor, t.Licencia, t.Codigo_Talla, t.Codigo_Color
                         ORDER BY T.codigo "
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
@@ -2734,13 +2742,12 @@ Partial Public Class clsLnTrans_inv_enc
 
         Try
 
-            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas,
-                                                ISNULL(t.NombrePresentacion, '') AS NombrePresentacion,
-                                                SUM(t.Inventario) AS Stock_WMS , 
-                                                SUM(t.Stock) AS Teorico_ERP, 
-                                                ROUND(SUM(t.Inventario) - SUM(t.Stock),6) AS Dif_ERP,
-                                                SUM(t.Conteo) AS Conteo, 
-                                                ROUND(SUM(t.Conteo) - SUM(t.Stock),6) AS Dif_Conteo,
+            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, 
+                                                Case
+                                                WHEN t.NombrePresentacion IS NULL OR t.NombrePresentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.NombrePresentacion
+                                                END AS Presentacion,
                                                 SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) AS Stock_WMS_Pres,
                                                 SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)) AS Teorico_ERP_Pres,
                                                 ROUND(SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_ERP_Pres,
@@ -2801,7 +2808,11 @@ Partial Public Class clsLnTrans_inv_enc
 						                        GROUP BY trans_inv_ciclico.idinventarioenc, producto.codigo, producto.IdProducto, producto.nombre, 
                                                 trans_inv_ciclico.lote, 
 						                        trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, color.nombre, talla.codigo, producto_presentacion.factor, producto_presentacion.nombre) AS T
-                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas,T.ubicacion, t.Talla, t.Color, t.NombrePresentacion, t.Factor
+                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto,T.ubicacion, t.Talla, t.Color, Case
+                                                WHEN t.NombrePresentacion IS NULL OR t.NombrePresentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.NombrePresentacion
+                                                END, t.Factor
                                           ORDER BY T.codigo  "
 
 
@@ -2848,7 +2859,11 @@ Partial Public Class clsLnTrans_inv_enc
                 vSQL = "SELECT t.ubicacion Codigo_Area, t.Codigo, t.Producto as Nombre, SUM(t.Inventario) AS Inv , 
                                      SUM(t.Stock) AS Stock, 
                                      SUM(t.Inventario) - SUM(t.Stock) AS Dif, t.lote AS Lote, t.fecha_vence AS Fecha_Vence,
-                                     t.UMBas,t.Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
+                                     Case
+                                        WHEN t.Presentacion IS NULL OR t.Presentacion = ''
+                                        THEN t.UMBas
+                                        ELSE t.Presentacion
+                                     END AS Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
                                      IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia
                                      FROM (
                                      SELECT idinventarioenc AS IdInventario,producto.codigo,producto.IdProducto,  
@@ -2886,7 +2901,11 @@ Partial Public Class clsLnTrans_inv_enc
 		                                    producto.nombre,producto_presentacion.nombre,producto_presentacion.IdPresentacion,producto.IdProducto,
 		                                    trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.codigo_area,
 		                                    trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor) AS T                                     
-                                GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion,t.factor, t.Licencia
+                                GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, Case
+                                                WHEN t.Presentacion IS NULL OR t.Presentacion = ''
+                                                THEN  t.UMBas
+                                                ELSE t.Presentacion
+                                                END,t.factor, t.Licencia
                                 ORDER BY T.ubicacion, T.codigo "
 
             ElseIf Not pIncluyeUbic AndAlso Not pIncluyeLoteVence Then
@@ -2894,7 +2913,11 @@ Partial Public Class clsLnTrans_inv_enc
                 vSQL = "SELECT t.Codigo, t.Producto as Nombre, SUM(t.Inventario) AS Inv , 
                                 SUM(t.Stock) AS Stock, 
                                 SUM(t.Inventario) - SUM(t.Stock) AS Dif, 
-                                t.UMBas,t.Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
+                                Case
+                                                WHEN t.Presentacion IS NULL OR t.Presentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.Presentacion
+                                                END AS Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
                                 IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia
                         FROM (SELECT idinventarioenc AS IdInventario,producto.codigo,producto.IdProducto,  
                                         producto.nombre AS Producto,
@@ -2928,7 +2951,11 @@ Partial Public Class clsLnTrans_inv_enc
 		                                producto.nombre,producto_presentacion.nombre,producto_presentacion.IdPresentacion,producto.IdProducto,
 		                                trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.codigo_area,
 		                                trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor) AS T                                     
-                        GROUP BY t.codigo, t.Producto,t.UMBas, t.Presentacion,t.factor, t.Licencia
+                        GROUP BY t.codigo, t.Producto,Case
+                                                WHEN t.Presentacion IS NULL OR t.Presentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.Presentacion
+                                                END,t.factor, t.Licencia
                         ORDER BY T.codigo "
             End If
 
@@ -2961,13 +2988,13 @@ Partial Public Class clsLnTrans_inv_enc
 
         Try
 
-            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas,
-                                                ISNULL(t.NombrePresentacion, '') AS NombrePresentacion,
-                                                SUM(t.Inventario) AS Stock_WMS , 
-                                                SUM(t.Stock) AS Teorico_ERP, 
-                                                ROUND(SUM(t.Inventario) - SUM(t.Stock),6) AS Dif_ERP,
-                                                SUM(t.Conteo) AS Conteo, 
-                                                ROUND(SUM(t.Conteo) - SUM(t.Stock),6) AS Dif_Conteo,
+            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, 
+                                                t.Producto as Nombre, 
+                                                Case
+                                                WHEN t.NombrePresentacion IS NULL OR t.NombrePresentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.NombrePresentacion
+                                                END AS Presentacion,
                                                 SUM(IiF(t.Factor <> 0, t.Inventario / t.Factor, 0)) AS Stock_WMS_Pres,
                                                 SUM(IiF(t.Factor <> 0, t.Stock / t.Factor, 0)) AS Teorico_ERP_Pres,
                                                 ROUND(SUM(IiF(t.Factor <> 0, t.Inventario / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_ERP_Pres,
@@ -3028,7 +3055,11 @@ Partial Public Class clsLnTrans_inv_enc
 						                        GROUP BY trans_inv_ciclico.idinventarioenc, producto.codigo, producto.IdProducto, producto.nombre, 
                                                 trans_inv_ciclico.lote, 
 						                        trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, color.nombre, talla.codigo, producto_presentacion.factor, producto_presentacion.nombre) AS T
-                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas,T.ubicacion, t.Color, t.Talla, t.NombrePresentacion, t.Factor
+                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto,T.ubicacion, t.Color, t.Talla, t.Factor, Case
+                                                WHEN t.NombrePresentacion IS NULL OR t.NombrePresentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.NombrePresentacion
+                                                END
                                           ORDER BY T.codigo  "
 
 
@@ -3062,13 +3093,11 @@ Partial Public Class clsLnTrans_inv_enc
 
         Try
 
-            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas, 
-                        ISNULL(t.NombrePresentacion, '') AS NombrePresentacion, t.Color, t.Talla, 
-                        SUM(t.Inventario) AS Stock_WMS , 
-                        SUM(t.Stock) AS Teorico_ERP, 
-                        ROUND(SUM(t.Inventario) - SUM(t.Stock),6) AS Dif_ERP,
-                        SUM(t.Conteo) AS Conteo, 
-                        ROUND(SUM(t.Conteo) - SUM(t.Stock),6) AS Dif_Conteo,
+            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre,  Case
+                                                WHEN t.NombrePresentacion IS NULL OR t.NombrePresentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.NombrePresentacion
+                                                END AS Presentacion, t.Color, t.Talla, 
                         SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) AS Stock_WMS_Pres,
 	                    SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)) AS Teorico_ERP_Pres,
 	                    ROUND(SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_ERP_Pres,
@@ -3130,7 +3159,11 @@ Partial Public Class clsLnTrans_inv_enc
 						GROUP BY trans_inv_ciclico.idinventarioenc, producto.codigo, producto.IdProducto, producto.nombre, 
                         producto_presentacion.nombre,trans_inv_ciclico.lote, 
 						trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo, color.nombre, talla.codigo, producto_presentacion.factor) AS T
-                  GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas, t.Color, t.Talla, t.NombrePresentacion, t.Factor
+                  GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.Color, t.Talla,  Case
+                                                WHEN t.NombrePresentacion IS NULL OR t.NombrePresentacion = ''
+                                                THEN t.UMBas
+                                                ELSE t.NombrePresentacion
+                                                END, t.Factor
                   ORDER BY T.codigo "
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
@@ -3446,6 +3479,81 @@ Partial Public Class clsLnTrans_inv_enc
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_TeoricoWMS_Vrs_TeoricoERP(ByVal pIdInv As Integer,
+                                                       ByVal pIdBodega As Integer,
+                                                       lConnection As SqlConnection,
+                                                       lTransaction As SqlTransaction) As DataTable
+
+        Get_TeoricoWMS_Vrs_TeoricoERP = Nothing
+
+        Dim vSQL As String = ""
+
+        Try
+
+            vSQL = "SELECT t.Codigo, t.Producto as Nombre, SUM(t.StockERP) AS StockERP , 
+                           SUM(t.StockWMS) AS StockWMS, 
+                           SUM(t.StockERP) - SUM(t.StockWMS) AS Dif, t.lote AS Lote, t.fecha_vence AS Fecha_Vence,
+                           t.UMBas,t.Presentacion
+                    FROM (
+                    SELECT  idinventario AS IdInventario,producto.codigo,producto.IdProducto,   
+			                producto.nombre AS Producto,
+				            ISNULL(producto_presentacion.nombre,'') AS Presentacion,producto_presentacion.IdPresentacion ,
+				            0 AS StockERP,SUM(cant) AS StockWMS,0 AS Peso, trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence,
+				            trans_inv_stock_prod.codigo_area  as ubicacion,
+				            unidad_medida.Nombre UMBas, producto_presentacion.factor, '' AS Licencia
+		            FROM trans_inv_stock_prod INNER JOIN 
+				            producto ON trans_inv_stock_prod.idproducto = producto.IdProducto INNER JOIN
+				            unidad_medida ON producto.IdUnidadMedidaBasica = producto.IdUnidadMedidaBasica AND 
+				            unidad_medida.IdUnidadMedida = trans_inv_stock_prod.idunidadmedida LEFT OUTER JOIN 
+				            producto_presentacion ON trans_inv_stock_prod.IdPresentacion = producto_presentacion.IdPresentacion
+		            WHERE idinventario = @IdInventarioEnc
+				            AND TipoTeoricoImportacion =0 --#EJC20240724: WMS
+		            GROUP BY idinventario,producto.codigo,  
+					            producto.nombre,producto_presentacion.nombre,producto_presentacion.IdPresentacion,producto.IdProducto,
+					            trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.codigo_area,
+					            trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor
+		            UNION ALL                     
+		            SELECT idinventario AS IdInventario,producto.codigo,producto.IdProducto,   
+				            producto.nombre AS Producto,
+				            ISNULL(producto_presentacion.nombre,'') AS Presentacion,producto_presentacion.IdPresentacion ,
+				            SUM(cant) AS StockERP, 0 StockWMS,0 AS Peso, trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence,
+				            trans_inv_stock_prod.codigo_area  as ubicacion,
+				            unidad_medida.Nombre UMBas, producto_presentacion.factor, '' AS Licencia
+		            FROM trans_inv_stock_prod INNER JOIN 
+				            producto ON trans_inv_stock_prod.idproducto = producto.IdProducto INNER JOIN
+				            unidad_medida ON producto.IdUnidadMedidaBasica = producto.IdUnidadMedidaBasica AND 
+				            unidad_medida.IdUnidadMedida = trans_inv_stock_prod.idunidadmedida LEFT OUTER JOIN 
+				            producto_presentacion ON trans_inv_stock_prod.IdPresentacion = producto_presentacion.IdPresentacion
+		            WHERE idinventario = @IdInventarioEnc
+				            AND TipoTeoricoImportacion =1 --#EJC20240724: ERP
+		            GROUP BY idinventario,producto.codigo,  
+					            producto.nombre,producto_presentacion.nombre,producto_presentacion.IdPresentacion,producto.IdProducto,
+					            trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.codigo_area,
+					            trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor) AS T                                     
+            GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion
+            ORDER BY T.ubicacion, T.codigo"
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInv)
+
+                Dim lDataTable As New DataTable()
+                lDataAdapter.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                    Get_TeoricoWMS_Vrs_TeoricoERP = lDataTable
+                End If
+
+            End Using
+
+        Catch ex As Exception
             Throw ex
         End Try
 

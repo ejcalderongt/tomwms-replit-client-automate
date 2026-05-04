@@ -342,4 +342,67 @@ Partial Public Class clsLnTrans_inv_resumen
         End Try
 
     End Function
+
+    Public Shared Function Get_Tiempos_Tramos_Verif_DT(pIdInventarioEnc As Integer,
+                                                       ByRef lConnection As SqlConnection,
+                                                       ByRef lTransaction As SqlTransaction) As DataTable
+
+        Dim DT As New DataTable
+
+        Dim SQL As String = "SELECT  t.descripcion Tramo,LTRIM(RTRIM(
+                                        SUBSTRING(
+                                            dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                            CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                            CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                        )
+                                    )) AS Nivel,LTRIM(RTRIM(
+                                        SUBSTRING(
+                                            dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                            CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                            CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                        )
+                                    )) AS Columna,min(i.fecha_captura) Fecha_Inicio, max(i.fecha_captura) Fecha_Fin, 
+                                DATEDIFF(MINUTE,min(i.fecha_captura),max(i.fecha_captura)) Tiempo_Conteo,
+                                COUNT(DISTINCT i.IdUbicacion) UbiContadas
+                                FROM trans_inv_resumen i inner join bodega_tramo t on i.idtramo = t.IdTramo and i.idbodega = t.IdBodega
+                                WHERE idinventarioenct = @IdInventarioEnc
+                                GROUP BY t.descripcion, LTRIM(RTRIM(
+                                        SUBSTRING(
+                                            dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                            CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                            CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                        )
+                                    )),LTRIM(RTRIM(
+                                SUBSTRING(
+                                    dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                    CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                    CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                        CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                        CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                )))
+                                UNION
+                                select t.descripcion Tramo, '' Nivel, '' Columna, '19000101' Fecha_Inicio, '19000101' Fecha_Fin, 
+                                0 Diferencia, 0 UbiContadas
+                                from trans_inv_tramo i inner join bodega_tramo t on i.idtramo = t.IdTramo and i.idbodega = t.IdBodega
+                                where idinventario = @IdInventarioEnc and i.idtramo not in (SELECT i.idtramo
+                                FROM trans_inv_resumen i inner join bodega_tramo t on i.idtramo = t.IdTramo and i.idbodega = t.IdBodega
+                                WHERE idinventarioenct = @IdInventarioEnc)"
+
+        Using da As New SqlDataAdapter(SQL, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+
+            da.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
+
+            da.Fill(DT)
+        End Using
+        Return DT
+    End Function
+
 End Class
