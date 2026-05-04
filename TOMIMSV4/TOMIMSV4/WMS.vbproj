@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>120</ApplicationRevision>
+    <ApplicationRevision>121</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -1502,6 +1502,18 @@
       <DependentUpon>frmInventarioDet.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
@@ -3804,6 +3816,12 @@
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
       <DependentUpon>frmInventarioDet.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.resx">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </EmbeddedResource>
@@ -4633,7 +4651,6 @@
     </Content>
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
-    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4703,7 +4720,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5484,7 +5500,6 @@
     <Folder Include="Mantenimientos\Impresión_Pallet\" />
     <Folder Include="Mantenimientos\PreFactura\" />
     <Folder Include="Mantenimientos\Producto_Parametro\" />
-    <Folder Include="Transacciones\Inventario\Inventario_rfid\" />
     <Folder Include="Transacciones\Picking\Balanceador\" />
     <Folder Include="Web References\bin\" />
   </ItemGroup>

@@ -92,6 +92,7 @@ Partial Public Class clsLnTrans_inv_enc
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
+                '#GT28042026: si tipo inventario es RFID omitir de la lista clasica de inventarios.
                 Dim vSQL As String = String.Format("SELECT trans_inv_enc.idinventarioenc, trans_inv_enc.idpropietario, trans_inv_enc.idbodega, trans_inv_enc.idtipoinventario, 
                          trans_inv_enc.tipo_conteo_producto, trans_inv_enc.doble_verificacion, trans_inv_enc.fecha, trans_inv_enc.estado, trans_inv_enc.inicial, 
                          trans_inv_enc.activo, trans_inv_enc.regularizado, trans_inv_enc.hora_ini, trans_inv_enc.hora_fin, trans_inv_enc.user_agr, 
@@ -103,8 +104,9 @@ Partial Public Class clsLnTrans_inv_enc
                          trans_inv_enc ON TipoInventario.IdTipoInv = trans_inv_enc.idtipoinventario LEFT OUTER JOIN
                          TipoConteo ON trans_inv_enc.tipo_conteo_producto = TipoConteo.IdTipoConteo LEFT OUTER JOIN
                          bodega ON trans_inv_enc.idbodega = bodega.idbodega  LEFT OUTER JOIN
-                         propietarios ON trans_inv_enc.idinventarioenc = propietarios.IdPropietario
-                         WHERE trans_inv_enc.idbodega = {0} AND cast(trans_inv_enc.Fecha as Date) >={1} and cast(trans_inv_enc.Fecha as Date) <={2} ",
+                         propietarios ON trans_inv_enc.idpropietario = propietarios.IdPropietario
+                         WHERE trans_inv_enc.idbodega = {0}  AND ISNULL(TipoInventario.Es_RFID, 0) <> 1
+                         AND cast(trans_inv_enc.Fecha as Date) >={1} and cast(trans_inv_enc.Fecha as Date) <={2} ",
                                                    IdBodega, FormatoFechas.fFecha(pFechaInicio), FormatoFechas.fFecha(pFechaFin))
 
                 If pActivos Then
@@ -137,7 +139,6 @@ Partial Public Class clsLnTrans_inv_enc
                         If dr("IdPropietario") IsNot DBNull.Value AndAlso dr("IdPropietario") IsNot Nothing Then
 
                             If dr("IdPropietario") = 0 Then
-
                                 'vBeTrans_inv_enc.Propietario = clsLnPropietarios.GetSingle(dr("IdPropietario"))
                                 vBeTrans_inv_enc.Propietario.Nombre_comercial = "INVENTARIO MULTI-PROPIETARIO"
 
@@ -152,13 +153,13 @@ Partial Public Class clsLnTrans_inv_enc
                         If dr("idtipoinventario") IsNot DBNull.Value AndAlso dr("idtipoinventario") IsNot Nothing Then
                             vBeTrans_inv_enc.TipoInv = New clsBeTipoInventario
                             vBeTrans_inv_enc.TipoInv.IdTipoInv = CType(dr("idtipoinventario"), Integer)
-                            vBeTrans_inv_enc.TipoInv.Descripcion = CType(dr("Inventario"), String)
+                            vBeTrans_inv_enc.TipoInv.Descripcion = If(IsDBNull(dr("Inventario")), String.Empty, CType(dr("Inventario"), String))
                         End If
 
                         If dr("tipo_conteo_producto") > 0 AndAlso dr("tipo_conteo_producto") IsNot Nothing Then
                             vBeTrans_inv_enc.TipoConteo = New clsBeTipoConteo
                             vBeTrans_inv_enc.TipoConteo.IdTipoConteo = CType(dr("tipo_conteo_producto"), Integer)
-                            vBeTrans_inv_enc.TipoConteo.Descripcion = CType(dr("Conteo"), String)
+                            vBeTrans_inv_enc.TipoConteo.Descripcion = If(IsDBNull(dr("Conteo")), String.Empty, CType(dr("Conteo"), String))
                         End If
 
                         lReturnList.Add(vBeTrans_inv_enc)
@@ -3475,6 +3476,104 @@ Partial Public Class clsLnTrans_inv_enc
             cmd.Dispose()
 
             Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    '#GT28042026: listar inventarios que sean de tipo_inventario RFID=1
+    Public Shared Function Listar_Inventarios_RFID_By_Rango_Fechas(ByVal pFechaInicio As Date,
+                                                                   ByVal pFechaFin As Date,
+                                                                   ByVal IdBodega As Integer,
+                                                                   ByVal pActivos As Boolean) As List(Of clsBeTrans_inv_enc)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_inv_enc)
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                '#GT28042026: si tipo inventario es RFID omitir de la lista clasica de inventarios.
+                Dim vSQL As String = String.Format("SELECT trans_inv_enc.idinventarioenc, trans_inv_enc.idpropietario, trans_inv_enc.idbodega, trans_inv_enc.idtipoinventario, 
+                         trans_inv_enc.tipo_conteo_producto, trans_inv_enc.doble_verificacion, trans_inv_enc.fecha, trans_inv_enc.estado, trans_inv_enc.inicial, 
+                         trans_inv_enc.activo, trans_inv_enc.regularizado, trans_inv_enc.hora_ini, trans_inv_enc.hora_fin, trans_inv_enc.user_agr, 
+                         trans_inv_enc.fec_agr, trans_inv_enc.user_mod, trans_inv_enc.fec_mod, trans_inv_enc.fecha_ultimo_inventario, propietarios.nombre_comercial AS Propietario, 
+                         bodega.nombre AS Bodega, TipoConteo.Descripcion AS Conteo, TipoInventario.Descripcion AS Inventario,trans_inv_enc.EsSistema, trans_inv_enc.cambia_ubicacion,
+                         trans_inv_enc.mostrar_cantidad_teorica_hh,trans_inv_enc.IdProductoFamilia,trans_inv_enc.IdBodegaVirtual,trans_inv_enc.capturar_no_existente,trans_inv_enc.multi_propietario,
+                         trans_inv_enc.IdCentroCosto, trans_inv_enc.Tipo_Asignacion, trans_inv_enc.Capturar_No_Asignados
+                         FROM TipoInventario RIGHT OUTER JOIN
+                         trans_inv_enc ON TipoInventario.IdTipoInv = trans_inv_enc.idtipoinventario LEFT OUTER JOIN
+                         TipoConteo ON trans_inv_enc.tipo_conteo_producto = TipoConteo.IdTipoConteo LEFT OUTER JOIN
+                         bodega ON trans_inv_enc.idbodega = bodega.idbodega  LEFT OUTER JOIN
+                         propietarios ON trans_inv_enc.idpropietario = propietarios.IdPropietario
+                         WHERE trans_inv_enc.idbodega = {0}  AND TipoInventario.Es_RFID = 1
+                         AND cast(trans_inv_enc.Fecha as Date) >={1} and cast(trans_inv_enc.Fecha as Date) <={2} ",
+                                                   IdBodega, FormatoFechas.fFecha(pFechaInicio), FormatoFechas.fFecha(pFechaFin))
+
+                If pActivos Then
+                    vSQL += " AND trans_inv_enc.activo = 1 "
+                Else
+                    vSQL += " AND trans_inv_enc.activo = 0 "
+                End If
+
+                Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                    lDTA.SelectCommand.CommandType = CommandType.Text
+
+                    Dim lDataTable As New DataTable
+                    lDTA.Fill(lDataTable)
+
+                    Dim vBeTrans_inv_enc As New clsBeTrans_inv_enc
+
+                    For Each dr As DataRow In lDataTable.Rows
+
+                        vBeTrans_inv_enc = New clsBeTrans_inv_enc
+
+                        Cargar(vBeTrans_inv_enc, dr)
+
+                        If dr("IdBodega") IsNot DBNull.Value AndAlso dr("IdBodega") IsNot Nothing Then
+                            vBeTrans_inv_enc.Bodega = New clsBeBodega
+                            vBeTrans_inv_enc.Bodega.IdBodega = CType(dr("IdBodega"), Integer)
+                            vBeTrans_inv_enc.Bodega.Nombre = CType(dr("Bodega"), String)
+                        End If
+
+                        If dr("IdPropietario") IsNot DBNull.Value AndAlso dr("IdPropietario") IsNot Nothing Then
+
+                            If dr("IdPropietario") = 0 Then
+                                'vBeTrans_inv_enc.Propietario = clsLnPropietarios.GetSingle(dr("IdPropietario"))
+                                vBeTrans_inv_enc.Propietario.Nombre_comercial = "INVENTARIO MULTI-PROPIETARIO"
+
+                            Else
+                                vBeTrans_inv_enc.Propietario = New clsBePropietarios
+                                vBeTrans_inv_enc.Propietario = clsLnPropietarios.GetSingle(dr("IdPropietario"))
+                                vBeTrans_inv_enc.Propietario.Nombre_comercial = vBeTrans_inv_enc.Propietario.Nombre_comercial
+                            End If
+
+                        End If
+
+                        If dr("idtipoinventario") IsNot DBNull.Value AndAlso dr("idtipoinventario") IsNot Nothing Then
+                            vBeTrans_inv_enc.TipoInv = New clsBeTipoInventario
+                            vBeTrans_inv_enc.TipoInv.IdTipoInv = CType(dr("idtipoinventario"), Integer)
+                            vBeTrans_inv_enc.TipoInv.Descripcion = If(IsDBNull(dr("Inventario")), String.Empty, CType(dr("Inventario"), String))
+                        End If
+
+                        If dr("tipo_conteo_producto") > 0 AndAlso dr("tipo_conteo_producto") IsNot Nothing Then
+                            vBeTrans_inv_enc.TipoConteo = New clsBeTipoConteo
+                            vBeTrans_inv_enc.TipoConteo.IdTipoConteo = CType(dr("tipo_conteo_producto"), Integer)
+                            vBeTrans_inv_enc.TipoConteo.Descripcion = If(IsDBNull(dr("Conteo")), String.Empty, CType(dr("Conteo"), String))
+                        End If
+
+                        lReturnList.Add(vBeTrans_inv_enc)
+                    Next
+
+                    Return lReturnList
+
+                End Using
+            End Using
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
