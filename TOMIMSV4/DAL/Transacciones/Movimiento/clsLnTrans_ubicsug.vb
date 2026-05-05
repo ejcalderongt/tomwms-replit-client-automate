@@ -604,6 +604,7 @@ Public Class clsLnTrans_ubicsug : Implements IDisposable
                 End If
             End If
 
+
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)

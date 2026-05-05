@@ -33,6 +33,7 @@ Partial Class frmImpresionRecepcion_OC
         Dim Label7 As System.Windows.Forms.Label
         Dim Label8 As System.Windows.Forms.Label
         Dim Label9 As System.Windows.Forms.Label
+        Dim Label1 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmImpresionRecepcion_OC))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
@@ -53,6 +54,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtCopias = New System.Windows.Forms.NumericUpDown()
         Me.lblEtiquetas = New DevExpress.XtraEditors.LabelControl()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtPesoTarima = New System.Windows.Forms.NumericUpDown()
         Me.txtCajaPorCama = New System.Windows.Forms.NumericUpDown()
         Me.txtCamaPorTarima = New System.Windows.Forms.NumericUpDown()
         Me.txtPresentacion = New DevExpress.XtraEditors.TextEdit()
@@ -68,6 +70,12 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtCantidadLicencias = New System.Windows.Forms.NumericUpDown()
         Me.txtCantidadBarras = New System.Windows.Forms.NumericUpDown()
         Me.DxErrorProvider1 = New DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(Me.components)
+        Me.Cliente_direccionTableAdapter1 = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
+        Me.TabControl1 = New System.Windows.Forms.TabControl()
+        Me.tabImpresion = New System.Windows.Forms.TabPage()
+        Me.tabLicencias = New System.Windows.Forms.TabPage()
+        Me.dgridBarrasPallet = New DevExpress.XtraGrid.GridControl()
+        Me.GridView5 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Label5 = New System.Windows.Forms.Label()
         lblLicenciaCnt = New System.Windows.Forms.Label()
         lblProducto = New System.Windows.Forms.Label()
@@ -81,6 +89,7 @@ Partial Class frmImpresionRecepcion_OC
         Label7 = New System.Windows.Forms.Label()
         Label8 = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
+        Label1 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtTiempoActualizacionP, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.XtraScrollableControl.SuspendLayout()
@@ -91,6 +100,7 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.txtCopias, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
+        CType(Me.txtPesoTarima, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCajaPorCama, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCamaPorTarima, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -104,6 +114,11 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.txtCantidadLicencias, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidadBarras, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DxErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TabControl1.SuspendLayout()
+        Me.tabImpresion.SuspendLayout()
+        Me.tabLicencias.SuspendLayout()
+        CType(Me.dgridBarrasPallet, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView5, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label5
@@ -120,7 +135,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         lblLicenciaCnt.AutoSize = True
         lblLicenciaCnt.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblLicenciaCnt.Location = New System.Drawing.Point(39, 348)
+        lblLicenciaCnt.Location = New System.Drawing.Point(35, 368)
         lblLicenciaCnt.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblLicenciaCnt.Name = "lblLicenciaCnt"
         lblLicenciaCnt.Size = New System.Drawing.Size(69, 21)
@@ -131,7 +146,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         lblProducto.AutoSize = True
         lblProducto.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblProducto.Location = New System.Drawing.Point(33, 57)
+        lblProducto.Location = New System.Drawing.Point(29, 77)
         lblProducto.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblProducto.Name = "lblProducto"
         lblProducto.Size = New System.Drawing.Size(81, 21)
@@ -142,7 +157,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         lblLote.AutoSize = True
         lblLote.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblLote.Location = New System.Drawing.Point(33, 95)
+        lblLote.Location = New System.Drawing.Point(29, 115)
         lblLote.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblLote.Name = "lblLote"
         lblLote.Size = New System.Drawing.Size(48, 21)
@@ -153,7 +168,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         lblLicencia.AutoSize = True
         lblLicencia.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblLicencia.Location = New System.Drawing.Point(33, 179)
+        lblLicencia.Location = New System.Drawing.Point(29, 199)
         lblLicencia.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblLicencia.Name = "lblLicencia"
         lblLicencia.Size = New System.Drawing.Size(75, 21)
@@ -164,7 +179,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Label3.AutoSize = True
         Label3.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label3.Location = New System.Drawing.Point(239, 324)
+        Label3.Location = New System.Drawing.Point(235, 344)
         Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label3.Name = "Label3"
         Label3.Size = New System.Drawing.Size(81, 21)
@@ -175,7 +190,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Label4.AutoSize = True
         Label4.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label4.Location = New System.Drawing.Point(328, 324)
+        Label4.Location = New System.Drawing.Point(324, 344)
         Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label4.Name = "Label4"
         Label4.Size = New System.Drawing.Size(92, 21)
@@ -186,7 +201,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         lblVencimiento.AutoSize = True
         lblVencimiento.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblVencimiento.Location = New System.Drawing.Point(33, 139)
+        lblVencimiento.Location = New System.Drawing.Point(29, 159)
         lblVencimiento.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblVencimiento.Name = "lblVencimiento"
         lblVencimiento.Size = New System.Drawing.Size(107, 21)
@@ -241,12 +256,23 @@ Partial Class frmImpresionRecepcion_OC
         '
         Label9.AutoSize = True
         Label9.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label9.Location = New System.Drawing.Point(860, 298)
+        Label9.Location = New System.Drawing.Point(698, 344)
         Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label9.Name = "Label9"
         Label9.Size = New System.Drawing.Size(65, 21)
         Label9.TabIndex = 45
         Label9.Text = "Copias:"
+        '
+        'Label1
+        '
+        Label1.AutoSize = True
+        Label1.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label1.Location = New System.Drawing.Point(15, 187)
+        Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label1.Name = "Label1"
+        Label1.Size = New System.Drawing.Size(121, 21)
+        Label1.TabIndex = 46
+        Label1.Text = "Peso x Tarima:"
         '
         'RibbonControl
         '
@@ -257,7 +283,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1080, 40)
+        Me.RibbonControl.Size = New System.Drawing.Size(1125, 40)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'RibbonPage1
@@ -271,10 +297,10 @@ Partial Class frmImpresionRecepcion_OC
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 627)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 706)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1080, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1125, 30)
         '
         'cmdPrintLicencia
         '
@@ -306,7 +332,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtTiempoActualizacionP.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtTiempoActualizacionP.Maximum = New Decimal(New Integer() {50000, 0, 0, 0})
         Me.txtTiempoActualizacionP.Name = "txtTiempoActualizacionP"
-        Me.txtTiempoActualizacionP.Size = New System.Drawing.Size(96, 20)
+        Me.txtTiempoActualizacionP.Size = New System.Drawing.Size(96, 22)
         Me.txtTiempoActualizacionP.TabIndex = 8
         Me.txtTiempoActualizacionP.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
@@ -317,44 +343,17 @@ Partial Class frmImpresionRecepcion_OC
         Me.XtraScrollableControl.Location = New System.Drawing.Point(0, 40)
         Me.XtraScrollableControl.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.XtraScrollableControl.Name = "XtraScrollableControl"
-        Me.XtraScrollableControl.Size = New System.Drawing.Size(1080, 587)
+        Me.XtraScrollableControl.Size = New System.Drawing.Size(1125, 666)
         Me.XtraScrollableControl.TabIndex = 5
         '
         'GroupControl4
         '
-        Me.GroupControl4.Controls.Add(Me.chkLicenciaBulto)
-        Me.GroupControl4.Controls.Add(Me.chkSoloLicencia)
-        Me.GroupControl4.Controls.Add(Me.cmdUnidad)
-        Me.GroupControl4.Controls.Add(Me.lblUmbasCant)
-        Me.GroupControl4.Controls.Add(Me.cmdPrinterUmbas)
-        Me.GroupControl4.Controls.Add(Me.txtCantUmBas)
-        Me.GroupControl4.Controls.Add(Me.lblProductoPres)
-        Me.GroupControl4.Controls.Add(Label9)
-        Me.GroupControl4.Controls.Add(Me.txtCopias)
-        Me.GroupControl4.Controls.Add(Me.lblEtiquetas)
-        Me.GroupControl4.Controls.Add(Me.GroupControl1)
-        Me.GroupControl4.Controls.Add(lblVencimiento)
-        Me.GroupControl4.Controls.Add(Me.txtVencimiento)
-        Me.GroupControl4.Controls.Add(Me.cmbProducto)
-        Me.GroupControl4.Controls.Add(Me.cmbLote)
-        Me.GroupControl4.Controls.Add(Label4)
-        Me.GroupControl4.Controls.Add(Me.cmdImpresionLicencia)
-        Me.GroupControl4.Controls.Add(Me.cmdImpresionBarra)
-        Me.GroupControl4.Controls.Add(Label3)
-        Me.GroupControl4.Controls.Add(Me.cmbPrinterLicencia)
-        Me.GroupControl4.Controls.Add(Me.cmbPrinterBarra)
-        Me.GroupControl4.Controls.Add(lblLicencia)
-        Me.GroupControl4.Controls.Add(Me.txtLicencia)
-        Me.GroupControl4.Controls.Add(lblProducto)
-        Me.GroupControl4.Controls.Add(lblLote)
-        Me.GroupControl4.Controls.Add(Me.txtCantidadLicencias)
-        Me.GroupControl4.Controls.Add(lblLicenciaCnt)
-        Me.GroupControl4.Controls.Add(Me.txtCantidadBarras)
+        Me.GroupControl4.Controls.Add(Me.TabControl1)
         Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl4.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1080, 587)
+        Me.GroupControl4.Size = New System.Drawing.Size(1125, 666)
         Me.GroupControl4.TabIndex = 2
         Me.GroupControl4.Text = "Datos para impresión"
         '
@@ -362,7 +361,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.chkLicenciaBulto.AutoSize = True
         Me.chkLicenciaBulto.Font = New System.Drawing.Font("Tahoma", 10.2!)
-        Me.chkLicenciaBulto.Location = New System.Drawing.Point(243, 275)
+        Me.chkLicenciaBulto.Location = New System.Drawing.Point(239, 295)
         Me.chkLicenciaBulto.Name = "chkLicenciaBulto"
         Me.chkLicenciaBulto.Size = New System.Drawing.Size(211, 25)
         Me.chkLicenciaBulto.TabIndex = 52
@@ -374,7 +373,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.chkSoloLicencia.AutoSize = True
         Me.chkSoloLicencia.Checked = True
         Me.chkSoloLicencia.Font = New System.Drawing.Font("Tahoma", 10.2!)
-        Me.chkSoloLicencia.Location = New System.Drawing.Point(243, 249)
+        Me.chkSoloLicencia.Location = New System.Drawing.Point(239, 269)
         Me.chkSoloLicencia.Name = "chkSoloLicencia"
         Me.chkSoloLicencia.Size = New System.Drawing.Size(134, 25)
         Me.chkSoloLicencia.TabIndex = 51
@@ -388,7 +387,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.cmdUnidad.Appearance.Options.UseFont = True
         Me.cmdUnidad.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
         Me.cmdUnidad.ImageOptions.SvgImage = CType(resources.GetObject("cmdUnidad.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdUnidad.Location = New System.Drawing.Point(580, 458)
+        Me.cmdUnidad.Location = New System.Drawing.Point(576, 478)
         Me.cmdUnidad.Name = "cmdUnidad"
         Me.cmdUnidad.Size = New System.Drawing.Size(97, 73)
         Me.cmdUnidad.TabIndex = 50
@@ -398,7 +397,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.lblUmbasCant.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblUmbasCant.Appearance.Options.UseFont = True
-        Me.lblUmbasCant.Location = New System.Drawing.Point(42, 424)
+        Me.lblUmbasCant.Location = New System.Drawing.Point(38, 444)
         Me.lblUmbasCant.Name = "lblUmbasCant"
         Me.lblUmbasCant.Size = New System.Drawing.Size(130, 21)
         Me.lblUmbasCant.TabIndex = 49
@@ -406,7 +405,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'cmdPrinterUmbas
         '
-        Me.cmdPrinterUmbas.Location = New System.Drawing.Point(332, 423)
+        Me.cmdPrinterUmbas.Location = New System.Drawing.Point(328, 443)
         Me.cmdPrinterUmbas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmdPrinterUmbas.MenuManager = Me.RibbonControl
         Me.cmdPrinterUmbas.Name = "cmdPrinterUmbas"
@@ -421,7 +420,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCantUmBas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCantUmBas.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCantUmBas.Location = New System.Drawing.Point(243, 422)
+        Me.txtCantUmBas.Location = New System.Drawing.Point(239, 442)
         Me.txtCantUmBas.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantUmBas.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCantUmBas.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -434,7 +433,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.lblProductoPres.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblProductoPres.Appearance.Options.UseFont = True
-        Me.lblProductoPres.Location = New System.Drawing.Point(42, 386)
+        Me.lblProductoPres.Location = New System.Drawing.Point(38, 406)
         Me.lblProductoPres.Name = "lblProductoPres"
         Me.lblProductoPres.Size = New System.Drawing.Size(108, 21)
         Me.lblProductoPres.TabIndex = 46
@@ -444,7 +443,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCopias.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCopias.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCopias.Location = New System.Drawing.Point(859, 320)
+        Me.txtCopias.Location = New System.Drawing.Point(697, 366)
         Me.txtCopias.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCopias.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCopias.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -457,7 +456,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.lblEtiquetas.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblEtiquetas.Appearance.Options.UseFont = True
-        Me.lblEtiquetas.Location = New System.Drawing.Point(859, 352)
+        Me.lblEtiquetas.Location = New System.Drawing.Point(697, 398)
         Me.lblEtiquetas.Name = "lblEtiquetas"
         Me.lblEtiquetas.Size = New System.Drawing.Size(170, 21)
         Me.lblEtiquetas.TabIndex = 43
@@ -466,6 +465,10 @@ Partial Class frmImpresionRecepcion_OC
         '
         'GroupControl1
         '
+        Me.GroupControl1.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.GroupControl1.Appearance.Options.UseBackColor = True
+        Me.GroupControl1.Controls.Add(Me.txtPesoTarima)
+        Me.GroupControl1.Controls.Add(Label1)
         Me.GroupControl1.Controls.Add(Me.txtCajaPorCama)
         Me.GroupControl1.Controls.Add(Me.txtCamaPorTarima)
         Me.GroupControl1.Controls.Add(Label8)
@@ -474,11 +477,25 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl1.Controls.Add(Label2)
         Me.GroupControl1.Controls.Add(Me.txtPresentacion)
         Me.GroupControl1.Controls.Add(Me.txtFactor)
-        Me.GroupControl1.Location = New System.Drawing.Point(632, 48)
+        Me.GroupControl1.Location = New System.Drawing.Point(628, 68)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(436, 186)
+        Me.GroupControl1.Size = New System.Drawing.Size(436, 252)
         Me.GroupControl1.TabIndex = 42
         Me.GroupControl1.Text = "Atributos de producto"
+        '
+        'txtPesoTarima
+        '
+        Me.txtPesoTarima.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtPesoTarima.DecimalPlaces = 6
+        Me.txtPesoTarima.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtPesoTarima.Location = New System.Drawing.Point(153, 183)
+        Me.txtPesoTarima.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtPesoTarima.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
+        Me.txtPesoTarima.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
+        Me.txtPesoTarima.Name = "txtPesoTarima"
+        Me.txtPesoTarima.Size = New System.Drawing.Size(250, 28)
+        Me.txtPesoTarima.TabIndex = 47
+        Me.txtPesoTarima.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'txtCajaPorCama
         '
@@ -536,7 +553,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'txtVencimiento
         '
-        Me.txtVencimiento.Location = New System.Drawing.Point(154, 132)
+        Me.txtVencimiento.Location = New System.Drawing.Point(150, 152)
         Me.txtVencimiento.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtVencimiento.Name = "txtVencimiento"
         Me.txtVencimiento.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
@@ -550,7 +567,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'cmbProducto
         '
-        Me.cmbProducto.Location = New System.Drawing.Point(154, 54)
+        Me.cmbProducto.Location = New System.Drawing.Point(150, 74)
         Me.cmbProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbProducto.MenuManager = Me.RibbonControl
         Me.cmbProducto.Name = "cmbProducto"
@@ -563,7 +580,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'cmbLote
         '
-        Me.cmbLote.Location = New System.Drawing.Point(154, 92)
+        Me.cmbLote.Location = New System.Drawing.Point(150, 112)
         Me.cmbLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbLote.MenuManager = Me.RibbonControl
         Me.cmbLote.Name = "cmbLote"
@@ -580,7 +597,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.cmdImpresionLicencia.Appearance.Options.UseFont = True
         Me.cmdImpresionLicencia.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
         Me.cmdImpresionLicencia.ImageOptions.SvgImage = CType(resources.GetObject("cmdImpresionLicencia.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdImpresionLicencia.Location = New System.Drawing.Point(332, 458)
+        Me.cmdImpresionLicencia.Location = New System.Drawing.Point(328, 478)
         Me.cmdImpresionLicencia.Name = "cmdImpresionLicencia"
         Me.cmdImpresionLicencia.Size = New System.Drawing.Size(102, 73)
         Me.cmdImpresionLicencia.TabIndex = 32
@@ -592,7 +609,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.cmdImpresionBarra.Appearance.Options.UseFont = True
         Me.cmdImpresionBarra.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
         Me.cmdImpresionBarra.ImageOptions.SvgImage = CType(resources.GetObject("cmdImpresionBarra.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdImpresionBarra.Location = New System.Drawing.Point(455, 458)
+        Me.cmdImpresionBarra.Location = New System.Drawing.Point(451, 478)
         Me.cmdImpresionBarra.Name = "cmdImpresionBarra"
         Me.cmdImpresionBarra.Size = New System.Drawing.Size(97, 73)
         Me.cmdImpresionBarra.TabIndex = 31
@@ -600,7 +617,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'cmbPrinterLicencia
         '
-        Me.cmbPrinterLicencia.Location = New System.Drawing.Point(332, 349)
+        Me.cmbPrinterLicencia.Location = New System.Drawing.Point(328, 369)
         Me.cmbPrinterLicencia.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbPrinterLicencia.MenuManager = Me.RibbonControl
         Me.cmbPrinterLicencia.Name = "cmbPrinterLicencia"
@@ -613,7 +630,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'cmbPrinterBarra
         '
-        Me.cmbPrinterBarra.Location = New System.Drawing.Point(332, 385)
+        Me.cmbPrinterBarra.Location = New System.Drawing.Point(328, 405)
         Me.cmbPrinterBarra.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbPrinterBarra.MenuManager = Me.RibbonControl
         Me.cmbPrinterBarra.Name = "cmbPrinterBarra"
@@ -626,7 +643,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'txtLicencia
         '
-        Me.txtLicencia.Location = New System.Drawing.Point(154, 172)
+        Me.txtLicencia.Location = New System.Drawing.Point(150, 192)
         Me.txtLicencia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtLicencia.Name = "txtLicencia"
         Me.txtLicencia.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
@@ -642,7 +659,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCantidadLicencias.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCantidadLicencias.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCantidadLicencias.Location = New System.Drawing.Point(243, 348)
+        Me.txtCantidadLicencias.Location = New System.Drawing.Point(239, 368)
         Me.txtCantidadLicencias.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantidadLicencias.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCantidadLicencias.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -655,7 +672,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.txtCantidadBarras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCantidadBarras.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCantidadBarras.Location = New System.Drawing.Point(243, 384)
+        Me.txtCantidadBarras.Location = New System.Drawing.Point(239, 404)
         Me.txtCantidadBarras.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantidadBarras.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtCantidadBarras.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
@@ -668,11 +685,98 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.DxErrorProvider1.ContainerControl = Me
         '
+        'Cliente_direccionTableAdapter1
+        '
+        Me.Cliente_direccionTableAdapter1.ClearBeforeFill = True
+        '
+        'TabControl1
+        '
+        Me.TabControl1.Controls.Add(Me.tabImpresion)
+        Me.TabControl1.Controls.Add(Me.tabLicencias)
+        Me.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TabControl1.Location = New System.Drawing.Point(2, 28)
+        Me.TabControl1.Name = "TabControl1"
+        Me.TabControl1.SelectedIndex = 0
+        Me.TabControl1.Size = New System.Drawing.Size(1121, 636)
+        Me.TabControl1.TabIndex = 53
+        '
+        'tabImpresion
+        '
+        Me.tabImpresion.Controls.Add(lblProducto)
+        Me.tabImpresion.Controls.Add(Me.chkLicenciaBulto)
+        Me.tabImpresion.Controls.Add(Me.txtCantidadBarras)
+        Me.tabImpresion.Controls.Add(Me.chkSoloLicencia)
+        Me.tabImpresion.Controls.Add(lblLicenciaCnt)
+        Me.tabImpresion.Controls.Add(Me.cmdUnidad)
+        Me.tabImpresion.Controls.Add(Me.txtCantidadLicencias)
+        Me.tabImpresion.Controls.Add(Me.lblUmbasCant)
+        Me.tabImpresion.Controls.Add(lblLote)
+        Me.tabImpresion.Controls.Add(Me.cmdPrinterUmbas)
+        Me.tabImpresion.Controls.Add(Me.txtLicencia)
+        Me.tabImpresion.Controls.Add(Me.txtCantUmBas)
+        Me.tabImpresion.Controls.Add(lblLicencia)
+        Me.tabImpresion.Controls.Add(Me.lblProductoPres)
+        Me.tabImpresion.Controls.Add(Me.cmbPrinterBarra)
+        Me.tabImpresion.Controls.Add(Label9)
+        Me.tabImpresion.Controls.Add(Me.cmbPrinterLicencia)
+        Me.tabImpresion.Controls.Add(Me.txtCopias)
+        Me.tabImpresion.Controls.Add(Label3)
+        Me.tabImpresion.Controls.Add(Me.lblEtiquetas)
+        Me.tabImpresion.Controls.Add(Me.cmdImpresionBarra)
+        Me.tabImpresion.Controls.Add(Me.GroupControl1)
+        Me.tabImpresion.Controls.Add(Me.cmdImpresionLicencia)
+        Me.tabImpresion.Controls.Add(lblVencimiento)
+        Me.tabImpresion.Controls.Add(Label4)
+        Me.tabImpresion.Controls.Add(Me.txtVencimiento)
+        Me.tabImpresion.Controls.Add(Me.cmbLote)
+        Me.tabImpresion.Controls.Add(Me.cmbProducto)
+        Me.tabImpresion.Location = New System.Drawing.Point(4, 25)
+        Me.tabImpresion.Name = "tabImpresion"
+        Me.tabImpresion.Padding = New System.Windows.Forms.Padding(3)
+        Me.tabImpresion.Size = New System.Drawing.Size(1113, 607)
+        Me.tabImpresion.TabIndex = 0
+        Me.tabImpresion.Text = "Impresión"
+        Me.tabImpresion.UseVisualStyleBackColor = True
+        '
+        'tabLicencias
+        '
+        Me.tabLicencias.Controls.Add(Me.dgridBarrasPallet)
+        Me.tabLicencias.Location = New System.Drawing.Point(4, 25)
+        Me.tabLicencias.Name = "tabLicencias"
+        Me.tabLicencias.Padding = New System.Windows.Forms.Padding(3)
+        Me.tabLicencias.Size = New System.Drawing.Size(1456, 607)
+        Me.tabLicencias.TabIndex = 1
+        Me.tabLicencias.Text = "Licencias"
+        Me.tabLicencias.UseVisualStyleBackColor = True
+        '
+        'dgridBarrasPallet
+        '
+        Me.dgridBarrasPallet.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridBarrasPallet.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.dgridBarrasPallet.Location = New System.Drawing.Point(3, 3)
+        Me.dgridBarrasPallet.MainView = Me.GridView5
+        Me.dgridBarrasPallet.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.dgridBarrasPallet.Name = "dgridBarrasPallet"
+        Me.dgridBarrasPallet.Size = New System.Drawing.Size(1450, 601)
+        Me.dgridBarrasPallet.TabIndex = 1
+        Me.dgridBarrasPallet.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView5})
+        '
+        'GridView5
+        '
+        Me.GridView5.Appearance.HeaderPanel.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridView5.Appearance.HeaderPanel.Options.UseFont = True
+        Me.GridView5.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridView5.Appearance.Row.Options.UseFont = True
+        Me.GridView5.DetailHeight = 437
+        Me.GridView5.GridControl = Me.dgridBarrasPallet
+        Me.GridView5.Name = "GridView5"
+        Me.GridView5.OptionsFind.AlwaysVisible = True
+        '
         'frmImpresionRecepcion_OC
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1080, 657)
+        Me.ClientSize = New System.Drawing.Size(1125, 736)
         Me.Controls.Add(Me.XtraScrollableControl)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
@@ -688,13 +792,13 @@ Partial Class frmImpresionRecepcion_OC
         Me.XtraScrollableControl.ResumeLayout(False)
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl4.ResumeLayout(False)
-        Me.GroupControl4.PerformLayout()
         CType(Me.cmdPrinterUmbas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantUmBas, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCopias, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
         Me.GroupControl1.PerformLayout()
+        CType(Me.txtPesoTarima, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCajaPorCama, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCamaPorTarima, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -708,6 +812,12 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.txtCantidadLicencias, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidadBarras, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DxErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TabControl1.ResumeLayout(False)
+        Me.tabImpresion.ResumeLayout(False)
+        Me.tabImpresion.PerformLayout()
+        Me.tabLicencias.ResumeLayout(False)
+        CType(Me.dgridBarrasPallet, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView5, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -747,4 +857,11 @@ Partial Class frmImpresionRecepcion_OC
     Friend WithEvents cmdUnidad As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents chkLicenciaBulto As RadioButton
     Friend WithEvents chkSoloLicencia As RadioButton
+    Friend WithEvents txtPesoTarima As NumericUpDown
+    Friend WithEvents TabControl1 As TabControl
+    Friend WithEvents tabImpresion As TabPage
+    Friend WithEvents tabLicencias As TabPage
+    Friend WithEvents Cliente_direccionTableAdapter1 As cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter
+    Friend WithEvents dgridBarrasPallet As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView5 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

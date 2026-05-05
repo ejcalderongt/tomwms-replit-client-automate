@@ -1148,7 +1148,7 @@ Partial Public Class clsLnTrans_oc_det_lote
 
         Try
 
-            Dim vSQL As String = "SELECT IdOrdenCompraDetLote as IdLote,lote, fecha_vence,cantidad 
+            Dim vSQL As String = "SELECT IdOrdenCompraDetLote as IdLote,lote, fecha_vence,cantidad, peso_licencia 
                                   FROM trans_oc_det_lote
                                   WHERE IdOrdenCompraEnc=@IdOrdenCompraEnc AND IdOrdenCompraDet = @IdOrdenCompraDet "
 
@@ -1208,4 +1208,101 @@ Partial Public Class clsLnTrans_oc_det_lote
 
     End Function
 
+    Public Shared Function Get_Correlativo_Inferido_Tarima_Actual(ByVal pIdOrdenCompraEnc As Integer,
+                                                                  ByVal pIdOrdenCompraDet As Integer) As Integer
+
+        Dim result As Integer = 0
+
+        Try
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                cn.Open()
+
+                Using cmd As New SqlCommand("
+                SELECT COUNT(1)
+                FROM trans_oc_det_lote
+                WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
+                  AND IdOrdenCompraDet = @IdOrdenCompraDet
+                  AND ISNULL(lic_plate, '') <> ''
+            ", cn)
+
+                    cmd.Parameters.Add("@IdOrdenCompraEnc", SqlDbType.Int).Value = pIdOrdenCompraEnc
+                    cmd.Parameters.Add("@IdOrdenCompraDet", SqlDbType.Int).Value = pIdOrdenCompraDet
+
+                    result = Convert.ToInt32(cmd.ExecuteScalar())
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("Error obteniendo correlativo inferido de tarima actual.", ex)
+        End Try
+
+        Return result
+
+    End Function
+
+    Public Shared Function Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(
+       ByVal idOrdenCompraEnc As Integer,
+       ByVal idOrdenCompraDet As Integer,
+       Optional ByVal pConnection As SqlConnection = Nothing,
+       Optional ByVal pTransaction As SqlTransaction = Nothing
+   ) As DataTable
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lDTA As SqlDataAdapter = Nothing
+        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+        Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet = Nothing
+
+        Try
+            Dim vSQL As String = "
+            SELECT 
+                IdPallet,
+                Codigo_Barra AS Licencia,
+                Fecha_Vence,
+                Lote,
+                Cantidad_Presentacion,
+                Cantidad_UMP,
+                ISNULL(peso, 0) AS Peso
+            FROM i_nav_barras_pallet
+            WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
+              AND IdOrdenCompraDet = @IdOrdenCompraDet
+            ORDER BY Fecha_Agregado DESC;
+        "
+
+            If Es_Transaccion_Remota Then
+                lDTA = New SqlDataAdapter(vSQL, pConnection)
+                lDTA.SelectCommand.Transaction = pTransaction
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                lDTA = New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.Transaction = lTransaction
+            End If
+
+            lDTA.SelectCommand.CommandType = CommandType.Text
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", idOrdenCompraEnc)
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraDet", idOrdenCompraDet)
+
+            Dim lDataTable As New DataTable()
+            lDTA.Fill(lDataTable)
+
+            Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet = lDataTable
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
+        Finally
+            If lDTA IsNot Nothing Then lDTA.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then
+                If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                lConnection.Dispose()
+            End If
+        End Try
+
+    End Function
 End Class

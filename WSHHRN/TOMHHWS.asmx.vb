@@ -5945,7 +5945,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp)
+            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp, True)
 
         Catch ex As Exception
 
@@ -12962,11 +12962,11 @@ Public Class TOMHHWS
             Dim esvalida As Boolean = clsLnTrans_ubicsug.Ubicacion_Es_Valida(pIdProducto, pIdUbicacion, pIdBodega)
 
             Dim json As String = JsonConvert.SerializeObject(New With {
-    .UbicacionValida = esvalida
-},
-New JsonSerializerSettings With {
-    .NullValueHandling = NullValueHandling.Include
-})
+            .UbicacionValida = esvalida
+                        },
+            New JsonSerializerSettings With {
+                .NullValueHandling = NullValueHandling.Include
+            })
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
@@ -18623,6 +18623,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_TipoEtiqueta_By_Id(ByVal pIdTipoEtiqueta As Integer) As clsBeTipo_etiqueta
         Try
@@ -18662,6 +18663,7 @@ New JsonSerializerSettings With {
             Return Nothing ' ✅ si no hay mArch, igual retornar algo
         End Try
     End Function
+
     '#MA20251204'
     <WebMethod(), SoapHeader("mArch")>
     Public Function Operador_Tiene_Permiso(ByVal pOperador As clsBeOperador, ByVal pOpcion As String) As Boolean
@@ -18952,13 +18954,15 @@ New JsonSerializerSettings With {
 
     '#GT07042026: cargar stock para la HH
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer) As List(Of clsBeI_nav_barras_rfid_enc)
+    Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
+
 
         Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
 
         Try
 
-            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina)
+            Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina, pBusqueda, pCriterioBusqueda)
+
 
         Catch ex As Exception
 
@@ -19306,7 +19310,12 @@ New JsonSerializerSettings With {
         Catch ex As Exception
 
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_reab.Agregar_Error(vMsgError, pIdStockNuevo, pIdMovimientoNuevo, pMovimiento.Lic_plate, pMovimiento.IdProductoBodega, pMovimiento.Cantidad)
+            clsLnLog_error_wms_reab.Agregar_Error(pMensajeExcepcion:=vMsgError,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                  pCantidad:=pMovimiento.Cantidad)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -19412,11 +19421,13 @@ New JsonSerializerSettings With {
     End Sub
 
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack(ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
+    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack(ByVal pStockResList As List(Of clsBeVW_stock_res),
+                                                                               ByVal pEsCambioEstado As Boolean) As Boolean
 
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
 
         Try
+
             If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
                 Throw New Exception("La lista enviada no contiene datos.")
             End If
@@ -19443,6 +19454,7 @@ New JsonSerializerSettings With {
                                              primeraLinea.Movimiento.IdOperadorBodega &
                                              " licencia: " & primeraLinea.Lic_plate)
 
+
             Dim exito As Boolean =
                 clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_HH_LicenciaCompleta_ConValidacionRack(primeraLinea.Movimiento,
                                                                                                        primeraLinea.Lic_plate,
@@ -19450,7 +19462,8 @@ New JsonSerializerSettings With {
                                                                                                        primeraLinea.Movimiento.IdUbicacionDestino,
                                                                                                        idStock,
                                                                                                        idMov,
-                                                                                                       0)
+                                                                                                       0,
+                                                                                                       pEsCambioEstado)
 
             If Not exito Then Return False
 
@@ -19481,6 +19494,6 @@ New JsonSerializerSettings With {
                 End If
             End If
         End Try
-
     End Function
+
 End Class

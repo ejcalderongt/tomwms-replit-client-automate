@@ -29,9 +29,12 @@ Public Class clsLnI_nav_barras_pallet
                 .Bodega_Destino = IIf(IsDBNull(dr.Item("Bodega_Destino")), "", dr.Item("Bodega_Destino"))
                 .Codigo_barra = IIf(IsDBNull(dr.Item("codigo_barra")), "", dr.Item("codigo_barra"))
                 .Cantidad_UMP = IIf(IsDBNull(dr.Item("cantidad_ump")), "0", dr.Item("cantidad_ump"))
+                .Fecha_Procesado_ERP = IIf(IsDBNull(dr.Item("fecha_procesado_erp")), Nothing, dr.Item("fecha_procesado_erp"))
                 .Impreso = IIf(IsDBNull(dr.Item("Impreso")), False, dr.Item("Impreso"))
                 .SSCC = IIf(IsDBNull(dr.Item("sscc")), "", dr.Item("sscc"))
                 .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
+                .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
+                .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
 
             End With
 
@@ -54,7 +57,7 @@ Public Class clsLnI_nav_barras_pallet
             Ins.Add("idpallet", "@idpallet", DataType.Parametro)
             Ins.Add("codigo", "@codigo", DataType.Parametro)
             Ins.Add("nombre", "@nombre", DataType.Parametro)
-            Ins.Add("CAMAS_POR_TARIMA", "@CAMAS_POR_TARIMA", DataType.Parametro)
+            Ins.Add("camas_por_tarima", "@camas_por_tarima", DataType.Parametro)
             Ins.Add("cajas_por_cama", "@cajas_por_cama", DataType.Parametro)
             Ins.Add("cantidad_presentacion", "@cantidad_presentacion", DataType.Parametro)
             Ins.Add("cantidad_ump", "@cantidad_ump", DataType.Parametro)
@@ -72,6 +75,8 @@ Public Class clsLnI_nav_barras_pallet
             Ins.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Ins.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
             Ins.Add("impreso", "@impreso", DataType.Parametro)
+            Ins.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
+            Ins.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -107,6 +112,8 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeI_nav_barras_pallet.Bodega_Destino))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
             cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_pallet.IdOrdenCompraEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeI_nav_barras_pallet.IdOrdenCompraDet))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -156,7 +163,8 @@ Public Class clsLnI_nav_barras_pallet
             Upd.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Upd.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
             Upd.Add("impreso", "@impreso", DataType.Parametro)
-
+            Upd.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
+            Upd.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
             Upd.Where("IdPallet = @IdPallet")
 
             Dim sp As String = Upd.SQL()
@@ -193,6 +201,8 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeI_nav_barras_pallet.Bodega_Destino))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
             cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_pallet.IdOrdenCompraEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeI_nav_barras_pallet.IdOrdenCompraDet))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -934,8 +944,8 @@ Public Class clsLnI_nav_barras_pallet
     End Function
 
     Public Shared Function Guardar_Pallet_PreImpresion(ByVal pListBarras_Pallet As clsBeI_nav_barras_pallet,
-                                                             ByVal lConnection As SqlConnection,
-                                                             ByVal lTransaction As SqlTransaction) As Boolean
+                                                      ByVal lConnection As SqlConnection,
+                                                      ByVal lTransaction As SqlTransaction) As Boolean
 
         Guardar_Pallet_PreImpresion = False
 
@@ -1034,7 +1044,32 @@ Public Class clsLnI_nav_barras_pallet
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
-            Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
+            Dim sp As String = "SELECT IdPallet,
+            Codigo,
+            Nombre,
+            Camas_Por_Tarima,
+            Cajas_Por_Cama,
+            Cantidad_Presentacion,
+            UM_Producto,
+            Lote,
+            Fecha_Agregado,
+            Fecha_Ingreso,
+            Fecha_Vence,
+            Fecha_Produccion,
+            Activo,
+            Recibido,
+            IdRecepcion,
+            Bodega_Origen,
+            Bodega_Destino,
+            Codigo_Barra,
+            Cantidad_UMP,
+            Lote_Numerico,
+            fecha_procesado_erp,
+            sscc,
+            gtin,
+            Impreso,
+            fecha_procesado_erp 
+            FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
