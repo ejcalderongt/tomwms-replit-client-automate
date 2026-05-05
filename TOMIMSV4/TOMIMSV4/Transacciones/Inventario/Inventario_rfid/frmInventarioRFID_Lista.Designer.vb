@@ -25,6 +25,7 @@ Partial Class frmInventarioRFID_Lista
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdNuevos = New DevExpress.XtraBars.BarButtonItem()
+        Me.lblRegs = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -33,7 +34,6 @@ Partial Class frmInventarioRFID_Lista
         Me.dtpFechaFin = New System.Windows.Forms.DateTimePicker()
         Me.grdInventario = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.lblRegs = New DevExpress.XtraBars.BarButtonItem()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -84,6 +84,12 @@ Partial Class frmInventarioRFID_Lista
         Me.cmdNuevos.Id = 3
         Me.cmdNuevos.ImageOptions.SvgImage = CType(resources.GetObject("cmdNuevos.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdNuevos.Name = "cmdNuevos"
+        '
+        'lblRegs
+        '
+        Me.lblRegs.Caption = "Registros: 0"
+        Me.lblRegs.Id = 4
+        Me.lblRegs.Name = "lblRegs"
         '
         'RibbonPage1
         '
@@ -158,12 +164,6 @@ Partial Class frmInventarioRFID_Lista
         Me.GridView1.GridControl = Me.grdInventario
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.Editable = False
-        '
-        'lblRegs
-        '
-        Me.lblRegs.Caption = "Registros: 0"
-        Me.lblRegs.Id = 4
-        Me.lblRegs.Name = "lblRegs"
         '
         'frmInventarioRFID_Lista
         '

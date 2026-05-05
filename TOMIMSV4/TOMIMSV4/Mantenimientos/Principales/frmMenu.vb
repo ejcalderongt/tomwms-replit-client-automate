@@ -5521,11 +5521,12 @@ Public Class frmMenu
 
         '    Cierra_Instancia_Previa(frmInventarioRFID_Lista)
 
-        '    With frmInventarioRFID_Lista
-        '        .MdiParent = Me
-        '        .Show()
-        '        .Focus()
-        '    End With
+        With frmInventarioRFID_Lista
+            .Modo = frmInventarioRFID_Lista.pModo.Lista
+            .MdiParent = Me
+            .Show()
+            .Focus()
+        End With
 
         '    SplashScreenManager.CloseForm(False)
 

@@ -190,8 +190,8 @@ namespace WMSWebAPI.Controllers
 
         [HttpGet("mi3/pendientes-procesar")]
         public IActionResult GetSalidasPendientesDeProcesar([FromServices] IConfiguration _configuration,
-                                                    [FromQuery] string? noPedido = null,
-                                                    [FromQuery] int? idTipoDocumento = null)
+                                                            [FromQuery] string? noPedido = null,
+                                                            [FromQuery] int? idTipoDocumento = null)
         {
             try
             {

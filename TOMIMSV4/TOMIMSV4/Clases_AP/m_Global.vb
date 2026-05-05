@@ -19,10 +19,10 @@ Module m_Global
     Public vRutaServicio As String = CurDir() & "/WMS_PrintService.exe"
     Public vRutaInterfaceCEALSA As String = CurDir() & "/CEALSASync.exe"
 
-    Public Property gVersionApp As String = "8.4.1"
+    Public Property gVersionApp As String = "8.4.4"
 
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2026, 4, 30)
+    Public Property gFechaVersion As Date = New Date(2026, 5, 5)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
 
     Public gIndiceInstancia As Integer = -1
