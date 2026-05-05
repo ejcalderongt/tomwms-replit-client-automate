@@ -31,7 +31,10 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
     public async Task<AjustesPendientesEnvioResponse> GetAjustesPendientesEnvioAsync(CancellationToken ct = default)
     {
         var sb = new StringBuilder();
-        var resp = new AjustesPendientesEnvioResponse();
+        var resp = new AjustesPendientesEnvioResponse
+        {
+            Ajustes = new List<clsBeAjustesMI3>()
+        };
 
         string vNDoc = "";
 
@@ -45,57 +48,49 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
             await conn.OpenAsync(ct);
             await using var tran = conn.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            // === VB: clsLnTrans_ajuste_enc.Get_All_Pendientes_Envio ===
-            List<clsBeTrans_ajuste_enc> ajustesPendEnvio = await clsLnTrans_ajuste_enc.Get_All_Pendientes_Envio(conn, tran);
+            var ajustesPendEnvio = await clsLnTrans_ajuste_enc.Get_All_Pendientes_Envio(conn, tran)
+                                  ?? new List<clsBeTrans_ajuste_enc>();
 
-            if (ajustesPendEnvio == null || ajustesPendEnvio.Count == 0)
+            if (ajustesPendEnvio.Count == 0)
             {
                 Append(sb, "No hay ajustes pendientes de envío.");
                 Append(sb, "Fin de sincronización de ajustes.");
 
                 resp.Resultado = sb.ToString();
-                resp.Ajustes = new List<clsBeAjustesMI3>();
-
                 tran.Commit();
                 return resp;
-            }      
+            }
 
             foreach (var ajEnc in ajustesPendEnvio)
             {
-                // VB: vNoDocumento = "WMS" + Right("000000" & AjEnc.Idajusteenc, 6)
                 var vNoDocumento = $"WMS{ajEnc.Idajusteenc.ToString().PadLeft(6, '0')}";
                 vNDoc = vNoDocumento;
 
-                var vistaDetalles = clsLn_vw_ajustes.Get_All_Pendientes_Envio(ajEnc.Idajusteenc, conn, tran) ?? new List<clsBe_vw_ajustes>();
+                var vistaDetalles = clsLn_vw_ajustes.Get_All_Pendientes_Envio(ajEnc.Idajusteenc, conn, tran)
+                                    ?? new List<clsBe_vw_ajustes>();
 
                 int vCorrelativoActual = 0;
                 int detallesEnviados = 0;
 
-                // VB: familia
                 clsBeProducto_familia? beFamilia = null;
                 if (ajEnc.IdProductoFamilia > 0)
                     beFamilia = clsLnProducto_familia.GetSingle(ajEnc.IdProductoFamilia, conn, tran);
 
                 if (vistaDetalles.Count == 0)
-                {                   
+                {
                     Append(sb, $"No hay detalle de ajustes válidos para el Id de ajuste #: {ajEnc.Idajusteenc}");
                     continue;
                 }
 
                 Append(sb, $"Detalle de ajustes para transacción: {ajEnc.Idajusteenc}");
 
-                // VB: Bodega
-                var beBodega = new clsBeBodega { IdBodega = ajEnc.IdBodega };
-                clsLnBodega.GetSingle_By_Idbodega(ajEnc.IdBodega, conn, tran);
+                var beBodega = clsLnBodega.GetSingle_By_Idbodega(ajEnc.IdBodega, conn, tran);
+                var codigoBodegaWms = beBodega?.Codigo ?? string.Empty;
 
-                var codigoBodegaWms = beBodega.Codigo;
-
-                // En tu VB vNomenclaturaBase existe pero no se asigna; lo dejo igual
                 string vNomenclaturaBase = "";
 
                 foreach (var ajDet in vistaDetalles)
                 {
-                    // VB: cliente por AjDet.IdBodegaERP
                     var beCliente = clsLnCliente.Get_Single_By_Codigo(ajDet.IdBodegaERP.ToString(), conn, tran);
 
                     string vSerieBodega = "";
@@ -105,16 +100,16 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
                     {
                         Append(sb, $"#EJC20200219_2214: No se encontró cliente/Serie para IdBodega: {ajEnc.IdBodega}");
 
-                        if (beBodega.Interface_SAP)
-                            codigoBodegaERP = beBodega.Codigo;
+                        if (beBodega?.Interface_SAP == true)
+                            codigoBodegaERP = codigoBodegaWms;
                     }
                     else
                     {
-                        vSerieBodega = beCliente.Referencia;
-                        codigoBodegaERP = beCliente.Codigo;
+                        vSerieBodega = beCliente.Referencia ?? "";
+                        codigoBodegaERP = beCliente.Codigo ?? "";
                     }
 
-                    // VB: correlativo
+                    // correlativo
                     if (vCorrelativoActual == 0)
                     {
                         var numericPart = ExtractNumericPartSafe(vNoDocumento);
@@ -132,7 +127,6 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
                     vNoDocumento = $"{vNomenclaturaBase}{vCorrelativoActual.ToString().PadLeft(6, '0')}";
                     Append(sb, $"Procesando ajuste número de documento: {vNoDocumento}");
 
-                    // VB: GetSingle del detalle real
                     var beAjusteDet = new clsBeTrans_ajuste_det
                     {
                         IdAjusteDet = ajDet.IdAjusteDet,
@@ -142,45 +136,21 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
                     clsLnTrans_ajuste_det.GetSingle(ref beAjusteDet, conn, tran);
 
                     if (beFamilia != null)
-                        ajDet.Seccion = beFamilia.Nombre;
-                   
+                        ajDet.Seccion = beFamilia.Nombre ?? "";
 
+                    // lógica de cantidad
                     if (ajDet.Modifica_Cantidad)
                     {
-                        // Negativo
-                        if (ajDet.Cantidad_original > ajDet.Cantidad_nueva)
-                        {
-                            var dif = Math.Round(ajDet.Cantidad_original - ajDet.Cantidad_nueva, 6);
+                        double dif = 0;
+                        bool esNegativo = ajDet.Cantidad_original > ajDet.Cantidad_nueva;
 
-                            try
-                            {
-                                var beAjusteMi3 = BuildAjusteMI3(ajEnc, 
-                                                                 ajDet, 
-                                                                 codigoBodegaWms, 
-                                                                 codigoBodegaERP,
-                                                                 vNoDocumento, 
-                                                                 dif, 
-                                                                 beCliente, 
-                                                                 conn, 
-                                                                 tran);
-
-                                resp.Ajustes.Add(beAjusteMi3);
-
-                                Append(sb, $"Procesando ajuste negativo para: {ajDet.Codigo_Producto} {ajDet.Nombre_Producto}");
-                                detallesEnviados++;
-                            }
-                            catch (Exception)
-                            {            
-                                Append(sb, $"Error al procesar el ajuste #: {ajEnc.Idajusteenc}");
-                                vCorrelativoActual -= 1;
-                                throw;
-                            }
-                        }
-                        // Positivo
+                        if (esNegativo)
+                            dif = Math.Round(ajDet.Cantidad_original - ajDet.Cantidad_nueva, 6);
                         else if (ajDet.Cantidad_original < ajDet.Cantidad_nueva)
-                        {
-                            var dif = Math.Round(ajDet.Cantidad_nueva - ajDet.Cantidad_original, 6);
+                            dif = Math.Round(ajDet.Cantidad_nueva - ajDet.Cantidad_original, 6);
 
+                        if (dif > 0)
+                        {
                             try
                             {
                                 var beAjusteMi3 = BuildAjusteMI3(ajEnc, ajDet, codigoBodegaWms, codigoBodegaERP,
@@ -188,17 +158,11 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
 
                                 resp.Ajustes.Add(beAjusteMi3);
 
-                                Append(sb, $"Procesando ajuste positivo para: {ajDet.Codigo_Producto} {ajDet.Nombre_Producto}");
-
-                                beAjusteDet.Enviado = true;
-
-                                if (string.IsNullOrWhiteSpace(ajEnc.Referencia))
-                                    ajEnc.Referencia = vNoDocumento;
-
+                                Append(sb, $"Procesando ajuste {(esNegativo ? "negativo" : "positivo")} para: {ajDet.Codigo_Producto} {ajDet.Nombre_Producto}");
                                 detallesEnviados++;
                             }
                             catch (Exception)
-                            {                 
+                            {
                                 Append(sb, $"Error al procesar el ajuste #: {ajEnc.Idajusteenc}");
                                 vCorrelativoActual -= 1;
                                 throw;
@@ -207,12 +171,10 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
                     }
                     else
                     {
-                        // VB: tipos que no se envían
                         beAjusteDet.Enviado = true;
                         clsLnTrans_ajuste_det.Actualizar_Estado_Enviado(beAjusteDet, conn, tran);
                         detallesEnviados++;
                     }
-                 
                 }
 
                 resp.Resultado = sb.ToString();
@@ -225,13 +187,13 @@ public sealed class AjustesEnvioService : IAjustesEnvioService
             return resp;
         }
         catch (Exception ex)
-        {            
+        {
             Append(sb, $"Error al enviar ajustes a NAV: {Environment.NewLine}{ex.Message}-{vNDoc}");
             resp.Resultado = sb.ToString();
-
-            throw; // mantiene stack
+            throw;
         }
     }
+
 
     private static clsBeAjustesMI3 BuildAjusteMI3(clsBeTrans_ajuste_enc ajEnc,
                                                   clsBe_vw_ajustes ajDet,
