@@ -203,8 +203,7 @@ namespace WMSWebAPI.Controllers
                 // 3) Filtro opcional por IdTipoDocumento
                 if (idTipoDocumento.HasValue)
                 {
-                    data = data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)
-                               .ToList();
+                    data = data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value).ToList();
                 }
 
                 // 4) Minimal por defecto
@@ -232,11 +231,7 @@ namespace WMSWebAPI.Controllers
                 var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
                 var bodegas = clsLnBodega.GetByIds(_configuration, bodegaIds);
                 var codigoClienteByPedidoId = clsLnTrans_pe_enc.Get_Codigos_Cliente_By_IdsPedidoEnc(_configuration, pedidoIds);
-
-                var usuariosByPedidoId =
-                    (Dictionary<int, Tuple<string, string>>)clsLnTrans_pe_enc
-                        .Get_Usuarios_Documento_By_IdsPedidoEnc(_configuration, pedidoIds);
-
+                var usuariosByPedidoId = clsLnTrans_pe_enc.Get_Usuarios_Documento_By_IdsPedidoEnc_Tuple(_configuration, pedidoIds);
                 var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo ?? "");
                 var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
                 var bodegaCodigoById = bodegas.ToDictionary(b => b.IdBodega, b => b.Codigo ?? "");

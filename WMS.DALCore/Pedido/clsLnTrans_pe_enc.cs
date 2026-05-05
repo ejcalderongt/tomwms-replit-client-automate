@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Pedido;
@@ -12,7 +10,6 @@ public class clsLnTrans_pe_enc
 
     private static clsInsert Ins = new clsInsert();
     private static clsUpdate Upd = new clsUpdate();
-
     public static void Cargar(ref clsBeTrans_pe_enc oBeTrans_pe_enc, DataRow dr)
     {
         int GetInt(string col) { return dr[col] is DBNull ? 0 : Convert.ToInt32(dr[col]); }
@@ -98,7 +95,6 @@ public class clsLnTrans_pe_enc
             throw;
         }
     }
-
     public static int Insertar(clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -260,7 +256,6 @@ public class clsLnTrans_pe_enc
 
         return rowsAffected;
     }
-
     public static int Insertar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc)
     {
 
@@ -375,7 +370,6 @@ public class clsLnTrans_pe_enc
         }
         return rowsAffected;
     }
-
     public static int Actualizar(clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -476,7 +470,6 @@ public class clsLnTrans_pe_enc
 
         return rowsAffected;
     }
-
     public int Eliminar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -532,7 +525,6 @@ public class clsLnTrans_pe_enc
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public DataTable Listar(IConfiguration config)
     {
 
@@ -572,7 +564,6 @@ public class clsLnTrans_pe_enc
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public static bool GetSingle(IConfiguration config, ref clsBeTrans_pe_enc pBeTrans_pe_enc)
     {
 
@@ -626,7 +617,6 @@ public class clsLnTrans_pe_enc
         return false;
 
     }
-
     public static List<clsBeTrans_pe_enc> GetAll(IConfiguration config)
     {
 
@@ -685,7 +675,6 @@ public class clsLnTrans_pe_enc
             throw new Exception(vMsgError);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
 
@@ -988,21 +977,19 @@ public class clsLnTrans_pe_enc
 
             using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                using SqlDataAdapter dad = new SqlDataAdapter(cmd);
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo_Empresa_ERP", pBeTrans_pe_enc.Codigo_Empresa_ERP));
+
+                DataTable dt = new DataTable();
+                dad.Fill(dt);
+
+                if (dt.Rows.Count >= 1)
                 {
-                    dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
-                    dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
-                    dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo_Empresa_ERP", pBeTrans_pe_enc.Codigo_Empresa_ERP));
-
-                    DataTable dt = new DataTable();
-                    dad.Fill(dt);
-
-                    if (dt.Rows.Count >= 1)
-                    {
-                        clsBeTrans_pe_enc ObjUM = new clsBeTrans_pe_enc();
-                        Cargar(ref ObjUM, dt.Rows[0]);
-                        return ObjUM;
-                    }
+                    clsBeTrans_pe_enc ObjUM = new clsBeTrans_pe_enc();
+                    Cargar(ref ObjUM, dt.Rows[0]);
+                    return ObjUM;
                 }
             }
         }
@@ -1133,9 +1120,9 @@ public class clsLnTrans_pe_enc
 
         return result;
     }
-
+   
     public static Dictionary<int, (string Documento, string Despacho)>
-    Get_Usuarios_Documento_By_IdsPedidoEnc(IConfiguration configuration, List<int> pedidoIds)
+      Get_Usuarios_Documento_By_IdsPedidoEnc(IConfiguration configuration, List<int> pedidoIds)
     {
         var result = new Dictionary<int, (string Documento, string Despacho)>();
 
@@ -1164,19 +1151,19 @@ public class clsLnTrans_pe_enc
         }
 
         cmd.CommandText = $@"
-        SELECT 
-            pe.IdPedidoEnc,
-            ISNULL(uDoc.Codigo, '') AS UsuarioDocumento,
-            ISNULL(uDesp.Codigo, '') AS UsuarioDespacho
-        FROM trans_pe_enc pe
-        INNER JOIN usuario uDoc
-            ON pe.user_agr = uDoc.IdUsuario
-        LEFT JOIN trans_despacho_enc de
-            ON pe.no_despacho = de.IdDespachoEnc
-        LEFT JOIN usuario uDesp
-            ON de.user_agr = uDesp.IdUsuario
-        WHERE pe.IdPedidoEnc IN ({string.Join(",", paramNames)})
-    ";
+            SELECT 
+                pe.IdPedidoEnc,
+                ISNULL(uDoc.Codigo, '') AS UsuarioDocumento,
+                ISNULL(uDesp.Codigo, '') AS UsuarioDespacho
+            FROM trans_pe_enc pe
+            INNER JOIN usuario uDoc
+                ON pe.user_agr = uDoc.IdUsuario
+            LEFT JOIN trans_despacho_enc de
+                ON pe.no_despacho = de.IdDespachoEnc
+            LEFT JOIN usuario uDesp
+                ON de.user_agr = uDesp.IdUsuario
+            WHERE pe.IdPedidoEnc IN ({string.Join(",", paramNames)})
+        ";
 
         using var dr = cmd.ExecuteReader();
         while (dr.Read())
@@ -1200,4 +1187,15 @@ public class clsLnTrans_pe_enc
         return result;
     }
 
+    // Método auxiliar para convertir a Dictionary<int, Tuple<string,string>>
+    public static Dictionary<int, Tuple<string, string>>
+        Get_Usuarios_Documento_By_IdsPedidoEnc_Tuple(IConfiguration configuration, List<int> pedidoIds)
+    {
+        var valueTupleResult = Get_Usuarios_Documento_By_IdsPedidoEnc(configuration, pedidoIds);
+
+        return valueTupleResult.ToDictionary(
+            kvp => kvp.Key,
+            kvp => Tuple.Create(kvp.Value.Documento, kvp.Value.Despacho)
+        );
+    }
 }
