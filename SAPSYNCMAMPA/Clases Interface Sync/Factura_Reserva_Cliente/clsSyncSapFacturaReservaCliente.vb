@@ -374,9 +374,9 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
     End Function
 
     Private Shared Async Function Procesar_Documentos(ByVal codigoBodega As String,
-                                                  ByVal pNoDocumento As String,
-                                                  ByVal BeConfigEnc As clsBeI_nav_config_enc,
-                                                  ByVal lblprg As RichTextBox) As Task(Of Boolean)
+                                                      ByVal pNoDocumento As String,
+                                                      ByVal BeConfigEnc As clsBeI_nav_config_enc,
+                                                      ByVal lblprg As RichTextBox) As Task(Of Boolean)
 
         Dim procesoExitoso As Boolean = False
         Dim clsTrans As New clsTransaccion
