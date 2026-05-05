@@ -318,6 +318,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         .Comments = factura_Reserva_Cliente("Comments")?.ToString(),
                         .Document_Type = tTipoDocumentoSalida.Factura_Reserva_Cliente,
                         .Transportation_Guide = factura_Reserva_Cliente("U_Guia")?.ToString(),
+                        .Transport_Company = factura_Reserva_Cliente("U_TIPO_GUIA")?.ToString(),
                         .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
                     }
 
