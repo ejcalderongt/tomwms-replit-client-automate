@@ -37,6 +37,10 @@ namespace WMSWebAPI.Be
         [DisplayName("Quantity")]
         public double Quantity { get; set; } = 0;
 
+        [Column("Net_Weight")]
+        [DisplayName("Net_Weight")]
+        public double Net_Weight { get; set; } = 0;
+
         [Column("Unit_Of_Measure_Code")]
         [DisplayName("Unit_Of_Measure_Code")]
         public string Unit_Of_Measure_Code { get; set; } = "";

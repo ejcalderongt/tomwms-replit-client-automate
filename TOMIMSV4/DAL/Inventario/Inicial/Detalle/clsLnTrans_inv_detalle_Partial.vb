@@ -556,4 +556,246 @@ Partial Public Class clsLnTrans_inv_detalle
             Throw ex
         End Try
     End Function
+
+    '#MA20260105 
+    Public Shared Function Get_Ubicaciones_No_Contadas_DT(IdInventario As Integer,
+                                                          IdBodega As Integer,
+                                                          ByRef lConnection As SqlConnection,
+                                                          ByRef lTransaction As SqlTransaction) As DataTable
+
+        Dim DT As New DataTable
+
+        Dim SQL As String = "SELECT DISTINCT
+                             u.IdUbicacion, u.IdBodega,
+                             dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Ubicacion,
+                                a.Descripcion AS Area,
+                                s.Descripcion AS Sector,
+                                t.Descripcion AS Tramo
+                            FROM bodega_ubicacion u
+                            INNER JOIN bodega_tramo t ON u.IdTramo = t.IdTramo AND u.IdBodega = t.IdBodega
+                            INNER JOIN bodega_sector s ON t.IdSector = s.IdSector AND u.IdBodega = s.IdBodega
+                            INNER JOIN bodega_area a ON s.IdArea = a.IdArea AND u.IdBodega = a.IdBodega
+                            WHERE u.IdBodega = @IdBodega AND u.bloqueada = 0 
+						    AND
+							Exists(Select * 
+							from trans_inv_tramo tit
+							where IdInventario = @IdInventario AND tit.idtramo = u.IdTramo And 
+							      u.IdBodega = tit.IdBodega)
+							AND u.IdUbicacion NOT IN (
+							Select Distinct IdUbicacion 
+							from trans_inv_detalle
+							where idinventarioenc = @IdInventario) AND 
+							u.IdUbicacion NOT IN (SELECT u.IdUbicacion
+                            FROM bodega_ubicacion u
+                            INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
+                            WHERE tt.IdInventario = @IdInventario and tt.det_estado= 'Finalizado'
+                            AND u.IdBodega = @IdBodega )
+                            ORDER BY Area, Sector, Tramo, Ubicacion"
+
+        Using da As New SqlDataAdapter(SQL, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+
+            da.SelectCommand.Parameters.AddWithValue("@IdInventario", IdInventario)
+            da.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+
+            da.Fill(DT)
+        End Using
+        Return DT
+    End Function
+
+    '#MA20260105
+    Public Shared Function Get_Total_Ubicaciones_Asig(IdInventarioEnc As Integer,
+                                                      IdBodega As Integer,
+                                                      lConnection As SqlConnection,
+                                                      lTransaction As SqlTransaction) As Integer
+
+        Dim cmd As New SqlCommand()
+        Dim Total As Integer = 0
+
+        Try
+            cmd.Connection = lConnection
+            cmd.Transaction = lTransaction
+            cmd.CommandType = CommandType.Text
+
+            cmd.CommandText = "SELECT COUNT(*) 
+                               FROM bodega_ubicacion u
+                               INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
+                               WHERE tt.IdInventario = @IdInventarioEnc
+                               AND u.IdBodega = @IdBodega AND u.bloqueada = 0 "
+
+            cmd.Parameters.AddWithValue("@IdInventarioEnc", IdInventarioEnc)
+            cmd.Parameters.AddWithValue("@IdBodega", IdBodega)
+
+            Total = Convert.ToInt32(cmd.ExecuteScalar())
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return Total
+
+    End Function
+
+    '#MA20260105
+    Public Shared Function Get_Ubicaciones_Contadas_NoFinalizadas(IdInventario As Integer,
+                                                                  IdBodega As Integer,
+                                                                  ByRef lConnection As SqlConnection,
+                                                                  ByRef lTransaction As SqlTransaction) As Integer
+        Dim Total As Integer = 0
+
+        Try
+            If lConnection.State <> ConnectionState.Open Then
+                lConnection.Open()
+            End If
+
+            Dim SQL As String = "SELECT COUNT(DISTINCT u.IdUbicacion)
+                                 FROM bodega_ubicacion u
+                                 INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
+                                 WHERE tt.IdInventario = @IdInventario and tt.det_estado <> 'Finalizado'
+                                  AND u.IdBodega = @IdBodega
+                                  AND EXISTS (
+                                        SELECT 1
+                                        FROM trans_inv_detalle d
+                                        WHERE d.IdUbicacion = u.IdUbicacion
+                                          AND d.IdInventarioEnc = @IdInventario
+                                      )"
+
+            Using cmd As New SqlCommand(SQL, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdInventario", IdInventario)
+                cmd.Parameters.AddWithValue("@IdBodega", IdBodega)
+                Total = Convert.ToInt32(cmd.ExecuteScalar())
+            End Using
+
+        Catch
+            Throw
+        End Try
+
+        Return Total
+    End Function
+
+    '#MA20260105
+    Public Shared Function Get_Ubicaciones_Contadas_Finalizadas(IdInventario As Integer,
+                                                                IdBodega As Integer,
+                                                                ByRef lConnection As SqlConnection,
+                                                                ByRef lTransaction As SqlTransaction) As Integer
+        Dim Total As Integer = 0
+
+        Try
+            If lConnection.State <> ConnectionState.Open Then
+                lConnection.Open()
+            End If
+
+            Dim SQL As String = "SELECT COUNT(DISTINCT u.IdUbicacion)
+                                 FROM bodega_ubicacion u
+                                 INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
+                                 WHERE tt.IdInventario = @IdInventario and tt.det_estado = 'Finalizado'
+                                  AND u.IdBodega = @IdBodega"
+
+            Using cmd As New SqlCommand(SQL, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdInventario", IdInventario)
+                cmd.Parameters.AddWithValue("@IdBodega", IdBodega)
+                Total = Convert.ToInt32(cmd.ExecuteScalar())
+            End Using
+
+        Catch
+            Throw
+        End Try
+
+        Return Total
+    End Function
+
+    Public Shared Function Get_Ubicaciones_Contadas_DT(pIdInventarioEnc As Integer,
+                                                      pIdBodega As Integer,
+                                                      ByRef lConnection As SqlConnection,
+                                                      ByRef lTransaction As SqlTransaction) As DataTable
+
+        Dim DT As New DataTable
+
+        Dim SQL As String = "SELECT dbo.Nombre_Completo_Ubicacion(IdUbicacion, idbodega) Ubicación, 
+                                    COUNT(DISTINCT lic_plate) Licencias_Distintas, 
+                                    COUNT(DISTINCT idproducto) Productos_Distintos,
+                                    COUNT(DISTINCT IdOperador) Operadores_Distintos,
+	                                COUNT(idinventariodet) Conteos
+                             FROM trans_inv_detalle
+                             WHERE idinventarioenc = @IdInventarioEnc AND IdBodega = @IdBodega
+                             GROUP BY IdUbicacion, idbodega"
+
+        Using da As New SqlDataAdapter(SQL, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+
+            da.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
+            da.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+            da.Fill(DT)
+        End Using
+        Return DT
+    End Function
+
+    Public Shared Function Get_Tiempos_Tramos_Conteo_DT(pIdInventarioEnc As Integer,
+                                                     ByRef lConnection As SqlConnection,
+                                                     ByRef lTransaction As SqlTransaction) As DataTable
+
+        Dim DT As New DataTable
+
+        Dim SQL As String = "SELECT t.descripcion Tramo,LTRIM(RTRIM(
+                                            SUBSTRING(
+                                                dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                                CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                                CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                    CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                    CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                            )
+                                        )) AS Nivel,LTRIM(RTRIM(
+                                            SUBSTRING(
+                                                dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                                CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                                CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                    CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                    CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                            )
+                                        )) AS Columna,min(i.fecha_captura) Fecha_Inicio, max(i.fecha_captura) Fecha_Fin, 
+                                    DATEDIFF(MINUTE,min(i.fecha_captura),max(i.fecha_captura)) Tiempo_Conteo,
+                                    COUNT(DISTINCT i.IdUbicacion) UbiContadas
+                             FROM trans_inv_detalle i inner join bodega_tramo t on i.idtramo = t.IdTramo and i.idbodega = t.IdBodega
+                             WHERE idinventarioenc = @IdInventarioEnc
+                             GROUP BY t.descripcion, LTRIM(RTRIM(
+                                            SUBSTRING(
+                                                dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                                CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                                CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                    CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                    CHARINDEX('N', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                            )
+                                        )),LTRIM(RTRIM(
+                                            SUBSTRING(
+                                                dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega),
+                                                CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega)),
+                                                CHARINDEX(' - ', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega) + ' - ', 
+			                                    CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))) - 
+			                                    CHARINDEX('C', dbo.Nombre_Completo_Ubicacion(i.idubicacion, i.idbodega))
+                                            )
+                                        ))
+                             UNION
+                             SELECT t.descripcion Tramo, '' Nivel, '' Columna, '19000101' Fecha_Inicio, '19000101' Fecha_Fin, 
+                                    0 Diferencia, 0 UbiContadas
+                             FROM trans_inv_tramo i inner join bodega_tramo t on i.idtramo = t.IdTramo and i.idbodega = t.IdBodega
+                             WHERE idinventario = @IdInventarioEnc and i.idtramo not in (SELECT idtramo
+                             FROM trans_inv_detalle
+                             WHERE idinventarioenc = @IdInventarioEnc)"
+
+        Using da As New SqlDataAdapter(SQL, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+
+            da.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
+
+            da.Fill(DT)
+        End Using
+        Return DT
+    End Function
+
 End Class

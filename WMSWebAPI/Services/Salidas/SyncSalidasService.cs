@@ -334,8 +334,8 @@ namespace WMSWebAPI.Services.Salidas
                 result.LineasProcesadas = cantLineas;
                 result.Resultado = resultado;
 
-                var connectionString = _configuration.GetConnectionString("WMSConnection") 
-                    ?? _configuration.GetConnectionString("DefaultConnection");
+                var connectionString = _configuration.GetConnectionString("CST") 
+                    ?? _configuration.GetConnectionString("CST");
                     
                 using var conn = new SqlConnection(connectionString);
                 conn.Open();

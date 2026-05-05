@@ -5945,7 +5945,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp)
+            Return clsLnTrans_ubic_hh_det.Aplica_LP_Stock(pMovimiento, pStockRes, pIdResolucionLp, True)
 
         Catch ex As Exception
 
@@ -18959,11 +18959,13 @@ Public Class TOMHHWS
     <WebMethod(), SoapHeader("mArch")>
     Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
 
+
         Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
 
         Try
 
             Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina, pBusqueda, pCriterioBusqueda)
+
 
         Catch ex As Exception
 
@@ -19311,7 +19313,12 @@ Public Class TOMHHWS
         Catch ex As Exception
 
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_reab.Agregar_Error(vMsgError, pIdStockNuevo, pIdMovimientoNuevo, pMovimiento.Lic_plate, pMovimiento.IdProductoBodega, pMovimiento.Cantidad)
+            clsLnLog_error_wms_reab.Agregar_Error(pMensajeExcepcion:=vMsgError,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                  pCantidad:=pMovimiento.Cantidad)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -19417,7 +19424,8 @@ Public Class TOMHHWS
     End Sub
 
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack(ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
+    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack(ByVal pStockResList As List(Of clsBeVW_stock_res),
+                                                                               ByVal pEsCambioEstado As Boolean) As Boolean
 
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta_ConValidacionRack = False
 
@@ -19431,8 +19439,6 @@ Public Class TOMHHWS
             'Para licencia completa se toma la primera línea solo como encabezado de contexto.
             'La composición real de la licencia se reconstruye en BD.
             Dim primeraLinea As clsBeVW_stock_res = pStockResList(0)
-
-            Dim EsCambioEstado As Boolean = (pStockResList.FirstOrDefault.Movimiento.IdEstadoOrigen <> pStockResList.FirstOrDefault.Movimiento.IdEstadoDestino)
 
             If primeraLinea.Movimiento Is Nothing Then
                 Throw New Exception("La línea no contiene información de movimiento.")
@@ -19460,7 +19466,7 @@ Public Class TOMHHWS
                                                                                                        idStock,
                                                                                                        idMov,
                                                                                                        0,
-                                                                                                       EsCambioEstado)
+                                                                                                       pEsCambioEstado)
 
             If Not exito Then Return False
 

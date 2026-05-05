@@ -1,12 +1,17 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.ComponentModel
+Imports System.Data.SqlClient
+Imports System.Drawing.Drawing2D
 Imports System.IO
 Imports System.Reflection
+Imports System.Web.UI.WebControls.Expressions
+Imports DevExpress.Data.Filtering
 Imports DevExpress.XtraCharts
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraReports.UI
+Imports DevExpress.XtraRichEdit.Commands
 Imports DevExpress.XtraSplashScreen
 Imports DevExpress.XtraTreeList
 Imports DevExpress.XtraTreeList.Nodes
@@ -62,6 +67,13 @@ Public Class frmInventario
     Private ufiltcod As Boolean
     Private ufiltubic As String
     Private ufiltcnt As Integer
+
+    'MA20260105
+    Private TotalUbicaciones As Integer = 0
+    Private UbicacionesContadasNoFinalizadas As Integer = 0
+    Private UbicacionesContadasFinalizadas As Integer = 0
+    Private UbicacionesPendientes As Integer = 0
+    Private ValorObjetivoGauge As Double = 0
 
     Public Enum TipoTrans
         Nuevo = 1
@@ -180,9 +192,14 @@ Public Class frmInventario
                     xtraTabInv.TabPages.Remove(TabInventarioCostos)
                     xtraTabInv.TabPages.Remove(tbne)
                     xtraTabInv.TabPages.Remove(tabKPI)
-                    xtraTabInv.TabPages.Remove(tabComparativoERPWMS)
+                    xtraTabInv.TabPages.Remove(tabComparativoERPFisicoWMS)
                     xtraTabInv.TabPages.Remove(tabDiferenciasInventario)
                     xtraTabInv.TabPages.Remove(tabConteoOperador)
+                    xtraTabInv.TabPages.Remove(tabUbicacionesNoContadas)
+                    xtraTabInv.TabPages.Remove(xtpRegularizacion)
+                    xtraTabInv.TabPages.Remove(tabUbicacionesContadas)
+                    xtraTabInv.TabPages.Remove(tabCompativoTeoricos)
+                    xtraTabInv.TabPages.Remove(tabTiemposPorTramo)
 
                     lblEsSistema.Visible = False
                     chkSistema.Visible = False
@@ -247,7 +264,15 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Remove(tabReconteo)
                         xtraTabInv.TabPages.Remove(tabInvCongelado)
                         xtraTabInv.TabPages.Remove(TabInventarioCostos)
+                        xtraTabInv.TabPages.Remove(tabKPI)
+                        xtraTabInv.TabPages.Remove(xtpRegularizacion)
+                        xtraTabInv.TabPages.Remove(tabConteoOperador)
+                        xtraTabInv.TabPages.Remove(tabDiferenciasInventario)
+                        xtraTabInv.TabPages.Remove(xtpRegularizacion)
                         xtraTabInv.TabPages.Add(tbne)
+                        xtraTabInv.TabPages.Add(tabUbicacionesContadas)
+                        xtraTabInv.TabPages.Add(tabCompativoTeoricos)
+                        xtraTabInv.TabPages.Add(tabTiemposPorTramo)
 
                         cmdReconteo.Enabled = False
                         rpgReconteo.Visible = False
@@ -262,6 +287,9 @@ Public Class frmInventario
                     Else
                         xtraTabInv.TabPages.Remove(Tramos)
                         xtraTabInv.TabPages.Remove(tabDetalle)
+                        xtraTabInv.TabPages.Remove(tabUbicacionesContadas)
+                        xtraTabInv.TabPages.Remove(tabCompativoTeoricos)
+                        xtraTabInv.TabPages.Remove(tabTiemposPorTramo)
                         xtraTabInv.TabPages.Add(tabAsignacionUbicaciones)
                         xtraTabInv.TabPages.Add(tabAsignacionOperadores)
                         xtraTabInv.TabPages.Add(tabAsignacionProductos)
@@ -270,6 +298,8 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Add(tabInvCongelado)
                         xtraTabInv.TabPages.Add(TabInventarioCostos)
                         xtraTabInv.TabPages.Add(tbne)
+                        xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
+                        xtraTabInv.TabPages.Add(xtpRegularizacion)
 
                         grpImprimirInicial.Visible = False
                         cmdConvertir.Enabled = False
@@ -314,6 +344,7 @@ Public Class frmInventario
                     Cargar_Productos_No_Existentes(clsTrans.lConnection, clsTrans.lTransaction)
 
                     SplashScreenManager.Default.SetWaitFormDescription("Listando datos del inventario...")
+                    chkComparativoConUbicacion.Checked = True
                     Listar_Datos_De_Inventario()
 
                     gBeBodegaTramosAsignados = clsLnBodega_tramo.Get_All_Tramos_For_Seleccion_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc,
@@ -336,6 +367,8 @@ Public Class frmInventario
                     Listar_Productos(clsTrans.lConnection, clsTrans.lTransaction)
 
                     Carga_Detalle_Ciclico()
+
+                    Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
                     'Timer1.Enabled = True
 
             End Select
@@ -360,26 +393,24 @@ Public Class frmInventario
     End Sub
 
     Private Sub SetDatataTableConteo()
-
+        '#MA20260204 ordenar las columnas con las agregadas
         DTInventarioConteo.Columns.Clear()
-        DTInventarioConteo.Columns.Add("IdInventario", GetType(Integer))
-        DTInventarioConteo.Columns.Add("IdTramo", GetType(Integer))
-        DTInventarioConteo.Columns.Add("Tramo", GetType(String))
-        DTInventarioConteo.Columns.Add("Código", GetType(String))
-        DTInventarioConteo.Columns.Add("Producto", GetType(String))
-        DTInventarioConteo.Columns.Add("Presentación", GetType(String))
-        DTInventarioConteo.Columns.Add("Cantidad Conteo", GetType(Double))
-        DTInventarioConteo.Columns.Add("Estado Detalle", GetType(String))
-        DTInventarioConteo.Columns.Add("Operador", GetType(String))
-        DTInventarioConteo.Columns.Add("FechaConteo", GetType(Date))
-        DTInventarioConteo.Columns.Add("Ubicación", GetType(String))
-        DTInventarioConteo.Columns.Add("Lote", GetType(String))
-        DTInventarioConteo.Columns.Add("Licencia", GetType(String))
-        DTInventarioConteo.Columns.Add("FechaVence", GetType(Date))
-        DTInventarioConteo.Columns.Add("IdProducto", GetType(Integer))
-        DTInventarioConteo.Columns.Add("Idinventariodet", GetType(Integer))
-        DTInventarioConteo.Columns.Add("Codigo Talla", GetType(String))
-        DTInventarioConteo.Columns.Add("Codigo Color", GetType(String))
+        DTInventarioConteo.Columns.Add("IdInventario", GetType(Integer)) '1
+        DTInventarioConteo.Columns.Add("IdTramo", GetType(Integer)) '2
+        DTInventarioConteo.Columns.Add("Tramo", GetType(String)) '3
+        DTInventarioConteo.Columns.Add("Código", GetType(String)) '4
+        DTInventarioConteo.Columns.Add("Producto", GetType(String)) '5
+        DTInventarioConteo.Columns.Add("Presentación", GetType(String)) '6
+        DTInventarioConteo.Columns.Add("Cantidad Conteo", GetType(Double)) '7
+        DTInventarioConteo.Columns.Add("Estado Detalle", GetType(String)) '8
+        DTInventarioConteo.Columns.Add("Operador", GetType(String)) '9
+        DTInventarioConteo.Columns.Add("FechaConteo", GetType(Date)) '10
+        DTInventarioConteo.Columns.Add("Ubicación", GetType(String)) '11
+        DTInventarioConteo.Columns.Add("Lote", GetType(String)) '12
+        DTInventarioConteo.Columns.Add("Licencia", GetType(String)) '13
+        DTInventarioConteo.Columns.Add("FechaVence", GetType(Date)) '14
+        DTInventarioConteo.Columns.Add("IdProducto", GetType(Integer)) '15
+        DTInventarioConteo.Columns.Add("Idinventariodet", GetType(Integer)) '16
 
     End Sub
 
@@ -411,8 +442,6 @@ Public Class frmInventario
         DTInventarioVerifica.Columns.Add("IdInventarioRes", GetType(Integer))
         DTInventarioVerifica.Columns.Add("Ubicacion", GetType(String))
         DTInventarioVerifica.Columns.Add("Licencia", GetType(String))
-        DTInventarioVerifica.Columns.Add("Código Talla", GetType(String))
-        DTInventarioVerifica.Columns.Add("Código Color", GetType(String))
 
     End Sub
 
@@ -433,78 +462,61 @@ Public Class frmInventario
         DTC.Columns.Add("EstadoConteo", GetType(String))
         DTC.Columns.Add("EstadoVerifica", GetType(String))
         DTC.Columns.Add("Ubicacion", GetType(String))
-        DTC.Columns.Add("Código Talla", GetType(String))
-        DTC.Columns.Add("Código Color", GetType(String))
 
     End Sub
 
     Private Sub SetDatataTableCiclico()
-
+        '#MA20260204 ordenar las columnas con las agregadas
         DTInventarioCiclico.Columns.Clear()
-        DTInventarioCiclico.Columns.Add("IdInvCiclico", GetType(Integer))
-        DTInventarioCiclico.Columns.Add("Ubicación", GetType(String))
-        DTInventarioCiclico.Columns.Add("Ubicación_Nueva", GetType(String))
-        DTInventarioCiclico.Columns.Add("IdStock", GetType(Integer))
-        DTInventarioCiclico.Columns.Add("Código", GetType(String))
-        DTInventarioCiclico.Columns.Add("Producto", GetType(String))
-        DTInventarioCiclico.Columns.Add("TipoProducto", GetType(String))
-        DTInventarioCiclico.Columns.Add("Presentación", GetType(String))
-        DTInventarioCiclico.Columns.Add("Estado_Stock", GetType(String))
-        DTInventarioCiclico.Columns.Add("Estado", GetType(String))
-        DTInventarioCiclico.Columns.Add("Lote_Stock", GetType(String))
-        DTInventarioCiclico.Columns.Add("Lote", GetType(String))
-        DTInventarioCiclico.Columns.Add("Vence_Stock", GetType(Date))
-        DTInventarioCiclico.Columns.Add("Vence", GetType(Date))
-        DTInventarioCiclico.Columns.Add("Talla_Stock", GetType(String))
-        DTInventarioCiclico.Columns.Add("Color_Stock", GetType(String))
-        DTInventarioCiclico.Columns.Add("Talla", GetType(String))
-        DTInventarioCiclico.Columns.Add("Color", GetType(String))
-        DTInventarioCiclico.Columns.Add("UM_Bas", GetType(String))
+        DTInventarioCiclico.Columns.Add("IdInvCiclico", GetType(Integer)) '1
+        DTInventarioCiclico.Columns.Add("Ubicación", GetType(String)) '2
+        DTInventarioCiclico.Columns.Add("Ubicación_Nueva", GetType(String)) '3
+        DTInventarioCiclico.Columns.Add("IdStock", GetType(Integer)) '4
+        DTInventarioCiclico.Columns.Add("Código", GetType(String)) '5
+        DTInventarioCiclico.Columns.Add("Producto", GetType(String)) '6
+        DTInventarioCiclico.Columns.Add("TipoProducto", GetType(String)) '7
+        DTInventarioCiclico.Columns.Add("Presentación", GetType(String)) '8
+        DTInventarioCiclico.Columns.Add("Estado_Stock", GetType(String)) '9
+        DTInventarioCiclico.Columns.Add("Estado", GetType(String)) '10
+        DTInventarioCiclico.Columns.Add("Lote_Stock", GetType(String)) '11
+        DTInventarioCiclico.Columns.Add("Lote", GetType(String)) '12
+        DTInventarioCiclico.Columns.Add("Vence_Stock", GetType(Date)) '13
+        DTInventarioCiclico.Columns.Add("Vence", GetType(Date)) '14
         'DTInventarioCiclico.Columns.Add("Operador", GetType(String))
-        DTInventarioCiclico.Columns.Add("Cant.Teorica.Pres", GetType(Double))
-        DTInventarioCiclico.Columns.Add("Cant.Teorica.UMBas", GetType(Double))
-        DTInventarioCiclico.Columns.Add("PesoStock", GetType(Double))
-        DTInventarioCiclico.Columns.Add("Cant.Conteo.Pres", GetType(Double))
-        DTInventarioCiclico.Columns.Add("Cant.Conteo.UMBas", GetType(Double))
+        DTInventarioCiclico.Columns.Add("Cant.Teorica.Pres", GetType(Double)) '15
+        DTInventarioCiclico.Columns.Add("PesoStock", GetType(Double)) '16
+        DTInventarioCiclico.Columns.Add("Cant.Conteo.Pres", GetType(Double)) '17
         DTInventarioCiclico.Columns.Add("PesoConteo", GetType(Double))
         DTInventarioCiclico.Columns.Add("Cant.Reconteo.Pres", GetType(Double))
-        DTInventarioCiclico.Columns.Add("Cant.Reconteo.UMBas", GetType(Double))
         DTInventarioCiclico.Columns.Add("PesoReconteo", GetType(Double))
         DTInventarioCiclico.Columns.Add("Dif.Cant.UMBas", GetType(Double))
-        DTInventarioCiclico.Columns.Add("Extraviado", GetType(Double))
-        DTInventarioCiclico.Columns.Add("IdInventario", GetType(Integer))
-        DTInventarioCiclico.Columns.Add("IdProductoBodega", GetType(Integer))
-        DTInventarioCiclico.Columns.Add("Licencia", GetType(String))
-
+        DTInventarioCiclico.Columns.Add("Cant.Reservada.Pres", GetType(Double))
+        DTInventarioCiclico.Columns.Add("Extraviado", GetType(Double)) '23
+        DTInventarioCiclico.Columns.Add("IdInventario", GetType(Integer)) '24
+        DTInventarioCiclico.Columns.Add("Licencia", GetType(String)) '25
+        DTInventarioCiclico.Columns.Add("IdProductoBodega", GetType(Integer)) '26
+        DTInventarioCiclico.Columns.Add("Cant.Reservada", GetType(Double)) '27
+        DTInventarioCiclico.Columns.Add("Contado", GetType(Boolean)) '28
     End Sub
 
-    '#GT17012025: tabla para el ciclico basico solo con diferencias, sin grupos ni filtros
     Private Sub SetDatataTableDiferenciaCiclico()
-
         DTInventarioDiferenciaCiclico.Columns.Clear()
-        DTInventarioDiferenciaCiclico.Columns.Add("IdInvCiclico", GetType(Integer))
-        DTInventarioDiferenciaCiclico.Columns.Add("IdInventario", GetType(Integer))
-        DTInventarioDiferenciaCiclico.Columns.Add("Código", GetType(String))
-        DTInventarioDiferenciaCiclico.Columns.Add("Producto", GetType(String))
-        DTInventarioDiferenciaCiclico.Columns.Add("TipoProducto", GetType(String))
 
-        DTInventarioDiferenciaCiclico.Columns.Add("UmBas", GetType(String))
-        DTInventarioDiferenciaCiclico.Columns.Add("NombrePresentacion", GetType(String))
+        DTInventarioDiferenciaCiclico.Columns.Add("IdInvCiclico", GetType(Integer)) '1
+        DTInventarioDiferenciaCiclico.Columns.Add("IdInventario", GetType(Integer)) '2
+        DTInventarioDiferenciaCiclico.Columns.Add("Código", GetType(String)) '3
+        DTInventarioDiferenciaCiclico.Columns.Add("Producto", GetType(String)) '4
+        DTInventarioDiferenciaCiclico.Columns.Add("Presentacion", GetType(String)) '6 ← ÚNICA
+        DTInventarioDiferenciaCiclico.Columns.Add("TipoProducto", GetType(String)) '7
 
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.UMBas", GetType(Double))
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.UMBas", GetType(Double))
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reconteo.UMBas", GetType(Double))
-        DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.UMBas", GetType(Double))
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.Presentacion", GetType(Double)) '8
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.Presentacion", GetType(Double)) '9
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reconteo.Presentacion", GetType(Double)) '10
+        DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.Presentacion", GetType(Double)) '11
 
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.Pres", GetType(Double))
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.Pres", GetType(Double))
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reconteo.Pres", GetType(Double))
-        DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.Pres", GetType(Double))
-
-        DTInventarioDiferenciaCiclico.Columns.Add("NombreTipoProducto", GetType(String))
-        DTInventarioDiferenciaCiclico.Columns.Add("IdProductoBodega", GetType(Integer))
-
-
+        DTInventarioDiferenciaCiclico.Columns.Add("NombreTipoProducto", GetType(String)) '12
+        DTInventarioDiferenciaCiclico.Columns.Add("IdProductoBodega", GetType(Integer)) '14
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reservada", GetType(Double)) '15
     End Sub
 
 
@@ -523,6 +535,7 @@ Public Class frmInventario
         DTInventarioCongelado.Columns.Add("Peso", GetType(Double))
         DTInventarioCongelado.Columns.Add("Ubicación", GetType(String))
         DTInventarioCongelado.Columns.Add("IdStock", GetType(Integer))
+        DTInventarioCongelado.Columns.Add("Licencia", GetType(String))
         DTInventarioCongelado.Columns.Add("TipoProducto", GetType(String))
 
     End Sub
@@ -828,8 +841,6 @@ Public Class frmInventario
                 gBeAgregar.Codigo = Ob.Codigo
                 gBeAgregar.UMBas = Ob.UMBas
                 gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
-                gBeAgregar.Codigo_Talla = Ob.Codigo_Talla
-                gBeAgregar.Codigo_Color = Ob.Codigo_Color
                 'clsLnTrans_inv_enc.InsertarComparacionInventario(gBeAgregar)
                 glistaInv.Add(gBeAgregar)
 
@@ -887,9 +898,7 @@ Public Class frmInventario
                                  vDif,
                                  BeTransInvEnc.EstadoDetalle,
                                  BeTransInvEnc.EstadoResumen,
-                                 BeTransInvEnc.UbicacionCompleta,
-                                 BeTransInvEnc.Codigo_Talla,
-                                 BeTransInvEnc.Codigo_Color)
+                                 BeTransInvEnc.UbicacionCompleta)
                     Else
                         DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
                                  BeTransInvEnc.IdTramo,
@@ -903,10 +912,7 @@ Public Class frmInventario
                                  BeTransInvEnc.Resumen,
                                  vDif,
                                  BeTransInvEnc.EstadoDetalle,
-                                 BeTransInvEnc.EstadoResumen,
-                                 "",
-                                 BeTransInvEnc.Codigo_Talla,
-                                 BeTransInvEnc.Codigo_Color)
+                                 BeTransInvEnc.EstadoResumen)
                     End If
 
 
@@ -1011,6 +1017,13 @@ Public Class frmInventario
             Catch ex As Exception
             End Try
 
+            Calcular_Comparativo_Teoricos(clsTrans.lConnection, clsTrans.lTransaction)
+
+            Try
+                SplashScreenManager.Default.SetWaitFormDescription("Actualizando comparativo teóricos")
+            Catch ex As Exception
+            End Try
+
             Calcula_Inventario_Teorico_Costos(clsTrans.lConnection, clsTrans.lTransaction)
 
             Try
@@ -1041,9 +1054,32 @@ Public Class frmInventario
 
             Cargar_Datos_Comparativos(clsTrans.lConnection, clsTrans.lTransaction)
 
-            Cargar_Conteos_Operador(clsTrans.lConnection, clsTrans.lTransaction)
+            If Not gBeTransInvEnc.Inicial Then
+                Cargar_Conteos_Operador(clsTrans.lConnection, clsTrans.lTransaction)
+            End If
 
             Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
+
+            Cargar_KPI_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction)
+
+            If gBeTransInvEnc.Inicial Then
+                Me.BeginInvoke(New Action(Sub()
+                                              Actualizar_Gauge_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction)
+                                          End Sub))
+
+                Listar_Ubicaciones_Contadas(clsTrans.lConnection, clsTrans.lTransaction)
+
+                Try
+                    SplashScreenManager.Default.SetWaitFormDescription("Actualizando ubicaciones contadas")
+                Catch ex As Exception
+                End Try
+
+                Listar_Tiempos_Por_Tramos(clsTrans.lConnection, clsTrans.lTransaction)
+                Try
+                    SplashScreenManager.Default.SetWaitFormDescription("Actualizando tiempos tramos")
+                Catch ex As Exception
+                End Try
+            End If
 
             clsTrans.Commit_Transaction()
 
@@ -1064,6 +1100,51 @@ Public Class frmInventario
             Dim dt As New DataTable
             dt = clsLnTrans_inv_ciclico.Get_All_Conteos_By_IdInventarioEnc_And_Operador(gBeTransInvEnc.Idinventarioenc, lConnection, lTransaction)
             dgridConteoOperador.DataSource = dt
+
+            '#MA20260204 
+            Dim viewConteoOperador As GridView = TryCast(dgridConteoOperador.MainView, GridView)
+            If viewConteoOperador IsNot Nothing AndAlso viewConteoOperador.RowCount > 0 Then
+
+                If viewConteoOperador.Columns.Contains(viewConteoOperador.Columns("Teorico_Pres")) Then
+                    viewConteoOperador.Columns("Teorico_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    viewConteoOperador.Columns("Teorico_Pres").DisplayFormat.FormatString = "{0:n6}"
+                    viewConteoOperador.Columns("Teorico_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    viewConteoOperador.Columns("Teorico_Pres").SummaryItem.DisplayFormat = "{0:n6}"
+                End If
+
+                If viewConteoOperador.Columns.Contains(viewConteoOperador.Columns("Conteo_Pres")) Then
+                    viewConteoOperador.Columns("Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    viewConteoOperador.Columns("Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
+                    viewConteoOperador.Columns("Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    viewConteoOperador.Columns("Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
+                End If
+
+                viewConteoOperador.OptionsView.ShowFooter = True
+            End If
+
+            grdConteo.DataSource = DTInventarioConteo
+
+            gviewConteo.BestFitColumns()
+
+            If Not gBeTransInvEnc.Inicial Then
+
+                If gviewConteo.RowCount > 0 Then
+
+                    gviewConteo.Columns("Teorico_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gviewConteo.Columns("Teorico_Pres").DisplayFormat.FormatString = "{0:n6}"
+
+                    gviewConteo.Columns("Teorico_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gviewConteo.Columns("Teorico_Pres").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    gviewConteo.Columns("Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gviewConteo.Columns("Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
+
+                    gviewConteo.Columns("Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gviewConteo.Columns("Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
+
+                End If
+
+            End If
 
             Set_LayOut_Grid(vNombreArchivoLayOutGridConteoOpe)
 
@@ -1098,7 +1179,7 @@ Public Class frmInventario
 
         Try
 
-            If AnularInventario Then
+            If AnularInventario() Then
 
                 If XtraMessageBox.Show("¿Anular proceso de inventario?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
@@ -1145,6 +1226,7 @@ Public Class frmInventario
                                 End If
 
                             End If
+
                         End If
                     End If
 
@@ -1242,9 +1324,7 @@ Public Class frmInventario
                                                 BeConteoDetalle.Licencia,
                                                 BeConteoDetalle.FechaVence,
                                                 BeConteoDetalle.IdProducto,
-                                                BeConteoDetalle.IdInventarioDet,
-                                                BeConteoDetalle.Codigo_Talla,
-                                                BeConteoDetalle.Codigo_Color)
+                                                BeConteoDetalle.IdInventarioDet)
 
                 Next
 
@@ -1330,9 +1410,7 @@ Public Class frmInventario
                                                   BeTrans_inv_enc.IdProducto,
                                                   BeTrans_inv_enc.IdInventarioRes,
                                                   BeTrans_inv_enc.UbicacionCompleta,
-                                                  BeTrans_inv_enc.Licencia,
-                                                  BeTrans_inv_enc.Codigo_Talla,
-                                                  BeTrans_inv_enc.Codigo_Color)
+                                                  BeTrans_inv_enc.Licencia)
 
                 Next
 
@@ -1998,23 +2076,22 @@ Public Class frmInventario
 
         Try
 
-
             If gBeTransInvEnc.Inicial Then
 
-                If AP.Bodega.Interface_SAP AndAlso AP.Bodega.Restringir_Areas_SAP Then
-                    gCoincidencias = True
-                End If
+                gCoincidencias = True
 
                 DTComparativoWMSVrsFisico = clsLnTrans_inv_enc.Get_Inventario_Vrs_Stock_Det_WMS(gBeTransInvEnc.Idinventarioenc,
-                                                                                             gBeTransInvEnc.IdBodega,
-                                                                                             gCoincidencias,
-                                                                                             lConnection,
-                                                                                             lTransaction)
+                                                                                                gBeTransInvEnc.IdBodega,
+                                                                                                gCoincidencias,
+                                                                                                lConnection,
+                                                                                                lTransaction)
             Else
                 DTComparativoWMSVrsFisico = clsLnTrans_inv_enc.Get_Inventario_Vrs_Stock_Det_Teorico_WMS(gBeTransInvEnc.Idinventarioenc,
-                                                                                                     lConnection,
-                                                                                                     lTransaction)
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
             End If
+
+
 
             dgridInvTeorico.DataSource = DTComparativoWMSVrsFisico
 
@@ -2024,38 +2101,39 @@ Public Class frmInventario
 
                     gvInvTeoricoWMS.Columns("Tipo").Group()
 
+
                     gvInvTeoricoWMS.Columns("Codigo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
                     gvInvTeoricoWMS.Columns("Codigo").SummaryItem.DisplayFormat = "Registros: {0}"
 
-                    gvInvTeoricoWMS.Columns("Stock_WMS").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoWMS.Columns("Stock_WMS").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Stock_WMS_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoWMS.Columns("Stock_WMS_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Stock_WMS").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoWMS.Columns("Stock_WMS").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Stock_WMS_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoWMS.Columns("Stock_WMS_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Teorico_ERP").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoWMS.Columns("Teorico_ERP").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Teorico_ERP_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoWMS.Columns("Teorico_ERP_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Teorico_ERP").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoWMS.Columns("Teorico_ERP").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Teorico_ERP_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoWMS.Columns("Teorico_ERP_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Dif_ERP").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoWMS.Columns("Dif_ERP").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Dif_ERP_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoWMS.Columns("Dif_ERP_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Dif_ERP").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoWMS.Columns("Dif_ERP").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Dif_ERP_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoWMS.Columns("Dif_ERP_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Dif_Conteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoWMS.Columns("Dif_Conteo").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Dif_Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoWMS.Columns("Dif_Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Dif_Conteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoWMS.Columns("Dif_Conteo").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Dif_Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoWMS.Columns("Dif_Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Conteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoWMS.Columns("Conteo").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoWMS.Columns("Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoWMS.Columns("Conteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoWMS.Columns("Conteo").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoWMS.Columns("Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoWMS.Columns("Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                 Else
 
@@ -2138,35 +2216,35 @@ Public Class frmInventario
                     GridView7.Columns("Codigo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
                     GridView7.Columns("Codigo").SummaryItem.DisplayFormat = "Registros: {0}"
 
-                    GridView7.Columns("Stock_WMS").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView7.Columns("Stock_WMS").DisplayFormat.FormatString = "{0:n6}"
+                    GridView7.Columns("Stock_WMS_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    GridView7.Columns("Stock_WMS_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    GridView7.Columns("Stock_WMS").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    GridView7.Columns("Stock_WMS").SummaryItem.DisplayFormat = "{0:n6}"
+                    GridView7.Columns("Stock_WMS_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    GridView7.Columns("Stock_WMS_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    GridView7.Columns("Teorico_ERP").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView7.Columns("Teorico_ERP").DisplayFormat.FormatString = "{0:n6}"
+                    GridView7.Columns("Teorico_ERP_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    GridView7.Columns("Teorico_ERP_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    GridView7.Columns("Teorico_ERP").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    GridView7.Columns("Teorico_ERP").SummaryItem.DisplayFormat = "{0:n6}"
+                    GridView7.Columns("Teorico_ERP_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    GridView7.Columns("Teorico_ERP_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    GridView7.Columns("Dif_ERP").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView7.Columns("Dif_ERP").DisplayFormat.FormatString = "{0:n6}"
+                    GridView7.Columns("Dif_ERP_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    GridView7.Columns("Dif_ERP_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    GridView7.Columns("Dif_ERP").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    GridView7.Columns("Dif_ERP").SummaryItem.DisplayFormat = "{0:n6}"
+                    GridView7.Columns("Dif_ERP_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    GridView7.Columns("Dif_ERP_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    GridView7.Columns("Dif_Conteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView7.Columns("Dif_Conteo").DisplayFormat.FormatString = "{0:n6}"
+                    GridView7.Columns("Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    GridView7.Columns("Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    GridView7.Columns("Dif_Conteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    GridView7.Columns("Dif_Conteo").SummaryItem.DisplayFormat = "{0:n6}"
+                    GridView7.Columns("Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    GridView7.Columns("Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    GridView7.Columns("Conteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView7.Columns("Conteo").DisplayFormat.FormatString = "{0:n6}"
+                    GridView7.Columns("Dif_Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    GridView7.Columns("Dif_Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    GridView7.Columns("Conteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    GridView7.Columns("Conteo").SummaryItem.DisplayFormat = "{0:n6}"
+                    GridView7.Columns("Dif_Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    GridView7.Columns("Dif_Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
                     GridView7.Columns("Costo_Nav").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     GridView7.Columns("Costo_Nav").DisplayFormat.FormatString = "{0:n6}"
@@ -2518,7 +2596,6 @@ Public Class frmInventario
                     .Peso = st.Peso
                     .Temperatura = 0
                     .Atributo_Variante_1 = st.Codigo_variante
-                    .IdProductoTallaColor = st.IdProductoTallaColor
 
                 End With
 
@@ -2555,7 +2632,6 @@ Public Class frmInventario
                 mov.IdEstadoOrigen = item.IdProductoEstado
                 mov.IdEstadoDestino = item.IdProductoEstado
                 mov.IdUnidadMedida = item.IdUnidadMedida
-                mov.IdProductoTallaColor = item.IdProductoTallaColor
                 mov.IdTipoTarea = 6
                 mov.IdBodegaDestino = AP.IdBodega
                 mov.IdRecepcion = 0
@@ -2603,7 +2679,7 @@ Public Class frmInventario
 
     End Sub
 
-    Private Sub frmInventario_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Private Sub frmInventario_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
 
         If e.KeyCode = Keys.Escape Then
             Close()
@@ -2667,7 +2743,7 @@ Public Class frmInventario
 
     End Sub
 
-    Private Sub SimpleButton1_Click(sender As Object, e As EventArgs) Handles cmdAgregar.Click
+    Private Sub cmdAgregar_Click(sender As Object, e As EventArgs) Handles cmdAgregar.Click
 
         Dim clsTrans As New clsTransaccion
 
@@ -2679,7 +2755,7 @@ Public Class frmInventario
             Ubicacion.pObjBeB.IdBodega = cmbBodega.EditValue
             Ubicacion.pObjBeB.Nombre = cmbBodega.Text
             Ubicacion.IdInventarioEnc = lblCod.Text
-            Ubicacion.IdOperador = cmbOperadorProd.EditValue
+            Ubicacion.IdOperador = cmbOperador.EditValue
             Ubicacion.lStockCongelado = clsLnTrans_inv_stock.Get_All_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc, gBeTransInvEnc.IdBodega, clsTrans.lConnection, clsTrans.lTransaction)
             Ubicacion.ShowDialog()
             Ubicacion.Dispose()
@@ -3488,66 +3564,130 @@ Public Class frmInventario
 
                                     End If
 
-                                    If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador(cmbOperador.EditValue,
-                                                                                                gBeTransInvEnc.Idinventarioenc,
-                                                                                                vIdProductoBodega,
-                                                                                                clsTrans.lConnection,
-                                                                                                clsTrans.lTransaction) Then
+                                    Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
+                                    lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
+                                                                                                                            vIdProductoBodega,
+                                                                                                                            NUbicacion.Tag,
+                                                                                                                            clsTrans.lConnection,
+                                                                                                                            clsTrans.lTransaction)
 
-                                        Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
-                                        lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
-                                                                                                                                vIdProductoBodega,
-                                                                                                                                NUbicacion.Tag,
-                                                                                                                                clsTrans.lConnection,
-                                                                                                                                clsTrans.lTransaction)
+                                    Dim InvCiclico As New clsBeTrans_inv_ciclico
 
-                                        Dim InvCiclico As New clsBeTrans_inv_ciclico
+                                    If lBeTransInvCiclico.Count > 0 Then
 
                                         For Each invcic In lBeTransInvCiclico
 
-                                            InvCiclico = New clsBeTrans_inv_ciclico
-                                            InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                            InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                            InvCiclico.IdStock = invcic.IdStock
-                                            InvCiclico.IdProductoBodega = invcic.IdProductoBodega
-                                            InvCiclico.IdProductoEstado = invcic.IdProductoEstado
-                                            InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
-                                            InvCiclico.IdUbicacion = invcic.IdUbicacion
-                                            InvCiclico.IdPresentacion = invcic.IdPresentacion
-                                            InvCiclico.EsNuevo = False
-                                            InvCiclico.Lote_stock = invcic.Lote_stock
-                                            InvCiclico.Lote = invcic.Lote
-                                            InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
-                                            InvCiclico.Fecha_vence = invcic.Fecha_vence
-                                            InvCiclico.Cant_stock = invcic.Cant_stock
-                                            InvCiclico.Cantidad = 0
-                                            InvCiclico.Cant_reconteo = invcic.Cant_reconteo
-                                            InvCiclico.Peso_stock = invcic.Peso_stock
-                                            InvCiclico.Peso = invcic.Peso
-                                            InvCiclico.Peso_reconteo = invcic.Peso_reconteo
-                                            InvCiclico.Idoperador = Operador.Idoperador
-                                            InvCiclico.User_agr = AP.UsuarioAp.Nombres
-                                            InvCiclico.Fec_agr = Now
-                                            InvCiclico.EsPallet = invcic.EsPallet
-                                            InvCiclico.lic_plate = invcic.lic_plate
-                                            InvCiclico.IdBodega = AP.IdBodega
+                                            vIdStock = invcic.IdStock
 
-                                            clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
+                                            If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador_And_IdStock(cmbOperador.EditValue,
+                                                                                                                    gBeTransInvEnc.Idinventarioenc,
+                                                                                                                    vIdProductoBodega,
+                                                                                                                    vIdStock,
+                                                                                                                    clsTrans.lConnection,
+                                                                                                                    clsTrans.lTransaction) Then
+
+                                                InvCiclico = New clsBeTrans_inv_ciclico
+                                                InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
+                                                InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
+                                                InvCiclico.IdStock = invcic.IdStock
+                                                InvCiclico.IdProductoBodega = invcic.IdProductoBodega
+                                                InvCiclico.IdProductoEstado = invcic.IdProductoEstado
+                                                InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
+                                                InvCiclico.IdUbicacion = invcic.IdUbicacion
+                                                InvCiclico.IdPresentacion = invcic.IdPresentacion
+                                                InvCiclico.EsNuevo = False
+                                                InvCiclico.Lote_stock = invcic.Lote_stock
+                                                InvCiclico.Lote = invcic.Lote
+                                                InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
+                                                InvCiclico.Fecha_vence = invcic.Fecha_vence
+                                                InvCiclico.Cant_stock = invcic.Cant_stock
+                                                InvCiclico.Cantidad = 0
+                                                InvCiclico.Cant_reconteo = invcic.Cant_reconteo
+                                                InvCiclico.Peso_stock = invcic.Peso_stock
+                                                InvCiclico.Peso = invcic.Peso
+                                                InvCiclico.Peso_reconteo = invcic.Peso_reconteo
+                                                InvCiclico.Idoperador = Operador.Idoperador
+                                                InvCiclico.User_agr = AP.UsuarioAp.Nombres
+                                                InvCiclico.Fec_agr = Now
+                                                InvCiclico.EsPallet = invcic.EsPallet
+                                                InvCiclico.lic_plate = invcic.lic_plate
+                                                InvCiclico.IdBodega = AP.IdBodega
+                                                InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                                                InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
+
+                                                clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
+
+                                            End If
 
                                         Next
 
+                                    Else
+
+                                        Dim lInvCongelado As New List(Of clsBeTrans_inv_stock)
+
+                                        lInvCongelado = clsLnTrans_inv_stock.Get_All_By_IdInventarioEnc_And_IdProductoBodega(gBeTransInvEnc.Idinventarioenc,
+                                                                                                                             vIdProductoBodega,
+                                                                                                                             NUbicacion.Tag,
+                                                                                                                             clsTrans.lConnection,
+                                                                                                                             clsTrans.lTransaction)
+                                        'GT 02092021 1222: si hay existencia iterar
+                                        If lInvCongelado.Count > 0 Then
+
+                                            For Each StockCongelado In lInvCongelado
+
+                                                If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador_And_IdStock(cmbOperador.EditValue,
+                                                                                                                        gBeTransInvEnc.Idinventarioenc,
+                                                                                                                        vIdProductoBodega,
+                                                                                                                        StockCongelado.IdStock,
+                                                                                                                        clsTrans.lConnection,
+                                                                                                                        clsTrans.lTransaction) Then
+                                                    InvCiclico = New clsBeTrans_inv_ciclico
+                                                    InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
+                                                    InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
+                                                    InvCiclico.IdStock = StockCongelado.IdStock
+                                                    InvCiclico.IdProductoBodega = StockCongelado.IdProductoBodega
+                                                    InvCiclico.IdProductoEstado = StockCongelado.IdProductoEstado
+                                                    InvCiclico.IdProductoEst_nuevo = StockCongelado.IdProductoEstado
+                                                    InvCiclico.IdPresentacion = StockCongelado.IdPresentacion
+                                                    InvCiclico.IdUbicacion = StockCongelado.IdUbicacion
+                                                    InvCiclico.IdUnidadMedida = StockCongelado.IdUnidadMedida
+                                                    InvCiclico.Lote_stock = StockCongelado.Lote
+                                                    InvCiclico.Lote = StockCongelado.Lote
+                                                    InvCiclico.Fecha_vence_stock = StockCongelado.Fecha_vence
+                                                    InvCiclico.Fecha_vence = StockCongelado.Fecha_vence
+                                                    InvCiclico.Cant_stock = StockCongelado.Cantidad
+                                                    InvCiclico.Peso_stock = StockCongelado.Peso
+                                                    InvCiclico.EsNuevo = False
+                                                    InvCiclico.Idoperador = cmbOperador.EditValue
+                                                    InvCiclico.User_agr = AP.UsuarioAp.User_agr
+                                                    InvCiclico.Fec_agr = Now
+                                                    InvCiclico.Cantidad = 0.0
+                                                    InvCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
+                                                    InvCiclico.lic_plate = StockCongelado.Lic_plate
+                                                    InvCiclico.IdBodega = StockCongelado.IdBodega
+                                                    InvCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
+
+                                                    clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
+
+                                                End If
+
+                                                Debug.Print("Procesando interno IdStock: " & StockCongelado.IdStock)
+
+                                            Next
+
+                                        End If
 
                                     End If
 
                                 Next
 
-                                If clsLnTrans_inv_operador.Get_By_Operador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                If Not clsLnTrans_inv_operador.Get_By_Operador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
 
-                                    XtraMessageBox.Show("Ya existe operador", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                    GuardarOperador = False
-                                    Exit For
+                                    '    XtraMessageBox.Show("Ya existe operador", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                    '    GuardarOperador = False
+                                    '    Exit For
 
-                                Else
+                                    'Else
 
                                     Try
 
@@ -3557,6 +3697,7 @@ Public Class frmInventario
                                         Ciclico.IdUbicacion = NUbicacion.Tag
                                         Ciclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
 
+                                        '#CKFK20250801 Modifiqué la validación
                                         If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador(cmbOperador.EditValue,
                                                                                                     gBeTransInvEnc.Idinventarioenc,
                                                                                                     vIdProductoBodega,
@@ -3600,6 +3741,8 @@ Public Class frmInventario
                                                 InvCiclico.EsPallet = invcic.EsPallet
                                                 InvCiclico.lic_plate = invcic.lic_plate
                                                 InvCiclico.IdBodega = AP.IdBodega
+                                                InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                                                InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
 
                                                 clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
 
@@ -3616,6 +3759,8 @@ Public Class frmInventario
 
                                 End If
 
+                            Else
+                                XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
 
                         Next
@@ -4081,6 +4226,7 @@ Public Class frmInventario
                                     InvCiclico.lic_plate = invcic.lic_plate
                                     InvCiclico.IdBodega = AP.IdBodega
                                     InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                                    InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
 
                                     If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, cTrans.lConnection, cTrans.lTransaction) Then
 
@@ -4161,6 +4307,7 @@ Public Class frmInventario
                                         InvCiclico.lic_plate = invcic.lic_plate
                                         InvCiclico.IdBodega = AP.IdBodega
                                         InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                                        InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
 
                                         clsLnTrans_inv_ciclico.Insertar(InvCiclico, cTrans.lConnection, cTrans.lTransaction)
 
@@ -4235,6 +4382,7 @@ Public Class frmInventario
                                         InvCiclico.lic_plate = invcic.lic_plate
                                         InvCiclico.IdBodega = AP.IdBodega
                                         InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                                        InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
 
                                         If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, cTrans.lConnection, cTrans.lTransaction) Then
 
@@ -4379,6 +4527,7 @@ Public Class frmInventario
                             InvCiclico.lic_plate = BeTransInvCiclico.lic_plate
                             InvCiclico.IdBodega = AP.IdBodega
                             InvCiclico.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
+                            InvCiclico.Cantidad_Reservada_UMBas = BeTransInvCiclico.Cantidad_Reservada_UMBas
 
                             clsLnTrans_inv_ciclico.Insertar(InvCiclico,
                                                                 cTrans.lConnection,
@@ -4500,6 +4649,7 @@ Public Class frmInventario
                                 InvCiclico.lic_plate = BeTransInvCiclico.lic_plate
                                 InvCiclico.IdBodega = AP.IdBodega
                                 InvCiclico.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
+                                InvCiclico.Cantidad_Reservada_UMBas = BeTransInvCiclico.Cantidad_Reservada_UMBas
 
                                 clsLnTrans_inv_ciclico.Insertar(InvCiclico,
                                                                         cTrans.lConnection,
@@ -4739,6 +4889,7 @@ Public Class frmInventario
         Dim Cantidad_Teorica_Stock_Pres As Double = 0
         Dim CantReUM As Double = 0
         Dim Cantidad_Reconteo_Pres As Double = 0
+        Dim Cantidad_Reservada_Pres As Double = 0
         Dim AbrioWaitForm As Boolean = False
         Dim vDiferencia As Double = 0
         Dim EstadoNuevo As String = ""
@@ -4768,37 +4919,30 @@ Public Class frmInventario
 
             If pIdPropietario > 0 Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdPropietario = pIdPropietario)
-                'dv.RowFilter += " AND IdPropietario = " & cmbPropietario.EditValue
             End If
 
             If txtIdFamilia.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdFamilia = txtIdFamilia.Text)
-                'dv.RowFilter += " AND IdFamilia = " & txtIdFamilia.Text
             End If
 
             If txtIdClasificacion.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdClasificacion = txtIdClasificacion.Text)
-                'dv.RowFilter += " AND IdClasificacion = " & txtIdClasificacion.Text
             End If
 
             If txtIdProducto.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.Codigo = txtIdProducto.Text)
-                'dv.RowFilter += " AND Codigo = " & txtIdClasificacion.Text
             End If
 
             If txtIdUbicacion.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdUbicacion = txtIdUbicacion.Text)
-                'dv.RowFilter += " AND IdUbicacion = " & txtIdUbicacion.Text
             End If
 
             If txtIdTramo.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdTramo = txtIdTramo.Text)
-                'dv.RowFilter += " AND IdTramo = " & txtIdTramo.Text
             End If
 
             If txtIdOperador.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.Idoperador = txtIdOperador.Text)
-                'dv.RowFilter += " AND Idoperador = " & txtIdOperador.Text
             End If
 
             If ListInventarioCiclico.Count > 0 Then
@@ -4837,10 +4981,11 @@ Public Class frmInventario
                     If BeTransInvCiclico.EsNuevo Then
 
                         Extraviado = BeTransInvCiclico.Cantidad
-                        BeTransInvCiclico.Cant_stock = 0
-                        BeTransInvCiclico.Cant_reconteo = 0
-                        BeTransInvCiclico.Peso_stock = 0
-                        BeTransInvCiclico.Peso_reconteo = 0
+                        '#CKFK20250730 Aunque sea nuevo la cantidad de stock no se coloca en 0 porque si existe en el congelado
+                        'BeTransInvCiclico.Cant_stock = 0
+                        'BeTransInvCiclico.Cant_reconteo = 0
+                        'BeTransInvCiclico.Peso_stock = 0
+                        'BeTransInvCiclico.Peso_reconteo = 0
 
                     Else
 
@@ -4887,7 +5032,36 @@ Public Class frmInventario
                         CantReUM = BeTransInvCiclico.Cant_reconteo
                     End If
 
-                    vDiferencia = (CantStockUM - CantidadUMBas)
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        Cantidad_Reservada_Pres = Math.Round(BeTransInvCiclico.Cantidad_Reservada_UMBas / BeTransInvCiclico.Factor, 6)
+                    Else
+                        Cantidad_Reservada_Pres = BeTransInvCiclico.Cantidad_Reservada_UMBas
+                    End If
+
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        vDiferencia = (Cantidad_Teorica_Stock_Pres - Cantidad_Contada_Pres)
+                    Else
+                        vDiferencia = (CantStockUM - CantidadUMBas)
+                    End If
+
+
+                    '#MA20260204 
+                    Dim PresentacionFinal As String
+                    Dim CantTeoricaFinal As String
+                    Dim CantConteoFinal As String
+                    Dim CantReconteoFinal As String
+
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        PresentacionFinal = BeTransInvCiclico.Presentacion
+                        CantTeoricaFinal = Cantidad_Teorica_Stock_Pres
+                        CantConteoFinal = Cantidad_Contada_Pres
+                        CantReconteoFinal = Cantidad_Reconteo_Pres
+                    Else
+                        PresentacionFinal = "UN"
+                        CantTeoricaFinal = CantStockUM
+                        CantConteoFinal = CantidadUMBas
+                        CantReconteoFinal = CantReUM
+                    End If
 
                     DTInventarioCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
                                                   BeTransInvCiclico.Ubicacion,
@@ -4896,32 +5070,27 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Codigo,
                                                   BeTransInvCiclico.Producto,
                                                   BeTransInvCiclico.TipoProducto,
-                                                  BeTransInvCiclico.Presentacion,
+                                                  PresentacionFinal,
                                                   BeTransInvCiclico.Estado,
                                                   EstadoNuevo,
                                                   BeTransInvCiclico.Lote_stock,
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence,
-                                                  BeTransInvCiclico.Talla,
-                                                  BeTransInvCiclico.Color,
-                                                  BeTransInvCiclico.Talla_Nueva,
-                                                  BeTransInvCiclico.Color_Nuevo,
-                                                  BeTransInvCiclico.UmBas,
-                                                  Cantidad_Teorica_Stock_Pres,
-                                                  CantStockUM,
+                                                  CantTeoricaFinal, '15
                                                   BeTransInvCiclico.Peso_stock,
-                                                  Cantidad_Contada_Pres,
-                                                  CantidadUMBas,
+                                                  CantConteoFinal,
                                                   BeTransInvCiclico.Peso,
-                                                  Cantidad_Reconteo_Pres,
-                                                  CantReUM,
+                                                  CantReconteoFinal,
                                                   BeTransInvCiclico.Peso_reconteo,
                                                   vDiferencia * -1,
+                                                  Cantidad_Reservada_Pres,
                                                   Extraviado,
                                                   BeTransInvCiclico.Idinventarioenc,
+                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
                                                   BeTransInvCiclico.IdProductoBodega,
-                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate))
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
@@ -4954,12 +5123,6 @@ Public Class frmInventario
                     gdviewTeorico.Columns("Cant.Teorica.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Cant.Teorica.Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-
                     gdviewTeorico.Columns("PesoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("PesoStock").DisplayFormat.FormatString = "{0:n6}"
 
@@ -4971,12 +5134,6 @@ Public Class frmInventario
 
                     gdviewTeorico.Columns("Cant.Conteo.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Cant.Conteo.Pres").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gdviewTeorico.Columns("PesoConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("PesoConteo").DisplayFormat.FormatString = "{0:n6}"
@@ -4990,12 +5147,6 @@ Public Class frmInventario
                     gdviewTeorico.Columns("Cant.Reconteo.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Cant.Reconteo.Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-
                     gdviewTeorico.Columns("PesoReconteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("PesoReconteo").DisplayFormat.FormatString = "{0:n6}"
 
@@ -5008,11 +5159,26 @@ Public Class frmInventario
                     gdviewTeorico.Columns("Extraviado").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Extraviado").SummaryItem.DisplayFormat = "{0:n6}"
 
+                    gdviewTeorico.Columns("Dif.Cant.UMBas").Caption = "Dif.Cant.Pres"
+
                     gdviewTeorico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatString = "{0:n6}"
 
                     gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    '#MA20260204
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").DisplayFormat.FormatString = "{0:n6}"
+
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    gdviewTeorico.Columns("Cant.Reservada").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gdviewTeorico.Columns("Cant.Reservada").DisplayFormat.FormatString = "{0:n6}"
+
+                    gdviewTeorico.Columns("Cant.Reservada").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gdviewTeorico.Columns("Cant.Reservada").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gdviewTeorico.Columns("Ubicación").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
                     gdviewTeorico.Columns("Ubicación").SummaryItem.DisplayFormat = "Registros: {0}"
@@ -5057,7 +5223,7 @@ Public Class frmInventario
         Dim Cantidad_Reconteo_Pres As Double = 0
         Dim AbrioWaitForm As Boolean = False
         Dim vDiferencia As Double = 0
-        Dim vDiferenciaPres As Double = 0
+        Dim vDiferencia_Pres As Double = 0
         Dim EstadoNuevo As String = ""
         Dim UbicacionNueva As String = ""
 
@@ -5134,40 +5300,37 @@ Public Class frmInventario
                     Cantidad_Reconteo_Pres = 0
                     CantReUM = 0
 
-                    If BeTransInvCiclico.IdPresentacion > 0 Then
-                        '#EJC20180821: Desde la hermana república del salvador, con ustedes, los cálculos.
-                        Cantidad_Contada_Pres = Math.Round(BeTransInvCiclico.Cantidad / BeTransInvCiclico.Factor, 6)
-                        Cantidad_Teorica_Stock_Pres = Math.Round(BeTransInvCiclico.Cant_stock / BeTransInvCiclico.Factor, 6)
-                        Cantidad_Reconteo_Pres = Math.Round(BeTransInvCiclico.Cant_reconteo / BeTransInvCiclico.Factor, 6)
-                        CantidadUMBas = BeTransInvCiclico.Cantidad
-                        CantStockUM = BeTransInvCiclico.Cant_stock
-                        CantReUM = BeTransInvCiclico.Cant_reconteo
-                    Else
-                        CantidadUMBas = BeTransInvCiclico.Cantidad
-                        CantStockUM = BeTransInvCiclico.Cant_stock
-                        CantReUM = BeTransInvCiclico.Cant_reconteo
-                    End If
+                    'If BeTransInvCiclico.IdPresentacion > 0 Then
+                    '    '#EJC20180821: Desde la hermana república del salvador, con ustedes, los cálculos.
+                    '    Cantidad_Contada_Pres = Math.Round(BeTransInvCiclico.Cantidad / BeTransInvCiclico.Factor, 6)
+                    '    Cantidad_Teorica_Stock_Pres = Math.Round(BeTransInvCiclico.Cant_stock / BeTransInvCiclico.Factor, 6)
+                    '    Cantidad_Reconteo_Pres = Math.Round(BeTransInvCiclico.Cant_reconteo / BeTransInvCiclico.Factor, 6)
+                    '    CantidadUMBas = BeTransInvCiclico.Cantidad
+                    '    CantStockUM = BeTransInvCiclico.Cant_stock
+                    '    CantReUM = BeTransInvCiclico.Cant_reconteo
+                    'Else
+                    '    CantidadUMBas = BeTransInvCiclico.Cantidad
+                    '    CantStockUM = BeTransInvCiclico.Cant_stock
+                    '    CantReUM = BeTransInvCiclico.Cant_reconteo
+                    'End If
 
-                    vDiferencia = (CantStockUM - CantidadUMBas)
-                    vDiferenciaPres = Cantidad_Teorica_Stock_Pres - Cantidad_Contada_Pres
+                    ' vDiferencia = (CantStockUM - CantidadUMBas)
 
-                    DTInventarioDiferenciaCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
-                                                           BeTransInvCiclico.Idinventarioenc,
-                                                           BeTransInvCiclico.Codigo,
-                                                           BeTransInvCiclico.Producto,
-                                                           BeTransInvCiclico.TipoProducto,
-                                                           BeTransInvCiclico.UnidadMedida,
-                                                           BeTransInvCiclico.Presentacion,
-                                                           CantStockUM,
-                                                           CantidadUMBas,
-                                                           CantReUM,
-                                                           vDiferencia * -1,
-                                                           Cantidad_Teorica_Stock_Pres,
-                                                           Cantidad_Contada_Pres,
-                                                           Cantidad_Reconteo_Pres,
-                                                           vDiferenciaPres * -1,
-                                                           "",
-                                                           BeTransInvCiclico.IdProductoBodega)
+                    '#MA20260204
+                    DTInventarioDiferenciaCiclico.Rows.Add(
+                                                    BeTransInvCiclico.IdInvCiclico,            '1
+                                                    BeTransInvCiclico.Idinventarioenc,         '2
+                                                    BeTransInvCiclico.Codigo,                  '3
+                                                    BeTransInvCiclico.Producto,                '4
+                                                    BeTransInvCiclico.Presentacion,            '5 
+                                                    BeTransInvCiclico.TipoProducto,            '6
+                                                    BeTransInvCiclico.Cant_stock,              '7
+                                                    BeTransInvCiclico.Cantidad,                '8
+                                                    BeTransInvCiclico.Cant_reconteo,           '9
+                                                    (BeTransInvCiclico.Cant_stock - BeTransInvCiclico.Cantidad) * -1, '10
+                                                    BeTransInvCiclico.TipoProducto,            '11 
+                                                     BeTransInvCiclico.IdProductoBodega,        '13
+                                                    BeTransInvCiclico.Cantidad_Reservada_UMBas)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioDiferenciaCiclico.Count)
 
@@ -5192,29 +5355,38 @@ Public Class frmInventario
                     '#EJC20180830_0540PM: Hot fix para funcionalidad de tablet
                     gvDiferenciasCiclico.Columns("Código").Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left
 
-                    gvDiferenciasCiclico.Columns("Cant.Teorica.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvDiferenciasCiclico.Columns("Cant.Teorica.UMBas").DisplayFormat.FormatString = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Reservada").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvDiferenciasCiclico.Columns("Cant.Reservada").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Cant.Teorica.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvDiferenciasCiclico.Columns("Cant.Teorica.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Reservada").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvDiferenciasCiclico.Columns("Cant.Reservada").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Cant.Conteo.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvDiferenciasCiclico.Columns("Cant.Conteo.UMBas").DisplayFormat.FormatString = "{0:n6}"
+                    '#MA20260204
+                    gvDiferenciasCiclico.Columns("Presentacion").Visible = True
 
-                    gvDiferenciasCiclico.Columns("Cant.Conteo.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvDiferenciasCiclico.Columns("Cant.Conteo.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Teorica.Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvDiferenciasCiclico.Columns("Cant.Teorica.Presentacion").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.UMBas").DisplayFormat.FormatString = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Teorica.Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvDiferenciasCiclico.Columns("Cant.Teorica.Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Conteo.Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvDiferenciasCiclico.Columns("Cant.Conteo.Presentacion").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvDiferenciasCiclico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatString = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Conteo.Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvDiferenciasCiclico.Columns("Cant.Conteo.Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Dif.Cant.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvDiferenciasCiclico.Columns("Dif.Cant.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").DisplayFormat.FormatString = "{0:n6}"
+
+                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    gvDiferenciasCiclico.Columns("Dif.Cant.Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvDiferenciasCiclico.Columns("Dif.Cant.Presentacion").DisplayFormat.FormatString = "{0:n6}"
+
+                    gvDiferenciasCiclico.Columns("Dif.Cant.Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvDiferenciasCiclico.Columns("Dif.Cant.Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gvDiferenciasCiclico.BestFitColumns()
 
@@ -5920,46 +6092,6 @@ Public Class frmInventario
     Private Sub gdviewTeorico_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gdviewTeorico.RowCellStyle
 
         Try
-            If e.Column.FieldName = "Dif.Cant.UMBas" Then
-
-                Dim View As GridView = sender
-                Dim CantidadConteo As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Conteo.UMBas"))
-                Dim CantidadStock As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Teorica.UMBas"))
-
-                If CantidadConteo <> CantidadStock Then
-                    e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
-                    e.Appearance.ForeColor = Color.Black
-                    e.Appearance.BackColor = Color.Salmon
-                    e.Appearance.BackColor2 = Color.SeaShell
-                ElseIf CantidadConteo = CantidadStock Then
-                    e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
-                    e.Appearance.ForeColor = Color.Black
-                    e.Appearance.BackColor = Color.Green
-                    e.Appearance.BackColor2 = Color.White
-                End If
-
-            End If
-
-            If e.Column.FieldName = "Cant.Reconteo.UMBas" Then
-
-                Dim View As GridView = sender
-                Dim CantidadReconteo As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Reconteo.UMBas"))
-                Dim CantidadConteo As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Conteo.UMBas"))
-                Dim CantidadStock As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Teorica.UMBas"))
-
-                If (CantidadReconteo <> CantidadStock) AndAlso (CantidadConteo > 0) AndAlso (CantidadReconteo > 0) Then
-                    e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
-                    e.Appearance.ForeColor = Color.Black
-                    e.Appearance.BackColor = Color.Salmon
-                    e.Appearance.BackColor2 = Color.SeaShell
-                ElseIf CantidadReconteo = CantidadStock Then
-                    e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
-                    e.Appearance.ForeColor = Color.Black
-                    e.Appearance.BackColor = Color.Green
-                    e.Appearance.BackColor2 = Color.White
-                End If
-
-            End If
 
             If e.Column.FieldName = "PesoConteo" Then
 
@@ -6001,39 +6133,32 @@ Public Class frmInventario
 
             End If
 
-            If e.Column.FieldName = "Cant.Conteo.UMBas" Then
+            If e.Column.FieldName = "Cant.Reservada" Then
 
-                Dim View As GridView = sender
-                Dim IdInvCiclico As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("IdInvCiclico"))
-                Dim CantidadConteo As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Conteo.UMBas"))
-                Dim CantidadStock As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Teorica.UMBas"))
-                Dim CantidadReConteo As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cant.Reconteo.UMBas"))
-                Dim vDif As Double = 0
-                Dim Dr As DataRow = Nothing
+                Dim View As GridView = CType(sender, GridView)
+                Dim rawValue As Object = View.GetRowCellValue(e.RowHandle, "Cant.Reservada")
 
-                Try
+                Dim CantReservada As Double = 0
 
-                    Dr = DTInventarioCiclico.Select("IdInvCiclico = " & IdInvCiclico).FirstOrDefault()
-
-                    If CantidadConteo > 0 AndAlso CantidadReConteo > 0 Then
-                        vDif = Math.Round(CantidadStock - CantidadReConteo, 6)
-                    ElseIf CantidadReConteo = 0 AndAlso CantidadConteo > 0 Then
-                        '#EJC20180801_1116PM: Evita diferencia por un valor decimal pequeño.
-                        vDif = Math.Round(CantidadStock - CantidadConteo, 6)
-                        If Math.Abs(CDec(vDif)) = 0.000001 Then
-                            If vDif > 0 Then
-                                Dr("Cant.Conteo.UMBas") = CantidadConteo - vDif
-                            Else
-                                Dr("Cant.Conteo.UMBas") = CantidadConteo + vDif
-                            End If
-                            vDif = 0
-                        End If
-                    ElseIf CantidadConteo = 0 Then
-                        vDif = Math.Round(CantidadStock - CantidadConteo, 6)
+                If rawValue IsNot Nothing AndAlso Double.TryParse(rawValue.ToString(), CantReservada) Then
+                    If CantReservada <> 0 Then
+                        e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
+                        e.Appearance.ForeColor = Color.Black
+                        e.Appearance.BackColor = Color.Plum
+                        e.Appearance.BackColor2 = Color.WhiteSmoke
+                        e.Appearance.GradientMode = LinearGradientMode.Vertical
+                    Else
+                        ' Cantidad es cero
+                        e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
+                        e.Appearance.ForeColor = Color.Black
+                        e.Appearance.BackColor = Color.White
+                        e.Appearance.BackColor2 = Color.White
                     End If
-                Catch ex As Exception
-
-                End Try
+                Else
+                    ' Si el valor es nulo o no numérico, lo consideramos como cero (o ignoramos estilo)
+                    e.Appearance.BackColor = Color.White
+                    e.Appearance.BackColor2 = Color.White
+                End If
 
             End If
 
@@ -6897,7 +7022,7 @@ Public Class frmInventario
         Imprimir_VistaCompara()
     End Sub
 
-    Private Sub frmInventario_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+    Private Sub frmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
 
         Try
 
@@ -6966,11 +7091,18 @@ Public Class frmInventario
 
                 GridView9.BestFitColumns(True)
 
-                GridView9.Columns("Cantidad").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView9.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
+                '#MA20260204
+                GridView9.Columns("Cantidad_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView9.Columns("Cantidad_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                GridView9.Columns("Cantidad").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView9.Columns("Cantidad").DisplayFormat.FormatString = "{0:n6}"
+                GridView9.Columns("Cantidad_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView9.Columns("Cantidad_Pres").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView9.Columns("Cantidad_Reservada_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView9.Columns("Cantidad_Reservada_Pres").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView9.Columns("Cantidad_Reservada_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView9.Columns("Cantidad_Reservada_Pres").DisplayFormat.FormatString = "{0:n6}"
 
                 GridView9.Columns("Peso").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                 GridView9.Columns("Peso").SummaryItem.DisplayFormat = "{0:n6}"
@@ -7017,12 +7149,19 @@ Public Class frmInventario
                 Exportar_Grid_A_Excel(dgridCongelado, "WMS_Inv_Congelado.xlsx")
             ElseIf xtraTabInv.SelectedTabPage Is TabInventarioCostos Then
                 Exportar_Grid_A_Excel(grdCostos, "WMS_In_Comparacion_Valorizacion.xlsx")
-            ElseIf xtraTabInv.SelectedTabPage Is tabComparativoERPWMS Then
+            ElseIf xtraTabInv.SelectedTabPage Is tabComparativoERPFisicoWMS Then
                 Exportar_Grid_A_Excel(dgridcomparativoerpwms, "WMS_Inv_Comparativo_ERP.xlsx")
             ElseIf xtraTabInv.SelectedTabPage Is tabDiferenciasInventario Then
                 Exportar_Grid_A_Excel(dgridDiferenciasCiclico, "WMS_Diferencias_Ciclico.xlsx")
             ElseIf xtraTabInv.SelectedTabPage Is xtpRegularizacion Then
                 Exportar_Grid_A_Excel(grdRegularizar, "WMS_Regularizacion_Ciclico" & gBeTransInvEnc.Idinventarioenc & ".xlsx")
+            ElseIf xtraTabInv.SelectedTabPage Is tabUbicacionesNoContadas Then
+                Exportar_Grid_A_Excel(dgridUbicacionesNoContadas, "WMS_Ubicaciones_No_Contadas" & gBeTransInvEnc.Idinventarioenc & ".xlsx")
+            ElseIf xtraTabInv.SelectedTabPage Is tabUbicacionesContadas Then
+                Exportar_Grid_A_Excel(gridUbicContadas, "WMS_Ubicaciones_Contadas" & gBeTransInvEnc.Idinventarioenc & ".xlsx")
+            ElseIf xtraTabInv.SelectedTabPage Is tabTiemposPorTramo Then
+                Exportar_Grid_A_Excel(gridTiempoConteos, "WMS_Conteos_Tiempos_Tramos" & gBeTransInvEnc.Idinventarioenc & ".xlsx")
+                Exportar_Grid_A_Excel(gridTiempoVerif, "WMS_Verificaciones_Tiempos_Tramos" & gBeTransInvEnc.Idinventarioenc & ".xlsx")
             Else
                 XtraMessageBox.Show("No hay nada que exportar en esta página", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
@@ -7218,15 +7357,8 @@ Public Class frmInventario
         Llena_Reporte_Inventario_Teorico_Costos()
     End Sub
 
-    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
-        Try
-            If Not bwKPI.IsBusy() Then
-                bwKPI.RunWorkerAsync()
-            End If
-        Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-        End Try
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs)
+
     End Sub
 
     Private Sub bwKPI_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwKPI.DoWork
@@ -7376,6 +7508,8 @@ Public Class frmInventario
 
         Try
 
+            gvInvTeoricoERP.Columns.Clear()
+
             If gBeTransInvEnc.Inicial Then
                 DTComparativoWMSVrsERP = clsLnTrans_inv_enc.Get_Inventario_Vrs_Stock_Det_ERP(gBeTransInvEnc.Idinventarioenc,
                                                                                              gBeTransInvEnc.IdBodega,
@@ -7391,6 +7525,7 @@ Public Class frmInventario
 
             dgridcomparativoerpwms.DataSource = DTComparativoWMSVrsERP
 
+
             If gvInvTeoricoERP.Columns.Count > 0 Then
 
                 If Not gBeTransInvEnc.Inicial Then
@@ -7400,35 +7535,35 @@ Public Class frmInventario
                     gvInvTeoricoERP.Columns("Codigo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
                     gvInvTeoricoERP.Columns("Codigo").SummaryItem.DisplayFormat = "Registros: {0}"
 
-                    gvInvTeoricoERP.Columns("Stock_WMS").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoERP.Columns("Stock_WMS").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Stock_WMS_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoERP.Columns("Stock_WMS_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Stock_WMS").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoERP.Columns("Stock_WMS").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Stock_WMS_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoERP.Columns("Stock_WMS_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Teorico_ERP").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoERP.Columns("Teorico_ERP").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Teorico_ERP_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoERP.Columns("Teorico_ERP_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Teorico_ERP").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoERP.Columns("Teorico_ERP").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Teorico_ERP_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoERP.Columns("Teorico_ERP_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Dif_ERP").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoERP.Columns("Dif_ERP").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Dif_ERP_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoERP.Columns("Dif_ERP_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Dif_ERP").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoERP.Columns("Dif_ERP").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Dif_ERP_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoERP.Columns("Dif_ERP_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Dif_Conteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoERP.Columns("Dif_Conteo").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Dif_Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoERP.Columns("Dif_Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Dif_Conteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoERP.Columns("Dif_Conteo").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Dif_Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoERP.Columns("Dif_Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Conteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvInvTeoricoERP.Columns("Conteo").DisplayFormat.FormatString = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gvInvTeoricoERP.Columns("Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                    gvInvTeoricoERP.Columns("Conteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvInvTeoricoERP.Columns("Conteo").SummaryItem.DisplayFormat = "{0:n6}"
+                    gvInvTeoricoERP.Columns("Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gvInvTeoricoERP.Columns("Conteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                 Else
 
@@ -7526,16 +7661,23 @@ Public Class frmInventario
                         Operador.Idoperador = cmbOperadorProd.EditValue
                         Operador.IdBodega = AP.IdBodega
 
-                        If clsLnTrans_inv_operador.Get_By_Operador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
+                        If Not clsLnTrans_inv_operador.Existe_Ubicacion_By_IdOperador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
 
-                            If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador(Operador.Idoperador,
-                                                                                        gBeTransInvEnc.Idinventarioenc,
-                                                                                        vIdProductoBodega,
-                                                                                        clsTrans.lConnection,
-                                                                                        clsTrans.lTransaction) Then
+                            clsLnTrans_inv_operador.Insertar(Operador, clsTrans.lConnection, clsTrans.lTransaction)
 
-                                Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
-                                lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
+                        End If
+
+                        If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(vUbicacion, gBeTransInvEnc.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
+
+                            BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
+                            BeTransInvCiclicoUbic.Idubicacion = vUbicacion
+                            BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
+                            Ubicaciones.Add(BeTransInvCiclicoUbic)
+
+                        End If
+
+                        Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
+                        lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
                                                                                                                         vIdProductoBodega,
                                                                                                                         vUbicacion,
                                                                                                                         clsTrans.lConnection,
@@ -7543,234 +7685,59 @@ Public Class frmInventario
 
 
 
-                                ' Crear una lista única por IdStock e IdUbicacion
-                                Dim distinctList As List(Of clsBeTrans_inv_ciclico) = lBeTransInvCiclico _
+                        ' Crear una lista única por IdStock e IdUbicacion
+                        Dim distinctList As List(Of clsBeTrans_inv_ciclico) = lBeTransInvCiclico _
                                                                                     .GroupBy(Function(x) New With {Key x.IdStock, Key x.IdUbicacion}) _
                                                                                     .Select(Function(g) g.First()) _
                                                                                     .ToList()
 
 
-                                Dim InvCiclico As New clsBeTrans_inv_ciclico
+                        Dim InvCiclico As New clsBeTrans_inv_ciclico
 
-                                For Each invcic In distinctList
+                        For Each invcic In distinctList
 
-                                    InvCiclico = New clsBeTrans_inv_ciclico
-                                    InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                    InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                    InvCiclico.IdStock = invcic.IdStock
-                                    InvCiclico.IdProductoBodega = invcic.IdProductoBodega
-                                    InvCiclico.IdProductoEstado = invcic.IdProductoEstado
-                                    InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
-                                    InvCiclico.IdUbicacion = invcic.IdUbicacion
-                                    InvCiclico.IdPresentacion = invcic.IdPresentacion
-                                    InvCiclico.EsNuevo = False
-                                    InvCiclico.Lote_stock = invcic.Lote_stock
-                                    InvCiclico.Lote = invcic.Lote
-                                    InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
-                                    InvCiclico.Fecha_vence = invcic.Fecha_vence
-                                    InvCiclico.Cant_stock = invcic.Cant_stock
-                                    InvCiclico.Cantidad = 0
-                                    InvCiclico.Cant_reconteo = 0
-                                    InvCiclico.Peso_stock = invcic.Peso_stock
-                                    InvCiclico.Peso = invcic.Peso
-                                    InvCiclico.Peso_reconteo = invcic.Peso_reconteo
-                                    InvCiclico.Idoperador = Operador.Idoperador
-                                    InvCiclico.User_agr = AP.UsuarioAp.Nombres
-                                    InvCiclico.Fec_agr = Now
-                                    InvCiclico.EsPallet = invcic.EsPallet
-                                    InvCiclico.lic_plate = invcic.lic_plate
-                                    InvCiclico.IdBodega = AP.IdBodega
-                                    InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                            If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador_And_IdStock(Operador.Idoperador, invcic.Idinventarioenc, invcic.IdProductoBodega, invcic.IdStock, clsTrans.lConnection, clsTrans.lTransaction) Then
 
-                                    If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                InvCiclico = New clsBeTrans_inv_ciclico
+                                InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
+                                InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
+                                InvCiclico.IdStock = invcic.IdStock
+                                InvCiclico.IdProductoBodega = invcic.IdProductoBodega
+                                InvCiclico.IdProductoEstado = invcic.IdProductoEstado
+                                InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
+                                InvCiclico.IdUbicacion = invcic.IdUbicacion
+                                InvCiclico.IdPresentacion = invcic.IdPresentacion
+                                InvCiclico.EsNuevo = False
+                                InvCiclico.Lote_stock = invcic.Lote_stock
+                                InvCiclico.Lote = invcic.Lote
+                                InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
+                                InvCiclico.Fecha_vence = invcic.Fecha_vence
+                                InvCiclico.Cant_stock = invcic.Cant_stock
+                                InvCiclico.Cantidad = 0
+                                InvCiclico.Cant_reconteo = 0
+                                InvCiclico.Peso_stock = invcic.Peso_stock
+                                InvCiclico.Peso = invcic.Peso
+                                InvCiclico.Peso_reconteo = invcic.Peso_reconteo
+                                InvCiclico.Idoperador = Operador.Idoperador
+                                InvCiclico.User_agr = AP.UsuarioAp.Nombres
+                                InvCiclico.Fec_agr = Now
+                                InvCiclico.EsPallet = invcic.EsPallet
+                                InvCiclico.lic_plate = invcic.lic_plate
+                                InvCiclico.IdBodega = AP.IdBodega
+                                InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
+                                InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
 
-                                        BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
-                                        BeTransInvCiclicoUbic.Idubicacion = invcic.IdUbicacion
-                                        BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
-                                        Ubicaciones.Add(BeTransInvCiclicoUbic)
-
-                                    End If
-
-                                    clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
-
-                                Next
+                                clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
 
                             End If
 
-                        Else
-
-                            Try
-
-                                If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(vUbicacion, gBeTransInvEnc.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
-
-                                    Dim Ubicacion As New clsBeTrans_inv_ciclico_ubic
-                                    Ubicacion.Idubicacion = vUbicacion
-                                    Ubicacion.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                    Ubicacion.IdBodega = AP.IdBodega
-                                    Ubicaciones.Add(BeTransInvCiclicoUbic)
-
-                                End If
-
-                                If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador(Operador.Idoperador,
-                                                                                            gBeTransInvEnc.Idinventarioenc,
-                                                                                            vIdProductoBodega,
-                                                                                            clsTrans.lConnection,
-                                                                                            clsTrans.lTransaction) Then
-
-                                    Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
-                                    lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
-                                                                                                                            vIdProductoBodega,
-                                                                                                                            vUbicacion,
-                                                                                                                            clsTrans.lConnection,
-                                                                                                                            clsTrans.lTransaction)
-
-                                    Dim InvCiclico As New clsBeTrans_inv_ciclico
-
-                                    For Each invcic In lBeTransInvCiclico
-
-                                        InvCiclico = New clsBeTrans_inv_ciclico
-                                        InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                        InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                        InvCiclico.IdStock = invcic.IdStock
-                                        InvCiclico.IdProductoBodega = invcic.IdProductoBodega
-                                        InvCiclico.IdProductoEstado = invcic.IdProductoEstado
-                                        InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
-                                        InvCiclico.IdUbicacion = invcic.IdUbicacion
-                                        InvCiclico.IdPresentacion = invcic.IdPresentacion
-                                        InvCiclico.EsNuevo = False
-                                        InvCiclico.Lote_stock = invcic.Lote_stock
-                                        InvCiclico.Lote = invcic.Lote
-                                        InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
-                                        InvCiclico.Fecha_vence = invcic.Fecha_vence
-                                        InvCiclico.Cant_stock = invcic.Cant_stock
-                                        InvCiclico.Cantidad = 0
-                                        InvCiclico.Cant_reconteo = 0
-                                        InvCiclico.Peso_stock = invcic.Peso_stock
-                                        InvCiclico.Peso = invcic.Peso
-                                        InvCiclico.Peso_reconteo = invcic.Peso_reconteo
-                                        InvCiclico.Idoperador = Operador.Idoperador
-                                        InvCiclico.User_agr = AP.UsuarioAp.Nombres
-                                        InvCiclico.Fec_agr = Now
-                                        InvCiclico.EsPallet = invcic.EsPallet
-                                        InvCiclico.lic_plate = invcic.lic_plate
-                                        InvCiclico.IdBodega = AP.IdBodega
-                                        InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
-
-                                        clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
-
-                                        If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, gBeTransInvEnc.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
-
-                                            BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
-                                            BeTransInvCiclicoUbic.Idubicacion = invcic.IdUbicacion
-                                            BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
-                                            Ubicaciones.Add(BeTransInvCiclicoUbic)
-
-                                        End If
-
-                                    Next
-
-                                    Operador.Idinvoperador = clsLnTrans_inv_operador.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                    Operador.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                    Operador.Idinvencreconteo = 0
-                                    Operador.Idubic = vUbicacion
-                                    Operador.IdBodega = gBeTransInvEnc.IdBodega
-                                    Operador.Idoperador = Operador.Idoperador
-
-                                    If Not clsLnTrans_inv_operador.Existe_Ubicacion_By_IdOperador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
-                                        clsLnTrans_inv_operador.Insertar(Operador, clsTrans.lConnection, clsTrans.lTransaction)
-                                    End If
-
-                                Else
-
-                                    Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
-                                    lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
-                                                                                                                            vIdProductoBodega,
-                                                                                                                            vUbicacion,
-                                                                                                                            clsTrans.lConnection,
-                                                                                                                            clsTrans.lTransaction)
-
-
-
-                                    ' Crear una lista única por IdStock e IdUbicacion
-                                    Dim distinctList As List(Of clsBeTrans_inv_ciclico) = lBeTransInvCiclico _
-                                                                                    .GroupBy(Function(x) New With {Key x.IdStock, Key x.IdUbicacion}) _
-                                                                                    .Select(Function(g) g.First()) _
-                                                                                    .ToList()
-
-
-                                    Dim InvCiclico As New clsBeTrans_inv_ciclico
-
-                                    For Each invcic In distinctList
-
-                                        InvCiclico = New clsBeTrans_inv_ciclico
-                                        InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                        InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                        InvCiclico.IdStock = invcic.IdStock
-                                        InvCiclico.IdProductoBodega = invcic.IdProductoBodega
-                                        InvCiclico.IdProductoEstado = invcic.IdProductoEstado
-                                        InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
-                                        InvCiclico.IdUbicacion = invcic.IdUbicacion
-                                        InvCiclico.IdPresentacion = invcic.IdPresentacion
-                                        InvCiclico.EsNuevo = False
-                                        InvCiclico.Lote_stock = invcic.Lote_stock
-                                        InvCiclico.Lote = invcic.Lote
-                                        InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
-                                        InvCiclico.Fecha_vence = invcic.Fecha_vence
-                                        InvCiclico.Cant_stock = invcic.Cant_stock
-                                        InvCiclico.Cantidad = 0
-                                        InvCiclico.Cant_reconteo = 0
-                                        InvCiclico.Peso_stock = invcic.Peso_stock
-                                        InvCiclico.Peso = invcic.Peso
-                                        InvCiclico.Peso_reconteo = invcic.Peso_reconteo
-                                        InvCiclico.Idoperador = Operador.Idoperador
-                                        InvCiclico.User_agr = AP.UsuarioAp.Nombres
-                                        InvCiclico.Fec_agr = Now
-                                        InvCiclico.EsPallet = invcic.EsPallet
-                                        InvCiclico.lic_plate = invcic.lic_plate
-                                        InvCiclico.IdBodega = AP.IdBodega
-                                        InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
-
-                                        If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
-
-                                            BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
-                                            BeTransInvCiclicoUbic.Idubicacion = invcic.IdUbicacion
-                                            BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
-                                            Ubicaciones.Add(BeTransInvCiclicoUbic)
-
-                                        End If
-
-                                        clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
-
-                                        Operador.Idinvoperador = clsLnTrans_inv_operador.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                        Operador.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                        Operador.Idinvencreconteo = 0
-                                        Operador.Idubic = vUbicacion
-                                        Operador.IdBodega = gBeTransInvEnc.IdBodega
-                                        Operador.Idoperador = Operador.Idoperador
-
-                                        If Not clsLnTrans_inv_operador.Existe_Ubicacion_By_IdOperador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
-                                            clsLnTrans_inv_operador.Insertar(Operador, clsTrans.lConnection, clsTrans.lTransaction)
-                                        End If
-
-                                    Next
-
-                                    'Dim Ciclico As New clsBeTrans_inv_ciclico
-                                    'Ciclico.Idoperador = cmbOperador.EditValue
-                                    'Ciclico.IdUbicacion = NAsignacion.Tag
-                                    'Ciclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                    'Ciclico.IdProductoBodega = vIdProductoBodega
-                                    ''clsLnTrans_inv_ciclico.Actualizar_By_IdProducto(Ciclico, clsTrans.lConnection, clsTrans.lTransaction)
-
-                                End If
-
-                            Catch ex As Exception
-                                Throw
-                            End Try
-
-                        End If
+                        Next
 
                     End If
 
+
+                Else
+                    XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
 
                 cantReg += 1
@@ -8205,6 +8172,7 @@ Public Class frmInventario
         Dim Cantidad_Teorica_Stock_Pres As Double = 0
         Dim CantReUM As Double = 0
         Dim Cantidad_Reconteo_Pres As Double = 0
+        Dim Cantidad_Reservada_Pres As Double = 0
         Dim AbrioWaitForm As Boolean = False
         Dim vDiferencia As Double = 0
         Dim EstadoNuevo As String = ""
@@ -8335,36 +8303,47 @@ Public Class frmInventario
                         CantReUM = BeTransInvCiclico.Cant_reconteo
                     End If
 
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        Cantidad_Reservada_Pres = Math.Round(BeTransInvCiclico.Cantidad_Reservada_UMBas / BeTransInvCiclico.Factor, 6)
+                    Else
+                        Cantidad_Reservada_Pres = BeTransInvCiclico.Cantidad_Reservada_UMBas
+                    End If
+
                     vDiferencia = (CantStockUM - CantidadUMBas)
 
-                    DTInventarioCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
-                                                  BeTransInvCiclico.Ubicacion,
-                                                  UbicacionNueva,
-                                                  BeTransInvCiclico.IdStock,
-                                                  BeTransInvCiclico.Codigo,
-                                                  BeTransInvCiclico.Producto,
-                                                  BeTransInvCiclico.TipoProducto,
-                                                  BeTransInvCiclico.Presentacion,
-                                                  BeTransInvCiclico.Estado,
-                                                  EstadoNuevo,
+                    '#MA20260204 
+                    DTInventarioCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico, '1
+                                                  BeTransInvCiclico.Ubicacion, '2
+                                                  UbicacionNueva, '3
+                                                  BeTransInvCiclico.IdStock, '4
+                                                  BeTransInvCiclico.Codigo, '5
+                                                  BeTransInvCiclico.Producto, '6
+                                                  BeTransInvCiclico.TipoProducto, '7
+                                                  BeTransInvCiclico.Presentacion, '8
+                                                  BeTransInvCiclico.UnidadMedida, '9
+                                                  BeTransInvCiclico.Estado, '10
+                                                  EstadoNuevo, '11
                                                   BeTransInvCiclico.Lote_stock,
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
-                                                  BeTransInvCiclico.Fecha_vence,
-                                                  Cantidad_Teorica_Stock_Pres,
-                                                  CantStockUM,
-                                                  BeTransInvCiclico.Peso_stock,
-                                                  Cantidad_Contada_Pres,
-                                                  CantidadUMBas,
-                                                  BeTransInvCiclico.Peso,
-                                                  Cantidad_Reconteo_Pres,
+                                                  BeTransInvCiclico.Fecha_vence, '15
+                                                  Cantidad_Teorica_Stock_Pres, '16
+                                                  CantStockUM, '16
+                                                  BeTransInvCiclico.Peso_stock, '18
+                                                  Cantidad_Contada_Pres, '19
+                                                  CantidadUMBas, '20
+                                                  BeTransInvCiclico.Peso, '21
+                                                  Cantidad_Reconteo_Pres, '22
                                                   CantReUM,
-                                                  BeTransInvCiclico.Peso_reconteo,
-                                                  vDiferencia * -1,
-                                                  Extraviado,
-                                                  BeTransInvCiclico.Idinventarioenc,
-                                                  BeTransInvCiclico.IdProductoBodega,
-                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate))
+                                                  BeTransInvCiclico.Peso_reconteo, '24
+                                                  vDiferencia * -1, '25
+                                                  Cantidad_Reservada_Pres, '26
+                                                  Extraviado, '27
+                                                  BeTransInvCiclico.Idinventarioenc, '28
+                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate), '29
+                                                  BeTransInvCiclico.IdProductoBodega, '30
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
@@ -8456,6 +8435,18 @@ Public Class frmInventario
 
                     gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").DisplayFormat.FormatString = "{0:n6}"
+
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    ' gdviewTeorico.Columns("Cant.Reservada").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    ' gdviewTeorico.Columns("Cant.Reservada").DisplayFormat.FormatString = "{0:n6}"
+
+                    '  gdviewTeorico.Columns("Cant.Reservada").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    '  gdviewTeorico.Columns("Cant.Reservada").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gdviewTeorico.Columns("Ubicación").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
                     gdviewTeorico.Columns("Ubicación").SummaryItem.DisplayFormat = "Registros: {0}"
@@ -8658,6 +8649,7 @@ Public Class frmInventario
         Dim Cantidad_Teorica_Stock_Pres As Double = 0
         Dim CantReUM As Double = 0
         Dim Cantidad_Reconteo_Pres As Double = 0
+        Dim Cantidad_Reservada_Pres As Double = 0
         Dim AbrioWaitForm As Boolean = False
         Dim vDiferencia As Double = 0
         Dim EstadoNuevo As String = ""
@@ -8790,7 +8782,35 @@ Public Class frmInventario
                         CantReUM = BeTransInvCiclico.Cant_reconteo
                     End If
 
-                    vDiferencia = (CantStockUM - CantidadUMBas)
+                    '#MA20260204 
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        Cantidad_Reservada_Pres = Math.Round(BeTransInvCiclico.Cantidad_Reservada_UMBas / BeTransInvCiclico.Factor, 6)
+                    Else
+                        Cantidad_Reservada_Pres = BeTransInvCiclico.Cantidad_Reservada_UMBas
+                    End If
+
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        vDiferencia = (Cantidad_Teorica_Stock_Pres - Cantidad_Contada_Pres)
+                    Else
+                        vDiferencia = (CantStockUM - CantidadUMBas)
+                    End If
+
+                    Dim PresentacionFinal As String
+                    Dim CantTeoricaFinal As String
+                    Dim CantConteoFinal As String
+                    Dim CantReconteoFinal As String
+
+                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                        PresentacionFinal = BeTransInvCiclico.Presentacion
+                        CantTeoricaFinal = Cantidad_Teorica_Stock_Pres
+                        CantConteoFinal = Cantidad_Contada_Pres
+                        CantReconteoFinal = Cantidad_Reconteo_Pres
+                    Else
+                        PresentacionFinal = "UN"
+                        CantTeoricaFinal = CantStockUM
+                        CantConteoFinal = CantidadUMBas
+                        CantReconteoFinal = CantReUM
+                    End If
 
                     DTInventarioCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
                                                   BeTransInvCiclico.Ubicacion,
@@ -8799,32 +8819,27 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Codigo,
                                                   BeTransInvCiclico.Producto,
                                                   BeTransInvCiclico.TipoProducto,
-                                                  BeTransInvCiclico.Presentacion,
+                                                  PresentacionFinal,
                                                   BeTransInvCiclico.Estado,
                                                   EstadoNuevo,
                                                   BeTransInvCiclico.Lote_stock,
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence,
-                                                  BeTransInvCiclico.Talla,
-                                                  BeTransInvCiclico.Color,
-                                                  BeTransInvCiclico.Talla_Nueva,
-                                                  BeTransInvCiclico.Color_Nuevo,
-                                                  BeTransInvCiclico.UmBas,
-                                                  Cantidad_Teorica_Stock_Pres,
-                                                  CantStockUM,
+                                                  CantTeoricaFinal,
                                                   BeTransInvCiclico.Peso_stock,
-                                                  Cantidad_Contada_Pres,
-                                                  CantidadUMBas,
+                                                  CantConteoFinal,
                                                   BeTransInvCiclico.Peso,
-                                                  Cantidad_Reconteo_Pres,
-                                                  CantReUM,
+                                                  CantReconteoFinal,
                                                   BeTransInvCiclico.Peso_reconteo,
                                                   vDiferencia * -1,
+                                                  Cantidad_Reservada_Pres,
                                                   Extraviado,
                                                   BeTransInvCiclico.Idinventarioenc,
+                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
                                                   BeTransInvCiclico.IdProductoBodega,
-                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate))
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador + 1 & " de: " & ListInventarioCiclico.Count)
 
@@ -8855,12 +8870,6 @@ Public Class frmInventario
                     gdviewTeorico.Columns("Cant.Teorica.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Cant.Teorica.Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gdviewTeorico.Columns("Cant.Teorica.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-
                     gdviewTeorico.Columns("PesoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("PesoStock").DisplayFormat.FormatString = "{0:n6}"
 
@@ -8872,12 +8881,6 @@ Public Class frmInventario
 
                     gdviewTeorico.Columns("Cant.Conteo.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Cant.Conteo.Pres").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gdviewTeorico.Columns("Cant.Conteo.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gdviewTeorico.Columns("PesoConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("PesoConteo").DisplayFormat.FormatString = "{0:n6}"
@@ -8891,12 +8894,6 @@ Public Class frmInventario
                     gdviewTeorico.Columns("Cant.Reconteo.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Cant.Reconteo.Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gdviewTeorico.Columns("Cant.Reconteo.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-
                     gdviewTeorico.Columns("PesoReconteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("PesoReconteo").DisplayFormat.FormatString = "{0:n6}"
 
@@ -8909,11 +8906,20 @@ Public Class frmInventario
                     gdviewTeorico.Columns("Extraviado").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Extraviado").SummaryItem.DisplayFormat = "{0:n6}"
 
+                    gdviewTeorico.Columns("Dif.Cant.UMBas").Caption = "Dif.Cant.Pres"
+
                     gdviewTeorico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gdviewTeorico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatString = "{0:n6}"
 
                     gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    '#MA20260204
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").DisplayFormat.FormatString = "{0:n6}"
+
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gdviewTeorico.Columns("Cant.Reservada.Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gdviewTeorico.Columns("Ubicación").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
                     gdviewTeorico.Columns("Ubicación").SummaryItem.DisplayFormat = "Registros: {0}"
@@ -9429,6 +9435,76 @@ Public Class frmInventario
         End Try
     End Function
 
+    Public Shared Function Get_All_By_Comparacion_Inventario(ByVal pIdInv As Integer, lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As DataTable
+
+        Get_All_By_Comparacion_Inventario = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT 
+                    codigo AS Código,
+                    producto AS Producto,
+                    LoteOrigen AS LoteOrigen,
+                    Lote,
+                    FechaVence,
+                    Licencia, 
+                    EstadoOrigen,
+                    EstadoDestino,
+                    UbicacionOrigen,
+                    UbicacionDestino,
+                    Cantidad_Stock AS CantidadStock,
+                    Peso_Stock AS PesoStock,
+                    Cantidad AS CantidadConteo,
+                    Peso AS PesoConteo,
+                    Entradas,
+                    Salidas,
+                    Entradas_Salidas,
+
+                    -- NuevoStock con múltiples condiciones 
+                    CASE 
+                        WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
+                        ELSE (Cantidad + Entradas_Salidas + Salidas)
+                    END AS NuevoStock,
+
+                    -- DiferenciaCantidad con múltiples condiciones 
+                    CASE 
+                        WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
+                        ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
+                    END AS DiferenciaCantidad,
+
+                    -- DiferenciaPeso se mantiene igual
+                    (Peso_Stock - Peso) AS DiferenciaPeso,
+                    Cantidad_Reservada_UmBas,
+                    TieneReservaYConteoInsuficiente,  
+                    Observacion
+                FROM 
+                    tempComparacionInventario
+                WHERE 
+                    IdInventario = @idinventarioenc;"
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInv)
+
+                Dim lDataTable As New DataTable()
+                lDataAdapter.Fill(lDataTable)
+
+                If lDataTable.Rows.Count > 0 Then
+                    Return lDataTable
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Private Sub Carga_Regularizacion(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
         Try
 
@@ -9443,13 +9519,6 @@ Public Class frmInventario
 
                 'GridView1.Columns("Código").Group()
 
-                Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "CantidadConteo",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("CantidadConteo")}
-                GridView1.GroupSummary.Add(item)
-
                 Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "PesoConteo",
                 .SummaryType = DevExpress.Data.SummaryItemType.Sum,
@@ -9457,26 +9526,12 @@ Public Class frmInventario
                 .ShowInGroupColumnFooter = GridView1.Columns("PesoConteo")}
                 GridView1.GroupSummary.Add(item1)
 
-                Dim item2 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "CantidadStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("CantidadStock")}
-                GridView1.GroupSummary.Add(item2)
-
                 Dim item3 As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "PesoStock",
                 .SummaryType = DevExpress.Data.SummaryItemType.Sum,
                 .DisplayFormat = "{0:n6}",
                 .ShowInGroupColumnFooter = GridView1.Columns("PesoStock")}
                 GridView1.GroupSummary.Add(item3)
-
-                Dim item4 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "Entradas_Salidas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("Entradas_Salidas")}
-                GridView1.GroupSummary.Add(item4)
 
                 Dim item5 As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "NuevoStock",
@@ -9499,20 +9554,6 @@ Public Class frmInventario
                 .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaPeso")}
                 GridView1.GroupSummary.Add(item7)
 
-                Dim item8 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "Entradas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("Entradas")}
-                GridView1.GroupSummary.Add(item8)
-
-                Dim item9 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "Salidas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("Salidas")}
-                GridView1.GroupSummary.Add(item9)
-
                 Dim item10 As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "Cantidad_Reservada_UmBas",
                 .SummaryType = DevExpress.Data.SummaryItemType.Sum,
@@ -9522,11 +9563,11 @@ Public Class frmInventario
 
                 lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
 
-                GridView1.Columns("CantidadConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView1.Columns("CantidadConteo").DisplayFormat.FormatString = "{0:n6}"
+                GridView1.Columns("CantidadConteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("CantidadConteo_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                GridView1.Columns("CantidadConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView1.Columns("CantidadConteo").SummaryItem.DisplayFormat = "{0:n6}"
+                GridView1.Columns("CantidadConteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("CantidadConteo_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                 GridView1.Columns("PesoConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                 GridView1.Columns("PesoConteo").DisplayFormat.FormatString = "{0:n6}"
@@ -9534,11 +9575,11 @@ Public Class frmInventario
                 GridView1.Columns("PesoConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                 GridView1.Columns("PesoConteo").SummaryItem.DisplayFormat = "{0:n6}"
 
-                GridView1.Columns("CantidadStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView1.Columns("CantidadStock").DisplayFormat.FormatString = "{0:n6}"
+                GridView1.Columns("CantidadStock_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("CantidadStock_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                GridView1.Columns("CantidadStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView1.Columns("CantidadStock").SummaryItem.DisplayFormat = "{0:n6}"
+                GridView1.Columns("CantidadStock_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("CantidadStock_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                 GridView1.Columns("PesoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                 GridView1.Columns("PesoStock").DisplayFormat.FormatString = "{0:n6}"
@@ -9546,11 +9587,11 @@ Public Class frmInventario
                 GridView1.Columns("PesoStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                 GridView1.Columns("PesoStock").SummaryItem.DisplayFormat = "{0:n6}"
 
-                GridView1.Columns("Entradas_Salidas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView1.Columns("Entradas_Salidas").DisplayFormat.FormatString = "{0:n6}"
+                GridView1.Columns("Entradas_Salidas_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Entradas_Salidas_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                GridView1.Columns("Entradas_Salidas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView1.Columns("Entradas_Salidas").SummaryItem.DisplayFormat = "{0:n6}"
+                GridView1.Columns("Entradas_Salidas_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Entradas_Salidas_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                 GridView1.Columns("NuevoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                 GridView1.Columns("NuevoStock").DisplayFormat.FormatString = "{0:n6}"
@@ -9570,23 +9611,18 @@ Public Class frmInventario
                 GridView1.Columns("DiferenciaPeso").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                 GridView1.Columns("DiferenciaPeso").SummaryItem.DisplayFormat = "{0:n6}"
 
-                GridView1.Columns("Entradas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView1.Columns("Entradas").DisplayFormat.FormatString = "{0:n6}"
+                GridView1.Columns("Entradas_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Entradas_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                GridView1.Columns("Entradas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView1.Columns("Entradas").SummaryItem.DisplayFormat = "{0:n6}"
+                GridView1.Columns("Entradas_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Entradas_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
-                GridView1.Columns("Salidas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView1.Columns("Salidas").DisplayFormat.FormatString = "{0:n6}"
 
-                GridView1.Columns("Salidas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView1.Columns("Salidas").SummaryItem.DisplayFormat = "{0:n6}"
+                GridView1.Columns("Cantidad_Reservada_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Cantidad_Reservada_Pres").DisplayFormat.FormatString = "{0:n6}"
 
-                GridView1.Columns("Cantidad_Reservada_UmBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView1.Columns("Cantidad_Reservada_UmBas").DisplayFormat.FormatString = "{0:n6}"
-
-                GridView1.Columns("Cantidad_Reservada_UmBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView1.Columns("Cantidad_Reservada_UmBas").SummaryItem.DisplayFormat = "{0:n6}"
+                GridView1.Columns("Cantidad_Reservada_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Cantidad_Reservada_Pres").SummaryItem.DisplayFormat = "{0:n6}"
 
                 GridView1.Columns("PesoConteo").Visible = False
                 GridView1.Columns("PesoStock").Visible = False
@@ -9597,6 +9633,332 @@ Public Class frmInventario
 
         Catch ex As Exception
 
+        End Try
+
+    End Sub
+
+    '#MA20260105
+    Private Sub Cargar_KPI_Ubicaciones(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Try
+            Dim dtPendientes As DataTable = clsLnTrans_inv_detalle.Get_Ubicaciones_No_Contadas_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                                  AP.IdBodega,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+
+            UbicacionesContadasNoFinalizadas = clsLnTrans_inv_detalle.Get_Ubicaciones_Contadas_NoFinalizadas(gBeTransInvEnc.Idinventarioenc,
+                                                                                 AP.IdBodega,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+            UbicacionesContadasFinalizadas = clsLnTrans_inv_detalle.Get_Ubicaciones_Contadas_Finalizadas(gBeTransInvEnc.Idinventarioenc,
+                                                                                 AP.IdBodega,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+            TotalUbicaciones = clsLnTrans_inv_detalle.Get_Total_Ubicaciones_Asig(gBeTransInvEnc.Idinventarioenc,
+                                                                                AP.IdBodega,
+                                                                                lConnection,
+                                                                                lTransaction)
+
+            UbicacionesPendientes = dtPendientes.Rows.Count
+
+            If TotalUbicaciones <= 0 Then TotalUbicaciones = 1
+
+            Dim porcentaje As Double = ((TotalUbicaciones - dtPendientes.Rows.Count) / TotalUbicaciones) * 100
+            porcentaje = Math.Min(Math.Max(porcentaje, 0), 100)
+
+            ArcScaleComponent2.Value = porcentaje
+
+            lblGaugeUbicaciones.Text = $"Contadas: {TotalUbicaciones - dtPendientes.Rows.Count} / Total: {TotalUbicaciones} (Pendientes: {dtPendientes.Rows.Count}) {Math.Round(porcentaje, 2)}%"
+
+            lblGaugeUbicaciones.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al cargar KPI de ubicaciones: " & ex.Message,
+                        Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    '#MA20260105
+    Private Sub Actualizar_Gauge_Ubicaciones(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Try
+            Dim dtPendientes As DataTable = clsLnTrans_inv_detalle.Get_Ubicaciones_No_Contadas_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                                  AP.IdBodega,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+
+            dgridUbicacionesNoContadas.DataSource = dtPendientes
+
+            With GridViewUbicacionesNoContadas
+                .PopulateColumns()
+                .OptionsView.ShowIndicator = True
+                .OptionsView.ColumnAutoWidth = False
+                .OptionsView.ShowFooter = True
+
+                If .Columns("IdUbicacion") IsNot Nothing Then
+                    .Columns("IdUbicacion").Caption = "ID Ubicación"
+                    .Columns("IdUbicacion").AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                    .Columns("IdUbicacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("IdUbicacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("IdUbicacion").SummaryItem.DisplayFormat = "Registros: {0}"
+                End If
+
+                If .Columns("Ubicacion") IsNot Nothing Then .Columns("Ubicacion").Caption = "Ubicación Completa"
+                If .Columns("Area") IsNot Nothing Then .Columns("Area").Caption = "Área"
+                If .Columns("Sector") IsNot Nothing Then .Columns("Sector").Caption = "Sector"
+                If .Columns("Tramo") IsNot Nothing Then .Columns("Tramo").Caption = "Tramo"
+
+                .BestFitColumns()
+                .OptionsView.ColumnAutoWidth = True
+                .Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                .Appearance.HeaderPanel.Font = New Font(.Appearance.HeaderPanel.Font, FontStyle.Bold)
+                .RowHeight = 28
+                .OptionsBehavior.Editable = False
+                .OptionsView.ShowAutoFilterRow = True
+            End With
+
+            UbicacionesContadasNoFinalizadas = clsLnTrans_inv_detalle.Get_Ubicaciones_Contadas_NoFinalizadas(gBeTransInvEnc.Idinventarioenc,
+                                                                                 AP.IdBodega,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+            UbicacionesContadasFinalizadas = clsLnTrans_inv_detalle.Get_Ubicaciones_Contadas_Finalizadas(gBeTransInvEnc.Idinventarioenc,
+                                                                                 AP.IdBodega,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+            TotalUbicaciones = clsLnTrans_inv_detalle.Get_Total_Ubicaciones_Asig(gBeTransInvEnc.Idinventarioenc,
+                                                                                AP.IdBodega,
+                                                                                lConnection,
+                                                                                lTransaction)
+            UbicacionesPendientes = dtPendientes.Rows.Count
+
+            If TotalUbicaciones <= 0 Then TotalUbicaciones = 1
+
+            Dim porcentaje As Double = ((TotalUbicaciones - UbicacionesPendientes) / TotalUbicaciones) * 100
+            porcentaje = Math.Min(Math.Max(porcentaje, 0), 100)
+            'porcentaje = 10.0  ' <-- Descomenta si quieres comprobar que funciona el gauge
+
+            Me.Invoke(Sub() Animar_Gauge_Ubicaciones(porcentaje))
+
+            lblGaugeUbicaciones.Text = $"Contadas: {TotalUbicaciones - dtPendientes.Rows.Count} / Total: {TotalUbicaciones} (Pendientes: {UbicacionesPendientes}) {Math.Round(porcentaje, 2)}%"
+
+            lblGaugeUbicaciones.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al actualizar Gauge de ubicaciones: " & ex.Message,
+                        Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End Try
+
+    End Sub
+
+    '#MA20260105
+    Private Sub Animar_Gauge_Ubicaciones(valorFinal As Double)
+        If valorFinal < 0 Then valorFinal = 0
+        If valorFinal > 100 Then valorFinal = 100
+
+        ValorObjetivoGauge = valorFinal
+
+        Timer1.Interval = 20
+        Timer1.Start()
+    End Sub
+
+    '#MA20260105
+    Private Sub tmrGauge_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        Dim paso As Double = 2.5
+
+        If ArcScaleComponent2.Value < ValorObjetivoGauge Then
+            ArcScaleComponent2.Value = Math.Min(ArcScaleComponent2.Value + paso, ValorObjetivoGauge)
+        ElseIf ArcScaleComponent2.Value > ValorObjetivoGauge Then
+            ArcScaleComponent2.Value = Math.Max(ArcScaleComponent2.Value - paso, ValorObjetivoGauge)
+        End If
+
+        If ArcScaleComponent2.Value = ValorObjetivoGauge Then Timer1.Stop()
+
+        gaugeUbicaciones.Update()
+        gaugeUbicaciones.Refresh()
+        Application.DoEvents()
+    End Sub
+
+    Private Sub frmInventario_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+        InvokeListarInventario?.Invoke()
+    End Sub
+
+    '#MA20260108 Agregar
+    Private Sub btnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+        Dim frm As New frmInventarioDet(frmInventarioDet.TipoTrans.Nuevo)
+        frm.IdInventario = gBeTransInvEnc.Idinventarioenc
+        frm.IdBodega = AP.IdBodega
+
+        If frm.ShowDialog(Me) = DialogResult.OK Then
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                cn.Open()
+                Calcular_Inventario_Teorico_WMS(cn, Nothing)
+            End Using
+        End If
+    End Sub
+
+    Private Sub Listar_Ubicaciones_Contadas(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Try
+            Dim dtContadas As DataTable = clsLnTrans_inv_detalle.Get_Ubicaciones_Contadas_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                               AP.IdBodega,
+                                                                                               lConnection,
+                                                                                               lTransaction)
+
+            gridUbicContadas.DataSource = dtContadas
+
+            With gvUbicacionesContadas
+
+                .PopulateColumns()
+                .OptionsView.ShowIndicator = True
+                .OptionsView.ColumnAutoWidth = False
+                .OptionsView.ShowFooter = True
+
+                .Columns("Ubicación").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                .Columns("Ubicación").DisplayFormat.FormatString = "{0:n6}"
+
+                .Columns("Ubicación").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                .Columns("Ubicación").SummaryItem.DisplayFormat = "{0:n6}"
+
+                .BestFitColumns()
+                .OptionsView.ColumnAutoWidth = True
+                .Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                .Appearance.HeaderPanel.Font = New Font(.Appearance.HeaderPanel.Font, FontStyle.Bold)
+                .RowHeight = 15
+                .OptionsBehavior.Editable = False
+                .OptionsView.ShowAutoFilterRow = True
+            End With
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al actualizar ubicaciones contadas: " & ex.Message,
+                        Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End Try
+
+    End Sub
+
+    Private Sub Calcular_Comparativo_Teoricos(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Dim DTComparativoTeoricos As New DataTable
+
+        Try
+
+            gvComparativoTeoricos.Columns.Clear()
+
+            DTComparativoTeoricos = clsLnTrans_inv_enc.Get_TeoricoWMS_Vrs_TeoricoERP(gBeTransInvEnc.Idinventarioenc,
+                                                                                     gBeTransInvEnc.IdBodega,
+                                                                                     lConnection,
+                                                                                     lTransaction)
+
+            gridComparativoTeoricos.DataSource = DTComparativoTeoricos
+
+            If gvComparativoTeoricos.Columns.Count > 0 Then
+
+                With gvComparativoTeoricos
+
+                    .PopulateColumns()
+                    .OptionsView.ShowIndicator = True
+                    .OptionsView.ColumnAutoWidth = False
+                    .OptionsView.ShowFooter = True
+
+                    .Columns("Codigo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                    .Columns("Codigo").DisplayFormat.FormatString = "{0:n6}"
+
+                    .Columns("Codigo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("Codigo").SummaryItem.DisplayFormat = "{0:n6}"
+
+                    .BestFitColumns()
+                    .OptionsView.ColumnAutoWidth = True
+                    .Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                    .Appearance.HeaderPanel.Font = New Font(.Appearance.HeaderPanel.Font, FontStyle.Bold)
+                    .OptionsBehavior.Editable = False
+                    .OptionsView.ShowAutoFilterRow = True
+                End With
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub Listar_Tiempos_Por_Tramos(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Try
+            Dim dtTiemposConteo As DataTable = clsLnTrans_inv_detalle.Get_Tiempos_Tramos_Conteo_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
+
+            gridTiempoConteos.DataSource = dtTiemposConteo
+
+            With gvTiempoConteos
+
+                .PopulateColumns()
+                .OptionsView.ShowIndicator = True
+                .OptionsView.ColumnAutoWidth = False
+                .OptionsView.ShowFooter = True
+
+                .Columns("Tramo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                .Columns("Tramo").DisplayFormat.FormatString = "{0:n6}"
+
+                .Columns("Tramo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                .Columns("Tramo").SummaryItem.DisplayFormat = "{0:n6}"
+
+                .Columns("Fecha_Inicio").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+                .Columns("Fecha_Inicio").DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss"
+
+                .Columns("Fecha_Fin").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+                .Columns("Fecha_Fin").DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss"
+
+                .BestFitColumns()
+                .OptionsView.ColumnAutoWidth = True
+                .Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                .Appearance.HeaderPanel.Font = New Font(.Appearance.HeaderPanel.Font, FontStyle.Bold)
+                .RowHeight = 15
+                .OptionsBehavior.Editable = False
+                .OptionsView.ShowAutoFilterRow = True
+            End With
+
+            Dim dtTiemposVerif As DataTable = clsLnTrans_inv_resumen.Get_Tiempos_Tramos_Verif_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                                 lConnection,
+                                                                                                 lTransaction)
+
+            gridTiempoVerif.DataSource = dtTiemposVerif
+
+            With gvTiempoVerif
+
+                .PopulateColumns()
+                .OptionsView.ShowIndicator = True
+                .OptionsView.ColumnAutoWidth = False
+                .OptionsView.ShowFooter = True
+
+                .Columns("Tramo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                .Columns("Tramo").DisplayFormat.FormatString = "{0:n6}"
+
+                .Columns("Tramo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                .Columns("Tramo").SummaryItem.DisplayFormat = "{0:n6}"
+
+                .Columns("Fecha_Inicio").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+                .Columns("Fecha_Inicio").DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss"
+
+                .Columns("Fecha_Fin").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+                .Columns("Fecha_Fin").DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss"
+
+                .BestFitColumns()
+                .OptionsView.ColumnAutoWidth = True
+                .Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                .Appearance.HeaderPanel.Font = New Font(.Appearance.HeaderPanel.Font, FontStyle.Bold)
+                .RowHeight = 15
+                .OptionsBehavior.Editable = False
+                .OptionsView.ShowAutoFilterRow = True
+            End With
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al actualizar Tiempos Tramos: " & ex.Message,
+                        Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
         End Try
 
     End Sub

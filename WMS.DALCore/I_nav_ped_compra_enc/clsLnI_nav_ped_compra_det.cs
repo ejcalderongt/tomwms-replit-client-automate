@@ -37,6 +37,7 @@ public class clsLnI_nav_ped_compra_det
             oBeI_nav_ped_compra_det.Fec_agr = GetDate("fec_agr");
             oBeI_nav_ped_compra_det.LayersPallet= GetInt("LayersPallet");
             oBeI_nav_ped_compra_det.BoxesLayer = GetInt("BoxesLayer");
+            oBeI_nav_ped_compra_det.Net_Weight = GetDouble("Net_Weight");
         }
         catch (Exception ex)
         {
@@ -74,6 +75,7 @@ public class clsLnI_nav_ped_compra_det
             Ins.Add("fec_agr", "@fec_agr", "F");
             Ins.Add("LayersPallet", "@LayersPallet", "F");
             Ins.Add("BoxesLayer", "@BoxesLayer", "F");
+            Ins.Add("Net_Weight", "@Net_Weight", "F");
 
             string sp = Ins.SQL();
 
@@ -108,6 +110,7 @@ public class clsLnI_nav_ped_compra_det
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@LayersPallet", oBeI_nav_ped_compra_det.LayersPallet));
             cmd.Parameters.Add(new SqlParameter("@BoxesLayer", oBeI_nav_ped_compra_det.BoxesLayer));
+            cmd.Parameters.Add(new SqlParameter("@Net_Weight", oBeI_nav_ped_compra_det.Net_Weight));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -166,6 +169,7 @@ public class clsLnI_nav_ped_compra_det
             Ins.Add("fec_agr", "@fec_agr", "F");
             Ins.Add("LayersPallet", "@LayersPallet", "F");
             Ins.Add("BoxesLayer", "@BoxesLayer", "F");
+            Ins.Add("Net_Weight", "@Net_Weight", "F");
 
             string sp = Ins.SQL();
 
@@ -191,6 +195,7 @@ public class clsLnI_nav_ped_compra_det
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@LayersPallet", oBeI_nav_ped_compra_det.LayersPallet));
             cmd.Parameters.Add(new SqlParameter("@BoxesLayer", oBeI_nav_ped_compra_det.BoxesLayer));
+            cmd.Parameters.Add(new SqlParameter("@Net_Weight", oBeI_nav_ped_compra_det.Net_Weight));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -246,6 +251,7 @@ public class clsLnI_nav_ped_compra_det
             Upd.Add("fec_agr", "@fec_agr", "F");
             Upd.Add("LayersPallet", "@LayersPallet", "F");
             Upd.Add("BoxesLayer", "@BoxesLayer", "F");
+            Upd.Add("Net_Weight", "@Net_Weight", "F");
             Upd.Where("NoEnc = @NoEnc " +
                 " AND No = @No" +
                 " AND Line_No = @Line_No");
@@ -283,6 +289,7 @@ public class clsLnI_nav_ped_compra_det
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@LayersPallet", oBeI_nav_ped_compra_det.LayersPallet));
             cmd.Parameters.Add(new SqlParameter("@BoxesLayer", oBeI_nav_ped_compra_det.BoxesLayer));
+            cmd.Parameters.Add(new SqlParameter("@Net_Weight", oBeI_nav_ped_compra_det.Net_Weight));    
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -623,7 +630,6 @@ public class clsLnI_nav_ped_compra_det
             throw new Exception(vMsgError);
         }
     }
-
     public static bool Exist(clsBeI_nav_ped_compra_det pBeI_nav_ped_compra_det,
                              SqlConnection pConnection,
                              SqlTransaction pTransaction)
