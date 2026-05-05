@@ -12,14 +12,9 @@ namespace WMSWebAPI.Controllers
 {
     [ApiController]
     [Route("api/sync/salidas")]
-    public class SyncSalidasController : ControllerBase
+    public class SyncSalidasController(ISyncSalidasService service) : ControllerBase
     {
-        private readonly ISyncSalidasService _salidaService;
-
-        public SyncSalidasController(ISyncSalidasService service)
-        {
-            _salidaService = service;
-        }
+        private readonly ISyncSalidasService _salidaService = service;
 
         [HttpPost("documento-salida")]
         public async Task<IActionResult> PostDocumentoSalida([FromBody] List<SalidaTrans_3plDto> dto,
@@ -106,7 +101,11 @@ namespace WMSWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error en GetDetalleOS");
+                if (_logger.IsEnabled(LogLevel.Error))
+                {
+                    _logger.LogError(ex, "Error en GetDetalleOS");
+                }
+
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
@@ -160,11 +159,18 @@ namespace WMSWebAPI.Controllers
 
                 if (!resultado.Exito)
                 {
-                    _logger.LogWarning("Documento MI3 procesado con errores: {Mensaje}", resultado.Mensaje);
+                    if (_logger.IsEnabled(LogLevel.Warning))
+                    {
+                        _logger.LogWarning("Documento MI3 procesado con errores: {Mensaje}", resultado.Mensaje);
+                    }
+
                     return StatusCode(422, resultado);
                 }
 
-                _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", resultado.LineasProcesadas);
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", resultado.LineasProcesadas);
+                }
 
                 return Ok(resultado);
             }
@@ -195,16 +201,14 @@ namespace WMSWebAPI.Controllers
                 // 2) Filtro opcional por NoPedido
                 if (!string.IsNullOrWhiteSpace(noPedido))
                 {
-                    data = data.Where(x => x.No_pedido != null &&
-                                           x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))
-                               .ToList();
+                    data = [.. data.Where(x => x.No_pedido != null &&
+                                           x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))];
                 }
 
                 // 3) Filtro opcional por IdTipoDocumento
                 if (idTipoDocumento.HasValue)
                 {
-                    data = data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)
-                               .ToList();
+                    data = [.. data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)];
                 }
 
                 // 4) Minimal por defecto
@@ -232,11 +236,7 @@ namespace WMSWebAPI.Controllers
                 var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
                 var bodegas = clsLnBodega.GetByIds(_configuration, bodegaIds);
                 var codigoClienteByPedidoId = clsLnTrans_pe_enc.Get_Codigos_Cliente_By_IdsPedidoEnc(_configuration, pedidoIds);
-
-                var usuariosByPedidoId =
-                    (Dictionary<int, Tuple<string, string>>)clsLnTrans_pe_enc
-                        .Get_Usuarios_Documento_By_IdsPedidoEnc(_configuration, pedidoIds);
-
+                var usuariosByPedidoId = clsLnTrans_pe_enc.Get_Usuarios_Documento_By_IdsPedidoEnc_Tuple(_configuration, pedidoIds);
                 var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo ?? "");
                 var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
                 var bodegaCodigoById = bodegas.ToDictionary(b => b.IdBodega, b => b.Codigo ?? "");
