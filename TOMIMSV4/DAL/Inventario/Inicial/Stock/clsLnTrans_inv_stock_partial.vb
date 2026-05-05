@@ -1137,6 +1137,7 @@ Partial Public Class clsLnTrans_inv_stock
             Dim ProductosSeleccionados = DTProductos.AsEnumerable().[Select](Function(row) New With {
                                                                                                     Key .IdProductoBodega = row.Field(Of Integer)("IdProductoBodega"),
                                                                                                     Key .Nombre = row.Field(Of String)("Nombre"),
+                                                                                                    Key .Codigo_barra = row.Field(Of String)("Codigo_barra"),
                                                                                                     Key .Seleccionado = row.Field(Of Boolean)("Seleccionar")}).Where(Function(e) e.Seleccionado = True).Distinct().ToArray().OrderBy(Function(x) x.IdProductoBodega)
 
             If ProductosSeleccionados.Count > 0 Then
@@ -1146,7 +1147,7 @@ Partial Public Class clsLnTrans_inv_stock
                 For Each ProdInv In ProductosSeleccionados
 
                     'validar en la tabla inventario_cic_rfid que no exista previamente el producto para no duplicar el registro.
-                    Dim listaProducto = clsLnI_nav_barras_pallet.GetAll_By_Codigo_Barra_Pallet_RFID(ProdInv.IdProductoBodega, pIdBodega)
+                    Dim listaProducto = clsLnTrans_inv_ciclico_rfid.GetAll_By_IdProducto_And_RFID(ProdInv.IdProductoBodega, pIdBodega)
 
                     cantReg = 0
 
