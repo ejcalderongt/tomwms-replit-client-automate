@@ -3526,7 +3526,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
-    Private Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
+    Public Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
 
         Nuevo_Picking = False
 
