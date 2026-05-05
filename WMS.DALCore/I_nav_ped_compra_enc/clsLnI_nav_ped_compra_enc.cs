@@ -637,186 +637,130 @@ public class clsLnI_nav_ped_compra_enc
         }
 
         return datosValidos;
-    }   
+    }
 
-    public static int Insert_Single_Pedido_From_ERP(IConfiguration config,clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc)
+    public static int Insert_Single_Pedido_From_ERP(IConfiguration config, clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc)
     {
         ArgumentNullException.ThrowIfNull(config);
-        ArgumentNullException.ThrowIfNull(oBeI_nav_ped_compra_enc);
-
-        int result = 0;
+        ArgumentNullException.ThrowIfNull(oBeI_nav_ped_compra_enc);        
 
         var connectionString = config.GetConnectionString("CST")
             ?? throw new InvalidOperationException("Missing connection string 'CST'.");
 
         var lConnection = new SqlConnection(connectionString);
         lConnection.Open();
-        
+
         var lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
 
         try
         {
             var BeProductoBodega = new clsBeProducto_bodega();
-            int vContador = 0;
             int RegistrosAfectados = 0;
             bool Bodega_Es_Valida_Para_Recepcion = false;
             int vIdBodega = 0;
 
             if (!Exist(oBeI_nav_ped_compra_enc.No, lConnection, lTransaction))
-            {
                 RegistrosAfectados += Insertar(config, oBeI_nav_ped_compra_enc, lConnection, lTransaction);
-            }
             else
-            {
                 RegistrosAfectados += Actualizar(config, oBeI_nav_ped_compra_enc, lConnection, lTransaction);
-            }
-
-            vContador += 1;
 
             lTransaction.Save("Encabezado");
 
-            if (oBeI_nav_ped_compra_enc.Lineas_Detalle != null)
+            if (oBeI_nav_ped_compra_enc.Lineas_Detalle == null)
+                throw new Exception($"Pedido de compra No: {oBeI_nav_ped_compra_enc.No} sin lineas de detalle");
+
+            foreach (var Det in oBeI_nav_ped_compra_enc.Lineas_Detalle)
             {
-                foreach (var Det in oBeI_nav_ped_compra_enc.Lineas_Detalle)
+                if (Det == null) continue;
+                
+                string locationToUse = !string.IsNullOrWhiteSpace(Det.Location_Code)
+                    ? Det.Location_Code.Trim()
+                    : oBeI_nav_ped_compra_enc.Location_Code?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(locationToUse))
+                    throw new Exception($"No está definida bodega para producto: {Det.No}");
+
+                try
                 {
-                    if (Det == null) continue;
-
-                    string? locationToUse = string.IsNullOrWhiteSpace(Det.Location_Code)
-                                            ? oBeI_nav_ped_compra_enc.Location_Code?.Trim()
-                                            : Det.Location_Code.Trim();
-
-                    try
+                    if ((Det.Type?.ToString()) == "2")
                     {
-                     
-                        //tipo 2 es producto, tipo 1 es servicio, y se omite
-                        if ((Det.Type?.ToString()) == "2")
+                        if (!oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
                         {
-                            if (Det.Location_Code != null)
+                            Bodega_Es_Valida_Para_Recepcion =
+                                clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);
+
+                            if (!Bodega_Es_Valida_Para_Recepcion)
                             {
-                                if (!oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
-                                {
-                                    Bodega_Es_Valida_Para_Recepcion = clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);                                    
-
-                                    if (!Bodega_Es_Valida_Para_Recepcion)
-                                    {
-                                        throw new Exception(string.Format(
-                                            "La bodega: {0} para el producto: {1} no se encuentra en la lista de bodegas válidas para recepción. " +
-                                            "Mantenimientos->Cliene: Verifique que exista un cliente con el código: {0}",
-                                            Det.Location_Code, Det.No));
-                                    }
-                                }
-                                else
-                                {
-                                    Bodega_Es_Valida_Para_Recepcion =
-                                        clsLnBodega.Exists_By_Codigo(locationToUse, lConnection, lTransaction);
-
-                                    if (!Bodega_Es_Valida_Para_Recepcion)
-                                    {
-                                        throw new Exception(string.Format(
-                                            "La bodega: {0} para el producto: {1} no se encuentra en la lista de bodegas válidas para recepción. " +
-                                            "Mantenimientos->Bodega: Verifique que exista una bodega con el código: {0}",
-                                            Det.Location_Code, Det.No));
-                                    }
-                                }
-
-                                if (Bodega_Es_Valida_Para_Recepcion)
-                                {
-                                    vIdBodega = clsLnBodega.Get_IdBodega_By_Codigo(locationToUse, lConnection, lTransaction);
-                                    if (vIdBodega == 0)
-                                        throw new Exception("No se pudo obtener el identificador para la bodega: " + locationToUse);
-
-                                    BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(
-                                        Det.No ?? string.Empty, vIdBodega, lConnection, lTransaction);
-
-                                    if (BeProductoBodega != null)
-                                    {
-                                        if (Det.Quantity != Det.Quantity_Received)
-                                        {
-                                            if (clsLnI_nav_ped_compra_det.Exist(Det, lConnection, lTransaction))
-                                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Actualizar(config, Det, lConnection, lTransaction);
-                                            else
-                                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Insertar(config, Det, lConnection, lTransaction);
-                                        }
-
-                                        if (oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes != null)
-                                        {
-                                            if (oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes.Count > 0)
-                                            {
-                                                foreach (var Lote in oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes)
-                                                {
-                                                    if (!clsLnI_nav_ped_compra_det_lote.Exist(Lote, lConnection, lTransaction))
-                                                        RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Insertar(config, Lote, lConnection, lTransaction);
-                                                    else
-                                                        RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Actualizar(config, Lote, lConnection, lTransaction);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
-                                                {
-                                                    throw new Exception("Error_202301191027A: El documento de transferencia interna no tiene definidos los lotes y fechas de vencimiento count(0). " +
-                                                        "Is_Internal_Transfer = " + oBeI_nav_ped_compra_enc.Is_Internal_Transfer);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
-                                            {
-                                                throw new Exception(string.Format(
-                                                    "El documento de transferencia interna No: {0}. No tiene definidos los lotes y fechas de vencimiento",
-                                                    Det.No));
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new Exception(string.Format(
-                                            "El código de producto: {0} no existe en maestro o no está asociado a la bodega: {1}",
-                                            Det.No, Det.Location_Code));
-                                    }
-                                }
-                                else
-                                {
-                                    // Rollback parcial al savepoint y re-lanzar
-                                    lTransaction.Rollback("Encabezado");
-
-                                    throw new Exception(string.Format(
-                                        "La bodega: {0} para el producto: {1} no se encuentra en la lista de bodegas válidas para recepción. " +
-                                        "Si es una transferencia interna: la bodega debe existir en el maestro de bodegas. " +
-                                        "Si no es T.I. el código de bodega debe existir en maestro de clientes",
-                                        Det.Location_Code, Det.No));
-                                }
-                            }
-                            else if (Det.No != null)
-                            {
-                                throw new Exception($"No está definida bodega para producto: {Det.No}, no se importará");
+                                throw new Exception(
+                                    $"La bodega: {locationToUse} para el producto: {Det.No} no es válida para recepción.");
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Re-lanzar con contexto sin perder stack original
-                        throw new Exception("Error procesando línea de detalle.", ex);
+                        else
+                        {
+                            Bodega_Es_Valida_Para_Recepcion =
+                                clsLnBodega.Exists_By_Codigo(locationToUse, lConnection, lTransaction);
+
+                            if (!Bodega_Es_Valida_Para_Recepcion)
+                            {
+                                throw new Exception(
+                                    $"La bodega: {locationToUse} no existe en maestro de bodegas.");
+                            }
+                        }
+
+                        if (!Bodega_Es_Valida_Para_Recepcion)
+                        {
+                            lTransaction.Rollback("Encabezado");
+                            throw new Exception($"Bodega inválida: {locationToUse}");
+                        }
+
+                        vIdBodega = clsLnBodega.Get_IdBodega_By_Codigo(locationToUse, lConnection, lTransaction);
+                        if (vIdBodega == 0)
+                            throw new Exception("No se pudo obtener Id de bodega: " + locationToUse);
+
+                        BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(
+                            Det.No ?? string.Empty, vIdBodega, lConnection, lTransaction);
+
+                        if (BeProductoBodega == null)
+                            throw new Exception($"Producto {Det.No} no asociado a bodega {locationToUse}");
+
+                        if (Det.Quantity != Det.Quantity_Received)
+                        {
+                            if (clsLnI_nav_ped_compra_det.Exist(Det, lConnection, lTransaction))
+                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Actualizar(config, Det, lConnection, lTransaction);
+                            else
+                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Insertar(config, Det, lConnection, lTransaction);
+                        }
+
+                        // LOTES
+                        if (oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes != null &&
+                            oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes.Count > 0)
+                        {
+                            foreach (var Lote in oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes)
+                            {
+                                if (!clsLnI_nav_ped_compra_det_lote.Exist(Lote, lConnection, lTransaction))
+                                    RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Insertar(config, Lote, lConnection, lTransaction);
+                                else
+                                    RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Actualizar(config, Lote, lConnection, lTransaction);
+                            }
+                        }
+                        else if (oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
+                        {
+                            throw new Exception("Transferencia interna sin lotes definidos.");
+                        }
                     }
                 }
-
-                result = RegistrosAfectados;
-            }
-            else
-            {
-                Console.WriteLine("Pedido de compra sin lineas de detalle?");
-                throw new Exception($"Pedido de compra No: {oBeI_nav_ped_compra_enc.No} sin lineas de detalle");
+                catch (Exception ex)
+                {
+                    throw new Exception("Error procesando línea de detalle.", ex);
+                }
             }
 
-            // Si todo fue bien, commit al final
             lTransaction.Commit();
-            return result;
+            return RegistrosAfectados;
         }
         catch (Exception ex)
         {
-            // Rollback global; si ya se hizo uno parcial, esto garantiza consistencia
-            try { lTransaction.Rollback(); } catch { /* opcional: log del fallo de rollback */ }
+            try { lTransaction.Rollback(); } catch { }
             throw new Exception($"{nameof(Insert_Single_Pedido_From_ERP)} failed.", ex);
         }
         finally
@@ -2019,7 +1963,9 @@ public class clsLnI_nav_ped_compra_enc
                     IdUnidadMedidaBasica = BePedidoCompraDet.IdUnidadMedidaBasica,
                     IdPresentacion = BePedidoCompraDet.IdPresentacion,
                     No_documento = navPedidoCompraEnc.No,
-                    Activo = true
+                    Lic_plate = navPedidoCompraDet.Barcode,
+                    Peso_Licencia = Lote.Pallet_Weight,
+                    Activo = true                    
                 };
 
                 if (LoteExistente == null)

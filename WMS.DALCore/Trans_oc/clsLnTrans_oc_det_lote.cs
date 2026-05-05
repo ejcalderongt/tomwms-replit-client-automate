@@ -1,9 +1,6 @@
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Trans_re;
 using WMSWebAPI.Be;
@@ -45,6 +42,7 @@ public class clsLnTrans_oc_det_lote
             oBeTrans_oc_det_lote.Reclasificar = GetBool("reclasificar");
             oBeTrans_oc_det_lote.Activo = GetBool("activo");
             oBeTrans_oc_det_lote.No_documento = GetString("no_documento");
+            oBeTrans_oc_det_lote.Peso_Licencia = GetDouble("peso_licencia");
         }
         catch (Exception ex)
         {
@@ -84,7 +82,8 @@ public class clsLnTrans_oc_det_lote
             Ins.Add("reclasificar", "@reclasificar", "F");
             Ins.Add("activo", "@activo", "F");
             Ins.Add("no_documento", "@no_documento", "F");
-
+            Ins.Add("peso_licencia", "@peso_licencia", "F");
+            
             string sp = Ins.SQL();
 
             SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction);
@@ -111,6 +110,7 @@ public class clsLnTrans_oc_det_lote
             cmd.Parameters.Add(new SqlParameter("@reclasificar", oBeTrans_oc_det_lote.Reclasificar));
             cmd.Parameters.Add(new SqlParameter("@activo", oBeTrans_oc_det_lote.Activo));
             cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_oc_det_lote.No_documento ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@peso_licencia", oBeTrans_oc_det_lote.Peso_Licencia));
 
             rowsAffected = cmd.ExecuteNonQuery();
         }
