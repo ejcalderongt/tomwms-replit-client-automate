@@ -994,6 +994,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.EsExportacion = BeINavPedTrasladoEnc.IsExport
                         pBePedidoEnc.Guia_Transporte = BeINavPedTrasladoEnc.Transportation_Guide
 
+                        If BeINavPedTrasladoEnc.Transport_Company <> "" Then
+                            Dim BeTransporte As New clsBeEmpresa_transporte
+                            BeTransporte.Nombre = BeINavPedTrasladoEnc.Transport_Company
+                            clsLnEmpresa_transporte.GetSingle_By_Nombre(BeTransporte,
+                                                                        lConectionInterface,
+                                                                        lTransInterface)
+                            pBePedidoEnc.IdEmpresaTransporte = BeTransporte.IdEmpresaTransporte
+                        End If
+
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,
                                                              lTransInterface)

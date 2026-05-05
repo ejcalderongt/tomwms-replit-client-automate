@@ -318,6 +318,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         .Comments = factura_Reserva_Cliente("Comments")?.ToString(),
                         .Document_Type = tTipoDocumentoSalida.Factura_Reserva_Cliente,
                         .Transportation_Guide = factura_Reserva_Cliente("U_Guia")?.ToString(),
+                        .Transport_Company = factura_Reserva_Cliente("U_TIPO_GUIA")?.ToString(),
                         .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
                     }
 
@@ -483,7 +484,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
             CnnLog.Open()
             clsTrans.Begin_Transaction()
 
-            lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente)
+            lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente)
 
             If Not lTransaccionesSalida Is Nothing AndAlso lTransaccionesSalida.Count > 0 Then
 
