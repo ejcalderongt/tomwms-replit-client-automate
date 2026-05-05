@@ -21,7 +21,17 @@ Partial Public Class clsLnTrans_inv_enc
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = "SELECT * From trans_inv_enc Where (activo = 1 And inicial = 1) "
+                    Dim vSQL As String = "SELECT DISTINCT
+                        trans_inv_enc.idinventarioenc, trans_inv_enc.idpropietario, trans_inv_enc.idbodega, trans_inv_enc.idtipoinventario, 
+                        trans_inv_enc.tipo_conteo_producto, trans_inv_enc.doble_verificacion,
+                        trans_inv_enc.fecha, trans_inv_enc.estado, trans_inv_enc.inicial, trans_inv_enc.activo, trans_inv_enc.regularizado, 
+                        trans_inv_enc.hora_ini, trans_inv_enc.hora_fin, trans_inv_enc.user_agr,
+                        trans_inv_enc.fec_agr, trans_inv_enc.user_mod, trans_inv_enc.fec_mod, 
+                        trans_inv_enc.EsSistema, trans_inv_enc.cambia_ubicacion, trans_inv_enc.Fecha_Ultimo_Inventario, 
+                        trans_inv_enc.mostrar_cantidad_teorica_hh, trans_inv_enc.IdProductoFamilia, trans_inv_enc.IdBodegaVirtual,trans_inv_enc.capturar_no_existente,
+                        trans_inv_enc.multi_propietario,
+						trans_inv_enc.IdCentroCosto, 0 as Tipo_Asignacion,
+                        trans_inv_enc.Capturar_No_Asignados From trans_inv_enc Where (activo = 1 And inicial = 1) "
 
                     If (pIdTarea > 0) Then vSQL &= "AND (idinventarioenc=@IdInventario) AND estado <> 'Finalizado' "
 
