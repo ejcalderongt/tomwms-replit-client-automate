@@ -1424,6 +1424,7 @@ public class clsLnI_nav_ped_compra_enc
             BePedidoCompraDet.Nombre_producto = BeProductoBodega?.Producto?.nombre ?? string.Empty;
             BePedidoCompraDet.Camas_Tarima = navPedidoCompraDet.LayersPallet;
             BePedidoCompraDet.Cajas_Cama = navPedidoCompraDet.BoxesLayer;
+            BePedidoCompraDet.Peso_neto = navPedidoCompraDet.Net_Weight;
 
             clsBeBodega? BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,lConnection,lTransInterface);
 
@@ -1870,7 +1871,7 @@ public class clsLnI_nav_ped_compra_enc
             BePedidoCompraDet.IdProductoBodega = BeProductoBodega.IdProductoBodega;
             BePedidoCompraDet.Codigo_producto = BeProductoBodega.Producto?.codigo ?? string.Empty;
             BePedidoCompraDet.Nombre_producto = clsPublic.Quitar_Caracteres_No_Permitidos(navPedidoCompraDet.Description);
-
+            BePedidoCompraDet.Peso_neto = navPedidoCompraDet.Net_Weight;
             BePedidoCompraDet.Nombre_unidad_medida_basica =
                 string.IsNullOrEmpty(navPedidoCompraDet.Variant_Code)
                     ? navPedidoCompraDet.Unit_Of_Measure_Code
