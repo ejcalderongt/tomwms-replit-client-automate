@@ -18956,11 +18956,13 @@ Public Class TOMHHWS
     <WebMethod(), SoapHeader("mArch")>
     Public Function Cargar_Stock_RFID_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
 
+
         Cargar_Stock_RFID_Paginado = New List(Of clsBeI_nav_barras_rfid_enc)
 
         Try
 
             Cargar_Stock_RFID_Paginado = clsLnI_nav_barras_rfid_enc.Get_Stock_WS_Paginado(pPagina, pTamanoPagina, pBusqueda, pCriterioBusqueda)
+
 
         Catch ex As Exception
 

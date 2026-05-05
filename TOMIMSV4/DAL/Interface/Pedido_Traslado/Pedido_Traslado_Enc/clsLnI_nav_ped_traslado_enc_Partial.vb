@@ -3457,6 +3457,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     If BePedidoEnc IsNot Nothing Then
                         Importar_Pedido_Cliente_A_Tabla_Intermedia = BePedidoEnc
                     End If
+
                 End If
 
             End If

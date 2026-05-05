@@ -950,13 +950,15 @@ Partial Public Class clsLnTrans_inv_stock
             "SELECT " &
             "    producto.codigo AS Codigo, " &
             "    producto.nombre AS Producto, " &
-            "    unidad_medida.Nombre AS UMBas, " &
-            "    producto_presentacion.nombre AS Presentacion, " &
+            " CASE " &
+            " WHEN producto_presentacion.nombre IS NULL OR producto_presentacion.nombre = '' " &
+            " THEN unidad_medida.Nombre " &
+            " ELSE producto_presentacion.nombre " &
+            " END AS Presentacion, " &
             "    producto_estado.nombre AS Estado, " &
             "    trans_inv_stock.Lote, " &
             "    trans_inv_stock.Fecha_vence, " &
-            "    trans_inv_stock.Cantidad, " &
-            "    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / NULLIF(producto_presentacion.Factor,0), 0) AS CantidadPresentacion, " &
+            "    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / NULLIF(producto_presentacion.Factor,0), 0) AS Cantidad_Pres, " &
             "    trans_inv_stock.Peso, " &
             "    dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion, trans_inv_stock.IdBodega) AS Ubicacion, " &
             "    trans_inv_stock.IdStock, " &
@@ -964,7 +966,13 @@ Partial Public Class clsLnTrans_inv_stock
             "    pt.NombreTipoProducto AS TipoProducto, " &
             "    trans_inv_stock.IdUbicacion, " &
             "    trans_inv_stock.IdProductoBodega, " &
-            "    ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) AS Cantidad_Reservada_UmBas, " &
+            "   CASE " &
+            "   WHEN producto_presentacion.nombre IS NULL OR producto_presentacion.nombre = '' " &
+            "   THEN ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) " &
+            "   WHEN producto_presentacion.Factor > 0 " &
+            "   THEN ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) / producto_presentacion.Factor " &
+            "   ELSE 0 " &
+            "   END AS Cantidad_Reservada_Pres, " &
             "    color.nombre AS Color, " &
             "    talla.codigo AS Talla " &
             "FROM trans_inv_stock " &

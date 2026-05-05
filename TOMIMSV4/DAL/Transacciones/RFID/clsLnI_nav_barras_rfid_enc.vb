@@ -1122,7 +1122,10 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 	End Function
 
-	Public Shared Function Get_Stock_WS_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
+	Public Shared Function Get_Stock_WS_Paginado(pPagina As Integer,
+												 pTamanoPagina As Integer,
+												 pBusqueda As String,
+												 pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
 
 		Dim lReturnList As New List(Of clsBeI_nav_barras_rfid_enc)
 
