@@ -1,0 +1,98 @@
+{
+  "db": "IMS4MB_MERCOPAN_PRD",
+  "cliente": "mercopan",
+  "env": "PRD",
+  "ts": "2026-05-05",
+  "ok": true,
+  "caps": {
+    "has_tipo_doc_str": true,
+    "has_idtipodoc": true,
+    "log_tables": [
+      "log_error_wms"
+    ]
+  },
+  "bodegas": [
+    {
+      "IdBodega": 14,
+      "codigo": "04",
+      "nombre": "BODEGA MERCOPAN",
+      "activo": true,
+      "IdEmpresa": 1
+    }
+  ],
+  "config_heatmap": [
+    {
+      "idbodega": 14,
+      "nombre_bodega": "BODEGA MERCOPAN",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": false,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    }
+  ],
+  "top_sps": [],
+  "outbox_estado": [
+    {
+      "enviado": 0,
+      "cant": 14762,
+      "primer": "2023-01-31 13:02:38.357000",
+      "ultimo": "2024-08-12 19:57:19.967000"
+    },
+    {
+      "enviado": 1,
+      "cant": 132375,
+      "primer": "2021-12-09 10:43:49.767000",
+      "ultimo": "2024-07-31 11:35:52"
+    }
+  ],
+  "outbox_tipos": [
+    {
+      "clave": "(NULL)",
+      "cant": 147137,
+      "enviados": 132375,
+      "pendientes": 14762
+    }
+  ],
+  "bug001": {
+    "danados_picking": 19607,
+    "danados_verif": 21,
+    "ajustes_locales": 1877,
+    "ajustes_enviados_erp": 171,
+    "ajustes_pendientes_erp": 1706,
+    "ajcantn": 0,
+    "todos_aj": 0
+  },
+  "heatmap_bodega": [
+    {
+      "IdBodega": 14,
+      "codigo": "04",
+      "nombre": "BODEGA MERCOPAN",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    }
+  ],
+  "log_totals": {
+    "log_error_wms": 70656,
+    "log_error_wms_pe": null,
+    "log_error_wms_pick": null,
+    "log_error_wms_rec": null,
+    "log_error_wms_reab": null,
+    "log_error_wms_oc": null,
+    "log_error_wms_ubic": null
+  },
+  "log_recientes": [
+    {
+      "_error": "ProgrammingError: (207, b\"Invalid column name 'Fec_agr'.DB-Lib error message 20018, severity 16:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")"
+    }
+  ]
+}

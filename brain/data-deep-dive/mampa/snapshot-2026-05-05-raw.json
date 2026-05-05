@@ -1,0 +1,1176 @@
+{
+  "db": "TOMWMS_MAMPA_QA",
+  "cliente": "mampa",
+  "env": "QA",
+  "ts": "2026-05-05",
+  "ok": true,
+  "caps": {
+    "has_tipo_doc_str": false,
+    "has_idtipodoc": true,
+    "log_tables": [
+      "log_error_wms",
+      "log_error_wms_oc",
+      "log_error_wms_pe",
+      "log_error_wms_pick",
+      "log_error_wms_reab",
+      "log_error_wms_rec",
+      "log_error_wms_ubic"
+    ]
+  },
+  "bodegas": [
+    {
+      "IdBodega": 1,
+      "codigo": "01",
+      "nombre": "TIENDA CENTRAL",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 2,
+      "codigo": "02",
+      "nombre": "PUNTO DE SERVICIO TECULUTAN",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 3,
+      "codigo": "03",
+      "nombre": "PUNTO DE SERVICIO ESCUINTLA",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 4,
+      "codigo": "04",
+      "nombre": "PUNTO DE SERVICIO BARBERENA",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 5,
+      "codigo": "05",
+      "nombre": "PUNTO DE SERVICIO XELA",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 6,
+      "codigo": "06",
+      "nombre": "PUNTO DE SERVICIO SAN MARCOS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 7,
+      "codigo": "07",
+      "nombre": "PUNTO DE SERVICIO COBAN",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 12,
+      "codigo": "12",
+      "nombre": "CAMBIOS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 13,
+      "codigo": "13",
+      "nombre": "BODEGA DE IMPARES",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 14,
+      "codigo": "14",
+      "nombre": "BODEGA DE SEGUNDAS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 15,
+      "codigo": "15",
+      "nombre": "BODEGA DE TERCERAS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 17,
+      "codigo": "17",
+      "nombre": "MUESTRAS MAMPA",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 18,
+      "codigo": "18",
+      "nombre": "MUESTRAS DISEÑO",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 19,
+      "codigo": "19",
+      "nombre": "GARANTIAS POROVEEDORES",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 21,
+      "codigo": "21",
+      "nombre": "CEDIS SAN JUAN",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 23,
+      "codigo": "23",
+      "nombre": "DIFERENCIAS SAN JUAN",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 24,
+      "codigo": "24",
+      "nombre": "SEGUNDA DEFECTO CEDIS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 25,
+      "codigo": "25",
+      "nombre": "DAÑADOS DE ORIGEN CEDIS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 28,
+      "codigo": "28",
+      "nombre": "GIRAS Y CONSIGNACION",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 30,
+      "codigo": "30",
+      "nombre": "BODEGA PRORRATEO",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 31,
+      "codigo": "31",
+      "nombre": "BODEGA TMK",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 32,
+      "codigo": "32",
+      "nombre": "MERCADERIA NTS",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 33,
+      "codigo": "33",
+      "nombre": "SUP XELA",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 36,
+      "codigo": "36",
+      "nombre": "MUESTRAS BRYAN SANTIZO",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 37,
+      "codigo": "37",
+      "nombre": "MUESTRAS ELVIRA GOMEZ",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 38,
+      "codigo": "38",
+      "nombre": "MUESTRAS JANICE ESCOBAR",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 39,
+      "codigo": "39",
+      "nombre": "MUESTRAS BRANDON OSORIO",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 41,
+      "codigo": "41",
+      "nombre": "MUESTRAS TELMA LOPEZ",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 42,
+      "codigo": "42",
+      "nombre": "MUESTRAS JORGE RODRIGUEZ",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 43,
+      "codigo": "43",
+      "nombre": "MUESTRAS INGRID GONZALEZ",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 44,
+      "codigo": "44",
+      "nombre": "MUESTRAS JONHATAN GONZALEZ",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 45,
+      "codigo": "45",
+      "nombre": "MUESTRAS EUFEMIA CHIC",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 46,
+      "codigo": "46",
+      "nombre": "MUESTRAS ILIANA GARZA",
+      "activo": true,
+      "IdEmpresa": 1
+    }
+  ],
+  "config_heatmap": [
+    {
+      "idbodega": 1,
+      "nombre_bodega": "TIENDA CENTRAL",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 2,
+      "nombre_bodega": "PUNTO DE SERVICIO TECULUTAN",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 3,
+      "nombre_bodega": "PUNTO DE SERVICIO ESCUINTLA",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 4,
+      "nombre_bodega": "PUNTO DE SERVICIO BARBERENA",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 5,
+      "nombre_bodega": "PUNTO DE SERVICIO XELA",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 6,
+      "nombre_bodega": "PUNTO DE SERVICIO SAN MARCOS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 7,
+      "nombre_bodega": "PUNTO DE SERVICIO COBAN",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 12,
+      "nombre_bodega": "CAMBIOS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 13,
+      "nombre_bodega": "BODEGA DE IMPARES",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 14,
+      "nombre_bodega": "BODEGA DE SEGUNDAS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 15,
+      "nombre_bodega": "BODEGA DE TERCERAS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 17,
+      "nombre_bodega": "MUESTRAS MAMPA",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 18,
+      "nombre_bodega": "MUESTRAS DISEÑO",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 19,
+      "nombre_bodega": "GARANTIAS POROVEEDORES",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 21,
+      "nombre_bodega": "CEDIS SAN JUAN",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 23,
+      "nombre_bodega": "DIFERENCIAS SAN JUAN",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 24,
+      "nombre_bodega": "SEGUNDA DEFECTO CEDIS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 25,
+      "nombre_bodega": "DAÑADOS DE ORIGEN CEDIS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 28,
+      "nombre_bodega": "GIRAS Y CONSIGNACION",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 30,
+      "nombre_bodega": "BODEGA PRORRATEO",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 31,
+      "nombre_bodega": "BODEGA TMK",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 32,
+      "nombre_bodega": "MERCADERIA NTS",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 33,
+      "nombre_bodega": "SUP XELA",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 36,
+      "nombre_bodega": "MUESTRAS BRYAN SANTIZO",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 37,
+      "nombre_bodega": "MUESTRAS ELVIRA GOMEZ",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 38,
+      "nombre_bodega": "MUESTRAS JANICE ESCOBAR",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 39,
+      "nombre_bodega": "MUESTRAS BRANDON OSORIO",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 41,
+      "nombre_bodega": "MUESTRAS TELMA LOPEZ",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 42,
+      "nombre_bodega": "MUESTRAS JORGE RODRIGUEZ",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 43,
+      "nombre_bodega": "MUESTRAS INGRID GONZALEZ",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 44,
+      "nombre_bodega": "MUESTRAS JONHATAN GONZALEZ",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 45,
+      "nombre_bodega": "MUESTRAS EUFEMIA CHIC",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 46,
+      "nombre_bodega": "MUESTRAS ILIANA GARZA",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    }
+  ],
+  "top_sps": [],
+  "outbox_estado": [
+    {
+      "enviado": 0,
+      "cant": 78,
+      "primer": "2026-02-19 16:44:18.060000",
+      "ultimo": "2026-04-16 16:43:30.543000"
+    },
+    {
+      "enviado": 1,
+      "cant": 907,
+      "primer": "2026-02-17 16:20:06.253000",
+      "ultimo": "2026-04-15 17:50:55.213000"
+    }
+  ],
+  "outbox_tipos": [
+    {
+      "clave": "IdTipoDocumento=4",
+      "cant": 400,
+      "enviados": 399,
+      "pendientes": 1
+    },
+    {
+      "clave": "IdTipoDocumento=6",
+      "cant": 251,
+      "enviados": 251,
+      "pendientes": 0
+    },
+    {
+      "clave": "IdTipoDocumento=13",
+      "cant": 166,
+      "enviados": 156,
+      "pendientes": 10
+    },
+    {
+      "clave": "IdTipoDocumento=16",
+      "cant": 94,
+      "enviados": 94,
+      "pendientes": 0
+    },
+    {
+      "clave": "IdTipoDocumento=17",
+      "cant": 45,
+      "enviados": 0,
+      "pendientes": 45
+    },
+    {
+      "clave": "IdTipoDocumento=8",
+      "cant": 17,
+      "enviados": 0,
+      "pendientes": 17
+    },
+    {
+      "clave": "IdTipoDocumento=12",
+      "cant": 7,
+      "enviados": 2,
+      "pendientes": 5
+    },
+    {
+      "clave": "IdTipoDocumento=14",
+      "cant": 3,
+      "enviados": 3,
+      "pendientes": 0
+    },
+    {
+      "clave": "IdTipoDocumento=3",
+      "cant": 2,
+      "enviados": 2,
+      "pendientes": 0
+    }
+  ],
+  "bug001": {
+    "danados_picking": 0,
+    "danados_verif": 0,
+    "ajustes_locales": 154,
+    "ajustes_enviados_erp": 4,
+    "ajustes_pendientes_erp": 150,
+    "ajcantn": null,
+    "todos_aj": null
+  },
+  "heatmap_bodega": [
+    {
+      "IdBodega": 1,
+      "codigo": "01",
+      "nombre": "TIENDA CENTRAL",
+      "picks_30d": 8,
+      "ajustes_30d": 77,
+      "danados_30d": 0,
+      "errores_pick_30d": 8,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 2,
+      "codigo": "02",
+      "nombre": "PUNTO DE SERVICIO TECULUTAN",
+      "picks_30d": 0,
+      "ajustes_30d": 6,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 3,
+      "codigo": "03",
+      "nombre": "PUNTO DE SERVICIO ESCUINTLA",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 4,
+      "codigo": "04",
+      "nombre": "PUNTO DE SERVICIO BARBERENA",
+      "picks_30d": 0,
+      "ajustes_30d": 3,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 5,
+      "codigo": "05",
+      "nombre": "PUNTO DE SERVICIO XELA",
+      "picks_30d": 0,
+      "ajustes_30d": 1,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 6,
+      "codigo": "06",
+      "nombre": "PUNTO DE SERVICIO SAN MARCOS",
+      "picks_30d": 4,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 4,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 7,
+      "codigo": "07",
+      "nombre": "PUNTO DE SERVICIO COBAN",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 12,
+      "codigo": "12",
+      "nombre": "CAMBIOS",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 13,
+      "codigo": "13",
+      "nombre": "BODEGA DE IMPARES",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 14,
+      "codigo": "14",
+      "nombre": "BODEGA DE SEGUNDAS",
+      "picks_30d": 1,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 3,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 15,
+      "codigo": "15",
+      "nombre": "BODEGA DE TERCERAS",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 17,
+      "codigo": "17",
+      "nombre": "MUESTRAS MAMPA",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 18,
+      "codigo": "18",
+      "nombre": "MUESTRAS DISEÑO",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 19,
+      "codigo": "19",
+      "nombre": "GARANTIAS POROVEEDORES",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 21,
+      "codigo": "21",
+      "nombre": "CEDIS SAN JUAN",
+      "picks_30d": 8,
+      "ajustes_30d": 3,
+      "danados_30d": 0,
+      "errores_pick_30d": 8,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 23,
+      "codigo": "23",
+      "nombre": "DIFERENCIAS SAN JUAN",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 24,
+      "codigo": "24",
+      "nombre": "SEGUNDA DEFECTO CEDIS",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 25,
+      "codigo": "25",
+      "nombre": "DAÑADOS DE ORIGEN CEDIS",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 28,
+      "codigo": "28",
+      "nombre": "GIRAS Y CONSIGNACION",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 30,
+      "codigo": "30",
+      "nombre": "BODEGA PRORRATEO",
+      "picks_30d": 2,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 31,
+      "codigo": "31",
+      "nombre": "BODEGA TMK",
+      "picks_30d": 0,
+      "ajustes_30d": 3,
+      "danados_30d": 0,
+      "errores_pick_30d": 2,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 32,
+      "codigo": "32",
+      "nombre": "MERCADERIA NTS",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 33,
+      "codigo": "33",
+      "nombre": "SUP XELA",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 36,
+      "codigo": "36",
+      "nombre": "MUESTRAS BRYAN SANTIZO",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 37,
+      "codigo": "37",
+      "nombre": "MUESTRAS ELVIRA GOMEZ",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 38,
+      "codigo": "38",
+      "nombre": "MUESTRAS JANICE ESCOBAR",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 39,
+      "codigo": "39",
+      "nombre": "MUESTRAS BRANDON OSORIO",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 41,
+      "codigo": "41",
+      "nombre": "MUESTRAS TELMA LOPEZ",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 42,
+      "codigo": "42",
+      "nombre": "MUESTRAS JORGE RODRIGUEZ",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 43,
+      "codigo": "43",
+      "nombre": "MUESTRAS INGRID GONZALEZ",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 44,
+      "codigo": "44",
+      "nombre": "MUESTRAS JONHATAN GONZALEZ",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 45,
+      "codigo": "45",
+      "nombre": "MUESTRAS EUFEMIA CHIC",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 46,
+      "codigo": "46",
+      "nombre": "MUESTRAS ILIANA GARZA",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    }
+  ],
+  "log_totals": {
+    "log_error_wms": 2334,
+    "log_error_wms_pe": 87,
+    "log_error_wms_pick": 69,
+    "log_error_wms_rec": 179,
+    "log_error_wms_reab": 24,
+    "log_error_wms_oc": 56,
+    "log_error_wms_ubic": 295
+  },
+  "log_recientes": [
+    {
+      "_error": "ProgrammingError: (207, b\"Invalid column name 'Fec_agr'.DB-Lib error message 20018, severity 16:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")"
+    }
+  ]
+}

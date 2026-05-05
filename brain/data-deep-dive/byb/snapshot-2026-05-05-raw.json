@@ -1,0 +1,165 @@
+{
+  "db": "IMS4MB_BYB_PRD",
+  "cliente": "byb",
+  "env": "PRD",
+  "ts": "2026-05-05",
+  "ok": true,
+  "caps": {
+    "has_tipo_doc_str": false,
+    "has_idtipodoc": true,
+    "log_tables": [
+      "log_error_wms",
+      "log_error_wms_oc",
+      "LOG_ERROR_WMS_PE",
+      "log_error_wms_pick",
+      "log_error_wms_rec",
+      "log_error_wms_ubic"
+    ]
+  },
+  "bodegas": [
+    {
+      "IdBodega": 2,
+      "codigo": "BA0002",
+      "nombre": "PRODUCTO TERMINADO",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 24,
+      "codigo": "BA0024",
+      "nombre": "PRODUCTO TERMINADO DAÑADO",
+      "activo": true,
+      "IdEmpresa": 1
+    }
+  ],
+  "config_heatmap": [
+    {
+      "idbodega": 2,
+      "nombre_bodega": "PRODUCTO TERMINADO",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": null,
+      "control_vencimiento": null,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": true,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": null
+    },
+    {
+      "idbodega": 24,
+      "nombre_bodega": "PRODUCTO TERMINADO DAÑADO",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": null,
+      "control_vencimiento": null,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": true,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    }
+  ],
+  "top_sps": [],
+  "outbox_estado": [
+    {
+      "enviado": 0,
+      "cant": 255912,
+      "primer": "2022-05-09 07:32:41.463000",
+      "ultimo": "2025-10-14 15:37:34.097000"
+    },
+    {
+      "enviado": 1,
+      "cant": 277417,
+      "primer": "2022-05-10 13:08:00.660000",
+      "ultimo": "2023-12-15 09:29:25.323000"
+    }
+  ],
+  "outbox_tipos": [
+    {
+      "clave": "IdTipoDocumento=3",
+      "cant": 277337,
+      "enviados": 277309,
+      "pendientes": 28
+    },
+    {
+      "clave": "IdTipoDocumento=1",
+      "cant": 115188,
+      "enviados": 1,
+      "pendientes": 115187
+    },
+    {
+      "clave": "IdTipoDocumento=6",
+      "cant": 95009,
+      "enviados": 16,
+      "pendientes": 94993
+    },
+    {
+      "clave": "IdTipoDocumento=4",
+      "cant": 29924,
+      "enviados": 0,
+      "pendientes": 29924
+    },
+    {
+      "clave": "IdTipoDocumento=12",
+      "cant": 8879,
+      "enviados": 0,
+      "pendientes": 8879
+    },
+    {
+      "clave": "IdTipoDocumento=8",
+      "cant": 6992,
+      "enviados": 91,
+      "pendientes": 6901
+    }
+  ],
+  "bug001": {
+    "danados_picking": 495,
+    "danados_verif": 15,
+    "ajustes_locales": 38,
+    "ajustes_enviados_erp": 27,
+    "ajustes_pendientes_erp": 11,
+    "ajcantn": null,
+    "todos_aj": null
+  },
+  "heatmap_bodega": [
+    {
+      "IdBodega": 2,
+      "codigo": "BA0002",
+      "nombre": "PRODUCTO TERMINADO",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    },
+    {
+      "IdBodega": 24,
+      "codigo": "BA0024",
+      "nombre": "PRODUCTO TERMINADO DAÑADO",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 0,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    }
+  ],
+  "log_totals": {
+    "log_error_wms": 203782,
+    "log_error_wms_pe": 14,
+    "log_error_wms_pick": 3,
+    "log_error_wms_rec": 18,
+    "log_error_wms_reab": null,
+    "log_error_wms_oc": 9,
+    "log_error_wms_ubic": 1
+  },
+  "log_recientes": [
+    {
+      "_error": "ProgrammingError: (207, b\"Invalid column name 'Fec_agr'.DB-Lib error message 20018, severity 16:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")"
+    }
+  ]
+}

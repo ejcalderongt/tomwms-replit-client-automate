@@ -1,0 +1,117 @@
+{
+  "db": "IMS4MB_CEALSA_QAS",
+  "cliente": "cealsa",
+  "env": "QAS",
+  "ts": "2026-05-05",
+  "ok": true,
+  "caps": {
+    "has_tipo_doc_str": false,
+    "has_idtipodoc": true,
+    "log_tables": [
+      "log_error_wms"
+    ]
+  },
+  "bodegas": [
+    {
+      "IdBodega": 1,
+      "codigo": "B01",
+      "nombre": "BODEGA GENERAL",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 2,
+      "codigo": "B02",
+      "nombre": "BODEGA FISCAL",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 3,
+      "codigo": "3",
+      "nombre": "Bodega nuevos rack",
+      "activo": false,
+      "IdEmpresa": 1
+    }
+  ],
+  "config_heatmap": [
+    {
+      "idbodega": 1,
+      "nombre_bodega": "BODEGA GENERAL",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    },
+    {
+      "idbodega": 2,
+      "nombre_bodega": "BODEGA FISCAL",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": false,
+      "control_vencimiento": false,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    }
+  ],
+  "top_sps": [],
+  "outbox_estado": [],
+  "outbox_tipos": [],
+  "bug001": {
+    "danados_picking": 0,
+    "danados_verif": 0,
+    "ajustes_locales": 460,
+    "ajustes_enviados_erp": 92,
+    "ajustes_pendientes_erp": 368,
+    "ajcantn": null,
+    "todos_aj": null
+  },
+  "heatmap_bodega": [
+    {
+      "IdBodega": 1,
+      "codigo": "B01",
+      "nombre": "BODEGA GENERAL",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    },
+    {
+      "IdBodega": 2,
+      "codigo": "B02",
+      "nombre": "BODEGA FISCAL",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    }
+  ],
+  "log_totals": {
+    "log_error_wms": 3,
+    "log_error_wms_pe": null,
+    "log_error_wms_pick": null,
+    "log_error_wms_rec": null,
+    "log_error_wms_reab": null,
+    "log_error_wms_oc": null,
+    "log_error_wms_ubic": null
+  },
+  "log_recientes": [
+    {
+      "_error": "ProgrammingError: (207, b\"Invalid column name 'Fec_agr'.DB-Lib error message 20018, severity 16:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")"
+    }
+  ]
+}

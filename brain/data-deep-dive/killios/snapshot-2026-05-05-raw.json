@@ -1,0 +1,258 @@
+{
+  "db": "TOMWMS_KILLIOS_PRD",
+  "cliente": "killios",
+  "env": "PRD",
+  "ts": "2026-05-05",
+  "ok": true,
+  "caps": {
+    "has_tipo_doc_str": true,
+    "has_idtipodoc": true,
+    "log_tables": [
+      "log_error_wms"
+    ]
+  },
+  "bodegas": [
+    {
+      "IdBodega": 1,
+      "codigo": "BOD1",
+      "nombre": "Bodega Principal",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 2,
+      "codigo": "PRTOK",
+      "nombre": "Bodega de Prorateo Kilio",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 3,
+      "codigo": "PRTO",
+      "nombre": "Bodega de Prorateo Garesa",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 4,
+      "codigo": "BOD5",
+      "nombre": "Bodega Amatitlan",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 5,
+      "codigo": "PRTK17",
+      "nombre": "Bodega de Prorateo Kilio Z17",
+      "activo": true,
+      "IdEmpresa": 1
+    },
+    {
+      "IdBodega": 6,
+      "codigo": "PRT17",
+      "nombre": "Bodega de Prorateo Garesa Z17",
+      "activo": true,
+      "IdEmpresa": 1
+    }
+  ],
+  "config_heatmap": [
+    {
+      "idbodega": 1,
+      "nombre_bodega": "Bodega Principal",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    },
+    {
+      "idbodega": 2,
+      "nombre_bodega": "Bodega de Prorateo Kilio",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    },
+    {
+      "idbodega": 3,
+      "nombre_bodega": "Bodega de Prorateo Garesa",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    },
+    {
+      "idbodega": 4,
+      "nombre_bodega": "Bodega Amatitlan",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    },
+    {
+      "idbodega": 5,
+      "nombre_bodega": "Bodega de Prorateo Kilio Z17",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    },
+    {
+      "idbodega": 6,
+      "nombre_bodega": "Bodega de Prorateo Garesa Z17",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 1,
+      "despachar_existencia_parcial": 1,
+      "convertir_decimales_a_umbas": 1,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": false,
+      "control_peso": true
+    }
+  ],
+  "top_sps": [],
+  "outbox_estado": [
+    {
+      "enviado": 0,
+      "cant": 3,
+      "primer": "2025-08-19 07:06:56.207000",
+      "ultimo": "2025-08-19 07:30:25.067000"
+    },
+    {
+      "enviado": 1,
+      "cant": 24190,
+      "primer": "2025-06-02 15:53:19.117000",
+      "ultimo": "2025-08-18 19:53:04.033000"
+    }
+  ],
+  "outbox_tipos": [
+    {
+      "clave": "(NULL)",
+      "cant": 24193,
+      "enviados": 24190,
+      "pendientes": 3
+    }
+  ],
+  "bug001": {
+    "danados_picking": 6500,
+    "danados_verif": 9,
+    "ajustes_locales": 825,
+    "ajustes_enviados_erp": 103,
+    "ajustes_pendientes_erp": 722,
+    "ajcantn": 0,
+    "todos_aj": 0
+  },
+  "heatmap_bodega": [
+    {
+      "IdBodega": 1,
+      "codigo": "BOD1",
+      "nombre": "Bodega Principal",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    },
+    {
+      "IdBodega": 2,
+      "codigo": "PRTOK",
+      "nombre": "Bodega de Prorateo Kilio",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    },
+    {
+      "IdBodega": 3,
+      "codigo": "PRTO",
+      "nombre": "Bodega de Prorateo Garesa",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    },
+    {
+      "IdBodega": 4,
+      "codigo": "BOD5",
+      "nombre": "Bodega Amatitlan",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    },
+    {
+      "IdBodega": 5,
+      "codigo": "PRTK17",
+      "nombre": "Bodega de Prorateo Kilio Z17",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    },
+    {
+      "IdBodega": 6,
+      "codigo": "PRT17",
+      "nombre": "Bodega de Prorateo Garesa Z17",
+      "picks_30d": 0,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": null,
+      "errores_rec_30d": null,
+      "errores_oc_30d": null
+    }
+  ],
+  "log_totals": {
+    "log_error_wms": 66339,
+    "log_error_wms_pe": null,
+    "log_error_wms_pick": null,
+    "log_error_wms_rec": null,
+    "log_error_wms_reab": null,
+    "log_error_wms_oc": null,
+    "log_error_wms_ubic": null
+  },
+  "log_recientes": [
+    {
+      "_error": "ProgrammingError: (207, b\"Invalid column name 'Fec_agr'.DB-Lib error message 20018, severity 16:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")"
+    }
+  ]
+}

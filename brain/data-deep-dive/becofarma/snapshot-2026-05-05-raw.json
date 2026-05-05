@@ -1,0 +1,116 @@
+{
+  "db": "IMS4MB_BECOFARMA_PRD",
+  "cliente": "becofarma",
+  "env": "PRD",
+  "ts": "2026-05-05",
+  "ok": true,
+  "caps": {
+    "has_tipo_doc_str": false,
+    "has_idtipodoc": true,
+    "log_tables": [
+      "log_error_wms",
+      "log_error_wms_oc",
+      "log_error_wms_pe",
+      "log_error_wms_pick",
+      "log_error_wms_reab",
+      "log_error_wms_rec",
+      "log_error_wms_ubic"
+    ]
+  },
+  "bodegas": [
+    {
+      "IdBodega": 1,
+      "codigo": "01",
+      "nombre": "GENERAL",
+      "activo": true,
+      "IdEmpresa": 1
+    }
+  ],
+  "config_heatmap": [
+    {
+      "idbodega": 1,
+      "nombre_bodega": "GENERAL",
+      "idPropietario": 1,
+      "rechazar_pedido_incompleto": 0,
+      "despachar_existencia_parcial": 0,
+      "convertir_decimales_a_umbas": 0,
+      "control_lote": true,
+      "control_vencimiento": true,
+      "genera_lp": true,
+      "crear_recepcion_de_transferencia_nav": false,
+      "equiparar_cliente_con_propietario_en_doc_salida": true,
+      "control_peso": false
+    }
+  ],
+  "top_sps": [],
+  "outbox_estado": [
+    {
+      "enviado": 0,
+      "cant": 31263,
+      "primer": "2026-01-04 18:39:43.183000",
+      "ultimo": "2026-04-27 12:45:15.410000"
+    },
+    {
+      "enviado": 1,
+      "cant": 5313,
+      "primer": "2026-01-04 15:29:16.603000",
+      "ultimo": "2026-04-25 10:11:11.447000"
+    }
+  ],
+  "outbox_tipos": [
+    {
+      "clave": "IdTipoDocumento=3",
+      "cant": 31486,
+      "enviados": 2109,
+      "pendientes": 29377
+    },
+    {
+      "clave": "IdTipoDocumento=1",
+      "cant": 4632,
+      "enviados": 2866,
+      "pendientes": 1766
+    },
+    {
+      "clave": "IdTipoDocumento=2",
+      "cant": 458,
+      "enviados": 338,
+      "pendientes": 120
+    }
+  ],
+  "bug001": {
+    "danados_picking": 0,
+    "danados_verif": 0,
+    "ajustes_locales": 10,
+    "ajustes_enviados_erp": 0,
+    "ajustes_pendientes_erp": 10,
+    "ajcantn": null,
+    "todos_aj": null
+  },
+  "heatmap_bodega": [
+    {
+      "IdBodega": 1,
+      "codigo": "01",
+      "nombre": "GENERAL",
+      "picks_30d": 1497,
+      "ajustes_30d": 0,
+      "danados_30d": 0,
+      "errores_pick_30d": 1529,
+      "errores_rec_30d": 0,
+      "errores_oc_30d": 0
+    }
+  ],
+  "log_totals": {
+    "log_error_wms": 52418,
+    "log_error_wms_pe": 7098,
+    "log_error_wms_pick": 5762,
+    "log_error_wms_rec": 6941,
+    "log_error_wms_reab": 6462,
+    "log_error_wms_oc": 1732,
+    "log_error_wms_ubic": 6426
+  },
+  "log_recientes": [
+    {
+      "_error": "ProgrammingError: (207, b\"Invalid column name 'Fec_agr'.DB-Lib error message 20018, severity 16:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")"
+    }
+  ]
+}
