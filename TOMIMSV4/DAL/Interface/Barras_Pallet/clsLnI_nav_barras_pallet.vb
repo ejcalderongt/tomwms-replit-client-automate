@@ -1330,4 +1330,59 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
+    Public Shared Function GetAll_By_Codigo_Barra_Pallet_RFID(ByVal pIdProductoBodega As Integer,
+                                                             ByVal pIdBodega As Integer) As List(Of clsBeI_nav_barras_pallet)
+
+
+        GetAll_By_Codigo_Barra_Pallet_RFID = Nothing
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Const sp As String = "SELECT nav.* FROM I_nav_barras_pallet nav 
+								   inner join producto pr 
+								   on nav.codigo=pr.codigo inner join producto_bodega pb
+								   on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=297771 and pb.IdBodega=@pIdBodega) "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdBodega", pIdBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdProductoBodega", pIdProductoBodega))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count > 0 AndAlso dt IsNot Nothing Then
+
+                GetAll_By_Codigo_Barra_Pallet_RFID = New List(Of clsBeI_nav_barras_pallet)
+
+                For Each row As DataRow In dt.Rows
+
+                    Dim pBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+                    Cargar(pBeI_nav_barras_pallet, row)
+
+                    GetAll_By_Codigo_Barra_Pallet_RFID.Add(pBeI_nav_barras_pallet)
+
+                Next
+
+            End If
+
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
 End Class

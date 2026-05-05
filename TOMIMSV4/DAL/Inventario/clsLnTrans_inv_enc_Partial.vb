@@ -25,6 +25,8 @@ Partial Public Class clsLnTrans_inv_enc
 
                     If (pIdTarea > 0) Then vSQL &= "AND (idinventarioenc=@IdInventario) AND estado <> 'Finalizado' "
 
+
+                    '#GT29042026: añadi join a tabla TipoInventario para no mostrar inventarios tipo ES_RFID, tambien en el where
                     vSQL &= " And (IdBodega = @IdBodega)
                         UNION
                         Select  DISTINCT
@@ -39,8 +41,11 @@ Partial Public Class clsLnTrans_inv_enc
 						trans_inv_enc.IdCentroCosto, 0 as Tipo_Asignacion,
                         trans_inv_enc.Capturar_No_Asignados
                         From trans_inv_enc
+                            LEFT JOIN TipoInventario 
+                            ON TipoInventario.IdTipoInv = trans_inv_enc.idtipoinventario
                         Where (trans_inv_enc.activo = 1) And (trans_inv_enc.idbodega =@IdBodega)
-                        And (trans_inv_enc.inicial = 0) AND trans_inv_enc.estado <> 'Finalizado' "
+                        And (trans_inv_enc.inicial = 0) AND trans_inv_enc.estado <> 'Finalizado' 
+                        AND ISNULL(TipoInventario.Es_RFID, 0) <> 1 "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -59,6 +64,8 @@ Partial Public Class clsLnTrans_inv_enc
                             For Each lRow As DataRow In lDataTable.Rows
                                 Obj = New clsBeTrans_inv_enc
                                 Cargar(Obj, lRow)
+                                '#GT29042026: se carga tipo inventario
+                                Obj.TipoInv = clsLnTipoInventario.GetSingle_By_IdTipoInventario(Obj.IdTipoInventario, lConnection, lTransaction)
                                 lReturnList.Add(Obj)
                             Next
                         End If
@@ -3550,5 +3557,128 @@ Partial Public Class clsLnTrans_inv_enc
 
     End Function
 
+    Public Shared Function Get_All_Pendientes_RFID_By_IdBodega_And_IdOperador(pIdBodega As Integer,
+                                                                         pIdOperador As Integer,
+                                                                         pIdTarea As Integer) As List(Of clsBeTrans_inv_enc)
+
+        Get_All_Pendientes_RFID_By_IdBodega_And_IdOperador = Nothing
+
+        Dim lReturnList As New List(Of clsBeTrans_inv_enc)
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT trans_inv_enc.* From trans_inv_enc 
+                                                        LEFT JOIN TipoInventario 
+                                                        ON TipoInventario.IdTipoInv = trans_inv_enc.idtipoinventario
+                                                    Where (activo = 1 And inicial = 1)
+                                                        AND trans_inv_enc.IdBodega = @IdBodega
+                                                        AND TipoInventario.Es_RFID = 1 "
+
+                    If (pIdTarea > 0) Then vSQL &= "AND (idinventarioenc=@IdInventario) AND estado <> 'Finalizado' "
+
+
+                    '#GT29042026: añadi join a tabla TipoInventario para mostrar inventarios tipo ES_RFID, tambien en el where
+                    vSQL &= " And (IdBodega = @IdBodega)
+                        UNION
+                        Select  DISTINCT
+                        trans_inv_enc.idinventarioenc, trans_inv_enc.idpropietario, trans_inv_enc.idbodega, trans_inv_enc.idtipoinventario, 
+                        trans_inv_enc.tipo_conteo_producto, trans_inv_enc.doble_verificacion,
+                        trans_inv_enc.fecha, trans_inv_enc.estado, trans_inv_enc.inicial, trans_inv_enc.activo, trans_inv_enc.regularizado, 
+                        trans_inv_enc.hora_ini, trans_inv_enc.hora_fin, trans_inv_enc.user_agr,
+                        trans_inv_enc.fec_agr, trans_inv_enc.user_mod, trans_inv_enc.fec_mod, 
+                        trans_inv_enc.EsSistema, trans_inv_enc.cambia_ubicacion, trans_inv_enc.Fecha_Ultimo_Inventario, 
+                        trans_inv_enc.mostrar_cantidad_teorica_hh, trans_inv_enc.IdProductoFamilia, trans_inv_enc.IdBodegaVirtual,trans_inv_enc.capturar_no_existente,
+                        trans_inv_enc.multi_propietario,
+						trans_inv_enc.IdCentroCosto, 0 as Tipo_Asignacion,
+                        trans_inv_enc.Capturar_No_Asignados
+                        From trans_inv_enc
+                            LEFT JOIN TipoInventario 
+                            ON TipoInventario.IdTipoInv = trans_inv_enc.idtipoinventario
+                        Where (trans_inv_enc.activo = 1) And (trans_inv_enc.idbodega =@IdBodega)
+                        And (trans_inv_enc.inicial = 0) AND trans_inv_enc.estado <> 'Finalizado' 
+                        AND TipoInventario.Es_RFID = 1 "
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOperador", pIdOperador)
+                        If (pIdTarea > 0) Then lDTA.SelectCommand.Parameters.AddWithValue("@IdInventario", pIdTarea)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeTrans_inv_enc
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            For Each lRow As DataRow In lDataTable.Rows
+                                Obj = New clsBeTrans_inv_enc
+                                Cargar(Obj, lRow)
+                                '#GT29042026: se carga tipo inventario
+                                Obj.TipoInv = clsLnTipoInventario.GetSingle_By_IdTipoInventario(Obj.IdTipoInventario, lConnection, lTransaction)
+                                lReturnList.Add(Obj)
+                            Next
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Guardar_RFID(ByVal pBeInventarioEnc As clsBeTrans_inv_enc,
+                                        ByVal pObjTareaHH As clsBeTarea_hh) As Boolean
+
+        Guardar_RFID = False
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction
+
+            'Inventario Encabezado
+            Guarda_Trans_Inv_Enc(pBeInventarioEnc, lConnection, lTransaction)
+
+            'Crea Tarea para HH
+            pObjTareaHH.IdTransaccion = pBeInventarioEnc.Idinventarioenc
+            clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH, lConnection, lTransaction)
+
+            '#GT04052026: para RFID no se necesita guardar inventario congelado porque no hay stock
+            'Crea copia de stock cuando es inventario ciclico. 
+            'clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, lConnection, lTransaction)
+
+            lTransaction.Commit()
+
+            Guardar_RFID = True
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(ex.Message)
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
 
 End Class

@@ -5522,6 +5522,7 @@ Public Class frmMenu
             Cierra_Instancia_Previa(frmInventarioRFID_Lista)
 
             With frmInventarioRFID_Lista
+                .Modo = frmInventarioRFID_Lista.pModo.Lista
                 .MdiParent = Me
                 .Show()
                 .Focus()
