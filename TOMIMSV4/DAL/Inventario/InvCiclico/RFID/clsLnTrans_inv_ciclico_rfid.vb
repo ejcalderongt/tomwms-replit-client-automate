@@ -415,4 +415,59 @@ Public Class clsLnTrans_inv_ciclico_rfid
 	End Function
 
 
+	Public Shared Function GetAll_By_IdProducto_And_RFID(ByVal pIdProductoBodega As Integer,
+															ByVal pIdBodega As Integer) As List(Of clsBeTrans_inv_ciclico_rfid)
+
+
+		GetAll_By_IdProducto_And_RFID = Nothing
+
+		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+			Const sp As String = "SELECT ciclcio.* FROM trans_inv_ciclico_rfid ciclcio 
+								   inner join producto pr 
+								   on nav.codigo=pr.codigo inner join producto_bodega pb
+								   on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=pIdProductoBodega and pb.IdBodega=@pIdBodega) "
+
+			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+			Dim dad As New SqlDataAdapter(cmd)
+			dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdBodega", pIdBodega))
+			dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdProductoBodega", pIdProductoBodega))
+
+			Dim dt As New DataTable
+			dad.Fill(dt)
+
+			If dt.Rows.Count > 0 AndAlso dt IsNot Nothing Then
+
+				GetAll_By_IdProducto_And_RFID = New List(Of clsBeTrans_inv_ciclico_rfid)
+
+				For Each row As DataRow In dt.Rows
+
+					Dim pBeI_nav_barras_pallet As New clsBeTrans_inv_ciclico_rfid
+
+					Cargar(pBeI_nav_barras_pallet, row)
+
+					GetAll_By_IdProducto_And_RFID.Add(pBeI_nav_barras_pallet)
+
+				Next
+
+			End If
+
+
+			lTransaction.Commit()
+
+		Catch ex As Exception
+			If lTransaction IsNot Nothing Then lTransaction.Rollback()
+			Throw ex
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If lTransaction IsNot Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
+
 End Class
