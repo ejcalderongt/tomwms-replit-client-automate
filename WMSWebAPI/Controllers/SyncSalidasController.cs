@@ -233,6 +233,10 @@ namespace WMSWebAPI.Controllers
                 var bodegas = clsLnBodega.GetByIds(_configuration, bodegaIds);
                 var codigoClienteByPedidoId = clsLnTrans_pe_enc.Get_Codigos_Cliente_By_IdsPedidoEnc(_configuration, pedidoIds);
 
+                var usuariosByPedidoId =
+                    (Dictionary<int, Tuple<string, string>>)clsLnTrans_pe_enc
+                        .Get_Usuarios_Documento_By_IdsPedidoEnc(_configuration, pedidoIds);
+
                 var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo ?? "");
                 var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
                 var bodegaCodigoById = bodegas.ToDictionary(b => b.IdBodega, b => b.Codigo ?? "");
@@ -259,6 +263,20 @@ namespace WMSWebAPI.Controllers
                                 codigoBodegaOrigen)
                             : null;
 
+                    string usuarioDocumento = "";
+                    string usuarioDespacho = "";
+
+                    // Inicializa siempre con valores seguros
+                    usuarioDocumento = string.Empty;
+                    usuarioDespacho = string.Empty;
+
+                    if (usuariosByPedidoId.TryGetValue(x.Idpedidoenc, out var usuarios) && usuarios != null)
+                    {
+                        usuarioDocumento = usuarios.Item1 ?? string.Empty;
+                        usuarioDespacho = usuarios.Item2 ?? string.Empty;
+                    }
+
+
                     return new SalidaSimpleReturnDto
                     {
                         Idtransaccion = x.Idtransaccion,
@@ -277,7 +295,9 @@ namespace WMSWebAPI.Controllers
                         Codigo_Bodega_Destino = esTraslado ? codigoDestino : "",
                         Codigo_Cliente = esTraslado ? "" : codigoDestino,
                         IdDocIngresoBodDestino = idDocIngresoBodDestino,
-                        IdDocSalidaBodOrigen = x.Idpedidoenc
+                        IdDocSalidaBodOrigen = x.Idpedidoenc,
+                        UsuarioDocumento = usuarioDocumento,
+                        UsuarioDespacho = usuarioDespacho
                     };
                 }).ToList();
 
@@ -289,6 +309,39 @@ namespace WMSWebAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { ok = false, message = ex.Message });
+            }
+        }
+
+        [HttpPatch("mi3/pendientes-procesar/marcar-enviadas")]
+        public IActionResult MarcarSalidasComoEnviadas([FromServices] IConfiguration configuration,
+                                                       [FromBody] MarcarTransaccionesEnviadasRequestDto request)
+        {
+            try
+            {
+                if (request?.IdTransacciones == null || request.IdTransacciones.Count == 0)
+                {
+                    return BadRequest(new
+                    {
+                        ok = false,
+                        message = "Debe enviar IdTransacciones (uno o más)."
+                    });
+                }
+
+                int marcadas = _salidaService.Marcar_Salidas_Como_Enviadas(configuration, request.IdTransacciones);
+
+                return Ok(new
+                {
+                    ok = true,
+                    marcadas
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    ok = false,
+                    message = ex.Message
+                });
             }
         }
     }
