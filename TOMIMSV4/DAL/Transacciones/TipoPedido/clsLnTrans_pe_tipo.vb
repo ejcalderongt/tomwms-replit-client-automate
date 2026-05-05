@@ -205,6 +205,7 @@ Public Class clsLnTrans_pe_tipo
 
             Upd.Add("transferir_ubicacion", "@transferir_ubicacion", DataType.Parametro)
             Upd.Add("genera_guia_remision", "@Genera_Guia_Remision", DataType.Parametro)
+            Upd.Add("Verificar_con_imagen", "@Verificar_con_imagen", DataType.Parametro)
             Upd.Add("Asignar_Todos_Operadores", "@Asignar_Todos_Operadores", DataType.Parametro)
 
             Upd.Where("IdTipoPedido = @IdTipoPedido")
