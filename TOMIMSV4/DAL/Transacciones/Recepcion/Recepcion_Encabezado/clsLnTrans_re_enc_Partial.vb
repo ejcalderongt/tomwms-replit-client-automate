@@ -2869,7 +2869,7 @@ Partial Public Class clsLnTrans_re_enc
                                 vCantStock += 1
                             Next
 
-                            If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
+                            If vGenera_LP AndAlso pIdResolucionLp <= 0 AndAlso (pListStockRec.FirstOrDefault.Lic_plate = "") Then
                                 Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
                             End If
 
@@ -5805,8 +5805,8 @@ Partial Public Class clsLnTrans_re_enc
                         Else
                             '#AT20250915 Solo si escajamaster = false
                             If Not EsCajaMaster Then
-                                If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
-                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
+                                If (vGenera_LP AndAlso pIdResolucionLp <= 0 AndAlso pListStockRec.FirstOrDefault.Lic_plate = "") Then
+                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion_A: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
                                 End If
 
                                 If Not vGenera_LP And pIdResolucionLp <= 0 Then
