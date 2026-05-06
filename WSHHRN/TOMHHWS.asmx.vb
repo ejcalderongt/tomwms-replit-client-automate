@@ -17860,18 +17860,17 @@ Public Class TOMHHWS
             '#MA20260505 Manejo de error
             If mArch IsNot Nothing Then
 
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                Else
-                    Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
-                    Dim curContext As HttpContext = HttpContext.Current
+                Dim errorJson As String = JsonConvert.SerializeObject(New With {
+                    .Error = True,
+                    .Mensaje = ex.Message
+                })
 
-                    curContext.Response.Clear()
-                    curContext.Response.StatusCode = 500
-                    curContext.Response.ContentType = "application/json"
-                    curContext.Response.Write(errorJson)
-                    curContext.ApplicationInstance.CompleteRequest()
-                End If
+                Dim curContext As HttpContext = HttpContext.Current
+                curContext.Response.Clear()
+                curContext.Response.StatusCode = 200
+                curContext.Response.ContentType = "application/json"
+                curContext.Response.Write(errorJson)
+                curContext.ApplicationInstance.CompleteRequest()
 
             End If
 
