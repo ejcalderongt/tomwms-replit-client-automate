@@ -798,7 +798,6 @@ Public Class frmPedido_List
         Catch ex As Exception
         End Try
 
-
         If verificar_bof Then
             txtGuia.Visible = True
             lbOk.Visible = True

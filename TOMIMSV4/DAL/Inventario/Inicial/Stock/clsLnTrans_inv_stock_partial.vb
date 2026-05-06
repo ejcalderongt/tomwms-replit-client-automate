@@ -1112,4 +1112,118 @@ Partial Public Class clsLnTrans_inv_stock
 
     End Function
 
+    Public Shared Function Insertar_Inventario_Congelado_RFID(ByVal DTProductos As DataTable,
+                                                             ByVal IdInventarioEnc As Integer,
+                                                             ByVal IdUsuarioAgrego As Integer,
+                                                             ByVal IdOperadorAsignado As Integer,
+                                                              ByVal pIdBodega As Integer) As Boolean
+
+        Insertar_Inventario_Congelado_RFID = False
+
+        Dim lConection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lInvCongelado As New List(Of clsBeTrans_inv_stock)
+        Dim gBeInventarioCiclico As New clsBeTrans_inv_ciclico
+        Dim Operador As New clsBeTrans_inv_operador
+        Dim Ubicacion As New clsBeTrans_inv_ciclico_ubic
+        Dim inserto_inv As Boolean = False
+        Dim cantReg As Integer = 0
+        Dim cantProd As Integer = 0
+
+        Dim gBeInventarioRFID As New clsBeTrans_inv_ciclico_rfid
+
+        Try
+
+            Dim ProductosSeleccionados = DTProductos.AsEnumerable().[Select](Function(row) New With {
+                                                                                                    Key .IdProductoBodega = row.Field(Of Integer)("IdProductoBodega"),
+                                                                                                    Key .Nombre = row.Field(Of String)("Nombre"),
+                                                                                                    Key .Codigo_barra = row.Field(Of String)("Codigo_barra"),
+                                                                                                    Key .Seleccionado = row.Field(Of Boolean)("Seleccionar")}).Where(Function(e) e.Seleccionado = True).Distinct().ToArray().OrderBy(Function(x) x.IdProductoBodega)
+
+            If ProductosSeleccionados.Count > 0 Then
+
+                lConection.Open() : lTransaction = lConection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                For Each ProdInv In ProductosSeleccionados
+
+                    'validar en la tabla inventario_cic_rfid que no exista previamente el producto para no duplicar el registro.
+                    Dim listaProducto = clsLnTrans_inv_ciclico_rfid.GetAll_By_IdProducto_And_RFID(ProdInv.IdProductoBodega, pIdBodega)
+
+                    cantReg = 0
+
+                    If listaProducto.Count > 0 Then
+
+                        For Each pProducto In listaProducto
+
+                            gBeInventarioRFID.Idinvciclico = clsLnTrans_inv_ciclico_rfid.MaxID(lConection, lTransaction)
+                            gBeInventarioRFID.Idinventarioenc = IdInventarioEnc
+                            gBeInventarioRFID.IdPallet = pProducto.IdPallet
+                            gBeInventarioRFID.Codigo = pProducto.Codigo
+                            gBeInventarioRFID.Nombre = pProducto.Nombre
+                            gBeInventarioRFID.Lote = pProducto.Lote
+                            gBeInventarioRFID.Codigo_Barra = pProducto.Codigo_barra
+                            gBeInventarioRFID.SSCC = pProducto.SSCC
+                            gBeInventarioRFID.GTIN = pProducto.GTIN
+                            gBeInventarioRFID.Fecha_Produccion = pProducto.Fecha_Produccion
+                            gBeInventarioRFID.IdProductoBodega = ProdInv.IdProductoBodega
+                            gBeInventarioRFID.User_agr = "1"
+                            gBeInventarioRFID.Fec_agr = Now
+                            gBeInventarioRFID.User_mod = "1"
+                            gBeInventarioRFID.Fec_mod = Now
+                            gBeInventarioRFID.IdOperador = 1
+                            gBeInventarioRFID.Cantidad = 1
+                            gBeInventarioRFID.EsPallet = True
+
+                            clsLnTrans_inv_ciclico_rfid.Insertar(gBeInventarioRFID, lConection, lTransaction)
+
+                            Operador = New clsBeTrans_inv_operador
+                            Operador.Idinvoperador = clsLnTrans_inv_operador.MaxID(lConection, lTransaction)
+                            Operador.Idinventarioenc = gBeInventarioCiclico.Idinventarioenc
+                            Operador.Idinvencreconteo = 0
+                            Operador.Idubic = 0
+                            Operador.IdBodega = pIdBodega
+                            Operador.Idoperador = IdOperadorAsignado
+
+                            If Not clsLnTrans_inv_operador.Existe_Operador_By_IdUbicacion(Operador,
+                                                                                         lConection,
+                                                                                         lTransaction) Then
+                                clsLnTrans_inv_operador.Insertar(Operador,
+                                                                 lConection,
+                                                                 lTransaction)
+                            End If
+
+                            cantReg += 1
+                            Debug.Print("Registro " & cantReg & " Procesando interno IdPallet: " & pProducto.IdPallet)
+
+                        Next
+
+                        inserto_inv = True
+
+                    Else
+                        inserto_inv = False
+                    End If
+
+                    cantProd += 1
+                    Debug.Print("Producto " & cantProd & " Procesando Externo Código: " & ProdInv.Nombre)
+
+                Next
+
+                lTransaction.Commit()
+
+            Else
+                Throw New Exception("No se marcó ningún registro para asignar al inventario")
+            End If
+
+            Insertar_Inventario_Congelado_RFID = inserto_inv
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConection.State = ConnectionState.Open Then lConection.Close()
+            lConection.Dispose()
+        End Try
+
+    End Function
+
 End Class

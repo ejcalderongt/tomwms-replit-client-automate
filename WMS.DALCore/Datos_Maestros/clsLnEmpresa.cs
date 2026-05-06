@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
-using Microsoft.VisualBasic.CompilerServices;
 using WMSWebAPI.Be;
 
 public class clsLnEmpresa

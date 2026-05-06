@@ -404,7 +404,12 @@ Public Class frmImpresionRecepcion_OC
 
         Dim cantidad As Decimal = 0D
         If pTransOC_Det IsNot Nothing Then cantidad = CDec(pTransOC_Det.Cantidad)
-        txtCantUmBas.Value = pBeProductoPresentacion.Factor * cantidad
+        If Not pBeProductoPresentacion Is Nothing Then
+            txtCantUmBas.Value = pBeProductoPresentacion.Factor * cantidad
+        Else
+            txtCantUmBas.Value = cantidad
+        End If
+
     End Sub
 
     Private Function CalcularEtiquetasDocumento() As Integer
