@@ -113,7 +113,7 @@ Public Class clsSyncSapDevolucionProveedor : Inherits clsInterfaceBase : Impleme
 
                         BeSolicitudDevolDet = New clsBeI_nav_ped_traslado_det()
                         BeSolicitudDevolDet.NoEnc = BeSolicitudDevolEnc.No
-                        BeSolicitudDevolDet.No = clsLnI_nav_ped_traslado_det.MaxID() 'clsLnTrans_pe_det.MaxID() + 1
+                        BeSolicitudDevolDet.No = clsLnI_nav_ped_traslado_det.MaxID()
                         BeSolicitudDevolDet.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
                         BeSolicitudDevolDet.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
                         BeSolicitudDevolDet.Shipment_Date = Date.Now
