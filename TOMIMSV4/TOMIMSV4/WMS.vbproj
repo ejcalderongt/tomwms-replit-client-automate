@@ -1504,6 +1504,12 @@
     <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
       <DependentUpon>frmInventarioRFID.vb</DependentUpon>
     </Compile>
@@ -3815,6 +3821,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
       <DependentUpon>frmInventarioDet.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.resx">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
       <DependentUpon>frmInventarioRFID.vb</DependentUpon>
