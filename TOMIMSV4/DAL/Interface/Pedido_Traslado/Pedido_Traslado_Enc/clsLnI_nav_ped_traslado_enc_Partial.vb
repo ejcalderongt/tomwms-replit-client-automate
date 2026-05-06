@@ -994,6 +994,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.EsExportacion = BeINavPedTrasladoEnc.IsExport
                         pBePedidoEnc.Guia_Transporte = BeINavPedTrasladoEnc.Transportation_Guide
 
+                        If BeINavPedTrasladoEnc.Transport_Company <> "" Then
+                            Dim BeTransporte As New clsBeEmpresa_transporte
+                            BeTransporte.Nombre = BeINavPedTrasladoEnc.Transport_Company
+                            clsLnEmpresa_transporte.GetSingle_By_Nombre(BeTransporte,
+                                                                        lConectionInterface,
+                                                                        lTransInterface)
+                            pBePedidoEnc.IdEmpresaTransporte = BeTransporte.IdEmpresaTransporte
+                        End If
+
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,
                                                              lTransInterface)
@@ -3517,7 +3526,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
-    Private Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
+    Public Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
 
         Nuevo_Picking = False
 

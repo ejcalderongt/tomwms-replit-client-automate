@@ -322,6 +322,10 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino = IIf(IsDBNull(lRow("Referencia_Documento_Ingreso_Bodega_Destino")), "", lRow("Referencia_Documento_Ingreso_Bodega_Destino"))
                     vPedidoEnc.IdMotivoDevolucion = IIf(IsDBNull(lRow("IdMotivoDevolucion")), 0, lRow("IdMotivoDevolucion"))
 
+                    vPedidoEnc.Guia_Transporte = IIf(IsDBNull(lRow("Guia_Transporte")), "", lRow("Guia_Transporte"))
+                    vPedidoEnc.IdEmpresaTransporte = IIf(IsDBNull(lRow("IdEmpresaTransporte")), 0, lRow("IdEmpresaTransporte"))
+                    vPedidoEnc.IdPiloto = IIf(IsDBNull(lRow("IdPiloto")), 0, lRow("IdPiloto"))
+
                     vPedidoEnc.Detalle = clsLnTrans_pe_det.Get_Detalle_By_IdPedidoEnc(vPedidoEnc.IdPedidoEnc, lConnection, lTransaction)
 
                     vPedidoEnc.IdPickingEnc = IIf(IsDBNull(lRow("IdPickingEnc")), 0, lRow("IdPickingEnc"))
@@ -451,6 +455,7 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
                         vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
                         vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
+                        vPedidoEnc.TipoPedido.Generar_Picking_Auto = IIf(IsDBNull(lRow("Generar_Picking_Auto")), False, lRow("Generar_Picking_Auto"))
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))
@@ -1831,6 +1836,12 @@ Partial Public Class clsLnTrans_pe_enc
 
                 Insertar(pBeTransPeEnc, lConnection, lTransaction)
             Else
+                If pBeTransPeEnc.Bodega_Destino IsNot Nothing AndAlso
+                   pBeTransPeEnc.Bodega_Destino.Length > 0 AndAlso
+                   pBeTransPeEnc.Bodega_Destino.Contains("-") Then
+                    Dim pBodDestino As String() = pBeTransPeEnc.Bodega_Destino.Split("-")
+                    pBeTransPeEnc.Bodega_Destino = pBodDestino.GetValue(0)
+                End If
                 Actualizar(pBeTransPeEnc, lConnection, lTransaction)
             End If
 
@@ -5617,6 +5628,7 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
                         vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
                         vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
+                        vPedidoEnc.TipoPedido.Generar_Picking_Auto = IIf(IsDBNull(lRow("Generar_Picking_Auto")), False, lRow("Generar_Picking_Auto"))
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))

@@ -3,6 +3,7 @@ Imports System.Management
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
+Imports DevExpress.Data.Async.Helpers
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Grid
 
@@ -266,9 +267,12 @@ Public Class frmImpresion_OC_RFID
 
                     Dim rawIdPallet = GridView1.GetRowCellValue(rowHandle, "IdPallet")
                     Dim rawCodigoBarra = GridView1.GetRowCellValue(rowHandle, "Codigo_barra")
+                    Dim rawDescripcion = GridView1.GetRowCellValue(rowHandle, "Nombre")
+
 
                     Dim pIdPallet = If(IsDBNull(rawIdPallet), 0, CInt(rawIdPallet))
                     Dim pCodigoBarra = If(IsDBNull(rawCodigoBarra), "", rawCodigoBarra.ToString())
+                    'Dim PdescripcionProducto = If(IsDBNull(rawDescripcion), "", rawDescripcion.ToString())
 
                     Dim beBarra = listBarrasPallet.Find(Function(x) x.IdPallet = pIdPallet AndAlso x.Codigo_barra = pCodigoBarra)
 
@@ -291,26 +295,54 @@ Public Class frmImpresion_OC_RFID
                 Dim beProducto = clsLnProducto.Get_BeProducto_By_Codigo(barraPallet.Codigo)
                 If beProducto Is Nothing Then Continue For
 
-                Dim bePresentacion = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(beProducto.IdProducto)
-                If bePresentacion Is Nothing Then bePresentacion.Nombre = "ND"
+                Dim bePresentacion As New clsBeProducto_Presentacion
+
+                bePresentacion = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(beProducto.IdProducto)
+                If bePresentacion IsNot Nothing Then
+                    bePresentacion.Nombre = "ND"
+                Else
+                    bePresentacion = New clsBeProducto_Presentacion
+                    bePresentacion.Nombre = "ND"
+                End If
 
                 Dim beBodega = clsLnBodega.GetSingle_By_Idbodega(barraPallet.Bodega_Origen)
                 If beBodega Is Nothing Then Continue For
+
+                '#GT29042026: obtener siempre 4 caracteres para formar lote
+                Dim loteGs1 As String = barraPallet.Lote.ToString().PadLeft(6, "0"c).Substring(0, 6)
+
+                Dim pGS1 = "01" & barraPallet.GTIN &
+                           "10" & loteGs1 &
+                           "11" & barraPallet.Fecha_Produccion.ToString("yyMMdd")
 
                 Dim epc96Hex As String = EncodeSsccToEpc96_WithPrefix7406171(barraPallet.Codigo_barra, filterValue:=0)
                 Dim fechaActual As String = Date.Now.ToString("dd-MM-yyyy")
                 Dim fechaVence As String = barraPallet.Fecha_Vence.ToString("dd-MM-yyyy")
 
-                Dim zpl As String = BuildZpl_RfidEncode_And_Print(
-                epc96Hex,
-                barraPallet.Codigo_barra,
-                BeEmpresa.Nombre,
-                beBodega.Nombre,
-                fechaVence,
-                bePresentacion.Nombre,
-                barraPallet.Cantidad_Presentacion,
-                fechaActual
-            )
+                Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex,
+                                                                  barraPallet.Codigo_barra,
+                                                                  BeEmpresa.Nombre,
+                                                                  beBodega.Nombre,
+                                                                  pGS1,
+                                                                  barraPallet.SSCC,
+                                                                  barraPallet.Lote,
+                                                                  barraPallet.Fecha_Produccion,
+                                                                  barraPallet.Codigo,
+                                                                  barraPallet.Cantidad_UMP,
+                                                                  barraPallet.Nombre,
+                                                                  barraPallet.GTIN
+                                                                  )
+
+                'Dim zpl As String = BuildZpl_RfidEncode_And_Print(
+                'epc96Hex,
+                'barraPallet.Codigo_barra,
+                'BeEmpresa.Nombre,
+                'beBodega.Nombre,
+                'fechaVence,
+                'bePresentacion.Nombre,
+                'barraPallet.Cantidad_Presentacion,
+                'fechaActual
+                ')
 
                 For j As Integer = 1 To maxToProcess
                     RawPrinterHelper.SendStringToPrinter(printerName, zpl)
@@ -332,7 +364,6 @@ Public Class frmImpresion_OC_RFID
                              MessageBoxIcon.Error)
         End Try
     End Sub
-
 
     Private Function BuildEpc96_FromCodigoBarra(codigo_barra As String) As String
         Try
@@ -370,139 +401,89 @@ Public Class frmImpresion_OC_RFID
     End Function
 
 
-    Public Function StringToHexWith96BitFlag(ByVal input As String) As (Hex As String, Is96Bits As Boolean)
-        If input Is Nothing Then Return (String.Empty, False)
-
-        Dim bytes As Byte() = System.Text.Encoding.UTF8.GetBytes(input)
-
-        Dim sb As New System.Text.StringBuilder(bytes.Length * 2)
-        For Each b As Byte In bytes
-            sb.Append(b.ToString("X2"))
-        Next
-
-        Dim hex As String = sb.ToString()
-
-        ' 96 bits = 12 bytes = 24 chars HEX
-        Dim is96 As Boolean = (bytes.Length = 12) AndAlso (hex.Length = 24)
-
-        Return (hex, is96)
-    End Function
-
-
-    Private Function BuildEpc96_199004_Consecutivo16(consecutivo As Integer) As String
-        If consecutivo < 0 OrElse consecutivo > &HFFFF Then
-            Throw New ArgumentOutOfRangeException(NameOf(consecutivo), "Consecutivo fuera de rango para 16 bits.")
-        End If
-
-        Dim prefijo As String = "03098C" ' 199004 decimal
-        Dim relleno As String = New String("0"c, 14) ' 56 bits = 14 hex
-        Dim ultimos16 As String = consecutivo.ToString("X4") ' 16 bits
-
-        Dim epc As String = (prefijo & relleno & ultimos16).ToUpperInvariant()
-
-        If epc.Length <> 24 Then
-            Throw New Exception("EPC inválido: debe ser 24 hex (96 bits). EPC=" & epc)
-        End If
-
-        Return epc
-    End Function
-
+    '#GT29042026: etiqueta de impresion ILP
     Private Function BuildZpl_RfidEncode_And_Print(epc96Hex As String,
-                                              licencia As String,
-                                              empresa As String,
-                                              bodega As String,
-                                              vigencia As String,
-                                              presentacion As String,
-                                              cantidad As String,
-                                              fecha As String) As String
+                                               licencia As String,
+                                               empresa As String,
+                                               bodega As String,
+                                               gs1 As String,
+                                               sscc As String,
+                                               lote As String,
+                                               fechaProd As String,
+                                               skuSavona As String,
+                                               cantidad As String,
+                                               descripcionProducto As String,
+                                               GTIN As String) As String
+        Try
+            Dim sb As New StringBuilder()
+            Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
 
-        Dim sb As New StringBuilder()
+            sb.AppendLine("^XA")
+            sb.AppendLine("^MMT")
+            sb.AppendLine("^PW1035")
+            sb.AppendLine("^LL0600")
+            sb.AppendLine("^LS0")
+            sb.AppendLine("^CI27")
 
-        sb.AppendLine("^XA")
-        sb.AppendLine("^CI27")
-        sb.AppendLine("^PW1200")
-        sb.AppendLine("^LL600")
-        sb.AppendLine("^LH0,0")
-        sb.AppendLine("^PR6")
+            sb.AppendLine("^RS4")
+            sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
 
-        ' === RFID: escribir EPC completo (96 bits) ===
-        sb.AppendLine("^RS4")
-        sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
+            sb.AppendLine("^FO3,3^GB1029,594,3^FS")
 
-        ' === Impresión física (escalada 203 -> 300 dpi; factor aprox 1.48) ===
-        sb.AppendLine("^FO30,22^A0N,44,44^FDTOMWMS Licencia.^FS")
-        sb.AppendLine("^FO30,74^GB1140,4,4^FS")
-        sb.AppendLine("^FO30,103^A0N,62,62^FD" & licencia & "^FS")
-        sb.AppendLine("^FO52,185^BXN,12,200^FD" & licencia & "^FS")
+            sb.AppendLine("^FT45,55^A0N,42,38^FH^FDTOMWMS Licencia.^FS")
+            sb.AppendLine("^FO3,75^GB1029,4,4^FS")
 
-        sb.AppendLine("^FO620,140^A0N,62,62^FDL:" & licencia & "^FS")
-        sb.AppendLine("^FO620,214^A0N,62,62^FDV:" & vigencia & "^FS")
-        sb.AppendLine("^FO620,303^A0N,62,62^FDPRES:" & presentacion & "^FS")
-        sb.AppendLine("^FO620,369^A0N,62,62^FDCANT:" & cantidad & "^FS")
+            sb.AppendLine("^FT45,110^A0N,26,24^FH^FDEmp:^FS")
+            sb.AppendLine("^FT100,110^A0N,26,24^FH^FD" & empresa & "^FS")
 
-        sb.AppendLine("^FO44,480^A0N,41,41^FDEmp:    " & empresa & "^FS")
-        sb.AppendLine("^FO635,480^A0N,41,41^FDBod:  " & bodega & "^FS")
-        sb.AppendLine("^FO30,524^GB1140,4,4^FS")
-        sb.AppendLine("^FO487,543^A0N,33,33^FD" & fecha & "^FS")
+            sb.AppendLine("^FT345,110^A0N,26,24^FH^FDBod:^FS")
+            sb.AppendLine("^FT400,110^A0N,26,24^FH^FD" & bodega & "^FS")
 
-        sb.AppendLine("^PQ1,0,1,N")
-        sb.AppendLine("^XZ")
+            sb.AppendLine("^FT695,110^A0N,26,24^FH^FDGTIN^FS")
+            sb.AppendLine("^FT750,110^A0N,26,24^FH^FD" & GTIN & "^FS")
 
-        Return sb.ToString()
+            '#linea separadora
+            sb.AppendLine("^FO3,120^GB1029,4,4^FS")
+
+            sb.AppendLine("^FT50,160^A0N,26,24^FH^FDSAVONA:^FS")
+            sb.AppendLine("^FT220,160^A0N,26,24^FH^FD" & skuSavona & "^FS")
+
+            sb.AppendLine("^FT220,190^A0N,24,22^FH^FD" & descripcionProducto & "^FS")
+
+            sb.AppendLine("^FT50,220^A0N,26,24^FH^FDCANT:^FS")
+            sb.AppendLine("^FT220,220^A0N,26,24^FH^FD" & cantidad & "^FS")
+
+            sb.AppendLine("^FT50,250^A0N,26,24^FH^FDFECHA PROD:^FS")
+            sb.AppendLine("^FT220,250^A0N,26,24^FH^FD" & fechaProd & "^FS")
+
+            sb.AppendLine("^FT50,275^A0N,26,24^FH^FDLOTE:^FS")
+            sb.AppendLine("^FT220,275^A0N,26,24^FH^FD" & lote & "^FS")
+
+            sb.AppendLine("^BY2,2,120")
+            sb.AppendLine("^FT160,390^BCN,100,Y,N,N")
+            sb.AppendLine("^FD" & gs1 & "^FS")
+
+            '#linea separadora
+            sb.AppendLine("^FO3,420^GB1029,4,4^FS")
+
+            sb.AppendLine("^BY3,2,105")
+            sb.AppendLine("^FT160,520^BCN,90,Y,N,N")
+            sb.AppendLine("^FD" & sscc & "^FS")
+
+            sb.AppendLine("^FO3,560^GB1029,4,4^FS")
+
+            sb.AppendLine("^FT480,588^A0N,26,20^FH^FD" & fechaActual & "^FS")
+
+            sb.AppendLine("^PQ1,0,1,Y")
+            sb.AppendLine("^XZ")
+
+            Return sb.ToString()
+
+        Catch ex As Exception
+            Throw
+        End Try
     End Function
 
-
-    Private Function BuildZpl_Tiraje3(licencia As String,
-                                      empresa As String,
-                                      bodega As String,
-                                      vigencia As String,
-                                      presentacion As String,
-                                      cantidad As String,
-                                      fecha As String) As String
-
-        ' Referencia: etiqueta 4x2 aprox, 203 dpi (ancho 812 dots, alto 406 dots)
-        ' SOLO impresión física: NO incluye comandos RFID (^RF / ^RFW / ^H* etc.)
-        Dim sb As New StringBuilder()
-
-        sb.AppendLine("^XA")
-        sb.AppendLine("^CI27") ' ASCII/Latin básico
-        sb.AppendLine("^PW812")
-        sb.AppendLine("^LL406")
-        sb.AppendLine("^LH0,0")
-        sb.AppendLine("^PR6")  ' velocidad moderada (ajustable)
-
-        ' Título superior
-        sb.AppendLine("^FO20,15^A0N,30,30^FDTOMWMS Licencia.^FS")
-
-        ' Línea superior
-        sb.AppendLine("^FO20,50^GB772,3,3^FS")
-
-        ' Licencia grande izquierda
-        sb.AppendLine("^FO20,70^A0N,42,42^FD" & licencia & "^FS")
-
-        ' DataMatrix (izquierda)
-        sb.AppendLine("^FO35,125^BXN,8,200^FD" & licencia & "^FS")
-
-        ' Bloque derecho (L / V / PRES / CANT)
-        sb.AppendLine("^FO420,95^A0N,42,42^FDL:" & licencia & "^FS")
-        sb.AppendLine("^FO420,145^A0N,42,42^FDV:" & vigencia & "^FS")
-        sb.AppendLine("^FO420,205^A0N,42,42^FDPRES:" & presentacion & "^FS")
-        sb.AppendLine("^FO420,250^A0N,42,42^FDCANT:" & cantidad & "^FS")
-
-        ' Pie: Emp / Bod
-        sb.AppendLine("^FO30,325^A0N,28,28^FDEmp:    " & empresa & "^FS")
-        sb.AppendLine("^FO430,325^A0N,28,28^FDBod:  " & bodega & "^FS")
-
-        ' Línea inferior y fecha centrada
-        sb.AppendLine("^FO20,355^GB772,3,3^FS")
-        sb.AppendLine("^FO330,368^A0N,22,22^FD" & fecha & "^FS")
-
-        ' Tiraje 3 etiquetas
-        sb.AppendLine("^PQ3,0,1,N")
-        sb.AppendLine("^XZ")
-
-        Return sb.ToString()
-    End Function
 
     ' ========= VALIDACIÓN DE ESTADO (WMI) =========
     Private Function GetPrinterStatus(printerName As String) As (found As Boolean, ok As Boolean, message As String)

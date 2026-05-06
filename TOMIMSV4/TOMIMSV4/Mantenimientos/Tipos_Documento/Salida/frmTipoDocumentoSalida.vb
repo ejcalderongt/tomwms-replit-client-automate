@@ -102,6 +102,7 @@ Public Class frmTipoDocumentoSalida
                     chkVerificacionImagenBOF.IsOn = pObjPT.Verificar_con_imagen
                     chkGeneraGuiaRemision.IsOn = pObjPT.Genera_Guia_Remision
                     chkAsignarTodosOperadores.IsOn = pObjPT.Asignar_Todos_Operadores
+                    chkGenerarPickingAuto.IsOn = pObjPT.Generar_Picking_Auto
 
                     mnuGuardar.Enabled = False
                     mnuActualizar.Enabled = OpcionesMenu.Modificar
@@ -162,6 +163,7 @@ Public Class frmTipoDocumentoSalida
             objPe_Tipo.Verificar_con_imagen = chkVerificacionImagenBOF.IsOn
             objPe_Tipo.Genera_Guia_Remision = chkGeneraGuiaRemision.IsOn
             objPe_Tipo.Asignar_Todos_Operadores = chkAsignarTodosOperadores.IsOn
+            objPe_Tipo.Generar_Picking_Auto = chkGenerarPickingAuto.IsOn
 
             clsLnTrans_pe_tipo.Insertar(objPe_Tipo)
 
@@ -213,6 +215,7 @@ Public Class frmTipoDocumentoSalida
                 pObjPT.Verificar_con_imagen = chkVerificacionImagenBOF.IsOn
                 pObjPT.Genera_Guia_Remision = chkGeneraGuiaRemision.IsOn
                 pObjPT.Asignar_Todos_Operadores = chkAsignarTodosOperadores.IsOn
+                pObjPT.Generar_Picking_Auto = chkGenerarPickingAuto.IsOn
 
                 clsLnTrans_pe_tipo.Actualizar(pObjPT)
                 Actualizar = True

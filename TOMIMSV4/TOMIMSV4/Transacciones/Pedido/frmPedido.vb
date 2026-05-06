@@ -645,6 +645,8 @@ Public Class frmPedido
                 lblSociedadSAP.Visible = BeConfigBodega.Interface_SAP
                 txtSociedadSAP.Visible = BeConfigBodega.Interface_SAP
 
+                cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
+
                 txtEsExportacion.Text = IIf(pBePedidoEnc.EsExportacion, "Si", "No")
 
                 If txtEsExportacion.Text = "Si" Then
@@ -838,6 +840,7 @@ Public Class frmPedido
             txtIdPicking.Text = pBePedidoEnc.IdPickingEnc
             txtObservacion.Text = pBePedidoEnc.Observacion
             txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
+            cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
 
             '#EJC20220510: Fix
             PedidoGuardadoPorUsuario = True
@@ -1680,6 +1683,8 @@ Public Class frmPedido
                 pBePedidoEnc.IdMotivoDevolucion = 0
             End If
 
+            pBePedidoEnc.IdEmpresaTransporte = Val(cmbEmpresaTransporte.EditValue)
+
             If chkControlPoliza.Checked Then
 
                 'GT 170820211743: Se obtiene el regimen, pero se valida que este seteado o avisar que la lectura de la poliza no lo asigno correctamente
@@ -1783,7 +1788,7 @@ Public Class frmPedido
 
             If BeConfigBodega.Interface_SAP Then
                 If Not pBePedidoEnc.TipoPedido.Genera_Guia_Remision Then
-                    If txtReferencia.Text = "" OrElse txtSociedadSAP.Text = "" Then
+                    If txtReferencia.Text = "" AndAlso txtSociedadSAP.Text = "" Then
                         pBePedidoEnc.Sync_MI3 = False
                         pBePedidoEnc.Enviado_A_ERP = True
                     End If

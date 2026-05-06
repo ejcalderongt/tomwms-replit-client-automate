@@ -2,9 +2,18 @@
 Imports DevExpress.XtraEditors
 
 Public Class frmInventarioRFID_Lista
+
+    Public Property Modo As pModo
+    'Public Property OpcionesMenu As New clsBeOpcionesMenuRol
+
+    Enum pModo
+        Lista = 1
+        Seleccion = 2
+    End Enum
+
     Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
         Try
-
+            Cargar()
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
@@ -153,4 +162,59 @@ Public Class frmInventarioRFID_Lista
 
     End Sub
 
+    Private Sub Procesar_Registro()
+
+        Try
+
+            If GridView1.RowCount > 0 Then
+
+                Dim Dr As DataRowView = GridView1.GetFocusedRow
+                Dim Obj As New clsBeTrans_inv_enc
+
+                Obj = clsLnTrans_inv_enc.Get_Single_By_IdInventarioEnc(Dr.Item("Código"))
+                Dim lSelectionIndex As Integer = GridView1.FocusedRowHandle
+
+                If Modo = pModo.Lista Then
+
+                    Cierra_Instancia_Previa(frmInventarioRFID)
+
+                    With frmInventarioRFID
+                        .Modo = frmInventarioRFID.TipoTrans.Editar
+                        .gBeTransInvEnc = Obj
+                        '.InvokeListarInventario = AddressOf Cargar
+                        .MdiParent = MdiParent
+                        .WindowState = FormWindowState.Maximized
+
+                        'If OpcionesMenu IsNot Nothing Then
+                        '    .OpcionesMenu = OpcionesMenu
+                        '    .mnuGuardar.Enabled = .OpcionesMenu.Modificar
+                        '    .mnuActualizar.Enabled = .OpcionesMenu.Modificar
+                        '    .mnuEliminar.Enabled = .OpcionesMenu.Eliminar
+                        'End If
+
+                        .Show()
+                        .Focus()
+                    End With
+
+                    GridView1.FocusedRowHandle = lSelectionIndex
+
+                ElseIf Modo = pModo.Seleccion Then
+                    Hide()
+                End If
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub grdInventario_DoubleClick(sender As Object, e As EventArgs) Handles grdInventario.DoubleClick
+        Try
+            Procesar_Registro()
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
 End Class

@@ -327,4 +327,40 @@ Public Class clsLnTipoInventario
 
     End Function
 
+    Public Shared Function GetSingle_By_IdTipoInventario(ByVal pIdTipoInventario As Integer,
+                                                     ByVal pConnection As SqlConnection,
+                                                     ByVal pTransaction As SqlTransaction) As clsBeTipoInventario
+
+        GetSingle_By_IdTipoInventario = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM TipoInventario " &
+                             "WHERE IdTipoInv = @IdTipoInv"
+
+            Using lCommand As New SqlCommand(sp, pConnection)
+
+                lCommand.Transaction = pTransaction
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.Add("@IdTipoInv", SqlDbType.Int).Value = pIdTipoInventario
+
+                Using da As New SqlDataAdapter(lCommand)
+
+                    Dim dt As New DataTable()
+                    da.Fill(dt)
+
+                    If dt.Rows.Count = 1 Then
+                        GetSingle_By_IdTipoInventario = New clsBeTipoInventario
+                        Cargar(GetSingle_By_IdTipoInventario, dt.Rows(0))
+                    End If
+
+                End Using
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
 End Class

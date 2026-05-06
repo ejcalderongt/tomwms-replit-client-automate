@@ -223,7 +223,14 @@ Public Class frmInventarioProductos
     End Sub
 
     Private Sub frmInventarioProductos_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Cargar()
+        Try
+
+            Cargar()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
     End Sub
 
     'Private Sub tlProductos_AfterCheckNode(sender As Object, e As NodeEventArgs)
