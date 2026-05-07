@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\192.168.126.79\WMS\</InstallUrl>
-    <UpdateUrl>\\192.168.126.79\WMS\</UpdateUrl>
+    <InstallUrl>\\10.10.1.19\WMS\</InstallUrl>
+    <UpdateUrl>\\10.10.1.19\WMS\</UpdateUrl>
     <ProductName>WMS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>114</ApplicationRevision>
+    <ApplicationRevision>123</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -1622,6 +1622,12 @@
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3878,6 +3884,9 @@
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -4651,7 +4660,6 @@
     </Content>
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
-    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4721,7 +4729,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
+    <Content Include="SAPBOSyncCumbre.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5676,6 +5684,9 @@
     <PackageReference Include="ClosedXML">
       <Version>0.102.3</Version>
     </PackageReference>
+    <PackageReference Include="DevExpress.Win.Design">
+      <Version>24.2.12</Version>
+    </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>
     </PackageReference>
@@ -5694,7 +5705,7 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>7.0.1</Version>
+      <Version>6.1.4</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>

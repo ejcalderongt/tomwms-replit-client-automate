@@ -155,7 +155,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                         BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
                         BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                        BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+                        BePedidoDetWMS.No = clsLnI_nav_ped_traslado_det.MaxID() + 1
                         BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
                         BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
                         BePedidoDetWMS.Shipment_Date = Date.Now
@@ -2475,7 +2475,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                         BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
                         BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                        BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+                        BePedidoDetWMS.No = 0 ' clsLnTrans_pe_det.MaxID() + 1
                         BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
                         BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
                         BePedidoDetWMS.Shipment_Date = Date.Now
