@@ -1507,15 +1507,21 @@
     <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
       <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
     </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb" />
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
       <DependentUpon>frmInventarioRFID.vb</DependentUpon>
     </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb" />
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
       <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
     </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb" />
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </Compile>
