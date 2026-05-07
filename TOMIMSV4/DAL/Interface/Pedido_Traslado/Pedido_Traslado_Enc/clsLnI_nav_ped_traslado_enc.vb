@@ -823,7 +823,7 @@ Public Class clsLnI_nav_ped_traslado_enc
                                 (BePedidoEnc.Bodega_Destino = "" OrElse BePedidoEnc.Cliente.Codigo = BePedidoEnc.Bodega_Destino)) _
                                 OrElse (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa AndAlso BePedidoEnc.Bodega_Destino <> "") Then
 
-                                If Nuevo_Picking(BePedidoEnc, lConnection, lTransaction) Then
+                                If Nuevo_Picking(BePedidoEnc, "Cerrado", lConnection, lTransaction) Then
 
                                     clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking creado para el documento: {0}/{1}{2}",
                                                                                      BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))

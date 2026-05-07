@@ -436,7 +436,10 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         Continue For
                     End If
 
+                    pedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(pedidoEnc.IdPedidoEnc, clsTrans.lConnection, clsTrans.lTransaction)
+
                     Dim pickingCreado As Boolean = clsLnI_nav_ped_traslado_enc.Nuevo_Picking(pedidoEnc,
+                                                                                             "Pendiente",
                                                                                              clsTrans.lConnection,
                                                                                              clsTrans.lTransaction)
 
