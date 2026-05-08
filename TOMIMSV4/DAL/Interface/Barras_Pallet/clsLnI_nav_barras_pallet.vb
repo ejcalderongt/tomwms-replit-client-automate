@@ -1068,7 +1068,9 @@ Public Class clsLnI_nav_barras_pallet
             sscc,
             gtin,
             Impreso,
-            fecha_procesado_erp 
+            fecha_procesado_erp,
+            IdOrdenCompraEnc,
+            IdOrdenCompraDet
             FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -1335,6 +1337,79 @@ Public Class clsLnI_nav_barras_pallet
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetAll_By_IdProducto_And_Barra_And_Idbodega(ByVal pIdProductoBodega As Integer, ByVal pCodigo_barra As String,
+                                                                       ByVal pIdBodega As Integer,
+                                                                       ByRef lConnection As SqlConnection,
+                                                                       ByRef lTransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
+
+
+        GetAll_By_IdProducto_And_Barra_And_Idbodega = Nothing
+
+        Try
+
+            Const sp As String = "SELECT IdPallet,
+                                    nav.Codigo,
+                                    nav.Nombre,
+                                    Camas_Por_Tarima,
+                                    Cajas_Por_Cama,
+                                    Cantidad_Presentacion,
+                                    UM_Producto,
+                                    Lote,
+                                    Fecha_Agregado,
+                                    Fecha_Ingreso,
+                                    Fecha_Vence,
+                                    Fecha_Produccion,
+                                    nav.activo,
+                                    Recibido,
+                                    IdRecepcion,
+                                    Bodega_Origen,
+                                    Bodega_Destino,
+                                    nav.codigo_barra,
+                                    Cantidad_UMP,
+                                    Lote_Numerico,
+                                    fecha_procesado_erp,
+                                    sscc,
+                                    gtin,
+                                    Impreso,
+                                    fecha_procesado_erp,
+                                    IdOrdenCompraEnc,
+                                    IdOrdenCompraDet
+                                    FROM I_nav_barras_pallet nav
+                                    inner join producto pr 
+								    on nav.codigo=pr.codigo inner join producto_bodega pb
+								    on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=@pIdProductoBodega and pb.IdBodega=@pIdBodega and nav.Codigo_barra=@pCodigo_barra) "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdBodega", pIdBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdProductoBodega", pIdProductoBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pCodigo_barra", pCodigo_barra))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count > 0 AndAlso dt IsNot Nothing Then
+
+                GetAll_By_IdProducto_And_Barra_And_Idbodega = New List(Of clsBeI_nav_barras_pallet)
+
+                For Each row As DataRow In dt.Rows
+
+                    Dim pBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+                    Cargar(pBeI_nav_barras_pallet, row)
+
+                    GetAll_By_IdProducto_And_Barra_And_Idbodega.Add(pBeI_nav_barras_pallet)
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function
