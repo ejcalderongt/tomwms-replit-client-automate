@@ -12347,11 +12347,6 @@ Public Class TOMHHWS
 
             Existe_Lp = clsLnStock_rec.Existe_Lp(pLic_Plate, pIdBodega, pIdStock)
 
-            'Si no se encontró el LP no hace sentido devolver el objeto de producto
-            'If Not pBeStockRec Is Nothing Then
-            'Return clsLnProducto.Get_Single_By_IdProductoBodega(pBeStockRec.IdProductoBodega)
-            'End If
-
         Catch ex As Exception
 
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
