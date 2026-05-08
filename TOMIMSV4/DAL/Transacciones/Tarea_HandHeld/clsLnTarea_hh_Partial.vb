@@ -1362,6 +1362,7 @@ Partial Public Class clsLnTarea_hh
                     '#GT29042025: campos para determinar el escaneo de muelle en picking
                     .IdUbicacionMuelle = IIf(IsDBNull(dr("IdUbicacionDefecto")), 0, dr("IdUbicacionDefecto"))
                     .Codigo_Barra_Muelle = IIf(IsDBNull(dr("codigo_barra_muelle")), "", dr("codigo_barra_muelle"))
+                    .Guia_Transporte = IIf(IsDBNull(dr("Guia_Transporte")), "", dr("Guia_Transporte"))
 
                 End With
 
