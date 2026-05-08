@@ -506,48 +506,6 @@ Public Class frmEjecucion
         e.Form.Icon = Me.Icon
     End Sub
 
-    Private Sub mnuEnvios_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pPedidoCliente As String = ""
-
-        Try
-
-            args.Caption = "Ingrese pedido de cliente"
-            args.Prompt = "Pedido No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            If Not tmpResult Is Nothing Then
-
-                pPedidoCliente = tmpResult.ToString
-
-                Ejecuta_interface_Pedido_Cliente(True, pPedidoCliente)
-
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
-
     Public Sub Ejecuta_interface_Devolucion_Mercancia(Optional ByVal Preguntar As Boolean = True)
 
         Dim MostrarMensaje As Boolean = False
@@ -815,42 +773,6 @@ Public Class frmEjecucion
 
     End Sub
 
-    Public Sub Ejecuta_interface_Pedido_Cliente(Optional ByVal Preguntar As Boolean = True,
-                                                Optional ByVal pPedidoCliente As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar pedido de cliente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPC As New clsSyncSAPSPedidoCliente()
-                    sPC.Ejecutar_Interfaz("Pedido_Cliente")
-                    sPC.Importar_Pedido_Cliente_SAP(lblprg, prg, True, Preguntar, pPedidoCliente)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-            End If
-        End Try
-
-    End Sub
-
     Private Sub Enviar_Documentos_Salida(Optional ByVal Preguntar As Boolean = True)
 
         Dim MostrarMensaje As Boolean = False
@@ -887,46 +809,6 @@ Public Class frmEjecucion
                 clsPublic.Actualizar_Progreso(lblprg, vMensaje)
             End If
 
-        End Try
-
-    End Sub
-
-    Private Sub mnuImportarAjustes_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
-        Ejecuta_interface_Ajustes()
-    End Sub
-
-    Public Sub Ejecuta_interface_Ajustes(Optional ByVal Preguntar As Boolean = True,
-                                         Optional ByVal pNoAjuste As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar ajustes?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPC As New clsSyncSAPAjustes()
-                    sPC.Ejecutar_Interfaz("Pedido_Cliente")
-                    sPC.Importar_Ajustes_SAP(lblprg, prg, True, Preguntar)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-            End If
         End Try
 
     End Sub

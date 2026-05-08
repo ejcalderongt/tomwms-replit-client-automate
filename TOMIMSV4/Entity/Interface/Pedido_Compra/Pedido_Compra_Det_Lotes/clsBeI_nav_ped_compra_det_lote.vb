@@ -10,6 +10,8 @@ Public Class clsBeI_nav_ped_compra_det_lote
     Public Property Source_Type() As Integer = 0
     Public Property Quantity_Base() As Double = 0.0
     Public Property Variant_Code() As String = ""
+    Public Property Pallet_Weight As Double = 0.0
+    Public Property Pallet_License_No As Double = 0.0
 
     Sub New()
     End Sub

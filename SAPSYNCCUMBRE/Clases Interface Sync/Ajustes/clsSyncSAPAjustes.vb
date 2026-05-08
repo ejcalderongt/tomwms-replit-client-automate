@@ -327,7 +327,7 @@ Public Class clsSyncSAPAjustes : Inherits clsInterfaceBase
 
                     Dim lineNo As Integer = 0
 
-                    vIdMaxDet = clsLnTrans_pe_det.MaxID() + 1
+                    vIdMaxDet = 0 'clsLnTrans_pe_det.MaxID() + 1
 
                     While Not RsDet.EoF
 
