@@ -861,11 +861,6 @@ Partial Public Class frmImportarAjusteExcel
     End Sub
 
     ''' <summary>
-    ''' Asigna una imagen del recurso My.Resources al botón del ribbon (LargeImage + Image).
-    ''' Usa reflexión para no fallar en compile-time si el recurso no existe en este branch.
-    ''' </summary>
-
-    ''' <summary>
     ''' Configura la licencia de EPPlus de manera compatible con cualquier versión instalada
     ''' (v4 no requiere licencia, v5 usa LicenseContext, v6+ usa License.SetNonCommercialPersonal).
     ''' Usa reflexión para no fallar en compile-time si la API no existe.

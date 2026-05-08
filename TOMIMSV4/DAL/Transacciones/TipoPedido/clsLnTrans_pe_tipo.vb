@@ -40,7 +40,7 @@ Public Class clsLnTrans_pe_tipo
                 .Verificar_con_imagen = IIf(IsDBNull(dr.Item("verificar_con_imagen")), False, dr.Item("verificar_con_imagen"))
                 .Genera_Guia_Remision = IIf(IsDBNull(dr.Item("genera_guia_remision")), False, dr.Item("genera_guia_remision"))
                 .Generar_Picking_Auto = IIf(IsDBNull(dr.Item("generar_picking_auto")), False, dr.Item("generar_picking_auto"))
-
+                .Asignar_Todos_Operadores = IIf(IsDBNull(dr.Item("asignar_todos_operadores")), False, dr.Item("asignar_todos_operadores"))
             End With
 
         Catch ex1 As SqlException

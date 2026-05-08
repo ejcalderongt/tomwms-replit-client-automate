@@ -402,6 +402,91 @@ Public Class frmImpresion_OC_RFID
 
 
     '#GT29042026: etiqueta de impresion ILP
+    'Private Function BuildZpl_RfidEncode_And_Print(epc96Hex As String,
+    '                                           licencia As String,
+    '                                           empresa As String,
+    '                                           bodega As String,
+    '                                           gs1 As String,
+    '                                           sscc As String,
+    '                                           lote As String,
+    '                                           fechaProd As String,
+    '                                           skuSavona As String,
+    '                                           cantidad As String,
+    '                                           descripcionProducto As String,
+    '                                           GTIN As String) As String
+    '    Try
+    '        Dim sb As New StringBuilder()
+    '        Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
+
+    '        sb.AppendLine("^XA")
+    '        sb.AppendLine("^MMT")
+    '        sb.AppendLine("^PW1035")
+    '        sb.AppendLine("^LL0600")
+    '        sb.AppendLine("^LS0")
+    '        sb.AppendLine("^CI27")
+
+    '        sb.AppendLine("^RS4")
+    '        sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
+
+    '        sb.AppendLine("^FO3,3^GB1029,594,3^FS")
+
+    '        sb.AppendLine("^FT45,55^A0N,42,38^FH^FDTOMWMS Licencia.^FS")
+    '        sb.AppendLine("^FO3,75^GB1029,4,4^FS")
+
+    '        sb.AppendLine("^FT45,110^A0N,26,24^FH^FDEmp:^FS")
+    '        sb.AppendLine("^FT100,110^A0N,26,24^FH^FD" & empresa & "^FS")
+
+    '        sb.AppendLine("^FT345,110^A0N,26,24^FH^FDBod:^FS")
+    '        sb.AppendLine("^FT400,110^A0N,26,24^FH^FD" & bodega & "^FS")
+
+    '        sb.AppendLine("^FT695,110^A0N,26,24^FH^FDGTIN^FS")
+    '        sb.AppendLine("^FT750,110^A0N,26,24^FH^FD" & GTIN & "^FS")
+
+    '        '#linea separadora
+    '        sb.AppendLine("^FO3,120^GB1029,4,4^FS")
+
+    '        sb.AppendLine("^FT50,160^A0N,26,24^FH^FDSAVONA:^FS")
+    '        sb.AppendLine("^FT220,160^A0N,26,24^FH^FD" & skuSavona & "^FS")
+
+    '        sb.AppendLine("^FT220,190^A0N,24,22^FH^FD" & descripcionProducto & "^FS")
+
+    '        sb.AppendLine("^FT50,220^A0N,26,24^FH^FDCANT:^FS")
+    '        sb.AppendLine("^FT220,220^A0N,26,24^FH^FD" & cantidad & "^FS")
+
+    '        sb.AppendLine("^FT50,250^A0N,26,24^FH^FDFECHA PROD:^FS")
+    '        sb.AppendLine("^FT220,250^A0N,26,24^FH^FD" & fechaProd & "^FS")
+
+    '        sb.AppendLine("^FT50,275^A0N,26,24^FH^FDLOTE:^FS")
+    '        sb.AppendLine("^FT220,275^A0N,26,24^FH^FD" & lote & "^FS")
+
+    '        sb.AppendLine("^BY2,2,120")
+    '        sb.AppendLine("^FT160,390^BCN,100,Y,N,N")
+    '        sb.AppendLine("^FD" & gs1 & "^FS")
+
+    '        '#linea separadora
+    '        sb.AppendLine("^FO3,420^GB1029,4,4^FS")
+
+    '        sb.AppendLine("^BY3,2,105")
+    '        sb.AppendLine("^FT160,520^BCN,90,Y,N,N")
+    '        sb.AppendLine("^FD" & sscc & "^FS")
+
+    '        sb.AppendLine("^FO3,560^GB1029,4,4^FS")
+
+    '        sb.AppendLine("^FT480,588^A0N,26,20^FH^FD" & fechaActual & "^FS")
+
+    '        sb.AppendLine("^PQ1,0,1,Y")
+    '        sb.AppendLine("^XZ")
+
+    '        Return sb.ToString()
+
+    '    Catch ex As Exception
+    '        Throw
+    '    End Try
+    'End Function
+
+
+    'version2 de impresión etiqueta ILP
+
     Private Function BuildZpl_RfidEncode_And_Print(epc96Hex As String,
                                                licencia As String,
                                                empresa As String,
@@ -429,50 +514,39 @@ Public Class frmImpresion_OC_RFID
             sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
 
             sb.AppendLine("^FO3,3^GB1029,594,3^FS")
+            sb.AppendLine("^FT40,55^A0N,25,25^FH^FDTOMWMS^FS")
 
-            sb.AppendLine("^FT45,55^A0N,42,38^FH^FDTOMWMS Licencia.^FS")
-            sb.AppendLine("^FO3,75^GB1029,4,4^FS")
+            sb.AppendLine("^FT350,55^A0N,26,24^FH^FDEmp:^FS")
+            sb.AppendLine("^FT400,55^A0N,26,24^FH^FD" & empresa & "^FS")
 
-            sb.AppendLine("^FT45,110^A0N,26,24^FH^FDEmp:^FS")
-            sb.AppendLine("^FT100,110^A0N,26,24^FH^FD" & empresa & "^FS")
+            sb.AppendLine("^FT40,245^A0N,26,24^FH^FDGTIN^FS")
+            sb.AppendLine("^FT210,245^A0N,26,24^FH^FD" & GTIN & "^FS")
 
-            sb.AppendLine("^FT345,110^A0N,26,24^FH^FDBod:^FS")
-            sb.AppendLine("^FT400,110^A0N,26,24^FH^FD" & bodega & "^FS")
+            sb.AppendLine("^FO3,70^GB1029,4,4^FS")
 
-            sb.AppendLine("^FT695,110^A0N,26,24^FH^FDGTIN^FS")
-            sb.AppendLine("^FT750,110^A0N,26,24^FH^FD" & GTIN & "^FS")
+            sb.AppendLine("^FT40,110^A0N,26,34^FH^FDSAVONA:^FS")
+            sb.AppendLine("^FT180,110^A0N,26,34^FH^FD" & skuSavona & "^FS")
 
-            '#linea separadora
-            sb.AppendLine("^FO3,120^GB1029,4,4^FS")
+            sb.AppendLine("^FT40,140^A0N,24,32^FH^FD" & descripcionProducto & "^FS")
 
-            sb.AppendLine("^FT50,160^A0N,26,24^FH^FDSAVONA:^FS")
-            sb.AppendLine("^FT220,160^A0N,26,24^FH^FD" & skuSavona & "^FS")
+            sb.AppendLine("^FT40,185^A0N,26,24^FH^FDCANT:^FS")
+            sb.AppendLine("^FT210,185^A0N,26,24^FH^FD" & cantidad & "^FS")
 
-            sb.AppendLine("^FT220,190^A0N,24,22^FH^FD" & descripcionProducto & "^FS")
+            sb.AppendLine("^FT40,215^A0N,26,24^FH^FDFECHA PROD:^FS")
+            sb.AppendLine("^FT210,215^A0N,26,24^FH^FD" & fechaProd & "^FS")
 
-            sb.AppendLine("^FT50,220^A0N,26,24^FH^FDCANT:^FS")
-            sb.AppendLine("^FT220,220^A0N,26,24^FH^FD" & cantidad & "^FS")
+            sb.AppendLine("^FT380,215^A0N,26,24^FH^FDLOTE:^FS")
+            sb.AppendLine("^FT450,215^A0N,26,24^FH^FD" & lote & "^FS")
 
-            sb.AppendLine("^FT50,250^A0N,26,24^FH^FDFECHA PROD:^FS")
-            sb.AppendLine("^FT220,250^A0N,26,24^FH^FD" & fechaProd & "^FS")
-
-            sb.AppendLine("^FT50,275^A0N,26,24^FH^FDLOTE:^FS")
-            sb.AppendLine("^FT220,275^A0N,26,24^FH^FD" & lote & "^FS")
+            sb.AppendLine("^FO3,270^GB1029,4,4^FS")
 
             sb.AppendLine("^BY2,2,120")
-            sb.AppendLine("^FT160,390^BCN,100,Y,N,N")
+            sb.AppendLine("^FT50,400^BCN,110,Y,N,N")
             sb.AppendLine("^FD" & gs1 & "^FS")
 
-            '#linea separadora
-            sb.AppendLine("^FO3,420^GB1029,4,4^FS")
-
             sb.AppendLine("^BY3,2,105")
-            sb.AppendLine("^FT160,520^BCN,90,Y,N,N")
+            sb.AppendLine("^FT50,545^BCN,110,Y,N,N")
             sb.AppendLine("^FD" & sscc & "^FS")
-
-            sb.AppendLine("^FO3,560^GB1029,4,4^FS")
-
-            sb.AppendLine("^FT480,588^A0N,26,20^FH^FD" & fechaActual & "^FS")
 
             sb.AppendLine("^PQ1,0,1,Y")
             sb.AppendLine("^XZ")

@@ -32,6 +32,7 @@ Public Class clsBeI_nav_barras_pallet
     Public Property GTIN() As String = ""
     Public Property IdOrdenCompraEnc As Integer = 0
     Public Property IdOrdenCompraDet As Integer = 0
+    Public Property Peso As Double = 0
 
     Sub New()
     End Sub
