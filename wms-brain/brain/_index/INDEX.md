@@ -976,3 +976,42 @@ defectuosa actual.
 | ID_RAIZ | Etiqueta human-readable | Estado | Archivo |
 |---|---|---|---|
 | REL-8.4.2-LACUMBRE | `RELEASE_v8.4.2_CUMBRE_dev_2028_merge` | VIGENTE | release-notes/v8.4.2-la-cumbre-2026-05-05.md |
+
+---
+
+## Actualizacion 09-may-2026 — CP-014 Killios WMS62 Maiz Galon (variante BUG-001)
+
+Caso reportado por Zulma Martinez (operativo Killios, garesa.co): stock
+WMS muestra +10 cajas vs kardex SAP en producto WMS62 (Maiz Dulce
+Miguels Galon 6/2900g). Diagnostico forense confirma match exacto sobre
+BD `TOMWMS_KILLIOS_PRD_2026` snapshot 2026-05-09 10:23 UTC.
+
+| Vista | UM | Cajas |
+|---|---:|---:|
+| Stock vivo BD bodega 1 | 2.741 | 456,83 |
+| Kardex SAP cliente | 2.681 | 446,83 |
+| Delta fantasma | +60 | **+10** |
+
+**Smoking gun**: 17/17 matriculas vivas sin movs en `trans_movimientos`
+para WMS62 bodega 1. Las matriculas en log son antiguas (FU04xxx); las
+vivas son nuevas (FU08xxx-FU09xxx, JM*, A3*) y no tienen contraparte
+contable.
+
+**Variante**: a diferencia de CP-013 (flag `dañado_picking`), aqui el
+gatillo es **TipoTarea 25/26 REEMP_BE_PICK / REEMP_ME_PICK** (HH) +
+cambio manual `IdProductoEstado: 1 → 8` (backoffice TOMIMSV4). Ambos
+con `Contabilizar=false` en `sis_tipo_tarea`.
+
+5 docs nuevos en `customer-open-cases/CP-014-killios-wms62-maiz-galon/`:
+INDEX.md, traza-001-stock-fantasma.md (27 lineas con IdStock + lic_plate
++ ubicacion para ajuste manual), INFORME-CLIENTE-KILLIOS.md (borrador
+para Zulma), INFORME-CAROLINA.md (4 hipotesis A/B/C/D, recomienda
+priorizar C=REEMP_BE_PICK), PLAYBOOK-FIX.md (hereda CP-013).
+
+Updates aplicadas a BUG-001/CASOS-RELACIONADOS.md (entrada CP-014 +
+arbol visual con 2 hijos) y BUG-001/CLIENTES-AFECTADOS.md (seccion
+Update 2026-05-09 — Variante CP-014).
+
+| ID_RAIZ | Etiqueta human-readable | Estado | Archivo |
+|---|---|---|---|
+| CP-014 | `CP_014_KILLIOS_WMS62_MAIZ_GALON_open` | OPEN | customer-open-cases/CP-014-killios-wms62-maiz-galon/INDEX.md |
