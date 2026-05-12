@@ -53,7 +53,7 @@ index 4134b04..29b3465 100644
      Friend WithEvents tabResumenAjuste As DevExpress.XtraTab.XtraTabPage
      Friend WithEvents dgridProductosConsolidados As DevExpress.XtraGrid.GridControl
 diff --git a/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb b/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb
-index 790bef1..ce6b210 100644
+index 790bef1..9deba61 100644
 --- a/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb
 +++ b/TOMIMSV4/TOMIMSV4/Transacciones/Ajustes/frmAjusteStock.vb
 @@ -1,6 +1,9 @@
@@ -66,13 +66,12 @@ index 790bef1..ce6b210 100644
  Imports DevExpress.XtraEditors
  Imports DevExpress.XtraPrinting
  Imports DevExpress.XtraReports.UI
-@@ -7406,4 +7409,286 @@ Public Class frmAjusteStock
+@@ -7406,4 +7409,283 @@ Public Class frmAjusteStock
  
  #End Region
  
-+#Region "Exportar Excel limpio (solo columnas utiles, sin formato)"
-+
-+    ' #EJCRP 2026-05-09: Export limpio de la grilla de ajuste a XLSX/CSV.
+-End Class
+\ No newline at end of file
 +    ' Construye un DataTable con solo las columnas utiles (omite imagenes,
 +    ' Ids internos y campos auxiliares) y lo exporta sin formato decorativo.
 +    ' Usa GridControl in-memory de DevExpress (mismo patron que
@@ -352,5 +351,4 @@ index 790bef1..ce6b210 100644
 +
 +#End Region
 +
- End Class
-\ No newline at end of file
++End Class
