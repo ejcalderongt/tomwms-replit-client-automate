@@ -880,9 +880,9 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                                                          lTransaction)
 
                                         Dim despachado As Boolean = clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
-                                                                                                         BePedidoEnc,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
+                                                                                                             BePedidoEnc,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
 
                                         If Not despachado Then
                                             clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} no pudo ser despachado {2}",
