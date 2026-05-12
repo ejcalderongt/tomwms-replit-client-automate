@@ -790,7 +790,6 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
-
     Public Shared Function Get_All_Pallet_Ingreso_By_Codigo_Barra_Pallet(ByVal pCodigoBarraPallet As String,
                                                                          ByVal pIdBodega As Integer,
                                                                          ByRef BeProducto As clsBeProducto) As List(Of clsBeI_nav_barras_pallet)
@@ -1335,6 +1334,54 @@ Public Class clsLnI_nav_barras_pallet
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_By_IdOrdenCompraEnc_Det(ByVal pIdOrdenCompraEnc As Integer,
+                                                           ByVal pIdOrdenCompraDet As Integer) As List(Of clsBeI_nav_barras_pallet)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeI_nav_barras_pallet)
+
+            Dim sp As String = "SELECT * FROM I_nav_barras_pallet 
+                                WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
+                                      IdOrdenCompraDet = @IdOrdenCompraDet AND 
+                                      recibido = 0 "
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+            cmd.Parameters.AddWithValue("@IdOrdenCompraDet", pIdOrdenCompraDet)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+            For Each dr As DataRow In dt.Rows
+                vBeI_nav_barras_pallet = New clsBeI_nav_barras_pallet
+                Cargar(vBeI_nav_barras_pallet, dr)
+                lReturnList.Add(vBeI_nav_barras_pallet)
+            Next
+
+            lTransaction.Commit()
+
+            Return lReturnList
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            lTransaction.Dispose()
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lConnection.Dispose()
         End Try
 
     End Function
