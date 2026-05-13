@@ -1147,13 +1147,15 @@ Partial Public Class clsLnTrans_inv_stock
                 For Each ProdInv In ProductosSeleccionados
 
                     'validar en la tabla inventario_cic_rfid que no exista previamente el producto para no duplicar el registro.
-                    Dim listaProducto = clsLnTrans_inv_ciclico_rfid.GetAll_By_IdProducto_And_RFID(ProdInv.IdProductoBodega, pIdBodega)
+                    'Dim listaProducto = clsLnTrans_inv_ciclico_rfid.GetAll_By_IdProducto_And_RFID(ProdInv.IdProductoBodega, ProdInv.Codigo_barra, pIdBodega)
+
+                    Dim listaBarrasPallet = clsLnI_nav_barras_pallet.GetAll_By_IdProducto_And_Barra_And_Idbodega(ProdInv.IdProductoBodega, ProdInv.Codigo_barra, pIdBodega, lConection, lTransaction)
 
                     cantReg = 0
 
-                    If listaProducto.Count > 0 Then
+                    If listaBarrasPallet.Count > 0 Then
 
-                        For Each pProducto In listaProducto
+                        For Each pProducto In listaBarrasPallet
 
                             gBeInventarioRFID.Idinvciclico = clsLnTrans_inv_ciclico_rfid.MaxID(lConection, lTransaction)
                             gBeInventarioRFID.Idinventarioenc = IdInventarioEnc
@@ -1170,7 +1172,7 @@ Partial Public Class clsLnTrans_inv_stock
                             gBeInventarioRFID.Fec_agr = Now
                             gBeInventarioRFID.User_mod = "1"
                             gBeInventarioRFID.Fec_mod = Now
-                            gBeInventarioRFID.IdOperador = 1
+                            gBeInventarioRFID.IdOperador = IdOperadorAsignado
                             gBeInventarioRFID.Cantidad = 1
                             gBeInventarioRFID.EsPallet = True
 
@@ -1178,18 +1180,20 @@ Partial Public Class clsLnTrans_inv_stock
 
                             Operador = New clsBeTrans_inv_operador
                             Operador.Idinvoperador = clsLnTrans_inv_operador.MaxID(lConection, lTransaction)
-                            Operador.Idinventarioenc = gBeInventarioCiclico.Idinventarioenc
+                            Operador.Idinventarioenc = IdInventarioEnc
                             Operador.Idinvencreconteo = 0
                             Operador.Idubic = 0
                             Operador.IdBodega = pIdBodega
                             Operador.Idoperador = IdOperadorAsignado
 
-                            If Not clsLnTrans_inv_operador.Existe_Operador_By_IdUbicacion(Operador,
+                            If Operador.Idoperador > 0 Then
+                                If Not clsLnTrans_inv_operador.Existe_Operador_By_IdUbicacion(Operador,
                                                                                          lConection,
                                                                                          lTransaction) Then
-                                clsLnTrans_inv_operador.Insertar(Operador,
-                                                                 lConection,
-                                                                 lTransaction)
+                                    clsLnTrans_inv_operador.Insertar(Operador,
+                                                                     lConection,
+                                                                     lTransaction)
+                                End If
                             End If
 
                             cantReg += 1

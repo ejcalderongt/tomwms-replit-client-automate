@@ -70,8 +70,7 @@ public class clsLnI_nav_ped_compra_det_lote
             Ins.Add("source_type", "@source_type", "F");
             Ins.Add("quantity_base", "@quantity_base", "F");
             Ins.Add("variant_code", "@variant_code", "F");
-            Ins.Add("fec_agr", "@fec_agr", "F");
-            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");            
             Ins.Add("Pallet_Weight", "@Pallet_Weight", "F");
             Ins.Add("Pallet_License_No", "@Pallet_License_No", "F");
 
@@ -230,8 +229,7 @@ public class clsLnI_nav_ped_compra_det_lote
             Upd.Add("quantity_base", "@quantity_base", "F");
             Upd.Add("variant_code", "@variant_code", "F");
             Upd.Add("fec_agr", "@fec_agr", "F");
-            Upd.Add("Pallet_Weight", "@Pallet_Weight", "F");
-            Upd.Add("Pallet_Weight", "@Pallet_Weight", "F");
+            Upd.Add("Pallet_Weight", "@Pallet_Weight", "F");            
             Upd.Add("Pallet_License_No", "@Pallet_License_No", "F");
             Upd.Where("NoEnc = @NoEnc" +
                 " AND Source_Prod_Order_Line = @Source_Prod_Order_Line " +
