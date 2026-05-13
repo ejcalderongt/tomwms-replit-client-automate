@@ -1,0 +1,2 @@
+401ab6b1b2dc12e84cd3ebd9a80f1ddf16e4a014dc4c1bb4bc7fc1d2c999c93e  full-files/frmAjusteStock.vb
+b877a98a24adffa49d5f24c09aa96b7afb87ff840fc4dc6919a4a5fd7edb63b9  base/frmAjusteStock_base_5c81c536.vb
