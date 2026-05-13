@@ -176,6 +176,8 @@
     <Compile Include="Ajuste de inventario\clsSyncAjusteInventario.vb" />
     <Compile Include="Clases Interface Sync\Auto_Config\clsSAP_Config.vb" />
     <Compile Include="Clases Interface Sync\Clientes\clsSyncSAPClientes.vb" />
+    <Compile Include="Clases\clsBeInfoBodegaByIdPedidoEnc.vb" />
+    <Compile Include="Clases\clsBeI_nav_transacciones_out_agrupado.vb" />
     <Compile Include="Clases\clsSAPTransaction.vb" />
     <Compile Include="Clases Interface Sync\Devolucion_Proveedor\clsSyncSapDevolucionProveedor.vb" />
     <Compile Include="Clases Interface Sync\Pedido_Cliente\clsSyncSAPSPedidoCliente.vb" />
@@ -383,7 +385,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>
