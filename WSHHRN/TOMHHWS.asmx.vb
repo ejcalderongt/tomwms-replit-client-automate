@@ -19415,4 +19415,42 @@ Public Class TOMHHWS
 
     End Function
 
+    '#GT11052026: guardar lecturas toma inventario ciclico RFID
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Guardar_Lectura_InventarioCiclico_RFID(ByVal pListaLecturas As List(Of clsBeTrans_inv_ciclico_rfid)) As Boolean
+        Guardar_Lectura_InventarioCiclico_RFID = False
+        Try
+
+            Guardar_Lectura_InventarioCiclico_RFID = clsLnTrans_inv_ciclico_rfid.Actualizar_DetalleCiclico_Con_Lectura_RFID(pListaLecturas)
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+        End Try
+    End Function
+
 End Class

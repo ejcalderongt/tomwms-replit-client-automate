@@ -558,4 +558,156 @@ Public Class clsLnTrans_inv_ciclico_rfid
 
 	End Function
 
+	Public Shared Function Actualizar_DetalleCiclico_Con_Lectura_RFID(ByVal pListaCiclicoRFID As List(Of clsBeTrans_inv_ciclico_rfid)) As Boolean
+
+		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+		Actualizar_DetalleCiclico_Con_Lectura_RFID = False
+
+		Try
+			lConnection.Open()
+			lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+
+			If pListaCiclicoRFID IsNot Nothing AndAlso pListaCiclicoRFID.Count > 0 Then
+
+				For Each Registro As clsBeTrans_inv_ciclico_rfid In pListaCiclicoRFID
+
+					If Registro_sin_conteo(Registro, lConnection, lTransaction) Then
+						Actualizar_Registro(Registro)
+					End If
+				Next
+
+				Actualizar_DetalleCiclico_Con_Lectura_RFID = True
+
+			End If
+
+			lTransaction.Commit()
+
+		Catch ex As Exception
+			If lTransaction IsNot Nothing Then
+				Try
+					lTransaction.Rollback()
+				Catch
+				End Try
+			End If
+
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If lTransaction IsNot Nothing Then lTransaction.Dispose()
+			If lConnection IsNot Nothing Then lConnection.Dispose()
+		End Try
+
+	End Function
+
+	Public Shared Function Registro_sin_conteo(ByVal pRegistro As clsBeTrans_inv_ciclico_rfid,
+											   ByRef lConnection As SqlConnection,
+											   ByRef lTransaction As SqlTransaction) As Boolean
+
+		Registro_sin_conteo = False
+
+		Try
+
+			Dim vSQL As String = "SELECT TOP 1 SSCC FROM trans_inv_ciclico_rfid
+								        WHERE (idinventarioenc=@idinventarioenc and SSCC=@sscc)"
+
+
+			Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+				lDTA.SelectCommand.CommandType = CommandType.Text
+				lDTA.SelectCommand.Transaction = lTransaction
+				lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pRegistro.Idinventarioenc)
+				lDTA.SelectCommand.Parameters.AddWithValue("@sscc", pRegistro.SSCC)
+
+				Dim lDT As New DataTable
+				lDTA.Fill(lDT)
+
+				If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+					Registro_sin_conteo = True
+				End If
+
+			End Using
+
+
+		Catch ex As Exception
+			Throw ex
+		End Try
+
+	End Function
+
+
+	Public Shared Function Actualizar_Registro(ByRef oBeTrans_inv_ciclico_rfid As clsBeTrans_inv_ciclico_rfid,
+											   Optional ByVal pConection As SqlConnection = Nothing,
+											   Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			Upd.Init("trans_inv_ciclico_rfid")
+			Upd.Add("idinvciclico", "@idinvciclico", DataType.Parametro)
+			Upd.Add("idinventarioenc", "@idinventarioenc", DataType.Parametro)
+
+			Upd.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
+			Upd.Add("sscc", "@sscc", DataType.Parametro)
+			Upd.Add("gtin", "@gtin", DataType.Parametro)
+
+			Upd.Add("user_agr", "@user_agr", DataType.Parametro)
+			Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Upd.Add("user_mod", "@user_mod", DataType.Parametro)
+			Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
+			Upd.Add("idoperador", "@idoperador", DataType.Parametro)
+			Upd.Add("cantidad", "@cantidad", DataType.Parametro)
+
+			Upd.Where("idinvciclico = @idinvciclico")
+
+			Dim sp As String = Upd.SQL()
+
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection, pTransaction)
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
+
+			cmd.Parameters.Add(New SqlParameter("@IDINVCICLICO", oBeTrans_inv_ciclico_rfid.Idinvciclico))
+			cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_ciclico_rfid.Idinventarioenc))
+
+			cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeTrans_inv_ciclico_rfid.Codigo_Barra))
+			cmd.Parameters.Add(New SqlParameter("@SSCC", oBeTrans_inv_ciclico_rfid.SSCC))
+			cmd.Parameters.Add(New SqlParameter("@GTIN", oBeTrans_inv_ciclico_rfid.GTIN))
+
+			cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeTrans_inv_ciclico_rfid.User_agr))
+			cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeTrans_inv_ciclico_rfid.Fec_agr))
+			cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeTrans_inv_ciclico_rfid.User_mod))
+			cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico_rfid.Fec_mod))
+			cmd.Parameters.Add(New SqlParameter("@IDOPERADOR", oBeTrans_inv_ciclico_rfid.IdOperador))
+			cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_ciclico_rfid.Cantidad))
+
+
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+			cmd.Dispose()
+
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+			Return rowsAffected
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
+
 End Class

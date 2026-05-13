@@ -1551,6 +1551,18 @@
     <Compile Include="Transacciones\Pedidos_MI3\frmPedidosInterface.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido.Designer.vb">
+      <DependentUpon>frmPedido.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido_List.Designer.vb">
+      <DependentUpon>frmPedido_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.Designer.vb">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </Compile>
@@ -3099,18 +3111,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Pedido\clsBePedidoDetalleGrid.vb" />
-    <Compile Include="Transacciones\Pedido\frmPedido.Designer.vb">
-      <DependentUpon>frmPedido.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido_List.Designer.vb">
-      <DependentUpon>frmPedido_List.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido_List.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Pedido\frmProductoPed_List.Designer.vb">
       <DependentUpon>frmProductoPed_List.vb</DependentUpon>
     </Compile>
@@ -3846,6 +3846,13 @@
     <EmbeddedResource Include="Transacciones\Pedidos_MI3\frmPedidosInterface.resx">
       <DependentUpon>frmPedidosInterface.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Pedido\frmPedido.resx">
+      <DependentUpon>frmPedido.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Pedido\frmPedido_List.resx">
+      <DependentUpon>frmPedido_List.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </EmbeddedResource>
@@ -4522,13 +4529,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Orden_Compra_Tipo_Transaccion\frmTipoTransaccion_List.resx">
       <DependentUpon>frmTipoTransaccion_List.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Pedido\frmPedido.resx">
-      <DependentUpon>frmPedido.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Pedido\frmPedido_List.resx">
-      <DependentUpon>frmPedido_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmProductoPed_List.resx">
       <DependentUpon>frmProductoPed_List.vb</DependentUpon>
