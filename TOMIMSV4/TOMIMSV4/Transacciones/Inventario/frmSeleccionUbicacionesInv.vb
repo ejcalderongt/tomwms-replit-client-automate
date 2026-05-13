@@ -832,6 +832,8 @@ Public Class frmSeleccionUbicacionesInv
                                             InvCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                                             InvCiclico.lic_plate = StockCongelado.Lic_plate
                                             InvCiclico.IdBodega = StockCongelado.IdBodega
+                                            InvCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
+                                            InvCiclico.IdProductoTallaColor_nuevo = StockCongelado.IdProductoTallaColor
 
                                             clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
 
