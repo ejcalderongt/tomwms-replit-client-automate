@@ -25,6 +25,10 @@ Public Class clsLnTrans_inv_ciclico_rfid
 				.IdOperador = IIf(IsDBNull(dr.Item("IdOperador")), 0, dr.Item("IdOperador"))
 				.Cantidad = IIf(IsDBNull(dr.Item("cantidad")), 0, dr.Item("cantidad"))
 				.EsPallet = IIf(IsDBNull(dr.Item("EsPallet")), False, dr.Item("EsPallet"))
+				.EsReconteo = IIf(IsDBNull(dr.Item("EsReconteo")), False, dr.Item("EsReconteo"))
+				.Cantidad_reconteo = IIf(IsDBNull(dr.Item("cantidad_reconteo")), 0, dr.Item("cantidad_reconteo"))
+				.Iddispositivo = IIf(IsDBNull(dr.Item("Iddispositivo")), "", dr.Item("Iddispositivo"))
+
 			End With
 		Catch ex As Exception
 			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
@@ -39,34 +43,34 @@ Public Class clsLnTrans_inv_ciclico_rfid
 		Try
 
 			Ins.Init("trans_inv_ciclico_rfid")
-			Ins.Add("idinvciclico","@idinvciclico","F")
-			Ins.Add("idinventarioenc","@idinventarioenc","F")
-			Ins.Add("idpallet","@idpallet","F")
-			Ins.Add("codigo","@codigo","F")
-			Ins.Add("nombre","@nombre","F")
-			Ins.Add("lote","@lote","F")
-			Ins.Add("codigo_barra","@codigo_barra","F")
-			Ins.Add("sscc","@sscc","F")
-			Ins.Add("gtin","@gtin","F")
-			Ins.Add("fecha_produccion","@fecha_produccion","F")
-			Ins.Add("idproductobodega","@idproductobodega","F")
-			Ins.Add("user_agr","@user_agr","F")
-			Ins.Add("fec_agr","@fec_agr","F")
-			Ins.Add("user_mod","@user_mod","F")
-			Ins.Add("fec_mod","@fec_mod","F")
-			Ins.Add("idoperador","@idoperador","F")
-			Ins.Add("cantidad","@cantidad","F")
-			Ins.Add("espallet","@espallet","F")
+			Ins.Add("idinvciclico", "@idinvciclico", DataType.Parametro)
+			Ins.Add("idinventarioenc", "@idinventarioenc", DataType.Parametro)
+			Ins.Add("idpallet", "@idpallet", DataType.Parametro)
+			Ins.Add("codigo", "@codigo", DataType.Parametro)
+			Ins.Add("nombre", "@nombre", DataType.Parametro)
+			Ins.Add("lote", "@lote", DataType.Parametro)
+			Ins.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
+			Ins.Add("sscc", "@sscc", DataType.Parametro)
+			Ins.Add("gtin", "@gtin", DataType.Parametro)
+			Ins.Add("fecha_produccion", "@fecha_produccion", DataType.Parametro)
+			Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+			Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+			Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Ins.Add("user_mod", "@user_mod", DataType.Parametro)
+			Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
+			Ins.Add("idoperador", "@idoperador", DataType.Parametro)
+			Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+			Ins.Add("espallet", "@espallet", DataType.Parametro)
 
 			Dim sp As String = Ins.SQL()
-			Dim cmd As New SqlCommand With {.CommandType=CommandType.Text}
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
 			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-			If Es_Transaccion_Remota Then 
+			If Es_Transaccion_Remota Then
 				cmd = New SqlCommand(sp, pConection, pTransaction)
 			Else
-				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 				cmd = New SqlCommand(sp, lConnection, lTransaction)
 			End If
 
@@ -91,7 +95,7 @@ Public Class clsLnTrans_inv_ciclico_rfid
 
 			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-			cmd.Dispose
+			cmd.Dispose()
 
 			If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
@@ -99,16 +103,16 @@ Public Class clsLnTrans_inv_ciclico_rfid
 
 		Catch ex As Exception
 			If Not lTransaction Is Nothing Then lTransaction.Rollback()
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		Finally
-			If lConnection.State =ConnectionState.Open Then lConnection.Close
-			If Not lConnection is Nothing Then lConnection.Dispose()
-			If Not lTransaction is Nothing Then lTransaction.Dispose()
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function
 
-	Public Shared Function Actualizar(ByRef oBeTrans_inv_ciclico_rfid As clsBeTrans_inv_ciclico_rfid, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+	Public Shared Function Actualizar(ByRef oBeTrans_inv_ciclico_rfid As clsBeTrans_inv_ciclico_rfid, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
@@ -116,24 +120,24 @@ Public Class clsLnTrans_inv_ciclico_rfid
 		Try
 
 			Upd.Init("trans_inv_ciclico_rfid")
-			Upd.Add("idinvciclico","@idinvciclico","F")
-			Upd.Add("idinventarioenc","@idinventarioenc","F")
-			Upd.Add("idpallet","@idpallet","F")
-			Upd.Add("codigo","@codigo","F")
-			Upd.Add("nombre","@nombre","F")
-			Upd.Add("lote","@lote","F")
-			Upd.Add("codigo_barra","@codigo_barra","F")
-			Upd.Add("sscc","@sscc","F")
-			Upd.Add("gtin","@gtin","F")
-			Upd.Add("fecha_produccion","@fecha_produccion","F")
-			Upd.Add("idproductobodega","@idproductobodega","F")
-			Upd.Add("user_agr","@user_agr","F")
-			Upd.Add("fec_agr","@fec_agr","F")
-			Upd.Add("user_mod","@user_mod","F")
-			Upd.Add("fec_mod","@fec_mod","F")
-			Upd.Add("idoperador","@idoperador","F")
-			Upd.Add("cantidad","@cantidad","F")
-			Upd.Add("espallet","@espallet","F")
+			Upd.Add("idinvciclico", "@idinvciclico", DataType.Parametro)
+			Upd.Add("idinventarioenc", "@idinventarioenc", DataType.Parametro)
+			Upd.Add("idpallet", "@idpallet", DataType.Parametro)
+			Upd.Add("codigo", "@codigo", DataType.Parametro)
+			Upd.Add("nombre", "@nombre", DataType.Parametro)
+			Upd.Add("lote", "@lote", DataType.Parametro)
+			Upd.Add("codigo_barra", "@codigo_barra", DataType.Parametro)
+			Upd.Add("sscc", "@sscc", DataType.Parametro)
+			Upd.Add("gtin", "@gtin", DataType.Parametro)
+			Upd.Add("fecha_produccion", "@fecha_produccion", DataType.Parametro)
+			Upd.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+			Upd.Add("user_agr", "@user_agr", DataType.Parametro)
+			Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Upd.Add("user_mod", "@user_mod", DataType.Parametro)
+			Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
+			Upd.Add("idoperador", "@idoperador", DataType.Parametro)
+			Upd.Add("cantidad", "@cantidad", DataType.Parametro)
+			Upd.Add("espallet", "@espallet", DataType.Parametro)
 			Upd.Where("idinvciclico = @idinvciclico")
 
 			Dim sp As String = Upd.SQL()
@@ -414,58 +418,142 @@ Public Class clsLnTrans_inv_ciclico_rfid
 
 	End Function
 
+	Public Shared Function Get_All_BeTransInvCiclico_By_IdInventarioEnc_RFID(ByVal pIdInventarioEnc As Integer, ByVal IdBodega As Integer) As List(Of clsBeTrans_inv_ciclico_rfid)
 
-	Public Shared Function GetAll_By_IdProducto_And_RFID(ByVal pIdProductoBodega As Integer,
-															ByVal pIdBodega As Integer) As List(Of clsBeTrans_inv_ciclico_rfid)
-
-
-		GetAll_By_IdProducto_And_RFID = Nothing
-
-		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-		Dim lTransaction As SqlTransaction = Nothing
+		Get_All_BeTransInvCiclico_By_IdInventarioEnc_RFID = Nothing
 
 		Try
 
-			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
-			Const sp As String = "SELECT ciclcio.* FROM trans_inv_ciclico_rfid ciclcio 
-								   inner join producto pr 
-								   on nav.codigo=pr.codigo inner join producto_bodega pb
-								   on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=pIdProductoBodega and pb.IdBodega=@pIdBodega) "
+			Dim vSQL As String = "SELECT dbo.bodega_ubicacion.IdUbicacion, dbo.bodega_ubicacion.descripcion AS Ubicacion, dbo.bodega_tramo.descripcion AS Tramo, dbo.Nombre_Completo_Ubicacion(dbo.bodega_ubicacion.IdUbicacion, 
+                                         dbo.bodega_ubicacion.IdBodega) AS Nombre_Completo, dbo.trans_inv_ciclico.IdStock, dbo.producto.codigo AS Codigo, dbo.producto.nombre AS Producto, ISNULL(dbo.producto_presentacion.nombre, '') AS Presentacion, 
+                                         dbo.trans_inv_ciclico.lote, dbo.trans_inv_ciclico.lote_stock, dbo.producto_estado.nombre AS Estado, dbo.trans_inv_ciclico.cantidad AS Cantidad_Ciclico, dbo.trans_inv_ciclico.peso AS Peso_Ciclico, dbo.producto.IdPropietario, 
+                                         dbo.producto.IdClasificacion, dbo.producto.IdFamilia, dbo.producto_estado.IdEstado, dbo.trans_inv_ciclico.EsNuevo, dbo.bodega_tramo.IdTramo, dbo.trans_inv_ciclico.fecha_vence, dbo.trans_inv_ciclico.idinventarioenc, 
+                                         dbo.operador.IdOperador, dbo.operador.nombres, dbo.trans_inv_ciclico.idinvciclico, dbo.trans_inv_ciclico.IdProductoBodega, dbo.trans_inv_ciclico.user_agr, dbo.trans_inv_ciclico.EsPallet, dbo.trans_inv_ciclico.lic_plate, 
+                                         dbo.trans_inv_ciclico.IdPresentacion, dbo.trans_inv_ciclico.fecha_vence_stock, dbo.trans_inv_ciclico.peso_stock AS Peso_Stock, dbo.trans_inv_ciclico.fec_agr, dbo.trans_inv_ciclico.cant_stock AS Cantidad_Stock, 
+                                         dbo.trans_inv_ciclico.peso_reconteo, dbo.producto_tipo.NombreTipoProducto, dbo.producto.IdProducto, ISNULL(dbo.producto_presentacion.factor, 1) AS Factor, 
+                                         CASE WHEN trans_inv_ciclico.IdPresentacion > 0 THEN trans_inv_ciclico.Cantidad * producto_presentacion.Factor ELSE trans_inv_ciclico.Cantidad END AS Expr1, 
+                                         CASE WHEN trans_inv_ciclico.IdPresentacion > 0 THEN trans_inv_ciclico.cant_stock * producto_presentacion.Factor ELSE trans_inv_ciclico.cant_stock END AS Expr2,
+                                         dbo.Nombre_Completo_Ubicacion( dbo.bodega_ubicacion.IdUbicacion,  dbo.bodega_ubicacion.IdBodega) as Ubicacion,
+                                         trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence
+                                  FROM dbo.trans_inv_ciclico INNER JOIN
+                                         dbo.producto_bodega ON dbo.trans_inv_ciclico.IdProductoBodega = dbo.producto_bodega.IdProductoBodega INNER JOIN
+                                         dbo.producto ON dbo.producto_bodega.IdProducto = dbo.producto.IdProducto INNER JOIN
+                                         dbo.bodega ON dbo.producto_bodega.IdBodega = dbo.bodega.IdBodega LEFT OUTER JOIN
+                                         dbo.bodega_tramo INNER JOIN
+                                         dbo.bodega_ubicacion ON dbo.bodega_tramo.IdTramo = dbo.bodega_ubicacion.IdTramo AND dbo.bodega_tramo.IdBodega = dbo.bodega_ubicacion.IdBodega AND dbo.bodega_tramo.IdArea = dbo.bodega_ubicacion.IdArea AND 
+                                         dbo.bodega_tramo.IdSector = dbo.bodega_ubicacion.IdSector ON dbo.bodega.IdBodega = dbo.bodega_tramo.IdBodega AND dbo.trans_inv_ciclico.IdUbicacion = dbo.bodega_ubicacion.IdUbicacion LEFT OUTER JOIN
+                                         dbo.producto_tipo ON dbo.producto.IdTipoProducto = dbo.producto_tipo.IdTipoProducto LEFT OUTER JOIN
+                                         dbo.operador ON dbo.trans_inv_ciclico.idoperador = dbo.operador.IdOperador LEFT OUTER JOIN
+                                         dbo.producto_estado ON dbo.trans_inv_ciclico.IdProductoEstado = dbo.producto_estado.IdEstado LEFT OUTER JOIN
+                                         dbo.producto_presentacion ON dbo.trans_inv_ciclico.IdPresentacion = dbo.producto_presentacion.IdPresentacion
+                                  WHERE (dbo.trans_inv_ciclico.idinventarioenc = @idinventario AND trans_inv_ciclico.IdBodega = @IdBodega)
+                                  GROUP BY dbo.bodega_ubicacion.IdUbicacion, dbo.bodega_ubicacion.descripcion, dbo.bodega_tramo.descripcion, dbo.trans_inv_ciclico.IdStock, dbo.producto.codigo, dbo.producto.nombre, dbo.producto_presentacion.nombre, 
+                                         dbo.trans_inv_ciclico.lote, dbo.producto_estado.nombre, dbo.trans_inv_ciclico.cantidad, dbo.trans_inv_ciclico.peso, dbo.producto.IdPropietario, dbo.producto.IdClasificacion, dbo.producto.IdFamilia, 
+                                         dbo.producto_estado.IdEstado, dbo.trans_inv_ciclico.EsNuevo, dbo.bodega_tramo.IdTramo, dbo.trans_inv_ciclico.fecha_vence, dbo.trans_inv_ciclico.idinventarioenc, dbo.operador.IdOperador, dbo.operador.nombres, 
+                                         dbo.trans_inv_ciclico.idinvciclico, dbo.trans_inv_ciclico.IdProductoBodega, dbo.trans_inv_ciclico.user_agr, dbo.trans_inv_ciclico.EsPallet, dbo.trans_inv_ciclico.lic_plate, dbo.trans_inv_ciclico.lote_stock, 
+                                         dbo.trans_inv_ciclico.IdPresentacion, dbo.trans_inv_ciclico.fecha_vence_stock, dbo.trans_inv_ciclico.peso_stock, dbo.trans_inv_ciclico.fec_agr, dbo.trans_inv_ciclico.cant_stock, dbo.trans_inv_ciclico.peso_reconteo, 
+                                         dbo.bodega_tramo.es_rack, dbo.bodega_ubicacion.indice_x, dbo.bodega_ubicacion.nivel, dbo.bodega_ubicacion.orientacion_pos, dbo.producto_tipo.NombreTipoProducto, dbo.producto.IdProducto, 
+                                         dbo.producto_presentacion.factor, dbo.bodega_ubicacion.IdBodega, trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence
+                                  ORDER BY Tramo, dbo.bodega_ubicacion.indice_x, dbo.bodega_ubicacion.nivel, dbo.bodega_ubicacion.orientacion_pos"
 
-			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-			Dim dad As New SqlDataAdapter(cmd)
-			dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdBodega", pIdBodega))
-			dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdProductoBodega", pIdProductoBodega))
 
-			Dim dt As New DataTable
-			dad.Fill(dt)
+			Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-			If dt.Rows.Count > 0 AndAlso dt IsNot Nothing Then
+				lConnection.Open()
 
-				GetAll_By_IdProducto_And_RFID = New List(Of clsBeTrans_inv_ciclico_rfid)
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-				For Each row As DataRow In dt.Rows
+					Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
-					Dim pBeI_nav_barras_pallet As New clsBeTrans_inv_ciclico_rfid
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						lDTA.SelectCommand.Parameters.AddWithValue("@idinventario", pIdInventarioEnc)
+						lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
 
-					Cargar(pBeI_nav_barras_pallet, row)
+						Dim lDataTable As New DataTable
+						lDTA.Fill(lDataTable)
 
-					GetAll_By_IdProducto_And_RFID.Add(pBeI_nav_barras_pallet)
+						Dim BeTransInvCiclico As New clsBeTrans_inv_ciclico_rfid
 
-				Next
+						For Each lRow As DataRow In lDataTable.Rows
 
-			End If
+							BeTransInvCiclico = New clsBeTrans_inv_ciclico_rfid
+
+							BeTransInvCiclico.IdInvCiclico = lRow("Idinvciclico")
 
 
-			lTransaction.Commit()
+
+							If lRow("EsPallet") IsNot DBNull.Value AndAlso lRow("EsPallet") IsNot Nothing Then
+								BeTransInvCiclico.EsPallet = CType(lRow("EsPallet"), Boolean)
+							End If
+
+							If lRow("user_agr") IsNot DBNull.Value AndAlso lRow("user_agr") IsNot Nothing Then
+								BeTransInvCiclico.User_agr = CType(lRow("user_agr"), String)
+							End If
+
+							If lRow("idinvciclico") IsNot DBNull.Value AndAlso lRow("idinvciclico") IsNot Nothing Then
+								BeTransInvCiclico.IdInvCiclico = CType(lRow("idinvciclico"), Integer)
+							End If
+
+							If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+								BeTransInvCiclico.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+							End If
+
+							If lRow("idinventarioenc") IsNot DBNull.Value AndAlso lRow("idinventarioenc") IsNot Nothing Then
+								BeTransInvCiclico.Idinventarioenc = CType(lRow("idinventarioenc"), Integer)
+							End If
+
+							If lRow("IdOperador") IsNot DBNull.Value AndAlso lRow("IdOperador") IsNot Nothing Then
+								BeTransInvCiclico.Idoperador = CType(lRow("IdOperador"), Integer)
+							End If
+
+							'If lRow("nombres") IsNot DBNull.Value AndAlso lRow("nombres") IsNot Nothing Then
+							'	BeTransInvCiclico.Operador = CType(lRow("nombres"), String)
+							'End If
+
+							If lRow("Codigo") IsNot DBNull.Value AndAlso lRow("Codigo") IsNot Nothing Then
+								BeTransInvCiclico.Codigo = CType(lRow("Codigo"), String)
+							End If
+
+
+
+							If lRow("Lote") IsNot DBNull.Value AndAlso lRow("Lote") IsNot Nothing Then
+								BeTransInvCiclico.Lote = CType(lRow("Lote"), String)
+							End If
+
+
+							If lRow("Cantidad") IsNot DBNull.Value AndAlso lRow("Cantidad") IsNot Nothing Then
+								BeTransInvCiclico.Cantidad = CType(lRow("Cantidad"), Double)
+							End If
+
+
+							'If lRow("IdPropietario") IsNot DBNull.Value AndAlso lRow("IdPropietario") IsNot Nothing Then
+							'	BeTransInvCiclico.Idp = CType(lRow("IdPropietario"), Integer)
+							'End If
+
+
+							If lRow("fec_agr") IsNot DBNull.Value AndAlso lRow("fec_agr") IsNot Nothing Then
+								BeTransInvCiclico.Fec_agr = CType(lRow("fec_agr"), Date)
+							End If
+
+							Get_All_BeTransInvCiclico_By_IdInventarioEnc_RFID.Add(BeTransInvCiclico)
+
+						Next
+
+
+					End Using
+
+					lTransaction.Commit()
+
+				End Using
+
+				lConnection.Close()
+
+			End Using
 
 		Catch ex As Exception
-			If lTransaction IsNot Nothing Then lTransaction.Rollback()
 			Throw ex
-		Finally
-			If lConnection.State = ConnectionState.Open Then lConnection.Close()
-			If lTransaction IsNot Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function
