@@ -12,7 +12,7 @@ Partial Public Class clsLnTrans_oc_det
             lConnection.Open()
 
             Using cmd As New SqlCommand("
-                SELECT ISNULL(SUM(ISNULL(Peso_Neto,0)),0)
+                SELECT ISNULL(SUM(ISNULL(Peso_Licencia,0)),0)
                 FROM trans_oc_det_lote
                 WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
                   AND IdOrdenCompraDet = @IdOrdenCompraDet", lConnection)

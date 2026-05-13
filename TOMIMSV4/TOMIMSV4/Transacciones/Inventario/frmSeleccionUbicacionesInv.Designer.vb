@@ -33,21 +33,24 @@ Partial Class frmSeleccionUbicacionesInv
         Me.Cliente_direccionTableAdapter1 = New cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
         Me.xtrBodegaSelUbic = New DevExpress.XtraTab.XtraTabControl()
         Me.TodasUbicaciones = New DevExpress.XtraTab.XtraTabPage()
-        Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
-        Me.txtFiltroUbic = New DevExpress.XtraEditors.TextEdit()
-        Me.btnFiltLimpia = New DevExpress.XtraEditors.SimpleButton()
-        Me.tlUbicacionesTodas = New DevExpress.XtraTreeList.TreeList()
         Me.pgrUbic = New DevExpress.XtraEditors.ProgressBarControl()
-        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).BeginInit
-        CType(Me.xtrBodegaSelUbic,System.ComponentModel.ISupportInitialize).BeginInit
-        Me.xtrBodegaSelUbic.SuspendLayout
-        Me.TodasUbicaciones.SuspendLayout
-        CType(Me.GroupControl1,System.ComponentModel.ISupportInitialize).BeginInit
-        Me.GroupControl1.SuspendLayout
-        CType(Me.txtFiltroUbic.Properties,System.ComponentModel.ISupportInitialize).BeginInit
-        CType(Me.tlUbicacionesTodas,System.ComponentModel.ISupportInitialize).BeginInit
-        CType(Me.pgrUbic.Properties,System.ComponentModel.ISupportInitialize).BeginInit
-        Me.SuspendLayout
+        Me.tlUbicacionesTodas = New DevExpress.XtraTreeList.TreeList()
+        Me.btnFiltLimpia = New DevExpress.XtraEditors.SimpleButton()
+        Me.txtFiltroUbic = New DevExpress.XtraEditors.TextEdit()
+        Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.xtrBodegaSelUbic, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.xtrBodegaSelUbic.SuspendLayout()
+        Me.TodasUbicaciones.SuspendLayout()
+        CType(Me.pgrUbic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tlUbicacionesTodas, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtFiltroUbic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl1.SuspendLayout()
+        CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl2.SuspendLayout()
+        Me.SuspendLayout()
         '
         'RibbonControl
         '
@@ -138,24 +141,52 @@ Partial Class frmSeleccionUbicacionesInv
         '
         'TodasUbicaciones
         '
+        Me.TodasUbicaciones.Controls.Add(Me.GroupControl2)
         Me.TodasUbicaciones.Controls.Add(Me.GroupControl1)
         Me.TodasUbicaciones.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.TodasUbicaciones.Name = "TodasUbicaciones"
         Me.TodasUbicaciones.Size = New System.Drawing.Size(1072, 537)
         Me.TodasUbicaciones.Text = "Todas las ubicaciones"
         '
-        'GroupControl1
+        'pgrUbic
         '
-        Me.GroupControl1.Controls.Add(Me.txtFiltroUbic)
-        Me.GroupControl1.Controls.Add(Me.btnFiltLimpia)
-        Me.GroupControl1.Controls.Add(Me.tlUbicacionesTodas)
-        Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
-        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1072, 537)
-        Me.GroupControl1.TabIndex = 0
-        Me.GroupControl1.Text = "Bodega -> Area -> Sector -> Tramo -> Ubicación"
+        Me.pgrUbic.Location = New System.Drawing.Point(615, 100)
+        Me.pgrUbic.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.pgrUbic.MenuManager = Me.RibbonControl
+        Me.pgrUbic.Name = "pgrUbic"
+        Me.pgrUbic.Properties.ShowTitle = True
+        Me.pgrUbic.Size = New System.Drawing.Size(405, 20)
+        Me.pgrUbic.TabIndex = 0
+        Me.pgrUbic.Visible = False
+        '
+        'tlUbicacionesTodas
+        '
+        Me.tlUbicacionesTodas.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlUbicacionesTodas.Location = New System.Drawing.Point(0, 0)
+        Me.tlUbicacionesTodas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.tlUbicacionesTodas.MinWidth = 23
+        Me.tlUbicacionesTodas.Name = "tlUbicacionesTodas"
+        Me.tlUbicacionesTodas.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
+        Me.tlUbicacionesTodas.OptionsBehavior.Editable = False
+        Me.tlUbicacionesTodas.OptionsBehavior.ReadOnly = True
+        Me.tlUbicacionesTodas.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.tlUbicacionesTodas.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check
+        Me.tlUbicacionesTodas.OptionsView.ShowAutoFilterRow = True
+        Me.tlUbicacionesTodas.OptionsView.ShowFilterPanelMode = DevExpress.XtraTreeList.ShowFilterPanelMode.ShowAlways
+        Me.tlUbicacionesTodas.Size = New System.Drawing.Size(1072, 466)
+        Me.tlUbicacionesTodas.TabIndex = 2
+        Me.tlUbicacionesTodas.TreeLevelWidth = 21
+        '
+        'btnFiltLimpia
+        '
+        Me.btnFiltLimpia.Dock = System.Windows.Forms.DockStyle.Right
+        Me.btnFiltLimpia.ImageOptions.Image = CType(resources.GetObject("btnFiltLimpia.ImageOptions.Image"), System.Drawing.Image)
+        Me.btnFiltLimpia.Location = New System.Drawing.Point(1041, 28)
+        Me.btnFiltLimpia.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.btnFiltLimpia.Name = "btnFiltLimpia"
+        Me.btnFiltLimpia.Size = New System.Drawing.Size(29, 41)
+        Me.btnFiltLimpia.TabIndex = 1
+        Me.btnFiltLimpia.Visible = False
         '
         'txtFiltroUbic
         '
@@ -178,45 +209,28 @@ Partial Class frmSeleccionUbicacionesInv
         Me.txtFiltroUbic.ToolTipTitle = "Filtro de búsqueda"
         Me.txtFiltroUbic.Visible = False
         '
-        'btnFiltLimpia
+        'GroupControl1
         '
-        Me.btnFiltLimpia.Dock = System.Windows.Forms.DockStyle.Right
-        Me.btnFiltLimpia.ImageOptions.Image = CType(resources.GetObject("btnFiltLimpia.ImageOptions.Image"), System.Drawing.Image)
-        Me.btnFiltLimpia.Location = New System.Drawing.Point(1041, 28)
-        Me.btnFiltLimpia.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.btnFiltLimpia.Name = "btnFiltLimpia"
-        Me.btnFiltLimpia.Size = New System.Drawing.Size(29, 58)
-        Me.btnFiltLimpia.TabIndex = 1
-        Me.btnFiltLimpia.Visible = False
+        Me.GroupControl1.Controls.Add(Me.txtFiltroUbic)
+        Me.GroupControl1.Controls.Add(Me.btnFiltLimpia)
+        Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
+        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupControl1.Name = "GroupControl1"
+        Me.GroupControl1.Size = New System.Drawing.Size(1072, 71)
+        Me.GroupControl1.TabIndex = 0
+        Me.GroupControl1.Text = "Bodega -> Area -> Sector -> Tramo -> Ubicación"
         '
-        'tlUbicacionesTodas
+        'GroupControl2
         '
-        Me.tlUbicacionesTodas.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.tlUbicacionesTodas.Location = New System.Drawing.Point(2, 86)
-        Me.tlUbicacionesTodas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.tlUbicacionesTodas.MinWidth = 23
-        Me.tlUbicacionesTodas.Name = "tlUbicacionesTodas"
-        Me.tlUbicacionesTodas.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
-        Me.tlUbicacionesTodas.OptionsBehavior.Editable = False
-        Me.tlUbicacionesTodas.OptionsBehavior.ReadOnly = True
-        Me.tlUbicacionesTodas.OptionsSelection.EnableAppearanceFocusedCell = False
-        Me.tlUbicacionesTodas.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check
-        Me.tlUbicacionesTodas.OptionsView.ShowAutoFilterRow = True
-        Me.tlUbicacionesTodas.OptionsView.ShowFilterPanelMode = DevExpress.XtraTreeList.ShowFilterPanelMode.ShowAlways
-        Me.tlUbicacionesTodas.Size = New System.Drawing.Size(1068, 449)
-        Me.tlUbicacionesTodas.TabIndex = 2
-        Me.tlUbicacionesTodas.TreeLevelWidth = 21
-        '
-        'pgrUbic
-        '
-        Me.pgrUbic.Location = New System.Drawing.Point(615, 100)
-        Me.pgrUbic.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.pgrUbic.MenuManager = Me.RibbonControl
-        Me.pgrUbic.Name = "pgrUbic"
-        Me.pgrUbic.Properties.ShowTitle = True
-        Me.pgrUbic.Size = New System.Drawing.Size(405, 20)
-        Me.pgrUbic.TabIndex = 0
-        Me.pgrUbic.Visible = False
+        Me.GroupControl2.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder
+        Me.GroupControl2.Controls.Add(Me.tlUbicacionesTodas)
+        Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GroupControl2.Location = New System.Drawing.Point(0, 71)
+        Me.GroupControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupControl2.Name = "GroupControl2"
+        Me.GroupControl2.Size = New System.Drawing.Size(1072, 466)
+        Me.GroupControl2.TabIndex = 2
         '
         'frmSeleccionUbicacionesInv
         '
@@ -233,16 +247,18 @@ Partial Class frmSeleccionUbicacionesInv
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Selección de Ubicaciones"
-        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.xtrBodegaSelUbic,System.ComponentModel.ISupportInitialize).EndInit
-        Me.xtrBodegaSelUbic.ResumeLayout(false)
-        Me.TodasUbicaciones.ResumeLayout(false)
-        CType(Me.GroupControl1,System.ComponentModel.ISupportInitialize).EndInit
-        Me.GroupControl1.ResumeLayout(false)
-        CType(Me.txtFiltroUbic.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.tlUbicacionesTodas,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.pgrUbic.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        Me.ResumeLayout(false)
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.xtrBodegaSelUbic, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.xtrBodegaSelUbic.ResumeLayout(False)
+        Me.TodasUbicaciones.ResumeLayout(False)
+        CType(Me.pgrUbic.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tlUbicacionesTodas, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtFiltroUbic.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl1.ResumeLayout(False)
+        CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl2.ResumeLayout(False)
+        Me.ResumeLayout(False)
         Me.PerformLayout
 
 End Sub
@@ -256,13 +272,14 @@ End Sub
     Friend WithEvents mnuActualizar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents xtrBodegaSelUbic As DevExpress.XtraTab.XtraTabControl
     Friend WithEvents TodasUbicaciones As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents txtFiltroUbic As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents btnFiltLimpia As DevExpress.XtraEditors.SimpleButton
-    Friend WithEvents tlUbicacionesTodas As DevExpress.XtraTreeList.TreeList
     Friend WithEvents grpUbic As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents chkUbicexist As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents mnuMarcarTodos As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents grpSelectAll As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents pgrUbic As DevExpress.XtraEditors.ProgressBarControl
+    Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents txtFiltroUbic As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents btnFiltLimpia As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents tlUbicacionesTodas As DevExpress.XtraTreeList.TreeList
+    Friend WithEvents GroupControl2 As DevExpress.XtraEditors.GroupControl
 End Class

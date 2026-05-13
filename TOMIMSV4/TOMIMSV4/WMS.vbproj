@@ -24,23 +24,24 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\WMS_ILP\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
     <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
     <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>127</ApplicationRevision>
+    <ApplicationRevision>130</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -341,7 +342,6 @@
     <Compile Include="Mantenimientos\Base_Datos\frmTablasBD.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Mantenimientos\Bodega\clsLnBodegaProxy.vb" />
     <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
       <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
     </Compile>
@@ -1552,6 +1552,18 @@
     <Compile Include="Transacciones\Pedidos_MI3\frmPedidosInterface.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido.Designer.vb">
+      <DependentUpon>frmPedido.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido_List.Designer.vb">
+      <DependentUpon>frmPedido_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.Designer.vb">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </Compile>
@@ -1622,12 +1634,6 @@
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
-      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3100,18 +3106,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Pedido\clsBePedidoDetalleGrid.vb" />
-    <Compile Include="Transacciones\Pedido\frmPedido.Designer.vb">
-      <DependentUpon>frmPedido.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido_List.Designer.vb">
-      <DependentUpon>frmPedido_List.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido_List.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Pedido\frmProductoPed_List.Designer.vb">
       <DependentUpon>frmProductoPed_List.vb</DependentUpon>
     </Compile>
@@ -3847,6 +3841,13 @@
     <EmbeddedResource Include="Transacciones\Pedidos_MI3\frmPedidosInterface.resx">
       <DependentUpon>frmPedidosInterface.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Pedido\frmPedido.resx">
+      <DependentUpon>frmPedido.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Pedido\frmPedido_List.resx">
+      <DependentUpon>frmPedido_List.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </EmbeddedResource>
@@ -3883,9 +3884,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
-      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -4524,13 +4522,6 @@
     <EmbeddedResource Include="Transacciones\Orden_Compra_Tipo_Transaccion\frmTipoTransaccion_List.resx">
       <DependentUpon>frmTipoTransaccion_List.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Pedido\frmPedido.resx">
-      <DependentUpon>frmPedido.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Pedido\frmPedido_List.resx">
-      <DependentUpon>frmPedido_List.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmProductoPed_List.resx">
       <DependentUpon>frmProductoPed_List.vb</DependentUpon>
     </EmbeddedResource>
@@ -4660,6 +4651,7 @@
     </Content>
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
+    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -5683,9 +5675,6 @@
   <ItemGroup>
     <PackageReference Include="ClosedXML">
       <Version>0.102.3</Version>
-    </PackageReference>
-    <PackageReference Include="DevExpress.Win.Design">
-      <Version>24.2.12</Version>
     </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>
