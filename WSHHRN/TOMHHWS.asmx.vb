@@ -12347,11 +12347,6 @@ Public Class TOMHHWS
 
             Existe_Lp = clsLnStock_rec.Existe_Lp(pLic_Plate, pIdBodega, pIdStock)
 
-            'Si no se encontró el LP no hace sentido devolver el objeto de producto
-            'If Not pBeStockRec Is Nothing Then
-            'Return clsLnProducto.Get_Single_By_IdProductoBodega(pBeStockRec.IdProductoBodega)
-            'End If
-
         Catch ex As Exception
 
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
@@ -19380,6 +19375,51 @@ Public Class TOMHHWS
             Get_All_Inventario_RFID_By_IdBodega_And_IdOperador = clsLnTrans_inv_enc.Get_All_Pendientes_RFID_By_IdBodega_And_IdOperador(pIdBodega, pIdOperador, pIdTarea)
 
             Return Get_All_Inventario_RFID_By_IdBodega_And_IdOperador
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_All_Pallet_Ingreso_By_IdOrdenCompraEnc_Det(ByVal pIdOrdenCompraEnc As Integer,
+                                                                   ByVal pIdOrdenCompraDet As Integer) As List(Of clsBeI_nav_barras_pallet)
+
+        Get_All_Pallet_Ingreso_By_IdOrdenCompraEnc_Det = Nothing
+
+        Try
+
+            Return clsLnI_nav_barras_pallet.Get_All_By_IdOrdenCompraEnc_Det(pIdOrdenCompraEnc,
+                                                                            pIdOrdenCompraDet)
 
         Catch ex As Exception
 
