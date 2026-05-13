@@ -55,7 +55,7 @@ Partial Class frmJornada_Laboral
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.DsUbicSug1 = New TOMWMS.dsUbicSug()
+        Me.DsUbicSug1 = New dsUbicSug()
         IdBodegaLabel = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()

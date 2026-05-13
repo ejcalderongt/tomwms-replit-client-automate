@@ -124,5 +124,5 @@
     Public Property Nombre_Proveedor As String
 
     Public Property Presentacion As clsBeProducto_Presentacion
-
+    Public Property IdRecepcionEnc As Integer = 0
 End Class

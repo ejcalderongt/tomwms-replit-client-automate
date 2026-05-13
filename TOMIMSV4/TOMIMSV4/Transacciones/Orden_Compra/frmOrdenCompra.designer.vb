@@ -283,7 +283,7 @@ Partial Class frmOrdenCompra
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.grdEncRec = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOC = New TOMWMS.DsOC()
+        Me.DsOC = New DsOC()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colCódigo = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colBodega = New DevExpress.XtraGrid.Columns.GridColumn()

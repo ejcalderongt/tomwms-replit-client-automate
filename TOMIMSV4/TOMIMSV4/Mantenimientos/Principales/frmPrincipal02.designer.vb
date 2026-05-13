@@ -70,7 +70,7 @@ Partial Class frmPrincipal02
         Me.ToolTipController1 = New DevExpress.Utils.ToolTipController(Me.components)
         Me.SchedulerM = New DevExpress.XtraScheduler.SchedulerControl()
         Me.TareahhBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DSCalendarioTarea = New TOMWMS.DSCalendarioTarea()
+        Me.DSCalendarioTarea = New DSCalendarioTarea()
         Me.BodegamuellesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.ResourcesPopupCheckedListBoxControl3 = New DevExpress.XtraScheduler.UI.ResourcesPopupCheckedListBoxControl()
         Me.PanelControl7 = New DevExpress.XtraEditors.PanelControl()
@@ -78,9 +78,9 @@ Partial Class frmPrincipal02
         Me.DateNavigator4 = New DevExpress.XtraScheduler.DateNavigator()
         Me.ResourcesPopupCheckedListBoxControl4 = New DevExpress.XtraScheduler.UI.ResourcesPopupCheckedListBoxControl()
         Me.PropietariosBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.Tarea_hhTableAdapter = New TOMWMS.DSCalendarioTareaTableAdapters.tarea_hhTableAdapter()
-        Me.Bodega_muellesTableAdapter = New TOMWMS.DSCalendarioTareaTableAdapters.bodega_muellesTableAdapter()
-        Me.PropietariosTableAdapter = New TOMWMS.DSCalendarioTareaTableAdapters.propietariosTableAdapter()
+        Me.Tarea_hhTableAdapter = New DSCalendarioTareaTableAdapters.tarea_hhTableAdapter()
+        Me.Bodega_muellesTableAdapter = New DSCalendarioTareaTableAdapters.bodega_muellesTableAdapter()
+        Me.PropietariosTableAdapter = New DSCalendarioTareaTableAdapters.propietariosTableAdapter()
         Me.TabPane1 = New DevExpress.XtraBars.Navigation.TabPane()
         Me.TabTareas = New DevExpress.XtraBars.Navigation.TabNavigationPage()
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
@@ -1733,13 +1733,13 @@ Partial Class frmPrincipal02
     Friend WithEvents mnuGuardar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuActualizar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEliminar As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents DSCalendarioTarea As TOMWMS.DSCalendarioTarea
+    Friend WithEvents DSCalendarioTarea As DSCalendarioTarea
     Friend WithEvents TareahhBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents Tarea_hhTableAdapter As TOMWMS.DSCalendarioTareaTableAdapters.tarea_hhTableAdapter
+    Friend WithEvents Tarea_hhTableAdapter As DSCalendarioTareaTableAdapters.tarea_hhTableAdapter
     Friend WithEvents BodegamuellesBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents Bodega_muellesTableAdapter As TOMWMS.DSCalendarioTareaTableAdapters.bodega_muellesTableAdapter
+    Friend WithEvents Bodega_muellesTableAdapter As DSCalendarioTareaTableAdapters.bodega_muellesTableAdapter
     Friend WithEvents PropietariosBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents PropietariosTableAdapter As TOMWMS.DSCalendarioTareaTableAdapters.propietariosTableAdapter
+    Friend WithEvents PropietariosTableAdapter As DSCalendarioTareaTableAdapters.propietariosTableAdapter
     Friend WithEvents SchedulerM As DevExpress.XtraScheduler.SchedulerControl
     Friend WithEvents ResourcesPopupCheckedListBoxControl3 As DevExpress.XtraScheduler.UI.ResourcesPopupCheckedListBoxControl
     Friend WithEvents PanelControl7 As DevExpress.XtraEditors.PanelControl

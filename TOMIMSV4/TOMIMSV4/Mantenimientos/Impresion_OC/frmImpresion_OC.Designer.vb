@@ -70,7 +70,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.txtCantidadLicencias = New System.Windows.Forms.NumericUpDown()
         Me.txtCantidadBarras = New System.Windows.Forms.NumericUpDown()
         Me.DxErrorProvider1 = New DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(Me.components)
-        Me.Cliente_direccionTableAdapter1 = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
+        Me.Cliente_direccionTableAdapter1 = New cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.tabImpresion = New System.Windows.Forms.TabPage()
         Me.tabLicencias = New System.Windows.Forms.TabPage()

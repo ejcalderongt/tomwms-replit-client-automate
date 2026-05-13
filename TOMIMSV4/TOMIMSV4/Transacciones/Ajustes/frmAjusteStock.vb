@@ -5,6 +5,7 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports TOMWMS.wsTOMHH
 
 Public Class frmAjusteStock
 
@@ -628,6 +629,7 @@ Public Class frmAjusteStock
                     BeAjusteDetBorrador.idstockres = IdStockRes
                     BeAjusteDetBorrador.idstocklink = 0
                     BeAjusteDetBorrador.esnuevolink = 0
+                    BeAjusteDetBorrador.IdRecepcionEnc = frmStockList.pSingleBEVWStockRes.IdRecepcionEnc
 
                     If BeBodega.Control_Talla_Color Then
 
@@ -940,6 +942,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdProductoTallaColor_origen = stockEspecificoSeleccionado.IdProductoTallaColor
             BeAjusteDet.Talla_origen = stockEspecificoSeleccionado.Codigo_Talla
             BeAjusteDet.Color_origen = stockEspecificoSeleccionado.Codigo_Color
+            BeAjusteDet.idRecepcionEnc = stockEspecificoSeleccionado.IdRecepcionEnc
             lBeTransAjusteDet.Add(BeAjusteDet)
 
             ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
@@ -3702,9 +3705,11 @@ Public Class frmAjusteStock
 
             Crear_Movimientos_Positivos(lConnection, lTransaction)
 
-            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc, lBeTransAjusteDet, lBeTransMovimientos,
-                                                                                      lConnection,
-                                                                                      lTransaction)
+            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
+                                                 lBeTransAjusteDet,
+                                                 lBeTransMovimientos,
+                                                 lConnection,
+                                                 lTransaction)
 
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
@@ -4944,6 +4949,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdPresentacion = pStockTemporal.IdPresentacion
             BeAjusteDet.IdUnidadMedida = vProductoSinStock.IdUnidadMedidaBasica
             BeAjusteDet.IdUbicacion = IIf(pStockTemporal.IdUbicacion = 0, ubic, pStockTemporal.IdUbicacion)
+            BeAjusteDet.idRecepcionEnc = pStockTemporal.IdRecepcionEnc
 
             If BeAjusteDet.IdPresentacion <> 0 Then
                 BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
@@ -5243,15 +5249,6 @@ Public Class frmAjusteStock
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-        End Try
-    End Sub
-
-    Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
-
-        Try
-
-        Catch ex As Exception
-            Debug.Print(ex.Message)
         End Try
     End Sub
 
@@ -5632,10 +5629,6 @@ Public Class frmAjusteStock
             IsLoading = False
             SplashScreenManager.CloseForm(False)
         End Try
-
-    End Sub
-
-    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
 
     End Sub
 
@@ -6065,7 +6058,8 @@ Public Class frmAjusteStock
         .fecha_creacion = fechaActual,
         .usuario_creacion = usuarioActual,
         .fecha_modificacion = fechaActual,
-        .usuario_modificacion = usuarioActual
+        .usuario_modificacion = usuarioActual,
+        .IdRecepcionEnc = item.idRecepcionEnc
     }
     End Function
 
@@ -6113,7 +6107,8 @@ Public Class frmAjusteStock
         .Factor = item.Factor,
         .Nombre_Presentacion = item.Nombre_Presentacion,
         .CantReservada = item.CantReservada,
-        .Presentacion = item.Presentacion
+        .Presentacion = item.Presentacion,
+        .idRecepcionEnc = item.IdRecepcionEnc
     }
     End Function
 
@@ -6195,6 +6190,10 @@ Public Class frmAjusteStock
 
     Private Sub mnuEliminarAjusteBorrador_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEliminarAjusteBorrador.ItemClick
         Eliminar_Ajuste_Si_Sin_Detalle()
+    End Sub
+
+    Private Sub mnuExportar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuExportar.ItemClick
+
     End Sub
 
     Private Sub dgrid_AnyChange_RC2026(sender As Object, e As EventArgs)

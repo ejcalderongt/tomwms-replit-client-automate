@@ -141,6 +141,7 @@ Partial Class frmAjusteStock
         Me.tabResumenAjuste = New DevExpress.XtraTab.XtraTabPage()
         Me.dgridProductosConsolidados = New DevExpress.XtraGrid.GridControl()
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.mnuExportar = New DevExpress.XtraBars.BarButtonItem()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -435,10 +436,10 @@ Partial Class frmAjusteStock
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel, Me.mnuImprimirResumen, Me.mnuEliminarAjusteBorrador})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuImprimir1, Me.mnuEstadoEnviadoAERP, Me.mnuReimpresionEtiquetas, Me.chkAuditado, Me.mnuGuardar, Me.chkBorrador, Me.btnImportarExcel, Me.mnuImprimirResumen, Me.mnuEliminarAjusteBorrador, Me.mnuExportar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 20
+        Me.RibbonControl.MaxItemId = 21
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -522,6 +523,7 @@ Partial Class frmAjusteStock
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkAuditado)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.chkBorrador)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.btnImportarExcel)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuExportar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarAjusteBorrador, True)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
@@ -1320,6 +1322,13 @@ Partial Class frmAjusteStock
         Me.GridView3.OptionsBehavior.ReadOnly = True
         Me.GridView3.OptionsFind.AlwaysVisible = True
         '
+        'mnuExportar
+        '
+        Me.mnuExportar.Caption = "Exportar"
+        Me.mnuExportar.Id = 20
+        Me.mnuExportar.ImageOptions.SvgImage = CType(resources.GetObject("mnuExportar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuExportar.Name = "mnuExportar"
+        '
         'frmAjusteStock
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -1490,4 +1499,5 @@ Partial Class frmAjusteStock
     Friend WithEvents colColor As DataGridViewComboBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
     Friend WithEvents colProveedor As DataGridViewTextBoxColumn
+    Friend WithEvents mnuExportar As DevExpress.XtraBars.BarButtonItem
 End Class

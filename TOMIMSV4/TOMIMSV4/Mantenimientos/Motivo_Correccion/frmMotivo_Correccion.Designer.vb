@@ -44,7 +44,7 @@ Partial Class frmMotivo_Correccion
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsMotivoCorreccion = New TOMWMS.DsMotivoCorreccion()
+        Me.DsMotivoCorreccion = New DsMotivoCorreccion()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()

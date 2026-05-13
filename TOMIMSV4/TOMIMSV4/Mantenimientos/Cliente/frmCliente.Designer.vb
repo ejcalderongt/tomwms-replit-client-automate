@@ -1,4 +1,6 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿Imports TOMWMS.cliente_direccion_dsetTableAdapters
+
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmCliente
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
@@ -140,7 +142,7 @@ Partial Class frmCliente
         Me.tsSeleccionarClientes = New DevExpress.XtraEditors.ToggleSwitch()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsCliente = New TOMWMS.DsCliente()
+        Me.DsCliente = New DsCliente()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSelección = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colIdBodega = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -171,8 +173,8 @@ Partial Class frmCliente
         Me.txtReferenciaDireccion = New DevExpress.XtraEditors.TextEdit()
         Me.txtCordX = New DevExpress.XtraEditors.TextEdit()
         Me.txtCordY = New DevExpress.XtraEditors.TextEdit()
-        Me.Cliente_direccionTableAdapter = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
-        Me.TableAdapterManager = New TOMWMS.cliente_direccion_dsetTableAdapters.TableAdapterManager()
+        Me.Cliente_direccionTableAdapter = New cliente_direccionTableAdapter()
+        Me.TableAdapterManager = New TableAdapterManager()
         Me.dkCliente = New DevExpress.XtraBars.Docking.DockManager(Me.components)
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
@@ -2047,7 +2049,7 @@ Partial Class frmCliente
         '
         Me.TableAdapterManager.BackupDataSetBeforeUpdate = False
         Me.TableAdapterManager.cliente_direccionTableAdapter = Me.Cliente_direccionTableAdapter
-        Me.TableAdapterManager.UpdateOrder = TOMWMS.cliente_direccion_dsetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete
+        Me.TableAdapterManager.UpdateOrder = cliente_direccion_dsetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete
         '
         'dkCliente
         '
@@ -2621,8 +2623,8 @@ Partial Class frmCliente
     Friend WithEvents cmdGuardar As System.Windows.Forms.Button
     Friend WithEvents GridTiempo As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridViewTiempo As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents Cliente_direccionTableAdapter As TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter
-    Friend WithEvents TableAdapterManager As TOMWMS.cliente_direccion_dsetTableAdapters.TableAdapterManager
+    Friend WithEvents Cliente_direccionTableAdapter As cliente_direccionTableAdapter
+    Friend WithEvents TableAdapterManager As TableAdapterManager
     Friend WithEvents txtIdDireccion As DevExpress.XtraEditors.SpinEdit
     Friend WithEvents txtAvenida As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCalle As DevExpress.XtraEditors.TextEdit
@@ -2638,7 +2640,7 @@ Partial Class frmCliente
     Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
     Friend WithEvents cmdAgregarDireccion As System.Windows.Forms.Button
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsCliente As TOMWMS.DsCliente
+    Friend WithEvents DsCliente As DsCliente
     Friend WithEvents txtDireccionEntrega As System.Windows.Forms.TextBox
     Friend WithEvents Fec_agrDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_agrTextEdit As DevExpress.XtraEditors.TextEdit

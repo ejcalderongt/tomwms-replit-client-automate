@@ -30,7 +30,7 @@ Partial Class frmSeleccionUbicacionesInv
         Me.grpUbic = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.grpSelectAll = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.Cliente_direccionTableAdapter1 = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
+        Me.Cliente_direccionTableAdapter1 = New cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
         Me.xtrBodegaSelUbic = New DevExpress.XtraTab.XtraTabControl()
         Me.TodasUbicaciones = New DevExpress.XtraTab.XtraTabPage()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()

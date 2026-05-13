@@ -237,7 +237,7 @@ Partial Class frmInventario
         Me.grdReconteo = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DSReconteoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DSReconteo = New TOMWMS.DSReconteo()
+        Me.DSReconteo = New DSReconteo()
         Me.GridView8 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colCorrelativo = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colIdReconteoEnc = New DevExpress.XtraGrid.Columns.GridColumn()
