@@ -1606,12 +1606,6 @@
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\RFID\frmStockRFID.Designer.vb">
-      <DependentUpon>frmStockRFID.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\RFID\frmStockRFID.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
     </Compile>
@@ -3856,9 +3850,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\RFID\frmStockRFID.resx">
-      <DependentUpon>frmStockRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>

@@ -3207,6 +3207,11 @@ Partial Public Class clsLnTrans_inv_ciclico
                     End If
                 End If
 
+                'Si no viene talla/color nuevo, se asume que NO cambió.
+                If BeTransInvCiclico.IdProductoTallaColor_nuevo = 0 Then
+                    BeTransInvCiclico.IdProductoTallaColor_nuevo = BeTransInvCiclico.IdProductoTallaColor
+                End If
+
                 If esOriginal And (BeTransInvCiclico.Fecha_vence <> BeTransInvCiclico.Fecha_vence_stock OrElse
                        (BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0) OrElse
                        BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock OrElse
@@ -4526,10 +4531,12 @@ Partial Public Class clsLnTrans_inv_ciclico
 
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Upd.Add("cantidad", "@cantidad", DataType.Parametro)
+            Upd.Add("IdPresentacion_nuevo", "@IdPresentacion_nuevo", DataType.Parametro)
             Upd.Add("IdProductoEst_nuevo", "@IdProductoEst_nuevo", DataType.Parametro)
             Upd.Add("IdUbicacion_nuevo", "@IdUbicacion_nuevo", DataType.Parametro)
             Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
+            Upd.Add("gondola", "@gondola", DataType.Parametro)
             Upd.Add("contado", "@contado", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
@@ -4559,6 +4566,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             End If
 
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_ciclico.Cantidad))
+            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION_NUEVO", IIf(oBeTrans_inv_ciclico.IdPresentacion_nuevo = 0, 0, oBeTrans_inv_ciclico.IdPresentacion_nuevo)))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOEST_NUEVO", IIf(oBeTrans_inv_ciclico.IdProductoEst_nuevo = 0, 0, oBeTrans_inv_ciclico.IdProductoEst_nuevo)))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION_NUEVO", IIf(oBeTrans_inv_ciclico.IdUbicacion_nuevo = 0, 0, oBeTrans_inv_ciclico.IdUbicacion_nuevo)))
 
@@ -4566,6 +4574,9 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_ciclico.IdProductoTallaColor))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR_NUEVO", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
+            cmd.Parameters.Add(New SqlParameter("@GONDOLA",
+                If(oBeTrans_inv_ciclico.Gondola Is Nothing, "", oBeTrans_inv_ciclico.Gondola.Trim())
+            ))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -4849,6 +4860,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     "  trans_inv_ciclico.lic_plate, " &
                                     "  trans_inv_ciclico.IdPresentacion, " &
                                     "  trans_inv_ciclico.fecha_vence_stock, " &
+                                    "  MAX(CASE WHEN trans_inv_ciclico.contado = 1 THEN ISNULL(trans_inv_ciclico.IdPresentacion_nuevo, 0) ELSE 0 END) AS IdPresentacion_nuevo, " &
                                     "  trans_inv_ciclico.peso_stock AS Peso_Stock, " &
                                     "  trans_inv_ciclico.cant_stock AS Cantidad_Stock, " &
                                     "  trans_inv_ciclico.peso_reconteo, " &
@@ -4899,8 +4911,8 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     "  producto.codigo, producto.nombre, producto_presentacion.nombre, trans_inv_ciclico.lote, producto_estado.nombre, e1.nombre, " &
                                     "  producto.IdPropietario, producto.IdClasificacion, producto.IdFamilia, producto_estado.IdEstado, trans_inv_ciclico.EsNuevo, " &
                                     "  bodega_tramo.IdTramo, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, " &
-                                    "  trans_inv_ciclico.EsPallet, trans_inv_ciclico.lic_plate, trans_inv_ciclico.lote_stock, trans_inv_ciclico.IdPresentacion, " &
-                                    "  trans_inv_ciclico.fecha_vence_stock, trans_inv_ciclico.peso_stock, trans_inv_ciclico.cant_stock, trans_inv_ciclico.peso_reconteo, " &
+                                       "  trans_inv_ciclico.EsPallet, trans_inv_ciclico.lic_plate, trans_inv_ciclico.lote_stock, trans_inv_ciclico.IdPresentacion, " &
+        "  trans_inv_ciclico.fecha_vence_stock, trans_inv_ciclico.peso_stock, trans_inv_ciclico.cant_stock, trans_inv_ciclico.peso_reconteo, " &
                                     "  bodega_tramo.es_rack, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, " &
                                     "  producto_tipo.NombreTipoProducto, producto.IdProducto, producto_presentacion.factor, bodega_ubicacion.IdBodega, " &
                                     "  trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.IdUbicacion_nuevo, " &
@@ -4944,6 +4956,9 @@ Partial Public Class clsLnTrans_inv_ciclico
 
                     If lRow("IdPresentacion") IsNot DBNull.Value AndAlso lRow("IdPresentacion") IsNot Nothing Then
                         BeTransInvCiclico.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
+                    End If
+                    If lRow("IdPresentacion_nuevo") IsNot DBNull.Value AndAlso lRow("IdPresentacion_nuevo") IsNot Nothing Then
+                        BeTransInvCiclico.IdPresentacion_nuevo = CType(lRow("IdPresentacion_nuevo"), Integer)
                     End If
 
                     If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then

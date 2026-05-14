@@ -5038,23 +5038,38 @@ Public Class frmInventario
                     End If
 
 
-                    '#MA20260204 
+                    '#MA20260512 Mostrar BOF según la presentación real usada en el conteo HH
                     Dim PresentacionFinal As String
-                    Dim CantTeoricaFinal As String
-                    Dim CantConteoFinal As String
-                    Dim CantReconteoFinal As String
+                    Dim CantTeoricaFinal As Double
+                    Dim CantConteoFinal As Double
+                    Dim CantReconteoFinal As Double
+                    Dim FactorVisual As Double = BeTransInvCiclico.Factor
 
-                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                    If FactorVisual <= 0 Then FactorVisual = 1
+
+                    If BeTransInvCiclico.IdPresentacion_nuevo > 0 Then
+
+                        'El conteo quedó en presentación, por ejemplo CAJA24.
                         PresentacionFinal = BeTransInvCiclico.Presentacion
-                        CantTeoricaFinal = Cantidad_Teorica_Stock_Pres
-                        CantConteoFinal = Cantidad_Contada_Pres
-                        CantReconteoFinal = Cantidad_Reconteo_Pres
+
+                        CantTeoricaFinal = Math.Round(BeTransInvCiclico.Cant_stock / FactorVisual, 6)
+                        CantConteoFinal = Math.Round(BeTransInvCiclico.Cantidad / FactorVisual, 6)
+                        CantReconteoFinal = Math.Round(BeTransInvCiclico.Cant_reconteo / FactorVisual, 6)
+
                     Else
-                        PresentacionFinal = "UN"
-                        CantTeoricaFinal = CantStockUM
-                        CantConteoFinal = CantidadUMBas
-                        CantReconteoFinal = CantReUM
+
+                        'El conteo quedó en unidad base / Sin Presentación.
+                        PresentacionFinal = "UNIDAD"
+
+                        CantTeoricaFinal = Math.Round(BeTransInvCiclico.Cant_stock, 6)
+                        CantConteoFinal = Math.Round(BeTransInvCiclico.Cantidad, 6)
+                        CantReconteoFinal = Math.Round(BeTransInvCiclico.Cant_reconteo, 6)
+
                     End If
+
+                    'Se mantiene el mismo comportamiento anterior:
+                    'vDiferencia * -1 = Conteo - Teórico
+                    vDiferencia = CantTeoricaFinal - CantConteoFinal
 
                     DTInventarioCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
                                                   BeTransInvCiclico.Ubicacion,
@@ -8712,6 +8727,8 @@ Public Class frmInventario
                 End If
 
                 Dim BeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
+                Dim debugBof As New System.Text.StringBuilder()
+
 
                 For Each BeTransInvCiclico As clsBeTrans_inv_ciclico In ListInventarioCiclico
 
@@ -8751,6 +8768,23 @@ Public Class frmInventario
                         End If
 
                         Extraviado = 0
+
+                    End If
+
+                    If BeTransInvCiclico.Codigo = "447540" AndAlso
+   (BeTransInvCiclico.IdUbicacion = 7506 OrElse BeTransInvCiclico.IdUbicacion = 7507) Then
+
+                        debugBof.AppendLine("Ubicacion: " & BeTransInvCiclico.IdUbicacion)
+                        debugBof.AppendLine("IdInvCiclico: " & BeTransInvCiclico.IdInvCiclico)
+                        debugBof.AppendLine("IdStock: " & BeTransInvCiclico.IdStock)
+                        debugBof.AppendLine("IdPresentacion: " & BeTransInvCiclico.IdPresentacion)
+                        debugBof.AppendLine("IdPresentacion_nuevo: " & BeTransInvCiclico.IdPresentacion_nuevo)
+                        debugBof.AppendLine("Cantidad: " & BeTransInvCiclico.Cantidad)
+                        debugBof.AppendLine("Cant_stock: " & BeTransInvCiclico.Cant_stock)
+                        debugBof.AppendLine("Factor: " & BeTransInvCiclico.Factor)
+                        debugBof.AppendLine("Presentacion: " & BeTransInvCiclico.Presentacion)
+                        debugBof.AppendLine("Contado: " & BeTransInvCiclico.Contado)
+                        debugBof.AppendLine("-----------------------------")
 
                     End If
 
@@ -8843,6 +8877,10 @@ Public Class frmInventario
                     Application.DoEvents()
 
                 Next
+
+                If debugBof.Length > 0 Then
+                    XtraMessageBox.Show(debugBof.ToString(), "Debug BOF Inventario Cíclico", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
 
