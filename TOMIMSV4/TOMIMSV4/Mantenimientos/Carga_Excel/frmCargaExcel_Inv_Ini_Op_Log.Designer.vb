@@ -36,7 +36,7 @@ Partial Class frmCargaExcel_Inv_Ini_Op_Log
         Me.GrpSeleccion = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsExcel = New TOMWMS.DsExcel()
+        Me.DsExcel = New DsExcel()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccionar = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -290,7 +290,7 @@ Partial Class frmCargaExcel_Inv_Ini_Op_Log
     Friend WithEvents RepositoryItemCheckEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit
     Friend WithEvents colHoja As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsExcel As TOMWMS.DsExcel
+    Friend WithEvents DsExcel As DsExcel
     Friend WithEvents RepositoryItemTextEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemTextEdit
     Friend WithEvents pbar As ProgressBar
     Friend WithEvents GroupBox1 As GroupBox

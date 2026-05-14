@@ -22,12 +22,12 @@ Partial Class frmInventarioRFID
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmInventarioRFID))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdGuardar = New DevExpress.XtraBars.BarButtonItem()
-        Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEliminar = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
+        Me.xtraTabInv = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.chkCapturarNoAsignado = New DevExpress.XtraEditors.CheckEdit()
@@ -62,10 +62,32 @@ Partial Class frmInventarioRFID
         Me.lblBodega = New System.Windows.Forms.Label()
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.lblCodigo = New System.Windows.Forms.Label()
-        Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
+        Me.xtraTabProductos = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridAsignacionProductos = New DevExpress.XtraTreeList.TreeList()
+        Me.grpProductos = New DevExpress.XtraEditors.GroupControl()
+        Me.cmdQuitaOpProd = New DevExpress.XtraEditors.SimpleButton()
+        Me.cmdAsignaOpProd = New DevExpress.XtraEditors.SimpleButton()
+        Me.twTodos = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.cmbOperadorProd = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.cmdEliminarOpProd = New DevExpress.XtraEditors.SimpleButton()
+        Me.cmdAsignarOp = New DevExpress.XtraEditors.SimpleButton()
+        Me.cmdQuitarProducto = New DevExpress.XtraEditors.SimpleButton()
+        Me.cmdAgregarProducto = New DevExpress.XtraEditors.SimpleButton()
+        Me.xtraTabConteo = New DevExpress.XtraTab.XtraTabPage()
+        Me.grpConteoCi = New DevExpress.XtraEditors.GroupControl()
+        Me.prgPanInvConteo = New System.Windows.Forms.ProgressBar()
+        Me.txtNombreProducto = New DevExpress.XtraEditors.TextEdit()
+        Me.LinklblProducto = New System.Windows.Forms.LinkLabel()
+        Me.txtIdProducto = New DevExpress.XtraEditors.TextEdit()
+        Me.txtNombreOperador = New DevExpress.XtraEditors.TextEdit()
+        Me.txtIdOperador = New DevExpress.XtraEditors.TextEdit()
+        Me.LinklblOperador = New System.Windows.Forms.LinkLabel()
+        Me.dgridInventarioCiclico = New DevExpress.XtraGrid.GridControl()
+        Me.gdviewTeorico = New DevExpress.XtraGrid.Views.Grid.GridView()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.XtraTabControl1.SuspendLayout()
+        CType(Me.xtraTabInv, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.xtraTabInv.SuspendLayout()
         Me.XtraTabPage1.SuspendLayout()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
@@ -87,17 +109,32 @@ Partial Class frmInventarioRFID
         CType(Me.Fecha.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.xtraTabProductos.SuspendLayout()
+        CType(Me.dgridAsignacionProductos, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grpProductos, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpProductos.SuspendLayout()
+        CType(Me.twTodos.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbOperadorProd.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.xtraTabConteo.SuspendLayout()
+        CType(Me.grpConteoCi, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpConteoCi.SuspendLayout()
+        CType(Me.txtNombreProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtIdProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtNombreOperador.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtIdOperador.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgridInventarioCiclico, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gdviewTeorico, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar, Me.BarButtonItem1, Me.cmdActualizar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar, Me.mnuEliminar, Me.cmdActualizar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.MaxItemId = 4
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1392, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1617, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdGuardar
@@ -107,12 +144,12 @@ Partial Class frmInventarioRFID
         Me.cmdGuardar.ImageOptions.SvgImage = CType(resources.GetObject("cmdGuardar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdGuardar.Name = "cmdGuardar"
         '
-        'BarButtonItem1
+        'mnuEliminar
         '
-        Me.BarButtonItem1.Caption = "Eliminar"
-        Me.BarButtonItem1.Id = 2
-        Me.BarButtonItem1.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.BarButtonItem1.Name = "BarButtonItem1"
+        Me.mnuEliminar.Caption = "Eliminar"
+        Me.mnuEliminar.Id = 2
+        Me.mnuEliminar.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEliminar.Name = "mnuEliminar"
         '
         'cmdActualizar
         '
@@ -131,31 +168,31 @@ Partial Class frmInventarioRFID
         '
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdGuardar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem1)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 575)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 645)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1392, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1617, 30)
         '
-        'XtraTabControl1
+        'xtraTabInv
         '
-        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.XtraTabControl1.Location = New System.Drawing.Point(0, 193)
-        Me.XtraTabControl1.Name = "XtraTabControl1"
-        Me.XtraTabControl1.SelectedTabPage = Me.XtraTabPage1
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1392, 382)
-        Me.XtraTabControl1.TabIndex = 2
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2})
+        Me.xtraTabInv.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.xtraTabInv.Location = New System.Drawing.Point(0, 193)
+        Me.xtraTabInv.Name = "xtraTabInv"
+        Me.xtraTabInv.SelectedTabPage = Me.XtraTabPage1
+        Me.xtraTabInv.Size = New System.Drawing.Size(1617, 452)
+        Me.xtraTabInv.TabIndex = 2
+        Me.xtraTabInv.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.xtraTabProductos, Me.xtraTabConteo})
         '
         'XtraTabPage1
         '
         Me.XtraTabPage1.Controls.Add(Me.GroupControl1)
         Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(1390, 352)
+        Me.XtraTabPage1.Size = New System.Drawing.Size(1547, 380)
         Me.XtraTabPage1.Text = "Encabezado"
         '
         'GroupControl1
@@ -195,7 +232,7 @@ Partial Class frmInventarioRFID
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1390, 352)
+        Me.GroupControl1.Size = New System.Drawing.Size(1547, 380)
         Me.GroupControl1.TabIndex = 0
         Me.GroupControl1.Text = "GroupControl1"
         '
@@ -556,18 +593,264 @@ Partial Class frmInventarioRFID
         Me.lblCodigo.TabIndex = 44
         Me.lblCodigo.Text = "Código:"
         '
-        'XtraTabPage2
+        'xtraTabProductos
         '
-        Me.XtraTabPage2.Name = "XtraTabPage2"
-        Me.XtraTabPage2.Size = New System.Drawing.Size(1390, 352)
-        Me.XtraTabPage2.Text = "XtraTabPage2"
+        Me.xtraTabProductos.Controls.Add(Me.dgridAsignacionProductos)
+        Me.xtraTabProductos.Controls.Add(Me.grpProductos)
+        Me.xtraTabProductos.Name = "xtraTabProductos"
+        Me.xtraTabProductos.Size = New System.Drawing.Size(1547, 380)
+        Me.xtraTabProductos.Text = "Agregar Productos"
+        '
+        'dgridAsignacionProductos
+        '
+        Me.dgridAsignacionProductos.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridAsignacionProductos.Location = New System.Drawing.Point(0, 114)
+        Me.dgridAsignacionProductos.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridAsignacionProductos.Name = "dgridAsignacionProductos"
+        Me.dgridAsignacionProductos.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
+        Me.dgridAsignacionProductos.OptionsBehavior.ReadOnly = True
+        Me.dgridAsignacionProductos.OptionsFind.AlwaysVisible = True
+        Me.dgridAsignacionProductos.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check
+        Me.dgridAsignacionProductos.OptionsView.ShowAutoFilterRow = True
+        Me.dgridAsignacionProductos.OptionsView.ShowSummaryFooter = True
+        Me.dgridAsignacionProductos.RowHeight = 30
+        Me.dgridAsignacionProductos.Size = New System.Drawing.Size(1547, 266)
+        Me.dgridAsignacionProductos.TabIndex = 2
+        Me.dgridAsignacionProductos.TreeLevelWidth = 17
+        '
+        'grpProductos
+        '
+        Me.grpProductos.Controls.Add(Me.cmdQuitaOpProd)
+        Me.grpProductos.Controls.Add(Me.cmdAsignaOpProd)
+        Me.grpProductos.Controls.Add(Me.twTodos)
+        Me.grpProductos.Controls.Add(Me.cmbOperadorProd)
+        Me.grpProductos.Controls.Add(Me.Label1)
+        Me.grpProductos.Controls.Add(Me.cmdEliminarOpProd)
+        Me.grpProductos.Controls.Add(Me.cmdAsignarOp)
+        Me.grpProductos.Controls.Add(Me.cmdQuitarProducto)
+        Me.grpProductos.Controls.Add(Me.cmdAgregarProducto)
+        Me.grpProductos.Dock = System.Windows.Forms.DockStyle.Top
+        Me.grpProductos.Location = New System.Drawing.Point(0, 0)
+        Me.grpProductos.Margin = New System.Windows.Forms.Padding(5)
+        Me.grpProductos.Name = "grpProductos"
+        Me.grpProductos.ShowCaption = False
+        Me.grpProductos.Size = New System.Drawing.Size(1547, 114)
+        Me.grpProductos.TabIndex = 1
+        '
+        'cmdQuitaOpProd
+        '
+        Me.cmdQuitaOpProd.ImageOptions.Image = CType(resources.GetObject("cmdQuitaOpProd.ImageOptions.Image"), System.Drawing.Image)
+        Me.cmdQuitaOpProd.Location = New System.Drawing.Point(902, 15)
+        Me.cmdQuitaOpProd.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmdQuitaOpProd.Name = "cmdQuitaOpProd"
+        Me.cmdQuitaOpProd.Size = New System.Drawing.Size(147, 44)
+        Me.cmdQuitaOpProd.TabIndex = 8
+        Me.cmdQuitaOpProd.Text = "Quitar operador"
+        '
+        'cmdAsignaOpProd
+        '
+        Me.cmdAsignaOpProd.ImageOptions.Image = CType(resources.GetObject("cmdAsignaOpProd.ImageOptions.Image"), System.Drawing.Image)
+        Me.cmdAsignaOpProd.Location = New System.Drawing.Point(744, 15)
+        Me.cmdAsignaOpProd.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmdAsignaOpProd.Name = "cmdAsignaOpProd"
+        Me.cmdAsignaOpProd.Size = New System.Drawing.Size(147, 44)
+        Me.cmdAsignaOpProd.TabIndex = 7
+        Me.cmdAsignaOpProd.Text = "Asignar operador"
+        '
+        'twTodos
+        '
+        Me.twTodos.Location = New System.Drawing.Point(438, 58)
+        Me.twTodos.Margin = New System.Windows.Forms.Padding(5)
+        Me.twTodos.MenuManager = Me.RibbonControl
+        Me.twTodos.Name = "twTodos"
+        Me.twTodos.Properties.OffText = "Ningún producto"
+        Me.twTodos.Properties.OnText = "Todos los productos"
+        Me.twTodos.Size = New System.Drawing.Size(280, 24)
+        Me.twTodos.TabIndex = 6
+        '
+        'cmbOperadorProd
+        '
+        Me.cmbOperadorProd.Location = New System.Drawing.Point(438, 26)
+        Me.cmbOperadorProd.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmbOperadorProd.MenuManager = Me.RibbonControl
+        Me.cmbOperadorProd.Name = "cmbOperadorProd"
+        Me.cmbOperadorProd.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbOperadorProd.Properties.NullText = ""
+        Me.cmbOperadorProd.Size = New System.Drawing.Size(281, 22)
+        Me.cmbOperadorProd.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(348, 26)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(79, 16)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "Operadores:"
+        '
+        'cmdEliminarOpProd
+        '
+        Me.cmdEliminarOpProd.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarOpProd.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdEliminarOpProd.Location = New System.Drawing.Point(1208, 15)
+        Me.cmdEliminarOpProd.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmdEliminarOpProd.Name = "cmdEliminarOpProd"
+        Me.cmdEliminarOpProd.Size = New System.Drawing.Size(140, 44)
+        Me.cmdEliminarOpProd.TabIndex = 5
+        Me.cmdEliminarOpProd.Text = "Quitar todos" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "los operadores"
+        '
+        'cmdAsignarOp
+        '
+        Me.cmdAsignarOp.ImageOptions.SvgImage = CType(resources.GetObject("cmdAsignarOp.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdAsignarOp.Location = New System.Drawing.Point(1059, 15)
+        Me.cmdAsignarOp.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmdAsignarOp.Name = "cmdAsignarOp"
+        Me.cmdAsignarOp.Size = New System.Drawing.Size(140, 44)
+        Me.cmdAsignarOp.TabIndex = 4
+        Me.cmdAsignarOp.Text = "Asignar todos " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "los operadores"
+        '
+        'cmdQuitarProducto
+        '
+        Me.cmdQuitarProducto.ImageOptions.Image = CType(resources.GetObject("cmdQuitarProducto.ImageOptions.Image"), System.Drawing.Image)
+        Me.cmdQuitarProducto.Location = New System.Drawing.Point(172, 18)
+        Me.cmdQuitarProducto.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmdQuitarProducto.Name = "cmdQuitarProducto"
+        Me.cmdQuitarProducto.Size = New System.Drawing.Size(149, 57)
+        Me.cmdQuitarProducto.TabIndex = 3
+        Me.cmdQuitarProducto.Text = "Quitar" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Productos"
+        '
+        'cmdAgregarProducto
+        '
+        Me.cmdAgregarProducto.ImageOptions.Image = CType(resources.GetObject("cmdAgregarProducto.ImageOptions.Image"), System.Drawing.Image)
+        Me.cmdAgregarProducto.Location = New System.Drawing.Point(13, 18)
+        Me.cmdAgregarProducto.Margin = New System.Windows.Forms.Padding(5)
+        Me.cmdAgregarProducto.Name = "cmdAgregarProducto"
+        Me.cmdAgregarProducto.Size = New System.Drawing.Size(149, 57)
+        Me.cmdAgregarProducto.TabIndex = 2
+        Me.cmdAgregarProducto.Text = "Agregar" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Productos"
+        '
+        'xtraTabConteo
+        '
+        Me.xtraTabConteo.Controls.Add(Me.dgridInventarioCiclico)
+        Me.xtraTabConteo.Controls.Add(Me.grpConteoCi)
+        Me.xtraTabConteo.Name = "xtraTabConteo"
+        Me.xtraTabConteo.Size = New System.Drawing.Size(1615, 422)
+        Me.xtraTabConteo.Text = "Detalle de Inventario Ciclico"
+        '
+        'grpConteoCi
+        '
+        Me.grpConteoCi.Controls.Add(Me.prgPanInvConteo)
+        Me.grpConteoCi.Controls.Add(Me.txtNombreProducto)
+        Me.grpConteoCi.Controls.Add(Me.LinklblProducto)
+        Me.grpConteoCi.Controls.Add(Me.txtIdProducto)
+        Me.grpConteoCi.Controls.Add(Me.txtNombreOperador)
+        Me.grpConteoCi.Controls.Add(Me.txtIdOperador)
+        Me.grpConteoCi.Controls.Add(Me.LinklblOperador)
+        Me.grpConteoCi.Dock = System.Windows.Forms.DockStyle.Top
+        Me.grpConteoCi.Location = New System.Drawing.Point(0, 0)
+        Me.grpConteoCi.Margin = New System.Windows.Forms.Padding(5)
+        Me.grpConteoCi.Name = "grpConteoCi"
+        Me.grpConteoCi.Size = New System.Drawing.Size(1615, 170)
+        Me.grpConteoCi.TabIndex = 1
+        Me.grpConteoCi.Text = "Filtros"
+        '
+        'prgPanInvConteo
+        '
+        Me.prgPanInvConteo.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.prgPanInvConteo.Location = New System.Drawing.Point(2, 135)
+        Me.prgPanInvConteo.Margin = New System.Windows.Forms.Padding(5)
+        Me.prgPanInvConteo.Name = "prgPanInvConteo"
+        Me.prgPanInvConteo.Size = New System.Drawing.Size(1611, 33)
+        Me.prgPanInvConteo.TabIndex = 18
+        Me.prgPanInvConteo.Visible = False
+        '
+        'txtNombreProducto
+        '
+        Me.txtNombreProducto.Location = New System.Drawing.Point(218, 77)
+        Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtNombreProducto.MenuManager = Me.RibbonControl
+        Me.txtNombreProducto.Name = "txtNombreProducto"
+        Me.txtNombreProducto.Size = New System.Drawing.Size(286, 22)
+        Me.txtNombreProducto.TabIndex = 14
+        '
+        'LinklblProducto
+        '
+        Me.LinklblProducto.AutoSize = True
+        Me.LinklblProducto.Location = New System.Drawing.Point(26, 80)
+        Me.LinklblProducto.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.LinklblProducto.Name = "LinklblProducto"
+        Me.LinklblProducto.Size = New System.Drawing.Size(57, 16)
+        Me.LinklblProducto.TabIndex = 12
+        Me.LinklblProducto.TabStop = True
+        Me.LinklblProducto.Text = "Producto"
+        '
+        'txtIdProducto
+        '
+        Me.txtIdProducto.Location = New System.Drawing.Point(113, 77)
+        Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtIdProducto.MenuManager = Me.RibbonControl
+        Me.txtIdProducto.Name = "txtIdProducto"
+        Me.txtIdProducto.Size = New System.Drawing.Size(96, 22)
+        Me.txtIdProducto.TabIndex = 13
+        '
+        'txtNombreOperador
+        '
+        Me.txtNombreOperador.Location = New System.Drawing.Point(218, 40)
+        Me.txtNombreOperador.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtNombreOperador.MenuManager = Me.RibbonControl
+        Me.txtNombreOperador.Name = "txtNombreOperador"
+        Me.txtNombreOperador.Size = New System.Drawing.Size(286, 22)
+        Me.txtNombreOperador.TabIndex = 5
+        '
+        'txtIdOperador
+        '
+        Me.txtIdOperador.Location = New System.Drawing.Point(113, 40)
+        Me.txtIdOperador.Margin = New System.Windows.Forms.Padding(5)
+        Me.txtIdOperador.MenuManager = Me.RibbonControl
+        Me.txtIdOperador.Name = "txtIdOperador"
+        Me.txtIdOperador.Size = New System.Drawing.Size(96, 22)
+        Me.txtIdOperador.TabIndex = 4
+        '
+        'LinklblOperador
+        '
+        Me.LinklblOperador.AutoSize = True
+        Me.LinklblOperador.Location = New System.Drawing.Point(26, 44)
+        Me.LinklblOperador.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.LinklblOperador.Name = "LinklblOperador"
+        Me.LinklblOperador.Size = New System.Drawing.Size(61, 16)
+        Me.LinklblOperador.TabIndex = 0
+        Me.LinklblOperador.TabStop = True
+        Me.LinklblOperador.Text = "Operador"
+        '
+        'dgridInventarioCiclico
+        '
+        Me.dgridInventarioCiclico.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridInventarioCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridInventarioCiclico.Location = New System.Drawing.Point(0, 170)
+        Me.dgridInventarioCiclico.MainView = Me.gdviewTeorico
+        Me.dgridInventarioCiclico.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridInventarioCiclico.MenuManager = Me.RibbonControl
+        Me.dgridInventarioCiclico.Name = "dgridInventarioCiclico"
+        Me.dgridInventarioCiclico.Size = New System.Drawing.Size(1615, 252)
+        Me.dgridInventarioCiclico.TabIndex = 2
+        Me.dgridInventarioCiclico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gdviewTeorico})
+        '
+        'gdviewTeorico
+        '
+        Me.gdviewTeorico.DetailHeight = 437
+        Me.gdviewTeorico.GridControl = Me.dgridInventarioCiclico
+        Me.gdviewTeorico.Name = "gdviewTeorico"
+        Me.gdviewTeorico.OptionsBehavior.ReadOnly = True
+        Me.gdviewTeorico.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.gdviewTeorico.OptionsView.ColumnAutoWidth = False
+        Me.gdviewTeorico.OptionsView.ShowAutoFilterRow = True
         '
         'frmInventarioRFID
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1392, 605)
-        Me.Controls.Add(Me.XtraTabControl1)
+        Me.ClientSize = New System.Drawing.Size(1617, 675)
+        Me.Controls.Add(Me.xtraTabInv)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
         Me.Name = "frmInventarioRFID"
@@ -575,8 +858,8 @@ Partial Class frmInventarioRFID
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Inventario RFID"
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.XtraTabControl1.ResumeLayout(False)
+        CType(Me.xtraTabInv, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.xtraTabInv.ResumeLayout(False)
         Me.XtraTabPage1.ResumeLayout(False)
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
@@ -599,6 +882,23 @@ Partial Class frmInventarioRFID
         CType(Me.Fecha.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.xtraTabProductos.ResumeLayout(False)
+        CType(Me.dgridAsignacionProductos, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grpProductos, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpProductos.ResumeLayout(False)
+        Me.grpProductos.PerformLayout()
+        CType(Me.twTodos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbOperadorProd.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.xtraTabConteo.ResumeLayout(False)
+        CType(Me.grpConteoCi, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpConteoCi.ResumeLayout(False)
+        Me.grpConteoCi.PerformLayout()
+        CType(Me.txtNombreProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtIdProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtNombreOperador.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtIdOperador.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgridInventarioCiclico, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gdviewTeorico, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -609,10 +909,10 @@ Partial Class frmInventarioRFID
     Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
     Friend WithEvents cmdGuardar As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents BarButtonItem1 As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents XtraTabControl1 As DevExpress.XtraTab.XtraTabControl
+    Friend WithEvents mnuEliminar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents xtraTabInv As DevExpress.XtraTab.XtraTabControl
     Friend WithEvents XtraTabPage1 As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents XtraTabPage2 As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents xtraTabProductos As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents chkCapturarNoAsignado As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents Label4 As Label
@@ -647,4 +947,26 @@ Partial Class frmInventarioRFID
     Friend WithEvents lblEstado As Label
     Friend WithEvents lblCodigo As Label
     Friend WithEvents cmdActualizar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents grpProductos As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents cmdQuitaOpProd As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents cmdAsignaOpProd As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents twTodos As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents cmbOperadorProd As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents Label1 As Label
+    Friend WithEvents cmdEliminarOpProd As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents cmdAsignarOp As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents cmdQuitarProducto As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents cmdAgregarProducto As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents dgridAsignacionProductos As DevExpress.XtraTreeList.TreeList
+    Friend WithEvents xtraTabConteo As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents grpConteoCi As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents prgPanInvConteo As ProgressBar
+    Friend WithEvents txtNombreProducto As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents LinklblProducto As LinkLabel
+    Friend WithEvents txtIdProducto As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtNombreOperador As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtIdOperador As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents LinklblOperador As LinkLabel
+    Friend WithEvents dgridInventarioCiclico As DevExpress.XtraGrid.GridControl
+    Friend WithEvents gdviewTeorico As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

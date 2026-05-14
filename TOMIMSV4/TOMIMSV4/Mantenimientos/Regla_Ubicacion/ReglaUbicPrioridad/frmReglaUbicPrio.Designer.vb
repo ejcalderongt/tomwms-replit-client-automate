@@ -375,7 +375,7 @@ Partial Class frmReglaUbicPrio
         '
         'BindingSource1
         '
-        Me.BindingSource1.DataSource = GetType(TOMWMS.clsBeRegla_ubic_prio_param_SelectionList)
+        Me.BindingSource1.DataSource = GetType(clsBeRegla_ubic_prio_param_SelectionList)
         '
         'grdvDet
         '

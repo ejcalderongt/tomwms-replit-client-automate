@@ -54,6 +54,9 @@ Partial Class frmRegularizarInventario
         Me.tabIdStockConReserva = New DevExpress.XtraTab.XtraTabPage()
         Me.grdInventarioConReserva = New DevExpress.XtraGrid.GridControl()
         Me.grdvInventarioConReserva = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.tabRegularizacion = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridRegularizado = New DevExpress.XtraGrid.GridControl()
+        Me.GridViewRegularizado = New DevExpress.XtraGrid.Views.Grid.GridView()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -74,6 +77,9 @@ Partial Class frmRegularizarInventario
         Me.tabIdStockConReserva.SuspendLayout()
         CType(Me.grdInventarioConReserva, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdvInventarioConReserva, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tabRegularizacion.SuspendLayout()
+        CType(Me.dgridRegularizado, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridViewRegularizado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -81,7 +87,7 @@ Partial Class frmRegularizarInventario
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdRegularizar, Me.cmdImprimir, Me.cmdSalir, Me.lblRegs, Me.mnuExportar, Me.lblPrg})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 9
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
@@ -156,7 +162,7 @@ Partial Class frmRegularizarInventario
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblPrg)
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 929)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1596, 30)
@@ -164,10 +170,10 @@ Partial Class frmRegularizarInventario
         'grdRegularizar
         '
         Me.grdRegularizar.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdRegularizar.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grdRegularizar.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         Me.grdRegularizar.Location = New System.Drawing.Point(0, 0)
         Me.grdRegularizar.MainView = Me.GridView1
-        Me.grdRegularizar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grdRegularizar.Margin = New System.Windows.Forms.Padding(4)
         Me.grdRegularizar.MenuManager = Me.RibbonControl
         Me.grdRegularizar.Name = "grdRegularizar"
         Me.grdRegularizar.Size = New System.Drawing.Size(1594, 576)
@@ -198,9 +204,9 @@ Partial Class frmRegularizarInventario
         Me.grpInfo.Controls.Add(Me.Label1)
         Me.grpInfo.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpInfo.Location = New System.Drawing.Point(0, 193)
-        Me.grpInfo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grpInfo.Margin = New System.Windows.Forms.Padding(4)
         Me.grpInfo.Name = "grpInfo"
-        Me.grpInfo.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grpInfo.Padding = New System.Windows.Forms.Padding(4)
         Me.grpInfo.Size = New System.Drawing.Size(1596, 102)
         Me.grpInfo.TabIndex = 0
         Me.grpInfo.TabStop = False
@@ -218,7 +224,7 @@ Partial Class frmRegularizarInventario
         'cmbBodega
         '
         Me.cmbBodega.Location = New System.Drawing.Point(510, 25)
-        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbBodega.MenuManager = Me.RibbonControl
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -252,7 +258,7 @@ Partial Class frmRegularizarInventario
         Me.rdStockInventarioMovs.AutoSize = True
         Me.rdStockInventarioMovs.Checked = True
         Me.rdStockInventarioMovs.Location = New System.Drawing.Point(719, 28)
-        Me.rdStockInventarioMovs.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.rdStockInventarioMovs.Margin = New System.Windows.Forms.Padding(4)
         Me.rdStockInventarioMovs.Name = "rdStockInventarioMovs"
         Me.rdStockInventarioMovs.Size = New System.Drawing.Size(329, 20)
         Me.rdStockInventarioMovs.TabIndex = 6
@@ -274,7 +280,7 @@ Partial Class frmRegularizarInventario
         '
         Me.rdStockInventario.AutoSize = True
         Me.rdStockInventario.Location = New System.Drawing.Point(719, 63)
-        Me.rdStockInventario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.rdStockInventario.Margin = New System.Windows.Forms.Padding(4)
         Me.rdStockInventario.Name = "rdStockInventario"
         Me.rdStockInventario.Size = New System.Drawing.Size(133, 20)
         Me.rdStockInventario.TabIndex = 8
@@ -285,7 +291,7 @@ Partial Class frmRegularizarInventario
         '
         Me.dtHora.EditValue = New Date(2018, 3, 20, 10, 20, 46, 0)
         Me.dtHora.Location = New System.Drawing.Point(349, 25)
-        Me.dtHora.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dtHora.Margin = New System.Windows.Forms.Padding(4)
         Me.dtHora.MenuManager = Me.RibbonControl
         Me.dtHora.Name = "dtHora"
         Me.dtHora.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -303,7 +309,7 @@ Partial Class frmRegularizarInventario
         '
         Me.dtFecha.EditValue = New Date(2018, 3, 20, 10, 18, 39, 0)
         Me.dtFecha.Location = New System.Drawing.Point(118, 25)
-        Me.dtFecha.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dtFecha.Margin = New System.Windows.Forms.Padding(4)
         Me.dtFecha.MenuManager = Me.RibbonControl
         Me.dtFecha.Name = "dtFecha"
         Me.dtFecha.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -326,7 +332,7 @@ Partial Class frmRegularizarInventario
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Top
         Me.prg.Location = New System.Drawing.Point(0, 295)
-        Me.prg.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.prg.Margin = New System.Windows.Forms.Padding(4)
         Me.prg.Name = "prg"
         Me.prg.Size = New System.Drawing.Size(1596, 28)
         Me.prg.TabIndex = 1
@@ -336,17 +342,17 @@ Partial Class frmRegularizarInventario
         '
         Me.tabRegu.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tabRegu.Location = New System.Drawing.Point(0, 323)
-        Me.tabRegu.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tabRegu.Margin = New System.Windows.Forms.Padding(4)
         Me.tabRegu.Name = "tabRegu"
         Me.tabRegu.SelectedTabPage = Me.tabAjustes
         Me.tabRegu.Size = New System.Drawing.Size(1596, 606)
         Me.tabRegu.TabIndex = 5
-        Me.tabRegu.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabAjustes, Me.tabMov, Me.tabIdStockConReserva})
+        Me.tabRegu.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabAjustes, Me.tabMov, Me.tabIdStockConReserva, Me.tabRegularizacion})
         '
         'tabAjustes
         '
         Me.tabAjustes.Controls.Add(Me.grdRegularizar)
-        Me.tabAjustes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tabAjustes.Margin = New System.Windows.Forms.Padding(4)
         Me.tabAjustes.Name = "tabAjustes"
         Me.tabAjustes.Size = New System.Drawing.Size(1594, 576)
         Me.tabAjustes.Text = "Ajustes"
@@ -354,7 +360,7 @@ Partial Class frmRegularizarInventario
         'tabMov
         '
         Me.tabMov.Controls.Add(Me.dgridMovimientos)
-        Me.tabMov.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tabMov.Margin = New System.Windows.Forms.Padding(4)
         Me.tabMov.Name = "tabMov"
         Me.tabMov.Size = New System.Drawing.Size(1594, 576)
         Me.tabMov.Text = "Movimientos"
@@ -362,10 +368,10 @@ Partial Class frmRegularizarInventario
         'dgridMovimientos
         '
         Me.dgridMovimientos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridMovimientos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgridMovimientos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridMovimientos.Location = New System.Drawing.Point(0, 0)
         Me.dgridMovimientos.MainView = Me.GridView2
-        Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridMovimientos.MenuManager = Me.RibbonControl
         Me.dgridMovimientos.Name = "dgridMovimientos"
         Me.dgridMovimientos.Size = New System.Drawing.Size(1594, 576)
@@ -382,7 +388,7 @@ Partial Class frmRegularizarInventario
         'tabIdStockConReserva
         '
         Me.tabIdStockConReserva.Controls.Add(Me.grdInventarioConReserva)
-        Me.tabIdStockConReserva.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tabIdStockConReserva.Margin = New System.Windows.Forms.Padding(4)
         Me.tabIdStockConReserva.Name = "tabIdStockConReserva"
         Me.tabIdStockConReserva.Size = New System.Drawing.Size(1594, 576)
         Me.tabIdStockConReserva.Text = "Inventario con reserva"
@@ -390,10 +396,10 @@ Partial Class frmRegularizarInventario
         'grdInventarioConReserva
         '
         Me.grdInventarioConReserva.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdInventarioConReserva.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grdInventarioConReserva.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         Me.grdInventarioConReserva.Location = New System.Drawing.Point(0, 0)
         Me.grdInventarioConReserva.MainView = Me.grdvInventarioConReserva
-        Me.grdInventarioConReserva.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grdInventarioConReserva.Margin = New System.Windows.Forms.Padding(4)
         Me.grdInventarioConReserva.MenuManager = Me.RibbonControl
         Me.grdInventarioConReserva.Name = "grdInventarioConReserva"
         Me.grdInventarioConReserva.Size = New System.Drawing.Size(1594, 576)
@@ -408,6 +414,36 @@ Partial Class frmRegularizarInventario
         Me.grdvInventarioConReserva.OptionsEditForm.PopupEditFormWidth = 933
         Me.grdvInventarioConReserva.OptionsView.ColumnAutoWidth = False
         '
+        'tabRegularizacion
+        '
+        Me.tabRegularizacion.Controls.Add(Me.dgridRegularizado)
+        Me.tabRegularizacion.Name = "tabRegularizacion"
+        Me.tabRegularizacion.Size = New System.Drawing.Size(1594, 576)
+        Me.tabRegularizacion.Text = "Regularización"
+        '
+        'dgridRegularizado
+        '
+        Me.dgridRegularizado.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridRegularizado.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridRegularizado.Location = New System.Drawing.Point(0, 0)
+        Me.dgridRegularizado.MainView = Me.GridViewRegularizado
+        Me.dgridRegularizado.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridRegularizado.MenuManager = Me.RibbonControl
+        Me.dgridRegularizado.Name = "dgridRegularizado"
+        Me.dgridRegularizado.Size = New System.Drawing.Size(1594, 576)
+        Me.dgridRegularizado.TabIndex = 1
+        Me.dgridRegularizado.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewRegularizado})
+        '
+        'GridViewRegularizado
+        '
+        Me.GridViewRegularizado.DetailHeight = 431
+        Me.GridViewRegularizado.GridControl = Me.dgridRegularizado
+        Me.GridViewRegularizado.Name = "GridViewRegularizado"
+        Me.GridViewRegularizado.OptionsBehavior.ReadOnly = True
+        Me.GridViewRegularizado.OptionsEditForm.PopupEditFormWidth = 933
+        Me.GridViewRegularizado.OptionsView.ColumnAutoWidth = False
+        Me.GridViewRegularizado.OptionsView.ShowAutoFilterRow = True
+        '
         'frmRegularizarInventario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -418,7 +454,7 @@ Partial Class frmRegularizarInventario
         Me.Controls.Add(Me.grpInfo)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmRegularizarInventario"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
@@ -446,6 +482,9 @@ Partial Class frmRegularizarInventario
         Me.tabIdStockConReserva.ResumeLayout(False)
         CType(Me.grdInventarioConReserva, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grdvInventarioConReserva, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tabRegularizacion.ResumeLayout(False)
+        CType(Me.dgridRegularizado, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridViewRegularizado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout
 
@@ -485,4 +524,7 @@ End Sub
     Friend WithEvents GridView2 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents grdInventarioConReserva As DevExpress.XtraGrid.GridControl
     Friend WithEvents grdvInventarioConReserva As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents tabRegularizacion As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents dgridRegularizado As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridViewRegularizado As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

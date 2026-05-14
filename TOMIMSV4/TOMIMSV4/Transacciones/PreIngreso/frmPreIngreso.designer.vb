@@ -297,7 +297,7 @@ Partial Class frmPreIngreso
         Me.GroupControl13 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource()
-        Me.DsOrdenCompraRecepcionOperador = New TOMWMS.DsOrdenCompraRecepcionOperador()
+        Me.DsOrdenCompraRecepcionOperador = New DsOrdenCompraRecepcionOperador()
         Me.GrdOperadorBobega = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSelección = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -2786,7 +2786,7 @@ End Sub
     Friend WithEvents Completa As DataGridViewCheckBoxColumn
     Friend WithEvents DgridDetalleRec As System.Windows.Forms.DataGridView
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOrdenCompraRecepcionOperador As TOMWMS.DsOrdenCompraRecepcionOperador
+    Friend WithEvents DsOrdenCompraRecepcionOperador As DsOrdenCompraRecepcionOperador
     Friend WithEvents colSelección As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colIdOperadorRec As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colIdOperadorBodega As DevExpress.XtraGrid.Columns.GridColumn

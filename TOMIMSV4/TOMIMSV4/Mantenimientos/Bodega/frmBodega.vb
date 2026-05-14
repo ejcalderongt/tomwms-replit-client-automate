@@ -94,12 +94,6 @@ Public Class frmBodega
         Buscar_Registro()
         '#MA20260225 Estado defecto rack
         CargarComboEstadosRack()
-        If pBeBodega.Estado_Defecto_Rack > 0 Then
-            cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
-        Else
-            cmbEstadoDefectoRack.EditValue = 0
-        End If
-
         txtCodigo.Focus()
 
     End Sub
@@ -1299,6 +1293,7 @@ Public Class frmBodega
             cmbCentroCostoERP.EditValue = pBeBodega.Centro_Costo_Erp
             cmbCentroCostoDirERP.EditValue = pBeBodega.Centro_Costo_Dir_Erp
             cmbCentroCostoDepERP.EditValue = pBeBodega.Centro_Costo_Dep_Erp
+
             If pBeBodega.Estado_Defecto_Rack > 0 Then
                 cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
             Else
@@ -1310,6 +1305,7 @@ Public Class frmBodega
             chkRequerirMismoProductoPosiciones.Checked = pBeBodega.requerir_mismo_producto_posiciones
 
             chkBodegaClienteAjusteByB.Checked = pBeBodega.Bodega_Cliente_Ajuste_ByB
+            chkControlGuia.Checked = pBeBodega.Control_Guia
 
         Catch ex As Exception
 
@@ -1567,6 +1563,8 @@ Public Class frmBodega
             pBeBodega.permitir_cambio_ubic_indice_menor = chkPermitirCambioUbicIndiceMenor.Checked
             pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
             pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
+            pBeBodega.Control_Guia = chkControlGuia.Checked
+
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1806,6 +1804,7 @@ Public Class frmBodega
                     pBeBodega.Estado_Defecto_Rack = 0
                 End If
                 pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
+                pBeBodega.Control_Guia = chkControlGuia.Checked
 
                 pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
                 '#Nuevos parámetros cambio ubicación

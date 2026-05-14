@@ -994,6 +994,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.EsExportacion = BeINavPedTrasladoEnc.IsExport
                         pBePedidoEnc.Guia_Transporte = BeINavPedTrasladoEnc.Transportation_Guide
 
+                        If BeINavPedTrasladoEnc.Transport_Company <> "" Then
+                            Dim BeTransporte As New clsBeEmpresa_transporte
+                            BeTransporte.Nombre = BeINavPedTrasladoEnc.Transport_Company
+                            clsLnEmpresa_transporte.GetSingle_By_Nombre(BeTransporte,
+                                                                        lConectionInterface,
+                                                                        lTransInterface)
+                            pBePedidoEnc.IdEmpresaTransporte = BeTransporte.IdEmpresaTransporte
+                        End If
+
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,
                                                              lTransInterface)
@@ -3517,7 +3526,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
-    Private Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
+    Public Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc,
+                                         pEstadoPicking As String,
+                                         lConnection As SqlConnection,
+                                         lTransaction As SqlTransaction) As Boolean
 
         Nuevo_Picking = False
 
@@ -3556,7 +3568,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                       .ToList()
 
             ' Llamar a Guardar_Picking
-            If Guardar_Picking(pBePedidoEnc, listaPickingDet, listaPickingUbic, lConnection, lTransaction) Then
+            If Guardar_Picking(pBePedidoEnc, listaPickingDet, listaPickingUbic, pEstadoPicking, lConnection, lTransaction) Then
                 Nuevo_Picking = True
             End If
 
@@ -3797,12 +3809,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
     End Function
 
     Private Shared Function Guardar_Picking(ByVal BePedidoEnc As clsBeTrans_pe_enc,
-                                             ByVal BeListPickingDet As List(Of clsBeTrans_picking_det),
-                                             pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
-                                             lConnection As SqlConnection,
-                                             lTransaction As SqlTransaction) As Boolean
+                                            ByVal BeListPickingDet As List(Of clsBeTrans_picking_det),
+                                            ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                            ByVal pEstadoPicking As String,
+                                            lConnection As SqlConnection,
+                                            lTransaction As SqlTransaction) As Boolean
 
-        Dim vContinuar As Boolean = False
         Dim BePickingEnc As New clsBeTrans_picking_enc
 
         Guardar_Picking = False
@@ -3826,13 +3838,13 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             BePickingEnc.Fecha_picking = Now
             BePickingEnc.Hora_ini = BePedidoEnc.Hora_ini
             BePickingEnc.Hora_fin = BePedidoEnc.Hora_fin
-            BePickingEnc.Estado = "Cerrado"
+            BePickingEnc.Estado = pEstadoPicking
             BePickingEnc.User_agr = BePedidoEnc.User_agr
             BePickingEnc.User_mod = BePedidoEnc.User_agr
             BePickingEnc.Fec_mod = Now
             BePickingEnc.Detalle_operador = False
             BePickingEnc.Activo = True
-            BePickingEnc.verifica_auto = IIf(BePedidoEnc.TipoPedido.Verificar, True, False)
+            BePickingEnc.verifica_auto = BePedidoEnc.TipoPedido.Verificar
             BePickingEnc.procesado_bof = True
             BePickingEnc.Requiere_Preparacion = False
             BePickingEnc.Fotografia_Verificacion = False
@@ -3850,12 +3862,40 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                 Dim BeListOp As New List(Of clsBeTrans_picking_op)
                 Dim BeOp As New clsBeTrans_picking_op
-                BeOp = clsLnTrans_picking_op.Get_BeOperador_Defecto_By_IdPickingEnc(BePickingEnc.IdBodega,
+                Dim vAsignarTodosOperadores As Boolean = BeTipoPedido.Asignar_Todos_Operadores
+
+                If vAsignarTodosOperadores Then
+                    Dim BeOperadoresList = clsLnOperador_bodega.Get_All_By_IdBodega_For_Tarea(BePickingEnc.IdBodega,
+                                                                                              clsDataContractDI.tTipoTarea.PICK,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+                    For Each BeOperador As clsBeOperador_bodega In BeOperadoresList
+                        BeOp = New clsBeTrans_picking_op
+                        BeOp.IdOperadorPicking = clsLnTrans_picking_op.MaxID(lConnection, lTransaction) + 1
+                        BeOp.IdPickingEnc = BePickingEnc.IdPickingEnc
+                        BeOp.IdOperadorBodega = BeOperador.IdOperadorBodega
+                        BeOp.User_agr = "MI3"
+                        BeOp.Fec_agr = Now
+                        BeOp.User_mod = "MI3"
+                        BeOp.Fec_mod = Now
+                        BeOp.IsNew = True
+                        BeListOp.Add(BeOp)
+                    Next
+                Else
+                    BeOp = clsLnTrans_picking_op.Get_BeOperador_Defecto_By_IdPickingEnc(BePickingEnc.IdBodega,
                                                                                     BePickingEnc.IdPickingEnc,
                                                                                     lConnection,
                                                                                     lTransaction)
-                If Not BeOp Is Nothing Then
+
                     BeListOp.Add(BeOp)
+                End If
+
+                If BeListOp.Count = 0 Then
+                    If BePickingEnc IsNot Nothing AndAlso BePickingEnc.IdPickingEnc > 0 Then
+                        BeListOp = clsLnTrans_picking_op.Get_All_By_IdPickingEnc(BePickingEnc.IdPickingEnc).ToList
+                    Else
+                        BeListOp = New List(Of clsBeTrans_picking_op)
+                    End If
                 End If
 
                 Guardar_Picking = clsLnTrans_picking_enc.Guardar(BePickingEnc,
@@ -3873,7 +3913,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
+            Throw
         End Try
 
     End Function
@@ -3968,7 +4008,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                             BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
                             '#EJC20251911: Terminar de afinar el método.
 
-                            If Nuevo_Picking(BePedidoEnc, lConnection, lTransaction) Then
+                            If Nuevo_Picking(BePedidoEnc, "Cerrado", lConnection, lTransaction) Then
 
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking creado para el documento: {0}/{1}{2}",
                                                                                      BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
@@ -3996,12 +4036,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                    lTransaction)
 
                                 clsLnTrans_picking_ubic.Procesar_Picking_Desde_BOF(pListBePickingUbic,
-                                                                               BePedidoEnc.User_agr,
-                                                                               BeListPickingDet,
-                                                                               BePickingEnc,
-                                                                               pListBeStockRes,
-                                                                               lConnection,
-                                                                               lTransaction)
+                                                                                   BePedidoEnc.User_agr,
+                                                                                   BeListPickingDet,
+                                                                                   BePickingEnc,
+                                                                                   pListBeStockRes,
+                                                                                   lConnection,
+                                                                                   lTransaction)
 
                                 BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
                                                                                            lConnection,

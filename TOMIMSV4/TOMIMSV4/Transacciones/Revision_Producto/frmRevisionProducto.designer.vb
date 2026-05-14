@@ -37,7 +37,7 @@ Partial Class frmRevisionProducto
         Me.cmdEnviarTarea = New DevExpress.XtraEditors.SimpleButton()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.RevisionBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsRevisionProducto = New TOMWMS.DsRevisionProducto()
+        Me.DsRevisionProducto = New DsRevisionProducto()
         Me.GridView = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccionar = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -411,7 +411,7 @@ Partial Class frmRevisionProducto
     Friend WithEvents Grid As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents RevisionBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsRevisionProducto As TOMWMS.DsRevisionProducto
+    Friend WithEvents DsRevisionProducto As DsRevisionProducto
     Friend WithEvents colSeleccionar As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colProducto As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colPresentacion As DevExpress.XtraGrid.Columns.GridColumn

@@ -35,7 +35,7 @@ Partial Class frmResumenExistenciasUMBas
         Me.grdResumenUMB = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DsDetalleExistenciasBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsDetalleExistencias = New TOMWMS.DsDetalleExistencias()
+        Me.DsDetalleExistencias = New DsDetalleExistencias()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.txtNombreProducto = New DevExpress.XtraEditors.TextEdit()

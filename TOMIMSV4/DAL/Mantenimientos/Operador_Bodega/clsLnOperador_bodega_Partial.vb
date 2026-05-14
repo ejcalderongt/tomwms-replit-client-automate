@@ -1048,6 +1048,52 @@ Partial Public Class clsLnOperador_bodega
 
     End Function
 
+    Public Shared Function Get_All_By_IdBodega_For_Tarea(ByVal pIdBodega As Integer,
+                                                         ByVal pTipoTarea As clsDataContractDI.tTipoTarea,
+                                                         lConnection As SqlConnection,
+                                                         lTransaction As SqlTransaction) As List(Of clsBeOperador_bodega)
+
+        Get_All_By_IdBodega_For_Tarea = New List(Of clsBeOperador_bodega)()
+
+        Try
+
+            Dim vSQL As String = "SELECT ob.IdOperadorBodega, o.IdOperador, ob.IdBodega, ob.Activo, 
+                                         ob.User_agr, ob.Fec_agr, ob.User_mod,ob.Fec_mod
+                                   FROM operador_bodega AS ob 
+                                   INNER JOIN operador AS o ON ob.IdOperador = o.IdOperador 
+                                   INNER JOIN bodega AS b ON ob.IdBodega = b.IdBodega 
+                                   WHERE ob.IdBodega=@IdBodega and o.activo=1 and ob.activo = 1 AND o.usa_hh = 1 "
+
+            If pTipoTarea = clsDataContractDI.tTipoTarea.PICK Then
+                vSQL += " AND (o.pickea = 1 OR o.verifica = 1)"
+            ElseIf pTipoTarea = clsDataContractDI.tTipoTarea.RECE Then
+                vSQL += " AND (o.recibe = 1) "
+            ElseIf pTipoTarea = clsDataContractDI.tTipoTarea.UBIC Then
+                vSQL += " AND (o.ubica = 1) "
+            End If
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                For Each lRow As DataRow In lDataTable.Rows
+                    Dim BeOperadorBodega As New clsBeOperador_bodega
+                    CargarHH(BeOperadorBodega, lRow, lConnection, lTransaction)
+                    Get_All_By_IdBodega_For_Tarea.Add(BeOperadorBodega)
+                Next
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+
+    End Function
 
 
 #Region "IDisposable Support"

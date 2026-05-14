@@ -49,7 +49,7 @@ Partial Class frmR3Asistente
         Me.GrpListado = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DTBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsAsistente = New TOMWMS.DsAsistente()
+        Me.DsAsistente = New DsAsistente()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -372,7 +372,7 @@ Partial Class frmR3Asistente
     Friend WithEvents RepositoryItemCheckEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit
     Friend WithEvents RepositoryItemCheckEdit2 As DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit
     Friend WithEvents DTBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsAsistente As TOMWMS.DsAsistente
+    Friend WithEvents DsAsistente As DsAsistente
     Friend WithEvents colSeleccion As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colTipo As DevExpress.XtraGrid.Columns.GridColumn
 End Class

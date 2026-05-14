@@ -373,14 +373,21 @@ Public Class frmInventario
 
             End Select
 
+            clsTrans.Commit_Transaction()
         Catch ex As Exception
+
+            clsTrans.Rollback_Transaction()
+
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+
         Finally
+
             SplashScreenManager.CloseForm(False)
             IsLoading = False
+
         End Try
 
     End Sub

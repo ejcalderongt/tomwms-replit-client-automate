@@ -33,6 +33,7 @@ Public Class clsLnI_nav_ped_traslado_enc
                 .Company_Code = IIf(IsDBNull(dr.Item("Comments")), "", dr.Item("Comments"))
                 .IsExport = IIf(IsDBNull(dr.Item("IsExport")), "", dr.Item("IsExport"))
                 .Transportation_Guide = IIf(IsDBNull(dr.Item("Transportation_Guide")), "", dr.Item("Transportation_Guide"))
+                .Transport_Company = IIf(IsDBNull(dr.Item("Transport_Company")), "", dr.Item("Transport_Company"))
 
             End With
 
@@ -83,6 +84,10 @@ Public Class clsLnI_nav_ped_traslado_enc
                 If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor.Trim = "" Then Ins.Add("RoadCodigoVendedor", "@RoadCodigoVendedor", DataType.Parametro)
             End If
 
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then Ins.Add("Transport_Company", "@Transport_Company", DataType.Parametro)
+            End If
+
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
@@ -124,6 +129,10 @@ Public Class clsLnI_nav_ped_traslado_enc
 
             If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor Is Nothing Then
                 If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@RoadCodigoVendedor", oBeI_nav_ped_traslado_enc.RoadCodigoVendedor))
+            End If
+
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@Transport_Company", oBeI_nav_ped_traslado_enc.Transport_Company))
             End If
 
             cmd.Parameters.Add(New SqlParameter("@ISEXPORT", oBeI_nav_ped_traslado_enc.IsExport))
@@ -187,6 +196,10 @@ Public Class clsLnI_nav_ped_traslado_enc
                 If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor.Trim = "" Then Upd.Add("RoadCodigoVendedor", "@RoadCodigoVendedor", DataType.Parametro)
             End If
 
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then Upd.Add("Transport_Company", "@Transport_Company", DataType.Parametro)
+            End If
+
             Upd.Where("No = @No")
 
             Dim sp As String = Upd.SQL()
@@ -232,6 +245,10 @@ Public Class clsLnI_nav_ped_traslado_enc
             End If
 
             cmd.Parameters.Add(New SqlParameter("@ISEXPORT", oBeI_nav_ped_traslado_enc.IsExport))
+
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@Transport_Company", oBeI_nav_ped_traslado_enc.Transport_Company))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -806,7 +823,7 @@ Public Class clsLnI_nav_ped_traslado_enc
                                 (BePedidoEnc.Bodega_Destino = "" OrElse BePedidoEnc.Cliente.Codigo = BePedidoEnc.Bodega_Destino)) _
                                 OrElse (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa AndAlso BePedidoEnc.Bodega_Destino <> "") Then
 
-                                If Nuevo_Picking(BePedidoEnc, lConnection, lTransaction) Then
+                                If Nuevo_Picking(BePedidoEnc, "Cerrado", lConnection, lTransaction) Then
 
                                     clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking creado para el documento: {0}/{1}{2}",
                                                                                      BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
@@ -863,9 +880,9 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                                                          lTransaction)
 
                                         Dim despachado As Boolean = clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
-                                                                                                         BePedidoEnc,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
+                                                                                                             BePedidoEnc,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
 
                                         If Not despachado Then
                                             clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} no pudo ser despachado {2}",

@@ -267,8 +267,16 @@ Partial Public Class clsLnProducto_codigos_barra
 
         Try
 
+            If lCodigosBarraInMemory Is Nothing Then
+                lCodigosBarraInMemory = New List(Of clsBeProducto_codigos_barra)
+            End If
+
             Dim lCodigos As New List(Of clsBeProducto_codigos_barra)
-            lCodigos = lCodigosBarraInMemory.FindAll(Function(x) x.IdProducto = pIdProducto)
+
+            lCodigos = lCodigosBarraInMemory.FindAll(Function(x) x IsNot Nothing AndAlso x.IdProducto = pIdProducto)
+
+            'Dim lCodigos As New List(Of clsBeProducto_codigos_barra)
+            'lCodigos = lCodigosBarraInMemory.FindAll(Function(x) x.IdProducto = pIdProducto)
 
             If Not lCodigos Is Nothing AndAlso lCodigos.Count > 0 Then
                 Return lCodigos

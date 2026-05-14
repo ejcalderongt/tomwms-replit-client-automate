@@ -5,6 +5,9 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports System.IO
+Imports System.Text
+Imports System.Globalization
 
 Public Class frmAjusteStock
 
@@ -453,8 +456,8 @@ Public Class frmAjusteStock
     End Function
 
     Private Function Get_Proveedor_Texto(ByVal pIdStock As Integer,
-                                         ByVal pConn As SqlClient.SqlConnection,
-                                         ByVal pTrans As SqlClient.SqlTransaction) As String
+                                         ByVal pConn As SqlConnection,
+                                         ByVal pTrans As SqlTransaction) As String
         If pIdStock <= 0 Then Return ""
         Try
             Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(pIdStock, pConn, pTrans)
@@ -628,6 +631,7 @@ Public Class frmAjusteStock
                     BeAjusteDetBorrador.idstockres = IdStockRes
                     BeAjusteDetBorrador.idstocklink = 0
                     BeAjusteDetBorrador.esnuevolink = 0
+                    BeAjusteDetBorrador.IdRecepcionEnc = frmStockList.pSingleBEVWStockRes.IdRecepcionEnc
 
                     If BeBodega.Control_Talla_Color Then
 
@@ -940,6 +944,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdProductoTallaColor_origen = stockEspecificoSeleccionado.IdProductoTallaColor
             BeAjusteDet.Talla_origen = stockEspecificoSeleccionado.Codigo_Talla
             BeAjusteDet.Color_origen = stockEspecificoSeleccionado.Codigo_Color
+            BeAjusteDet.idRecepcionEnc = stockEspecificoSeleccionado.IdRecepcionEnc
             lBeTransAjusteDet.Add(BeAjusteDet)
 
             ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
@@ -1311,7 +1316,7 @@ Public Class frmAjusteStock
 
         Dim cntFaltantes As Integer = 0
         Dim cntRecreados As Integer = 0
-        Dim warnings As New System.Text.StringBuilder()
+        Dim warnings As New StringBuilder()
 
         Try
             If lDetallesBorrador Is Nothing OrElse lDetallesBorrador.Count = 0 Then Return 0
@@ -1532,7 +1537,7 @@ Public Class frmAjusteStock
 
         Try
 
-            If TypeOf e.Control Is System.Windows.Forms.ComboBox Then
+            If TypeOf e.Control Is Windows.Forms.ComboBox Then
 
                 If dgrid.CurrentCell.OwningColumn.Name = "tipoajuste" Then
 
@@ -3702,9 +3707,11 @@ Public Class frmAjusteStock
 
             Crear_Movimientos_Positivos(lConnection, lTransaction)
 
-            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc, lBeTransAjusteDet, lBeTransMovimientos,
-                                                                                      lConnection,
-                                                                                      lTransaction)
+            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
+                                                 lBeTransAjusteDet,
+                                                 lBeTransMovimientos,
+                                                 lConnection,
+                                                 lTransaction)
 
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
@@ -4944,6 +4951,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdPresentacion = pStockTemporal.IdPresentacion
             BeAjusteDet.IdUnidadMedida = vProductoSinStock.IdUnidadMedidaBasica
             BeAjusteDet.IdUbicacion = IIf(pStockTemporal.IdUbicacion = 0, ubic, pStockTemporal.IdUbicacion)
+            BeAjusteDet.idRecepcionEnc = pStockTemporal.IdRecepcionEnc
 
             If BeAjusteDet.IdPresentacion <> 0 Then
                 BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
@@ -5243,15 +5251,6 @@ Public Class frmAjusteStock
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-        End Try
-    End Sub
-
-    Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
-
-        Try
-
-        Catch ex As Exception
-            Debug.Print(ex.Message)
         End Try
     End Sub
 
@@ -5635,10 +5634,6 @@ Public Class frmAjusteStock
 
     End Sub
 
-    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
-
-    End Sub
-
     Private Sub Mostrar_Columnas_Talla_Color(ByVal mostrar_talla_color As Boolean)
         Try
 
@@ -5765,7 +5760,7 @@ Public Class frmAjusteStock
             ByVal lote As List(Of clsBeTrans_ajuste_det)) As String
         If lote Is Nothing OrElse lote.Count = 0 Then Return ""
         Try
-            Dim sb As New System.Text.StringBuilder()
+            Dim sb As New StringBuilder()
             Dim ordenado = lote.OrderBy(Function(x) x.Codigo_producto) _
                                .ThenBy(Function(x) x.Lote_original) _
                                .ThenBy(Function(x) x.IdStock)
@@ -5773,12 +5768,12 @@ Public Class frmAjusteStock
                 sb.Append(If(d.Codigo_producto, "")).Append("|"c)
                 sb.Append(If(d.Lote_original, "")).Append("|"c)
                 sb.Append(d.IdStock).Append("|"c)
-                sb.Append(d.Cantidad_original.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).Append("|"c)
-                sb.Append(d.Cantidad_nueva.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Cantidad_original.ToString("R", CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Cantidad_nueva.ToString("R", CultureInfo.InvariantCulture)).Append("|"c)
                 sb.Append(d.Idtipoajuste).Append(";"c)
             Next
             Using sha As System.Security.Cryptography.SHA256 = System.Security.Cryptography.SHA256.Create()
-                Dim bytes() As Byte = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(sb.ToString()))
+                Dim bytes() As Byte = sha.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()))
                 Return BitConverter.ToString(bytes).Replace("-", "")
             End Using
         Catch ex As Exception
@@ -6065,7 +6060,8 @@ Public Class frmAjusteStock
         .fecha_creacion = fechaActual,
         .usuario_creacion = usuarioActual,
         .fecha_modificacion = fechaActual,
-        .usuario_modificacion = usuarioActual
+        .usuario_modificacion = usuarioActual,
+        .IdRecepcionEnc = item.idRecepcionEnc
     }
     End Function
 
@@ -6113,7 +6109,8 @@ Public Class frmAjusteStock
         .Factor = item.Factor,
         .Nombre_Presentacion = item.Nombre_Presentacion,
         .CantReservada = item.CantReservada,
-        .Presentacion = item.Presentacion
+        .Presentacion = item.Presentacion,
+        .idRecepcionEnc = item.IdRecepcionEnc
     }
     End Function
 
@@ -6248,8 +6245,8 @@ Public Class frmAjusteStock
         If v Is Nothing Then Return 0D
         Dim d As Decimal
         If Decimal.TryParse(v.ToString(),
-                            Globalization.NumberStyles.Any,
-                            Globalization.CultureInfo.CurrentCulture, d) Then Return d
+                            NumberStyles.Any,
+                            CultureInfo.CurrentCulture, d) Then Return d
         Return 0D
     End Function
 
@@ -6432,12 +6429,12 @@ Public Class frmAjusteStock
             If difObj Is Nothing OrElse IsDBNull(difObj) Then Return
             Dim dif As Decimal = 0D
             If Decimal.TryParse(difObj.ToString(),
-                                Globalization.NumberStyles.Any,
-                                Globalization.CultureInfo.CurrentCulture,
+                                NumberStyles.Any,
+                                CultureInfo.CurrentCulture,
                                 dif) Then
                 If dif <> 0D Then
                     e.Appearance.BackColor =
-                        System.Drawing.Color.FromArgb(255, 252, 232, 232)
+                        Color.FromArgb(255, 252, 232, 232)
                 End If
             End If
         Catch
@@ -6502,61 +6499,61 @@ Public Class frmAjusteStock
 
         ' --- 3) JSON compacto para el QR (sin librerias externas)
         Dim qrJson As String = String.Format(
-            Globalization.CultureInfo.InvariantCulture,
+            CultureInfo.InvariantCulture,
             "{{""t"":""AJ"",""id"":{0},""bod"":{1},""f"":""{2}"",""b"":{3},""ln"":{4},""pr"":{5},""se"":{6},""sc"":{7},""sd"":{8}}}",
             docId, idBod,
             fecDoc.ToString("yyyy-MM-ddTHH:mm:ss",
-                            Globalization.CultureInfo.InvariantCulture),
+                            CultureInfo.InvariantCulture),
             If(esBorrador, "true", "false"),
             totLineas, totProd, sumExi, sumCan, sumDif)
 
         ' --- 4) Construccion del reporte
         Dim rpt As New DevExpress.XtraReports.UI.XtraReport()
-        rpt.PaperKind = System.Drawing.Printing.PaperKind.Letter
+        rpt.PaperKind = PaperKind.Letter
         rpt.Landscape = True
-        rpt.Margins = New System.Drawing.Printing.Margins(40, 40, 40, 40)
+        rpt.Margins = New Margins(40, 40, 40, 40)
         rpt.DataSource = DT_RC2026_Consolidado
         rpt.DataMember = ""
-        rpt.Font = New System.Drawing.Font("Segoe UI", 8)
+        rpt.Font = New Font("Segoe UI", 8)
         rpt.DisplayName = $"Resumen Ajuste #{docId}"
 
         ' --- 4a) Page Header
-        Dim phb As New DevExpress.XtraReports.UI.PageHeaderBand()
+        Dim phb As New PageHeaderBand()
         phb.HeightF = 130
         rpt.Bands.Add(phb)
 
         ' Titulo
-        Dim lblTitulo As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblTitulo As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
-            .SizeF = New System.Drawing.SizeF(720.0F, 28.0F),
-            .Font = New System.Drawing.Font("Segoe UI Semibold", 16,
-                                            System.Drawing.FontStyle.Bold),
+            .SizeF = New SizeF(720.0F, 28.0F),
+            .Font = New Font("Segoe UI Semibold", 16,
+                                            FontStyle.Bold),
             .Text = "AJUSTE DE STOCK - RESUMEN CONSOLIDADO",
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         phb.Controls.Add(lblTitulo)
 
         ' Linea separadora
-        Dim line1 As New DevExpress.XtraReports.UI.XRLine() With {
+        Dim line1 As New XRLine() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 30.0F),
-            .SizeF = New System.Drawing.SizeF(720.0F, 2.0F),
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .SizeF = New SizeF(720.0F, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         phb.Controls.Add(line1)
 
         ' Datos cabecera (lado izquierdo)
-        Dim hdrFont As New System.Drawing.Font("Segoe UI", 9)
+        Dim hdrFont As New Font("Segoe UI", 9)
         Dim addHdr = Sub(label As String, value As String, top As Single)
-                         Dim lblK As New DevExpress.XtraReports.UI.XRLabel() With {
+                         Dim lblK As New XRLabel() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(0F, top),
-                             .SizeF = New System.Drawing.SizeF(80.0F, 14.0F),
-                             .Font = New System.Drawing.Font("Segoe UI Semibold", 9,
-                                                             System.Drawing.FontStyle.Bold),
+                             .SizeF = New SizeF(80.0F, 14.0F),
+                             .Font = New Font("Segoe UI Semibold", 9,
+                                                             FontStyle.Bold),
                              .Text = label
                          }
-                         Dim lblV As New DevExpress.XtraReports.UI.XRLabel() With {
+                         Dim lblV As New XRLabel() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(82.0F, top),
-                             .SizeF = New System.Drawing.SizeF(540.0F, 14.0F),
+                             .SizeF = New SizeF(540.0F, 14.0F),
                              .Font = hdrFont,
                              .Text = value
                          }
@@ -6573,44 +6570,44 @@ Public Class frmAjusteStock
 
         ' Watermark "BORRADOR" si aplica
         If esBorrador Then
-            Dim lblBorr As New DevExpress.XtraReports.UI.XRLabel() With {
+            Dim lblBorr As New XRLabel() With {
                 .LocationFloat = New DevExpress.Utils.PointFloat(300.0F, 38.0F),
-                .SizeF = New System.Drawing.SizeF(160.0F, 24.0F),
-                .Font = New System.Drawing.Font("Segoe UI Black", 14,
-                                                System.Drawing.FontStyle.Bold),
+                .SizeF = New SizeF(160.0F, 24.0F),
+                .Font = New Font("Segoe UI Black", 14,
+                                                FontStyle.Bold),
                 .Text = "* BORRADOR *",
-                .ForeColor = System.Drawing.Color.FromArgb(190, 60, 60),
-                .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                .Borders = DevExpress.XtraPrinting.BorderSide.All,
-                .BorderColor = System.Drawing.Color.FromArgb(190, 60, 60),
+                .ForeColor = Color.FromArgb(190, 60, 60),
+                .TextAlignment = TextAlignment.MiddleCenter,
+                .Borders = BorderSide.All,
+                .BorderColor = Color.FromArgb(190, 60, 60),
                 .BorderWidth = 2
             }
             phb.Controls.Add(lblBorr)
         End If
 
         ' QR (lado derecho)
-        Dim qr As New DevExpress.XtraReports.UI.XRBarCode() With {
+        Dim qr As New XRBarCode() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(640.0F, 38.0F),
-            .SizeF = New System.Drawing.SizeF(80.0F, 80.0F),
+            .SizeF = New SizeF(80.0F, 80.0F),
             .Text = qrJson,
             .ShowText = False,
             .AutoModule = True,
-            .Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 2, 2, 100.0F)
+            .Padding = New PaddingInfo(2, 2, 2, 2, 100.0F)
         }
-        Dim qrGen As New DevExpress.XtraPrinting.BarCode.QRCodeGenerator()
+        Dim qrGen As New BarCode.QRCodeGenerator()
         qrGen.CompactionMode =
-            DevExpress.XtraPrinting.BarCode.QRCodeCompactionMode.Byte
+            BarCode.QRCodeCompactionMode.Byte
         qrGen.ErrorCorrectionLevel =
-            DevExpress.XtraPrinting.BarCode.QRCodeErrorCorrectionLevel.M
+            BarCode.QRCodeErrorCorrectionLevel.M
         qr.Symbology = qrGen
         phb.Controls.Add(qr)
 
         ' Etiqueta "Doc QR" debajo del QR
-        Dim lblQrCap As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblQrCap As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(640.0F, 118.0F),
-            .SizeF = New System.Drawing.SizeF(80.0F, 10.0F),
-            .Font = New System.Drawing.Font("Segoe UI", 7),
-            .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+            .SizeF = New SizeF(80.0F, 10.0F),
+            .Font = New Font("Segoe UI", 7),
+            .TextAlignment = TextAlignment.MiddleCenter,
             .Text = "Doc QR"
         }
         phb.Controls.Add(lblQrCap)
@@ -6630,27 +6627,27 @@ Public Class frmAjusteStock
             New Object() {"Ubicaciones", "Ubicaciones", 195.0F, False}
         }
 
-        Dim hdrTbl As New DevExpress.XtraReports.UI.XRTable() With {
+        Dim hdrTbl As New XRTable() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 130.0F - 18.0F),
-            .SizeF = New System.Drawing.SizeF(970.0F, 18.0F),
-            .Font = New System.Drawing.Font("Segoe UI Semibold", 8,
-                                            System.Drawing.FontStyle.Bold),
-            .Borders = DevExpress.XtraPrinting.BorderSide.All,
-            .BackColor = System.Drawing.Color.FromArgb(33, 64, 95),
-            .ForeColor = System.Drawing.Color.White
+            .SizeF = New SizeF(970.0F, 18.0F),
+            .Font = New Font("Segoe UI Semibold", 8,
+                                            FontStyle.Bold),
+            .Borders = BorderSide.All,
+            .BackColor = Color.FromArgb(33, 64, 95),
+            .ForeColor = Color.White
         }
-        Dim hdrRow As New DevExpress.XtraReports.UI.XRTableRow()
+        Dim hdrRow As New XRTableRow()
         For Each cd In colDefs
             Dim caption = CStr(cd(1))
             Dim w = CSng(cd(2))
             Dim alignRight = CBool(cd(3))
-            Dim cell As New DevExpress.XtraReports.UI.XRTableCell() With {
+            Dim cell As New XRTableCell() With {
                 .Text = caption,
                 .WidthF = w,
                 .TextAlignment = If(alignRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleLeft),
-                .Padding = New DevExpress.XtraPrinting.PaddingInfo(3, 3, 0, 0, 100.0F)
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 0, 0, 100.0F)
             }
             hdrRow.Cells.Add(cell)
         Next
@@ -6658,32 +6655,32 @@ Public Class frmAjusteStock
         phb.Controls.Add(hdrTbl)
 
         ' --- 4c) Detail Band con XRTable bindeada al DataTable
-        Dim detail As New DevExpress.XtraReports.UI.DetailBand()
+        Dim detail As New DetailBand()
         detail.HeightF = 16
         rpt.Bands.Add(detail)
 
-        Dim detTbl As New DevExpress.XtraReports.UI.XRTable() With {
+        Dim detTbl As New XRTable() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
-            .SizeF = New System.Drawing.SizeF(970.0F, 16.0F),
-            .Font = New System.Drawing.Font("Segoe UI", 8),
-            .Borders = DevExpress.XtraPrinting.BorderSide.All,
-            .BorderColor = System.Drawing.Color.FromArgb(220, 220, 220)
+            .SizeF = New SizeF(970.0F, 16.0F),
+            .Font = New Font("Segoe UI", 8),
+            .Borders = BorderSide.All,
+            .BorderColor = Color.FromArgb(220, 220, 220)
         }
-        Dim detRow As New DevExpress.XtraReports.UI.XRTableRow()
+        Dim detRow As New XRTableRow()
         detRow.Name = "rowDetail"
         For Each cd In colDefs
             Dim field = CStr(cd(0))
             Dim w = CSng(cd(2))
             Dim alignRight = CBool(cd(3))
-            Dim cell As New DevExpress.XtraReports.UI.XRTableCell() With {
+            Dim cell As New XRTableCell() With {
                 .WidthF = w,
                 .TextAlignment = If(alignRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleLeft),
-                .Padding = New DevExpress.XtraPrinting.PaddingInfo(3, 3, 0, 0, 100.0F)
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 0, 0, 100.0F)
             }
             cell.ExpressionBindings.Add(
-                New DevExpress.XtraReports.UI.ExpressionBinding(
+                New ExpressionBinding(
                     "BeforePrint", "Text",
                     If(field = "Lineas", "[Lineas]",
                         If(alignRight, "FormatString('{0:n6}', [" & field & "])",
@@ -6691,7 +6688,7 @@ Public Class frmAjusteStock
             If field = "Lineas" Then
                 cell.ExpressionBindings.Clear()
                 cell.ExpressionBindings.Add(
-                    New DevExpress.XtraReports.UI.ExpressionBinding(
+                    New ExpressionBinding(
                         "BeforePrint", "Text", "FormatString('{0:n0}', [Lineas])"))
             End If
             detRow.Cells.Add(cell)
@@ -6703,17 +6700,17 @@ Public Class frmAjusteStock
         AddHandler detRow.BeforePrint,
             Sub(s, eArgs)
                 Try
-                    Dim row = DirectCast(s, DevExpress.XtraReports.UI.XRTableRow)
+                    Dim row = DirectCast(s, XRTableRow)
                     Dim difCell = row.Cells(8) ' indice de Diferencia segun colDefs
                     Dim difTxt = If(difCell.Text, "")
                     Dim dif As Decimal = 0D
                     If Decimal.TryParse(difTxt,
-                            Globalization.NumberStyles.Any,
-                            Globalization.CultureInfo.CurrentCulture, dif) Then
+                            NumberStyles.Any,
+                            CultureInfo.CurrentCulture, dif) Then
                         If dif <> 0D Then
-                            row.BackColor = System.Drawing.Color.FromArgb(252, 232, 232)
+                            row.BackColor = Color.FromArgb(252, 232, 232)
                         Else
-                            row.BackColor = System.Drawing.Color.White
+                            row.BackColor = Color.White
                         End If
                     End If
                 Catch
@@ -6721,31 +6718,31 @@ Public Class frmAjusteStock
             End Sub
 
         ' --- 4d) Report Footer: totales + firmas
-        Dim rfb As New DevExpress.XtraReports.UI.ReportFooterBand()
+        Dim rfb As New ReportFooterBand()
         rfb.HeightF = 110
         rpt.Bands.Add(rfb)
 
-        Dim line2 As New DevExpress.XtraReports.UI.XRLine() With {
+        Dim line2 As New XRLine() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 4.0F),
-            .SizeF = New System.Drawing.SizeF(970.0F, 2.0F),
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .SizeF = New SizeF(970.0F, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         rfb.Controls.Add(line2)
 
-        Dim totFont As New System.Drawing.Font("Segoe UI Semibold", 9,
-                                               System.Drawing.FontStyle.Bold)
+        Dim totFont As New Font("Segoe UI Semibold", 9,
+                                               FontStyle.Bold)
         Dim addTot = Sub(label As String, value As String, top As Single)
-                         Dim lblK As New DevExpress.XtraReports.UI.XRLabel() With {
+                         Dim lblK As New XRLabel() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(0F, top),
-                             .SizeF = New System.Drawing.SizeF(160.0F, 14.0F),
+                             .SizeF = New SizeF(160.0F, 14.0F),
                              .Font = totFont,
                              .Text = label
                          }
-                         Dim lblV As New DevExpress.XtraReports.UI.XRLabel() With {
+                         Dim lblV As New XRLabel() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(160.0F, top),
-                             .SizeF = New System.Drawing.SizeF(180.0F, 14.0F),
-                             .Font = New System.Drawing.Font("Segoe UI", 9),
-                             .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight,
+                             .SizeF = New SizeF(180.0F, 14.0F),
+                             .Font = New Font("Segoe UI", 9),
+                             .TextAlignment = TextAlignment.MiddleRight,
                              .Text = value
                          }
                          rfb.Controls.Add(lblK)
@@ -6759,18 +6756,18 @@ Public Class frmAjusteStock
         addTot("Sum Diferencia:", sumDif.ToString("n6"), 76.0F)
 
         ' Firmas
-        Dim sigFont As New System.Drawing.Font("Segoe UI", 8)
+        Dim sigFont As New Font("Segoe UI", 8)
         Dim addSig = Sub(label As String, leftPos As Single)
-                         Dim lnSig As New DevExpress.XtraReports.UI.XRLine() With {
+                         Dim lnSig As New XRLine() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 70.0F),
-                             .SizeF = New System.Drawing.SizeF(220.0F, 1.0F),
-                             .ForeColor = System.Drawing.Color.Black
+                             .SizeF = New SizeF(220.0F, 1.0F),
+                             .ForeColor = Color.Black
                          }
-                         Dim lblS As New DevExpress.XtraReports.UI.XRLabel() With {
+                         Dim lblS As New XRLabel() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 72.0F),
-                             .SizeF = New System.Drawing.SizeF(220.0F, 14.0F),
+                             .SizeF = New SizeF(220.0F, 14.0F),
                              .Font = sigFont,
-                             .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                             .TextAlignment = TextAlignment.MiddleCenter,
                              .Text = label
                          }
                          rfb.Controls.Add(lnSig)
@@ -6780,38 +6777,38 @@ Public Class frmAjusteStock
         addSig("Aprobo", 750.0F)
 
         ' --- 4e) Page Footer: paginacion + fecha de impresion
-        Dim pfb As New DevExpress.XtraReports.UI.PageFooterBand()
+        Dim pfb As New PageFooterBand()
         pfb.HeightF = 24
         rpt.Bands.Add(pfb)
 
-        Dim lnFoot As New DevExpress.XtraReports.UI.XRLine() With {
+        Dim lnFoot As New XRLine() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
-            .SizeF = New System.Drawing.SizeF(970.0F, 1.0F),
-            .ForeColor = System.Drawing.Color.FromArgb(180, 180, 180)
+            .SizeF = New SizeF(970.0F, 1.0F),
+            .ForeColor = Color.FromArgb(180, 180, 180)
         }
         pfb.Controls.Add(lnFoot)
 
-        Dim lblImpr As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblImpr As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 6.0F),
-            .SizeF = New System.Drawing.SizeF(400.0F, 14.0F),
+            .SizeF = New SizeF(400.0F, 14.0F),
             .Font = sigFont,
             .Text = "Impreso: " & DateTime.Now.ToString("dd/MM/yyyy HH:mm") &
                     "   |   Usuario impresion: " & usuarioTxt
         }
         pfb.Controls.Add(lblImpr)
 
-        Dim pageInfo As New DevExpress.XtraReports.UI.XRPageInfo() With {
+        Dim pageInfo As New XRPageInfo() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(800.0F, 6.0F),
-            .SizeF = New System.Drawing.SizeF(170.0F, 14.0F),
+            .SizeF = New SizeF(170.0F, 14.0F),
             .Font = sigFont,
-            .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight,
+            .TextAlignment = TextAlignment.MiddleRight,
             .PageInfo = DevExpress.XtraPrinting.PageInfo.NumberOfTotal,
             .Format = "Pag {0} de {1}"
         }
         pfb.Controls.Add(pageInfo)
 
         ' --- 5) Mostrar preview
-        Dim tool As New DevExpress.XtraReports.UI.ReportPrintTool(rpt)
+        Dim tool As New ReportPrintTool(rpt)
         tool.PreviewForm.WindowState = FormWindowState.Maximized
         tool.ShowPreview()
     End Sub
@@ -7011,11 +7008,11 @@ Public Class frmAjusteStock
 
         ' --- 6) QR JSON compacto (tipo AJD = Ajuste Detalle)
         Dim qrJson As String = String.Format(
-            Globalization.CultureInfo.InvariantCulture,
+            CultureInfo.InvariantCulture,
             "{{""t"":""AJD"",""id"":{0},""bod"":{1},""f"":""{2}"",""b"":{3},""ln"":{4},""tc"":{5},""bb"":{6}}}",
             docId, idBod,
             fecDoc.ToString("yyyy-MM-ddTHH:mm:ss",
-                            Globalization.CultureInfo.InvariantCulture),
+                            CultureInfo.InvariantCulture),
             If(esBorrador, "true", "false"),
             dt.Rows.Count,
             If(incTallaColor, 1, 0),
@@ -7023,57 +7020,57 @@ Public Class frmAjusteStock
 
         ' --- 7) Construccion del XtraReport
         Dim rpt As New DevExpress.XtraReports.UI.XtraReport()
-        rpt.PaperKind = System.Drawing.Printing.PaperKind.Letter
+        rpt.PaperKind = PaperKind.Letter
         rpt.Landscape = True
-        rpt.Margins = New System.Drawing.Printing.Margins(40, 40, 40, 40)
+        rpt.Margins = New Margins(40, 40, 40, 40)
         rpt.DataSource = dt
         rpt.DataMember = ""
-        rpt.Font = New System.Drawing.Font("Segoe UI", 8)
+        rpt.Font = New Font("Segoe UI", 8)
         rpt.DisplayName = $"Detalle Ajuste #{docId}"
 
         Const PAGE_W As Single = 970.0F   ' Letter horizontal usable
 
         ' --- 7a) Page Header (140 px)
-        Dim phb As New DevExpress.XtraReports.UI.PageHeaderBand()
+        Dim phb As New PageHeaderBand()
         phb.HeightF = 140
         rpt.Bands.Add(phb)
 
-        Dim lblTitulo As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblTitulo As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
-            .SizeF = New System.Drawing.SizeF(720.0F, 28.0F),
-            .Font = New System.Drawing.Font("Segoe UI Semibold", 16,
-                                            System.Drawing.FontStyle.Bold),
+            .SizeF = New SizeF(720.0F, 28.0F),
+            .Font = New Font("Segoe UI Semibold", 16,
+                                            FontStyle.Bold),
             .Text = "AJUSTE DE STOCK - DETALLE",
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         phb.Controls.Add(lblTitulo)
 
-        Dim line1 As New DevExpress.XtraReports.UI.XRLine() With {
+        Dim line1 As New XRLine() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 30.0F),
-            .SizeF = New System.Drawing.SizeF(PAGE_W, 2.0F),
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .SizeF = New SizeF(PAGE_W, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         phb.Controls.Add(line1)
 
         ' Datos cabecera en 2 columnas
-        Dim hdrFont As New System.Drawing.Font("Segoe UI", 9)
-        Dim hdrBold As New System.Drawing.Font("Segoe UI Semibold", 9,
-                                               System.Drawing.FontStyle.Bold)
+        Dim hdrFont As New Font("Segoe UI", 9)
+        Dim hdrBold As New Font("Segoe UI Semibold", 9,
+                                               FontStyle.Bold)
 
         Dim addHdr2 = Sub(label As String, value As String,
                           col As Integer, top As Single)
                           Dim leftK As Single = If(col = 0, 0F, 320.0F)
                           Dim leftV As Single = If(col = 0, 82.0F, 410.0F)
                           Dim wV As Single = If(col = 0, 230.0F, 220.0F)
-                          Dim lblK As New DevExpress.XtraReports.UI.XRLabel() With {
+                          Dim lblK As New XRLabel() With {
                               .LocationFloat = New DevExpress.Utils.PointFloat(leftK, top),
-                              .SizeF = New System.Drawing.SizeF(80.0F, 14.0F),
+                              .SizeF = New SizeF(80.0F, 14.0F),
                               .Font = hdrBold,
                               .Text = label
                           }
-                          Dim lblV As New DevExpress.XtraReports.UI.XRLabel() With {
+                          Dim lblV As New XRLabel() With {
                               .LocationFloat = New DevExpress.Utils.PointFloat(leftV, top),
-                              .SizeF = New System.Drawing.SizeF(wV, 14.0F),
+                              .SizeF = New SizeF(wV, 14.0F),
                               .Font = hdrFont,
                               .Text = value
                           }
@@ -7095,43 +7092,43 @@ Public Class frmAjusteStock
 
         ' Watermark BORRADOR
         If esBorrador Then
-            Dim lblBorr As New DevExpress.XtraReports.UI.XRLabel() With {
+            Dim lblBorr As New XRLabel() With {
                 .LocationFloat = New DevExpress.Utils.PointFloat(580.0F, 4.0F),
-                .SizeF = New System.Drawing.SizeF(160.0F, 24.0F),
-                .Font = New System.Drawing.Font("Segoe UI Black", 14,
-                                                System.Drawing.FontStyle.Bold),
+                .SizeF = New SizeF(160.0F, 24.0F),
+                .Font = New Font("Segoe UI Black", 14,
+                                                FontStyle.Bold),
                 .Text = "* BORRADOR *",
-                .ForeColor = System.Drawing.Color.FromArgb(190, 60, 60),
-                .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                .Borders = DevExpress.XtraPrinting.BorderSide.All,
-                .BorderColor = System.Drawing.Color.FromArgb(190, 60, 60),
+                .ForeColor = Color.FromArgb(190, 60, 60),
+                .TextAlignment = TextAlignment.MiddleCenter,
+                .Borders = BorderSide.All,
+                .BorderColor = Color.FromArgb(190, 60, 60),
                 .BorderWidth = 2
             }
             phb.Controls.Add(lblBorr)
         End If
 
         ' QR
-        Dim qr As New DevExpress.XtraReports.UI.XRBarCode() With {
+        Dim qr As New XRBarCode() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(880.0F, 38.0F),
-            .SizeF = New System.Drawing.SizeF(90.0F, 90.0F),
+            .SizeF = New SizeF(90.0F, 90.0F),
             .Text = qrJson,
             .ShowText = False,
             .AutoModule = True,
-            .Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 2, 2, 100.0F)
+            .Padding = New PaddingInfo(2, 2, 2, 2, 100.0F)
         }
-        Dim qrGen As New DevExpress.XtraPrinting.BarCode.QRCodeGenerator()
+        Dim qrGen As New BarCode.QRCodeGenerator()
         qrGen.CompactionMode =
-            DevExpress.XtraPrinting.BarCode.QRCodeCompactionMode.Byte
+            BarCode.QRCodeCompactionMode.Byte
         qrGen.ErrorCorrectionLevel =
-            DevExpress.XtraPrinting.BarCode.QRCodeErrorCorrectionLevel.M
+            BarCode.QRCodeErrorCorrectionLevel.M
         qr.Symbology = qrGen
         phb.Controls.Add(qr)
 
-        Dim lblQrCap As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblQrCap As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(880.0F, 128.0F),
-            .SizeF = New System.Drawing.SizeF(90.0F, 10.0F),
-            .Font = New System.Drawing.Font("Segoe UI", 7),
-            .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+            .SizeF = New SizeF(90.0F, 10.0F),
+            .Font = New Font("Segoe UI", 7),
+            .TextAlignment = TextAlignment.MiddleCenter,
             .Text = "Doc QR (AJD)"
         }
         phb.Controls.Add(lblQrCap)
@@ -7182,27 +7179,27 @@ Public Class frmAjusteStock
         Next
 
         ' --- 7c) Encabezado de columnas (ultima banda del PageHeader)
-        Dim hdrTbl As New DevExpress.XtraReports.UI.XRTable() With {
+        Dim hdrTbl As New XRTable() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 122.0F),
-            .SizeF = New System.Drawing.SizeF(PAGE_W, 18.0F),
-            .Font = New System.Drawing.Font("Segoe UI Semibold", 8,
-                                            System.Drawing.FontStyle.Bold),
-            .Borders = DevExpress.XtraPrinting.BorderSide.All,
-            .BackColor = System.Drawing.Color.FromArgb(33, 64, 95),
-            .ForeColor = System.Drawing.Color.White
+            .SizeF = New SizeF(PAGE_W, 18.0F),
+            .Font = New Font("Segoe UI Semibold", 8,
+                                            FontStyle.Bold),
+            .Borders = BorderSide.All,
+            .BackColor = Color.FromArgb(33, 64, 95),
+            .ForeColor = Color.White
         }
-        Dim hdrRow As New DevExpress.XtraReports.UI.XRTableRow()
+        Dim hdrRow As New XRTableRow()
         For Each cd In cols
             Dim caption = CStr(cd(1))
             Dim w = CSng(cd(2))
             Dim alignRight = CBool(cd(3))
-            Dim cell As New DevExpress.XtraReports.UI.XRTableCell() With {
+            Dim cell As New XRTableCell() With {
                 .Text = caption,
                 .WidthF = w,
                 .TextAlignment = If(alignRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleLeft),
-                .Padding = New DevExpress.XtraPrinting.PaddingInfo(3, 3, 0, 0, 100.0F)
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 0, 0, 100.0F)
             }
             hdrRow.Cells.Add(cell)
         Next
@@ -7210,35 +7207,35 @@ Public Class frmAjusteStock
         phb.Controls.Add(hdrTbl)
 
         ' --- 7d) Detail Band con XRTable bindeada al DT
-        Dim detail As New DevExpress.XtraReports.UI.DetailBand()
+        Dim detail As New DetailBand()
         detail.HeightF = 18
         rpt.Bands.Add(detail)
 
-        Dim detTbl As New DevExpress.XtraReports.UI.XRTable() With {
+        Dim detTbl As New XRTable() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
-            .SizeF = New System.Drawing.SizeF(PAGE_W, 18.0F),
-            .Font = New System.Drawing.Font("Segoe UI", 8),
-            .Borders = DevExpress.XtraPrinting.BorderSide.All,
-            .BorderColor = System.Drawing.Color.FromArgb(220, 220, 220)
+            .SizeF = New SizeF(PAGE_W, 18.0F),
+            .Font = New Font("Segoe UI", 8),
+            .Borders = BorderSide.All,
+            .BorderColor = Color.FromArgb(220, 220, 220)
         }
-        Dim detRow As New DevExpress.XtraReports.UI.XRTableRow()
+        Dim detRow As New XRTableRow()
         detRow.Name = "rowDetail"
         For Each cd In cols
             Dim field = CStr(cd(0))
             Dim w = CSng(cd(2))
             Dim alignRight = CBool(cd(3))
             Dim wrap = CBool(cd(4))
-            Dim cell As New DevExpress.XtraReports.UI.XRTableCell() With {
+            Dim cell As New XRTableCell() With {
                 .WidthF = w,
                 .TextAlignment = If(alignRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleRight,
-                    DevExpress.XtraPrinting.TextAlignment.MiddleLeft),
-                .Padding = New DevExpress.XtraPrinting.PaddingInfo(3, 3, 1, 1, 100.0F),
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 1, 1, 100.0F),
                 .Multiline = wrap,
                 .CanGrow = wrap
             }
             cell.ExpressionBindings.Add(
-                New DevExpress.XtraReports.UI.ExpressionBinding(
+                New ExpressionBinding(
                     "BeforePrint", "Text", "[" & field & "]"))
             detRow.Cells.Add(cell)
         Next
@@ -7251,15 +7248,15 @@ Public Class frmAjusteStock
         AddHandler detRow.BeforePrint,
             Sub(s, eArgs)
                 Try
-                    Dim row = DirectCast(s, DevExpress.XtraReports.UI.XRTableRow)
+                    Dim row = DirectCast(s, XRTableRow)
                     Dim ix As Integer = 0
                     Try : ix = CInt(rpt.GetCurrentColumnValue("NumLinea")) : Catch : End Try
 
                     ' Zebra
                     If (ix Mod 2) = 0 Then
-                        row.BackColor = System.Drawing.Color.FromArgb(247, 249, 252)
+                        row.BackColor = Color.FromArgb(247, 249, 252)
                     Else
-                        row.BackColor = System.Drawing.Color.White
+                        row.BackColor = Color.White
                     End If
 
                     ' Chip de color en celda Tipo
@@ -7270,72 +7267,72 @@ Public Class frmAjusteStock
                         Dim chip = row.Cells(tipoColIdx)
                         Select Case tipoVal
                             Case "Ajuste Positivo"
-                                chip.BackColor = System.Drawing.Color.FromArgb(220, 245, 220)
-                                chip.ForeColor = System.Drawing.Color.FromArgb(20, 90, 30)
+                                chip.BackColor = Color.FromArgb(220, 245, 220)
+                                chip.ForeColor = Color.FromArgb(20, 90, 30)
                             Case "Ajuste Negativo"
-                                chip.BackColor = System.Drawing.Color.FromArgb(252, 224, 224)
-                                chip.ForeColor = System.Drawing.Color.FromArgb(140, 30, 30)
+                                chip.BackColor = Color.FromArgb(252, 224, 224)
+                                chip.ForeColor = Color.FromArgb(140, 30, 30)
                             Case "Ajuste Lote."
-                                chip.BackColor = System.Drawing.Color.FromArgb(220, 234, 252)
-                                chip.ForeColor = System.Drawing.Color.FromArgb(30, 60, 140)
+                                chip.BackColor = Color.FromArgb(220, 234, 252)
+                                chip.ForeColor = Color.FromArgb(30, 60, 140)
                             Case "Ajuste Vencimiento"
-                                chip.BackColor = System.Drawing.Color.FromArgb(255, 234, 200)
-                                chip.ForeColor = System.Drawing.Color.FromArgb(150, 80, 0)
+                                chip.BackColor = Color.FromArgb(255, 234, 200)
+                                chip.ForeColor = Color.FromArgb(150, 80, 0)
                             Case "Ajuste Peso"
-                                chip.BackColor = System.Drawing.Color.FromArgb(232, 220, 245)
-                                chip.ForeColor = System.Drawing.Color.FromArgb(80, 30, 130)
+                                chip.BackColor = Color.FromArgb(232, 220, 245)
+                                chip.ForeColor = Color.FromArgb(80, 30, 130)
                             Case Else
-                                chip.BackColor = System.Drawing.Color.FromArgb(235, 235, 235)
-                                chip.ForeColor = System.Drawing.Color.FromArgb(80, 80, 80)
+                                chip.BackColor = Color.FromArgb(235, 235, 235)
+                                chip.ForeColor = Color.FromArgb(80, 80, 80)
                         End Select
-                        chip.Font = New System.Drawing.Font(
-                            "Segoe UI Semibold", 8, System.Drawing.FontStyle.Bold)
+                        chip.Font = New Font(
+                            "Segoe UI Semibold", 8, FontStyle.Bold)
                     End If
                 Catch
                 End Try
             End Sub
 
         ' --- 7e) Report Footer: resumen por tipo + firmas
-        Dim rfb As New DevExpress.XtraReports.UI.ReportFooterBand()
+        Dim rfb As New ReportFooterBand()
         rfb.HeightF = 130
         rpt.Bands.Add(rfb)
 
-        Dim line2 As New DevExpress.XtraReports.UI.XRLine() With {
+        Dim line2 As New XRLine() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 4.0F),
-            .SizeF = New System.Drawing.SizeF(PAGE_W, 2.0F),
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .SizeF = New SizeF(PAGE_W, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         rfb.Controls.Add(line2)
 
-        Dim lblTotHdr As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblTotHdr As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 10.0F),
-            .SizeF = New System.Drawing.SizeF(300.0F, 14.0F),
-            .Font = New System.Drawing.Font("Segoe UI Semibold", 10,
-                                            System.Drawing.FontStyle.Bold),
+            .SizeF = New SizeF(300.0F, 14.0F),
+            .Font = New Font("Segoe UI Semibold", 10,
+                                            FontStyle.Bold),
             .Text = "Resumen por Tipo de ajuste",
-            .ForeColor = System.Drawing.Color.FromArgb(33, 64, 95)
+            .ForeColor = Color.FromArgb(33, 64, 95)
         }
         rfb.Controls.Add(lblTotHdr)
 
         ' Mini tabla por tipo (max 6 filas, ordenadas por tipo)
         Dim topY As Single = 28.0F
-        Dim totFont As New System.Drawing.Font("Segoe UI", 9)
-        Dim totFontB As New System.Drawing.Font("Segoe UI Semibold", 9,
-                                                System.Drawing.FontStyle.Bold)
+        Dim totFont As New Font("Segoe UI", 9)
+        Dim totFontB As New Font("Segoe UI Semibold", 9,
+                                                FontStyle.Bold)
 
         Dim ixT As Integer = 0
         For Each kv In countByTipo.OrderBy(Function(x) x.Key)
-            Dim lblK As New DevExpress.XtraReports.UI.XRLabel() With {
+            Dim lblK As New XRLabel() With {
                 .LocationFloat = New DevExpress.Utils.PointFloat(0F, topY),
-                .SizeF = New System.Drawing.SizeF(180.0F, 14.0F),
+                .SizeF = New SizeF(180.0F, 14.0F),
                 .Font = totFontB,
                 .Text = kv.Key
             }
-            Dim lblV As New DevExpress.XtraReports.UI.XRLabel() With {
+            Dim lblV As New XRLabel() With {
                 .LocationFloat = New DevExpress.Utils.PointFloat(180.0F, topY),
-                .SizeF = New System.Drawing.SizeF(70.0F, 14.0F),
+                .SizeF = New SizeF(70.0F, 14.0F),
                 .Font = totFont,
-                .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight,
+                .TextAlignment = TextAlignment.MiddleRight,
                 .Text = kv.Value.ToString("n0") & " linea(s)"
             }
             rfb.Controls.Add(lblK)
@@ -7346,18 +7343,18 @@ Public Class frmAjusteStock
         Next
 
         ' Firmas: 3 (Preparo / Aprobo / Recibido)
-        Dim sigFont As New System.Drawing.Font("Segoe UI", 8)
+        Dim sigFont As New Font("Segoe UI", 8)
         Dim addSig = Sub(label As String, leftPos As Single)
-                         Dim lnSig As New DevExpress.XtraReports.UI.XRLine() With {
+                         Dim lnSig As New XRLine() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 90.0F),
-                             .SizeF = New System.Drawing.SizeF(180.0F, 1.0F),
-                             .ForeColor = System.Drawing.Color.Black
+                             .SizeF = New SizeF(180.0F, 1.0F),
+                             .ForeColor = Color.Black
                          }
-                         Dim lblS As New DevExpress.XtraReports.UI.XRLabel() With {
+                         Dim lblS As New XRLabel() With {
                              .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 92.0F),
-                             .SizeF = New System.Drawing.SizeF(180.0F, 14.0F),
+                             .SizeF = New SizeF(180.0F, 14.0F),
                              .Font = sigFont,
-                             .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                             .TextAlignment = TextAlignment.MiddleCenter,
                              .Text = label
                          }
                          rfb.Controls.Add(lnSig)
@@ -7368,41 +7365,323 @@ Public Class frmAjusteStock
         addSig("Recibido", 800.0F)
 
         ' --- 7f) Page Footer: paginacion + fecha
-        Dim pfb As New DevExpress.XtraReports.UI.PageFooterBand()
+        Dim pfb As New PageFooterBand()
         pfb.HeightF = 24
         rpt.Bands.Add(pfb)
 
-        Dim lnFoot As New DevExpress.XtraReports.UI.XRLine() With {
+        Dim lnFoot As New XRLine() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
-            .SizeF = New System.Drawing.SizeF(PAGE_W, 1.0F),
-            .ForeColor = System.Drawing.Color.FromArgb(180, 180, 180)
+            .SizeF = New SizeF(PAGE_W, 1.0F),
+            .ForeColor = Color.FromArgb(180, 180, 180)
         }
         pfb.Controls.Add(lnFoot)
 
-        Dim lblImpr As New DevExpress.XtraReports.UI.XRLabel() With {
+        Dim lblImpr As New XRLabel() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(0F, 6.0F),
-            .SizeF = New System.Drawing.SizeF(500.0F, 14.0F),
+            .SizeF = New SizeF(500.0F, 14.0F),
             .Font = sigFont,
             .Text = "Impreso: " & DateTime.Now.ToString("dd/MM/yyyy HH:mm") &
                     "   |   Usuario impresion: " & usuarioTxt
         }
         pfb.Controls.Add(lblImpr)
 
-        Dim pageInfo As New DevExpress.XtraReports.UI.XRPageInfo() With {
+        Dim pageInfo As New XRPageInfo() With {
             .LocationFloat = New DevExpress.Utils.PointFloat(800.0F, 6.0F),
-            .SizeF = New System.Drawing.SizeF(170.0F, 14.0F),
+            .SizeF = New SizeF(170.0F, 14.0F),
             .Font = sigFont,
-            .TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight,
+            .TextAlignment = TextAlignment.MiddleRight,
             .PageInfo = DevExpress.XtraPrinting.PageInfo.NumberOfTotal,
             .Format = "Pag {0} de {1}"
         }
         pfb.Controls.Add(pageInfo)
 
         ' --- 8) Mostrar preview
-        Dim tool As New DevExpress.XtraReports.UI.ReportPrintTool(rpt)
+        Dim tool As New ReportPrintTool(rpt)
         tool.PreviewForm.WindowState = FormWindowState.Maximized
         tool.ShowPreview()
     End Sub
+
+#End Region
+
+
+#Region "Exportar Excel limpio"
+
+    ' Construye un DataTable con solo las columnas utiles (omite imagenes,
+    ' Ids internos y campos auxiliares) y lo exporta sin formato decorativo.
+    ' Usa GridControl in-memory de DevExpress (mismo patron que
+    ' frmPicking_List.Exportar_Grid_A_Excel) para garantizar XLSX nativo.
+    ' Fallback CSV UTF-8 BOM con separador ';' para compatibilidad Excel ES.
+
+    Private Sub mnuExportar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuExportar.ItemClick
+
+        Try
+
+            If dgrid Is Nothing OrElse dgrid.Rows Is Nothing OrElse dgrid.Rows.Count = 0 Then
+
+                XtraMessageBox.Show("No hay registros en la grilla para exportar.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information)
+
+                Return
+
+            End If
+
+            Dim dt As DataTable = Construir_DataTable_Limpio_AjusteStock(dgrid)
+
+            Dim nombreSugerido As String = "AjusteStock_" &
+                pBeTransAjustEnc.IdAjusteenc.ToString() & "_" &
+                DateTime.Now.ToString("yyyyMMdd_HHmm")
+
+            Using sfd As New SaveFileDialog()
+
+                sfd.Filter = "Excel (*.xlsx)|*.xlsx|CSV UTF-8 (*.csv)|*.csv"
+                sfd.FilterIndex = 1
+                sfd.FileName = nombreSugerido
+                sfd.RestoreDirectory = True
+
+                If sfd.ShowDialog() <> DialogResult.OK Then Return
+
+                Dim ext As String = Path.GetExtension(sfd.FileName)
+
+                If String.Equals(ext, ".xlsx", StringComparison.OrdinalIgnoreCase) Then
+                    Exportar_DataTable_A_Xlsx(dt, sfd.FileName)
+                Else
+                    Exportar_DataTable_A_Csv(dt, sfd.FileName)
+                End If
+
+                XtraMessageBox.Show("Exportacion completada:" & vbCrLf & sfd.FileName,
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information)
+
+            End Using
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
+
+            clsLnLog_error_wms.Agregar_Error("mnuExportar_ItemClick: " & ex.Message)
+
+        End Try
+
+    End Sub
+
+    Private Function Construir_DataTable_Limpio_AjusteStock(dGrid As DataGridView) As DataTable
+
+        Dim dt As New DataTable("AjusteStockDet")
+
+        ' Orden y nombres de columnas pensados para reporte limpio.
+        ' Omitidos a proposito:
+        '   ColDiferencia (es DataGridViewImageColumn, sin valor util)
+        '   ColIdAjusteDEt (id interno, opcional al final)
+        '   colIdProductoTallaColor (id interno, sin valor para usuario)
+        dt.Columns.Add("Codigo Producto", GetType(String))
+        dt.Columns.Add("Nombre Producto", GetType(String))
+        dt.Columns.Add("Bodega", GetType(String))
+        dt.Columns.Add("Ubicacion", GetType(String))
+        dt.Columns.Add("Lic Plate", GetType(String))
+        dt.Columns.Add("Lote", GetType(String))
+        dt.Columns.Add("Lote Original", GetType(String))
+        dt.Columns.Add("Talla", GetType(String))
+        dt.Columns.Add("Color", GetType(String))
+        dt.Columns.Add("Presentacion", GetType(String))
+        dt.Columns.Add("UM Base", GetType(String))
+        dt.Columns.Add("Tipo Ajuste", GetType(String))
+        dt.Columns.Add("Motivo Ajuste", GetType(String))
+        dt.Columns.Add("Cant. Sistema", GetType(Decimal))
+        dt.Columns.Add("Cant. Fisica", GetType(Decimal))
+        dt.Columns.Add("Diferencia", GetType(Decimal))
+        dt.Columns.Add("Proveedor", GetType(String))
+        dt.Columns.Add("Observacion", GetType(String))
+        dt.Columns.Add("Enviado a ERP", GetType(Boolean))
+        dt.Columns.Add("Id Ajuste Det", GetType(Long))
+
+        For Each row As DataGridViewRow In dGrid.Rows
+
+            If row.IsNewRow Then Continue For
+
+            Dim r As DataRow = dt.NewRow()
+
+            r("Codigo Producto") = SafeStr_AS(row, "ColCodigoProducto")
+            r("Nombre Producto") = SafeStr_AS(row, "colNombreProducto")
+            r("Bodega") = SafeFmt_AS(row, "ColBodega")
+            r("Ubicacion") = SafeStr_AS(row, "colUbicacion")
+            r("Lic Plate") = SafeStr_AS(row, "ColLicPlate")
+            r("Lote") = SafeStr_AS(row, "colLote")
+            r("Lote Original") = SafeStr_AS(row, "LoteOrig")
+            r("Talla") = SafeFmt_AS(row, "colTalla")
+            r("Color") = SafeFmt_AS(row, "colColor")
+            r("Presentacion") = SafeStr_AS(row, "colPresentacion")
+            r("UM Base") = SafeStr_AS(row, "UmBas")
+            r("Tipo Ajuste") = SafeFmt_AS(row, "tipoajuste")
+            r("Motivo Ajuste") = SafeFmt_AS(row, "motivoajuste")
+
+            Dim cantSistema As Decimal = SafeDec_AS(row, "CantidadP")
+            Dim cantFisica As Decimal = SafeDec_AS(row, "ColCantidad")
+            r("Cant. Sistema") = cantSistema
+            r("Cant. Fisica") = cantFisica
+            r("Diferencia") = cantFisica - cantSistema
+
+            r("Proveedor") = SafeStr_AS(row, "colProveedor")
+            r("Observacion") = SafeStr_AS(row, "ColObservacion")
+            r("Enviado a ERP") = SafeBool_AS(row, "ColEnviadoAErp")
+            r("Id Ajuste Det") = SafeLong_AS(row, "ColIdAjusteDEt")
+
+            dt.Rows.Add(r)
+
+        Next
+
+        Return dt
+
+    End Function
+
+    Private Function SafeStr_AS(row As DataGridViewRow, colName As String) As String
+
+        Try
+            If Not row.DataGridView.Columns.Contains(colName) Then Return ""
+            Dim cell = row.Cells(colName)
+            If cell Is Nothing OrElse cell.Value Is Nothing OrElse cell.Value Is DBNull.Value Then Return ""
+            Return cell.Value.ToString().Trim()
+        Catch
+            Return ""
+        End Try
+
+    End Function
+
+    Private Function SafeFmt_AS(row As DataGridViewRow, colName As String) As String
+
+        Try
+            If Not row.DataGridView.Columns.Contains(colName) Then Return ""
+            Dim cell = row.Cells(colName)
+            If cell Is Nothing Then Return ""
+            If cell.FormattedValue IsNot Nothing Then Return cell.FormattedValue.ToString().Trim()
+        Catch
+        End Try
+
+        Return SafeStr_AS(row, colName)
+
+    End Function
+
+    Private Function SafeDec_AS(row As DataGridViewRow, colName As String) As Decimal
+
+        Dim s As String = SafeStr_AS(row, colName)
+        If s.Length = 0 Then Return 0D
+
+        Dim d As Decimal
+        If Decimal.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, d) Then Return d
+        If Decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, d) Then Return d
+        Return 0D
+
+    End Function
+
+    Private Function SafeLong_AS(row As DataGridViewRow, colName As String) As Long
+
+        Dim s As String = SafeStr_AS(row, colName)
+        If s.Length = 0 Then Return 0L
+
+        Dim l As Long
+        If Long.TryParse(s, l) Then Return l
+        Return 0L
+
+    End Function
+
+    Private Function SafeBool_AS(row As DataGridViewRow, colName As String) As Boolean
+
+        Try
+            If Not row.DataGridView.Columns.Contains(colName) Then Return False
+            Dim cell = row.Cells(colName)
+            If cell Is Nothing OrElse cell.Value Is Nothing OrElse cell.Value Is DBNull.Value Then Return False
+            Dim v = cell.Value
+            If TypeOf v Is Boolean Then Return CBool(v)
+            Dim s As String = v.ToString().Trim().ToLowerInvariant()
+            Return s = "1" OrElse s = "true" OrElse s = "verdadero" OrElse s = "si" OrElse s = "sí"
+        Catch
+            Return False
+        End Try
+
+    End Function
+
+    Private Sub Exportar_DataTable_A_Xlsx(dt As DataTable, filePath As String)
+
+        ' GridControl in-memory: aprovecha la lib DevExpress ya referenciada
+        ' (DevExpress.XtraGrid.v24.2). Genera xlsx limpio con headers + datos,
+        ' sin estilos del DataGridView de pantalla.
+        Using gc As New DevExpress.XtraGrid.GridControl()
+
+            Dim gv As New DevExpress.XtraGrid.Views.Grid.GridView()
+            gc.MainView = gv
+            gc.ViewCollection.Add(gv)
+            gc.DataSource = dt
+            gv.PopulateColumns()
+
+            ' Forzar el orden definido en el DataTable
+            For i As Integer = 0 To dt.Columns.Count - 1
+                Dim col = gv.Columns.ColumnByFieldName(dt.Columns(i).ColumnName)
+                If col IsNot Nothing Then
+                    col.VisibleIndex = i
+                    col.Caption = dt.Columns(i).ColumnName
+                End If
+            Next
+
+            gv.OptionsView.ShowGroupPanel = False
+            gv.BestFitColumns()
+
+            gc.ExportToXlsx(filePath)
+
+        End Using
+
+    End Sub
+
+    Private Sub Exportar_DataTable_A_Csv(dt As DataTable, filePath As String)
+
+        Const sep As String = ";"
+        Dim sb As New StringBuilder()
+
+        Dim headers(dt.Columns.Count - 1) As String
+        For i As Integer = 0 To dt.Columns.Count - 1
+            headers(i) = EscaparCsv_AS(dt.Columns(i).ColumnName, sep)
+        Next
+        sb.AppendLine(String.Join(sep, headers))
+
+        For Each row As DataRow In dt.Rows
+            Dim vals(dt.Columns.Count - 1) As String
+            For i As Integer = 0 To dt.Columns.Count - 1
+                Dim v = row(i)
+                Dim s As String
+                If v Is Nothing OrElse v Is DBNull.Value Then
+                    s = ""
+                ElseIf TypeOf v Is Decimal OrElse TypeOf v Is Double OrElse TypeOf v Is Single Then
+                    s = Convert.ToDecimal(v).ToString("0.####", CultureInfo.CurrentCulture)
+                ElseIf TypeOf v Is Boolean Then
+                    s = If(CBool(v), "Si", "No")
+                Else
+                    s = v.ToString()
+                End If
+                vals(i) = EscaparCsv_AS(s, sep)
+            Next
+            sb.AppendLine(String.Join(sep, vals))
+        Next
+
+        ' UTF-8 con BOM para que Excel ES detecte acentos correctamente.
+        File.WriteAllText(filePath, sb.ToString(), New UTF8Encoding(True))
+
+    End Sub
+
+    Private Function EscaparCsv_AS(s As String, sep As String) As String
+
+        If s Is Nothing Then Return ""
+
+        If s.Contains(sep) OrElse s.Contains("""") OrElse s.Contains(vbCr) OrElse s.Contains(vbLf) Then
+            Return """" & s.Replace("""", """""") & """"
+        End If
+
+        Return s
+
+    End Function
 
 #End Region
 

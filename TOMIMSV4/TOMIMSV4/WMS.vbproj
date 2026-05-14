@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS</AssemblyName>
+    <AssemblyName>WMS_QAS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\192.168.126.79\WMS\</InstallUrl>
-    <UpdateUrl>\\192.168.126.79\WMS\</UpdateUrl>
-    <ProductName>WMS</ProductName>
+    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
+    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
+    <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS</SuiteName>
+    <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>114</ApplicationRevision>
+    <ApplicationRevision>130</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -340,6 +340,12 @@
       <DependentUpon>frmTablasBD.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Base_Datos\frmTablasBD.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.Designer.vb">
+      <DependentUpon>frmIndicadorAjusteProveedor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
@@ -1504,6 +1510,24 @@
     <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </Compile>
@@ -1532,6 +1556,18 @@
       <DependentUpon>frmPedidosInterface.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Pedidos_MI3\frmPedidosInterface.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido.Designer.vb">
+      <DependentUpon>frmPedido.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido_List.Designer.vb">
+      <DependentUpon>frmPedido_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Pedido\frmPedido_List.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.Designer.vb">
@@ -3076,18 +3112,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Pedido\clsBePedidoDetalleGrid.vb" />
-    <Compile Include="Transacciones\Pedido\frmPedido.Designer.vb">
-      <DependentUpon>frmPedido.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido_List.Designer.vb">
-      <DependentUpon>frmPedido_List.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Pedido\frmPedido_List.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Pedido\frmProductoPed_List.Designer.vb">
       <DependentUpon>frmProductoPed_List.vb</DependentUpon>
     </Compile>
@@ -3261,6 +3285,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Bodega\Estructura\frmTramo.resx">
       <DependentUpon>frmTramo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.resx">
+      <DependentUpon>frmIndicadorAjusteProveedor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.resx">
       <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
@@ -3798,6 +3825,15 @@
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
       <DependentUpon>frmInventarioDet.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.resx">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.resx">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </EmbeddedResource>
@@ -3813,6 +3849,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedidos_MI3\frmPedidosInterface.resx">
       <DependentUpon>frmPedidosInterface.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Pedido\frmPedido.resx">
+      <DependentUpon>frmPedido.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Pedido\frmPedido_List.resx">
+      <DependentUpon>frmPedido_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
@@ -4487,13 +4530,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Orden_Compra_Tipo_Transaccion\frmTipoTransaccion_List.resx">
       <DependentUpon>frmTipoTransaccion_List.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Pedido\frmPedido.resx">
-      <DependentUpon>frmPedido.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Pedido\frmPedido_List.resx">
-      <DependentUpon>frmPedido_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmProductoPed_List.resx">
       <DependentUpon>frmProductoPed_List.vb</DependentUpon>
@@ -5667,7 +5703,7 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>6.1.4</Version>
+      <Version>7.0.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>

@@ -56,8 +56,8 @@ Public Class clsLnStock
 
     End Sub
     Public Shared Function Insertar(ByRef oBeStock As clsBeStock,
-                                Optional ByVal pConection As SqlConnection = Nothing,
-                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

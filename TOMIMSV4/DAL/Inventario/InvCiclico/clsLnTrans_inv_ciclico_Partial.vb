@@ -7747,4 +7747,140 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
+    Public Shared Function Get_All_By_Regularizacion_Inventario_Consolidado(ByVal pIdInv As Integer,
+                                                                            ByVal lConnection As SqlConnection,
+                                                                            ByVal lTransaction As SqlTransaction) As DataTable
+
+        Dim vSQL As String = "
+                                SELECT 
+                            ci.codigo AS Codigo,
+                            ci.producto AS Producto,
+                            ISNULL(pt.NombreTipoProducto, '') AS Categoria,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad
+                                END
+                            ) AS CantidadContada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad_Stock / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad_Stock
+                                END
+                            ) AS CantidadEsperada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Entradas_Salidas / NULLIF(pp.factor, 0)
+                                    ELSE ci.Entradas_Salidas
+                                END
+                            ) AS SalidasEntradas,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.Cantidad = (ci.Cantidad_Stock + ci.Entradas) AND ci.Salidas = 0 
+                                        THEN (ci.Cantidad_Stock + ci.Entradas - ci.Cantidad)
+                                    WHEN ci.Salidas IS NOT NULL AND ci.Salidas < 0 
+                                        THEN (ci.Cantidad_Stock + ci.Salidas - ci.Cantidad) * -1
+                                    ELSE ((ci.Cantidad_Stock + ci.Entradas_Salidas) - ci.Cantidad) * -1
+                                END
+                            ) AS Diferencia
+
+                        FROM ComparacionInventario ci
+                        LEFT JOIN producto p 
+                            ON p.codigo = ci.codigo
+                        LEFT JOIN producto_tipo pt
+                            ON pt.IdTipoProducto = p.IdTipoProducto
+                        LEFT JOIN producto_presentacion pp 
+                            ON ci.IdPresentacion = pp.IdPresentacion
+
+                        WHERE 
+                            ci.IdInventario = @idinventarioenc
+                            AND ci.TieneReservaYConteoInsuficiente = 0
+
+                        GROUP BY 
+                            ci.codigo,
+                            ci.producto,
+                            pt.NombreTipoProducto
+
+                        ORDER BY 
+                            ci.codigo;
+
+                            SELECT 
+                            ci.codigo AS Codigo,
+                            ci.producto AS Producto,
+                            ISNULL(pt.NombreTipoProducto, '') AS Categoria,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad
+                                END
+                            ) AS CantidadContada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad_Stock / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad_Stock
+                                END
+                            ) AS CantidadEsperada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Entradas_Salidas / NULLIF(pp.factor, 0)
+                                    ELSE ci.Entradas_Salidas
+                                END
+                            ) AS SalidasEntradas,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.Cantidad = (ci.Cantidad_Stock + ci.Entradas) AND ci.Salidas = 0 
+                                        THEN (ci.Cantidad_Stock + ci.Entradas - ci.Cantidad)
+                                    WHEN ci.Salidas IS NOT NULL AND ci.Salidas < 0 
+                                        THEN (ci.Cantidad_Stock + ci.Salidas - ci.Cantidad) * -1
+                                    ELSE ((ci.Cantidad_Stock + ci.Entradas_Salidas) - ci.Cantidad) * -1
+                                END
+                            ) AS Diferencia
+
+                        FROM ComparacionInventario ci
+                        LEFT JOIN producto p 
+                            ON p.codigo = ci.codigo
+                        LEFT JOIN producto_tipo pt
+                            ON pt.IdTipoProducto = p.IdTipoProducto
+                        LEFT JOIN producto_presentacion pp 
+                            ON ci.IdPresentacion = pp.IdPresentacion
+
+                        WHERE 
+                            ci.IdInventario = @idinventarioenc
+                            AND ci.TieneReservaYConteoInsuficiente = 0
+
+                        GROUP BY 
+                            ci.codigo,
+                            ci.producto,
+                            pt.NombreTipoProducto
+
+                        ORDER BY 
+                            ci.codigo;"
+
+        Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+            lDataAdapter.SelectCommand.CommandType = CommandType.Text
+            lDataAdapter.SelectCommand.Transaction = lTransaction
+            lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInv)
+
+            Dim lDataTable As New DataTable()
+            lDataAdapter.Fill(lDataTable)
+
+            Return lDataTable
+        End Using
+
+    End Function
+
 End Class

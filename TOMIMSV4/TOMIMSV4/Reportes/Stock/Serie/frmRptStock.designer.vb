@@ -29,7 +29,7 @@ Partial Class frmRptStock
         Me.grdSeries = New DevExpress.XtraGrid.GridControl()
         Me.StockBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.SeriesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.Series = New TOMWMS.Series()
+        Me.Series = New Series()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colPropietario = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colProducto = New DevExpress.XtraGrid.Columns.GridColumn()

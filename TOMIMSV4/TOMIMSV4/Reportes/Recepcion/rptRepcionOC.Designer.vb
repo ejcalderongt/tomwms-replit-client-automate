@@ -371,7 +371,7 @@ Partial Public Class rptRepcionOC
         Me.XrTableCell11 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell12 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell13 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.Cliente_direccionTableAdapter1 = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
+        Me.Cliente_direccionTableAdapter1 = New cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
         Me.XrLabel19 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel18 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel17 = New DevExpress.XtraReports.UI.XRLabel()

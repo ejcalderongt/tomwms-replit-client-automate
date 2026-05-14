@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Pedido;
@@ -10,13 +8,12 @@ using AppGlobal;
 public class clsLnTrans_pe_enc
 {
 
-    private static clsInsert Ins = new clsInsert();
-    private static clsUpdate Upd = new clsUpdate();
-
+    private static readonly clsInsert Ins = new();
+    private static readonly clsUpdate Upd = new();
     public static void Cargar(ref clsBeTrans_pe_enc oBeTrans_pe_enc, DataRow dr)
     {
         int GetInt(string col) { return dr[col] is DBNull ? 0 : Convert.ToInt32(dr[col]); }
-        bool GetBool(string col) { return dr[col] is DBNull ? false : Convert.ToBoolean(dr[col]); }
+        bool GetBool(string col) { return dr[col] is not DBNull && Convert.ToBoolean(dr[col]); }
         string GetString(string col) { return dr[col] is DBNull ? "" : (Convert.ToString(dr[col]) ?? ""); }
         DateTime GetDate(string col) { return dr[col] is DBNull ? DateTime.Now : Convert.ToDateTime(dr[col]); }        
         double GetDecimal(string col) { return dr[col] is DBNull ? 0 : Convert.ToDouble(dr[col]); }
@@ -98,7 +95,6 @@ public class clsLnTrans_pe_enc
             throw;
         }
     }
-
     public static int Insertar(clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -177,7 +173,7 @@ public class clsLnTrans_pe_enc
 
             string sp = Ins.SQL();
 
-            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
+            using SqlCommand cmd = new(sp, pConection, pTransaction)
             {
                 CommandType = CommandType.Text
             };
@@ -260,12 +256,11 @@ public class clsLnTrans_pe_enc
 
         return rowsAffected;
     }
-
     public static int Insertar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc)
     {
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new (config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -342,7 +337,7 @@ public class clsLnTrans_pe_enc
 
             string sp = Ins.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
+            SqlCommand cmd = new() { CommandType = CommandType.Text };
 
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
             cmd = new SqlCommand(sp, lConnection, lTransaction);
@@ -351,14 +346,12 @@ public class clsLnTrans_pe_enc
 
             rowsAffected = cmd.ExecuteNonQuery();
 
-            if (lTransaction != null)
-                lTransaction.Commit();
+            lTransaction?.Commit();
 
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -370,12 +363,11 @@ public class clsLnTrans_pe_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
         return rowsAffected;
     }
-
     public static int Actualizar(clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -455,7 +447,7 @@ public class clsLnTrans_pe_enc
 
             string sp = Upd.SQL();
 
-            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
+            using SqlCommand cmd = new(sp, pConection, pTransaction)
             {
                 CommandType = CommandType.Text
             };
@@ -476,11 +468,10 @@ public class clsLnTrans_pe_enc
 
         return rowsAffected;
     }
-
-    public int Eliminar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Eliminar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -490,7 +481,7 @@ public class clsLnTrans_pe_enc
 
             bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
+            SqlCommand cmd = new() { CommandType = CommandType.Text };
 
             if (Es_Transaccion_Remota)
             {
@@ -507,16 +498,14 @@ public class clsLnTrans_pe_enc
             int rowsAffected = cmd.ExecuteNonQuery();
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+                lTransaction?.Commit();
 
             return rowsAffected;
 
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -528,24 +517,23 @@ public class clsLnTrans_pe_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
     }
-
-    public DataTable Listar(IConfiguration config)
+    public static DataTable Listar(IConfiguration config)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
         {
             const string sp = "Select * FROM Trans_pe_enc";
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
-            SqlDataAdapter dad = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
+            SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new(cmd);
+            DataTable dt = new();
             dad.Fill(dt);
 
             lTransaction.Commit();
@@ -555,8 +543,7 @@ public class clsLnTrans_pe_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -568,15 +555,14 @@ public class clsLnTrans_pe_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
     }
-
     public static bool GetSingle(IConfiguration config, ref clsBeTrans_pe_enc pBeTrans_pe_enc)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -587,11 +573,11 @@ public class clsLnTrans_pe_enc
 
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
-            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new(cmd);
 
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdPedidoEnc", pBeTrans_pe_enc.IdPedidoEnc));
-            DataTable dt = new DataTable();
+            DataTable dt = new();
             dad.Fill(dt);
 
             lTransaction.Commit();
@@ -607,8 +593,7 @@ public class clsLnTrans_pe_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -620,42 +605,41 @@ public class clsLnTrans_pe_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
         return false;
 
     }
-
     public static List<clsBeTrans_pe_enc> GetAll(IConfiguration config)
     {
 
         SqlTransaction? lTransaction = null;
-        List<clsBeTrans_pe_enc> lreturnList = new List<clsBeTrans_pe_enc>();
+        List<clsBeTrans_pe_enc> lreturnList = [];
 
         try
         {
             const string sp = "Select * FROM Trans_pe_enc";
 
-            using (SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST")))
+            using (SqlConnection lConnection = new(config.GetConnectionString("CST")))
             {
 
                 lConnection.Open();
 
                 using (lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    using (SqlDataAdapter lDTA = new SqlDataAdapter(sp, lConnection))
+                    using (SqlDataAdapter lDTA = new(sp, lConnection))
                     {
                         lDTA.SelectCommand.CommandType = CommandType.Text;
                         lDTA.SelectCommand.Transaction = lTransaction;
-                        DataTable lDataTable = new DataTable();
+                        DataTable lDataTable = new();
                         lDTA.Fill(lDataTable);
 
-                        clsBeTrans_pe_enc vBeTrans_pe_enc = new clsBeTrans_pe_enc();
+                        clsBeTrans_pe_enc vBeTrans_pe_enc = new();
 
                         foreach (DataRow dr in lDataTable.Rows)
                         {
-                            vBeTrans_pe_enc = new clsBeTrans_pe_enc();
+                            vBeTrans_pe_enc = new();
                             Cargar(ref vBeTrans_pe_enc, dr);
                             lreturnList.Add(vBeTrans_pe_enc);
                         }
@@ -674,8 +658,7 @@ public class clsLnTrans_pe_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -685,7 +668,6 @@ public class clsLnTrans_pe_enc
             throw new Exception(vMsgError);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
 
@@ -698,13 +680,13 @@ public class clsLnTrans_pe_enc
 
             const string sp = "Select ISNULL(Max(IdPedidoEnc),0) FROM Trans_pe_enc";
 
-            using (SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST")))
+            using (SqlConnection lConnection = new(config.GetConnectionString("CST")))
             {
                 lConnection.Open();
 
                 using (lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    using (SqlCommand lCommand = new SqlCommand(sp, lConnection) { CommandType = CommandType.Text })
+                    using (SqlCommand lCommand = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
                     {
                         Object lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
@@ -723,8 +705,7 @@ public class clsLnTrans_pe_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -742,7 +723,7 @@ public class clsLnTrans_pe_enc
         {
             const string sp = "SELECT ISNULL(Max(IdPedidoEnc),0) FROM Trans_pe_enc";
 
-            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
+            using SqlCommand cmd =  new (sp, pConection, pTransaction)
             {
                 CommandType = CommandType.Text
             };
@@ -951,18 +932,18 @@ public class clsLnTrans_pe_enc
             const string sp = @"SELECT * FROM Trans_pe_enc 
                            Where(Referencia = @Referencia AND IdTipoPedido = @IdTipoPedido)";
 
-            SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
-            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            SqlCommand cmd = new(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new(cmd);
 
             dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
 
-            DataTable dt = new DataTable();
+            DataTable dt = new();
             dad.Fill(dt);
 
             if (dt.Rows.Count >= 1)
             {
-                clsBeTrans_pe_enc ObjUM = new clsBeTrans_pe_enc();
+                clsBeTrans_pe_enc ObjUM = new();
                 Cargar(ref ObjUM, dt.Rows[0]);
                 return ObjUM;
             }
@@ -986,23 +967,21 @@ public class clsLnTrans_pe_enc
             const string sp = "SELECT * FROM Trans_pe_enc " +
                              " WHERE (Referencia = @Referencia AND IdTipoPedido = @IdTipoPedido AND Codigo_Empresa_ERP = @Codigo_Empresa_ERP) ";
 
-            using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            using SqlCommand cmd = new(sp, pConection, pTransaction) { CommandType = CommandType.Text };
             {
-                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                using SqlDataAdapter dad = new(cmd);
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo_Empresa_ERP", pBeTrans_pe_enc.Codigo_Empresa_ERP));
+
+                DataTable dt = new();
+                dad.Fill(dt);
+
+                if (dt.Rows.Count >= 1)
                 {
-                    dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
-                    dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
-                    dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo_Empresa_ERP", pBeTrans_pe_enc.Codigo_Empresa_ERP));
-
-                    DataTable dt = new DataTable();
-                    dad.Fill(dt);
-
-                    if (dt.Rows.Count >= 1)
-                    {
-                        clsBeTrans_pe_enc ObjUM = new clsBeTrans_pe_enc();
-                        Cargar(ref ObjUM, dt.Rows[0]);
-                        return ObjUM;
-                    }
+                    clsBeTrans_pe_enc ObjUM = new();
+                    Cargar(ref ObjUM, dt.Rows[0]);
+                    return ObjUM;
                 }
             }
         }
@@ -1018,8 +997,7 @@ public class clsLnTrans_pe_enc
                                           SqlConnection lConnection,
                                           SqlTransaction lTransaction)
     {
-        bool result = false;
-
+        bool result;
         try
         {
             pPedido.IdPedidoEnc = MaxID(lConnection, lTransaction)+1;
@@ -1042,17 +1020,15 @@ public class clsLnTrans_pe_enc
         {
             string vSQL = "SELECT TOP(1) IdPedidoDet FROM trans_pe_det WHERE IdPedidoEnc = @IdPedidoEnc";
 
-            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
-            {
-                lDTA.SelectCommand.Transaction = lTransaction;
-                lDTA.SelectCommand.CommandType = CommandType.Text;
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc);
+            using SqlDataAdapter lDTA = new(vSQL, lConnection);
+            lDTA.SelectCommand.Transaction = lTransaction;
+            lDTA.SelectCommand.CommandType = CommandType.Text;
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc);
 
-                DataTable lDT = new DataTable();
-                lDTA.Fill(lDT);
+            DataTable lDT = new();
+            lDTA.Fill(lDT);
 
-                return lDT.Rows.Count > 0;
-            }
+            return lDT.Rows.Count > 0;
         }
         catch (Exception)
         {
@@ -1068,7 +1044,7 @@ public class clsLnTrans_pe_enc
         {
             string sp = "DELETE FROM Trans_pe_enc WHERE (IdPedidoEnc = @IdPedidoEnc)";
 
-            using SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            using SqlCommand cmd = new(sp, lConnection, lTransaction)
             {
                 CommandType = CommandType.Text
             };
@@ -1133,10 +1109,11 @@ public class clsLnTrans_pe_enc
 
         return result;
     }
-
-    public static object Get_Usuarios_Documento_By_IdsPedidoEnc(IConfiguration configuration, List<int> pedidoIds)
+   
+    public static Dictionary<int, (string Documento, string Despacho)>
+      Get_Usuarios_Documento_By_IdsPedidoEnc(IConfiguration configuration, List<int> pedidoIds)
     {
-        var result = new Dictionary<int, Tuple<string, string>>();
+        var result = new Dictionary<int, (string Documento, string Despacho)>();
 
         if (pedidoIds == null || pedidoIds.Count == 0)
             return result;
@@ -1148,62 +1125,66 @@ public class clsLnTrans_pe_enc
         if (ids.Count == 0)
             return result;
 
-        using (var lConnection = new SqlConnection(configuration.GetConnectionString("CST")))
+        using var lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+        lConnection.Open();
+
+        using var cmd = lConnection.CreateCommand();
+        cmd.CommandType = CommandType.Text;
+
+        var paramNames = new List<string>();
+        for (int i = 0; i < ids.Count; i++)
         {
-            lConnection.Open();
+            var paramName = "@id" + i;
+            paramNames.Add(paramName);
+            cmd.Parameters.Add(paramName, SqlDbType.Int).Value = ids[i];
+        }
 
-            using (var cmd = lConnection.CreateCommand())
+        cmd.CommandText = $@"
+            SELECT 
+                pe.IdPedidoEnc,
+                ISNULL(uDoc.Codigo, '') AS UsuarioDocumento,
+                ISNULL(uDesp.Codigo, '') AS UsuarioDespacho
+            FROM trans_pe_enc pe
+            INNER JOIN usuario uDoc
+                ON pe.user_agr = uDoc.IdUsuario
+            LEFT JOIN trans_despacho_enc de
+                ON pe.no_despacho = de.IdDespachoEnc
+            LEFT JOIN usuario uDesp
+                ON de.user_agr = uDesp.IdUsuario
+            WHERE pe.IdPedidoEnc IN ({string.Join(",", paramNames)})
+        ";
+
+        using var dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+            var idPedidoEnc = dr["IdPedidoEnc"] is DBNull ? 0 : Convert.ToInt32(dr["IdPedidoEnc"]);
+
+            var usuarioDocumento = dr["UsuarioDocumento"] is DBNull
+                ? string.Empty
+                : clsPublic.Desencriptar(dr["UsuarioDocumento"]?.ToString() ?? string.Empty) ?? string.Empty;
+
+            var usuarioDespacho = dr["UsuarioDespacho"] is DBNull
+                ? string.Empty
+                : clsPublic.Desencriptar(dr["UsuarioDespacho"]?.ToString() ?? string.Empty) ?? string.Empty;
+
+            if (idPedidoEnc > 0 && !result.ContainsKey(idPedidoEnc))
             {
-                cmd.CommandType = CommandType.Text;
-
-                var paramNames = new List<string>();
-                for (int i = 0; i < ids.Count; i++)
-                {
-                    var paramName = "@id" + i;
-                    paramNames.Add(paramName);
-                    cmd.Parameters.Add(paramName, SqlDbType.Int).Value = ids[i];
-                }
-
-                cmd.CommandText = string.Format(@"
-                SELECT 
-                    pe.IdPedidoEnc,
-                    ISNULL(uDoc.Codigo, '') AS UsuarioDocumento,
-                    ISNULL(uDesp.Codigo, '') AS UsuarioDespacho
-                FROM trans_pe_enc pe
-                INNER JOIN usuario uDoc
-                    ON pe.user_agr = uDoc.IdUsuario
-                LEFT JOIN trans_despacho_enc de
-                    ON pe.no_despacho = de.IdDespachoEnc
-                LEFT JOIN usuario uDesp
-                    ON de.user_agr = uDesp.IdUsuario
-                WHERE pe.IdPedidoEnc IN ({0})",
-                    string.Join(",", paramNames));
-
-                using (var dr = cmd.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        var idPedidoEnc = dr["IdPedidoEnc"] == DBNull.Value
-                            ? 0
-                            : Convert.ToInt32(dr["IdPedidoEnc"]);
-
-                        var usuarioDocumento = dr["UsuarioDocumento"] == DBNull.Value
-                            ? ""
-                            : clsPublic.Desencriptar(dr["UsuarioDocumento"].ToString()) ?? "";
-
-                        var usuarioDespacho = dr["UsuarioDespacho"] == DBNull.Value
-                            ? ""
-                            : clsPublic.Desencriptar(dr["UsuarioDespacho"].ToString()) ?? "";
-
-                        if (idPedidoEnc > 0 && !result.ContainsKey(idPedidoEnc))
-                        {
-                            result.Add(idPedidoEnc, Tuple.Create(usuarioDocumento, usuarioDespacho));
-                        }
-                    }
-                }
+                result.Add(idPedidoEnc, (usuarioDocumento, usuarioDespacho));
             }
         }
 
         return result;
+    }
+
+    // Método auxiliar para convertir a Dictionary<int, Tuple<string,string>>
+    public static Dictionary<int, Tuple<string, string>>
+        Get_Usuarios_Documento_By_IdsPedidoEnc_Tuple(IConfiguration configuration, List<int> pedidoIds)
+    {
+        var valueTupleResult = Get_Usuarios_Documento_By_IdsPedidoEnc(configuration, pedidoIds);
+
+        return valueTupleResult.ToDictionary(
+            kvp => kvp.Key,
+            kvp => Tuple.Create(kvp.Value.Documento, kvp.Value.Despacho)
+        );
     }
 }

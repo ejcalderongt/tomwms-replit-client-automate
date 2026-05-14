@@ -181,9 +181,9 @@ Partial Class frmBodega
         Dim Label92 As System.Windows.Forms.Label
         Dim Label93 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim ButtonImageOptions2 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
-        Dim Code128Generator2 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim ButtonImageOptions1 As DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions = New DevExpress.XtraEditors.ButtonsPanelControl.ButtonImageOptions()
+        Dim Code128Generator1 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Me.lblControlGondola = New System.Windows.Forms.Label()
         Me.Label80 = New System.Windows.Forms.Label()
         Me.Label81 = New System.Windows.Forms.Label()
@@ -283,7 +283,7 @@ Partial Class frmBodega
         Me.txtNombreTarea = New DevExpress.XtraEditors.TextEdit()
         Me.lnkTareas = New System.Windows.Forms.LinkLabel()
         Me.txtIdTarea = New DevExpress.XtraEditors.TextEdit()
-        Me.DsBodega = New TOMWMS.DsBodega()
+        Me.DsBodega = New DsBodega()
         Me.BodegaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.ControlPanelBodega = New DevExpress.XtraTab.XtraTabControl()
         Me.tabDatos = New DevExpress.XtraTab.XtraTabPage()
@@ -342,16 +342,16 @@ Partial Class frmBodega
         Me.txtIdArea = New DevExpress.XtraEditors.TextEdit()
         Me.chkActivoAreaBodega = New DevExpress.XtraEditors.CheckEdit()
         Me.txtCodigoAreaBodega = New DevExpress.XtraEditors.TextEdit()
-        Me.nUpdAncho = New System.Windows.Forms.NumericUpDown()
-        Me.nUpdLargo = New System.Windows.Forms.NumericUpDown()
         Me.chkSistemaAreaBodega = New DevExpress.XtraEditors.CheckEdit()
-        Me.nUpdAlto = New System.Windows.Forms.NumericUpDown()
         Me.txtDescripcionAreaBodega = New DevExpress.XtraEditors.TextEdit()
         Me.GroupControl6 = New DevExpress.XtraEditors.GroupControl()
         Me.nUpdMargenInferior = New System.Windows.Forms.NumericUpDown()
         Me.nUpdMargenSuperior = New System.Windows.Forms.NumericUpDown()
         Me.nUpdMargenDerecho = New System.Windows.Forms.NumericUpDown()
         Me.nUpdMargenIzquierdo = New System.Windows.Forms.NumericUpDown()
+        Me.nUpdAlto = New System.Windows.Forms.NumericUpDown()
+        Me.nUpdAncho = New System.Windows.Forms.NumericUpDown()
+        Me.nUpdLargo = New System.Windows.Forms.NumericUpDown()
         Me.ToolStripPR = New System.Windows.Forms.ToolStrip()
         Me.cmdNuevaArea = New System.Windows.Forms.ToolStripButton()
         Me.cmdGuardarArea = New System.Windows.Forms.ToolStripButton()
@@ -550,6 +550,8 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
+        Me.Label95 = New System.Windows.Forms.Label()
+        Me.chkControlGuia = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -808,10 +810,7 @@ Partial Class frmBodega
         CType(Me.txtIdArea.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivoAreaBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoAreaBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nUpdAncho, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nUpdLargo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkSistemaAreaBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nUpdAlto, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtDescripcionAreaBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl6, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl6.SuspendLayout()
@@ -819,6 +818,9 @@ Partial Class frmBodega
         CType(Me.nUpdMargenSuperior, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nUpdMargenDerecho, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nUpdMargenIzquierdo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nUpdAlto, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nUpdAncho, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nUpdLargo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStripPR.SuspendLayout()
         CType(Me.GroupControl17, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl17.SuspendLayout()
@@ -988,6 +990,7 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkControlGuia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -3316,8 +3319,8 @@ Partial Class frmBodega
         '
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        GridLevelNode2.RelationName = "Level1"
-        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.Dgrid.Location = New System.Drawing.Point(0, 180)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -3501,7 +3504,7 @@ Partial Class frmBodega
         Me.gpSmtp.Controls.Add(Label88)
         Me.gpSmtp.Controls.Add(Label89)
         Me.gpSmtp.Controls.Add(Label90)
-        Me.gpSmtp.CustomHeaderButtons.AddRange(New DevExpress.XtraEditors.ButtonPanel.IBaseButton() {New DevExpress.XtraEditors.ButtonsPanelControl.GroupBoxButton("Limpiar", True, ButtonImageOptions2, DevExpress.XtraBars.Docking2010.ButtonStyle.PushButton, "", -1, True, Nothing, True, False, True, Nothing, -1)})
+        Me.gpSmtp.CustomHeaderButtons.AddRange(New DevExpress.XtraEditors.ButtonPanel.IBaseButton() {New DevExpress.XtraEditors.ButtonsPanelControl.GroupBoxButton("Limpiar", True, ButtonImageOptions1, DevExpress.XtraBars.Docking2010.ButtonStyle.PushButton, "", -1, True, Nothing, True, False, True, Nothing, -1)})
         Me.gpSmtp.CustomHeaderButtonsLocation = DevExpress.Utils.GroupElementLocation.AfterText
         Me.gpSmtp.Location = New System.Drawing.Point(687, 320)
         Me.gpSmtp.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
@@ -4094,30 +4097,6 @@ Partial Class frmBodega
         Me.txtCodigoAreaBodega.Size = New System.Drawing.Size(388, 22)
         Me.txtCodigoAreaBodega.TabIndex = 1
         '
-        'nUpdAncho
-        '
-        Me.nUpdAncho.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.nUpdAncho.DecimalPlaces = 6
-        Me.nUpdAncho.Location = New System.Drawing.Point(88, 133)
-        Me.nUpdAncho.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.nUpdAncho.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.nUpdAncho.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
-        Me.nUpdAncho.Name = "nUpdAncho"
-        Me.nUpdAncho.Size = New System.Drawing.Size(224, 23)
-        Me.nUpdAncho.TabIndex = 9
-        '
-        'nUpdLargo
-        '
-        Me.nUpdLargo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.nUpdLargo.DecimalPlaces = 6
-        Me.nUpdLargo.Location = New System.Drawing.Point(88, 105)
-        Me.nUpdLargo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.nUpdLargo.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.nUpdLargo.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
-        Me.nUpdLargo.Name = "nUpdLargo"
-        Me.nUpdLargo.Size = New System.Drawing.Size(224, 23)
-        Me.nUpdLargo.TabIndex = 7
-        '
         'chkSistemaAreaBodega
         '
         Me.chkSistemaAreaBodega.Location = New System.Drawing.Point(185, 210)
@@ -4126,18 +4105,6 @@ Partial Class frmBodega
         Me.chkSistemaAreaBodega.Properties.Caption = "Sistema"
         Me.chkSistemaAreaBodega.Size = New System.Drawing.Size(98, 24)
         Me.chkSistemaAreaBodega.TabIndex = 11
-        '
-        'nUpdAlto
-        '
-        Me.nUpdAlto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.nUpdAlto.DecimalPlaces = 6
-        Me.nUpdAlto.Location = New System.Drawing.Point(88, 76)
-        Me.nUpdAlto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.nUpdAlto.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.nUpdAlto.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
-        Me.nUpdAlto.Name = "nUpdAlto"
-        Me.nUpdAlto.Size = New System.Drawing.Size(224, 23)
-        Me.nUpdAlto.TabIndex = 5
         '
         'txtDescripcionAreaBodega
         '
@@ -4220,6 +4187,42 @@ Partial Class frmBodega
         Me.nUpdMargenIzquierdo.Name = "nUpdMargenIzquierdo"
         Me.nUpdMargenIzquierdo.Size = New System.Drawing.Size(233, 23)
         Me.nUpdMargenIzquierdo.TabIndex = 1
+        '
+        'nUpdAlto
+        '
+        Me.nUpdAlto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.nUpdAlto.DecimalPlaces = 6
+        Me.nUpdAlto.Location = New System.Drawing.Point(88, 76)
+        Me.nUpdAlto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.nUpdAlto.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
+        Me.nUpdAlto.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
+        Me.nUpdAlto.Name = "nUpdAlto"
+        Me.nUpdAlto.Size = New System.Drawing.Size(224, 23)
+        Me.nUpdAlto.TabIndex = 5
+        '
+        'nUpdAncho
+        '
+        Me.nUpdAncho.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.nUpdAncho.DecimalPlaces = 6
+        Me.nUpdAncho.Location = New System.Drawing.Point(88, 133)
+        Me.nUpdAncho.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.nUpdAncho.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
+        Me.nUpdAncho.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
+        Me.nUpdAncho.Name = "nUpdAncho"
+        Me.nUpdAncho.Size = New System.Drawing.Size(224, 23)
+        Me.nUpdAncho.TabIndex = 9
+        '
+        'nUpdLargo
+        '
+        Me.nUpdLargo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.nUpdLargo.DecimalPlaces = 6
+        Me.nUpdLargo.Location = New System.Drawing.Point(88, 105)
+        Me.nUpdLargo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.nUpdLargo.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
+        Me.nUpdLargo.Minimum = New Decimal(New Integer() {1215752191, 23, 0, -2147483648})
+        Me.nUpdLargo.Name = "nUpdLargo"
+        Me.nUpdLargo.Size = New System.Drawing.Size(224, 23)
+        Me.nUpdLargo.TabIndex = 7
         '
         'ToolStripPR
         '
@@ -5572,6 +5575,8 @@ Partial Class frmBodega
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.Label95)
+        Me.GroupBox2.Controls.Add(Me.chkControlGuia)
         Me.GroupBox2.Controls.Add(lblPickeadorVerifica)
         Me.GroupBox2.Controls.Add(Me.chkOperadorPickingVerifica)
         Me.GroupBox2.Controls.Add(Label72)
@@ -5902,7 +5907,7 @@ Partial Class frmBodega
         Me.Bcc.Name = "Bcc"
         Me.Bcc.Padding = New System.Windows.Forms.Padding(12, 2, 12, 0)
         Me.Bcc.Size = New System.Drawing.Size(195, 53)
-        Me.Bcc.Symbology = Code128Generator2
+        Me.Bcc.Symbology = Code128Generator1
         Me.Bcc.TabIndex = 45
         '
         'cmbSymbology
@@ -6455,6 +6460,28 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
+        'Label95
+        '
+        Me.Label95.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label95.AutoSize = True
+        Me.Label95.Location = New System.Drawing.Point(16, 324)
+        Me.Label95.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label95.Name = "Label95"
+        Me.Label95.Size = New System.Drawing.Size(76, 16)
+        Me.Label95.TabIndex = 127
+        Me.Label95.Text = "Control guía"
+        '
+        'chkControlGuia
+        '
+        Me.chkControlGuia.Location = New System.Drawing.Point(344, 317)
+        Me.chkControlGuia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkControlGuia.Name = "chkControlGuia"
+        Me.chkControlGuia.Properties.Caption = ""
+        Me.chkControlGuia.Size = New System.Drawing.Size(28, 24)
+        Me.chkControlGuia.TabIndex = 126
+        Me.chkControlGuia.ToolTip = "Restringir áeras de SAP"
+        '
         'frmBodega
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -6615,10 +6642,7 @@ Partial Class frmBodega
         CType(Me.txtIdArea.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkActivoAreaBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoAreaBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nUpdAncho, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nUpdLargo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkSistemaAreaBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nUpdAlto, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtDescripcionAreaBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl6.ResumeLayout(False)
@@ -6627,6 +6651,9 @@ Partial Class frmBodega
         CType(Me.nUpdMargenSuperior, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.nUpdMargenDerecho, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.nUpdMargenIzquierdo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nUpdAlto, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nUpdAncho, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nUpdLargo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStripPR.ResumeLayout(False)
         Me.ToolStripPR.PerformLayout()
         CType(Me.GroupControl17, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6813,6 +6840,7 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkControlGuia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -6866,7 +6894,7 @@ Partial Class frmBodega
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents GroupControl16 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents tlUbicaciones As DevExpress.XtraTreeList.TreeList
-    Friend WithEvents DsBodega As TOMWMS.DsBodega
+    Friend WithEvents DsBodega As DsBodega
     Friend WithEvents BodegaBindingSource As System.Windows.Forms.BindingSource
     Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents txtNombreTarea As DevExpress.XtraEditors.TextEdit
@@ -7184,4 +7212,6 @@ Partial Class frmBodega
 
     Friend WithEvents chkBodegaClienteAjusteByB As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents lblBodegaClienteAjusteByB As Label
+    Friend WithEvents Label95 As Label
+    Friend WithEvents chkControlGuia As DevExpress.XtraEditors.CheckEdit
 End Class

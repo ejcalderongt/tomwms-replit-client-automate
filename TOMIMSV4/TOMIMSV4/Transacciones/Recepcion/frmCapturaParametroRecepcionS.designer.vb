@@ -45,7 +45,7 @@ Partial Class frmCapturaParametroRecepcionS
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCapturaParametroRecepcionS))
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Me.DTBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DSPR = New TOMWMS.DSPR()
+        Me.DSPR = New DSPR()
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -1224,7 +1224,7 @@ End Sub
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents chkActivos As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents DTBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DSPR As TOMWMS.DSPR
+    Friend WithEvents DSPR As DSPR
     Friend WithEvents BarManager1 As DevExpress.XtraBars.BarManager
     Friend WithEvents Bar2 As DevExpress.XtraBars.Bar
     Friend WithEvents cmdAcept As DevExpress.XtraBars.BarButtonItem
