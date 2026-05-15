@@ -49,7 +49,7 @@ Partial Class frmEmpresa_Transporte
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsEmpresaTransporteBodega = New TOMWMS.DsEmpresaTransporteBodega()
+        Me.DsEmpresaTransporteBodega = New DsEmpresaTransporteBodega()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSelección = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -596,7 +596,7 @@ Partial Class frmEmpresa_Transporte
     Private WithEvents gridView1 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents RepositoryItemCheckEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsEmpresaTransporteBodega As TOMWMS.DsEmpresaTransporteBodega
+    Friend WithEvents DsEmpresaTransporteBodega As DsEmpresaTransporteBodega
     Friend WithEvents colSelección As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colIdBodega As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colIdAsignacion As DevExpress.XtraGrid.Columns.GridColumn

@@ -42,6 +42,13 @@ Public Class clsLnTrans_ajuste_det_borrador
                 .usuario_creacion = IIf(IsDBNull(dr.Item("usuario_creacion")), "", dr.Item("usuario_creacion"))
                 .fecha_modificacion = IIf(IsDBNull(dr.Item("fecha_modificacion")), Date.Now, dr.Item("fecha_modificacion"))
                 .usuario_modificacion = IIf(IsDBNull(dr.Item("usuario_modificacion")), "", dr.Item("usuario_modificacion"))
+
+                '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+                .IdProveedor = IIf(IsDBNull(dr.Item("idproveedor")), 0, dr.Item("idproveedor"))
+                .Codigo_Proveedor = IIf(IsDBNull(dr.Item("codigo_proveedor")), "", dr.Item("codigo_proveedor"))
+                .Nombre_Proveedor = IIf(IsDBNull(dr.Item("nombre_proveedor")), "", dr.Item("nombre_proveedor"))
+                .IdRecepcionEnc = IIf(IsDBNull(dr.Item("idrecepcionenc")), 0, dr.Item("idrecepcionenc"))
+
             End With
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -95,6 +102,12 @@ Public Class clsLnTrans_ajuste_det_borrador
             If oBeTrans_ajuste_det_borrador.usuario_creacion IsNot Nothing Then Ins.Add("usuario_creacion", "@usuario_creacion", DataType.Parametro)
             Ins.Add("fecha_modificacion", "@fecha_modificacion", DataType.Parametro)
             If oBeTrans_ajuste_det_borrador.usuario_modificacion IsNot Nothing Then Ins.Add("usuario_modificacion", "@usuario_modificacion", DataType.Parametro)
+            If oBeTrans_ajuste_det_borrador.IdRecepcionEnc > 0 Then Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
+
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            Ins.Add("idproveedor", "@idproveedor", DataType.Parametro)
+            Ins.Add("codigo_proveedor", "@codigo_proveedor", DataType.Parametro)
+            Ins.Add("nombre_proveedor", "@nombre_proveedor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -144,6 +157,13 @@ Public Class clsLnTrans_ajuste_det_borrador
             If oBeTrans_ajuste_det_borrador.usuario_creacion IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@USUARIO_CREACION", oBeTrans_ajuste_det_borrador.usuario_creacion))
             cmd.Parameters.Add(New SqlParameter("@FECHA_MODIFICACION", oBeTrans_ajuste_det_borrador.fecha_modificacion))
             If oBeTrans_ajuste_det_borrador.usuario_modificacion IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@USUARIO_MODIFICACION", oBeTrans_ajuste_det_borrador.usuario_modificacion))
+
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeTrans_ajuste_det_borrador.IdProveedor))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_PROVEEDOR", IIf(oBeTrans_ajuste_det_borrador.Codigo_Proveedor Is Nothing, "", oBeTrans_ajuste_det_borrador.Codigo_Proveedor)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROVEEDOR", IIf(oBeTrans_ajuste_det_borrador.Nombre_Proveedor Is Nothing, "", oBeTrans_ajuste_det_borrador.Nombre_Proveedor)))
+
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeTrans_ajuste_det_borrador.IdRecepcionEnc))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -209,6 +229,11 @@ Public Class clsLnTrans_ajuste_det_borrador
             Upd.Add("fecha_modificacion", "@fecha_modificacion", DataType.Parametro)
             Upd.Add("usuario_modificacion", "@usuario_modificacion", DataType.Parametro)
 
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            Upd.Add("idproveedor", "@idproveedor", DataType.Parametro)
+            Upd.Add("codigo_proveedor", "@codigo_proveedor", DataType.Parametro)
+            Upd.Add("nombre_proveedor", "@nombre_proveedor", DataType.Parametro)
+
             Upd.Where("idajustedetborrador = @idajustedetborrador")
 
             Dim sp As String = Upd.SQL()
@@ -260,6 +285,11 @@ Public Class clsLnTrans_ajuste_det_borrador
             cmd.Parameters.Add(New SqlParameter("@USUARIO_CREACION", oBeTrans_ajuste_det_borrador.usuario_creacion))
             cmd.Parameters.Add(New SqlParameter("@FECHA_MODIFICACION", oBeTrans_ajuste_det_borrador.fecha_modificacion))
             cmd.Parameters.Add(New SqlParameter("@USUARIO_MODIFICACION", oBeTrans_ajuste_det_borrador.usuario_modificacion))
+
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+            cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeTrans_ajuste_det_borrador.IdProveedor))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_PROVEEDOR", IIf(oBeTrans_ajuste_det_borrador.Codigo_Proveedor Is Nothing, "", oBeTrans_ajuste_det_borrador.Codigo_Proveedor)))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROVEEDOR", IIf(oBeTrans_ajuste_det_borrador.Nombre_Proveedor Is Nothing, "", oBeTrans_ajuste_det_borrador.Nombre_Proveedor)))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -471,6 +501,49 @@ Public Class clsLnTrans_ajuste_det_borrador
             Throw ex
         Finally
             If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Eliminar_Por_IdAjusteEnc_And_IdAjusteDet(ByVal pIdAjusteEnc As Integer,
+                                                                    ByVal pIdAjusteDetBorrador As Integer,
+                                                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = "DELETE FROM trans_ajuste_det_borrador WHERE idajusteenc = @idajusteenc and idajustedetborrador = @idajustedetborrador "
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEENC", pIdAjusteEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDAJUSTEDETBORRADOR", pIdAjusteDetBorrador))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
         End Try
 
     End Function

@@ -5,6 +5,9 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports System.IO
+Imports System.Text
+Imports System.Globalization
 
 Public Class frmAjusteStock
 
@@ -195,6 +198,15 @@ Public Class frmAjusteStock
             Dim tipoajuste As Integer = 0
 
             If chkBorrador.Checked Then
+
+                '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3):
+                'Validar que las reservas en stock_res asociadas al borrador sigan vivas.
+                'Si algún IdStock fue consumido o liberado por terceros entre sesiones,
+                'recrear la reserva. Si no se puede recrear (stock agotado), advertir
+                'al operador antes de aplicar.
+                Validar_Reservas_Borrador_Al_Cargar(lBeTransAjusteDetBorrador,
+                                                    pBeTransAjustEnc.IdAjusteenc)
+
                 If lBeTransAjusteDetBorrador IsNot Nothing AndAlso lBeTransAjusteDetBorrador.Count > 0 Then
                     tipoajuste = lBeTransAjusteDetBorrador.FirstOrDefault().idtipoajuste
                 End If
@@ -270,16 +282,37 @@ Public Class frmAjusteStock
 
                     vBeAjustDet.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vBeAjustDet.IdUnidadMedida, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+                    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: si el detalle ya tiene
+                    ' proveedor persistido (idproveedor / codigo_proveedor / nombre_proveedor
+                    ' provenientes de trans_ajuste_det), usarlo directo y evitar el lookup
+                    ' por IdStock (que puede haber cambiado luego del cierre del lote).
+                    ' Si NO hay proveedor persistido, hacer el lookup y guardarlo en el BE
+                    ' para que el próximo guardado lo deje en BD.
+                    If vBeAjustDet.IdProveedor > 0 _
+                       OrElse Not String.IsNullOrWhiteSpace(vBeAjustDet.Codigo_Proveedor) _
+                       OrElse Not String.IsNullOrWhiteSpace(vBeAjustDet.Nombre_Proveedor) Then
 
-                    If vProveedor IsNot Nothing Then
-                        If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
-                            sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                        If Not String.IsNullOrWhiteSpace(vBeAjustDet.Codigo_Proveedor) Then
+                            sProveedorTexto = $"{vBeAjustDet.Codigo_Proveedor} - {vBeAjustDet.Nombre_Proveedor}"
                         Else
-                            sProveedorTexto = vProveedor.Nombre
+                            sProveedorTexto = If(vBeAjustDet.Nombre_Proveedor, "")
                         End If
                     Else
-                        Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                        vProveedor = clsLnProveedor.Get_Single_By_IdStock(vBeAjustDet.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        If vProveedor IsNot Nothing Then
+                            vBeAjustDet.IdProveedor = vProveedor.IdProveedor
+                            vBeAjustDet.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                            vBeAjustDet.Nombre_Proveedor = If(vProveedor.Nombre, "")
+
+                            If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
+                                sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
+                            Else
+                                sProveedorTexto = If(vProveedor.Nombre, "")
+                            End If
+                        Else
+                            Debug.WriteLine($"No se encontró proveedor para IdStock: {vBeAjustDet.IdStock}")
+                        End If
                     End If
 
                     ' #EJCRP 21042026: Estandarización del Rows.Add posicional. Aunque aquí
@@ -295,7 +328,7 @@ Public Class frmAjusteStock
                     ' #EJCRP 21042026: (consolida #ProveedorFix previo) ColProveedor está al
                     ' final del grid; se asigna por nombre para no caer en 'motivoajuste'
                     ' por el orden posicional. sProveedorTexto se calcula líneas arriba.
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTexto
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(vBeAjustDet)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = vBeAjustDet.Lote_original
@@ -306,21 +339,17 @@ Public Class frmAjusteStock
                     Llenar_Talla(rc, -1)
                     Llenar_Color(rc, -1)
 
-                    If vBeAjustDet.Idtipoajuste = 3 Then
+                    '#FIX_v22_AJUSTE_EXIST_FROM_BD_2026-04-25:
+                    'Eliminar refresh "live" desde Stock; usar siempre la
+                    'Cantidad_original persistida en BD como fuente de verdad
+                    'para CantidadP / Existencia. (Se mantiene v21.G2 en ColCantidad).
+                    If vBeAjustDet.Idtipoajuste = 3 OrElse vBeAjustDet.Idtipoajuste = 5 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
                             dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = Math.Abs(vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original) / vBeAjustDet.Factor
                         Else
                             dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original
-                        End If
-                    ElseIf vBeAjustDet.Idtipoajuste = 5 Then
-                        If vBeAjustDet.IdPresentacion <> 0 Then
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original / vBeAjustDet.Factor
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = (vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva) / vBeAjustDet.Factor
-                        Else
-                            dgrid.Rows(rc).Cells("CantidadP").Value = vBeAjustDet.Cantidad_original
-                            dgrid.Rows(rc).Cells("ColCantidad").Value = vBeAjustDet.Cantidad_original - vBeAjustDet.Cantidad_nueva
+                            dgrid.Rows(rc).Cells("ColCantidad").Value = Math.Abs(vBeAjustDet.Cantidad_nueva - vBeAjustDet.Cantidad_original)
                         End If
                     ElseIf vBeAjustDet.Idtipoajuste = 1 Then 'Ajuste Lote
                         '#EJC20180726: Desplegar lote anterior y nuevo lote
@@ -427,8 +456,8 @@ Public Class frmAjusteStock
     End Function
 
     Private Function Get_Proveedor_Texto(ByVal pIdStock As Integer,
-                                         ByVal pConn As SqlClient.SqlConnection,
-                                         ByVal pTrans As SqlClient.SqlTransaction) As String
+                                         ByVal pConn As SqlConnection,
+                                         ByVal pTrans As SqlTransaction) As String
         If pIdStock <= 0 Then Return ""
         Try
             Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(pIdStock, pConn, pTrans)
@@ -440,6 +469,48 @@ Public Class frmAjusteStock
         Catch
             Return ""
         End Try
+    End Function
+
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    ' Resuelve el proveedor por IdStock, lo persiste en el BE de detalle (IdProveedor /
+    ' Codigo_Proveedor / Nombre_Proveedor) y devuelve el texto formateado para mostrar
+    ' en la columna ColProveedor de la grilla. Si el lookup falla devuelve "".
+    Private Function Resolver_Proveedor_Y_Persistir(ByVal oBe As clsBeTrans_ajuste_det) As String
+        Try
+            If oBe Is Nothing Then Return ""
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(oBe.IdStock)
+            If be IsNot Nothing Then
+                oBe.IdProveedor = be.IdProveedor
+                oBe.Codigo_Proveedor = If(be.Codigo, "")
+                oBe.Nombre_Proveedor = If(be.Nombre, "")
+                If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                    Return $"{be.Nombre}"
+                End If
+                Return If(be.Nombre, "")
+            End If
+        Catch
+        End Try
+        Return ""
+    End Function
+
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    ' Sobrecarga para clsBeTrans_ajuste_det_borrador.
+    Private Function Resolver_Proveedor_Y_Persistir(ByVal oBe As clsBeTrans_ajuste_det_borrador) As String
+        Try
+            If oBe Is Nothing Then Return ""
+            Dim be As clsBeProveedor = clsLnProveedor.Get_Single_By_IdStock(oBe.IdStock)
+            If be IsNot Nothing Then
+                oBe.IdProveedor = be.IdProveedor
+                oBe.Codigo_Proveedor = If(be.Codigo, "")
+                oBe.Nombre_Proveedor = If(be.Nombre, "")
+                If Not String.IsNullOrWhiteSpace(be.Codigo) Then
+                    Return $"{be.Nombre}"
+                End If
+                Return If(be.Nombre, "")
+            End If
+        Catch
+        End Try
+        Return ""
     End Function
 
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
@@ -560,6 +631,7 @@ Public Class frmAjusteStock
                     BeAjusteDetBorrador.idstockres = IdStockRes
                     BeAjusteDetBorrador.idstocklink = 0
                     BeAjusteDetBorrador.esnuevolink = 0
+                    BeAjusteDetBorrador.IdRecepcionEnc = frmStockList.pSingleBEVWStockRes.IdRecepcionEnc
 
                     If BeBodega.Control_Talla_Color Then
 
@@ -591,8 +663,9 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
-                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta desde borrador).
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDetBorrador.IdStock)
+                    ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar
+                    ' Proveedor en grilla y persistirlo en el BE borrador para guardado.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(BeAjusteDetBorrador)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDetBorrador.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -733,8 +806,9 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
-                    ' #EJCRP 21042026: poblar Proveedor desde el IdStock (alta directa).
-                    dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(BeAjusteDet.IdStock)
+                    ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar
+                    ' Proveedor en grilla y persistirlo en el BE de detalle para guardado.
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(BeAjusteDet)
 
                     dgrid.Rows(rc).Cells("UmBas").Value = BeAjusteDet.UmBas
                     dgrid.Rows(rc).Cells("UmBas").ReadOnly = True
@@ -870,6 +944,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdProductoTallaColor_origen = stockEspecificoSeleccionado.IdProductoTallaColor
             BeAjusteDet.Talla_origen = stockEspecificoSeleccionado.Codigo_Talla
             BeAjusteDet.Color_origen = stockEspecificoSeleccionado.Codigo_Color
+            BeAjusteDet.idRecepcionEnc = stockEspecificoSeleccionado.IdRecepcionEnc
             lBeTransAjusteDet.Add(BeAjusteDet)
 
             ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
@@ -913,7 +988,14 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
-            dgrid.Rows(rc).Cells("ColProveedor").Value = stockEspecificoSeleccionado.Proveedor
+            '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistir IdProveedor / Codigo /
+            ' Nombre en el BE; si el lookup por IdStock falla, fallback al texto que ya
+            ' venía precargado en stockEspecificoSeleccionado.Proveedor.
+            Dim sProveedorTextoSE As String = Resolver_Proveedor_Y_Persistir(BeAjusteDet)
+            If String.IsNullOrWhiteSpace(sProveedorTextoSE) Then
+                sProveedorTextoSE = stockEspecificoSeleccionado.Proveedor
+            End If
+            dgrid.Rows(rc).Cells("ColProveedor").Value = sProveedorTextoSE
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
@@ -1218,6 +1300,99 @@ Public Class frmAjusteStock
 
     End Sub
 
+    '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3):
+    'Helper invocado al cargar un ajuste borrador existente. Verifica que cada
+    'detalle tenga su correspondiente reserva en stock_res; si no, intenta
+    'recrearla. Devuelve la cantidad de detalles que NO se pudieron re-reservar
+    '(stock agotado/eliminado por terceros).
+    '
+    'Implementación: usa clsLnStock_res.Get_All_By_IdStock(IdStock) que SÍ existe
+    '(DAL clsLnStock_res_Partial.vb línea 5149) y filtra in-memory por
+    'IdTransaccion + Indicador. Más lento que un SP dedicado pero evita agregar
+    'función nueva al DAL.
+    Private Function Validar_Reservas_Borrador_Al_Cargar(
+            ByVal lDetallesBorrador As List(Of clsBeTrans_ajuste_det_borrador),
+            ByVal pIdAjusteEnc As Integer) As Integer
+
+        Dim cntFaltantes As Integer = 0
+        Dim cntRecreados As Integer = 0
+        Dim warnings As New StringBuilder()
+
+        Try
+            If lDetallesBorrador Is Nothing OrElse lDetallesBorrador.Count = 0 Then Return 0
+
+            For Each det As clsBeTrans_ajuste_det_borrador In lDetallesBorrador
+                If det.IdStock <= 0 Then Continue For
+
+                Dim reservasDelStock As List(Of clsBeStock_res) =
+                    clsLnStock_res.Get_All_By_IdStock(det.IdStock)
+
+                Dim tieneReservaPropia As Boolean = False
+                If reservasDelStock IsNot Nothing Then
+                    For Each rsv In reservasDelStock
+                        If rsv.IdTransaccion = pIdAjusteEnc AndAlso
+                           rsv.Indicador = "ajuste_stock" Then
+                            tieneReservaPropia = True
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                If tieneReservaPropia Then Continue For
+
+                'Reserva faltante: intentar recrear
+                Dim ok As Boolean = Reservar_Stock_Borrador_Standalone(det.IdStock, pIdAjusteEnc)
+                If ok Then
+                    cntRecreados += 1
+                Else
+                    cntFaltantes += 1
+                    warnings.AppendLine(String.Format(
+                        "  - IdStock {0}, lote {1}, producto {2}: stock no disponible.",
+                        det.IdStock, det.lote_original, det.codigo_producto))
+                End If
+            Next
+
+            If cntFaltantes > 0 Then
+                XtraMessageBox.Show(
+                    String.Format(
+                        "Se reanudó el borrador pero {0} detalle(s) tienen stock " &
+                        "consumido por otros procesos:" & vbCrLf & vbCrLf & "{1}" & vbCrLf &
+                        "Revise estos detalles antes de aplicar el ajuste.",
+                        cntFaltantes, warnings.ToString()),
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(
+                "Validar_Reservas_Borrador_Al_Cargar: " & ex.Message)
+        End Try
+
+        Return cntFaltantes
+    End Function
+
+    '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3 helper):
+    'Wrap defensivo de Reservar_Stock_Para_Borrador_Standalone con su propia tx,
+    'devuelve True/False sin mostrar MessageBox individual (el agregado lo hace
+    'Validar_Reservas_Borrador_Al_Cargar).
+    Private Function Reservar_Stock_Borrador_Standalone(ByVal idstock As Integer,
+                                                         ByVal pIdAjusteEnc As Integer) As Boolean
+        Dim ct As New clsTransaccion()
+        Try
+            ct.Begin_Transaction()
+            Dim ok = clsLnTrans_ajuste_enc.Reservar_Stock_Para_Borrador_Standalone(
+                idstock, pIdAjusteEnc, AP.HostName, AP.UsuarioAp.IdUsuario,
+                ct.lConnection, ct.lTransaction)
+            ct.Commit_Transaction()
+            Return ok
+        Catch ex As Exception
+            ct.RollBack_Transaction()
+            clsLnLog_error_wms.Agregar_Error("Reservar_Stock_Borrador_Standalone: " & ex.Message)
+            Return False
+        Finally
+            ct.Close_Conection()
+        End Try
+    End Function
+
     Private Sub Llenar_Tipo(ByVal pIndex As Integer, Optional pidtipo As Integer = 0,
                               Optional ByVal lConnection As SqlConnection = Nothing,
                               Optional ByVal lTransaction As SqlTransaction = Nothing)
@@ -1233,6 +1408,32 @@ Public Class frmAjusteStock
             'If pidtipo = 3 Then --se cumple cuando del grid cmbTipoAjuste esta seleccionado el +/', pero cuando se selecciona del grid
             'entonces deja de ser 3 y podria ser 5 (3 y 5 son los ajustes por cantidad).
             '#GT10062022_1640
+
+            '#FIX_v19_LLENAR_TIPO_PRIMERA_FILA_2026-04-25 (E1):
+            'Sincronizar IdTipoAjuste (campo de form) con cmbTipoAjuste.EditValue
+            'cuando aun no fue inicializado. Causa raiz del bug: en Form_Load se hace
+            '"cmbTipoAjuste.EditValue = 3" pero cmbTipoAjuste_EditValueChanged hace
+            '"If IsLoading Then Exit Sub", por lo cual IdTipoAjuste queda en 0 hasta
+            'que el handler dispare por accion del usuario. La PRIMERA fila agregada
+            'al grid llamaba Llenar_Tipo con IdTipoAjuste=0, caia al ELSE branch
+            '(GetAll + ReadOnly=True + Value=pidtipo) y dejaba el combo bloqueado en
+            'Positivo. La SEGUNDA fila ya tenia IdTipoAjuste sincronizado por la
+            'asignacion de la linea 1421 dentro del ELSE, asi que entraba al IF
+            'branch (Get_by_Cantidad + ReadOnly=False) y mostraba ambas opciones.
+            If IdTipoAjuste <> 3 AndAlso IdTipoAjuste <> 5 Then
+                Try
+                    Dim vEditValueEnc As Object = cmbTipoAjuste.EditValue
+                    If vEditValueEnc IsNot Nothing AndAlso IsNumeric(vEditValueEnc) Then
+                        Dim vIdTipoAjusteEnc As Integer = CInt(vEditValueEnc)
+                        If vIdTipoAjusteEnc = 3 OrElse vIdTipoAjusteEnc = 5 Then
+                            IdTipoAjuste = vIdTipoAjusteEnc
+                        End If
+                    End If
+                Catch
+                    'Si el combo del enc aun no esta inicializado, dejar IdTipoAjuste
+                    'como esta y caer al ELSE branch original (comportamiento previo).
+                End Try
+            End If
 
             If IdTipoAjuste = 3 OrElse IdTipoAjuste = 5 Then
 
@@ -1276,7 +1477,7 @@ Public Class frmAjusteStock
                         dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = False
                         Valor_Tipo_Ajuste(pIndex)
 
-                        If pidtipo = 3 Then
+                        If pidtipo = 3 OrElse pidtipo = 5 Then
                             DgComboTipo.Value = pidtipo
                         End If
 
@@ -1336,7 +1537,7 @@ Public Class frmAjusteStock
 
         Try
 
-            If TypeOf e.Control Is System.Windows.Forms.ComboBox Then
+            If TypeOf e.Control Is Windows.Forms.ComboBox Then
 
                 If dgrid.CurrentCell.OwningColumn.Name = "tipoajuste" Then
 
@@ -1862,7 +2063,9 @@ Public Class frmAjusteStock
 
         Try
             sr = dgrid.SelectedRows(0).Index
-            If MessageBox.Show("Eliminar registro ?", "", MessageBoxButtons.YesNo) <> DialogResult.Yes Then Return
+            If XtraMessageBox.Show("¿Eliminar registro?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then
+                Return
+            End If
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1876,12 +2079,49 @@ Public Class frmAjusteStock
                 stocklink = lBeTransAjusteDetBorrador(sr).idstocklink
 
                 If stocklink = 0 Then
+
+                    '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
+                    'Eliminar Stock_res reservado al quitar la fila en modo borrador.
+                    'Causa raiz: en alta de fila desde frmStockList se llama
+                    'Reservar_Stock incondicionalmente (linea 539, antes del
+                    'IF chkBorrador.Checked), por lo cual la fila borrador tambien
+                    'tiene un IdStockRes valido. La rama no-borrador (debajo) ya
+                    'eliminaba el stock_res; faltaba replicar la limpieza aca para
+                    'no dejar reservas huerfanas que bloqueen la disponibilidad.
+                    str.IdStockRes = lBeTransAjusteDetBorrador(sr).idstockres
+                    If str.IdStockRes > 0 Then
+                        clsLnStock_res.Eliminar(str)
+                    End If
+
+                    clsLnTrans_ajuste_det_borrador.Eliminar_Por_IdAjusteEnc_And_IdAjusteDet(lBeTransAjusteDetBorrador(sr).idajusteenc, lBeTransAjusteDetBorrador(sr).IdAjusteDetBorrador)
+
                     lBeTransAjusteDetBorrador.RemoveAt(sr)
+
                     dgrid.Rows.RemoveAt(sr)
+
                 Else
+                    '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
+                    'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDetBorrador.Count - 1 To 0 Step -1
-                        lBeTransAjusteDetBorrador.RemoveAt(ii)
-                        dgrid.Rows.RemoveAt(ii)
+                        If lBeTransAjusteDetBorrador(ii).idstocklink = stocklink Then
+                            '#FIX_v19_DEL_BORRADOR_STOCKRES_2026-04-25 (F1):
+                            'Eliminar Stock_res tambien para cada hermana del
+                            'mismo idstocklink antes de quitarla de la lista.
+                            'Espejo de la rama no-borrador (lineas 2030-2032)
+                            'que hace clsLnStock_res.Eliminar para cada idstockres
+                            'de las filas hermanas. Aca no aplicamos el filtro
+                            '"Not esnuevolink" porque en borrador todas las filas
+                            'son nuevas reservas locales que deben liberarse.
+                            str.IdStockRes = lBeTransAjusteDetBorrador(ii).idstockres
+                            If str.IdStockRes > 0 Then
+                                clsLnStock_res.Eliminar(str)
+                            End If
+
+                            lBeTransAjusteDetBorrador.RemoveAt(ii)
+                            If ii < dgrid.Rows.Count Then
+                                dgrid.Rows.RemoveAt(ii)
+                            End If
+                        End If
                     Next
                 End If
 
@@ -1896,15 +2136,23 @@ Public Class frmAjusteStock
                     lBeTransAjusteDet.RemoveAt(sr)
                     dgrid.Rows.RemoveAt(sr)
                 Else
+                    '#FIX_v13_DEL_STOCKLINK_2026-04-25 (G1):
+                    'Borrar solo filas hermanas del mismo idstocklink.
                     For ii = lBeTransAjusteDet.Count - 1 To 0 Step -1
 
-                        If Not lBeTransAjusteDet(ii).esnuevolink Then
-                            str.IdStockRes = lBeTransAjusteDet(ii).idstockres
-                            clsLnStock_res.Eliminar(str)
-                        End If
+                        If lBeTransAjusteDet(ii).idstocklink = stocklink Then
 
-                        lBeTransAjusteDet.RemoveAt(ii)
-                        dgrid.Rows.RemoveAt(ii)
+                            If Not lBeTransAjusteDet(ii).esnuevolink Then
+                                str.IdStockRes = lBeTransAjusteDet(ii).idstockres
+                                clsLnStock_res.Eliminar(str)
+                            End If
+
+                            lBeTransAjusteDet.RemoveAt(ii)
+                            If ii < dgrid.Rows.Count Then
+                                dgrid.Rows.RemoveAt(ii)
+                            End If
+
+                        End If
                     Next
                 End If
 
@@ -2025,9 +2273,10 @@ Public Class frmAjusteStock
             dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
             dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
-            ' #EJCRP 21042026: poblar Proveedor para el detalle del link de quiebre de lote.
+            ' #EJCRP 21042026 / #FIX_v20_PROVEEDOR_PERSIST_2026-04-25: poblar Proveedor
+            ' para el detalle del link de quiebre de lote y persistirlo en el BE.
             ' Item.IdStock representa el stock origen del nuevo link.
-            dgrid.Rows(rc).Cells("ColProveedor").Value = Get_Proveedor_Texto(Item.IdStock)
+            dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(Item)
 
             Llenar_Motivo(rc, Item.IdMotivoAjuste)
             Llenar_Tipo(rc, Item.Idtipoajuste)
@@ -2187,7 +2436,17 @@ Public Class frmAjusteStock
     End Function
 
     Private Sub mnuImprimir1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuImprimir1.ItemClick
-        Llenar_DS_Rep()
+        Try
+            If dgrid Is Nothing OrElse dgrid.Rows.Count = 0 Then
+                XtraMessageBox.Show("No hay lineas para imprimir.",
+                                    Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+            Imprimir_Detalle_Ajuste_RC2026()
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Try : clsLnLog_error_wms.Agregar_Error("mnuImprimir1_ItemClick: " & ex.Message) : Catch : End Try
+        End Try
     End Sub
 
     Private Sub combomotivo_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
@@ -2360,7 +2619,22 @@ Public Class frmAjusteStock
                 If Not Validar_Datos() Then Return
 
                 '#GT27112024: ajuste normal debe entrar por aca
-                If Not Es_Ajuste_Positivo_Sin_Stock Then
+                '#FIX_v8_2026-04-25: defensa contra bug duplicado ajuste positivo.
+                'La bandera Es_Ajuste_Positivo_Sin_Stock se prendÃ­a indebidamente desde
+                'cmbTipoAjuste_EditValueChanged (linea 4795) al elegir IdTipoAjuste=3,
+                'incluso cuando todos los detalles tenÃ­an stock previo (IdStock > 0).
+                'Resultado: el flujo entraba en Guardar_Ajuste_Positivo_Sin_Stock que
+                'usa Guardar_Stock_Ajuste_Positivo (DAL 16375) que SOLO hace INSERT,
+                'creando un IdStock nuevo en lugar de actualizar el origen.
+                '
+                'Defensa: Ruta B (Guardar_Ajuste_Positivo_Sin_Stock) solo si REALMENTE
+                'hay al menos un detalle SIN stock previo (IdStock = 0). En caso
+                'contrario forzar Ruta A para que Procesar_Ajuste actualice el origen.
+                Dim hayDetalleSinStockPrevio As Boolean =
+                    lBeTransAjusteDet IsNot Nothing AndAlso
+                    lBeTransAjusteDet.Any(Function(d) d.IdStock = 0)
+
+                If Not Es_Ajuste_Positivo_Sin_Stock OrElse Not hayDetalleSinStockPrevio Then
 
                     If pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
                         Actualizar_Ajuste()
@@ -2720,6 +2994,90 @@ Public Class frmAjusteStock
 
     End Function
 
+    '#FIX_v14_ELIMINAR_AJUSTE_2026-04-25 (H1):
+    'Elimina el ajuste actual solo si no tiene detalle.
+    Public Sub Eliminar_Ajuste_Si_Sin_Detalle()
+        Try
+            If pBeTransAjustEnc Is Nothing OrElse
+               pBeTransAjustEnc.IdAjusteenc <= 0 Then
+                XtraMessageBox.Show(
+                    "No hay un ajuste cargado para eliminar.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G1):
+            ' Solo se permite eliminar ajustes en estado borrador. Un ajuste ya
+            ' aplicado/finalizado no debe eliminarse desde esta UI: afecta stock
+            ' y trazabilidad y debe pasar por proceso de reverso, no por borrar.
+            If Not chkBorrador.Checked Then
+                XtraMessageBox.Show(
+                    "El ajuste #" & pBeTransAjustEnc.IdAjusteenc &
+                    " ya esta aplicado/finalizado y no puede eliminarse desde esta pantalla.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G2):
+            ' Contar detalles desde la lista en memoria del estado actual
+            ' (lBeTransAjusteDetBorrador para borrador), no desde dgrid.Rows.
+            ' Despues de mnuDel_Click el DataGridView puede quedar con filas
+            ' IsNewRow / fantasma que distorsionan el conteo (caso reportado:
+            ' filasGrid = 2 con la lista vacia, bloqueando la eliminacion del
+            ' ajuste). La lista se mantiene sincronizada con RemoveAt en
+            ' mnuDel_Click, asi que es la fuente de verdad.
+            Dim cantDetallesMem As Integer = 0
+            If lBeTransAjusteDetBorrador IsNot Nothing Then
+                cantDetallesMem = lBeTransAjusteDetBorrador.Count
+            End If
+            If cantDetallesMem > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & cantDetallesMem & " detalle(s) en memoria. Elimine los detalles antes de eliminar el ajuste.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            '#FIX_v23_ELIMINAR_AJUSTE_RULES_2026-04-25 (G3):
+            ' Defensa: validar contra la BD que efectivamente no quedaron filas
+            ' en trans_ajuste_det_borrador (por si la lista en memoria estuviera
+            ' desincronizada por algun camino atipico). trans_ajuste_det no se
+            ' chequea: G1 ya bloqueo todo lo no-borrador, asi que esa tabla no
+            ' deberia tener filas para este IdAjusteEnc.
+            Dim detallesBorr As List(Of clsBeTrans_ajuste_det_borrador) =
+                clsLnTrans_ajuste_det_borrador.Get_By_IdAjusteEnc(pBeTransAjustEnc.IdAjusteenc)
+            If detallesBorr IsNot Nothing AndAlso detallesBorr.Count > 0 Then
+                XtraMessageBox.Show(
+                    "El ajuste tiene " & detallesBorr.Count & " detalle(s) en BD trans_ajuste_det_borrador. Elimine los detalles antes.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            Dim resp As DialogResult = XtraMessageBox.Show(
+                "Confirma eliminar el ajuste #" & pBeTransAjustEnc.IdAjusteenc &
+                "?" & vbCrLf & vbCrLf & "Esta operación es irreversible.",
+                "Eliminar ajuste sin detalle",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2)
+            If resp <> DialogResult.Yes Then Return
+
+            clsLnTrans_ajuste_enc.RollBackStockRes(pBeTransAjustEnc)
+
+            XtraMessageBox.Show(
+                "Ajuste eliminado correctamente.",
+                Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            Guardado = True
+            Me.Close()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text,
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            clsLnLog_error_wms.Agregar_Error(
+                "Eliminar_Ajuste_Si_Sin_Detalle: " & ex.Message)
+        End Try
+    End Sub
+
     Private Sub Guardar_Ajuste()
 
         Dim cc, ic As Integer
@@ -2795,9 +3153,42 @@ Public Class frmAjusteStock
 
             End If
 
+            '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2):
+            'Reconciliar lista vs grid antes de iterar por índice.
+            Sincronizar_Lista_Con_Grid()
+
             If lBeTransAjusteDet Is Nothing OrElse lBeTransAjusteDet.Count = 0 Then
                 Throw New Exception("No hay registros para guardar.")
             End If
+
+            '#FIX_v15_RECUPERAR_PRODUCTO_2026-04-25 (I2): completar código/nombre faltantes.
+            For Each detItem As clsBeTrans_ajuste_det In lBeTransAjusteDet
+                If String.IsNullOrWhiteSpace(detItem.Codigo_producto) OrElse
+                   String.IsNullOrWhiteSpace(detItem.Nombre_producto) Then
+                    Try
+                        If detItem.IdProductoBodega > 0 Then
+                            Dim idProd As Integer =
+                                clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(
+                                    detItem.IdProductoBodega)
+                            If idProd > 0 Then
+                                Dim prod = clsLnProducto.Get_Single_By_IdProducto(idProd)
+                                If prod IsNot Nothing Then
+                                    If String.IsNullOrWhiteSpace(detItem.Codigo_producto) Then
+                                        detItem.Codigo_producto = prod.Codigo
+                                    End If
+                                    If String.IsNullOrWhiteSpace(detItem.Nombre_producto) Then
+                                        detItem.Nombre_producto = prod.Nombre
+                                    End If
+                                End If
+                            End If
+                        End If
+                    Catch ex As Exception
+                        clsLnLog_error_wms.Agregar_Error(
+                            "v15.I2 Recuperar producto IdProductoBodega=" &
+                            detItem.IdProductoBodega & ": " & ex.Message)
+                    End Try
+                End If
+            Next
 
             pBeTransAjustEnc.Referencia = txtReferencia.Text
             pBeTransAjustEnc.Fecha = dtpFecha.EditValue
@@ -2831,8 +3222,9 @@ Public Class frmAjusteStock
                 If lBeTransAjusteDet(i).Peso_original <> lBeTransAjusteDet(i).Peso_nuevo Then ic += 1
                 If ic > 0 Then cc += 1
 
-                '#EJC20180924: Asignación de bodega de ERP.                
-                DgComboBodega = TryCast(dgrid.CurrentRow.Cells("ColBodega"), DataGridViewComboBoxCell)
+                '#EJC20180924: Asignación de bodega de ERP.
+                '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G3): usar la fila del bucle.
+                DgComboBodega = TryCast(dgrid.Rows(i).Cells("ColBodega"), DataGridViewComboBoxCell)
                 '#CM_20200219: Se cambio el IdBodega en lugar de IdBodegaErp
                 If BeBodega.Bodega_Cliente_Ajuste_ByB Then
                     IdBodegaERP = cmbBodegaERP.EditValue
@@ -2929,7 +3321,8 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             If Not EsBorrador Then
-                Llenar_DS_Rep()
+                'Llenar_DS_Rep()
+                Imprimir_Detalle_Ajuste_RC2026()
             End If
 
             If EsBorrador Then Close()
@@ -3086,6 +3479,102 @@ Public Class frmAjusteStock
         End Try
     End Sub
 
+    '#FIX_v13_SYNC_GUARDAR_2026-04-25 (G2 helper) — REWRITE v16:
+    'Reconstruye lBeTransAjusteDet para que refleje exactamente el grid.
+    Private Sub Sincronizar_Lista_Con_Grid()
+        Dim lNueva As New List(Of clsBeTrans_ajuste_det)
+        Dim lOriginal As List(Of clsBeTrans_ajuste_det) =
+            If(lBeTransAjusteDet, New List(Of clsBeTrans_ajuste_det))
+
+        Dim filasGrid As New List(Of DataGridViewRow)
+        For iRow As Integer = 0 To dgrid.Rows.Count - 1
+            If Not dgrid.Rows(iRow).IsNewRow Then filasGrid.Add(dgrid.Rows(iRow))
+        Next
+
+        Dim modoPosicional As Boolean = (filasGrid.Count = lOriginal.Count)
+
+        For i As Integer = 0 To filasGrid.Count - 1
+
+            Dim row As DataGridViewRow = filasGrid(i)
+
+            Dim Codigo As String = If(
+                IsDBNull(row.Cells("ColCodigoProducto").Value),
+                "", CStr(row.Cells("ColCodigoProducto").Value))
+            Dim Lote As String = If(
+                IsDBNull(row.Cells("ColLote").Value),
+                "", CStr(row.Cells("ColLote").Value))
+            Dim IdAjusteDet As Integer = If(
+                IsDBNull(row.Cells("ColIdAjusteDEt").Value),
+                0, CInt(row.Cells("ColIdAjusteDEt").Value))
+
+            Dim found As clsBeTrans_ajuste_det = Nothing
+
+            '1) Match nominal en lista principal
+            found = lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
+                                    AndAlso x.Lote_nuevo = Lote _
+                                    AndAlso x.IdAjusteDet = IdAjusteDet)
+
+            '2) Fallback nominal en borrador
+            If found Is Nothing AndAlso
+               lBeTransAjusteDetBorrador IsNot Nothing Then
+                Dim foundBorr As clsBeTrans_ajuste_det_borrador =
+                    lBeTransAjusteDetBorrador.Find(
+                        Function(x) x.codigo_producto = Codigo _
+                          AndAlso x.lote_nuevo = Lote _
+                          AndAlso x.idajustedet = IdAjusteDet)
+                If foundBorr IsNot Nothing Then
+                    found = Convertir_Borrador_A_Detalle(foundBorr)
+                End If
+            End If
+
+            '3) FIX_v16_J1: fallback posicional + backfill de campos vacíos
+            If found Is Nothing AndAlso modoPosicional AndAlso i < lOriginal.Count Then
+                found = lOriginal(i)
+
+                If String.IsNullOrWhiteSpace(found.Codigo_producto) Then
+                    found.Codigo_producto = Codigo
+                End If
+
+                Try
+                    Dim nombreGrid As String = If(
+                        IsDBNull(row.Cells("ColNombreProducto").Value),
+                        "", CStr(row.Cells("ColNombreProducto").Value))
+                    If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
+                       Not String.IsNullOrWhiteSpace(nombreGrid) Then
+                        found.Nombre_producto = nombreGrid
+                    End If
+                Catch
+                End Try
+
+                If String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
+                   Not String.IsNullOrWhiteSpace(Lote) Then
+                    found.Lote_nuevo = Lote
+                End If
+            End If
+
+            If found IsNot Nothing Then
+                lNueva.Add(found)
+            Else
+                Throw New Exception(String.Format(
+                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
+                    i + 1, Codigo, Lote, IdAjusteDet))
+            End If
+        Next
+
+        lBeTransAjusteDet = lNueva
+
+        'FIX_v16_J2: usar mapeo explícito al espejo borrador
+        If chkBorrador.Checked AndAlso lBeTransAjusteDetBorrador IsNot Nothing Then
+            Dim lNuevoBorr As New List(Of clsBeTrans_ajuste_det_borrador)
+            Dim fechaActual As Date = Now
+            Dim usuarioActual As String = AP.UsuarioAp.IdUsuario.ToString()
+            For Each d As clsBeTrans_ajuste_det In lNueva
+                lNuevoBorr.Add(MapearDetalleABorrador(d, fechaActual, usuarioActual))
+            Next
+            lBeTransAjusteDetBorrador = lNuevoBorr
+        End If
+    End Sub
+
     Private Sub Guardar_Ajuste_Positivo(ByRef lConnection As SqlConnection, ByRef lTransaction As SqlTransaction)
 
         Dim ss As String = ""
@@ -3218,9 +3707,11 @@ Public Class frmAjusteStock
 
             Crear_Movimientos_Positivos(lConnection, lTransaction)
 
-            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc, lBeTransAjusteDet, lBeTransMovimientos,
-                                                                                      lConnection,
-                                                                                      lTransaction)
+            clsLnTrans_ajuste_enc.Aplicar_Ajuste(pBeTransAjustEnc,
+                                                 lBeTransAjusteDet,
+                                                 lBeTransMovimientos,
+                                                 lConnection,
+                                                 lTransaction)
 
 
             If CantidadRegistrosEnviados = lBeTransAjusteDet.Count Then
@@ -4460,6 +4951,7 @@ Public Class frmAjusteStock
             BeAjusteDet.IdPresentacion = pStockTemporal.IdPresentacion
             BeAjusteDet.IdUnidadMedida = vProductoSinStock.IdUnidadMedidaBasica
             BeAjusteDet.IdUbicacion = IIf(pStockTemporal.IdUbicacion = 0, ubic, pStockTemporal.IdUbicacion)
+            BeAjusteDet.idRecepcionEnc = pStockTemporal.IdRecepcionEnc
 
             If BeAjusteDet.IdPresentacion <> 0 Then
                 BeAjusteDet.Presentacion = clsLnProducto_presentacion.GetSingle(BeAjusteDet.IdPresentacion)
@@ -4762,15 +5254,6 @@ Public Class frmAjusteStock
         End Try
     End Sub
 
-    Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
-
-        Try
-
-        Catch ex As Exception
-            Debug.Print(ex.Message)
-        End Try
-    End Sub
-
     Private Sub cmbTipoAjuste_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTipoAjuste.EditValueChanged
 
         If IsLoading Then Exit Sub
@@ -4782,7 +5265,12 @@ Public Class frmAjusteStock
 
             If IdTipoAjuste = 3 Then
                 mnuAjustePositivo.Enabled = True
-                Es_Ajuste_Positivo_Sin_Stock = True
+                '#FIX_v8_2026-04-25: NO prender la bandera acÃ¡. La bandera
+                'Es_Ajuste_Positivo_Sin_Stock SOLO debe activarse cuando el operador
+                'usa explÃ­citamente mnuAjustePositivo_Click (agregar producto SIN stock previo).
+                'Antes: Es_Ajuste_Positivo_Sin_Stock = True
+                'Esa lÃ­nea provocaba que ajustes positivos masivos vÃ­a Excel (con IdStock previo)
+                'crearan un IdStock nuevo en lugar de actualizar el origen.
             Else
                 mnuAjustePositivo.Enabled = False
                 Es_Ajuste_Positivo_Sin_Stock = False
@@ -5023,6 +5511,8 @@ Public Class frmAjusteStock
             'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
             IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
 
+            cmbTipoAjuste.EditValue = 3
+
             '#GT29082025: mostrar u ocultar las columnas de talla/color
             Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
 
@@ -5135,13 +5625,12 @@ Public Class frmAjusteStock
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         Finally
+            ' #RC2026 INIT - Inicializa el resumen consolidado por (Codigo|Talla|Color).
+            ' Idempotente: solo arma el datasource y las columnas la primera vez.
+            Try : Hook_Init_Resumen_Consolidado_2026() : Catch : End Try
             IsLoading = False
             SplashScreenManager.CloseForm(False)
         End Try
-
-    End Sub
-
-    Private Sub btnImportarExcel_Click(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btnImportarExcel.ItemClick
 
     End Sub
 
@@ -5261,6 +5750,38 @@ Public Class frmAjusteStock
         Return oDet
 
     End Function
+
+    '#FIX_v12_HASH_EXCEL_2026-04-25 (F1):
+    'HashSet de hashes SHA-256 de los lotes ya importados en la sesión actual.
+    Private pHashesExcelImportadosSesion As New HashSet(Of String)
+
+    '#FIX_v12_HASH_EXCEL_2026-04-25 (F1 helper):
+    Private Function CalcularHashImportacion(
+            ByVal lote As List(Of clsBeTrans_ajuste_det)) As String
+        If lote Is Nothing OrElse lote.Count = 0 Then Return ""
+        Try
+            Dim sb As New StringBuilder()
+            Dim ordenado = lote.OrderBy(Function(x) x.Codigo_producto) _
+                               .ThenBy(Function(x) x.Lote_original) _
+                               .ThenBy(Function(x) x.IdStock)
+            For Each d As clsBeTrans_ajuste_det In ordenado
+                sb.Append(If(d.Codigo_producto, "")).Append("|"c)
+                sb.Append(If(d.Lote_original, "")).Append("|"c)
+                sb.Append(d.IdStock).Append("|"c)
+                sb.Append(d.Cantidad_original.ToString("R", CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Cantidad_nueva.ToString("R", CultureInfo.InvariantCulture)).Append("|"c)
+                sb.Append(d.Idtipoajuste).Append(";"c)
+            Next
+            Using sha As System.Security.Cryptography.SHA256 = System.Security.Cryptography.SHA256.Create()
+                Dim bytes() As Byte = sha.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()))
+                Return BitConverter.ToString(bytes).Replace("-", "")
+            End Using
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("CalcularHashImportacion: " & ex.Message)
+            Return ""
+        End Try
+    End Function
+
     Private Sub btnImportarExcel_Click(sender As Object, e As EventArgs) Handles btnImportarExcel.ItemClick
         Try
             ' El tipo de ajuste es obligatorio antes de importar
@@ -5274,10 +5795,28 @@ Public Class frmAjusteStock
 
             Using frm As New frmImportarAjusteExcel(AP.IdBodega,
                                                     cmbPropietarioBodega.EditValue,
-                                                    idTipoSel)
+                                                    idTipoSel,
+                                                    BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color)
                 frm.ShowDialog(Me)
 
                 If frm.DialogResult <> DialogResult.OK OrElse frm.AjustesParaCargar.Count = 0 Then Return
+
+                '#FIX_v12_HASH_EXCEL_2026-04-25 (F1): evitar doble import accidental.
+                Dim hashLote As String = CalcularHashImportacion(frm.AjustesParaCargar)
+                If Not String.IsNullOrEmpty(hashLote) Then
+                    If pHashesExcelImportadosSesion.Contains(hashLote) Then
+                        Dim resp As DialogResult = XtraMessageBox.Show(
+                            "El archivo Excel que está intentando importar coincide exactamente con uno ya importado en esta sesión del ajuste." & vbCrLf & vbCrLf &
+                            "¿Desea importarlo de todas formas? Continuar generará filas duplicadas en el grid.",
+                            "Archivo duplicado",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning,
+                            MessageBoxDefaultButton.Button2)
+                        If resp <> DialogResult.Yes Then Return
+                    Else
+                        pHashesExcelImportadosSesion.Add(hashLote)
+                    End If
+                End If
 
                 Dim BeAjusteDetBorrador As clsBeTrans_ajuste_det_borrador = Nothing
 
@@ -5286,9 +5825,10 @@ Public Class frmAjusteStock
 
                     det.IdAjusteEnc = pBeTransAjustEnc.IdAjusteenc
 
+                    '#FIX_v15_IMPORTER_BORRADOR_2026-04-25 (I1): mapeo explícito al borrador.
                     If chkBorrador.Checked Then
-                        BeAjusteDetBorrador = New clsBeTrans_ajuste_det_borrador
-                        clsPublic.CopyObject(det, BeAjusteDetBorrador)
+                        BeAjusteDetBorrador = MapearDetalleABorrador(
+                            det, Now, AP.UsuarioAp.IdUsuario.ToString())
                         lBeTransAjusteDetBorrador.Add(BeAjusteDetBorrador)
                     Else
                         lBeTransAjusteDet.Add(det)
@@ -5304,6 +5844,20 @@ Public Class frmAjusteStock
                     vProveedor = clsLnProveedor.Get_Single_By_IdStock(det.IdStock)
 
                     If vProveedor IsNot Nothing Then
+                        '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25: persistir proveedor en el
+                        ' BE de detalle (det) para que el guardado deje las columnas en
+                        ' trans_ajuste_det. Si la fila se mapeó a borrador, propagar también
+                        ' al BeAjusteDetBorrador correspondiente (mismo det).
+                        det.IdProveedor = vProveedor.IdProveedor
+                        det.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                        det.Nombre_Proveedor = If(vProveedor.Nombre, "")
+
+                        If chkBorrador.Checked AndAlso BeAjusteDetBorrador IsNot Nothing Then
+                            BeAjusteDetBorrador.IdProveedor = vProveedor.IdProveedor
+                            BeAjusteDetBorrador.Codigo_Proveedor = If(vProveedor.Codigo, "")
+                            BeAjusteDetBorrador.Nombre_Proveedor = If(vProveedor.Nombre, "")
+                        End If
+
                         If Not String.IsNullOrWhiteSpace(vProveedor.Codigo) Then
                             sProveedorTexto = $"{vProveedor.Codigo} - {vProveedor.Nombre}"
                         Else
@@ -5313,13 +5867,47 @@ Public Class frmAjusteStock
                         Debug.WriteLine($"No se encontró proveedor para IdStock: {det.IdStock}")
                     End If
 
+                    '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1): asignación nominal de proveedor.
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
-                                                       ubic, sProveedorTexto)
+                                                       ubic)
 
                     Llenar_Motivo(rc, det.IdMotivoAjuste)
                     Llenar_Tipo(rc, det.Idtipoajuste)
+
+                    ' Cinturón defensivo: forzar el valor del combo aunque
+                    ' Llenar_Tipo no lo haya seteado (el fix raíz va en
+                    ' Llenar_Tipo, branch Case TipoTrans.Nuevo).
+                    Try
+                        dgrid.Rows(rc).Cells("tipoajuste").Value = det.Idtipoajuste
+                    Catch
+                    End Try
+
+                    ' Talla/Color: solo cuando la bodega controla. El importador
+                    ' resolvió IdProductoTallaColor desde el IdStock; aquí se
+                    ' propaga al dgrid usando el patrón canónico (líneas 921-934
+                    ' del flujo manual: Llenar_Talla/Color cargan los DataSource).
+                    If BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color _
+                       AndAlso det.IdProductoTallaColor_origen > 0 Then
+                        Try
+                            Llenar_Talla(rc, -1)
+                            Llenar_Color(rc, -1)
+                            dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = det.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = det.Talla_origen
+                            dgrid.Rows(rc).Cells("colColor").Value = det.Color_origen
+                            dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                            dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+                        Catch ex As Exception
+                            ' No bloquea la importación si el lookup falla.
+                            clsLnLog_error_wms.Agregar_Error(
+                                "btnImportarExcel_Click talla/color row " & rc & ": " & ex.Message)
+                        End Try
+                    End If
+
                     Llena_Bodegas_ERP_Grid(rc, -1)
+
+                    '#FIX_v12_PROVEEDOR_GRID_2026-04-25 (F1):
+                    dgrid.Rows(rc).Cells("ColProveedor").Value = Resolver_Proveedor_Y_Persistir(det)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = det.Lote_original
@@ -5472,7 +6060,8 @@ Public Class frmAjusteStock
         .fecha_creacion = fechaActual,
         .usuario_creacion = usuarioActual,
         .fecha_modificacion = fechaActual,
-        .usuario_modificacion = usuarioActual
+        .usuario_modificacion = usuarioActual,
+        .IdRecepcionEnc = item.idRecepcionEnc
     }
     End Function
 
@@ -5520,8 +6109,1580 @@ Public Class frmAjusteStock
         .Factor = item.Factor,
         .Nombre_Presentacion = item.Nombre_Presentacion,
         .CantReservada = item.CantReservada,
-        .Presentacion = item.Presentacion
+        .Presentacion = item.Presentacion,
+        .idRecepcionEnc = item.IdRecepcionEnc
     }
     End Function
+
+
+#Region "Resumen_Consolidado_2026"
+    ' ============================================================================
+    '  RESUMEN CONSOLIDADO 2026 — agrupa el detalle por (Codigo|Talla|Color)
+    '  y lo muestra en el grid DevExpress `dgridProductosConsolidados`
+    '  (MainView = GridView3, declarado read-only en Designer).
+    '
+    '  Una sola vista, una sola responsabilidad:
+    '    - 1 fila por (Codigo | Talla | Color)
+    '    - sumas: # lineas, Existencia, Cantidad ajuste, Diferencia
+    '    - sets: Bodegas, Ubicaciones (texto separado por coma / pipe)
+    '    - resalta filas con Diferencia <> 0 en rosa palido
+    '    - footer con totales (sumas y conteo de productos distintos)
+    '    - autofilter row activado para inspeccion rapida
+    '
+    '  No modifica el dgrid clasico ni su logica de carga / edicion / guardado.
+    '  Se refresca solo cuando el dgrid clasico cambia o cuando el usuario
+    '  entra a la pestana del resumen.
+    '
+    '  Hook a invocar UNA vez desde frmAjusteStock_Shown (al final, en Finally):
+    '    Try : Hook_Init_Resumen_Consolidado_2026() : Catch : End Try
+    '  (Esa linea ya quedo agregada en este archivo - buscar "#RC2026 INIT".)
+    ' ============================================================================
+
+    Private DT_RC2026_Consolidado As DataTable
+    Private RC2026_Inicializado As Boolean = False
+
+    Private Sub mnuImprimirResumen_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuImprimirResumen.ItemClick
+        Try
+            ' Aseguro que el consolidado esta al dia antes de imprimir.
+            Refrescar_Resumen_Consolidado_RC2026()
+            If DT_RC2026_Consolidado Is Nothing OrElse DT_RC2026_Consolidado.Rows.Count = 0 Then
+                XtraMessageBox.Show("No hay datos para imprimir en el resumen consolidado.",
+                                    Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+            Imprimir_Resumen_Consolidado_RC2026()
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Try : clsLnLog_error_wms.Agregar_Error("mnuImprimirResumen_ItemClick: " & ex.Message) : Catch : End Try
+        End Try
+    End Sub
+
+    Private RC2026_Refrescando As Boolean = False  ' guard re-entrancy
+
+    Private Sub Hook_Init_Resumen_Consolidado_2026()
+        If RC2026_Inicializado Then Return
+
+        Try
+            Build_DT_Consolidado_RC2026()
+            Set_Columnas_GridView3_RC2026()
+
+            ' Auto-refresh: NO reemplaza handlers, agrega en paralelo.
+            ' Cualquier cambio en el dgrid clasico dispara recalculo si la
+            ' pestana del resumen esta activa (ahorra trabajo si no se ve).
+            AddHandler dgrid.RowsAdded, AddressOf dgrid_AnyChange_RC2026
+            AddHandler dgrid.RowsRemoved, AddressOf dgrid_AnyChange_RC2026
+            AddHandler dgrid.CellValueChanged, AddressOf dgrid_AnyChange_RC2026
+            AddHandler dgrid.RowValidated, AddressOf dgrid_AnyChange_RC2026
+
+            If XtraTabControl1 IsNot Nothing Then
+                AddHandler XtraTabControl1.SelectedPageChanged,
+                    Sub(s, e2) Refrescar_Resumen_Consolidado_RC2026()
+            End If
+
+            RC2026_Inicializado = True
+            Refrescar_Resumen_Consolidado_RC2026()
+        Catch ex As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error(
+                    "Hook_Init_Resumen_Consolidado_2026: " & ex.Message)
+            Catch
+            End Try
+        End Try
+    End Sub
+
+    Private Sub mnuEliminarAjusteBorrador_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEliminarAjusteBorrador.ItemClick
+        Eliminar_Ajuste_Si_Sin_Detalle()
+    End Sub
+
+    Private Sub dgrid_AnyChange_RC2026(sender As Object, e As EventArgs)
+        ' Solo recalcula si la pestana del resumen esta visible.
+        If XtraTabControl1 Is Nothing OrElse
+           XtraTabControl1.SelectedTabPage Is Nothing Then Return
+        If XtraTabControl1.SelectedTabPage IsNot tabResumenAjuste Then Return
+        Refrescar_Resumen_Consolidado_RC2026()
+    End Sub
+
+    Private Sub Build_DT_Consolidado_RC2026()
+        DT_RC2026_Consolidado = New DataTable("ResumenConsolidado")
+        With DT_RC2026_Consolidado.Columns
+            .Add("Codigo", GetType(String))
+            .Add("Producto", GetType(String))
+            .Add("UmBas", GetType(String))
+            .Add("Talla", GetType(String))
+            .Add("Color", GetType(String))
+            .Add("Lineas", GetType(Integer))
+            .Add("Existencia", GetType(Decimal))
+            .Add("Cantidad", GetType(Decimal))
+            .Add("Diferencia", GetType(Decimal))
+            .Add("Bodegas", GetType(String))
+            .Add("Ubicaciones", GetType(String))
+        End With
+    End Sub
+
+    ' --- Helpers de lectura segura sobre el dgrid clasico --------------------
+    Private Function CellRC_Obj(rowIdx As Integer, name As String) As Object
+        Try
+            If rowIdx < 0 OrElse rowIdx >= dgrid.Rows.Count Then Return Nothing
+            Dim r = dgrid.Rows(rowIdx)
+            If r.IsNewRow Then Return Nothing
+            If Not dgrid.Columns.Contains(name) Then Return Nothing
+            Dim v = r.Cells(name).Value
+            If v Is Nothing OrElse IsDBNull(v) Then Return Nothing
+            Return v
+        Catch
+            Return Nothing
+        End Try
+    End Function
+
+    Private Function CellRC_Str(rowIdx As Integer, name As String) As String
+        Dim v = CellRC_Obj(rowIdx, name)
+        If v Is Nothing Then Return ""
+        Return v.ToString()
+    End Function
+
+    Private Function CellRC_Dec(rowIdx As Integer, name As String) As Decimal
+        Dim v = CellRC_Obj(rowIdx, name)
+        If v Is Nothing Then Return 0D
+        Dim d As Decimal
+        If Decimal.TryParse(v.ToString(),
+                            NumberStyles.Any,
+                            CultureInfo.CurrentCulture, d) Then Return d
+        Return 0D
+    End Function
+
+    ' --- Refresh principal ---------------------------------------------------
+    Public Sub Refrescar_Resumen_Consolidado_RC2026()
+        If Not RC2026_Inicializado Then Return
+        If RC2026_Refrescando Then Return
+        RC2026_Refrescando = True
+        Try
+            ' Acumulador en memoria: clave = "Codigo|Talla|Color"
+            Dim acc As New Dictionary(Of String, Object())
+
+            For i As Integer = 0 To dgrid.Rows.Count - 1
+                If dgrid.Rows(i).IsNewRow Then Continue For
+
+                Dim cod = CellRC_Str(i, "ColCodigoProducto")
+                Dim prod = CellRC_Str(i, "colNombreProducto")
+                Dim umb = CellRC_Str(i, "UmBas")
+                Dim tal = CellRC_Str(i, "colTalla")
+                Dim col = CellRC_Str(i, "colColor")
+                Dim exi = CellRC_Dec(i, "CantidadP")
+                Dim can = CellRC_Dec(i, "ColCantidad")
+                ' Diferencia se calcula SIEMPRE como (Cantidad - Existencia)
+                ' para que el consolidado sea correcto en borrador, antes de
+                ' que el flujo principal recalcule la columna ColDiferencia
+                ' del dgrid clasico (que puede estar vacia / desactualizada).
+                Dim dif = can - exi
+                Dim bod = CellRC_Str(i, "ColBodega").Trim()
+                Dim ubi = CellRC_Str(i, "colUbicacion").Trim()
+
+                ' Si la fila no tiene codigo, no aporta al consolidado.
+                If cod Is Nothing OrElse cod.Trim() = "" Then Continue For
+
+                Dim key = cod & "|" & tal & "|" & col
+                If Not acc.ContainsKey(key) Then
+                    acc(key) = New Object() {
+                        cod, prod, umb, tal, col,
+                        0, 0D, 0D, 0D,
+                        New HashSet(Of String)(StringComparer.OrdinalIgnoreCase),
+                        New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                    }
+                End If
+                Dim row = acc(key)
+                row(5) = CInt(row(5)) + 1
+                row(6) = CDec(row(6)) + exi
+                row(7) = CDec(row(7)) + can
+                row(8) = CDec(row(8)) + dif
+                Dim setBod = DirectCast(row(9), HashSet(Of String))
+                Dim setUbi = DirectCast(row(10), HashSet(Of String))
+                If bod <> "" Then setBod.Add(bod)
+                If ubi <> "" Then setUbi.Add(ubi)
+            Next
+
+            DT_RC2026_Consolidado.BeginLoadData()
+            DT_RC2026_Consolidado.Rows.Clear()
+            For Each kv In acc
+                Dim row = kv.Value
+                Dim setBod = DirectCast(row(9), HashSet(Of String))
+                Dim setUbi = DirectCast(row(10), HashSet(Of String))
+                DT_RC2026_Consolidado.Rows.Add(
+                    row(0), row(1), row(2), row(3), row(4),
+                    CInt(row(5)), CDec(row(6)), CDec(row(7)), CDec(row(8)),
+                    String.Join(", ", setBod),
+                    String.Join(" | ", setUbi))
+            Next
+            DT_RC2026_Consolidado.EndLoadData()
+
+            ' Bind idempotente
+            If dgridProductosConsolidados.DataSource IsNot DT_RC2026_Consolidado Then
+                dgridProductosConsolidados.DataSource = DT_RC2026_Consolidado
+            End If
+        Catch ex As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error(
+                    "Refrescar_Resumen_Consolidado_RC2026: " & ex.Message)
+            Catch
+            End Try
+        Finally
+            RC2026_Refrescando = False
+        End Try
+    End Sub
+
+    ' --- Setup de GridView3 (la vista del dgridProductosConsolidados) --------
+    Private Sub Set_Columnas_GridView3_RC2026()
+        Try
+            If GridView3 Is Nothing Then Return
+
+            GridView3.OptionsView.ShowFooter = True
+            GridView3.OptionsView.ShowGroupPanel = False
+            GridView3.OptionsView.ColumnAutoWidth = False
+            GridView3.OptionsView.ShowAutoFilterRow = True
+            GridView3.OptionsBehavior.Editable = False
+            GridView3.OptionsBehavior.ReadOnly = True
+            GridView3.OptionsSelection.MultiSelect = False
+            GridView3.OptionsCustomization.AllowFilter = True
+            GridView3.OptionsFind.AlwaysVisible = True
+            GridView3.Columns.Clear()
+
+            Dim idx As Integer = 0
+            Dim addCol = Sub(field As String, caption As String,
+                             width As Integer, fmt As String)
+                             Dim c As New DevExpress.XtraGrid.Columns.GridColumn With {
+                                 .FieldName = field,
+                                 .Caption = caption,
+                                 .Visible = True,
+                                 .VisibleIndex = idx,
+                                 .Width = width
+                             }
+                             c.OptionsColumn.AllowEdit = False
+                             c.OptionsColumn.ReadOnly = True
+                             If fmt <> "" Then
+                                 c.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                                 c.DisplayFormat.FormatString = fmt
+                             End If
+                             GridView3.Columns.Add(c)
+                             idx += 1
+                         End Sub
+
+            addCol("Codigo", "Codigo", 100, "")
+            addCol("Producto", "Producto", 260, "")
+            addCol("UmBas", "UmBas", 70, "")
+            addCol("Talla", "Talla", 70, "")
+            addCol("Color", "Color", 80, "")
+            addCol("Lineas", "# Lineas", 70, "{0:n0}")
+            addCol("Existencia", "Existencia", 110, "{0:n6}")
+            addCol("Cantidad", "Cantidad ajuste", 120, "{0:n6}")
+            addCol("Diferencia", "Diferencia", 110, "{0:n6}")
+            addCol("Bodegas", "Bodegas", 150, "")
+            addCol("Ubicaciones", "Ubicaciones", 350, "")
+
+            With GridView3.Columns("Lineas").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Total lineas: {0:n0}"
+            End With
+            With GridView3.Columns("Existencia").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Sum Exist: {0:n6}"
+            End With
+            With GridView3.Columns("Cantidad").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Sum Cant: {0:n6}"
+            End With
+            With GridView3.Columns("Diferencia").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum
+                .DisplayFormat = "Sum Dif: {0:n6}"
+            End With
+            With GridView3.Columns("Codigo").SummaryItem
+                .SummaryType = DevExpress.Data.SummaryItemType.Count
+                .DisplayFormat = "Productos distintos: {0:n0}"
+            End With
+
+            ' Ajuste visual: alinear numericos a la derecha
+            For Each fn In {"Lineas", "Existencia", "Cantidad", "Diferencia"}
+                GridView3.Columns(fn).AppearanceCell.TextOptions.HAlignment =
+                GridView3.Columns(fn).AppearanceCell.TextOptions.HAlignment =
+                    DevExpress.Utils.HorzAlignment.Far
+                GridView3.Columns(fn).AppearanceHeader.TextOptions.HAlignment =
+                    DevExpress.Utils.HorzAlignment.Far
+            Next
+
+            ' Resaltar filas con Diferencia <> 0
+            AddHandler GridView3.RowStyle, AddressOf GridView3_RowStyle_RC2026
+        Catch ex As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error(
+                    "Set_Columnas_GridView3_RC2026: " & ex.Message)
+            Catch
+            End Try
+        End Try
+    End Sub
+
+    Private Sub GridView3_RowStyle_RC2026(
+            sender As Object,
+            e As DevExpress.XtraGrid.Views.Grid.RowStyleEventArgs)
+        Try
+            Dim gv = DirectCast(sender,
+                                DevExpress.XtraGrid.Views.Grid.GridView)
+            If e.RowHandle < 0 Then Return
+            Dim difObj = gv.GetRowCellValue(e.RowHandle, "Diferencia")
+            If difObj Is Nothing OrElse IsDBNull(difObj) Then Return
+            Dim dif As Decimal = 0D
+            If Decimal.TryParse(difObj.ToString(),
+                                NumberStyles.Any,
+                                CultureInfo.CurrentCulture,
+                                dif) Then
+                If dif <> 0D Then
+                    e.Appearance.BackColor =
+                        Color.FromArgb(255, 252, 232, 232)
+                End If
+            End If
+        Catch
+        End Try
+    End Sub
+
+    ' ========================================================================
+    '  IMPRESION del Resumen Consolidado 2026
+    '  Construye un XtraReport en codigo (sin .repx, sin typed dataset),
+    '  con QR JSON compacto del documento en el header y filas con
+    '  Diferencia <> 0 resaltadas en rosa palido.
+    ' ========================================================================
+
+    Private Sub Imprimir_Resumen_Consolidado_RC2026()
+
+        ' --- 1) Datos cabecera (defensivo: el form puede no tenerlos todavia)
+        Dim docId As Long = 0L
+        Dim refer As String = ""
+        Dim fecDoc As DateTime = DateTime.Now
+        Dim idBod As Integer = 0
+        Dim nomBod As String = ""
+        Dim usuarioTxt As String = ""
+        Dim esBorrador As Boolean = False
+
+        Try
+            If pBeTransAjustEnc IsNot Nothing Then
+                docId = CLng(pBeTransAjustEnc.IdAjusteenc)
+                Try : refer = If(pBeTransAjustEnc.Referencia, "") : Catch : End Try
+                Try : fecDoc = pBeTransAjustEnc.Fecha : Catch : End Try
+            End If
+        Catch
+        End Try
+
+        Try
+            If BeBodega IsNot Nothing Then
+                idBod = CInt(BeBodega.IdBodega)
+                Try : nomBod = If(BeBodega.Nombre, "") : Catch : End Try
+            End If
+        Catch
+        End Try
+
+        Try
+            usuarioTxt = String.Format("{0} - {1} {2}",
+                AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+        Catch
+        End Try
+
+        Try : esBorrador = chkBorrador.Checked : Catch : End Try
+
+        ' --- 2) Sumas y conteos para el footer + el QR
+        Dim totLineas As Integer = 0
+        Dim totProd As Integer = DT_RC2026_Consolidado.Rows.Count
+        Dim sumExi As Decimal = 0D
+        Dim sumCan As Decimal = 0D
+        Dim sumDif As Decimal = 0D
+        For Each r As DataRow In DT_RC2026_Consolidado.Rows
+            totLineas += CInt(r("Lineas"))
+            sumExi += CDec(r("Existencia"))
+            sumCan += CDec(r("Cantidad"))
+            sumDif += CDec(r("Diferencia"))
+        Next
+
+        ' --- 3) JSON compacto para el QR (sin librerias externas)
+        Dim qrJson As String = String.Format(
+            CultureInfo.InvariantCulture,
+            "{{""t"":""AJ"",""id"":{0},""bod"":{1},""f"":""{2}"",""b"":{3},""ln"":{4},""pr"":{5},""se"":{6},""sc"":{7},""sd"":{8}}}",
+            docId, idBod,
+            fecDoc.ToString("yyyy-MM-ddTHH:mm:ss",
+                            CultureInfo.InvariantCulture),
+            If(esBorrador, "true", "false"),
+            totLineas, totProd, sumExi, sumCan, sumDif)
+
+        ' --- 4) Construccion del reporte
+        Dim rpt As New DevExpress.XtraReports.UI.XtraReport()
+        rpt.PaperKind = PaperKind.Letter
+        rpt.Landscape = True
+        rpt.Margins = New Margins(40, 40, 40, 40)
+        rpt.DataSource = DT_RC2026_Consolidado
+        rpt.DataMember = ""
+        rpt.Font = New Font("Segoe UI", 8)
+        rpt.DisplayName = $"Resumen Ajuste #{docId}"
+
+        ' --- 4a) Page Header
+        Dim phb As New PageHeaderBand()
+        phb.HeightF = 130
+        rpt.Bands.Add(phb)
+
+        ' Titulo
+        Dim lblTitulo As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
+            .SizeF = New SizeF(720.0F, 28.0F),
+            .Font = New Font("Segoe UI Semibold", 16,
+                                            FontStyle.Bold),
+            .Text = "AJUSTE DE STOCK - RESUMEN CONSOLIDADO",
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        phb.Controls.Add(lblTitulo)
+
+        ' Linea separadora
+        Dim line1 As New XRLine() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 30.0F),
+            .SizeF = New SizeF(720.0F, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        phb.Controls.Add(line1)
+
+        ' Datos cabecera (lado izquierdo)
+        Dim hdrFont As New Font("Segoe UI", 9)
+        Dim addHdr = Sub(label As String, value As String, top As Single)
+                         Dim lblK As New XRLabel() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(0F, top),
+                             .SizeF = New SizeF(80.0F, 14.0F),
+                             .Font = New Font("Segoe UI Semibold", 9,
+                                                             FontStyle.Bold),
+                             .Text = label
+                         }
+                         Dim lblV As New XRLabel() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(82.0F, top),
+                             .SizeF = New SizeF(540.0F, 14.0F),
+                             .Font = hdrFont,
+                             .Text = value
+                         }
+                         phb.Controls.Add(lblK)
+                         phb.Controls.Add(lblV)
+                     End Sub
+
+        addHdr("Documento:", If(docId > 0, "AJ-" & docId.ToString(), "(nuevo)"), 38.0F)
+        addHdr("Fecha:", fecDoc.ToString("dd/MM/yyyy HH:mm"), 54.0F)
+        addHdr("Bodega:",
+               If(idBod > 0, idBod.ToString() & " - " & nomBod, nomBod), 70.0F)
+        addHdr("Usuario:", usuarioTxt, 86.0F)
+        addHdr("Referencia:", refer, 102.0F)
+
+        ' Watermark "BORRADOR" si aplica
+        If esBorrador Then
+            Dim lblBorr As New XRLabel() With {
+                .LocationFloat = New DevExpress.Utils.PointFloat(300.0F, 38.0F),
+                .SizeF = New SizeF(160.0F, 24.0F),
+                .Font = New Font("Segoe UI Black", 14,
+                                                FontStyle.Bold),
+                .Text = "* BORRADOR *",
+                .ForeColor = Color.FromArgb(190, 60, 60),
+                .TextAlignment = TextAlignment.MiddleCenter,
+                .Borders = BorderSide.All,
+                .BorderColor = Color.FromArgb(190, 60, 60),
+                .BorderWidth = 2
+            }
+            phb.Controls.Add(lblBorr)
+        End If
+
+        ' QR (lado derecho)
+        Dim qr As New XRBarCode() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(640.0F, 38.0F),
+            .SizeF = New SizeF(80.0F, 80.0F),
+            .Text = qrJson,
+            .ShowText = False,
+            .AutoModule = True,
+            .Padding = New PaddingInfo(2, 2, 2, 2, 100.0F)
+        }
+        Dim qrGen As New BarCode.QRCodeGenerator()
+        qrGen.CompactionMode =
+            BarCode.QRCodeCompactionMode.Byte
+        qrGen.ErrorCorrectionLevel =
+            BarCode.QRCodeErrorCorrectionLevel.M
+        qr.Symbology = qrGen
+        phb.Controls.Add(qr)
+
+        ' Etiqueta "Doc QR" debajo del QR
+        Dim lblQrCap As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(640.0F, 118.0F),
+            .SizeF = New SizeF(80.0F, 10.0F),
+            .Font = New Font("Segoe UI", 7),
+            .TextAlignment = TextAlignment.MiddleCenter,
+            .Text = "Doc QR"
+        }
+        phb.Controls.Add(lblQrCap)
+
+        ' --- 4b) Encabezado de columnas (XRTable como header pegado abajo del PH)
+        Dim colDefs = New Object()() {
+            New Object() {"Codigo", "Codigo", 70.0F, False},
+            New Object() {"Producto", "Producto", 200.0F, False},
+            New Object() {"UmBas", "UmBas", 50.0F, False},
+            New Object() {"Talla", "Talla", 45.0F, False},
+            New Object() {"Color", "Color", 55.0F, False},
+            New Object() {"Lineas", "# Lineas", 55.0F, True},
+            New Object() {"Existencia", "Existencia", 75.0F, True},
+            New Object() {"Cantidad", "Cantidad", 75.0F, True},
+            New Object() {"Diferencia", "Diferencia", 70.0F, True},
+            New Object() {"Bodegas", "Bodegas", 80.0F, False},
+            New Object() {"Ubicaciones", "Ubicaciones", 195.0F, False}
+        }
+
+        Dim hdrTbl As New XRTable() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 130.0F - 18.0F),
+            .SizeF = New SizeF(970.0F, 18.0F),
+            .Font = New Font("Segoe UI Semibold", 8,
+                                            FontStyle.Bold),
+            .Borders = BorderSide.All,
+            .BackColor = Color.FromArgb(33, 64, 95),
+            .ForeColor = Color.White
+        }
+        Dim hdrRow As New XRTableRow()
+        For Each cd In colDefs
+            Dim caption = CStr(cd(1))
+            Dim w = CSng(cd(2))
+            Dim alignRight = CBool(cd(3))
+            Dim cell As New XRTableCell() With {
+                .Text = caption,
+                .WidthF = w,
+                .TextAlignment = If(alignRight,
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 0, 0, 100.0F)
+            }
+            hdrRow.Cells.Add(cell)
+        Next
+        hdrTbl.Rows.Add(hdrRow)
+        phb.Controls.Add(hdrTbl)
+
+        ' --- 4c) Detail Band con XRTable bindeada al DataTable
+        Dim detail As New DetailBand()
+        detail.HeightF = 16
+        rpt.Bands.Add(detail)
+
+        Dim detTbl As New XRTable() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
+            .SizeF = New SizeF(970.0F, 16.0F),
+            .Font = New Font("Segoe UI", 8),
+            .Borders = BorderSide.All,
+            .BorderColor = Color.FromArgb(220, 220, 220)
+        }
+        Dim detRow As New XRTableRow()
+        detRow.Name = "rowDetail"
+        For Each cd In colDefs
+            Dim field = CStr(cd(0))
+            Dim w = CSng(cd(2))
+            Dim alignRight = CBool(cd(3))
+            Dim cell As New XRTableCell() With {
+                .WidthF = w,
+                .TextAlignment = If(alignRight,
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 0, 0, 100.0F)
+            }
+            cell.ExpressionBindings.Add(
+                New ExpressionBinding(
+                    "BeforePrint", "Text",
+                    If(field = "Lineas", "[Lineas]",
+                        If(alignRight, "FormatString('{0:n6}', [" & field & "])",
+                                       "[" & field & "]"))))
+            If field = "Lineas" Then
+                cell.ExpressionBindings.Clear()
+                cell.ExpressionBindings.Add(
+                    New ExpressionBinding(
+                        "BeforePrint", "Text", "FormatString('{0:n0}', [Lineas])"))
+            End If
+            detRow.Cells.Add(cell)
+        Next
+        detTbl.Rows.Add(detRow)
+        detail.Controls.Add(detTbl)
+
+        ' Resaltar filas con Diferencia <> 0
+        AddHandler detRow.BeforePrint,
+            Sub(s, eArgs)
+                Try
+                    Dim row = DirectCast(s, XRTableRow)
+                    Dim difCell = row.Cells(8) ' indice de Diferencia segun colDefs
+                    Dim difTxt = If(difCell.Text, "")
+                    Dim dif As Decimal = 0D
+                    If Decimal.TryParse(difTxt,
+                            NumberStyles.Any,
+                            CultureInfo.CurrentCulture, dif) Then
+                        If dif <> 0D Then
+                            row.BackColor = Color.FromArgb(252, 232, 232)
+                        Else
+                            row.BackColor = Color.White
+                        End If
+                    End If
+                Catch
+                End Try
+            End Sub
+
+        ' --- 4d) Report Footer: totales + firmas
+        Dim rfb As New ReportFooterBand()
+        rfb.HeightF = 110
+        rpt.Bands.Add(rfb)
+
+        Dim line2 As New XRLine() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 4.0F),
+            .SizeF = New SizeF(970.0F, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        rfb.Controls.Add(line2)
+
+        Dim totFont As New Font("Segoe UI Semibold", 9,
+                                               FontStyle.Bold)
+        Dim addTot = Sub(label As String, value As String, top As Single)
+                         Dim lblK As New XRLabel() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(0F, top),
+                             .SizeF = New SizeF(160.0F, 14.0F),
+                             .Font = totFont,
+                             .Text = label
+                         }
+                         Dim lblV As New XRLabel() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(160.0F, top),
+                             .SizeF = New SizeF(180.0F, 14.0F),
+                             .Font = New Font("Segoe UI", 9),
+                             .TextAlignment = TextAlignment.MiddleRight,
+                             .Text = value
+                         }
+                         rfb.Controls.Add(lblK)
+                         rfb.Controls.Add(lblV)
+                     End Sub
+
+        addTot("Productos distintos:", totProd.ToString("n0"), 12.0F)
+        addTot("Total lineas detalle:", totLineas.ToString("n0"), 28.0F)
+        addTot("Sum Existencia:", sumExi.ToString("n6"), 44.0F)
+        addTot("Sum Cantidad ajuste:", sumCan.ToString("n6"), 60.0F)
+        addTot("Sum Diferencia:", sumDif.ToString("n6"), 76.0F)
+
+        ' Firmas
+        Dim sigFont As New Font("Segoe UI", 8)
+        Dim addSig = Sub(label As String, leftPos As Single)
+                         Dim lnSig As New XRLine() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 70.0F),
+                             .SizeF = New SizeF(220.0F, 1.0F),
+                             .ForeColor = Color.Black
+                         }
+                         Dim lblS As New XRLabel() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 72.0F),
+                             .SizeF = New SizeF(220.0F, 14.0F),
+                             .Font = sigFont,
+                             .TextAlignment = TextAlignment.MiddleCenter,
+                             .Text = label
+                         }
+                         rfb.Controls.Add(lnSig)
+                         rfb.Controls.Add(lblS)
+                     End Sub
+        addSig("Preparo", 510.0F)
+        addSig("Aprobo", 750.0F)
+
+        ' --- 4e) Page Footer: paginacion + fecha de impresion
+        Dim pfb As New PageFooterBand()
+        pfb.HeightF = 24
+        rpt.Bands.Add(pfb)
+
+        Dim lnFoot As New XRLine() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
+            .SizeF = New SizeF(970.0F, 1.0F),
+            .ForeColor = Color.FromArgb(180, 180, 180)
+        }
+        pfb.Controls.Add(lnFoot)
+
+        Dim lblImpr As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 6.0F),
+            .SizeF = New SizeF(400.0F, 14.0F),
+            .Font = sigFont,
+            .Text = "Impreso: " & DateTime.Now.ToString("dd/MM/yyyy HH:mm") &
+                    "   |   Usuario impresion: " & usuarioTxt
+        }
+        pfb.Controls.Add(lblImpr)
+
+        Dim pageInfo As New XRPageInfo() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(800.0F, 6.0F),
+            .SizeF = New SizeF(170.0F, 14.0F),
+            .Font = sigFont,
+            .TextAlignment = TextAlignment.MiddleRight,
+            .PageInfo = DevExpress.XtraPrinting.PageInfo.NumberOfTotal,
+            .Format = "Pag {0} de {1}"
+        }
+        pfb.Controls.Add(pageInfo)
+
+        ' --- 5) Mostrar preview
+        Dim tool As New ReportPrintTool(rpt)
+        tool.PreviewForm.WindowState = FormWindowState.Maximized
+        tool.ShowPreview()
+    End Sub
+
+    '#EJC20260424
+    ' ========================================================================
+    '  IMPRESION del DETALLE del Ajuste (reemplaza Llenar_DS_Rep legacy)
+    '  - Reporte XtraReport construido en codigo (sin .repx, sin typed dataset).
+    '  - Columnas dinamicas segun BeBodega.Control_Talla_Color y
+    '    BeBodega.Bodega_Cliente_Ajuste_ByB.
+    '  - Columna UM unificada: Presentacion si existe, sino UmBas.
+    '  - Chip de color en la celda Tipo segun categoria del ajuste.
+    '  - Footer con resumen por Tipo + 3 firmas + QR JSON compacto.
+    ' ========================================================================
+    Private Sub Imprimir_Detalle_Ajuste_RC2026()
+
+        ' --- 1) Datos cabecera (defensivo)
+        Dim docId As Long = 0L
+        Dim refer As String = ""
+        Dim fecDoc As DateTime = DateTime.Now
+        Dim idBod As Integer = 0
+        Dim nomBod As String = ""
+        Dim usuarioTxt As String = ""
+        Dim esBorrador As Boolean = False
+
+        Try
+            If pBeTransAjustEnc IsNot Nothing Then
+                docId = CLng(pBeTransAjustEnc.IdAjusteenc)
+                Try : refer = If(pBeTransAjustEnc.Referencia, "") : Catch : End Try
+                Try : fecDoc = pBeTransAjustEnc.Fecha : Catch : End Try
+            End If
+        Catch
+        End Try
+
+        Try
+            If BeBodega IsNot Nothing Then
+                idBod = CInt(BeBodega.IdBodega)
+                Try : nomBod = If(BeBodega.Nombre, "") : Catch : End Try
+            End If
+        Catch
+        End Try
+
+        Try
+            usuarioTxt = String.Format("{0} - {1} {2}",
+                AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+        Catch
+        End Try
+
+        Try : esBorrador = chkBorrador.Checked : Catch : End Try
+
+        ' --- 2) Flags de bodega (controlan que columnas aparecen)
+        Dim incTallaColor As Boolean = False
+        Try : incTallaColor = BeBodega.Control_Talla_Color : Catch : End Try
+        Dim incBodegaByB As Boolean = False
+        Try : incBodegaByB = BeBodega.Bodega_Cliente_Ajuste_ByB : Catch : End Try
+
+        ' --- 3) DataTable dinamico (orden = orden de columnas en el reporte)
+        Dim dt As New DataTable("AjusteDetalle")
+        dt.Columns.Add("NumLinea", GetType(Integer))
+        dt.Columns.Add("Codigo", GetType(String))
+        dt.Columns.Add("Producto", GetType(String))
+        dt.Columns.Add("UM", GetType(String))
+        dt.Columns.Add("Ubicacion", GetType(String))
+        dt.Columns.Add("Lote", GetType(String))
+        dt.Columns.Add("LicPlate", GetType(String))
+        dt.Columns.Add("Proveedor", GetType(String))
+        If incTallaColor Then
+            dt.Columns.Add("Talla", GetType(String))
+            dt.Columns.Add("Color", GetType(String))
+        End If
+        If incBodegaByB Then
+            dt.Columns.Add("Bodega", GetType(String))
+        End If
+        dt.Columns.Add("Motivo", GetType(String))
+        dt.Columns.Add("Tipo", GetType(String))
+        dt.Columns.Add("ValorAnterior", GetType(String))
+        dt.Columns.Add("ValorActual", GetType(String))
+        dt.Columns.Add("Observacion", GetType(String))
+
+        ' --- 4) Helper local para leer celda como string seguro
+        Dim cellStr = Function(rowIx As Integer, name As String) As String
+                          Try
+                              Dim v = dgrid.Rows(rowIx).Cells(name).Value
+                              If v Is Nothing Then Return ""
+                              Return v.ToString().Trim()
+                          Catch
+                              Return ""
+                          End Try
+                      End Function
+
+        Dim cellFmt = Function(rowIx As Integer, name As String) As String
+                          Try
+                              Dim v = dgrid.Rows(rowIx).Cells(name).EditedFormattedValue
+                              If v Is Nothing Then Return ""
+                              Return v.ToString().Trim()
+                          Catch
+                              Return ""
+                          End Try
+                      End Function
+
+        ' --- 5) Popular DT y acumular conteo por Tipo
+        Dim countByTipo As New Dictionary(Of String, Integer)
+
+        For i = 0 To dgrid.Rows.Count - 1
+            Dim r = dt.NewRow()
+
+            r("NumLinea") = i + 1
+            r("Codigo") = cellStr(i, "ColCodigoProducto")
+            r("Producto") = cellStr(i, "ColNombreProducto")
+
+            ' UM unificada: Presentacion si existe, sino UmBas
+            Dim presStr = cellStr(i, "colPresentacion")
+            Dim umBasStr = cellStr(i, "UmBas")
+            r("UM") = If(presStr <> "", presStr, umBasStr)
+
+            ' Ubicacion: parseo igual que el reporte legacy (substring despues de "#")
+            Dim ubic = cellStr(i, "colUbicacion")
+            If ubic <> "" Then
+                Dim ix = ubic.IndexOf("#"c)
+                If ix >= 0 Then ubic = ubic.Substring(ix + 1)
+            End If
+            r("Ubicacion") = ubic
+
+            r("Lote") = cellStr(i, "ColLote")
+            r("LicPlate") = cellStr(i, "ColLicPlate")
+            r("Proveedor") = cellStr(i, "ColProveedor")
+
+            If incTallaColor Then
+                r("Talla") = cellStr(i, "ColTalla")
+                r("Color") = cellStr(i, "ColColor")
+            End If
+
+            If incBodegaByB Then
+                ' ColBodega es DataGridViewComboBoxCell -> EditedFormattedValue
+                Dim bodStr = cellFmt(i, "ColBodega")
+                If bodStr = "" Then bodStr = If(idBod > 0, idBod.ToString(), "")
+                r("Bodega") = bodStr
+            End If
+
+            Dim motivoStr = cellFmt(i, "motivoajuste")
+            Dim tipoStr = cellFmt(i, "tipoajuste")
+            r("Motivo") = motivoStr
+            r("Tipo") = tipoStr
+
+            ' ValorAnterior / ValorActual: misma logica que Llenar_DS_Rep legacy
+            Dim cantP As Object = Nothing
+            Try : cantP = dgrid.Rows(i).Cells("CantidadP").Value : Catch : End Try
+            Dim cantC As Object = Nothing
+            Try : cantC = dgrid.Rows(i).Cells("ColCantidad").Value : Catch : End Try
+
+            Dim vAnt As String = ""
+            Dim vAct As String = ""
+
+            Select Case tipoStr
+                Case "Ajuste Lote."
+                    vAnt = cellStr(i, "ColLote")
+                    vAct = If(cantC, "").ToString()
+                Case "Ajuste Vencimiento"
+                    Try : vAnt = Format(cantP, "dd-MM-yyyy") : Catch : vAnt = If(cantP, "").ToString() : End Try
+                    Try : vAct = Format(cantC, "dd-MM-yyyy") : Catch : vAct = If(cantC, "").ToString() : End Try
+                    If vAct = "dd-MM-yyyy" Then vAct = If(cantC, "").ToString()
+                Case "Ajuste Positivo"
+                    Try
+                        vAnt = CDec(cantP).ToString("n6")
+                        vAct = (CDec(cantP) + CDec(cantC)).ToString("n6")
+                    Catch
+                        vAnt = If(cantP, "").ToString()
+                        vAct = If(cantC, "").ToString()
+                    End Try
+                Case "Ajuste Peso"
+                    vAnt = If(cantP, "").ToString()
+                    vAct = If(cantC, "").ToString()
+                Case "Ajuste Negativo"
+                    Try
+                        vAnt = CDec(cantP).ToString("n6")
+                        vAct = (CDec(cantP) - CDec(cantC)).ToString("n6")
+                    Catch
+                        vAnt = If(cantP, "").ToString()
+                        vAct = If(cantC, "").ToString()
+                    End Try
+                Case Else
+                    vAnt = If(cantP, "").ToString()
+                    vAct = If(cantC, "").ToString()
+            End Select
+
+            r("ValorAnterior") = vAnt
+            r("ValorActual") = vAct
+            r("Observacion") = cellStr(i, "ColObservacion")
+
+            dt.Rows.Add(r)
+
+            ' Conteo por tipo
+            Dim k = If(tipoStr = "", "(sin tipo)", tipoStr)
+            If Not countByTipo.ContainsKey(k) Then countByTipo(k) = 0
+            countByTipo(k) += 1
+        Next
+
+        ' --- 6) QR JSON compacto (tipo AJD = Ajuste Detalle)
+        Dim qrJson As String = String.Format(
+            CultureInfo.InvariantCulture,
+            "{{""t"":""AJD"",""id"":{0},""bod"":{1},""f"":""{2}"",""b"":{3},""ln"":{4},""tc"":{5},""bb"":{6}}}",
+            docId, idBod,
+            fecDoc.ToString("yyyy-MM-ddTHH:mm:ss",
+                            CultureInfo.InvariantCulture),
+            If(esBorrador, "true", "false"),
+            dt.Rows.Count,
+            If(incTallaColor, 1, 0),
+            If(incBodegaByB, 1, 0))
+
+        ' --- 7) Construccion del XtraReport
+        Dim rpt As New DevExpress.XtraReports.UI.XtraReport()
+        rpt.PaperKind = PaperKind.Letter
+        rpt.Landscape = True
+        rpt.Margins = New Margins(40, 40, 40, 40)
+        rpt.DataSource = dt
+        rpt.DataMember = ""
+        rpt.Font = New Font("Segoe UI", 8)
+        rpt.DisplayName = $"Detalle Ajuste #{docId}"
+
+        Const PAGE_W As Single = 970.0F   ' Letter horizontal usable
+
+        ' --- 7a) Page Header (140 px)
+        Dim phb As New PageHeaderBand()
+        phb.HeightF = 140
+        rpt.Bands.Add(phb)
+
+        Dim lblTitulo As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
+            .SizeF = New SizeF(720.0F, 28.0F),
+            .Font = New Font("Segoe UI Semibold", 16,
+                                            FontStyle.Bold),
+            .Text = "AJUSTE DE STOCK - DETALLE",
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        phb.Controls.Add(lblTitulo)
+
+        Dim line1 As New XRLine() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 30.0F),
+            .SizeF = New SizeF(PAGE_W, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        phb.Controls.Add(line1)
+
+        ' Datos cabecera en 2 columnas
+        Dim hdrFont As New Font("Segoe UI", 9)
+        Dim hdrBold As New Font("Segoe UI Semibold", 9,
+                                               FontStyle.Bold)
+
+        Dim addHdr2 = Sub(label As String, value As String,
+                          col As Integer, top As Single)
+                          Dim leftK As Single = If(col = 0, 0F, 320.0F)
+                          Dim leftV As Single = If(col = 0, 82.0F, 410.0F)
+                          Dim wV As Single = If(col = 0, 230.0F, 220.0F)
+                          Dim lblK As New XRLabel() With {
+                              .LocationFloat = New DevExpress.Utils.PointFloat(leftK, top),
+                              .SizeF = New SizeF(80.0F, 14.0F),
+                              .Font = hdrBold,
+                              .Text = label
+                          }
+                          Dim lblV As New XRLabel() With {
+                              .LocationFloat = New DevExpress.Utils.PointFloat(leftV, top),
+                              .SizeF = New SizeF(wV, 14.0F),
+                              .Font = hdrFont,
+                              .Text = value
+                          }
+                          phb.Controls.Add(lblK)
+                          phb.Controls.Add(lblV)
+                      End Sub
+
+        addHdr2("Documento:", If(docId > 0, "AJ-" & docId.ToString(), "(nuevo)"), 0, 38.0F)
+        addHdr2("Fecha:", fecDoc.ToString("dd/MM/yyyy HH:mm"), 0, 54.0F)
+        addHdr2("Bodega:",
+                If(idBod > 0, idBod.ToString() & " - " & nomBod, nomBod), 0, 70.0F)
+        addHdr2("Referencia:", refer, 0, 86.0F)
+
+        addHdr2("Usuario:", usuarioTxt, 1, 38.0F)
+        addHdr2("Estado:", If(esBorrador, "BORRADOR", "Definitivo"), 1, 54.0F)
+        addHdr2("Total lineas:", dt.Rows.Count.ToString("n0"), 1, 70.0F)
+        addHdr2("Talla/Color:", If(incTallaColor, "Si", "No") &
+                "    Bodega ByB: " & If(incBodegaByB, "Si", "No"), 1, 86.0F)
+
+        ' Watermark BORRADOR
+        If esBorrador Then
+            Dim lblBorr As New XRLabel() With {
+                .LocationFloat = New DevExpress.Utils.PointFloat(580.0F, 4.0F),
+                .SizeF = New SizeF(160.0F, 24.0F),
+                .Font = New Font("Segoe UI Black", 14,
+                                                FontStyle.Bold),
+                .Text = "* BORRADOR *",
+                .ForeColor = Color.FromArgb(190, 60, 60),
+                .TextAlignment = TextAlignment.MiddleCenter,
+                .Borders = BorderSide.All,
+                .BorderColor = Color.FromArgb(190, 60, 60),
+                .BorderWidth = 2
+            }
+            phb.Controls.Add(lblBorr)
+        End If
+
+        ' QR
+        Dim qr As New XRBarCode() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(880.0F, 38.0F),
+            .SizeF = New SizeF(90.0F, 90.0F),
+            .Text = qrJson,
+            .ShowText = False,
+            .AutoModule = True,
+            .Padding = New PaddingInfo(2, 2, 2, 2, 100.0F)
+        }
+        Dim qrGen As New BarCode.QRCodeGenerator()
+        qrGen.CompactionMode =
+            BarCode.QRCodeCompactionMode.Byte
+        qrGen.ErrorCorrectionLevel =
+            BarCode.QRCodeErrorCorrectionLevel.M
+        qr.Symbology = qrGen
+        phb.Controls.Add(qr)
+
+        Dim lblQrCap As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(880.0F, 128.0F),
+            .SizeF = New SizeF(90.0F, 10.0F),
+            .Font = New Font("Segoe UI", 7),
+            .TextAlignment = TextAlignment.MiddleCenter,
+            .Text = "Doc QR (AJD)"
+        }
+        phb.Controls.Add(lblQrCap)
+
+        ' --- 7b) Definicion dinamica de columnas
+        '  {fieldName, captionTxt, widthF, alignRight, wrap}
+        Dim cols As New List(Of Object())()
+        cols.Add(New Object() {"NumLinea", "#", 28.0F, True, False})
+        cols.Add(New Object() {"Codigo", "Codigo", 60.0F, False, False})
+        cols.Add(New Object() {"Producto", "Producto", 175.0F, False, True})
+        cols.Add(New Object() {"UM", "UM", 55.0F, False, False})
+        cols.Add(New Object() {"Ubicacion", "Ubicacion", 75.0F, False, False})
+        cols.Add(New Object() {"Lote", "Lote", 60.0F, False, False})
+        cols.Add(New Object() {"LicPlate", "LicPlate", 65.0F, False, False})
+        cols.Add(New Object() {"Proveedor", "Proveedor", 110.0F, False, True})
+        If incTallaColor Then
+            cols.Add(New Object() {"Talla", "Talla", 38.0F, False, False})
+            cols.Add(New Object() {"Color", "Color", 50.0F, False, False})
+        End If
+        If incBodegaByB Then
+            cols.Add(New Object() {"Bodega", "Bod.", 40.0F, False, False})
+        End If
+        cols.Add(New Object() {"Motivo", "Motivo", 80.0F, False, False})
+        cols.Add(New Object() {"Tipo", "Tipo", 75.0F, False, False})
+        cols.Add(New Object() {"ValorAnterior", "V. Anterior", 65.0F, True, False})
+        cols.Add(New Object() {"ValorActual", "V. Actual", 65.0F, True, False})
+        cols.Add(New Object() {"Observacion", "Observacion", 130.0F, False, True})
+
+        ' Reescalar para que sumen exactamente PAGE_W
+        Dim sumW As Single = 0F
+        For Each cd In cols
+            sumW += CSng(cd(2))
+        Next
+        If sumW > 0F Then
+            Dim factor As Single = PAGE_W / sumW
+            For Each cd In cols
+                cd(2) = CSng(cd(2)) * factor
+            Next
+        End If
+
+        ' Tipo column index (para chip de color)
+        Dim tipoColIdx As Integer = -1
+        For ix = 0 To cols.Count - 1
+            If CStr(cols(ix)(0)) = "Tipo" Then
+                tipoColIdx = ix
+                Exit For
+            End If
+        Next
+
+        ' --- 7c) Encabezado de columnas (ultima banda del PageHeader)
+        Dim hdrTbl As New XRTable() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 122.0F),
+            .SizeF = New SizeF(PAGE_W, 18.0F),
+            .Font = New Font("Segoe UI Semibold", 8,
+                                            FontStyle.Bold),
+            .Borders = BorderSide.All,
+            .BackColor = Color.FromArgb(33, 64, 95),
+            .ForeColor = Color.White
+        }
+        Dim hdrRow As New XRTableRow()
+        For Each cd In cols
+            Dim caption = CStr(cd(1))
+            Dim w = CSng(cd(2))
+            Dim alignRight = CBool(cd(3))
+            Dim cell As New XRTableCell() With {
+                .Text = caption,
+                .WidthF = w,
+                .TextAlignment = If(alignRight,
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 0, 0, 100.0F)
+            }
+            hdrRow.Cells.Add(cell)
+        Next
+        hdrTbl.Rows.Add(hdrRow)
+        phb.Controls.Add(hdrTbl)
+
+        ' --- 7d) Detail Band con XRTable bindeada al DT
+        Dim detail As New DetailBand()
+        detail.HeightF = 18
+        rpt.Bands.Add(detail)
+
+        Dim detTbl As New XRTable() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
+            .SizeF = New SizeF(PAGE_W, 18.0F),
+            .Font = New Font("Segoe UI", 8),
+            .Borders = BorderSide.All,
+            .BorderColor = Color.FromArgb(220, 220, 220)
+        }
+        Dim detRow As New XRTableRow()
+        detRow.Name = "rowDetail"
+        For Each cd In cols
+            Dim field = CStr(cd(0))
+            Dim w = CSng(cd(2))
+            Dim alignRight = CBool(cd(3))
+            Dim wrap = CBool(cd(4))
+            Dim cell As New XRTableCell() With {
+                .WidthF = w,
+                .TextAlignment = If(alignRight,
+                    TextAlignment.MiddleRight,
+                    TextAlignment.MiddleLeft),
+                .Padding = New PaddingInfo(3, 3, 1, 1, 100.0F),
+                .Multiline = wrap,
+                .CanGrow = wrap
+            }
+            cell.ExpressionBindings.Add(
+                New ExpressionBinding(
+                    "BeforePrint", "Text", "[" & field & "]"))
+            detRow.Cells.Add(cell)
+        Next
+        detRow.CanGrow = True
+        detTbl.Rows.Add(detRow)
+        detail.CanGrow = True
+        detail.Controls.Add(detTbl)
+
+        ' Zebra + chip de color en la celda Tipo
+        AddHandler detRow.BeforePrint,
+            Sub(s, eArgs)
+                Try
+                    Dim row = DirectCast(s, XRTableRow)
+                    Dim ix As Integer = 0
+                    Try : ix = CInt(rpt.GetCurrentColumnValue("NumLinea")) : Catch : End Try
+
+                    ' Zebra
+                    If (ix Mod 2) = 0 Then
+                        row.BackColor = Color.FromArgb(247, 249, 252)
+                    Else
+                        row.BackColor = Color.White
+                    End If
+
+                    ' Chip de color en celda Tipo
+                    If tipoColIdx >= 0 AndAlso tipoColIdx < row.Cells.Count Then
+                        Dim tipoValObj As Object = Nothing
+                        Try : tipoValObj = rpt.GetCurrentColumnValue("Tipo") : Catch : End Try
+                        Dim tipoVal = If(tipoValObj, "").ToString().Trim()
+                        Dim chip = row.Cells(tipoColIdx)
+                        Select Case tipoVal
+                            Case "Ajuste Positivo"
+                                chip.BackColor = Color.FromArgb(220, 245, 220)
+                                chip.ForeColor = Color.FromArgb(20, 90, 30)
+                            Case "Ajuste Negativo"
+                                chip.BackColor = Color.FromArgb(252, 224, 224)
+                                chip.ForeColor = Color.FromArgb(140, 30, 30)
+                            Case "Ajuste Lote."
+                                chip.BackColor = Color.FromArgb(220, 234, 252)
+                                chip.ForeColor = Color.FromArgb(30, 60, 140)
+                            Case "Ajuste Vencimiento"
+                                chip.BackColor = Color.FromArgb(255, 234, 200)
+                                chip.ForeColor = Color.FromArgb(150, 80, 0)
+                            Case "Ajuste Peso"
+                                chip.BackColor = Color.FromArgb(232, 220, 245)
+                                chip.ForeColor = Color.FromArgb(80, 30, 130)
+                            Case Else
+                                chip.BackColor = Color.FromArgb(235, 235, 235)
+                                chip.ForeColor = Color.FromArgb(80, 80, 80)
+                        End Select
+                        chip.Font = New Font(
+                            "Segoe UI Semibold", 8, FontStyle.Bold)
+                    End If
+                Catch
+                End Try
+            End Sub
+
+        ' --- 7e) Report Footer: resumen por tipo + firmas
+        Dim rfb As New ReportFooterBand()
+        rfb.HeightF = 130
+        rpt.Bands.Add(rfb)
+
+        Dim line2 As New XRLine() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 4.0F),
+            .SizeF = New SizeF(PAGE_W, 2.0F),
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        rfb.Controls.Add(line2)
+
+        Dim lblTotHdr As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 10.0F),
+            .SizeF = New SizeF(300.0F, 14.0F),
+            .Font = New Font("Segoe UI Semibold", 10,
+                                            FontStyle.Bold),
+            .Text = "Resumen por Tipo de ajuste",
+            .ForeColor = Color.FromArgb(33, 64, 95)
+        }
+        rfb.Controls.Add(lblTotHdr)
+
+        ' Mini tabla por tipo (max 6 filas, ordenadas por tipo)
+        Dim topY As Single = 28.0F
+        Dim totFont As New Font("Segoe UI", 9)
+        Dim totFontB As New Font("Segoe UI Semibold", 9,
+                                                FontStyle.Bold)
+
+        Dim ixT As Integer = 0
+        For Each kv In countByTipo.OrderBy(Function(x) x.Key)
+            Dim lblK As New XRLabel() With {
+                .LocationFloat = New DevExpress.Utils.PointFloat(0F, topY),
+                .SizeF = New SizeF(180.0F, 14.0F),
+                .Font = totFontB,
+                .Text = kv.Key
+            }
+            Dim lblV As New XRLabel() With {
+                .LocationFloat = New DevExpress.Utils.PointFloat(180.0F, topY),
+                .SizeF = New SizeF(70.0F, 14.0F),
+                .Font = totFont,
+                .TextAlignment = TextAlignment.MiddleRight,
+                .Text = kv.Value.ToString("n0") & " linea(s)"
+            }
+            rfb.Controls.Add(lblK)
+            rfb.Controls.Add(lblV)
+            topY += 16.0F
+            ixT += 1
+            If ixT >= 6 Then Exit For
+        Next
+
+        ' Firmas: 3 (Preparo / Aprobo / Recibido)
+        Dim sigFont As New Font("Segoe UI", 8)
+        Dim addSig = Sub(label As String, leftPos As Single)
+                         Dim lnSig As New XRLine() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 90.0F),
+                             .SizeF = New SizeF(180.0F, 1.0F),
+                             .ForeColor = Color.Black
+                         }
+                         Dim lblS As New XRLabel() With {
+                             .LocationFloat = New DevExpress.Utils.PointFloat(leftPos, 92.0F),
+                             .SizeF = New SizeF(180.0F, 14.0F),
+                             .Font = sigFont,
+                             .TextAlignment = TextAlignment.MiddleCenter,
+                             .Text = label
+                         }
+                         rfb.Controls.Add(lnSig)
+                         rfb.Controls.Add(lblS)
+                     End Sub
+        addSig("Preparo", 400.0F)
+        addSig("Aprobo", 600.0F)
+        addSig("Recibido", 800.0F)
+
+        ' --- 7f) Page Footer: paginacion + fecha
+        Dim pfb As New PageFooterBand()
+        pfb.HeightF = 24
+        rpt.Bands.Add(pfb)
+
+        Dim lnFoot As New XRLine() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 0F),
+            .SizeF = New SizeF(PAGE_W, 1.0F),
+            .ForeColor = Color.FromArgb(180, 180, 180)
+        }
+        pfb.Controls.Add(lnFoot)
+
+        Dim lblImpr As New XRLabel() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(0F, 6.0F),
+            .SizeF = New SizeF(500.0F, 14.0F),
+            .Font = sigFont,
+            .Text = "Impreso: " & DateTime.Now.ToString("dd/MM/yyyy HH:mm") &
+                    "   |   Usuario impresion: " & usuarioTxt
+        }
+        pfb.Controls.Add(lblImpr)
+
+        Dim pageInfo As New XRPageInfo() With {
+            .LocationFloat = New DevExpress.Utils.PointFloat(800.0F, 6.0F),
+            .SizeF = New SizeF(170.0F, 14.0F),
+            .Font = sigFont,
+            .TextAlignment = TextAlignment.MiddleRight,
+            .PageInfo = DevExpress.XtraPrinting.PageInfo.NumberOfTotal,
+            .Format = "Pag {0} de {1}"
+        }
+        pfb.Controls.Add(pageInfo)
+
+        ' --- 8) Mostrar preview
+        Dim tool As New ReportPrintTool(rpt)
+        tool.PreviewForm.WindowState = FormWindowState.Maximized
+        tool.ShowPreview()
+    End Sub
+
+#End Region
+
+
+#Region "Exportar Excel limpio"
+
+    ' Construye un DataTable con solo las columnas utiles (omite imagenes,
+    ' Ids internos y campos auxiliares) y lo exporta sin formato decorativo.
+    ' Usa GridControl in-memory de DevExpress (mismo patron que
+    ' frmPicking_List.Exportar_Grid_A_Excel) para garantizar XLSX nativo.
+    ' Fallback CSV UTF-8 BOM con separador ';' para compatibilidad Excel ES.
+
+    Private Sub mnuExportar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuExportar.ItemClick
+
+        Try
+
+            If dgrid Is Nothing OrElse dgrid.Rows Is Nothing OrElse dgrid.Rows.Count = 0 Then
+
+                XtraMessageBox.Show("No hay registros en la grilla para exportar.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information)
+
+                Return
+
+            End If
+
+            Dim dt As DataTable = Construir_DataTable_Limpio_AjusteStock(dgrid)
+
+            Dim nombreSugerido As String = "AjusteStock_" &
+                pBeTransAjustEnc.IdAjusteenc.ToString() & "_" &
+                DateTime.Now.ToString("yyyyMMdd_HHmm")
+
+            Using sfd As New SaveFileDialog()
+
+                sfd.Filter = "Excel (*.xlsx)|*.xlsx|CSV UTF-8 (*.csv)|*.csv"
+                sfd.FilterIndex = 1
+                sfd.FileName = nombreSugerido
+                sfd.RestoreDirectory = True
+
+                If sfd.ShowDialog() <> DialogResult.OK Then Return
+
+                Dim ext As String = Path.GetExtension(sfd.FileName)
+
+                If String.Equals(ext, ".xlsx", StringComparison.OrdinalIgnoreCase) Then
+                    Exportar_DataTable_A_Xlsx(dt, sfd.FileName)
+                Else
+                    Exportar_DataTable_A_Csv(dt, sfd.FileName)
+                End If
+
+                XtraMessageBox.Show("Exportacion completada:" & vbCrLf & sfd.FileName,
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information)
+
+            End Using
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
+
+            clsLnLog_error_wms.Agregar_Error("mnuExportar_ItemClick: " & ex.Message)
+
+        End Try
+
+    End Sub
+
+    Private Function Construir_DataTable_Limpio_AjusteStock(dGrid As DataGridView) As DataTable
+
+        Dim dt As New DataTable("AjusteStockDet")
+
+        ' Orden y nombres de columnas pensados para reporte limpio.
+        ' Omitidos a proposito:
+        '   ColDiferencia (es DataGridViewImageColumn, sin valor util)
+        '   ColIdAjusteDEt (id interno, opcional al final)
+        '   colIdProductoTallaColor (id interno, sin valor para usuario)
+        dt.Columns.Add("Codigo Producto", GetType(String))
+        dt.Columns.Add("Nombre Producto", GetType(String))
+        dt.Columns.Add("Bodega", GetType(String))
+        dt.Columns.Add("Ubicacion", GetType(String))
+        dt.Columns.Add("Lic Plate", GetType(String))
+        dt.Columns.Add("Lote", GetType(String))
+        dt.Columns.Add("Lote Original", GetType(String))
+        dt.Columns.Add("Talla", GetType(String))
+        dt.Columns.Add("Color", GetType(String))
+        dt.Columns.Add("Presentacion", GetType(String))
+        dt.Columns.Add("UM Base", GetType(String))
+        dt.Columns.Add("Tipo Ajuste", GetType(String))
+        dt.Columns.Add("Motivo Ajuste", GetType(String))
+        dt.Columns.Add("Cant. Sistema", GetType(Decimal))
+        dt.Columns.Add("Cant. Fisica", GetType(Decimal))
+        dt.Columns.Add("Diferencia", GetType(Decimal))
+        dt.Columns.Add("Proveedor", GetType(String))
+        dt.Columns.Add("Observacion", GetType(String))
+        dt.Columns.Add("Enviado a ERP", GetType(Boolean))
+        dt.Columns.Add("Id Ajuste Det", GetType(Long))
+
+        For Each row As DataGridViewRow In dGrid.Rows
+
+            If row.IsNewRow Then Continue For
+
+            Dim r As DataRow = dt.NewRow()
+
+            r("Codigo Producto") = SafeStr_AS(row, "ColCodigoProducto")
+            r("Nombre Producto") = SafeStr_AS(row, "colNombreProducto")
+            r("Bodega") = SafeFmt_AS(row, "ColBodega")
+            r("Ubicacion") = SafeStr_AS(row, "colUbicacion")
+            r("Lic Plate") = SafeStr_AS(row, "ColLicPlate")
+            r("Lote") = SafeStr_AS(row, "colLote")
+            r("Lote Original") = SafeStr_AS(row, "LoteOrig")
+            r("Talla") = SafeFmt_AS(row, "colTalla")
+            r("Color") = SafeFmt_AS(row, "colColor")
+            r("Presentacion") = SafeStr_AS(row, "colPresentacion")
+            r("UM Base") = SafeStr_AS(row, "UmBas")
+            r("Tipo Ajuste") = SafeFmt_AS(row, "tipoajuste")
+            r("Motivo Ajuste") = SafeFmt_AS(row, "motivoajuste")
+
+            Dim cantSistema As Decimal = SafeDec_AS(row, "CantidadP")
+            Dim cantFisica As Decimal = SafeDec_AS(row, "ColCantidad")
+            r("Cant. Sistema") = cantSistema
+            r("Cant. Fisica") = cantFisica
+            r("Diferencia") = cantFisica - cantSistema
+
+            r("Proveedor") = SafeStr_AS(row, "colProveedor")
+            r("Observacion") = SafeStr_AS(row, "ColObservacion")
+            r("Enviado a ERP") = SafeBool_AS(row, "ColEnviadoAErp")
+            r("Id Ajuste Det") = SafeLong_AS(row, "ColIdAjusteDEt")
+
+            dt.Rows.Add(r)
+
+        Next
+
+        Return dt
+
+    End Function
+
+    Private Function SafeStr_AS(row As DataGridViewRow, colName As String) As String
+
+        Try
+            If Not row.DataGridView.Columns.Contains(colName) Then Return ""
+            Dim cell = row.Cells(colName)
+            If cell Is Nothing OrElse cell.Value Is Nothing OrElse cell.Value Is DBNull.Value Then Return ""
+            Return cell.Value.ToString().Trim()
+        Catch
+            Return ""
+        End Try
+
+    End Function
+
+    Private Function SafeFmt_AS(row As DataGridViewRow, colName As String) As String
+
+        Try
+            If Not row.DataGridView.Columns.Contains(colName) Then Return ""
+            Dim cell = row.Cells(colName)
+            If cell Is Nothing Then Return ""
+            If cell.FormattedValue IsNot Nothing Then Return cell.FormattedValue.ToString().Trim()
+        Catch
+        End Try
+
+        Return SafeStr_AS(row, colName)
+
+    End Function
+
+    Private Function SafeDec_AS(row As DataGridViewRow, colName As String) As Decimal
+
+        Dim s As String = SafeStr_AS(row, colName)
+        If s.Length = 0 Then Return 0D
+
+        Dim d As Decimal
+        If Decimal.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, d) Then Return d
+        If Decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, d) Then Return d
+        Return 0D
+
+    End Function
+
+    Private Function SafeLong_AS(row As DataGridViewRow, colName As String) As Long
+
+        Dim s As String = SafeStr_AS(row, colName)
+        If s.Length = 0 Then Return 0L
+
+        Dim l As Long
+        If Long.TryParse(s, l) Then Return l
+        Return 0L
+
+    End Function
+
+    Private Function SafeBool_AS(row As DataGridViewRow, colName As String) As Boolean
+
+        Try
+            If Not row.DataGridView.Columns.Contains(colName) Then Return False
+            Dim cell = row.Cells(colName)
+            If cell Is Nothing OrElse cell.Value Is Nothing OrElse cell.Value Is DBNull.Value Then Return False
+            Dim v = cell.Value
+            If TypeOf v Is Boolean Then Return CBool(v)
+            Dim s As String = v.ToString().Trim().ToLowerInvariant()
+            Return s = "1" OrElse s = "true" OrElse s = "verdadero" OrElse s = "si" OrElse s = "sí"
+        Catch
+            Return False
+        End Try
+
+    End Function
+
+    Private Sub Exportar_DataTable_A_Xlsx(dt As DataTable, filePath As String)
+
+        ' GridControl in-memory: aprovecha la lib DevExpress ya referenciada
+        ' (DevExpress.XtraGrid.v24.2). Genera xlsx limpio con headers + datos,
+        ' sin estilos del DataGridView de pantalla.
+        Using gc As New DevExpress.XtraGrid.GridControl()
+
+            Dim gv As New DevExpress.XtraGrid.Views.Grid.GridView()
+            gc.MainView = gv
+            gc.ViewCollection.Add(gv)
+            gc.DataSource = dt
+            gv.PopulateColumns()
+
+            ' Forzar el orden definido en el DataTable
+            For i As Integer = 0 To dt.Columns.Count - 1
+                Dim col = gv.Columns.ColumnByFieldName(dt.Columns(i).ColumnName)
+                If col IsNot Nothing Then
+                    col.VisibleIndex = i
+                    col.Caption = dt.Columns(i).ColumnName
+                End If
+            Next
+
+            gv.OptionsView.ShowGroupPanel = False
+            gv.BestFitColumns()
+
+            gc.ExportToXlsx(filePath)
+
+        End Using
+
+    End Sub
+
+    Private Sub Exportar_DataTable_A_Csv(dt As DataTable, filePath As String)
+
+        Const sep As String = ";"
+        Dim sb As New StringBuilder()
+
+        Dim headers(dt.Columns.Count - 1) As String
+        For i As Integer = 0 To dt.Columns.Count - 1
+            headers(i) = EscaparCsv_AS(dt.Columns(i).ColumnName, sep)
+        Next
+        sb.AppendLine(String.Join(sep, headers))
+
+        For Each row As DataRow In dt.Rows
+            Dim vals(dt.Columns.Count - 1) As String
+            For i As Integer = 0 To dt.Columns.Count - 1
+                Dim v = row(i)
+                Dim s As String
+                If v Is Nothing OrElse v Is DBNull.Value Then
+                    s = ""
+                ElseIf TypeOf v Is Decimal OrElse TypeOf v Is Double OrElse TypeOf v Is Single Then
+                    s = Convert.ToDecimal(v).ToString("0.####", CultureInfo.CurrentCulture)
+                ElseIf TypeOf v Is Boolean Then
+                    s = If(CBool(v), "Si", "No")
+                Else
+                    s = v.ToString()
+                End If
+                vals(i) = EscaparCsv_AS(s, sep)
+            Next
+            sb.AppendLine(String.Join(sep, vals))
+        Next
+
+        ' UTF-8 con BOM para que Excel ES detecte acentos correctamente.
+        File.WriteAllText(filePath, sb.ToString(), New UTF8Encoding(True))
+
+    End Sub
+
+    Private Function EscaparCsv_AS(s As String, sep As String) As String
+
+        If s Is Nothing Then Return ""
+
+        If s.Contains(sep) OrElse s.Contains("""") OrElse s.Contains(vbCr) OrElse s.Contains(vbLf) Then
+            Return """" & s.Replace("""", """""") & """"
+        End If
+
+        Return s
+
+    End Function
+
+#End Region
 
 End Class

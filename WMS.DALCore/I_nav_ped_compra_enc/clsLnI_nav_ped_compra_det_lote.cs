@@ -36,6 +36,8 @@ public class clsLnI_nav_ped_compra_det_lote
             oBeI_nav_ped_compra_det_lote.Quantity_Base = GetDouble("Quantity_Base");
             oBeI_nav_ped_compra_det_lote.Variant_Code = GetString("Variant_Code");
             oBeI_nav_ped_compra_det_lote.Fec_agr = GetDate("fec_agr");
+            oBeI_nav_ped_compra_det_lote.Pallet_Weight = GetDouble("Pallet_Weight");
+            oBeI_nav_ped_compra_det_lote.Pallet_License_No = GetString("Pallet_License_No");    
         }
         catch (Exception ex)
         {
@@ -68,7 +70,9 @@ public class clsLnI_nav_ped_compra_det_lote
             Ins.Add("source_type", "@source_type", "F");
             Ins.Add("quantity_base", "@quantity_base", "F");
             Ins.Add("variant_code", "@variant_code", "F");
-            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");            
+            Ins.Add("Pallet_Weight", "@Pallet_Weight", "F");
+            Ins.Add("Pallet_License_No", "@Pallet_License_No", "F");
 
             string sp = Ins.SQL();
 
@@ -86,17 +90,19 @@ public class clsLnI_nav_ped_compra_det_lote
                 cmd = new SqlCommand(sp, lConnection, lTransaction);
             }
 
-            cmd.Parameters.Add(new SqlParameter("@NoEnc", oBeI_nav_ped_compra_det_lote.NoEnc));
-            cmd.Parameters.Add(new SqlParameter("@source_ID", oBeI_nav_ped_compra_det_lote.Source_ID));
-            cmd.Parameters.Add(new SqlParameter("@Source_Prod_Order_Line", oBeI_nav_ped_compra_det_lote.Source_Prod_Order_Line));
-            cmd.Parameters.Add(new SqlParameter("@Item_No", oBeI_nav_ped_compra_det_lote.Item_No));
-            cmd.Parameters.Add(new SqlParameter("@Lot_No", oBeI_nav_ped_compra_det_lote.Lot_No));
-            cmd.Parameters.Add(new SqlParameter("@Expiration_Date", oBeI_nav_ped_compra_det_lote.Expiration_Date));
-            cmd.Parameters.Add(new SqlParameter("@Entry_No", oBeI_nav_ped_compra_det_lote.Entry_No));
-            cmd.Parameters.Add(new SqlParameter("@Source_Type", oBeI_nav_ped_compra_det_lote.Source_Type));
-            cmd.Parameters.Add(new SqlParameter("@Quantity_Base", oBeI_nav_ped_compra_det_lote.Quantity_Base));
-            cmd.Parameters.Add(new SqlParameter("@Variant_Code", oBeI_nav_ped_compra_det_lote.Variant_Code));
-            cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det_lote.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@NOENC", oBeI_nav_ped_compra_det_lote.NoEnc));
+            cmd.Parameters.Add(new SqlParameter("@SOURCE_ID", oBeI_nav_ped_compra_det_lote.Source_ID));
+            cmd.Parameters.Add(new SqlParameter("@SOURCE_PROD_ORDER_LINE", oBeI_nav_ped_compra_det_lote.Source_Prod_Order_Line));
+            cmd.Parameters.Add(new SqlParameter("@ITEM_NO", oBeI_nav_ped_compra_det_lote.Item_No));
+            cmd.Parameters.Add(new SqlParameter("@LOT_NO", oBeI_nav_ped_compra_det_lote.Lot_No));
+            cmd.Parameters.Add(new SqlParameter("@EXPIRATION_DATE", oBeI_nav_ped_compra_det_lote.Expiration_Date));
+            cmd.Parameters.Add(new SqlParameter("@ENTRY_NO", oBeI_nav_ped_compra_det_lote.Entry_No));
+            cmd.Parameters.Add(new SqlParameter("@SOURCE_TYPE", oBeI_nav_ped_compra_det_lote.Source_Type));
+            cmd.Parameters.Add(new SqlParameter("@QUANTITY_BASE", oBeI_nav_ped_compra_det_lote.Quantity_Base));
+            cmd.Parameters.Add(new SqlParameter("@VARIANT_CODE", oBeI_nav_ped_compra_det_lote.Variant_Code));
+            cmd.Parameters.Add(new SqlParameter("@FEC_AGR", oBeI_nav_ped_compra_det_lote.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@PALLET_WEIGHT", oBeI_nav_ped_compra_det_lote.Pallet_Weight));
+            cmd.Parameters.Add(new SqlParameter("@PALLET_LICENSE_NO", oBeI_nav_ped_compra_det_lote.Pallet_License_No));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -150,6 +156,8 @@ public class clsLnI_nav_ped_compra_det_lote
             Ins.Add("quantity_base", "@quantity_base", "F");
             Ins.Add("variant_code", "@variant_code", "F");
             Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("Pallet_Weight", "@Pallet_Weight", "F");
+            Ins.Add("Pallet_License_No", "@Pallet_License_No", "F");
 
             string sp = Ins.SQL();
 
@@ -169,6 +177,8 @@ public class clsLnI_nav_ped_compra_det_lote
             cmd.Parameters.Add(new SqlParameter("@Quantity_Base", oBeI_nav_ped_compra_det_lote.Quantity_Base));
             cmd.Parameters.Add(new SqlParameter("@Variant_Code", oBeI_nav_ped_compra_det_lote.Variant_Code));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det_lote.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@PALLET_WEIGHT", oBeI_nav_ped_compra_det_lote.Pallet_Weight));
+            cmd.Parameters.Add(new SqlParameter("@PALLET_LICENSE_NO", oBeI_nav_ped_compra_det_lote.Pallet_License_No));
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -219,6 +229,8 @@ public class clsLnI_nav_ped_compra_det_lote
             Upd.Add("quantity_base", "@quantity_base", "F");
             Upd.Add("variant_code", "@variant_code", "F");
             Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("Pallet_Weight", "@Pallet_Weight", "F");            
+            Upd.Add("Pallet_License_No", "@Pallet_License_No", "F");
             Upd.Where("NoEnc = @NoEnc" +
                 " AND Source_Prod_Order_Line = @Source_Prod_Order_Line " +
                 " AND Item_No = @Item_No");
@@ -250,6 +262,8 @@ public class clsLnI_nav_ped_compra_det_lote
             cmd.Parameters.Add(new SqlParameter("@Quantity_Base", oBeI_nav_ped_compra_det_lote.Quantity_Base));
             cmd.Parameters.Add(new SqlParameter("@Variant_Code", oBeI_nav_ped_compra_det_lote.Variant_Code));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_det_lote.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@Pallet_Weight", oBeI_nav_ped_compra_det_lote.Pallet_Weight));
+            cmd.Parameters.Add(new SqlParameter("@Pallet_License_No", oBeI_nav_ped_compra_det_lote.Pallet_License_No)); 
 
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -397,17 +411,9 @@ public class clsLnI_nav_ped_compra_det_lote
             SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
             SqlDataAdapter dad = new SqlDataAdapter(cmd);
 
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@NoEnc", pBeI_nav_ped_compra_det_lote.NoEnc));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@source_ID", pBeI_nav_ped_compra_det_lote.Source_ID));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@NoEnc", pBeI_nav_ped_compra_det_lote.NoEnc));            
             dad.SelectCommand.Parameters.Add(new SqlParameter("@Source_Prod_Order_Line", pBeI_nav_ped_compra_det_lote.Source_Prod_Order_Line));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Item_No", pBeI_nav_ped_compra_det_lote.Item_No));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Lot_No", pBeI_nav_ped_compra_det_lote.Lot_No));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Expiration_Date", pBeI_nav_ped_compra_det_lote.Expiration_Date));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Entry_No", pBeI_nav_ped_compra_det_lote.Entry_No));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Source_Type", pBeI_nav_ped_compra_det_lote.Source_Type));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Quantity_Base", pBeI_nav_ped_compra_det_lote.Quantity_Base));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@Variant_Code", pBeI_nav_ped_compra_det_lote.Variant_Code));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@fec_agr", pBeI_nav_ped_compra_det_lote.Fec_agr));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@Item_No", pBeI_nav_ped_compra_det_lote.Item_No));            
 
             DataTable dt = new DataTable();
             dad.Fill(dt);

@@ -47,6 +47,8 @@ Partial Class frmTipoDocumentoSalida
         Me.chkGenerarPedidoIngresoBodegaDestino = New DevExpress.XtraEditors.ToggleSwitch()
         Me.cmbTipoDocumentoIngreso = New DevExpress.XtraEditors.LookUpEdit()
         Me.grpGenerales = New DevExpress.XtraEditors.GroupControl()
+        Me.chkAsignarTodosOperadores = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.chkGeneraGuiaRemision = New DevExpress.XtraEditors.ToggleSwitch()
         Me.chkEmpaqueTarima = New DevExpress.XtraEditors.ToggleSwitch()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lblPropietario = New System.Windows.Forms.Label()
@@ -54,6 +56,7 @@ Partial Class frmTipoDocumentoSalida
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.cmbEstado = New DevExpress.XtraEditors.LookUpEdit()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chkVerificacionImagenBOF = New DevExpress.XtraEditors.ToggleSwitch()
         Me.chkFotografiaVerificacion = New DevExpress.XtraEditors.ToggleSwitch()
         Me.chkVerificar = New DevExpress.XtraEditors.ToggleSwitch()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
@@ -83,9 +86,7 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.chkVerificacionImagenBOF = New DevExpress.XtraEditors.ToggleSwitch()
-        Me.chkGeneraGuiaRemision = New DevExpress.XtraEditors.ToggleSwitch()
-        Me.chkAsignarTodosOperadores = New DevExpress.XtraEditors.ToggleSwitch()
+        Me.chkGenerarPickingAuto = New DevExpress.XtraEditors.ToggleSwitch()
         NombreLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -106,11 +107,14 @@ Partial Class frmTipoDocumentoSalida
         CType(Me.cmbTipoDocumentoIngreso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpGenerales, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpGenerales.SuspendLayout()
+        CType(Me.chkAsignarTodosOperadores.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkEmpaqueTarima.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox3.SuspendLayout()
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
+        CType(Me.chkVerificacionImagenBOF.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkFotografiaVerificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkVerificar.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -142,9 +146,7 @@ Partial Class frmTipoDocumentoSalida
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.chkVerificacionImagenBOF.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkAsignarTodosOperadores.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkGenerarPickingAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'NombreLabel
@@ -423,6 +425,28 @@ Partial Class frmTipoDocumentoSalida
         Me.grpGenerales.Size = New System.Drawing.Size(901, 472)
         Me.grpGenerales.TabIndex = 21
         '
+        'chkAsignarTodosOperadores
+        '
+        Me.chkAsignarTodosOperadores.Location = New System.Drawing.Point(85, 305)
+        Me.chkAsignarTodosOperadores.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkAsignarTodosOperadores.MenuManager = Me.RibbonControl
+        Me.chkAsignarTodosOperadores.Name = "chkAsignarTodosOperadores"
+        Me.chkAsignarTodosOperadores.Properties.OffText = "No asignar todos los operadores"
+        Me.chkAsignarTodosOperadores.Properties.OnText = "Asignar todos los operadores"
+        Me.chkAsignarTodosOperadores.Size = New System.Drawing.Size(244, 24)
+        Me.chkAsignarTodosOperadores.TabIndex = 34
+        '
+        'chkGeneraGuiaRemision
+        '
+        Me.chkGeneraGuiaRemision.Location = New System.Drawing.Point(85, 273)
+        Me.chkGeneraGuiaRemision.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkGeneraGuiaRemision.MenuManager = Me.RibbonControl
+        Me.chkGeneraGuiaRemision.Name = "chkGeneraGuiaRemision"
+        Me.chkGeneraGuiaRemision.Properties.OffText = "No genera guía remisión"
+        Me.chkGeneraGuiaRemision.Properties.OnText = "Genera guía remisión"
+        Me.chkGeneraGuiaRemision.Size = New System.Drawing.Size(222, 24)
+        Me.chkGeneraGuiaRemision.TabIndex = 33
+        '
         'chkEmpaqueTarima
         '
         Me.chkEmpaqueTarima.Location = New System.Drawing.Point(392, 304)
@@ -507,6 +531,17 @@ Partial Class frmTipoDocumentoSalida
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Verificacion"
         '
+        'chkVerificacionImagenBOF
+        '
+        Me.chkVerificacionImagenBOF.Location = New System.Drawing.Point(17, 92)
+        Me.chkVerificacionImagenBOF.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkVerificacionImagenBOF.MenuManager = Me.RibbonControl
+        Me.chkVerificacionImagenBOF.Name = "chkVerificacionImagenBOF"
+        Me.chkVerificacionImagenBOF.Properties.OffText = "No verificar imagen en BOF"
+        Me.chkVerificacionImagenBOF.Properties.OnText = "Verificar con imagen en BOF"
+        Me.chkVerificacionImagenBOF.Size = New System.Drawing.Size(223, 24)
+        Me.chkVerificacionImagenBOF.TabIndex = 13
+        '
         'chkFotografiaVerificacion
         '
         Me.chkFotografiaVerificacion.Location = New System.Drawing.Point(17, 33)
@@ -531,6 +566,7 @@ Partial Class frmTipoDocumentoSalida
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.chkGenerarPickingAuto)
         Me.GroupBox1.Controls.Add(Me.chkMoverAMuelle)
         Me.GroupBox1.Controls.Add(Me.chkEscanearMuellePicking)
         Me.GroupBox1.Location = New System.Drawing.Point(55, 339)
@@ -542,7 +578,7 @@ Partial Class frmTipoDocumentoSalida
         '
         'chkMoverAMuelle
         '
-        Me.chkMoverAMuelle.Location = New System.Drawing.Point(25, 32)
+        Me.chkMoverAMuelle.Location = New System.Drawing.Point(7, 32)
         Me.chkMoverAMuelle.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.chkMoverAMuelle.MenuManager = Me.RibbonControl
         Me.chkMoverAMuelle.Name = "chkMoverAMuelle"
@@ -553,7 +589,7 @@ Partial Class frmTipoDocumentoSalida
         '
         'chkEscanearMuellePicking
         '
-        Me.chkEscanearMuellePicking.Location = New System.Drawing.Point(25, 60)
+        Me.chkEscanearMuellePicking.Location = New System.Drawing.Point(7, 60)
         Me.chkEscanearMuellePicking.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.chkEscanearMuellePicking.MenuManager = Me.RibbonControl
         Me.chkEscanearMuellePicking.Name = "chkEscanearMuellePicking"
@@ -842,38 +878,16 @@ Partial Class frmTipoDocumentoSalida
         Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 90)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'chkVerificacionImagenBOF
+        'chkGenerarPickingAuto
         '
-        Me.chkVerificacionImagenBOF.Location = New System.Drawing.Point(17, 92)
-        Me.chkVerificacionImagenBOF.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.chkVerificacionImagenBOF.MenuManager = Me.RibbonControl
-        Me.chkVerificacionImagenBOF.Name = "chkVerificacionImagenBOF"
-        Me.chkVerificacionImagenBOF.Properties.OffText = "No verificar imagen en BOF"
-        Me.chkVerificacionImagenBOF.Properties.OnText = "Verificar con imagen en BOF"
-        Me.chkVerificacionImagenBOF.Size = New System.Drawing.Size(223, 24)
-        Me.chkVerificacionImagenBOF.TabIndex = 13
-        '
-        'chkGeneraGuiaRemision
-        '
-        Me.chkGeneraGuiaRemision.Location = New System.Drawing.Point(85, 273)
-        Me.chkGeneraGuiaRemision.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.chkGeneraGuiaRemision.MenuManager = Me.RibbonControl
-        Me.chkGeneraGuiaRemision.Name = "chkGeneraGuiaRemision"
-        Me.chkGeneraGuiaRemision.Properties.OffText = "No genera guía remisión"
-        Me.chkGeneraGuiaRemision.Properties.OnText = "Genera guía remisión"
-        Me.chkGeneraGuiaRemision.Size = New System.Drawing.Size(222, 24)
-        Me.chkGeneraGuiaRemision.TabIndex = 33
-        '
-        'chkAsignarTodosOperadores
-        '
-        Me.chkAsignarTodosOperadores.Location = New System.Drawing.Point(85, 305)
-        Me.chkAsignarTodosOperadores.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.chkAsignarTodosOperadores.MenuManager = Me.RibbonControl
-        Me.chkAsignarTodosOperadores.Name = "chkAsignarTodosOperadores"
-        Me.chkAsignarTodosOperadores.Properties.OffText = "No asignar todos los operadores"
-        Me.chkAsignarTodosOperadores.Properties.OnText = "Asignar todos los operadores"
-        Me.chkAsignarTodosOperadores.Size = New System.Drawing.Size(244, 24)
-        Me.chkAsignarTodosOperadores.TabIndex = 34
+        Me.chkGenerarPickingAuto.Location = New System.Drawing.Point(7, 88)
+        Me.chkGenerarPickingAuto.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.chkGenerarPickingAuto.MenuManager = Me.RibbonControl
+        Me.chkGenerarPickingAuto.Name = "chkGenerarPickingAuto"
+        Me.chkGenerarPickingAuto.Properties.OffText = "No generar picking auto"
+        Me.chkGenerarPickingAuto.Properties.OnText = "Generar picking auto"
+        Me.chkGenerarPickingAuto.Size = New System.Drawing.Size(241, 24)
+        Me.chkGenerarPickingAuto.TabIndex = 29
         '
         'frmTipoDocumentoSalida
         '
@@ -906,12 +920,15 @@ Partial Class frmTipoDocumentoSalida
         CType(Me.grpGenerales, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpGenerales.ResumeLayout(False)
         Me.grpGenerales.PerformLayout()
+        CType(Me.chkAsignarTodosOperadores.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkEmpaqueTarima.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox2.ResumeLayout(False)
+        CType(Me.chkVerificacionImagenBOF.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkFotografiaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkVerificar.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
@@ -944,9 +961,7 @@ Partial Class frmTipoDocumentoSalida
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.chkVerificacionImagenBOF.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkGeneraGuiaRemision.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkAsignarTodosOperadores.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkGenerarPickingAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1010,4 +1025,5 @@ Partial Class frmTipoDocumentoSalida
     Friend WithEvents chkVerificacionImagenBOF As DevExpress.XtraEditors.ToggleSwitch
     Friend WithEvents chkAsignarTodosOperadores As DevExpress.XtraEditors.ToggleSwitch
     Friend WithEvents chkGeneraGuiaRemision As DevExpress.XtraEditors.ToggleSwitch
+    Friend WithEvents chkGenerarPickingAuto As DevExpress.XtraEditors.ToggleSwitch
 End Class

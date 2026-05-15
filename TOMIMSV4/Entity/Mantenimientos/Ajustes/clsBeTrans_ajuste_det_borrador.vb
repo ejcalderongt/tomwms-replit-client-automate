@@ -15,8 +15,8 @@
         lote_original = String.Empty
         lote_nuevo = String.Empty
 
-        fecha_vence_original = DateTime.MinValue
-        fecha_vence_nueva = DateTime.MinValue
+        fecha_vence_original = New Date(1900, 1, 1)
+        fecha_vence_nueva = New Date(1900, 1, 1)
 
         peso_original = 0
         peso_nuevo = 0
@@ -39,9 +39,9 @@
         estado_borrador = "BORRADOR"
         confirmado = False
         procesado = False
-        fecha_creacion = DateTime.MinValue
+        fecha_creacion = New Date(1900, 1, 1)
         usuario_creacion = String.Empty
-        fecha_modificacion = DateTime.MinValue
+        fecha_modificacion = New Date(1900, 1, 1)
         usuario_modificacion = String.Empty
 
         Nombre_Presentacion = String.Empty
@@ -59,6 +59,11 @@
         CantReservada = 0
         idstockres = 0
         esnuevolink = 0
+
+        '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+        IdProveedor = 0
+        Codigo_Proveedor = String.Empty
+        Nombre_Proveedor = String.Empty
 
         Presentacion = New clsBeProducto_Presentacion()
     End Sub
@@ -112,6 +117,12 @@
     Public Property CantReservada As Object
     Public Property idstockres As Integer
     Public Property esnuevolink As Integer
-    Public Property Presentacion As clsBeProducto_Presentacion
 
+    '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
+    Public Property IdProveedor As Integer
+    Public Property Codigo_Proveedor As String
+    Public Property Nombre_Proveedor As String
+
+    Public Property Presentacion As clsBeProducto_Presentacion
+    Public Property IdRecepcionEnc As Integer = 0
 End Class

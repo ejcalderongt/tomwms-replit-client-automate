@@ -117,7 +117,7 @@ Partial Class frmOperador
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOperador = New TOMWMS.DsOperador()
+        Me.DsOperador = New DsOperador()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -2230,7 +2230,7 @@ Partial Class frmOperador
     Friend WithEvents txtDireccion As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCostoHora As System.Windows.Forms.NumericUpDown
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOperador As TOMWMS.DsOperador
+    Friend WithEvents DsOperador As DsOperador
     Friend WithEvents cmdImprimeCarnet As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents lnkRolOperador As System.Windows.Forms.LinkLabel
     Friend WithEvents txtIdRolOperador As DevExpress.XtraEditors.TextEdit

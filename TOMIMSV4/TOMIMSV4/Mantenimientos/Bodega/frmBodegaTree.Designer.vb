@@ -66,7 +66,7 @@ Partial Class frmBodegaTree
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.AreaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsBodega = New TOMWMS.DsBodega()
+        Me.DsBodega = New DsBodega()
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
@@ -1024,7 +1024,7 @@ Partial Class frmBodegaTree
     Friend WithEvents Fec_modTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents Fec_agrTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents AreaBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsBodega As TOMWMS.DsBodega
+    Friend WithEvents DsBodega As DsBodega
     Friend WithEvents TabUbicacion As System.Windows.Forms.TabPage
     Friend WithEvents tLArea As DevExpress.XtraTreeList.TreeList
     Friend WithEvents colIdArea As DevExpress.XtraTreeList.Columns.TreeListColumn

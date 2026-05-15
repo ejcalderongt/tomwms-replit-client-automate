@@ -645,6 +645,8 @@ Public Class frmPedido
                 lblSociedadSAP.Visible = BeConfigBodega.Interface_SAP
                 txtSociedadSAP.Visible = BeConfigBodega.Interface_SAP
 
+                cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
+
                 txtEsExportacion.Text = IIf(pBePedidoEnc.EsExportacion, "Si", "No")
 
                 If txtEsExportacion.Text = "Si" Then
@@ -838,6 +840,7 @@ Public Class frmPedido
             txtIdPicking.Text = pBePedidoEnc.IdPickingEnc
             txtObservacion.Text = pBePedidoEnc.Observacion
             txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
+            cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
 
             '#EJC20220510: Fix
             PedidoGuardadoPorUsuario = True
@@ -1680,6 +1683,8 @@ Public Class frmPedido
                 pBePedidoEnc.IdMotivoDevolucion = 0
             End If
 
+            pBePedidoEnc.IdEmpresaTransporte = Val(cmbEmpresaTransporte.EditValue)
+
             If chkControlPoliza.Checked Then
 
                 'GT 170820211743: Se obtiene el regimen, pero se valida que este seteado o avisar que la lectura de la poliza no lo asigno correctamente
@@ -1783,7 +1788,7 @@ Public Class frmPedido
 
             If BeConfigBodega.Interface_SAP Then
                 If Not pBePedidoEnc.TipoPedido.Genera_Guia_Remision Then
-                    If txtReferencia.Text = "" OrElse txtSociedadSAP.Text = "" Then
+                    If txtReferencia.Text = "" AndAlso txtSociedadSAP.Text = "" Then
                         pBePedidoEnc.Sync_MI3 = False
                         pBePedidoEnc.Enviado_A_ERP = True
                     End If
@@ -12145,38 +12150,42 @@ Public Class frmPedido
 
             If cmbBodega.Text <> "" AndAlso cmbTipoPedido.EditValue <> 0 Then
 
-                'GT 210720211443: Si Tipo Doc tiene  transferencia fiscal a general, se habilita el tab de poliza.
-                Dim fila As Object = cmbTipoPedido.GetSelectedDataRow
+                If cmbTipoPedido.Properties.DataSource IsNot Nothing Then
 
-                If fila IsNot Nothing Then
+                    'GT 210720211443: Si Tipo Doc tiene  transferencia fiscal a general, se habilita el tab de poliza.
+                    Dim fila As DataRowView = TryCast(cmbTipoPedido.GetSelectedDataRow(), DataRowView)
 
-                    Dim vControl_Poliza As Boolean = fila.Item("control_poliza")
-                    Dim vVerificar As Boolean = fila.Item("Verificar")
-                    Dim vFotografiaVerificacion As Boolean = fila.Item("Fotografia_Verificacion")
-                    Dim vEs_Devolucion As Boolean = fila.Item("es_devolucion")
+                    If fila IsNot Nothing Then
 
-                    If vControl_Poliza Then
-                        chkControlPoliza.Checked = True
-                        chkControlPoliza.Enabled = False
+                        Dim vControl_Poliza As Boolean = fila.Item("control_poliza")
+                        Dim vVerificar As Boolean = fila.Item("Verificar")
+                        Dim vFotografiaVerificacion As Boolean = fila.Item("Fotografia_Verificacion")
+                        Dim vEs_Devolucion As Boolean = fila.Item("es_devolucion")
+
+                        If vControl_Poliza Then
+                            chkControlPoliza.Checked = True
+                            chkControlPoliza.Enabled = False
+                        Else
+                            chkControlPoliza.Checked = False
+                            chkControlPoliza.Enabled = False
+                        End If
+
+                        cmbMotivoDevolucion.Visible = vEs_Devolucion
+                        lblMotivoDevolucion.Visible = vEs_Devolucion
+
+                        If vEs_Devolucion Then
+                            Llena_Motivos_Devolucion()
+                        End If
+
+                        grpScanPoliza.Visible = vControl_Poliza
+                        tabPoliza.Visible = vControl_Poliza
+                        tabPoliza.PageVisible = vControl_Poliza
+                        chkVerificar.Checked = vVerificar
+                        chkFotografiaVerificacion.Checked = vFotografiaVerificacion
                     Else
-                        chkControlPoliza.Checked = False
-                        chkControlPoliza.Enabled = False
+                        Throw New Exception("El tipo de documento no es válido, revise la configuración de la bodega, no se puede crear el pedido")
                     End If
 
-                    cmbMotivoDevolucion.Visible = vEs_Devolucion
-                    lblMotivoDevolucion.Visible = vEs_Devolucion
-
-                    If vEs_Devolucion Then
-                        Llena_Motivos_Devolucion()
-                    End If
-
-                    grpScanPoliza.Visible = vControl_Poliza
-                    tabPoliza.Visible = vControl_Poliza
-                    tabPoliza.PageVisible = vControl_Poliza
-                    chkVerificar.Checked = vVerificar
-                    chkFotografiaVerificacion.Checked = vFotografiaVerificacion
-                Else
-                    Throw New Exception("El tipo de documento no es válido, revise la configuración de la bodega, no se puede crear el pedido")
                 End If
 
             End If

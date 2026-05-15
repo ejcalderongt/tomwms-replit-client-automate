@@ -68,7 +68,7 @@ Partial Class frmMotivo_Devolucion
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsMotivoDev = New TOMWMS.DsMotivoDev()
+        Me.DsMotivoDev = New DsMotivoDev()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -698,7 +698,7 @@ End Sub
     Friend WithEvents IdInterno As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents RepositoryItemCheckEdit2 As DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsMotivoDev As TOMWMS.DsMotivoDev
+    Friend WithEvents DsMotivoDev As DsMotivoDev
     Friend WithEvents cmdImportarExcel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents chkActivo As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents chkEsDetalle As DevExpress.XtraEditors.CheckEdit

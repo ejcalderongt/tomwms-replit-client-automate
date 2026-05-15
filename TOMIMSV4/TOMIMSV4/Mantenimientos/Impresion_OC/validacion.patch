@@ -1,0 +1,101 @@
+diff --git a/frmImpresionRecepcion_OC.vb b/frmImpresionRecepcion_OC.vb
+index 1234567..89abcde 100644
+--- a/frmImpresionRecepcion_OC.vb
++++ b/frmImpresionRecepcion_OC.vb
+@@ -XXX,6 +XXX,7 @@ Imports DevExpress.XtraEditors
+ Imports System.Data
+ Imports System.Data.SqlClient
+
+ Public Class frmImpresionRecepcion_OC
+
+@@ -XXX,6 +XXX,67 @@ Public Class frmImpresionRecepcion_OC
+
+ #Region "Control peso, ejc."
+
++    Private Function ObtenerResumenPesoImpreso() As Decimal
++        Try
++            If pTransOC_Det Is Nothing Then Return 0D
++
++            Using cn As New SqlConnection(clsLnConexion.GetConexionString())
++                cn.Open()
++
++                Using cmd As New SqlCommand("
++                    SELECT ISNULL(SUM(ISNULL(Pallet_Weight,0)),0)
++                    FROM trans_oc_det_lote
++                    WHERE IdOrdenCompraEnc = @Enc
++                      AND IdOrdenCompraDet = @Det", cn)
++
++                    cmd.Parameters.AddWithValue("@Enc", pTransOC_Enc.IdOrdenCompraEnc)
++                    cmd.Parameters.AddWithValue("@Det", pTransOC_Det.IdOrdenCompraDet)
++
++                    Dim result = cmd.ExecuteScalar()
++                    If result IsNot Nothing Then
++                        Return CDec(result)
++                    End If
++                End Using
++            End Using
++
++        Catch
++        End Try
++
++        Return 0D
++    End Function
++
+     Private Function ObtenerPesoTotalLinea() As Decimal
+         If pTransOC_Det Is Nothing Then Return 0D
+
+         Return CDec(pTransOC_Det.Peso_Neto)
+     End Function
+
+@@ -XXX,6 +XXX,50 @@ Private Function ValidarPesoTarimaContraLinea() As Boolean
+         Dim pesoTarima As Decimal = CDec(txtPesoTarima.Value)
+         Dim pesoTotalLinea As Decimal = ObtenerPesoTotalLinea()
+
++        ' ===============================
++        ' NUEVA LÓGICA ACUMULATIVA
++        ' ===============================
++        Dim pesoYaImpreso As Decimal = ObtenerResumenPesoImpreso()
++        Dim pesoProyectado As Decimal = pesoYaImpreso + pesoTarima
++
+         ' Si ambos pesos son cero, no aplica validación.
+         If pesoTarima <= 0D AndAlso pesoTotalLinea <= 0D Then
+             Return True
+         End If
+
+@@ -XXX,6 +XXX,28 @@ Private Function ValidarPesoTarimaContraLinea() As Boolean
+
+         Dim pesoEstadisticoPorTarima As Decimal = pesoTotalLinea / CDec(cantidadTarimas)
+         Dim margenTolerancia As Decimal = pesoEstadisticoPorTarima * (porcentajeTolerancia / 100D)
+
++        ' ===============================
++        ' VALIDACIÓN GLOBAL (NUEVA)
++        ' ===============================
++        Dim limiteGlobal As Decimal = pesoTotalLinea + (pesoTotalLinea * (porcentajeTolerancia / 100D))
++
++        If pesoProyectado > limiteGlobal Then
++            XtraMessageBox.Show("Se excede el peso total permitido considerando lo ya recibido." &
++                            Environment.NewLine &
++                            Environment.NewLine &
++                            $"Peso línea: {pesoTotalLinea:N2} lbs" &
++                            Environment.NewLine &
++                            $"Ya recibido: {pesoYaImpreso:N2} lbs" &
++                            Environment.NewLine &
++                            $"Nueva tarima: {pesoTarima:N2} lbs" &
++                            Environment.NewLine &
++                            $"Total proyectado: {pesoProyectado:N2} lbs" &
++                            Environment.NewLine &
++                            $"Límite permitido: {limiteGlobal:N2} lbs",
++                            Text,
++                            MessageBoxButtons.OK,
++                            MessageBoxIcon.Exclamation)
++            Return False
++        End If
++
+         Dim pesoMinimoPermitido As Decimal = pesoEstadisticoPorTarima - margenTolerancia
+         Dim pesoMaximoPermitido As Decimal = pesoEstadisticoPorTarima + margenTolerancia
+
+@@ -XXX,6 +XXX,7 @@ Private Function ValidarPesoTarimaContraLinea() As Boolean
+         End If
+
+         Return True
+     End Function

@@ -22,11 +22,12 @@ Public Class clsSyncSapTrasladosEnvio
                                                                  Optional ByVal pNoDocumento As String = "",
                                                                  Optional ByVal pEsProrrateo As Boolean = True,
                                                                  Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False) As Task(Of Boolean)
+
         Dim clsTrans As New clsTransaccion
         Dim sw As New Stopwatch()
+        Dim primeraParteConfirmada As Boolean = False
 
         Try
-            ' Inicia el cronómetro
             sw.Start()
 
             clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de importación de solicitudes de traslado desde SAP.")
@@ -34,11 +35,12 @@ Public Class clsSyncSapTrasladosEnvio
             clsTrans.Begin_Transaction()
 
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                      clsTrans.lConnection,
-                                                      clsTrans.lTransaction)
+                                                          clsTrans.lConnection,
+                                                          clsTrans.lTransaction)
 
             Dim sessionCookie As String = ""
             Dim baseUrl As String = BD.Instancia.HANA_SL
+
             Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
                                                                         clsTrans.lConnection,
                                                                         clsTrans.lTransaction)
@@ -50,129 +52,203 @@ Public Class clsSyncSapTrasladosEnvio
             If pEsProrrateo Then
                 If BeBodega.Codigo <> BeConfigEnc.Bodega_Prorrateo Then
                     clsPublic.Actualizar_Progreso(lblprg, $"La bodega de origen y la de prorrateo no coinciden ({BeBodega.Codigo} <> {BeConfigEnc.Bodega_Prorrateo}), no se puede importar el documento.")
+
+                    clsTrans.RollBack_Transaction()
+                    clsTrans.Close_Conection()
+
+                    sw.Stop()
+                    clsPublic.Actualizar_Progreso(lblprg, $"Fin del proceso. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+
                     Return False
                 End If
             End If
 
-            Await Procesar_Documentos(BeBodega.Codigo,
-                                      pNoDocumento,
-                                      BeConfigEnc,
-                                      lblprg,
-                                      clsTrans,
-                                      pEsProrrateo,
-                                      pEsTrasladoBodegaVirtual)
-
             clsTrans.Commit_Transaction()
+            primeraParteConfirmada = True
 
-            ' Detiene el cronómetro
+            clsTrans.Close_Conection()
+
+            Dim ok As Boolean = Await Procesar_Documentos(BeBodega.Codigo,
+                                                      pNoDocumento,
+                                                      BeConfigEnc,
+                                                      lblprg,
+                                                      pEsProrrateo,
+                                                      pEsTrasladoBodegaVirtual)
+
             sw.Stop()
 
             clsPublic.Actualizar_Progreso(lblprg, $"Fin del proceso de sincronización. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
 
-            Return True
+            Return ok
 
         Catch ex As Exception
             sw.Stop()
-            clsTrans.RollBack_Transaction()
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
 
+            If Not primeraParteConfirmada Then
+                Try
+                    clsTrans.RollBack_Transaction()
+                Catch
+                End Try
+            End If
+
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
             clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+
             Throw
 
         Finally
-            clsTrans.Close_Conection()
+            Try
+                clsTrans.Close_Conection()
+            Catch
+            End Try
         End Try
+
     End Function
 
     Private Shared Async Function Procesar_Documentos(ByVal codigoBodega As String,
                                                       ByVal pNoDocumento As String,
                                                       ByVal BeConfigEnc As clsBeI_nav_config_enc,
                                                       ByVal lblprg As RichTextBox,
-                                                      ByVal clsTrans As clsTransaccion,
                                                       Optional ByVal pEsProrrateo As Boolean = True,
                                                       Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False) As Task(Of Boolean)
 
         Try
-
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            Dim solicitudes As List(Of clsBeI_nav_ped_traslado_enc) = Get_Traslados_SAP_Prorrateo_SL(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
-            Dim pBePedidoEnc As New clsBeTrans_pe_enc
-            Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
-            Dim PedidoClienteExistente As New clsBeTrans_pe_enc
+            ' Usa una conexión/transacción solo para leer la lista si tu método la necesita.
+            Dim clsTransConsulta As New clsTransaccion
+            clsTransConsulta.Begin_Transaction()
 
-            If solicitudes.Count = 0 Then
+            Dim solicitudes As List(Of clsBeI_nav_ped_traslado_enc) =
+            Get_Traslados_SAP_Prorrateo_SL(codigoBodega,
+                                           clsTransConsulta.lConnection,
+                                           clsTransConsulta.lTransaction,
+                                           lblprg,
+                                           pNoDocumento)
+
+            clsTransConsulta.Commit_Transaction()
+
+            If solicitudes Is Nothing OrElse solicitudes.Count = 0 Then
                 clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
                 Return False
             End If
 
+            Dim alMenosUnoProcesado As Boolean = False
+
             For Each solicitud In solicitudes
 
-                '#EJC20251009: En esta opción solo deben importarse documentos cuya bodega de origen sea la de prorrateo.
-                If pEsProrrateo Then
-                    If Not solicitud.Transfer_from_Code = BeConfigEnc.Bodega_Prorrateo Then
-                        clsPublic.Actualizar_Progreso(lblprg, $"La bodega de origen {solicitud.Transfer_from_Code} no coincide con la bodega de prorrateo {BeConfigEnc.Bodega_Prorrateo}, se omite el documento {solicitud.No}.")
-                        Continue For
-                    End If
-                End If
+                Dim clsTransDoc As New clsTransaccion
 
-                clsPublic.Actualizar_Progreso(lblprg, $"Procesando solicitud de traslado SAP (OWTQ): {solicitud.Receipt_Document_Reference}/{solicitud.No}{vbNewLine}")
+                Try
+                    clsTransDoc.Begin_Transaction()
 
-                If Await Validar_Cliente_WMS(solicitud.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                    Dim ok As Boolean = Await Procesar_Documento_Individual(
+                    solicitud,
+                    BeConfigEnc,
+                    lblprg,
+                    clsTransDoc,
+                    pEsProrrateo,
+                    pEsTrasladoBodegaVirtual
+                )
 
-                    '#CKFK20260324 Pues en la bodega Origen el Transfer_From_Code
-                    'Dim origenEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_from_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
-                    'Dim destinoEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_to_CodeField, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
-                    Dim origenEsWMS As Boolean = clsLnBodega.Exists_By_Codigo(solicitud.Transfer_from_Code, clsTrans.lConnection, clsTrans.lTransaction)
-                    Dim destinoEsWMS As Boolean = clsLnBodega.Exists_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction)
-                    Dim debeProcesar As Boolean = Not destinoEsWMS OrElse Not origenEsWMS OrElse (origenEsWMS AndAlso destinoEsWMS)
-
-                    If debeProcesar Then
-
-                        If solicitud.Transfer_to_CodeField.Trim <> "" Then
-
-                            If Not clsLnCliente.Existe_Cliente_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) Then
-                                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no existe como cliente, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
-                                Continue For
-                            End If
-
-                            If clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) = 0 Then
-                                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no tiene ubicación virtual definida, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
-                                Continue For
-                            End If
-
-                            If clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) <> solicitud.Transfer_to_CodeField AndAlso
-                                solicitud.Transfer_to_Code = solicitud.Transfer_to_CodeField Then
-                                clsPublic.Actualizar_Progreso(lblprg, $"La ubicación virtual no tiene el mismo código de la bodega destino {solicitud.Transfer_to_CodeField}, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
-                                Continue For
-                            End If
-
-                        End If
-
-                            Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
-
-                        If pedidoEnc IsNot Nothing Then
-
-                            Dim trasladoSincronizado As Boolean = Marcar_Traslado_Sincronizado_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL, 1).GetAwaiter().GetResult()
-
-                            If trasladoSincronizado Then
-                                Return True
-                            End If
-
-                        End If
-
+                    If ok Then
+                        clsTransDoc.Commit_Transaction()
+                        alMenosUnoProcesado = True
+                        clsPublic.Actualizar_Progreso(lblprg, $"Documento {solicitud.No} confirmado.")
+                    Else
+                        clsTransDoc.RollBack_Transaction()
+                        clsPublic.Actualizar_Progreso(lblprg, $"Documento {solicitud.No} revertido.")
                     End If
 
-                End If
+                Catch ex As Exception
+                    clsTransDoc.RollBack_Transaction()
+                    clsPublic.Actualizar_Progreso(lblprg, $"Error en documento {solicitud.No}: {ex.Message}")
+                End Try
 
             Next
 
-            Return False
+            Return alMenosUnoProcesado
 
         Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, ex.Message)
             Return False
         End Try
+
+    End Function
+
+    Private Shared Async Function Procesar_Documento_Individual(ByVal solicitud As clsBeI_nav_ped_traslado_enc,
+                                                            ByVal BeConfigEnc As clsBeI_nav_config_enc,
+                                                            ByVal lblprg As RichTextBox,
+                                                            ByVal clsTrans As clsTransaccion,
+                                                            Optional ByVal pEsProrrateo As Boolean = True,
+                                                            Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False) As Task(Of Boolean)
+
+        If pEsProrrateo Then
+            If Not solicitud.Transfer_from_Code = BeConfigEnc.Bodega_Prorrateo Then
+                clsPublic.Actualizar_Progreso(lblprg, $"La bodega de origen {solicitud.Transfer_from_Code} no coincide con la bodega de prorrateo {BeConfigEnc.Bodega_Prorrateo}, se omite el documento {solicitud.No}.")
+                Return False
+            End If
+        End If
+
+        clsPublic.Actualizar_Progreso(lblprg, $"Procesando solicitud de traslado SAP (OWTQ): {solicitud.Receipt_Document_Reference}/{solicitud.No}{vbNewLine}")
+
+        If Not Await Validar_Cliente_WMS(solicitud.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+            Return False
+        End If
+
+        Dim origenEsWMS As Boolean = clsLnBodega.Exists_By_Codigo(solicitud.Transfer_from_Code, clsTrans.lConnection, clsTrans.lTransaction)
+        Dim destinoEsWMS As Boolean = clsLnBodega.Exists_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction)
+        Dim debeProcesar As Boolean = Not destinoEsWMS OrElse Not origenEsWMS OrElse (origenEsWMS AndAlso destinoEsWMS)
+
+        If Not debeProcesar Then
+            Return False
+        End If
+
+        If solicitud.Transfer_to_CodeField.Trim <> "" Then
+
+            If Not clsLnCliente.Existe_Cliente_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) Then
+                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no existe como cliente, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
+                Return False
+            End If
+
+            If clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) = 0 Then
+                clsPublic.Actualizar_Progreso(lblprg, $"La bodega destino {solicitud.Transfer_to_CodeField} no tiene ubicación virtual definida, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
+                Return False
+            End If
+
+            If clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(solicitud.Transfer_to_CodeField, clsTrans.lConnection, clsTrans.lTransaction) <> solicitud.Transfer_to_CodeField AndAlso
+           solicitud.Transfer_to_Code = solicitud.Transfer_to_CodeField Then
+                clsPublic.Actualizar_Progreso(lblprg, $"La ubicación virtual no tiene el mismo código de la bodega destino {solicitud.Transfer_to_CodeField}, se omite el documento {solicitud.Receipt_Document_Reference}/{solicitud.No}.")
+                Return False
+            End If
+
+        End If
+
+        Dim pedidoEnc As clsBeTrans_pe_enc =
+        clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(
+            solicitud,
+            lblprg,
+            clsTrans.lConnection,
+            clsTrans.lTransaction
+        )
+
+        If pedidoEnc Is Nothing Then
+            Return False
+        End If
+
+        Dim trasladoSincronizado As Boolean =
+        Await Marcar_Traslado_Sincronizado_SLAsync(
+            solicitud.No,
+            vHanaService.SessionCookie,
+            BD.Instancia.HANA_SL,
+            1
+        )
+
+        If Not trasladoSincronizado Then
+            Return False
+        End If
+
+        Return True
 
     End Function
 

@@ -86,7 +86,7 @@ Partial Class frmProveedor
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsProveedor = New TOMWMS.DsProveedor()
+        Me.DsProveedor = New DsProveedor()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colAsignar = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -1302,7 +1302,7 @@ End Sub
     Friend WithEvents txtTelefono As DevExpress.XtraEditors.TextEdit
     Friend WithEvents Grid As DevExpress.XtraGrid.GridControl
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsProveedor As TOMWMS.DsProveedor
+    Friend WithEvents DsProveedor As DsProveedor
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents colAsignar As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents RepositoryItemCheckEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit

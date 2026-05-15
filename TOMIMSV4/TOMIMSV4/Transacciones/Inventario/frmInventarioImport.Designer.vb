@@ -88,7 +88,7 @@ Partial Class frmInventarioImport
         Me.ColTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colError = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DsExcel = New TOMWMS.DsExcel()
+        Me.DsExcel = New DsExcel()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit2, System.ComponentModel.ISupportInitialize).BeginInit()

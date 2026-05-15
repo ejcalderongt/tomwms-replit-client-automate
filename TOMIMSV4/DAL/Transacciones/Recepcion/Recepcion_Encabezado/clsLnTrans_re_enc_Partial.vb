@@ -2869,7 +2869,7 @@ Partial Public Class clsLnTrans_re_enc
                                 vCantStock += 1
                             Next
 
-                            If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
+                            If vGenera_LP AndAlso pIdResolucionLp <= 0 AndAlso (pListStockRec.FirstOrDefault.Lic_plate = "") Then
                                 Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
                             End If
 
@@ -4170,14 +4170,17 @@ Partial Public Class clsLnTrans_re_enc
 
                                     End If
 
+                                    '#CKFK20260422puse esto asi AndAlso x.Cantidad >= vCantidadMatch antes solo era =
                                     BeTransOcDet = lTransOcDet.Where(Function(x) x.IdProductoBodega = pBeStockRec.IdProductoBodega _
                                                                      AndAlso x.IdPresentacion = pBeStockRec.IdPresentacion _
                                                                      AndAlso x.IdUnidadMedidaBasica = pBeStockRec.IdUnidadMedida _
-                                                                     AndAlso x.Cantidad = vCantidadMatch).FirstOrDefault()
+                                                                     AndAlso x.Cantidad >= vCantidadMatch).FirstOrDefault()
 
                                     If Not BeTransOcDet Is Nothing Then
                                         pBeStockRec.No_linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.No_Linea = BeTransOcDet.No_Linea
+                                        pBeTransReDet.IdOrdenCompraDet = BeTransOcDet.IdOrdenCompraDet
+                                        pBeTransReDet.IdOrdenCompraEnc = BeTransOcDet.IdOrdenCompraEnc
                                     End If
 
                                 End If
@@ -5805,8 +5808,8 @@ Partial Public Class clsLnTrans_re_enc
                         Else
                             '#AT20250915 Solo si escajamaster = false
                             If Not EsCajaMaster Then
-                                If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
-                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
+                                If (vGenera_LP AndAlso pIdResolucionLp <= 0 AndAlso pListStockRec.FirstOrDefault.Lic_plate = "") Then
+                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion_A: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
                                 End If
 
                                 If Not vGenera_LP And pIdResolucionLp <= 0 Then
@@ -8919,6 +8922,10 @@ Partial Public Class clsLnTrans_re_enc
 
                 IdBodegaDestino = BeOrdenCompraEnc.IdBodega
                 BeProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(BeMI3Config.IdProductoEstado_NC, lConnection, lTransaction)
+
+                If BeProductoEstado Is Nothing Then
+                    Throw New Exception("No está configurado el estado por defecto para la Nota de Crédito en la Bodega: " & IdBodegaDestino)
+                End If
 
                 BeRecepcionEnc.IsNew = True
                 BeRecepcionEnc.IdRecepcionEnc = MaxID(lConnection, lTransaction) + 1

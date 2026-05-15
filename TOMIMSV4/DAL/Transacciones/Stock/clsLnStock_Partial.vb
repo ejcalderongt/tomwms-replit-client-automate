@@ -7160,7 +7160,6 @@ Partial Public Class clsLnStock
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)
 
-                        '#GT15062022_1010: deje el Obj fuera, para retornar nothing sino hay filas que setear.
                         Obj = Nothing
 
                         If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then

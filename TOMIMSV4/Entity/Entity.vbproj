@@ -218,10 +218,13 @@
     <Compile Include="Interface\Transacciones_Out\clsBeI_nav_transacciones_out_error.vb" />
     <Compile Include="Interface\Transacciones_Push\clsBeI_nav_transacciones_push.vb" />
     <Compile Include="Inventario\Ciclico\clsBeTempComparacionInventario.vb" />
+    <Compile Include="Inventario\Ciclico\RFID\clsBeTrans_inv_ciclico_rfid.vb" />
     <Compile Include="Inventario\clsDataContractDI.vb" />
     <Compile Include="Inventario\Inicial\clsBeTrans_inv_stock_prod_sug.vb" />
     <Compile Include="Inventario\Inicial\Stock\clsBeTrans_inv_stock_partial.vb" />
     <Compile Include="Inventario\InvNE\clsBeTrans_inv_ne.vb" />
+    <Compile Include="Log\clsBeDMS_Log_sincronizacion_fallos.vb" />
+    <Compile Include="Log\clsBeDMS_Log_sincronizacion_nube.vb" />
     <Compile Include="Log\clsBeLog_importacion_excel.vb" />
     <Compile Include="Log\clsBeLog_sincronizacion_fallos.vb" />
     <Compile Include="Log\clsBeLog_sincronizacion_nube.vb" />

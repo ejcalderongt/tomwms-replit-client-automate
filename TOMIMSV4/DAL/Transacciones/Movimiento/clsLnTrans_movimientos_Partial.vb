@@ -83,6 +83,7 @@ Partial Public Class clsLnTrans_movimientos
                         Area_Origen, Operador, Codigo_Talla as Talla, Codigo_Color as Color 
                         FROM VW_Movimientos WHERE IdBodegaOrigen=@IdBodegaOrigen"
             Else
+
                 vSQL = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
                         [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
                         [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,

@@ -1,4 +1,5 @@
 Imports System.IO
+Imports System.Text
 Imports OfficeOpenXml
 Imports OfficeOpenXml.Style
 Imports DevExpress.XtraEditors
@@ -17,9 +18,14 @@ Partial Public Class frmImportarAjusteExcel
     Private _idPropietarioBodega As Integer
     Private _idTipoAjuste As Integer          ' 3=Positivo, 5=Negativo, 1=Lote
     Private _idMotivoDefault As Integer = 0   ' opcional
+    Private _controlTallaColor As Boolean = False    ' bodega.Control_Talla_Color
 
     Private _rutaArchivo As String = ""
     Private _filasValidadas As New List(Of FilaAjusteExcel)
+
+    ''' <summary>Bitácora de diagnóstico de la última validación. Se vuelca a archivo .log
+    ''' al lado del .xlsx y se muestra en MessageBox cuando no hay filas válidas.</summary>
+    Private _diagnostico As New StringBuilder()
 
     ' CLASE INTERNA: representa una fila del Excel ya validada
     Public Class FilaAjusteExcel
@@ -61,17 +67,26 @@ Partial Public Class frmImportarAjusteExcel
         Public CantidadOriginal As Decimal
         Public CantidadNueva As Decimal
         Public CantReservada As Decimal
+
+        ' Talla/Color (solo aplican cuando la bodega controla talla/color).
+        ' Se resuelven automáticamente desde el IdStock en Resolver_BD; NO
+        ' se piden columnas en el Excel para evitar errores de tipeo.
+        Public IdProductoTallaColor As Integer = 0
+        Public Talla As String = ""
+        Public Color As String = ""
     End Class
 
     Public Sub New(idBodega As Integer,
                    idPropietarioBodega As Integer,
-                   idTipoAjuste As Integer)
+                   idTipoAjuste As Integer,
+                   Optional controlTallaColor As Boolean = False)
 
         InitializeComponent()
 
         _idBodega = idBodega
         _idPropietarioBodega = idPropietarioBodega
         _idTipoAjuste = idTipoAjuste
+        _controlTallaColor = controlTallaColor
 
         Me.Text = "Importar Ajuste desde Excel"
         Me.Size = New Size(1100, 700)
@@ -184,6 +199,14 @@ Partial Public Class frmImportarAjusteExcel
             det.idstockres = 0
             det.idstocklink = 0
             det.esnuevolink = 0
+            ' Talla/Color: solo se popularon en Resolver_BD si _controlTallaColor=True.
+            ' Para Ajuste_Cantidad la combinación no cambia → destino = origen.
+            det.IdProductoTallaColor_origen = f.IdProductoTallaColor
+            det.Talla_origen = f.Talla
+            det.Color_origen = f.Color
+            det.IdProductoTallaColor_destino = f.IdProductoTallaColor
+            det.Talla_destino = f.Talla
+            det.Color_destino = f.Color
             If f.Presentacion IsNot Nothing Then det.Presentacion = f.Presentacion
             AjustesParaCargar.Add(det)
         Next
@@ -210,6 +233,7 @@ Partial Public Class frmImportarAjusteExcel
             Dim cols As String() = {
                 "Estado", "Hoja", "Fila", "IdUbicacion", "Ubicacion",
                 "IdStock", "Codigo", "Nombre", "Proveedor", "Lote", "LoteNuevo",
+                "Talla", "Color",
                 "Tipo", "Cantidad", "Motivo", "Observacion"
             }
             For Each n As String In cols
@@ -242,6 +266,21 @@ Partial Public Class frmImportarAjusteExcel
         btnProcesar.Enabled = False
         progressBar.Visible = True
         Application.DoEvents()
+
+        ' Reset bitácora de diagnóstico de esta corrida.
+        _diagnostico.Clear()
+        _diagnostico.AppendLine("=== Importar Ajuste desde Excel — Diagnóstico de validación ===")
+        _diagnostico.AppendLine("Fecha:       " & Now.ToString("yyyy-MM-dd HH:mm:ss"))
+        _diagnostico.AppendLine("Usuario WMS: " & Environment.UserName)
+        _diagnostico.AppendLine("Archivo:     " & _rutaArchivo)
+        _diagnostico.AppendLine("Padre:       IdBodega=" & _idBodega &
+                                "  IdPropietarioBodega=" & _idPropietarioBodega &
+                                "  IdTipoAjuste=" & _idTipoAjuste &
+                                "  (" & Obtener_Tipo_Texto() & ")")
+        _diagnostico.AppendLine(New String("-"c, 70))
+
+        Dim filasOtraHoja As Integer = 0
+        Dim nombreOtraHojaInfo As String = ""
 
         Dim faseActual As String = "init"
         Try
@@ -293,11 +332,21 @@ Partial Public Class frmImportarAjusteExcel
                     Return
                 End If
 
-                ' Aviso si el archivo trae además la otra hoja con datos: se ignorará.
+                ' Cuántas filas con datos hay en la hoja activa y en la otra hoja.
+                ' Esto es crítico para detectar el caso "datos en hoja equivocada"
+                ' al final de la validación.
                 Dim wsOtra As ExcelWorksheet = If(_idTipoAjuste = 3, wsLote, wsCant)
                 Dim nombreOtraHoja As String = If(_idTipoAjuste = 3, "Ajuste_Lote", "Ajuste_Cantidad")
-                If wsOtra IsNot Nothing AndAlso wsOtra.Dimension IsNot Nothing AndAlso
-                   wsOtra.Dimension.End.Row >= 6 Then
+                nombreOtraHojaInfo = nombreOtraHoja
+                filasOtraHoja = Contar_Filas_Con_Datos(wsOtra)
+                Dim filasEstaHoja As Integer = Contar_Filas_Con_Datos(wsActiva)
+                _diagnostico.AppendLine("Hoja activa  '" & nombreHojaEsperada & "': " &
+                                        filasEstaHoja & " fila(s) con IdUbicacion no vacía.")
+                _diagnostico.AppendLine("Hoja inactiva '" & nombreOtraHoja & "':  " &
+                                        filasOtraHoja & " fila(s) con IdUbicacion no vacía.")
+                _diagnostico.AppendLine(New String("-"c, 70))
+
+                If filasOtraHoja > 0 Then
                     Actualizar_Status(
                         "Aviso: la hoja '" & nombreOtraHoja & "' será IGNORADA " &
                         "porque el ajuste padre es '" & Obtener_Tipo_Texto() & "'.",
@@ -328,6 +377,11 @@ Partial Public Class frmImportarAjusteExcel
             btnImprimirDatos.Enabled = (nValidas + nErrores) > 0
             btnImprimirErrores.Enabled = nErrores > 0
 
+            _diagnostico.AppendLine(New String("="c, 70))
+            _diagnostico.AppendLine("RESULTADO: " & nValidas & " válida(s), " &
+                                    nErrores & " con error, " &
+                                    _filasValidadas.Count & " procesada(s) en total.")
+
             If nValidas > 0 Then
                 btnProcesar.Enabled = True
                 Actualizar_Status(nValidas & " fila(s) válidas para cargar. " &
@@ -339,7 +393,68 @@ Partial Public Class frmImportarAjusteExcel
                 tabControl.SelectedTabPageIndex = 1
             End If
 
+            ' ─── Guardar log SIEMPRE para auditoría ───
+            Dim logPath As String = Guardar_Log_Diagnostico()
+            If Not String.IsNullOrEmpty(logPath) Then
+                _diagnostico.AppendLine("Log guardado en: " & logPath)
+            End If
+
+            ' ─── Mensaje modal específico cuando no hay NADA en el preview ───
+            If _filasValidadas.Count = 0 Then
+
+                Dim cabezal As String =
+                    "La validación no generó filas." & vbCrLf & vbCrLf &
+                    "Tipo de ajuste padre: " & Obtener_Tipo_Texto() &
+                        " (IdTipoAjuste=" & _idTipoAjuste & ")" & vbCrLf &
+                    "Hoja leída:           " &
+                        If(_idTipoAjuste = 3, "Ajuste_Cantidad", "Ajuste_Lote") &
+                        " (filas con datos a partir de la 6: 0)" & vbCrLf
+
+                If filasOtraHoja > 0 Then
+                    ' Caso típico: el usuario puso datos en la hoja equivocada.
+                    cabezal &= "Otra hoja:            " & nombreOtraHojaInfo &
+                               " (filas con datos a partir de la 6: " & filasOtraHoja & ")" & vbCrLf & vbCrLf &
+                               "→ Parece que los datos están en la hoja '" & nombreOtraHojaInfo &
+                               "', pero el ajuste padre es de tipo '" & Obtener_Tipo_Texto() &
+                               "', que solo lee la hoja '" &
+                               If(_idTipoAjuste = 3, "Ajuste_Cantidad", "Ajuste_Lote") & "'." & vbCrLf & vbCrLf &
+                               "Cierre este importador, cree un nuevo ajuste con el tipo correspondiente " &
+                               "a la hoja donde están los datos, y vuelva a importar."
+                Else
+                    cabezal &= vbCrLf &
+                               "→ Ninguna fila tiene IdUbicacion numérico válido a partir de la fila 6." & vbCrLf &
+                               "Verifique que los datos comiencen en la fila 6 (filas 1-5 son cabecera/ejemplo) " &
+                               "y que la columna A contenga el IdUbicacion."
+                End If
+
+                If Not String.IsNullOrEmpty(logPath) Then
+                    cabezal &= vbCrLf & vbCrLf & "Log de diagnóstico: " & logPath
+                End If
+
+                XtraMessageBox.Show(cabezal,
+                                    "Sin filas para validar",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
+
+            ElseIf nValidas = 0 Then
+                ' Hubo filas pero todas fallaron en Resolver_BD: la pestaña Errores
+                ' ya las muestra, pero el usuario puede no notarlo. Toast modal.
+                XtraMessageBox.Show(
+                    "Se procesaron " & nErrores & " fila(s) pero TODAS fallaron en validación contra la base de datos." & vbCrLf & vbCrLf &
+                    "Revise la pestaña 'Errores de Validación' para ver el detalle de cada fila." & vbCrLf &
+                    If(Not String.IsNullOrEmpty(logPath), vbCrLf & "Log: " & logPath, ""),
+                    "Validación con errores",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
+
         Catch ex As Exception
+            _diagnostico.AppendLine(vbCrLf & "EXCEPCIÓN en fase '" & faseActual & "':")
+            _diagnostico.AppendLine("  " & ex.Message)
+            If ex.InnerException IsNot Nothing Then
+                _diagnostico.AppendLine("  Inner: " & ex.InnerException.Message)
+            End If
+            _diagnostico.AppendLine("  Stack: " & ex.StackTrace)
+            Guardar_Log_Diagnostico()
+
             Dim detalle As String =
                 "Fase: " & faseActual & vbCrLf &
                 "Mensaje: " & ex.Message & vbCrLf & vbCrLf &
@@ -364,11 +479,20 @@ Partial Public Class frmImportarAjusteExcel
     ' Fila 4=cabecera, fila 5=ejemplo ignorado, datos desde fila 6
     Private Sub Leer_Hoja_Cantidad(ws As ExcelWorksheet)
         Dim filaFin As Integer = If(ws.Dimension Is Nothing, 0, ws.Dimension.End.Row)
-        If filaFin < 6 Then Return
+        _diagnostico.AppendLine("[" & Now.ToString("HH:mm:ss") & "] Leer_Hoja_Cantidad: dimensión hasta fila " & filaFin)
+        If filaFin < 6 Then
+            _diagnostico.AppendLine("    La hoja no tiene filas a partir de la 6. Nada que leer.")
+            Return
+        End If
 
+        Dim leidas As Integer = 0
+        Dim saltadas As Integer = 0
         For r As Integer = 6 To filaFin
             Dim idUbic As Integer = CeldaInt(ws, r, 1)
-            If idUbic = 0 Then Continue For   ' fila vacía = skip
+            If idUbic = 0 Then
+                saltadas += 1
+                Continue For   ' fila vacía o IdUbicacion no numérico = skip
+            End If
 
             Dim f As New FilaAjusteExcel() With {
                 .Hoja = "Ajuste_Cantidad",
@@ -384,7 +508,9 @@ Partial Public Class frmImportarAjusteExcel
                 .Observacion = CeldaStr(ws, r, 11).Trim()
             }
             _filasValidadas.Add(f)
+            leidas += 1
         Next
+        _diagnostico.AppendLine("    Filas leídas: " & leidas & "  |  saltadas (col A vacía o no numérica): " & saltadas)
     End Sub
 
     ' Columnas: A=IdUbicacion(*) B=IdStock(*) C=Código(ref) D=Nombre(ref)
@@ -392,11 +518,20 @@ Partial Public Class frmImportarAjusteExcel
     ' Fila 4=cabecera, fila 5=ejemplo ignorado, datos desde fila 6
     Private Sub Leer_Hoja_Lote(ws As ExcelWorksheet)
         Dim filaFin As Integer = If(ws.Dimension Is Nothing, 0, ws.Dimension.End.Row)
-        If filaFin < 6 Then Return
+        _diagnostico.AppendLine("[" & Now.ToString("HH:mm:ss") & "] Leer_Hoja_Lote: dimensión hasta fila " & filaFin)
+        If filaFin < 6 Then
+            _diagnostico.AppendLine("    La hoja no tiene filas a partir de la 6. Nada que leer.")
+            Return
+        End If
 
+        Dim leidas As Integer = 0
+        Dim saltadas As Integer = 0
         For r As Integer = 6 To filaFin
             Dim idUbic As Integer = CeldaInt(ws, r, 1)
-            If idUbic = 0 Then Continue For   ' fila vacía = skip
+            If idUbic = 0 Then
+                saltadas += 1
+                Continue For   ' fila vacía o IdUbicacion no numérico = skip
+            End If
 
             Dim f As New FilaAjusteExcel() With {
                 .Hoja = "Ajuste_Lote",
@@ -411,7 +546,9 @@ Partial Public Class frmImportarAjusteExcel
                 .TipoTexto = "LOTE"
             }
             _filasValidadas.Add(f)
+            leidas += 1
         Next
+        _diagnostico.AppendLine("    Filas leídas: " & leidas & "  |  saltadas (col A vacía o no numérica): " & saltadas)
     End Sub
 
     Private Sub Resolver_BD()
@@ -550,6 +687,40 @@ Partial Public Class frmImportarAjusteExcel
                 f.Factor = factor
                 f.Presentacion = bePresObj
 
+                ' ── Resolución talla/color ───────────────────────────────
+                ' Solo aplica si la bodega controla talla/color. La combinación
+                ' viene determinada por el IdStock (que ya identifica unívocamente
+                ' IdProductoBodega + Lote + IdProductoTallaColor). NO se piden
+                ' columnas Talla/Color en el Excel para evitar errores de tipeo:
+                ' se resuelven aquí y se muestran en el preview como referencia.
+                If _controlTallaColor Then
+                    If beStock.IdProductoTallaColor > 0 Then
+                        f.IdProductoTallaColor = beStock.IdProductoTallaColor
+                        Try
+                            Dim dtTC As DataTable =
+                                clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(
+                                    beStock.IdProductoTallaColor)
+                            If dtTC IsNot Nothing AndAlso dtTC.Rows.Count > 0 Then
+                                f.Talla = If(IsDBNull(dtTC.Rows(0).Item("Talla")), "",
+                                             dtTC.Rows(0).Item("Talla").ToString())
+                                f.Color = If(IsDBNull(dtTC.Rows(0).Item("Color")), "",
+                                             dtTC.Rows(0).Item("Color").ToString())
+                            End If
+                        Catch
+                            ' Si la consulta falla, dejamos talla/color como string
+                            ' vacío pero conservamos el IdProductoTallaColor para
+                            ' que el frmAjusteStock pueda hacer el lookup por su lado.
+                        End Try
+                    Else
+                        ' Bodega controla pero el stock no tiene combinación asignada:
+                        ' registro inconsistente, marcamos la fila como error.
+                        Throw New Exception(
+                            "La bodega IdBodega=" & _idBodega &
+                            " controla talla/color, pero el IdStock=" & f.IdStockInput &
+                            " no tiene IdProductoTallaColor asignado.")
+                    End If
+                End If
+
                 ' Proveedor (cadena: stock → trans_re_det → trans_oc_enc → proveedor_bodega → proveedor)
                 ' Devuelve Nothing si el stock no proviene de una recepción contra OC.
                 Try
@@ -578,9 +749,15 @@ Partial Public Class frmImportarAjusteExcel
             Catch ex As Exception
                 f.Valida = False
                 f.vError = ex.Message
+                _diagnostico.AppendLine("    Fila " & f.Fila & " ERROR: " & ex.Message)
             End Try
 
         Next
+
+        Dim okCount = _filasValidadas.Where(Function(x) x.Valida).Count()
+        Dim errCount = _filasValidadas.Where(Function(x) Not x.Valida).Count()
+        _diagnostico.AppendLine("[" & Now.ToString("HH:mm:ss") & "] Resolver_BD: " &
+                                okCount & " válidas, " & errCount & " con error.")
 
     End Sub
 
@@ -625,6 +802,8 @@ Partial Public Class frmImportarAjusteExcel
                     f.NombreProveedor,
                     f.Lote,
                     loteNuevoMostrar,
+                    f.Talla,
+                    f.Color,
                     f.TipoTexto,
                     cantTexto,
                     f.MotivoTexto,
@@ -680,11 +859,6 @@ Partial Public Class frmImportarAjusteExcel
         End Try
 
     End Sub
-
-    ''' <summary>
-    ''' Asigna una imagen del recurso My.Resources al botón del ribbon (LargeImage + Image).
-    ''' Usa reflexión para no fallar en compile-time si el recurso no existe en este branch.
-    ''' </summary>
 
     ''' <summary>
     ''' Configura la licencia de EPPlus de manera compatible con cualquier versión instalada
@@ -969,6 +1143,65 @@ Partial Public Class frmImportarAjusteExcel
         barStatusInfo.Caption = msg
         barStatusInfo.ItemAppearance.Normal.ForeColor = color
         barStatusInfo.ItemAppearance.Normal.Options.UseForeColor = True
+
+        ' DevExpress no refresca el bar item dentro de un Sub síncrono. Forzamos.
+        Try
+            If barStatusInfo.Manager IsNot Nothing Then
+                barStatusInfo.Manager.LayoutChanged()
+            End If
+        Catch
+        End Try
+        Try
+            Application.DoEvents()
+        Catch
+        End Try
+
+        ' Espejo en el diagnóstico para que quede registro auditable.
+        _diagnostico.AppendLine("[" & Now.ToString("HH:mm:ss") & "] STATUS: " & msg)
+    End Sub
+
+    ''' <summary>Cuenta cuántas filas a partir de la fila 6 tienen IdUbicacion (col A) numérico no cero.
+    ''' Útil para detectar el caso "el usuario puso datos en la hoja equivocada".</summary>
+    Private Function Contar_Filas_Con_Datos(ws As ExcelWorksheet) As Integer
+        If ws Is Nothing OrElse ws.Dimension Is Nothing Then Return 0
+        Dim filaFin As Integer = ws.Dimension.End.Row
+        If filaFin < 6 Then Return 0
+        Dim n As Integer = 0
+        For r As Integer = 6 To filaFin
+            If CeldaInt(ws, r, 1) <> 0 Then n += 1
+        Next
+        Return n
+    End Function
+
+    ''' <summary>Vuelca el contenido de _diagnostico a un archivo .log al lado del .xlsx.
+    ''' No bloquea la operación si el disco no permite escribir.</summary>
+    Private Function Guardar_Log_Diagnostico() As String
+        Try
+            If String.IsNullOrWhiteSpace(_rutaArchivo) Then Return ""
+            Dim dir As String = Path.GetDirectoryName(_rutaArchivo)
+            Dim baseName As String = Path.GetFileNameWithoutExtension(_rutaArchivo)
+            Dim stamp As String = Now.ToString("yyyyMMdd_HHmmss")
+            Dim logPath As String = Path.Combine(dir, baseName & "_import_" & stamp & ".log")
+            File.WriteAllText(logPath, _diagnostico.ToString(), Encoding.UTF8)
+            Return logPath
+        Catch
+            Return ""
+        End Try
+    End Function
+
+    ''' <summary>Muestra el diagnóstico completo en un MessageBox modal con monoespaciado y scroll.
+    ''' Erik puede copiar/pegar para soporte sin tener que abrir el .log.</summary>
+    Private Sub Mostrar_Diagnostico_Modal(titulo As String, icono As MessageBoxIcon)
+        Dim cuerpo As String = _diagnostico.ToString()
+        ' XtraMessageBox tiene scroll nativo; no recortamos pero limitamos a 8000 chars
+        ' para que no explote si una iteración loguea miles de filas.
+        If cuerpo.Length > 8000 Then
+            cuerpo = cuerpo.Substring(0, 8000) &
+                     vbCrLf & vbCrLf &
+                     "(... truncado a 8000 caracteres. El log completo está en el archivo .log " &
+                     "generado al lado del Excel.)"
+        End If
+        XtraMessageBox.Show(cuerpo, titulo, MessageBoxButtons.OK, icono)
     End Sub
 
     ' BOTONES: Imprimir Vista Previa / Imprimir Errores (DevExpress nativo)

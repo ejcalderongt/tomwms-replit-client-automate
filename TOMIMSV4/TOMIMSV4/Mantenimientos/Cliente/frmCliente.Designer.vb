@@ -1,4 +1,6 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿Imports TOMWMS.cliente_direccion_dsetTableAdapters
+
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmCliente
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
@@ -137,9 +139,10 @@ Partial Class frmCliente
         Me.GridViewTiempo = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GrpClienteBodega = New DevExpress.XtraEditors.GroupControl()
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
+        Me.tsSeleccionarClientes = New DevExpress.XtraEditors.ToggleSwitch()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsCliente = New TOMWMS.DsCliente()
+        Me.DsCliente = New DsCliente()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSelección = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colIdBodega = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -170,8 +173,8 @@ Partial Class frmCliente
         Me.txtReferenciaDireccion = New DevExpress.XtraEditors.TextEdit()
         Me.txtCordX = New DevExpress.XtraEditors.TextEdit()
         Me.txtCordY = New DevExpress.XtraEditors.TextEdit()
-        Me.Cliente_direccionTableAdapter = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
-        Me.TableAdapterManager = New TOMWMS.cliente_direccion_dsetTableAdapters.TableAdapterManager()
+        Me.Cliente_direccionTableAdapter = New cliente_direccionTableAdapter()
+        Me.TableAdapterManager = New TableAdapterManager()
         Me.dkCliente = New DevExpress.XtraBars.Docking.DockManager(Me.components)
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
@@ -207,7 +210,6 @@ Partial Class frmCliente
         Me.grpLotesBloqueados = New DevExpress.XtraEditors.GroupControl()
         Me.DgridLotesBloqueados = New DevExpress.XtraGrid.GridControl()
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.tsSeleccionarClientes = New DevExpress.XtraEditors.ToggleSwitch()
         IdEmpresaLabel = New System.Windows.Forms.Label()
         CodigoLabel = New System.Windows.Forms.Label()
         Nombre_comercialLabel = New System.Windows.Forms.Label()
@@ -308,6 +310,7 @@ Partial Class frmCliente
         Me.GrpClienteBodega.SuspendLayout()
         CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl3.SuspendLayout()
+        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsCliente, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -370,7 +373,6 @@ Partial Class frmCliente
         Me.grpLotesBloqueados.SuspendLayout()
         CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdEmpresaLabel
@@ -1679,6 +1681,16 @@ Partial Class frmCliente
         Me.GroupControl3.TabIndex = 0
         Me.GroupControl3.Text = "Selección de Bodega"
         '
+        'tsSeleccionarClientes
+        '
+        Me.tsSeleccionarClientes.Location = New System.Drawing.Point(472, 3)
+        Me.tsSeleccionarClientes.MenuManager = Me.RibbonControl
+        Me.tsSeleccionarClientes.Name = "tsSeleccionarClientes"
+        Me.tsSeleccionarClientes.Properties.OffText = "Ninguno"
+        Me.tsSeleccionarClientes.Properties.OnText = "Todos"
+        Me.tsSeleccionarClientes.Size = New System.Drawing.Size(115, 24)
+        Me.tsSeleccionarClientes.TabIndex = 97
+        '
         'Grid
         '
         Me.Grid.Cursor = System.Windows.Forms.Cursors.Default
@@ -2037,7 +2049,7 @@ Partial Class frmCliente
         '
         Me.TableAdapterManager.BackupDataSetBeforeUpdate = False
         Me.TableAdapterManager.cliente_direccionTableAdapter = Me.Cliente_direccionTableAdapter
-        Me.TableAdapterManager.UpdateOrder = TOMWMS.cliente_direccion_dsetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete
+        Me.TableAdapterManager.UpdateOrder = cliente_direccion_dsetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete
         '
         'dkCliente
         '
@@ -2436,16 +2448,6 @@ Partial Class frmCliente
         Me.GridView3.OptionsView.ShowGroupPanel = False
         Me.GridView3.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.[True]
         '
-        'tsSeleccionarClientes
-        '
-        Me.tsSeleccionarClientes.Location = New System.Drawing.Point(472, 3)
-        Me.tsSeleccionarClientes.MenuManager = Me.RibbonControl
-        Me.tsSeleccionarClientes.Name = "tsSeleccionarClientes"
-        Me.tsSeleccionarClientes.Properties.OffText = "Ninguno"
-        Me.tsSeleccionarClientes.Properties.OnText = "Todos"
-        Me.tsSeleccionarClientes.Size = New System.Drawing.Size(115, 24)
-        Me.tsSeleccionarClientes.TabIndex = 97
-        '
         'frmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -2512,6 +2514,7 @@ Partial Class frmCliente
         Me.GrpClienteBodega.ResumeLayout(False)
         CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl3.ResumeLayout(False)
+        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsCliente, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2580,7 +2583,6 @@ Partial Class frmCliente
         Me.grpLotesBloqueados.ResumeLayout(False)
         CType(Me.DgridLotesBloqueados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.tsSeleccionarClientes.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2621,8 +2623,8 @@ Partial Class frmCliente
     Friend WithEvents cmdGuardar As System.Windows.Forms.Button
     Friend WithEvents GridTiempo As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridViewTiempo As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents Cliente_direccionTableAdapter As TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter
-    Friend WithEvents TableAdapterManager As TOMWMS.cliente_direccion_dsetTableAdapters.TableAdapterManager
+    Friend WithEvents Cliente_direccionTableAdapter As cliente_direccionTableAdapter
+    Friend WithEvents TableAdapterManager As TableAdapterManager
     Friend WithEvents txtIdDireccion As DevExpress.XtraEditors.SpinEdit
     Friend WithEvents txtAvenida As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCalle As DevExpress.XtraEditors.TextEdit
@@ -2638,7 +2640,7 @@ Partial Class frmCliente
     Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
     Friend WithEvents cmdAgregarDireccion As System.Windows.Forms.Button
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsCliente As TOMWMS.DsCliente
+    Friend WithEvents DsCliente As DsCliente
     Friend WithEvents txtDireccionEntrega As System.Windows.Forms.TextBox
     Friend WithEvents Fec_agrDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_agrTextEdit As DevExpress.XtraEditors.TextEdit

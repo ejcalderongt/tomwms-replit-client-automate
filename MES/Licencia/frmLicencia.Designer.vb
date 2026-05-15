@@ -87,7 +87,7 @@ Partial Class frmLicencia
         Me.RibbonControl.MaxItemId = 3
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1338, 198)
+        Me.RibbonControl.Size = New System.Drawing.Size(1338, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuAplicar
@@ -118,19 +118,19 @@ Partial Class frmLicencia
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 731)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 733)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1338, 32)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1338, 30)
         '
         'Grp
         '
         Me.Grp.Controls.Add(Me.GroupBox1)
         Me.Grp.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Grp.Location = New System.Drawing.Point(0, 198)
+        Me.Grp.Location = New System.Drawing.Point(0, 193)
         Me.Grp.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Grp.Name = "Grp"
-        Me.Grp.Size = New System.Drawing.Size(1338, 533)
+        Me.Grp.Size = New System.Drawing.Size(1338, 540)
         Me.Grp.TabIndex = 4
         Me.Grp.Text = "Datos"
         '
@@ -145,14 +145,12 @@ Partial Class frmLicencia
         Me.GroupBox1.Controls.Add(Me.btnCon)
         Me.GroupBox1.Controls.Add(Me.lblSolic)
         Me.GroupBox1.Controls.Add(Me.Label5)
-        Me.GroupBox1.Controls.Add(Me.btnAdd)
-        Me.GroupBox1.Controls.Add(Me.btnRem)
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox1.Location = New System.Drawing.Point(2, 33)
+        Me.GroupBox1.Location = New System.Drawing.Point(2, 28)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupBox1.Size = New System.Drawing.Size(1334, 498)
+        Me.GroupBox1.Size = New System.Drawing.Size(1334, 510)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
         '
@@ -290,6 +288,8 @@ Partial Class frmLicencia
         Me.PanelControl2.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.PanelControl2.Controls.Add(Me.PictureBox1)
         Me.PanelControl2.Controls.Add(Me.Label6)
+        Me.PanelControl2.Controls.Add(Me.btnRem)
+        Me.PanelControl2.Controls.Add(Me.btnAdd)
         Me.PanelControl2.Controls.Add(Me.txtLlave)
         Me.PanelControl2.Location = New System.Drawing.Point(16, 25)
         Me.PanelControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -509,7 +509,7 @@ Partial Class frmLicencia
         'btnAdd
         '
         Me.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnAdd.Location = New System.Drawing.Point(617, 251)
+        Me.btnAdd.Location = New System.Drawing.Point(478, 5)
         Me.btnAdd.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.btnAdd.Name = "btnAdd"
         Me.btnAdd.Size = New System.Drawing.Size(93, 28)
@@ -520,7 +520,7 @@ Partial Class frmLicencia
         'btnRem
         '
         Me.btnRem.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnRem.Location = New System.Drawing.Point(617, 316)
+        Me.btnRem.Location = New System.Drawing.Point(577, 5)
         Me.btnRem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.btnRem.Name = "btnRem"
         Me.btnRem.Size = New System.Drawing.Size(93, 28)

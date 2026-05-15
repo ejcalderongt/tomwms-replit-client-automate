@@ -1,12 +1,14 @@
 using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.DALCore;
+using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
+using WMS.EntityCore.Transacciones;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -332,13 +334,13 @@ namespace WMSWebAPI.Services.Salidas
                 result.LineasProcesadas = cantLineas;
                 result.Resultado = resultado;
 
-                var connectionString = _configuration.GetConnectionString("WMSConnection") 
-                    ?? _configuration.GetConnectionString("DefaultConnection");
+                var connectionString = _configuration.GetConnectionString("CST") 
+                    ?? _configuration.GetConnectionString("CST");
                     
                 using var conn = new SqlConnection(connectionString);
                 conn.Open();
 
-                result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, conn, null);
+                result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, BeInavPedSalida?.No ?? string.Empty, conn, null);
                 
                 result.TotalSolicitado = result.LineasDetalle.Sum(l => l.QuantityRequested);
                 result.TotalReservado = result.LineasDetalle.Sum(l => l.QuantityReserved);
@@ -399,11 +401,30 @@ namespace WMSWebAPI.Services.Salidas
             return endIdx >= 0 ? razonText.Substring(0, endIdx).Trim() : razonText.Trim();
         }
 
-        private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, SqlConnection conn, SqlTransaction? tx)
+        private static (string code, string reason) ResolveFailureReason(string? processResult)
+        {
+            if (string.IsNullOrWhiteSpace(processResult))
+                return ("SIN_STOCK", "Sin stock disponible para cubrir la cantidad solicitada");
+
+            if (processResult.Contains("LINEA_REPROCESO", StringComparison.OrdinalIgnoreCase))
+                return ("LINEA_REPROCESO", "Línea ya existente en el pedido — no fue reprocesada en este envío");
+
+            if (processResult.StartsWith("ERROR_202310021910A", StringComparison.OrdinalIgnoreCase))
+                return ("RESERVA_FALLIDA", "No se pudo completar la reserva de stock (ver log WMS)");
+
+            if (processResult.Equals("Ok", StringComparison.OrdinalIgnoreCase))
+                return ("SIN_RESERVA_NUEVA", "Línea procesada previamente — sin nueva reserva generada");
+
+            return ("RESERVA_FALLIDA", processResult);
+        }
+
+        private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, string noEnc, SqlConnection conn, SqlTransaction? tx)
         {
             try
             {
-                var rows = clsLnTrans_pe_det.Get_Detalles_Reserva_By_IdPedidoEnc(idPedidoEnc, conn, tx);
+                var rows = clsLnTrans_pe_det.Get_Detalles_Reserva_By_IdPedidoEnc(idPedidoEnc, noEnc, conn, tx);
+
+                var processResults = new Dictionary<int, string>();
 
                 var lineDict = new Dictionary<int, ReservationLineDetailDto>();
 
@@ -421,6 +442,9 @@ namespace WMSWebAPI.Services.Salidas
                         };
                         lineDict[row.NoLinea] = lineDetail;
                     }
+
+                    if (!processResults.ContainsKey(row.NoLinea) && !string.IsNullOrWhiteSpace(row.ProcessResult))
+                        processResults[row.NoLinea] = row.ProcessResult;
 
                     if (row.IdStockRes > 0)
                     {
@@ -443,11 +467,13 @@ namespace WMSWebAPI.Services.Salidas
                 foreach (var line in lineDict.Values)
                 {
                     line.QuantityReserved = line.Reservations.Sum(r => r.Quantity);
-                    line.Status = line.QuantityReserved >= line.QuantityRequested - 0.001
-                        ? "Completa"
-                        : line.QuantityReserved > 0
-                            ? "Parcial"
-                            : "Sin reserva";
+                    bool completa = line.QuantityReserved >= line.QuantityRequested - 0.001;
+                    bool parcial  = !completa && line.QuantityReserved > 0;
+
+                    line.Status = completa ? "Completa" : parcial ? "Parcial" : "Sin reserva";
+
+                    if (!completa)
+                        (line.FailureCode, line.FailureReason) = ResolveFailureReason(processResults.GetValueOrDefault(line.LineNo));
                 }
 
                 return lineDict.Values.OrderBy(l => l.LineNo).ToList();
@@ -459,7 +485,7 @@ namespace WMSWebAPI.Services.Salidas
             }
         }
 
-                private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
+        private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
         {
             bool Datos_Validos = false;
 
@@ -725,6 +751,26 @@ namespace WMSWebAPI.Services.Salidas
                 }
             }
 
+        }
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null)
+        {
+            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration, noPedido);
+            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
+        }
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null, int? idTipoDocumento = null)
+        {
+            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration,
+                                                                                           noPedido,
+                                                                                           idTipoDocumento);
+
+            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
+        }
+        public int Marcar_Salidas_Como_Enviadas(IConfiguration configuration, List<int> idTransacciones)
+        {
+            if (idTransacciones == null || idTransacciones.Count == 0)
+                return 0;
+
+            return clsLnI_nav_transacciones_out.Marcar_Salidas_Como_Enviado(configuration, idTransacciones);
         }
     }
 }

@@ -206,6 +206,7 @@ Public Class frmConteo
         Dim vCantidadPres As Double = 0.0
         Dim vPeso As Double = 0.0
         Dim Conver As Double = 0.0
+        Dim vDiferencia As Double = 0.0
 
         Dim cTrans As New clsTransaccion
 
@@ -283,12 +284,16 @@ Public Class frmConteo
             Actualizar = True
 
             '#EJC20180801:Actualizar la fila del del DT asociado al datasource del grid.
-            Dim vDiferencia As Double = Math.Round(gBeCiclico.Cant_stock - vCantidadUmBas, 6)
+            If gBeCiclico.IdPresentacion > 0 Then
+                Dim stockPres As Double = gBeCiclico.Cant_stock / Presentacion.Factor
+                vDiferencia = Math.Round(stockPres - vCantidadPres, 6)
+            Else
+                vDiferencia = Math.Round(gBeCiclico.Cant_stock - vCantidadUmBas, 6)
+            End If
 
             DrDetalleInv.Item("Vence") = dtpFechaVence.EditValue
             DrDetalleInv.Item("Lote") = txtLote.Text.Trim
             DrDetalleInv.Item("Estado") = cmbEstadoProducto.Text
-            DrDetalleInv.Item("Cant.Conteo.UMBas") = vCantidadUmBas
             DrDetalleInv.Item("Cant.Conteo.Pres") = vCantidadPres
             DrDetalleInv.Item("PesoConteo") = txtPesoAnterior.Value
             DrDetalleInv.Item("Dif.Cant.UMBas") = vDiferencia * -1

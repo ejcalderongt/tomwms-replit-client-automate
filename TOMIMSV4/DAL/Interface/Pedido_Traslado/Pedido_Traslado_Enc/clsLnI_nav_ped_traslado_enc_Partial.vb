@@ -319,9 +319,9 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
     End Function
 
     Public Shared Function Importar_Pedido_Cliente_A_Tabla_Intermedia_Bool(ByRef BePedidoCliente As clsBeI_nav_ped_traslado_enc,
-                                                                ByRef lblprg As RichTextBox,
-                                                                ByRef lConnection As SqlConnection,
-                                                                ByRef lTransaction As SqlTransaction) As Boolean
+                                                                           ByRef lblprg As RichTextBox,
+                                                                           ByRef lConnection As SqlConnection,
+                                                                           ByRef lTransaction As SqlTransaction) As Boolean
 
         Dim IdNavConfigDet As Integer = 102 'Pedidos de clientes
         Dim BeNavEjecucionEnc As New clsBeI_nav_ejecucion_enc
@@ -770,6 +770,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim vFechaInicio As Date = Now
         Dim vPedidoExistente As Boolean = False
         Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
+        Dim vCantStockRes As Integer = 0
 
         Try
 
@@ -992,6 +993,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.Observacion = BeINavPedTrasladoEnc.Comments
                         pBePedidoEnc.EsExportacion = BeINavPedTrasladoEnc.IsExport
                         pBePedidoEnc.Guia_Transporte = BeINavPedTrasladoEnc.Transportation_Guide
+
+                        If BeINavPedTrasladoEnc.Transport_Company <> "" Then
+                            Dim BeTransporte As New clsBeEmpresa_transporte
+                            BeTransporte.Nombre = BeINavPedTrasladoEnc.Transport_Company
+                            clsLnEmpresa_transporte.GetSingle_By_Nombre(BeTransporte,
+                                                                        lConectionInterface,
+                                                                        lTransInterface)
+                            pBePedidoEnc.IdEmpresaTransporte = BeTransporte.IdEmpresaTransporte
+                        End If
 
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,
@@ -1376,7 +1386,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                         Try
 
-                            Dim vCantStockRes As Integer = clsLnStock_res.Get_Count_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc,
+                            vCantStockRes = clsLnStock_res.Get_Count_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc,
                                                                                                    lConectionInterface,
                                                                                                    lTransInterface)
 
@@ -1474,10 +1484,14 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
             If Not pBePedidoEnc Is Nothing Then
                 If pBePedidoEnc.IdPedidoEnc > 0 Then
-                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido procesado correctamente - IdPedido: {0}. {1} líneas procesadas correctamente de {2}",
+
+                    If vCantStockRes > 0 Then
+                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido procesado correctamente - IdPedido: {0}. {1} líneas procesadas correctamente de {2}",
                                                                         pBePedidoEnc.IdPedidoEnc,
                                                                         vContador_Lineas_Detalle_Pedido_Insertadas,
                                                                         BeINavPedTrasladoEnc.Lineas_Detalle.Count))
+
+                    End If
 
                     If vContador_Lineas_Detalle_Pedido_Insertadas = BeINavPedTrasladoEnc.Lineas_Detalle.Count Then
                         Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS = pBePedidoEnc
@@ -3452,6 +3466,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     If BePedidoEnc IsNot Nothing Then
                         Importar_Pedido_Cliente_A_Tabla_Intermedia = BePedidoEnc
                     End If
+
                 End If
 
             End If
@@ -3511,7 +3526,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
-    Private Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
+    Public Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc,
+                                         pEstadoPicking As String,
+                                         lConnection As SqlConnection,
+                                         lTransaction As SqlTransaction) As Boolean
 
         Nuevo_Picking = False
 
@@ -3550,7 +3568,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                       .ToList()
 
             ' Llamar a Guardar_Picking
-            If Guardar_Picking(pBePedidoEnc, listaPickingDet, listaPickingUbic, lConnection, lTransaction) Then
+            If Guardar_Picking(pBePedidoEnc, listaPickingDet, listaPickingUbic, pEstadoPicking, lConnection, lTransaction) Then
                 Nuevo_Picking = True
             End If
 
@@ -3791,12 +3809,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
     End Function
 
     Private Shared Function Guardar_Picking(ByVal BePedidoEnc As clsBeTrans_pe_enc,
-                                             ByVal BeListPickingDet As List(Of clsBeTrans_picking_det),
-                                             pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
-                                             lConnection As SqlConnection,
-                                             lTransaction As SqlTransaction) As Boolean
+                                            ByVal BeListPickingDet As List(Of clsBeTrans_picking_det),
+                                            ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                            ByVal pEstadoPicking As String,
+                                            lConnection As SqlConnection,
+                                            lTransaction As SqlTransaction) As Boolean
 
-        Dim vContinuar As Boolean = False
         Dim BePickingEnc As New clsBeTrans_picking_enc
 
         Guardar_Picking = False
@@ -3820,13 +3838,13 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             BePickingEnc.Fecha_picking = Now
             BePickingEnc.Hora_ini = BePedidoEnc.Hora_ini
             BePickingEnc.Hora_fin = BePedidoEnc.Hora_fin
-            BePickingEnc.Estado = "Cerrado"
+            BePickingEnc.Estado = pEstadoPicking
             BePickingEnc.User_agr = BePedidoEnc.User_agr
             BePickingEnc.User_mod = BePedidoEnc.User_agr
             BePickingEnc.Fec_mod = Now
             BePickingEnc.Detalle_operador = False
             BePickingEnc.Activo = True
-            BePickingEnc.verifica_auto = IIf(BePedidoEnc.TipoPedido.Verificar, True, False)
+            BePickingEnc.verifica_auto = BePedidoEnc.TipoPedido.Verificar
             BePickingEnc.procesado_bof = True
             BePickingEnc.Requiere_Preparacion = False
             BePickingEnc.Fotografia_Verificacion = False
@@ -3844,12 +3862,40 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                 Dim BeListOp As New List(Of clsBeTrans_picking_op)
                 Dim BeOp As New clsBeTrans_picking_op
-                BeOp = clsLnTrans_picking_op.Get_BeOperador_Defecto_By_IdPickingEnc(BePickingEnc.IdBodega,
+                Dim vAsignarTodosOperadores As Boolean = BeTipoPedido.Asignar_Todos_Operadores
+
+                If vAsignarTodosOperadores Then
+                    Dim BeOperadoresList = clsLnOperador_bodega.Get_All_By_IdBodega_For_Tarea(BePickingEnc.IdBodega,
+                                                                                              clsDataContractDI.tTipoTarea.PICK,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+                    For Each BeOperador As clsBeOperador_bodega In BeOperadoresList
+                        BeOp = New clsBeTrans_picking_op
+                        BeOp.IdOperadorPicking = clsLnTrans_picking_op.MaxID(lConnection, lTransaction) + 1
+                        BeOp.IdPickingEnc = BePickingEnc.IdPickingEnc
+                        BeOp.IdOperadorBodega = BeOperador.IdOperadorBodega
+                        BeOp.User_agr = "MI3"
+                        BeOp.Fec_agr = Now
+                        BeOp.User_mod = "MI3"
+                        BeOp.Fec_mod = Now
+                        BeOp.IsNew = True
+                        BeListOp.Add(BeOp)
+                    Next
+                Else
+                    BeOp = clsLnTrans_picking_op.Get_BeOperador_Defecto_By_IdPickingEnc(BePickingEnc.IdBodega,
                                                                                     BePickingEnc.IdPickingEnc,
                                                                                     lConnection,
                                                                                     lTransaction)
-                If Not BeOp Is Nothing Then
+
                     BeListOp.Add(BeOp)
+                End If
+
+                If BeListOp.Count = 0 Then
+                    If BePickingEnc IsNot Nothing AndAlso BePickingEnc.IdPickingEnc > 0 Then
+                        BeListOp = clsLnTrans_picking_op.Get_All_By_IdPickingEnc(BePickingEnc.IdPickingEnc).ToList
+                    Else
+                        BeListOp = New List(Of clsBeTrans_picking_op)
+                    End If
                 End If
 
                 Guardar_Picking = clsLnTrans_picking_enc.Guardar(BePickingEnc,
@@ -3867,7 +3913,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
+            Throw
         End Try
 
     End Function
@@ -3953,65 +3999,99 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                     If BePedidoEnc IsNot Nothing Then
 
-                        BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
-                        '#EJC20251911: Terminar de afinar el método.
+                        Dim TieneStockRes As Boolean = clsLnStock_res.Tiene_StockRes_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                    BePedidoEnc.IdBodega,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+                        If TieneStockRes Then
 
-                        If Nuevo_Picking(BePedidoEnc, lConnection, lTransaction) Then
+                            BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
+                            '#EJC20251911: Terminar de afinar el método.
 
-                            Dim pListBePickingUbic As List(Of clsBeTrans_picking_ubic) =
-                            clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
-                                                                                       BePedidoEnc.IdBodega,
-                                                                                       lConnection,
-                                                                                       lTransaction)
+                            If Nuevo_Picking(BePedidoEnc, "Cerrado", lConnection, lTransaction) Then
 
-                            BePedidoEnc.IdPickingEnc = pListBePickingUbic.Item(0).IdPickingEnc
+                                clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking creado para el documento: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
 
-                            Dim BeListPickingDet As List(Of clsBeTrans_picking_det) =
-                            clsLnTrans_picking_det.Get_All_Picking_Det_By_IdPickingEnc(BePedidoEnc.IdPickingEnc,
-                                                                                       lConnection,
-                                                                                       lTransaction)
+                                Dim pListBePickingUbic As List(Of clsBeTrans_picking_ubic) =
+                                        clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                   BePedidoEnc.IdBodega,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
 
-                            Dim BePickingEnc As clsBeTrans_picking_enc = Nothing
-                            BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePedidoEnc.IdPickingEnc,
+                                BePedidoEnc.IdPickingEnc = pListBePickingUbic.Item(0).IdPickingEnc
+
+                                Dim BeListPickingDet As List(Of clsBeTrans_picking_det) =
+                                    clsLnTrans_picking_det.Get_All_Picking_Det_By_IdPickingEnc(BePedidoEnc.IdPickingEnc,
+                                                                                               lConnection,
+                                                                                               lTransaction)
+
+                                Dim BePickingEnc As clsBeTrans_picking_enc = Nothing
+                                BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePedidoEnc.IdPickingEnc,
                                                                             lConnection,
                                                                             lTransaction)
-                            Dim pListBeStockRes As List(Of clsBeStock_res) =
-                            clsLnStock_res.Get_All_StockRes_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
-                                                                           lConnection,
-                                                                           lTransaction)
+                                Dim pListBeStockRes As List(Of clsBeStock_res) =
+                                    clsLnStock_res.Get_All_StockRes_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                   lConnection,
+                                                                                   lTransaction)
 
-                            clsLnTrans_picking_ubic.Procesar_Picking_Desde_BOF(pListBePickingUbic,
-                                                                               BePedidoEnc.User_agr,
-                                                                               BeListPickingDet,
-                                                                               BePickingEnc,
-                                                                               pListBeStockRes,
-                                                                               lConnection,
-                                                                               lTransaction)
+                                clsLnTrans_picking_ubic.Procesar_Picking_Desde_BOF(pListBePickingUbic,
+                                                                                   BePedidoEnc.User_agr,
+                                                                                   BeListPickingDet,
+                                                                                   BePickingEnc,
+                                                                                   pListBeStockRes,
+                                                                                   lConnection,
+                                                                                   lTransaction)
 
-                            BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
                                                                                            lConnection,
                                                                                            lTransaction)
 
-                            For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
-                                BePedidoDet.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(BePedidoDet.IdPedidoDet,
+                                For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
+                                    BePedidoDet.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(BePedidoDet.IdPedidoDet,
                                                                                                                           BePedidoEnc.IdPedidoEnc,
                                                                                                                           lConnection,
                                                                                                                           lTransaction)
-                            Next
+                                Next
 
-                            clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
-                                                                     BePedidoEnc,
-                                                                     lConnection,
-                                                                     lTransaction)
+                                pListBePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                                         BePedidoEnc.IdBodega,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
 
-                            Importar_Pedido_Cliente_A_Tabla_Intermedia_Transac_WMS = BePedidoEnc
+                                Dim despachado As Boolean = clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
+                                                                                                         BePedidoEnc,
+                                                                                                         lConnection,
+                                                                                                         lTransaction)
+
+                                If Not despachado Then
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} no pudo ser despachado {2}",
+                                                                                           BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                                    BePedidoEnc = Nothing
+                                Else
+
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} despachado {2}",
+                                                                                           BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                                    Importar_Pedido_Cliente_A_Tabla_Intermedia_Transac_WMS = BePedidoEnc
+
+                                End If
+
+                            End If
+
+                        Else
+
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("No se reservó inventario para el pedido: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                            Importar_Pedido_Cliente_A_Tabla_Intermedia_Transac_WMS = Nothing
 
                         End If
 
                     End If
 
                 End If
-            Else
 
             End If
 
@@ -4074,6 +4154,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     Insertar(BePedidoCliente, lConnection, lTransaction)
                 End If
 
+                clsPublic.Actualizar_Progreso(lblprg, "Encabezado de documento " & BePedidoCliente.External_Document_No & " guardado correctamente...")
+
                 vContador += 1
 
                 lTransaction.Save("Encabezado")
@@ -4081,6 +4163,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 Application.DoEvents()
 
                 If Not BePedidoCliente.Lineas_Detalle Is Nothing Then
+
+                    clsPublic.Actualizar_Progreso(lblprg, "Recorriendo detalle del documento " & BePedidoCliente.External_Document_No & "...")
 
                     For Each BeI_Nav_PedidoTrasladoDet As clsBeI_nav_ped_traslado_det In BePedidoCliente.Lineas_Detalle
 
@@ -4111,11 +4195,13 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeBodegaArea.IdBodega, lConnection, lTransaction)
 
                                         If BeBodega Is Nothing Then
+                                            clsPublic.Actualizar_Progreso(lblprg, "ERROR_20231031A: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
                                             Throw New Exception("ERROR_20231031A: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
                                         End If
 
                                     Else
-                                        Throw New Exception("ERROR_20231031: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
+                                        clsPublic.Actualizar_Progreso(lblprg, "ERROR_20231031B: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
+                                        Throw New Exception("ERROR_20231031B: La bodega: " & BePedidoCliente.Transfer_from_Code & " no existe.")
                                     End If
 
                                 End If
@@ -4139,13 +4225,42 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                                                lConnection,
                                                                                                                lTransaction)
                                         End If
+
+                                    Else
+
+                                        Dim BeProducto As New clsBeProducto
+                                        BeProducto = clsLnProducto.Existe(BeI_Nav_PedidoTrasladoDet.Item_No, lConnection, lTransaction)
+
+                                        If BeProducto IsNot Nothing Then
+                                            BeProductoBodega = New clsBeProducto_bodega With {
+                                                .IdProductoBodega = clsLnProducto_bodega.MaxID(lConnection, lTransaction) + 1,
+                                                .IdProducto = BeProducto.IdProducto,
+                                                .IdBodega = BeBodega.IdBodega,
+                                                .Activo = True,
+                                                .User_agr = "MI3",
+                                                .User_mod = "MI3",
+                                                .Fec_agr = Now,
+                                                .Fec_mod = Now
+                                            }
+
+                                            clsLnProducto_bodega.InsertarFromInterface(BeProductoBodega, lConnection, lTransaction)
+
+                                        End If
+
                                     End If
+
                                 End If
 
                                 If Not BeProductoBodega Is Nothing Then
                                     lProductoBodegaInMemory.Add(BeProductoBodega.Clone())
                                 Else
-                                    Throw New Exception("El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
+                                    If BeBodega.Control_Talla_Color Then
+                                        clsPublic.Actualizar_Progreso(lblprg, "El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " Talla: " & BeI_Nav_PedidoTrasladoDet.Size & " Color: " & BeI_Nav_PedidoTrasladoDet.Color & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
+                                        Throw New Exception("El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " Talla: " & BeI_Nav_PedidoTrasladoDet.Size & " Color: " & BeI_Nav_PedidoTrasladoDet.Color & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
+                                    Else
+                                        clsPublic.Actualizar_Progreso(lblprg, "El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
+                                        Throw New Exception("El producto: " & BeI_Nav_PedidoTrasladoDet.Item_No & " No está asociado a la bodega: " & BePedidoCliente.Transfer_from_Code & " o no existe en el maestro de materiales.")
+                                    End If
                                 End If
 
                                 'Existe el producto en el maestro?
@@ -4161,6 +4276,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         End If
 
                                         vContadorLineas += 1
+                                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Se importó producto: {0}{1}", BeI_Nav_PedidoTrasladoDet.Item_No, vbNewLine))
 
                                     Else
 
@@ -4199,11 +4315,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                 Else
                     Console.WriteLine("Pedido de compra sin lineas de detalle?")
+                    clsPublic.Actualizar_Progreso(lblprg, "Pedido de compra sin lineas de detalle")
                 End If
 
             Catch ex As Exception
 
-
+                clsPublic.Actualizar_Progreso(lblprg, ex.Message)
                 clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
                                                           BePedidoCliente.No,
                                                           BeNavEjecucionEnc.IdEjecucionEnc,

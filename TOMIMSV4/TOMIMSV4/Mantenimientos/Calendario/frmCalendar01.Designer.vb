@@ -28,11 +28,11 @@ Partial Class frmCalendar01
         Me.SchedulerControl1 = New DevExpress.XtraScheduler.SchedulerControl()
         Me.SchedulerStorage = New DevExpress.XtraScheduler.SchedulerStorage(Me.components)
         Me.AppointmentsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.IMS4MBCalendar = New TOMWMS.IMS4MBCalendar()
+        Me.IMS4MBCalendar = New IMS4MBCalendar()
         Me.ResourcesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DateNavigator1 = New DevExpress.XtraScheduler.DateNavigator()
-        Me.AppointmentsTableAdapter = New TOMWMS.IMS4MBCalendarTableAdapters.AppointmentsTableAdapter()
-        Me.ResourcesTableAdapter = New TOMWMS.IMS4MBCalendarTableAdapters.ResourcesTableAdapter()
+        Me.AppointmentsTableAdapter = New IMS4MBCalendarTableAdapters.AppointmentsTableAdapter()
+        Me.ResourcesTableAdapter = New IMS4MBCalendarTableAdapters.ResourcesTableAdapter()
         Me.ResourcesPopupCheckedListBoxControl1 = New DevExpress.XtraScheduler.UI.ResourcesPopupCheckedListBoxControl()
         CType(Me.SchedulerControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SchedulerStorage, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -163,10 +163,10 @@ Partial Class frmCalendar01
     Friend WithEvents SchedulerControl1 As DevExpress.XtraScheduler.SchedulerControl
     Friend WithEvents SchedulerStorage As DevExpress.XtraScheduler.SchedulerStorage
     Friend WithEvents DateNavigator1 As DevExpress.XtraScheduler.DateNavigator
-    Friend WithEvents IMS4MBCalendar As TOMWMS.IMS4MBCalendar
+    Friend WithEvents IMS4MBCalendar As IMS4MBCalendar
     Friend WithEvents AppointmentsBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents AppointmentsTableAdapter As TOMWMS.IMS4MBCalendarTableAdapters.AppointmentsTableAdapter
+    Friend WithEvents AppointmentsTableAdapter As IMS4MBCalendarTableAdapters.AppointmentsTableAdapter
     Friend WithEvents ResourcesBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents ResourcesTableAdapter As TOMWMS.IMS4MBCalendarTableAdapters.ResourcesTableAdapter
+    Friend WithEvents ResourcesTableAdapter As IMS4MBCalendarTableAdapters.ResourcesTableAdapter
     Friend WithEvents ResourcesPopupCheckedListBoxControl1 As DevExpress.XtraScheduler.UI.ResourcesPopupCheckedListBoxControl
 End Class

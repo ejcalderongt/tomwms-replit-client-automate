@@ -119,7 +119,7 @@ Partial Class frmCambioUbicacion
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOperadorUbicacion = New TOMWMS.DsOperadorUbicacion()
+        Me.DsOperadorUbicacion = New DsOperadorUbicacion()
         Me.TarimasDisponiblesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.GroupControl7 = New DevExpress.XtraEditors.GroupControl()
         Me.prg = New System.Windows.Forms.ProgressBar()
@@ -2126,7 +2126,7 @@ Partial Class frmCambioUbicacion
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage
     Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOperadorUbicacion As TOMWMS.DsOperadorUbicacion
+    Friend WithEvents DsOperadorUbicacion As DsOperadorUbicacion
     Friend WithEvents TarimasDisponiblesBindingSource As BindingSource
     Private WithEvents GroupControl7 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents prg As ProgressBar

@@ -759,7 +759,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             Dim filtro As New Text.StringBuilder()
 
             filtro.Append("U_Grupo ne '19' and " &
-                     If(codigo <> "", "", "U_ENVIADO_WMS eq null and ") &
+                     If(codigo <> "", "", " (U_ENVIADO_WMS eq null or U_ENVIADO_WMS eq 2) and ") &
                       " Valid eq 'tYES' and " &
                       " InventoryUOM ne '' ")
 
@@ -879,6 +879,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                             skip += filasPagina
                         End Using
                     End While
+
                 End Using
 
             End Using
