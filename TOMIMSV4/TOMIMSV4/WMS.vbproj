@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS_QAS</AssemblyName>
+    <AssemblyName>WMS_QA</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QA\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\172.16.100.26\WMS_QAS\</InstallUrl>
-    <UpdateUrl>\\172.16.100.26\WMS_QAS\</UpdateUrl>
-    <ProductName>WMS_QAS</ProductName>
+    <InstallUrl>\\10.0.0.56\WMS_QA\</InstallUrl>
+    <UpdateUrl>\\10.0.0.56\WMS_QA\</UpdateUrl>
+    <ProductName>WMS_QA</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS_QAS</SuiteName>
+    <SuiteName>WMS_QA</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>114</ApplicationRevision>
+    <ApplicationRevision>129</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QA.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QA.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QA.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QA.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -1504,6 +1504,24 @@
     <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </Compile>
@@ -1606,10 +1624,10 @@
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\RFID\frmStockRFID.Designer.vb">
-      <DependentUpon>frmStockRFID.vb</DependentUpon>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </Compile>
-    <Compile Include="Transacciones\RFID\frmStockRFID.vb">
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3804,6 +3822,15 @@
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
       <DependentUpon>frmInventarioDet.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.resx">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.resx">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </EmbeddedResource>
@@ -3857,8 +3884,8 @@
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\RFID\frmStockRFID.resx">
-      <DependentUpon>frmStockRFID.vb</DependentUpon>
+    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -4671,7 +4698,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe" />
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -5656,6 +5682,9 @@
   <ItemGroup>
     <PackageReference Include="ClosedXML">
       <Version>0.102.3</Version>
+    </PackageReference>
+    <PackageReference Include="DevExpress.Win.Design">
+      <Version>24.2.12</Version>
     </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>

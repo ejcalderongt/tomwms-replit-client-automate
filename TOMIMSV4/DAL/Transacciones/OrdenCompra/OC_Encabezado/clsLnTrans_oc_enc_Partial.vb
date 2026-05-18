@@ -3348,6 +3348,7 @@ Partial Public Class clsLnTrans_oc_enc
 
         Dim pBeTransOcEnc As New clsBeTrans_oc_enc
         Dim pListBeTransOcDet As New List(Of clsBeTrans_oc_det)
+        Dim pListBeTransOcDetLote As New List(Of clsBeTrans_oc_det_lote)
 
         Duplicar = 0
 
@@ -3395,6 +3396,26 @@ Partial Public Class clsLnTrans_oc_enc
                         clsLnTrans_oc_det.Insertar(OCDet,
                                                    lConnection,
                                                    lTransaction)
+                    Next
+
+                    pListBeTransOcDetLote = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(pIdOrdenCompraEnc, lConnection, lTransaction)
+
+
+                    For Each OCDetLote In pListBeTransOcDetLote
+
+                        Dim BeNewOCDetLote As New clsBeTrans_oc_det_lote()
+
+                        clsPublic.CopyObject(OCDetLote, BeNewOCDetLote)
+                        BeNewOCDetLote.IdOrdenCompraDetLote = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransaction) + 1
+                        BeNewOCDetLote.IdOrdenCompraEnc = pBeTransOcEnc.IdOrdenCompraEnc
+                        BeNewOCDetLote.Cantidad_recibida = 0
+                        BeNewOCDetLote.Fec_agr = Now
+                        BeNewOCDetLote.Fec_mod = Now
+                        BeNewOCDetLote.User_mod = pIdUsuario
+                        BeNewOCDetLote.Fec_agr = Now
+                        clsLnTrans_oc_det_lote.Insertar(BeNewOCDetLote,
+                                                        lConnection,
+                                                        lTransaction)
                     Next
 
 

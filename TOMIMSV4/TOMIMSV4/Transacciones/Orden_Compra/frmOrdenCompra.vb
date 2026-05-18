@@ -595,6 +595,7 @@ Public Class frmOrdenCompra
                                                                    Unidad_Medida = datos.UnidadMedida.Nombre,
                                                                    Cantidad_Presentacion = IIf(datos.IdPresentacion <> 0, datos.Cantidad / datos.Presentacion.Factor, 0),
                                                                    Cantidad_Recibida_Presentacion = IIf(datos.IdPresentacion <> 0, datos.Cantidad_recibida / datos.Presentacion.Factor, 0),
+                                                                   datos.Peso_Licencia,
                                                                    Presentacion = datos.Presentacion.Nombre,
                                                                    datos.Presentacion.Factor,
                                                                    datos.Lote,
@@ -618,17 +619,42 @@ Public Class frmOrdenCompra
                 gridviewLotes.Columns("IdOrdenCompraDet").Visible = False
                 gridviewLotes.Columns("IdOrdenCompraDetLote").Visible = False
                 gridviewLotes.Columns("IdProductoBodega").Visible = False
-                gridviewLotes.Columns("Cantidad_Recibida_UMBAS").Visible = True
+
+                ' Cantidades
                 gridviewLotes.Columns("Cantidad_UMBAS").DisplayFormat.FormatType = FormatType.Numeric
                 gridviewLotes.Columns("Cantidad_UMBAS").DisplayFormat.FormatString = "{0:n6}"
+                gridviewLotes.Columns("Cantidad_UMBAS").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                gridviewLotes.Columns("Cantidad_UMBAS").SummaryItem.DisplayFormat = "Total: {0:n6}"
+
+                gridviewLotes.Columns("Cantidad_Recibida_UMBAS").Visible = True
                 gridviewLotes.Columns("Cantidad_Recibida_UMBAS").DisplayFormat.FormatType = FormatType.Numeric
                 gridviewLotes.Columns("Cantidad_Recibida_UMBAS").DisplayFormat.FormatString = "{0:n6}"
+                gridviewLotes.Columns("Cantidad_Recibida_UMBAS").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                gridviewLotes.Columns("Cantidad_Recibida_UMBAS").SummaryItem.DisplayFormat = "Total: {0:n6}"
+
                 gridviewLotes.Columns("Cantidad_Presentacion").DisplayFormat.FormatType = FormatType.Numeric
                 gridviewLotes.Columns("Cantidad_Presentacion").DisplayFormat.FormatString = "{0:n6}"
+                gridviewLotes.Columns("Cantidad_Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                gridviewLotes.Columns("Cantidad_Presentacion").SummaryItem.DisplayFormat = "Total: {0:n6}"
+
                 gridviewLotes.Columns("Cantidad_Recibida_Presentacion").DisplayFormat.FormatType = FormatType.Numeric
                 gridviewLotes.Columns("Cantidad_Recibida_Presentacion").DisplayFormat.FormatString = "{0:n6}"
+                gridviewLotes.Columns("Cantidad_Recibida_Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                gridviewLotes.Columns("Cantidad_Recibida_Presentacion").SummaryItem.DisplayFormat = "Total: {0:n6}"
+
+                ' Factor
                 gridviewLotes.Columns("Factor").DisplayFormat.FormatType = FormatType.Numeric
+                gridviewLotes.Columns("Factor").DisplayFormat.FormatString = "{0:n6}"
+
+                ' Peso
+                If gridviewLotes.Columns.ColumnByFieldName("peso_licencia") IsNot Nothing Then
+                    gridviewLotes.Columns("peso_licencia").DisplayFormat.FormatType = FormatType.Numeric
+                    gridviewLotes.Columns("peso_licencia").DisplayFormat.FormatString = "{0:n2}"
+                    gridviewLotes.Columns("peso_licencia").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                    gridviewLotes.Columns("peso_licencia").SummaryItem.DisplayFormat = "Total: {0:n2}"
+                End If
             End If
+
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)

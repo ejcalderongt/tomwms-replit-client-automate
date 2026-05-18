@@ -531,6 +531,7 @@ Public Class frmUbicacion_Etiqueta
 
         ElseIf cmbEtiquetaU.SelectedValue = 1 Then 'formato 2x4
 
+            '#EJC20260518: ZPL Con código de barras 1D.
             ZPLString = String.Format(" ^XA
                                         ^MMT
                                         ^PW812
@@ -564,6 +565,42 @@ Public Class frmUbicacion_Etiqueta
                                                Barra,
                                                CodBodega,
                                                RackPasillo)
+
+            '#EJC20260518: ZPL Con código de barras QR.
+            ZPLString = String.Format("^XA
+                                        ^MMT
+                                        ^PW812
+                                        ^LL0406
+                                        ^LS0
+                                        ^FT790,364^A0I,25,24^FH\^FDTOM, WMS. - Location Tag^FS
+                                        ^FT400,364^A0I,25,24^FH\^FDBodega: {6}^FS
+                                        ^FO9,359^GB800,0,1^FS
+                                        ^FT684,146^A0I,25,24^FH\^FDPos^FS
+                                        ^FT687,323^A0I,25,24^FH\^FDCol^FS
+                                        ^FT787,146^A0I,25,24^FH\^FDNivel^FS
+                                        ^FT793,229^A0I,85,70^FH\^FD{0}^FS
+                                        ^FT588,236^A0I,85,122^FH\^FD{1}^FS
+                                        ^FT686,228^A0I,85,84^FH\^FD{3}^FS
+                                        ^FT687,47^A0I,85,122^FH\^FD{2}^FS
+                                        ^FT794,325^A0I,25,24^FH\^FD{7}^FS
+                                        ^FT787,48^A0I,85,84^FH\^FD{4}^FS
+                                        ^FT583,323^A0I,23,24^FH\^FDTunel^FS
+                                        ^FO590,191^GB211,162,8^FS
+                                        ^FO590,13^GB211,172,8^FS
+                                        ^FO697,18^GB0,165,4^FS
+                                        ^FO702,196^GB0,154,5^FS
+                                        ^FO20,5^BQN,4,16
+                                        ^FDLA,{5}^FS
+                                        ^PQ1,0,1,Y
+                                        ^XZ",
+                                        Rack,
+                                        Tunel,
+                                        Pos,
+                                        Col,
+                                        Nivel,
+                                        Barra,
+                                        CodBodega,
+                                        RackPasillo)
 
             BeTipoEtiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(cmbEtiquetaU.SelectedValue)
 

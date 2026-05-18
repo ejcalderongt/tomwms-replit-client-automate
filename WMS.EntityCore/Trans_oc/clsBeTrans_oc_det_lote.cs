@@ -45,7 +45,7 @@ namespace WMSWebAPI.Be
 
         [Column("fecha_vence")]
         [DisplayName("fecha_vence")]
-        public DateTime Fecha_vence { get; set; } = DateTime.Now;
+        public DateTime Fecha_vence { get; set; } = new DateTime(1900, 1, 1);
 
         [Column("lic_plate")]
         [DisplayName("lic_plate")]

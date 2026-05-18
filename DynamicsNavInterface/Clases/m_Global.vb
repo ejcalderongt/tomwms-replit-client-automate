@@ -11,9 +11,9 @@ Module m_Global
     Public Property BeConfigEnc As New clsBeI_nav_config_enc
     Public Property RemoteCallBack As Boolean = False
     Public Property wsTOMHHInstance As WebReference.TOMHHWS
-    Public Property gVersionApp As String = "8.3.5"
+    Public Property gVersionApp As String = "8.4.6"
 
-    Public Property gFechaVersion As Date = New Date(2026, 4, 20)
+    Public Property gFechaVersion As Date = New Date(2026, 5, 8)
 
     Public Enum pInterfaceAEjecutar
         Ninguna = -1
