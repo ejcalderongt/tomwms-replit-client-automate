@@ -1306,7 +1306,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                    esImplosion)
 
             pStockRes.Lic_plate = pStockRes.Lic_plate_Anterior
-            pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
+            '#CKFK20260518 Puse esto en comentario porque la presentacion no se debe cambiar
+            'pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
 
             If pStockRes.Lic_plate_Anterior = "" Then
                 ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes, lConnection, lTransaction)
