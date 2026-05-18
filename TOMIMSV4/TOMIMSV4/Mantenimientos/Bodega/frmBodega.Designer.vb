@@ -283,7 +283,7 @@ Partial Class frmBodega
         Me.txtNombreTarea = New DevExpress.XtraEditors.TextEdit()
         Me.lnkTareas = New System.Windows.Forms.LinkLabel()
         Me.txtIdTarea = New DevExpress.XtraEditors.TextEdit()
-        Me.DsBodega = New TOMWMS.DsBodega()
+        Me.DsBodega = New DsBodega()
         Me.BodegaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.ControlPanelBodega = New DevExpress.XtraTab.XtraTabControl()
         Me.tabDatos = New DevExpress.XtraTab.XtraTabPage()
@@ -6894,7 +6894,7 @@ Partial Class frmBodega
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents GroupControl16 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents tlUbicaciones As DevExpress.XtraTreeList.TreeList
-    Friend WithEvents DsBodega As TOMWMS.DsBodega
+    Friend WithEvents DsBodega As DsBodega
     Friend WithEvents BodegaBindingSource As System.Windows.Forms.BindingSource
     Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents txtNombreTarea As DevExpress.XtraEditors.TextEdit

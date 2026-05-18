@@ -91,7 +91,7 @@ Partial Class frmPropietario
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsPropietario = New TOMWMS.DsPropietario()
+        Me.DsPropietario = New DsPropietario()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -1910,7 +1910,7 @@ Partial Class frmPropietario
     Friend WithEvents DireccionTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents EmailTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsPropietario As TOMWMS.DsPropietario
+    Friend WithEvents DsPropietario As DsPropietario
     Friend WithEvents chkActualizarPrecioOC As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents picFoto As System.Windows.Forms.PictureBox
     Friend WithEvents txtCorreoElectronico As DevExpress.XtraEditors.GroupControl

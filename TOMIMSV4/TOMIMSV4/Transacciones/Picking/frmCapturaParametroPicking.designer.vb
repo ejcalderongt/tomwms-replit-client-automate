@@ -33,7 +33,7 @@ Partial Class frmCapturaParametroPicking
         Me.GrpParametro = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DTBindingSource = New System.Windows.Forms.BindingSource()
-        Me.DSPR = New TOMWMS.DSPR()
+        Me.DSPR = New DSPR()
         Me.GrdP = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colTexto = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colNumerico = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -426,7 +426,7 @@ Partial Class frmCapturaParametroPicking
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents chkActivos As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents DTBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DSPR As TOMWMS.DSPR
+    Friend WithEvents DSPR As DSPR
     Friend WithEvents colDescripcion As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents BarManager1 As DevExpress.XtraBars.BarManager
     Friend WithEvents Bar2 As DevExpress.XtraBars.Bar

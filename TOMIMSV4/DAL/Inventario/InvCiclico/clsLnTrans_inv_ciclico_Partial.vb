@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Configuration.ConfigurationManager
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_inv_ciclico
@@ -3207,6 +3208,11 @@ Partial Public Class clsLnTrans_inv_ciclico
                     End If
                 End If
 
+                'Si no viene talla/color nuevo, se asume que NO cambió.
+                If BeTransInvCiclico.IdProductoTallaColor_nuevo = 0 Then
+                    BeTransInvCiclico.IdProductoTallaColor_nuevo = BeTransInvCiclico.IdProductoTallaColor
+                End If
+
                 If esOriginal And (BeTransInvCiclico.Fecha_vence <> BeTransInvCiclico.Fecha_vence_stock OrElse
                        (BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0) OrElse
                        BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock OrElse
@@ -4526,10 +4532,12 @@ Partial Public Class clsLnTrans_inv_ciclico
 
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Upd.Add("cantidad", "@cantidad", DataType.Parametro)
+            Upd.Add("IdPresentacion_nuevo", "@IdPresentacion_nuevo", DataType.Parametro)
             Upd.Add("IdProductoEst_nuevo", "@IdProductoEst_nuevo", DataType.Parametro)
             Upd.Add("IdUbicacion_nuevo", "@IdUbicacion_nuevo", DataType.Parametro)
             Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
+            Upd.Add("gondola", "@gondola", DataType.Parametro)
             Upd.Add("contado", "@contado", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
@@ -4559,6 +4567,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             End If
 
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_ciclico.Cantidad))
+            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION_NUEVO", IIf(oBeTrans_inv_ciclico.IdPresentacion_nuevo = 0, 0, oBeTrans_inv_ciclico.IdPresentacion_nuevo)))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOEST_NUEVO", IIf(oBeTrans_inv_ciclico.IdProductoEst_nuevo = 0, 0, oBeTrans_inv_ciclico.IdProductoEst_nuevo)))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION_NUEVO", IIf(oBeTrans_inv_ciclico.IdUbicacion_nuevo = 0, 0, oBeTrans_inv_ciclico.IdUbicacion_nuevo)))
 
@@ -4566,6 +4575,9 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_ciclico.IdProductoTallaColor))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR_NUEVO", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
+            cmd.Parameters.Add(New SqlParameter("@GONDOLA",
+                If(oBeTrans_inv_ciclico.Gondola Is Nothing, "", oBeTrans_inv_ciclico.Gondola.Trim())
+            ))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -4849,6 +4861,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     "  trans_inv_ciclico.lic_plate, " &
                                     "  trans_inv_ciclico.IdPresentacion, " &
                                     "  trans_inv_ciclico.fecha_vence_stock, " &
+                                    "  MAX(CASE WHEN trans_inv_ciclico.contado = 1 THEN ISNULL(trans_inv_ciclico.IdPresentacion_nuevo, 0) ELSE 0 END) AS IdPresentacion_nuevo, " &
                                     "  trans_inv_ciclico.peso_stock AS Peso_Stock, " &
                                     "  trans_inv_ciclico.cant_stock AS Cantidad_Stock, " &
                                     "  trans_inv_ciclico.peso_reconteo, " &
@@ -4899,8 +4912,8 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     "  producto.codigo, producto.nombre, producto_presentacion.nombre, trans_inv_ciclico.lote, producto_estado.nombre, e1.nombre, " &
                                     "  producto.IdPropietario, producto.IdClasificacion, producto.IdFamilia, producto_estado.IdEstado, trans_inv_ciclico.EsNuevo, " &
                                     "  bodega_tramo.IdTramo, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, " &
-                                    "  trans_inv_ciclico.EsPallet, trans_inv_ciclico.lic_plate, trans_inv_ciclico.lote_stock, trans_inv_ciclico.IdPresentacion, " &
-                                    "  trans_inv_ciclico.fecha_vence_stock, trans_inv_ciclico.peso_stock, trans_inv_ciclico.cant_stock, trans_inv_ciclico.peso_reconteo, " &
+                                       "  trans_inv_ciclico.EsPallet, trans_inv_ciclico.lic_plate, trans_inv_ciclico.lote_stock, trans_inv_ciclico.IdPresentacion, " &
+        "  trans_inv_ciclico.fecha_vence_stock, trans_inv_ciclico.peso_stock, trans_inv_ciclico.cant_stock, trans_inv_ciclico.peso_reconteo, " &
                                     "  bodega_tramo.es_rack, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, " &
                                     "  producto_tipo.NombreTipoProducto, producto.IdProducto, producto_presentacion.factor, bodega_ubicacion.IdBodega, " &
                                     "  trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.IdUbicacion_nuevo, " &
@@ -4944,6 +4957,9 @@ Partial Public Class clsLnTrans_inv_ciclico
 
                     If lRow("IdPresentacion") IsNot DBNull.Value AndAlso lRow("IdPresentacion") IsNot Nothing Then
                         BeTransInvCiclico.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
+                    End If
+                    If lRow("IdPresentacion_nuevo") IsNot DBNull.Value AndAlso lRow("IdPresentacion_nuevo") IsNot Nothing Then
+                        BeTransInvCiclico.IdPresentacion_nuevo = CType(lRow("IdPresentacion_nuevo"), Integer)
                     End If
 
                     If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
@@ -5106,15 +5122,15 @@ Partial Public Class clsLnTrans_inv_ciclico
         Try
 
             Dim lReturnList As New List(Of clsBeTrans_inv_ciclico)
-
+            '#MA20280515 Agregar talla y color y eliminar columnas repetidas
             '#CKFK20250206 Por una mejora que se hizo en el ingreso de los datos, ya se pueden sumar la cantidades contadas
             'y las cantidades del stock, quité ambas del group by
             Dim vSQL As String = "SELECT t.idinventarioenc,
                                          t.Codigo,
                                          t.Producto,
+                                         MAX(t.TipoProducto) As TipoProducto,
                                          SUM(t.Cantidad_Stock)  As Cantidad_Stock_UMBAS, 
-                                         SUM(t.Cantidad_Ciclico) As Cantidad_Ciclico_UMBAS, 
-                                         t.NombreTipoProducto,
+                                         SUM(t.Cantidad_Ciclico) As Cantidad_Ciclico_UMBAS,
                                          t.IdProducto,
                                          t.IdProductoBodega, 
                                          SUM(t.Cantidad_Reservada) As Cantidad_Reservada,
@@ -5126,9 +5142,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                                               Else MAX(t.UMBas)
                                           End As Presentacion,
                                           MAX(t.UMBas) As UMBas,
+                                          MAX(t.Talla) As Talla,
+                                          MAX(t.Color) As Color,
                                          SUM(t.Cantidad_Stock)   AS Cant_Stock_UMBAS,
                                          SUM(t.Cantidad_Ciclico) AS Cant_Conteo_UMBAS,
-                                         SUM(t.Cantidad_Reconteo) AS Cant_Reconteo_UMBAS,
                                             ROUND(
                                                 CASE 
                                                     WHEN MAX(t.IdPresentacion) > 0
@@ -5143,13 +5160,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                 ELSE SUM(t.Cantidad_Ciclico)
                                             END, 6
                                         ) AS Cant_Conteo_Presentacion,
-                                           ROUND(
-                                            CASE 
-                                               WHEN MAX(t.IdPresentacion) > 0
-                                                    THEN SUM(t.Cantidad_Reconteo / t.Factor)
-                                                ELSE SUM(t.Cantidad_Reconteo)
-                                            END, 6
-                                        ) AS Cant_Reconteo_Presentacion,
+                                          
                                     SUM(
                                         ROUND(
                                             CASE 
@@ -5168,8 +5179,6 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                 producto.nombre AS Producto,
                                                 MAX(trans_inv_ciclico.cant_stock) As Cantidad_Stock, 
                                                 SUM(trans_inv_ciclico.cantidad) As Cantidad_Ciclico, 
-                                                SUM(ISNULL(trans_inv_ciclico.cant_reconteo, 0)) As Cantidad_Reconteo,
-                                                producto_tipo.NombreTipoProducto,
                                                 producto.IdProducto,
                                                 trans_inv_ciclico.IdProductoBodega,
                                                 trans_inv_ciclico.IdStock,
@@ -5177,7 +5186,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                 MAX(ISNULL(trans_inv_ciclico.IdPresentacion, 0)) As IdPresentacion,
                                                 MAX(ISNULL(producto_presentacion.Factor, 1)) As Factor,
                                                 MAX(unidad_medida.Nombre) As UMBas,
-                                                MAX(producto_presentacion.nombre) As Presentacion
+                                                MAX(talla.Nombre) As Talla,
+                                                MAX(color.Nombre) As Color,
+                                                MAX(producto_presentacion.nombre) As Presentacion,
+                                                MAX(producto_tipo.NombreTipoProducto) As TipoProducto
                                             From trans_inv_ciclico 
                                             INNER Join producto_bodega 
                                                 On trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega 
@@ -5189,13 +5201,18 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                 On trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion 
                                             Left Join unidad_medida 
                                                 On producto.IdUnidadMedidaBasica = unidad_medida.IdUnidadMedida
+                                            LEFT JOIN producto_talla_color 
+                                            ON trans_inv_ciclico.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+                                           LEFT JOIN talla 
+                                            ON talla.IdTalla = producto_talla_color.IdTalla
+                                           LEFT JOIN color 
+                                            ON color.IdColor = producto_talla_color.IdColor
                                             WHERE trans_inv_ciclico.idinventarioenc = @idinventario 
                                               And trans_inv_ciclico.IdBodega = @IdBodega 
                                             GROUP BY 
                                                 producto.codigo,
                                                 trans_inv_ciclico.idinventarioenc,
                                                 producto.nombre,
-                                                producto_tipo.NombreTipoProducto,
                                                 producto.IdProducto,
                                                 trans_inv_ciclico.IdProductoBodega,
                                                 trans_inv_ciclico.IdStock) T
@@ -5203,7 +5220,6 @@ Partial Public Class clsLnTrans_inv_ciclico
                                             t.idinventarioenc,
                                             t.codigo,
                                             t.Producto,
-                                            t.NombreTipoProducto,
                                             t.IdProducto,
                                             t.IdProductoBodega"
 
@@ -5246,14 +5262,24 @@ Partial Public Class clsLnTrans_inv_ciclico
                         BeTransInvCiclico.UnidadMedida = CType(lRow("UMBas"), String)
                     End If
 
+                    If lRow("Talla") IsNot DBNull.Value Then
+                        BeTransInvCiclico.Talla = lRow("Talla").ToString()
+                    End If
+
+                    If lRow("Color") IsNot DBNull.Value Then
+                        BeTransInvCiclico.Color = lRow("Color").ToString()
+                    End If
+
+                    If lRow("TipoProducto") IsNot DBNull.Value AndAlso lRow("TipoProducto") IsNot Nothing Then
+                        BeTransInvCiclico.TipoProducto = CType(lRow("TipoProducto"), String)
+                    End If
+
                     BeTransInvCiclico.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
                     BeTransInvCiclico.Factor = CType(lRow("Factor"), Double)
-                    BeTransInvCiclico.TipoProducto = IIf(IsDBNull(lRow("NombreTipoProducto")), "", lRow("NombreTipoProducto"))
                     BeTransInvCiclico.IdProducto = IIf(IsDBNull(lRow("IdProducto")), "", lRow("IdProducto"))
                     BeTransInvCiclico.Cantidad_Reservada_UMBas = IIf(IsDBNull(lRow("Cantidad_Reservada")), 0, lRow("Cantidad_Reservada"))
                     BeTransInvCiclico.Cant_stock = If(IsDBNull(lRow("Cant_Teorica_Presentacion")), 0, CDbl(lRow("Cant_Teorica_Presentacion")))
                     BeTransInvCiclico.Cantidad = If(IsDBNull(lRow("Cant_Conteo_Presentacion")), 0, CDbl(lRow("Cant_Conteo_Presentacion")))
-                    BeTransInvCiclico.Cant_reconteo = If(IsDBNull(lRow("Cant_Reconteo_Presentacion")), 0, CDbl(lRow("Cant_Reconteo_Presentacion")))
 
                     lReturnList.Add(BeTransInvCiclico)
 
@@ -5623,43 +5649,64 @@ Partial Public Class clsLnTrans_inv_ciclico
         Get_All_Conteos_By_IdInventarioEnc_And_Operador = Nothing
 
         Try
-
+            '#MA20280515 Agregar talla y color y revisar productos duplicados
             '#MA20260204 agregar columnas de presentacion
-            Dim vSQL As String = "SELECT  
-                                    v.IdInventarioenc,
-                                    v.Ubicacion,
-                                    v.IdStock,
-                                    v.lic_plate,
-                                    v.Codigo,
-                                    v.CodigoBarra,
-                                    v.Nombre,
-                                    v.Operador,
-                                   CASE 
+            Dim vSQL As String = "SELECT DISTINCT
+                                v.IdInventarioenc,
+                                v.Ubicacion,
+                                v.IdStock,
+                                v.lic_plate,
+                                v.Codigo,
+                                v.CodigoBarra,
+                                v.Nombre,
+                                v.Operador,
+
+                                Case 
                                     WHEN tic.IdPresentacion > 0 THEN pp.Nombre
-                                    ELSE u.Nombre
-                                    END AS Presentacion,
-                                    CASE 
+                                    Else u.Nombre
+                                End As Presentacion,
+
+                                talla.Nombre AS Talla,
+                                color.Nombre As Color,
+
+                                Case 
                                     WHEN tic.IdPresentacion > 0 
                                         THEN v.Teorico / pp.factor
-                                    ELSE v.Teorico
-                                    END AS Teorico_Pres,
-                                    CASE 
+                                    Else v.Teorico
+                                End As Teorico_Pres,
+
+                                Case 
                                     WHEN tic.IdPresentacion > 0 
                                         THEN v.Conteo / pp.factor
-                                    ELSE v.Conteo
-                                    END AS Conteo_Pres
-                                FROM VW_Conteo_By_Operador v
-                                LEFT JOIN producto p
-                                       ON p.codigo = v.Codigo
-                                LEFT JOIN unidad_medida u
-                                       ON p.IdUnidadMedidaBasica = u.IdUnidadMedida
-                                LEFT JOIN trans_inv_ciclico tic
-                                       ON tic.IdStock = v.IdStock
-                                      AND tic.IdInventarioenc = v.IdInventarioenc
-                                LEFT JOIN producto_presentacion pp
-                                       ON pp.IdPresentacion = tic.IdPresentacion
-                                      AND pp.IdProducto = p.IdProducto
-                                    WHERE v.IdInventarioenc = @IdInventarioenc"
+                                    Else v.Conteo
+                                End As Conteo_Pres
+
+                            From VW_Conteo_By_Operador v
+
+                            Left Join producto p
+                                   On p.codigo = v.Codigo
+
+                            Left Join unidad_medida u
+                                   On p.IdUnidadMedidaBasica = u.IdUnidadMedida
+
+                            Left Join trans_inv_ciclico tic
+                                   On tic.IdStock = v.IdStock
+                                  And tic.IdInventarioenc = v.IdInventarioenc
+
+                            Left Join producto_presentacion pp
+                                   On pp.IdPresentacion = tic.IdPresentacion
+                                  And pp.IdProducto = p.IdProducto
+
+                            Left Join producto_talla_color ptc
+                                   On ptc.IdProductoTallaColor = tic.IdProductoTallaColor
+
+                            Left Join talla
+                                   On talla.IdTalla = ptc.IdTalla
+
+                            Left Join color
+                                   On color.IdColor = ptc.IdColor
+
+                            WHERE v.IdInventarioenc = @IdInventarioenc"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -7729,6 +7776,142 @@ Partial Public Class clsLnTrans_inv_ciclico
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
+
+    End Function
+
+    Public Shared Function Get_All_By_Regularizacion_Inventario_Consolidado(ByVal pIdInv As Integer,
+                                                                            ByVal lConnection As SqlConnection,
+                                                                            ByVal lTransaction As SqlTransaction) As DataTable
+
+        Dim vSQL As String = "
+                                SELECT 
+                            ci.codigo AS Codigo,
+                            ci.producto AS Producto,
+                            ISNULL(pt.NombreTipoProducto, '') AS Categoria,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad
+                                END
+                            ) AS CantidadContada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad_Stock / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad_Stock
+                                END
+                            ) AS CantidadEsperada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Entradas_Salidas / NULLIF(pp.factor, 0)
+                                    ELSE ci.Entradas_Salidas
+                                END
+                            ) AS SalidasEntradas,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.Cantidad = (ci.Cantidad_Stock + ci.Entradas) AND ci.Salidas = 0 
+                                        THEN (ci.Cantidad_Stock + ci.Entradas - ci.Cantidad)
+                                    WHEN ci.Salidas IS NOT NULL AND ci.Salidas < 0 
+                                        THEN (ci.Cantidad_Stock + ci.Salidas - ci.Cantidad) * -1
+                                    ELSE ((ci.Cantidad_Stock + ci.Entradas_Salidas) - ci.Cantidad) * -1
+                                END
+                            ) AS Diferencia
+
+                        FROM ComparacionInventario ci
+                        LEFT JOIN producto p 
+                            ON p.codigo = ci.codigo
+                        LEFT JOIN producto_tipo pt
+                            ON pt.IdTipoProducto = p.IdTipoProducto
+                        LEFT JOIN producto_presentacion pp 
+                            ON ci.IdPresentacion = pp.IdPresentacion
+
+                        WHERE 
+                            ci.IdInventario = @idinventarioenc
+                            AND ci.TieneReservaYConteoInsuficiente = 0
+
+                        GROUP BY 
+                            ci.codigo,
+                            ci.producto,
+                            pt.NombreTipoProducto
+
+                        ORDER BY 
+                            ci.codigo;
+
+                            SELECT 
+                            ci.codigo AS Codigo,
+                            ci.producto AS Producto,
+                            ISNULL(pt.NombreTipoProducto, '') AS Categoria,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad
+                                END
+                            ) AS CantidadContada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Cantidad_Stock / NULLIF(pp.factor, 0)
+                                    ELSE ci.Cantidad_Stock
+                                END
+                            ) AS CantidadEsperada,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.IdPresentacion > 0 
+                                        THEN ci.Entradas_Salidas / NULLIF(pp.factor, 0)
+                                    ELSE ci.Entradas_Salidas
+                                END
+                            ) AS SalidasEntradas,
+
+                            SUM(
+                                CASE 
+                                    WHEN ci.Cantidad = (ci.Cantidad_Stock + ci.Entradas) AND ci.Salidas = 0 
+                                        THEN (ci.Cantidad_Stock + ci.Entradas - ci.Cantidad)
+                                    WHEN ci.Salidas IS NOT NULL AND ci.Salidas < 0 
+                                        THEN (ci.Cantidad_Stock + ci.Salidas - ci.Cantidad) * -1
+                                    ELSE ((ci.Cantidad_Stock + ci.Entradas_Salidas) - ci.Cantidad) * -1
+                                END
+                            ) AS Diferencia
+
+                        FROM ComparacionInventario ci
+                        LEFT JOIN producto p 
+                            ON p.codigo = ci.codigo
+                        LEFT JOIN producto_tipo pt
+                            ON pt.IdTipoProducto = p.IdTipoProducto
+                        LEFT JOIN producto_presentacion pp 
+                            ON ci.IdPresentacion = pp.IdPresentacion
+
+                        WHERE 
+                            ci.IdInventario = @idinventarioenc
+                            AND ci.TieneReservaYConteoInsuficiente = 0
+
+                        GROUP BY 
+                            ci.codigo,
+                            ci.producto,
+                            pt.NombreTipoProducto
+
+                        ORDER BY 
+                            ci.codigo;"
+
+        Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+            lDataAdapter.SelectCommand.CommandType = CommandType.Text
+            lDataAdapter.SelectCommand.Transaction = lTransaction
+            lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInv)
+
+            Dim lDataTable As New DataTable()
+            lDataAdapter.Fill(lDataTable)
+
+            Return lDataTable
+        End Using
 
     End Function
 

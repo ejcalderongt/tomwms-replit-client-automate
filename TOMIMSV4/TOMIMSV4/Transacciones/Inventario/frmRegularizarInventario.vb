@@ -1,6 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
-Imports DevExpress.Xpf.Bars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
@@ -243,8 +242,6 @@ Public Class frmRegularizarInventario
                 grdvInventarioConReserva.OptionsView.ShowFooter = True
                 grdvInventarioConReserva.BestFitColumns(True)
 
-                'grdvInventarioConReserva.Columns("Código").Group()
-
                 Dim item1 As New GridGroupSummaryItem() _
                 With {.FieldName = "PesoConteo",
                 .SummaryType = DevExpress.Data.SummaryItemType.Sum,
@@ -369,6 +366,8 @@ Public Class frmRegularizarInventario
                                                     clsTransaccion.lConnection,
                                                     clsTransaccion.lTransaction)
 
+            Carga_Regularizado_Consolidado(clsTransaccion.lConnection,
+                                                    clsTransaccion.lTransaction)
             clsTransaccion.Commit_Transaction()
 
         Catch ex As Exception
@@ -1623,6 +1622,40 @@ Public Class frmRegularizarInventario
         Catch ex As Exception
             Throw New Exception($"Error en ProcesarAjustePorTipo: {ex.Message}")
         End Try
+
+    End Sub
+
+    Public Sub Carga_Regularizado_Consolidado(ByVal lConnection As SqlConnection,
+                                              ByVal lTransaction As SqlTransaction)
+
+        Try
+            dgridRegularizado.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Regularizacion_Inventario_Consolidado(gBeInventario.Idinventarioenc,
+                                                                                                                   lConnection,
+                                                                                                                   lTransaction)
+
+            If GridViewRegularizado.RowCount > 0 Then
+                GridViewRegularizado.OptionsView.ShowFooter = True
+                GridViewRegularizado.BestFitColumns(True)
+
+                FormatearColumnaNumerica(GridViewRegularizado, "CantidadContada")
+                FormatearColumnaNumerica(GridViewRegularizado, "CantidadEsperada")
+                FormatearColumnaNumerica(GridViewRegularizado, "SalidasEntradas")
+                FormatearColumnaNumerica(GridViewRegularizado, "Diferencia")
+            End If
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Sub
+
+    Private Sub FormatearColumnaNumerica(ByVal view As GridView,
+                                         ByVal columna As String)
+
+        view.Columns(columna).DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+        view.Columns(columna).DisplayFormat.FormatString = "{0:n6}"
+        view.Columns(columna).SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+        view.Columns(columna).SummaryItem.DisplayFormat = "{0:n6}"
 
     End Sub
 

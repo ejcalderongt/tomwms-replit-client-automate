@@ -71,7 +71,7 @@ Partial Class frmQA
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
         Me.dgridConfiguracion = New DevExpress.XtraGrid.GridControl()
         Me.Configuracion_qaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.Configuracion_QADataSet = New TOMWMS.Configuracion_QADataSet()
+        Me.Configuracion_QADataSet = New Configuracion_QADataSet()
         Me.gvConfiguracion = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colIdConfiguracionQA = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colNombre = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -93,8 +93,8 @@ Partial Class frmQA
         Me.colDisponiblePresentacion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colDisponibleUMBas = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
-        Me.Configuracion_qaTableAdapter = New TOMWMS.Configuracion_QADataSetTableAdapters.configuracion_qaTableAdapter()
-        Me.TableAdapterManager = New TOMWMS.Configuracion_QADataSetTableAdapters.TableAdapterManager()
+        Me.Configuracion_qaTableAdapter = New Configuracion_QADataSetTableAdapters.configuracion_qaTableAdapter()
+        Me.TableAdapterManager = New Configuracion_QADataSetTableAdapters.TableAdapterManager()
         Me.BindingNavigatorMoveFirstItem = New System.Windows.Forms.ToolStripButton()
         Me.BindingNavigatorMovePreviousItem = New System.Windows.Forms.ToolStripButton()
         Me.BindingNavigatorSeparator = New System.Windows.Forms.ToolStripSeparator()
@@ -818,7 +818,7 @@ Partial Class frmQA
         Me.TableAdapterManager.productoTableAdapter = Nothing
         Me.TableAdapterManager.propietario_bodegaTableAdapter = Nothing
         Me.TableAdapterManager.propietariosTableAdapter = Nothing
-        Me.TableAdapterManager.UpdateOrder = TOMWMS.Configuracion_QADataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete
+        Me.TableAdapterManager.UpdateOrder = Configuracion_QADataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete
         '
         'BindingNavigatorMoveFirstItem
         '

@@ -1,7 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data.SqlClient
-Imports System.Diagnostics
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_despacho_enc

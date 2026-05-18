@@ -141,7 +141,7 @@ Partial Class frmProducto
         Me.grdPStock = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DsResumenStockBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsResumenStock = New TOMWMS.DsResumenStock()
+        Me.DsResumenStock = New DsResumenStock()
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colIdProducto = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colPropietario = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -176,7 +176,7 @@ Partial Class frmProducto
         Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsProducto = New TOMWMS.DsProducto()
+        Me.DsProducto = New DsProducto()
         Me.mnuEliminar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage3 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -6289,7 +6289,7 @@ Partial Class frmProducto
     Friend WithEvents Fec_modDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_modTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsProducto As TOMWMS.DsProducto
+    Friend WithEvents DsProducto As DsProducto
     Friend WithEvents mnuEliminar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents mnuGuardar As DevExpress.XtraBars.BarButtonItem
