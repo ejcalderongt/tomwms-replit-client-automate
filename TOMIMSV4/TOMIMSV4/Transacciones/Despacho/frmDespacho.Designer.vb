@@ -128,7 +128,7 @@ Partial Class frmDespacho
         Me.tbUbicPicking = New DevExpress.XtraTab.XtraTabPage()
         Me.panelUbic = New DevExpress.XtraEditors.PanelControl()
         Me.grdUbicPicking = New DevExpress.XtraGrid.GridControl()
-        Me.DsOrdenCompraRecepcionOperador = New TOMWMS.DsOrdenCompraRecepcionOperador()
+        Me.DsOrdenCompraRecepcionOperador = New DsOrdenCompraRecepcionOperador()
         Me.grdvPickingUbic = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.tbPagina2 = New DevExpress.XtraTab.XtraTabPage()
         Me.GrpDetalle = New DevExpress.XtraEditors.GroupControl()
@@ -1776,7 +1776,7 @@ Partial Class frmDespacho
     Friend WithEvents dtmHoraF As System.Windows.Forms.DateTimePicker
     Friend WithEvents dtmHoraI As System.Windows.Forms.DateTimePicker
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOrdenCompraRecepcionOperador As TOMWMS.DsOrdenCompraRecepcionOperador
+    Friend WithEvents DsOrdenCompraRecepcionOperador As DsOrdenCompraRecepcionOperador
     Friend WithEvents Fec_agrDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_agrTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents Fec_modDateEdit As DevExpress.XtraEditors.DateEdit

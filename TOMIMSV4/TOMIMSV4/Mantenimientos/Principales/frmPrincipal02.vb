@@ -3540,15 +3540,15 @@ Public Class frmPrincipal02
                 .ArgumentDataMember = "Area"                  ' eje X: Área
                 .ValueDataMembers.Clear()
                 .ValueDataMembers.AddRange(New String() {"Cantidad"})
-                .ValueScaleType = DevExpress.XtraCharts.ScaleType.Numerical
+                .ValueScaleType = ScaleType.Numerical
 
                 ' Vista apilada lado a lado (dos pilas: GENERAL y FISCAL)
-                .View = New DevExpress.XtraCharts.SideBySideStackedBarSeriesView()
+                .View = New SideBySideStackedBarSeriesView()
 
                 ' Etiquetas (center para stacked; desactivadas para menos ruido)
-                Dim lbl As New DevExpress.XtraCharts.StackedBarSeriesLabel()
+                Dim lbl As New StackedBarSeriesLabel()
                 lbl.TextPattern = "{V:n0}"
-                lbl.Position = DevExpress.XtraCharts.BarSeriesLabelPosition.Center
+                lbl.Position = BarSeriesLabelPosition.Center
                 lbl.Visible = False
                 .Label = lbl
             End With

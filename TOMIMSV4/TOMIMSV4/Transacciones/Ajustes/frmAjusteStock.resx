@@ -359,6 +359,36 @@
         DQo8L3N2Zz4L
 </value>
   </data>
+  <data name="mnuExportar.ImageOptions.SvgImage" type="DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v24.2" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpEZXZFeHByZXNzLkRhdGEudjI0LjIsIFZlcnNpb249MjQuMi4x
+        Mi4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI4OGQxNzU0ZDcwMGU0OWEFAQAAAB1E
+        ZXZFeHByZXNzLlV0aWxzLlN2Zy5TdmdJbWFnZQEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAA1BQAAAu+7
+        vzw/eG1sIHZlcnNpb249JzEuMCcgZW5jb2Rpbmc9J1VURi04Jz8+DQo8c3ZnIHg9IjBweCIgeT0iMHB4
+        IiB2aWV3Qm94PSIwIDAgMzIgMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3Jn
+        LzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNw
+        YWNlPSJwcmVzZXJ2ZSIgaWQ9IkxheWVyXzEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAw
+        IDMyIDMyIj4NCiAgPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5CbHVle2ZpbGw6IzExNzdENzt9Cgku
+        QmxhY2t7ZmlsbDojNzI3MjcyO30KCS5HcmVlbntmaWxsOiMwMzlDMjM7fQo8L3N0eWxlPg0KICA8cG9s
+        eWdvbiBwb2ludHM9IjMwLDI0IDE4LDI0IDI0LDI4ICIgY2xhc3M9IkJsdWUiIC8+DQogIDxwYXRoIGQ9
+        Ik0xOCwyNnY1YzAsMC42LDAuNCwxLDEsMWgxMGMwLjYsMCwxLTAuNCwxLTF2LTVsLTYsNEwxOCwyNnoi
+        IGNsYXNzPSJCbHVlIiAvPg0KICA8cGF0aCBkPSJNNiwxOEg0djExYzAsMC42LDAuNCwxLDEsMWgxMXYt
+        Mkg2VjE4eiIgY2xhc3M9IkJsYWNrIiAvPg0KICA8cGF0aCBkPSJNNiwxMFY0aDE4djZoMlYzYzAtMC42
+        LTAuNC0xLTEtMUg1QzQuNCwyLDQsMi40LDQsM3Y3SDZ6IiBjbGFzcz0iQmxhY2siIC8+DQogIDxyZWN0
+        IHg9IjI0IiB5PSIxOCIgd2lkdGg9IjIiIGhlaWdodD0iNCIgY2xhc3M9IkJsYWNrIiAvPg0KICA8cGF0
+        aCBkPSJNMjcsOEgzQzIuNCw4LDIsOC40LDIsOXYxMGMwLDAuNiwwLjQsMSwxLDFoMjRjMC42LDAsMS0w
+        LjQsMS0xVjlDMjgsOC40LDI3LjYsOCwyNyw4eiBNOS42LDE4bC0xLjItMi42ICBjMC0wLjEtMC4xLTAu
+        My0wLjEtMC41bDAsMGMwLDAuMS0wLjEsMC4zLTAuMiwwLjZMNi44LDE4SDQuOWwyLjMtNGwtMi4xLTRo
+        MmwxLDIuNGMwLjEsMC4yLDAuMiwwLjQsMC4yLDAuN2wwLDAgIGMwLTAuMiwwLjEtMC40LDAuMi0wLjdM
+        OS42LDEwaDEuOGwtMi4yLDRsMi4yLDRIOS42eiBNMTcuOCwxOGgtNC4zdi04aDEuNnY2LjVoMi43VjE4
+        eiBNMjAsMTcuOWMtMC40LTAuMS0wLjctMC4yLTAuOS0wLjN2LTEuNyAgYzAuMywwLjMsMC42LDAuNSwx
+        LDAuNmMyLDAuNSwyLjItMC40LDIuMi0wLjZjMC4xLTAuMi0wLjItMC42LTAuMy0wLjdjLTAuOS0wLjgt
+        Mi45LTAuNy0yLjktMi44YzAtMC45LDAuNi0yLjQsMy44LTIuMSAgYzAuMywwLDAuNiwwLjEsMC44LDAu
+        MnYxLjZjLTAuOS0xLjEtMi45LTAuNS0yLjksMC4zYzAsMS4xLDIuMSwxLjQsMi44LDIuMWMwLjIsMC4y
+        LDAuNSwwLjcsMC41LDEuNEMyNC4xLDE2LjksMjIuOSwxOC40LDIwLDE3Ljl6IiBjbGFzcz0iR3JlZW4i
+        IC8+DQo8L3N2Zz4L
+</value>
+  </data>
   <metadata name="ToolStripP.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

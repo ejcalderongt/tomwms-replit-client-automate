@@ -353,7 +353,7 @@ Public Class frmImpresionRecepcion_OC
                              cantidadPresentacion)
     End Function
 
-    Private Function CrearPalletPreImpresion(ByVal pReDet As clsBeTrans_oc_det,
+    Private Function CrearPalletPreImpresion(ByVal BeTransOcDetLote As clsBeTrans_oc_det,
                                              ByVal licenciaActual As String,
                                              ByVal cantidadPresentacion As Integer) As clsBeI_nav_barras_pallet
 
@@ -361,12 +361,12 @@ Public Class frmImpresionRecepcion_OC
 
         Return New clsBeI_nav_barras_pallet With {
             .IdPallet = 0,
-            .Codigo = pReDet.Codigo_Producto,
-            .Nombre = pReDet.Nombre_producto,
+            .Codigo = BeTransOcDetLote.Codigo_Producto,
+            .Nombre = BeTransOcDetLote.Nombre_producto,
             .Camas_Por_Tarima = pCamasPorTarima,
             .Cajas_Por_Cama = pCajasPorCama,
             .Cantidad_Presentacion = cantidadPresentacion,
-            .UM_Producto = pReDet.Nombre_unidad_medida_basica,
+            .UM_Producto = BeTransOcDetLote.Nombre_unidad_medida_basica,
             .Lote = cmbLote.Text,
             .Fecha_Agregado = Now,
             .Fecha_Ingreso = New Date(1900, 1, 1),
@@ -378,10 +378,10 @@ Public Class frmImpresionRecepcion_OC
             .Bodega_Origen = BeBodega_Origen.Codigo,
             .Bodega_Destino = BeBodega_Origen.Codigo,
             .Codigo_barra = licenciaActual,
-            .Cantidad_UMP = Nothing,
+            .Cantidad_UMP = BeTransOcDetLote.Cantidad,
             .Lote_Numerico = Nothing,
-            .IdOrdenCompraEnc = pReDet.IdOrdenCompraEnc,
-            .IdOrdenCompraDet = pReDet.IdOrdenCompraDet,
+            .IdOrdenCompraEnc = BeTransOcDetLote.IdOrdenCompraEnc,
+            .IdOrdenCompraDet = BeTransOcDetLote.IdOrdenCompraDet,
             .Impreso = True
         }
     End Function
@@ -582,8 +582,8 @@ Public Class frmImpresionRecepcion_OC
                 Next
 
                 Dim BeInavBarraPalletTMP As clsBeI_nav_barras_pallet = CrearPalletPreImpresion(pReDet,
-                                                                                              licenciaActual,
-                                                                                              pCantidadPresentacion)
+                                                                                               licenciaActual,
+                                                                                               pCantidadPresentacion)
 
                 clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(BeInavBarraPalletTMP,
                                                                      clsTransaccion.lConnection,

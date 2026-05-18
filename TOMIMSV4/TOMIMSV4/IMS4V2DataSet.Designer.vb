@@ -2062,7 +2062,7 @@ Namespace IMS4V2DataSetTableAdapters
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
         Private Sub InitConnection()
             Me._connection = New Global.System.Data.SqlClient.SqlConnection()
-            Me._connection.ConnectionString = TOMWMS.My.MySettings.Default.IMS4MB_QAConnectionStringPrograN
+            Me._connection.ConnectionString = My.MySettings.Default.IMS4MB_QAConnectionStringPrograN
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
@@ -2669,7 +2669,7 @@ Namespace IMS4V2DataSetTableAdapters
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
         Private Sub InitConnection()
             Me._connection = New Global.System.Data.SqlClient.SqlConnection()
-            Me._connection.ConnectionString = TOMWMS.My.MySettings.Default.IMS4MB_QAConnectionStringPrograN
+            Me._connection.ConnectionString = My.MySettings.Default.IMS4MB_QAConnectionStringPrograN
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _

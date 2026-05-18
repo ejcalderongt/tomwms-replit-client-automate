@@ -27,7 +27,7 @@ Partial Class frmBodegaT
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.tlUbicaciones = New DevExpress.XtraTreeList.TreeList()
         Me.BodegaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsBodega = New TOMWMS.DsBodega()
+        Me.DsBodega = New DsBodega()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.BarSubItem1 = New DevExpress.XtraBars.BarSubItem()
         Me.BarEditItem1 = New DevExpress.XtraBars.BarEditItem()
@@ -236,7 +236,7 @@ Partial Class frmBodegaT
     Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents tlUbicaciones As DevExpress.XtraTreeList.TreeList
     Friend WithEvents BodegaBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsBodega As TOMWMS.DsBodega
+    Friend WithEvents DsBodega As DsBodega
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents BarSubItem1 As DevExpress.XtraBars.BarSubItem
     Friend WithEvents BarEditItem1 As DevExpress.XtraBars.BarEditItem

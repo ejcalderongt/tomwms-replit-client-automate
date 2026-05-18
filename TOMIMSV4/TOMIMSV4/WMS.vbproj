@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
-    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
+    <InstallUrl>\\172.16.100.26\WMS_QAS\</InstallUrl>
+    <UpdateUrl>\\172.16.100.26\WMS_QAS\</UpdateUrl>
     <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>6.0.1.98</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>129</ApplicationRevision>
+    <ApplicationRevision>114</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -1504,24 +1504,6 @@
     <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
-      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
-      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
-      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </Compile>
@@ -1622,6 +1604,12 @@
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmStockRFID.Designer.vb">
+      <DependentUpon>frmStockRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmStockRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3816,15 +3804,6 @@
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
       <DependentUpon>frmInventarioDet.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.resx">
-      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
-      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.resx">
-      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </EmbeddedResource>
@@ -3877,6 +3856,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmStockRFID.resx">
+      <DependentUpon>frmStockRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -4651,7 +4633,6 @@
     </Content>
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
-    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4690,6 +4671,7 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
+    <Content Include="NavSync.exe" />
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -4721,7 +4703,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5694,7 +5675,7 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>7.0.1</Version>
+      <Version>6.1.4</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
