@@ -2310,11 +2310,15 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                                                                                          lTransaction)
 
 
+                                        If BeProductoEstado Is Nothing Then
+                                            Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: No se obtuvo un Estado para el producto " & BePickingUbic.IdProducto & " con propietario " & vIdPropietario & " bodega " & BeOrdenCompraEnc.IdBodega & " propietario_bodega " & BeOrdenCompraEnc.IdPropietarioBodega & " Revise configuración de estado de producto por bodega."
+                                            Throw New Exception(vMensajeLog)
+                                        End If
+
                                         If String.IsNullOrEmpty(BeProductoEstado.Nombre) Then
                                             Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: Error desconocido, no se obtuvo un Estado para el producto " & BePickingUbic.IdProducto & " con propietario " & vIdPropietario & " bodega " & BeOrdenCompraEnc.IdBodega & " propietario_bodega " & BeOrdenCompraEnc.IdPropietarioBodega
                                             clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                                         End If
-
 
                                         BeUnidadMedida = clsLnUnidad_medida.GetSingle(BePickingUbic.IdUnidadMedida, lConnection, lTransaction)
 
