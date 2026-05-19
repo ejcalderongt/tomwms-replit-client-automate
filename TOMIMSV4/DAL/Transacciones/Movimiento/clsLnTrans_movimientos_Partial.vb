@@ -3046,6 +3046,7 @@ Partial Public Class clsLnTrans_movimientos
                     If Obj.IdMovimiento = 0 Then
                         Obj.IdMovimiento = lMaxMov
                         Obj.IdTransaccion = IdTareaUbicacionEnc
+                        End If
                         Obj.Fecha = Now
                         Insertar(Obj, lConnection, lTransaction)
                         lMaxMov += 1
