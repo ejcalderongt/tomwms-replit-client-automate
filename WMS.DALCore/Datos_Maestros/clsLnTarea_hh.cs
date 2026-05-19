@@ -547,6 +547,35 @@ public class clsLnTarea_hh
         }
     }    
 
+    public static clsBeTarea_hh? Get_Tarea_Recepcion_By_IdRecepcionEnc(IConfiguration config,
+                                                                       int pIdRecepcionEnc)
+    {
+        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection.Open();
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            clsBeTarea_hh? tarea = GetSingle(1, pIdRecepcionEnc, lTransaction, lConnection);
+
+            lTransaction.Commit();
+            return tarea;
+        }
+        catch (Exception)
+        {
+            if (lTransaction != null) lTransaction.Rollback();
+            throw;
+        }
+        finally
+        {
+            if (lConnection.State == ConnectionState.Open) lConnection.Close();
+            if (lTransaction != null) lTransaction.Dispose();
+            lConnection.Dispose();
+        }
+    }
+
     public static clsBeTarea_hh GetSingle(int IdTipoTarea,
                                           int IdTransaccion,
                                           int IdPropietario,

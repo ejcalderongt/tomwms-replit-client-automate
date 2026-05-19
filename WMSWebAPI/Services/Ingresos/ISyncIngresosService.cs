@@ -19,6 +19,7 @@ namespace WMSWebAPI.Services.Ingresos
         public int Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc);
         public List<clsBeI_nav_transacciones_out> Get_Ingresos_Pendientes_De_Procesar();
         public int Marcar_Ingresos_Como_Enviados(List<int> idTransacciones);        
-        IngresoAsociacionResponseDto BuildIngresoAsociacion(int idOrdenCompraEnc);        
+        IngresoAsociacionResponseDto BuildIngresoAsociacion(int idOrdenCompraEnc);
+        DocumentoIngresoEstatusResponseDto GetDocumentoIngresoEstatus(string referencia);
     }
 }
