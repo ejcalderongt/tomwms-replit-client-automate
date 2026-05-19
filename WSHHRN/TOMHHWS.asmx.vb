@@ -4346,6 +4346,7 @@ Public Class TOMHHWS
                                                   ByVal IdStock As Integer,
                                                   ByVal IdStockRes As Integer,
                                                   ByVal UsuarioHH As Integer,
+                                                  ByVal IdPickingEnc As Integer,
                                                   ByVal CantNoEncontrada As Double,
                                                   ByVal IdPropietarioBodega As Integer,
                                                   ByVal IdPickingUbic As Integer) As String
@@ -4358,6 +4359,7 @@ Public Class TOMHHWS
                                                                  IdEmpresa,
                                                                  IdStock,
                                                                  IdStockRes,
+                                                                 IdPickingEnc,
                                                                  UsuarioHH,
                                                                  CantNoEncontrada,
                                                                  IdPropietarioBodega,
@@ -4895,26 +4897,24 @@ Public Class TOMHHWS
 
         Try
 
-
-
             If clsLnStock_res.Reservar_Y_Reemplazar_Stock_By_IdStock(IdStockReservarDesde,
-                                                            IdStockOriginal,
-                                                            CantSol,
-                                                            MaquinaQueSolicita,
-                                                            IdPickingEnc,
-                                                            IdPickingDet,
-                                                            IdPedidoEnc,
-                                                            IdUsuarioHH,
-                                                            IdPedidoDet,
-                                                            IdPickingUbic,
-                                                            EsPicking,
-                                                            IdPresentacionPedido,
-                                                            IdBodega,
-                                                            IdEmpresa,
-                                                            IdUbicDestino,
-                                                            IdProductoEstadoDestino,
-                                                            IdStockResOrigen,
-                                                            MarcarComoNE) Then
+                                                                    IdStockOriginal,
+                                                                    CantSol,
+                                                                    MaquinaQueSolicita,
+                                                                    IdPickingEnc,
+                                                                    IdPickingDet,
+                                                                    IdPedidoEnc,
+                                                                    IdUsuarioHH,
+                                                                    IdPedidoDet,
+                                                                    IdPickingUbic,
+                                                                    EsPicking,
+                                                                    IdPresentacionPedido,
+                                                                    IdBodega,
+                                                                    IdEmpresa,
+                                                                    IdUbicDestino,
+                                                                    IdProductoEstadoDestino,
+                                                                    IdStockResOrigen,
+                                                                    MarcarComoNE) Then
 
                 Reservar_Y_Reemplazar_Stock_By_IdStock = True
 
@@ -6288,12 +6288,11 @@ Public Class TOMHHWS
 
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_Productos_By_IdUbicacion_Existencias_JSON(ByVal pIdUbicacion As Integer,
-                                                         ByVal pIdProductoBodega As Integer,
-                                                         ByVal pFechaVence As Date,
-                                                         ByVal pLote As String,
-                                                         ByVal pIdPresentacion As Integer,
-                                                         ByVal pLicencia As String)
-
+                                                             ByVal pIdProductoBodega As Integer,
+                                                             ByVal pFechaVence As Date,
+                                                             ByVal pLote As String,
+                                                             ByVal pIdPresentacion As Integer,
+                                                             ByVal pLicencia As String)
 
         ' Get_Productos_By_IdUbicacion_Existencias = Nothing
 
@@ -19237,21 +19236,22 @@ Public Class TOMHHWS
 
     End Function
 
+    '#CKFK20260518 Modifique esta función
     Public Sub ConvertirListasVaciasANothing(obj As Object)
         If obj Is Nothing Then Return
 
         Dim tipo As System.Type = obj.GetType()
 
-        ' Ignorar tipos simples
         If tipo.IsPrimitive OrElse
-       tipo Is GetType(System.String) OrElse
-       tipo Is GetType(System.DateTime) OrElse
-       tipo Is GetType(System.Decimal) OrElse
+       tipo Is GetType(String) OrElse
+       tipo Is GetType(DateTime) OrElse
+       tipo Is GetType(Decimal) OrElse
        tipo.IsEnum Then
             Return
         End If
 
-        For Each prop As Reflection.PropertyInfo In tipo.GetProperties(Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance)
+        For Each prop As Reflection.PropertyInfo In tipo.GetProperties(
+        Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance)
 
             If Not prop.CanRead OrElse Not prop.CanWrite Then Continue For
             If prop.GetIndexParameters().Length > 0 Then Continue For
@@ -19259,23 +19259,24 @@ Public Class TOMHHWS
             Dim valor As Object = prop.GetValue(obj, Nothing)
             Dim tipoProp As System.Type = prop.PropertyType
 
-            ' Si es lista
             If GetType(System.Collections.IList).IsAssignableFrom(tipoProp) Then
 
-                If valor Is Nothing Then
-                    Dim nuevaLista = Activator.CreateInstance(tipoProp)
-                    prop.SetValue(obj, nuevaLista, Nothing)
-                Else
+                If valor IsNot Nothing Then
                     Dim lista = DirectCast(valor, System.Collections.IList)
-                    For Each item In lista
-                        ConvertirListasVaciasANothing(item)
-                    Next
+
+                    If lista.Count = 0 Then
+                        prop.SetValue(obj, Nothing, Nothing)
+                    Else
+                        For Each item In lista
+                            ConvertirListasVaciasANothing(item)
+                        Next
+                    End If
                 End If
 
             ElseIf Not tipoProp.IsPrimitive AndAlso
-               tipoProp IsNot GetType(System.String) AndAlso
-               tipoProp IsNot GetType(System.DateTime) AndAlso
-               tipoProp IsNot GetType(System.Decimal) AndAlso
+               tipoProp IsNot GetType(String) AndAlso
+               tipoProp IsNot GetType(DateTime) AndAlso
+               tipoProp IsNot GetType(Decimal) AndAlso
                Not tipoProp.IsEnum Then
 
                 If valor IsNot Nothing Then
@@ -19491,6 +19492,49 @@ Public Class TOMHHWS
 
             End If
         End Try
+    End Function
+
+    '#GT14052026: retornar cuantas pallets deben leerse en tags.
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function GetProductosAInventariarCiclico_RFID(ByVal pIdInventarioEnc As Integer, ByVal pIdBodega As Integer) As Integer
+
+        GetProductosAInventariarCiclico_RFID = -1
+
+        Try
+
+            GetProductosAInventariarCiclico_RFID = clsLnTrans_inv_ciclico_rfid.Get_Conteo_Productos(pIdInventarioEnc, pIdBodega)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
     End Function
 
 End Class

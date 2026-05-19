@@ -92,7 +92,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         While Not RsDet.EoF
             Dim detalle As New clsBeI_nav_ped_traslado_det With {
             .NoEnc = docEntry,
-            .No = clsLnTrans_pe_det.MaxID() + 1,
+            .No = clsLnI_nav_ped_traslado_det.MaxID() + 1,
             .Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString(),
             .Line_No = RsDet.Fields.Item("LINENUM").Value.ToString(),
             .Shipment_Date = Date.Now,

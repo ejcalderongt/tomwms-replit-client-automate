@@ -167,6 +167,7 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Priorizar_Cantidad_Superior As Boolean = False
     Public Property Bodega_Cliente_Ajuste_ByB As Boolean = False
     Public Property Control_Guia As Boolean = False
+    Public Property Ubic_Implosion_Auto As Boolean = False
 
     Sub New()
     End Sub

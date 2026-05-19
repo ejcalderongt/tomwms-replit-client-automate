@@ -495,4 +495,34 @@ Public Class clsLnTrans_oc_det_lote
 
     End Function
 
+    Public Shared Function GetSingle_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(ByVal IdOrdenCompraEnc As Integer, ByVal IdOrdenCompraDet As Integer, ByVal lConnection As SqlConnection, lTransaction As SqlTransaction) As clsBeTrans_oc_det_lote
+
+        GetSingle_By_IdOrdenCompraEnc_And_IdOrdenCompraDet = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM Trans_oc_det_lote" &
+            " Where(IdOrdenCompraEnc = @IdOrdenCompraEnc)" &
+            " AND (IdOrdenCompraDet = @IdOrdenCompraDet) "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", IdOrdenCompraEnc))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", IdOrdenCompraDet))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeTrans_oc_det_lote As New clsBeTrans_oc_det_lote
+                Cargar(pBeTrans_oc_det_lote, dt.Rows(0))
+                GetSingle_By_IdOrdenCompraEnc_And_IdOrdenCompraDet = pBeTrans_oc_det_lote
+            End If
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+
+    End Function
+
 End Class

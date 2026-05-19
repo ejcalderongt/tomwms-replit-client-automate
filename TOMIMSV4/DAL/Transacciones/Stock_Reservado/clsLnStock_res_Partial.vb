@@ -3478,6 +3478,7 @@ Partial Public Class clsLnStock_res
                                                                               CantSol,
                                                                               pu.IdPropietarioBodega,
                                                                               pu.IdPickingUbic,
+                                                                              pu.IdPickingEnc,
                                                                               lConnection,
                                                                               lTransaction)
                     End If
@@ -25549,7 +25550,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                             pListStockResOUT.AddRange(lBeStockAReservar)
 
-                            If Not (vCantidadCompletada AndAlso vCantidadPendiente > 0) AndAlso (pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadDecimalUMBas = 0) Then
+                            '#EJCBYB20250519CKF:
+                            ' BYB QA reporto reservas MI3 en UMBAS que absorbían todo el stock disponible
+                            ' cuando el pedido ya venía en unidad base. En ese caso el pendiente real es
+                            ' vCantidadPendiente; vCantidadDecimalUMBas puede venir de la lógica de fracción /
+                            ' explosión de presentación y no debe reemplazar el remanente a reservar.
+                            If pStockResSolicitud.IdPresentacion = 0 Then
                                 vCantidadDecimalUMBas = vCantidadPendiente
                             ElseIf Not ((vCantidadCompletada AndAlso vCantidadPendiente > 0) AndAlso (pStockResSolicitud.IdPresentacion <> 0 AndAlso vCantidadDecimalUMBas = 0 AndAlso pBeConfigEnc.Explosion_Automatica)) AndAlso vBusquedaEnUmBas Then
                                 If vCantidadDecimalUMBas > 0 Then
@@ -25572,7 +25578,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         vCantidadDecimalUMBas += vCantidadPendiente
                                     End If
 
-                                    BeStockResUMBas.Cantidad = vCantidadDecimalUMBas
+                                    BeStockResUMBas.Cantidad = Math.Round(vCantidadDecimalUMBas, 6)
                                     BeStockResUMBas.IdPresentacion = 0
                                     BeStockResUMBas.Serial = No_Linea
 

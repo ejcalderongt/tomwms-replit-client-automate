@@ -3,6 +3,7 @@ Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
+Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
 Imports DevExpress.XtraTreeList
 Imports DevExpress.XtraTreeList.Nodes
@@ -343,24 +344,16 @@ Public Class frmInventarioRFID
 
     Private Sub Listar_Productos_Asignados(ByRef tl As TreeList, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
 
-        'Dim CountUbicacionesUnicas As Integer
         Dim CountProductosUnicos As Integer
 
         Try
 
             tl.BeginUnboundLoad()
-
             ListInventarioCiclico.Clear()
-
             tl.ClearNodes()
 
-            'ListInventarioCiclico = clsLnTrans_inv_ciclico.Get_All_BeTransInvCiclico_By_IdInventarioEnc_SinAgrupar(gBeTransInvEnc.Idinventarioenc,
-            '                                                                                                       AP.IdBodega,
-            '                                                                                                       lConnection,
-            '                                                                                                       lTransaction)
-
-
-            ListInventarioCiclico = clsLnTrans_inv_ciclico_rfid.Get_All()
+            ListInventarioCiclico = clsLnTrans_inv_ciclico_rfid.Get_All(gBeTransInvEnc.Idinventarioenc, AP.IdBodega, lConnection,
+                                                                                                                     lTransaction)
 
             If ListInventarioCiclico.Count > 0 Then
 
@@ -372,18 +365,8 @@ Public Class frmInventarioRFID
                                     Key .Count = grupo.Count()
                                     })
 
-                'Dim UbicacionesUnicas = ListInventarioCiclico _
-                '                    .GroupBy(Function(x) x.IdUbicacion) _
-                '                    .Select(Function(grupo) New With {
-                '                    Key .IdUbicacion = grupo.Key,
-                '                    Key .Count = grupo.Count()
-                '                    })
-
                 CountProductosUnicos = ProductosUnicos.Count()
-                'CountUbicacionesUnicas = UbicacionesUnicas.Count()
-
                 Dim parentForRootNodes As TreeListNode = Nothing
-
                 Dim rootNode As TreeListNode
 
                 Dim Lista = From i In ListInventarioCiclico Group i By Keys = New With {
@@ -414,24 +397,9 @@ Public Class frmInventarioRFID
 
                 Next
 
-                '#GT18012025: mostrar conteo
-                'lblRegistros.Text = Lista.Count
-                'lblProductosUnicos.Text = CountProductosUnicos
-                'lblUbicacionesUnicas.Text = CountUbicacionesUnicas
-
             End If
 
-            '#Inserta_Ubicaciones
-            'Inserta_Ubicaciones(Obj.IdUbicacion)
-
             tl.EndUnboundLoad()
-
-            '#GT18012025: se muestra conteo dentro de labels, ya que se requiere filtro unico por producto, ubicaciones y registros
-            'dgridAsignacionProductos.OptionsView.ShowSummaryFooter = True
-            'dgridAsignacionProductos.Columns(1).AllNodesSummary = True
-            'dgridAsignacionProductos.Columns(1).SummaryFooterStrFormat = "Registros: {0:n0}"
-            'dgridAsignacionProductos.Columns(1).SummaryFooterStrFormat = "Registros: {0:n0}"
-            'dgridAsignacionProductos.Columns(1).SummaryFooter = SummaryItemType.Count
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -460,14 +428,8 @@ Public Class frmInventarioRFID
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Cargando productos...")
 
-            'Inserta_Operadores()
-
             Listar_Productos()
-
-            'pendiente copiar de inventario para mostrar como avanza la lectura desde la HH
-            'Carga_Detalle_Ciclico()
-
-
+            Carga_Detalle_Ciclico()
 
             SplashScreenManager.CloseForm(False)
 
@@ -603,16 +565,10 @@ Public Class frmInventarioRFID
         Try
 
             tl.BeginUnboundLoad()
-
             ListInventarioCiclico.Clear()
-
             tl.ClearNodes()
 
-            'ListInventarioCiclico = clsLnTrans_inv_ciclico.Get_All_BeTransInvCiclico_By_IdInventarioEnc_SinAgrupar(gBeTransInvEnc.Idinventarioenc,
-            '                                                                                                       AP.IdBodega)
-
-
-            ListInventarioCiclico = clsLnTrans_inv_ciclico_rfid.Get_All()
+            ListInventarioCiclico = clsLnTrans_inv_ciclico_rfid.Get_All(gBeTransInvEnc.Idinventarioenc, AP.IdBodega)
 
             If ListInventarioCiclico.Count > 0 Then
 
@@ -688,7 +644,7 @@ Public Class frmInventarioRFID
         Dim clsTrans As New clsTransaccion
 
         Try
-            'InventarioCiclico
+
             Dim Extraviado As Double = 0.0
             Dim Reconteo As New clsBeTrans_inv_reconteo
             Dim Ubicacion As New clsBeBodega_ubicacion
@@ -703,37 +659,11 @@ Public Class frmInventarioRFID
 
             clsTrans.Begin_Transaction()
 
-            'ListInventarioCiclico = clsLnTrans_inv_ciclico.Get_All_BeTransInvCiclico_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc,
-            '                                                                                            AP.IdBodega,
-            '                                                                                            clsTrans.lConnection,
-            '                                                                                            clsTrans.lTransaction)
+            ListInventarioCiclico = clsLnTrans_inv_ciclico_rfid.Get_All(gBeTransInvEnc.Idinventarioenc,
+                                                                                                        AP.IdBodega,
+                                                                                                        clsTrans.lConnection,
+                                                                                                        clsTrans.lTransaction)
 
-
-            ListInventarioCiclico = clsLnTrans_inv_ciclico_rfid.Get_All()
-
-            'If pIdPropietario > 0 Then
-            '    ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdPropietario = pIdPropietario)
-            'End If
-
-            'If txtIdFamilia.Text <> "" Then
-            '    ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdFamilia = txtIdFamilia.Text)
-            'End If
-
-            'If txtIdClasificacion.Text <> "" Then
-            '    ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdClasificacion = txtIdClasificacion.Text)
-            'End If
-
-            'If txtIdProducto.Text <> "" Then
-            '    ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.Codigo = txtIdProducto.Text)
-            'End If
-
-            'If txtIdUbicacion.Text <> "" Then
-            '    ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdUbicacion = txtIdUbicacion.Text)
-            'End If
-
-            'If txtIdTramo.Text <> "" Then
-            '    ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdTramo = txtIdTramo.Text)
-            'End If
 
             If txtIdOperador.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdOperador = txtIdOperador.Text)
@@ -756,44 +686,8 @@ Public Class frmInventarioRFID
 
                 For Each BeTransInvCiclico As clsBeTrans_inv_ciclico_rfid In ListInventarioCiclico
 
-                    'Ubicacion.IdUbicacion = BeTransInvCiclico.IdUbicacion
-
-                    'EstadoNuevo = BeTransInvCiclico.Estado
-
                     UbicacionNueva = ""
 
-                    'If BeTransInvCiclico.IdUbicacion_nuevo <> 0 Then
-                    '    UbicacionNueva = BeTransInvCiclico.Ubicacion_Nueva
-                    'End If
-
-                    'If BeTransInvCiclico.EsNuevo Then
-
-                    '    Extraviado = BeTransInvCiclico.Cantidad
-                    '    BeTransInvCiclico.Cant_stock = 0
-                    '    BeTransInvCiclico.Cant_reconteo = 0
-                    '    BeTransInvCiclico.Peso_stock = 0
-                    '    BeTransInvCiclico.Peso_reconteo = 0
-
-                    'Else
-
-                    '    Reconteo.Idinventarioenc = BeTransInvCiclico.Idinventarioenc
-                    '    Reconteo.IdOperador = BeTransInvCiclico.IdOperador
-                    '    Reconteo.IdStock = BeTransInvCiclico.IdStock
-                    '    Reconteo.IdUbicacionAnterior = BeTransInvCiclico.IdUbicacion
-                    '    Reconteo.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
-
-                    '    If BeTransInvCiclico.IdStock > 0 Then
-
-                    '        If clsLnTrans_inv_reconteo.Obtener_By_Ubicacion(Reconteo, clsTrans.lConnection, clsTrans.lTransaction) Then
-                    '            BeTransInvCiclico.Cant_reconteo = Reconteo.Cantidad
-                    '            BeTransInvCiclico.Peso_reconteo = Reconteo.Peso
-                    '        End If
-
-                    '    End If
-
-                    '    Extraviado = 0
-
-                    'End If
 
                     CantidadUMBas = 0
                     Cantidad_Contada_Pres = 0
@@ -801,11 +695,6 @@ Public Class frmInventarioRFID
                     CantStockUM = 0
                     Cantidad_Reconteo_Pres = 0
                     CantReUM = 0
-
-                    'Dim PresentacionFinal As String
-                    'Dim CantTeoricaFinal As String
-                    'Dim CantConteoFinal As String
-                    'Dim CantReconteoFinal As String
 
                     DTInventarioCiclico.Rows.Add(BeTransInvCiclico.Idinvciclico,
                               BeTransInvCiclico.Idinventarioenc,
@@ -840,87 +729,73 @@ Public Class frmInventarioRFID
                 Next
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
+                gdviewTeorico.RefreshData()
+                gdviewTeorico.LayoutChanged()
+
 
                 If gdviewTeorico.RowCount > 0 Then
-
-                    'gdviewTeorico.Columns("IdInventario").Visible = False
-                    'gdviewTeorico.Columns("IdProductoBodega").Visible = False
-                    'gdviewTeorico.Columns("IdInvCiclico").Visible = False
 
                     gdviewTeorico.Columns("idinvciclico").Visible = False
                     gdviewTeorico.Columns("idinventarioenc").Visible = False
                     gdviewTeorico.Columns("IdPallet").Visible = False
 
+                    gdviewTeorico.Columns("IdProductoBodega").Visible = False
+                    gdviewTeorico.Columns("user_agr").Visible = False
+                    gdviewTeorico.Columns("user_mod").Visible = False
+                    gdviewTeorico.Columns("EsPallet").Visible = False
+                    gdviewTeorico.Columns("EsReconteo").Visible = False
+                    gdviewTeorico.Columns("cantidad_reconteo").Visible = False
+
+                    gdviewTeorico.Columns("Codigo_Barra").Caption = "Barra"
+                    gdviewTeorico.Columns("Fecha_Produccion").Caption = "Producción"
+                    gdviewTeorico.Columns("fec_agr").Caption = "Fecha Registro"
+                    gdviewTeorico.Columns("fec_mod").Caption = "Fecha Modificación"
+                    gdviewTeorico.Columns("IdOperador").Caption = "Operador"
+                    gdviewTeorico.Columns("Iddispositivo").Caption = "Dispositivo"
+
                     gdviewTeorico.OptionsView.ShowFooter = True
-
-                    '#EJC20180830_0540PM: Hot fix para funcionalidad de tablet
-                    'gdviewTeorico.Columns("Código").Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left
-
-                    'gdviewTeorico.Columns("Cant.Teorica.Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("Cant.Teorica.Pres").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Cant.Teorica.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("Cant.Teorica.Pres").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("PesoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("PesoStock").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("PesoStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("PesoStock").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Cant.Conteo.Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("Cant.Conteo.Pres").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Cant.Conteo.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("Cant.Conteo.Pres").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("PesoConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("PesoConteo").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("PesoConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("PesoConteo").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Cant.Reconteo.Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("Cant.Reconteo.Pres").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Cant.Reconteo.Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("Cant.Reconteo.Pres").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("PesoReconteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("PesoReconteo").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("PesoReconteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("PesoReconteo").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Extraviado").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("Extraviado").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Extraviado").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("Extraviado").SummaryItem.DisplayFormat = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Dif.Cant.UMBas").Caption = "Dif.Cant.Pres"
-
-                    'gdviewTeorico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    'gdviewTeorico.Columns("Dif.Cant.UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    'gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    'gdviewTeorico.Columns("Dif.Cant.UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-
-
-
                     gdviewTeorico.BestFitColumns()
 
                 End If
 
             End If
 
-            'Actualiza_KPIS()
+
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
+            SplashScreenManager.CloseForm(False)
             prgPanInvConteo.Value = 0
             prgPanInvConteo.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub gdviewTeorico_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gdviewTeorico.RowCellStyle
+
+        Try
+
+            Dim View As GridView = CType(sender, GridView)
+
+            If e.RowHandle < 0 Then Exit Sub
+
+            If View.Columns("cantidad") Is Nothing Then Exit Sub
+
+            Dim CantidadObj As Object = View.GetRowCellValue(e.RowHandle, "cantidad")
+
+            If CantidadObj Is Nothing OrElse IsDBNull(CantidadObj) Then Exit Sub
+
+            If Val(CantidadObj.ToString()) = 1 Then
+                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
+                e.Appearance.ForeColor = Color.Black
+                e.Appearance.BackColor = Color.LightGreen
+                e.Appearance.BackColor2 = Color.White
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 
     End Sub
@@ -1027,5 +902,63 @@ Public Class frmInventarioRFID
         DTInventarioCiclico.Columns.Add("cantidad_reconteo", GetType(Integer))
         DTInventarioCiclico.Columns.Add("Iddispositivo", GetType(String))
     End Sub
+
+    Private Sub cmdQuitarProducto_Click(sender As Object, e As EventArgs) Handles cmdQuitarProducto.Click
+
+        If XtraMessageBox.Show("¿Eliminar los productos asociados al inventario?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbYes Then
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormDescription("Eliminando productos asignados...")
+
+            If Eliminar_Producto_Asignado() Then
+
+                SplashScreenManager.CloseForm()
+                XtraMessageBox.Show("Asignación de producto eliminada", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Listar_Productos()
+                Carga_Detalle_Ciclico()
+
+            Else
+                XtraMessageBox.Show("No fue posible eliminar el producto", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+        End If
+    End Sub
+
+    Private Function Eliminar_Producto_Asignado() As Boolean
+
+        Dim Operador As New clsBeTrans_inv_operador
+        Dim InvCiclicoUbic As New clsBeTrans_inv_ciclico_ubic
+        Dim IdProductoBodega As Integer
+        Dim Ubicaciones As New List(Of Integer)
+
+        Eliminar_Producto_Asignado = False
+
+        Try
+
+            Dim gBeInvCiclico As New clsBeTrans_inv_ciclico
+
+            For Each Op As TreeListNode In dgridAsignacionProductos.Nodes
+
+                If Op.Checked Then
+
+                    IdProductoBodega = Op.Tag
+
+                    clsLnTrans_inv_operador.Eliminar_IdUbicacion_By_IdOperador_And_IdProductoBodega(gBeTransInvEnc.Idinventarioenc, Op.Item("IdOperador"), IdProductoBodega)
+                    'clsLnTrans_inv_ciclico.Eliminar_By_IdProductoBodega(IdProductoBodega, gBeTransInvEnc.Idinventarioenc)
+                    clsLnTrans_inv_ciclico_rfid.Eliminar_By_IdProductoBodega(IdProductoBodega, gBeTransInvEnc.Idinventarioenc)
+
+                    Eliminar_Producto_Asignado = True
+
+                End If
+
+            Next
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm()
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Function
 
 End Class

@@ -1025,6 +1025,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
     Public Shared Function Aplica_Cambio_Estado_Ubic_En_Picking(ByVal pMovimiento As clsBeTrans_movimientos,
                                                                 ByVal pStockRes As clsBeVW_stock_res,
                                                                 ByVal EsIdStockIgual As Boolean,
+                                                                ByVal IdPickingEnc As Integer,
                                                                 ByRef lConnection As SqlConnection,
                                                                 ByRef lTransaction As SqlTransaction) As String
 
@@ -1057,7 +1058,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                     If vCantidadPendiente >= vCantidadDisponible Then
 
                         pMovimiento.Cantidad = vCantidadDisponible
-
+                        pMovimiento.IdTransaccion = IdPickingEnc
                         result += " " & clsLnTrans_movimientos.Aplicar_Cambio_Ubicacion_Automatico_Por_Picking(pMovimiento,
                                                                                                                StockRes.IdStock,
                                                                                                                EsIdStockIgual,
@@ -1086,7 +1087,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                     ElseIf vCantidadPendiente < vCantidadDisponible Then
 
                         pMovimiento.Cantidad = vCantidadPendiente
-
+                        pMovimiento.IdTransaccion = IdPickingEnc
                         result += " " & clsLnTrans_movimientos.Aplicar_Cambio_Ubicacion_Automatico_Por_Picking(pMovimiento,
                                                                                                                StockRes.IdStock,
                                                                                                                EsIdStockIgual,
@@ -1306,7 +1307,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                    esImplosion)
 
             pStockRes.Lic_plate = pStockRes.Lic_plate_Anterior
-            pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
+            '#CKFK20260518 Puse esto en comentario porque la presentacion no se debe cambiar
+            'pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
 
             If pStockRes.Lic_plate_Anterior = "" Then
                 ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes, lConnection, lTransaction)
