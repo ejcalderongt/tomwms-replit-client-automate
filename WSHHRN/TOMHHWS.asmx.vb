@@ -6288,12 +6288,11 @@ Public Class TOMHHWS
 
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_Productos_By_IdUbicacion_Existencias_JSON(ByVal pIdUbicacion As Integer,
-                                                         ByVal pIdProductoBodega As Integer,
-                                                         ByVal pFechaVence As Date,
-                                                         ByVal pLote As String,
-                                                         ByVal pIdPresentacion As Integer,
-                                                         ByVal pLicencia As String)
-
+                                                             ByVal pIdProductoBodega As Integer,
+                                                             ByVal pFechaVence As Date,
+                                                             ByVal pLote As String,
+                                                             ByVal pIdPresentacion As Integer,
+                                                             ByVal pLicencia As String)
 
         ' Get_Productos_By_IdUbicacion_Existencias = Nothing
 
@@ -19242,16 +19241,16 @@ Public Class TOMHHWS
 
         Dim tipo As System.Type = obj.GetType()
 
-        ' Ignorar tipos simples
         If tipo.IsPrimitive OrElse
-       tipo Is GetType(System.String) OrElse
-       tipo Is GetType(System.DateTime) OrElse
-       tipo Is GetType(System.Decimal) OrElse
+       tipo Is GetType(String) OrElse
+       tipo Is GetType(DateTime) OrElse
+       tipo Is GetType(Decimal) OrElse
        tipo.IsEnum Then
             Return
         End If
 
-        For Each prop As Reflection.PropertyInfo In tipo.GetProperties(Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance)
+        For Each prop As Reflection.PropertyInfo In tipo.GetProperties(
+        Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance)
 
             If Not prop.CanRead OrElse Not prop.CanWrite Then Continue For
             If prop.GetIndexParameters().Length > 0 Then Continue For
@@ -19259,23 +19258,24 @@ Public Class TOMHHWS
             Dim valor As Object = prop.GetValue(obj, Nothing)
             Dim tipoProp As System.Type = prop.PropertyType
 
-            ' Si es lista
             If GetType(System.Collections.IList).IsAssignableFrom(tipoProp) Then
 
-                If valor Is Nothing Then
-                    Dim nuevaLista = Activator.CreateInstance(tipoProp)
-                    prop.SetValue(obj, nuevaLista, Nothing)
-                Else
+                If valor IsNot Nothing Then
                     Dim lista = DirectCast(valor, System.Collections.IList)
-                    For Each item In lista
-                        ConvertirListasVaciasANothing(item)
-                    Next
+
+                    If lista.Count = 0 Then
+                        prop.SetValue(obj, Nothing, Nothing)
+                    Else
+                        For Each item In lista
+                            ConvertirListasVaciasANothing(item)
+                        Next
+                    End If
                 End If
 
             ElseIf Not tipoProp.IsPrimitive AndAlso
-               tipoProp IsNot GetType(System.String) AndAlso
-               tipoProp IsNot GetType(System.DateTime) AndAlso
-               tipoProp IsNot GetType(System.Decimal) AndAlso
+               tipoProp IsNot GetType(String) AndAlso
+               tipoProp IsNot GetType(DateTime) AndAlso
+               tipoProp IsNot GetType(Decimal) AndAlso
                Not tipoProp.IsEnum Then
 
                 If valor IsNot Nothing Then
