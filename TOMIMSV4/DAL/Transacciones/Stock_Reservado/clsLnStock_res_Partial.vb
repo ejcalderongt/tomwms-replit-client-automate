@@ -10,6 +10,14 @@ Partial Public Class clsLnStock_res
     Private Shared lBeConfigInMemory As New List(Of clsBeI_nav_config_enc)
     Private Shared lProductosInMemory As New List(Of clsBeProducto)
 
+    Private Class clsReservaMi3StockReservadoCache
+        Public IdStocksReservados As System.Collections.Generic.HashSet(Of Integer)
+        Public ReservadoPorStock As New System.Collections.Generic.Dictionary(Of Integer, System.Tuple(Of Double, Double))()
+    End Class
+
+    Private Shared ReadOnly mReservaMi3StockReservadoCacheLock As New Object()
+    Private Shared ReadOnly mReservaMi3StockReservadoCache As New System.Collections.Generic.Dictionary(Of String, clsReservaMi3StockReservadoCache)(StringComparer.OrdinalIgnoreCase)
+
     Public Shared Function Stock_Res_Esta_Pickeado_By_IdPedidoDet(ByVal IdPedidoDet As Integer) As Boolean
 
         Stock_Res_Esta_Pickeado_By_IdPedidoDet = False
@@ -8994,6 +9002,41 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    Private Shared Function Obtener_Cache_StockReservado_MI3(ByVal pTrace As String,
+                                                            ByVal pIdBodega As Integer) As clsReservaMi3StockReservadoCache
+
+        If String.IsNullOrWhiteSpace(pTrace) Then Return Nothing
+
+        Dim vKey As String = pTrace & "|" & pIdBodega.ToString(Globalization.CultureInfo.InvariantCulture)
+        Dim vCache As clsReservaMi3StockReservadoCache = Nothing
+
+        SyncLock mReservaMi3StockReservadoCacheLock
+            If Not mReservaMi3StockReservadoCache.TryGetValue(vKey, vCache) Then
+                vCache = New clsReservaMi3StockReservadoCache()
+                mReservaMi3StockReservadoCache(vKey) = vCache
+            End If
+        End SyncLock
+
+        Return vCache
+
+    End Function
+
+    Friend Shared Sub Limpiar_Cache_StockReservado_MI3(ByVal pTrace As String)
+
+        If String.IsNullOrWhiteSpace(pTrace) Then Return
+
+        SyncLock mReservaMi3StockReservadoCacheLock
+            Dim lKeys As List(Of String) = mReservaMi3StockReservadoCache.Keys.
+                Where(Function(x) x.StartsWith(pTrace & "|", StringComparison.OrdinalIgnoreCase)).
+                ToList()
+
+            For Each vKey As String In lKeys
+                mReservaMi3StockReservadoCache.Remove(vKey)
+            Next
+        End SyncLock
+
+    End Sub
+
     Private Shared Function Restar_Stock_Reservado(ByVal lStock As List(Of clsBeStock),
                                                    ByVal pBeConfigEnc As clsBeI_nav_config_enc,
                                                    ByVal lConnection As SqlConnection,
@@ -9025,15 +9068,46 @@ Partial Public Class clsLnStock_res
             End If
 
             Dim lIdStocksReservados As New List(Of Integer)
+            Dim hIdStocksReservados As System.Collections.Generic.HashSet(Of Integer) = Nothing
+            Dim vCacheStockReservado As clsReservaMi3StockReservadoCache =
+                Obtener_Cache_StockReservado_MI3(vReservaMi3Trace, pBeConfigEnc.Idbodega)
+            Dim vCacheIds As String = "BD"
             Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
-            lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
-            Dim hIdStocksReservados As New System.Collections.Generic.HashSet(Of Integer)(lIdStocksReservados)
+
+            If vCacheStockReservado IsNot Nothing Then
+                Dim vCargarIds As Boolean = False
+
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    vCargarIds = (vCacheStockReservado.IdStocksReservados Is Nothing)
+
+                    If Not vCargarIds Then
+                        hIdStocksReservados = New System.Collections.Generic.HashSet(Of Integer)(vCacheStockReservado.IdStocksReservados)
+                        vCacheIds = "Hit"
+                    End If
+                End SyncLock
+
+                If vCargarIds Then
+                    lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+                    hIdStocksReservados = New System.Collections.Generic.HashSet(Of Integer)(lIdStocksReservados)
+
+                    SyncLock mReservaMi3StockReservadoCacheLock
+                        vCacheStockReservado.IdStocksReservados = hIdStocksReservados
+                    End SyncLock
+
+                    vCacheIds = "Miss"
+                End If
+            Else
+                lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+                hIdStocksReservados = New System.Collections.Generic.HashSet(Of Integer)(lIdStocksReservados)
+            End If
+
             clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
                                                  "perf_get_ids_stock_reservados_bodega_despues",
                                                  vCronometro,
                                                  "IdBodega", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Idbodega),
-                                                 "IdsReservados", clsReservaMi3DebugTrace.Valor(If(lIdStocksReservados Is Nothing, 0, lIdStocksReservados.Count)),
+                                                 "IdsReservados", clsReservaMi3DebugTrace.Valor(If(hIdStocksReservados Is Nothing, 0, hIdStocksReservados.Count)),
                                                  "StockAProcesar", clsReservaMi3DebugTrace.Valor(lStock.Count),
+                                                 "Cache", clsReservaMi3DebugTrace.Valor(vCacheIds),
                                                  "Lookup", clsReservaMi3DebugTrace.Valor("HashSet"))
 
             Dim lIdsStockAProcesar As New List(Of Integer)
@@ -9045,13 +9119,55 @@ Partial Public Class clsLnStock_res
             Next
 
             vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
-            Dim dReservadoPorStock As Dictionary(Of Integer, System.Tuple(Of Double, Double)) =
-                Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(lIdsStockAProcesar, lConnection, lTransaction)
+            Dim dReservadoPorStock As New Dictionary(Of Integer, System.Tuple(Of Double, Double))()
+            Dim vCacheCantidades As String = "BD"
+
+            If vCacheStockReservado IsNot Nothing Then
+                Dim lIdsStockPendientes As New List(Of Integer)
+
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    For Each vIdStock As Integer In lIdsStockAProcesar
+                        If vCacheStockReservado.ReservadoPorStock.ContainsKey(vIdStock) Then
+                            dReservadoPorStock(vIdStock) = vCacheStockReservado.ReservadoPorStock(vIdStock)
+                        Else
+                            lIdsStockPendientes.Add(vIdStock)
+                        End If
+                    Next
+                End SyncLock
+
+                If lIdsStockPendientes.Count > 0 Then
+                    Dim dReservadoPendiente As Dictionary(Of Integer, System.Tuple(Of Double, Double)) =
+                        Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(lIdsStockPendientes, lConnection, lTransaction)
+
+                    SyncLock mReservaMi3StockReservadoCacheLock
+                        For Each vIdStock As Integer In lIdsStockPendientes
+                            Dim tReservado As System.Tuple(Of Double, Double) = Nothing
+
+                            If dReservadoPendiente.TryGetValue(vIdStock, tReservado) Then
+                                vCacheStockReservado.ReservadoPorStock(vIdStock) = tReservado
+                                dReservadoPorStock(vIdStock) = tReservado
+                            Else
+                                tReservado = New System.Tuple(Of Double, Double)(0, 0)
+                                vCacheStockReservado.ReservadoPorStock(vIdStock) = tReservado
+                                dReservadoPorStock(vIdStock) = tReservado
+                            End If
+                        Next
+                    End SyncLock
+
+                    vCacheCantidades = "Miss"
+                Else
+                    vCacheCantidades = "Hit"
+                End If
+            Else
+                dReservadoPorStock = Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(lIdsStockAProcesar, lConnection, lTransaction)
+            End If
+
             clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
                                                  "perf_get_cantidades_reservadas_stock_batch_despues",
                                                  vCronometro,
                                                  "StockAProcesar", clsReservaMi3DebugTrace.Valor(lIdsStockAProcesar.Count),
-                                                 "StockConReserva", clsReservaMi3DebugTrace.Valor(dReservadoPorStock.Count))
+                                                 "StockConReserva", clsReservaMi3DebugTrace.Valor(dReservadoPorStock.Where(Function(x) x.Value.Item1 <> 0 OrElse x.Value.Item2 <> 0).Count()),
+                                                 "Cache", clsReservaMi3DebugTrace.Valor(vCacheCantidades))
 
             For Each BeStock In lStock
 
@@ -26722,6 +26838,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
         Finally
             If vTraceCreadoLocal Then
                 clsReservaMi3DebugTrace.Finalizar(vReservaMi3Trace, IIf(Reserva_Stock_From_MI3, "OK", "FALSE"))
+                Limpiar_Cache_StockReservado_MI3(vReservaMi3Trace)
                 clsReservaMi3DebugTrace.LimpiarActual(vReservaMi3Trace)
             Else
                 clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
@@ -34933,6 +35050,7 @@ Public Class clsReservaMi3DebugTrace
 
     Public Shared Sub LimpiarActual(ByVal pArchivo As String)
         If String.Equals(mArchivoActual, pArchivo, StringComparison.OrdinalIgnoreCase) Then
+            clsLnStock_res.Limpiar_Cache_StockReservado_MI3(pArchivo)
             mArchivoActual = ""
         End If
     End Sub
