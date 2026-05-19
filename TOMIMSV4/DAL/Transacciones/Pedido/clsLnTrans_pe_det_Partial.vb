@@ -2209,13 +2209,21 @@ Partial Public Class clsLnTrans_pe_det
                                                    "Factor", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Factor))
                     If Not pBeTrasladoDet Is Nothing Then
                         If pBePedidoDet.IdPresentacion <> 0 Then
+                            Dim vStockResCantidadAntesNormalizacion As Double = pBeStockRes.Cantidad
+                            Dim vStockResIdPresentacionAntesNormalizacion As Integer = pBeStockRes.IdPresentacion
                             pBePedidoDet.Cantidad = Math.Ceiling(Math.Round(pBeTrasladoDet.Quantity * pBePedidoDet.Factor, 2))
                             pBePedidoDet.Nom_presentacion = ""
                             pBePedidoDet.IdPresentacion = 0
+                            pBeStockRes.Cantidad = pBePedidoDet.Cantidad
+                            pBeStockRes.IdPresentacion = 0
                             clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
                                                            "linea_convertida_a_umbas",
                                                            "Cantidad_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
-                                                           "IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.IdPresentacion))
+                                                           "IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.IdPresentacion),
+                                                           "StockRes_Cantidad_Antes", clsReservaMi3DebugTrace.Valor(vStockResCantidadAntesNormalizacion),
+                                                           "StockRes_IdPresentacion_Antes", clsReservaMi3DebugTrace.Valor(vStockResIdPresentacionAntesNormalizacion),
+                                                           "StockRes_Cantidad_Despues", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                                           "StockRes_IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
                         End If
                     End If
                 End If

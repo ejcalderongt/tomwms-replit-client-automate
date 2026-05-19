@@ -4794,6 +4794,10 @@ Partial Public Class clsLnStock_res
                 BeStockResPreviamenteInsertado.IdStockRes = BeStockRes.IdStockRes
                 BeStockResPreviamenteInsertado.IdProductoBodega = BeStockRes.IdProductoBodega
 
+                clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                       "stock_res_candidato_insert",
+                                                       BeStockRes)
+
                 If Not GetSingle(BeStockResPreviamenteInsertado,
                                  lConnection,
                                  ltransaction) Then
@@ -4804,9 +4808,25 @@ Partial Public Class clsLnStock_res
                     Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                     clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_insertando",
+                                                           BeStockRes,
+                                                           "PermitirDecimales", clsReservaMi3DebugTrace.Valor(vPermitirDecimales),
+                                                           "CantidadStockDestino", clsReservaMi3DebugTrace.Valor(CantidadStockDestino))
+
                     Insertar(BeStockRes,
                              lConnection,
                              ltransaction)
+
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_insertado",
+                                                           BeStockRes)
+
+                Else
+
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_omitido_ya_existia",
+                                                           BeStockResPreviamenteInsertado)
 
                 End If
 
@@ -25612,7 +25632,16 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                            "vBusquedaEnUmBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
                                                            "Explosion_Automatica", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Explosion_Automatica))
                             If pStockResSolicitud.IdPresentacion = 0 Then
-                                vCantidadDecimalUMBas = vCantidadPendiente
+                                If vCantidadPendiente > 0 Then
+                                    vCantidadDecimalUMBas = vCantidadPendiente
+                                Else
+                                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                                   "recursion_umbas_omitida_pendiente_no_positivo",
+                                                                   "vCantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente),
+                                                                   "vCantidadDecimalUMBas_Antes", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas))
+                                    vCantidadPendiente = 0
+                                    vCantidadDecimalUMBas = 0
+                                End If
                             ElseIf Not ((vCantidadCompletada AndAlso vCantidadPendiente > 0) AndAlso (pStockResSolicitud.IdPresentacion <> 0 AndAlso vCantidadDecimalUMBas = 0 AndAlso pBeConfigEnc.Explosion_Automatica)) AndAlso vBusquedaEnUmBas Then
                                 If vCantidadDecimalUMBas > 0 Then
                                     vCantidadPendiente = vCantidadDecimalUMBas
@@ -34467,6 +34496,9 @@ Public Class clsReservaMi3DebugTrace
     <ThreadStatic>
     Private Shared mArchivoActual As String
 
+    <ThreadStatic>
+    Private Shared mPasoActual As Integer
+
     Private Shared ReadOnly mLock As New Object()
 
     Public Shared Function EstaActivo() As Boolean
@@ -34533,6 +34565,7 @@ Public Class clsReservaMi3DebugTrace
             vLineas.Add("eventos:")
 
             System.IO.File.WriteAllLines(vArchivo, vLineas, System.Text.Encoding.UTF8)
+            mPasoActual = 0
             Return vArchivo
 
         Catch
@@ -34566,6 +34599,7 @@ Public Class clsReservaMi3DebugTrace
         Try
             Dim vLineas As New List(Of String)
             vLineas.Add("  - ts: """ & Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & """")
+            vLineas.Add("    paso: " & SiguientePaso())
             vLineas.Add("    etapa: """ & Normalizar(pEtapa) & """")
 
             If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
@@ -34594,6 +34628,59 @@ Public Class clsReservaMi3DebugTrace
 
     End Sub
 
+    Public Shared Sub EventoStockRes(ByVal pArchivo As String,
+                                     ByVal pEtapa As String,
+                                     ByVal pStockRes As clsBeStock_res,
+                                     ParamArray pPares() As String)
+
+        If pStockRes Is Nothing Then
+            Evento(pArchivo, pEtapa, pPares)
+            Return
+        End If
+
+        Dim vPares As New List(Of String)
+
+        vPares.Add("IdStockRes")
+        vPares.Add(Valor(pStockRes.IdStockRes))
+        vPares.Add("IdStock")
+        vPares.Add(Valor(pStockRes.IdStock))
+        vPares.Add("IdPedido")
+        vPares.Add(Valor(pStockRes.IdPedido))
+        vPares.Add("IdPedidoDet")
+        vPares.Add(Valor(pStockRes.IdPedidoDet))
+        vPares.Add("IdProductoBodega")
+        vPares.Add(Valor(pStockRes.IdProductoBodega))
+        vPares.Add("IdBodega")
+        vPares.Add(Valor(pStockRes.IdBodega))
+        vPares.Add("IdUbicacion")
+        vPares.Add(Valor(pStockRes.IdUbicacion))
+        vPares.Add("IdPresentacion")
+        vPares.Add(Valor(pStockRes.IdPresentacion))
+        vPares.Add("Cantidad")
+        vPares.Add(Valor(pStockRes.Cantidad))
+        vPares.Add("Peso")
+        vPares.Add(Valor(pStockRes.Peso))
+        vPares.Add("Lote")
+        vPares.Add(pStockRes.Lote)
+        vPares.Add("Lic_plate")
+        vPares.Add(pStockRes.Lic_plate)
+        vPares.Add("Serial")
+        vPares.Add(pStockRes.Serial)
+        vPares.Add("Fecha_vence")
+        vPares.Add(Valor(pStockRes.Fecha_vence))
+        vPares.Add("IdRecepcion")
+        vPares.Add(Valor(pStockRes.IdRecepcion))
+        vPares.Add("IdPicking")
+        vPares.Add(Valor(pStockRes.IdPicking))
+
+        If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+            vPares.AddRange(pPares)
+        End If
+
+        Evento(pArchivo, pEtapa, vPares.ToArray())
+
+    End Sub
+
     Public Shared Sub Finalizar(ByVal pArchivo As String, ByVal pEstado As String)
         Evento(pArchivo, "fin", "estado", pEstado)
     End Sub
@@ -34601,6 +34688,11 @@ Public Class clsReservaMi3DebugTrace
     Public Shared Function Valor(ByVal pValor As Object) As String
         If pValor Is Nothing OrElse pValor Is DBNull.Value Then Return ""
         Return Convert.ToString(pValor, Globalization.CultureInfo.InvariantCulture)
+    End Function
+
+    Private Shared Function SiguientePaso() As Integer
+        mPasoActual += 1
+        Return mPasoActual
     End Function
 
     Private Shared Function ObtenerDirectorio() As String
