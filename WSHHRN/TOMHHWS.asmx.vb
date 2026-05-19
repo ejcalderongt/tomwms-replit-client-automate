@@ -4897,26 +4897,24 @@ Public Class TOMHHWS
 
         Try
 
-
-
             If clsLnStock_res.Reservar_Y_Reemplazar_Stock_By_IdStock(IdStockReservarDesde,
-                                                            IdStockOriginal,
-                                                            CantSol,
-                                                            MaquinaQueSolicita,
-                                                            IdPickingEnc,
-                                                            IdPickingDet,
-                                                            IdPedidoEnc,
-                                                            IdUsuarioHH,
-                                                            IdPedidoDet,
-                                                            IdPickingUbic,
-                                                            EsPicking,
-                                                            IdPresentacionPedido,
-                                                            IdBodega,
-                                                            IdEmpresa,
-                                                            IdUbicDestino,
-                                                            IdProductoEstadoDestino,
-                                                            IdStockResOrigen,
-                                                            MarcarComoNE) Then
+                                                                    IdStockOriginal,
+                                                                    CantSol,
+                                                                    MaquinaQueSolicita,
+                                                                    IdPickingEnc,
+                                                                    IdPickingDet,
+                                                                    IdPedidoEnc,
+                                                                    IdUsuarioHH,
+                                                                    IdPedidoDet,
+                                                                    IdPickingUbic,
+                                                                    EsPicking,
+                                                                    IdPresentacionPedido,
+                                                                    IdBodega,
+                                                                    IdEmpresa,
+                                                                    IdUbicDestino,
+                                                                    IdProductoEstadoDestino,
+                                                                    IdStockResOrigen,
+                                                                    MarcarComoNE) Then
 
                 Reservar_Y_Reemplazar_Stock_By_IdStock = True
 
