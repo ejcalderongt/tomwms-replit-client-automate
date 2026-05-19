@@ -18310,7 +18310,7 @@ Partial Public Class clsLnStock_res
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 616 Then
+            If pStockResSolicitud.IdProductoBodega = 19 Then
                 Debug.Print("Aqui " & DiasVencimiento)
             End If
 
