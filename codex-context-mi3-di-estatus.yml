@@ -1,0 +1,128 @@
+contexto:
+  fecha: "2026-05-19"
+  agente: "Codex local / Mary Jane"
+  repo: "TOMWMS"
+  branch: "dev_2028_merge"
+  objetivo: "Continuidad de contexto para el endpoint MI3 de estatus de Documento de Ingreso."
+
+reglas_activas:
+  - "Antes de cualquier tarea TOMWMS: git pull --ff-only en C:\\Users\\yejc2\\source\\repos\\wms-brain."
+  - "No commit/push automatico sin confirmacion explicita de Erik en la sesion."
+  - "No mezclar HH Android y BOF/WebAPI en el mismo cambio."
+  - "Endpoints nuevos deben responder Forma A: { data, error }."
+  - "Controllers delgados; SQL/lecturas en DALCore; orquestacion en Services; modelos en EntityCore/Dtos."
+  - "No tocar Reference.vb."
+
+brain:
+  estado: "wms-brain sincronizado antes de los cambios."
+  nota_para_brain_keeper: >
+    Documentar mecanica API MI3: modelar DTOs en WMS.EntityCore/Dtos, encapsular lecturas
+    SQL en WMS.DALCore/clsLn*, orquestar en WMSWebAPI/Services, y exponer Controllers
+    delgados con respuesta Forma A. Para estatus DI, resolver OC por trans_oc_enc.Referencia,
+    luego usar IdOrdenCompraEnc interno para navegar trans_re_oc -> trans_re_enc/trans_re_det
+    -> tarea_hh.IdTransaccion.
+
+endpoint:
+  metodo: "GET"
+  ruta: "/api/sync/ingresos/mi3/di-estatus"
+  query:
+    referencia: "Referencia externa del documento. Ejemplo: ORDEMP-26083"
+  ejemplo:
+    url: "/api/sync/ingresos/mi3/di-estatus?referencia=ORDEMP-26083"
+  respuesta_forma_a:
+    ok: "{ data: <DocumentoIngresoEstatusResponseDto>, error: null }"
+    error: "{ data: null, error: { message: string, details?: string|null } }"
+
+modelo_respuesta_actual:
+  enfoque: "Resumido y agrupado por producto/linea de OC."
+  objetivo_principal:
+    - "Saber si cada producto de la OC ya fue recibido completamente."
+    - "Saber si la tarea HH asociada a las recepciones esta finalizada."
+  data:
+    referencia: "string"
+    idOrdenCompraEnc: "int"
+    estadoOC:
+      id: "int"
+      nombre: "string"
+    resumen:
+      totalLineas: "int"
+      lineasCompletas: "int"
+      lineasPendientes: "int"
+      recepcionCompleta: "bool"
+      tareasFinalizadas: "bool"
+    productos:
+      - noLinea: "int"
+        idOrdenCompraDet: "int"
+        idProductoBodega: "int"
+        codigoProducto: "string"
+        nombreProducto: "string"
+        presentacion: "string"
+        unidadMedida: "string"
+        cantidadSolicitada: "double"
+        cantidadRecibida: "double"
+        cantidadPendiente: "double"
+        recepcionCompleta: "bool"
+        tarea:
+          total: "int"
+          finalizadas: "int"
+          pendientes: "int"
+          finalizada: "bool"
+          estados:
+            - idEstado: "int"
+              estado: "Nuevo|Pendiente|Anulado|Finalizado"
+              cantidad: "int"
+
+reglas_negocio:
+  relacion_oc_recepcion_tarea:
+    oc: "trans_oc_enc.IdOrdenCompraEnc"
+    recepciones: "trans_re_oc.IdOrdenCompraEnc -> trans_re_oc.IdRecepcionEnc"
+    tarea_hh: "tarea_hh.IdTransaccion = trans_re_oc.IdRecepcionEnc"
+    tipo_tarea_recepcion: "IdTipoTarea = 1"
+  sis_estado_tarea_hh:
+    1: "Nuevo"
+    2: "Pendiente"
+    3: "Anulado"
+    4: "Finalizado"
+  calculos:
+    recepcionCompleta_producto: "cantidadRecibida >= cantidadSolicitada"
+    tarea_finalizada_producto: "todas las tareas asociadas a recepciones de esa linea tienen IdEstado = 4"
+    recepcionCompleta_resumen: "todas las lineas tienen recepcionCompleta = true"
+    tareasFinalizadas_resumen: "existe al menos una tarea y todas las tareas HH asociadas tienen IdEstado = 4"
+
+archivos_modificados:
+  - path: "WMS.EntityCore/Dtos/Ingresos/DocumentoIngresoEstatusDto.cs"
+    cambio: "DTO resumido para di-estatus: estadoOC, resumen y productos agrupados."
+  - path: "WMS.DALCore/Datos_Maestros/clsLnTarea_hh.cs"
+    cambio: "Helper Get_Tarea_Recepcion_By_IdRecepcionEnc(config, idRecepcionEnc)."
+  - path: "WMS.DALCore/Trans_oc/clsLnTrans_oc_enc.cs"
+    cambio: "Overload Get_Single_By_Referencia(config, referencia), preservando lectura de detalle OC y lotes."
+    nota: "Archivo tenia codificacion no UTF-8; se edito preservando Windows-1252."
+  - path: "WMSWebAPI/Services/Ingresos/ISyncIngresosService.cs"
+    cambio: "Firma GetDocumentoIngresoEstatus(string referencia)."
+  - path: "WMSWebAPI/Services/Ingresos/SyncIngresosService.cs"
+    cambio: "Orquesta busqueda por referencia, recepciones, tareas HH y resumen agrupado por producto."
+  - path: "WMSWebAPI/Controllers/SyncIngresosController.cs"
+    cambio: "Endpoint GET mi3/di-estatus con query referencia y respuesta Forma A."
+
+verificacion:
+  comando: "dotnet build C:\\Users\\yejc2\\source\\repos\\TOMWMS\\WMSWebAPI\\WMSWebAPI.csproj"
+  resultado: "Compilacion correcta."
+  warnings:
+    - "2 warnings preexistentes de nullable en WMS.DALCore/Reserva_Stock/Strategies; no relacionados con el cambio."
+
+estado_git:
+  commit: "No realizado."
+  push: "No realizado."
+  archivos_pendientes:
+    - "WMS.DALCore/Datos_Maestros/clsLnTarea_hh.cs"
+    - "WMS.DALCore/Trans_oc/clsLnTrans_oc_enc.cs"
+    - "WMSWebAPI/Controllers/SyncIngresosController.cs"
+    - "WMSWebAPI/Services/Ingresos/ISyncIngresosService.cs"
+    - "WMSWebAPI/Services/Ingresos/SyncIngresosService.cs"
+    - "WMS.EntityCore/Dtos/Ingresos/DocumentoIngresoEstatusDto.cs"
+
+pendientes_sugeridos:
+  - "Probar endpoint con una referencia real: ORDEMP-26083."
+  - "Confirmar si una linea puede tener varias recepciones con tareas distintas y si el resumen por linea debe considerar todas o solo la ultima."
+  - "Si Erik aprueba, documentar esta mecanica en wms-brain mediante handoff/LEARNINGS."
+  - "Si se autoriza commit, usar formato: #EJCRP feat(mi3): agrega estatus DI por referencia [brain:handoffs/<slug>]"
