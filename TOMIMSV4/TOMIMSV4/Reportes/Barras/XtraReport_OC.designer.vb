@@ -25,8 +25,8 @@ Partial Public Class XtraReport_OC
         Me.XrTableCell1 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.TopMargin = New DevExpress.XtraReports.UI.TopMarginBand()
         Me.BottomMargin = New DevExpress.XtraReports.UI.BottomMarginBand()
-        Me.CodBarras1 = New TOMWMS.CodBarras()
-        Me.Codigo_BarraTableAdapter = New TOMWMS.CodBarrasTableAdapters.Codigo_BarraTableAdapter()
+        Me.CodBarras1 = New CodBarras()
+        Me.Codigo_BarraTableAdapter = New CodBarrasTableAdapters.Codigo_BarraTableAdapter()
         Me.XrTableCell2 = New DevExpress.XtraReports.UI.XRTableCell()
         CType(Me.XrTable1,System.ComponentModel.ISupportInitialize).BeginInit
         CType(Me.CodBarras1,System.ComponentModel.ISupportInitialize).BeginInit

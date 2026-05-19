@@ -26,7 +26,7 @@ Partial Class frmResumenStock
         Me.grdResumenStock = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DsResumenStockBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsResumenStock = New TOMWMS.DsResumenStock()
+        Me.DsResumenStock = New DsResumenStock()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colIdProducto = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colPropietario = New DevExpress.XtraGrid.Columns.GridColumn()

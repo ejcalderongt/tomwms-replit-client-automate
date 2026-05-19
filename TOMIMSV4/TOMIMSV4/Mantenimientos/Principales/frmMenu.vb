@@ -5682,4 +5682,32 @@ Public Class frmMenu
     '    End Try
 
     'End Sub
+
+    Private Sub mnurptIndicadorAjusteProveedor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnurptIndicadorAjusteProveedor.ItemClick
+
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmIndicadorAjusteProveedor)
+
+            With frmIndicadorAjusteProveedor
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
 End Class

@@ -827,7 +827,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -1306,7 +1306,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                    esImplosion)
 
             pStockRes.Lic_plate = pStockRes.Lic_plate_Anterior
-            pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
+            '#CKFK20260518 Puse esto en comentario porque la presentacion no se debe cambiar
+            'pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
 
             If pStockRes.Lic_plate_Anterior = "" Then
                 ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes, lConnection, lTransaction)
@@ -1448,7 +1449,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdStockNuevo As Integer = 0
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")

@@ -58,7 +58,7 @@ Partial Class frmMotivo_Anulacion
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsMotivoAnulacion = New TOMWMS.DsMotivoAnulacion()
+        Me.DsMotivoAnulacion = New DsMotivoAnulacion()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -637,7 +637,7 @@ End Sub
     Friend WithEvents lblCodigo As System.Windows.Forms.Label
     Friend WithEvents NombreTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsMotivoAnulacion As TOMWMS.DsMotivoAnulacion
+    Friend WithEvents DsMotivoAnulacion As DsMotivoAnulacion
     Friend WithEvents chkActivo As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents Fec_agrDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_agrTextEdit As DevExpress.XtraEditors.TextEdit

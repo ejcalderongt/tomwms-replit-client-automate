@@ -203,7 +203,7 @@ Partial Class frmPicking
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.grdOperadorBodega = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOrdenCompraRecepcionOperador = New TOMWMS.DsOrdenCompraRecepcionOperador()
+        Me.DsOrdenCompraRecepcionOperador = New DsOrdenCompraRecepcionOperador()
         Me.DgridOperadorBodega = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colIdOperadorBodega = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colSelección = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -2406,7 +2406,7 @@ Partial Class frmPicking
     Friend WithEvents dtmHoraF As System.Windows.Forms.DateTimePicker
     Friend WithEvents dtmHoraI As System.Windows.Forms.DateTimePicker
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOrdenCompraRecepcionOperador As TOMWMS.DsOrdenCompraRecepcionOperador
+    Friend WithEvents DsOrdenCompraRecepcionOperador As DsOrdenCompraRecepcionOperador
     Friend WithEvents cmdImprimir As DevExpress.XtraBars.BarSubItem
     Friend WithEvents cmdListaUbicacion As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents GroupControl2 As DevExpress.XtraEditors.GroupControl

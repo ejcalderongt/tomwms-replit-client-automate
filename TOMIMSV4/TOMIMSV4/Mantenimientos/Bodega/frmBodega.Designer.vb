@@ -472,6 +472,8 @@ Partial Class frmBodega
         Me.chkcalcular_ubicacion_sugerida_ml = New DevExpress.XtraEditors.CheckEdit()
         Me.chkPermitirDecimales = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.Label95 = New System.Windows.Forms.Label()
+        Me.chkControlGuia = New DevExpress.XtraEditors.CheckEdit()
         Me.chkOperadorPickingVerifica = New DevExpress.XtraEditors.CheckEdit()
         Me.chkPermitirNoEncontradoPicking = New DevExpress.XtraEditors.CheckEdit()
         Me.chkPermitirReemplazoPickingMismaLIcencia = New DevExpress.XtraEditors.CheckEdit()
@@ -550,8 +552,8 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.Label95 = New System.Windows.Forms.Label()
-        Me.chkControlGuia = New DevExpress.XtraEditors.CheckEdit()
+        Me.Label96 = New System.Windows.Forms.Label()
+        Me.chkUbicImplosionAuto = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -934,6 +936,7 @@ Partial Class frmBodega
         CType(Me.chkcalcular_ubicacion_sugerida_ml.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkPermitirDecimales.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
+        CType(Me.chkControlGuia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkOperadorPickingVerifica.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkPermitirNoEncontradoPicking.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkPermitirReemplazoPickingMismaLIcencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -990,7 +993,7 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkControlGuia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkUbicImplosionAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -1889,7 +1892,7 @@ Partial Class frmBodega
         Label54.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label54.AutoSize = True
-        Label54.Location = New System.Drawing.Point(7, 206)
+        Label54.Location = New System.Drawing.Point(7, 190)
         Label54.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label54.Name = "Label54"
         Label54.Size = New System.Drawing.Size(252, 16)
@@ -1925,7 +1928,7 @@ Partial Class frmBodega
         lblControlOperadorPorUbicacion.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblControlOperadorPorUbicacion.AutoSize = True
-        lblControlOperadorPorUbicacion.Location = New System.Drawing.Point(7, 178)
+        lblControlOperadorPorUbicacion.Location = New System.Drawing.Point(7, 162)
         lblControlOperadorPorUbicacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblControlOperadorPorUbicacion.Name = "lblControlOperadorPorUbicacion"
         lblControlOperadorPorUbicacion.Size = New System.Drawing.Size(202, 16)
@@ -1937,7 +1940,7 @@ Partial Class frmBodega
         lblEscanearCodigoProductoEnPicking.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblEscanearCodigoProductoEnPicking.AutoSize = True
-        lblEscanearCodigoProductoEnPicking.Location = New System.Drawing.Point(9, 209)
+        lblEscanearCodigoProductoEnPicking.Location = New System.Drawing.Point(12, 198)
         lblEscanearCodigoProductoEnPicking.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblEscanearCodigoProductoEnPicking.Name = "lblEscanearCodigoProductoEnPicking"
         lblEscanearCodigoProductoEnPicking.Size = New System.Drawing.Size(235, 16)
@@ -1949,7 +1952,7 @@ Partial Class frmBodega
         lblinferir_origen_en_cambio_ubic.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblinferir_origen_en_cambio_ubic.AutoSize = True
-        lblinferir_origen_en_cambio_ubic.Location = New System.Drawing.Point(7, 231)
+        lblinferir_origen_en_cambio_ubic.Location = New System.Drawing.Point(7, 215)
         lblinferir_origen_en_cambio_ubic.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblinferir_origen_en_cambio_ubic.Name = "lblinferir_origen_en_cambio_ubic"
         lblinferir_origen_en_cambio_ubic.Size = New System.Drawing.Size(277, 16)
@@ -1973,7 +1976,7 @@ Partial Class frmBodega
         lblPickeadorVerifica.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblPickeadorVerifica.AutoSize = True
-        lblPickeadorVerifica.Location = New System.Drawing.Point(8, 36)
+        lblPickeadorVerifica.Location = New System.Drawing.Point(12, 25)
         lblPickeadorVerifica.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblPickeadorVerifica.Name = "lblPickeadorVerifica"
         lblPickeadorVerifica.Size = New System.Drawing.Size(236, 16)
@@ -1985,7 +1988,7 @@ Partial Class frmBodega
         lblPermitirCambioDeUbicacionEnPicking.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblPermitirCambioDeUbicacionEnPicking.AutoSize = True
-        lblPermitirCambioDeUbicacionEnPicking.Location = New System.Drawing.Point(8, 238)
+        lblPermitirCambioDeUbicacionEnPicking.Location = New System.Drawing.Point(12, 227)
         lblPermitirCambioDeUbicacionEnPicking.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblPermitirCambioDeUbicacionEnPicking.Name = "lblPermitirCambioDeUbicacionEnPicking"
         lblPermitirCambioDeUbicacionEnPicking.Size = New System.Drawing.Size(318, 16)
@@ -1997,7 +2000,7 @@ Partial Class frmBodega
         Label58.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label58.AutoSize = True
-        Label58.Location = New System.Drawing.Point(8, 182)
+        Label58.Location = New System.Drawing.Point(12, 171)
         Label58.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label58.Name = "Label58"
         Label58.Size = New System.Drawing.Size(291, 16)
@@ -2022,7 +2025,7 @@ Partial Class frmBodega
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblrestringir_vencimiento_en_reemplazo.AutoSize = True
         lblrestringir_vencimiento_en_reemplazo.ForeColor = System.Drawing.Color.Firebrick
-        lblrestringir_vencimiento_en_reemplazo.Location = New System.Drawing.Point(7, 37)
+        lblrestringir_vencimiento_en_reemplazo.Location = New System.Drawing.Point(7, 21)
         lblrestringir_vencimiento_en_reemplazo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblrestringir_vencimiento_en_reemplazo.Name = "lblrestringir_vencimiento_en_reemplazo"
         lblrestringir_vencimiento_en_reemplazo.Size = New System.Drawing.Size(216, 16)
@@ -2035,7 +2038,7 @@ Partial Class frmBodega
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblrestringir_lote_en_reemplazo.AutoSize = True
         lblrestringir_lote_en_reemplazo.ForeColor = System.Drawing.Color.Firebrick
-        lblrestringir_lote_en_reemplazo.Location = New System.Drawing.Point(7, 65)
+        lblrestringir_lote_en_reemplazo.Location = New System.Drawing.Point(7, 49)
         lblrestringir_lote_en_reemplazo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblrestringir_lote_en_reemplazo.Name = "lblrestringir_lote_en_reemplazo"
         lblrestringir_lote_en_reemplazo.Size = New System.Drawing.Size(175, 16)
@@ -2071,7 +2074,7 @@ Partial Class frmBodega
         Label66.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label66.AutoSize = True
-        Label66.Location = New System.Drawing.Point(7, 151)
+        Label66.Location = New System.Drawing.Point(7, 135)
         Label66.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label66.Name = "Label66"
         Label66.Size = New System.Drawing.Size(281, 16)
@@ -2107,7 +2110,7 @@ Partial Class frmBodega
         Label68.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label68.AutoSize = True
-        Label68.Location = New System.Drawing.Point(10, 266)
+        Label68.Location = New System.Drawing.Point(12, 255)
         Label68.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label68.Name = "Label68"
         Label68.Size = New System.Drawing.Size(173, 16)
@@ -2119,7 +2122,7 @@ Partial Class frmBodega
         Label69.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label69.AutoSize = True
-        Label69.Location = New System.Drawing.Point(12, 293)
+        Label69.Location = New System.Drawing.Point(12, 282)
         Label69.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label69.Name = "Label69"
         Label69.Size = New System.Drawing.Size(181, 16)
@@ -2131,7 +2134,7 @@ Partial Class frmBodega
         Label70.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label70.AutoSize = True
-        Label70.Location = New System.Drawing.Point(8, 154)
+        Label70.Location = New System.Drawing.Point(12, 143)
         Label70.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label70.Name = "Label70"
         Label70.Size = New System.Drawing.Size(177, 16)
@@ -2155,7 +2158,7 @@ Partial Class frmBodega
         Label72.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label72.AutoSize = True
-        Label72.Location = New System.Drawing.Point(8, 65)
+        Label72.Location = New System.Drawing.Point(12, 54)
         Label72.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label72.Name = "Label72"
         Label72.Size = New System.Drawing.Size(199, 16)
@@ -2167,7 +2170,7 @@ Partial Class frmBodega
         lblPermitirReemplazoPickingMismaLIcencia.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblPermitirReemplazoPickingMismaLIcencia.AutoSize = True
-        lblPermitirReemplazoPickingMismaLIcencia.Location = New System.Drawing.Point(8, 94)
+        lblPermitirReemplazoPickingMismaLIcencia.Location = New System.Drawing.Point(12, 83)
         lblPermitirReemplazoPickingMismaLIcencia.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblPermitirReemplazoPickingMismaLIcencia.Name = "lblPermitirReemplazoPickingMismaLIcencia"
         lblPermitirReemplazoPickingMismaLIcencia.Size = New System.Drawing.Size(305, 16)
@@ -2191,7 +2194,7 @@ Partial Class frmBodega
         Label76.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label76.AutoSize = True
-        Label76.Location = New System.Drawing.Point(7, 98)
+        Label76.Location = New System.Drawing.Point(7, 82)
         Label76.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label76.Name = "Label76"
         Label76.Size = New System.Drawing.Size(199, 16)
@@ -2238,7 +2241,7 @@ Partial Class frmBodega
         Label79.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label79.AutoSize = True
-        Label79.Location = New System.Drawing.Point(7, 258)
+        Label79.Location = New System.Drawing.Point(7, 242)
         Label79.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label79.Name = "Label79"
         Label79.Size = New System.Drawing.Size(118, 16)
@@ -2274,7 +2277,7 @@ Partial Class frmBodega
         lblControlTallaColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblControlTallaColor.AutoSize = True
-        lblControlTallaColor.Location = New System.Drawing.Point(8, 286)
+        lblControlTallaColor.Location = New System.Drawing.Point(8, 270)
         lblControlTallaColor.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblControlTallaColor.Name = "lblControlTallaColor"
         lblControlTallaColor.Size = New System.Drawing.Size(115, 16)
@@ -2378,7 +2381,7 @@ Partial Class frmBodega
         Me.lblControlGondola.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblControlGondola.AutoSize = True
-        Me.lblControlGondola.Location = New System.Drawing.Point(8, 338)
+        Me.lblControlGondola.Location = New System.Drawing.Point(8, 322)
         Me.lblControlGondola.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblControlGondola.Name = "lblControlGondola"
         Me.lblControlGondola.Size = New System.Drawing.Size(97, 16)
@@ -2424,7 +2427,7 @@ Partial Class frmBodega
         Me.lblHomologarLoteConFechaVence.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblHomologarLoteConFechaVence.AutoSize = True
-        Me.lblHomologarLoteConFechaVence.Location = New System.Drawing.Point(7, 124)
+        Me.lblHomologarLoteConFechaVence.Location = New System.Drawing.Point(7, 108)
         Me.lblHomologarLoteConFechaVence.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblHomologarLoteConFechaVence.Name = "lblHomologarLoteConFechaVence"
         Me.lblHomologarLoteConFechaVence.Size = New System.Drawing.Size(243, 16)
@@ -2436,7 +2439,7 @@ Partial Class frmBodega
         Me.lblEscanearLicenciaPicking.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblEscanearLicenciaPicking.AutoSize = True
-        Me.lblEscanearLicenciaPicking.Location = New System.Drawing.Point(8, 124)
+        Me.lblEscanearLicenciaPicking.Location = New System.Drawing.Point(12, 113)
         Me.lblEscanearLicenciaPicking.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblEscanearLicenciaPicking.Name = "lblEscanearLicenciaPicking"
         Me.lblEscanearLicenciaPicking.Size = New System.Drawing.Size(166, 16)
@@ -4997,14 +5000,14 @@ Partial Class frmBodega
         Me.GroupBox5.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox5.Name = "GroupBox5"
         Me.GroupBox5.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox5.Size = New System.Drawing.Size(354, 366)
+        Me.GroupBox5.Size = New System.Drawing.Size(354, 347)
         Me.GroupBox5.TabIndex = 124
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Operacion Mixta"
         '
         'chkControlGondola
         '
-        Me.chkControlGondola.Location = New System.Drawing.Point(318, 331)
+        Me.chkControlGondola.Location = New System.Drawing.Point(318, 315)
         Me.chkControlGondola.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkControlGondola.Name = "chkControlGondola"
         Me.chkControlGondola.Properties.Caption = ""
@@ -5015,7 +5018,7 @@ Partial Class frmBodega
         'Label82
         '
         Me.Label82.AutoSize = True
-        Me.Label82.Location = New System.Drawing.Point(9, 313)
+        Me.Label82.Location = New System.Drawing.Point(9, 297)
         Me.Label82.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label82.Name = "Label82"
         Me.Label82.Size = New System.Drawing.Size(143, 16)
@@ -5025,7 +5028,7 @@ Partial Class frmBodega
         'nudRangoDiasDocumentos
         '
         Me.nudRangoDiasDocumentos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.nudRangoDiasDocumentos.Location = New System.Drawing.Point(290, 306)
+        Me.nudRangoDiasDocumentos.Location = New System.Drawing.Point(290, 290)
         Me.nudRangoDiasDocumentos.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.nudRangoDiasDocumentos.Maximum = New Decimal(New Integer() {365, 0, 0, 0})
         Me.nudRangoDiasDocumentos.Name = "nudRangoDiasDocumentos"
@@ -5034,7 +5037,7 @@ Partial Class frmBodega
         '
         'chkControlTallaColor
         '
-        Me.chkControlTallaColor.Location = New System.Drawing.Point(317, 278)
+        Me.chkControlTallaColor.Location = New System.Drawing.Point(317, 262)
         Me.chkControlTallaColor.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkControlTallaColor.Name = "chkControlTallaColor"
         Me.chkControlTallaColor.Properties.Caption = ""
@@ -5044,7 +5047,7 @@ Partial Class frmBodega
         '
         'chkrestringir_vencimiento_en_reemplazo
         '
-        Me.chkrestringir_vencimiento_en_reemplazo.Location = New System.Drawing.Point(315, 37)
+        Me.chkrestringir_vencimiento_en_reemplazo.Location = New System.Drawing.Point(315, 21)
         Me.chkrestringir_vencimiento_en_reemplazo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkrestringir_vencimiento_en_reemplazo.Name = "chkrestringir_vencimiento_en_reemplazo"
         Me.chkrestringir_vencimiento_en_reemplazo.Properties.Caption = ""
@@ -5054,7 +5057,7 @@ Partial Class frmBodega
         '
         'chkrestringir_lote_en_reemplazo
         '
-        Me.chkrestringir_lote_en_reemplazo.Location = New System.Drawing.Point(315, 64)
+        Me.chkrestringir_lote_en_reemplazo.Location = New System.Drawing.Point(315, 48)
         Me.chkrestringir_lote_en_reemplazo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkrestringir_lote_en_reemplazo.Name = "chkrestringir_lote_en_reemplazo"
         Me.chkrestringir_lote_en_reemplazo.Properties.Caption = ""
@@ -5064,7 +5067,7 @@ Partial Class frmBodega
         '
         'chkLberarStockDepachosParciales
         '
-        Me.chkLberarStockDepachosParciales.Location = New System.Drawing.Point(316, 94)
+        Me.chkLberarStockDepachosParciales.Location = New System.Drawing.Point(316, 78)
         Me.chkLberarStockDepachosParciales.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.chkLberarStockDepachosParciales.Name = "chkLberarStockDepachosParciales"
         Me.chkLberarStockDepachosParciales.Properties.Caption = ""
@@ -5073,7 +5076,7 @@ Partial Class frmBodega
         '
         'chkHomologarLoteConFechaVence
         '
-        Me.chkHomologarLoteConFechaVence.Location = New System.Drawing.Point(316, 121)
+        Me.chkHomologarLoteConFechaVence.Location = New System.Drawing.Point(316, 105)
         Me.chkHomologarLoteConFechaVence.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkHomologarLoteConFechaVence.Name = "chkHomologarLoteConFechaVence"
         Me.chkHomologarLoteConFechaVence.Properties.Caption = ""
@@ -5082,7 +5085,7 @@ Partial Class frmBodega
         '
         'chkValidarExistenciasEnCargaInventarioInicial
         '
-        Me.chkValidarExistenciasEnCargaInventarioInicial.Location = New System.Drawing.Point(316, 146)
+        Me.chkValidarExistenciasEnCargaInventarioInicial.Location = New System.Drawing.Point(316, 130)
         Me.chkValidarExistenciasEnCargaInventarioInicial.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkValidarExistenciasEnCargaInventarioInicial.Name = "chkValidarExistenciasEnCargaInventarioInicial"
         Me.chkValidarExistenciasEnCargaInventarioInicial.Properties.Caption = ""
@@ -5094,7 +5097,7 @@ Partial Class frmBodega
         '
         'chkControlPalletsMixtos
         '
-        Me.chkControlPalletsMixtos.Location = New System.Drawing.Point(317, 251)
+        Me.chkControlPalletsMixtos.Location = New System.Drawing.Point(317, 235)
         Me.chkControlPalletsMixtos.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkControlPalletsMixtos.Name = "chkControlPalletsMixtos"
         Me.chkControlPalletsMixtos.Properties.Caption = ""
@@ -5104,7 +5107,7 @@ Partial Class frmBodega
         '
         'chkControlOperadorUbicacion
         '
-        Me.chkControlOperadorUbicacion.Location = New System.Drawing.Point(317, 172)
+        Me.chkControlOperadorUbicacion.Location = New System.Drawing.Point(317, 156)
         Me.chkControlOperadorUbicacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkControlOperadorUbicacion.Name = "chkControlOperadorUbicacion"
         Me.chkControlOperadorUbicacion.Properties.Caption = ""
@@ -5115,7 +5118,7 @@ Partial Class frmBodega
         '
         'chkinferir_origen_en_cambio_ubic
         '
-        Me.chkinferir_origen_en_cambio_ubic.Location = New System.Drawing.Point(317, 225)
+        Me.chkinferir_origen_en_cambio_ubic.Location = New System.Drawing.Point(317, 209)
         Me.chkinferir_origen_en_cambio_ubic.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkinferir_origen_en_cambio_ubic.Name = "chkinferir_origen_en_cambio_ubic"
         Me.chkinferir_origen_en_cambio_ubic.Properties.Caption = ""
@@ -5126,7 +5129,7 @@ Partial Class frmBodega
         '
         'chkValidarDisponibilidadEnUbicacionDestino
         '
-        Me.chkValidarDisponibilidadEnUbicacionDestino.Location = New System.Drawing.Point(317, 199)
+        Me.chkValidarDisponibilidadEnUbicacionDestino.Location = New System.Drawing.Point(317, 183)
         Me.chkValidarDisponibilidadEnUbicacionDestino.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkValidarDisponibilidadEnUbicacionDestino.Name = "chkValidarDisponibilidadEnUbicacionDestino"
         Me.chkValidarDisponibilidadEnUbicacionDestino.Properties.Caption = ""
@@ -5137,6 +5140,8 @@ Partial Class frmBodega
         '
         'GroupBox4
         '
+        Me.GroupBox4.Controls.Add(Me.Label96)
+        Me.GroupBox4.Controls.Add(Me.chkUbicImplosionAuto)
         Me.GroupBox4.Controls.Add(Me.chkBodegaClienteAjusteByB)
         Me.GroupBox4.Controls.Add(Me.lblBodegaClienteAjusteByB)
         Me.GroupBox4.Controls.Add(Me.chkreemplazoOpcional)
@@ -5173,11 +5178,11 @@ Partial Class frmBodega
         Me.GroupBox4.Controls.Add(Me.chkPermitirCambioUbicIndiceMenor)
         Me.GroupBox4.Controls.Add(Me.lblRequerirMismoProductoPosiciones)
         Me.GroupBox4.Controls.Add(Me.chkRequerirMismoProductoPosiciones)
-        Me.GroupBox4.Location = New System.Drawing.Point(435, 407)
+        Me.GroupBox4.Location = New System.Drawing.Point(435, 390)
         Me.GroupBox4.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox4.Size = New System.Drawing.Size(724, 290)
+        Me.GroupBox4.Size = New System.Drawing.Size(724, 316)
         Me.GroupBox4.TabIndex = 123
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Salidas"
@@ -5459,7 +5464,7 @@ Partial Class frmBodega
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox3.Size = New System.Drawing.Size(410, 366)
+        Me.GroupBox3.Size = New System.Drawing.Size(410, 347)
         Me.GroupBox3.TabIndex = 122
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Generales"
@@ -5601,14 +5606,36 @@ Partial Class frmBodega
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox2.Size = New System.Drawing.Size(369, 364)
+        Me.GroupBox2.Size = New System.Drawing.Size(369, 347)
         Me.GroupBox2.TabIndex = 121
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Picking"
         '
+        'Label95
+        '
+        Me.Label95.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label95.AutoSize = True
+        Me.Label95.Location = New System.Drawing.Point(12, 305)
+        Me.Label95.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label95.Name = "Label95"
+        Me.Label95.Size = New System.Drawing.Size(76, 16)
+        Me.Label95.TabIndex = 127
+        Me.Label95.Text = "Control guía"
+        '
+        'chkControlGuia
+        '
+        Me.chkControlGuia.Location = New System.Drawing.Point(344, 301)
+        Me.chkControlGuia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkControlGuia.Name = "chkControlGuia"
+        Me.chkControlGuia.Properties.Caption = ""
+        Me.chkControlGuia.Size = New System.Drawing.Size(28, 24)
+        Me.chkControlGuia.TabIndex = 126
+        Me.chkControlGuia.ToolTip = "Restringir áeras de SAP"
+        '
         'chkOperadorPickingVerifica
         '
-        Me.chkOperadorPickingVerifica.Location = New System.Drawing.Point(341, 32)
+        Me.chkOperadorPickingVerifica.Location = New System.Drawing.Point(341, 21)
         Me.chkOperadorPickingVerifica.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkOperadorPickingVerifica.Name = "chkOperadorPickingVerifica"
         Me.chkOperadorPickingVerifica.Properties.Caption = ""
@@ -5619,7 +5646,7 @@ Partial Class frmBodega
         '
         'chkPermitirNoEncontradoPicking
         '
-        Me.chkPermitirNoEncontradoPicking.Location = New System.Drawing.Point(341, 60)
+        Me.chkPermitirNoEncontradoPicking.Location = New System.Drawing.Point(341, 49)
         Me.chkPermitirNoEncontradoPicking.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkPermitirNoEncontradoPicking.Name = "chkPermitirNoEncontradoPicking"
         Me.chkPermitirNoEncontradoPicking.Properties.Caption = ""
@@ -5628,7 +5655,7 @@ Partial Class frmBodega
         '
         'chkPermitirReemplazoPickingMismaLIcencia
         '
-        Me.chkPermitirReemplazoPickingMismaLIcencia.Location = New System.Drawing.Point(341, 90)
+        Me.chkPermitirReemplazoPickingMismaLIcencia.Location = New System.Drawing.Point(341, 79)
         Me.chkPermitirReemplazoPickingMismaLIcencia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkPermitirReemplazoPickingMismaLIcencia.Name = "chkPermitirReemplazoPickingMismaLIcencia"
         Me.chkPermitirReemplazoPickingMismaLIcencia.Properties.Caption = ""
@@ -5637,7 +5664,7 @@ Partial Class frmBodega
         '
         'chkEscanearLicenciaPicking
         '
-        Me.chkEscanearLicenciaPicking.Location = New System.Drawing.Point(341, 121)
+        Me.chkEscanearLicenciaPicking.Location = New System.Drawing.Point(341, 110)
         Me.chkEscanearLicenciaPicking.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkEscanearLicenciaPicking.Name = "chkEscanearLicenciaPicking"
         Me.chkEscanearLicenciaPicking.Properties.Caption = ""
@@ -5646,7 +5673,7 @@ Partial Class frmBodega
         '
         'chkPermitirReemplazoPicking
         '
-        Me.chkPermitirReemplazoPicking.Location = New System.Drawing.Point(341, 148)
+        Me.chkPermitirReemplazoPicking.Location = New System.Drawing.Point(341, 137)
         Me.chkPermitirReemplazoPicking.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkPermitirReemplazoPicking.Name = "chkPermitirReemplazoPicking"
         Me.chkPermitirReemplazoPicking.Properties.Caption = ""
@@ -5655,7 +5682,7 @@ Partial Class frmBodega
         '
         'chkpermitir_buen_estado_en_reemplazo
         '
-        Me.chkpermitir_buen_estado_en_reemplazo.Location = New System.Drawing.Point(341, 176)
+        Me.chkpermitir_buen_estado_en_reemplazo.Location = New System.Drawing.Point(341, 165)
         Me.chkpermitir_buen_estado_en_reemplazo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkpermitir_buen_estado_en_reemplazo.Name = "chkpermitir_buen_estado_en_reemplazo"
         Me.chkpermitir_buen_estado_en_reemplazo.Properties.Caption = ""
@@ -5665,7 +5692,7 @@ Partial Class frmBodega
         '
         'chkEscanearCodigoProductoEnPicking
         '
-        Me.chkEscanearCodigoProductoEnPicking.Location = New System.Drawing.Point(341, 206)
+        Me.chkEscanearCodigoProductoEnPicking.Location = New System.Drawing.Point(341, 195)
         Me.chkEscanearCodigoProductoEnPicking.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkEscanearCodigoProductoEnPicking.Name = "chkEscanearCodigoProductoEnPicking"
         Me.chkEscanearCodigoProductoEnPicking.Properties.Caption = ""
@@ -5676,7 +5703,7 @@ Partial Class frmBodega
         '
         'chkPermitirCambioUbicacionPicking
         '
-        Me.chkPermitirCambioUbicacionPicking.Location = New System.Drawing.Point(341, 231)
+        Me.chkPermitirCambioUbicacionPicking.Location = New System.Drawing.Point(341, 220)
         Me.chkPermitirCambioUbicacionPicking.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkPermitirCambioUbicacionPicking.Name = "chkPermitirCambioUbicacionPicking"
         Me.chkPermitirCambioUbicacionPicking.Properties.Caption = ""
@@ -5687,7 +5714,7 @@ Partial Class frmBodega
         '
         'chkOrdenarPickingDescendente
         '
-        Me.chkOrdenarPickingDescendente.Location = New System.Drawing.Point(341, 258)
+        Me.chkOrdenarPickingDescendente.Location = New System.Drawing.Point(341, 247)
         Me.chkOrdenarPickingDescendente.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkOrdenarPickingDescendente.Name = "chkOrdenarPickingDescendente"
         Me.chkOrdenarPickingDescendente.Properties.Caption = ""
@@ -5699,7 +5726,7 @@ Partial Class frmBodega
         '
         'chkOrdenarNombreCompleto
         '
-        Me.chkOrdenarNombreCompleto.Location = New System.Drawing.Point(341, 286)
+        Me.chkOrdenarNombreCompleto.Location = New System.Drawing.Point(341, 275)
         Me.chkOrdenarNombreCompleto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.chkOrdenarNombreCompleto.Name = "chkOrdenarNombreCompleto"
         Me.chkOrdenarNombreCompleto.Properties.Caption = ""
@@ -5724,11 +5751,11 @@ Partial Class frmBodega
         Me.GroupBox1.Controls.Add(Me.chkCapturaEstibaIngreso)
         Me.GroupBox1.Controls.Add(Label67)
         Me.GroupBox1.Controls.Add(Me.chkPermitirRepeticionesEnIngreso)
-        Me.GroupBox1.Location = New System.Drawing.Point(13, 407)
+        Me.GroupBox1.Location = New System.Drawing.Point(13, 390)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox1.Size = New System.Drawing.Size(412, 290)
+        Me.GroupBox1.Size = New System.Drawing.Size(412, 316)
         Me.GroupBox1.TabIndex = 120
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Recepcion"
@@ -6460,27 +6487,22 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'Label95
+        'Label96
         '
-        Me.Label95.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label95.AutoSize = True
-        Me.Label95.Location = New System.Drawing.Point(16, 324)
-        Me.Label95.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label95.Name = "Label95"
-        Me.Label95.Size = New System.Drawing.Size(76, 16)
-        Me.Label95.TabIndex = 127
-        Me.Label95.Text = "Control guía"
+        Me.Label96.AutoSize = True
+        Me.Label96.Location = New System.Drawing.Point(381, 280)
+        Me.Label96.Name = "Label96"
+        Me.Label96.Size = New System.Drawing.Size(148, 16)
+        Me.Label96.TabIndex = 136
+        Me.Label96.Text = "Ubicación implosión auto"
         '
-        'chkControlGuia
+        'chkUbicImplosionAuto
         '
-        Me.chkControlGuia.Location = New System.Drawing.Point(344, 317)
-        Me.chkControlGuia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.chkControlGuia.Name = "chkControlGuia"
-        Me.chkControlGuia.Properties.Caption = ""
-        Me.chkControlGuia.Size = New System.Drawing.Size(28, 24)
-        Me.chkControlGuia.TabIndex = 126
-        Me.chkControlGuia.ToolTip = "Restringir áeras de SAP"
+        Me.chkUbicImplosionAuto.Location = New System.Drawing.Point(686, 276)
+        Me.chkUbicImplosionAuto.Name = "chkUbicImplosionAuto"
+        Me.chkUbicImplosionAuto.Properties.Caption = ""
+        Me.chkUbicImplosionAuto.Size = New System.Drawing.Size(23, 24)
+        Me.chkUbicImplosionAuto.TabIndex = 135
         '
         'frmBodega
         '
@@ -6781,6 +6803,7 @@ Partial Class frmBodega
         CType(Me.chkPermitirDecimales.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
+        CType(Me.chkControlGuia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkOperadorPickingVerifica.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkPermitirNoEncontradoPicking.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkPermitirReemplazoPickingMismaLIcencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6840,7 +6863,7 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkControlGuia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkUbicImplosionAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -6894,7 +6917,7 @@ Partial Class frmBodega
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents GroupControl16 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents tlUbicaciones As DevExpress.XtraTreeList.TreeList
-    Friend WithEvents DsBodega As TOMWMS.DsBodega
+    Friend WithEvents DsBodega As DsBodega
     Friend WithEvents BodegaBindingSource As System.Windows.Forms.BindingSource
     Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents txtNombreTarea As DevExpress.XtraEditors.TextEdit
@@ -7214,4 +7237,6 @@ Partial Class frmBodega
     Friend WithEvents lblBodegaClienteAjusteByB As Label
     Friend WithEvents Label95 As Label
     Friend WithEvents chkControlGuia As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents Label96 As Label
+    Friend WithEvents chkUbicImplosionAuto As DevExpress.XtraEditors.CheckEdit
 End Class

@@ -84,7 +84,7 @@ Partial Class frmManufactura
         Me.GridView3 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GridView4 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOrdenCompraRecepcionOperador = New TOMWMS.DsOrdenCompraRecepcionOperador()
+        Me.DsOrdenCompraRecepcionOperador = New DsOrdenCompraRecepcionOperador()
         Me.Bar2 = New DevExpress.XtraBars.Bar()
         Me.dkRecepcion = New DevExpress.XtraBars.Docking.DockManager(Me.components)
         Me.tmrActualizarDatosRecepcion = New System.Windows.Forms.Timer(Me.components)
@@ -1430,7 +1430,7 @@ Partial Class frmManufactura
     Friend WithEvents cmdCostoArancel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents Bar2 As DevExpress.XtraBars.Bar
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOrdenCompraRecepcionOperador As TOMWMS.DsOrdenCompraRecepcionOperador
+    Friend WithEvents DsOrdenCompraRecepcionOperador As DsOrdenCompraRecepcionOperador
     Friend WithEvents dkRecepcion As DevExpress.XtraBars.Docking.DockManager
     Friend WithEvents lblRegs As DevExpress.XtraBars.BarStaticItem
     Friend WithEvents tmrActualizarDatosRecepcion As Timer

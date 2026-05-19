@@ -55,7 +55,7 @@ Partial Class FrmStockList
         Me.RepositoryItemCheckEdit3 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
         Me.RepositoryItemCheckEdit4 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
         Me.DsetSeleccionStockBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsetSeleccionStock = New TOMWMS.DsetSeleccionStock()
+        Me.DsetSeleccionStock = New DsetSeleccionStock()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.prg = New DevExpress.XtraEditors.ProgressBarControl()
         Me.mnuTomarSeleccionados = New DevExpress.XtraBars.BarButtonItem()

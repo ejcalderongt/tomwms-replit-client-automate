@@ -47,6 +47,8 @@ Public Class clsLnTrans_ajuste_det_borrador
                 .IdProveedor = IIf(IsDBNull(dr.Item("idproveedor")), 0, dr.Item("idproveedor"))
                 .Codigo_Proveedor = IIf(IsDBNull(dr.Item("codigo_proveedor")), "", dr.Item("codigo_proveedor"))
                 .Nombre_Proveedor = IIf(IsDBNull(dr.Item("nombre_proveedor")), "", dr.Item("nombre_proveedor"))
+                .IdRecepcionEnc = IIf(IsDBNull(dr.Item("idrecepcionenc")), 0, dr.Item("idrecepcionenc"))
+
             End With
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -100,6 +102,7 @@ Public Class clsLnTrans_ajuste_det_borrador
             If oBeTrans_ajuste_det_borrador.usuario_creacion IsNot Nothing Then Ins.Add("usuario_creacion", "@usuario_creacion", DataType.Parametro)
             Ins.Add("fecha_modificacion", "@fecha_modificacion", DataType.Parametro)
             If oBeTrans_ajuste_det_borrador.usuario_modificacion IsNot Nothing Then Ins.Add("usuario_modificacion", "@usuario_modificacion", DataType.Parametro)
+            If oBeTrans_ajuste_det_borrador.IdRecepcionEnc > 0 Then Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
 
             '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
             Ins.Add("idproveedor", "@idproveedor", DataType.Parametro)
@@ -159,6 +162,8 @@ Public Class clsLnTrans_ajuste_det_borrador
             cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeTrans_ajuste_det_borrador.IdProveedor))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_PROVEEDOR", IIf(oBeTrans_ajuste_det_borrador.Codigo_Proveedor Is Nothing, "", oBeTrans_ajuste_det_borrador.Codigo_Proveedor)))
             cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROVEEDOR", IIf(oBeTrans_ajuste_det_borrador.Nombre_Proveedor Is Nothing, "", oBeTrans_ajuste_det_borrador.Nombre_Proveedor)))
+
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeTrans_ajuste_det_borrador.IdRecepcionEnc))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

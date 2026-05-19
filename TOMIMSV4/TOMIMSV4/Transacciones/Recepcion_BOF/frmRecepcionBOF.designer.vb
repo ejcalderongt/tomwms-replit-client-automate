@@ -273,7 +273,7 @@ Partial Class frmRecepcionBOF
         Me.GroupControl13 = New DevExpress.XtraEditors.GroupControl()
         Me.DGridOperadores = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOrdenCompraRecepcionOperador = New TOMWMS.DsOrdenCompraRecepcionOperador()
+        Me.DsOrdenCompraRecepcionOperador = New DsOrdenCompraRecepcionOperador()
         Me.GrdOperadorBobega = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSelección = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colIdOperadorRec = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -2912,7 +2912,7 @@ Partial Class frmRecepcionBOF
     Friend WithEvents Completa As DataGridViewCheckBoxColumn
     Friend WithEvents DgridDetalleRec As System.Windows.Forms.DataGridView
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsOrdenCompraRecepcionOperador As TOMWMS.DsOrdenCompraRecepcionOperador
+    Friend WithEvents DsOrdenCompraRecepcionOperador As DsOrdenCompraRecepcionOperador
     Friend WithEvents cmdAgregarProducto As ToolStripButton
     Friend WithEvents cmdVerParametros As ToolStripButton
     Friend WithEvents lblPesoR As Label

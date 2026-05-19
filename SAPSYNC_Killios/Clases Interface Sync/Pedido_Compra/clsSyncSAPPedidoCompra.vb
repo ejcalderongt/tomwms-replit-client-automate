@@ -357,7 +357,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                         Dim BeStockPushAlmacenaje As New clsBeStock
                                         BeStockPushAlmacenaje = New clsBeStock()
                                         BeStockPushAlmacenaje.IdBodega = BeINavConfigEnc.Idbodega
-                                        BeStockPushAlmacenaje.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                        BeStockPushAlmacenaje.IdStock = 0
                                         BeProducto = clsLnProducto.Get_Single_By_Codigo(vItemCode, lConnection, lTransaction)
                                         BeStockPushAlmacenaje.IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(BeProducto.IdProducto, BeINavConfigEnc.Idbodega, lConnection, lTransaction)
                                         BeStockPushAlmacenaje.IdPropietarioBodega = BeINavConfigEnc.IdPropietario

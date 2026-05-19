@@ -58,7 +58,7 @@ Partial Class frmTraslado_Producto
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsPropietario = New TOMWMS.DsPropietario()
+        Me.DsPropietario = New DsPropietario()
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.txtEstado = New DevExpress.XtraEditors.LabelControl()
         Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
@@ -1193,7 +1193,7 @@ Partial Class frmTraslado_Producto
     Friend WithEvents User_modTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents Fec_modDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsPropietario As TOMWMS.DsPropietario
+    Friend WithEvents DsPropietario As DsPropietario
     Friend WithEvents PanelControl1 As DevExpress.XtraEditors.PanelControl
     Friend WithEvents txtEstado As DevExpress.XtraEditors.LabelControl
     Friend WithEvents LabelControl2 As DevExpress.XtraEditors.LabelControl

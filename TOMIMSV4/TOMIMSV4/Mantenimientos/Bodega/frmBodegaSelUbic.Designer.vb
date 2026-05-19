@@ -90,7 +90,7 @@ Partial Class frmBodegaSelUbic
         Me.BarSubItem1 = New DevExpress.XtraBars.BarSubItem()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
-        Me.DsBodega = New TOMWMS.DsBodega()
+        Me.DsBodega = New DsBodega()
         Me.BodegaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.tlUbicacionesTodas = New DevExpress.XtraTreeList.TreeList()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()

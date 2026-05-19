@@ -45,6 +45,7 @@ Partial Class frmUbicacion_Etiqueta
         Me.colIdUbicacion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colDescripcion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colCodigo_Barra = New DevExpress.XtraGrid.Columns.GridColumn()
+        Me.colUbicacionPicking = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.cmbEtiquetaU = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -67,7 +68,6 @@ Partial Class frmUbicacion_Etiqueta
         Me.RepositoryItemComboBox1 = New DevExpress.XtraEditors.Repository.RepositoryItemComboBox()
         Me.lblArea = New System.Windows.Forms.Label()
         Me.pgbUbic = New DevExpress.XtraEditors.ProgressBarControl()
-        Me.colUbicacionPicking = New DevExpress.XtraGrid.Columns.GridColumn()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -134,10 +134,6 @@ Partial Class frmUbicacion_Etiqueta
         Me.grdUbicacion.TabIndex = 1
         Me.grdUbicacion.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewUbi, Me.GridView2})
         '
-        'BindingSource1
-        '
-        '        Me.BindingSource1.DataSource = GetType(TOMWMS.clsBeBodega_Ubicacion_Seleccion)
-        '
         'GridViewUbi
         '
         Me.GridViewUbi.Columns.AddRange(New DevExpress.XtraGrid.Columns.GridColumn() {Me.colSeleccionar, Me.colIdUbicacion, Me.colDescripcion, Me.colCodigo_Barra, Me.colUbicacionPicking})
@@ -193,6 +189,16 @@ Partial Class frmUbicacion_Etiqueta
         Me.colCodigo_Barra.Visible = True
         Me.colCodigo_Barra.VisibleIndex = 3
         Me.colCodigo_Barra.Width = 87
+        '
+        'colUbicacionPicking
+        '
+        Me.colUbicacionPicking.Caption = "Ubicacion_Picking"
+        Me.colUbicacionPicking.FieldName = "Ubicacion_Picking"
+        Me.colUbicacionPicking.MinWidth = 25
+        Me.colUbicacionPicking.Name = "colUbicacionPicking"
+        Me.colUbicacionPicking.Visible = True
+        Me.colUbicacionPicking.VisibleIndex = 4
+        Me.colUbicacionPicking.Width = 94
         '
         'GridView2
         '
@@ -259,7 +265,7 @@ Partial Class frmUbicacion_Etiqueta
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.cmdImprimir, Me.mnuMarcarTodos, Me.BarButtonItem1, Me.mnuMarcarUbicacionPicking})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.cmdImprimir, Me.mnuMarcarTodos, Me.BarButtonItem1, Me.mnuMarcarUbicacionPicking})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 8
@@ -391,16 +397,6 @@ Partial Class frmUbicacion_Etiqueta
         Me.pgbUbic.Size = New System.Drawing.Size(345, 28)
         Me.pgbUbic.TabIndex = 0
         Me.pgbUbic.Visible = False
-        '
-        'colUbicacionPicking
-        '
-        Me.colUbicacionPicking.Caption = "Ubicacion_Picking"
-        Me.colUbicacionPicking.FieldName = "Ubicacion_Picking"
-        Me.colUbicacionPicking.MinWidth = 25
-        Me.colUbicacionPicking.Name = "colUbicacionPicking"
-        Me.colUbicacionPicking.Visible = True
-        Me.colUbicacionPicking.VisibleIndex = 4
-        Me.colUbicacionPicking.Width = 94
         '
         'frmUbicacion_Etiqueta
         '

@@ -482,6 +482,9 @@ Public Class frmInventario
         DTInventarioCiclico.Columns.Add("Lote", GetType(String)) '12
         DTInventarioCiclico.Columns.Add("Vence_Stock", GetType(Date)) '13
         DTInventarioCiclico.Columns.Add("Vence", GetType(Date)) '14
+        DTInventarioCiclico.Columns.Add("Talla", GetType(String))
+        DTInventarioCiclico.Columns.Add("Color", GetType(String))
+        DTInventarioCiclico.Columns.Add("Góndola", GetType(String))
         'DTInventarioCiclico.Columns.Add("Operador", GetType(String))
         DTInventarioCiclico.Columns.Add("Cant.Teorica.Pres", GetType(Double)) '15
         DTInventarioCiclico.Columns.Add("PesoStock", GetType(Double)) '16
@@ -499,6 +502,80 @@ Public Class frmInventario
         DTInventarioCiclico.Columns.Add("Contado", GetType(Boolean)) '28
     End Sub
 
+    Private Sub ConfigurarColumnasDetalleInventarioCiclico(
+    ByVal view As DevExpress.XtraGrid.Views.Grid.GridView,
+    ByVal Control_Talla_Color As Boolean,
+    ByVal Control_Gondola As Boolean
+)
+
+        If view.Columns.ColumnByFieldName("Talla") IsNot Nothing Then
+            view.Columns("Talla").Visible = Control_Talla_Color
+        End If
+
+        If view.Columns.ColumnByFieldName("Color") IsNot Nothing Then
+            view.Columns("Color").Visible = Control_Talla_Color
+        End If
+
+        If view.Columns.ColumnByFieldName("Góndola") IsNot Nothing Then
+            view.Columns("Góndola").Visible = Control_Gondola
+        End If
+
+    End Sub
+    Private Sub SetVisibleColumnaInventario(ByVal view As GridView,
+                                        ByVal visible As Boolean,
+                                        ParamArray nombres() As String)
+
+        For Each nombre As String In nombres
+
+            Dim col = view.Columns.ColumnByFieldName(nombre)
+
+            If col Is Nothing Then
+                col = view.Columns.Cast(Of DevExpress.XtraGrid.Columns.GridColumn)().
+                FirstOrDefault(Function(c) c.Caption = nombre OrElse c.FieldName = nombre)
+            End If
+
+            If col IsNot Nothing Then
+                col.Visible = visible
+
+                If visible Then
+                    If col.VisibleIndex < 0 Then
+                        col.VisibleIndex = view.VisibleColumns.Count
+                    End If
+                Else
+                    col.VisibleIndex = -1
+                End If
+
+                Debug.Print("Columna " & col.FieldName & " visible: " & visible.ToString())
+                Exit Sub
+            End If
+
+        Next
+
+        Debug.Print("No se encontró columna: " & String.Join(", ", nombres))
+
+    End Sub
+
+    Private Sub MostrarOcultarColumna(ByVal view As GridView, ByVal fieldName As String, ByVal visible As Boolean)
+
+        Dim col = view.Columns.ColumnByFieldName(fieldName)
+
+        If col IsNot Nothing Then
+            col.Visible = visible
+        End If
+
+    End Sub
+
+    Private Sub CambiarCaptionColumna(ByVal view As GridView, ByVal fieldName As String, ByVal caption As String)
+
+        Dim col = view.Columns.ColumnByFieldName(fieldName)
+
+        If col IsNot Nothing Then
+            col.Caption = caption
+        End If
+
+    End Sub
+
+    '#MA20280515 Agregar talla y color
     Private Sub SetDatataTableDiferenciaCiclico()
         DTInventarioDiferenciaCiclico.Columns.Clear()
 
@@ -506,17 +583,17 @@ Public Class frmInventario
         DTInventarioDiferenciaCiclico.Columns.Add("IdInventario", GetType(Integer)) '2
         DTInventarioDiferenciaCiclico.Columns.Add("Código", GetType(String)) '3
         DTInventarioDiferenciaCiclico.Columns.Add("Producto", GetType(String)) '4
-        DTInventarioDiferenciaCiclico.Columns.Add("Presentacion", GetType(String)) '6 ← ÚNICA
-        DTInventarioDiferenciaCiclico.Columns.Add("TipoProducto", GetType(String)) '7
+        DTInventarioDiferenciaCiclico.Columns.Add("Presentacion", GetType(String)) '5 ← ÚNICA
+        DTInventarioDiferenciaCiclico.Columns.Add("Talla", GetType(String))
+        DTInventarioDiferenciaCiclico.Columns.Add("Color", GetType(String))
+        DTInventarioDiferenciaCiclico.Columns.Add("TipoProducto", GetType(String)) '6
 
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.Presentacion", GetType(Double)) '8
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.Presentacion", GetType(Double)) '9
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reconteo.Presentacion", GetType(Double)) '10
-        DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.Presentacion", GetType(Double)) '11
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.Presentacion", GetType(Double)) '7
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.Presentacion", GetType(Double)) '8
+        DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.Presentacion", GetType(Double)) '9
 
-        DTInventarioDiferenciaCiclico.Columns.Add("NombreTipoProducto", GetType(String)) '12
-        DTInventarioDiferenciaCiclico.Columns.Add("IdProductoBodega", GetType(Integer)) '14
-        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reservada", GetType(Double)) '15
+        DTInventarioDiferenciaCiclico.Columns.Add("IdProductoBodega", GetType(Integer)) '10
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reservada", GetType(Double)) '11
     End Sub
 
 
@@ -1104,15 +1181,25 @@ Public Class frmInventario
             '#MA20260204 
             Dim viewConteoOperador As GridView = TryCast(dgridConteoOperador.MainView, GridView)
             If viewConteoOperador IsNot Nothing AndAlso viewConteoOperador.RowCount > 0 Then
+                '#MA20280515 validar talla y color si aplica 
 
-                If viewConteoOperador.Columns.Contains(viewConteoOperador.Columns("Teorico_Pres")) Then
+                If AP.Bodega.Control_Talla_Color Then
+                    viewConteoOperador.Columns("Talla").Visible = True
+                    viewConteoOperador.Columns("Color").Visible = True
+                Else
+                    viewConteoOperador.Columns("Talla").Visible = False
+                    viewConteoOperador.Columns("Color").Visible = False
+                End If
+
+
+                If viewConteoOperador.Columns.ColumnByFieldName("Teorico_Pres") IsNot Nothing Then
                     viewConteoOperador.Columns("Teorico_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     viewConteoOperador.Columns("Teorico_Pres").DisplayFormat.FormatString = "{0:n6}"
                     viewConteoOperador.Columns("Teorico_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     viewConteoOperador.Columns("Teorico_Pres").SummaryItem.DisplayFormat = "{0:n6}"
                 End If
 
-                If viewConteoOperador.Columns.Contains(viewConteoOperador.Columns("Conteo_Pres")) Then
+                If viewConteoOperador.Columns.ColumnByFieldName("Conteo_Pres") IsNot Nothing Then
                     viewConteoOperador.Columns("Conteo_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     viewConteoOperador.Columns("Conteo_Pres").DisplayFormat.FormatString = "{0:n6}"
                     viewConteoOperador.Columns("Conteo_Pres").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
@@ -1148,6 +1235,13 @@ Public Class frmInventario
 
             Set_LayOut_Grid(vNombreArchivoLayOutGridConteoOpe)
 
+            Dim viewConteoOperadorFinal As GridView = TryCast(dgridConteoOperador.MainView, GridView)
+
+            If viewConteoOperadorFinal IsNot Nothing AndAlso viewConteoOperadorFinal.Columns.Count > 0 Then
+                SetVisibleColumnaInventario(viewConteoOperadorFinal, AP.Bodega.Control_Talla_Color, "Talla")
+                SetVisibleColumnaInventario(viewConteoOperadorFinal, AP.Bodega.Control_Talla_Color, "Color")
+                viewConteoOperadorFinal.BestFitColumns()
+            End If
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         End Try
@@ -4916,7 +5010,6 @@ Public Class frmInventario
                                                                                                         AP.IdBodega,
                                                                                                         lConnection,
                                                                                                         lTransaction)
-
             If pIdPropietario > 0 Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdPropietario = pIdPropietario)
             End If
@@ -5045,23 +5138,38 @@ Public Class frmInventario
                     End If
 
 
-                    '#MA20260204 
+                    '#MA20260512 Mostrar BOF según la presentación real usada en el conteo HH
                     Dim PresentacionFinal As String
-                    Dim CantTeoricaFinal As String
-                    Dim CantConteoFinal As String
-                    Dim CantReconteoFinal As String
+                    Dim CantTeoricaFinal As Double
+                    Dim CantConteoFinal As Double
+                    Dim CantReconteoFinal As Double
+                    Dim FactorVisual As Double = BeTransInvCiclico.Factor
 
-                    If BeTransInvCiclico.IdPresentacion > 0 Then
+                    If FactorVisual <= 0 Then FactorVisual = 1
+
+                    If BeTransInvCiclico.IdPresentacion_nuevo > 0 Then
+
+                        'El conteo quedó en presentación, por ejemplo CAJA24.
                         PresentacionFinal = BeTransInvCiclico.Presentacion
-                        CantTeoricaFinal = Cantidad_Teorica_Stock_Pres
-                        CantConteoFinal = Cantidad_Contada_Pres
-                        CantReconteoFinal = Cantidad_Reconteo_Pres
+
+                        CantTeoricaFinal = Math.Round(BeTransInvCiclico.Cant_stock / FactorVisual, 6)
+                        CantConteoFinal = Math.Round(BeTransInvCiclico.Cantidad / FactorVisual, 6)
+                        CantReconteoFinal = Math.Round(BeTransInvCiclico.Cant_reconteo / FactorVisual, 6)
+
                     Else
-                        PresentacionFinal = "UN"
-                        CantTeoricaFinal = CantStockUM
-                        CantConteoFinal = CantidadUMBas
-                        CantReconteoFinal = CantReUM
+
+                        'El conteo quedó en unidad base / Sin Presentación.
+                        PresentacionFinal = "UNIDAD"
+
+                        CantTeoricaFinal = Math.Round(BeTransInvCiclico.Cant_stock, 6)
+                        CantConteoFinal = Math.Round(BeTransInvCiclico.Cantidad, 6)
+                        CantReconteoFinal = Math.Round(BeTransInvCiclico.Cant_reconteo, 6)
+
                     End If
+
+                    'Se mantiene el mismo comportamiento anterior:
+                    'vDiferencia * -1 = Conteo - Teórico
+                    vDiferencia = CantTeoricaFinal - CantConteoFinal
 
                     DTInventarioCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
                                                   BeTransInvCiclico.Ubicacion,
@@ -5077,6 +5185,9 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence,
+                                                  BeTransInvCiclico.Talla,
+                                                  BeTransInvCiclico.Color,
+                                                  BeTransInvCiclico.Gondola,
                                                   CantTeoricaFinal, '15
                                                   BeTransInvCiclico.Peso_stock,
                                                   CantConteoFinal,
@@ -5105,7 +5216,7 @@ Public Class frmInventario
                 'cTrans.Commit_Transaction()
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-
+               
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
@@ -5187,6 +5298,10 @@ Public Class frmInventario
                     gdviewTeorico.Columns("PesoConteo").Visible = False
                     gdviewTeorico.Columns("PesoStock").Visible = False
 
+
+                    ConfigurarColumnasDetalleInventarioCiclico(gdviewTeorico,
+                                                                AP.Bodega.Control_Talla_Color,
+                                                                AP.Bodega.Control_Gondola)
                     gdviewTeorico.BestFitColumns()
 
                 End If
@@ -5318,19 +5433,20 @@ Public Class frmInventario
 
                     '#MA20260204
                     DTInventarioDiferenciaCiclico.Rows.Add(
-                                                    BeTransInvCiclico.IdInvCiclico,            '1
-                                                    BeTransInvCiclico.Idinventarioenc,         '2
-                                                    BeTransInvCiclico.Codigo,                  '3
-                                                    BeTransInvCiclico.Producto,                '4
-                                                    BeTransInvCiclico.Presentacion,            '5 
-                                                    BeTransInvCiclico.TipoProducto,            '6
-                                                    BeTransInvCiclico.Cant_stock,              '7
-                                                    BeTransInvCiclico.Cantidad,                '8
-                                                    BeTransInvCiclico.Cant_reconteo,           '9
-                                                    (BeTransInvCiclico.Cant_stock - BeTransInvCiclico.Cantidad) * -1, '10
-                                                    BeTransInvCiclico.TipoProducto,            '11 
-                                                     BeTransInvCiclico.IdProductoBodega,        '13
-                                                    BeTransInvCiclico.Cantidad_Reservada_UMBas)
+                                                            BeTransInvCiclico.IdInvCiclico,            '1
+                                                            BeTransInvCiclico.Idinventarioenc,         '2
+                                                            BeTransInvCiclico.Codigo,                  '3
+                                                            BeTransInvCiclico.Producto,                '4
+                                                            BeTransInvCiclico.Presentacion,
+                                                            BeTransInvCiclico.Talla,
+                                                            BeTransInvCiclico.Color,'5
+                                                            BeTransInvCiclico.TipoProducto,            '6
+                                                            BeTransInvCiclico.Cant_stock,              '7
+                                                            BeTransInvCiclico.Cantidad,                '8
+                                                            (BeTransInvCiclico.Cant_stock - BeTransInvCiclico.Cantidad) * -1, '9
+                                                            BeTransInvCiclico.IdProductoBodega,        '10
+                                                            BeTransInvCiclico.Cantidad_Reservada_UMBas '11
+                                                            )
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioDiferenciaCiclico.Count)
 
@@ -5345,6 +5461,14 @@ Public Class frmInventario
                 dgridDiferenciasCiclico.DataSource = DTInventarioDiferenciaCiclico
 
                 If gvDiferenciasCiclico.RowCount > 0 Then
+                    '#MA20280515 Validar talla y color si aplica
+                    If AP.Bodega.Control_Talla_Color Then
+                        gvDiferenciasCiclico.Columns("Talla").Visible = True
+                        gvDiferenciasCiclico.Columns("Color").Visible = True
+                    Else
+                        gvDiferenciasCiclico.Columns("Talla").Visible = False
+                        gvDiferenciasCiclico.Columns("Color").Visible = False
+                    End If
 
                     gvDiferenciasCiclico.Columns("IdInventario").Visible = False
                     gvDiferenciasCiclico.Columns("IdProductoBodega").Visible = False
@@ -5376,11 +5500,6 @@ Public Class frmInventario
                     gvDiferenciasCiclico.Columns("Cant.Conteo.Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gvDiferenciasCiclico.Columns("Cant.Conteo.Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
 
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").DisplayFormat.FormatString = "{0:n6}"
-
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                    gvDiferenciasCiclico.Columns("Cant.Reconteo.Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
 
                     gvDiferenciasCiclico.Columns("Dif.Cant.Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     gvDiferenciasCiclico.Columns("Dif.Cant.Presentacion").DisplayFormat.FormatString = "{0:n6}"
@@ -8320,21 +8439,20 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Producto, '6
                                                   BeTransInvCiclico.TipoProducto, '7
                                                   BeTransInvCiclico.Presentacion, '8
-                                                  BeTransInvCiclico.UnidadMedida, '9
                                                   BeTransInvCiclico.Estado, '10
                                                   EstadoNuevo, '11
                                                   BeTransInvCiclico.Lote_stock,
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence, '15
+                                                  BeTransInvCiclico.Talla,
+                                                  BeTransInvCiclico.Color,
+                                                  BeTransInvCiclico.Gondola,
                                                   Cantidad_Teorica_Stock_Pres, '16
-                                                  CantStockUM, '16
                                                   BeTransInvCiclico.Peso_stock, '18
                                                   Cantidad_Contada_Pres, '19
-                                                  CantidadUMBas, '20
                                                   BeTransInvCiclico.Peso, '21
                                                   Cantidad_Reconteo_Pres, '22
-                                                  CantReUM,
                                                   BeTransInvCiclico.Peso_reconteo, '24
                                                   vDiferencia * -1, '25
                                                   Cantidad_Reservada_Pres, '26
@@ -8344,7 +8462,7 @@ Public Class frmInventario
                                                   BeTransInvCiclico.IdProductoBodega, '30
                                                   BeTransInvCiclico.Cantidad_Reservada_UMBas,
                                                   BeTransInvCiclico.Contado)
-
+                    Debug.Print("Columnas DTInventarioCiclico: " & DTInventarioCiclico.Columns.Count)
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
                     prgPanInvConteo.Value = vContador
@@ -8358,7 +8476,8 @@ Public Class frmInventario
                 'cTrans.Commit_Transaction()
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-
+                XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
+                    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
@@ -8455,6 +8574,12 @@ Public Class frmInventario
                     gdviewTeorico.Columns("PesoConteo").Visible = False
                     gdviewTeorico.Columns("PesoStock").Visible = False
 
+
+                    ConfigurarColumnasDetalleInventarioCiclico(
+    gdviewTeorico,
+    AP.Bodega.Control_Talla_Color,
+    AP.Bodega.Control_Gondola
+)
                     gdviewTeorico.BestFitColumns()
 
                 End If
@@ -8719,6 +8844,8 @@ Public Class frmInventario
                 End If
 
                 Dim BeTrans_inv_ciclico As New clsBeTrans_inv_ciclico
+                Dim debugBof As New System.Text.StringBuilder()
+
 
                 For Each BeTransInvCiclico As clsBeTrans_inv_ciclico In ListInventarioCiclico
 
@@ -8758,6 +8885,23 @@ Public Class frmInventario
                         End If
 
                         Extraviado = 0
+
+                    End If
+
+                    If BeTransInvCiclico.Codigo = "447540" AndAlso
+   (BeTransInvCiclico.IdUbicacion = 7506 OrElse BeTransInvCiclico.IdUbicacion = 7507) Then
+
+                        debugBof.AppendLine("Ubicacion: " & BeTransInvCiclico.IdUbicacion)
+                        debugBof.AppendLine("IdInvCiclico: " & BeTransInvCiclico.IdInvCiclico)
+                        debugBof.AppendLine("IdStock: " & BeTransInvCiclico.IdStock)
+                        debugBof.AppendLine("IdPresentacion: " & BeTransInvCiclico.IdPresentacion)
+                        debugBof.AppendLine("IdPresentacion_nuevo: " & BeTransInvCiclico.IdPresentacion_nuevo)
+                        debugBof.AppendLine("Cantidad: " & BeTransInvCiclico.Cantidad)
+                        debugBof.AppendLine("Cant_stock: " & BeTransInvCiclico.Cant_stock)
+                        debugBof.AppendLine("Factor: " & BeTransInvCiclico.Factor)
+                        debugBof.AppendLine("Presentacion: " & BeTransInvCiclico.Presentacion)
+                        debugBof.AppendLine("Contado: " & BeTransInvCiclico.Contado)
+                        debugBof.AppendLine("-----------------------------")
 
                     End If
 
@@ -8826,6 +8970,9 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence,
+                                                  BeTransInvCiclico.Talla,
+                                                  BeTransInvCiclico.Color,
+                                                  BeTransInvCiclico.Gondola,
                                                   CantTeoricaFinal,
                                                   BeTransInvCiclico.Peso_stock,
                                                   CantConteoFinal,
@@ -8851,8 +8998,13 @@ Public Class frmInventario
 
                 Next
 
-                dgridInventarioCiclico.DataSource = DTInventarioCiclico
+                If debugBof.Length > 0 Then
+                    XtraMessageBox.Show(debugBof.ToString(), "Debug BOF Inventario Cíclico", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
 
+                dgridInventarioCiclico.DataSource = DTInventarioCiclico
+                XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
+                    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
@@ -8928,6 +9080,14 @@ Public Class frmInventario
                     gdviewTeorico.Columns("PesoConteo").Visible = False
                     gdviewTeorico.Columns("PesoStock").Visible = False
 
+                    Dim Control_Talla_Color As Boolean = False
+                    Dim Control_Gondola As Boolean = False
+
+                    ConfigurarColumnasDetalleInventarioCiclico(
+                                                                gdviewTeorico,
+                                                                AP.Bodega.Control_Talla_Color,
+                                                                AP.Bodega.Control_Gondola
+                                                            )
                     gdviewTeorico.BestFitColumns()
 
                 End If
