@@ -61,7 +61,7 @@
     ''' <returns></returns>
     Public Property Formato_Recepcion As Integer = 1
 
-    Public Property Modo_Debug As Boolean = False
+    Public Property Modo_Debug As Boolean = True
 
 #Region "INTERFACE SAPBO"
 
