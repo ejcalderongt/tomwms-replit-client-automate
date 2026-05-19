@@ -180,3 +180,17 @@ MISMATCH_PRESENTACION_RESTANTES = 5
   - `SCRIPT_AUDITORIA_REGULARIZACION_VERI_DUPLICADOS.sql`
 - Script UMBAS:
   - `SCRIPT_AUDITORIA_REGULARIZACION_VERI_CANTIDAD_UMBAS.sql`
+
+### Notificación a Brain Keeper
+
+Se creó `LEARNINGS.md` para que Brain Keeper pueda procesar los hallazgos recientes del caso.
+
+Contenido informado:
+
+- regla de cantidad `VERI` en UMBAS;
+- diferencia entre cantidad de presentación y cantidad base en movimientos;
+- necesidad de idempotencia al insertar `VERI`;
+- limpieza de `VERI` al marcar línea como no verificada en flujo BOF/manual;
+- gotchas de auditoría por collation y llave logística completa;
+- supuestos pendientes de validación explícita por Erik;
+- sugerencias para promover al brain como regla global/playbook.
