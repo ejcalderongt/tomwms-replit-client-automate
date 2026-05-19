@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Reflection
 Imports DevExpress.XtraEditors
+Imports DevExpress.XtraSplashScreen
 
 Public Class frmImpresionRecepcion_OC
 
@@ -34,6 +35,7 @@ Public Class frmImpresionRecepcion_OC
     Private pTotalTarimasProducto As Integer = 0
     Private pCorrelativoTarimaActual As Integer = 0
     Private pTarimasImpresasAcumuladas As Integer = 0
+    Private pModoReimpresion As Boolean = False
 
     Private Sub frmImpresionRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -417,7 +419,6 @@ Public Class frmImpresionRecepcion_OC
         Select Case pModoProcesoActual
             Case TipoProcesoLicencia.SoloLicencia
                 lblEtiquetas.Text = $"Licencias sugeridas: {CalcularEtiquetasDocumento()}"
-
             Case TipoProcesoLicencia.LicenciaBulto
                 lblEtiquetas.Text = $"Licencia actual: impresos {impresos} / capacidad {pCapacidadObjetivoLicenciaActual} / pendientes {pBultosPendientesLicenciaActual}"
         End Select
@@ -484,9 +485,20 @@ Public Class frmImpresionRecepcion_OC
     End Sub
 
     Private Sub cmdImpresionLicencia_Click(sender As Object, e As EventArgs) Handles cmdImpresionLicencia.Click
+
+        cmdImpresionLicencia.Enabled = False
+
         Try
+
             If Not ValidarDatosBasicosProducto() Then Exit Sub
             If Not ValidarImpresora(cmbPrinterLicencia, Convert.ToString(cmbPrinterLicencia.EditValue), "Seleccione impresora") Then Exit Sub
+
+            If pModoReimpresion Then
+                ReimprimirLicencia(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
+                pModoReimpresion = False
+                cmdImpresionLicencia.BackColor = Color.Transparent
+                Exit Sub
+            End If
 
             If DebeForzarCierreLicenciaAntesDeSeguir() Then
                 CerrarEImprimirLicenciaConBultos(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
@@ -497,18 +509,23 @@ Public Class frmImpresionRecepcion_OC
                 Case TipoProcesoLicencia.SoloLicencia
                     If Not PuedeImprimirLicenciaSolo() Then Exit Sub
                     ImprimirLicencias_SoloLicencia(pBeTransOcDet,
-                                                   Convert.ToString(cmbPrinterLicencia.EditValue),
-                                                   Convert.ToInt32(txtCantidadLicencias.Value))
+                                               Convert.ToString(cmbPrinterLicencia.EditValue),
+                                               Convert.ToInt32(txtCantidadLicencias.Value))
 
                 Case TipoProcesoLicencia.LicenciaBulto
                     If Not PuedeCerrarEImprimirLicenciaConBultos() Then Exit Sub
                     CerrarEImprimirLicenciaConBultos(pBeTransOcDet,
-                                                     Convert.ToString(cmbPrinterLicencia.EditValue))
+                                                 Convert.ToString(cmbPrinterLicencia.EditValue))
             End Select
+
+            ListarBarrasPallet()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+            cmdImpresionLicencia.Enabled = False
         End Try
+
     End Sub
 
     Private Sub cmdImpresionBarra_Click(sender As Object, e As EventArgs) Handles cmdImpresionBarra.Click
@@ -578,9 +595,36 @@ Public Class frmImpresionRecepcion_OC
         Try
             If pImpresiones <= 0 Then Exit Sub
 
+            Dim licenciasGeneradas As Integer = ObtenerLicenciasGeneradasLinea()
+
+            Dim pendientes As Integer = pTotalTarimasProducto - licenciasGeneradas
+
+            If pendientes < 0 Then pendientes = 0
+
+            If pImpresiones > pendientes Then
+
+                Dim result = XtraMessageBox.Show($"Está intentando imprimir más tarimas de las pendientes." &
+                                                Environment.NewLine & Environment.NewLine &
+                                                $"Total tarimas documento: {pTotalTarimasProducto}" &
+                                                Environment.NewLine &
+                                                $"Ya generadas: {licenciasGeneradas}" &
+                                                Environment.NewLine &
+                                                $"Pendientes: {pendientes}" &
+                                                Environment.NewLine &
+                                                $"Solicitadas: {pImpresiones}" &
+                                                Environment.NewLine & Environment.NewLine &
+                                                "¿Continuar?",
+                                                Text,
+                                                MessageBoxButtons.YesNo,
+                                                MessageBoxIcon.Warning)
+
+                If result = DialogResult.No Then Exit Sub
+
+            End If
+
             clsTransaccion.Begin_Transaction()
 
-            If Not ValidarSobreImpresionTarimas(1) Then
+            If Not ValidarSobreImpresionTarimas(pImpresiones) Then
                 clsTransaccion.RollBack_Transaction()
                 Exit Sub
             End If
@@ -589,38 +633,60 @@ Public Class frmImpresionRecepcion_OC
             pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
             pPresentacion = CStr(txtPresentacion.EditValue)
 
-            Dim pCantidadPresentacion As Integer = pCamasPorTarima * pCajasPorCama
             Dim copiasPorLicencia As Integer = ObtenerCopiasSolicitadas()
             Dim licenciaActual As String = CStr(txtLicencia.EditValue)
-            Dim vPeso As Double = txtPesoTarima.Value
 
             For i As Integer = 1 To pImpresiones
 
+                Dim numeroTarima As Integer = pCorrelativoTarimaActual + 1
+                Dim cantidadPresentacion As Integer = ObtenerCantidadPresentacionPorTarima(numeroTarima)
+
+                If cantidadPresentacion <= 0 Then
+                    Throw New Exception("No se pudo calcular la cantidad real de presentación para la tarima.")
+                End If
+
                 Dim zplString As String = ConstruirZplLicencia(pBeTransOcDet,
-                                                               licenciaActual,
-                                                               pCantidadPresentacion,
-                                                               clsTransaccion)
+                                                           licenciaActual,
+                                                           cantidadPresentacion,
+                                                           clsTransaccion)
 
                 For c As Integer = 1 To copiasPorLicencia
                     RawPrinterHelper.SendStringToPrinter(PrinterName, zplString)
                 Next
 
-                Dim BeInavBarraPalletTMP As clsBeI_nav_barras_pallet = CrearPalletPreImpresion(pBeTransOcDet,
-                                                                                              licenciaActual,
-                                                                                              pCantidadPresentacion)
+                Dim BeInavBarraPalletTMP As clsBeI_nav_barras_pallet =
+                CrearPalletPreImpresion(pBeTransOcDet,
+                                         licenciaActual,
+                                         cantidadPresentacion)
 
                 BeInavBarraPalletTMP.Peso = txtPesoTarima.Value
 
+                If clsLnI_nav_barras_pallet.Get_Single_By_Licencia(licenciaActual,
+                                                                  clsTransaccion.lConnection,
+                                                                  clsTransaccion.lTransaction) Then
+
+                    ListarBarrasPallet()
+
+                    Throw New Exception($"La licencia [{licenciaActual}] ya existe.")
+
+                End If
+
                 clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(BeInavBarraPalletTMP,
-                                                                     clsTransaccion.lConnection,
-                                                                     clsTransaccion.lTransaction)
+                                                      clsTransaccion.lConnection,
+                                                      clsTransaccion.lTransaction)
+
+                pCorrelativoTarimaActual += 1
+                pTarimasImpresasAcumuladas += 1
 
                 AvanzarALaSiguienteLicencia(clsTransaccion)
                 licenciaActual = CStr(txtLicencia.EditValue)
+
             Next
 
             clsTransaccion.Commit_Transaction()
+
             ActualizarEstadoPantalla()
+            ListarBarrasPallet()
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
@@ -628,6 +694,7 @@ Public Class frmImpresionRecepcion_OC
         Finally
             clsTransaccion.Close_Conection()
         End Try
+
     End Sub
 
     Private Sub CerrarEImprimirLicenciaConBultos(ByVal pReDet As clsBeTrans_oc_det,
@@ -665,6 +732,15 @@ Public Class frmImpresionRecepcion_OC
                                                                                       cantidadPresentacion)
 
             BeInavBarraPallet.Peso = vPeso
+
+            If clsLnI_nav_barras_pallet.Get_Single_By_Licencia(licenciaActual,
+                                                                  clsTransaccion.lConnection,
+                                                                  clsTransaccion.lTransaction) Then
+
+                ListarBarrasPallet()
+                Throw New Exception($"La licencia [{licenciaActual}] ya existe. (Verifique concurrencia)")
+
+            End If
 
             clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(BeInavBarraPallet,
                                                                  clsTransaccion.lConnection,
@@ -750,9 +826,9 @@ Public Class frmImpresionRecepcion_OC
                     pBeTransOcDet.No_Linea = fila.No_Linea
                     pIdPresentacion = fila.IdPresentacion
                     pBeTransOcDet = clsLnTrans_oc_det.Get_Single_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pTransOC_Enc.IdOrdenCompraEnc,
-                                                                                                         pBeTransOcDet.IdOrdenCompraDet,
-                                                                                                         pBeTransOcDet.IdProductoBodega,
-                                                                                                         pBeTransOcDet.No_Linea)
+                                                                                                          pBeTransOcDet.IdOrdenCompraDet,
+                                                                                                          pBeTransOcDet.IdProductoBodega,
+                                                                                                          pBeTransOcDet.No_Linea)
                 End If
 
                 If pBeTransOcDet.IdOrdenCompraDet > 0 Then
@@ -883,7 +959,8 @@ Public Class frmImpresionRecepcion_OC
                     .ShowHeader = True
                     .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
                     .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoComplete
-                    .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
+                    .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor
+
                 End With
 
                 If pListaLotes.Rows.Count = 1 Then
@@ -1114,6 +1191,153 @@ Public Class frmImpresionRecepcion_OC
         End If
 
         Return True
+    End Function
+
+    Private Sub dgridBarrasPallet_DoubleClick(sender As Object, e As EventArgs) Handles dgridBarrasPallet.DoubleClick
+
+        Try
+
+            If (gviewlicencias.RowCount > 0) Then
+
+                Dim Dr As DataRowView = gviewlicencias.GetFocusedRow
+
+                If Dr Is Nothing Then Exit Sub
+
+                Dim IdPallet As Integer = Integer.Parse(Dr.Item("IdPallet"))
+
+                Dim lSelectionIndex As Integer = gviewlicencias.FocusedRowHandle
+                gviewlicencias.FocusedRowHandle = lSelectionIndex
+
+                Dim pBeI_nav_barras_pallet = clsLnI_nav_barras_pallet.GetSingle(IdPallet)
+
+                If pBeI_nav_barras_pallet IsNot Nothing Then
+
+                    Dim vCodigoProducto As String = pBeI_nav_barras_pallet.Codigo
+                    Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(vCodigoProducto)
+
+                    If BeProducto IsNot Nothing Then
+                        Dim vIdProductoBodega As Integer = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(BeProducto.IdProducto, pTransOC_Enc.IdBodega)
+                        cmbProducto.EditValue = vIdProductoBodega
+                        SeleccionarLotePorCodigo(pBeI_nav_barras_pallet.Lote)
+                        txtVencimiento.EditValue = pBeI_nav_barras_pallet.Fecha_Vence
+                        txtLicencia.Text = pBeI_nav_barras_pallet.Codigo_barra
+                        lblIdPallet.Visible = True
+                        txtIdPallet.Visible = True
+                        txtIdPallet.Text = pBeI_nav_barras_pallet.IdPallet.ToString()
+                        pModoReimpresion = True
+                        tabImp.SelectedTab = tabImpresion
+                        cmdImpresionLicencia.BackColor = Color.MistyRose
+                    End If
+
+
+                End If
+
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub SeleccionarLotePorCodigo(lote As String)
+
+        Dim dtLotes As DataTable = TryCast(cmbLote.Properties.DataSource, DataTable)
+
+        If dtLotes Is Nothing Then Exit Sub
+
+        Dim drLote As DataRow = dtLotes.AsEnumerable().
+            FirstOrDefault(Function(r) r.Field(Of String)("lote").Trim().ToUpper() =
+                                       lote.Trim().ToUpper())
+
+        If drLote IsNot Nothing Then
+            cmbLote.EditValue = drLote.Field(Of Integer)("IdLote")
+        End If
+
+    End Sub
+
+    Private Sub ReimprimirLicencia(ByVal pReDet As clsBeTrans_oc_det,
+                                   ByVal PrinterName As String)
+
+        Dim clsTransaccion As New clsTransaccion
+
+        Try
+
+            If pModoReimpresion Then
+                If XtraMessageBox.Show("Está por reimprimir una licencia existente. ¿Continuar?",
+                           Text,
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Warning) = DialogResult.No Then Exit Sub
+            End If
+
+            clsTransaccion.Begin_Transaction()
+
+            pCajasPorCama = Convert.ToInt32(txtCajaPorCama.Value)
+            pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
+            pPresentacion = CStr(txtPresentacion.EditValue)
+
+            Dim cantidadPresentacion As Integer = pCamasPorTarima * pCajasPorCama
+            Dim licenciaActual As String = CStr(txtLicencia.EditValue)
+            Dim copiasPorLicencia As Integer = ObtenerCopiasSolicitadas()
+
+            Dim zplString As String = ConstruirZplLicencia(pReDet,
+                                                           licenciaActual,
+                                                           cantidadPresentacion,
+                                                           clsTransaccion)
+
+            For c As Integer = 1 To copiasPorLicencia
+                RawPrinterHelper.SendStringToPrinter(PrinterName, zplString)
+            Next
+
+            clsTransaccion.Commit_Transaction()
+
+        Catch ex As Exception
+            clsTransaccion.RollBack_Transaction()
+            Throw
+        Finally
+            clsTransaccion.Close_Conection()
+        End Try
+
+    End Sub
+
+    Private Function ObtenerCantidadPresentacionPorTarima(ByVal numeroTarima As Integer) As Integer
+
+        Dim cantidadTotal As Decimal = CDec(pBeTransOcDet.Cantidad)
+        Dim capacidadTarima As Integer = Convert.ToInt32(txtCamaPorTarima.Value) *
+                                         Convert.ToInt32(txtCajaPorCama.Value)
+
+        If capacidadTarima <= 0 Then Return 0
+        If cantidadTotal <= 0D Then Return 0
+
+        Dim cantidadConsumida As Decimal = CDec(numeroTarima - 1) * CDec(capacidadTarima)
+        Dim cantidadRestante As Decimal = cantidadTotal - cantidadConsumida
+
+        If cantidadRestante <= 0D Then Return 0
+
+        Return CInt(Math.Min(capacidadTarima, cantidadRestante))
+
+    End Function
+
+    Private Function ObtenerLicenciasGeneradasLinea() As Integer
+
+        If pTransOC_Enc Is Nothing OrElse pBeTransOcDet Is Nothing Then Return 0
+
+        If pTransOC_Enc.IdOrdenCompraEnc <= 0 OrElse pBeTransOcDet.IdOrdenCompraDet <= 0 Then
+            Return 0
+        End If
+
+        Return clsLnI_nav_barras_pallet.Get_Count_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pTransOC_Enc.IdOrdenCompraEnc,
+                                                                                           pBeTransOcDet.IdOrdenCompraDet)
+
     End Function
 
 End Class
