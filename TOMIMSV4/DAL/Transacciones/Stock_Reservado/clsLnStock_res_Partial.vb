@@ -8921,6 +8921,79 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    Private Shared Function Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(ByVal pIdsStock As List(Of Integer),
+                                                                          ByRef lConnection As SqlConnection,
+                                                                          ByRef lTransaction As SqlTransaction) As Dictionary(Of Integer, System.Tuple(Of Double, Double))
+
+        Dim lReturnValue As New Dictionary(Of Integer, System.Tuple(Of Double, Double))
+
+        Try
+
+            If pIdsStock Is Nothing OrElse pIdsStock.Count = 0 Then
+                Return lReturnValue
+            End If
+
+            Dim lIdsUnicos As New List(Of Integer)(New System.Collections.Generic.HashSet(Of Integer)(pIdsStock))
+            Const vTamanoLote As Integer = 900
+            Dim vIndiceInicio As Integer = 0
+
+            While vIndiceInicio < lIdsUnicos.Count
+
+                Dim lIdsLote As New List(Of Integer)
+                Dim vIndiceFin As Integer = Math.Min(vIndiceInicio + vTamanoLote - 1, lIdsUnicos.Count - 1)
+
+                For vIndice As Integer = vIndiceInicio To vIndiceFin
+                    lIdsLote.Add(lIdsUnicos(vIndice))
+                Next
+
+                Dim lParametros As New List(Of String)
+
+                For vIndice As Integer = 0 To lIdsLote.Count - 1
+                    lParametros.Add("@IdStock" & vIndice.ToString())
+                Next
+
+                Dim vSql As String = "SELECT IdStock, SUM(Cantidad) AS Cantidad, SUM(Peso) AS Peso FROM Stock_res WHERE IdStock IN (" &
+                                     String.Join(",", lParametros) &
+                                     ") GROUP BY IdStock"
+
+                Using cmd As New SqlCommand(vSql, lConnection, lTransaction)
+
+                    cmd.CommandType = CommandType.Text
+
+                    For vIndice As Integer = 0 To lIdsLote.Count - 1
+                        cmd.Parameters.AddWithValue(lParametros(vIndice), lIdsLote(vIndice))
+                    Next
+
+                    Using lDataReader As SqlDataReader = cmd.ExecuteReader()
+
+                        While lDataReader.Read()
+                            Dim vIdStock As Integer = Convert.ToInt32(lDataReader("IdStock"))
+                            Dim vCantidad As Double = If(lDataReader.IsDBNull(1), 0, Convert.ToDouble(lDataReader("Cantidad")))
+                            Dim vPeso As Double = If(lDataReader.IsDBNull(2), 0, Convert.ToDouble(lDataReader("Peso")))
+
+                            lReturnValue(vIdStock) = New System.Tuple(Of Double, Double)(vCantidad, vPeso)
+                        End While
+
+                    End Using
+
+                End Using
+
+                vIndiceInicio = vIndiceFin + 1
+
+            End While
+
+        Catch ex1 As SqlException
+            Throw ex1
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+        Return lReturnValue
+
+    End Function
+
     Private Shared Function Restar_Stock_Reservado(ByVal lStock As List(Of clsBeStock),
                                                    ByVal pBeConfigEnc As clsBeI_nav_config_enc,
                                                    ByVal lConnection As SqlConnection,
@@ -8954,12 +9027,31 @@ Partial Public Class clsLnStock_res
             Dim lIdStocksReservados As New List(Of Integer)
             Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+            Dim hIdStocksReservados As New System.Collections.Generic.HashSet(Of Integer)(lIdStocksReservados)
             clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
                                                  "perf_get_ids_stock_reservados_bodega_despues",
                                                  vCronometro,
                                                  "IdBodega", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Idbodega),
                                                  "IdsReservados", clsReservaMi3DebugTrace.Valor(If(lIdStocksReservados Is Nothing, 0, lIdStocksReservados.Count)),
-                                                 "StockAProcesar", clsReservaMi3DebugTrace.Valor(lStock.Count))
+                                                 "StockAProcesar", clsReservaMi3DebugTrace.Valor(lStock.Count),
+                                                 "Lookup", clsReservaMi3DebugTrace.Valor("HashSet"))
+
+            Dim lIdsStockAProcesar As New List(Of Integer)
+
+            For Each BeStock In lStock
+                If hIdStocksReservados.Contains(BeStock.IdStock) Then
+                    lIdsStockAProcesar.Add(BeStock.IdStock)
+                End If
+            Next
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            Dim dReservadoPorStock As Dictionary(Of Integer, System.Tuple(Of Double, Double)) =
+                Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(lIdsStockAProcesar, lConnection, lTransaction)
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_get_cantidades_reservadas_stock_batch_despues",
+                                                 vCronometro,
+                                                 "StockAProcesar", clsReservaMi3DebugTrace.Valor(lIdsStockAProcesar.Count),
+                                                 "StockConReserva", clsReservaMi3DebugTrace.Valor(dReservadoPorStock.Count))
 
             For Each BeStock In lStock
 
@@ -8968,16 +9060,16 @@ Partial Public Class clsLnStock_res
                     Debug.Write("Hola")
                 End If
 
-                If lIdStocksReservados.Contains(BeStock.IdStock) Then
+                If hIdStocksReservados.Contains(BeStock.IdStock) Then
 
                     BePresentacionStock = BeStock.Presentacion
 
-                    If Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock(BeStock.IdStock,
-                                                                    False,
-                                                                    vCantidadReservadaRef,
-                                                                    vPesoReservadoRef,
-                                                                    lConnection,
-                                                                    lTransaction) Then
+                    Dim tReservadoPorStock As System.Tuple(Of Double, Double) = Nothing
+
+                    If dReservadoPorStock.TryGetValue(BeStock.IdStock, tReservadoPorStock) Then
+
+                        vCantidadReservadaRef = tReservadoPorStock.Item1
+                        vPesoReservadoRef = tReservadoPorStock.Item2
 
                         If vCantidadReservadaRef <> 0 Then
 
@@ -9087,6 +9179,8 @@ Partial Public Class clsLnStock_res
 
                         End If
 
+                    Else
+                        BeStock.Pallet_Completo = True
                     End If
 
                 Else
