@@ -4176,7 +4176,24 @@ Partial Public Class clsLnTrans_re_enc
                                                                      AndAlso x.IdUnidadMedidaBasica = pBeStockRec.IdUnidadMedida _
                                                                      AndAlso x.Cantidad >= vCantidadMatch).FirstOrDefault()
 
-                                    If Not BeTransOcDet Is Nothing Then
+                                    If BeTransOcDet Is Nothing Then
+                                        '#EJC20260511: Y si recibé menos sobre una línea ??AndAlso x.Cantidad < vCantidadMatch) == nothing..
+                                        BeTransOcDet = lTransOcDet.Where(Function(x) x.IdProductoBodega = pBeStockRec.IdProductoBodega _
+                                                                         AndAlso x.IdPresentacion = pBeStockRec.IdPresentacion _
+                                                                         AndAlso x.IdUnidadMedidaBasica = pBeStockRec.IdUnidadMedida _
+                                                                         AndAlso x.Cantidad <= vCantidadMatch).FirstOrDefault()
+
+
+                                        If BeTransOcDet Is Nothing Then
+                                            Throw New Exception("Error_20260511: No se encontró línea de OC para asociar el pallet, se intentó buscar una línea con cantidad mayor o igual a la cantidad recibida pero no se encontró, se intentó buscar una línea con cantidad menor o igual a la cantidad recibida y se encontró una línea, por favor revisar la línea " & BeTransOcDet.No_Linea & " del detalle de la orden de compra.")
+                                        End If
+
+
+                                    End If
+
+
+
+                                        If Not BeTransOcDet Is Nothing Then
                                         pBeStockRec.No_linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.No_Linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.IdOrdenCompraDet = BeTransOcDet.IdOrdenCompraDet
@@ -4252,7 +4269,15 @@ Partial Public Class clsLnTrans_re_enc
                                 BeOCEnc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(pIdOrdenCompraEnc, lConnection, lTransaction)
 
                                 If BeOCEnc IsNot Nothing Then
-                                    pBeINavBarraPallet.Bodega_Origen = BeOCEnc.ProveedorBodega.Proveedor.Codigo
+
+                                    '#EJC20260508: A diferencia de Idealsa, en el caso de MHS las barras pre-impresas, son producto de los lotes que envían.
+                                    'en consecuencia, si tengo lote, no varío, la bodega origen, si no tengo lote la bodega origen es el proveedor :).
+                                    Dim BeDetLote = clsLnTrans_oc_det_lote.GetSingle_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pBeTransReDet.IdOrdenCompraEnc, pBeTransReDet.IdOrdenCompraDet, lConnection, lTransaction)
+
+                                    If BeDetLote Is Nothing Then
+                                        pBeINavBarraPallet.Bodega_Origen = BeOCEnc.ProveedorBodega.Proveedor.Codigo
+                                    End If
+
                                 Else
                                     pBeINavBarraPallet.Bodega_Origen = ""
                                 End If

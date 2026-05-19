@@ -1061,6 +1061,8 @@ Partial Public Class clsLnTrans_inv_stock
                             InvCiclico.IdUnidadMedida = Obj.IdUnidadMedida
                             InvCiclico.Cant_stock = Obj.Cantidad
                             InvCiclico.IdUbicacion = Obj.IdUbicacion
+                            '#AT20260518 Agregue IdProductoTallaColor
+                            InvCiclico.IdProductoTallaColor = Obj.IdProductoTallaColor
                             InvCiclico.EstadoNuevo = ""
 
                             Get_Stock_Congelado_InvCiclico = InvCiclico

@@ -2066,25 +2066,53 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                     oReturn.UserFields.Fields.Item(nombreCampoUGira).Value = oReturnRequest.UserFields.Fields.Item(nombreCampoUGira).Value '"CADENAS"
 
                     Dim nombreCampoUDepto As String = "U_Depto"
-                    oReturn.UserFields.Fields.Item(nombreCampoUDepto).Value = oReturnRequest.UserFields.Fields.Item(nombreCampoUDepto).Value
+                    Try
+                        oReturn.UserFields.Fields.Item(nombreCampoUDepto).Value = oReturnRequest.UserFields.Fields.Item(nombreCampoUDepto).Value
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & nombreCampoUDepto)
+                    End Try
 
                     Dim U_TipoNotaCredito As String = "U_TiipoNotaCredito"
-                    oReturn.UserFields.Fields.Item(U_TipoNotaCredito).Value = oReturnRequest.UserFields.Fields.Item(U_TipoNotaCredito).Value
+                    Try
+                        oReturn.UserFields.Fields.Item(U_TipoNotaCredito).Value = oReturnRequest.UserFields.Fields.Item(U_TipoNotaCredito).Value
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & U_TipoNotaCredito)
+                    End Try
 
                     Dim U_Distribuidor As String = "U_Distribuidor"
-                    oReturn.UserFields.Fields.Item(U_Distribuidor).Value = oReturnRequest.UserFields.Fields.Item(U_Distribuidor).Value
+                    Try
+                        oReturn.UserFields.Fields.Item(U_Distribuidor).Value = oReturnRequest.UserFields.Fields.Item(U_Distribuidor).Value
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & U_Distribuidor)
+                    End Try
 
                     Dim U_FactNit As String = "U_FacNit"
-                    oReturn.UserFields.Fields.Item(U_FactNit).Value = oReturnRequest.UserFields.Fields.Item(U_FactNit).Value
+                    Try
+                        oReturn.UserFields.Fields.Item(U_FactNit).Value = oReturnRequest.UserFields.Fields.Item(U_FactNit).Value
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & U_FactNit)
+                    End Try
 
                     Dim U_NIT As String = "U_NIT"
-                    oReturn.UserFields.Fields.Item(U_NIT).Value = oReturnRequest.UserFields.Fields.Item(U_NIT).Value
+                    Try
+                        oReturn.UserFields.Fields.Item(U_NIT).Value = oReturnRequest.UserFields.Fields.Item(U_NIT).Value
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & U_NIT)
+                    End Try
 
                     Dim U_SegundaReferencia As String = "U_SEGUNDAREFERENCIA"
-                    oReturn.UserFields.Fields.Item(U_SegundaReferencia).Value = vIdOrdenCompraEnc.ToString()
+                    Try
+                        oReturn.UserFields.Fields.Item(U_SegundaReferencia).Value = vIdOrdenCompraEnc.ToString()
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & U_SegundaReferencia)
+                    End Try
 
                     Dim U_Tipo_Documento As String = "U_TIPO_DOCUMENTO"
-                    oReturn.UserFields.Fields.Item(U_Tipo_Documento).Value = oReturnRequest.UserFields.Fields.Item(U_Tipo_Documento).Value
+                    Try
+                        oReturn.UserFields.Fields.Item(U_Tipo_Documento).Value = oReturnRequest.UserFields.Fields.Item(U_Tipo_Documento).Value
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblPrg, vbTab & U_Tipo_Documento)
+                    End Try
 
                     oReturn.ManualNumber = 1989
 

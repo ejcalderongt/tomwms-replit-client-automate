@@ -1,6 +1,5 @@
 ﻿Imports DevExpress.XtraEditors
 Imports DevExpress.XtraSplashScreen
-Imports TOMWMS.frmOrdenCompra
 
 Public Class frmDocIngresoRFID
 
@@ -28,7 +27,6 @@ Public Class frmDocIngresoRFID
 
             '#GT15042026: carga de lookupedit, no combobox de forms
             IMS.Listar_Proveedor(cmbProveedor)
-
 
             Select Case Modo
 

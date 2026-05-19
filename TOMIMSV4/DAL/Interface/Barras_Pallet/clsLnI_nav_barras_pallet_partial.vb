@@ -241,6 +241,56 @@ Partial Public Class clsLnI_nav_barras_pallet
 
     End Function
 
+    Public Shared Function Actualizar_Barra_No_Recibida(ByVal pIdOrdencompraEnc As Integer,
+                                                        ByVal pIdOrdenCompraDet As Integer,
+                                                        ByVal pCodigo_Barra As String,
+                                                        ByVal pIdRecepcion As Integer,
+                                                        Optional ByVal pConection As SqlConnection = Nothing,
+                                                        Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = " UPDATE i_nav_barras_pallet SET recibido = 0, IdRecepcion = 0 
+                                   WHERE IdOrdenCompraEnc = @IdOrdencompraEnc AND
+                                         IdOrdenCompraDet = @IdOrdencompraDet AND
+                                         Codigo_Barra = @Codigo_Barra AND
+                                         IdRecepcion  = @IdRecepcion"
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraEnc", pIdOrdencompraEnc))
+            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraDet", pIdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@Codigo_Barra", pCodigo_Barra))
+            cmd.Parameters.Add(New SqlParameter("@IdRecepcion", pIdRecepcion))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+    End Function
 
 End Class

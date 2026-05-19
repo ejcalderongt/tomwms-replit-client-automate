@@ -35,6 +35,7 @@ Public Class clsLnI_nav_barras_pallet
                 .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
                 .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
                 .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
+                .Peso = IIf(IsDBNull(dr.Item("Peso")), 0D, dr.Item("Peso"))
 
             End With
 
@@ -411,9 +412,9 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
-    Public Shared Function GetSingle(ByRef pBeI_nav_barras_pallet As clsBeI_nav_barras_pallet) As Boolean
+    Public Shared Function GetSingle(ByVal IdPallet As Integer) As clsBeI_nav_barras_pallet
 
-        GetSingle = False
+        GetSingle = Nothing
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -425,14 +426,14 @@ Public Class clsLnI_nav_barras_pallet
             Const sp As String = "SELECT * FROM I_nav_barras_pallet Where(IdPallet = @IdPallet) "
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDPALLET", pBeI_nav_barras_pallet.IdPallet))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDPALLET", IdPallet))
 
             Dim dt As New DataTable
             dad.Fill(dt)
 
             If dt.Rows.Count = 1 Then
-                Cargar(pBeI_nav_barras_pallet, dt.Rows(0))
-                GetSingle = True
+                GetSingle = New clsBeI_nav_barras_pallet
+                Cargar(GetSingle, dt.Rows(0))
             End If
 
         Catch ex As Exception
@@ -1457,6 +1458,56 @@ Public Class clsLnI_nav_barras_pallet
             lTransaction.Dispose()
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Count_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(ByVal pIdOrdenCompraEnc As Integer,
+                                                                              ByVal pIdOrdenCompraDet As Integer) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Dim sp As String =
+            "SELECT COUNT(*) 
+               FROM I_nav_barras_pallet
+              WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
+                AND IdOrdenCompraDet = @IdOrdenCompraDet
+                AND recibido = 0"
+
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {
+            .CommandType = CommandType.Text
+        }
+
+            cmd.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+            cmd.Parameters.AddWithValue("@IdOrdenCompraDet", pIdOrdenCompraDet)
+
+            Dim result As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+
+            lTransaction.Commit()
+
+            Return result
+
+        Catch ex As Exception
+
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+
+        Finally
+
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+
+            If lConnection.State = ConnectionState.Open Then
+                lConnection.Close()
+            End If
+
+            lConnection.Dispose()
+
         End Try
 
     End Function

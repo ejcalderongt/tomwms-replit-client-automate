@@ -3094,6 +3094,30 @@ Partial Public Class clsLnTrans_re_det
 
                 End If
 
+                FilasAfectadas = clsLnI_nav_barras_pallet.Actualizar_Barra_No_Recibida(pRecDet.IdOrdenCompraEnc,
+                                                                                       pRecDet.IdOrdenCompraDet,
+                                                                                       pRecDet.Lic_plate,
+                                                                                       pRecDet.IdRecepcionEnc,
+                                                                                       lConnection, lTrans)
+
+                If FilasAfectadas Then
+
+                    Resultado += String.Format("Se actualizó la barra {0} de la tabla i_nav_barras_pallet ", pRecDet.Lic_plate)
+
+                    Dim vMsgError As String = String.Format("Se actualizó la barra {0} de la tabla i_nav_barras_pallet ", pRecDet.Lic_plate)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pNumeroLinea:=pRecDet.No_Linea,
+                                                         pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=pRecDet.Codigo_Producto,
+                                                         pCantidad:=pRecDet.cantidad_recibida,
+                                                         pReferenciaDocumento:=pIdHost.ToString(),
+                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                         pIdRecDet:=pIdRecepcionDet,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTrans)
+
+                End If
+
                 '#EJC202404270040: Log Error WMS. al eliminar línea de recepción BOF.
                 '#GT16102024: Se agrega al log del error, el host desde donde se elimina la linea.
                 Dim msgFinal As String = "EJC240427_HH_EliminarRecepcion: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
