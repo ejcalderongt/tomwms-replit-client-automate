@@ -167,7 +167,7 @@ Partial Class frmImpresion_OC_RFID
         Me.txtCantidadImpresiones.Name = "txtCantidadImpresiones"
         Me.txtCantidadImpresiones.Size = New System.Drawing.Size(98, 23)
         Me.txtCantidadImpresiones.TabIndex = 49
-        Me.txtCantidadImpresiones.Value = New Decimal(New Integer() {2, 0, 0, 0})
+        Me.txtCantidadImpresiones.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'lblImpresiones
         '

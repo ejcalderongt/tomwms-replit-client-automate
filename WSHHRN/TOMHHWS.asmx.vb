@@ -19493,4 +19493,47 @@ Public Class TOMHHWS
         End Try
     End Function
 
+    '#GT14052026: retornar cuantas pallets deben leerse en tags.
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function GetProductosAInventariarCiclico_RFID(ByVal pIdInventarioEnc As Integer, ByVal pIdBodega As Integer) As Integer
+
+        GetProductosAInventariarCiclico_RFID = -1
+
+        Try
+
+            GetProductosAInventariarCiclico_RFID = clsLnTrans_inv_ciclico_rfid.Get_Conteo_Productos(pIdInventarioEnc, pIdBodega)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
 End Class

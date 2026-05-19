@@ -319,30 +319,33 @@ Public Class frmImpresion_OC_RFID
                 Dim fechaActual As String = Date.Now.ToString("dd-MM-yyyy")
                 Dim fechaVence As String = barraPallet.Fecha_Vence.ToString("dd-MM-yyyy")
 
-                Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex,
-                                                                  barraPallet.Codigo_barra,
-                                                                  BeEmpresa.Nombre,
-                                                                  beBodega.Nombre,
-                                                                  pGS1,
-                                                                  barraPallet.SSCC,
-                                                                  barraPallet.Lote,
-                                                                  barraPallet.Fecha_Produccion,
-                                                                  barraPallet.Codigo,
-                                                                  barraPallet.Cantidad_UMP,
-                                                                  barraPallet.Nombre,
-                                                                  barraPallet.GTIN
-                                                                  )
+                Dim zpl As String = BuildZpl_RfidEncode_And_Print_208dpi(epc96Hex,
+                                                                          barraPallet.Codigo_barra,
+                                                                          BeEmpresa.Nombre,
+                                                                          beBodega.Nombre,
+                                                                          pGS1,
+                                                                          barraPallet.SSCC,
+                                                                          barraPallet.Lote,
+                                                                          barraPallet.Fecha_Produccion,
+                                                                          barraPallet.Codigo,
+                                                                          barraPallet.Cantidad_UMP,
+                                                                          barraPallet.Nombre,
+                                                                          barraPallet.GTIN
+                                                                          )
 
-                'Dim zpl As String = BuildZpl_RfidEncode_And_Print(
-                'epc96Hex,
-                'barraPallet.Codigo_barra,
-                'BeEmpresa.Nombre,
-                'beBodega.Nombre,
-                'fechaVence,
-                'bePresentacion.Nombre,
-                'barraPallet.Cantidad_Presentacion,
-                'fechaActual
-                ')
+                'Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex,
+                '                                                  barraPallet.Codigo_barra,
+                '                                                  BeEmpresa.Nombre,
+                '                                                  beBodega.Nombre,
+                '                                                  pGS1,
+                '                                                  barraPallet.SSCC,
+                '                                                  barraPallet.Lote,
+                '                                                  barraPallet.Fecha_Produccion,
+                '                                                  barraPallet.Codigo,
+                '                                                  barraPallet.Cantidad_UMP,
+                '                                                  barraPallet.Nombre,
+                '                                                  barraPallet.GTIN
+                '                                                  )
 
                 For j As Integer = 1 To maxToProcess
                     RawPrinterHelper.SendStringToPrinter(printerName, zpl)
@@ -557,6 +560,82 @@ Public Class frmImpresion_OC_RFID
             Throw
         End Try
     End Function
+
+
+    Private Function BuildZpl_RfidEncode_And_Print_208dpi(epc96Hex As String,
+                                                       licencia As String,
+                                                       empresa As String,
+                                                       bodega As String,
+                                                       gs1 As String,
+                                                       sscc As String,
+                                                       lote As String,
+                                                       fechaProd As String,
+                                                       skuSavona As String,
+                                                       cantidad As String,
+                                                       descripcionProducto As String,
+                                                       GTIN As String) As String
+        Try
+            Dim sb As New StringBuilder()
+            Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
+
+            sb.AppendLine("^XA")
+            sb.AppendLine("^MMT")
+
+            ' 300 dpi original: PW1035 / LL0600
+            ' Escalado aproximado a 208 dpi: 208 / 300 = 0.6933
+            sb.AppendLine("^PW718")
+            sb.AppendLine("^LL416")
+            sb.AppendLine("^LS0")
+            sb.AppendLine("^CI27")
+
+            sb.AppendLine("^RS4")
+            sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
+
+            sb.AppendLine("^FO2,2^GB713,412,2^FS")
+            sb.AppendLine("^FT28,38^A0N,17,17^FH^FDTOMWMS^FS")
+
+            sb.AppendLine("^FT243,38^A0N,18,17^FH^FDEmp:^FS")
+            sb.AppendLine("^FT280,38^A0N,18,17^FH^FD" & empresa & "^FS")
+
+            sb.AppendLine("^FT28,170^A0N,18,17^FH^FDGTIN^FS")
+            sb.AppendLine("^FT146,170^A0N,18,17^FH^FD" & GTIN & "^FS")
+
+            sb.AppendLine("^FO2,49^GB713,3,3^FS")
+
+            sb.AppendLine("^FT28,76^A0N,18,24^FH^FDSAVONA:^FS")
+            sb.AppendLine("^FT125,76^A0N,18,24^FH^FD" & skuSavona & "^FS")
+
+            sb.AppendLine("^FT28,97^A0N,17,22^FH^FD" & descripcionProducto & "^FS")
+
+            sb.AppendLine("^FT28,128^A0N,18,17^FH^FDCANT:^FS")
+            sb.AppendLine("^FT146,128^A0N,18,17^FH^FD" & cantidad & "^FS")
+
+            sb.AppendLine("^FT28,149^A0N,18,17^FH^FDFECHA PROD:^FS")
+            sb.AppendLine("^FT146,149^A0N,18,17^FH^FD" & fechaProd & "^FS")
+
+            sb.AppendLine("^FT263,149^A0N,18,17^FH^FDLOTE:^FS")
+            sb.AppendLine("^FT312,149^A0N,18,17^FH^FD" & lote & "^FS")
+
+            sb.AppendLine("^FO2,187^GB713,3,3^FS")
+
+            sb.AppendLine("^BY1,2,83")
+            sb.AppendLine("^FT35,277^BCN,76,Y,N,N")
+            sb.AppendLine("^FD" & gs1 & "^FS")
+
+            sb.AppendLine("^BY2,2,73")
+            sb.AppendLine("^FT35,378^BCN,76,Y,N,N")
+            sb.AppendLine("^FD" & sscc & "^FS")
+
+            sb.AppendLine("^PQ1,0,1,Y")
+            sb.AppendLine("^XZ")
+
+            Return sb.ToString()
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
 
 
     ' ========= VALIDACIÓN DE ESTADO (WMI) =========

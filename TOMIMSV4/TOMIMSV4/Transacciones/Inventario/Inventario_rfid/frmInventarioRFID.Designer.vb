@@ -75,6 +75,8 @@ Partial Class frmInventarioRFID
         Me.cmdQuitarProducto = New DevExpress.XtraEditors.SimpleButton()
         Me.cmdAgregarProducto = New DevExpress.XtraEditors.SimpleButton()
         Me.xtraTabConteo = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridInventarioCiclico = New DevExpress.XtraGrid.GridControl()
+        Me.gdviewTeorico = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.grpConteoCi = New DevExpress.XtraEditors.GroupControl()
         Me.prgPanInvConteo = New System.Windows.Forms.ProgressBar()
         Me.txtNombreProducto = New DevExpress.XtraEditors.TextEdit()
@@ -83,8 +85,6 @@ Partial Class frmInventarioRFID
         Me.txtNombreOperador = New DevExpress.XtraEditors.TextEdit()
         Me.txtIdOperador = New DevExpress.XtraEditors.TextEdit()
         Me.LinklblOperador = New System.Windows.Forms.LinkLabel()
-        Me.dgridInventarioCiclico = New DevExpress.XtraGrid.GridControl()
-        Me.gdviewTeorico = New DevExpress.XtraGrid.Views.Grid.GridView()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.xtraTabInv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.xtraTabInv.SuspendLayout()
@@ -116,14 +116,14 @@ Partial Class frmInventarioRFID
         CType(Me.twTodos.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbOperadorProd.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.xtraTabConteo.SuspendLayout()
+        CType(Me.dgridInventarioCiclico, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gdviewTeorico, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpConteoCi, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpConteoCi.SuspendLayout()
         CType(Me.txtNombreProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreOperador.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdOperador.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.dgridInventarioCiclico, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.gdviewTeorico, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -192,7 +192,7 @@ Partial Class frmInventarioRFID
         '
         Me.XtraTabPage1.Controls.Add(Me.GroupControl1)
         Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(1547, 380)
+        Me.XtraTabPage1.Size = New System.Drawing.Size(1615, 422)
         Me.XtraTabPage1.Text = "Encabezado"
         '
         'GroupControl1
@@ -232,9 +232,8 @@ Partial Class frmInventarioRFID
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1547, 380)
+        Me.GroupControl1.Size = New System.Drawing.Size(1615, 422)
         Me.GroupControl1.TabIndex = 0
-        Me.GroupControl1.Text = "GroupControl1"
         '
         'chkCapturarNoAsignado
         '
@@ -598,7 +597,7 @@ Partial Class frmInventarioRFID
         Me.xtraTabProductos.Controls.Add(Me.dgridAsignacionProductos)
         Me.xtraTabProductos.Controls.Add(Me.grpProductos)
         Me.xtraTabProductos.Name = "xtraTabProductos"
-        Me.xtraTabProductos.Size = New System.Drawing.Size(1547, 380)
+        Me.xtraTabProductos.Size = New System.Drawing.Size(1615, 422)
         Me.xtraTabProductos.Text = "Agregar Productos"
         '
         'dgridAsignacionProductos
@@ -614,7 +613,7 @@ Partial Class frmInventarioRFID
         Me.dgridAsignacionProductos.OptionsView.ShowAutoFilterRow = True
         Me.dgridAsignacionProductos.OptionsView.ShowSummaryFooter = True
         Me.dgridAsignacionProductos.RowHeight = 30
-        Me.dgridAsignacionProductos.Size = New System.Drawing.Size(1547, 266)
+        Me.dgridAsignacionProductos.Size = New System.Drawing.Size(1615, 308)
         Me.dgridAsignacionProductos.TabIndex = 2
         Me.dgridAsignacionProductos.TreeLevelWidth = 17
         '
@@ -634,7 +633,7 @@ Partial Class frmInventarioRFID
         Me.grpProductos.Margin = New System.Windows.Forms.Padding(5)
         Me.grpProductos.Name = "grpProductos"
         Me.grpProductos.ShowCaption = False
-        Me.grpProductos.Size = New System.Drawing.Size(1547, 114)
+        Me.grpProductos.Size = New System.Drawing.Size(1615, 114)
         Me.grpProductos.TabIndex = 1
         '
         'cmdQuitaOpProd
@@ -737,6 +736,29 @@ Partial Class frmInventarioRFID
         Me.xtraTabConteo.Size = New System.Drawing.Size(1615, 422)
         Me.xtraTabConteo.Text = "Detalle de Inventario Ciclico"
         '
+        'dgridInventarioCiclico
+        '
+        Me.dgridInventarioCiclico.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridInventarioCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridInventarioCiclico.Location = New System.Drawing.Point(0, 170)
+        Me.dgridInventarioCiclico.MainView = Me.gdviewTeorico
+        Me.dgridInventarioCiclico.Margin = New System.Windows.Forms.Padding(5)
+        Me.dgridInventarioCiclico.MenuManager = Me.RibbonControl
+        Me.dgridInventarioCiclico.Name = "dgridInventarioCiclico"
+        Me.dgridInventarioCiclico.Size = New System.Drawing.Size(1615, 252)
+        Me.dgridInventarioCiclico.TabIndex = 2
+        Me.dgridInventarioCiclico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gdviewTeorico})
+        '
+        'gdviewTeorico
+        '
+        Me.gdviewTeorico.DetailHeight = 437
+        Me.gdviewTeorico.GridControl = Me.dgridInventarioCiclico
+        Me.gdviewTeorico.Name = "gdviewTeorico"
+        Me.gdviewTeorico.OptionsBehavior.ReadOnly = True
+        Me.gdviewTeorico.OptionsEditForm.PopupEditFormWidth = 1000
+        Me.gdviewTeorico.OptionsView.ColumnAutoWidth = False
+        Me.gdviewTeorico.OptionsView.ShowAutoFilterRow = True
+        '
         'grpConteoCi
         '
         Me.grpConteoCi.Controls.Add(Me.prgPanInvConteo)
@@ -757,10 +779,10 @@ Partial Class frmInventarioRFID
         'prgPanInvConteo
         '
         Me.prgPanInvConteo.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prgPanInvConteo.Location = New System.Drawing.Point(2, 135)
+        Me.prgPanInvConteo.Location = New System.Drawing.Point(2, 127)
         Me.prgPanInvConteo.Margin = New System.Windows.Forms.Padding(5)
         Me.prgPanInvConteo.Name = "prgPanInvConteo"
-        Me.prgPanInvConteo.Size = New System.Drawing.Size(1611, 33)
+        Me.prgPanInvConteo.Size = New System.Drawing.Size(1611, 41)
         Me.prgPanInvConteo.TabIndex = 18
         Me.prgPanInvConteo.Visible = False
         '
@@ -822,29 +844,6 @@ Partial Class frmInventarioRFID
         Me.LinklblOperador.TabStop = True
         Me.LinklblOperador.Text = "Operador"
         '
-        'dgridInventarioCiclico
-        '
-        Me.dgridInventarioCiclico.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridInventarioCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
-        Me.dgridInventarioCiclico.Location = New System.Drawing.Point(0, 170)
-        Me.dgridInventarioCiclico.MainView = Me.gdviewTeorico
-        Me.dgridInventarioCiclico.Margin = New System.Windows.Forms.Padding(5)
-        Me.dgridInventarioCiclico.MenuManager = Me.RibbonControl
-        Me.dgridInventarioCiclico.Name = "dgridInventarioCiclico"
-        Me.dgridInventarioCiclico.Size = New System.Drawing.Size(1615, 252)
-        Me.dgridInventarioCiclico.TabIndex = 2
-        Me.dgridInventarioCiclico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gdviewTeorico})
-        '
-        'gdviewTeorico
-        '
-        Me.gdviewTeorico.DetailHeight = 437
-        Me.gdviewTeorico.GridControl = Me.dgridInventarioCiclico
-        Me.gdviewTeorico.Name = "gdviewTeorico"
-        Me.gdviewTeorico.OptionsBehavior.ReadOnly = True
-        Me.gdviewTeorico.OptionsEditForm.PopupEditFormWidth = 1000
-        Me.gdviewTeorico.OptionsView.ColumnAutoWidth = False
-        Me.gdviewTeorico.OptionsView.ShowAutoFilterRow = True
-        '
         'frmInventarioRFID
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -890,6 +889,8 @@ Partial Class frmInventarioRFID
         CType(Me.twTodos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbOperadorProd.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.xtraTabConteo.ResumeLayout(False)
+        CType(Me.dgridInventarioCiclico, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gdviewTeorico, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grpConteoCi, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpConteoCi.ResumeLayout(False)
         Me.grpConteoCi.PerformLayout()
@@ -897,8 +898,6 @@ Partial Class frmInventarioRFID
         CType(Me.txtIdProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreOperador.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdOperador.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.dgridInventarioCiclico, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.gdviewTeorico, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

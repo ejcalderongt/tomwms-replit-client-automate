@@ -342,6 +342,12 @@
     <Compile Include="Mantenimientos\Base_Datos\frmTablasBD.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\I_Nav_Servicios\frmServicio_List.Designer.vb">
+      <DependentUpon>frmServicio_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\I_Nav_Servicios\frmServicio_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
       <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
     </Compile>
@@ -535,12 +541,6 @@
       <DependentUpon>frmServicio.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\I_Nav_Servicios\frmServicio.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Mantenimientos\I_Nav_Servicios\frmServicio_List.Designer.vb">
-      <DependentUpon>frmServicio_List.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Mantenimientos\I_Nav_Servicios\frmServicio_List.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Jornada_Sistema\frmJornadaSistema.Designer.vb">
@@ -1582,6 +1582,12 @@
     <Compile Include="Transacciones\Picking\frmPicking.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Picking\frmPicking_List.designer.vb">
+      <DependentUpon>frmPicking_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Picking\frmPicking_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\PreFactura\frmIngresos_List.Designer.vb">
       <DependentUpon>frmIngresos_List.vb</DependentUpon>
     </Compile>
@@ -1634,6 +1640,12 @@
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -3124,12 +3136,6 @@
     <Compile Include="Transacciones\Picking\frmPedidoDetalleBuscador.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\Picking\frmPicking_List.designer.vb">
-      <DependentUpon>frmPicking_List.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Transacciones\Picking\frmPicking_List.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Transacciones\Cambio_Ubicacion_Estado\DsOperadorUbicacion.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3280,6 +3286,9 @@
     <EmbeddedResource Include="Mantenimientos\Bodega\Estructura\frmTramo.resx">
       <DependentUpon>frmTramo.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\I_Nav_Servicios\frmServicio_List.resx">
+      <DependentUpon>frmServicio_List.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.resx">
       <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
     </EmbeddedResource>
@@ -3342,9 +3351,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\I_Nav_Servicios\frmServicio.resx">
       <DependentUpon>frmServicio.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Mantenimientos\I_Nav_Servicios\frmServicio_List.resx">
-      <DependentUpon>frmServicio_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Jornada_Sistema\frmJornadaSistema.resx">
       <DependentUpon>frmJornadaSistema.vb</DependentUpon>
@@ -3857,6 +3863,9 @@
     <EmbeddedResource Include="Transacciones\Picking\frmPicking.resx">
       <DependentUpon>frmPicking.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Picking\frmPicking_List.resx">
+      <DependentUpon>frmPicking_List.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\PreFactura\frmIngresos_List.resx">
       <DependentUpon>frmIngresos_List.vb</DependentUpon>
     </EmbeddedResource>
@@ -3884,6 +3893,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -4530,9 +4542,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Picking\frmPedidoDetalleBuscador.resx">
       <DependentUpon>frmPedidoDetalleBuscador.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Transacciones\Picking\frmPicking_List.resx">
-      <DependentUpon>frmPicking_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.resx">
       <DependentUpon>frmCambioUbicacion.vb</DependentUpon>

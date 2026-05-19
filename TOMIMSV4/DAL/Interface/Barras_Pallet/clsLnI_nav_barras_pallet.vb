@@ -1380,7 +1380,8 @@ Public Class clsLnI_nav_barras_pallet
                                     FROM I_nav_barras_pallet nav
                                     inner join producto pr 
 								    on nav.codigo=pr.codigo inner join producto_bodega pb
-								    on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=@pIdProductoBodega and pb.IdBodega=@pIdBodega and nav.Codigo_barra=@pCodigo_barra) "
+								    on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=@pIdProductoBodega 
+                                    and pb.IdBodega=@pIdBodega) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
