@@ -18205,7 +18205,32 @@ Partial Public Class clsLnStock_res
 
         Reserva_Stock_From_MI3 = False
 
+        Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+        Dim vTraceCreadoLocal As Boolean = False
+
         Try
+
+            If String.IsNullOrWhiteSpace(vReservaMi3Trace) Then
+                vReservaMi3Trace = clsReservaMi3DebugTrace.Iniciar("Reserva_Stock_From_MI3",
+                                                                   pStockResSolicitud.IdPedido,
+                                                                   pStockResSolicitud.IdPedidoDet,
+                                                                   No_Linea,
+                                                                   clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdProductoBodega))
+                clsReservaMi3DebugTrace.EstablecerActual(vReservaMi3Trace)
+                vTraceCreadoLocal = Not String.IsNullOrWhiteSpace(vReservaMi3Trace)
+            End If
+
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "entrada_reserva_stock_from_mi3",
+                                           "IdPedido", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPedido),
+                                           "IdPedidoDet", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPedidoDet),
+                                           "No_Linea", clsReservaMi3DebugTrace.Valor(No_Linea),
+                                           "IdProductoBodega", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdProductoBodega),
+                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                           "DiasVencimiento", clsReservaMi3DebugTrace.Valor(DiasVencimiento),
+                                           "Explosion_Automatica", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Explosion_Automatica),
+                                           "Tarea_Reabasto", clsReservaMi3DebugTrace.Valor(pTarea_Reabasto))
 
 #Region "Variables"
 
@@ -18352,6 +18377,17 @@ Partial Public Class clsLnStock_res
             lBeStockExistenteZonasNoPicking = ListasStock.lBeStockExistenteZonasNoPicking
             lBeStockExistenteZonaPicking = ListasStock.lBeStockExistenteZonaPicking
 
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "listas_stock_iniciales",
+                                           "Producto_Codigo", BeProducto.Codigo,
+                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.IdPresentacion),
+                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.Factor),
+                                           "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(BePedidoDet.Cantidad),
+                                           "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(BePedidoDet.IdPresentacion),
+                                           "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),
+                                           "StockZonaPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonaPicking Is Nothing, 0, lBeStockExistenteZonaPicking.Count)),
+                                           "StockZonasNoPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonasNoPicking Is Nothing, 0, lBeStockExistenteZonasNoPicking.Count)))
+
             If pStockResSolicitud.IdPresentacion <> 0 AndAlso lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Count > 0 Then
                 lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.FindAll(Function(x) x.UbicacionPicking = True)
             End If
@@ -18488,6 +18524,11 @@ EXPLOSIONAR_PRODUCTO:
                     End If
 
                     If vBusquedaEnUmBas Then
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "entra_busqueda_umbas",
+                                                       "CantidadSolicitud_Antes", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                       "IdPresentacion_Antes", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                                       "EncontroExistenciaEnPresentacion", clsReservaMi3DebugTrace.Valor(vEncontroExistenciaEnPresentacion))
                         ' Dividir la cantidad solicitada en su parte entera y decimal
                         Split_Decimal(pStockResSolicitud.Cantidad, vCantidadEnteraPres, vCantidadDecimalUMBas)
 
@@ -18518,6 +18559,13 @@ EXPLOSIONAR_PRODUCTO:
                         pStockResSolicitud.Cantidad = vCantidadSolicitadaPedido
                         pStockResSolicitud.Atributo_Variante_1 = Nothing
                         pStockResSolicitud.IdPresentacion = 0
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "solicitud_convertida_a_umbas",
+                                                       "CantidadEnteraPres", clsReservaMi3DebugTrace.Valor(vCantidadEnteraPres),
+                                                       "CantidadDecimalUMBas", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas),
+                                                       "CantidadSolicitadaPedido", clsReservaMi3DebugTrace.Valor(vCantidadSolicitadaPedido),
+                                                       "CantidadSolicitud_Despues", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                       "IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion))
                     End If
 
                     If lBeStockExistente.Count = 0 Then
@@ -25555,6 +25603,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                             ' cuando el pedido ya venía en unidad base. En ese caso el pendiente real es
                             ' vCantidadPendiente; vCantidadDecimalUMBas puede venir de la lógica de fracción /
                             ' explosión de presentación y no debe reemplazar el remanente a reservar.
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "preparar_recursion_umbas_antes_ckf",
+                                                           "StockResSolicitud_IdPresentacion", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                                           "vCantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente),
+                                                           "vCantidadDecimalUMBas", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas),
+                                                           "vCantidadCompletada", clsReservaMi3DebugTrace.Valor(vCantidadCompletada),
+                                                           "vBusquedaEnUmBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
+                                                           "Explosion_Automatica", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Explosion_Automatica))
                             If pStockResSolicitud.IdPresentacion = 0 Then
                                 vCantidadDecimalUMBas = vCantidadPendiente
                             ElseIf Not ((vCantidadCompletada AndAlso vCantidadPendiente > 0) AndAlso (pStockResSolicitud.IdPresentacion <> 0 AndAlso vCantidadDecimalUMBas = 0 AndAlso pBeConfigEnc.Explosion_Automatica)) AndAlso vBusquedaEnUmBas Then
@@ -25564,6 +25620,10 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     vCantidadDecimalUMBas = vCantidadPendiente
                                 End If
                             End If
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "preparar_recursion_umbas_despues_ckf",
+                                                           "vCantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente),
+                                                           "vCantidadDecimalUMBas", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas))
 
                             Reserva_Stock_From_MI3 = True
 
@@ -25581,6 +25641,11 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     BeStockResUMBas.Cantidad = Math.Round(vCantidadDecimalUMBas, 6)
                                     BeStockResUMBas.IdPresentacion = 0
                                     BeStockResUMBas.Serial = No_Linea
+                                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                                   "crea_solicitud_recursiva_umbas",
+                                                                   "Cantidad", clsReservaMi3DebugTrace.Valor(BeStockResUMBas.Cantidad),
+                                                                   "IdPresentacion", clsReservaMi3DebugTrace.Valor(BeStockResUMBas.IdPresentacion),
+                                                                   "No_Linea", clsReservaMi3DebugTrace.Valor(No_Linea))
 
                                     If pStockResSolicitud.IdUbicacionAbastecerCon <> 0 Then
                                         BeStockResUMBas.IdUbicacionAbastecerCon = pStockResSolicitud.IdUbicacionAbastecerCon
@@ -26337,7 +26402,17 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
             End If
 
         Catch ex As Exception
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace, "exception_reserva_stock_from_mi3", "mensaje", ex.Message)
             Throw ex
+        Finally
+            If vTraceCreadoLocal Then
+                clsReservaMi3DebugTrace.Finalizar(vReservaMi3Trace, IIf(Reserva_Stock_From_MI3, "OK", "FALSE"))
+                clsReservaMi3DebugTrace.LimpiarActual(vReservaMi3Trace)
+            Else
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "salida_reserva_stock_from_mi3",
+                                               "resultado", IIf(Reserva_Stock_From_MI3, "OK", "FALSE"))
+            End If
         End Try
 
     End Function
@@ -34385,4 +34460,181 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
         End Try
 
     End Function
+End Class
+
+Public Class clsReservaMi3DebugTrace
+
+    <ThreadStatic>
+    Private Shared mArchivoActual As String
+
+    Private Shared ReadOnly mLock As New Object()
+
+    Public Shared Function EstaActivo() As Boolean
+
+        Try
+            Dim vTrace As String = Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE")
+            Dim vDebug As String = Configuration.ConfigurationManager.AppSettings("WMS_MODO_DEBUG")
+
+            If String.IsNullOrWhiteSpace(vTrace) Then
+                vTrace = vDebug
+            End If
+
+            If String.IsNullOrWhiteSpace(vTrace) Then
+                Return False
+            End If
+
+            vTrace = vTrace.Trim().ToUpperInvariant()
+            Return vTrace = "ON" OrElse vTrace = "TRUE" OrElse vTrace = "1" OrElse vTrace = "SI" OrElse vTrace = "SÍ"
+
+        Catch
+            Return False
+        End Try
+
+    End Function
+
+    Public Shared Function Iniciar(ByVal pOrigen As String,
+                                   ByVal pIdPedidoEnc As Integer,
+                                   ByVal pIdPedidoDet As Integer,
+                                   ByVal pNoLinea As Integer,
+                                   ByVal pItemNo As String) As String
+
+        If Not EstaActivo() Then Return ""
+
+        Try
+            Dim vDirectorio As String = ObtenerDirectorio()
+            System.IO.Directory.CreateDirectory(vDirectorio)
+
+            Dim vCorrelativo As String = String.Format("{0}-{1}-{2}",
+                                                       Date.Now.ToString("yyyyMMdd-HHmmss-fff"),
+                                                       System.Diagnostics.Process.GetCurrentProcess().Id,
+                                                       Guid.NewGuid().ToString("N").Substring(0, 8))
+
+            Dim vNombreArchivo As String = String.Format("reserva-mi3-{0}-ped{1}-det{2}-lin{3}-{4}.yml",
+                                                         vCorrelativo,
+                                                         pIdPedidoEnc,
+                                                         pIdPedidoDet,
+                                                         pNoLinea,
+                                                         LimpiarNombreArchivo(pItemNo))
+
+            Dim vArchivo As String = System.IO.Path.Combine(vDirectorio, vNombreArchivo)
+
+            Dim vLineas As New List(Of String)
+            vLineas.Add("trace:")
+            vLineas.Add("  correlativo: """ & vCorrelativo & """")
+            vLineas.Add("  inicio: """ & Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & """")
+            vLineas.Add("  origen: """ & Normalizar(pOrigen) & """")
+            vLineas.Add("  maquina: """ & Normalizar(Environment.MachineName) & """")
+            vLineas.Add("  usuario_windows: """ & Normalizar(Environment.UserName) & """")
+            vLineas.Add("  contexto:")
+            vLineas.Add("    idPedidoEnc: " & pIdPedidoEnc)
+            vLineas.Add("    idPedidoDet: " & pIdPedidoDet)
+            vLineas.Add("    noLinea: " & pNoLinea)
+            vLineas.Add("    itemNo: """ & Normalizar(pItemNo) & """")
+            vLineas.Add("eventos:")
+
+            System.IO.File.WriteAllLines(vArchivo, vLineas, System.Text.Encoding.UTF8)
+            Return vArchivo
+
+        Catch
+            Return ""
+        End Try
+
+    End Function
+
+    Public Shared Sub EstablecerActual(ByVal pArchivo As String)
+        If Not String.IsNullOrWhiteSpace(pArchivo) Then
+            mArchivoActual = pArchivo
+        End If
+    End Sub
+
+    Public Shared Function ObtenerActual() As String
+        Return If(mArchivoActual, "")
+    End Function
+
+    Public Shared Sub LimpiarActual(ByVal pArchivo As String)
+        If String.Equals(mArchivoActual, pArchivo, StringComparison.OrdinalIgnoreCase) Then
+            mArchivoActual = ""
+        End If
+    End Sub
+
+    Public Shared Sub Evento(ByVal pArchivo As String,
+                             ByVal pEtapa As String,
+                             ParamArray pPares() As String)
+
+        If String.IsNullOrWhiteSpace(pArchivo) Then Return
+
+        Try
+            Dim vLineas As New List(Of String)
+            vLineas.Add("  - ts: """ & Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & """")
+            vLineas.Add("    etapa: """ & Normalizar(pEtapa) & """")
+
+            If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+                vLineas.Add("    datos:")
+
+                Dim i As Integer = 0
+                While i < pPares.Length
+                    Dim vClave As String = pPares(i)
+                    Dim vValor As String = ""
+
+                    If i + 1 < pPares.Length Then
+                        vValor = pPares(i + 1)
+                    End If
+
+                    vLineas.Add("      " & LimpiarClave(vClave) & ": """ & Normalizar(vValor) & """")
+                    i += 2
+                End While
+            End If
+
+            SyncLock mLock
+                System.IO.File.AppendAllLines(pArchivo, vLineas, System.Text.Encoding.UTF8)
+            End SyncLock
+
+        Catch
+        End Try
+
+    End Sub
+
+    Public Shared Sub Finalizar(ByVal pArchivo As String, ByVal pEstado As String)
+        Evento(pArchivo, "fin", "estado", pEstado)
+    End Sub
+
+    Public Shared Function Valor(ByVal pValor As Object) As String
+        If pValor Is Nothing OrElse pValor Is DBNull.Value Then Return ""
+        Return Convert.ToString(pValor, Globalization.CultureInfo.InvariantCulture)
+    End Function
+
+    Private Shared Function ObtenerDirectorio() As String
+        Dim vDirectorio As String = Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE_PATH")
+
+        If String.IsNullOrWhiteSpace(vDirectorio) Then
+            vDirectorio = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                                                 "TOMWMS",
+                                                 "debug-reserva-mi3")
+        End If
+
+        Return vDirectorio
+    End Function
+
+    Private Shared Function LimpiarNombreArchivo(ByVal pValor As String) As String
+        Dim vValor As String = If(pValor, "item")
+
+        For Each vCaracter As Char In System.IO.Path.GetInvalidFileNameChars()
+            vValor = vValor.Replace(vCaracter, "_"c)
+        Next
+
+        If vValor.Trim() = "" Then vValor = "item"
+        Return vValor.Trim()
+    End Function
+
+    Private Shared Function LimpiarClave(ByVal pValor As String) As String
+        Dim vValor As String = If(pValor, "dato").Trim()
+        If vValor = "" Then vValor = "dato"
+        Return vValor.Replace(" ", "_").Replace("-", "_").Replace(".", "_")
+    End Function
+
+    Private Shared Function Normalizar(ByVal pValor As String) As String
+        If pValor Is Nothing Then Return ""
+        Return pValor.Replace("\", "\\").Replace("""", "'").Replace(vbCr, " ").Replace(vbLf, " ")
+    End Function
+
 End Class
