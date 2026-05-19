@@ -19236,6 +19236,7 @@ Public Class TOMHHWS
 
     End Function
 
+    '#CKFK20260518 Modifique esta función
     Public Sub ConvertirListasVaciasANothing(obj As Object)
         If obj Is Nothing Then Return
 
