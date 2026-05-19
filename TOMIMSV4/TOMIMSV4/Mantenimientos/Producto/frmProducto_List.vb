@@ -1367,7 +1367,7 @@ Public Class frmProductoList
 
     End Sub
 
-    ' 🔧 FUNCIÓN AUXILIAR PARA MANEJAR DBNull
+    ' FUNCIÓN AUXILIAR PARA MANEJAR DBNull
     Private Function ObtenerValorRow(row As DataRow, nombreColumna As String) As String
         If row.Table.Columns.Contains(nombreColumna) Then
             Dim valor = row(nombreColumna)

@@ -1933,6 +1933,7 @@ public class clsLnI_nav_ped_compra_enc
                     No_linea = Lote.Source_Prod_Order_Line,
                     IdProductoBodega = BePedidoCompraDet.IdProductoBodega,
                     Lote = Lote.Lot_No,
+                    Fecha_vence = Lote.Expiration_Date,
                     Cantidad_recibida = 0,
                     Codigo_producto = Lote.Item_No,
                     IdUnidadMedidaBasica = BePedidoCompraDet.IdUnidadMedidaBasica,
@@ -1940,7 +1941,7 @@ public class clsLnI_nav_ped_compra_enc
                     No_documento = navPedidoCompraEnc.No,
                     Lic_plate = navPedidoCompraDet.Barcode,
                     Peso_Licencia = Lote.Pallet_Weight,
-                    Activo = true                    
+                    Activo = true
                 };
 
                 if (LoteExistente == null)
