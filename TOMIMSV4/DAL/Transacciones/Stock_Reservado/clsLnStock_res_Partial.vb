@@ -21489,8 +21489,8 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                 ElseIf (vStockOrigen.Fecha_vence > FechaMinimaVenceStock) Then
                                     If Not ListaEstadosDeProceso.Contains(102) Then
                                         ListaEstadosDeProceso.Add(102)
+                                        GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     End If
-                                    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                 Else
                                     If Not ListaEstadosDeProceso.Contains(102) Then
                                         ListaEstadosDeProceso.Add(102)
