@@ -388,7 +388,7 @@ Public Class frmImpresionRecepcion_OC
             .Camas_Por_Tarima = pCamasPorTarima,
             .Cajas_Por_Cama = pCajasPorCama,
             .Cantidad_Presentacion = cantidadPresentacion,
-            .UM_Producto = IIf(pReDet.Nombre_presentacion <> "", pReDet.Presentacion.Codigo, pReDet.Nombre_unidad_medida_basica),
+            .UM_Producto = IIf(BeTransOcDetLote.Nombre_presentacion <> "", BeTransOcDetLote.Presentacion.Codigo, BeTransOcDetLote.Nombre_unidad_medida_basica),
             .Lote = cmbLote.Text,
             .Fecha_Agregado = Now,
             .Fecha_Ingreso = New Date(1900, 1, 1),
