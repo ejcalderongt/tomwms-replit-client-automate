@@ -4881,7 +4881,8 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     "  ISNULL(color.nombre, '') AS Color, " &
                                     "  ISNULL(talla.codigo, '') AS Talla, " &
                                     "  ISNULL(cn.nombre, '') AS Color_Nuevo, " &
-                                    "  ISNULL(tn.codigo, '') AS Talla_Nueva " &
+                                    "  ISNULL(tn.codigo, '') AS Talla_Nueva, " &
+                                    "  MAX(ISNULL(trans_inv_ciclico.gondola, '')) AS Gondola " &
                                     "FROM trans_inv_ciclico " &
                                     "  INNER JOIN producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega " &
                                     "  INNER JOIN producto ON producto_bodega.IdProducto = producto.IdProducto " &
@@ -4930,6 +4931,7 @@ Partial Public Class clsLnTrans_inv_ciclico
 
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)
+
 
                 Dim BeTransInvCiclico As New clsBeTrans_inv_ciclico
 
@@ -5075,12 +5077,9 @@ Partial Public Class clsLnTrans_inv_ciclico
                         BeTransInvCiclico.Talla = CType(lRow("Talla"), String)
                     End If
 
-                    If lRow("Color_Nuevo") IsNot DBNull.Value AndAlso lRow("Color_Nuevo") IsNot Nothing Then
-                        BeTransInvCiclico.Color_Nuevo = CType(lRow("Color_Nuevo"), String)
-                    End If
 
-                    If lRow("Talla_Nueva") IsNot DBNull.Value AndAlso lRow("Talla_Nueva") IsNot Nothing Then
-                        BeTransInvCiclico.Talla_Nueva = CType(lRow("Talla_Nueva"), String)
+                    If lRow("Gondola") IsNot DBNull.Value AndAlso lRow("Gondola") IsNot Nothing Then
+                        BeTransInvCiclico.Gondola = CType(lRow("Gondola"), String)
                     End If
 
                     If lRow("UmBas") IsNot DBNull.Value AndAlso lRow("UmBas") IsNot Nothing Then
