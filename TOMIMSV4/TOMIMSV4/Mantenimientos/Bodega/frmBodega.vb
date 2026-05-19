@@ -1306,6 +1306,7 @@ Public Class frmBodega
 
             chkBodegaClienteAjusteByB.Checked = pBeBodega.Bodega_Cliente_Ajuste_ByB
             chkControlGuia.Checked = pBeBodega.Control_Guia
+            chkUbicImplosionAuto.Checked = pBeBodega.Ubic_Implosion_Auto
 
         Catch ex As Exception
 
@@ -1564,6 +1565,7 @@ Public Class frmBodega
             pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
             pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
             pBeBodega.Control_Guia = chkControlGuia.Checked
+            pBeBodega.Ubic_Implosion_Auto = chkUbicImplosionAuto.Checked
 
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
@@ -1805,6 +1807,7 @@ Public Class frmBodega
                 End If
                 pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
                 pBeBodega.Control_Guia = chkControlGuia.Checked
+                pBeBodega.Ubic_Implosion_Auto = chkUbicImplosionAuto.Checked
 
                 pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
                 '#Nuevos parámetros cambio ubicación
