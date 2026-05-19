@@ -1,9 +1,5 @@
-Imports System
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.Data.Linq.Helpers
-Imports DevExpress.Xpo.Helpers
 
 Public Class clsLnI_nav_barras_rfid_enc
 
@@ -905,159 +901,6 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 	End Function
 
-	'Public Shared Function Get_Stock_WS_Paginado(pPagina As Integer, pTamanoPagina As Integer, pBusqueda As String, pCriterioBusqueda As String) As List(Of clsBeI_nav_barras_rfid_enc)
-
-	'	Dim lReturnList As New List(Of clsBeI_nav_barras_rfid_enc)
-
-	'	Try
-
-	'		If pPagina <= 0 Then pPagina = 1
-	'		If pTamanoPagina <= 0 Then pTamanoPagina = 50
-
-	'		Dim lOffset As Integer = (pPagina - 1) * pTamanoPagina
-
-	'		Const spEnc As String =
-	'			"WITH EncabezadosStock AS
-	'		(
-	'			SELECT DISTINCT
-	'				   ing.IdRFIDEnc,
-	'				   ing.IdOrdenCompraEnc,
-	'				   ing.IdRecepcionEnc,
-	'				   ing.IdBodega,
-	'				   ing.fec_agr,
-	'				   ing.fec_mod,
-	'				   ing.Estado,
-	'				   ing.Tipo,
-	'				   ing.IdProveedor,
-	'				   ing.IdCliente,
-	'				   ing.IdPedidoEnc
-	'			FROM I_nav_barras_rfid_enc ing
-	'			INNER JOIN I_nav_barras_rfid_det detIng
-	'				ON detIng.IdRFIDEnc = ing.IdRFIDEnc
-	'			WHERE ISNULL(ing.Tipo, '') = 'ING'
-	'			  AND NOT EXISTS (
-	'					SELECT 1
-	'					FROM I_nav_barras_rfid_enc sal
-	'					INNER JOIN I_nav_barras_rfid_det detSal
-	'						ON detSal.IdRFIDEnc = sal.IdRFIDEnc
-	'					WHERE ISNULL(sal.Tipo, '') = 'SAL'
-	'					  AND ISNULL(detSal.barra_epc, '') = ISNULL(detIng.barra_epc, '')
-	'			  )
-	'		)
-	'		SELECT *
-	'		FROM EncabezadosStock
-	'		ORDER BY IdRFIDEnc
-	'		OFFSET @Offset ROWS FETCH NEXT @TamanoPagina ROWS ONLY"
-
-	'		Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-
-	'			lConnection.Open()
-
-	'			Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-	'				Dim lIds As New List(Of Integer)
-	'				Dim lDic As New Dictionary(Of Integer, clsBeI_nav_barras_rfid_enc)
-
-	'				Using lDTAEnc As New SqlDataAdapter(spEnc, lConnection)
-
-	'					lDTAEnc.SelectCommand.CommandType = CommandType.Text
-	'					lDTAEnc.SelectCommand.Transaction = lTransaction
-	'					lDTAEnc.SelectCommand.Parameters.AddWithValue("@Offset", lOffset)
-	'					lDTAEnc.SelectCommand.Parameters.AddWithValue("@TamanoPagina", pTamanoPagina)
-
-	'					Dim lDataTableEnc As New DataTable
-	'					lDTAEnc.Fill(lDataTableEnc)
-
-	'					For Each drFila As DataRow In lDataTableEnc.Rows
-	'						Dim vRFIDEncabezado As New clsBeI_nav_barras_rfid_enc()
-	'						Cargar(vRFIDEncabezado, drFila)
-
-	'						vRFIDEncabezado.Cliente = New clsBeCliente
-	'						vRFIDEncabezado.Proveedor = New clsBeProveedor
-	'						vRFIDEncabezado.Detalle = New List(Of clsBeI_nav_barras_rfid_det)
-	'						vRFIDEncabezado.Cliente = clsLnCliente.GetSingle(vRFIDEncabezado.IdCliente, lConnection, lTransaction)
-	'						vRFIDEncabezado.Proveedor = clsLnProveedor.GetSingle(vRFIDEncabezado.IdProveedor, lConnection, lTransaction)
-	'						lReturnList.Add(vRFIDEncabezado)
-	'						lDic.Add(vRFIDEncabezado.IdRFIDEnc, vRFIDEncabezado)
-	'						lIds.Add(vRFIDEncabezado.IdRFIDEnc)
-	'					Next
-
-	'				End Using
-
-	'				If lIds.Count > 0 Then
-
-	'					Dim lIdsSql As String = String.Join(",", lIds)
-
-	'					Dim spDet As String =
-	'						"SELECT
-	'						 detIng.*,
-	'						 encIng.IdRFIDEnc
-	'					 FROM I_nav_barras_rfid_det detIng
-	'					 INNER JOIN I_nav_barras_rfid_enc encIng
-	'						ON encIng.IdRFIDEnc = detIng.IdRFIDEnc
-	'					 WHERE encIng.IdRFIDEnc IN (" & lIdsSql & ")
-	'					   AND ISNULL(encIng.Tipo, '') = 'ING'
-	'					   AND NOT EXISTS (
-	'							SELECT 1
-	'							FROM I_nav_barras_rfid_det detSal
-	'							INNER JOIN I_nav_barras_rfid_enc encSal
-	'								ON encSal.IdRFIDEnc = detSal.IdRFIDEnc
-	'							WHERE ISNULL(encSal.Tipo, '') = 'SAL'
-	'							  AND ISNULL(detSal.barra_epc, '') = ISNULL(detIng.barra_epc, '')
-	'					   )
-	'					 ORDER BY encIng.IdRFIDEnc"
-
-	'					Using lDTADet As New SqlDataAdapter(spDet, lConnection)
-
-	'						lDTADet.SelectCommand.CommandType = CommandType.Text
-	'						lDTADet.SelectCommand.Transaction = lTransaction
-
-	'						Dim lDataTableDet As New DataTable
-	'						lDTADet.Fill(lDataTableDet)
-
-	'						For Each drFilaDetalle As DataRow In lDataTableDet.Rows
-
-	'							Dim lIdRFIDEnc As Integer = CInt(drFilaDetalle("IdRFIDEnc"))
-
-	'							If lDic.ContainsKey(lIdRFIDEnc) Then
-	'								Dim vDet As New clsBeI_nav_barras_rfid_det()
-	'								clsLnI_nav_barras_rfid_det.Cargar(vDet, drFilaDetalle)
-
-	'								vDet.Producto = New clsBeProducto
-
-	'								Dim vCodigoProducto = clsLnI_nav_barras_pallet.Get_CodigoProducto_By_Barra_EPC(vDet.Barra_epc, lConnection, lTransaction)
-
-	'								If String.IsNullOrWhiteSpace(vCodigoProducto) Then
-	'									Throw New ApplicationException(String.Format("GT08042026: No existe código de producto para la barra EPC: {0}", vDet.Barra_epc))
-	'								End If
-
-	'								vDet.Producto = clsLnProducto.Get_Single_By_Codigo(vCodigoProducto, lConnection, lTransaction)
-	'								lDic(lIdRFIDEnc).Detalle.Add(vDet)
-
-	'							End If
-
-	'						Next
-
-	'					End Using
-
-	'				End If
-
-	'				lTransaction.Commit()
-
-	'			End Using
-
-	'			lConnection.Close()
-
-	'		End Using
-
-	'		Return lReturnList
-
-	'	Catch ex As Exception
-	'		Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
-	'	End Try
-
-	'End Function
-
 	Public Shared Function Actualizar_Encabezado(ByRef oBeI_nav_barras_rfid_enc As clsBeI_nav_barras_rfid_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1066,16 +909,9 @@ Public Class clsLnI_nav_barras_rfid_enc
 		Try
 
 			Upd.Init("i_nav_barras_rfid_enc")
-			'Upd.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
-			'Upd.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
-			'Upd.Add("idbodega", "@idbodega", DataType.Parametro)
-			'Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
 			Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
-			'Upd.Add("estado", "@estado", DataType.Parametro)
-			'Upd.Add("tipo", "@tipo", DataType.Parametro)
 			Upd.Add("idproveedor", "@idproveedor", DataType.Parametro)
 			Upd.Add("idcliente", "@idcliente", DataType.Parametro)
-			'Upd.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
 			Upd.Where("IdRFIDEnc = @IdRFIDEnc")
 
 			Dim sp As String = Upd.SQL()
@@ -1092,16 +928,9 @@ Public Class clsLnI_nav_barras_rfid_enc
 			End If
 
 			cmd.Parameters.Add(New SqlParameter("@IDRFIDENC", oBeI_nav_barras_rfid_enc.IdRFIDEnc))
-			'cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_rfid_enc.IdOrdenCompraEnc))
-			'cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeI_nav_barras_rfid_enc.IdRecepcionEnc))
-			'cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeI_nav_barras_rfid_enc.IdBodega))
-			'cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeI_nav_barras_rfid_enc.Fec_agr))
 			cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeI_nav_barras_rfid_enc.Fec_mod))
-			'cmd.Parameters.Add(New SqlParameter("@ESTADO", oBeI_nav_barras_rfid_enc.Estado))
-			'cmd.Parameters.Add(New SqlParameter("@TIPO", oBeI_nav_barras_rfid_enc.Tipo))
 			cmd.Parameters.Add(New SqlParameter("@IDPROVEEDOR", oBeI_nav_barras_rfid_enc.IdProveedor))
 			cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeI_nav_barras_rfid_enc.IdCliente))
-			'cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeI_nav_barras_rfid_enc.IdPedidoEnc))
 
 			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
