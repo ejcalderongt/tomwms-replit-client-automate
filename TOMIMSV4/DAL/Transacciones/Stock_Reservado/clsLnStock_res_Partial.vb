@@ -8939,13 +8939,27 @@ Partial Public Class clsLnStock_res
 
         Try
 
+            Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+            Dim vCronometroTotal As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             Dim BePresentacionStock As New clsBeProducto_Presentacion
             Dim vHash As String = ""
 
-            If lStock Is Nothing Then Return True
+            If lStock Is Nothing OrElse lStock.Count = 0 Then
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_stock_reservado_omitido_lista_vacia",
+                                                     vCronometroTotal)
+                Return True
+            End If
 
             Dim lIdStocksReservados As New List(Of Integer)
+            Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_get_ids_stock_reservados_bodega_despues",
+                                                 vCronometro,
+                                                 "IdBodega", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Idbodega),
+                                                 "IdsReservados", clsReservaMi3DebugTrace.Valor(If(lIdStocksReservados Is Nothing, 0, lIdStocksReservados.Count)),
+                                                 "StockAProcesar", clsReservaMi3DebugTrace.Valor(lStock.Count))
 
             For Each BeStock In lStock
 
@@ -9082,6 +9096,10 @@ Partial Public Class clsLnStock_res
             Next
 
             Restar_Stock_Reservado = True
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_restar_stock_reservado_fin",
+                                                     vCronometroTotal,
+                                                     lStock)
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -18150,6 +18168,9 @@ Partial Public Class clsLnStock_res
                                                                                                          lBeStockExistenteZonaPicking As List(Of clsBeStock))
         Try
 
+            Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+            Dim vCronometroTotal As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+            Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
 
             Dim lBeStockExistente As List(Of clsBeStock) = clsLnStock.lStock(pStockResSolicitud,
                                                                              BeProducto,
@@ -18162,9 +18183,29 @@ Partial Public Class clsLnStock_res
                                                                              pTarea_Reabasto,
                                                                              pEs_Devolucion)
 
-            Restar_Stock_Reservado(lBeStockExistente, pBeConfigEnc, lConnection, ltransaction)
-            lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_lstock_inicial_despues",
+                                                     vCronometro,
+                                                     lBeStockExistente,
+                                                     "ExcluirZonaNoPicking", clsReservaMi3DebugTrace.Valor(IIf(pTarea_Reabasto, True, False)),
+                                                     "ConmutarPresentacion", "False")
 
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            If lBeStockExistente IsNot Nothing AndAlso lBeStockExistente.Count > 0 Then
+                Restar_Stock_Reservado(lBeStockExistente, pBeConfigEnc, lConnection, ltransaction)
+                lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_restar_reservado_inicial_despues",
+                                                         vCronometro,
+                                                         lBeStockExistente)
+            Else
+                lBeStockExistente = New List(Of clsBeStock)
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_reservado_inicial_omitido_lista_vacia",
+                                                     vCronometro)
+            End If
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
             Dim lBeStockExistenteZonasNoPicking As List(Of clsBeStock) = clsLnStock.lStock(pStockResSolicitud,
                                                                                        BeProducto,
                                                                                        DiasVencimiento,
@@ -18175,9 +18216,29 @@ Partial Public Class clsLnStock_res
                                                                                        False,
                                                                                        pTarea_Reabasto,
                                                                                        pEs_Devolucion)
-            Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking, pBeConfigEnc, lConnection, ltransaction)
-            lBeStockExistenteZonasNoPicking = lBeStockExistenteZonasNoPicking.Where(Function(x) x.Cantidad > 0).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_lstock_zonas_no_picking_despues",
+                                                     vCronometro,
+                                                     lBeStockExistenteZonasNoPicking,
+                                                     "ExcluirZonaNoPicking", "True",
+                                                     "ConmutarPresentacion", "False")
 
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Count > 0 Then
+                Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking, pBeConfigEnc, lConnection, ltransaction)
+                lBeStockExistenteZonasNoPicking = lBeStockExistenteZonasNoPicking.Where(Function(x) x.Cantidad > 0).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_restar_reservado_zonas_no_picking_despues",
+                                                         vCronometro,
+                                                         lBeStockExistenteZonasNoPicking)
+            Else
+                lBeStockExistenteZonasNoPicking = New List(Of clsBeStock)
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_reservado_zonas_no_picking_omitido_lista_vacia",
+                                                     vCronometro)
+            End If
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
             Dim lBeStockExistenteZonaPicking As List(Of clsBeStock) = clsLnStock.lStock(pStockResSolicitud,
                                                                                     BeProducto,
                                                                                     DiasVencimiento,
@@ -18189,10 +18250,39 @@ Partial Public Class clsLnStock_res
                                                                                     pTarea_Reabasto,
                                                                                     pEs_Devolucion)
 
-            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.UbicacionPicking = True).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_lstock_zona_picking_despues",
+                                                     vCronometro,
+                                                     lBeStockExistenteZonaPicking,
+                                                     "ExcluirZonaNoPicking", "False",
+                                                     "ConmutarPresentacion", "False")
 
-            Restar_Stock_Reservado(lBeStockExistenteZonaPicking, pBeConfigEnc, lConnection, ltransaction)
-            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+            If lBeStockExistenteZonaPicking Is Nothing Then
+                lBeStockExistenteZonaPicking = New List(Of clsBeStock)
+            Else
+                lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.UbicacionPicking = True).ToList()
+            End If
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            If lBeStockExistenteZonaPicking.Count > 0 Then
+                Restar_Stock_Reservado(lBeStockExistenteZonaPicking, pBeConfigEnc, lConnection, ltransaction)
+                lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_restar_reservado_zona_picking_despues",
+                                                         vCronometro,
+                                                         lBeStockExistenteZonaPicking)
+            Else
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_reservado_zona_picking_omitido_lista_vacia",
+                                                     vCronometro)
+            End If
+
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_obtener_listas_stock_fin",
+                                                 vCronometroTotal,
+                                                 "StockExistente", clsReservaMi3DebugTrace.Valor(lBeStockExistente.Count),
+                                                 "StockZonasNoPicking", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonasNoPicking.Count),
+                                                 "StockZonaPicking", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaPicking.Count))
 
             Return (lBeStockExistente, lBeStockExistenteZonasNoPicking, lBeStockExistenteZonaPicking)
 
@@ -18464,9 +18554,23 @@ INICIAR_CON_NUEVO_LSTOCK:
 
                 vRestoStockReservado = True
 
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "listas_stock_post_restar_reservado",
+                                               "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),
+                                               "StockZonaPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonaPicking Is Nothing, 0, lBeStockExistenteZonaPicking.Count)),
+                                               "StockZonasNoPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonasNoPicking Is Nothing, 0, lBeStockExistenteZonasNoPicking.Count)),
+                                               "CantidadStockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Sum(Function(x) x.Cantidad))),
+                                               "CantidadZonaPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonaPicking Is Nothing, 0, lBeStockExistenteZonaPicking.Sum(Function(x) x.Cantidad))),
+                                               "CantidadZonasNoPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonasNoPicking Is Nothing, 0, lBeStockExistenteZonasNoPicking.Sum(Function(x) x.Cantidad))))
+
 #End Region
 
 #Region "OBTENER_FECHA_MINIMA_DE_INVENTARIO"
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "calcula_fecha_minima_stock_antes",
+                                               "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                               "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)))
 
                 FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                  DiasVencimiento,
@@ -18479,6 +18583,12 @@ INICIAR_CON_NUEVO_LSTOCK:
                                                                                  vFechaMinimaVenceZonaALM,
                                                                                  lBeStockExistente,
                                                                                  BePresentacionDefecto)
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "calcula_fecha_minima_stock_despues",
+                                               "FechaMinimaVenceStock", clsReservaMi3DebugTrace.Valor(FechaMinimaVenceStock),
+                                               "FechaMinimaVenceZonaPicking", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaPicking),
+                                               "FechaMinimaVenceZonaALM", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaALM))
 
                 If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Count > 0 AndAlso vFechaMinimaVenceZonaALM < FechaMinimaVenceStock Then
                     lBeStockExistente = lBeStockExistenteZonasNoPicking
@@ -18625,6 +18735,12 @@ EXPLOSIONAR_PRODUCTO:
                         End If
 
                         '#EJC202309271639: Se busca explosionar primero de zonas de picking.
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "fallback_stock_picking_antes",
+                                                       "BusquedaEnUMBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
+                                                       "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(If(vBusquedaEnUmBas, pStockResSolicitud.IdPresentacion, If(pStockResBusquedaParaExplosion Is Nothing, 0, pStockResBusquedaParaExplosion.IdPresentacion))))
+
+                        Dim vCronometroFallbackPicking As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                         lBeStockExistenteZonaPicking = clsLnStock.lStock(IIf(vBusquedaEnUmBas,
                                                                              pStockResSolicitud,
                                                                              pStockResBusquedaParaExplosion),
@@ -18638,16 +18754,37 @@ EXPLOSIONAR_PRODUCTO:
                                                                          pTarea_Reabasto,
                                                                          pEs_Devolucion)
 
-                        Restar_Stock_Reservado(lBeStockExistenteZonaPicking,
-                                               pBeConfigEnc,
-                                               lConnection,
-                                               ltransaction)
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_picking_lstock_despues",
+                                                                 vCronometroFallbackPicking,
+                                                                 lBeStockExistenteZonaPicking)
+
+                        Dim vCronometroFallbackPickingRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                        If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Count > 0 Then
+                            Restar_Stock_Reservado(lBeStockExistenteZonaPicking,
+                                                   pBeConfigEnc,
+                                                   lConnection,
+                                                   ltransaction)
+                        End If
+
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_picking_despues",
+                                                                 vCronometroFallbackPickingRestar,
+                                                                 lBeStockExistenteZonaPicking)
+
+                        If lBeStockExistenteZonaPicking Is Nothing Then lBeStockExistenteZonaPicking = New List(Of clsBeStock)
 
                         If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Any() Then
                             vFechaMinimaVenceZonaPicking = lBeStockExistenteZonaPicking.Min(Function(x) x.Fecha_vence)
                             vProcessResult.Add("#MI3_2312201855: Se encontraron " & lBeStockExistenteZonaPicking.Count & " registros. La fecha mínima de picking es: " & vFechaMinimaVenceZonaPicking)
                         End If
 
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "fallback_stock_alm_antes",
+                                                       "BusquedaEnUMBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
+                                                       "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(If(vBusquedaEnUmBas, pStockResSolicitud.IdPresentacion, If(pStockResBusquedaParaExplosion Is Nothing, 0, pStockResBusquedaParaExplosion.IdPresentacion))))
+
+                        Dim vCronometroFallbackAlm As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                         lBeStockExistenteZonasNoPicking = clsLnStock.lStock(IIf(vBusquedaEnUmBas,
                                                                   pStockResSolicitud,
                                                                   pStockResBusquedaParaExplosion),
@@ -18661,10 +18798,25 @@ EXPLOSIONAR_PRODUCTO:
                                                               pTarea_Reabasto,
                                                               pEs_Devolucion)
 
-                        Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking,
-                                               pBeConfigEnc,
-                                               lConnection,
-                                               ltransaction)
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_alm_lstock_despues",
+                                                                 vCronometroFallbackAlm,
+                                                                 lBeStockExistenteZonasNoPicking)
+
+                        Dim vCronometroFallbackAlmRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                        If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Count > 0 Then
+                            Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking,
+                                                   pBeConfigEnc,
+                                                   lConnection,
+                                                   ltransaction)
+                        End If
+
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_alm_despues",
+                                                                 vCronometroFallbackAlmRestar,
+                                                                 lBeStockExistenteZonasNoPicking)
+
+                        If lBeStockExistenteZonasNoPicking Is Nothing Then lBeStockExistenteZonasNoPicking = New List(Of clsBeStock)
 
                         If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Any() Then
                             vFechaMinimaVenceZonaALM = lBeStockExistenteZonasNoPicking.Min(Function(x) x.Fecha_vence)
@@ -18710,6 +18862,12 @@ EXPLOSIONAR_PRODUCTO:
                             If pStockResSolicitud.IdPresentacion = 0 Then vBusquedaEnUmBas = True
 
                             '#CKFK20231009 Puse el conmutar en false porque aqui solo quiero unidades
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "fallback_stock_umbas_sin_conmutar_antes",
+                                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion))
+
+                            Dim vCronometroFallbackUMBas As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                             lBeStockExistente = clsLnStock.lStock(pStockResSolicitud,
                                                                   BeProducto,
                                                                   DiasVencimiento,
@@ -18721,14 +18879,28 @@ EXPLOSIONAR_PRODUCTO:
                                                                   pTarea_Reabasto,
                                                                   pEs_Devolucion)
 
-                            Restar_Stock_Reservado(lBeStockExistente,
-                                                   pBeConfigEnc,
-                                                   lConnection,
-                                                   ltransaction)
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                     "fallback_stock_umbas_sin_conmutar_lstock_despues",
+                                                                     vCronometroFallbackUMBas,
+                                                                     lBeStockExistente)
+
+                            Dim vCronometroFallbackUMBasRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                            If lBeStockExistente IsNot Nothing AndAlso lBeStockExistente.Count > 0 Then
+                                Restar_Stock_Reservado(lBeStockExistente,
+                                                       pBeConfigEnc,
+                                                       lConnection,
+                                                       ltransaction)
+                            End If
 
                             vRestoInventarioEnUmBas = True
 
+                            If lBeStockExistente Is Nothing Then lBeStockExistente = New List(Of clsBeStock)
                             lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                           "fallback_stock_umbas_sin_conmutar_despues",
+                                                           vCronometroFallbackUMBasRestar,
+                                                           lBeStockExistente)
 
                             If lBeStockExistente.Count > 0 Then
                                 '#EJC20231019_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
@@ -18758,6 +18930,12 @@ EXPLOSIONAR_PRODUCTO:
                             If pStockResSolicitud.IdPresentacion = 0 Then vBusquedaEnUmBas = True
 
                             '#EJC202309121412: Buscar en zonas de picking  unidades
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "fallback_stock_umbas_picking_con_conmutar_antes",
+                                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion))
+
+                            Dim vCronometroUMBasPicking As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                             lBeStockExistente = clsLnStock.lStock(pStockResSolicitud,
                                                                   BeProducto,
                                                                   DiasVencimiento,
@@ -18769,14 +18947,28 @@ EXPLOSIONAR_PRODUCTO:
                                                                   pTarea_Reabasto,
                                                                   pEs_Devolucion)
 
-                            Restar_Stock_Reservado(lBeStockExistente,
-                                                   pBeConfigEnc,
-                                                   lConnection,
-                                                   ltransaction)
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                     "fallback_stock_umbas_picking_con_conmutar_lstock_despues",
+                                                                     vCronometroUMBasPicking,
+                                                                     lBeStockExistente)
+
+                            Dim vCronometroUMBasPickingRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                            If lBeStockExistente IsNot Nothing AndAlso lBeStockExistente.Count > 0 Then
+                                Restar_Stock_Reservado(lBeStockExistente,
+                                                       pBeConfigEnc,
+                                                       lConnection,
+                                                       ltransaction)
+                            End If
 
                             vRestoInventarioEnUmBas = True
 
+                            If lBeStockExistente Is Nothing Then lBeStockExistente = New List(Of clsBeStock)
                             lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                     "fallback_stock_umbas_picking_con_conmutar_despues",
+                                                                     vCronometroUMBasPickingRestar,
+                                                                     lBeStockExistente)
 
                             FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                              DiasVencimiento,
@@ -26461,20 +26653,41 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
         Try
 
+            Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+            Dim vCronometroTotal As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+
             If lBeStockExistente Is Nothing OrElse lBeStockExistente.Count = 0 Then
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_procesar_restar_stock_omitido_lista_vacia",
+                                                     vCronometroTotal)
                 Return
             End If
 
             ' Ordenar lista si es necesario
             If vOrdernarListaStockSinPresentacionPrimero Then
+                Dim vCronometroOrden As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                 lBeStockExistente = lBeStockExistente.OrderBy(Function(x) x.IdPresentacion).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_ordenar_stock_sin_presentacion_primero_despues",
+                                                         vCronometroOrden,
+                                                         lBeStockExistente)
             End If
 
             ' Restar stock reservado - lógica específica para esta operación
+            Dim vCronometroRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             Restar_Stock_Reservado(lBeStockExistente, pBeConfigEnc, lConnection, ltransaction)
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_procesar_restar_stock_despues",
+                                                     vCronometroRestar,
+                                                     lBeStockExistente)
 
             ' Filtrar elementos con cantidad mayor a cero
+            Dim vCronometroFiltrar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_filtrar_stock_cantidad_positiva_despues",
+                                                     vCronometroFiltrar,
+                                                     lBeStockExistente)
 
             ' Buscar BePresentacionStock en la lista lPresentaciones
             Dim BePresentacionStock As clsBeProducto_Presentacion = Nothing
@@ -26498,6 +26711,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                vCantidadEnteraTarimasCompletasClavaud,
                                                vCantidadDecimalTarimasCompletasClavaud,
                                                pStockResSolicitud)
+
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_procesar_y_restar_stock_reservado_fin",
+                                                 vCronometroTotal,
+                                                 "StockFinal", clsReservaMi3DebugTrace.Valor(lBeStockExistente.Count),
+                                                 "EncontroExistenciaEnPresentacion", clsReservaMi3DebugTrace.Valor(vEncontroExistenciaEnPresentacion))
 
         Catch ex As Exception
             Throw
@@ -26651,9 +26870,27 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
         Dim FechaMinimaVenceRecorrido As Date = vFechaDefecto
         Dim vBusquedaStockEnPresentacion As Boolean = False
         Dim pStockResSolicitudPres As New clsBeStock_res
+        Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
 
 
         Try
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "fecha_minima_inicio",
+                                           "IdProductoBodega", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdProductoBodega),
+                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                           "StockEntrada", clsReservaMi3DebugTrace.Valor(If(pListaStockExistente Is Nothing, 0, pListaStockExistente.Count)),
+                                           "StockRecorrido", clsReservaMi3DebugTrace.Valor(If(lStockRecorrido Is Nothing, 0, lStockRecorrido.Count)))
+
+            If (pListaStockExistente Is Nothing OrElse pListaStockExistente.Count = 0) AndAlso
+               (lStockRecorrido Is Nothing OrElse Not lStockRecorrido.Any(Function(x) x.Cantidad > 0)) Then
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "fecha_minima_omitida_sin_stock_base",
+                                               "motivo", "No hay stock base para ordenar por fecha; las busquedas de fallback se trazan en el flujo principal.")
+                Return vFechaDefecto
+            End If
+
             ' Zona ALM
             Dim lBeStockExistenteZonasALM = pListaStockExistente.Where(Function(x) Not x.UbicacionPicking).ToList()
             If lBeStockExistenteZonasALM.Count > 0 Then
@@ -26686,6 +26923,10 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                     pStockResSolicitudPres.IdPresentacion = pBePresentacionDefecto.IdPresentacion
 
                     'Zona Picking Presentación
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_picking_antes",
+                                                   "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(pStockResSolicitudPres.IdPresentacion))
+
                     Dim lBeStockExistenteZonaPickingPres = clsLnStock.lStock(pStockResSolicitudPres,
                                                                              BeProducto,
                                                                              DiasVencimiento,
@@ -26698,11 +26939,19 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                     Restar_Stock_Reservado(lBeStockExistenteZonaPickingPres, pBeConfigEnc, lConnection, ltransaction)
                     lBeStockExistenteZonaPickingPres = lBeStockExistenteZonaPickingPres.FindAll(Function(x) x.Cantidad > 0 And x.UbicacionPicking = True)
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_picking_despues",
+                                                   "StockEncontrado", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaPickingPres.Count),
+                                                   "CantidadEncontrada", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaPickingPres.Sum(Function(x) x.Cantidad)))
                     If lBeStockExistenteZonaPickingPres.Count > 0 Then
                         FechaMinimaVencePICKPres = lBeStockExistenteZonaPickingPres.Min(Function(x) x.Fecha_vence)
                     End If
 
                     'Zona ALM Presentación
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_alm_antes",
+                                                   "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(pStockResSolicitudPres.IdPresentacion))
+
                     Dim lBeStockExistenteZonaALMPres = clsLnStock.lStock(pStockResSolicitudPres,
                                                                          BeProducto,
                                                                          DiasVencimiento,
@@ -26715,6 +26964,10 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                     Restar_Stock_Reservado(lBeStockExistenteZonaALMPres, pBeConfigEnc, lConnection, ltransaction)
                     lBeStockExistenteZonaALMPres = lBeStockExistenteZonaALMPres.FindAll(Function(x) x.Cantidad > 0)
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_alm_despues",
+                                                   "StockEncontrado", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaALMPres.Count),
+                                                   "CantidadEncontrada", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaALMPres.Sum(Function(x) x.Cantidad)))
                     If lBeStockExistenteZonaALMPres.Count > 0 Then
                         FechaMinimaVenceALMPres = lBeStockExistenteZonaALMPres.Min(Function(x) x.Fecha_vence)
                     End If
@@ -34672,6 +34925,68 @@ Public Class clsReservaMi3DebugTrace
         vPares.Add(Valor(pStockRes.IdRecepcion))
         vPares.Add("IdPicking")
         vPares.Add(Valor(pStockRes.IdPicking))
+
+        If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+            vPares.AddRange(pPares)
+        End If
+
+        Evento(pArchivo, pEtapa, vPares.ToArray())
+
+    End Sub
+
+    Public Shared Function IniciarCronometro() As System.Diagnostics.Stopwatch
+        Dim vCronometro As New System.Diagnostics.Stopwatch()
+        vCronometro.Start()
+        Return vCronometro
+    End Function
+
+    Public Shared Sub EventoTiempo(ByVal pArchivo As String,
+                                   ByVal pEtapa As String,
+                                   ByVal pInicio As System.Diagnostics.Stopwatch,
+                                   ParamArray pPares() As String)
+
+        Dim vPares As New List(Of String)
+
+        vPares.Add("duracion_ms")
+        If pInicio Is Nothing Then
+            vPares.Add("0")
+        Else
+            pInicio.Stop()
+            vPares.Add(Valor(pInicio.ElapsedMilliseconds))
+        End If
+
+        If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+            vPares.AddRange(pPares)
+        End If
+
+        Evento(pArchivo, pEtapa, vPares.ToArray())
+
+    End Sub
+
+    Public Shared Sub EventoListaStock(ByVal pArchivo As String,
+                                       ByVal pEtapa As String,
+                                       ByVal pInicio As System.Diagnostics.Stopwatch,
+                                       ByVal pListaStock As List(Of clsBeStock),
+                                       ParamArray pPares() As String)
+
+        Dim vPares As New List(Of String)
+
+        vPares.Add("duracion_ms")
+        If pInicio Is Nothing Then
+            vPares.Add("0")
+        Else
+            pInicio.Stop()
+            vPares.Add(Valor(pInicio.ElapsedMilliseconds))
+        End If
+
+        vPares.Add("StockEncontrado")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Count)))
+        vPares.Add("CantidadEncontrada")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Sum(Function(x) x.Cantidad))))
+        vPares.Add("StockPicking")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Where(Function(x) x.UbicacionPicking).Count())))
+        vPares.Add("StockNoPicking")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Where(Function(x) Not x.UbicacionPicking).Count())))
 
         If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
             vPares.AddRange(pPares)
