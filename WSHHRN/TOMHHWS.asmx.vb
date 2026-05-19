@@ -4346,6 +4346,7 @@ Public Class TOMHHWS
                                                   ByVal IdStock As Integer,
                                                   ByVal IdStockRes As Integer,
                                                   ByVal UsuarioHH As Integer,
+                                                  ByVal IdPickingEnc As Integer,
                                                   ByVal CantNoEncontrada As Double,
                                                   ByVal IdPropietarioBodega As Integer,
                                                   ByVal IdPickingUbic As Integer) As String
@@ -4358,6 +4359,7 @@ Public Class TOMHHWS
                                                                  IdEmpresa,
                                                                  IdStock,
                                                                  IdStockRes,
+                                                                 IdPickingEnc,
                                                                  UsuarioHH,
                                                                  CantNoEncontrada,
                                                                  IdPropietarioBodega,

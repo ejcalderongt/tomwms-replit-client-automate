@@ -3478,6 +3478,7 @@ Partial Public Class clsLnStock_res
                                                                               CantSol,
                                                                               pu.IdPropietarioBodega,
                                                                               pu.IdPickingUbic,
+                                                                              pu.IdPickingEnc,
                                                                               lConnection,
                                                                               lTransaction)
                     End If

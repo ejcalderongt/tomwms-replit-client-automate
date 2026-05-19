@@ -4668,7 +4668,7 @@ Partial Public Class clsLnTrans_picking_ubic
                         .IdBodega = IdBodega}
 
                     pListBePickingUbic.Add(BeTransPickingUbic)
-
+                    BeStockRes.IdTransaccion = IdPickingEnc
                     BeStockRes.Estado = "UNCOMMITED"
                     clsLnStock_res.Actualizar(BeStockRes, lConnection, lTransaction)
 
@@ -4733,6 +4733,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                  CantSol,
                                                  lBeStockAReservar(0).IdPropietarioBodega,
                                                  pListBePickingUbic(0).IdPickingUbic,
+                                                 IdPickingEnc,
                                                  lConnection,
                                                  lTransaction,
                                                  lBeStockAReservar(0).IdProductoBodega,
@@ -4993,6 +4994,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                 ByVal CantNoEncontrada As Double,
                                                 ByVal IdPropietarioBodega As Integer,
                                                 ByVal IdPickingUbic As Integer,
+                                                ByVal IdPickingEnc As Integer,
                                                 Optional ByRef pConnection As SqlConnection = Nothing,
                                                 Optional ByRef pTransaction As SqlTransaction = Nothing,
                                                 Optional ByVal IdProductoBodega As Integer = 0,
@@ -5034,6 +5036,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                           IdEmpresa,
                                                           IdStockRes,
                                                           IdPickingUbic,
+                                                          IdPickingEnc,
                                                           UsuarioHH,
                                                           CantNoEncontrada,
                                                           pHostSolicita,
@@ -5159,6 +5162,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                          ByVal IdEmpresa As Integer,
                                                          ByVal IdStockRes As Integer,
                                                          ByVal IdPickingUbic As Integer,
+                                                         ByVal IdPickingEnc As Integer,
                                                          ByVal UsuarioHH As Integer,
                                                          ByVal CantNoEncontrada As Double,
                                                          ByVal pHostSolicita As String,
@@ -5311,7 +5315,8 @@ Partial Public Class clsLnTrans_picking_ubic
 
             pBeMovimiento.IdEmpresa = IdEmpresa
             pBeMovimiento.IdBodegaOrigen = IdBodega
-            pBeMovimiento.IdTransaccion = IIf(Not UbicaAuto, beUbicHHDet.IdTareaUbicacionEnc, 1)
+            pBeMovimiento.IdTransaccion = IdPickingEnc
+            'pBeMovimiento.IdTransaccion = IIf(Not UbicaAuto, beUbicHHDet.IdTareaUbicacionEnc, 1)
             pBeMovimiento.IdPropietarioBodega = pBePropietarioBodega.IdPropietarioBodega
             pBeMovimiento.IdProductoBodega = pBeStock.IdProductoBodega
             pBeMovimiento.IdUbicacionOrigen = pBeStock.IdUbicacion
@@ -5382,6 +5387,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pBeMovimiento,
                                                                             vStockRes,
                                                                             False,
+                                                                            IdPickingEnc,
                                                                             pConnection,
                                                                             pTransaction)
 
@@ -5494,6 +5500,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                               IdEmpresa,
                                               IdStockProductoNE,
                                               IdStockResProductoNE,
+                                              IdPickingEnc,
                                               UsuarioHH,
                                               CantSol,
                                               lBeStockAReservar(0).IdPropietarioBodega,
@@ -5601,7 +5608,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
             '#CKFK 20180422 12:00 AM Marca los productos no encontrador y modifica el StockRes
             Marcar_No_Encontrado(IdBodega, IdEmpresa, IdStockProductoNE, IdStockResProductoNE, UsuarioHH, CantSol, lBeStockAReservar(0).IdPropietarioBodega,
-                               pListBePickingUbic(0).IdPickingUbic, lConnection, lTransaction)
+                               pListBePickingUbic(0).IdPickingUbic, IdPickingEnc, lConnection, lTransaction)
 
             lTransaction.Commit()
 
