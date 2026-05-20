@@ -3247,17 +3247,16 @@ Public Class frmPedido_List
                                                             Select Case pBePedidoEnc.IdTipoPedido
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
                                                                     Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
                                                                     Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
                                                                     Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                                                                                                    vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
                                                                 Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
                                                                     Await clsSyncSapFacturaReservaCliente.Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                                  vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
-
+                                                                                                                                                              vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
                                                             End Select
 
                                                         End If
@@ -3265,117 +3264,117 @@ Public Class frmPedido_List
                                                         '#EJC202211221049: Validar que la instancia no sea nothing para eliminar desde WS
                                                         If Not wsTOMHHInstance Is Nothing Then
 
-                                                            Dim ArchHeader As New wsTOMHH.clsArchHeader()
-                                                            ArchHeader.Tipo = "WM"
+                                                                    Dim ArchHeader As New wsTOMHH.clsArchHeader()
+                                                                    ArchHeader.Tipo = "WM"
 
-                                                            'Si no existe picking no debo borrar
-                                                            Dim vResultBorraPicking As Boolean = wsTOMHHInstance.Borrar_Picking(ArchHeader,
-                                                                                                                                pBePedidoEnc.Referencia)
+                                                                    'Si no existe picking no debo borrar
+                                                                    Dim vResultBorraPicking As Boolean = wsTOMHHInstance.Borrar_Picking(ArchHeader,
+                                                                                                                                        pBePedidoEnc.Referencia)
 
 
-                                                            If Not vResultBorraPicking Then
-                                                                SplashScreenManager.CloseForm(False)
-                                                                XtraMessageBox.Show("No se pudo eliminar el envío de almacén, ni el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                                                            Else
+                                                                    If Not vResultBorraPicking Then
+                                                                        SplashScreenManager.CloseForm(False)
+                                                                        XtraMessageBox.Show("No se pudo eliminar el envío de almacén, ni el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                                                    Else
 
-                                                                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                                                                SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
+                                                                        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                                                                        SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
+
+                                                                        If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
+                                                                                                                                           AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                                           AP.UsuarioAp.IdUsuario,
+                                                                                                                                           MA.BeMotivoAnulacionBodega.IdMotivoAnulacionBodega) Then
+
+                                                                            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde lista.
+                                                                            Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
+
+                                                                            SplashScreenManager.CloseForm(False)
+
+                                                                            XtraMessageBox.Show("Se ha eliminado el pedido, el envío de almacén y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                                                                            Listar_Pedidos()
+
+                                                                        Else
+                                                                            SplashScreenManager.CloseForm(False)
+                                                                            XtraMessageBox.Show("No se pudo eliminar el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                                                        End If
+
+                                                                    End If
+
+                                                                Else
+
+                                                                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                                                                    SplashScreenManager.Default.SetWaitFormDescription("Eliminando...")
+
+                                                                    If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
+                                                                                                                                       AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                                       AP.UsuarioAp.IdUsuario) Then
+
+                                                                        '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde lista.
+                                                                        Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
+
+                                                                        SplashScreenManager.CloseForm(False)
+
+                                                                        Dim vInterfaceSAP As Boolean = clsLnI_nav_config_enc.Get_Interface_SAP(AP.IdConfiguracionInterface)
+
+                                                                        Listar_Pedidos()
+
+                                                                        Try
+
+                                                                            If vInterfaceSAP Then
+                                                                                'EJC202403271301: Actualizar el estado enviado a WMS a 2, para que se peuda volver a importar.
+
+                                                                                Dim vArgumentosAEnviarAInterface As String = ""
+                                                                                Dim tipoDocumento As New clsDataContractDI.tTipoDocumentoSalida
+
+                                                                                tipoDocumento = pBePedidoEnc.IdTipoPedido
+
+                                                                                Select Case tipoDocumento
+                                                                                    Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
+                                                                                        vArgumentosAEnviarAInterface = "12-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2"
+                                                                                    Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
+                                                                                        vArgumentosAEnviarAInterface = "8-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2"
+                                                                                    Case clsDataContractDI.tTipoDocumentoSalida.Traslado_Por_Estados_SAP
+                                                                                        vArgumentosAEnviarAInterface = "7-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2"
+                                                                                End Select
+
+                                                                                'EJC202403271301: Actualizar el estado enviado a WMS a 2, para que se peuda volver a importar.
+                                                                                If Ejecutar_Interface(vArgumentosAEnviarAInterface, Me) Then
+                                                                                    XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                                                                End If
+
+                                                                            End If
+
+                                                                        Catch ex As Exception
+                                                                            XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado, sin embargo no se pudo actualizar el estado en SAP", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                                                            Exit Sub
+                                                                        End Try
+
+                                                                    Else
+                                                                        SplashScreenManager.CloseForm(False)
+                                                                        XtraMessageBox.Show("No se pudo eliminar el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                                                    End If
+
+                                                                End If
+
+                                                                Else
 
                                                                 If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
                                                                                                                                    AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                                   AP.UsuarioAp.IdUsuario,
-                                                                                                                                   MA.BeMotivoAnulacionBodega.IdMotivoAnulacionBodega) Then
+                                                                                                                                   AP.UsuarioAp.IdUsuario) Then
 
                                                                     '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde lista.
                                                                     Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                                     SplashScreenManager.CloseForm(False)
 
-                                                                    XtraMessageBox.Show("Se ha eliminado el pedido, el envío de almacén y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                                                    XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
                                                                     Listar_Pedidos()
 
                                                                 Else
-                                                                    SplashScreenManager.CloseForm(False)
                                                                     XtraMessageBox.Show("No se pudo eliminar el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                                                                 End If
-
-                                                            End If
-
-                                                        Else
-
-                                                            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                                                            SplashScreenManager.Default.SetWaitFormDescription("Eliminando...")
-
-                                                            If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                                               AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                               AP.UsuarioAp.IdUsuario) Then
-
-                                                                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde lista.
-                                                                Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
-
-                                                                SplashScreenManager.CloseForm(False)
-
-                                                                Dim vInterfaceSAP As Boolean = clsLnI_nav_config_enc.Get_Interface_SAP(AP.IdConfiguracionInterface)
-
-                                                                Listar_Pedidos()
-
-                                                                Try
-
-                                                                    If vInterfaceSAP Then
-                                                                        'EJC202403271301: Actualizar el estado enviado a WMS a 2, para que se peuda volver a importar.
-
-                                                                        Dim vArgumentosAEnviarAInterface As String = ""
-                                                                        Dim tipoDocumento As New clsDataContractDI.tTipoDocumentoSalida
-
-                                                                        tipoDocumento = pBePedidoEnc.IdTipoPedido
-
-                                                                        Select Case tipoDocumento
-                                                                            Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
-                                                                                vArgumentosAEnviarAInterface = "12-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2"
-                                                                            Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
-                                                                                vArgumentosAEnviarAInterface = "8-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2"
-                                                                            Case clsDataContractDI.tTipoDocumentoSalida.Traslado_Por_Estados_SAP
-                                                                                vArgumentosAEnviarAInterface = "7-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBePedidoEnc.Referencia & "-2"
-                                                                        End Select
-
-                                                                        'EJC202403271301: Actualizar el estado enviado a WMS a 2, para que se peuda volver a importar.
-                                                                        If Ejecutar_Interface(vArgumentosAEnviarAInterface, Me) Then
-                                                                            XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                                                        End If
-
-                                                                    End If
-
-                                                                Catch ex As Exception
-                                                                    XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado, sin embargo no se pudo actualizar el estado en SAP", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                                                    Exit Sub
-                                                                End Try
-
-                                                            Else
-                                                                SplashScreenManager.CloseForm(False)
-                                                                XtraMessageBox.Show("No se pudo eliminar el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                                                            End If
-
-                                                        End If
-
-                                                    Else
-
-                                                        If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                                           AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                           AP.UsuarioAp.IdUsuario) Then
-
-                                                            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde lista.
-                                                            Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
-
-                                                            SplashScreenManager.CloseForm(False)
-
-                                                            XtraMessageBox.Show("Se ha eliminado el pedido y se ha liberado el stock reservado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-                                                            Listar_Pedidos()
-
-                                                        Else
-                                                            XtraMessageBox.Show("No se pudo eliminar el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                                                        End If
 
                                                     End If
 

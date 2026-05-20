@@ -5780,12 +5780,13 @@ Public Class frmPicking
             With frmDespacho
                 .Modo = frmDespacho.TipoTrans.Nuevo
                 .WindowState = FormWindowState.Maximized
+                .InvokeCargarPedido = AddressOf Cargar_Datos
+                .Despacho_Cargado_Desde_Picking = True
                 .Activate()
                 .Show()
-                .Agregar_Pedido(BePedidoEnc)
-                .InvokeCargarPedido = AddressOf Cargar_Datos
-                .Focus()
                 .BringToFront()
+                .Agregar_Pedido(BePedidoEnc)
+                .Focus()
             End With
 
         Catch ex As Exception

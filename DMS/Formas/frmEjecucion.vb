@@ -614,7 +614,7 @@ Public Class frmEjecucion
         End Try
     End Sub
 
-    Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarButtonItem1.ItemClick
+    Private Sub cmdReiniciar_ItemClick_1(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdReiniciar.ItemClick
         Dim clsTransaccion As New clsTransaccion()
 
         Try
@@ -628,6 +628,21 @@ Public Class frmEjecucion
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
         End Try
-
     End Sub
+
+    'Private Sub cmdLogErrores_ItemClick_1(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdLogErrores.ItemClick
+    '    Dim clsTransaccion As New clsTransaccion()
+
+    '    Try
+    '        clsTransaccion.Begin_Transaction()
+
+    '        clsLnDMS_Log_sincronizacion_fallos.Eliminar_Todo(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+    '        clsLnDMS_Log_sincronizacion_nube.Eliminar(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+    '        clsTransaccion.Commit_Transaction()
+
+    '    Catch ex As Exception
+    '        clsTransaccion.RollBack_Transaction()
+    '    End Try
+    'End Sub
 End Class
