@@ -2565,9 +2565,7 @@ Partial Public Class clsLnTrans_re_det
 
                 If BeTransReDet.IsNew Then
 
-                    MaxIdRecepcionDet = 0 'now is identity EJC20260226
-
-                    pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
+                    Dim IdRecepcionDetOrigen As Integer = BeTransReDet.IdRecepcionDet
 
                     BeTransReDet.Fecha_ingreso = Now
                     BeTransReDet.Fec_agr = Now
@@ -2577,6 +2575,18 @@ Partial Public Class clsLnTrans_re_det
                     End If
 
                     Insertar(BeTransReDet, lConnection, lTransaction)
+
+                    MaxIdRecepcionDet = BeTransReDet.IdRecepcionDet
+
+                    If MaxIdRecepcionDet <= 0 Then
+                        Throw New Exception("ERROR_202605201645: No se obtuvo IdRecepcionDet identity para la linea de recepcion.")
+                    End If
+
+                    '#EJCCKFK20260520: trans_re_det.IdRecepcionDet es identity; stock_rec debe quedar ligado al identity real.
+                    Asignar_IdRecepcionDet_StockRec(pListaStockRec,
+                                                    BeTransReDet,
+                                                    IdRecepcionDetOrigen,
+                                                    MaxIdRecepcionDet)
 
                     vFilas += 1
 
@@ -2599,6 +2609,35 @@ Partial Public Class clsLnTrans_re_det
         End Try
 
     End Function
+
+    Private Shared Sub Asignar_IdRecepcionDet_StockRec(ByRef pListaStockRec As List(Of clsBeStock_rec),
+                                                       ByVal pBeTransReDet As clsBeTrans_re_det,
+                                                       ByVal pIdRecepcionDetOrigen As Integer,
+                                                       ByVal pIdRecepcionDetNuevo As Integer)
+
+        If pListaStockRec Is Nothing OrElse pIdRecepcionDetNuevo <= 0 Then
+            Exit Sub
+        End If
+
+        Dim lLicPlate As String = If(pBeTransReDet.Lic_plate, "")
+
+        Dim lStockRec As List(Of clsBeStock_rec) = pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = pIdRecepcionDetOrigen _
+                                                                                 AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
+                                                                                 AndAlso x.No_linea = pBeTransReDet.No_Linea _
+                                                                                 AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+
+        If lStockRec.Count = 0 Then
+            lStockRec = pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = 0 _
+                                                      AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
+                                                      AndAlso x.No_linea = pBeTransReDet.No_Linea _
+                                                      AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+        End If
+
+        For Each BeStockRec As clsBeStock_rec In lStockRec
+            BeStockRec.IdRecepcionDet = pIdRecepcionDetNuevo
+        Next
+
+    End Sub
 
     Public Shared Function Eliminar_Detalle_By_IdOrdenCompraEnc_And_BeRecepcionDet(ByVal pIdOrdenCompra As Integer,
                                                                                    ByVal pBeRecepcionDet As clsBeTrans_re_det,
@@ -2660,7 +2699,15 @@ Partial Public Class clsLnTrans_re_det
                 Insertar(BeTransReDet, lConnection, lTransaction)
                 MaxIdRecepcionDet = BeTransReDet.IdRecepcionDet
 
-                pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = IdRecepcionDetOrigen).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
+                If MaxIdRecepcionDet <= 0 Then
+                    Throw New Exception("ERROR_202605201646: No se obtuvo IdRecepcionDet identity para la linea de recepcion.")
+                End If
+
+                '#EJCCKFK20260520: trans_re_det.IdRecepcionDet es identity; stock_rec debe quedar ligado al identity real.
+                Asignar_IdRecepcionDet_StockRec(pListaStockRec,
+                                                BeTransReDet,
+                                                IdRecepcionDetOrigen,
+                                                MaxIdRecepcionDet)
 
                 vFilas += 1
 
