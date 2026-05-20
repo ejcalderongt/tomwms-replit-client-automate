@@ -508,7 +508,6 @@
     <ProjectReference Include="..\SAPSYNCMAMPA\SAPSYNCMAMPA.vbproj">
       <Project>{69ea4ff6-c886-49c1-b9d1-f011bc18d0d2}</Project>
       <Name>SAPSYNCMAMPA</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
