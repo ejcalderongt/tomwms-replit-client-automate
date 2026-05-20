@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports System.Threading
 Imports DevExpress.XtraEditors
 
 Public Module ModuleMain
@@ -7,6 +8,7 @@ Public Module ModuleMain
 
     Public MenuPrincipal As frmMenu
     Public IdConfiguracion As String = ""
+    Private appMutex As Mutex
 
     Sub Main(ByVal Args As String())
 
@@ -14,6 +16,15 @@ Public Module ModuleMain
         Dim InterfaceAEjecutar As String = ""
 
         Try
+
+            Dim creadoNuevo As Boolean = False
+
+            appMutex = New Mutex(True, "TOMWMS_SAPSYNCMAMPA_UNICA_INSTANCIA", creadoNuevo)
+
+            If Not creadoNuevo Then
+                MessageBox.Show("La aplicación ya está abierta.", "TOMWMS", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
 
             Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(False)

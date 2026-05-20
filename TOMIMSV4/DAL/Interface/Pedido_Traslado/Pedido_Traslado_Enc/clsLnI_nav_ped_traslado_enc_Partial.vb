@@ -906,6 +906,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim vDiasVencimientoCliente As Integer = 0
         Dim BeUnidadMedida As New clsBeUnidad_medida
         Dim BePresentacion As New clsBeProducto_Presentacion
+        Dim BeProductoTallaColor As New clsBeProducto_talla_color
         Dim vContador_Lineas_Detalle_Pedido_Insertadas As Integer = 0
         Dim vContador_Lineas_Detalle_Pedido_Insertadas_Tabla As Integer = 0
         Dim VContadorBitacoraTOMWMS As Integer = 0
@@ -921,6 +922,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim vPedidoExistente As Boolean = False
         Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
         Dim vCantStockRes As Integer = 0
+        Dim BeBodega As New clsBeBodega
 
         Try
 
@@ -933,6 +935,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 End If
 
                 If BeINavPedTrasladoEnc.Lineas_Detalle.Count > 0 Then
+
+                    BeBodega = clsLnBodega.GetSingle_By_Idbodega(IdBodegaOrigen, lConectionInterface, lTransInterface)
 
                     pBePedidoEnc = New clsBeTrans_pe_enc() With {.Referencia = BeINavPedTrasladoEnc.No,
                                                                  .IdTipoPedido = BeINavPedTrasladoEnc.Document_Type,
@@ -1230,6 +1234,35 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                             Else
                                 '#EJC20190530: Estan pidiendo en UMBAS.
                                 BePresentacion = Nothing
+                            End If
+
+                            If BeBodega.Control_Talla_Color Then
+
+                                Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(PDet.Size, lConectionInterface, lTransInterface)
+                                If BeTalla IsNot Nothing Then
+                                    BeProductoTallaColor.IdTalla = BeTalla.IdTalla
+                                Else
+                                    Dim vMsgEx2 As String = "La talla " & PDet.Size & " del producto: " & PDet.Item_No & " no existe, valide por favor: "
+                                    clsPublic.Actualizar_Progreso(lblprg, vMsgEx2)
+                                    Throw New Exception(vMsgEx2)
+                                End If
+
+                                Dim BeColor = clsLnColor.Get_Single_By_Codigo(PDet.Color, lConectionInterface, lTransInterface)
+                                If BeColor IsNot Nothing Then
+                                    BeProductoTallaColor.IdColor = BeColor.IdColor
+                                Else
+                                    Dim vMsgEx2 As String = "El color " & PDet.Color & " del producto: " & PDet.Item_No & " no existe, valide por favor: "
+                                    clsPublic.Actualizar_Progreso(lblprg, vMsgEx2)
+                                    Throw New Exception(vMsgEx2)
+                                End If
+
+                                BeProductoTallaColor.IdProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_CodTalla_and_CodColor(BeTalla.Codigo, BeColor.Codigo, BeProducto.IdProducto, lConectionInterface, lTransInterface)
+
+                                If BeProductoTallaColor.IdProductoTallaColor = 0 Then
+                                    Dim vMsgEx2 As String = "La talla color del producto: " & PDet.Item_No & " no existe: " & PDet.Color & " - " & PDet.Size
+                                    clsPublic.Actualizar_Progreso(lblprg, vMsgEx2)
+                                    Throw New Exception(vMsgEx2)
+                                End If
                             End If
 
                             vClienteTiempo = pClienteTiemposList.Find(Function(x) _
