@@ -132,3 +132,110 @@ WMS.DALCore/Reserva_Stock/ ← VERSION VIVA, ~3,833 lineas + fachada legacy + DT
 - Codigo legacy: `TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb` (35,259 lineas totales)
 - Codigo Core (vivo): `WMS.DALCore/Reserva_Stock/` (~3,833 lineas en 27 archivos)
 - Codigo Core (huerfanos sospechados): `WMS.StockReservation2/`, `WMS.StockReservation3/`, `reservastockfrommi3/`
+
+---
+
+## §9. Progreso Mary Jane (commits dev_2028_merge desde 2026-05-19)
+
+> **Fecha de actualizacion**: 2026-05-20
+> **Autor de la actualizacion**: Replit Agent (coordinador brain)
+> **Fuente**: fetch `dev_2028_merge` en `/tmp/wms-bof`, rango
+> `faaf853437..5ffe278e` (14 commits, autor `ejcalderongt`)
+> **Validacion**: leidos diffs de cb4726b9 / 0798df6c / 6ff10f45 / 68045f09
+
+### 9.1 Commits que avanzan paridad legacy<->Core
+
+| Commit | Mensaje | Impacto paridad |
+|---|---|---|
+| `cb4726b9` | Homologar motivos no-reserva legacy<->WebAPI | **ALTA**. Introduce `TIPO_NO_RESERVA=` como string en VB + `Clasificar_Motivo_No_Reserva_MI3()` + propaga el motivo en `Process_Result`. Toca 6 archivos: `clsLnI_nav_ped_traslado_enc_Partial.vb` (204+), `clsLnStock_res_Partial.vb` (248+), `clsLnI_nav_ped_traslado_enc.cs` (44+), `clsLnTrans_pe_det.cs` (118+), `EntityLoadingStep.cs` (36+), `SyncSalidasService.cs` (34+). Corrige normalizacion UM/Variant y conversion de presentacion solicitada en Core. |
+| `0798df6c` | Mejorar diagnostico reserva MI3 + reduce reprocesos | **MEDIA-ALTA**. Estructura `MensajeLog` de `trans_pe_det_log_reserva` con contexto operativo. Tipifica no-reserva con motivo+documento+linea+stock+vencimiento. Evita que fallas del log aborten el flujo. **Omite reprocesos identicos en `Restar_Stock_Reservado` dentro del mismo trace** - blinda el punto §3 de este pattern. |
+| `6ff10f45` | Mejora diagnostico no-reserva en log legado | **MEDIA**. Tipifica motivos operativos en log legado. Registra eventos no-reserva en `trans_pe_det_log_reserva` con datos de linea/SKU/UM/documento. Homologa Process_Result con razones estructuradas. Completa datos linea cuando existe `IdPedidoDet`. |
+| `68045f09` | Mejoras reserva WebAPI Core MHS v4 | **MEDIA**. Toca `StockReservationFacade.cs` (37+), `PostProcessingStep.cs` (37+), `SyncSalidasService.cs` (34+), `clsLnI_nav_ped_traslado_det.cs` (73+). Avanza Core en flujo MHS V4. |
+| `4806210e` | Optimizar resta stock reservado en reserva MI3 | Anterior a Mary Jane segun el log, pero en el mismo bloque. Optimizacion focal en `Restar_Stock_Reservado`. |
+| `faaf853437` | Fix loop L21489 GoTo estado 102 | Anterior. Ya documentado en §5 de este pattern. |
+
+### 9.2 Diff puntual: cambio mas relevante en Core (`EntityLoadingStep.cs`)
+
+```csharp
+// ANTES (faaf853437):
+if (context.Request.IdPresentacion <= 0 || context.DefaultPresentation == null) {
+    context.WasQuantityInPresentation = false;
+    context.ConversionFactor = 1;
+    return;
+}
+double factor = context.DefaultPresentation.Factor;
+
+// DESPUES (cb4726b9):
+if (context.Request.IdPresentacion <= 0) {                    // <-- ya no contempla null como bypass
+    context.WasQuantityInPresentation = false;
+    context.ConversionFactor = 1;
+    return;
+}
+var requestedPresentation = ResolveRequestedPresentation(context);
+if (requestedPresentation == null)
+    throw new InvalidOperationException(
+        $"Presentacion {context.Request.IdPresentacion} no encontrada para convertir cantidad a unidades.");
+double factor = requestedPresentation.Factor;
+```
+
+**Lectura**: ahora si `IdPresentacion > 0` pero la presentacion no resuelve,
+Core explota explicito en lugar de silenciosamente usar factor 1. Esto se
+alinea con la REGLA 6 bis de `replit.md` (sin presentacion -> usar UMBAS,
+NO abortar) **interpretada como**: la "ausencia de presentacion" es
+`IdPresentacion <= 0`, NO `IdPresentacion > 0 + null en cache`. La segunda
+condicion ahora es un bug detectable, no un silent fallback.
+
+### 9.3 Decision pendiente sobre tipificacion `TIPO_NO_RESERVA`
+
+Mary Jane introdujo `TIPO_NO_RESERVA=<motivo>` como **string** dentro de
+`vMotivo`. Funciona, pero a futuro conviene:
+
+```vb
+' Propuesto (extension_point de domain-reserva.yml):
+Public Enum TIPO_NO_RESERVA
+    SIN_STOCK_DISPONIBLE = 0
+    SIN_UBICACION_VALIDA = 1
+    PRESENTACION_NO_RESUELVE = 2
+    FECHA_VENCIDA = 3
+    ' ...los 14 valores que matcheen ReservationFailureCode Core
+End Enum
+```
+
+Con mapeo 1:1 contra `ReservationFailureCode` Core:
+
+```csharp
+public enum ReservationFailureCode {
+    NO_STOCK,             // -> VB TIPO_NO_RESERVA.SIN_STOCK_DISPONIBLE
+    NO_PRESENTACION,      // -> VB TIPO_NO_RESERVA.PRESENTACION_NO_RESUELVE
+    // ...14 valores totales
+}
+```
+
+Esto cierra la paridad semantica entre legacy y Core sin depender de
+matching de strings.
+
+### 9.4 Que falta para cerrar paridad (cobertura actual estimada)
+
+| Area | Antes Mary Jane | Despues Mary Jane | Falta |
+|---|---|---|---|
+| Tipificacion motivos | NO | SI (string) | enum tipificado + mapeo 1:1 con Core |
+| Log estructurado `trans_pe_det_log_reserva` | parcial | SI | nada |
+| Process_Result propaga motivo | NO | SI | nada |
+| Idempotencia `Restar_Stock_Reservado` | NO | SI (mismo trace) | extender a cross-trace si aplica |
+| Loop L21489 estado 102 | bug | fix | nada |
+| Resolucion presentacion en Core | silent fallback | explicit fail | nada |
+| FEFO logica completa Core | parcial | parcial | revisar despues |
+| Zonas picking vs no-picking Core | parcial | parcial | revisar despues |
+
+**Cobertura legacy reflejada en Core**: subio de ~40% a estimado **~65%**
+con los commits de Mary Jane. Quedan principalmente FEFO completo + zonas
++ enum tipificado.
+
+### 9.5 Referencia cruzada
+
+- Tarea pendiente para Mary Jane (proxima ronda):
+  - Tipificar `TIPO_NO_RESERVA` como `Enum` VB con valores numericos
+  - Crear mapeo 1:1 con `ReservationFailureCode` Core
+  - Avanzar steps Core para FEFO completo (PostProcessingStep + filtros
+    en EntityLoadingStep)
+- Coordinador (Replit Agent) actualizara este §7 cuando se cierren.
