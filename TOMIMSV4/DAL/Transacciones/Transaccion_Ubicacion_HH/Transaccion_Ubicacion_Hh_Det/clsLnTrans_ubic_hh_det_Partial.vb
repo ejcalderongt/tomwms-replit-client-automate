@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Configuration
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_ubic_hh_det
@@ -14,7 +15,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                   ORDER BY IdTareaUbicacionDet "
 
             '#EJC20180419:1109PM: Se agrego transaccionalidad a función.
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
 
@@ -438,7 +439,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             Dim vSQL As String = "SELECT * from trans_ubic_hh_det where IdTareaUbicacionDet=@IdTransUbicHhDet"
 
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
 
@@ -509,7 +510,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Guardar_Detalle = False
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -584,7 +585,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplicar_Movimiento = ""
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -619,7 +620,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Dim IdMaxMov As Integer
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
@@ -811,7 +812,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdMovimiento As Integer
         Dim IdStockNuevo As Integer = 0
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
@@ -1244,7 +1245,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Procesar_Cambio_Ubicacion_Dirigido = False
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
         Dim BeTransReabasto As New clsBeTrans_reabastecimiento_log()
 
@@ -1273,5 +1274,754 @@ Partial Public Class clsLnTrans_ubic_hh_det
         End Try
 
     End Function
+
+    '#EJC20260416:
+    'Este método orquesta en un solo flujo los procesos de:
+    '1) cambio de estado
+    '2) implosión
+    '3) cambio de ubicación
+    '
+    'La regla es que NO siempre se ejecutan los 3 procesos,
+    'pero si aplican varios, SIEMPRE deben ejecutarse en este orden:
+    '   estado -> implosión -> ubicación
+    '
+    '#EJC20260416:
+    'Importante:
+    'Los métodos internos buscan stock por atributos (estado, licencia, ubicación, etc.),
+    'por lo tanto el stock "lógico" va mutando entre pasos.
+    'Por esa razón se actualiza pStockRes después de cada proceso exitoso,
+    'para que el siguiente proceso trabaje sobre el estado más reciente del stock.
+    Public Shared Function Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack(ByVal pMovimiento As clsBeTrans_movimientos,
+                                                                          ByVal pStockRes As clsBeVW_stock_res,
+                                                                          ByRef pIdStockNuevo As Integer,
+                                                                          ByRef pIdMovimientoNuevo As Integer,
+                                                                          ByVal pPosiciones As Integer,
+                                                                          Optional ByVal EsCambioEstado As Boolean = False) As Boolean
+
+        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+            lConnection.Open()
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
+                                                                                               pMovimiento.IdBodegaDestino)
+
+            Dim esRack As Boolean = False
+            Dim licenciaDestino As String = ""
+            Dim IdProductoEstadoDestino As Integer = 0
+
+            '#EJC20260416:
+            'Se guardan los valores originales porque el objeto pMovimiento y pStockRes
+            'se reutilizan en varios pasos del flujo y van mutando durante la ejecución.
+            Dim IdUbicacionOrigen As Integer = pMovimiento.IdUbicacionOrigen
+            Dim IdUbicacionDestino As Integer = pMovimiento.IdUbicacionDestino
+            Dim licenciaOrigen As String = pStockRes.Lic_plate
+            Dim IdProductoEstadoOrigen As Integer = pStockRes.IdProductoEstado
+            Dim propietarioOriginal = pMovimiento.IdPropietarioBodega
+
+            If infoDestinoDT IsNot Nothing AndAlso infoDestinoDT.Rows.Count > 0 Then
+                Dim row = infoDestinoDT.Rows(0)
+
+                esRack = CBool(row("es_rack"))
+                licenciaDestino = If(IsDBNull(row("LicenciaDestino")), "", row("LicenciaDestino").ToString())
+                IdProductoEstadoDestino = If(IsDBNull(row("IdProductoEstadoDestino")), 0, CInt(row("IdProductoEstadoDestino")))
+            End If
+
+            Dim estadoRackDefecto As Integer = clsLnBodega.Get_Estado_Defecto_Rack(pMovimiento.IdBodegaDestino,
+                                                                                   lConnection,
+                                                                                   lTransaction)
+
+            '#EJC20260416:
+            'Se definen flags independientes.
+            'Antes el flujo mezclaba decisiones entre ubicación, estado e implosión,
+            'lo que hacía difícil combinar procesos y respetar el orden.
+            Dim requiereCambioEstado As Boolean = False
+            Dim requiereImplosion As Boolean = False
+            Dim requiereCambioUbicacion As Boolean = False
+
+            Dim tieneLicenciaDestino As Boolean = licenciaDestino <> ""
+            Dim tieneEstadoDestino As Boolean = IdProductoEstadoDestino > 0
+
+            If EsCambioEstado AndAlso pMovimiento.IdEstadoDestino > 0 Then
+                IdProductoEstadoDestino = pMovimiento.IdEstadoDestino
+                tieneEstadoDestino = True
+            End If
+
+            '#EJC20260416:
+            'Cambio de estado:
+            'Aplica si el destino trae estado y es distinto al actual.
+            If tieneEstadoDestino AndAlso IdProductoEstadoDestino <> IdProductoEstadoOrigen Then
+                requiereCambioEstado = True
+            End If
+
+            If EsCambioEstado Then
+                requiereCambioEstado = True
+            End If
+
+            '#EJC20260416:
+            'Regla especial de rack:
+            'Si la ubicación destino es rack y el estado actual no coincide con el estado por defecto del rack,
+            'se obliga el cambio de estado, incluso si el destino no envía un estado explícito.
+            If Not EsCambioEstado Then
+                If esRack AndAlso estadoRackDefecto > 0 AndAlso IdProductoEstadoOrigen <> estadoRackDefecto Then
+                    requiereCambioEstado = True
+
+                    If Not tieneEstadoDestino Then
+                        IdProductoEstadoDestino = estadoRackDefecto
+                        tieneEstadoDestino = True
+                    End If
+                End If
+            End If
+
+            '#EJC20260416:
+            'Si no hay estado destino explícito ni regla de rack, se conserva el estado actual.
+            If Not tieneEstadoDestino Then
+                IdProductoEstadoDestino = IdProductoEstadoOrigen
+            End If
+
+            'si es distinto, solo validar si hay estado rack configurado
+            If esRack AndAlso estadoRackDefecto > 0 AndAlso IdProductoEstadoDestino <> estadoRackDefecto Then
+
+                Dim BeEstadoRack = clsLnProducto_estado.Get_Single_By_IdEstado(estadoRackDefecto,
+                                                                               lConnection,
+                                                                               lTransaction)
+
+                Dim nombreEstadoRack As String = If(BeEstadoRack IsNot Nothing, BeEstadoRack.Nombre, estadoRackDefecto.ToString())
+
+                Throw New Exception("Cambio de estado no válido." & vbCrLf & "Destino es rack y el estado no es " & nombreEstadoRack & ".")
+
+            End If
+
+            '#EJC20260416:
+            'Implosión:
+            'Aplica solo si la ubicación destino tiene una licencia configurada
+            'y esa licencia es distinta a la licencia actual del stock.
+            If Not EsCambioEstado Then
+                If tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
+                    requiereImplosion = True
+                End If
+            End If
+
+            '#EJC20260416:
+            'Cambio de ubicación:
+            'Aplica si la ubicación destino es válida y distinta a la de origen.
+            If Not EsCambioEstado Then
+                If IdUbicacionDestino > 0 AndAlso IdUbicacionDestino <> IdUbicacionOrigen Then
+                    requiereCambioUbicacion = True
+                End If
+            End If
+
+            If EsCambioEstado Then
+                requiereImplosion = False
+                requiereCambioUbicacion = False
+            End If
+
+            '#EJC20260416:
+            'Si no hay ningún cambio a aplicar, se confirma la transacción y se retorna True.
+            If Not requiereCambioEstado AndAlso Not requiereImplosion AndAlso Not requiereCambioUbicacion Then
+                lTransaction.Commit()
+                Return True
+            End If
+
+            Dim exitoPaso As Boolean = False
+
+            '==========================================================
+            '#EJC20260416:
+            'PASO 1 - CAMBIO DE ESTADO
+            '==========================================================
+            If requiereCambioEstado Then
+
+                '#EJC20260416:
+                'Para cambio de estado se deja la misma ubicación,
+                'porque este paso solo debe mutar el estado del stock.
+                pMovimiento.IdTipoTarea = 3
+                pMovimiento.IdEstadoOrigen = pStockRes.IdProductoEstado
+                pMovimiento.IdEstadoDestino = IdProductoEstadoDestino
+                pMovimiento.IdUbicacionOrigen = IdUbicacionOrigen
+                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+                pMovimiento.Fecha = DateTime.Now
+                pMovimiento.Fecha_agr = DateTime.Now
+
+                exitoPaso = Aplica_Cambio_Estado_Ubic(pMovimiento,
+                                                      pStockRes,
+                                                      pIdStockNuevo,
+                                                      pIdMovimientoNuevo,
+                                                      lConnection,
+                                                      lTransaction,
+                                                      pPosiciones)
+
+                If Not exitoPaso Then
+                    Throw New Exception("Error al aplicar cambio de estado.")
+                End If
+
+                '#EJC20260416:
+                'El stock ya mutó.
+                'Se actualiza el contexto en memoria para que el siguiente paso
+                '(implosión o ubicación) use el nuevo estado como filtro de entrada.
+                pStockRes.IdProductoEstado = IdProductoEstadoDestino
+
+                '#EJC20260416:
+                'Si se obtuvo un nuevo IdStock, se actualiza también en memoria.
+                'Esto ayuda a mantener sincronizado el contexto lógico del stock resultante.
+                If pIdStockNuevo > 0 Then
+                    pStockRes.IdStock = pIdStockNuevo
+                End If
+            End If
+
+            '==========================================================
+            '#EJC20260416:
+            'PASO 2 - IMPLOSIÓN
+            '==========================================================
+            If requiereImplosion Then
+
+                '#EJC20260416:
+                'La implosión debe ejecutarse sobre el stock ya mutado por el paso anterior,
+                'si hubo cambio de estado.
+
+                'Validar_Implosion_MismaUbicacionEstado(licenciaOrigen,
+                '                                       licenciaDestino,
+                '                                       pMovimiento.IdBodegaDestino,
+                '                                       lConnection,
+                '                                       lTransaction)
+
+                'Por eso aquí pStockRes ya contiene el estado vigente del stock.
+                'Se deja registrada la licencia anterior y se establece la licencia nueva.
+                pMovimiento.IdPropietarioBodega = propietarioOriginal
+                pStockRes.Lic_plate_Anterior = pStockRes.Lic_plate
+                pStockRes.Lic_plate = licenciaDestino
+
+                pMovimiento.IdTipoTarea = 12
+                pMovimiento.Lic_plate = pStockRes.Lic_plate_Anterior
+                pMovimiento.Barra_pallet = licenciaDestino
+                pMovimiento.IdEstadoOrigen = pStockRes.IdProductoEstado
+                pMovimiento.IdEstadoDestino = pStockRes.IdProductoEstado
+                pMovimiento.IdUbicacionOrigen = IdUbicacionOrigen
+                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+                pMovimiento.Fecha = DateTime.Now
+                pMovimiento.Fecha_agr = DateTime.Now
+
+                Aplica_Implosion(pMovimiento,
+                                 pStockRes,
+                                 lConnection,
+                                 lTransaction,
+                                 False)
+
+                '#EJC20260416:
+                'Después de implosionar, el stock lógico ya quedó con nueva licencia.
+                'Se conserva esa licencia en memoria para que el siguiente paso
+                '(cambio de ubicación) busque el stock correcto.
+                '
+                'Nota:
+                'Aplica_Implosion actualmente no devuelve el nuevo IdStock.
+                'Por eso aquí solo se actualiza el contexto por atributos.
+            End If
+
+            '==========================================================
+            '#EJC20260416:
+            'PASO 3 - CAMBIO DE UBICACIÓN
+            '==========================================================
+            If requiereCambioUbicacion Then
+
+                '#EJC20260416:
+                'Este paso debe usar como input el stock ya mutado por los pasos previos:
+                'estado y/o implosión, según hayan aplicado.
+                pMovimiento.IdPropietarioBodega = propietarioOriginal
+
+                pMovimiento.IdTipoTarea = 2
+                pMovimiento.IdUbicacionOrigen = IdUbicacionOrigen
+                pMovimiento.IdUbicacionDestino = IdUbicacionDestino
+                pMovimiento.IdEstadoOrigen = pStockRes.IdProductoEstado
+                pMovimiento.IdEstadoDestino = pStockRes.IdProductoEstado
+                pMovimiento.Lic_plate = ""
+                pMovimiento.Fecha = DateTime.Now
+                pMovimiento.Fecha_agr = DateTime.Now
+
+                exitoPaso = Aplica_Cambio_Estado_Ubic(pMovimiento,
+                                                      pStockRes,
+                                                      pIdStockNuevo,
+                                                      pIdMovimientoNuevo,
+                                                      lConnection,
+                                                      lTransaction,
+                                                      pPosiciones)
+
+                If Not exitoPaso Then
+                    Throw New Exception("Error al aplicar cambio de ubicación.")
+                End If
+
+                '#EJC20260416:
+                'Se actualiza el contexto final del stock.
+                pStockRes.IdUbicacion_Anterior = pStockRes.IdUbicacion
+                pStockRes.IdUbicacion = IdUbicacionDestino
+
+                If pIdStockNuevo > 0 Then
+                    pStockRes.IdStock = pIdStockNuevo
+                End If
+            End If
+
+            lTransaction.Commit()
+            Return True
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then
+                lTransaction.Rollback()
+            End If
+
+            Dim vMsgError As String = String.Format("{0} {1}",
+                                           MethodBase.GetCurrentMethod().Name,
+                                           ex.Message)
+
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+
+        Finally
+            If lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
+                lConnection.Close()
+            End If
+        End Try
+
+    End Function
+
+    '#MA20260415  metodo para el cambio de ubicacion - mejoras para la cumbre
+    Public Shared Function Aplica_Cambio_Estado_Ubic(ByVal pMovimiento As clsBeTrans_movimientos,
+                                                     ByVal pStockRes As clsBeVW_stock_res,
+                                                     ByRef pIdStockNuevo As Integer,
+                                                     ByRef pIdMovimiento As Integer,
+                                                     ByVal lConnection As SqlConnection,
+                                                     ByVal lTransaction As SqlTransaction,
+                                                     Optional pPosiciones As Integer = 0) As Boolean
+
+        Aplica_Cambio_Estado_Ubic = False
+
+        Dim ListaStock As New List(Of clsBeVW_stock_res)
+        Dim result As String = ""
+        Dim vCantidadCompletada As Double = 0
+        Dim vCantidadPendiente As Double = 0
+        Dim vCantidadDisponible As Double = 0
+        Dim IdMovimiento As Integer
+        Dim IdStockNuevo As Integer = 0
+
+        Dim BePickingUbic As New clsBeTrans_picking_ubic()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+
+        If pMovimiento.IdTipoTarea = 0 Then
+            Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
+        End If
+
+        Try
+
+            '#MECR03112025: Se agrego bitacora de ubicacion
+            Dim vMsgError As String = "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: " & pStockRes.IdUbicacion & " ubicacion anterior " & pStockRes.IdUbicacion_Anterior & "opoerador " & pMovimiento.IdOperadorBodega
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
+                                                  pUsrAgr:=pMovimiento.Usuario_agr,
+                                                  pIdTareaUbicacionEnc:=pIdMovimiento,
+                                                  pIdStock:=pStockRes.IdStock,
+                                                  pIdUMBAs:=pMovimiento.IdUnidadMedida,
+                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
+                                                  pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
+                                                  pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+                                                  pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
+                                                  pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
+                                                  pCantidad:=pMovimiento.Cantidad,
+                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
+                                                  pTransaction:=lTransaction,
+                                                  pConection:=lConnection)
+
+            If pStockRes.Lic_plate = "" Then
+                ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes,
+                                                               lConnection,
+                                                               lTransaction)
+            Else
+                ListaStock = clsLnVW_stock_res.Get_Lista_Stock_By_Lic_Plate(pStockRes,
+                                                                            lConnection,
+                                                                            lTransaction)
+            End If
+
+            vCantidadPendiente = pStockRes.CantidadUmBas
+
+            If Not ListaStock Is Nothing Then
+
+                If ListaStock.Count > 0 Then
+
+                    For Each StockRes In ListaStock
+
+                        If pStockRes.IdUbicacionVirtual = 0 Then
+
+                            '#CKFK 20181025 0547PM Agregué el redondeo a 6 cifras decimales cuando hace la resta
+                            vCantidadDisponible = Math.Round(StockRes.CantidadUmBas - StockRes.CantidadReservadaUMBas, 6)
+
+                            'CM_20190523: Agregué método para buscar el propietario bodega, porque de la HH trae el IdPropietario
+                            pMovimiento.IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(pMovimiento.IdBodegaDestino,
+                                                                                                                                      pMovimiento.IdPropietarioBodega,
+                                                                                                                                      lConnection,
+                                                                                                                                      lTransaction)
+
+                            '#CKFK 20181113 Agregué esta validación para que validara que la cantidad disponible fuera mayor que 0.
+                            If vCantidadDisponible > 0 Then
+
+                                If vCantidadPendiente >= vCantidadDisponible Then
+
+                                    pMovimiento.Cantidad = vCantidadDisponible
+
+                                    IdStockNuevo = clsLnTrans_movimientos.Aplicar(pMovimiento,
+                                                                                  StockRes.IdStock,
+                                                                                  True,
+                                                                                  lConnection,
+                                                                                  lTransaction,
+                                                                                  pPosiciones)
+
+                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                                    pMovimiento.IdMovimiento = IdMovimiento
+                                    pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
+
+                                    If pMovimiento.IdTipoTarea = 20 Then
+                                        pMovimiento.IdPresentacion = 0
+                                    End If
+
+                                    clsLnTrans_movimientos.Insertar(pMovimiento,
+                                                                    lConnection,
+                                                                    lTransaction)
+
+                                    vCantidadPendiente -= vCantidadDisponible
+                                    '#CKFK 20181025 0547PM Agregué el redondeo a 6 cifras decimales cuando hace la resta
+                                    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                    vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                    If vCantidadCompletada Then Exit For
+
+                                ElseIf vCantidadPendiente < vCantidadDisponible Then
+
+                                    pMovimiento.Cantidad = vCantidadPendiente
+
+                                    IdStockNuevo = clsLnTrans_movimientos.Aplicar(pMovimiento,
+                                                                                  StockRes.IdStock,
+                                                                                  True,
+                                                                                  lConnection,
+                                                                                  lTransaction,
+                                                                                  pPosiciones)
+
+                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                                    pMovimiento.IdMovimiento = IdMovimiento
+                                    pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
+
+                                    clsLnTrans_movimientos.Insertar(pMovimiento,
+                                                                    lConnection,
+                                                                    lTransaction)
+
+                                    vCantidadPendiente -= vCantidadPendiente
+                                    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                    vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                    If vCantidadCompletada Then Exit For
+
+                                End If
+
+                            End If
+
+                        Else '#EJC20220330 - IdUbicacionVirtual <> 0
+
+                            'Actualizar, IdUbicacionVirtual en picking y no hacer nada mas!!!
+                            BePickingUbic = clsLnTrans_picking_ubic.Get_Single_By_IdStock(StockRes.IdStock,
+                                                                                          StockRes.IdBodega,
+                                                                                          lConnection,
+                                                                                          lTransaction)
+
+                            If Not BePickingUbic Is Nothing Then
+                                BePickingUbic.IdUbicacionTemporal = pStockRes.IdUbicacionVirtual
+                                clsLnTrans_picking_ubic.Actualizar_IdUbicacionTemporal(BePickingUbic,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+                            End If
+
+                        End If
+
+                    Next
+
+                    pIdStockNuevo = IdStockNuevo
+                    pIdMovimiento = IdMovimiento
+
+                    Aplica_Cambio_Estado_Ubic = (IdStockNuevo <> 0)
+
+                Else
+                    '#MECR03112025: Se agrego bitacora de ubicacion
+                    'clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock)
+                    Dim msgError As String = "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock
+                    clsLnLog_error_wms_ubic.Agregar_Error(msgError,
+                                                          pIdEmpresa:=pMovimiento.IdEmpresa,
+                                                          pUsrAgr:=pMovimiento.Usuario_agr,
+                                                          pIdTareaUbicacionEnc:=pIdMovimiento,
+                                                          pIdStock:=pStockRes.IdStock,
+                                                          pIdUMBAs:=pMovimiento.IdUnidadMedida,
+                                                          pIdPresentacion:=pMovimiento.IdPresentacion,
+                                                          pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
+                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+                                                          pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
+                                                          pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
+                                                          pCantidad:=pMovimiento.Cantidad,
+                                                          pIdOperador:=pMovimiento.IdOperadorBodega,
+                                                          pTransaction:=lTransaction,
+                                                          pConection:=lConnection)
+
+                    Throw New Exception("ERROR_202208241645A: Es probable que la licencia haya tenido una actualización, recargue la licencia.")
+                End If
+
+            Else
+                '#MECR03112025: Se agrego bitacora de ubicacion
+                'clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock)
+                Dim msgError As String = "No se pudo obtener la información de stock, IdStock: " & pStockRes.IdStock
+                clsLnLog_error_wms_ubic.Agregar_Error(msgError,
+                                                          pIdEmpresa:=pMovimiento.IdEmpresa,
+                                                          pUsrAgr:=pMovimiento.Usuario_agr,
+                                                          pIdTareaUbicacionEnc:=pIdMovimiento,
+                                                          pIdStock:=pStockRes.IdStock,
+                                                          pIdUMBAs:=pMovimiento.IdUnidadMedida,
+                                                          pIdPresentacion:=pMovimiento.IdPresentacion,
+                                                          pIdUbicacionOrigen:=pMovimiento.IdUbicacionOrigen,
+                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+                                                          pIdEstadoOrigen:=pMovimiento.IdEstadoOrigen,
+                                                          pIdEstadoDestino:=pMovimiento.IdEstadoDestino,
+                                                          pCantidad:=pMovimiento.Cantidad,
+                                                          pIdOperador:=pMovimiento.IdOperadorBodega,
+                                                          pTransaction:=lTransaction,
+                                                          pConection:=lConnection)
+
+                Throw New Exception("ERROR_202208241645B: No se pudo obtener la información de stock con los parámetros solicitados (lista is nothing)")
+            End If
+
+        Catch ex As Exception
+            'If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        End Try
+
+    End Function
+
+    '#MA20260415 metodo para implosionar, mejoras en la cumbre
+    Public Shared Function Aplica_Implosion(ByVal pMovimiento As clsBeTrans_movimientos,
+                                            ByVal pStockRes As clsBeVW_stock_res,
+                                            ByVal lConnection As SqlConnection,
+                                            ByVal lTransaction As SqlTransaction,
+                                            ByVal esImplosion As Boolean) As String
+
+        Aplica_Implosion = ""
+
+        Dim IdMaxMov As Integer
+
+
+        Try
+
+            Dim ListaStock As New List(Of clsBeVW_stock_res)
+            Dim result As String = ""
+            Dim vCantidadCompletada As Double = 0
+            Dim vCantidadPendiente As Double = 0
+            Dim vCantidadDisponible As Double = 0
+
+            '#EJC20200117: Almacenar aquí temporalmente, para hacer la lista de stock en base a lic_plate anterior.
+            '#AT20220316 Agregué la presentación
+            Dim vNuevoLicPlate As String = pStockRes.Lic_plate
+            Dim vPresentacion As Integer = pStockRes.IdPresentacion
+
+            Validar_Implosion_MismaUbicacionEstado(pStockRes.Lic_plate_Anterior,
+                                                   pStockRes.Lic_plate,
+                                                   pMovimiento.IdBodegaDestino,
+                                                   lConnection,
+                                                   lTransaction,
+                                                   esImplosion)
+
+            pStockRes.Lic_plate = pStockRes.Lic_plate_Anterior
+            '#CKFK20260518 Puse esto en comentario porque la presentacion no se debe cambiar
+            'pStockRes.IdPresentacion = pStockRes.IdPresentacion_Anterior
+
+            If pStockRes.Lic_plate_Anterior = "" Then
+                ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes, lConnection, lTransaction)
+            Else
+                ListaStock = clsLnVW_stock_res.Get_Lista_Stock_By_Lic_Plate(pStockRes, lConnection, lTransaction)
+            End If
+
+            '#EJC20200117: Resetear de nuevo el LP para que inserte el nuevo LP en el stock.
+            '#AT20220316 Agregué la presentación
+            pStockRes.Lic_plate = vNuevoLicPlate
+            pStockRes.IdPresentacion = vPresentacion
+
+            vCantidadPendiente = pStockRes.CantidadUmBas
+
+            If Not ListaStock Is Nothing Then
+
+                If ListaStock.Count > 0 Then
+
+                    For Each StockRes In ListaStock
+
+                        vCantidadDisponible = Math.Round(StockRes.CantidadUmBas - StockRes.CantidadReservadaUMBas, 6) '#CKFK 20181025 0547PM Agregué el redondeo a 6 cifras decimales cuando hace la resta
+
+                        pMovimiento.IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(pMovimiento.IdBodegaDestino,
+                                                                                                                                  pMovimiento.IdPropietarioBodega,
+                                                                                                                                  lConnection,
+                                                                                                                                  lTransaction)
+
+                        If vCantidadDisponible > 0 Then
+
+                            If vCantidadPendiente >= vCantidadDisponible Then
+
+
+
+                                pMovimiento.Cantidad = vCantidadDisponible
+
+                                result += " " & clsLnTrans_movimientos.Aplicar_Packing(pMovimiento,
+                                                                                       StockRes.IdStock,
+                                                                                       vNuevoLicPlate,
+                                                                                       vPresentacion,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+
+                                IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                                pMovimiento.IdMovimiento = IdMaxMov
+
+                                clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
+
+                                vCantidadPendiente -= vCantidadDisponible
+                                vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                If vCantidadCompletada Then Exit For
+
+                            ElseIf vCantidadPendiente < vCantidadDisponible Then
+
+
+
+                                pMovimiento.Cantidad = vCantidadPendiente
+
+                                result += " " & clsLnTrans_movimientos.Aplicar_Packing(pMovimiento,
+                                                                                       StockRes.IdStock,
+                                                                                       vNuevoLicPlate,
+                                                                                       vPresentacion,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+
+                                IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                                pMovimiento.IdMovimiento = IdMaxMov
+
+                                clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
+
+                                vCantidadPendiente -= vCantidadPendiente
+                                vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                If vCantidadCompletada Then Exit For
+
+                            End If
+
+                            '#MECR19112025: Se agregó bitacora de logs para implosion
+                            Dim vMsgInformacion As String = "Se agrego implosion, Licencia: " + pMovimiento.Lic_plate + " por el operador: " + pMovimiento.IdOperadorBodega.ToString()
+                            clsLnLog_error_wms_pack.Agregar_Error(vMsgInformacion,
+                                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
+                                                                  pIdBodega:=pMovimiento.IdBodegaDestino,
+                                                                  pIdPedidoEnc:=pMovimiento.IdPedidoEnc,
+                                                                  pIdDespachoEnc:=pMovimiento.IdDespachoEnc,
+                                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
+                                                                  pIdUnidadMedida:=pMovimiento.IdUnidadMedida,
+                                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
+                                                                  pUsuario_agr:=pMovimiento.Usuario_agr,
+                                                                  pEsImplosion:=True)
+
+                        Else
+                            Throw New Exception("No hay cantidad disponible para implosionar")
+                        End If
+
+                    Next
+
+                Else
+                    Throw New Exception("Error #EJC20200117_A: No se obtuvieron registros con los parámetros solicitados")
+                End If
+            Else
+                Throw New Exception("Error #EJC20200117_B: No se obtuvieron registros con los parámetros solicitados")
+            End If
+
+            Return result
+
+        Catch ex As Exception
+            'If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            'Throw New Exception(ex.Message)
+            Throw
+        End Try
+
+    End Function
+
+    Private Shared Sub Validar_Implosion_MismaUbicacionEstado(ByVal pLicenciaOrigen As String,
+                                                              ByVal pLicenciaDestino As String,
+                                                              ByVal pIdBodega As Integer,
+                                                              ByVal lConnection As SqlConnection,
+                                                              ByVal lTransaction As SqlTransaction,
+                                                              ByVal esImplosion As Boolean)
+
+        If String.IsNullOrWhiteSpace(pLicenciaOrigen) Then
+            Throw New Exception("No se puede implosionar, licencia origen vacía.")
+        End If
+
+        If String.IsNullOrWhiteSpace(pLicenciaDestino) Then
+            Throw New Exception("No se puede implosionar, licencia destino vacía.")
+        End If
+
+        Dim stockOrigen As clsBeVW_stock_res =
+        clsLnVW_stock_res.Get_Stock_Implosion_By_LicPlate(pLicenciaOrigen,
+                                                          pIdBodega,
+                                                          lConnection,
+                                                          lTransaction)
+
+        Dim stockDestino As clsBeVW_stock_res =
+        clsLnVW_stock_res.Get_Stock_Implosion_By_LicPlate(pLicenciaDestino,
+                                                          pIdBodega,
+                                                          lConnection,
+                                                          lTransaction)
+
+        If stockOrigen Is Nothing Then
+            Throw New Exception("No se puede implosionar, no se encontró stock de la licencia origen.")
+        End If
+
+        If stockDestino Is Nothing Then
+            Throw New Exception("No se puede implosionar, no se encontró stock de la licencia destino.")
+        End If
+
+        Dim nombreUbicacionOrigen As String = If(String.IsNullOrWhiteSpace(stockOrigen.Nombre_Completo),
+                                             stockOrigen.IdUbicacion.ToString(),
+                                             stockOrigen.Nombre_Completo)
+
+        Dim nombreUbicacionDestino As String = If(String.IsNullOrWhiteSpace(stockDestino.Nombre_Completo),
+                                              stockDestino.IdUbicacion.ToString(),
+                                              stockDestino.Nombre_Completo)
+
+        Dim nombreEstadoOrigen As String = If(String.IsNullOrWhiteSpace(stockOrigen.NomEstado),
+                                          stockOrigen.IdProductoEstado.ToString(),
+                                          stockOrigen.NomEstado)
+
+        Dim nombreEstadoDestino As String = If(String.IsNullOrWhiteSpace(stockDestino.NomEstado),
+                                               stockDestino.IdProductoEstado.ToString(),
+                                               stockDestino.NomEstado)
+
+        If esImplosion Then
+            If stockOrigen.IdUbicacion <> stockDestino.IdUbicacion Then
+                Throw New Exception("No se puede implosionar, ubicaciones diferentes." & vbCrLf &
+                                    "Origen: " & nombreUbicacionOrigen &
+                                    ", destino: " & nombreUbicacionDestino & ".")
+            End If
+        End If
+
+        If stockOrigen.IdProductoEstado <> stockDestino.IdProductoEstado Then
+            Throw New Exception("No se puede implosionar, estados diferentes." & vbCrLf &
+                            "Origen: " & nombreEstadoOrigen &
+                            ", destino: " & nombreEstadoDestino & ".")
+        End If
+
+    End Sub
 
 End Class

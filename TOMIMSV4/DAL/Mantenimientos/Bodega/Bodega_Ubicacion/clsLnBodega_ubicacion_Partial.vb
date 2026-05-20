@@ -4011,4 +4011,6 @@ Partial Public Class clsLnBodega_ubicacion
 
     End Function
 
+
+
 End Class

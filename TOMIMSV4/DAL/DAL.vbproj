@@ -180,6 +180,8 @@
     <Compile Include="Inventario\InvCiclico\clsLnTrans_inv_operador_partial.vb" />
     <Compile Include="Inventario\InvNE\clsLnTrans_inv_ne.vb" />
     <Compile Include="Inventario\InvNE\clsLnTrans_inv_ne_partial.vb" />
+    <Compile Include="Log\clsLnDMS_Log_sincronizacion_fallos.vb" />
+    <Compile Include="Log\clsLnDMS_Log_sincronizacion_nube.vb" />
     <Compile Include="Log\clsLnLog_importacion_excel_partial.vb" />
     <Compile Include="Log\clsLnLog_importacion_excel.vb" />
     <Compile Include="Log\clsLnLog_sincronizacion_fallos.vb" />

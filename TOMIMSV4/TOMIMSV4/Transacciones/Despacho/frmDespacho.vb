@@ -47,6 +47,7 @@ Public Class frmDespacho
 
 
     Public Despacho_Cargado_Desde_Pedido As Boolean
+    Public Despacho_Cargado_Desde_Picking As Boolean
 
     Public Enum TipoTrans
         Nuevo = 1
@@ -2562,7 +2563,6 @@ Public Class frmDespacho
     Private Sub cmbPropietario_EditValueChanged(sender As Object, e As EventArgs) Handles cmbPropietario.EditValueChanged
         Try
 
-
             If cmbPropietario.ItemIndex > -1 Then
                 If cmbBodega.Text <> "" Then
                     cmbPropietario.Tag = IMS.Get_IdPropietario_By_IdBodega(cmbBodega.EditValue, cmbPropietario.EditValue)
@@ -2587,7 +2587,8 @@ Public Class frmDespacho
 
             If cmbBodega.ItemIndex > -1 Then
                 '#GT11032026: si el despacho se dispara desde pedido, no recargar propietarios porque borra el seteado.
-                If Not Despacho_Cargado_Desde_Pedido Then
+                '#GT12032026: cada que el despacho viene del picking jode la recarga del combo bodega y de propietarios, dejando manuchar
+                If Not Despacho_Cargado_Desde_Pedido AndAlso Not Despacho_Cargado_Desde_Picking Then
                     cmbPropietario.Properties.DataSource = Nothing
                     IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue)
                 End If
@@ -2711,8 +2712,16 @@ Public Class frmDespacho
 
                                 If pProcesado_Bof Then
 
-                                    BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
-                                    vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
+                                    Dim pIdOperador = clsLnOperador_bodega.Get_IdOperador_By_IdOperadorBodega(vIdOperadorPicking)
+
+                                    If pIdOperador > 0 Then
+                                        Dim BeOperador = clsLnOperador.Get_Single_By_IdOperador(pIdOperador)
+                                        vNombreOperadorPickeo = BeOperador.Nombres + "" + BeOperador.Apellidos
+
+                                    Else
+                                        BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
+                                        vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
+                                    End If
 
                                 Else
 

@@ -20,24 +20,23 @@ Partial Class frmConfiguracionHorarios
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim User_modLabel As System.Windows.Forms.Label
-        Dim User_agrLabel As System.Windows.Forms.Label
-        Dim Fec_modLabel As System.Windows.Forms.Label
-        Dim Fec_agrLabel As System.Windows.Forms.Label
-        Dim Label9 As System.Windows.Forms.Label
-        Dim Label6 As System.Windows.Forms.Label
-        Dim Label5 As System.Windows.Forms.Label
-        Dim Label4 As System.Windows.Forms.Label
-        Dim Label3 As System.Windows.Forms.Label
-        Dim Label31 As System.Windows.Forms.Label
-        Dim Label32 As System.Windows.Forms.Label
-        Dim Label33 As System.Windows.Forms.Label
         Dim EditorButtonImageOptions2 As DevExpress.XtraEditors.Controls.EditorButtonImageOptions = New DevExpress.XtraEditors.Controls.EditorButtonImageOptions()
         Dim SerializableAppearanceObject5 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject6 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject7 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject8 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfiguracionHorarios))
+        Me.User_modLabel = New System.Windows.Forms.Label()
+        Me.User_agrLabel = New System.Windows.Forms.Label()
+        Me.Fec_modLabel = New System.Windows.Forms.Label()
+        Me.Fec_agrLabel = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label31 = New System.Windows.Forms.Label()
+        Me.Label32 = New System.Windows.Forms.Label()
+        Me.Label33 = New System.Windows.Forms.Label()
         Me.IdEmpresaLabel = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -165,18 +164,6 @@ Partial Class frmConfiguracionHorarios
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.HelpProvider1 = New System.Windows.Forms.HelpProvider()
-        User_modLabel = New System.Windows.Forms.Label()
-        User_agrLabel = New System.Windows.Forms.Label()
-        Fec_modLabel = New System.Windows.Forms.Label()
-        Fec_agrLabel = New System.Windows.Forms.Label()
-        Label9 = New System.Windows.Forms.Label()
-        Label6 = New System.Windows.Forms.Label()
-        Label5 = New System.Windows.Forms.Label()
-        Label4 = New System.Windows.Forms.Label()
-        Label3 = New System.Windows.Forms.Label()
-        Label31 = New System.Windows.Forms.Label()
-        Label32 = New System.Windows.Forms.Label()
-        Label33 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_modTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -254,137 +241,137 @@ Partial Class frmConfiguracionHorarios
         '
         'User_modLabel
         '
-        User_modLabel.AutoSize = True
-        User_modLabel.Location = New System.Drawing.Point(608, 23)
-        User_modLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        User_modLabel.Name = "User_modLabel"
-        User_modLabel.Size = New System.Drawing.Size(106, 16)
-        User_modLabel.TabIndex = 0
-        User_modLabel.Text = "Usuario Modificó:"
+        Me.User_modLabel.AutoSize = True
+        Me.User_modLabel.Location = New System.Drawing.Point(608, 23)
+        Me.User_modLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.User_modLabel.Name = "User_modLabel"
+        Me.User_modLabel.Size = New System.Drawing.Size(106, 16)
+        Me.User_modLabel.TabIndex = 0
+        Me.User_modLabel.Text = "Usuario Modificó:"
         '
         'User_agrLabel
         '
-        User_agrLabel.AutoSize = True
-        User_agrLabel.Location = New System.Drawing.Point(75, 27)
-        User_agrLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        User_agrLabel.Name = "User_agrLabel"
-        User_agrLabel.Size = New System.Drawing.Size(100, 16)
-        User_agrLabel.TabIndex = 2
-        User_agrLabel.Text = "Usuario Agregó:"
+        Me.User_agrLabel.AutoSize = True
+        Me.User_agrLabel.Location = New System.Drawing.Point(75, 27)
+        Me.User_agrLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.User_agrLabel.Name = "User_agrLabel"
+        Me.User_agrLabel.Size = New System.Drawing.Size(100, 16)
+        Me.User_agrLabel.TabIndex = 2
+        Me.User_agrLabel.Text = "Usuario Agregó:"
         '
         'Fec_modLabel
         '
-        Fec_modLabel.AutoSize = True
-        Fec_modLabel.Location = New System.Drawing.Point(825, 23)
-        Fec_modLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Fec_modLabel.Name = "Fec_modLabel"
-        Fec_modLabel.Size = New System.Drawing.Size(97, 16)
-        Fec_modLabel.TabIndex = 1
-        Fec_modLabel.Text = "Fecha Modificó:"
+        Me.Fec_modLabel.AutoSize = True
+        Me.Fec_modLabel.Location = New System.Drawing.Point(825, 23)
+        Me.Fec_modLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Fec_modLabel.Name = "Fec_modLabel"
+        Me.Fec_modLabel.Size = New System.Drawing.Size(97, 16)
+        Me.Fec_modLabel.TabIndex = 1
+        Me.Fec_modLabel.Text = "Fecha Modificó:"
         '
         'Fec_agrLabel
         '
-        Fec_agrLabel.AutoSize = True
-        Fec_agrLabel.Location = New System.Drawing.Point(292, 27)
-        Fec_agrLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Fec_agrLabel.Name = "Fec_agrLabel"
-        Fec_agrLabel.Size = New System.Drawing.Size(91, 16)
-        Fec_agrLabel.TabIndex = 3
-        Fec_agrLabel.Text = "Fecha Agregó:"
+        Me.Fec_agrLabel.AutoSize = True
+        Me.Fec_agrLabel.Location = New System.Drawing.Point(292, 27)
+        Me.Fec_agrLabel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Fec_agrLabel.Name = "Fec_agrLabel"
+        Me.Fec_agrLabel.Size = New System.Drawing.Size(91, 16)
+        Me.Fec_agrLabel.TabIndex = 3
+        Me.Fec_agrLabel.Text = "Fecha Agregó:"
         '
         'Label9
         '
-        Label9.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label9.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label9.AutoSize = True
-        Label9.Location = New System.Drawing.Point(24, 229)
-        Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label9.Name = "Label9"
-        Label9.Size = New System.Drawing.Size(60, 16)
-        Label9.TabIndex = 6
-        Label9.Text = "Hora Fin:"
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(24, 229)
+        Me.Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(60, 16)
+        Me.Label9.TabIndex = 6
+        Me.Label9.Text = "Hora Fin:"
         '
         'Label6
         '
-        Label6.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label6.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(24, 130)
-        Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label6.Name = "Label6"
-        Label6.Size = New System.Drawing.Size(71, 16)
-        Label6.TabIndex = 0
-        Label6.Text = "Ejecutable:"
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(24, 130)
+        Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(71, 16)
+        Me.Label6.TabIndex = 0
+        Me.Label6.Text = "Ejecutable:"
         '
         'Label5
         '
-        Label5.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label5.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label5.AutoSize = True
-        Label5.Location = New System.Drawing.Point(24, 165)
-        Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label5.Name = "Label5"
-        Label5.Size = New System.Drawing.Size(65, 16)
-        Label5.TabIndex = 2
-        Label5.Text = "End Point:"
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(24, 165)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(65, 16)
+        Me.Label5.TabIndex = 2
+        Me.Label5.Text = "End Point:"
         '
         'Label4
         '
-        Label4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(24, 260)
-        Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(98, 16)
-        Label4.TabIndex = 8
-        Label4.Text = "Frecuencia Min:"
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(24, 260)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(98, 16)
+        Me.Label4.TabIndex = 8
+        Me.Label4.Text = "Frecuencia Min:"
         '
         'Label3
         '
-        Label3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(24, 197)
-        Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(73, 16)
-        Label3.TabIndex = 4
-        Label3.Text = "Hora Inicio:"
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(24, 197)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(73, 16)
+        Me.Label3.TabIndex = 4
+        Me.Label3.Text = "Hora Inicio:"
         '
         'Label31
         '
-        Label31.AutoSize = True
-        Label31.Location = New System.Drawing.Point(24, 54)
-        Label31.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label31.Name = "Label31"
-        Label31.Size = New System.Drawing.Size(30, 16)
-        Label31.TabIndex = 49
-        Label31.Text = "Dia:"
+        Me.Label31.AutoSize = True
+        Me.Label31.Location = New System.Drawing.Point(24, 54)
+        Me.Label31.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label31.Name = "Label31"
+        Me.Label31.Size = New System.Drawing.Size(30, 16)
+        Me.Label31.TabIndex = 49
+        Me.Label31.Text = "Dia:"
         '
         'Label32
         '
-        Label32.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label32.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label32.AutoSize = True
-        Label32.Location = New System.Drawing.Point(24, 96)
-        Label32.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label32.Name = "Label32"
-        Label32.Size = New System.Drawing.Size(63, 16)
-        Label32.TabIndex = 52
-        Label32.Text = "Interface:"
+        Me.Label32.AutoSize = True
+        Me.Label32.Location = New System.Drawing.Point(24, 96)
+        Me.Label32.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label32.Name = "Label32"
+        Me.Label32.Size = New System.Drawing.Size(63, 16)
+        Me.Label32.TabIndex = 52
+        Me.Label32.Text = "Interface:"
         '
         'Label33
         '
-        Label33.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label33.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label33.AutoSize = True
-        Label33.Location = New System.Drawing.Point(24, 295)
-        Label33.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label33.Name = "Label33"
-        Label33.Size = New System.Drawing.Size(46, 16)
-        Label33.TabIndex = 54
-        Label33.Text = "Activo:"
+        Me.Label33.AutoSize = True
+        Me.Label33.Location = New System.Drawing.Point(24, 295)
+        Me.Label33.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label33.Name = "Label33"
+        Me.Label33.Size = New System.Drawing.Size(46, 16)
+        Me.Label33.TabIndex = 54
+        Me.Label33.Text = "Activo:"
         '
         'IdEmpresaLabel
         '
@@ -651,12 +638,12 @@ Partial Class frmConfiguracionHorarios
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 4
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1096, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1183, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'RibbonPage1
@@ -671,17 +658,17 @@ Partial Class frmConfiguracionHorarios
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 801)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 847)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1096, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1183, 30)
         '
         'User_modTextEdit
         '
         Me.User_modTextEdit.Enabled = False
         Me.User_modTextEdit.Location = New System.Drawing.Point(611, 42)
-        Me.User_modTextEdit.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.User_modTextEdit.Margin = New System.Windows.Forms.Padding(4)
         Me.User_modTextEdit.Name = "User_modTextEdit"
         Me.User_modTextEdit.Size = New System.Drawing.Size(205, 22)
         Me.User_modTextEdit.TabIndex = 4
@@ -690,7 +677,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.User_agrTextEdit.Enabled = False
         Me.User_agrTextEdit.Location = New System.Drawing.Point(78, 47)
-        Me.User_agrTextEdit.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.User_agrTextEdit.Margin = New System.Windows.Forms.Padding(4)
         Me.User_agrTextEdit.Name = "User_agrTextEdit"
         Me.User_agrTextEdit.Size = New System.Drawing.Size(205, 22)
         Me.User_agrTextEdit.TabIndex = 6
@@ -699,7 +686,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.Fec_modTextEdit.Enabled = False
         Me.Fec_modTextEdit.Location = New System.Drawing.Point(824, 42)
-        Me.Fec_modTextEdit.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Fec_modTextEdit.Margin = New System.Windows.Forms.Padding(4)
         Me.Fec_modTextEdit.Name = "Fec_modTextEdit"
         Me.Fec_modTextEdit.Size = New System.Drawing.Size(205, 22)
         Me.Fec_modTextEdit.TabIndex = 5
@@ -708,7 +695,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.Fec_agrTextEdit.Enabled = False
         Me.Fec_agrTextEdit.Location = New System.Drawing.Point(292, 47)
-        Me.Fec_agrTextEdit.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Fec_agrTextEdit.Margin = New System.Windows.Forms.Padding(4)
         Me.Fec_agrTextEdit.Name = "Fec_agrTextEdit"
         Me.Fec_agrTextEdit.Size = New System.Drawing.Size(205, 22)
         Me.Fec_agrTextEdit.TabIndex = 7
@@ -717,19 +704,19 @@ Partial Class frmConfiguracionHorarios
         '
         Me.XtraTabControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.XtraTabControl.Location = New System.Drawing.Point(0, 193)
-        Me.XtraTabControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.XtraTabControl.Margin = New System.Windows.Forms.Padding(4)
         Me.XtraTabControl.Name = "XtraTabControl"
         Me.XtraTabControl.SelectedTabPage = Me.XtraTabPage1
-        Me.XtraTabControl.Size = New System.Drawing.Size(1096, 582)
+        Me.XtraTabControl.Size = New System.Drawing.Size(1183, 590)
         Me.XtraTabControl.TabIndex = 0
         Me.XtraTabControl.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2, Me.XtraTabPage3, Me.XtraTabPage4})
         '
         'XtraTabPage1
         '
         Me.XtraTabPage1.Controls.Add(Me.pnlEncabezado)
-        Me.XtraTabPage1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.XtraTabPage1.Margin = New System.Windows.Forms.Padding(4)
         Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(1506, 589)
+        Me.XtraTabPage1.Size = New System.Drawing.Size(1473, 514)
         Me.XtraTabPage1.Text = "Configuración"
         '
         'pnlEncabezado
@@ -807,16 +794,16 @@ Partial Class frmConfiguracionHorarios
         Me.pnlEncabezado.Controls.Add(Me.cmbBodega)
         Me.pnlEncabezado.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlEncabezado.Location = New System.Drawing.Point(0, 0)
-        Me.pnlEncabezado.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.pnlEncabezado.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlEncabezado.Name = "pnlEncabezado"
-        Me.pnlEncabezado.Size = New System.Drawing.Size(1506, 589)
+        Me.pnlEncabezado.Size = New System.Drawing.Size(1473, 514)
         Me.pnlEncabezado.TabIndex = 0
         '
         'txtCodigoBodegaProrrateo1
         '
         Me.txtCodigoBodegaProrrateo1.EditValue = ""
         Me.txtCodigoBodegaProrrateo1.Location = New System.Drawing.Point(300, 519)
-        Me.txtCodigoBodegaProrrateo1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtCodigoBodegaProrrateo1.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCodigoBodegaProrrateo1.MenuManager = Me.RibbonControl
         Me.txtCodigoBodegaProrrateo1.Name = "txtCodigoBodegaProrrateo1"
         Me.txtCodigoBodegaProrrateo1.Properties.MaxLength = 256
@@ -828,7 +815,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtCodigoBodegaProrrateo.EditValue = ""
         Me.txtCodigoBodegaProrrateo.Location = New System.Drawing.Point(300, 490)
-        Me.txtCodigoBodegaProrrateo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtCodigoBodegaProrrateo.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCodigoBodegaProrrateo.MenuManager = Me.RibbonControl
         Me.txtCodigoBodegaProrrateo.Name = "txtCodigoBodegaProrrateo"
         Me.txtCodigoBodegaProrrateo.Properties.MaxLength = 256
@@ -840,7 +827,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtCodigoBodegaFacturacion.EditValue = ""
         Me.txtCodigoBodegaFacturacion.Location = New System.Drawing.Point(300, 460)
-        Me.txtCodigoBodegaFacturacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtCodigoBodegaFacturacion.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCodigoBodegaFacturacion.MenuManager = Me.RibbonControl
         Me.txtCodigoBodegaFacturacion.Name = "txtCodigoBodegaFacturacion"
         Me.txtCodigoBodegaFacturacion.Properties.MaxLength = 256
@@ -851,7 +838,7 @@ Partial Class frmConfiguracionHorarios
         'chkExcluirRececpionPicking
         '
         Me.chkExcluirRececpionPicking.Location = New System.Drawing.Point(1122, 420)
-        Me.chkExcluirRececpionPicking.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkExcluirRececpionPicking.Margin = New System.Windows.Forms.Padding(4)
         Me.chkExcluirRececpionPicking.MenuManager = Me.RibbonControl
         Me.chkExcluirRececpionPicking.Name = "chkExcluirRececpionPicking"
         Me.chkExcluirRececpionPicking.Properties.Caption = "Excluir recepción de picking"
@@ -862,7 +849,7 @@ Partial Class frmConfiguracionHorarios
         'chkValidaSoloCodigo
         '
         Me.chkValidaSoloCodigo.Location = New System.Drawing.Point(1122, 386)
-        Me.chkValidaSoloCodigo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkValidaSoloCodigo.Margin = New System.Windows.Forms.Padding(4)
         Me.chkValidaSoloCodigo.MenuManager = Me.RibbonControl
         Me.chkValidaSoloCodigo.Name = "chkValidaSoloCodigo"
         Me.chkValidaSoloCodigo.Properties.Caption = "Valida sólo código"
@@ -873,7 +860,7 @@ Partial Class frmConfiguracionHorarios
         'chkRechazarBonificacionIncompleta
         '
         Me.chkRechazarBonificacionIncompleta.Location = New System.Drawing.Point(1122, 354)
-        Me.chkRechazarBonificacionIncompleta.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkRechazarBonificacionIncompleta.Margin = New System.Windows.Forms.Padding(4)
         Me.chkRechazarBonificacionIncompleta.MenuManager = Me.RibbonControl
         Me.chkRechazarBonificacionIncompleta.Name = "chkRechazarBonificacionIncompleta"
         Me.chkRechazarBonificacionIncompleta.Properties.Caption = "Rechazar bonificación incompleta"
@@ -884,7 +871,7 @@ Partial Class frmConfiguracionHorarios
         'chkInferirBonificacionPedidoSAP
         '
         Me.chkInferirBonificacionPedidoSAP.Location = New System.Drawing.Point(1122, 321)
-        Me.chkInferirBonificacionPedidoSAP.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkInferirBonificacionPedidoSAP.Margin = New System.Windows.Forms.Padding(4)
         Me.chkInferirBonificacionPedidoSAP.MenuManager = Me.RibbonControl
         Me.chkInferirBonificacionPedidoSAP.Name = "chkInferirBonificacionPedidoSAP"
         Me.chkInferirBonificacionPedidoSAP.Properties.Caption = "Inferir bonificación pedido SAP"
@@ -904,7 +891,7 @@ Partial Class frmConfiguracionHorarios
         'cmbIndiceRotacion
         '
         Me.cmbIndiceRotacion.Location = New System.Drawing.Point(981, 50)
-        Me.cmbIndiceRotacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbIndiceRotacion.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbIndiceRotacion.MenuManager = Me.RibbonControl
         Me.cmbIndiceRotacion.Name = "cmbIndiceRotacion"
         Me.cmbIndiceRotacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -930,7 +917,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbIdEstadoProductoNC.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbIdEstadoProductoNC.ForeColor = System.Drawing.Color.Navy
         Me.cmbIdEstadoProductoNC.Location = New System.Drawing.Point(300, 207)
-        Me.cmbIdEstadoProductoNC.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbIdEstadoProductoNC.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbIdEstadoProductoNC.Name = "cmbIdEstadoProductoNC"
         Me.cmbIdEstadoProductoNC.Size = New System.Drawing.Size(431, 25)
         Me.cmbIdEstadoProductoNC.TabIndex = 59
@@ -951,7 +938,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtLoteDefectoEntradaNC.EditValue = ""
         Me.txtLoteDefectoEntradaNC.Location = New System.Drawing.Point(300, 400)
-        Me.txtLoteDefectoEntradaNC.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtLoteDefectoEntradaNC.Margin = New System.Windows.Forms.Padding(4)
         Me.txtLoteDefectoEntradaNC.MenuManager = Me.RibbonControl
         Me.txtLoteDefectoEntradaNC.Name = "txtLoteDefectoEntradaNC"
         Me.txtLoteDefectoEntradaNC.Properties.MaxLength = 256
@@ -963,7 +950,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtCodigoBodegaERPNC.EditValue = ""
         Me.txtCodigoBodegaERPNC.Location = New System.Drawing.Point(300, 370)
-        Me.txtCodigoBodegaERPNC.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtCodigoBodegaERPNC.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCodigoBodegaERPNC.MenuManager = Me.RibbonControl
         Me.txtCodigoBodegaERPNC.Name = "txtCodigoBodegaERPNC"
         Me.txtCodigoBodegaERPNC.Properties.MaxLength = 256
@@ -974,7 +961,7 @@ Partial Class frmConfiguracionHorarios
         'chkConsiderar_Paletizado_En_Reabasto
         '
         Me.chkConsiderar_Paletizado_En_Reabasto.Location = New System.Drawing.Point(1122, 289)
-        Me.chkConsiderar_Paletizado_En_Reabasto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkConsiderar_Paletizado_En_Reabasto.Margin = New System.Windows.Forms.Padding(4)
         Me.chkConsiderar_Paletizado_En_Reabasto.MenuManager = Me.RibbonControl
         Me.chkConsiderar_Paletizado_En_Reabasto.Name = "chkConsiderar_Paletizado_En_Reabasto"
         Me.chkConsiderar_Paletizado_En_Reabasto.Properties.Caption = "Considerar paletizado en reabasto"
@@ -985,7 +972,7 @@ Partial Class frmConfiguracionHorarios
         'chkExcluirUbicacionesReabasto
         '
         Me.chkExcluirUbicacionesReabasto.Location = New System.Drawing.Point(1122, 255)
-        Me.chkExcluirUbicacionesReabasto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkExcluirUbicacionesReabasto.Margin = New System.Windows.Forms.Padding(4)
         Me.chkExcluirUbicacionesReabasto.MenuManager = Me.RibbonControl
         Me.chkExcluirUbicacionesReabasto.Name = "chkExcluirUbicacionesReabasto"
         Me.chkExcluirUbicacionesReabasto.Properties.Caption = "Excluir ubicaciones de reabasto"
@@ -996,7 +983,7 @@ Partial Class frmConfiguracionHorarios
         'chkRecepcionGeneraHistorico
         '
         Me.chkRecepcionGeneraHistorico.Location = New System.Drawing.Point(1122, 219)
-        Me.chkRecepcionGeneraHistorico.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkRecepcionGeneraHistorico.Margin = New System.Windows.Forms.Padding(4)
         Me.chkRecepcionGeneraHistorico.MenuManager = Me.RibbonControl
         Me.chkRecepcionGeneraHistorico.Name = "chkRecepcionGeneraHistorico"
         Me.chkRecepcionGeneraHistorico.Properties.Caption = "Recepción genera histórico"
@@ -1007,7 +994,7 @@ Partial Class frmConfiguracionHorarios
         'chkmantener_zona_picking_clavaud
         '
         Me.chkmantener_zona_picking_clavaud.Location = New System.Drawing.Point(752, 370)
-        Me.chkmantener_zona_picking_clavaud.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkmantener_zona_picking_clavaud.Margin = New System.Windows.Forms.Padding(4)
         Me.chkmantener_zona_picking_clavaud.MenuManager = Me.RibbonControl
         Me.chkmantener_zona_picking_clavaud.Name = "chkmantener_zona_picking_clavaud"
         Me.chkmantener_zona_picking_clavaud.Properties.Caption = "Conservar Zona de Picking (Modelo Clavaud)"
@@ -1018,7 +1005,7 @@ Partial Class frmConfiguracionHorarios
         'cmbTipoRotacion
         '
         Me.cmbTipoRotacion.Location = New System.Drawing.Point(1284, 44)
-        Me.cmbTipoRotacion.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbTipoRotacion.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbTipoRotacion.MenuManager = Me.RibbonControl
         Me.cmbTipoRotacion.Name = "cmbTipoRotacion"
         Me.cmbTipoRotacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1041,7 +1028,7 @@ Partial Class frmConfiguracionHorarios
         'chkEjecutarEnDespachoAuotmaticamente
         '
         Me.chkEjecutarEnDespachoAuotmaticamente.Location = New System.Drawing.Point(752, 338)
-        Me.chkEjecutarEnDespachoAuotmaticamente.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkEjecutarEnDespachoAuotmaticamente.Margin = New System.Windows.Forms.Padding(4)
         Me.chkEjecutarEnDespachoAuotmaticamente.MenuManager = Me.RibbonControl
         Me.chkEjecutarEnDespachoAuotmaticamente.Name = "chkEjecutarEnDespachoAuotmaticamente"
         Me.chkEjecutarEnDespachoAuotmaticamente.Properties.Caption = "Ejecutar en despacho automáticamente"
@@ -1055,7 +1042,7 @@ Partial Class frmConfiguracionHorarios
         'chkExplosionAutomaticaInterface
         '
         Me.chkExplosionAutomaticaInterface.Location = New System.Drawing.Point(1122, 178)
-        Me.chkExplosionAutomaticaInterface.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkExplosionAutomaticaInterface.Margin = New System.Windows.Forms.Padding(4)
         Me.chkExplosionAutomaticaInterface.MenuManager = Me.RibbonControl
         Me.chkExplosionAutomaticaInterface.Name = "chkExplosionAutomaticaInterface"
         Me.chkExplosionAutomaticaInterface.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 7.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1071,7 +1058,7 @@ Partial Class frmConfiguracionHorarios
         'chkImplosionAutomaticaEnInterface
         '
         Me.chkImplosionAutomaticaEnInterface.Location = New System.Drawing.Point(1122, 142)
-        Me.chkImplosionAutomaticaEnInterface.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkImplosionAutomaticaEnInterface.Margin = New System.Windows.Forms.Padding(4)
         Me.chkImplosionAutomaticaEnInterface.MenuManager = Me.RibbonControl
         Me.chkImplosionAutomaticaEnInterface.Name = "chkImplosionAutomaticaEnInterface"
         Me.chkImplosionAutomaticaEnInterface.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 7.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1087,7 +1074,7 @@ Partial Class frmConfiguracionHorarios
         'chkpush_ingreso_nav_desde_hh
         '
         Me.chkpush_ingreso_nav_desde_hh.Location = New System.Drawing.Point(752, 305)
-        Me.chkpush_ingreso_nav_desde_hh.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkpush_ingreso_nav_desde_hh.Margin = New System.Windows.Forms.Padding(4)
         Me.chkpush_ingreso_nav_desde_hh.MenuManager = Me.RibbonControl
         Me.chkpush_ingreso_nav_desde_hh.Name = "chkpush_ingreso_nav_desde_hh"
         Me.chkpush_ingreso_nav_desde_hh.Properties.Caption = "Push Ingreso NAV Desde HH"
@@ -1098,7 +1085,7 @@ Partial Class frmConfiguracionHorarios
         'chkCrearRecTransfNAV
         '
         Me.chkCrearRecTransfNAV.Location = New System.Drawing.Point(752, 272)
-        Me.chkCrearRecTransfNAV.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkCrearRecTransfNAV.Margin = New System.Windows.Forms.Padding(4)
         Me.chkCrearRecTransfNAV.MenuManager = Me.RibbonControl
         Me.chkCrearRecTransfNAV.Name = "chkCrearRecTransfNAV"
         Me.chkCrearRecTransfNAV.Properties.Caption = "Crear recepcion_De_Transferencia_NAV"
@@ -1109,7 +1096,7 @@ Partial Class frmConfiguracionHorarios
         'chkCrearRecCompraNAV
         '
         Me.chkCrearRecCompraNAV.Location = New System.Drawing.Point(752, 240)
-        Me.chkCrearRecCompraNAV.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkCrearRecCompraNAV.Margin = New System.Windows.Forms.Padding(4)
         Me.chkCrearRecCompraNAV.MenuManager = Me.RibbonControl
         Me.chkCrearRecCompraNAV.Name = "chkCrearRecCompraNAV"
         Me.chkCrearRecCompraNAV.Properties.Caption = "Crear recepción automática para documentos de ingreso"
@@ -1120,7 +1107,7 @@ Partial Class frmConfiguracionHorarios
         'cmbEtiqueta
         '
         Me.cmbEtiqueta.Location = New System.Drawing.Point(1284, 14)
-        Me.cmbEtiqueta.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbEtiqueta.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbEtiqueta.MenuManager = Me.RibbonControl
         Me.cmbEtiqueta.Name = "cmbEtiqueta"
         Me.cmbEtiqueta.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1144,7 +1131,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtIdAcuerdoEnc.EditValue = ""
         Me.txtIdAcuerdoEnc.Location = New System.Drawing.Point(1284, 74)
-        Me.txtIdAcuerdoEnc.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtIdAcuerdoEnc.Margin = New System.Windows.Forms.Padding(4)
         Me.txtIdAcuerdoEnc.MenuManager = Me.RibbonControl
         Me.txtIdAcuerdoEnc.Name = "txtIdAcuerdoEnc"
         Me.txtIdAcuerdoEnc.Properties.MaxLength = 50
@@ -1155,7 +1142,7 @@ Partial Class frmConfiguracionHorarios
         'chkControlPeso
         '
         Me.chkControlPeso.Location = New System.Drawing.Point(752, 208)
-        Me.chkControlPeso.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkControlPeso.Margin = New System.Windows.Forms.Padding(4)
         Me.chkControlPeso.MenuManager = Me.RibbonControl
         Me.chkControlPeso.Name = "chkControlPeso"
         Me.chkControlPeso.Properties.Caption = "Control peso"
@@ -1167,7 +1154,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtCodigoProvProd.EditValue = ""
         Me.txtCodigoProvProd.Location = New System.Drawing.Point(981, 80)
-        Me.txtCodigoProvProd.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtCodigoProvProd.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCodigoProvProd.MenuManager = Me.RibbonControl
         Me.txtCodigoProvProd.Name = "txtCodigoProvProd"
         Me.txtCodigoProvProd.Properties.MaxLength = 50
@@ -1178,7 +1165,7 @@ Partial Class frmConfiguracionHorarios
         'chkGenerarRecAutoBD
         '
         Me.chkGenerarRecAutoBD.Location = New System.Drawing.Point(752, 175)
-        Me.chkGenerarRecAutoBD.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkGenerarRecAutoBD.Margin = New System.Windows.Forms.Padding(4)
         Me.chkGenerarRecAutoBD.MenuManager = Me.RibbonControl
         Me.chkGenerarRecAutoBD.Name = "chkGenerarRecAutoBD"
         Me.chkGenerarRecAutoBD.Properties.Caption = "Generar recepcion auto Bodega Destino"
@@ -1189,7 +1176,7 @@ Partial Class frmConfiguracionHorarios
         'chkGenerarPedidoIngresoBD
         '
         Me.chkGenerarPedidoIngresoBD.Location = New System.Drawing.Point(752, 143)
-        Me.chkGenerarPedidoIngresoBD.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkGenerarPedidoIngresoBD.Margin = New System.Windows.Forms.Padding(4)
         Me.chkGenerarPedidoIngresoBD.MenuManager = Me.RibbonControl
         Me.chkGenerarPedidoIngresoBD.Name = "chkGenerarPedidoIngresoBD"
         Me.chkGenerarPedidoIngresoBD.Properties.Caption = "Generar pedido ingreso Bodega Destino"
@@ -1201,7 +1188,7 @@ Partial Class frmConfiguracionHorarios
         'chkControlLote
         '
         Me.chkControlLote.Location = New System.Drawing.Point(752, 402)
-        Me.chkControlLote.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkControlLote.Margin = New System.Windows.Forms.Padding(4)
         Me.chkControlLote.MenuManager = Me.RibbonControl
         Me.chkControlLote.Name = "chkControlLote"
         Me.chkControlLote.Properties.Caption = "Control por Lote"
@@ -1212,7 +1199,7 @@ Partial Class frmConfiguracionHorarios
         'txtArchivo
         '
         Me.txtArchivo.Location = New System.Drawing.Point(300, 430)
-        Me.txtArchivo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtArchivo.Margin = New System.Windows.Forms.Padding(4)
         Me.txtArchivo.Name = "txtArchivo"
         Me.txtArchivo.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Ellipsis, "", -1, True, True, True, EditorButtonImageOptions2, New DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), SerializableAppearanceObject5, SerializableAppearanceObject6, SerializableAppearanceObject7, SerializableAppearanceObject8, "", Nothing, Nothing, DevExpress.Utils.ToolTipAnchor.[Default])})
         Me.txtArchivo.Properties.ButtonsStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat
@@ -1223,7 +1210,7 @@ Partial Class frmConfiguracionHorarios
         'chkControlFechaVencimiento
         '
         Me.chkControlFechaVencimiento.Location = New System.Drawing.Point(752, 434)
-        Me.chkControlFechaVencimiento.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkControlFechaVencimiento.Margin = New System.Windows.Forms.Padding(4)
         Me.chkControlFechaVencimiento.MenuManager = Me.RibbonControl
         Me.chkControlFechaVencimiento.Name = "chkControlFechaVencimiento"
         Me.chkControlFechaVencimiento.Properties.Caption = "Controlar Vencimientos"
@@ -1245,7 +1232,7 @@ Partial Class frmConfiguracionHorarios
         'chkGeneraLP
         '
         Me.chkGeneraLP.Location = New System.Drawing.Point(752, 466)
-        Me.chkGeneraLP.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkGeneraLP.Margin = New System.Windows.Forms.Padding(4)
         Me.chkGeneraLP.MenuManager = Me.RibbonControl
         Me.chkGeneraLP.Name = "chkGeneraLP"
         Me.chkGeneraLP.Properties.Caption = "Generar Licencia (Automáticamente)"
@@ -1259,7 +1246,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbClasificación.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbClasificación.ForeColor = System.Drawing.Color.Navy
         Me.cmbClasificación.Location = New System.Drawing.Point(300, 271)
-        Me.cmbClasificación.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbClasificación.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbClasificación.Name = "cmbClasificación"
         Me.cmbClasificación.Size = New System.Drawing.Size(431, 25)
         Me.cmbClasificación.TabIndex = 19
@@ -1271,7 +1258,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbTipoProducto.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbTipoProducto.ForeColor = System.Drawing.Color.Navy
         Me.cmbTipoProducto.Location = New System.Drawing.Point(300, 337)
-        Me.cmbTipoProducto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbTipoProducto.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbTipoProducto.Name = "cmbTipoProducto"
         Me.cmbTipoProducto.Size = New System.Drawing.Size(431, 25)
         Me.cmbTipoProducto.TabIndex = 17
@@ -1283,7 +1270,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbMarca.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbMarca.ForeColor = System.Drawing.Color.Navy
         Me.cmbMarca.Location = New System.Drawing.Point(300, 304)
-        Me.cmbMarca.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbMarca.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbMarca.Name = "cmbMarca"
         Me.cmbMarca.Size = New System.Drawing.Size(431, 25)
         Me.cmbMarca.TabIndex = 15
@@ -1295,7 +1282,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbFamilia.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbFamilia.ForeColor = System.Drawing.Color.Navy
         Me.cmbFamilia.Location = New System.Drawing.Point(300, 238)
-        Me.cmbFamilia.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbFamilia.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbFamilia.Name = "cmbFamilia"
         Me.cmbFamilia.Size = New System.Drawing.Size(431, 25)
         Me.cmbFamilia.TabIndex = 13
@@ -1307,7 +1294,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbProductoEstado.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbProductoEstado.ForeColor = System.Drawing.Color.Navy
         Me.cmbProductoEstado.Location = New System.Drawing.Point(300, 175)
-        Me.cmbProductoEstado.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbProductoEstado.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProductoEstado.Name = "cmbProductoEstado"
         Me.cmbProductoEstado.Size = New System.Drawing.Size(431, 25)
         Me.cmbProductoEstado.TabIndex = 2
@@ -1319,7 +1306,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbUsuario.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbUsuario.ForeColor = System.Drawing.Color.Navy
         Me.cmbUsuario.Location = New System.Drawing.Point(300, 142)
-        Me.cmbUsuario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbUsuario.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbUsuario.Name = "cmbUsuario"
         Me.cmbUsuario.Size = New System.Drawing.Size(431, 25)
         Me.cmbUsuario.TabIndex = 9
@@ -1331,7 +1318,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbPropietario.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbPropietario.ForeColor = System.Drawing.Color.Navy
         Me.cmbPropietario.Location = New System.Drawing.Point(300, 110)
-        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Size = New System.Drawing.Size(431, 25)
         Me.cmbPropietario.TabIndex = 7
@@ -1341,7 +1328,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtNombre.EditValue = ""
         Me.txtNombre.Location = New System.Drawing.Point(300, 14)
-        Me.txtNombre.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtNombre.Margin = New System.Windows.Forms.Padding(4)
         Me.txtNombre.MenuManager = Me.RibbonControl
         Me.txtNombre.Name = "txtNombre"
         Me.txtNombre.Properties.MaxLength = 256
@@ -1355,7 +1342,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbEmpresa.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbEmpresa.ForeColor = System.Drawing.Color.Navy
         Me.cmbEmpresa.Location = New System.Drawing.Point(300, 43)
-        Me.cmbEmpresa.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbEmpresa.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbEmpresa.Name = "cmbEmpresa"
         Me.cmbEmpresa.Size = New System.Drawing.Size(431, 25)
         Me.cmbEmpresa.TabIndex = 3
@@ -1367,7 +1354,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbBodega.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbBodega.ForeColor = System.Drawing.Color.Navy
         Me.cmbBodega.Location = New System.Drawing.Point(300, 76)
-        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Size = New System.Drawing.Size(431, 25)
         Me.cmbBodega.TabIndex = 5
@@ -1379,20 +1366,20 @@ Partial Class frmConfiguracionHorarios
         Me.XtraTabPage2.Controls.Add(Me.pnlEntidades)
         Me.XtraTabPage2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.XtraTabPage2.Name = "XtraTabPage2"
-        Me.XtraTabPage2.Size = New System.Drawing.Size(1094, 552)
+        Me.XtraTabPage2.Size = New System.Drawing.Size(1181, 560)
         Me.XtraTabPage2.Text = "programación semanal"
         '
         'Dgrid
         '
         Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.Dgrid.Location = New System.Drawing.Point(0, 337)
+        Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.Dgrid.Location = New System.Drawing.Point(0, 423)
         Me.Dgrid.MainView = Me.GridView1
-        Me.Dgrid.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.Dgrid.MenuManager = Me.RibbonControl
         Me.Dgrid.Name = "Dgrid"
-        Me.Dgrid.Size = New System.Drawing.Size(1094, 215)
+        Me.Dgrid.Size = New System.Drawing.Size(1476, 278)
         Me.Dgrid.TabIndex = 50
         Me.Dgrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -1406,9 +1393,9 @@ Partial Class frmConfiguracionHorarios
         '
         'pnlEntidades
         '
-        Me.pnlEntidades.Controls.Add(Label33)
+        Me.pnlEntidades.Controls.Add(Me.Label33)
         Me.pnlEntidades.Controls.Add(Me.chkActivo)
-        Me.pnlEntidades.Controls.Add(Label32)
+        Me.pnlEntidades.Controls.Add(Me.Label32)
         Me.pnlEntidades.Controls.Add(Me.cmbInterfaces)
         Me.pnlEntidades.Controls.Add(Me.cmbEntidades)
         Me.pnlEntidades.Controls.Add(Me.checBoxDomingo)
@@ -1418,23 +1405,23 @@ Partial Class frmConfiguracionHorarios
         Me.pnlEntidades.Controls.Add(Me.checBoxMiercoles)
         Me.pnlEntidades.Controls.Add(Me.checBoxMartes)
         Me.pnlEntidades.Controls.Add(Me.checBoxLunes)
-        Me.pnlEntidades.Controls.Add(Label31)
+        Me.pnlEntidades.Controls.Add(Me.Label31)
         Me.pnlEntidades.Controls.Add(Me.ToolStrip)
         Me.pnlEntidades.Controls.Add(Me.txtEntidad)
         Me.pnlEntidades.Controls.Add(Me.txtHoraFin)
-        Me.pnlEntidades.Controls.Add(Label9)
-        Me.pnlEntidades.Controls.Add(Label6)
+        Me.pnlEntidades.Controls.Add(Me.Label9)
+        Me.pnlEntidades.Controls.Add(Me.Label6)
         Me.pnlEntidades.Controls.Add(Me.txtFrecuencia)
         Me.pnlEntidades.Controls.Add(Me.txtEndpoint)
-        Me.pnlEntidades.Controls.Add(Label5)
-        Me.pnlEntidades.Controls.Add(Label4)
+        Me.pnlEntidades.Controls.Add(Me.Label5)
+        Me.pnlEntidades.Controls.Add(Me.Label4)
         Me.pnlEntidades.Controls.Add(Me.txtHoraInicio)
-        Me.pnlEntidades.Controls.Add(Label3)
+        Me.pnlEntidades.Controls.Add(Me.Label3)
         Me.pnlEntidades.Dock = System.Windows.Forms.DockStyle.Top
         Me.pnlEntidades.Location = New System.Drawing.Point(0, 0)
-        Me.pnlEntidades.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.pnlEntidades.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlEntidades.Name = "pnlEntidades"
-        Me.pnlEntidades.Size = New System.Drawing.Size(1094, 337)
+        Me.pnlEntidades.Size = New System.Drawing.Size(1476, 338)
         Me.pnlEntidades.TabIndex = 3
         '
         'chkActivo
@@ -1450,7 +1437,7 @@ Partial Class frmConfiguracionHorarios
         'cmbInterfaces
         '
         Me.cmbInterfaces.Location = New System.Drawing.Point(180, 94)
-        Me.cmbInterfaces.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbInterfaces.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbInterfaces.MenuManager = Me.RibbonControl
         Me.cmbInterfaces.Name = "cmbInterfaces"
         Me.cmbInterfaces.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1461,7 +1448,7 @@ Partial Class frmConfiguracionHorarios
         'cmbEntidades
         '
         Me.cmbEntidades.Location = New System.Drawing.Point(180, 128)
-        Me.cmbEntidades.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbEntidades.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbEntidades.MenuManager = Me.RibbonControl
         Me.cmbEntidades.Name = "cmbEntidades"
         Me.cmbEntidades.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1473,7 +1460,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxDomingo.AutoSize = True
         Me.checBoxDomingo.Location = New System.Drawing.Point(460, 53)
-        Me.checBoxDomingo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxDomingo.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxDomingo.Name = "checBoxDomingo"
         Me.checBoxDomingo.Size = New System.Drawing.Size(37, 20)
         Me.checBoxDomingo.TabIndex = 48
@@ -1485,7 +1472,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxSabado.AutoSize = True
         Me.checBoxSabado.Location = New System.Drawing.Point(410, 53)
-        Me.checBoxSabado.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxSabado.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxSabado.Name = "checBoxSabado"
         Me.checBoxSabado.Size = New System.Drawing.Size(37, 20)
         Me.checBoxSabado.TabIndex = 47
@@ -1497,7 +1484,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxViernes.AutoSize = True
         Me.checBoxViernes.Location = New System.Drawing.Point(364, 53)
-        Me.checBoxViernes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxViernes.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxViernes.Name = "checBoxViernes"
         Me.checBoxViernes.Size = New System.Drawing.Size(37, 20)
         Me.checBoxViernes.TabIndex = 46
@@ -1509,7 +1496,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxJueves.AutoSize = True
         Me.checBoxJueves.Location = New System.Drawing.Point(318, 53)
-        Me.checBoxJueves.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxJueves.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxJueves.Name = "checBoxJueves"
         Me.checBoxJueves.Size = New System.Drawing.Size(34, 20)
         Me.checBoxJueves.TabIndex = 45
@@ -1521,7 +1508,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxMiercoles.AutoSize = True
         Me.checBoxMiercoles.Location = New System.Drawing.Point(270, 53)
-        Me.checBoxMiercoles.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxMiercoles.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxMiercoles.Name = "checBoxMiercoles"
         Me.checBoxMiercoles.Size = New System.Drawing.Size(39, 20)
         Me.checBoxMiercoles.TabIndex = 44
@@ -1533,7 +1520,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxMartes.AutoSize = True
         Me.checBoxMartes.Location = New System.Drawing.Point(223, 53)
-        Me.checBoxMartes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxMartes.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxMartes.Name = "checBoxMartes"
         Me.checBoxMartes.Size = New System.Drawing.Size(39, 20)
         Me.checBoxMartes.TabIndex = 43
@@ -1545,7 +1532,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.checBoxLunes.AutoSize = True
         Me.checBoxLunes.Location = New System.Drawing.Point(180, 53)
-        Me.checBoxLunes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.checBoxLunes.Margin = New System.Windows.Forms.Padding(4)
         Me.checBoxLunes.Name = "checBoxLunes"
         Me.checBoxLunes.Size = New System.Drawing.Size(35, 20)
         Me.checBoxLunes.TabIndex = 42
@@ -1559,42 +1546,38 @@ Partial Class frmConfiguracionHorarios
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNuevo, Me.cmdAdd, Me.cmdActualizar, Me.cmdDelete})
         Me.ToolStrip.Location = New System.Drawing.Point(2, 2)
         Me.ToolStrip.Name = "ToolStrip"
-        Me.ToolStrip.Size = New System.Drawing.Size(1090, 27)
+        Me.ToolStrip.Size = New System.Drawing.Size(1472, 27)
         Me.ToolStrip.TabIndex = 41
         Me.ToolStrip.Text = "ToolStrip4"
         '
         'cmdNuevo
         '
-        Me.cmdNuevo.Image = CType(resources.GetObject("cmdNuevo.Image"), System.Drawing.Image)
         Me.cmdNuevo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNuevo.Name = "cmdNuevo"
-        Me.cmdNuevo.Size = New System.Drawing.Size(76, 24)
+        Me.cmdNuevo.Size = New System.Drawing.Size(56, 24)
         Me.cmdNuevo.Text = "Nuevo"
         '
         'cmdAdd
         '
         Me.cmdAdd.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdAdd.Image = CType(resources.GetObject("cmdAdd.Image"), System.Drawing.Image)
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(86, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(66, 24)
         Me.cmdAdd.Text = "Guardar"
         '
         'cmdActualizar
         '
-        Me.cmdActualizar.Image = CType(resources.GetObject("cmdActualizar.Image"), System.Drawing.Image)
         Me.cmdActualizar.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdActualizar.Name = "cmdActualizar"
-        Me.cmdActualizar.Size = New System.Drawing.Size(99, 24)
+        Me.cmdActualizar.Size = New System.Drawing.Size(79, 24)
         Me.cmdActualizar.Text = "Actualizar"
         '
         'cmdDelete
         '
         Me.cmdDelete.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
         Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDelete.Name = "cmdDelete"
-        Me.cmdDelete.Size = New System.Drawing.Size(102, 24)
+        Me.cmdDelete.Size = New System.Drawing.Size(82, 24)
         Me.cmdDelete.Text = "Desactivar"
         Me.cmdDelete.Visible = False
         '
@@ -1602,7 +1585,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtEntidad.EditValue = ""
         Me.txtEntidad.Location = New System.Drawing.Point(760, 85)
-        Me.txtEntidad.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtEntidad.Margin = New System.Windows.Forms.Padding(4)
         Me.txtEntidad.MenuManager = Me.RibbonControl
         Me.txtEntidad.Name = "txtEntidad"
         Me.txtEntidad.Size = New System.Drawing.Size(158, 22)
@@ -1613,7 +1596,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtHoraFin.EditValue = New Date(2017, 9, 8, 0, 0, 0, 0)
         Me.txtHoraFin.Location = New System.Drawing.Point(178, 226)
-        Me.txtHoraFin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtHoraFin.Margin = New System.Windows.Forms.Padding(4)
         Me.txtHoraFin.MenuManager = Me.RibbonControl
         Me.txtHoraFin.Name = "txtHoraFin"
         Me.txtHoraFin.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1623,7 +1606,7 @@ Partial Class frmConfiguracionHorarios
         'txtFrecuencia
         '
         Me.txtFrecuencia.Location = New System.Drawing.Point(178, 258)
-        Me.txtFrecuencia.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtFrecuencia.Margin = New System.Windows.Forms.Padding(4)
         Me.txtFrecuencia.Name = "txtFrecuencia"
         Me.txtFrecuencia.Size = New System.Drawing.Size(298, 23)
         Me.txtFrecuencia.TabIndex = 9
@@ -1632,7 +1615,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtEndpoint.EditValue = ""
         Me.txtEndpoint.Location = New System.Drawing.Point(178, 162)
-        Me.txtEndpoint.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtEndpoint.Margin = New System.Windows.Forms.Padding(4)
         Me.txtEndpoint.MenuManager = Me.RibbonControl
         Me.txtEndpoint.Name = "txtEndpoint"
         Me.txtEndpoint.Size = New System.Drawing.Size(298, 22)
@@ -1642,7 +1625,7 @@ Partial Class frmConfiguracionHorarios
         '
         Me.txtHoraInicio.EditValue = New Date(2017, 9, 8, 0, 0, 0, 0)
         Me.txtHoraInicio.Location = New System.Drawing.Point(178, 194)
-        Me.txtHoraInicio.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtHoraInicio.Margin = New System.Windows.Forms.Padding(4)
         Me.txtHoraInicio.MenuManager = Me.RibbonControl
         Me.txtHoraInicio.Name = "txtHoraInicio"
         Me.txtHoraInicio.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -1667,13 +1650,13 @@ Partial Class frmConfiguracionHorarios
         Me.XtraTabPage3.Controls.Add(Me.Label15)
         Me.XtraTabPage3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.XtraTabPage3.Name = "XtraTabPage3"
-        Me.XtraTabPage3.Size = New System.Drawing.Size(1506, 589)
+        Me.XtraTabPage3.Size = New System.Drawing.Size(1094, 552)
         Me.XtraTabPage3.Text = "Control de existencias"
         '
         'txtdias_vida_defecto_perecederos
         '
         Me.txtdias_vida_defecto_perecederos.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.txtdias_vida_defecto_perecederos.Location = New System.Drawing.Point(154, 143)
+        Me.txtdias_vida_defecto_perecederos.Location = New System.Drawing.Point(123, 114)
         Me.txtdias_vida_defecto_perecederos.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.txtdias_vida_defecto_perecederos.MenuManager = Me.RibbonControl
         Me.txtdias_vida_defecto_perecederos.Name = "txtdias_vida_defecto_perecederos"
@@ -1681,7 +1664,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtdias_vida_defecto_perecederos.Properties.IsFloatValue = False
         Me.txtdias_vida_defecto_perecederos.Properties.MaskSettings.Set("mask", "N00")
         Me.txtdias_vida_defecto_perecederos.Properties.MaxValue = New Decimal(New Integer() {365, 0, 0, 0})
-        Me.txtdias_vida_defecto_perecederos.Size = New System.Drawing.Size(69, 24)
+        Me.txtdias_vida_defecto_perecederos.Size = New System.Drawing.Size(55, 19)
         Me.txtdias_vida_defecto_perecederos.TabIndex = 52
         '
         'Label22
@@ -1696,12 +1679,12 @@ Partial Class frmConfiguracionHorarios
         '
         'chkConsiderar_Disponibilidad_Ubicacion_Reabasto
         '
-        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Location = New System.Drawing.Point(154, 127)
-        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Location = New System.Drawing.Point(123, 101)
+        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Margin = New System.Windows.Forms.Padding(4)
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.MenuManager = Me.RibbonControl
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Name = "chkConsiderar_Disponibilidad_Ubicacion_Reabasto"
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Properties.Caption = ""
-        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Size = New System.Drawing.Size(69, 24)
+        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Size = New System.Drawing.Size(55, 19)
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.TabIndex = 50
         '
         'lblConsiderar_Disponibilidad_Ubicacion_Reabasto
@@ -1717,7 +1700,7 @@ Partial Class frmConfiguracionHorarios
         'txtNivelMaximoExplosionAuto
         '
         Me.txtNivelMaximoExplosionAuto.EditValue = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.txtNivelMaximoExplosionAuto.Location = New System.Drawing.Point(154, 110)
+        Me.txtNivelMaximoExplosionAuto.Location = New System.Drawing.Point(123, 88)
         Me.txtNivelMaximoExplosionAuto.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.txtNivelMaximoExplosionAuto.MenuManager = Me.RibbonControl
         Me.txtNivelMaximoExplosionAuto.Name = "txtNivelMaximoExplosionAuto"
@@ -1725,7 +1708,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtNivelMaximoExplosionAuto.Properties.IsFloatValue = False
         Me.txtNivelMaximoExplosionAuto.Properties.MaskSettings.Set("mask", "N00")
         Me.txtNivelMaximoExplosionAuto.Properties.MaxValue = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.txtNivelMaximoExplosionAuto.Size = New System.Drawing.Size(69, 24)
+        Me.txtNivelMaximoExplosionAuto.Size = New System.Drawing.Size(55, 19)
         Me.txtNivelMaximoExplosionAuto.TabIndex = 48
         '
         'Label21
@@ -1740,12 +1723,12 @@ Partial Class frmConfiguracionHorarios
         '
         'chkExplosionAutomaticaUbicacionPicking
         '
-        Me.chkExplosionAutomaticaUbicacionPicking.Location = New System.Drawing.Point(154, 94)
-        Me.chkExplosionAutomaticaUbicacionPicking.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkExplosionAutomaticaUbicacionPicking.Location = New System.Drawing.Point(123, 75)
+        Me.chkExplosionAutomaticaUbicacionPicking.Margin = New System.Windows.Forms.Padding(4)
         Me.chkExplosionAutomaticaUbicacionPicking.MenuManager = Me.RibbonControl
         Me.chkExplosionAutomaticaUbicacionPicking.Name = "chkExplosionAutomaticaUbicacionPicking"
         Me.chkExplosionAutomaticaUbicacionPicking.Properties.Caption = ""
-        Me.chkExplosionAutomaticaUbicacionPicking.Size = New System.Drawing.Size(69, 24)
+        Me.chkExplosionAutomaticaUbicacionPicking.Size = New System.Drawing.Size(55, 19)
         Me.chkExplosionAutomaticaUbicacionPicking.TabIndex = 46
         '
         'lblexplosion_automatica_desde_ubicacion_picking
@@ -1761,7 +1744,7 @@ Partial Class frmConfiguracionHorarios
         'seConvertirDecUMB
         '
         Me.seConvertirDecUMB.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.seConvertirDecUMB.Location = New System.Drawing.Point(154, 71)
+        Me.seConvertirDecUMB.Location = New System.Drawing.Point(123, 56)
         Me.seConvertirDecUMB.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.seConvertirDecUMB.MenuManager = Me.RibbonControl
         Me.seConvertirDecUMB.Name = "seConvertirDecUMB"
@@ -1769,13 +1752,13 @@ Partial Class frmConfiguracionHorarios
         Me.seConvertirDecUMB.Properties.IsFloatValue = False
         Me.seConvertirDecUMB.Properties.Mask.EditMask = "N00"
         Me.seConvertirDecUMB.Properties.MaxValue = New Decimal(New Integer() {3, 0, 0, 0})
-        Me.seConvertirDecUMB.Size = New System.Drawing.Size(69, 24)
+        Me.seConvertirDecUMB.Size = New System.Drawing.Size(55, 19)
         Me.seConvertirDecUMB.TabIndex = 32
         '
         'seDespacharExiParc
         '
         Me.seDespacharExiParc.EditValue = New Decimal(New Integer() {0, 0, 0, 0})
-        Me.seDespacharExiParc.Location = New System.Drawing.Point(154, 53)
+        Me.seDespacharExiParc.Location = New System.Drawing.Point(123, 42)
         Me.seDespacharExiParc.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.seDespacharExiParc.MenuManager = Me.RibbonControl
         Me.seDespacharExiParc.Name = "seDespacharExiParc"
@@ -1783,7 +1766,7 @@ Partial Class frmConfiguracionHorarios
         Me.seDespacharExiParc.Properties.IsFloatValue = False
         Me.seDespacharExiParc.Properties.MaskSettings.Set("mask", "N00")
         Me.seDespacharExiParc.Properties.MaxValue = New Decimal(New Integer() {3, 0, 0, 0})
-        Me.seDespacharExiParc.Size = New System.Drawing.Size(69, 24)
+        Me.seDespacharExiParc.Size = New System.Drawing.Size(55, 19)
         Me.seDespacharExiParc.TabIndex = 31
         '
         'Label17
@@ -1798,12 +1781,12 @@ Partial Class frmConfiguracionHorarios
         '
         'chkRechazarPedidoIncompleto
         '
-        Me.chkRechazarPedidoIncompleto.Location = New System.Drawing.Point(154, 34)
-        Me.chkRechazarPedidoIncompleto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkRechazarPedidoIncompleto.Location = New System.Drawing.Point(123, 27)
+        Me.chkRechazarPedidoIncompleto.Margin = New System.Windows.Forms.Padding(4)
         Me.chkRechazarPedidoIncompleto.MenuManager = Me.RibbonControl
         Me.chkRechazarPedidoIncompleto.Name = "chkRechazarPedidoIncompleto"
         Me.chkRechazarPedidoIncompleto.Properties.Caption = ""
-        Me.chkRechazarPedidoIncompleto.Size = New System.Drawing.Size(69, 24)
+        Me.chkRechazarPedidoIncompleto.Size = New System.Drawing.Size(55, 19)
         Me.chkRechazarPedidoIncompleto.TabIndex = 44
         '
         'Label16
@@ -1819,7 +1802,7 @@ Partial Class frmConfiguracionHorarios
         'Label15
         '
         Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(26, 89)
+        Me.Label15.Location = New System.Drawing.Point(26, 88)
         Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(168, 16)
@@ -1833,37 +1816,37 @@ Partial Class frmConfiguracionHorarios
         Me.XtraTabPage4.Controls.Add(Me.chkInterfaceSAP)
         Me.XtraTabPage4.Margin = New System.Windows.Forms.Padding(2)
         Me.XtraTabPage4.Name = "XtraTabPage4"
-        Me.XtraTabPage4.Size = New System.Drawing.Size(1506, 589)
+        Me.XtraTabPage4.Size = New System.Drawing.Size(1094, 552)
         Me.XtraTabPage4.Text = "Configuración SAP"
         '
         'chkSAP_Control_Draft_Traslados
         '
-        Me.chkSAP_Control_Draft_Traslados.Location = New System.Drawing.Point(23, 64)
-        Me.chkSAP_Control_Draft_Traslados.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkSAP_Control_Draft_Traslados.Location = New System.Drawing.Point(18, 51)
+        Me.chkSAP_Control_Draft_Traslados.Margin = New System.Windows.Forms.Padding(4)
         Me.chkSAP_Control_Draft_Traslados.MenuManager = Me.RibbonControl
         Me.chkSAP_Control_Draft_Traslados.Name = "chkSAP_Control_Draft_Traslados"
         Me.chkSAP_Control_Draft_Traslados.Properties.Caption = "SAP_Control_Draft_Traslados"
-        Me.chkSAP_Control_Draft_Traslados.Size = New System.Drawing.Size(98, 24)
+        Me.chkSAP_Control_Draft_Traslados.Size = New System.Drawing.Size(78, 19)
         Me.chkSAP_Control_Draft_Traslados.TabIndex = 65
         '
         'chkSAP_Control_Draft_Ajustes
         '
-        Me.chkSAP_Control_Draft_Ajustes.Location = New System.Drawing.Point(23, 48)
-        Me.chkSAP_Control_Draft_Ajustes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkSAP_Control_Draft_Ajustes.Location = New System.Drawing.Point(18, 38)
+        Me.chkSAP_Control_Draft_Ajustes.Margin = New System.Windows.Forms.Padding(4)
         Me.chkSAP_Control_Draft_Ajustes.MenuManager = Me.RibbonControl
         Me.chkSAP_Control_Draft_Ajustes.Name = "chkSAP_Control_Draft_Ajustes"
         Me.chkSAP_Control_Draft_Ajustes.Properties.Caption = "SAP_Control_Draft_Ajustes"
-        Me.chkSAP_Control_Draft_Ajustes.Size = New System.Drawing.Size(98, 24)
+        Me.chkSAP_Control_Draft_Ajustes.Size = New System.Drawing.Size(78, 19)
         Me.chkSAP_Control_Draft_Ajustes.TabIndex = 64
         '
         'chkInterfaceSAP
         '
-        Me.chkInterfaceSAP.Location = New System.Drawing.Point(23, 32)
-        Me.chkInterfaceSAP.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkInterfaceSAP.Location = New System.Drawing.Point(18, 25)
+        Me.chkInterfaceSAP.Margin = New System.Windows.Forms.Padding(4)
         Me.chkInterfaceSAP.MenuManager = Me.RibbonControl
         Me.chkInterfaceSAP.Name = "chkInterfaceSAP"
         Me.chkInterfaceSAP.Properties.Caption = "Interface SAP"
-        Me.chkInterfaceSAP.Size = New System.Drawing.Size(55, 24)
+        Me.chkInterfaceSAP.Size = New System.Drawing.Size(44, 19)
         Me.chkInterfaceSAP.TabIndex = 63
         '
         'docBitacora
@@ -1877,10 +1860,10 @@ Partial Class frmConfiguracionHorarios
         Me.hideContainerBottom.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
         Me.hideContainerBottom.Controls.Add(Me.DockPanel1)
         Me.hideContainerBottom.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.hideContainerBottom.Location = New System.Drawing.Point(0, 775)
-        Me.hideContainerBottom.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.hideContainerBottom.Location = New System.Drawing.Point(0, 783)
+        Me.hideContainerBottom.Margin = New System.Windows.Forms.Padding(4)
         Me.hideContainerBottom.Name = "hideContainerBottom"
-        Me.hideContainerBottom.Size = New System.Drawing.Size(1096, 26)
+        Me.hideContainerBottom.Size = New System.Drawing.Size(1183, 64)
         '
         'DockPanel1
         '
@@ -1888,7 +1871,7 @@ Partial Class frmConfiguracionHorarios
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("4958cf5a-b6eb-42ec-8e5c-c27b3b609845")
         Me.DockPanel1.Location = New System.Drawing.Point(0, 660)
-        Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 89)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
@@ -1900,15 +1883,15 @@ Partial Class frmConfiguracionHorarios
         'DockPanel1_Container
         '
         Me.DockPanel1_Container.Controls.Add(Me.User_modTextEdit)
-        Me.DockPanel1_Container.Controls.Add(User_modLabel)
-        Me.DockPanel1_Container.Controls.Add(Fec_agrLabel)
+        Me.DockPanel1_Container.Controls.Add(Me.User_modLabel)
+        Me.DockPanel1_Container.Controls.Add(Me.Fec_agrLabel)
         Me.DockPanel1_Container.Controls.Add(Me.User_agrTextEdit)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_agrTextEdit)
-        Me.DockPanel1_Container.Controls.Add(User_agrLabel)
-        Me.DockPanel1_Container.Controls.Add(Fec_modLabel)
+        Me.DockPanel1_Container.Controls.Add(Me.User_agrLabel)
+        Me.DockPanel1_Container.Controls.Add(Me.Fec_modLabel)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_modTextEdit)
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 31)
-        Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
         Me.DockPanel1_Container.Size = New System.Drawing.Size(1101, 75)
         Me.DockPanel1_Container.TabIndex = 0
@@ -1917,12 +1900,12 @@ Partial Class frmConfiguracionHorarios
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1096, 831)
+        Me.ClientSize = New System.Drawing.Size(1183, 877)
         Me.Controls.Add(Me.XtraTabControl)
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmConfiguracionHorarios"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -2139,4 +2122,16 @@ Partial Class frmConfiguracionHorarios
     Friend WithEvents Label28 As Label
     Friend WithEvents Label29 As Label
     Friend WithEvents Label30 As Label
+    Friend WithEvents User_modLabel As Label
+    Friend WithEvents User_agrLabel As Label
+    Friend WithEvents Fec_modLabel As Label
+    Friend WithEvents Fec_agrLabel As Label
+    Friend WithEvents Label9 As Label
+    Friend WithEvents Label6 As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents Label4 As Label
+    Friend WithEvents Label3 As Label
+    Friend WithEvents Label31 As Label
+    Friend WithEvents Label32 As Label
+    Friend WithEvents Label33 As Label
 End Class
