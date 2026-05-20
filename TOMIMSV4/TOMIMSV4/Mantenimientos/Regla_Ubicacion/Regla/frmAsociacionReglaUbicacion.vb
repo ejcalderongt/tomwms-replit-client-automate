@@ -13,6 +13,7 @@ Public Class frmAsociacionReglaUbicacion
 
     Private IdTramo As Integer = 0
     Private tramonom As String
+    Private bMostrarTodas As Boolean = False
 
     Private lUbicacionesBodega As New List(Of clsBeBodega_ubicacion)
     Private lUbicacionesRegla As New List(Of clsBeRegla_ubicacion)
@@ -107,8 +108,19 @@ Public Class frmAsociacionReglaUbicacion
         DsReglaUb.Ubic.Clear()
 
         Try
+            '#MA20260519 Para listar
+            'lUbicacionesBodega = BeBodega.Ubicaciones.FindAll(Function(x) x.IdTramo = IdTramo AndAlso x.IdBodega = AP.IdBodega) ' clsLnRegla_ubicacion.ListarUbicaciones(tramoid, reglaid)
+            If bMostrarTodas Then
 
-            lUbicacionesBodega = BeBodega.Ubicaciones.FindAll(Function(x) x.IdTramo = IdTramo AndAlso x.IdBodega = AP.IdBodega) ' clsLnRegla_ubicacion.ListarUbicaciones(tramoid, reglaid)
+                lUbicacionesBodega = BeBodega.Ubicaciones.FindAll(
+                    Function(x) x.IdBodega = AP.IdBodega)
+
+            Else
+
+                lUbicacionesBodega = BeBodega.Ubicaciones.FindAll(
+                    Function(x) x.IdTramo = IdTramo AndAlso
+                    x.IdBodega = AP.IdBodega)
+            End If
 
             lUbicacionesRegla = clsLnRegla_Ubicacion.Get_All_By_IdReglaUbicacionEnc(IdReglaUbicacionEnc, AP.IdBodega)
 
@@ -312,6 +324,13 @@ Public Class frmAsociacionReglaUbicacion
         End Try
 
         IdTramo = selid
+        'Si estaba activado "mostrar todas", se apaga automáticamente
+        If bMostrarTodas Then
+            bMostrarTodas = False
+            BarToggleSwitchItem1.Checked = False
+        End If
+
+        grdvTramo.SelectRow(grdvTramo.FocusedRowHandle)
 
         Listar_Ubicaciones()
 
@@ -371,4 +390,31 @@ Public Class frmAsociacionReglaUbicacion
 
     End Sub
 
+    '#MA20260519 Marcar todas las ubicaciones
+    Private Sub BarToggleSwitchItem1_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarToggleSwitchItem1.CheckedChanged
+
+        Try
+
+            bMostrarTodas = BarToggleSwitchItem1.Checked
+
+            If bMostrarTodas Then
+
+                IdTramo = 0
+                grdvTramo.ClearSelection()
+
+            End If
+
+            Listar_Ubicaciones()
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(
+            ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+        End Try
+
+    End Sub
 End Class

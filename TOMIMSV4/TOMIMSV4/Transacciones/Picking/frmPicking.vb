@@ -1,5 +1,4 @@
-﻿Imports System
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
 Imports System.Threading.Tasks
@@ -65,6 +64,59 @@ Public Class frmPicking
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Property InvokeCargarPedido As Action(Of SqlConnection, SqlTransaction)
     Public Property InvokeCargarObjetoPedido As Action
+
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
+    ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
+    ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
+    ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. La notificación se hace después del commit WMS.
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+
+    Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Async(ByVal pEstadoPedido As Integer,
+                                                                  ByVal pEstadoFactura As Integer,
+                                                                  ByVal pEstadoGuia As Integer) As Task
+
+        If Not AP.Bodega.Interface_SAP Then Return
+        If String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then Return
+
+        Try
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            For Each ped In lPedidosPicking
+
+                If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+                   ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                    Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
+                        ped.Referencia,
+                        vHanaService.SessionCookie,
+                        SapServiceLayerClient.baseUrl,
+                        pEstadoPedido,
+                        pEstadoFactura,
+                        pEstadoGuia,
+                        Now,
+                        AP.UsuarioAp.IdUsuario,
+                        Now,
+                        Now,
+                        AP.UsuarioAp.IdUsuario,
+                        Now)
+
+                End If
+
+            Next
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo notificar estado SAP HANA SL. EstadoPedido=" & pEstadoPedido & ". " & ex.Message,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+        End Try
+
+    End Function
+
     Sub New(ByVal pModo As TipoTrans, pPickingAuto As Boolean)
         InitializeComponent()
         Modo = pModo
@@ -505,54 +557,8 @@ Public Class frmPicking
                 Return False
             End If
 
-            '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
-            If AP.Bodega.Interface_SAP AndAlso Not String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then
-
-                Dim vHanaService As New SapServiceLayerClient()
-
-                Dim loginResponse As LoginResponseDto =
-                Await vHanaService.LoginAsync()
-                For Each ped In lPedidosPicking
-
-                    If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
-                       ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
-
-                        '========================================
-                        ' Variables configurables
-                        '========================================
-                        Dim estadoPedido As Integer = 2
-                        Dim estadoFactura As Integer = 2
-                        Dim estadoGuia As Integer = 1
-
-                        Dim inicioPick As Date = Now
-                        Dim usuarioPick As String = AP.UsuarioAp.IdUsuario
-                        Dim finPick As Date = Now
-
-                        Dim inicioPack As Date = Now
-                        Dim usuarioPack As String = AP.UsuarioAp.IdUsuario
-                        Dim finPack As Date = Now
-
-                        '========================================
-                        ' Actualizar traslado SAP SL
-                        '========================================
-                        Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
-                            ped.Referencia,
-                            vHanaService.SessionCookie,
-                            SapServiceLayerClient.baseUrl,
-                            estadoPedido,
-                            estadoFactura,
-                            estadoGuia,
-                            inicioPick,
-                            usuarioPick,
-                            finPick,
-                            inicioPack,
-                            usuarioPack,
-                            finPack)
-
-                    End If
-
-                Next
-            End If
+            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 2 = Asignado al crear picking.
+            Await Notificar_Estado_SAP_Hana_MAMAPA_Async(2, 2, 1)
 
             '#GT27022023: se guarda log del picking
             Dim mensajeLog As String =
@@ -2199,7 +2205,7 @@ Public Class frmPicking
         Anular_Picking()
     End Sub
 
-    Private Sub Anular_Picking()
+    Private Async Sub Anular_Picking()
 
         Dim vLiberarStock As Boolean = False
 
@@ -2224,6 +2230,9 @@ Public Class frmPicking
                                                          BeListOp,
                                                          AP.IdEmpresa,
                                                          vLiberarStock) Then
+
+                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 1 = Nueva/disponible en SAP cuando se anula el picking y puede reasignarse.
+                    Await Notificar_Estado_SAP_Hana_MAMAPA_Async(1, 1, 1)
 
                     Dim vMsgError As String = "El usuario" & AP.UsuarioAp.IdUsuario & " anuló el picking " & BePickingEnc.IdPickingEnc
                     'clsLnLog_error_wms.Agregar_Error(vMsgError)

@@ -9,7 +9,6 @@ Partial Public Class clsLnI_nav_ejecucion_res
         Try
 
             Ins.Init("i_nav_ejecucion_res")
-            Ins.Add("idejecucionres", "@idejecucionres", DataType.Parametro)
             Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Ins.Add("registros_ws", "@registros_ws", DataType.Parametro)
@@ -17,10 +16,10 @@ Partial Public Class clsLnI_nav_ejecucion_res
             Ins.Add("registros_wms", "@registros_wms", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionres")
             Dim cmd As New SqlCommand(sp, pConection) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONRES", oBeI_nav_ejecucion_res.IdEjecucionRes))
             cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_res.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", oBeI_nav_ejecucion_res.IdNavConfigDet))
             cmd.Parameters.Add(New SqlParameter("@REGISTROS_WS", oBeI_nav_ejecucion_res.Registros_ws))
@@ -28,57 +27,17 @@ Partial Public Class clsLnI_nav_ejecucion_res
             cmd.Parameters.Add(New SqlParameter("@REGISTROS_WMS", oBeI_nav_ejecucion_res.Registros_WMS))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_res.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_res.IdEjecucionRes = newId
 
             cmd.Dispose()
 
-            Return rowsAffected
+            Return 1
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Max_IdEjecucionRes() As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(IdEjecucionres),0) FROM i_nav_ejecucion_res "
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
-
-                        lCommand.CommandType = CommandType.Text
-
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            lMax = CInt(lReturnValue) + 1
-                        End If
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
             Throw ex
         End Try
 
@@ -125,34 +84,6 @@ Partial Public Class clsLnI_nav_ejecucion_res
 
     End Function
 
-    Public Shared Function Max_IdEjecucionRes(ByVal pConnection As SqlConnection) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(idejecucionres),0) FROM i_nav_ejecucion_res"
-
-            Using lCommand As New SqlCommand(vSQL, pConnection)
-
-                lCommand.CommandType = CommandType.Text
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue) + 1
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Insertar(ByRef oBeI_nav_ejecucion_res As clsBeI_nav_ejecucion_res) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -163,7 +94,6 @@ Partial Public Class clsLnI_nav_ejecucion_res
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Ins.Init("i_nav_ejecucion_res")
-            Ins.Add("idejecucionres", "@idejecucionres", DataType.Parametro)
             Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Ins.Add("registros_ws", "@registros_ws", DataType.Parametro)
@@ -171,10 +101,10 @@ Partial Public Class clsLnI_nav_ejecucion_res
             Ins.Add("registros_wms", "@registros_wms", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionres")
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONRES", oBeI_nav_ejecucion_res.IdEjecucionRes))
             cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_res.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", oBeI_nav_ejecucion_res.IdNavConfigDet))
             cmd.Parameters.Add(New SqlParameter("@REGISTROS_WS", oBeI_nav_ejecucion_res.Registros_ws))
@@ -182,13 +112,15 @@ Partial Public Class clsLnI_nav_ejecucion_res
             cmd.Parameters.Add(New SqlParameter("@REGISTROS_WMS", oBeI_nav_ejecucion_res.Registros_WMS))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_res.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_res.IdEjecucionRes = newId
 
             cmd.Dispose()
 
             lTransaction.Commit()
 
-            Insertar = rowsAffected
+            Insertar = 1
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()

@@ -13,6 +13,15 @@
     {
         private static clsInsert Ins = new clsInsert();
         private static clsUpdate Upd = new clsUpdate();
+
+        private static bool TieneLlaveLinea(clsBeI_nav_ped_traslado_det det)
+        {
+            return det != null &&
+                   !string.IsNullOrWhiteSpace(det.NoEnc) &&
+                   det.Line_No != 0 &&
+                   !string.IsNullOrWhiteSpace(det.Item_No);
+        }
+
         public static void Cargar(ref clsBeI_nav_ped_traslado_det oBeI_nav_ped_traslado_det, DataRow dr)
         {
             string GetString(string col) { return dr[col] is DBNull ? "" : (Convert.ToString(dr[col]) ?? ""); }
@@ -194,6 +203,28 @@
         {
             try
             {
+                if (TieneLlaveLinea(oBeI_nav_ped_traslado_det))
+                {
+                    Upd.Init("i_nav_ped_traslado_det");
+                    Upd.Add("status", "@status", "F");
+                    Upd.Add("process_result", "@process_result", "F");
+                    Upd.Where("NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No");
+
+                    string spLinea = Upd.SQL();
+
+                    using SqlCommand cmdLinea = new SqlCommand(spLinea, pConection, pTransaction);
+
+                    cmdLinea.Parameters.Add(new SqlParameter("@NOENC", oBeI_nav_ped_traslado_det.NoEnc ?? (object)DBNull.Value));
+                    cmdLinea.Parameters.Add(new SqlParameter("@LINE_NO", oBeI_nav_ped_traslado_det.Line_No));
+                    cmdLinea.Parameters.Add(new SqlParameter("@ITEM_NO", oBeI_nav_ped_traslado_det.Item_No ?? (object)DBNull.Value));
+                    cmdLinea.Parameters.Add(new SqlParameter("@STATUS", oBeI_nav_ped_traslado_det.Status == 0 ? (object)DBNull.Value : oBeI_nav_ped_traslado_det.Status));
+                    cmdLinea.Parameters.Add(new SqlParameter("@PROCESS_RESULT", oBeI_nav_ped_traslado_det.Process_Result ?? (object)DBNull.Value));
+
+                    int rowsLinea = cmdLinea.ExecuteNonQuery();
+                    if (rowsLinea > 0)
+                        return rowsLinea;
+                }
+
                 Upd.Init("i_nav_ped_traslado_det");
                 Upd.Add("status", "@status", "F");
                 Upd.Add("process_result", "@process_result", "F");
@@ -221,6 +252,28 @@
         {
             try
             {
+                if (TieneLlaveLinea(oBeI_nav_ped_traslado_det))
+                {
+                    Upd.Init("i_nav_ped_traslado_det");
+                    Upd.Add("Process_Result", "@Process_Result", "F");
+                    Upd.Add("Qty_to_Receive", "@Qty_to_Receive", "F");
+                    Upd.Where("NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No");
+
+                    string spLinea = Upd.SQL();
+
+                    using SqlCommand cmdLinea = new SqlCommand(spLinea, pConection, pTransaction);
+
+                    cmdLinea.Parameters.Add(new SqlParameter("@NOENC", oBeI_nav_ped_traslado_det.NoEnc ?? (object)DBNull.Value));
+                    cmdLinea.Parameters.Add(new SqlParameter("@QTY_TO_RECEIVE", oBeI_nav_ped_traslado_det.Qty_to_Receive));
+                    cmdLinea.Parameters.Add(new SqlParameter("@PROCESS_RESULT", oBeI_nav_ped_traslado_det.Process_Result ?? (object)DBNull.Value));
+                    cmdLinea.Parameters.Add(new SqlParameter("@LINE_NO", oBeI_nav_ped_traslado_det.Line_No));
+                    cmdLinea.Parameters.Add(new SqlParameter("@ITEM_NO", oBeI_nav_ped_traslado_det.Item_No ?? (object)DBNull.Value));
+
+                    int rowsLinea = cmdLinea.ExecuteNonQuery();
+                    if (rowsLinea > 0)
+                        return rowsLinea;
+                }
+
                 Upd.Init("i_nav_ped_traslado_det");
                 Upd.Add("Process_Result", "@Process_Result", "F");
                 Upd.Add("Qty_to_Receive", "@Qty_to_Receive", "F");
@@ -480,6 +533,26 @@
         {
             try
             {
+                if (TieneLlaveLinea(oBeI_nav_ped_traslado_det))
+                {
+                    Upd.Init("i_nav_ped_traslado_det");
+                    Upd.Add("Quantity_Reserved_WMS", "@Quantity_Reserved_WMS", "F");
+                    Upd.Where("NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No");
+
+                    string spLinea = Upd.SQL();
+
+                    using SqlCommand cmdLinea = new SqlCommand(spLinea, pConection, pTransaction);
+
+                    cmdLinea.Parameters.Add(new SqlParameter("@NOENC", oBeI_nav_ped_traslado_det.NoEnc ?? (object)DBNull.Value));
+                    cmdLinea.Parameters.Add(new SqlParameter("@QUANTITY_RESERVED_WMS", oBeI_nav_ped_traslado_det.Quantity_Reserved_WMS));
+                    cmdLinea.Parameters.Add(new SqlParameter("@LINE_NO", oBeI_nav_ped_traslado_det.Line_No));
+                    cmdLinea.Parameters.Add(new SqlParameter("@ITEM_NO", oBeI_nav_ped_traslado_det.Item_No ?? (object)DBNull.Value));
+
+                    int rowsLinea = cmdLinea.ExecuteNonQuery();
+                    if (rowsLinea > 0)
+                        return rowsLinea;
+                }
+
                 Upd.Init("i_nav_ped_traslado_det");
                 Upd.Add("Quantity_Reserved_WMS", "@Quantity_Reserved_WMS", "F");
                 Upd.Where("NoEnc = @NoEnc AND No = @No AND Line_No = @Line_No");
