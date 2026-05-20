@@ -19300,9 +19300,42 @@ EXPLOSIONAR_PRODUCTO:
 
                     End If
 
-                    If vFechaMinimaVenceZonaALM > vFechaMinimaVenceZonaPicking Then
+                    '#EJCCKFK20260520: Si la zona ALM/no picking exige explosion y picking cubre la solicitud,
+                    'no se debe descartar el stock picking por FEFO de una ubicacion que no puede reservarse.
+                    Dim vCantidadSolicitudFallbackPicking As Double = vCantidadSolicitadaPedido
+                    If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitudFallbackPicking = 0 Then
+                        vCantidadSolicitudFallbackPicking = pStockResSolicitud.Cantidad
+                    End If
+
+                    Dim vCantidadStockZonaPickingFallback As Double = 0
+                    If lBeStockExistenteZonaPicking IsNot Nothing Then
+                        vCantidadStockZonaPickingFallback = lBeStockExistenteZonaPicking.Where(Function(x) x.Cantidad > 0).Sum(Function(x) x.Cantidad)
+                    End If
+
+                    Dim vNoPickingRequiereExplosionNoPermitida As Boolean = vRestoInventarioEnUmBas _
+                                                                              AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                                              AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0 _
+                                                                              AndAlso pStockResSolicitud.IdPresentacion = 0
+                    Dim vPickingCubreSolicitudFallback As Boolean = vCantidadSolicitudFallbackPicking > 0 _
+                                                                   AndAlso vCantidadStockZonaPickingFallback >= vCantidadSolicitudFallbackPicking
+                    Dim vForzarPickingPorNoExplosion As Boolean = vNoPickingRequiereExplosionNoPermitida _
+                                                                 AndAlso vPickingCubreSolicitudFallback
+
+                    If vFechaMinimaVenceZonaALM > vFechaMinimaVenceZonaPicking _
+                        OrElse vForzarPickingPorNoExplosion Then
                         If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Any() Then
                             lBeStockExistente = lBeStockExistenteZonaPicking
+                            Iniciar_En = 0
+
+                            If vForzarPickingPorNoExplosion AndAlso vFechaMinimaVenceZonaALM <= vFechaMinimaVenceZonaPicking Then
+                                vProcessResult.Add("#EJCCKFK20260520: Se omite FEFO de ALM/no picking porque requiere explosion no permitida y picking cubre la solicitud.")
+                                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                               "fallback_picking_por_no_picking_no_explosionable",
+                                                               "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(vCantidadSolicitudFallbackPicking),
+                                                               "CantidadZonaPicking", clsReservaMi3DebugTrace.Valor(vCantidadStockZonaPickingFallback),
+                                                               "FechaMinimaVenceZonaPicking", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaPicking),
+                                                               "FechaMinimaVenceZonaALM", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaALM))
+                            End If
                         End If
                     Else
                         If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Any() Then
