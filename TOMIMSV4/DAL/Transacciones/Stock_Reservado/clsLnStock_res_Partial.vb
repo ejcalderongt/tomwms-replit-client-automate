@@ -18679,6 +18679,21 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    Private Shared Function Formatear_Process_Result_No_Reserva_MI3(ByVal pMotivo As String) As String
+
+        Dim vMotivo As String = Formatear_Motivo_No_Reserva_MI3(pMotivo)
+        If String.IsNullOrWhiteSpace(vMotivo) Then Return ""
+
+        Dim vProcessResult As String = "No se pudo completar la reserva: " & vMotivo
+
+        If vProcessResult.Length > 600 Then
+            vProcessResult = vProcessResult.Substring(0, 600)
+        End If
+
+        Return vProcessResult
+
+    End Function
+
     Private Shared Sub Marcar_Motivo_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
                                                     ByVal pMotivo As String,
                                                     Optional ByVal pStockResSolicitud As clsBeStock_res = Nothing,
@@ -18690,12 +18705,23 @@ Partial Public Class clsLnStock_res
 
         Dim vMotivo As String = Formatear_Motivo_No_Reserva_MI3(pMotivo)
         If String.IsNullOrWhiteSpace(vMotivo) Then Exit Sub
+        Dim vProcessResult As String = Formatear_Process_Result_No_Reserva_MI3(pMotivo)
 
         If String.IsNullOrWhiteSpace(pBeTrasladoDet.Process_Result) OrElse
            String.Equals(pBeTrasladoDet.Process_Result.Trim(), "Ok", StringComparison.OrdinalIgnoreCase) Then
-            pBeTrasladoDet.Process_Result = vMotivo
+            pBeTrasladoDet.Process_Result = vProcessResult
         ElseIf pBeTrasladoDet.Process_Result.IndexOf(vMotivo, StringComparison.OrdinalIgnoreCase) < 0 Then
             pBeTrasladoDet.Process_Result = pBeTrasladoDet.Process_Result.Trim() & " " & vMotivo
+        End If
+
+        If lConnection IsNot Nothing AndAlso ltransaction IsNot Nothing Then
+            Try
+                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                      lConnection,
+                                                                      ltransaction)
+            Catch ex As Exception
+                clsLnLog_error_wms.Agregar_Error("Marcar_Motivo_No_Reserva_MI3 Actualizar_Process_Result " & ex.Message)
+            End Try
         End If
 
         If pStockResSolicitud IsNot Nothing AndAlso
