@@ -319,33 +319,33 @@ Public Class frmImpresion_OC_RFID
                 Dim fechaActual As String = Date.Now.ToString("dd-MM-yyyy")
                 Dim fechaVence As String = barraPallet.Fecha_Vence.ToString("dd-MM-yyyy")
 
-                Dim zpl As String = BuildZpl_RfidEncode_And_Print_208dpi(epc96Hex,
-                                                                          barraPallet.Codigo_barra,
-                                                                          BeEmpresa.Nombre,
-                                                                          beBodega.Nombre,
-                                                                          pGS1,
-                                                                          barraPallet.SSCC,
-                                                                          barraPallet.Lote,
-                                                                          barraPallet.Fecha_Produccion,
-                                                                          barraPallet.Codigo,
-                                                                          barraPallet.Cantidad_UMP,
-                                                                          barraPallet.Nombre,
-                                                                          barraPallet.GTIN
-                                                                          )
+                'Dim zpl As String = BuildZpl_RfidEncode_And_Print_208dpi(epc96Hex,
+                '                                                          barraPallet.Codigo_barra,
+                '                                                          BeEmpresa.Nombre,
+                '                                                          beBodega.Nombre,
+                '                                                          pGS1,
+                '                                                          barraPallet.SSCC,
+                '                                                          barraPallet.Lote,
+                '                                                          barraPallet.Fecha_Produccion,
+                '                                                          barraPallet.Codigo,
+                '                                                          barraPallet.Cantidad_UMP,
+                '                                                          barraPallet.Nombre,
+                '                                                          barraPallet.GTIN
+                '                                                          )
 
-                'Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex,
-                '                                                  barraPallet.Codigo_barra,
-                '                                                  BeEmpresa.Nombre,
-                '                                                  beBodega.Nombre,
-                '                                                  pGS1,
-                '                                                  barraPallet.SSCC,
-                '                                                  barraPallet.Lote,
-                '                                                  barraPallet.Fecha_Produccion,
-                '                                                  barraPallet.Codigo,
-                '                                                  barraPallet.Cantidad_UMP,
-                '                                                  barraPallet.Nombre,
-                '                                                  barraPallet.GTIN
-                '                                                  )
+                Dim zpl As String = BuildZpl_RfidEncode_And_Print(epc96Hex,
+                                                                  barraPallet.Codigo_barra,
+                                                                  BeEmpresa.Nombre,
+                                                                  beBodega.Nombre,
+                                                                  pGS1,
+                                                                  barraPallet.SSCC,
+                                                                  barraPallet.Lote,
+                                                                  barraPallet.Fecha_Produccion,
+                                                                  barraPallet.Codigo,
+                                                                  barraPallet.Cantidad_UMP,
+                                                                  barraPallet.Nombre,
+                                                                  barraPallet.GTIN
+                                                                  )
 
                 For j As Integer = 1 To maxToProcess
                     RawPrinterHelper.SendStringToPrinter(printerName, zpl)
