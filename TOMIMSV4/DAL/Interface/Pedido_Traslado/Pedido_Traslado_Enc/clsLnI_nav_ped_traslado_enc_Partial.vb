@@ -13,6 +13,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim vTexto As String = pTexto.Replace(vbCr, " ").Replace(vbLf, " ").Trim()
 
         If String.Equals(vTexto, "Ok", StringComparison.OrdinalIgnoreCase) Then Return ""
+        If String.Equals(vTexto, "No se pudo completar la reserva.", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(vTexto, "No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) Then Return ""
         If vTexto.IndexOf("No se pudo completar la reserva, consulte log_error_wms", StringComparison.OrdinalIgnoreCase) >= 0 Then Return ""
 
         Return vTexto

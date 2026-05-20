@@ -18694,6 +18694,33 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    Private Shared Function Actualizar_Process_Result_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                                     ByVal lConnection As SqlConnection,
+                                                                     ByVal ltransaction As SqlTransaction) As Integer
+
+        If pBeTrasladoDet Is Nothing OrElse lConnection Is Nothing OrElse ltransaction Is Nothing Then Return 0
+        If lConnection.State <> ConnectionState.Open Then Return 0
+        If String.IsNullOrWhiteSpace(pBeTrasladoDet.NoEnc) OrElse
+           pBeTrasladoDet.Line_No = 0 OrElse
+           String.IsNullOrWhiteSpace(pBeTrasladoDet.Item_No) Then Return 0
+
+        Const sp As String = "UPDATE i_nav_ped_traslado_det " &
+                             "SET Process_Result = @Process_Result, Qty_to_Receive = @Qty_to_Receive " &
+                             "WHERE NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No"
+
+        Using cmd As New SqlCommand(sp, lConnection, ltransaction)
+            cmd.CommandType = CommandType.Text
+            cmd.Parameters.Add(New SqlParameter("@NOENC", pBeTrasladoDet.NoEnc))
+            cmd.Parameters.Add(New SqlParameter("@LINE_NO", pBeTrasladoDet.Line_No))
+            cmd.Parameters.Add(New SqlParameter("@ITEM_NO", pBeTrasladoDet.Item_No))
+            cmd.Parameters.Add(New SqlParameter("@QTY_TO_RECEIVE", pBeTrasladoDet.Qty_to_Receive))
+            cmd.Parameters.Add(New SqlParameter("@PROCESS_RESULT", pBeTrasladoDet.Process_Result))
+
+            Return cmd.ExecuteNonQuery()
+        End Using
+
+    End Function
+
     Private Shared Sub Marcar_Motivo_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
                                                     ByVal pMotivo As String,
                                                     Optional ByVal pStockResSolicitud As clsBeStock_res = Nothing,
@@ -18708,7 +18735,9 @@ Partial Public Class clsLnStock_res
         Dim vProcessResult As String = Formatear_Process_Result_No_Reserva_MI3(pMotivo)
 
         If String.IsNullOrWhiteSpace(pBeTrasladoDet.Process_Result) OrElse
-           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "Ok", StringComparison.OrdinalIgnoreCase) Then
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "Ok", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "No se pudo completar la reserva.", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) Then
             pBeTrasladoDet.Process_Result = vProcessResult
         ElseIf pBeTrasladoDet.Process_Result.IndexOf(vMotivo, StringComparison.OrdinalIgnoreCase) < 0 Then
             pBeTrasladoDet.Process_Result = pBeTrasladoDet.Process_Result.Trim() & " " & vMotivo
@@ -18716,9 +18745,15 @@ Partial Public Class clsLnStock_res
 
         If lConnection IsNot Nothing AndAlso ltransaction IsNot Nothing Then
             Try
-                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                      lConnection,
-                                                                      ltransaction)
+                Dim vFilasActualizadas As Integer = Actualizar_Process_Result_No_Reserva_MI3(pBeTrasladoDet,
+                                                                                             lConnection,
+                                                                                             ltransaction)
+                If vFilasActualizadas = 0 Then
+                    clsLnLog_error_wms.Agregar_Error("Marcar_Motivo_No_Reserva_MI3 Actualizar_Process_Result sin filas. Documento: " &
+                                                     pBeTrasladoDet.NoEnc &
+                                                     " Linea: " & pBeTrasladoDet.Line_No &
+                                                     " Item: " & pBeTrasladoDet.Item_No)
+                End If
             Catch ex As Exception
                 clsLnLog_error_wms.Agregar_Error("Marcar_Motivo_No_Reserva_MI3 Actualizar_Process_Result " & ex.Message)
             End Try
@@ -35212,6 +35247,18 @@ Public Class clsReservaMi3DebugTrace
 
     Private Shared ReadOnly mLock As New Object()
 
+    Private Class clsResumenTimingEtapa
+        Public Etapa As String = ""
+        Public Cantidad As Integer = 0
+        Public TotalMs As Long = 0
+        Public MaxMs As Long = 0
+    End Class
+
+    Private Class clsResumenTimingGap
+        Public EtapaAnterior As String = ""
+        Public DuracionMs As Long = 0
+    End Class
+
     Public Shared Function EstaActivo() As Boolean
 
         Try
@@ -35456,6 +35503,7 @@ Public Class clsReservaMi3DebugTrace
     End Sub
 
     Public Shared Sub Finalizar(ByVal pArchivo As String, ByVal pEstado As String)
+        AgregarResumenTiming(pArchivo)
         Evento(pArchivo, "fin", "estado", pEstado)
     End Sub
 
@@ -35467,6 +35515,169 @@ Public Class clsReservaMi3DebugTrace
     Private Shared Function SiguientePaso() As Integer
         mPasoActual += 1
         Return mPasoActual
+    End Function
+
+    Private Shared Sub AgregarResumenTiming(ByVal pArchivo As String)
+
+        If String.IsNullOrWhiteSpace(pArchivo) Then Return
+
+        Try
+            If Not System.IO.File.Exists(pArchivo) Then Return
+
+            Dim vLineas() As String = System.IO.File.ReadAllLines(pArchivo, System.Text.Encoding.UTF8)
+            Dim vPorEtapa As New System.Collections.Generic.Dictionary(Of String, clsResumenTimingEtapa)(StringComparer.OrdinalIgnoreCase)
+            Dim vGaps As New List(Of clsResumenTimingGap)
+            Dim vEventos As Integer = 0
+            Dim vEventosPerf As Integer = 0
+            Dim vDuraciones As Integer = 0
+            Dim vSumaDuracionesMs As Long = 0
+            Dim vInicioTrace As DateTime = DateTime.MinValue
+            Dim vPrimerTs As DateTime = DateTime.MinValue
+            Dim vUltimoTs As DateTime = DateTime.MinValue
+            Dim vTsAnterior As DateTime = DateTime.MinValue
+            Dim vEtapaActual As String = ""
+            Dim vEtapaAnterior As String = "inicio"
+
+            For Each vLinea As String In vLineas
+                Dim vTexto As String = vLinea.Trim()
+
+                If vTexto.StartsWith("inicio: """) Then
+                    Dim vValorInicio As String = ExtraerValorYaml(vTexto)
+                    DateTime.TryParseExact(vValorInicio,
+                                           "yyyy-MM-dd HH:mm:ss.fff",
+                                           Globalization.CultureInfo.InvariantCulture,
+                                           Globalization.DateTimeStyles.None,
+                                           vInicioTrace)
+
+                ElseIf vTexto.StartsWith("- ts: """) Then
+                    Dim vValorTs As String = ExtraerValorYaml(vTexto)
+                    Dim vTs As DateTime = DateTime.MinValue
+
+                    If DateTime.TryParseExact(vValorTs,
+                                              "yyyy-MM-dd HH:mm:ss.fff",
+                                              Globalization.CultureInfo.InvariantCulture,
+                                              Globalization.DateTimeStyles.None,
+                                              vTs) Then
+
+                        If vPrimerTs = DateTime.MinValue Then vPrimerTs = vTs
+
+                        If vTsAnterior <> DateTime.MinValue Then
+                            Dim vGapMs As Long = CLng((vTs - vTsAnterior).TotalMilliseconds)
+
+                            If vGapMs > 25 Then
+                                vGaps.Add(New clsResumenTimingGap With {
+                                          .EtapaAnterior = vEtapaAnterior,
+                                          .DuracionMs = vGapMs})
+                            End If
+                        End If
+
+                        vTsAnterior = vTs
+                        vUltimoTs = vTs
+                    End If
+
+                ElseIf vTexto.StartsWith("etapa: """) Then
+                    vEtapaActual = ExtraerValorYaml(vTexto)
+                    vEtapaAnterior = vEtapaActual
+                    vEventos += 1
+
+                    If vEtapaActual.StartsWith("perf_", StringComparison.OrdinalIgnoreCase) Then
+                        vEventosPerf += 1
+                    End If
+
+                ElseIf vTexto.StartsWith("duracion_ms: """) Then
+                    Dim vDuracionTexto As String = ExtraerValorYaml(vTexto)
+                    Dim vDuracionMs As Long = 0
+
+                    If Long.TryParse(vDuracionTexto,
+                                     Globalization.NumberStyles.Any,
+                                     Globalization.CultureInfo.InvariantCulture,
+                                     vDuracionMs) Then
+
+                        vDuraciones += 1
+                        vSumaDuracionesMs += vDuracionMs
+
+                        If Not vPorEtapa.ContainsKey(vEtapaActual) Then
+                            vPorEtapa(vEtapaActual) = New clsResumenTimingEtapa With {.Etapa = vEtapaActual}
+                        End If
+
+                        vPorEtapa(vEtapaActual).Cantidad += 1
+                        vPorEtapa(vEtapaActual).TotalMs += vDuracionMs
+
+                        If vDuracionMs > vPorEtapa(vEtapaActual).MaxMs Then
+                            vPorEtapa(vEtapaActual).MaxMs = vDuracionMs
+                        End If
+                    End If
+                End If
+            Next
+
+            Dim vVentanaEventosMs As Long = 0
+            If vPrimerTs <> DateTime.MinValue AndAlso vUltimoTs <> DateTime.MinValue Then
+                vVentanaEventosMs = CLng((vUltimoTs - vPrimerTs).TotalMilliseconds)
+            End If
+
+            Dim vDuracionTotalMs As Long = 0
+            If vInicioTrace <> DateTime.MinValue Then
+                vDuracionTotalMs = CLng((Date.Now - vInicioTrace).TotalMilliseconds)
+            End If
+
+            Dim vPares As New List(Of String)
+            vPares.Add("eventos")
+            vPares.Add(Valor(vEventos))
+            vPares.Add("eventos_perf")
+            vPares.Add(Valor(vEventosPerf))
+            vPares.Add("duraciones")
+            vPares.Add(Valor(vDuraciones))
+            vPares.Add("suma_duraciones_ms")
+            vPares.Add(Valor(vSumaDuracionesMs))
+            vPares.Add("ventana_eventos_ms")
+            vPares.Add(Valor(vVentanaEventosMs))
+            vPares.Add("duracion_total_trace_ms")
+            vPares.Add(Valor(vDuracionTotalMs))
+            vPares.Add("diferencia_ventana_vs_duraciones_ms")
+            vPares.Add(Valor(vVentanaEventosMs - vSumaDuracionesMs))
+
+            Dim vTopEtapas As List(Of clsResumenTimingEtapa) = vPorEtapa.Values.ToList()
+            vTopEtapas.Sort(Function(a, b) b.TotalMs.CompareTo(a.TotalMs))
+
+            For i As Integer = 0 To Math.Min(4, vTopEtapas.Count - 1)
+                vPares.Add("top_etapa_" & (i + 1).ToString(Globalization.CultureInfo.InvariantCulture))
+                vPares.Add(String.Format(Globalization.CultureInfo.InvariantCulture,
+                                         "{0}|total_ms={1}|count={2}|max_ms={3}",
+                                         vTopEtapas(i).Etapa,
+                                         vTopEtapas(i).TotalMs,
+                                         vTopEtapas(i).Cantidad,
+                                         vTopEtapas(i).MaxMs))
+            Next
+
+            vGaps.Sort(Function(a, b) b.DuracionMs.CompareTo(a.DuracionMs))
+
+            For i As Integer = 0 To Math.Min(4, vGaps.Count - 1)
+                vPares.Add("gap_" & (i + 1).ToString(Globalization.CultureInfo.InvariantCulture))
+                vPares.Add(String.Format(Globalization.CultureInfo.InvariantCulture,
+                                         "after={0}|ms={1}",
+                                         vGaps(i).EtapaAnterior,
+                                         vGaps(i).DuracionMs))
+            Next
+
+            Evento(pArchivo, "resumen_timing", vPares.ToArray())
+
+        Catch
+        End Try
+
+    End Sub
+
+    Private Shared Function ExtraerValorYaml(ByVal pLinea As String) As String
+
+        If String.IsNullOrWhiteSpace(pLinea) Then Return ""
+
+        Dim vInicio As Integer = pLinea.IndexOf(""""c)
+        If vInicio < 0 Then Return ""
+
+        Dim vFin As Integer = pLinea.LastIndexOf(""""c)
+        If vFin <= vInicio Then Return ""
+
+        Return pLinea.Substring(vInicio + 1, vFin - vInicio - 1)
+
     End Function
 
     Private Shared Function ObtenerDirectorio() As String
