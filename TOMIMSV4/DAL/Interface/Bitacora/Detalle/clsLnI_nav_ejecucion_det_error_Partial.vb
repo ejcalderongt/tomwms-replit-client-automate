@@ -17,7 +17,7 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
         End If
 
         Dim BeNavEjecucionDet As New clsBeI_nav_ejecucion_det_error()
-        BeNavEjecucionDet.Idejecuciondet = MaxID() + 1
+        '#EJCCKFK20260520: Cambio por Identity en tabla.
         BeNavEjecucionDet.Fecha = Now
         BeNavEjecucionDet.Idejecucionenc = IdEjecucionEnc
         BeNavEjecucionDet.Idnavconfigdet = IdNavconfigDet
@@ -53,7 +53,7 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
         End If
 
         Dim BeNavEjecucionDet As New clsBeI_nav_ejecucion_det_error()
-        BeNavEjecucionDet.Idejecuciondet = MaxID() + 1
+        '#EJCCKFK20260520: Cambio por Identity en tabla.
         BeNavEjecucionDet.Fecha = Now
         BeNavEjecucionDet.Idejecucionenc = IdEjecucionEnc
         BeNavEjecucionDet.Idnavconfigdet = IdNavconfigDet
@@ -80,7 +80,8 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
                                   ByVal IdNavconfigDet As Integer)
 
         If Referencia Is Nothing Then Referencia = ""
-        Dim BeNavEjecucionDet As New clsBeI_nav_ejecucion_det_error() With {.Idejecuciondet = MaxID() + 1,
+        '#EJCCKFK20260520: Cambio por Identity en tabla.
+        Dim BeNavEjecucionDet As New clsBeI_nav_ejecucion_det_error() With {
             .Fecha = Now,
             .Idejecucionenc = IdEjecucionEnc,
             .Idnavconfigdet = IdNavconfigDet,
@@ -103,7 +104,6 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
         Try
 
             Ins.Init("i_nav_ejecucion_det_error")
-            Ins.Add("idejecuciondet", "@idejecuciondet", DataType.Parametro)
             Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Ins.Add("error", "@error", DataType.Parametro)
@@ -116,10 +116,10 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
             Ins.Add("umbas", "@umbas", DataType.Parametro)
             Ins.Add("codigo_presentacion", "@codigo_presentacion", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecuciondet")
             Dim cmd As New SqlCommand(sp, pConection) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONDET", oBeI_nav_ejecucion_det_error.Idejecuciondet))
             cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_det_error.Idejecucionenc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", oBeI_nav_ejecucion_det_error.Idnavconfigdet))
             cmd.Parameters.Add(New SqlParameter("@ERROR", oBeI_nav_ejecucion_det_error.vError))
@@ -133,11 +133,13 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
 
             If pConection.State = ConnectionState.Closed Then pConection.Open()
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_det_error.Idejecuciondet = newId
 
             cmd.Dispose()
 
-            Return rowsAffected
+            Return newId
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -205,7 +207,6 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Ins.Init("i_nav_ejecucion_det_error")
-            Ins.Add("idejecuciondet", "@idejecuciondet", DataType.Parametro)
             Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Ins.Add("error", "@error", DataType.Parametro)
@@ -218,10 +219,10 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
             Ins.Add("umbas", "@umbas", DataType.Parametro)
             Ins.Add("codigo_presentacion", "@codigo_presentacion", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecuciondet")
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONDET", oBeI_nav_ejecucion_det_error.Idejecuciondet))
             cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_det_error.Idejecucionenc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", oBeI_nav_ejecucion_det_error.Idnavconfigdet))
             cmd.Parameters.Add(New SqlParameter("@ERROR", oBeI_nav_ejecucion_det_error.vError))
@@ -232,11 +233,15 @@ Partial Public Class clsLnI_nav_ejecucion_det_error
             cmd.Parameters.Add(New SqlParameter("@UMBAS", oBeI_nav_ejecucion_det_error.UMBas))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_PRESENTACION", oBeI_nav_ejecucion_det_error.Codigo_Presentacion))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_det_error.Idejecuciondet = newId
 
             lTransaction.Commit()
 
             cmd.Dispose()
+
+            Return newId
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()

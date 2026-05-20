@@ -19,6 +19,7 @@ Partial Class frmMenu
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMenu))
         Me.rbMain = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuPrueba = New DevExpress.XtraBars.BarButtonItem()
@@ -31,21 +32,25 @@ Partial Class frmMenu
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpgInterfaceMenuPrincipal = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
+        Me.NotifyIcon1 = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.mnuMostrar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuSalir = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'rbMain
         '
-        Me.rbMain.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.rbMain.ExpandCollapseItem.Id = 0
         Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuPrueba, Me.lblNombrePC, Me.lblServerAPP, Me.lblBDAPP, Me.lblEmpresa, Me.lblBodega, Me.BarStaticItem1})
         Me.rbMain.Location = New System.Drawing.Point(0, 0)
+        Me.rbMain.Margin = New System.Windows.Forms.Padding(4)
         Me.rbMain.MaxItemId = 12
         Me.rbMain.Name = "rbMain"
-        Me.rbMain.OptionsMenuMinWidth = 283
         Me.rbMain.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.rbMain.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.rbMain.Size = New System.Drawing.Size(973, 158)
+        Me.rbMain.Size = New System.Drawing.Size(1135, 193)
         Me.rbMain.StatusBar = Me.RibbonStatusBar
         '
         'mnuPrueba
@@ -126,19 +131,49 @@ Partial Class frmMenu
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblEmpresa)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblBodega)
         Me.RibbonStatusBar.ItemLinks.Add(Me.BarStaticItem1)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 441)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 542)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.rbMain
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(973, 24)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1135, 30)
+        '
+        'NotifyIcon1
+        '
+        Me.NotifyIcon1.ContextMenuStrip = Me.ContextMenuStrip1
+        Me.NotifyIcon1.Icon = CType(resources.GetObject("NotifyIcon1.Icon"), System.Drawing.Icon)
+        Me.NotifyIcon1.Text = "NotifyIcon1"
+        Me.NotifyIcon1.Visible = True
+        '
+        'ContextMenuStrip1
+        '
+        Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuMostrar, Me.mnuSalir})
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(130, 52)
+        '
+        'mnuMostrar
+        '
+        Me.mnuMostrar.Name = "mnuMostrar"
+        Me.mnuMostrar.Size = New System.Drawing.Size(129, 24)
+        Me.mnuMostrar.Text = "Mostrar"
+        '
+        'mnuSalir
+        '
+        Me.mnuSalir.Name = "mnuSalir"
+        Me.mnuSalir.Size = New System.Drawing.Size(129, 24)
+        Me.mnuSalir.Text = "Salir"
         '
         'frmMenu
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(973, 465)
+        Me.ClientSize = New System.Drawing.Size(1135, 572)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.rbMain)
+        Me.IconOptions.Image = CType(resources.GetObject("frmMenu.IconOptions.Image"), System.Drawing.Image)
+        Me.IconOptions.LargeImage = CType(resources.GetObject("frmMenu.IconOptions.LargeImage"), System.Drawing.Image)
         Me.IsMdiContainer = True
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmMenu"
         Me.Ribbon = Me.rbMain
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -146,6 +181,7 @@ Partial Class frmMenu
         Me.Text = "Interface"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -162,4 +198,8 @@ Partial Class frmMenu
     Friend WithEvents lblEmpresa As DevExpress.XtraBars.BarStaticItem
     Friend WithEvents lblBodega As DevExpress.XtraBars.BarStaticItem
     Friend WithEvents BarStaticItem1 As DevExpress.XtraBars.BarStaticItem
+    Friend WithEvents NotifyIcon1 As NotifyIcon
+    Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
+    Friend WithEvents mnuMostrar As ToolStripMenuItem
+    Friend WithEvents mnuSalir As ToolStripMenuItem
 End Class
