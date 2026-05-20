@@ -178,6 +178,18 @@ Public Class frmConteo
             txtPesoAnterior.Value = gBeCiclico.Peso
             txtLicencia.Text = gBeCiclico.lic_plate
 
+            txtGondola.Text = ""
+
+            If DrDetalleInv IsNot Nothing Then
+
+                If DrDetalleInv.Table.Columns.Contains("Góndola") Then
+                    txtGondola.Text = DrDetalleInv.Item("Góndola").ToString()
+                ElseIf DrDetalleInv.Table.Columns.Contains("Gondola") Then
+                    txtGondola.Text = DrDetalleInv.Item("Gondola").ToString()
+                End If
+
+            End If
+
             If AP.Bodega.Control_Talla_Color Then
 
                 txtLicencia.Enabled = True
@@ -186,11 +198,14 @@ Public Class frmConteo
                 txtUbicacion.Enabled = True
                 txtUbicacion.Properties.ReadOnly = False
 
+                txtGondola.Enabled = True
+                txtGondola.Properties.ReadOnly = False
+
             Else
 
-                ' Si no maneja talla/color, lo dejas como estaba.
                 txtLicencia.Enabled = False
                 txtUbicacion.Enabled = False
+                txtGondola.Enabled = False
 
             End If
 
@@ -398,6 +413,12 @@ Public Class frmConteo
             DrDetalleInv.Item("Cant.Conteo.Pres") = vCantidadPres
             DrDetalleInv.Item("PesoConteo") = txtPesoAnterior.Value
             DrDetalleInv.Item("Dif.Cant.UMBas") = vDiferencia * -1
+
+            If DrDetalleInv.Table.Columns.Contains("Góndola") Then
+                DrDetalleInv.Item("Góndola") = txtGondola.Text.Trim()
+            ElseIf DrDetalleInv.Table.Columns.Contains("Gondola") Then
+                DrDetalleInv.Item("Gondola") = txtGondola.Text.Trim()
+            End If
 
             cTrans.Commit_Transaction()
             Actualizar = True
