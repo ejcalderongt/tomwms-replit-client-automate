@@ -14,12 +14,13 @@ Partial Class frmLogEjecucionesInterface
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim gridLevelNodeResultados As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim gridLevelNodeErrores As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmLogEjecucionesInterface))
         Me.gvResultados = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.grdLog = New DevExpress.XtraGrid.GridControl()
-        Me.gvEjecuciones = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.gvErrores = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.gvEjecuciones = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdLimpiar = New DevExpress.XtraBars.BarButtonItem()
@@ -46,100 +47,117 @@ Partial Class frmLogEjecucionesInterface
         Me.lblFiltros = New DevExpress.XtraEditors.LabelControl()
         CType(Me.gvResultados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdLog, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.gvEjecuciones, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvErrores, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gvEjecuciones, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pnlFiltros, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlFiltros.SuspendLayout()
         CType(Me.txtTexto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtProceso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtTransaccion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.dtHasta.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtHasta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.dtDesde.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtHasta.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtDesde.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtDesde.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'gvResultados
         '
+        Me.gvResultados.DetailHeight = 431
         Me.gvResultados.GridControl = Me.grdLog
         Me.gvResultados.Name = "gvResultados"
+        Me.gvResultados.OptionsEditForm.PopupEditFormWidth = 933
         Me.gvResultados.OptionsFind.AlwaysVisible = True
         '
         'grdLog
         '
         Me.grdLog.Dock = System.Windows.Forms.DockStyle.Fill
-        gridLevelNodeResultados.LevelTemplate = Me.gvResultados
-        gridLevelNodeResultados.RelationName = "Resultados"
-        gridLevelNodeErrores.LevelTemplate = Me.gvErrores
-        gridLevelNodeErrores.RelationName = "Errores"
-        Me.grdLog.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {gridLevelNodeResultados, gridLevelNodeErrores})
-        Me.grdLog.Location = New System.Drawing.Point(270, 158)
+        Me.grdLog.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        GridLevelNode1.LevelTemplate = Me.gvResultados
+        GridLevelNode1.RelationName = "Resultados"
+        GridLevelNode2.LevelTemplate = Me.gvErrores
+        GridLevelNode2.RelationName = "Errores"
+        Me.grdLog.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1, GridLevelNode2})
+        Me.grdLog.Location = New System.Drawing.Point(315, 193)
         Me.grdLog.MainView = Me.gvEjecuciones
+        Me.grdLog.Margin = New System.Windows.Forms.Padding(4)
         Me.grdLog.MenuManager = Me.RibbonControl
         Me.grdLog.Name = "grdLog"
-        Me.grdLog.Size = New System.Drawing.Size(894, 510)
+        Me.grdLog.Size = New System.Drawing.Size(1043, 629)
         Me.grdLog.TabIndex = 2
-        Me.grdLog.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvEjecuciones, Me.gvResultados, Me.gvErrores})
-        '
-        'gvEjecuciones
-        '
-        Me.gvEjecuciones.GridControl = Me.grdLog
-        Me.gvEjecuciones.Name = "gvEjecuciones"
-        Me.gvEjecuciones.OptionsFind.AlwaysVisible = True
+        Me.grdLog.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvErrores, Me.gvEjecuciones, Me.gvResultados})
         '
         'gvErrores
         '
+        Me.gvErrores.DetailHeight = 431
         Me.gvErrores.GridControl = Me.grdLog
         Me.gvErrores.Name = "gvErrores"
+        Me.gvErrores.OptionsEditForm.PopupEditFormWidth = 933
         Me.gvErrores.OptionsFind.AlwaysVisible = True
+        '
+        'gvEjecuciones
+        '
+        Me.gvEjecuciones.DetailHeight = 431
+        Me.gvEjecuciones.GridControl = Me.grdLog
+        Me.gvEjecuciones.Name = "gvEjecuciones"
+        Me.gvEjecuciones.OptionsEditForm.PopupEditFormWidth = 933
+        Me.gvEjecuciones.OptionsFind.AlwaysVisible = True
         '
         'RibbonControl
         '
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(35, 37, 35, 37)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.cmdLimpiar, Me.cmdExpandir, Me.cmdContraer, Me.cmdImprimir, Me.cmdSalir, Me.lblResumen})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 8
         Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.OptionsMenuMinWidth = 385
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1164, 158)
+        Me.RibbonControl.Size = New System.Drawing.Size(1358, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdActualizar
         '
         Me.cmdActualizar.Caption = "Actualizar"
         Me.cmdActualizar.Id = 1
+        Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("cmdActualizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdActualizar.Name = "cmdActualizar"
         '
         'cmdLimpiar
         '
         Me.cmdLimpiar.Caption = "Limpiar filtros"
         Me.cmdLimpiar.Id = 2
+        Me.cmdLimpiar.ImageOptions.SvgImage = CType(resources.GetObject("cmdLimpiar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdLimpiar.Name = "cmdLimpiar"
         '
         'cmdExpandir
         '
         Me.cmdExpandir.Caption = "Expandir"
         Me.cmdExpandir.Id = 3
+        Me.cmdExpandir.ImageOptions.SvgImage = CType(resources.GetObject("cmdExpandir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdExpandir.Name = "cmdExpandir"
         '
         'cmdContraer
         '
         Me.cmdContraer.Caption = "Contraer"
         Me.cmdContraer.Id = 4
+        Me.cmdContraer.ImageOptions.SvgImage = CType(resources.GetObject("cmdContraer.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdContraer.Name = "cmdContraer"
         '
         'cmdImprimir
         '
         Me.cmdImprimir.Caption = "Imprimir"
         Me.cmdImprimir.Id = 5
+        Me.cmdImprimir.ImageOptions.SvgImage = CType(resources.GetObject("cmdImprimir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdImprimir.Name = "cmdImprimir"
         '
         'cmdSalir
         '
         Me.cmdSalir.Caption = "Salir"
         Me.cmdSalir.Id = 6
+        Me.cmdSalir.ImageOptions.SvgImage = CType(resources.GetObject("cmdSalir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdSalir.Name = "cmdSalir"
         '
         'lblResumen
@@ -168,10 +186,11 @@ Partial Class frmLogEjecucionesInterface
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblResumen)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 668)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 822)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1164, 24)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1358, 30)
         '
         'pnlFiltros
         '
@@ -188,47 +207,53 @@ Partial Class frmLogEjecucionesInterface
         Me.pnlFiltros.Controls.Add(Me.lblDesde)
         Me.pnlFiltros.Controls.Add(Me.lblFiltros)
         Me.pnlFiltros.Dock = System.Windows.Forms.DockStyle.Left
-        Me.pnlFiltros.Location = New System.Drawing.Point(0, 158)
+        Me.pnlFiltros.Location = New System.Drawing.Point(0, 193)
+        Me.pnlFiltros.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlFiltros.Name = "pnlFiltros"
-        Me.pnlFiltros.Size = New System.Drawing.Size(270, 510)
+        Me.pnlFiltros.Size = New System.Drawing.Size(315, 629)
         Me.pnlFiltros.TabIndex = 3
         '
         'btnBuscar
         '
-        Me.btnBuscar.Location = New System.Drawing.Point(16, 331)
+        Me.btnBuscar.Location = New System.Drawing.Point(19, 407)
+        Me.btnBuscar.Margin = New System.Windows.Forms.Padding(4)
         Me.btnBuscar.Name = "btnBuscar"
-        Me.btnBuscar.Size = New System.Drawing.Size(238, 30)
+        Me.btnBuscar.Size = New System.Drawing.Size(278, 37)
         Me.btnBuscar.TabIndex = 11
         Me.btnBuscar.Text = "Buscar"
         '
         'txtTexto
         '
-        Me.txtTexto.Location = New System.Drawing.Point(16, 276)
+        Me.txtTexto.Location = New System.Drawing.Point(19, 340)
+        Me.txtTexto.Margin = New System.Windows.Forms.Padding(4)
         Me.txtTexto.MenuManager = Me.RibbonControl
         Me.txtTexto.Name = "txtTexto"
-        Me.txtTexto.Size = New System.Drawing.Size(238, 20)
+        Me.txtTexto.Size = New System.Drawing.Size(278, 22)
         Me.txtTexto.TabIndex = 10
         '
         'txtProceso
         '
-        Me.txtProceso.Location = New System.Drawing.Point(16, 220)
+        Me.txtProceso.Location = New System.Drawing.Point(19, 271)
+        Me.txtProceso.Margin = New System.Windows.Forms.Padding(4)
         Me.txtProceso.MenuManager = Me.RibbonControl
         Me.txtProceso.Name = "txtProceso"
-        Me.txtProceso.Size = New System.Drawing.Size(238, 20)
+        Me.txtProceso.Size = New System.Drawing.Size(278, 22)
         Me.txtProceso.TabIndex = 9
         '
         'txtTransaccion
         '
-        Me.txtTransaccion.Location = New System.Drawing.Point(16, 164)
+        Me.txtTransaccion.Location = New System.Drawing.Point(19, 202)
+        Me.txtTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.txtTransaccion.MenuManager = Me.RibbonControl
         Me.txtTransaccion.Name = "txtTransaccion"
-        Me.txtTransaccion.Size = New System.Drawing.Size(238, 20)
+        Me.txtTransaccion.Size = New System.Drawing.Size(278, 22)
         Me.txtTransaccion.TabIndex = 8
         '
         'dtHasta
         '
         Me.dtHasta.EditValue = Nothing
-        Me.dtHasta.Location = New System.Drawing.Point(16, 108)
+        Me.dtHasta.Location = New System.Drawing.Point(19, 133)
+        Me.dtHasta.Margin = New System.Windows.Forms.Padding(4)
         Me.dtHasta.MenuManager = Me.RibbonControl
         Me.dtHasta.Name = "dtHasta"
         Me.dtHasta.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -238,13 +263,14 @@ Partial Class frmLogEjecucionesInterface
         Me.dtHasta.Properties.EditFormat.FormatString = "dd/MM/yyyy"
         Me.dtHasta.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime
         Me.dtHasta.Properties.MaskSettings.Set("mask", "d")
-        Me.dtHasta.Size = New System.Drawing.Size(238, 20)
+        Me.dtHasta.Size = New System.Drawing.Size(278, 22)
         Me.dtHasta.TabIndex = 7
         '
         'dtDesde
         '
         Me.dtDesde.EditValue = Nothing
-        Me.dtDesde.Location = New System.Drawing.Point(16, 56)
+        Me.dtDesde.Location = New System.Drawing.Point(19, 69)
+        Me.dtDesde.Margin = New System.Windows.Forms.Padding(4)
         Me.dtDesde.MenuManager = Me.RibbonControl
         Me.dtDesde.Name = "dtDesde"
         Me.dtDesde.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
@@ -254,46 +280,51 @@ Partial Class frmLogEjecucionesInterface
         Me.dtDesde.Properties.EditFormat.FormatString = "dd/MM/yyyy"
         Me.dtDesde.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime
         Me.dtDesde.Properties.MaskSettings.Set("mask", "d")
-        Me.dtDesde.Size = New System.Drawing.Size(238, 20)
+        Me.dtDesde.Size = New System.Drawing.Size(278, 22)
         Me.dtDesde.TabIndex = 6
         '
         'lblTexto
         '
-        Me.lblTexto.Location = New System.Drawing.Point(16, 257)
+        Me.lblTexto.Location = New System.Drawing.Point(19, 316)
+        Me.lblTexto.Margin = New System.Windows.Forms.Padding(4)
         Me.lblTexto.Name = "lblTexto"
-        Me.lblTexto.Size = New System.Drawing.Size(58, 13)
+        Me.lblTexto.Size = New System.Drawing.Size(66, 16)
         Me.lblTexto.TabIndex = 5
         Me.lblTexto.Text = "Texto libre:"
         '
         'lblProceso
         '
-        Me.lblProceso.Location = New System.Drawing.Point(16, 201)
+        Me.lblProceso.Location = New System.Drawing.Point(19, 247)
+        Me.lblProceso.Margin = New System.Windows.Forms.Padding(4)
         Me.lblProceso.Name = "lblProceso"
-        Me.lblProceso.Size = New System.Drawing.Size(43, 13)
+        Me.lblProceso.Size = New System.Drawing.Size(50, 16)
         Me.lblProceso.TabIndex = 4
         Me.lblProceso.Text = "Proceso:"
         '
         'lblTransaccion
         '
-        Me.lblTransaccion.Location = New System.Drawing.Point(16, 145)
+        Me.lblTransaccion.Location = New System.Drawing.Point(19, 178)
+        Me.lblTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblTransaccion.Name = "lblTransaccion"
-        Me.lblTransaccion.Size = New System.Drawing.Size(63, 13)
+        Me.lblTransaccion.Size = New System.Drawing.Size(74, 16)
         Me.lblTransaccion.TabIndex = 3
         Me.lblTransaccion.Text = "Transaccion:"
         '
         'lblHasta
         '
-        Me.lblHasta.Location = New System.Drawing.Point(16, 89)
+        Me.lblHasta.Location = New System.Drawing.Point(19, 110)
+        Me.lblHasta.Margin = New System.Windows.Forms.Padding(4)
         Me.lblHasta.Name = "lblHasta"
-        Me.lblHasta.Size = New System.Drawing.Size(31, 13)
+        Me.lblHasta.Size = New System.Drawing.Size(37, 16)
         Me.lblHasta.TabIndex = 2
         Me.lblHasta.Text = "Hasta:"
         '
         'lblDesde
         '
-        Me.lblDesde.Location = New System.Drawing.Point(16, 37)
+        Me.lblDesde.Location = New System.Drawing.Point(19, 46)
+        Me.lblDesde.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDesde.Name = "lblDesde"
-        Me.lblDesde.Size = New System.Drawing.Size(34, 13)
+        Me.lblDesde.Size = New System.Drawing.Size(40, 16)
         Me.lblDesde.TabIndex = 1
         Me.lblDesde.Text = "Desde:"
         '
@@ -301,21 +332,23 @@ Partial Class frmLogEjecucionesInterface
         '
         Me.lblFiltros.Appearance.Font = New System.Drawing.Font("Tahoma", 10.0!, System.Drawing.FontStyle.Bold)
         Me.lblFiltros.Appearance.Options.UseFont = True
-        Me.lblFiltros.Location = New System.Drawing.Point(16, 12)
+        Me.lblFiltros.Location = New System.Drawing.Point(19, 15)
+        Me.lblFiltros.Margin = New System.Windows.Forms.Padding(4)
         Me.lblFiltros.Name = "lblFiltros"
-        Me.lblFiltros.Size = New System.Drawing.Size(42, 16)
+        Me.lblFiltros.Size = New System.Drawing.Size(54, 21)
         Me.lblFiltros.TabIndex = 0
         Me.lblFiltros.Text = "Filtros"
         '
         'frmLogEjecucionesInterface
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1164, 692)
+        Me.ClientSize = New System.Drawing.Size(1358, 852)
         Me.Controls.Add(Me.grdLog)
         Me.Controls.Add(Me.pnlFiltros)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmLogEjecucionesInterface"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -324,8 +357,8 @@ Partial Class frmLogEjecucionesInterface
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.gvResultados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grdLog, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.gvEjecuciones, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvErrores, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gvEjecuciones, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pnlFiltros, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlFiltros.ResumeLayout(False)

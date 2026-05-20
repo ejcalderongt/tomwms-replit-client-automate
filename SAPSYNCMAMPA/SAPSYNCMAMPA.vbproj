@@ -372,6 +372,9 @@
     <EmbeddedResource Include="Formas\Producto\frmProducto_List.resx">
       <DependentUpon>frmProducto_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Reportes\frmLogEjecucionesInterface.resx">
+      <DependentUpon>frmLogEjecucionesInterface.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmRegistroInter.resx">
       <DependentUpon>frmRegistroInter.vb</DependentUpon>
     </EmbeddedResource>
