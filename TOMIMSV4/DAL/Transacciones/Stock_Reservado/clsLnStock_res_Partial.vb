@@ -24071,7 +24071,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                         Else
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
                                                             vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
-                                                            Reserva_Stock_From_MI3 = False : Exit For
+                                                            Continue For
                                                         End If
 
                                                     End If
