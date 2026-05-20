@@ -7,11 +7,87 @@ using WMS.DALCore.I_nav_ped_traslado_det;
 using WMS.EntityCore.Picking;
 using WMS.DALCore.Picking;
 using WMS.StockReservation.Compatibility;
+using WMS.EntityCore.Producto;
 public class clsLnTrans_pe_det
 {
 
     private static clsInsert Ins = new clsInsert();
     private static clsUpdate Upd = new clsUpdate();
+
+    private static string SafeTrim(string? value)
+    {
+        return value?.Trim() ?? string.Empty;
+    }
+
+    private static double ResolverFactorPresentacion(clsBeTrans_pe_det pBePedidoDet,
+                                                     SqlConnection lConnection,
+                                                     SqlTransaction lTransaction)
+    {
+        if (pBePedidoDet.Factor > 0)
+            return pBePedidoDet.Factor;
+
+        if (pBePedidoDet.IdPresentacion > 0)
+        {
+            clsBeProducto_presentacion? presentacion = clsLnProducto_presentacion.GetSingle(
+                pBePedidoDet.IdPresentacion,
+                lConnection,
+                lTransaction);
+
+            if (presentacion != null && presentacion.Factor > 0)
+                return presentacion.Factor;
+        }
+
+        return 0;
+    }
+
+    private static void NormalizarLineaPorUmVariant(ref clsBeI_nav_ped_traslado_det pBeTrasladoDet,
+                                                    ref clsBeTrans_pe_det pBePedidoDet,
+                                                    ref clsBeStock_res pBeStockRes,
+                                                    SqlConnection lConnection,
+                                                    SqlTransaction lTransaction)
+    {
+        if (pBeTrasladoDet == null || pBePedidoDet == null || pBeStockRes == null)
+            return;
+
+        if (pBePedidoDet.IdPresentacion == 0)
+            return;
+
+        var pBeTrasladoTemp = new clsBeI_nav_ped_traslado_det
+        {
+            Item_No = pBeTrasladoDet.No,
+            Line_No = pBeTrasladoDet.Line_No,
+            NoEnc = pBeTrasladoDet.NoEnc
+        };
+
+        clsLnI_nav_ped_traslado_det.GetSingle(pBeTrasladoTemp, lConnection, lTransaction);
+
+        bool variantDistinto = !string.Equals(SafeTrim(pBeTrasladoDet.Variant_Code),
+                                              SafeTrim(pBeTrasladoTemp.Variant_Code),
+                                              StringComparison.OrdinalIgnoreCase);
+
+        bool umNoCoincideConPresentacion = !string.Equals(SafeTrim(pBeTrasladoTemp.Unit_of_Measure_Code),
+                                                          SafeTrim(pBePedidoDet.Nom_presentacion),
+                                                          StringComparison.OrdinalIgnoreCase);
+
+        if (!variantDistinto || !umNoCoincideConPresentacion)
+            return;
+
+        double factor = ResolverFactorPresentacion(pBePedidoDet, lConnection, lTransaction);
+        if (factor <= 0)
+            throw new Exception("ERROR_202605191930: No se pudo normalizar la linea a UMBas porque la presentacion no tiene factor valido.");
+
+        double cantidadUMBas = Math.Ceiling(Math.Round(pBeTrasladoDet.Quantity * factor, 2));
+
+        pBePedidoDet.Cantidad = cantidadUMBas;
+        pBePedidoDet.Nom_presentacion = "";
+        pBePedidoDet.IdPresentacion = 0;
+        pBePedidoDet.Factor = factor;
+        pBePedidoDet.Atributo_variante_1 = "";
+
+        pBeStockRes.Cantidad = cantidadUMBas;
+        pBeStockRes.IdPresentacion = 0;
+        pBeStockRes.Atributo_Variante_1 = "";
+    }
 
     public static void Cargar(ref clsBeTrans_pe_det oBeTrans_pe_det, DataRow dr)
     {
@@ -1223,30 +1299,17 @@ public class clsLnTrans_pe_det
         try
         {
             int ResultadoInsert = 0;
-            clsBeI_nav_ped_traslado_det pBeTrasladoTemp = new clsBeI_nav_ped_traslado_det();
-
-            pBeTrasladoTemp.Item_No = pBeTrasladoDet.No;
-            pBeTrasladoTemp.Line_No = pBeTrasladoDet.Line_No;
-            pBeTrasladoTemp.NoEnc = pBeTrasladoDet.NoEnc;
-            clsLnI_nav_ped_traslado_det.GetSingle(pBeTrasladoTemp,lConnection, lTransaction);
 
             if (pBePedidoDet.IsNew)
             {
                 pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
 
-                if (pBeTrasladoDet.Variant_Code != pBeTrasladoTemp.Variant_Code && pBeTrasladoTemp.Unit_of_Measure_Code != pBePedidoDet.Nom_presentacion)
-                {
-                    if (pBeTrasladoDet != null)
-                    {
-                        if (pBePedidoDet.IdPresentacion != 0)
-                        {
-                            pBePedidoDet.Cantidad = Math.Ceiling(Math.Round(pBeTrasladoDet.Quantity * pBePedidoDet.Factor, 2));
-                            pBePedidoDet.Nom_presentacion = "";
-                            pBePedidoDet.IdPresentacion = 0;
-                        }
-                    }
-                }
+                NormalizarLineaPorUmVariant(ref pBeTrasladoDet,
+                                            ref pBePedidoDet,
+                                            ref pBeStockRes,
+                                            lConnection,
+                                            lTransaction);
 
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
             }
@@ -1256,6 +1319,11 @@ public class clsLnTrans_pe_det
                 {
                     pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
                     pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+                    NormalizarLineaPorUmVariant(ref pBeTrasladoDet,
+                                                ref pBePedidoDet,
+                                                ref pBeStockRes,
+                                                lConnection,
+                                                lTransaction);
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
                 }
                 else
@@ -1460,6 +1528,13 @@ public class clsLnTrans_pe_det
             {
                 pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+
+                NormalizarLineaPorUmVariant(ref pBeTrasladoDet,
+                                            ref pBePedidoDet,
+                                            ref pBeStockRes,
+                                            lConnection,
+                                            lTransaction);
+
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
             }
             else
@@ -1468,6 +1543,11 @@ public class clsLnTrans_pe_det
                 {
                     pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
                     pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+                    NormalizarLineaPorUmVariant(ref pBeTrasladoDet,
+                                                ref pBePedidoDet,
+                                                ref pBeStockRes,
+                                                lConnection,
+                                                lTransaction);
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
                 }
                 else

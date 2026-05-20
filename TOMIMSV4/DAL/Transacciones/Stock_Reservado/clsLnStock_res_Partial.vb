@@ -18510,6 +18510,125 @@ Partial Public Class clsLnStock_res
         End Try
     End Function
 
+    Private Shared Function Normalizar_Texto_No_Reserva_MI3(ByVal pTexto As String) As String
+
+        If String.IsNullOrWhiteSpace(pTexto) Then Return ""
+
+        Return pTexto.Replace(vbCr, " ").
+                      Replace(vbLf, " ").
+                      Replace(vbTab, " ").
+                      Trim().
+                      ToUpperInvariant().
+                      Replace("Á", "A").
+                      Replace("É", "E").
+                      Replace("Í", "I").
+                      Replace("Ó", "O").
+                      Replace("Ú", "U")
+
+    End Function
+
+    Private Shared Function Clasificar_Motivo_No_Reserva_MI3(ByVal pMotivo As String) As String
+
+        Dim vTexto As String = Normalizar_Texto_No_Reserva_MI3(pMotivo)
+
+        If vTexto.Contains("TALLA") OrElse
+           vTexto.Contains("COLOR") OrElse
+           vTexto.Contains("IDPRODUCTOTALLACOLOR") Then
+            Return "TALLA_COLOR_NO_APLICA"
+        End If
+
+        If vTexto.Contains("UBICACION OBLIGATORIA") OrElse
+           vTexto.Contains("UBICACION ABASTECER") OrElse
+           vTexto.Contains("IDUBICACIONABASTECERCON") OrElse
+           vTexto.Contains("SIN STOCK APLICABLE EN UBICACION") Then
+            Return "UBICACION_CLIENTE_OBLIGATORIA"
+        End If
+
+        If vTexto.Contains("EXPLOSION_AUTOMATICA_NIVEL") OrElse
+           vTexto.Contains("NIVEL PARA LA EXPLOSION") OrElse
+           vTexto.Contains("CONDICION DE NIVEL") Then
+            Return "EXPLOSION_NIVEL_NO_APLICA"
+        End If
+
+        If vTexto.Contains("NO SE PUEDE EXPLOSIONAR") AndAlso
+           (vTexto.Contains("NO PICKING") OrElse
+            vTexto.Contains("ALM") OrElse
+            vTexto.Contains("ALMACENAMIENTO") OrElse
+            vTexto.Contains("RACK")) Then
+            Return "SOLO_NO_PICKING_SIN_EXPLOSION"
+        End If
+
+        If vTexto.Contains("FEFO") OrElse
+           vTexto.Contains("FECHA MINIMA") OrElse
+           vTexto.Contains("FECHAMINIMA") OrElse
+           vTexto.Contains("VENCE") OrElse
+           vTexto.Contains("VENCIMIENTO") Then
+
+            If (vTexto.Contains("ZONA PICKING") OrElse vTexto.Contains("ZONAPICKING")) AndAlso
+               (vTexto.Contains("ZONA ALM") OrElse vTexto.Contains("ZONAALM") OrElse vTexto.Contains("ALM")) Then
+                Return "FEFO_BLOQUEA_PICKING"
+            End If
+
+            Return "SIN_VENCIMIENTO_VALIDO"
+        End If
+
+        If vTexto.Contains("PRESENTACION") OrElse
+           vTexto.Contains("PRES=") OrElse
+           vTexto.Contains("PRES ") Then
+            Return "PRESENTACION_NO_APLICA"
+        End If
+
+        If vTexto.Contains("RESERVADO") OrElse
+           vTexto.Contains("RESERVA VIGENTE") OrElse
+           vTexto.Contains("RESERVAS VIGENTES") Then
+            Return "RESERVADO_POR_OTROS"
+        End If
+
+        If vTexto.Contains("LISTA NO TIENE REGISTROS") OrElse
+           vTexto.Contains("NO SE OBTUVO NINGUN REGISTRO") OrElse
+           vTexto.Contains("NO HAY EXISTENCIA") OrElse
+           vTexto.Contains("EXISTENCIA DISPONIBLE") OrElse
+           vTexto.Contains("SIN STOCK") Then
+            Return "SIN_STOCK_APLICABLE"
+        End If
+
+        Return "RESERVA_NO_COMPLETADA"
+
+    End Function
+
+    Private Shared Function Formatear_Motivo_No_Reserva_MI3(ByVal pMotivo As String) As String
+
+        Dim vMotivo As String = pMotivo.Replace(vbCr, " ").
+                                        Replace(vbLf, " ").
+                                        Replace(vbTab, " ").
+                                        Trim()
+        If String.IsNullOrWhiteSpace(vMotivo) Then Return ""
+
+        If vMotivo.IndexOf("TIPO_NO_RESERVA=", StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return vMotivo
+        End If
+
+        Return "TIPO_NO_RESERVA=" & Clasificar_Motivo_No_Reserva_MI3(vMotivo) & " | " & vMotivo
+
+    End Function
+
+    Private Shared Sub Marcar_Motivo_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                    ByVal pMotivo As String)
+
+        If pBeTrasladoDet Is Nothing OrElse String.IsNullOrWhiteSpace(pMotivo) Then Exit Sub
+
+        Dim vMotivo As String = Formatear_Motivo_No_Reserva_MI3(pMotivo)
+        If String.IsNullOrWhiteSpace(vMotivo) Then Exit Sub
+
+        If String.IsNullOrWhiteSpace(pBeTrasladoDet.Process_Result) OrElse
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "Ok", StringComparison.OrdinalIgnoreCase) Then
+            pBeTrasladoDet.Process_Result = vMotivo
+        ElseIf pBeTrasladoDet.Process_Result.IndexOf(vMotivo, StringComparison.OrdinalIgnoreCase) < 0 Then
+            pBeTrasladoDet.Process_Result = pBeTrasladoDet.Process_Result.Trim() & " " & vMotivo
+        End If
+
+    End Sub
+
     Public Shared Function Reserva_Stock_From_MI3(ByRef pStockResSolicitud As clsBeStock_res,
                                                   ByVal DiasVencimiento As Double,
                                                   ByVal MaquinaQueSolicita As String,
@@ -18918,15 +19037,16 @@ EXPLOSIONAR_PRODUCTO:
                                                                            0))
                             Else
                                 If Not vCantidadCompletada Then
-                                    Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
-                                                                                    BeProducto.Codigo,
-                                                                                    vCantidadSolicitadaPedido,
-                                                                                    vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                    'Exit Function
-                                End If
-                            End If
-                        End If
+                                     Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                                     BeProducto.Codigo,
+                                                                                     vCantidadSolicitadaPedido,
+                                                                                     vCantidadStock)
+                                     clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306)
+                                     'Exit Function
+                                 End If
+                             End If
+                         End If
 
                         '#EJC202312191315: Para BYB, con amor.
                         If Not vBusquedaEnUmBas AndAlso pStockResBusquedaParaExplosion Is Nothing Then
@@ -19257,25 +19377,27 @@ EXPLOSIONAR_PRODUCTO:
 
                                             ListaEstadosDeProceso.Add(105)
 
-                                            Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
-                                                                                        BeProducto.Codigo,
-                                                                                        vCantidadSolicitadaPedido,
-                                                                                        vCantidadStock)
-                                            clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                            Exit Function
+                                             Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                                         BeProducto.Codigo,
+                                                                                         vCantidadSolicitadaPedido,
+                                                                                         vCantidadStock)
+                                             clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306)
+                                             Exit Function
 
-                                        End If
+                                         End If
 
                                     Else
 
-                                        Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
-                                                                                        BeProducto.Codigo,
-                                                                                        vCantidadSolicitadaPedido,
-                                                                                        vCantidadStock)
-                                        clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                        Exit Function
+                                         Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                                         BeProducto.Codigo,
+                                                                                         vCantidadSolicitadaPedido,
+                                                                                         vCantidadStock)
+                                         clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306)
+                                         Exit Function
 
-                                    End If
+                                     End If
 
                                 End If
 
@@ -19666,11 +19788,12 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                    Return False
-                                                End If
+                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                     Return False
+                                                 End If
 
                                             End If
                                         Else
@@ -19697,11 +19820,12 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                                     Else
 
-                                                        If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                            Return False
-                                                        End If
+                                                         If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                             Return False
+                                                         End If
 
                                                     End If
                                                 Else
@@ -19727,11 +19851,12 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                    Return False
-                                                End If
+                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                     Return False
+                                                 End If
 
                                             End If
                                         Else
@@ -23563,11 +23688,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                    Else
-                                                        Reserva_Stock_From_MI3 = False
-                                                    End If
+                                                     Else
+                                                         vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
+                                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                         Reserva_Stock_From_MI3 = False
+                                                     End If
 
-                                                End If
+                                                 End If
 
                                             End If
 
@@ -24136,11 +24264,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                        Else
-                                                            Reserva_Stock_From_MI3 = False
-                                                        End If
+                                                         Else
+                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                             Reserva_Stock_From_MI3 = False
+                                                         End If
 
-                                                    End If
+                                                     End If
 
                                                 End If
 
@@ -24538,17 +24669,20 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                        Else
-                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                            vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
-                                                            Reserva_Stock_From_MI3 = False : Exit For
-                                                        End If
+                                                         Else
+                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                             vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
+                                                             Reserva_Stock_From_MI3 = False : Exit For
+                                                         End If
 
-                                                    End If
-                                                Else
-                                                    vProcessResult.Add("#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel)
-                                                    Continue For
-                                                End If
+                                                     End If
+                                                 Else
+                                                     Dim vMotivoNoAplicaExplosionNivel As String = "#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMotivoNoAplicaExplosionNivel)
+                                                     vProcessResult.Add(vMotivoNoAplicaExplosionNivel)
+                                                     Continue For
+                                                 End If
 
                                             Else
 
