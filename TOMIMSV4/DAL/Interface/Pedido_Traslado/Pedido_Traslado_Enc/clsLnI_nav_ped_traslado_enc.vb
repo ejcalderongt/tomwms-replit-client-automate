@@ -576,11 +576,24 @@ Public Class clsLnI_nav_ped_traslado_enc
 
         Try
 
-            Dim vSQL As String = "SELECT enc.No,enc.Transfer_from_Code,enc.Transfer_to_Code,det.no as Codigo,det.Description as Producto,det.Quantity as Cantidad
-                    FROM i_nav_ped_traslado_det det inner join 
-                    i_nav_ped_traslado_enc enc on enc.No = det.NoEnc
-                    WHERE enc.no = @Referencia 
-                    Order By det.no"
+            Dim vSQL As String = "SELECT enc.No,enc.Transfer_from_Code,enc.Transfer_to_Code,det.no as Codigo,
+                                         det.Description as Producto,
+                                         det.Quantity as Cantidad,
+                                         IsNull(det.Quantity_Reserved_WMS,0) Cantidad_Reservada,
+                                         CAST(IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0) AS decimal(18,6)) Diferencia_Reserva,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE (IsNull(det.Quantity_Reserved_WMS,0) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Reservado,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE ((IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0)) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Diferencia,
+                                         CASE
+                                             WHEN IsNull(det.Quantity,0) = 0 THEN 'Sin solicitud'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = 0 THEN 'Sin reserva'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) < IsNull(det.Quantity,0) THEN 'Parcial'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = IsNull(det.Quantity,0) THEN 'Completa'
+                                             ELSE 'Exceso'
+                                         END Estado_Reserva
+                                  FROM i_nav_ped_traslado_det det inner join
+                                       i_nav_ped_traslado_enc enc on enc.No = det.NoEnc
+                                  WHERE enc.no = @Referencia
+                                  Order By det.no"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -617,6 +630,16 @@ Public Class clsLnI_nav_ped_traslado_enc
                                          Codigo,det.Description as Producto,det.Quantity as Cantidad, det.Unit_Of_Measure_Code as UM, 
                                          CASE WHEN det.Variant_Code IS NOT NULL THEN PP.nombre ELSE '' END  as Presentacion, 
                                          IsNull(det.Quantity_Reserved_WMS,0) Cantidad_Reservada,
+                                         CAST(IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0) AS decimal(18,6)) Diferencia_Reserva,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE (IsNull(det.Quantity_Reserved_WMS,0) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Reservado,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE ((IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0)) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Diferencia,
+                                         CASE
+                                             WHEN IsNull(det.Quantity,0) = 0 THEN 'Sin solicitud'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = 0 THEN 'Sin reserva'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) < IsNull(det.Quantity,0) THEN 'Parcial'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = IsNull(det.Quantity,0) THEN 'Completa'
+                                             ELSE 'Exceso'
+                                         END Estado_Reserva,
                                          det.Status, det.Process_Result as Resultado, det.Size as Talla, det.Color 
                                   FROM i_nav_ped_traslado_det det INNER JOIN 
                                        i_nav_ped_traslado_enc enc on enc.No = det.NoEnc LEFT OUTER JOIN
